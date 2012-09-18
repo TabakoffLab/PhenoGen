@@ -3055,7 +3055,7 @@ public class Dataset {
                 public void addFilterStep(int dsFilterStatID,String method,String parameters,int step_count, int stepNumber,int userID,Connection conn){
                     DSFilterStat curDSFS=getFilterStat(dsFilterStatID,userID,conn);
                     if(curDSFS!=null){
-                        curDSFS.addFilterStep(method,parameters,step_count,stepNumber,conn);
+                        curDSFS.addFilterStep(method,parameters,step_count,stepNumber,-1,-1,conn);
                     }
                 }
                 
