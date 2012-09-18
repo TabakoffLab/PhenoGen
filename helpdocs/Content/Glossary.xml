@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:disableMasterStylesheet="true" MadCap:tocPath="" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Glossary" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" />
+        <title>Glossary</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body style="background-color: #fafafa;">
+        <div id="GlossaryBody">
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_0" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">Array</a>
+                    <a name="3590870745_anchor1">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_0" style="display: none;">See Microarray.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_1" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">bQTL</a>
+                    <a name="3590870745_anchor2">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_1" style="display: none;">Behavioral QTL.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_2" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">Chip</a>
+                    <a name="3590870745_anchor3">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_2" style="display: none;">See Microarray.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_3" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">Experiment</a>
+                    <a name="3590870745_anchor4">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_3" style="display: none;">A group of arrays that are assayed at the same time. Information about the experimental protocol is entered into a MIAME-compliant database integrated into PhenoGen. Each array in the experiment represents a hybridization and is linked to a sample.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_4" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">iDecoder</a>
+                    <a name="3590870745_anchor5">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_4" style="display: none;">iDecoder is a tool that maps gene identifiers between databases. For instance, if database 1 contains entry A and database 2 contains entry B, and both A and B refer to entry C in database 3, but not to each other, iDecoder will identify that A and B are related.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_5" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">INIA</a>
+                    <a name="3590870745_anchor6">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_5" style="display: none;">See Integrative Neuroscience Initiative on Alcoholism.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_6" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">Integrative Neuroscience Initiative on Alcoholism</a>
+                    <a name="3590870745_anchor7">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_6" style="display: none;">A consortium created to identify the molecular, cellular, and behavioral neuroadaptations that occur in the brain reward circuits associated with the extended amygdala and its connections.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_7" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">LIMMA</a>
+                    <a name="3590870745_anchor8">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_7" style="display: none;">Linear Models for Microarrays.  Collection of tools used for normalization and statistical analysis of cDNA and oligonucleotide arrays.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_8" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">MIAME</a>
+                    <a name="3590870745_anchor9">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_8" style="display: none;">Minimum Information About a Microarray Experiment.  MIAME is a standard for exchanging microarray experimental data in such a way as to make it easily interpreted and allow for easy and independent verification.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_9" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">Microarray</a>
+                    <a name="3590870745_anchor10">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_9" style="display: none;">A 2D array, typically on a glass, filter, or silicon wafer, upon which genes or gene fragments are deposited or synthesized in a predetermined spatial order allowing them to be made available as probes in a high-throughput, parallel manner.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_10" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">Motif</a>
+                    <a name="3590870745_anchor11">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_10" style="display: none;">A motif is a sequence pattern that occurs repeatedly in a group of related protein or DNA sequences.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_11" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">PI</a>
+                    <a name="3590870745_anchor12">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_11" style="display: none;">See Principal Investigator.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_12" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">Principal Investigator</a>
+                    <a name="3590870745_anchor13">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_12" style="display: none;">(a.k.a. PI)  1. Often the head of a lab.   2. Typically the array owner.  3. The person responsible for granting permission to other users to view the arrays.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_13" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">QTL</a>
+                    <a name="3590870745_anchor14">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_13" style="display: none;">Quantitative Trait Locus. An area of the genome that is associated with variation in a quantitative trait.</div>
+            </div>
+            <div class="GlossaryPageEntry">
+                <div class="GlossaryPageTerm">
+                    <a href="javascript:void(0);" class="GlossaryPageTerm" id="MCDropDownHotSpot_3590870745_14" onclick="FMCDropDown( this ); FMCScrollToVisible( window, this.parentNode.parentNode ); return false;">Version</a>
+                    <a name="3590870745_anchor15">
+                    </a>
+                </div>
+                <div class="GlossaryPageDefinition" id="MCDropDownBody_3590870745_14" style="display: none;">After selecting run-groups and normalizing data for a saved experiment, a "version" of the experiment is created.</div>
+            </div>
+        </div>
+        <p>&#160;</p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

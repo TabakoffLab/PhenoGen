@@ -1,0 +1,922 @@
+/* **************************************************************************************
+ *          BEGIN SECTION DEFINITIONS
+ */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          PAGE WRAPPER & BODY WRAPPER
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  body{
+  	background: none repeat scroll 0 0 #FFFFFF;
+    color: #666666;
+    font-family: Arial,Verdana,sans-serif;
+    font-size: 14px;
+    margin: 5px auto 60px;
+    padding: 5px 0 10px;
+    position: relative;
+    text-align: left;
+    width: 1000px;
+  }
+    #page_wrapper {
+        padding: 5px 0 10px;
+        width: 1000px;
+        margin: 5px auto;
+        background: #fff;
+        position: relative;
+    }
+
+    #body_wrapper {
+        background-color: #ccc;
+        padding: 10px;
+        border: solid 1px #777;
+        border-top: solid 0px #777;
+        margin: 0 5px;
+    }
+	
+	 #body_wrapper_plain{
+        background-color: #FFFFFF;
+    }
+
+    #main_body {
+        border: solid 1px #777;
+        background: #fff url("../web/images/bg/tab-field-bg_grey.jpg") repeat-x 0 0px;
+        text-align: left;
+    }
+	#white_body {
+        border: solid 1px #777;
+        background: #fff; 
+        text-align: left;
+    }
+	
+	#main_body_plain {
+        text-align: left;
+    }
+	
+    div.body_border {
+	margin: 0 10px;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          TOOLBAR ICONS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div#iconsDiv {
+        padding: 0 0 10px 0;
+        margin: 0 4px;
+	position:relative;
+        width: 500px;
+	float:right;
+	clear: both;
+	height: 0px;
+    }
+    div.optionIcons {
+        padding: 5px;
+	float:right;
+	clear:both;
+    }
+    .toolbarImg:hover {
+	background: white;
+        border: solid 4px #aaa;
+        padding: 2px;
+    }
+    .toolbarImg {
+        cursor: pointer;
+        float:left;
+        margin: 7px;
+    }
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          DOWNLOAD & DELETE
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    .linkedImg {
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
+    }
+    div.linkedImg.edit {
+        margin-left: auto;
+        margin-right: auto;
+        background: transparent url("../web/images/icons/edit.png") no-repeat left bottom;
+    }
+    div.linkedImg.delete {
+        margin-left: auto;
+        margin-right: auto;
+        background: transparent url("../web/images/icons/delete.png") no-repeat left bottom;
+    }
+    div.linkedImg.download {
+        background: transparent url("../web/images/icons/download_g.png") no-repeat left bottom;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .linkedImg.return {
+        margin-left: auto;
+        margin-right: auto;
+        background: transparent url("../web/images/icons/prev.png") no-repeat left center;
+    }
+    div.linkedImg.more {
+	height: 80px;
+	width: 80px;
+        background: transparent url("../web/images/icons/arrow.gif") no-repeat left bottom;
+    }
+	
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          PROGRESS DIV
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+div.progressDiv {
+  position:absolute;
+  top:0px;
+  left:0px;
+  z-index:15;
+}
+
+TABLE.progressBar {
+  font-size: 14pt;
+  border-width: 4px;
+  border-color: black;
+  border-style: solid;
+  padding: 20px;
+  margin: 25px;
+  width: 100px;
+  background-color: #FFFFCC;  /* light yellow */
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          MAIN TABS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    #main_tab_bar {
+        border-bottom: solid 1px #777;
+        padding: 5px 0 0 20px;
+        height: 33px;
+        z-index: 0;
+        margin: 0 5px;
+    position: relative;
+    clear: both;
+	font-size: 13px;
+    }
+    #main_tab_bar div.tab {
+    left: 2px;
+        line-height: 16px;
+        font-size: 12px;
+        float: left;
+        cursor: pointer;
+        font-weight: bold;
+        text-align: center;
+        color: #aaa;
+        width: 140px;
+        margin: 1px 0 0 0;
+        padding: 9px 0 7px 0;
+        background: transparent url("../web/images/bg/nav-btn-lg3-off.jpg") no-repeat;
+    }
+
+    #main_tab_bar a {
+	font-size: 11px;
+	text-decoration:none;
+	font-weight: bold;
+    }
+    #main_tab_bar div.selected {
+        /*color: #000;
+        background-color: #ddd;*/
+        background: transparent url("../web/images/bg/nav-btn-lg3-on.gif") no-repeat;
+        border-bottom: solid 1px #ccc;
+    }
+
+    #main_tab_bar div.main_tab_help {
+        float: right;
+        margin: 10px 10px 0 0;
+    }
+
+    #main_tab_bar div.main_tab_help a {
+        background: transparent url("../web/images/icons/help.png") no-repeat top right;
+        padding: 3px 20px 0 0;
+	font-size: 12px;
+    }
+
+    #main_tab_bar div.main_tab_help a:hover span {
+        border-bottom: dotted 1px #476087;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          RELATED ACTIONS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div#related_links,
+    div#related_actions {
+    	text-align: right;
+    }
+
+    div#related_links {
+        float: right;
+        margin: 12px 12px 12px 0;
+    }
+
+    div#related_links a {
+    	color: #4C7298;
+    	font-size: 14px;
+    }
+
+    div.other_actions {
+    	text-align: center;
+        float: right;
+        margin: 10px 10px 0 0;
+	height: 15px;
+	cursor:pointer;
+    }
+
+    div#related_actions {
+        float: left;
+	clear: both;
+        margin: 0 0 0 12px;
+    }
+
+    div#related_actions .action {
+        float: left;
+    }
+
+    div.submenu {
+        height: 20px;
+        margin: 0 9px;
+        border-bottom: solid 0px #aad;
+        padding: 3px 0;
+    }
+    div.submenu div {
+        float: left;
+        font-size: 13px;
+        margin: 0 15px 0 0;
+        text-align: center;
+        padding: 0 2px;
+        cursor: pointer;
+        color: #658CB2; 
+        /* color: #328773; */
+    }
+
+    div.submenu div.expandList {
+        display: none;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          LIST TABLE WRAPPER
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.list_container {
+        float: none;
+        clear: both;
+        margin: 0 auto;
+        margin: 10px; 
+        padding: 0;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          GENERIC TABS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.action_tabs, div.ma_action_tabs {
+        position: relative;
+        clear: both;
+        display: block;
+        border-bottom: solid 1px #24618e;
+        margin: 0 8px 0 10px;
+        padding: 8px 0 0 5px;
+        height: 35px;
+    }
+    div.action_tabs div, div.ma_action_tabs div {
+        cursor: pointer;
+        float: left;
+        position: relative;
+        background: transparent url("../web/images/tableftJ.gif") no-repeat left top;
+        padding: 0 0 0 5px;
+        border: solid 0px green;
+        line-height: 16px;
+    }
+	
+	div.action_tabs div.single, div.ma_action_tabs div.single {
+		line-height:35px;
+	}
+	
+    div.action_tabs div span, div.ma_action_tabs div span {
+        font-weight: bold;
+		font-size:12px;
+		text-align:center;
+        height: 35px;
+        overflow: visible;
+        background:url("../web/images/tabrightJ2.gif") no-repeat right top;
+        display: block;
+        color: #24618e;
+        float:left;
+        padding: 0 9px 0 3px;
+    }
+    div.action_tabs div.selected, div.ma_action_tabs div.selected {
+        background-position: 0% -42px;
+    }
+    div.action_tabs div.selected span, div.ma_action_tabs div.selected span {
+        background-position: 100% -42px;
+        color: #fff;
+    }
+    .action_tabs div:hover, .ma_action_tabs div:hover {
+        background-position: 0% -42px;
+    }
+    .action_tabs div:hover span, .ma_action_tabs div:hover span {
+        color: #6fb4cc;
+        background-position: 100% -42px;
+    }
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          GENERIC TAB FIELD (DATA CONTAINER)
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.dataContainer {
+        clear: both;
+        position: relative;
+        margin: -1px 10px 10px 10px;
+        border: solid 1px #24618e;
+        border-top: 0px;
+        padding: 10px 10px 20px 10px;
+	overflow: auto;
+    }
+
+    div.datasetDataContainer {
+        clear: both;
+        position: relative;
+        margin: -1px 10px 10px 10px;
+        border: solid 1px #24618e;
+        padding: 10px;
+	height: 580px;
+	overflow: auto;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          BUTTON CLASSES
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+    div.button {
+        float: left;
+        margin: 0 6px;
+        white-space: nowrap;
+        text-align: left;
+        color: #444;
+        text-decoration: none;
+        line-height: 1.2em;
+        outline: none;
+    }
+
+    div.button b {
+        background: #DDDDDD url("../web/images/bg/button.gif") repeat-x scroll 0 0;
+        border: solid #AAAAAA;
+        border-width: 1px 0;
+        display: block;
+        font-weight: normal;
+        margin: 1px 1px;
+        padding: 1px;
+    }
+    div.button:hover b, div.button.current b {
+        border-color:#888888;
+    }
+    div.button.current b {
+        z-index: 2;
+        border-bottom-color: #fff;
+        background-position: bottom left;
+    }
+    div.button b b {
+        background: transparent none repeat scroll 0 0;
+        border-width: 0 1px;
+        margin: 0 -1px;
+        padding: 0 5px;
+    }
+    div.button b b b {
+        border-width: 0;
+        cursor: pointer;
+        font-weight: bold;
+        margin: 0;
+        padding: 0.1em 0.2em;
+    }
+    div.button.menu b b b {
+        background: transparent url("../web/images/icons/button_arrow_down.gif") no-repeat scroll right center;
+        padding-right: 15px;
+    }
+    div.button.current b b b {
+        background: transparent url("../web/images/icons/button_arrow_up.gif") no-repeat scroll right center;
+    }
+
+    div.navigationButton.notSelectedLeft {
+        background: transparent url("../web/images/icons/prev.png") no-repeat left center;
+    }
+
+    div.navigationButton.notSelectedRight {
+        background: transparent url("../web/images/icons/next.png") no-repeat right center;
+    }
+
+    div.navigationButton.selected {
+	font-weight: bold;
+    }
+
+    div.navigationButton {
+	display:inline-block;
+        margin: 10px 6px 0px 0px;
+        padding: 0px 20px;
+	text-decoration: underline;
+	line-height: 1.8em;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    div.inlineButton {
+	display:inline;
+        background: #DDDDDD url("../web/images/bg/button.gif") repeat-x scroll 0 0; 
+        border: 1px solid #AAAAAA;
+        margin: 0px -90px 0px 10px;
+        padding: 0 10px;
+	text-align: center;
+	line-height: 1.2em;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        color: #658CB2;
+    }
+/*
+ *          END SECTION DEFINITIONS
+ *****************************************************************************************/
+
+.itemDetails, .arrayDetails, div.object_details, div.downloadItem, div.scrollable {
+    overflow: auto;
+}
+
+.details, .publicDetails {
+    cursor: pointer;
+    color: #416fbf;
+}
+
+.vDesc {
+    cursor: pointer;
+    color: #416fbf;
+}
+
+div.brClear {
+    clear: both;
+    float: none;
+}
+
+P.indent {
+    margin-left: .5in;
+}
+
+SPAN.heading {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #000000; /* black */
+}
+
+div#wait1{
+	width: 100%;
+    text-align: center;
+	display:block;
+}
+
+
+.hide { position:absolute; visibility:hidden; }
+.show { position:absolute; visibility:visible; }
+
+    div.center {
+        width: 100%;
+        text-align: center;
+        float: left;
+    }
+    div.right {
+        text-align: right;
+        float: right;
+    }
+
+    div.left {
+        text-align: left;
+        float: left;
+    }
+
+
+span.buttonRef { 
+	font-size: 14px;
+	font-weight: bold;
+}
+
+span.info { 
+	cursor: pointer; 
+	margin: 0 5px;
+}
+.extra_class { 
+	width: 300px; 
+}
+
+/*
+    div.help img {
+        float: left;
+        position: relative;
+        margin:0px 0px 0px 50px;
+    }
+*/
+
+
+/* page-intro */
+div.page-intro{ 
+	float: left; 
+	margin: 20px 0px 20px 20px;
+	width: 700px;
+	font-size: 14px;
+}
+/* tab-intro */
+div.tab-intro{ 
+	float: left; 
+	margin: 20px 0px 20px 20px;
+	width: 600px;
+}
+
+TD.orange {
+  color: #E47833;               /* Mandarin Orange */
+}
+
+.pagedisplay {
+	font-size: 12px;
+	font-family: Arial, Verdana, sans-serif;
+	border: solid 1px #FFF;
+	text-align: center;
+}
+.numArraysDisplay {
+	font-size: 12pt;
+	color: #545454;
+	font-family: Arial, Verdana, sans-serif;
+	border: solid 1px transparent;
+	background: transparent;
+	text-align: center;
+}
+
+div.alertMsg {
+	text-align: center;
+	margin: 40px 10px;	
+}
+
+div.closeWindow {
+	text-align: center;
+	margin: 40px 0px;	
+	cursor: pointer;
+	color: #416fbf;
+}
+
+#prevNext {
+    clear: left;
+    padding: 80px 0px 10px 0px;
+    margin: 10px;
+    height: 25px;
+}
+
+#prevNext div.right,
+#prevNext div.left {
+    width: 200px;
+}
+
+/* Used for expanding/contracting */
+.trigger{
+        cursor: pointer;
+        /* needed for IE?  Don't think so */
+	/* cursor: hand; */
+	background: url(../web/images/icons/add.png) center left no-repeat; 
+	padding: 0 10px 0 20px;
+}
+
+.less{
+	background: url(../web/images/icons/min.png) center left no-repeat; 
+}
+
+/*- Circles --------------------------- */
+
+    /* top right bottom left */
+    #circles {
+        width: 700px;
+        line-height:normal;
+        padding-left: 20px;
+    }
+
+    #circles div.picture.earlierStep {
+	text-decoration:underline;
+    }
+
+    #circles img.currentStep {
+	border: solid 4px #aaa;
+	padding: 4px 6px;
+	margin: 0px 15px;
+	background: white;
+    }
+
+    #circles a img:hover {
+/*
+	border: solid 4px #aaa;
+	background: #d3d4d8;
+*/
+    }
+
+/*- Steps --------------------------- */
+    div.steps_container {
+        margin: 0 auto;
+	padding-top: 8px;
+	
+    }
+
+    /* top-bottom right-left */
+    /* top right bottom left */
+    #steps {
+        text-align: left;
+        padding: 10px 0px 10px 40px;
+    }
+    #steps span {
+	float:left;
+	display:block;
+	color: #658CB2;
+	width: 40px;
+	text-align:center;
+	margin:0px 40px 0px 0px;
+	text-decoration:none;
+      }
+
+	.toolbarPicture {
+		padding: 3px; 
+		font-size: 11px; 
+		text-align:center; 
+		color:#326f9b; 
+		width:63px;
+		cursor:pointer;
+	}
+	.toolbarPicture:hover {
+		background:white;
+		border: solid 4px #aaa;
+	}
+	.toolbarPicture img {
+		vertical-align:middle; 
+		margin-bottom: 3px;
+	}
+	.picture {
+		padding: 3px; 
+		font-size: 11px; 
+		text-align:center; 
+		color:#326f9b; 
+		width:63px;
+	}
+	.picture:hover {
+		background:white;
+	}
+	.picture.earlierStep:hover {
+		background:white;
+		border: solid 4px #aaa;
+	}
+	.picture.laterStep{
+		background:#d3d4d8; 
+		text-decoration:none;
+	}
+
+	.picture img {
+		margin-bottom: 3px;
+	}
+	.currentStep {
+		background:white; 
+		border:4px solid #AAAAAA;
+	}
+	.icons {
+		margin: 5px 0px; 
+		float:left;
+	 }
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          Tabs for modal windows
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+#arrayDetailsTab ul {
+	float: left;
+	/* outer background color of the tabs */
+	background: #fff;
+	width: 900px;
+	padding-top: 4px;
+}
+
+
+#arrayDetailsTab li {
+	margin-left: 1px;
+	list-style: none;
+	cursor: pointer;
+        float: left;
+        position: relative;
+        background: transparent url("../web/images/tableftJ.gif") no-repeat left top;
+        padding: 0 0 0 5px;
+       
+        line-height: 30px;
+	
+}
+
+
+
+
+#arrayDetailsTab ul li.active a {
+    /* font color of the tab */
+	 background-position: 100% -42px;
+        color: #fff;
+  
+}
+#arrayDetailsTab div {
+    /* bg color of tab content */
+	/* background: #FFFFCC; */
+	clear: both;
+	padding: 15px;
+	min-height: 200px;
+}
+
+#arrayDetailsTab ul li a {
+
+      font-weight: bold;
+        height: 27px;
+        overflow: hidden;
+        background:url("../web/images/tabrightJ2.gif") no-repeat right top;
+        display: block;
+        color: #24618e;
+        float: left;
+        padding: 0 11px 0 3px;
+        
+}
+
+
+
+
+#arrayDetailsTab li.selected {
+	margin-left: 1px;
+	list-style: none;
+	cursor: pointer;
+        float: left;
+        position: relative;
+        background: transparent url("../web/images/tableftJ.gif") no-repeat 0px -42px;;
+        padding: 0 0 0 5px;
+       
+        line-height: 30px;
+	
+}
+
+
+
+        
+  div.modalTab { position:absolute; top:10%; left:2%; width:95%;
+		height:70%; background-color:white; padding:0 1em; }
+
+.modalTabContent
+{
+  BORDER-TOP: #808080 2px solid;
+  BORDER-LEFT: #808080 2px solid;
+  BORDER-BOTTOM: #808080 2px solid;
+  BORDER-RIGHT: #808080 2px solid;
+  position:absolute; top:5%; left:0; width:92%; height:110%;
+}
+
+
+.modalWindowClose
+{
+ bottom:0;
+ position:absolute;
+ left:40%;
+ width:20%;
+ height:20%;
+
+}
+
+/*---------------Errors-----------*/
+div.error{ 
+	float: left; 
+	margin: 20px 0px 20px 20px;
+	width: 700px;
+	font-size: 16px;
+	font-weight:bold;
+	
+}
+
+div.whats-new { background:  #fefefe; float: left; overflow: auto; width: 425px; height:200px; margin: 20px 30px; border: #999 1px solid; color: #999; font-size:12px}
+ 
+div.whats-new ul{ 
+		list-style: square outside;
+		margin-left: 30px; 
+		display: block;
+        color: #24618e;
+		line-height:16px;
+		
+}
+
+div.whats-new ol{ 
+		list-style: outside lower-alpha;
+		margin-left: 40px; 
+		display: block;
+        color: #24618e;
+		
+}
+
+div.whats-new li{ 
+		padding-top:8px;
+}
+
+div.whats-new  SPAN.highlight-dark {
+	font-size: 12pt; 
+	color:#3c3c3c;
+}
+
+div.whats-new .version h3{
+	font-size: 13pt; 
+	color:#3c3c3c;
+}
+div.whats-new .version{
+	font-size: 11pt; 
+	color:#3c3c3c;
+}
+
+div.smallSummary {
+	font-size:10px;
+	}
+	
+.button{
+	display: inline-block;
+	height: 20px;
+	width: 100px;
+	background: #DDDDDD;
+	border:2px solid #AAAAAA;
+	
+	cursor:pointer;
+	
+	color: rgba(0, 0, 0, 0.55);
+	text-align: center;
+	font: bold 14px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+ 
+	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.button:hover{
+	display: inline-block;
+	height: 20px;
+	width: 100px;
+	background: #BBBBBB;
+	border:2px solid #AAAAAA;
+	
+	color: rgba(0, 0, 0, 0.55);
+	text-align: center;
+	font: bold 14px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+ 
+	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+a.button {
+	text-decoration: none;
+}
+
+.button#logInOutBtn{
+	background:#3e698c;
+	color: #FFFFFF;
+	-webkit-border-radius: 0px;
+	-khtml-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+
+.button#accountBtn{
+	background:#3e698c;
+	color: #FFFFFF;
+	-webkit-border-radius: 0px;
+	-khtml-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+
+.button#logInOutBtn:hover{
+	background:#436f93;
+	color:#CCCCCC;
+	-webkit-border-radius: 0px;
+	-khtml-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+
+.button#accountBtn:hover{
+	background:#436f93;
+	color: #CCCCCC;
+	-webkit-border-radius: 0px;
+	-khtml-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+	
+}
+
+
+ol
+{
+list-style: decimal;
+list-style-type:decimal;
+padding-left:30px;
+}
+
+ol li
+{
+background-position: 0px 5px;
+padding-left: 10px;
+}
+
+.inpageHelp{
+	cursor:pointer;
+}
+
+.inpageHelpContent{
+	font-size:9px;
+}

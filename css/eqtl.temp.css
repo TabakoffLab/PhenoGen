@@ -1,0 +1,42 @@
+
+h1  { font-family: Arial ; font-weight: bold; }
+h2  { font-family: Arial ; font-weight: bold; font-size: 16pt; }
+
+
+table.frames { border: solid 0px #bbbbbb; background: transparent; }
+table.list  { background-color: #fff; }
+table.list table { background-color: #999; }
+
+table.frames table table { background-color: #999; }
+
+td.cell   { font-size: 2pt; width: 10px; }
+td.cell1  { font-size: 2pt; width: 14px; }
+td.cell2  { font-size: 6pt; width: 28px; }
+td.cell3  { font-size: 6pt; height: 35px; }
+td.point  { font-family: Arial Bold; color: red;font-size: 9pt; font-weight: bold; }
+
+
+td.region {
+  border-top: solid 1px blue;
+  border-left: solid 1px blue;
+  border-right: solid 1px blue;
+  font-family: Arial;
+  font-size: 6pt;
+}
+
+td.pointer {
+  font-family: Arial;
+  font-weight: bold;
+  font-size: 10pt;
+  color: red;
+}
+
+td.annotate {
+  font-family: Arial;
+  font-size: 8pt;
+}
+
+a.arrow { color: red; text-decoration: none; font-family: Arial Bold; font-weight: bold; font-size: 10pt; }
+a.arrow:visited { color: red; }
+a.arrow:active { color: red; }
+a.arrow:hover { color: red; }

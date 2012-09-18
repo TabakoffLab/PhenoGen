@@ -1,0 +1,459 @@
+<project name="PhenoGen" default="build" basedir=".">
+
+  <property file="build.properties"/>
+  <!-- for executing Tomcat processes-->
+  <!-- <echo message="${ant.home}"/> -->
+  <taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask" >
+<!-- no longer need to explicitly specify this
+	<classpath> 
+		<path location="${ant.home}/lib/catalina-ant.jar" /> 
+	</classpath> 
+-->
+  </taskdef>
+  <taskdef name="start" classname="org.apache.catalina.ant.StartTask" >
+  </taskdef>
+  <taskdef name="stop" classname="org.apache.catalina.ant.StopTask" >
+  </taskdef>
+  <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" >
+<!-- no longer need to explicitly specify this
+	<classpath> 
+		<path location="${ant.home}/lib/catalina-ant.jar" /> 
+	</classpath> 
+-->
+  </taskdef>
+  <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" >
+<!-- no longer need to explicitly specify this
+	<classpath> 
+		<path location="${ant.home}/lib/catalina-ant.jar" /> 
+	</classpath> 
+-->
+  </taskdef>
+  <taskdef name="install" classname="org.apache.catalina.ant.InstallTask" >
+<!-- no longer need to explicitly specify this
+	<classpath> 
+		<path location="${ant.home}/lib/catalina-ant.jar" /> 
+	</classpath> 
+-->
+  </taskdef>
+
+
+  <path id="jar-classpath">
+	
+	    <!-- Start  Commenting out bec drawGraph is not part of PhenoGen app 
+	    <fileset dir="${PhenoGen.dir}/lib">
+		<include name="jung-api-2.0.jar" />
+		<include name="jung-algorithms-2.0.jar" />
+		<include name="jung-graph-impl-2.0.jar" />
+		<include name="jung-visualization-2.0.jar" />
+		<include name="collections-generic-4.01.jar" />
+		<include name="colt-1.2.0.jar" />
+		<include name="log4j-1.2.8.jar" />
+	</fileset>
+	End Commenting out bec drawGraph is not part of PhenoGen app  -->
+	
+  </path>
+
+<!--
+<pathconvert property="manifest.classpath" pathsep=" ">
+  <path refid="jar-classpath"/>
+  <mapper>
+    <chainedmapper>
+       <flattenmapper/>
+       <globmapper from="*.jar" to="./*.jar"/>
+    </chainedmapper>
+  </mapper>
+</pathconvert>
+-->
+
+
+
+  <path id="compile-classpath">
+        <!-- <pathelement location="${PhenoGen.dir}/WEB-INF/classes"/>  -->
+
+	<fileset dir="${PhenoGen.dir}/WEB-INF/lib">
+		<include name="*.jar" />
+	</fileset>
+
+	<fileset dir="${tomcat.dir}/lib">
+		<include name="*.jar" />
+	</fileset>
+	<!-- 
+	<fileset dir="${tomcat.dir}/common/lib">
+		<include name="*.jar" />
+	</fileset>
+	-->
+
+     <path refid="jar-classpath"/>
+  </path>
+
+  <path id="run.classpath">
+     <path refid="compile-classpath"/>
+     <pathelement location="${dest-dir}"/>
+  </path>
+
+
+  <target name="init"
+	description="Initialize properties.">
+	<echo message="Initializing properties..."/>
+  	<tstamp>
+		<format property="TODAY_US" pattern="MMMM-dd-yyyy hh:mm aa" locale="en,US"/>
+	</tstamp>
+	<echo message="${TODAY_US}"/>
+  </target>
+
+  <target name="prepare" depends="init">
+	<echo message="Cleaning up the build and dist directories."/>
+	<delete dir="${build-dir}"/>
+	<mkdir dir="${build-dir}"/>
+	<delete dir="${dist-dir}"/>
+	<mkdir dir="${dist-dir}"/>
+  </target>
+
+<!-- link = "http://java.sun.com/j2se/1.4.2/docs/api" --> 
+    <target name="build-javadoc">
+	<echo message="api dir= ${api-dir}" />
+	<echo message="src dir= ${src-dir}" />
+        <javadoc
+            packagenames = "edu.ucdenver.ccp.*"
+            sourcepath = "${src-dir}"
+            destdir = "${api-dir}"
+	    link = "http://download.oracle.com/javase/6/docs/api"
+	    version="true"
+            windowtitle = "CCP Java Repository">
+            <doctitle><![CDATA[<h1>CCP Java Library</h1>]]></doctitle>
+            <bottom><![CDATA[<i></i>]]></bottom>
+	    <classpath refid="compile-classpath"/>
+        </javadoc>
+    </target>
+
+  <target name="deploy"
+	description="Deploys a Web application.">
+	<echo message="Deploying the application"/>
+	<deploy url="${url}" username="${username}" password="${password}"	
+		path="/${PhenoGen_context_path}" war="file:${dist-dir}/${PhenoGen_context_path}.war"
+	/>
+  </target>
+
+  <target name="undeploy"
+	description="Undeploys a Web application." if="already.deployed">
+	<echo message="Undeploying the application if it's deployed"/>
+	<undeploy url="${url}" username="${username}" password="${password}"	
+		path="/${PhenoGen_context_path}" 
+	/>
+  </target>
+
+  <target name="reload"
+	description="Reloads a Web application.">
+	<echo message="Reloads the application "/>
+	<reload url="${url}" username="${username}" password="${password}"	
+		path="/${PhenoGen_context_path}" 
+	/>
+  </target>
+
+<!-- Start Commenting out bec drawGraph is not part of PhenoGen app  -->
+<!--  <target name="buildGraphJar" depends="compile" -->
+<!--	description="Create a jar file to use by iDecoder graph">-->
+<!--	<copy todir="${PhenoGen.dir}/lib">-->
+<!--		<fileset dir="${PhenoGen.dir}/WEB-INF/classes/"-->	
+<!--			includes="edu/ucdenver/ccp/util/PropertyName.class,--> 
+<!--			edu/ucdenver/ccp/util/Debugger.class,-->
+<!--			edu/ucdenver/ccp/util/ObjectHandler.class,-->
+<!--			edu/ucdenver/ccp/util/sql/PropertiesConnection.class,-->
+<!--			edu/ucdenver/ccp/util/sql/Results.class,-->
+<!--			edu/ucdenver/ccp/PhenoGen/util/DbUtils.class,-->
+<!--			edu/ucdenver/ccp/PhenoGen/data/GeneList.class,-->
+<!--			edu/ucdenver/ccp/PhenoGen/data/ParameterValue.class,-->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph.class,--> 
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$MyNode.class,--> 
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$MyEdge.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$1.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$2.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$3.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$4.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/IDecoderClient.class,-->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/Identifier.class,-->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/IdentifierLink.class"-->
+<!--		/> -->
+<!--	</copy> -->	
+<!--	<jar destfile="${PhenoGen.dir}/lib/drawGraph.jar"> -->
+<!--		<fileset dir="${PhenoGen.dir}/lib/"		-->
+<!--		includes="edu/ucdenver/ccp/util/PropertyName.class, -->
+<!--			edu/ucdenver/ccp/util/Debugger.class, -->
+<!--			edu/ucdenver/ccp/util/ObjectHandler.class, -->
+<!--			edu/ucdenver/ccp/util/sql/PropertiesConnection.class, -->
+<!--			edu/ucdenver/ccp/util/sql/Results.class,-->
+<!--			edu/ucdenver/ccp/PhenoGen/util/DbUtils.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/data/GeneList.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/data/ParameterValue.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$MyNode.class, --> 
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$MyEdge.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$1.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$2.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$3.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/DrawGraph$4.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/IDecoderClient.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/Identifier.class, -->
+<!--			edu/ucdenver/ccp/PhenoGen/tools/idecoder/IdentifierLink.class" -->
+<!--		/> -->
+<!--            <manifest> -->
+<!--                <attribute name="Built-By" value="PhenoGen Informatics"/> -->
+<!--                <attribute name="Main-Class" value="edu.ucdenver.ccp.util.DrawGraph"/> -->
+                <!-- turns out this is necessary in order to run it stand-alone: also have to include all signed jars in the jnlp file  -->
+<!--		<attribute name="Class-Path" value=". ${manifest.classpath}"/> -->
+<!--            </manifest> -->
+<!--	</jar> -->
+<!--        <antcall target="sign-jar"> -->
+<!--        </antcall> -->
+<!-- </target> -->
+
+    <target name="sign-jar">
+        <condition property="keystore.missing">
+            <not>
+                <available file="${src-dir}/KeyStore">
+                </available>
+            </not>
+        </condition>
+        <antcall target="generate-keystore">
+        </antcall>
+        <!--
+        <signjar jar="${PhenoGen.dir}/lib/drawGraph.jar" keystore="${src-dir}/KeyStore" alias="DrawGraphSign" storepass="lqv78eke" keypass="lqv78eke" verbose="true" >
+        </signjar>
+        -->
+<!-- 
+        <signjar jar="${PhenoGen.dir}/lib/log4j-1.2.8.jar" keystore="${src-dir}/KeyStore" alias="DrawGraphSign" storepass="lqv78eke" keypass="lqv78eke" verbose="true" >
+        </signjar>
+        <signjar jar="${PhenoGen.dir}/lib/colt-1.2.0.jar" keystore="${src-dir}/KeyStore" alias="DrawGraphSign" storepass="lqv78eke" keypass="lqv78eke" verbose="true" >
+        </signjar>
+        <signjar jar="${PhenoGen.dir}/lib/collections-generic-4.01.jar" keystore="${src-dir}/KeyStore" alias="DrawGraphSign" storepass="lqv78eke" keypass="lqv78eke" verbose="true" >
+        </signjar>
+        <signjar jar="${PhenoGen.dir}/lib/jung-api-2.0.jar" keystore="${src-dir}/KeyStore" alias="DrawGraphSign" storepass="lqv78eke" keypass="lqv78eke" verbose="true" >
+        </signjar>
+        <signjar jar="${PhenoGen.dir}/lib/jung-algorithms-2.0.jar" keystore="${src-dir}/KeyStore" alias="DrawGraphSign" storepass="lqv78eke" keypass="lqv78eke" verbose="true" >
+        </signjar>
+        <signjar jar="${PhenoGen.dir}/lib/jung-graph-impl-2.0.jar" keystore="${src-dir}/KeyStore" alias="DrawGraphSign" storepass="lqv78eke" keypass="lqv78eke" verbose="true" >
+        </signjar>
+        <signjar jar="${PhenoGen.dir}/lib/jung-visualization-2.0.jar" keystore="${src-dir}/KeyStore" alias="DrawGraphSign" storepass="lqv78eke" keypass="lqv78eke" verbose="true" >
+        </signjar>
+-->
+    </target>
+    
+    <target name="generate-keystore" if="keystore.missing">
+        <echo>***** Generating a new keystore file. *****</echo>
+        <genkey validity="1118250" alias="DrawGraphSign" storepass="lqv78eke" verbose="true" keystore="${src-dir}/KeyStore" keypass="lqv78eke" dname="CN=PhenoGen Informatics, OU=Department of Pharmacology, O=UCHSC, C=Aurora CO US">
+        </genkey>
+    </target>
+
+  <target name="create-jar" depends="compile" 
+	description="Create a jar file to use by PhenoGenAdmin">
+	<jar destfile="${PhenoGenAdminLibDir}/${PhenoGen_context_path}.jar"
+		basedir="${dest-dir}"		
+		excludes="*.properties,*.xml,CVS/" />
+	<antcall target="reload-admintomcat"/>
+  </target>
+
+  <target name="create-war" 
+	description="Create a web application archive file">
+	<war destfile="${dist-dir}/${PhenoGen_context_path}.war" webxml="${meta-dir}/web.xml">
+		<classes dir="${build-dir}"/>		
+		<lib dir="${lib-dir}"/>		
+		<fileset dir="${web-dir}"/>		
+		<fileset dir="${PhenoGen.dir}"/>		
+	</war>
+  </target>
+
+  <target name="deploy-application" depends="prepare" 
+	description="Compile the web application">
+	<available file="${manager.path}/${PhenoGen_context_path}" property="already.deployed"/> 
+	<antcall target="undeploy"/> 
+	<antcall target="compile"/>
+	<antcall target="create-war"/>
+	<antcall target="deploy"/> 
+	<antcall target="reload"/>
+  </target>
+
+	<target name="timestamp">
+	  <tstamp>
+		<format property="current.time" pattern="MMMM-dd-yyyy hh:mm:ss aa" locale="en,US"/>
+	  </tstamp>
+
+	  <echo message="${message} ${current.time}" />      
+	</target>
+
+    <target name="runRefSetCreator">
+  	<antcall target="timestamp">
+    		<param name="message" value="start time:" />
+  	</antcall>
+        <java fork="true" maxmemory="4096m" classname="edu.ucdenver.ccp.iDecoder.RefSetCreator" >
+            <classpath refid="run.classpath"/>
+        </java>
+  	<antcall target="timestamp">
+    		<param name="message" value="end time:" />
+  	</antcall>
+    </target>
+
+    <target name="runParsers">
+        <java classname="edu.ucdenver.ccp.iDecoder.ParserRunner" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runCodeGenerator">
+        <java classname="edu.ucdenver.ccp.util.CodeGenerator" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runIDecoder">
+        <java classname="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runEnsembl">
+        <java classname="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runJackson">
+        <java classname="edu.ucdenver.ccp.iDecoder.JacksonLab" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runPopulateEQtlTables">
+        <java classname="uk.ac.ic.eqtlexplorer.db.PopulateEQtlTables" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runEQtlExplorer">
+        <java classname="uk.ac.ic.eqtlexplorer.gui.EQtlExplorer" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runDirCleanup">
+        <java classname="edu.ucdenver.ccp.util.DirCleanup" >
+            <classpath refid="run.classpath"/>
+        </java>
+	<!-- <echo message="Changing ownership on userFiles to ${owner}:${group}..."/>
+	<chown owner="${owner}" verbose="true">
+		<fileset dir="${userFiles}" />
+	</chown>
+	<chgrp group="${group}" verbose="true">
+		<fileset dir="${userFiles}" />
+	</chgrp> -->
+    </target>
+
+    <target name="runGraph">
+        <java fork="true"
+		classname="edu.ucdenver.ccp.util.DrawGraph" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runGrep">
+        <java classname="edu.ucdenver.ccp.util.Grep" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="runTest" depends="compile">
+        <java fork="true" 
+		maxmemory="1024m"
+		classname="edu.ucdenver.ccp.util.Test" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="SOAPmon">
+        <java classname="org.apache.axis.util.TcpTunnelGui" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+    <target name="tcpmon">
+        <java classname="org.apache.axis.utils.tcpmon" >
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>
+
+  <target name="compile" depends="init"
+      description="Compiles the source code">
+      <echo message="Compiling the source code...."/>
+	<property name="displayClasspath" refid="compile-classpath" />
+<!--	<echo message="CLASSPATH= ${displayClasspath}" />  -->
+<!-- to create .war file, change dest-dir to build-dir             destdir="${dest-dir}" -->
+	<echo message="src dir= ${src-dir}" />
+      <javac 
+		srcdir="${src-dir}"
+		destdir="${dest-dir}"
+		excludes="*.properties,*.xml,CVS/"
+		deprecation="true">
+		<!-- compile with warnings except disable path warnings -->
+		<compilerarg value="-Xlint:unchecked"/> 
+		<!-- <compilerarg value="-Xlint:-path"/> -->
+		<classpath refid="compile-classpath"/>
+		<!--debug="true">-->
+<!--		<include name="${compiled.servlet}.java" /> -->
+      </javac>
+  </target>
+
+
+  <target name="stop-task" 
+	description="Stops PhenoGen task">
+      <echo message="Stopping PhenoGen task ...."/>
+	<stop
+		url="${url}"
+		password="${password}" 
+		username="${username}" 
+		path="/${PhenoGen_context_path}" /> 
+  </target>
+
+  <target name="start-task" depends="stop-task"
+	description="Starts PhenoGen task">
+      <echo message="Starting PhenoGen task ...."/>
+	<start
+		url="${url}"
+		password="${password}" 
+		username="${username}" 
+		path="/${PhenoGen_context_path}" /> 
+  </target>
+
+  <target name="reload-tomcat"
+	description="Reloads Tomcat">
+      <echo message="Reloading Tomcat ...."/>
+	<reload
+		url="${url}"
+		password="${password}" 
+		username="${username}" 
+		path="/${PhenoGen_context_path}" /> 
+  </target>
+
+  <target name="reload-admintomcat"
+	description="Reloads Tomcat">
+      <echo message="Reloading Tomcat ...."/>
+	<reload
+		url="${url}"
+		password="${password}" 
+		username="${username}" 
+		path="/${PhenoGenAdmin_context_path}" /> 
+  </target>
+
+
+  <!-- <target name="build" depends="compile, reload-tomcat" -->
+  <target name="build" depends="compile, start-task"
+     description="Executes the targets needed to build the service.">
+      <echo message="Building project...."/>
+  </target>
+
+    <target name="install_PhenoGen"
+       description="Installs the PhenoGen application">
+        <install url="${url}" username="${username}" password="${password}"
+          path="/PhenoGen" war="file:${PhenoGen.dir}"
+        />
+    </target>
+
+</project>

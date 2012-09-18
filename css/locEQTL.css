@@ -1,0 +1,476 @@
+/* **************************************************************************************
+ *          BEGIN SECTION DEFINITIONS
+ */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          TAB FIELD MENU TOP BAR (specific)
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.menuBar div.locEQTL.help {
+        margin: 5px 10px 0 0;
+    }
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          GRAPHIC SETTINGS MENU BAR (specific)
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div#eQTLRegionConfiguration div.menuBar {
+        float: none;
+        clear: both;
+        height: 20px;
+        background-color: #ccd;
+        border-bottom: solid 1px #aad;
+        padding: 2px 5px;
+        margin: 2px 4px 2px 4px;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          ADVANCED SETTINGS - NO MENU BAR (specific)
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div#advancedSettingsButton {
+        float: none;
+        clear: both;
+        height: 17px;
+        margin: 0 4px;
+        padding: 2px 0 0 0;
+    }
+
+    #advancedSettingsButton.button {
+        width: 185px;
+        margin: 0 0 2px 3px;
+    }
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          LOCATION EQTL CONTENT
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div#displayLocEQTL {
+        border: solid 0px red;
+        margin-top: 1px;
+    }
+
+    div#graphic_container {
+        float: left;
+        margin: 2px 2px 8px 2px;
+        background: #fff;
+        border: solid 1px #cca;
+        height: 470px;
+        width: 460px;
+    }
+    div#graphic_container.expanded {
+        width: 935px;
+    }
+
+    div#graphic {
+        clear: both;
+        float: none;
+        margin: 5px;
+    }
+
+    div#graphic .waiting {
+        margin: 130px 150px;
+        height: 30px;
+        padding: 10px 0 0 30px;
+        font-size: 14px;
+        font-weight: bolder;
+        color: #777;
+        background: transparent url("../web/images/icons/busy.gif") no-repeat 0 10px;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          SELECT AND COFIGURE REGION BOX
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div#eQTLRegionConfiguration {
+        background-color: #fff;
+        border: solid 1px #cca;
+        margin: 2px 2px 2px 3px;
+        float: left;
+        height: 470px;
+        width: 450px;
+	position: relative;
+    }
+    div#eQTLRegionConfiguration.expanded {
+        display: none;
+    }
+
+    div#regionsOfInterest {
+        clear: both;
+    }
+
+    div#eQTLRegionConfiguration div.title {
+        float: left;
+        margin: 2px 0 0 0;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    div#advancedSettingsRegions {
+        z-index: 99;
+        padding: 0 0 5px 0;
+        border: solid 1px #aaa;
+        width: 500px;
+        background: #eee;
+        display: none;
+        left: -20px;
+        top: 6px;
+        /* top: -2px; */
+    }
+    div#advancedSettingsRegions .menuBar {
+        cursor: move;
+    }
+
+    div.advancedSettings {
+        padding: 0 8px 10px;
+        display: none;
+    }
+
+    div.graphicOptions {
+        width: 400px;
+        float: left;
+        clear: left;
+        margin-top: 5px;
+        padding: 3px;
+    }
+
+    div.graphicOptions div {
+        margin: 0 0 2px 2px;
+        clear: left;
+    }
+
+    div.graphicSettingsWindow {
+        margin: 0 2px 3px;;
+        float: left;
+    }
+
+    div.graphicSettingsWindow div.checkOption {
+        padding: 0 0 5px 5px;
+        clear: both;
+        text-align: left;
+    }
+
+    div.graphicSettingsWindow select,
+    div.graphicSettingsWindow {
+        font-size: 12px;
+    }
+
+/*  gene eQTL region list dialog box  */
+    div.region_list div.list_BoxTitle {
+        border: solid 1px #bb7;
+        background: #ddf;
+    }
+    div.region_list div.region_content {
+        text-align: left;
+        border: solid 1px #dde;
+        background: #fff;
+    }
+    .vList {
+        cursor: pointer;
+        color: #416fbf;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          GRAPHIC CONTROLS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.graphicControls {
+        float: right;
+        border: solid 0px red;
+        padding: 0;
+        margin: 1px 1px 0 0;
+        height: 20px;
+        border-left: dotted 1px #999;
+        border-bottom: dotted 1px #999;
+    }
+    div.graphicControls div {
+        float: left;
+        width: 25px;
+        height: 20px;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    div.graphicControls div:hover {
+        border-bottom: solid 1px #ec8a31;
+    }
+
+    div.graphicControls div.graphicEnlarge.initial {
+        background: transparent url("../web/images/icons/magnifiers.jpg") no-repeat -19px 0;
+    }
+    div.graphicControls div.graphicEnlarge.expanded {
+        display: none;
+    }
+    div.graphicControls div.graphicShrink.expanded {
+        background: transparent url("../web/images/icons/magnifiers.jpg") no-repeat -43px 0;
+    }
+    div.graphicControls div.graphicShrink.initial {
+        display: none;
+    }
+    div.graphicControls div.graphicMaximize {
+        border-left: solid 1px #bbb;
+        background: transparent url("../web/images/icons/magnifiers.jpg") no-repeat -19px 0;
+        display: none;
+    }
+    div.graphicControls div.graphicPrint {
+        border-left: solid 1px #bbb;
+        background: transparent url("../web/images/icons/printer.gif") no-repeat 4px 2px;
+    }
+    div.graphicControls div.rotateChromoVertical.expanded {
+        border-left: solid 1px #bbb;
+        background: transparent url("../web/images/icons/graphic_rotate.jpg") no-repeat 4px 0;
+    }
+    div.graphicControls div.rotateChromoVertical.initial {
+        display: none;
+    }
+    div.graphicControls div.graphicDownload {
+        border-left: solid 1px #bbb;
+        background: transparent url("../web/images/icons/download_g.png") no-repeat 2px -2px;
+    }
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          LIST TABLE WRAPPER
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div#regionsOfInterest div.list_container {
+        float: none;
+        clear: both;
+        margin: 0 5px;
+        height: 290px;
+        overflow: auto;
+        padding: 0 1px 0 0;
+        border: solid 1px #ddd;
+        background: #fff;
+    }
+    div#regionsOfInterest div.list_container table {
+        border: 0;
+    }
+    div#regionsOfInterest div.singleItem {
+        height: 26px;
+    }
+    div#regionsOfInterest div.list_container table td.selected {
+        background-color: #fff;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          CREATE NEW QTL REGION
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.defineQTLs {
+        background-color: #fff;
+        padding: 5px 5px 10px;
+        width: 970px;
+        text-align: left;
+    }
+    div.defineQTLs div.controlButtons {
+        clear: left;
+        margin-top: 20px;
+    }
+    div.defineQTLs div.controlButtons input {
+        margin-right: 30px;
+    }
+
+    div.formContainer {
+        width: 570px;
+        float: left;
+        padding: 10px;
+        border: solid 2px #777;
+        border-top: solid 2px #ccc;
+        border-left: solid 2px #ccc;
+    }
+
+    div.formContainer label {
+        padding: 0 0 0 3px;
+        font-weight: bold;
+        font-size: 12px;
+        color: #666;
+        letter-spacing: 1px;
+    }
+
+    div.formContainer div.formHead {
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    div.formContainer div.row {
+        clear: left;
+    }
+    div.formContainer div.row div {
+        float: left;
+        margin: 5px 0;
+        margin-right: 10px;
+    }
+    div.formContainer div.row div.last {
+        margin-right: 0;
+    }
+    div.formContainer div.addNew {
+        float: left;
+        border: solid 1px #bb8;
+        padding: 2px 4px;
+        background-color: #eee;
+        cursor: pointer;
+        font-size: 90%;
+    }
+
+    div.workArea {
+        margin: 0 0 0 10px;
+        padding: 5px;
+        border: solid 1px #88a;
+        float: left;
+        width: 350px;
+    }
+    div.workArea span.title{
+        font-weight: bold;
+    }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          VERTICAL CHROMOSOME GRAPH
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.verticalGraphic {
+        display : none;
+    }
+
+    div.graphicControls.modal {
+        position: relative;
+        border: solid 0px red;
+        border-bottom: dotted 1px #bbb;
+        top: -10px;
+        right: -10px;
+    }
+
+    div.graphicControls.modal div {
+        border: 0px;
+        border-left: dotted 1px #bbb;
+    }
+
+    div.graphicControls.modal div:hover {
+        border-bottom: solid 1px #ec8a31;
+    }
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          HORIZONTAL CHROMOSOME
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.mainImage {
+        margin: 0 0 0 5px;
+        padding:0;
+        height: 420px;
+        width: 460px;
+        border: solid 0px red;
+    }
+    div.mainImage.expanded {
+        margin: 0 0 0 10px;
+        width: 900px;
+        height: 180px;
+    }
+
+    div.horizontalImgPrintArea {
+        height: 150px;
+        margin: 0 0 0 10px;
+    }
+    div.horizontalImgPrintArea img { float: left; }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          HORIZONTAL CHROMOSOME CONTROLS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.hControls {
+        height: 33px; 
+	width: 900px;
+        margin: 0 auto;
+        margin-top: 15px;
+        border: solid 1px #bbb;
+        overflow: hidden;
+    }
+
+    div.hControls.bottom {
+        height: 30px;
+    }
+
+    div.hControls div.zoom,
+    div.hControls div.scroll,
+    div.hControls div.setBp {
+        float: left;
+        margin: 5px 0 0 0;
+        margin-left: 15px;
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
+    }
+
+    div.hControls div.zoom.factor {
+        padding: 0 5px;
+        margin-top: 6px;
+        height: 22px;
+        width: 115px;
+        cursor: default;
+    }
+
+    div.hControls div.zoom.in {
+        background: transparent url("../web/images/icons/magnifiers.jpg") no-repeat -21px 0;
+    }
+    div.hControls div.zoom.out {
+        background: transparent url("../web/images/icons/magnifiers.jpg") no-repeat -45px 0;
+    }
+
+    div.hControls div.scroll.basepairs {
+        padding: 0 5px;
+        margin-top: 4px;
+        height: 22px;
+        width: 145px;
+        cursor: default;
+    }
+
+    div.hControls div.scroll.left {
+        background: transparent url("../web/images/icons/scrollers.jpg") no-repeat -2px 0;
+    }
+    div.hControls div.scroll.right {
+        background: transparent url("../web/images/icons/scrollers.jpg") no-repeat -28px 0;
+        margin-right: 20px;
+    }
+
+    div.hControls div.setBp.leftIn,
+    div.hControls div.setBp.rightIn {
+        margin-left: 20px;
+        margin-top: 4px;
+        width: 190px;
+        cursor: default;
+    }
+
+    div.hControls div.setBp.apply {
+        width: 35px;
+        margin-top: 5px;
+        /* margin-top: 6px; */
+    }
+
+    div.bpRightInfo {
+        text-align: right;
+        float: right;
+        margin-right: 20px;
+    }
+
+    div.bpLeftInfo {
+        text-align: left;
+        float: left;
+        margin-left: 40px;
+    }
+
+    div.bpCenterInfo {
+        float: left;
+        margin-left: 410px;
+        margin-left: 330px;
+    }
+
+    div.grInfo { font-size: 10px; color: #77a; width: 95px; margin-top: -20px; }
+
+    div.locationIndicator {
+        float: left;
+        text-align: center;
+        width: 450px;
+        height: 60px;
+        margin: 0 auto;
+        padding: 0 10px 0 0;
+        margin-top: -3px;
+    }
+    div.locationIndicator img { float: left; }
+    div.locationIndicator div.label {
+        cursor: default;
+        float: left;
+        width: 100px;
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: #7777aa;
+        margin: 13px 10px 0 20px;
+    }
+/*
+ *          END SECTION DEFINITIONS
+ *****************************************************************************************/

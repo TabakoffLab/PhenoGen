@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="4" MadCap:lastHeight="1303" MadCap:lastWidth="1203" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Analyzing Microarrays|Analyzing Datasets|Types of Statistical Analysis" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Differential Expression Analysis</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Differential_Expressions_Analysis.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1 style="background-color: Transparent;"><a name="kanchor51"></a>Differential Expression Analysis</h1>
+        <p>The ultimate goal of differential expression analysis is to select genes 
+ whose expression values are significantly different between two or more 
+ groups of samples. Statistical tools are available for the following types 
+ of analysis: </p>
+        <ul>
+            <li class="Bullet" value="1">Differential expression in 
+ two groups.</li>
+            <li class="Bullet" value="2">Differential expression using 
+ one-way ANOVA.</li>
+            <li class="Bullet" value="3">Differential expression using 
+ two-way ANOVA.</li>
+            <li class="Bullet" value="4">Differential expression in 
+ replicate datasets.</li>
+        </ul>
+        <p>The type of statistical tools available to the user are dependent on 
+ the number of groups specified during the Preparing Datasets process. 
+ If more complicated analyses are needed, you can download the raw CEL 
+ files or the normalized data for analysis using the statistical package 
+ of your choice. <a href="Downloading_a_Dataset.htm" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Downloading a Dataset"</a>.</p>
+        <h2>Statistics for Differential Expression in Two Groups</h2>
+        <p>If you have grouped the arrays in your dataset into only two groups, 
+ you can perform parametric, non-parametric, or 2-way ANOVA statistical 
+ analysis.</p>
+        <h3><a name="kanchor52"></a><a name="kanchor53"></a><a name="kanchor54"></a><a name="Parametric"></a>Parametric Analysis</h3>
+        <p>The parametric analysis is a two-sample t-test 
+ assuming equal variances and is executed using the R function <span style="font-style: italic;">t.test</span>. 
+ This test is considered parametric because it assumes that the distribution 
+ of expression values is normal within each group. However, expression 
+ data is often not distributed normally and there are often not enough 
+ observations to assume that the central limit theorem applies.</p>
+        <h3><a name="kanchor55"></a><a name="kanchor56"></a><a name="kanchor57"></a><a name="Non-Parametric"></a>Non-Parametric Analysis</h3>
+        <p>A non-parametric test does not depend on the distribution of the expression 
+ data. The Wilcoxon 
+ rank sum test is invoked when you specify a non-parametric test. This 
+ analysis is done in R using the function <span style="font-style: italic;">wilcox_test</span> 
+ from the <span style="font-style: italic;">coin</span> package. When the 
+ sample size is under 50, the exact p-value is used, otherwise a normal 
+ approximation is calculated. The parametric t-test 
+ is more powerful when the data is truly normally distributed, but the 
+ non-parametric test is robust for data that is not normally distributed. 
+ </p>
+        <h3>Two-way ANOVA Analysis</h3>
+        <p>Use a two-way ANOVA Analysis to input factors or use factors from the 
+ array attributes in a two-way analysis of variance. You can test for four 
+ different effects; main effect of factor 1, main effect of factor 2, the 
+ interaction effect between factor 1 and factor 2, or the overall model 
+ effect. To test for the interaction effect or the overall model effect, 
+ a regression model is used that contains the main effects for both factor 
+ 1 and factor 2 plus the interaction effect, a true two-way ANOVA. To test 
+ for main effects, the interaction effect is not included in the model. 
+ F-statistics are reported in all cases. Factors that are entered as character 
+ values are treated as categorical, and factors that are entered as numerical 
+ values are treated as continuous.</p>
+        <h2>Statistics for Differential Expression with More than Two Groups</h2>
+        <p>If you have grouped the arrays in your dataset into more than two groups, 
+ the following types of statistical analyses are available:</p>
+        <ul>
+            <li class="Bullet" value="1">One-way ANOVA</li>
+            <li class="Bullet" value="2">Two-way ANOVA</li>
+            <li class="Bullet" value="3">T-test with noise distribution</li>
+        </ul>
+        <h3><a name="kanchor58"></a><a name="kanchor59"></a><a name="Statistics_for_Differential_Expression_Using_One_Way_ANOVA"></a>One-way 
+ ANOVA Analysis</h3>
+        <p>Use a one-way ANOVA model to compare the within-group variance and the 
+ between-group variance of selected groups. You can choose from any of 
+ the possible pair-wise contrasts (e.g., Group1 vs. Group 2) or the overall 
+ effect of group (factor effect) on the model. When there are more than 
+ four groups, you can only use the factor effect. For the pair-wise contrasts, 
+ a moderated t-statistic is used to test significance, and for factor effects, 
+ a moderated F-statistic is used. For the moderated t-statistic and F-statistic, 
+ the standard deviation of the ordinary test is "shrunk" to reflect 
+ information that is borrowed across genes (Smyth 
+ 2004).</p>
+        <p class="References"><b>References</b>
+        </p>
+        <p>Smyth GK 
+ (2004). &#160;Linear 
+ Models and Empirical Bayes Methods for Assessing Differential Expression 
+ in Microarray Experiments. Statistical Applications in Genetics and Molecular 
+ Biology 3(1), Article 3.</p>
+        <h3><a name="kanchor60"></a><a name="kanchor61"></a><a name="Statistics_for_Differential_Expression_Using_Two_Way_ANOVA"></a>Two-way 
+ ANOVA Analysis</h3>
+        <p>Use a two-way ANOVA Analysis to input factors or use factors from the 
+ array attributes in a two-way analysis of variance. You can test for four 
+ different effects; main effect of factor 1, main effect of factor 2, the 
+ interaction effect between factor 1 and factor 2, or the overall model 
+ effect. To test for the interaction effect or the overall model effect, 
+ a regression model is used that contains the main effects for both factor 
+ 1 and factor 2 plus the interaction effect, a true two-way ANOVA. To test 
+ for main effects, the interaction effect is not included in the model. 
+ F-statistics are reported in all cases. Factors that are entered as character 
+ values are treated as categorical, and factors that are entered as numerical 
+ values are treated as continuous.</p>
+        <h3><a name="kanchor62"></a><a name="kanchor63"></a><a name="T_test_with_Noise"></a>T-Test with Noise Distribution Analysis</h3>
+        <p>Use a t-test with noise distribution to determine a list of genes that 
+ are differentially expressed between two groups in a replicate experiment, 
+ i.e., "high" selected line from replicate 1, "low" 
+ selected line from replicate 1, "high" selected line from replicate 
+ 2, and "low" selected line from replicate 2. This method was 
+ first introduced by Eaves et al. in 2002.</p>
+        <p>This method involves first calculating a modified t-statistic for each 
+ probe(set) for each replicate separately where the traditional sample 
+ variances are replaced with a "pooled" variance. The pooled 
+ variance is calculated for each group using a weighted mean between the 
+ observed variance and a mean local variance. The weights are 2 to 1 where 
+ the larger of the two variances is given the larger weight. To calculate 
+ the mean local variance, the data is first sorted by mean expression for 
+ each probe(set), the mean local variance is then calculated as the mean 
+ of the variances of the 250 probe(set)s immediately below the probe(set) 
+ of interest and the 250 probe(set)s immediately above the probe(set) of 
+ interest.</p>
+        <p>After t-statistics are calculated for each probe(set) and each replicate, 
+ the probe(set)s are separated into two groups. Probe(set)s are placed 
+ in the null distribution if their t-statistics show opposite signs in 
+ the two replicate experiments. The t-statistics for these experiments 
+ are used to generate a null distribution of t-statistics for p-values 
+ to be based on. Instead of individual p-values being calculated for each 
+ probe(set), an initial p-value threshold is set and it is determined whether 
+ or not probe(set)s meet this criteria. Using this method, the type I error 
+ rate (p-value) is determined by the product of the following three probabilities: 
+ </p>
+        <ol>
+            <li class="Numbered" value="1">Probability of a t-statistic 
+ greater than the one observed given the gene is not differentially expressed 
+ in replicate dataset1 (i.e., in null distribution).</li>
+            <li class="Numbered" value="2">Probability of a t-statistic 
+ greater than the one observed given the gene is not differentially expressed 
+ in replicate dataset2 (i.e., in null distribution).</li>
+            <li class="Numbered" value="3">Probability of having 
+ the two t-statistics showing the same direction of differential expression 
+ (i.e. 0.5). </li>
+        </ol>
+        <p>Therefore, the percentiles from the null distribution used to determine 
+ 'significance' can be calculated for a specific error rate by taking the 
+ square root of the fraction, the probability of having the two t-statistics 
+ showing the same direction of differential expression divided by the specified 
+ error rate. A gene is considered significant if the observed t-statistic 
+ for each replicate is larger than the threshold t-statistic determined 
+ from the null distribution for that replicate. Exact p-values are not 
+ reported for this statistical method, and therefore, multiple testing 
+ corrections cannot be implemented.</p>
+        <p class="References"><b>References</b>
+        </p>
+        <p>Eaves IA, Wicker LS, Ghandour G, Lyons PA, Peterson LB, Todd JA, Glynne 
+ RJ (2002). Combining mouse congenic strain and microarray gene expression 
+ analyses to study a complex trait: The NOD model of type1 diabetes. Genome 
+ Research 12:232-243.</p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

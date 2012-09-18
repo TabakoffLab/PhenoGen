@@ -1,0 +1,348 @@
+/* normalizing styles */
+
+@import url(normalize.css);
+
+/* global tag styles */
+
+html { text-align: center; background: #365473; }
+body { position: relative; margin: 5px auto 60px; width: 1000px; text-align: left; font-size: 14px; font-family: Arial, Verdana, sans-serif; color: #666; background: #fff; padding: 5px 0 10px 0;}
+h1 { float: left; margin-left: 10px; font-size: 24px; font-weight: normal; line-height: 72px; color: #fff; }
+h2 { height: 40px; margin-bottom: 10px; padding-left: 10px; font-size: 16px; font-weight: normal; line-height: 40px; color: #36424e; background: #e4e7ea; }
+h2.homePage { margin-bottom: 0px; }
+h2.recentPub {margin-bottom:0; padding-top: 5px;}
+a, a:focus { color: #658cb2; text-decoration: underline; outline: none; }
+a:hover { color: #1d2f42; }
+p { margin-bottom: 8px; padding: 0 10px; }
+
+/* wraps the entire page between the body tags */
+
+    #external_page_wrapper {
+        padding: 0px;
+        margin: 10px ;
+    }
+
+    #external_body_wrapper {
+        padding: 0px;
+        margin: 0px;
+    }
+#page_wrapper { margin: 0; padding: 0; width: 1000px; }
+
+/* header */
+
+#header { width: 990px; height: 72px; margin-bottom: 10px; background: url(../web/images/bg/header.jpg) no-repeat; }
+#header-nav { float: right; padding-top: 20px; text-align: right; line-height: 16px; color: #ccc; }
+#header-nav a { color: #fff; text-decoration: none; }
+#header-nav a:hover { color: #ccc; }
+#header-nav a#site-help-btn { padding-right: 20px; background: url(../web/images/icons/help.png) right center no-repeat; }
+#header-nav span#messages-icon { padding-right: 20px; background: url(../web/images/icons/message.png) right center no-repeat; }
+
+/* primary-content */
+
+#primary-content { float: left; width: 805px; margin: 0;}
+#current-array-count { 
+	margin-bottom: 15px; 
+	border: #999 1px solid; 
+}
+#welcome{ 
+	margin-bottom: 15px; 
+	height: 575px;
+	border: #999 10px solid; 
+	color:#DADDDD;
+	background: #1F344F url("../web/images/bg/header5.jpg") no-repeat bottom right; 
+}
+#steps li {
+	list-style: decimal;
+	margin: 0px 200px 0px 0px;
+}
+#tools li {
+	list-style: disc;
+	margin: 0px 200px 0px 0px;
+}
+
+/* #welcome overview { height: 1px; } */
+#overview ul.tabs { 
+	padding: 10px 10px 0px 20px; 
+	background: #1F344F url("../web/images/bg/header5.jpg") no-repeat top right;
+	height: 44px;
+}
+#overview ul.tabs li {
+    float: left;
+	/*
+    left: 10px;
+    top: 1px;
+	*/
+    width: 165px;
+    position: relative;
+    z-index: 99;
+    cursor: pointer;
+    border-bottom: 0px;
+    padding: 8px 0; 
+	/* top left bottom right */
+    /* margin: 0px 8px 10px 8px;  */
+    margin: 0px 10px 10px 0px; 
+    color: #999;
+    font-size: 13px;
+    text-decoration: none;
+    text-align: center;
+    /* background: transparent url("../web/images/bg/nav-btn-lg-off.jpg") no-repeat; */
+    background: transparent url("../web/images/bg/nav-btn-off.jpg") no-repeat;
+}
+#overview ul.tabs li.selected {
+    /* border-bottom: solid 1px #ccc; */
+    z-index: 100;
+    color: #333;
+    /* background: transparent url("../web/images/bg/nav-btn-lg-on.gif") no-repeat; */
+    background: transparent url("../web/images/bg/nav-btn-on.gif") no-repeat;
+}
+
+#welcome a:hover { color: #ffffff; }
+#welcome overview-wrap { clear: both; border: #9c9c9c 1px solid; background: #ccc; }
+#welcome overview-content { margin: 8px; padding: 10px 0; border: #9c9c9c 1px solid; background: #fff; }
+#welcome.links a:hover {color: #fff; }
+#overview-content { width: 430px;}
+#overview-content-wide { width: 550px;}
+#overview-content li{ clear:left; list-style:  square outside; margin:0 40px; }
+#overview-content-wide li{ clear:left; list-style:  square outside; margin:0 40px; }
+#landing #primary-content li{ list-style:  square outside; margin:0 40px; }
+
+div.welcome.tabContent{
+	/*background: transparent url("../web/images/bg/header5.jpg") no-repeat bottom right;*/
+	height: 380px;
+	overflow: auto;
+}
+
+div.whats_new.tabContent{
+	/*background: transparent url("../web/images/bg/header5.jpg") no-repeat bottom right;*/
+	height: 380px;
+	overflow: auto;
+	
+}
+
+div.whats_new.version{
+	/*background: transparent url("../web/images/bg/header5.jpg") no-repeat bottom right;*/
+	text-align: center;
+	
+}
+
+div.microarray_tools.tabContent{
+	background: transparent url("../web/images/bg/array.gif") no-repeat bottom right;
+	height: 450px;
+	overflow: auto;
+}
+
+div.genelist_tools.tabContent{
+	background: transparent url("../web/images/bg/research2.gif") no-repeat bottom right;
+	height: 450px;
+	overflow: auto;
+}
+
+div.qtl_tools.tabContent{
+	background: transparent url("../web/images/bg/qtl.gif") no-repeat bottom right;
+	height: 450px;
+	overflow: auto;
+}
+
+div.explore_exons.tabContent{
+	background: transparent url("../web/images/bg/full_exon.jpg") no-repeat bottom right;
+	height: 380px;
+	overflow: auto;
+	
+}
+div.download_resources.tabContent{
+	/*background: transparent url("../web/images/bg/header5.jpg") no-repeat bottom right;*/
+	height: 380px;
+	overflow: auto;
+	
+}
+
+
+
+/* secondary-content */
+
+#index #secondary-content { float: left; width: 805px; }
+#did-you-know { float:left; width: 370px; margin-left: 15px; margin-bottom: 20px; border: #999 1px solid; }
+#did-you-know div, #how-do-i div { height: 130px; overflow: auto; }
+#did-you-know div p, #how-do-i p, #recent-publications p { margin-bottom: 10px; font-size:12px;}
+#how-do-i { margin-left: 35px; float: left; width: 370px; margin-bottom: 20px; border: #999 1px solid; } 
+#what-to-do { background:  #fefefe; float: left; overflow: auto; width: 425px; margin: 20px 30px; border: #999 1px solid; } 
+#what-to-do a:hover { color: #1d2f42; }
+#landing #secondary-content { float: left; width: 370px; margin-left: 5px; }
+
+/* tertiary-content */
+
+#tertiary-content { float: left; width: 165px;}
+#recent-publications{ position:relative; width: 165px; margin-left:12px; margin-top:-450px;}
+#regDemoBtns{text-align:center; width: 165px; margin-left: 12px;}
+/*#login-div {float: left; width: 165px; margin-left: 12px;}*/
+
+#marketing-content { border: #999 1px solid; padding: 5px; }
+
+/* footer */
+
+#footer { clear: both; }
+
+/* utility */
+div.brClear {
+    clear: both;
+    float: none;
+}
+
+/* Used for expanding/contracting */
+.clicker{
+	/* height: 20px; */
+	/* width: 52px; */
+        /* background: transparent url("../web/images/icons/morePlusArrow.gif") no-repeat top right; */
+	margin-left: 5px;
+        cursor: pointer;
+        /* needed for IE?  Don't think so */
+        /* cursor: hand; */
+}
+.clicker img{
+	vertical-align:bottom;
+}
+
+.clickerLess{
+        /* background: transparent url("../web/images/icons/arrow.gif") no-repeat top right; */
+}
+.branch{
+        display: none;
+	font-size: 9pt;
+	margin-left:20px;
+	margin-bottom:10px;
+	float:left;
+}
+
+SPAN.highlight {
+	font-size: 14pt; 
+	color: white;
+}
+
+SPAN.highlight-dark {
+	font-size: 12pt; 
+	color:#CCCCCC;
+}
+
+SPAN.heading {
+	font-size: 14pt; 
+  	font-weight: bold;
+	color: black;
+}
+
+div.closeWindow {
+	text-align: center;
+	margin: 40px 0px;	
+	cursor: pointer;
+	color: #416fbf;
+}
+div.scrollable {
+	overflow:auto;
+}
+    div.externalWindow_download {
+    	text-align: center;
+        float: right;
+        padding: 10px 10px 0px 0px;
+	cursor: pointer;
+	text-decoration: none;
+    }
+    div.externalWindow_download a {
+	text-decoration: none;
+    }
+
+
+/*-----------------Gene Centric Page-------------*/
+.geneimage {
+	text-align:center;
+}
+
+.hidden{
+	display:none;
+}
+
+#banner {
+	height: 30px; width: 1000px; text-align: center; font-size: 16px; font-family: Arial, Verdana, sans-serif; color: #666; background: #ccc; font-weight: bold; vertical-align: middle;
+}
+
+#geneSummarybtn{ text-align:center; width: 165px; margin-left: 12px;}
+
+.triangle_down {
+	position:absolute;
+	width:0px;
+	height:0px;
+	margin-top: 18px;
+	margin-right: 0px;
+	margin-left: 4px;
+	border-left:5px solid transparent;
+	/* left arrow slant */
+	border-right:5px solid transparent;
+	/* right arrow slant */
+	border-top:5px solid #ffffff;
+	/* bottom,add background color here */
+	font-size:0px;
+	line-height:0px;
+}
+
+.triangle_up {
+	position:absolute;
+	width:0px;
+	height:0px;
+	margin-top: 18px;
+	margin-right: 0px;
+	margin-left: 4px;
+	border-left:5px solid transparent;
+	/* left arrow slant */
+	border-right:5px solid transparent;
+	/* right arrow slant */
+	border-bottom:5px solid #ffffff;
+	/* bottom,add background color here */
+	font-size:0px;
+	line-height:0px;
+}
+
+div.alertMsg {
+	text-align: center;
+	margin: 40px 10px;	
+}
+
+
+/*-----------Get Started Buttons---------------------*/
+
+.button{
+	display: inline-block;
+	height: 20px;
+	width: 100px;
+	background: #DDDDDD;
+	border:2px solid #AAAAAA;
+	
+	color: rgba(0, 0, 0, 0.55);
+	text-align: center;
+	font: bold 14px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+ 
+	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.button:hover{
+	display: inline-block;
+	height: 20px;
+	width: 100px;
+	background: #BBBBBB;
+	border:2px solid #AAAAAA;
+	
+	color: rgba(0, 0, 0, 0.55);
+	text-align: center;
+	font: bold 14px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+ 
+	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+a.button {
+	text-decoration: none;
+}

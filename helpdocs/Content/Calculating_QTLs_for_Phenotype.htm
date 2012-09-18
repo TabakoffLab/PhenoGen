@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="5" MadCap:lastHeight="2442" MadCap:lastWidth="1209" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Investigating QTL Regions" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Calculating QTLs for Phenotype</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Calculating_QTLs_for_Phenotype.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1 style="background-color: Transparent;"><a name="kanchor125"></a>Calculating QTLs for Phenotype</h1>
+        <p>You can calculate QTL for uploaded phenotype data using pre-compiled 
+ marker sets. The website supports phenotypic QTL analysis for BXD recombinant 
+ inbred mice and HXB/BXH recombinant inbred rats.</p>
+        <ol>
+            <li class="Numbered" value="1">Click the <span style="font-weight: bold;">Investigate 
+ QTL Regions</span> tab. The Investigate QTL Regions page displays.</li>
+            <li class="Numbered" value="2">Click <span style="font-weight: bold;">Calculate 
+ QTLs for Phenotype</span> in the <span style="font-style: italic;">What 
+ would you like to do</span> section. The Calculate QTLs for Phenotype 
+ page displays.</li>
+            <li class="Numbered" value="3">Choose the Marker Set 
+ data: <span style="font-weight: bold;">Public BXD RI Mice</span>, <span style="font-weight: bold;">Public HXB/BXH RI Rats</span>, or <b>Public ILSXISS RI Mice</b>.</li>
+            <li class="Numbered" value="4"><span style="font-weight: bold;font-family: 'Comic Sans MS', cursive;color: #000080;">OPTIONAL:</span> Click <span style="font-weight: bold;">Enter 
+ New Phenotype Data</span>. You can upload, manually enter, or copy phenotype 
+ data. Click <span style="font-weight: bold;">Enter Variance Values</span> 
+ to enter variances for your groups. <a href="Using_Phenotype_Data.htm" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Using Phenotype Data in Correlation Analysis"</a> for upload, enter, copy, 
+ and delete instructions.</li>
+            <li class="Numbered" value="5">Click a row in the Phenotype 
+ Values table.</li>
+            <li class="Numbered" value="6">Choose <span style="font-weight: bold;">Yes</span> 
+ or <span style="font-weight: bold;">No</span> to weight the analysis based 
+ on variance.</li>
+            <li class="Numbered" value="7">Enter the <span style="font-weight: bold;">number 
+ of permutations</span> between 0 and 1 000 000. Zero indicates that empirical 
+ p-values are not calculated.</li>
+            <li class="Numbered" value="8">Click <span style="font-weight: bold;">Run</span>. 
+ A LOD plot displays.</li>
+            <li class="Numbered" value="9">Choose an option to narrow 
+ the results: <span style="font-weight: bold;">LOD threshold</span>,<span style="font-weight: bold;"> p-value threshold</span>, <span style="font-weight: bold;">genomic 
+ location</span>, and enter associated criteria.</li>
+            <li class="Numbered" value="10">Choose a <span style="font-weight: bold;">method 
+ to calculate confidence interval</span> (see descriptions in the <span style="font-style: italic;">Summary of Results</span> section).</li>
+            <li class="Numbered" value="11">Click <span style="font-weight: bold;">Run 
+ Summary</span>. The results that satisfy your criteria display.</li>
+        </ol>
+        <blockquote>
+            <div class="MCDropDown">
+                <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_3621465252_0" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+                </div>
+                <div class="MCDropDownBody" id="MCDropDownBody_3621465252_0" style="display: none;">
+                    <p>
+                        <img src="Images/calculateQTLResults.gif" style="border-left-color: #c0c0c0;border-top-color: #c0c0c0;border-right-color: #c0c0c0;border-bottom-color: #c0c0c0;border-left-style: Double;border-left-width: 3px;border-right-style: Double;border-right-width: 3px;border-top-style: Double;border-top-width: 3px;border-bottom-style: Double;border-bottom-width: 3px;float: none;" border="3" />
+                    </p>
+                </div>
+            </div>
+        </blockquote>
+        <h2>QTL Calculation</h2>
+        <p>Due to the large marker density of the two available marker sets, the 
+ QTL calculation is done using a simple marker regression. LOD (log base 
+ 10 odds ratio) scores are calculated for each marker and displayed on 
+ the LOD plot. When strain variances or standard deviations are available 
+ you can weight the marker regression by the inverse of the strain variance, 
+ to give more weight to strain means with lower variance. &#160;</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_3621465252_1" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_3621465252_1" style="display: none;">
+                <p>
+                    <img src="Images/calculateQTLResultsSummary.gif" style="border-left-style: Double;border-left-width: 3px;border-right-style: Double;border-right-width: 3px;border-top-style: Double;border-top-width: 3px;border-bottom-style: Double;border-bottom-width: 3px;border-left-color: #c0c0c0;border-right-color: #c0c0c0;border-top-color: #c0c0c0;border-bottom-color: #c0c0c0;float: none;" border="3" />
+                </p>
+            </div>
+        </div>
+        <h3>Marker Sets</h3>
+        <h4>Markers for BXD Recombinant Inbred Mice</h4>
+        <p>Markers for the BXD recombinant inbred panel were retrieved from the 
+ Wellcome-CTC Mouse Strain SNP Genotype Set (http://www.well.ox.ac.uk/mouse/INBREDS/). 
+ SNPs were retained if their marker ID could be matched with a SNP in the 
+ Ensembl 56 dbSNP128 mouse data retrieved through BioMart (http://www.ensembl.org/biomart/index.html) 
+ and if the SNP was also give a valid position in the mouse genome. In 
+ addition, individual SNPs were dropped if they did not differ between 
+ the two parental strains (C57BL/6J and DBA/2J) and if they had unknown 
+ genotypes for all BXD RI strains. </p>
+        <p>11 SNPs were removed because they had more than three strains with double 
+ recombinant genotypes. A double recombinant genotype occurs when a SNP 
+ between two SNPs that are less than 1 Mb has a different genotype for 
+ a strain than the SNPs on either side. Often these double recombinants 
+ represent a genotyping error rather than two instances of recombination 
+ so close together. </p>
+        <p>As an additional quality control measure, individual SNPs were evaluated 
+ for segregation distortion. This measure looks at the proportion of subjects/samples 
+ in each genotype category and assesses the probability of this distribution. 
+ In the case of recombinant inbred strains, the probability of each genotype 
+ is 50%. Two SNPs (rs13459145 and rs13478690) were dropped because of significant 
+ segregation distortion (p &lt; 1.0 X 10e-8). </p>
+        <p>Finally, a genomic map was estimated from the remaining SNPs, and if 
+ a SNP was estimated to have more than 40 cM between it and another SNP 
+ on either side, it was eliminated from the data set (one SNP). These quality 
+ control measures resulted in a final dataset with 91 strains including 
+ the parental strains and 6,093 SNPs.</p>
+        <h4>Markers for HXB/BXH Recombinant Inbred Rats</h4>
+        <p>Markers for the HXB/BXH recombinant inbred panel were retrieve from 
+ the STAR consortium (http://www.snp-star.eu/). SNPs were eliminated if 
+ they did not differ between parental strains (SHR/Ola and BN-Lx), if they 
+ were not genotype for either parental strain, or if they were heterozygous 
+ for either parental strain. If the genotype for a recombinant inbred strain 
+ was unknown, but the two surrounding SNPs had the same genotype, the missing 
+ genotype was assigned the value of the surrounding SNPs (53% of unknown 
+ genotypes were changed).These quality control measures resulted in a final 
+ dataset with 34 strains including the parental strains and 13,143 SNPs.</p>
+        <h3>Genome-wide P-Values</h3>
+        <p>A genome-wide p-value is calculated using permutation (Churchill and 
+ Doerge 1994) to account for multiple testing across markers. To calculate 
+ these p-values, phenotype and genotype associations are permuted and for 
+ each permutation, the maximum LOD score is retained. The distribution 
+ of these maximum LOD scores then becomes the null distribution from which 
+ p-values are calculated. For example the p-value of a LOD score of 3 is 
+ equal to the proportion of permutations where the maximum LOD score was 
+ greater than 3. Although results for all markers are shown in the LOD 
+ plot, only unique strain distribution patterns were used in the calculation 
+ of genome-wide p-values. </p>
+        <p>SNPs have identical strain distribution patterns in inbred panels, and 
+ when strains are grouped by genotype for either marker, the same two groups 
+ are formed. When two SNPs have identical strain distribution patterns, 
+ their LOD score is the same. &#160;Identical 
+ strain distribution patterns in adjacent markers are generally caused 
+ by linkage disequilibrium while identical strain distribution patterns 
+ in non-adjacent markers may be a consequence of using only a small number 
+ of strains.</p>
+        <h3>Summary of Results</h3>
+        <p>After the QTL calculation, you can limit the results to markers that 
+ reach some threshold (p-value or LOD score) or to markers within a certain 
+ genomic area. Results are shown on the strain distribution pattern (SDP) 
+ level. The minimum and maximum basepair positions on each chromosome are 
+ shown for each SDP that meet the criteria.</p>
+        <p>You can also calculate location confidence intervals for QTLs that met 
+ the criteria you specified when you summarized the results. In addition 
+ to not calculating confidence intervals at all, three different methods 
+ are available: non-parametric bootstrap, LOD support interval, and Bayesian 
+ credible interval. Confidence intervals are only calculated for the maximum 
+ LOD score on each chromosome. </p>
+        <ul>
+            <li class="Bullet" value="1">The non-parametric bootstrap 
+ confidence intervals are calculated using the methods outlined by Visscher 
+ et al (1996). One thousand bootstrap samples are taken to calculate intervals, 
+ and you can choose your own probability coverage. The bootstrap non-parametric 
+ measure is useful when it is possible that more than one QTL is in the 
+ area.</li>
+            <li class="Bullet" value="2">For the LOD support interval, 
+ the confidence interval is identified by locating the marker on either 
+ side of the maximum LOD scores were the LOD score first drops by the LOD 
+ score threshold you specified. </li>
+            <li class="Bullet" value="3">The Bayesian credible interval 
+ is calculated as outlined in Manichaikul et al (2006). This article also 
+ compares the three methods and recommends against the bootstrap non-parametric 
+ method, but their analysis was done with relatively sparse marker maps 
+ on backcross and intercross populations using only one QTL. </li>
+        </ul>
+        <p class="References">References</p>
+        <p>1. Churchill GA and Doerge RW (1994). &#160;Empirical 
+ threshold values for quantitative trait mapping. &#160;Genetics 
+ Nov;138(3):963-71.</p>
+        <p>2. Manichaikul A, Dupuis J, Sen S, Broman KW (2006). &#160;Poor 
+ performance of bootstrap confidence intervals for the location of a quantitative 
+ trait locus. &#160;Genetics 
+ 174(1):481-9. </p>
+        <p>3. Visscher PM, Thompson R, and Haley CS (1996). &#160;Confidence 
+ intervals in QTL mapping by bootstrapping. &#160;Genetics 
+ 143(2):1013-20.</p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

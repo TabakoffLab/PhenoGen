@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="8" MadCap:lastHeight="3279" MadCap:lastWidth="1168" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Analyzing Microarrays" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Creating Datasets</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#creating_datasets.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1 class="pgBrkBefore"><a name="kanchor19"></a>Creating Datasets</h1>
+        <p>Creating datasets comprises four steps:</p>
+        <blockquote>
+            <p><a href="#retrievingArrays" target="" title="" alt="" class="MCXref" xrefformat="{quote}{paratext}{quote}">"1. Retrieving Arrays"</a>, to determine which arrays you want in the dataset.</p>
+            <p><a href="#selectFinalizeArrays" target="" title="" alt="" class="MCXref" xrefformat="{quote}{paratext}{quote}">"2. &amp; 3. Selecting and Finalizing 
+ Arrays"</a>, to add them to the dataset you are creating and finalize the dataset with the selected arrays.</p>
+            <p><a href="#QC" target="" title="" alt="" class="MCXref" xrefformat="{quote}{paratext}{quote}">"4. Running Quality Control"</a>, on the dataset and reviewing the results.</p>
+        </blockquote>
+        <h4><a name="retrievingArrays"></a>1. Retrieving Arrays</h4>
+        <p>Arrays in the PhenoGen website are uploaded into a local, MIAME-compliant 
+ database. There are public arrays which are available to any user and 
+ semi-public arrays which users can use after they are granted permission 
+ from the Principal Investigator responsible for the array.</p>
+        <p>
+            <img src="Images/exclamationpoint.gif" style="border: none;float: none;border-style: none;border-style: none;" border="0" /><span style="color: #ff0000; font-weight: bold;">Important!</span> <![CDATA[ ]]><span style="color: #ff0000;">The 
+ PhenoGen website uses a local database for storing information about arrays, and data entered is only available on the PhenoGen website. </span><a href="MIAME.htm" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "MIAME Overview"</a> for details about the Minimum Information About a Microarray Experiment (MIAME) standard.</p>
+        <p>The PhenoGen website allows you to take single or multiple arrays from 
+ multiple lab experiments and combine them into "in-silico" datasets. 
+ Each array is annotated as displayed on the <span style="font-style: italic;">Array 
+ Details</span> page. The annotation provides details such as species, 
+ gender, and array type. The set of arrays in the dataset can then be grouped 
+ by a particular set of characteristics (e.g., treated vs. untreated) and 
+ analyzed using the tools provided by the website. The goal of such an 
+ analysis is a list of genes that can be further investigated.</p>
+        <p>When retrieving arrays, you can filter a number of ways:</p>
+        <ul>
+            <li class="Bullet" value="1">Platform Attributes<ul><li class="BulletIndent" value="1">Single or 
+ Two-Channel</li><li class="BulletIndent" value="2">Array type 
+ (e.g., Codelink_Rat_Whole_Genome)</li></ul></li>
+            <li class="Bullet" value="2">Experiment Attributes <ul><li class="BulletIndent" value="1">Experiment 
+ name</li><li class="BulletIndent" value="2">Design type 
+ </li></ul></li>
+            <li class="Bullet" value="3">Owner Attributes<ul><li class="BulletIndent" value="1">Principal 
+ Investigator </li></ul></li>
+            <li class="Bullet" value="4">Array/Sample Attributes<ul><li class="BulletIndent" value="1">Organism</li><li class="BulletIndent" value="2">Genetic Modification 
+ (e.g., congenic strain)</li><li class="BulletIndent" value="3">Sex</li><li class="BulletIndent" value="4">Tissue (e.g., 
+ brain)</li><li class="BulletIndent" value="5">Strain (e.g., 
+ 1 HXB)</li><li class="BulletIndent" value="6">Genotype 
+ (e.g., hAC7 transgenic)</li><li class="BulletIndent" value="7">Line (e.g., 
+ alcohol accepting)</li><li class="BulletIndent" value="8">Hybridization 
+ Name contains...</li></ul></li>
+            <li class="Bullet" value="5">Compound Treatment Attributes <ul><li class="BulletIndent" value="1">Treatment (e.g., control)<ul><li class="Bullet" value="1">Duration</li></ul></li></ul></li>
+            <li class="Bullet" value="6">Compound (e.g., saline)<ul><li class="BulletIndent" value="1">Dose</li></ul></li>
+        </ul>
+        <p>Although filtering is not required, it is recommended.</p>
+        <p><span style="font-weight: bold;"><img src="Images/bulb.gif" style="border: none;float: none;border-style: none;border-style: none;" border="0" />Notes:</span>
+        </p>
+        <ul>
+            <li class="Bullet" value="1">Click <b>Advanced Search</b> to display more filtering options. Click <b>Basic Search</b> to display fewer options.</li>
+            <li class="Bullet" value="2">Your choices in the drop-down 
+ lists are based on the experiments that have been uploaded into PhenoGen 
+ and your selection of Single Channel or Two Channel. </li>
+            <li class="Bullet" value="3">Use the drop-down lists to 
+ narrow your criteria and limit the number of results that are returned.</li>
+            <li class="Bullet" value="4">Leave the drop-down lists 
+ set to <span style="font-weight: bold;">All</span> to return all the arrays 
+ in the database. This is NOT recommended.</li>
+            <li class="Bullet" value="5">Type a specific array name 
+ in the <span style="font-weight: bold;">Hybridization Name contains</span> 
+ field to retrieve only arrays that match your input.</li>
+        </ul>
+        <h4 class="pgBrkBefore"><a name="selectFinalizeArrays"></a>2. &amp; 3. Selecting and Finalizing 
+ Arrays</h4>
+        <p>After you retrieve arrays, you can select the arrays that you want to 
+ be part of your dataset from the resultant list. If the <span style="font-weight: bold;">Availability</span> 
+ column shows "Access Required", the Principal Investigator who 
+ owns those arrays must give you permission to access them if you want 
+ to include them in your dataset. Open access arrays do not require permission 
+ to use and show "Public" in the <span style="font-weight: bold;">Availability 
+ </span>column.</p>
+        <p><span style="font-weight: bold;"><img src="Images/bulb.gif" style="border: none;float: none;border-style: none;border-style: none;" border="0" />Note:</span> Array data 
+ is the responsibility of the Principal Investigator (PI). &#160;When 
+ you select arrays for which access is required, an email that requests 
+ access is sent to each of the Principal Investigators who are responsible 
+ for the data. When you are granted permission, you receive an email at 
+ the address you provided during registration.</p>
+        <p style="font-style: normal;">If you want to review the array details, 
+ click <span style="font-weight: bold;">View</span> in the <span style="font-weight: bold;">Array 
+ Details</span> column to view the array information, or click the experiment 
+ name.</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_346317550_0" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_346317550_0" style="display: none;">
+                <p>
+                    <img src="Images/selectArrays.gif" style="border-left-style: Double;border-left-width: 4px;border-right-style: Double;border-right-width: 4px;border-top-style: Double;border-top-width: 4px;border-bottom-style: Double;border-bottom-width: 4px;border-left-color: #c0c0c0;border-right-color: #c0c0c0;border-top-color: #c0c0c0;border-bottom-color: #c0c0c0;float: none;" border="4" />
+                </p>
+            </div>
+        </div>
+        <p>After you select and add the arrays you want to your dataset, click the <span style="font-weight: bold;">View/Finalize Dataset</span> <![CDATA[ ]]>link at the 
+ right to review and modify the arrays in your dataset, and finalize the 
+ dataset. If you require permission to use any of the arrays, your dataset 
+ remains in <span style="font-style: italic;">Pending</span> status until 
+ permission is granted.</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_346317550_1" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_346317550_1" style="display: none;">
+                <p>
+                    <img src="Images/finalizeDataset.gif" style="border-left-color: #c0c0c0;border-left-style: Double;border-top-color: #c0c0c0;border-top-style: Double;border-right-color: #c0c0c0;border-right-style: Double;border-bottom-color: #c0c0c0;border-bottom-style: Double;border-left-width: 4px;border-right-width: 4px;border-top-width: 4px;border-bottom-width: 4px;float: none;" border="4" />
+                </p>
+            </div>
+        </div>
+        <h4><a name="QC"></a>4. Running Quality Control</h4>
+        <p>Quality control is an essential process when creating datasets. There 
+ are two quality control checks that ensure that the arrays you want to 
+ combine are compatible. They are:</p>
+        <ul>
+            <li class="Bullet" value="1"><a href="Quality_Control_Checks.htm#MIAMExpress" target="" title="" alt="" class="MCXref" xrefformat="{quote}{paratext}{quote}">"Array Attribution Comparison (Step 1)"</a>
+            </li>
+            <li class="Bullet" value="2"><a href="Quality_Control_Checks.htm#ArrayIntegrity" target="" title="" alt="" class="MCXref" xrefformat="{quote}{paratext}{quote}">"Array Integrity (Step 2)"</a>
+            </li>
+        </ul>
+        <p>When you run quality control, a quality control check of the selected 
+ arrays in the finalized dataset is performed. Arrays that are identified 
+ as questionable at any or all of the steps should be considered for deletion. 
+ However, some of the small imperfections and minor concerns can be alleviated 
+ by an appropriate normalization method. <a href="Preparing_Datasets_Overview.htm" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Preparing Datasets"</a>.</p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

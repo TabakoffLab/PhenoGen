@@ -1,0 +1,390 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:ignoredWords="as to;INIA;website;MIAMExpress;arrays;microarrays;Affymetrix;CodeLink;dChip;RMA;PDNN;VSN;GCRMA;Quantiles;Qspline;quantile;loessScale;loessQuantile;cf;limma;vsn" MadCap:status="Complete" MadCap:lastBlockDepth="4" MadCap:lastHeight="4373" MadCap:lastWidth="683" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Analyzing Microarrays" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head><title>Preparing Datasets Overview</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Preparing_Datasets_Overview.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1 class="pgBrkBefore"><a name="kanchor39"></a>Preparing Datasets</h1>
+        <p>After you finalize a dataset, run the quality control checks on the 
+ dataset, and approve the quality control results, your dataset is ready 
+ to be grouped and normalized, as indicated by the word "Run" 
+ in the <span style="font-weight: bold;">Arrays Grouped and Normalized</span> 
+ column on the <span style="font-style: italic;">View Datasets</span> page. 
+ </p>
+        <h2>Grouping</h2>
+        <p>Data grouping allows you to group arrays and normalize data across groups. 
+ Data is then in a state where statistical analysis can be performed. You 
+ can create multiple groupings and normalize each grouping multiple times. 
+ After you create and normalize a grouping of arrays, a checkmark displays 
+ in the Arrays Grouped and Normalized column.</p>
+        <h3><a name="kanchor40"></a><a name="kanchor41"></a><a name="Run_Groups"></a>Groups</h3>
+        <p>The term "group" is used to indicate an analysis group. For 
+ example, if you analyze mouse data for differential expression between 
+ males and females, group 1 can be all the samples from female mice, and 
+ group 2 can be all the samples from male mice. For inbred strains, replicate 
+ samples within a group can be considered biological replicates, because 
+ even though the samples are two different animals, it is assumed that 
+ the gene expression is similar (if not exactly the same) between the two 
+ samples. </p>
+        <p>You can choose groups by:</p>
+        <ul>
+            <li class="Bullet" value="1">Array attribute. </li>
+            <li class="Bullet" value="2">Previous saved group combinations.</li>
+            <li class="Bullet" value="3">User-created categories.</li>
+        </ul>
+        <h3><a name="kanchor42"></a><a name="kanchor43"></a><a name="Normalization"></a>Normalization</h3>
+        <p>The purpose of normalization and background correction is to remove 
+ systematic noise and reduce technical variation. To normalize in the context 
+ of DNA microarrays means to standardize your data to be able to differentiate 
+ between real (biological) variations in gene expression levels and variations 
+ due to the measurement process. Normalizing also scales your data so that 
+ you can compare relative gene expression levels. In general, the normalization 
+ process is subdivided into four sequential steps:</p>
+        <ol>
+            <li class="Numbered" value="1">Background correction.</li>
+            <li class="Numbered" value="2">Data normalization. </li>
+            <li class="Numbered" value="3">Adjustment for non-specific 
+ binding (Affymetrix arrays only).</li>
+            <li class="Numbered" value="4">Data summary methods 
+ (Affymetrix arrays only). &#160;&#160;</li>
+        </ol>
+        <p>The options for normalizing data are based on array platform: </p>
+        <table style="width: 77.838%;border-spacing: 0px;border-spacing: 0px;" cellspacing="0" width="77.838%">
+            <col style="width: 31.25%;" />
+            <col style="width: 31.25%;" />
+            <col style="width: 37.501%;" />
+            <tr valign="top">
+                <td colspan="1" rowspan="1" style="width: 31.25%;padding-right: 10px;padding-left: 10px;border-bottom-style: none;border-right-style: none;border-left-style: none;border-top-style: none;" width="31.25%">
+                    <p class="TableHeader">Affymetrix 3' Arrays </p>
+                </td>
+                <td style="width: 31.25%;padding-right: 10px;padding-left: 10px;border-top-style: none;border-right-style: none;border-bottom-style: none;" width="31.25%">
+                    <p class="TableHeader">Affymetrix Exon Arrays </p>
+                </td>
+                <td style="width: 37.501%;padding-right: 10px;padding-left: 10px;border-bottom-style: none;border-top-style: none;border-right-style: none;" width="37.501%">
+                    <p class="TableHeader">CodeLink Arrays</p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td colspan="1" rowspan="1" style="width: 31.25%;padding-right: 10px;padding-left: 10px;border-bottom-style: none;border-right-style: none;border-left-style: none;" width="31.25%">
+                    <ul>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="1">MAS5.0</li>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="2">dChip 
+ </li>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="3">RMA (recommended)</li>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="4">VSN</li>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="5">GCRMA</li>
+                    </ul>
+                </td>
+                <td style="width: 31.25%;padding-right: 10px;padding-left: 10px;border-right-style: none;border-bottom-style: none;" width="31.25%">
+                    <ul>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="1">RMA</li>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="2">PLIER</li>
+                    </ul>
+                </td>
+                <td style="width: 37.501%;padding-right: 10px;padding-left: 10px;border-bottom-style: none;border-right-style: none;" width="37.501%">
+                    <ul>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="1">None</li>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="2">Loess 
+ (recommended)</li>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="3">VSN</li>
+                        <li style="margin-left: 0px;" class="BulletIndent" value="4">LIMMA</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+        <p>Many normalization methods have been developed over the years since 
+ microarrays first hit the market. These different normalization methods 
+ have the potential of yielding very different results in candidate gene 
+ searches. Some researchers choose to run their analysis using a couple 
+ different normalization methods and then choose the candidate genes that 
+ are identified regardless of normalization method. For Affymetrix, RMA 
+ and the closely related gcRMA are the most common normalization methods 
+ published. For CodeLink, the paper cited in the following <span style="font-style: italic;">References</span> 
+ section gives an in-depth comparison of normalization methods and concludes 
+ cyclic Loess to be the most accurate.</p>
+        <p style="font-weight: bold;">References</p>
+        <p>Wu W, Dave N, Tseng GC, Richards T, Xing EP, and Kaminski N (2005). 
+ Comparison of normalization methods for CodeLink Bioarray data. &#160;BMC 
+ Bioinformatics 6:309.</p>
+        <h4><a name="Normalization_Methods"></a>Normalization Methods</h4>
+        <h5>MAS 5.0</h5>
+        <p><span style="font-style: italic;">Micro Array Suite Version 5.0 (MAS5)</span> 
+ is implemented in both the MAS 5.0 software package from Affymetrix and 
+ in the <span style="font-style: italic;">Affy</span> package in R. The 
+ PhenoGen website application uses the <span style="font-style: italic;">mas5</span> 
+ function in R. Signal calculation using MAS 5.0 consists of five main 
+ steps.</p>
+        <p>The first step adjusts the raw intensities for a global background by 
+ organizing the array into zones. Within each zone, the lowest 2% of intensities 
+ are used as an estimate background for that zone. The transition between 
+ zones is smoothed by taking a weighted estimate of background for each 
+ point where the weights are based on distances from zone centers. The 
+ second step calculates an "ideal" mismatch (IM) intensity to 
+ adjust the perfect match intensity with the goal of eliminating background 
+ cross-hybridization and stray signal. The IM value is used instead of 
+ the mismatch (MM) value to ensure that the resulting signal (PM-IM) is 
+ positive. The third step transforms the intensity values with a log base 
+ 2 transformation. The fourth step combines probe values within a probe 
+ set using the one-step Tukey’s biweight algorithm, which "weights" 
+ the data to reduce the influence of outliers. The fifth and final step 
+ scales all probe sets after conversion back to the original intensity 
+ scale, i.e., not log base 2 transformed, to a target probe set intensity 
+ (500 by default). After the MAS 5.0 procedure is complete, all intensity 
+ values are transformed using a log base 2 in preparation for statistical 
+ analyses.</p>
+        <p class="References"><b>References</b>
+        </p>
+        <ol>
+            <li class="Numbered" value="1">Affymetrix (2001). Statistical 
+ algorithms reference guide. Technical report Affymetrix.</li>
+            <li class="Numbered" value="2">Hubbell E, Liu W-M, Mei 
+ R (2002). &#160;Robust 
+ estimators of expression analysis. Bioinformatics 18(12):1585-1592.</li>
+            <li class="Numbered" value="3">Liu W-M, Mei R, Di X, 
+ Ryder TB, Hubbell E, Dee S, Webster TA, Harrington CA, Ho M-H, Baid J, 
+ Smeekens SP (2002). Analysis of high density expression microarrays with 
+ signed-rank call algorithms. &#160;Bioinformatics 
+ 18(12):1593-1599.</li>
+        </ol>
+        <h5>PLIER (Probe Logarithmic Intensity Error)</h5>
+        <p style="background-color: Transparent;"><span style="font-style: italic;">Probe 
+ Logarithmic Intensity Error Estimation (PLIER). </span>The PLIER algorithm 
+ is a model-based method that includes “experimentally observed patterns 
+ for feature behavior and handling error appropriately at low and high 
+ abundance”. The probe, or "feature", intensities are first pre-processed 
+ by quantile normalization to scale expression values across arrays. Intensities 
+ are then adjusted for background noise by subtracting the median intensity 
+ of control probes with similar GC content. All feature intensities for 
+ a probe set are used to calculate a feature response; “a measure of how 
+ much the relative intensity of a feature is due to the feature itself, 
+ as opposed to the common target of a probe set”. After taking into account 
+ the difference in features within a probe set, intensity values across 
+ features are combined using a weighting scheme that down-weights probes 
+ with inconsistent behavior. Finally, a mixed error model is used to account 
+ for the differences in appropriate error models depending on the abundance 
+ of the transcript.</p>
+        <p class="References"><b>References</b> <![CDATA[ ]]></p>
+        <ol>
+            <li class="Numbered" value="1">Guide to Probe Logarithmic 
+ Intensity Error (PLIER) Estimation, Affymetrix Tech Note, 2005.</li>
+        </ol>
+        <h5>dChip (Perfect Match Probes Only)</h5>
+        <p><span style="font-style: italic;">DNA-chip Analyzer (dChip)</span> is 
+ a software package that implements the model proposed by Cheng Li and 
+ Wing Hung Wong. This model is also referred to as the Li Wong method and 
+ the resulting values are considered model-based expression indexes (MBEI). 
+ &#160;The PM-only 
+ model fits the following model to each gene:</p>
+        <p>
+            <img src="Images/dchip1.png" style="border: none;float: none;border-style: none;border-style: none;" border="0" />
+        </p>
+        <p>Where:</p>
+        <blockquote>
+            <p><span style="font-style: italic;">PM</span><span style="font-style: italic;vertical-align: Sub;">ij</span> 
+ is the intensity for perfect match probe of probe pair <span style="font-style: italic;">j</span> 
+ on the <span style="font-style: italic;">i</span>th array.</p>
+            <p><span style="font-style: italic;">ν</span><span style="font-style: italic;vertical-align: Sub;">j</span> is the baseline 
+ response of the <span style="font-style: italic;">j</span>th probe due 
+ to nonspecific binding.</p>
+            <p>θ<span style="font-style: italic;vertical-align: Sub;">i</span> 
+ is the expression index of the gene in the ith array.</p>
+            <p><![CDATA[ ]]><img src="Images/dchip2.png" style="border: none;float: none;border-style: none;border-style: none;" border="0" /> is 
+ the sensitivity of the PM probe of the probe pair <span style="font-style: italic;">j</span>.</p>
+            <p>ε<span style="vertical-align: Sub;font-style: italic;">ij</span> 
+ is the random error. </p>
+        </blockquote>
+        <p>Parameter estimates are determined through iteration. 
+ The R code used for normalization on the PhenoGen website is not identical 
+ to the code used in Li and Wong's stand-alone program, <span style="font-style: italic;">dChip</span>. 
+ Therefore, normalization on the website might differ slightly from normalization 
+ derived from the <span style="font-style: italic;">dChip</span> program. 
+ After the dChip method is completed, all intensities are transformed using 
+ a log base 2 in preparation for statistical analyses. </p>
+        <p class="References">References </p>
+        <ol>
+            <li class="Numbered" value="1">Li C, Wong WH (2001). 
+ &#160;Model-based 
+ analysis of oligonucleotide arrays: expression index computation and outlier 
+ detection. Proc Natl Acad Sci U S A 98(1):31-6. (uses both PM and MM probes)</li>
+            <li class="Numbered" value="2">Li C, Wong WH (2001). 
+ &#160;Model-based 
+ analysis of oligonucleotide arrays: model validation, design issues, and 
+ standard error application. &#160;Genome 
+ Biology 2(8):1-11. (uses only PM probes)</li>
+        </ol>
+        <h5>RMA</h5>
+        <p><span style="font-style: italic;">Robust Multi-Chip Average/Robust Multi-Array 
+ Analysis (RMA).</span> RMA pre-processing consists of three main steps: 
+ background correction, normalization, and summarization of probe level 
+ intensities in probe sets. RMA uses a background correction method to 
+ account for optical noise and non-specific binding using only the perfect-match 
+ probes. The background-corrected probe intensities are then transformed 
+ using log base 2 and normalized using quantile normalization. Finally, 
+ the probe intensities are combined using a median polish to get one intensity 
+ for each probe set or transcript cluster. The log base 2 transformation 
+ of intensity values occurs within the RMA procedure, so a separate transformation 
+ is not needed.</p>
+        <p>For the Affymetrix Exon Arrays, determine the probesets to include, 
+ based on confidence in annotation (core, extended, and full), by summarizing 
+ on either the exon level or gene level. For more details, see the Affymetrix 
+ GeneChip ® 
+ Exon Array whitepaper, <span style="font-style: italic;">Exon Probeset 
+ Annotations and Transcript Cluster Groupings (2005)</span>.</p>
+        <p class="References">References</p>
+        <ol>
+            <li class="Numbered" value="1">Bolstad BM, Irizarry 
+ R A, Astrand M, and Speed TP (2003). A Comparison of Normalization Methods 
+ for High Density Oligonucleotide Array Data Based on Bias and Variance. 
+ Bioinformatics 19(2):185-193.</li>
+            <li class="Numbered" value="2">Irizarry RA, Benjamin 
+ M, Bolstad FC, Cope LM, Hobbs B, Speed TP (2003). Summaries of Affymetrix 
+ GeneChip probe level data. Nucleic Acids Research 31(4):e15.</li>
+            <li class="Numbered" value="3">Irizarry RA, Hobbs B, 
+ Collin F, Beazer-Barclay YD, Antonellis KJ, Scherf U, Speed TP (2003). 
+ Exploration, Normalization, and Summaries of High Density Oligonucleotide 
+ Array Probe Level Data. Biostatistics 4( 2): 249-264.</li>
+        </ol>
+        <h5>VSN</h5>
+        <p><span style="font-style: italic;">Variance stabilization (VSN).</span> 
+ The goal of variance stabilization is to transform the data in such a 
+ way as to eliminate the dependence of the variance on the mean. The VSN 
+ accounts for both background correction and normalization by scaling and 
+ shifting the original intensity and then using the inverse of the hyperbolic 
+ sine as a variance stabilizing transformation. &#160;</p>
+        <p>For Affymetrix data, this normalization method is implemented in the 
+ Affy <span style="font-style: italic;">vsnrma()</span> procedure. The 
+ VSN transformation is done at the probe level on the PM probes only, and 
+ then the probe level intensities are combined into a probe set intensity 
+ using a median polish. Affymetrix data is transformed to log base 2 within 
+ the VSN procedure. </p>
+        <p>For CodeLink data, this normalization method is implemented by choosing 
+ either the 'vsn' or the 'limma' options on the website. &#160;If 
+ the 'vsn' option is chosen, it is implemented using the <span style="font-style: italic;">vsn2()</span> 
+ procedure in R and the values are on the natural log scale. If the 'limma' 
+ option is chosen, it is implemented using the <span style="font-style: italic;">normalizeBetweenArrays()</span> 
+ procedure, and values are on the log base 2 scale. In either case, data 
+ values are background corrected before VSN is implemented. </p>
+        <p>Finally, for both Affymetrix and CodeLink data, a quantile of 0.5 is 
+ used for the least-trimmed sum of squared (LTS) regression for the estimation 
+ of parameters. This is the most robust value (i.e., a value of 1 offers 
+ no protection to outliers and 0.5 offers the most).</p>
+        <p class="References"><b>References </b>
+        </p>
+        <ol>
+            <li class="Numbered" value="1">Huber 
+ W, von 
+ Heydebreck 
+ A, Sultmann 
+ H, Poustka 
+ A, Vingron 
+ M (2002). Variance 
+ stabilization applied to microarray data calibration and to the quantification 
+ of differential expression. Bioinformatics 18(S1):S96-S104.</li>
+            <li class="Numbered" value="2">Huber 
+ W, von 
+ Heydebreck 
+ A, Sultmann 
+ H, Poustka 
+ A, Vingron 
+ M (2003). Parameter 
+ estimation for the calibration and variance stabilization of microarray 
+ data. Statistical Applications in Genetics and Molecular Biology 2(1) 
+ Article 3. http://www.bepress.com/sagmb/vol2/iss1/art3</li>
+        </ol>
+        <h5>GCRMA</h5>
+        <p><span style="font-style: italic;">G/C 
+ Robust Multi-Array Average (GCRMA)</span>. The GCRMA method is related 
+ to the RMA method described previously, in that GCRMA also uses quantile 
+ normalization on the log base 2 probe values and a median polish to summarize 
+ probes into a probe set. However, the difference lies in the background 
+ adjustment. The RMA method does not account for probe affinity when calculating 
+ background. For GCRMA, the estimate for non-specific binding is related 
+ to the base composition of the nucleic acid molecules, i.e., the proportion 
+ of G and C 
+ bases present in the probe sequence. </p>
+        <p class="References"><b>References </b>
+        </p>
+        <ol>
+            <li class="Numbered" value="1">Wu 
+ Z, Irizarry 
+ RA, Gentleman R, Martinez Murllio 
+ F, Spencer 
+ F (2004). A 
+ model based background adjustment for oligonucleotide expression arrays. 
+ Johns Hopkins 
+ University, Dept. 
+ of Biostatistics Working Papers, Paper 1. http://www.bepress.com/jhubiostat/paper1</li>
+        </ol>
+        <h5>LOESS</h5>
+        <p><span style="font-style: italic;">Locally Weighted Scatterplot 
+ Smoothing (LOWESS/LOESS)</span>. 
+ When applied to normalization of CodeLink arrays, this method is also 
+ referred to as cyclic loess. This method is an iterative approach that 
+ is based on the MA plot. For each distinct pair of arrays, the data is 
+ plotted using an MA plot (difference in log base 2 values versus the average 
+ of log base 2 values). A loess curve using a one-degree polynomial is 
+ fit to each graph. This loess curve is used to estimate an adjustment 
+ for each value. The average adjustment for all pairwise comparisons for 
+ a particular probe is used to obtain starting values for that probe and 
+ array in the next iteration. This method is implemented using the<span style="font-weight: bold;"> <![CDATA[ ]]></span><span style="font-style: italic;">normalize.loess</span> 
+ function in R. Initially, expression values from CodeLink are adjusted 
+ for background, i.e., spot mean-background median. Because this can result 
+ in negative values, expression values less than 1 are re-coded to 1. Expression 
+ values are transformed using a log base 2 before LOESS normalization. 
+ You can fit the loess curve using a weighted least-squares approach (family.loess=gaussian) 
+ or a re-descending M estimator with the Tukey's biweight function (family.loess="symmetric").</p>
+        <p class="References"><b>References </b>
+        </p>
+        <ol>
+            <li class="Numbered" value="1">Bolstad BM, Irizarry 
+ R A, Astrand M, Speed TP (2003). A Comparison of Normalization Methods 
+ for High Density Oligonucleotide Array Data Based on Bias and Variance. 
+ Bioinformatics 19(2):185-193.</li>
+        </ol>
+        <h5>LIMMA </h5>
+        <p><span style="font-style: italic;">Linear Models for MicroArrays (LIMMA).</span> 
+ &#160;LIMMA refers 
+ to the package that is used in R. Two normalization methods are available 
+ under this method: <span style="font-weight: bold;">scale</span> and <span style="font-weight: bold;">quantile</span>. </p>
+        <ul>
+            <li class="Bullet" value="1"><span style="font-style: italic;">Scale 
+ – </span>Data 
+ is background corrected, values less than 1 are re-coded to 1, and all 
+ values are log base 2 transformed. Values are then scaled so that the 
+ median absolute deviations (MADs) are the same across arrays. </li>
+            <li class="Bullet" value="2"><span style="font-style: italic;">Quantile 
+ – </span>Data 
+ is background corrected, values less than 1 are re-coded to 1, and all 
+ values are log base 2 transformed. Values are then adjusted so that each 
+ array has the exact same distribution of intensities. This gives the same 
+ results as the <span style="font-weight: bold;">normalize.quantiles</span> 
+ function in R. </li>
+        </ul>
+        <p class="References"><b>References </b>
+        </p>
+        <ol>
+            <li class="Numbered" value="1">Bolstad BM, Irizarry 
+ R A, Astrand M, Speed TP (2003). A Comparison of Normalization Methods 
+ for High Density Oligonucleotide Array Data Based on Bias and Variance. 
+ Bioinformatics 19(2):185-193.</li>
+            <li class="Numbered" value="2">Smyth GK, Speed TP (2003). 
+ &#160;Normalization 
+ of cDNA microarray data. &#160;Methods 
+ 31(4): 265-273.</li>
+        </ol>
+        <h2><a name="EliminateProbes"></a>Eliminating Probes with Poor Sequence Integrity</h2>
+        <p>Probe masks were created for the Affymetrix Mouse 430 version 2 array, the Affymetrix Mouse Exon array, and the Affymetrix Rat Exon array to eliminate probes whose sequence did not match to the reference genome (NCBI m37 build for the mouse arrays and RGSC version 3.2 for the rat array), matched the genome in multiple places, or harbored a SNP.  For the mouse arrays, SNPs were derived from the 19 strains in the public Inbred Mice dataset where genotype data is available at the Imputed Genotype Resource from the Jackson Laboratory; <a href="http://cgd.jax.org/datasets/popgen/imputed.shtml">http://cgd.jax.org/datasets/popgen/imputed.shtml</a> (129P3/J is not available). For the rat array, SNPs were derived from comparing the full genome sequence of the Brown Norway (BN) Inbred strain to the Spontaneously Hypertensive Rat (SHR) strain that was recently sequenced (Atanur et al 2010) using next-generation sequencing.  We also included SNPs identified from our sequencing of the DNA (Phred quality score &gt; 150) of the parental strains of the HXB/BXH panel (SHR/OlaPrin and BN-Lx/CubPrin).</p>
+        <p>Entire probe sets were eliminated if less than four probes remained for the 3' array or less than three probes remained for the exon array. For the Affymetrix Mouse 430 version 2 array, 68,002 probes were eliminated because they did not align uniquely to the genome, and 39,430 additional probes were eliminated because they targeted a genomic region with a known SNP. Of the original 45,101 probe sets on the array, 41,485 remain after masking. For the Affymetrix Mouse Exon array, 329,422 probes were eliminated because they did not align uniquely to the genome, and 913,592 additional probes were eliminated because they targeted a genomic region with a known SNP. Of the original 1,180,331 probe sets from the full annotation on the array, 900,079 remain after masking. For the Affymetrix Rat Exon array, 472,072 probes were eliminated because they did not align uniquely to the genome, and 132,529 additional probes were eliminated because they targeted a genomic region with a known SNP. Of the original 887,561 probe sets on the array from the full annotation, 721,150 remain after masking.</p>
+        <p class="SeeAlso" MadCap:conditions="Primary.Online">See Also</p>
+        <p MadCap:conditions="Primary.Online"><a href="Group_Normalizing_Datasets.htm">Grouping 
+ &amp; Normalizing Datasets</a>
+        </p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

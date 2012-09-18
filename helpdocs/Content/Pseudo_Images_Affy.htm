@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="4" MadCap:lastHeight="1629" MadCap:lastWidth="1203" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Analyzing Microarrays|Creating Datasets|Quality Control Checks|Assessing Affymetrix Data Quality" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Pseudo Images (Affymetrix)</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Pseudo_Images_Affy.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1 class="pgBrkBefore"><a name="kanchor31"></a>Pseudo Images (Affymetrix)</h1>
+        <p>There are several different pseudo-images that you can inspect for artifacts 
+ that are not visible from the raw images. The first image that is displayed 
+ shows (from left to right) the spatial distribution of the weights involved 
+ in the estimation of the probe-level model outlined previously. In some 
+ sense, weights can be considered a "standardized" residual. 
+ They range from 0 to 1 where 1 is a small residual and 0 is a large residual 
+ relative to the variance between residuals for the probe across all arrays.</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_1366162612_0" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_1366162612_0" style="display: none;">
+                <p>
+                    <img src="Images/chip integrity 2.gif" style="border-left-style: Double;border-left-width: 4px;border-right-style: Double;border-right-width: 4px;border-top-style: Double;border-top-width: 4px;border-bottom-style: Double;border-bottom-width: 4px;border-left-color: #c0c0c0;border-right-color: #c0c0c0;border-top-color: #c0c0c0;border-bottom-color: #c0c0c0;width: 193px;height: 295px;float: none;" width="193" height="295" border="4" />
+                </p>
+            </div>
+        </div>
+        <p>The pseudo-image above looks good because the spots appear to be randomly 
+ scattered around the array, rather than being concentrated in any one 
+ area. These images are mainly useful for finding spatial artifacts that 
+ may be caused by scratches on the array, bubbles that occurred during 
+ processing, etc. &#160;</p>
+        <p>You can also look at the raw residuals using a pseudo-image, which represents 
+ the εkij value from the default model equation. As opposed to the 
+ weights, you want to see values in these images that are close to zero, 
+ which indicates that the model is a good fit. There are also several options 
+ for looking at the residuals; viewing both the positive and negative residuals 
+ on one array or separating them onto two different arrays. You can view 
+ a pseudo-image that represents just the sign of the residual, not the 
+ magnitude. <MadCap:conditionalText MadCap:conditions="Primary.Online">Click <b>Take a look</b> below, to view an </MadCap:conditionalText>example of each choice for the same array.</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_1366162612_1" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_1366162612_1" style="display: none;">
+                <p>
+                    <img src="Images/chip integrity 3.gif" style="border-left-style: Double;border-left-width: 4px;border-right-style: Double;border-right-width: 4px;border-top-style: Double;border-top-width: 4px;border-bottom-style: Double;border-bottom-width: 4px;border-left-color: #c0c0c0;border-right-color: #c0c0c0;border-top-color: #c0c0c0;border-bottom-color: #c0c0c0;width: 620px;height: 540px;float: none;" width="620" height="540" border="4" />
+                </p>
+            </div>
+        </div>
+        <p>The image at the top left has both negative (blue) and positive (red) 
+ residuals shown. The intensity of each color represents the magnitude 
+ of the residual. The image in the top right shows only positive residuals. 
+ The image in the bottom left shows only negative residuals. Finally, the 
+ image in the bottom right represents the signs of the residuals only. 
+ In general, the plots show random distribution of color and intensity, 
+ indicating no major artifacts of concern for this array.</p>
+        <p class="pgBrkBefore">Some pseudo-images show a definitive ‘spot’ on the 
+ array.</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_1366162612_2" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_1366162612_2" style="display: none;">
+                <p>
+                    <img src="Images/dba_6.gif" style="border-left-style: Double;border-left-width: 4px;border-right-style: Double;border-right-width: 4px;border-top-style: Double;border-top-width: 4px;border-bottom-style: Double;border-bottom-width: 4px;border-left-color: #c0c0c0;border-right-color: #c0c0c0;border-top-color: #c0c0c0;border-bottom-color: #c0c0c0;width: 301px;height: 287px;float: none;" width="301" height="287" border="4" />
+                </p>
+            </div>
+        </div>
+        <p>Although some spots are obvious, Affymetrix requires that ‘artifacts’ 
+ must cover over 10% of the array for the array to be considered poor quality. 
+ The main reason for this is that the image above <MadCap:conditionalText MadCap:conditions="Primary.Online">(click Take a look to view) </MadCap:conditionalText>displays weights on the 
+ probe level. Since probes from the same probeset are scattered about the 
+ array randomly, it is assumed that the effect of these ‘bad’ probes will 
+ be eliminated when summarized into probeset values during the normalization 
+ procedure.</p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

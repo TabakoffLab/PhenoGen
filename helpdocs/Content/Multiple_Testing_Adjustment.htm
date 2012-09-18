@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="4" MadCap:lastHeight="1035" MadCap:lastWidth="1203" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Analyzing Microarrays|Analyzing Datasets|Types of Statistical Analysis" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head><title>Multiple Testing Adjustment</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Multiple_Testing_Adjustment.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1 style="background-color: Transparent;"><a name="kanchor65"></a>Multiple Testing Adjustment</h1>
+        <p>There are eleven options for adjusting p-values for multiple testing. 
+ Multiple testing adjustments are only used for statistical analysis when 
+ doing a differential expression or a correlation analysis. They are split 
+ into four categories:</p>
+        <ul>
+            <li class="Bullet" value="1">False Discovery Rate (FDR)</li>
+            <li class="Bullet" value="2">General</li>
+            <li class="Bullet" value="3">Permutation</li>
+            <li class="Bullet" value="4">None</li>
+        </ul>
+        <h2>False Discovery Rate </h2>
+        <ol>
+            <li class="Numbered" value="1">Benjamini and Hochberg 
+ (BH)</li>
+            <li class="Numbered" value="2">Benjamini and Yekutieli 
+ (BY)</li>
+            <li class="Numbered" value="3">Storey</li>
+        </ol>
+        <p class="References"><b>References</b>
+        </p>
+        <p>Benjamini Y and Hochberg Y (1995). Controlling the false discovery rate: 
+ a practical and powerful approach to multiple testing. JR Statist Soc 
+ B 57:289-300.</p>
+        <p>Benjamini Y and Yekutieli D (2001). The control of the false discovery 
+ rate in multiple hypothesis testing under dependency. Annals of Statistics 
+ 29(4):1165-1188.</p>
+        <p>Storey JD (2002). A direct approach to false discovery rates. JR Statist 
+ Soc B 64:479-498.</p>
+        <h2>General</h2>
+        <ol start="4" style="list-style: decimal;list-style-type: decimal;">
+            <li class="Numbered" value="4">Bonferroni</li>
+            <li class="Numbered" value="5">Holm</li>
+            <li class="Numbered" value="6">Hochberg</li>
+            <li class="Numbered" value="7">Sidak Single Step (SidakSS)</li>
+            <li class="Numbered" value="8">Sidak Step-Down (SidakSD)</li>
+        </ol>
+        <p class="References"><b>References</b>
+        </p>
+        <p>Dudoit S, Shaffer JP, Boldrick JC (2002). Multiple hypothesis testing 
+ in microarray experiments. UC Berkeley Division of Biostatistics Working 
+ Paper Series, paper 110. <span style="text-decoration: underline;"><a href="http://www.bepress.com/ucbbiostat/paper110" target="_blank">http://www.bepress.com/ucbbiostat/paper110</a></span></p>
+        <h2>Permutation</h2>
+        <ol start="9" style="list-style: decimal;list-style-type: decimal;">
+            <li class="Numbered" value="9">minP with permutation 
+ (only available for two groups)</li>
+            <li class="Numbered" value="10">maxT with permutation 
+ (only available for two groups)</li>
+        </ol>
+        <p class="References"><b>References</b>
+        </p>
+        <p>Westfall PH and Young SS (1993). <span style="font-style: italic;">Resampling-based 
+ multiple testing: Examples and methods for p-value adjustment</span>, 
+ John Wiley &amp; Sons.</p>
+        <h2>None</h2>
+        <ol start="11" style="list-style: decimal;list-style-type: decimal;">
+            <li class="Numbered" value="11">No Test</li>
+        </ol>
+        <p>All multiple testing adjustments are conducted in R. Adjustments 1, 
+ 2 and 4 through 8 are done using the R function <span style="font-style: italic;">mt.rawp2adjp</span>. 
+ Adjustment 9 uses <span style="font-style: italic;">mt.maxT</span> 
+ and adjustment 10 uses <span style="font-style: italic;">mt.minP</span>. 
+ Adjustment 3 uses <span style="font-style: italic;">qvalue</span>.</p>
+        <p>For several methods, only the threshold value for α needs to be 
+ specified to complete the analysis. For Adjustment 3, the method for estimating 
+ the tuning parameter must be specified in addition to the alpha threshold. 
+ You can use a "smoother" approach or a "bootstrap" 
+ approach. For most cases, the "smoother" approach works better, 
+ but there are situations when it will fail. Therefore, "bootstrap" 
+ is overall a safer option.</p>
+        <p>With the two methods of adjustment that require permutation (9 and 10), 
+ two more parameters must be specified because these two methods require 
+ that the statistical analysis be done for each permutation. The two additional 
+ parameters are:</p>
+        <ul>
+            <li class="Bullet" value="1">The type of test to be conducted. 
+ The choice here overrides the results from the statistical analysis specified 
+ previously. </li>
+            <li class="Bullet" value="2">The number of permutations 
+ to use in estimating the p-value. </li>
+        </ul>
+        <p>
+            <img src="Images/bulb.gif" style="border: none;float: none;border-style: none;border-style: none;" border="0" /><span style="font-weight: bold;">Note:</span> The last 
+ method, 'No Test', provides the option of not using any of the multiple 
+ comparison adjustments.</p>
+        <p class="SeeAlso" MadCap:conditions="Primary.Online">See Also</p>
+        <p MadCap:conditions="Primary.Online"><a href="Filtering_and_Analyzing_Datasets.htm">Filtering 
+ and Analyzing Datasets</a>
+        </p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

@@ -1,0 +1,232 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          BASIC TABLE applies to tables whose class="basic"
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+table.basic {
+    margin: 0 auto;
+    background: transparent;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          TABLE LISTS   applies to tables whose class="list_base"
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/*
+table.list_base {
+
+}
+table.list_base {
+    border: solid 1px #ddd;
+    margin: 0 auto;
+}
+*/
+table.list_base {
+    border: solid 1px #ddd;
+    margin: 0 auto;
+}
+
+table.list_base tr.title th {
+    padding: 4px 7px;
+    border: 0px;
+    background: #eee;
+    text-align: center;
+    font-size: 14px;
+}
+
+table.list_base tr.col_title th {
+    vertical-align: middle;
+    text-align: center;
+    border: solid 1px #999;
+    /* background: transparent url("tablesort/bg.gif") no-repeat right 5px; */
+    padding: 2px 5px 2px 5px;
+    /* cursor: default; */
+    cursor: pointer;
+    color: #416fbf;
+
+}
+
+table.list_base th.noSort.topLine {
+    border-bottom: 0px;
+    border-top: solid 1px #999;
+    border-left: solid 1px #999;
+    border-right: solid 1px #999;
+    color: #416FBF;
+    font-weight: bold;
+}
+
+table.list_base th.topLine.noBox {
+    border: 0px;
+}
+
+table.list_base tr.col_title th.noSort, td.noSort {
+    background: transparent;
+    border: solid 1px #999;
+    padding: 2px 5px 2px 5px;
+    color: #333333;
+    cursor: default;
+}
+
+
+table.list_base td {
+    cursor: default;
+    padding: 0 3px;
+    vertical-align: middle;
+}
+
+table.list_base td.sideHeading {
+	font-weight:bold;
+	vertical-align: top;
+}
+
+table.sideHeading td.header{
+	width:30%;
+	font-weight:bold;
+	vertical-align: top;
+}
+
+table.sideHeading td{
+	vertical-align: top;
+}
+
+/*
+table.list_base td.selected {
+    background-color: #48507B;
+    color: #FFFFFF;
+}
+
+.selected td {
+    background-color: #48507B;
+    color: #FFFFFF;
+}
+*/
+
+
+/* Laura adding this for dataTable */
+.sorting_asc {
+	background: #eee url("tablesort/asc.gif") no-repeat right 8px;
+	padding-right: 20px;
+	text-align:center;
+}
+
+.sorting_desc {
+	background: #eee url("tablesort/desc.gif") no-repeat right 5px;
+	padding-right: 20px;
+	text-align:center;
+}
+/* Laura doesn't like these
+.sorting {
+	background: #eee url("tablesort/bg.gif") no-repeat right 5px;
+	padding-right: 20px;
+	text-align:center;
+}
+
+.sorting_asc_disabled {
+	background: url('dataTables/sort_asc_disabled.png') no-repeat right 5px;
+	padding-right: 20px;
+	text-align:center;
+}
+
+.sorting_desc_disabled {
+	background: url('dataTables/sort_desc_disabled.png') no-repeat right 5px;
+	padding-right: 20px;
+	text-align:center;
+}
+*/
+
+
+
+table.list_base td.rowSelected {
+    background-color: #999999;
+    color: #000033;
+}
+
+table.list_base tr.alt_stripe {
+    background-color: #dedede;
+}
+
+table.list_base td.alt_stripe {
+    background-color: #dedede;
+}
+
+table.list_base tr.odd td { background: #dedede; }
+table.list_base tr.even  td { background: #ffffff; }
+
+table.list_base thead tr th.headerSortUp {
+    background: #eee url("tablesort/asc.gif") no-repeat right 8px;
+	/* For the column that is being sorted, add some padding after the header */
+	padding-right: 20px;
+	text-align:center;
+}
+table.list_base thead tr th.headerSortDown {
+    background: #eee url("tablesort/desc.gif") no-repeat right 5px;
+	/* For the column that is being sorted, add some padding after the header */
+	padding-right: 20px;
+	text-align:center;
+}
+
+table.list_base tr.even td.hover,
+table.list_base tr.odd td.hover {
+    background-color: #bbe;
+}
+
+/* table.list_base tr:hover td.hover { background-color: #bbe; } what does tr:hover do? */
+table.list_base td.hover { background-color: #bbe; } 
+
+table.list_base td.selected {
+    background-color: #aad;
+}
+
+table.list_base td.cursorPointer {
+    cursor: pointer;
+
+
+}
+
+table.list_base td.wrapit {
+	word-wrap:break-word; 
+}
+
+table.analysisParameters {
+    border: solid 1px #ddd;
+    margin: 2px;
+    padding: 4px 7px;
+}
+
+div.leftTitle {
+	text-align: left; 
+	font-weight: bold; 
+	font-size: 18px;
+	padding: 15px 0 5px 25px;
+}
+div.title {
+	text-align: center; 
+	font-weight: bold; 
+	font-size: 14px;
+	padding: 5px 0 5px 0;
+}
+
+
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          GENERIC TABLE ATTRIBUTES
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+th.center {
+  text-align: center;
+}
+th.right {
+  text-align: right;
+}
+th.radio {
+	width: 5px;
+}
+td.center {
+  text-align: center;
+}
+td.right {
+  text-align: right;
+}
+td.fixedWidth {
+  width:120px;
+}
+table.list_base td.indent {
+    padding-left: .5in;
+}

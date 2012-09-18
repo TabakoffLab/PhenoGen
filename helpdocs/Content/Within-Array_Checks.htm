@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="4" MadCap:lastHeight="1336" MadCap:lastWidth="1203" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Analyzing Microarrays|Creating Datasets|Quality Control Checks|Assessing Affymetrix Data Quality" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Within-Array Checks for Affymetrix 3' Arrays</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Within-Array_Checks.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1 class="pgBrkBefore"><a name="kanchor27"></a>Within-Array Checks for Affymetrix 3' Arrays</h1>
+        <p>The within-array quality control checks are examined using the Bioconductor 
+ package <span style="font-style: italic;">Simpleaffy</span>. There are 
+ four checks that are examined:</p>
+        <ul>
+            <li class="Bullet" value="1"><span style="font-weight: bold;"><a name="Average_Background"></a>Average Background</span> &#160;Average 
+ background is examined to determine if it is consistent across arrays. 
+ Affymetrix has indicated that typical background averages range from 20 
+ to 100, but there is no statistically relevant range for these values 
+ to fall within.</li>
+            <li class="Bullet" value="2"><a name="Internal_Controls"></a><span style="font-weight: bold;">Internal Controls</span> &#160;There 
+ are two internal house-keeping genes ( β-actin and GAPDH) that are 
+ used to evaluate the RNA and assay quality. Three probe sets have been 
+ designed per control. The first probe set measures the intensity of the 
+ 3' end of the gene, the second probe set measures the intensity of the 
+ 5’ end of the gene, and the third probe set measures the intensity in 
+ the middle of the gene. The ratio of the intensity from the 3' end to 
+ the 5' end should theoretically be around 1. According to Wilson, et al. 
+ (2004), ratios above 1.25 for GAPDH should be considered outliers and 
+ ratios over 3 for β-actin should be considered outliers.</li>
+            <li class="Bullet" value="3"><a name="Percent_Present"></a><span style="font-weight: bold;">Percent Present</span> &#160;Affymetrix 
+ recommends the use of a normalization and summary method called Microarray 
+ Suite 5.0 (MAS5). Within this normalization procedure, each probe set 
+ gives a Present, Marginal, or Absent call. The percent of present probe 
+ sets out of all probe sets on the array is used as a quality control measure. 
+ Although the percent of present probe sets measured is highly dependent 
+ on each specific experiment with respect to the number of genes you expect 
+ to be expressed, an extremely low value raises suspicion about the quality 
+ of an array. Also, it is expected that duplicate arrays have similar percent 
+ missing levels. &#160;</li>
+            <li class="Bullet" value="4"><a name="Scaling_Factors"></a><span style="font-weight: bold;">Scaling Factors</span> &#160;As 
+ part of the quality control procedure, intensities are normalized using 
+ the MAS5 procedure. Within the process of normalization, each array is 
+ adjusted by a scaling factor to get the trimmed mean of all arrays to 
+ equal a target signal. This scaling factor indicates how much RNA was 
+ hybridized onto the array. A wide variation of scaling factors across 
+ arrays can be a cause for concern. Affymetrix defines a wide variation 
+ as a three-fold or greater difference.</li>
+        </ul>
+        <p>The <span style="font-style: italic;">Simpleaffy</span> package from 
+ Bioconductor calculates the four within-array quality control check measures 
+ from a group of CEL files and displays the results on a single QC Stats 
+ graph:</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_95744531_0" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_95744531_0" style="display: none;">
+                <p>
+                    <img src="Images/chip integrity 1.gif" style="width: 630px;height: 680px;border-left-style: Double;border-left-width: 4px;border-right-style: Double;border-right-width: 4px;border-top-style: Double;border-top-width: 4px;border-bottom-style: Double;border-bottom-width: 4px;border-left-color: #c0c0c0;border-right-color: #c0c0c0;border-top-color: #c0c0c0;border-bottom-color: #c0c0c0;float: none;" width="630" height="680" border="4" />
+                </p>
+            </div>
+        </div>
+        <p>Along the left side of the graph are the names of the CEL files that 
+ were included in this analysis. The next column has two numbers per CEL 
+ file. The top number is the <span style="font-style: italic;">percent 
+ present</span> and the bottom number is the <span style="font-style: italic;">average 
+ background</span> for that CEL file. It is expected that the <span style="font-style: italic;">average 
+ background</span> measures across arrays should be similar and, ideally, 
+ below 100. </p>
+        <p>The <span style="font-style: italic;">percent present</span> values 
+ are heavily dependent on the type of sample used on the array. If the 
+ same type of tissue is used in all samples, the percent present values 
+ should be similar across arrays. However, if you have multiple tissue 
+ types such as liver and brain, the percent present values could vary substantially 
+ between these tissues.</p>
+        <p>When the <span style="font-style: italic;">average background</span> 
+ measures display in red, it indicates that the values across arrays show 
+ a "considerable amount of variation". When the <span style="font-style: italic;">percent 
+ present</span> values display in red, it indicates that there is a spread 
+ greater than 10% between the lowest and highest percentage. &#160;</p>
+        <p>The solid dots that are attached to a horizontal bar originating from 
+ the zero line represent the <span style="font-style: italic;">scale factors</span> 
+ (indicators of how much RNA was hybridized to the array) for each array. 
+ The blue shading is the region that spans three-fold below and three-fold 
+ above the average <span style="font-style: italic;">scale factor</span>. 
+ In the graph above, all of the <span style="font-style: italic;">scale 
+ factors</span> fall into this range. However, if one scale factor did 
+ not fall within the range, the dot and horizontal line for that scale 
+ factor would display in red.</p>
+        <p>The intensity of the two <span style="font-style: italic;">internal 
+ control</span> housekeeping genes is represented by open triangles and 
+ open diamonds and measures the quality of the hybridized RNA.</p>
+        <p>The open triangles represent the log base 2 of the 3' to 5' ratio for 
+ <span style="font-style: italic;">β-actin</span>. In the graph above, 
+ a value of 0 for the ratio would be ideal and a value above 1.6 would 
+ be a cause for concern. None of the ratios in the graph are greater than 
+ 1.6.</p>
+        <p>Similarly, the open diamonds on the graph represent the log base 2 of 
+ the 3' to 5' ratio of <span style="font-style: italic;">GAPDH</span>. 
+ This ratio should be below 0.32. Again, none of the ratios are above the 
+ threshold.</p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

@@ -1,0 +1,10 @@
+DRIVER_NAME=oracle.jdbc.OracleDriver
+HOST=localhost
+PORT=1521
+DATABASE=dev.localhost
+ORACLE_SID=dev
+USER=Username
+PASSWORD=UserPassword
+URL_PREFIX=jdbc:oracle:thin:@//
+PLATFORM=Oracle
+

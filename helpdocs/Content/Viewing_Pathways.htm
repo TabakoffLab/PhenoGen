@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="4" MadCap:lastHeight="1071" MadCap:lastWidth="1222" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Researching Genes" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Viewing Pathways</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Viewing_Pathways.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1 style="background-color: Transparent;"><a name="kanchor112"></a><a name="kanchor113"></a><a name="kanchor114"></a>Viewing Pathways</h1>
+        <p style="background-color: Transparent;">Signaling Pathway Impact Analysis 
+ (SPIA) is a tool for analyzing the hypothetical impact of differences 
+ in transcription levels of a set of genes on signaling pathways defined 
+ by KEGG (Ogata et al 1999). The input is a set of gene identifiers and 
+ their fold changes. The <b>Pathways</b> tab only displays when a full change or correlation coefficient is available.</p>
+        <p style="background-color: Transparent;">The influence of differences in transcription of the 
+ input gene set on a particular pathway is assessed using two measures:</p>
+        <ol>
+            <li class="Numbered" value="1"><span style="font-weight: bold;">NDE</span>: 
+ The number of genes from the set that are in the pathway.</li>
+            <li class="Numbered" value="2"><span style="font-weight: bold;">PERT</span>: 
+ The possible perturbation of the pathway due to changes in expression 
+ of genes from the input gene set, that is, the influence of the input 
+ genes on the pathway based on their position in the pathway and their 
+ magnitude of change. </li>
+        </ol>
+        <p style="background-color: Transparent;">For each pathway, a p-value is 
+ calculated for each of these measures. P<span style="vertical-align: Sub;">NDE</span> 
+ is the p-value associated with an enrichment test (i.e., is the number 
+ of differentially expressed genes in the given pathway more than one would 
+ expected by chance). The values for P<span style="vertical-align: Sub;">NDE</span> 
+ &#160;are calculated 
+ using the assumption that NDE follows a hyper-geometric distribution.</p>
+        <p style="background-color: Transparent;">The second probability, P<span style="vertical-align: Sub;">PERT</span>, is calculated based on the estimated 
+ amount of perturbation in each pathway due to the differential expression 
+ of the input genet set. Each pathway is represented as a network, with 
+ genes/proteins for nodes and directed edges indicating interactions between 
+ them. The perturbation of the pathway caused by each gene/protein is calculated 
+ using the number of genes/proteins it influences (either activates or 
+ suppresses) and its magnitude of change. </p>
+        <p style="background-color: Transparent;">SPIA takes a table of differentially 
+ expressed genes and their fold changes as input and returns a table of 
+ signaling pathways containing at least one of the genes on the list. This 
+ table summarizes the impact of the differentially expressed genes on each 
+ pathway and contains links to images from the KEGG pathways site and to 
+ other summary information.</p>
+        <p style="background-color: Transparent;">The output also includes a summary 
+ plot, where each pathway containing at least one gene from the input list 
+ is plotted to its (-log transformed) values for P<span style="vertical-align: Sub;">NDE</span> 
+ and P<span style="vertical-align: Sub;">PERT</span>. The plot indicates 
+ where the most impacted pathways lie, with respect to two statistical 
+ thresholds. The first is the family-wise error rate, indicated by the 
+ solid red line in the plot. The second is the false discovery rate, indicated 
+ by the solid blue line in the plot. </p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_2572929110_0" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_2572929110_0" style="display: none;">
+                <p>
+                    <img src="Images/spia.png" style="border-left-style: Double;border-left-width: 4px;border-right-style: Double;border-right-width: 4px;border-top-style: Double;border-top-width: 4px;border-bottom-style: Double;border-bottom-width: 4px;border-left-color: #c0c0c0;border-right-color: #c0c0c0;border-top-color: #c0c0c0;border-bottom-color: #c0c0c0;width: 582px;height: 580px;float: none;" width="582" height="580" border="4" />
+                </p>
+            </div>
+        </div>
+        <h5><span style="background-color: Transparent;">References</span>
+        </h5>
+        <ol>
+            <li class="Numbered" value="1">Ogata H, Goto S, Sato 
+ K, Fujibuchi W, Bono H, Kanehisa M (1999). &#160;KEGG: 
+ Kyoto Encyclopedia of Genes and Genomes. &#160;Nucleic 
+ Acids Res 27(1):29-34.</li>
+            <li class="Numbered" value="2">Tarca AL, Draghici S, 
+ Khatri P, Hassan SS, Mittal P, Kim JS, Kim CJ, Kusanovic JP, Romero R 
+ (2009). &#160;A 
+ novel signaling pathway impact analysis. &#160;Bioinformatics 
+ 25(1):75-82. </li>
+        </ol>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

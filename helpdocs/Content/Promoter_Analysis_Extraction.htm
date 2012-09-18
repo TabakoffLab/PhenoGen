@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:ignoredWords="INIA;website" MadCap:lastBlockDepth="5" MadCap:lastHeight="2176" MadCap:lastWidth="1190" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Researching Genes" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Promoter Analysis &amp; Extraction</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Promoter_Analysis_Extraction.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1><a name="kanchor99"></a>Promoter Analysis and Extraction</h1>
+        <p>The PhenoGen website allows you to perform oPOSSUM and MEME promoter 
+ analysis, and upstream sequence extraction.</p>
+        <ol>
+            <li class="Numbered" value="1">Click the<span style="font-weight: bold;"> 
+ Research Genes </span>tab. The <span style="font-style: italic;">Research 
+ Genes &#160;</span>page 
+ displays.</li>
+            <li class="Numbered" value="2">Click <span style="font-weight: bold;">Select 
+ a gene list for further investigation </span>in the <span style="font-style: italic;">What 
+ would you like to do</span> section. A page displays the gene lists to 
+ which you have access.</li>
+            <li class="Numbered" value="3">Click the gene list for 
+ which you want to perform a promoter analysis.</li>
+            <li class="Numbered" value="4">Click the <b>Promoter</b> tab. The <i>Promoter</i> page displays.</li>
+        </ol>
+        <blockquote>
+            <div class="MCDropDown">
+                <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_2885359661_0" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+                </div>
+                <div class="MCDropDownBody" id="MCDropDownBody_2885359661_0" style="display: none;">
+                    <p>
+                        <img src="Images/promoterTab.gif" style="border-left-style: Double;border-left-width: 4px;border-right-style: Double;border-right-width: 4px;border-top-style: Double;border-top-width: 4px;border-bottom-style: Double;border-bottom-width: 4px;border-left-color: #c0c0c0;border-right-color: #c0c0c0;border-top-color: #c0c0c0;border-bottom-color: #c0c0c0;float: none;" border="4" />
+                    </p>
+                </div>
+            </div>
+        </blockquote>
+        <h2><a name="kanchor100"></a><a name="kanchor101"></a><a name="oPOSSUMoverview"></a>oPOSSUM Overview</h2>
+        <p><a href="http://www.cisreg.ca/cgi-bin/oPOSSUM/opossum" target="_blank" MadCap:conditions="Primary.Online">oPOSSUM</a> 
+ is a tool for determining the over-representation of transcription factor 
+ binding sites (TFBS) 
+ within a set of (co-expressed) genes as compared with a pre-compiled <a href="http://www.cisreg.ca/oPOSSUM/help.html#background_set" target="_blank" MadCap:conditions="Primary.Online">background set</a> (Ho Sui et al., 2005, Nucleic Acids Res 33(10):3154-64). The input 
+ is a set of gene identifiers and analysis <a href="http://www.cisreg.ca/oPOSSUM/help.html#select_parameters" target="_blank" MadCap:conditions="Primary.Online">parameters</a>. 
+ The system compares the number of hits for each selected TFBS 
+ on the target gene set against the background set. Two different measures 
+ of statistical significance are applied to determine which TFBS 
+ sites are over-represented in the target set. The <a href="http://www.cisreg.ca/oPOSSUM/help.html#analysis_results" target="_blank" MadCap:conditions="Primary.Online">results</a> of the analysis are displayed in a tabular form. </p>
+        <p><b style="font-weight: bold;"><img src="Images/bulb.gif" style="border: none;float: none;border-style: none;border-style: none;" border="0" />Notes: </b>
+        </p>
+        <ul>
+            <li class="Bullet" style="font-weight: normal;" value="1">The 
+ PhenoGen website uses a customized version of oPOSSUM featuring a sub-set 
+ of input parameters. </li>
+            <li class="Bullet" value="2">All matrices in the oPOSSUM 
+ database with a given minimum specificity are selected. These matrices 
+ are obtained from the JASPAR 
+ database. </li>
+        </ul>
+        <h3>Selection Criteria</h3>
+        <h4>Search Regional Level</h4>
+        <p>This refers to the size of the region 
+ around the transcription start site (TSS) 
+ which was analyzed for TFBS 
+ sites. The background set was computed using a region extending a maximum 
+ of 5000 bp upstream and 5000 bp downstream of the TSS. 
+ During the background computation the upstream region was truncated to 
+ less than 5000 bp if it overlapped an upstream exon from another gene.</p>
+        <h4>Conservation Level</h4>
+        <p>To limit spurious TFBS 
+ sites, conservation with the aligned orthologous mouse sequence was used 
+ as a filter, and only sites which fell within these non-coding conserved 
+ regions were kept. A conserved region was defined as a span of some minimum 
+ length L within 
+ the human sequence which had a percent identity with the aligned mouse 
+ sequence of some minimum value X. The background set was pre-computed 
+ with three levels of conservation filter. Level 1 corresponds to the top 
+ 10 percentile of non-coding conserved regions with an absolute minimum 
+ percent identity of 70%. Level 2 corresponds to the top 20 percentile 
+ with a minimum percent identity of 65% and level 3 corresponds to the 
+ top 30 percentile with a minimum percent identity of 60%. </p>
+        <h4>Matrix Match Threshold</h4>
+        <p>TFBS sites 
+ are scanned by sliding the corresponding position weight matrix (PWM) 
+ along the sequence and scoring it at each position. The threshold is the 
+ minimum relative score used to report the position as a putative binding 
+ site. The background set was computed using a threshold of 70%. </p>
+        <h3>Statistical measure for over-representation</h3>
+        <p>Two measures of statistical over-representation are available: a one-tailed 
+ Fisher exact probability and a Z-score. </p>
+        <h4>One-tailed Fisher Exact Probability</h4>
+        <p>The one-tailed Fisher exact probability compares the proportion of co-expressed 
+ genes containing a particular TFBS to the proportion of the background 
+ set that contains the site to determine the probability of a non-random 
+ association between the co-expressed gene set and the TFBS of interest. 
+ It is calculated using the hypergeometric probability distribution that 
+ describes sampling without replacement from a finite population consisting 
+ of two types of elements. Therefore, the number of times a TFBS occurs 
+ in the promoter of an individual gene is disregarded, and instead, the 
+ TFBS is considered as either present or absent.</p>
+        <h4>Z-score</h4>
+        <p>The Z-score uses a simple binomial distribution model to compare the 
+ rate of occurrence of a TFBS in the target set of genes to the expected 
+ rate estimated from the pre-computed background set.</p>
+        <p>For a given TFBS, let the random variable x denote the number of predicted 
+ binding site nucleotides in the conserved non-coding regions of the target 
+ gene set. Let B be the number of predicted binding site nucleotides in 
+ the conserved non-coding regions of the background gene set. Using a binomial 
+ model with n 
+ events, where n 
+ is the total number of nucleotides examined (i.e., the total number of 
+ nucleotides in the conserved non-coding regions) from the co-expressed 
+ genes, and N 
+ is the total number of nucleotides examined from the background genes, 
+ then the expected value of x is u = B * C, 
+ where C = n 
+ / N (i.e., 
+ C is the ratio 
+ of sample sizes). Then taking p = B / N 
+ as the probability of success, the standard deviation is given by s = 
+ sqrt(n * p 
+ * (1 - p)).</p>
+        <p>Let <span style="font-style: italic;">x</span> be the observed number 
+ of binding site nucleotides in the conserved non-coding regions of the 
+ co-expressed genes. By applying the Central Limit Theorem and using the 
+ normal approximation to the binomial distribution with a continuity correction, 
+ the z-score is calculated as <span style="font-style: italic;">z 
+ = (x - u - 0.5) / s</span>. Then, the probability of observing <span style="font-style: italic;">x</span> 
+ or more binding site nucleotides in the conserved non-coding regions of 
+ the target genes, given the TFBS is not truly over-represented in the 
+ target genes, is the p-value associated with <span style="font-style: italic;">Pr(Z 
+ &gt;= z)</span>.</p>
+        <p class="SeeAlso"><span MadCap:conditions="Primary.Online">See Also</span>
+        </p>
+        <p MadCap:conditions="Primary.Online"><a href="Performing_Promoter_Analysis.htm" title="Running oPossum">Running oPOSSUM</a>
+        </p>
+        <p MadCap:conditions="Primary.Online"><a href="Viewing_Promoter_Results.htm" MadCap:conditions="Primary.Online">Viewing 
+ oPOSSUM Results</a>
+        </p>
+        <h2><a name="kanchor102"></a><a name="kanchor103"></a><a name="MEMEoverview"></a>MEME Overview</h2>
+        <p>The MEME (Multiple EM for Motif Extraction) search is based on occurrences 
+ of known motifs (transcription factor binding sites). There are many software 
+ options available to explore the occurrence of previously uncharacterized 
+ motifs. Although these have not been directly incorporated within the 
+ PhenoGen website as with oPOSSUM, they can easily be applied using other 
+ publicly available web servers.</p>
+        <p>A recent comprehensive review (Tompa et al., 2005, Nature Biotechnology 
+ 23:137) of such programs found that MEME (Bailey and Elkan, 1995, Proc. 
+ Int Conf Intell Syst Mol Biol 3:21), was one of the best performing algorithms 
+ on mouse data. Methods like MEME are optimal for analyzing sequences less 
+ than 2KB and it is not recommended to use longer lengths for such tools. 
+ Furthermore, many motif software webservers restrict the input data size. 
+ In addition to accessing MEME on the PhenoGen website, MEME can also be 
+ accessed at <a href="http://meme.sdsc.edu/meme/meme.html" target="_blank">http://meme.sdsc.edu/meme/meme.html</a>.</p>
+        <p class="SeeAlso" MadCap:conditions="Primary.Online">See Also</p>
+        <p MadCap:conditions="Primary.Online"><a href="Running_MEME.htm">Running MEME</a>
+        </p>
+        <p MadCap:conditions="Primary.Online"><a href="Viewing_MEME_Results.htm">Viewing 
+ MEME Results</a>
+        </p>
+        <h2><a name="UpstreamOverview"></a>Upstream Sequence Extraction Overview</h2>
+        <p>An important step in understanding the mechanisms that regulate the 
+ expression of genes is the ability to identify regulatory elements, i.e., 
+ the binding sites in DNA for transcription factors. Transcription factors 
+ are DNA binding proteins, typically upstream from, and close to, the transcription 
+ start site (TSS) 
+ of a gene, that modulate the expression of the gene by activating or repressing 
+ the transcription machinery. </p>
+        <p>Because there is a limited amount of information regarding the majority 
+ of the transcription factors and especially about their target binding 
+ sites (even in well-characterized organisms) you could focus on computational 
+ tools designed for the discovery of novel regulatory elements, where nothing 
+ is known a priori<span style="font-size: 9pt;"> <![CDATA[ ]]></span>of the transcription 
+ factor or its preferred binding sites. If you provide a collection of 
+ sequences that correspond to the regulatory regions of genes that are 
+ believed to be co-regulated, the computational tool identifies short DNA 
+ sequence 'motifs' that are statistically over- or under-represented in 
+ these regulatory regions. Accurate identification of these motifs is very 
+ difficult because they are short signals (typically about 10 bp long) 
+ in the midst of a great amount of statistical noise (a typical input being 
+ one regulatory region of length 1,000 bp upstream of each gene). Also, 
+ there is marked sequence variability among the consensus binding sites 
+ of a given transcription factor, and the nature of the variability itself 
+ is not well understood.</p>
+        <p>There are numerous tools available for this task of motif prediction. 
+ They differ from each other mainly in their definition of what represents 
+ a motif and what would be an acceptable model for statistical over-representation 
+ of a motif. A comprehensive list of tools that could be used (table adapted 
+ from Tompa 
+ et al, 2005, Nature 23(1):137-144) is presented in <a href="Supplementary_Information.htm" target="" title="" alt="" class="MCXref" xrefformat="{quote}{paratext}{quote}">"Supplementary Information"</a>. 
+ This sequence information can be used to carry out TFBS 
+ analysis, off the PhenoGen website, using any of these tools. <a href="Promoter_Analysis_Tools.htm" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Promoter Analysis Tools"</a>.</p>
+        <p class="SeeAlso"><span MadCap:conditions="Primary.Online">See Also</span>
+        </p>
+        <p MadCap:conditions="Primary.Online"><a href="Running_Upstream_Sequence_Extraction.htm">Running 
+ Upstream Sequence Extraction</a>
+        </p>
+        <p MadCap:conditions="Primary.Online"><a href="Viewing_Upstream_Sequence_Extraction_Results.htm">Viewing 
+ Upstream Extraction Results</a>
+        </p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

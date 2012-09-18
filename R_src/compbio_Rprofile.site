@@ -1,0 +1,37 @@
+.First <- function() {
+   #
+   # Change the following two lines to customize for your environment
+   #
+   G_SrcDir <<- '/usr/share/tomcat/webapps/PhenoGenTEST/R_src/'
+   G_WriteLogFile <<- '/usr/share/tomcat/logs/WriteLogs.txt'
+
+   # Global variables and setup for writeLog use
+   # for new programs, create a new G_WriteLogXXX variable below
+   # see writeLog.R for additional documentation
+   G_WriteLogDefault <<- FALSE
+   G_WriteLogAffyExport <<- TRUE
+   G_WriteLogAffyFilter <<- FALSE
+   G_WriteLogAffyGeneList <<- FALSE
+   G_WriteLogAffyImport <<- FALSE
+   G_WriteLogAffyMultTest <<- TRUE
+   G_WriteLogAffyNorm <<- TRUE
+   G_WriteLogAffyStats <<- FALSE
+   G_WriteLogAnova <<- FALSE
+   G_WriteLogCDNAExport <<- FALSE
+   G_WriteLogCDNAFilter <<- FALSE
+   G_WriteLogCDNAGeneList <<- FALSE
+   G_WriteLogCDNAImport <<- FALSE
+   G_WriteLogCDNAMultTest <<- FALSE
+   G_WriteLogCDNANorm <<- FALSE
+   G_WriteLogCDNAStats <<- FALSE
+	
+   G_WriteUserMsgFile <<- "UserMsgs.txt"      # File to check for user msgs to display on web
+                                              #   (will be written to the working directory)
+
+
+   G_WriteLogID <<- paste("PID",Sys.getpid(),sep="")
+   source(paste(G_SrcDir,"/writelog.R",sep=""))
+   source(paste(G_SrcDir,"fileLoader.R",sep=""))
+
+
+}

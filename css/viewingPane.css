@@ -1,0 +1,37 @@
+/* **************************************************************************************
+ *          BEGIN SECTION DEFINITIONS
+ */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          VIEWING PANE
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.viewingPane {
+        margin: 15px 10px;
+        float: left;
+    }
+
+    .viewingPane .viewingTitle {
+        font-size: 20px;
+        float: left;
+    }
+
+    .viewingPane .listName {
+        font-weight: bold;
+        margin: 0px 0px 0px 15px;
+        font-size: 20px;
+        float: left;
+        width: 360px;
+    }
+
+    .viewingPane .expName {
+        font-weight: bold;
+        margin: 0px 0px 0px 15px;
+        font-size: 20px;
+        float: left;
+        width: 375px;
+    }
+    
+
+/*
+ *          END SECTION DEFINITIONS
+ *****************************************************************************************/

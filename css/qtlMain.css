@@ -1,0 +1,12 @@
+
+/*  Used in displayQTLResults.jsp  			 *
+ *  to dynamically display parameters                   */
+
+div.qtlParameters {
+  float:left;
+  vertical-align: top;
+  padding: 0 10px 10px 0px;
+  display:none;
+}
+
+

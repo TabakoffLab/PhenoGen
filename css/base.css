@@ -1,0 +1,59 @@
+
+/* normalizing styles */
+
+@import url(normalize.css);
+
+/* global styles */
+
+html { text-align: center; background: #365473; }
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #333;
+    background: #365473;
+}
+
+h1 {
+    font-size: 24px;
+    color: #fff;
+}
+h2 {
+    font-size: 16px;
+    color: #36424e;
+}
+
+a {
+    color: #658cb2; 
+    text-decoration: none;
+    outline: none;
+}
+a.hover {
+    color: #658cb2;
+}
+
+form {
+    padding: 0;
+    margin: 0;
+}
+
+table {
+    background-color: #fff;
+}
+
+td, th, textarea {
+    color: #333333;
+    font-family: Arial, Verdana, sans-serif;
+    font-size: 12px;
+}
+
+b, strong {
+    font-weight:bolder;
+}
+
+@media print {
+
+    .noPrint {
+        display: none;
+    }
+}

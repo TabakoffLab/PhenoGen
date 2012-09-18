@@ -1,0 +1,481 @@
+/*<meta />*/
+
+body
+{
+	font-family: Arial;
+	background-color: #ffffff;
+	font-size: 10pt;
+}
+
+h1
+{
+	font-weight: bold;
+	font-size: 18pt;
+	font-family: Tahoma, sans-serif;
+	color: #1f344f;
+}
+
+li.mc-H1
+{
+	font-weight: bold;
+	font-size: 18pt;
+	font-family: Tahoma, sans-serif;
+	color: #1f344f;
+}
+
+h2
+{
+	font-weight: bold;
+	font-size: 14pt;
+	font-family: Tahoma, sans-serif;
+	color: #1f344f;
+}
+
+li.mc-H2
+{
+	font-weight: bold;
+	font-size: 14pt;
+	font-family: Tahoma, sans-serif;
+	color: #1f344f;
+}
+
+h3
+{
+	font-weight: bold;
+	font-size: 12pt;
+	font-family: Tahoma, sans-serif;
+	color: #1f344f;
+}
+
+li.mc-H3
+{
+	font-weight: bold;
+	font-size: 12pt;
+	font-family: Tahoma, sans-serif;
+	color: #1f344f;
+}
+
+h4
+{
+	font-weight: bold;
+	font-family: Tahoma, sans-serif;
+	font-size: 11pt;
+	color: #000000;
+}
+
+li.mc-H4
+{
+	font-weight: bold;
+	font-family: Tahoma, sans-serif;
+	font-size: 11pt;
+	color: #000000;
+}
+
+h5
+{
+	font-weight: bold;
+	font-size: 10.0pt;
+}
+
+li.mc-H5
+{
+	font-weight: bold;
+	font-size: 10.0pt;
+}
+
+h6
+{
+	font-weight: bold;
+	font-size: 8.0pt;
+}
+
+li.mc-H6
+{
+	font-weight: bold;
+	font-size: 8.0pt;
+}
+
+p
+{
+	font-size: 10pt;
+	margin-top: 6pt;
+	margin-bottom: 6pt;
+}
+
+li
+{
+	font-size: 10pt;
+}
+
+a.expandspot
+{
+	color: #008000;
+	cursor: hand;
+	font-style: italic;
+	text-decoration: none;
+}
+
+span.expandtext
+{
+	font-style: italic;
+	font-weight: normal;
+	color: #ff0000;
+}
+
+a.dropspot
+{
+	cursor: hand;
+	color: #008000;
+	font-style: italic;
+	text-decoration: none;
+}
+
+a.glossterm
+{
+	color: #800000;
+	cursor: hand;
+	font-style: italic;
+	text-decoration: none;
+}
+
+span.glosstext
+{
+	font-style: italic;
+	font-weight: normal;
+	color: #0000ff;
+}
+
+ol,
+ul
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+p.Bullet
+{
+	list-style: disc;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+}
+
+li.Bullet
+{
+	list-style: disc;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+}
+
+p.BulletIndent
+{
+	list-style: circle;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+	margin-left: 0in;
+}
+
+li.BulletIndent
+{
+	list-style: circle;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+	margin-left: 0in;
+}
+
+p.TableHeader
+{
+	font-weight: bold;
+	font-style: normal;
+	margin-bottom: 6pt;
+}
+
+li.TableHeader
+{
+	font-weight: bold;
+	font-style: normal;
+	margin-bottom: 6pt;
+}
+
+p.TableText
+{
+	font-size: 9pt;
+	margin-top: 2pt;
+	margin-bottom: 2pt;
+	padding: 4px;
+}
+
+li.TableText
+{
+	font-size: 9pt;
+	margin-top: 2pt;
+	margin-bottom: 2pt;
+}
+
+p.Numbered
+{
+	list-style: decimal;
+	font-weight: normal;
+}
+
+li.Numbered
+{
+	list-style: decimal;
+	font-weight: normal;
+	margin-top: 2pt;
+	margin-bottom: 2pt;
+}
+
+p.Alert
+{
+	font-family: Tahoma, sans-serif;
+	color: #004080;
+	margin-top: 0pt;
+	margin-bottom: 6pt;
+}
+
+li.Alert
+{
+	font-family: Tahoma, sans-serif;
+	color: #004080;
+	margin-top: 0pt;
+	margin-bottom: 6pt;
+}
+
+p.SeeAlso
+{
+	font-weight: bold;
+	font-style: normal;
+	font-family: Tahoma, sans-serif;
+	margin-top: 18pt;
+	color: #495c7a;
+	mc-next-tag: p;
+}
+
+li.SeeAlso
+{
+	font-weight: bold;
+	font-style: normal;
+	font-family: Tahoma, sans-serif;
+	margin-top: 18pt;
+	color: #495c7a;
+	mc-next-tag: p;
+}
+
+li.mc-H1-CDisclaimer
+{
+	
+}
+
+li.mc-H2-CCitation
+{
+	
+}
+
+MadCap|dropDownHead
+{
+	color: #4169e1;
+	font-family: Verdana;
+	font-size: 9pt;
+	padding-left: 3pt;
+	padding-top: 3pt;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+}
+
+MadCap|dropDownHotspot:focus
+{
+	color: #4169e1;
+}
+
+MadCap|dropDown
+{
+	color: #4169e1;
+	font-family: Verdana;
+	margin-bottom: 3pt;
+	margin-top: 3pt;
+}
+
+MadCap|dropDownHotspot
+{
+	font-family: Verdana;
+	color: #4169e1;
+}
+
+MadCap|dropDownBody
+{
+	color: #000000;
+}
+
+h5
+{
+	font-size: 10pt;
+	font-weight: normal;
+	font-style: italic;
+	margin: 6pt;
+	margin-left: 0pt;
+	margin-right: 0pt;
+}
+
+MadCap|concept
+{
+	font-family: sans-serif;
+}
+
+a
+{
+	
+}
+
+MadCap|helpControlMenuItem
+{
+	font-size: 8pt;
+}
+
+MadCap|helpControlMenu
+{
+	background-color: #d7e5f7;
+}
+
+MadCap|conceptLink
+{
+	font: verdana;
+	font-size: 8pt;
+}
+
+MadCap|expandingHead.expandspot
+{
+	color: #008000;
+	cursor: hand;
+	font-style: italic;
+	text-decoration: none;
+}
+
+MadCap|expandingBody.expandtext
+{
+	font-style: italic;
+	font-weight: normal;
+	color: #ff0000;
+}
+
+MadCap|glossaryTerm.glossterm
+{
+	color: #800000;
+	cursor: hand;
+	font-style: italic;
+	text-decoration: none;
+}
+
+MadCap|expandingBody.glossterm
+{
+	font-style: italic;
+	font-weight: normal;
+	color: #0000ff;
+}
+
+@media print
+{
+	img
+	{
+		max-width: 6in;
+	}
+
+	p.HeadingIndent
+	{
+		font-weight: bold;
+		margin: 1.5em;
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+
+	h5
+	{
+		mc-heading-level: 0;
+	}
+
+	h6
+	{
+		mc-heading-level: 0;
+	}
+
+	h4
+	{
+		mc-heading-level: 0;
+	}
+
+	MadCap|dropDownHead
+	{
+		color: #4169e1;
+		font-weight: bold;
+	}
+
+	MadCap|dropDownHotspot
+	{
+		color: #0000cd;
+		font-weight: bold;
+	}
+
+	MadCap|dropDown
+	{
+		font-weight: bold;
+	}
+
+	span.bold
+	{
+		font-weight: bold;
+	}
+
+	MadCap|xref.custom
+	{
+		mc-format: '{quote}{paratext}{quote} on page {page}';
+	}
+}
+
+p.Heading
+{
+	mc-next-tag: p;
+	color: #1f344f;
+	font-size: 18pt;
+	font-weight: bold;
+	font-family: Tahoma, ' sans-serif';
+}
+
+.pgBrkBefore
+{
+	page-break-before: always;
+}
+
+.pgBrkAfter
+{
+	page-break-after: always;
+}
+
+p.References
+{
+	font-weight: bold;
+	font-size: 10.0pt;
+	margin-top: 12pt;
+}
+
+span.bold
+{
+	font-weight: bold;
+}
+
+MadCap|xref.custom
+{
+	mc-format: '{quote}{paratext}{quote}';
+}
+
+@media non-print
+{
+	MadCap|xref.custom
+	{
+		mc-format: '{quote}{paratext}{quote}';
+	}
+}
+
+MadCap|xref
+{
+	mc-format: 'See {quote}{paratext}{quote}';
+}
+

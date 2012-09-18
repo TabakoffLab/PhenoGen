@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="4" MadCap:lastHeight="1236" MadCap:lastWidth="1203" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Analyzing Microarrays|Analyzing Datasets|Types of Statistical Analysis" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Clustering Analysis</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Clustering_Analysis.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1><a name="kanchor66"></a>Clustering Analysis</h1>
+        <p>The PhenoGen website provides the ability to cluster gene expression 
+ values by samples, groups, probesets, or when using hierarchical clustering, 
+ by both samples or groups and probe sets. When you perform clustering 
+ on a dataset, you have additional options for filtering the probes that 
+ are included in the analysis. </p>
+        <p>In addition to the filtering options available for other types of analysis, 
+ the following options are also available for clustering:</p>
+        <ul>
+            <li style="font-weight: normal;" class="Bullet" value="1">Variation</li>
+            <li style="font-weight: normal;" class="Bullet" value="2">Fold Change</li>
+        </ul>
+        <p><a href="Clustering_Filtering_Procedures.htm" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Clustering Filtering Procedures"</a> 
+ for details.</p>
+        <h2>Statistics for Cluster Analysis</h2>
+        <p><a name="kanchor67"></a>After you filter, you must specify the clustering algorithm to use, 
+ the expression values to use, which object is to be clustered, the distance 
+ measure to use, how many clusters you want to use, and which dissimilarity 
+ measure to use (for hierarchical clustering).</p>
+        <ul>
+            <li class="Bullet" value="1"><span style="font-weight: bold;">Clustering 
+ Algorithm</span> - Choose whether to cluster using the <span style="font-weight: bold;">hierarchical</span> 
+ or <span style="font-weight: bold;">k-means </span>algorithm. </li>
+            <li class="Bullet" value="2"><span style="font-weight: bold;">Mean 
+ Expression Values</span> - Choose whether to cluster using individual 
+ expression values for each sample in your dataset or, if your dataset 
+ has more than two groups, to use the mean expression values for each group. 
+ &#160;</li>
+            <li class="Bullet" value="3"><span style="font-weight: bold;">Cluster 
+ Object</span> - Choose whether to cluster samples, groups, or probes. 
+ When you choose hierarchical clustering, you can also cluster by both 
+ samples or groups and probes to get a heat map representation of the data. 
+ &#160;</li>
+            <li class="Bullet" value="4"><span style="font-weight: bold;">Dissimilarity 
+ Measure</span> - Choose the method for determining dissimilarity between 
+ clusters.</li>
+            <li class="Bullet" value="5"><span style="font-weight: bold;">Distance 
+ Measure</span> - Both clustering algorithms are based on the distance 
+ that one cluster object is from the other, in other words, the dissimilarity 
+ between objects. In the PhenoGen website, distance (dissimilarity) can 
+ be calculated using two different measures; Euclidean distance or one 
+ minus the correlation. The Euclidean distance is the square root of the 
+ sum of squared differences. In general, one minus the correlation is more 
+ commonly used in microarray analyses because it is both location and scale 
+ invariant.</li>
+        </ul>
+        <h3>Hierarchical Clustering Method</h3>
+        <p style="margin-left: 0px;">The <span style="font-style: italic;">hierarchical 
+ clustering method</span> on the PhenoGen website uses bottom-up methodology 
+ where each cluster object starts off as its own cluster. Next, the two 
+ clusters that are the most similar are combined into one cluster. This 
+ process is repeated until all clusters have been combined to form one 
+ cluster that contains all cluster objects. When using hierarchical clustering, 
+ you must choose a between-cluster dissimilarity measure.</p>
+        <p>Hierarchical clustering is implemented using the <span style="font-style: italic;">hclust</span> 
+ function in R. You can also specify the number of clusters to form. Generally 
+ in hierarchical clustering, the number of clusters does not need to be 
+ specified a priori, but on the PhenoGen website, when you specify the 
+ number of clusters to form, cluster objects can be placed into groups, 
+ and if the cluster objects are probes, then these individual groups can 
+ be downloaded as gene lists for further exploration and analysis. In addition 
+ to a numerical representation of the clusters, a dendrogram is also created 
+ and displayed when a single cluster object is chosen. When you choose 
+ to cluster on both samples (or groups) and probes, you do not have to 
+ specify the number of clusters, and the only output generated is a heat 
+ map with samples or groups along the x axis and probes along the y axis. 
+ In the heat map, the expression intensity values are represented as a 
+ z-score calculated using the mean and standard deviation for that particular 
+ probe. The z-score is represented on a color scale from bright red to 
+ bright green where red indicates a larger negative z-score value, and 
+ green indicates a larger positive z-score. <a href="Viewing_Cluster_Analysis_Results.htm#Viewing" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Viewing Heat Maps"</a> for details.</p>
+        <h4>Dissimilarity Measure</h4>
+        <p style="margin-left: 0px;">The distance between clusters is calculated 
+ using the Lance Williams dissimilarity update formula according to the 
+ measure you chose. There are four different options for the between-cluster 
+ dissimilarity measure:</p>
+        <ul>
+            <li class="Bullet" value="1"><span style="font-weight: bold;">Single</span> 
+ - Minimum difference between points in different clusters.</li>
+            <li class="Bullet" value="2"><span style="font-weight: bold;">Complete</span> 
+ - Maximum difference between points in different clusters</li>
+            <li class="Bullet" value="3"><span style="font-weight: bold;">Average</span> 
+ - Average of all distances between points in different clusters.</li>
+            <li class="Bullet" value="4"><span style="font-weight: bold;">Centroid</span> 
+ - Difference between cluster centroids. </li>
+        </ul>
+        <h3>K-Means Partitioning Method</h3>
+        <p style="margin-left: 0px;">The other clustering algorithm, the <span style="font-style: italic;">k-means partitioning method</span>, iteratively 
+ updates the cluster centers until the sum of squared distances from each 
+ observation to its cluster center is minimized. The Hartigan and Wong 
+ method as implemented in the function <span style="font-style: italic;">kmeans</span> 
+ in R is used for the k-means analysis. This algorithm requires that initial 
+ estimates of cluster centers be given. Currently, cluster objects are 
+ chosen at random to use as starting locations. Since different starting 
+ locations might generate different results, you should be aware that if 
+ the same analysis is carried out again on the website, the results may 
+ differ. &#160;</p>
+        <p class="References"><b>References</b>
+        </p>
+        <p>A partial list of references for additional information about the clustering 
+ methods follows.</p>
+        <ol>
+            <li class="Numbered" value="1">Speed, T (2003). &#160;Statistical 
+ Analysis of Gene Expression Microarray Data. &#160;New 
+ York: Chapman and Hall/CRC.</li>
+        </ol>
+        <p class="References">References for ‘hclust’ in R</p>
+        <ol>
+            <li class="Numbered" value="1">Everitt, B. (1974). Cluster 
+ Analysis. London: Heinemann Educ. Books. </li>
+            <li class="Numbered" value="2">Hartigan, J. A. (1975). 
+ Clustering Algorithms. New York: Wiley. </li>
+            <li class="Numbered" value="3">Sneath, P. H. A. and 
+ R. R. Sokal (1973). Numerical Taxonomy. San Francisco: Freeman. </li>
+            <li class="Numbered" value="4">Anderberg, M. R. (1973). 
+ Cluster Analysis for Applications. Academic Press: New York. </li>
+            <li class="Numbered" value="5">Gordon, A. D. (1999). 
+ Classification. Second Edition. London: Chapman and Hall / CRC </li>
+            <li class="Numbered" value="6">Murtagh, F. (1985). "Multidimensional 
+ Clustering Algorithms", in COMPSTAT Lectures 4. Wuerzburg: Physica-Verlag 
+ (for algorithmic details of algorithms used). </li>
+            <li class="Numbered" value="7">McQuitty, L.L. (1966). 
+ Similarity Analysis by Reciprocal Pairs for Discrete and Continuous Data. 
+ Educational and Psychological Measurement, 26, 825–831. </li>
+        </ol>
+        <p class="References">References for ‘kmeans’ in R</p>
+        <ol>
+            <li class="Numbered" value="1">Forgy, E. W. (1965) Cluster 
+ analysis of multivariate data: efficiency vs interpretability of classifications. 
+ Biometrics 21, 768–769. </li>
+            <li class="Numbered" value="2">Hartigan, J. A. and Wong, 
+ M. A. (1979). A K-means clustering algorithm. Applied Statistics 28, 100–108. 
+ </li>
+            <li class="Numbered" value="3">Lloyd, S. P. (1957, 1982) 
+ Least squares quantization in PCM. Technical Note, Bell Laboratories. 
+ Published in 1982 in IEEE Transactions on Information Theory 28, 128–137. 
+ </li>
+            <li class="Numbered" value="4">MacQueen, J. (1967) Some 
+ methods for classification and analysis of multivariate observations. 
+ In Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics 
+ and Probability, eds L. M. Le Cam &amp; J. Neyman, 1, pp. 281–297. Berkeley, 
+ CA: University of California Press. </li>
+        </ol>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

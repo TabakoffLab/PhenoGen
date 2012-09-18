@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CatapultSkin Version="1" Title="PhenoGen Help" AutoSyncTOC="True" Tabs="TOC,Index,Search" Top="97px" Left="224px" Width="845px" Height="665px" DefaultTab="TOC" Bottom="232px" Right="211px" Anchors="Width,Height" UseBrowserDefaultSize="true" NavigationLinkTop="true">
+    <!-- saved from url=(0014)about:internet -->
+    <HtmlHelpOptions ShowMenuBar="False" TopmostWindowStyle="False" AutoShowNavigationPane="False" EnableButtonCaptions="True" NavigationPaneWidth="0" Buttons="" HideNavigationOnStartup="False" />
+    <Toc LinesBetweenItems="True" LinesFromRoot="True" SingleClick="False" PlusMinusSquares="True" AlwaysShowSelection="True" UseFolderIcons="False" ImageListWidth="16" BinaryStorage="False" />
+    <Index BinaryStorage="True" />
+    <WebHelpOptions NavigationPaneWidth="200" VisibleAccordionItemCount="4" />
+    <Stylesheet Link="Stylesheet.xml">
+    </Stylesheet>
+    <Toolbar EnableCustomLayout="true" Buttons="Separator|ToggleNavigationPane|Separator|Back|Forward|Separator|Print|Separator|Home|Separator|SelectSearch|Separator|RemoveHighlight" />
+</CatapultSkin>

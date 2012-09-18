@@ -1,0 +1,11 @@
+array moe430bcdf
+alpha1 0.05
+alpha2 0.065
+spk bioB AFFX-r2-Ec-bioB-3_at
+spk bioC AFFX-r2-Ec-bioC-3_at
+spk bioD AFFX-r2-Ec-bioD-3_at
+spk creX AFFX-r2-P1-cre-3_at
+ratio actin3/actin5 AFFX-b-ActinMur/M12481_3_at AFFX-b-ActinMur/M12481_5_at
+ratio actin3/actinM AFFX-b-ActinMur/M12481_3_at AFFX-b-ActinMur/M12481_M_at
+ratio gapdh3/gapdh5 AFFX-GapdhMur/M32599_3_at AFFX-GapdhMur/M32599_5_at
+ratio gapdh3/gapdhM AFFX-GapdhMur/M32599_3_at AFFX-GapdhMur/M32599_M_at

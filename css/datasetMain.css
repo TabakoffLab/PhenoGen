@@ -1,0 +1,103 @@
+div.datasetForm {
+	margin: 0px 10px 0px 10px;
+}
+
+div.filterResults {
+	border: solid 2px #365473;
+	margin-left: 24px;
+	width: 320px;
+	padding: 0 3px;
+	float:left;
+	background-color:#658CB2;
+	color: #FFFFFF;
+}
+
+div.filterResults div.title {
+    margin: 0 10px;
+    /* border-bottom: solid 1px #ccc; */
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+div.filterResults div.resultGroup {
+    margin-top: 5px;
+    padding: 3px 0;
+}
+
+/*  Used in filters.jsp and statistics.jsp  *
+ *  to dynamically display parameters                   */
+
+div.showParameters {
+  width: 550px;
+  float:left;
+  padding: 0 10px 10px 0px;
+  display:none;
+}
+
+TD.heading {
+  font-size: 14pt;
+  font-weight: bold;
+  text-align: center;
+}
+
+TABLE.parameters {
+  width: 550px;
+  padding: 0px; 
+  background-color: transparent; 
+}
+
+    .analysis_choice {
+        height: 34px;
+        clear: both;
+        margin: 0 10px 0 10px;
+        padding: 0 0 0 20px;
+    }
+
+    div.analysisAction {
+        float: right;
+	font-size: 14px;
+        text-align: right;
+        width: 250px;
+        margin-right: 12px;
+    }
+
+div#pageSubmit {
+	padding: 20px 25px 0px 60px;
+}
+
+div#pageSubmit div.submit {
+	margin: 0px 0px 0px 10px;
+	float: left;
+}
+
+div.autoScroll {
+	overflow:auto;
+}
+div.hint {
+	float: left;
+	color: #545454;
+	margin: 0px 0px 0px 10px;
+	width:260px;
+}
+span.hint {
+    font-size: 9pt;
+    color: #545454;
+}
+
+div.datasetButton {
+	float: right;
+	border: 1px solid #545454;
+	font-size: 12pt;
+	cursor: pointer;
+	color: #545454;
+	margin:10px 12px 20px 0px;
+	clear: right;
+}
+
+div#param-working1{
+	display:block;
+}
+div#hdf5-working1{
+	display:block;
+}

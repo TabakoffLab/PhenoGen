@@ -1,0 +1,6 @@
+The files that go in this directory are relatively static.  
+They consist of files listing the probesets from the affy arrays and the affy power tools program apt-probeset-summarize.
+
+Download supporting files from the Downloads section of GitHub or from http://phenogen.ucdenver.edu  
+
+There will be a link for Developers at the bottom of the page that links to supporting files and code.
