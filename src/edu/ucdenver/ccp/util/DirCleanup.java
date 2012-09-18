@@ -1900,7 +1900,7 @@ log.debug("thisExpement expID = "+thisExperiment.getExp_id());
                         fileListingWriter.close();
 			log.debug("getting ready to run Import on "+experimentDir);
                 	try {
-                        	rErrorMsg = myR_session.runR(newImportFileName, experimentDir);
+                        	rErrorMsg = myR_session.runR(newImportFileName, experimentDir,"");
 				if (rErrorMsg != null && rErrorMsg.length > 0) {
                                 	log.debug("ERROR when running Import on "+experimentDir);
                                         for (int y=0; y<rErrorMsg.length; y++) {
@@ -1945,7 +1945,7 @@ log.debug("thisExpement expID = "+thisExperiment.getExp_id());
                         fileListingWriter.close();
 			log.debug("getting ready to run QC on "+experimentDir);
                 	try {
-                        	String[] rErrorMsg = myR_session.runR(newQCFileName, experimentDir);
+                        	String[] rErrorMsg = myR_session.runR(newQCFileName, experimentDir,"");
 				if (rErrorMsg != null && rErrorMsg.length > 0) {
                                 	log.debug("ERROR when running QC on "+experimentDir);
                                         for (int y=0; y<rErrorMsg.length; y++) {
@@ -2021,7 +2021,7 @@ log.debug("thisExpement expID = "+thisExperiment.getExp_id());
                         	fileListingWriter.close();
 				log.debug("getting ready to run Normalization on "+versionDirName);
                 		try {
-                        		String[] rErrorMsg = myR_session.runR(newNormalizationFileName, versionDirName);
+                        		String[] rErrorMsg = myR_session.runR(newNormalizationFileName, versionDirName,"");
 					if (rErrorMsg != null && rErrorMsg.length > 0) {
                                 		log.debug("ERROR when running normalization on "+versionDirName);
                                         	for (int y=0; y<rErrorMsg.length; y++) {
@@ -2082,7 +2082,7 @@ log.debug("thisExpement expID = "+thisExperiment.getExp_id());
 		if (keepGoing) {
 			log.debug("getting ready to run QC on "+experimentDir);
                 	try {
-                        	String[] rErrorMsg = myR_session.runR(newQCSummaryFileName, experimentDir);
+                        	String[] rErrorMsg = myR_session.runR(newQCSummaryFileName, experimentDir,"");
 				if (rErrorMsg != null && rErrorMsg.length > 0) {
                                 	log.debug("ERROR when running QC on "+experimentDir);
                                         for (int y=0; y<rErrorMsg.length; y++) {
@@ -2127,7 +2127,7 @@ log.debug("thisExpement expID = "+thisExperiment.getExp_id());
                         fileListingWriter.close();
 			log.debug("getting ready to run Import on "+experimentDir);
                 	try {
-                        	rErrorMsg = myR_session.runR(newImportFileName, experimentDir);
+                        	rErrorMsg = myR_session.runR(newImportFileName, experimentDir,"");
 				if (rErrorMsg != null && rErrorMsg.length > 0) {
                                 	log.debug("ERROR when running Import on "+experimentDir);
                                         for (int y=0; y<rErrorMsg.length; y++) {
@@ -2230,7 +2230,7 @@ log.debug("thisExpement expID = "+thisExperiment.getExp_id());
                         	fileListingWriter.close();
 				log.debug("getting ready to run Normalization on "+versionDirName);
                 		try {
-                        		String[] rErrorMsg = myR_session.runR(newNormalizationFileName, versionDirName);
+                        		String[] rErrorMsg = myR_session.runR(newNormalizationFileName, versionDirName,"");
 					if (rErrorMsg != null && rErrorMsg.length > 0) {
                                 		log.debug("ERROR when running normalization on "+versionDirName);
                                         	for (int y=0; y<rErrorMsg.length; y++) {
