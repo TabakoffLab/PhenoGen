@@ -4,6 +4,7 @@
 #####################################################
 *.properties
 web.xml
+build.xml
 
 # Users need to download platform specific tools from	#
 # Affymetrix and then current probeset files from 	#
