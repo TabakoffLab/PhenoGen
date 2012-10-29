@@ -297,12 +297,27 @@
 	
 			String perlScriptDirectory = (String)session.getAttribute("perlDir")+"scripts/";
 			String perlEnvironmentVariables = (String)session.getAttribute("perlEnvVar");
-			//
-			// The next line needs to be changed depending on dev, test, production
-			//
-			//
-                        perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+			
 
+
+ 			String hostName=request.getServerName();
+
+			if(hostName.equals("amc-kenny.ucdenver.pvt")){
+				perlEnvironmentVariables += ":/usr/bin/perl:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/lib:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/bin";
+			}
+			else if(hostName.equals("compbio.ucdenver.edu")){
+				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+			}
+			else if(hostName.equals("phenogen.ucdenver.edu")){
+				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+			}
+			else if(hostName.equals("stan.ucdenver.pvt")){
+				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+			}
+			else{
+				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+			}
+			log.debug("Host Name "+hostName);
 
 			String filePrefixWithPath = (String)session.getAttribute("geneCentricPath")+transcriptClusterID+"_circos";
 			// create the short svg directory name which incoporates the date for uniqueness
@@ -343,32 +358,32 @@
      		perlScriptArguments[15]=dsn;
      		perlScriptArguments[16]=OracleUserName;
      		perlScriptArguments[17]=password;
-			log.debug(" Calling createCircosFiles from GeneDataTools");
-			//
-			// call perl script
-			//
+		log.debug(" Calling createCircosFiles from GeneDataTools");
+		//
+		// call perl script
+		//
      		GeneDataTools gdtCircos=new GeneDataTools();
         	circosReturnStatus = gdtCircos.createCircosFiles(perlScriptDirectory,perlEnvironmentVariables,perlScriptArguments,filePrefixWithPath);
         	if(circosReturnStatus){
         		log.debug("Circos run completed successfully");
-//
-//
-// The next line needs to be changed based on dev, test and production
-//
-
-       			String shortGeneCentricPath = geneCentricPath.substring(geneCentricPath.indexOf("/PhenoGenTEST/"));
-				String svgFile = shortGeneCentricPath+transcriptClusterID+"_"+timeStampString+"/svg/circos_new.svg";
-				iframeURL = svgFile;
-				allowChromosomeSelection=true;  // After the first time they run circos, let them select the chromosomes.
+			String shortGeneCentricPath;
+			if(geneCentricPath.indexOf("/PhenoGen/") > 0){
+				shortGeneCentricPath = geneCentricPath.substring(geneCentricPath.indexOf("/PhenoGen/"));
 			}
 			else{
-				log.debug("Circos run failed");
-				// be sure iframeURL is still null
-				iframeURL = null;
+				shortGeneCentricPath = geneCentricPath.substring(geneCentricPath.indexOf("/PhenoGenTEST/"));
 			}
-			
+			String svgFile = shortGeneCentricPath+transcriptClusterID+"_"+timeStampString+"/svg/circos_new.svg";
+			iframeURL = svgFile;
+			allowChromosomeSelection=true;  // After the first time they run circos, let them select the chromosomes.
+		}
+		else{
+			log.debug("Circos run failed");
+			// be sure iframeURL is still null
+			iframeURL = null;
 		}
 	}
+}
 	
 	// This is the end of the first big scriptlet
 %>

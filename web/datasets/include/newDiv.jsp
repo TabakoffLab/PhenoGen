@@ -141,7 +141,7 @@
 					String groupName = thisGroup.getGroup_name().replaceAll("/", "SLASH");
 				 %>
 					<tr>
-                                   <!--     	<td style="height:20px"><input type="text" name="<%=groupName%>_VARIANCE" id="<%=groupName%>_VARIANCE"></td>-->
+                                        	<td style="height:20px"><input type="text" name="<%=groupName%>_VARIANCE" id="<%=groupName%>_VARIANCE"></td>
                                 	</tr>
                                 <% } %>
 				</tbody>

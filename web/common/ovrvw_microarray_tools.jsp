@@ -11,7 +11,7 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
 <% extrasList.add("index.css"); %>
-
+<%pageTitle="Overview Microarray Analysis Tools";%>
 
 <%@ include file="/web/common/basicHeader.jsp" %>
 <jsp:useBean id="myArray" class="edu.ucdenver.ccp.PhenoGen.data.Array"> </jsp:useBean>

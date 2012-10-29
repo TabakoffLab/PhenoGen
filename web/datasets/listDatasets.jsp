@@ -28,6 +28,7 @@
 
         mySessionHandler.createSessionActivity(session.getId(), "Viewed all datasets", dbConn);
 %>
+<%pageTitle="Analyze Dataset";%>
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
     <script type="text/javascript">

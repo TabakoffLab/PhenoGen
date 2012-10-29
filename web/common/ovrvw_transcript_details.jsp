@@ -13,6 +13,8 @@
 <% extrasList.add("index.css"); %>
 <% extrasList.add("overview.js"); %>
 
+<%pageTitle="Overview Detailed Transcription Information";%>
+
 <%@ include file="/web/common/basicHeader.jsp" %>
 
         <div id="welcome" style="height:575px; width:980px; overflow:auto;">

@@ -1,0 +1,9 @@
+DRIVER_NAME=com.mysql.jdbc.Driver
+HOST=localhost
+PORT=3306
+DATABASE=ensembl_website_64
+USER=YOUR_USERNAME_HERE
+PASSWORD=YOUR_PASSWORD_HERE
+URL_PREFIX=jdbc:mysql://
+PLATFORM=MySQL
+

@@ -5,6 +5,19 @@
 *.properties
 web.xml
 
+# Users need to download platform specific tools from	#
+# Affymetrix and then current probeset files from 	#
+# http://phenogen.ucdenver.edu				#
+#########################################################
+affyPowerTools/bin/
+
+# These should be linked but we don't want to check in	#
+# data.							#
+#########################################################
+tmpData/
+userFiles/
+LODPlots/
+
 # Compiled source #
 ###################
 *.com

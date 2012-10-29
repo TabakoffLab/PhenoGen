@@ -46,7 +46,7 @@ sub setupDirectories{
 
 
 sub callCircos{
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$chromosomeString,$geneCentricPath,$timeStampString,$tissue)=@_;
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$chromosomeString,$geneCentricPath,$timeStampString,$tissuei,$dsn,$usr,$passwd)=@_;
 	#
 	# General outline of process:
 	# First, prep circos conf and data files
@@ -68,7 +68,7 @@ sub callCircos{
 	my @chromosomeList = split(/;/, $chromosomeString);
 	my $chromosomeListRef = (\@chromosomeList);
 	print " Ready to call prepCircos \n";
-	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissue);
+	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissuei,$dsn,$usr,$passwd);
 	print " Finished prepCircos \n";	
 	
 
@@ -122,7 +122,10 @@ sub callCircos{
 	my $arg11= $ARGV[10]; # geneCentricPath
 	my $arg12=$ARGV[11]; #time stamp string 
 	my $arg13=$ARGV[12]; #selected Tissue
-	callCircos($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11,$arg12,$arg13);
+	my $arg14=$ARGV[13]; #dsn
+	my $arg15=$ARGV[14]; #user
+	my $arg16=$ARGV[15]; #password
+	callCircos($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11,$arg12,$arg13,$arg14,$arg15,$arg16);
 #callCircos 'ENSRNOG00000001300' 'P2rx4' 7102228 'transcript' 'rn12' 34943900 34961541 2.5 'Rn' "rn5;rn12;rnX" '/usr/share/tomcat/webapps/PhenoGenTEST/tmpData/geneData/ENSRNOG00000001300/' 'All';
 
 1;

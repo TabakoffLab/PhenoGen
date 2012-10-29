@@ -26,6 +26,8 @@
 
 %>
 
+<%pageTitle="Analyze gene list";%>
+
 <%@ include file="/web/common/header.jsp"%>
 	<script type="text/javascript">
 		crumbs = ["Home", "Research Genes"]; 

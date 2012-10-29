@@ -164,7 +164,7 @@
 			<BR> --> 
 			<%=radioButton%> <%=thisIdentifier.getIdentifier()%>  
             <%if (officialSymbolList != null && officialSymbolList.size() > 0) {%>
-            	<div class="smallSummary"><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=officialSymbolList.get(0)%>&speciesCB=<%=selectedGeneList.getOrganism()%>&auto=Y">Detailed Transcription Information</a></div>
+            	<div class="smallSummary"><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=officialSymbolList.get(0)%>&speciesCB=<%=selectedGeneList.getOrganism()%>&auto=Y&newWindow=Y">Detailed Transcription Information</a></div>
             <%}%>
             
 <!-- <p><a href="<%=geneListsDir%>showGraph.jsp?identifier=<%=thisIdentifier.getIdentifier()%>" target="_blank">Show Graph</a></p> -->

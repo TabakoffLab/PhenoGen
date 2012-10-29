@@ -141,22 +141,34 @@ public class AffymetrixParser extends InputFileParser {
             String[] flybaseIDs = splitListColumns(columns[24]);
             String[] mgiIDs = addMGIPrefix(splitListColumns(columns[27]));
             String[] rgdIDs = splitListColumns(columns[28]);
-
+            
+            
+            
+            //10/4/2012-SBM- Probesets need a location they do correspond to a location in the genome.
+            String chr="",loc="";
+            if(columns[12].startsWith("chr")){
+                String orig=columns[12].substring(0,columns[12].indexOf("//"));
+                chr=orig.substring(3,orig.indexOf(":"));
+                loc=orig.substring(orig.indexOf(":")+1);
+            }
+            
+            
+            // OLD COMMENT FROM CHERYL
             // Note that chromosome and map location do not make sense for Affy
             // IDs (probe sets don't have a location)
-            writeToInfoFile(taxonID, AFFY_ID_TYPE, affyID, "", "", geneChipArray);
+            writeToInfoFile(taxonID, AFFY_ID_TYPE, affyID, chr, loc, geneChipArray);
 
             // Since gene symbol and Ensembl IDs are primary IDs, as well as
             // being link IDs, write them to both the info and links files.
             for (int i = 0; i < geneSymbols.length; i++) {
                 String geneSymbol = geneSymbols[i];
-                writeToInfoFile(taxonID, GENE_SYMBOL_TYPE, geneSymbol);
+                writeToInfoFile(taxonID, GENE_SYMBOL_TYPE, geneSymbol,chr,loc);
                 writeToLinksFile(AFFY_ID_TYPE, affyID, GENE_SYMBOL_TYPE, geneSymbol);
             }
 
             for (int i = 0; i < ensemblIDs.length; i++) {
                 String ensemblID = ensemblIDs[i];
-                writeToInfoFile(taxonID, ENSEMBL_ID_TYPE, ensemblID);
+                writeToInfoFile(taxonID, ENSEMBL_ID_TYPE, ensemblID,chr,loc);
                 writeToLinksFile(AFFY_ID_TYPE, affyID, ENSEMBL_ID_TYPE, ensemblID);
             }
 

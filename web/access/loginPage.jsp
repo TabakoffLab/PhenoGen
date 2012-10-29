@@ -31,7 +31,7 @@
 
 	<h2>Selected Tool Requires Login</h2>
     
-						<p> The Tool you selected requires you to login.  Please register or login below.</p>  
+						<p> The tool you selected requires you to login.  Please <a href="<%=accessDir%>registration.jsp">register</a> or login below.</p>  
                         
                         <div style="width:165px; height:165px; margin-left:10px;">
                         
@@ -55,14 +55,14 @@
                              </form>
                          <% } %>
                 </div>
-        <% if(loginEnabled){ %>
+           
+    </div><!-- end welcome -->
+
+     <% if(loginEnabled){ %>
         <script type="text/javascript">
                 document.loginForm.user_name.focus();
         </script>      
-        <%}%>        
-    </div><!-- end welcome -->
-
-    
+        <%}%>    
 	
 	
 <%@ include file="/web/common/footer.jsp" %>

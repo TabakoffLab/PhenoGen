@@ -25,6 +25,9 @@
 	ArrayList checkedList = new ArrayList();
 	
 %>
+
+<%pageTitle="Download Resources";%>
+
 <%@ include file="/web/common/header.jsp"  %>
 
 <% if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%>
@@ -166,6 +169,8 @@
 			<% } %>
 			</tbody>
 		</table>
+        
+        
         
 	</form>
 

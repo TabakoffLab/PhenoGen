@@ -22,9 +22,7 @@
                             <a href="<%=accessDir%>emailPassword.jsp" title="Click here if you forgot your password">Forgot Password?</a>
                 
                     </form>
-                    <script type="text/javascript">
-                        document.loginForm.user_name.focus();
-                    </script>
+                    
 				<%}%>
         </div> <!-- // end login-form -->
 		<div class="brClear"></div>

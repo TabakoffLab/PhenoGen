@@ -12,6 +12,8 @@
 
 <% extrasList.add("index.css"); %>
 
+<%pageTitle="Overview What's New";%>
+
 <%@ include file="/web/common/basicHeader.jsp" %>
 
         <div id="welcome" style="height:575px; width:980px; overflow:auto;">

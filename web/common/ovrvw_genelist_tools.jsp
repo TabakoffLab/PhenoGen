@@ -11,8 +11,8 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
 <% extrasList.add("index.css"); %>
-
-<%@ include file="/web/common/basicHeader.jsp" %>
+<%pageTitle="Overview Gene List Analaysis Tools";%>
+<%@ include file="/web/common/header.jsp" %>
 
         <div id="welcome" style="height:575px; width:980px; overflow:auto;">
 

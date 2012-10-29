@@ -72,21 +72,28 @@
 </context-param>
 
 <context-param>
+	<param-name>ucscGeneDir</param-name>
+	<param-value>GeneTracks
+	</param-value>
+</context-param>
+
+<context-param>
 	<param-name>dbPropertiesFile</param-name>
 	<param-value>Dev.properties
 	</param-value>
 </context-param>
 
 <context-param>
-	<param-name>perlEnvVar</param-name>
-	<param-value>ORACLE_HOME=/usr/local/instantclient_10_2,TNS_ADMIN=/usr/local/instantclient_10_2,DYLD_LIBRARY_PATH=/usr/local/instantclient_10_2,LD_LIBRARY_PATH=/usr/local/instantclient_10_2,PATH=/usr/local/instantclient_10_2</param-value>
+	<param-name>ensDbPropertiesFile</param-name>
+	<param-value>ensembl_local.properties
+	</param-value>
 </context-param>
 
 <context-param>
-	<param-name>ucscGeneDir</param-name>
-	<param-value>GeneTracks
-	</param-value>
+	<param-name>perlEnvVar</param-name>
+	<param-value>PERL5LIB=/opt/ensembl_ucsc/ensembl/modules,ORACLE_HOME=/usr/local/instantclient_10_2,TNS_ADMIN=/usr/local/instantclient_10_2,DYLD_LIBRARY_PATH=/usr/local/instantclient_10_2,LD_LIBRARY_PATH=/usr/local/instantclient_10_2,PATH=/usr/local/instantclient_10_2</param-value>
 </context-param>
+
 
 <!-- The rest of these parameters should never change -->
 

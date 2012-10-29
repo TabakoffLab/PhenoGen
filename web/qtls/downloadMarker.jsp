@@ -40,6 +40,9 @@
         }
 
 %>
+
+<%pageTitle="Download QTL Markers";%>
+
 <%@ include file="/web/common/header.jsp"  %>
 	<form	method="post" 
 		action="downloadMarker.jsp" 

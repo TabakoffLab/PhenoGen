@@ -41,7 +41,7 @@ sub readRNAIsoformDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	#print "read probesets chr:$geneChrom\n";
@@ -187,7 +187,11 @@ sub readRNAIsoformDataFromDB{
 				};
 				$cntTranscript++;
 				#print "adding transcript $isoform_id\n";
-				$trtmp_id=$tissue." Isoform ".$isoform_id;
+				if($shortName==0){
+					$trtmp_id=$tissue." Isoform ".$isoform_id;
+				}else{
+					$trtmp_id=$isoform_id;
+				}
 				$trtmp_score=$trscore;
 				$trtmp_start=$trstart;
 				$trtmp_stop=$trstop;
@@ -259,21 +263,31 @@ sub readRNAIsoformDataFromDB{
 				$cntTranscript++;
 			}
 			#print "adding gene $gene_id\n";
+			my $tmpGeneID=$tissue.".".$gene_id;
+			if($shortName==1){
+				my $shortGID=substr($gene_id,index($gene_id,".")+1);
+				$tmpGeneID=$tissue.".".$shortGID;
+			}
+			
 			#create next gene
 			$geneHOH{Gene}[$cntGene] = {
 				start => 0,
 				stop => 0,
-				ID => $tissue.".".$gene_id,
+				ID => $tmpGeneID,
 				strand=>$trstrand,
 				chromosome=>$chr,
 				biotype => "protein coding",
-				geneSymbol => "N/A",
+				geneSymbol => "",
 				source => "RNA Seq"
 				};
 			$cntGene++;
 			#print "adding transcript $isoform_id\n";
 			#reset variables
-			$trtmp_id=$tissue." Isoform ".$isoform_id;
+			if($shortName==0){
+				$trtmp_id=$tissue." Isoform ".$isoform_id;
+			}else{
+				$trtmp_id=$isoform_id;
+			}
 			$trtmp_score=$trscore;
 			$trtmp_start=$trstart;
 			$trtmp_stop=$trstop;

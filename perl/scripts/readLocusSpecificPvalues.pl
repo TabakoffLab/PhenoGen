@@ -29,37 +29,58 @@ sub readLocusSpecificPvalues{
 	#INPUT VARIABLES: $probeID, $organism
 
 	# Read inputs
-	my($probeID,$organism,$chromosomeListRef,$dsn,$usr,$passwd)=@_;   
+	my($probeID,$organism,$chromosomeListRef)=@_;   
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# $hostname is used to determine the connection to the database.
-	#my $hostname = hostname;
+	my $hostname = hostname;
 
 	my $debugLevel = 2;
 	if($debugLevel >= 1){
-		print " In readLocusSpecificPvalues \n";
 		print "Probe ID: ".$probeID."\n";
 		print "Organism: ".$organism."\n";
-		print "Number of Chromosomes for running Circos ".$numberOfChromosomes."\n";
-		print "first chromosome ".$chromosomeList[0]."\n";
+		print "Host Name: ".$hostname."\n";	
 	}
 	#Initializing Array
 
 	my @eqtlAOH; # array of hashes containing location specific eqtl data
 		
 	#Set up to read the Locus Specific Pvalue information from three tables in the database.
-	
+	my $host = '//phenogen.ucdenver.edu';
+	my $port = '1521';
+	my ($service_name, $platform, $usr, $passwd);
+	if($hostname eq 'amc-kenny.ucdenver.pvt'){
+		$service_name = 'dev.ucdenver.pvt';
+		$platform = 'Oracle';
+		$usr = 'INIA';
+		$passwd = 'INIA_dev';
+	}
+	elsif($hostname eq 'compbio.ucdenver.edu'){
+		$service_name = 'test.ucdenver.pvt';
+		$platform = 'Oracle';
+		$usr = 'INIA';
+		$passwd = 'INIA_test';
+	}
+	elsif($hostname eq 'phenogen.ucdenver.edu'){
+		$service_name = 'prod.ucdenver.pvt';
+		$platform = 'Oracle';
+		$usr = 'INIA';
+		$passwd = 'INIA_olleH';
+	}
+	else{
+		die("Unrecognized Hostname:",$hostname,"\n");
+	}
 
 	my $locationSpecificEQTLTablename = 'Location_Specific_EQTL';
 	my $snpTablename = 'SNPS';
 	my $chromosomeTablename = 'Chromosomes';
 	
 	# DATA SOURCE NAME
-	#my $dsn = "dbi:$platform:$service_name";
+	my $dsn = "dbi:$platform:$service_name";
 	if($debugLevel >= 1){
 		print "dsn: $dsn \n";
-		#print "usr: $usr \n";
-		#print "passwd: $passwd \n";
+		print "usr: $usr \n";
+		print "passwd: $passwd \n";
 	}
 	
 	# PERL DBI CONNECT
@@ -67,13 +88,14 @@ sub readLocusSpecificPvalues{
 
 	# PREPARE THE QUERY for pvalues
 
-	my $query = "select s.SNP_NAME, c.NAME, s.SNP_LOCATION, e.TISSUE, e.PVALUE
+	my $query = "select s.SNP_NAME, c.NAME, s.SNP_START, s.TISSUE, e.PVALUE
 		      from $snpTablename s, $chromosomeTablename c, $locationSpecificEQTLTablename e
 		      where
 		      e.PROBE_ID = $probeID
-		      and e.organism = '$organism'
+		      and s.organism = '$organism'
 		      and s.chromosome_id = c.chromosome_id
 		      and e.SNP_ID = s.SNP_ID";
+
 		      
 	if ($debugLevel >= 2){
 		print $query."\n";
@@ -111,12 +133,10 @@ sub readLocusSpecificPvalues{
 	}
 	$query_handle->finish();
 	$connect->disconnect();
-	if($debugLevel >= 2){
-		print " Finished loading array \n";
-		print " Total in Array ".$counter."\n";
-	}
+
 	if($debugLevel >= 3){
 		my $i;
+		print " Total in Array ".$counter."\n";
 		for ($i = 0; $i < min(10,$counter);$i++){
 			print " i: ",$i,"\n";
 			print " Name: ".$eqtlAOH[$i]{name}."\n";

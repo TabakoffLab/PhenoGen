@@ -264,39 +264,7 @@ div.scrollable {
 
 #geneSummarybtn{ text-align:center; width: 165px; margin-left: 12px;}
 
-.triangle_down {
-	position:absolute;
-	width:0px;
-	height:0px;
-	margin-top: 18px;
-	margin-right: 0px;
-	margin-left: 4px;
-	border-left:5px solid transparent;
-	/* left arrow slant */
-	border-right:5px solid transparent;
-	/* right arrow slant */
-	border-top:5px solid #ffffff;
-	/* bottom,add background color here */
-	font-size:0px;
-	line-height:0px;
-}
 
-.triangle_up {
-	position:absolute;
-	width:0px;
-	height:0px;
-	margin-top: 18px;
-	margin-right: 0px;
-	margin-left: 4px;
-	border-left:5px solid transparent;
-	/* left arrow slant */
-	border-right:5px solid transparent;
-	/* right arrow slant */
-	border-bottom:5px solid #ffffff;
-	/* bottom,add background color here */
-	font-size:0px;
-	line-height:0px;
-}
 
 div.alertMsg {
 	text-align: center;
@@ -345,4 +313,38 @@ div.alertMsg {
 }
 a.button {
 	text-decoration: none;
+}
+
+.triangle_down {
+	position:absolute;
+	width:0px;
+	height:0px;
+	margin-top: 5px;
+	margin-right: 0px;
+	margin-left: 4px;
+	border-left:5px solid transparent;
+	/* left arrow slant */
+	border-right:5px solid transparent;
+	/* right arrow slant */
+	border-top:5px solid #ffffff;
+	/* bottom,add background color here */
+	font-size:0px;
+	line-height:0px;
+}
+
+.triangle_up {
+	position:absolute;
+	width:0px;
+	height:0px;
+	margin-top: 5px;
+	margin-right: 0px;
+	margin-left: 4px;
+	border-left:5px solid transparent;
+	/* left arrow slant */
+	border-right:5px solid transparent;
+	/* right arrow slant */
+	border-bottom:5px solid #ffffff;
+	/* bottom,add background color here */
+	font-size:0px;
+	line-height:0px;
 }

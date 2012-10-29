@@ -1,0 +1,12 @@
+host=ensembldb.ensembl.org
+port=3306
+database_prefix=homo_sapiens_core
+user=anonymous
+
+HOST=ensembldb.ensembl.org
+PORT=3306
+USER=anonymous
+DRIVER_NAME=com.mysql.jdbc.Driver
+URL_PREFIX=jdbc:mysql://
+DATABASE=homo_sapiens_core_40_36b
+

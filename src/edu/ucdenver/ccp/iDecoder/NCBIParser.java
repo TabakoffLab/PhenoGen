@@ -1,6 +1,7 @@
 package edu.ucdenver.ccp.iDecoder;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -57,21 +58,21 @@ public class NCBIParser extends InputFileParser {
         initializeOutputFiles();
         
         long startTime = System.currentTimeMillis();
-        String fileSpec = createFileSpec(inputDirectory,unigeneFilename);
-        processUnigeneInputFile(fileSpec, unigenePrefixSet, 
-            PropertiesHelper.getUniGenePrefixToTaxonIDMap());
+        String fileSpec = createFileSpec(inputDirectory,geneInfoFilename);
+        HashMap egLocation=processGeneInfoInputFile(fileSpec,taxonIDSet);
         System.out.println("processed " + fileSpec + "\t"
                 + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
         
         startTime = System.currentTimeMillis();
-        fileSpec = createFileSpec(inputDirectory,geneInfoFilename);
-        processGeneInfoInputFile(fileSpec,taxonIDSet);
+        fileSpec = createFileSpec(inputDirectory,unigeneFilename);
+        processUnigeneInputFile(fileSpec, unigenePrefixSet, 
+            PropertiesHelper.getUniGenePrefixToTaxonIDMap(),egLocation);
         System.out.println("processed " + fileSpec + "\t"
                 + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
 
         startTime = System.currentTimeMillis();
         fileSpec = createFileSpec(inputDirectory,accNumFilename);
-        processAccessionNumInputFile(fileSpec,taxonIDSet);
+        processAccessionNumInputFile(fileSpec,taxonIDSet, egLocation);
         System.out.println("processed " + fileSpec + "\t"
                 + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
         
@@ -100,7 +101,7 @@ public class NCBIParser extends InputFileParser {
      * is related to Homo sapiens). A Set of relevant prefixes is passed as an
      * argument to this method.
      */
-    private void processUnigeneInputFile(String inputFilename, Set relevantPrefixSet, Map unigene2TaxonIDMap)
+    private void processUnigeneInputFile(String inputFilename, Set relevantPrefixSet, Map unigene2TaxonIDMap, HashMap egLocation)
             throws IOException {
         
         BufferedReader reader = createInputFileReader(inputFilename);
@@ -123,7 +124,12 @@ public class NCBIParser extends InputFileParser {
             // their UniGene prefix, by checking against the relevant prefix Set
             if (relevantPrefixSet.contains(unigenePrefix)) {
                 // The Map contains entries relating UniGene prefixes to Taxonomy IDs
-                writeToInfoFile((String) unigene2TaxonIDMap.get(unigenePrefix),UNIGENE_ID_TYPE,unigeneID);
+                String[] location=(String[])egLocation.get(entrezGeneID);
+                if(location!=null&&location.length==2){
+                    writeToInfoFile((String) unigene2TaxonIDMap.get(unigenePrefix),UNIGENE_ID_TYPE,unigeneID,location[0],location[1]);
+                }else{
+                    writeToInfoFile((String) unigene2TaxonIDMap.get(unigenePrefix),UNIGENE_ID_TYPE,unigeneID);
+                }
                 writeToLinksFile(ENTREZ_GENE_ID_TYPE,entrezGeneID,UNIGENE_ID_TYPE,unigeneID);
             }
         }
@@ -152,7 +158,7 @@ public class NCBIParser extends InputFileParser {
      * value contained in the 3rd column. Also note that RefSeq IDs are named
      * differently than non-RefSeq IDs here (and in iDecoder).
      */
-    private void processAccessionNumInputFile(String inputFilename, Set relevantTaxonIDSet)
+    private void processAccessionNumInputFile(String inputFilename, Set relevantTaxonIDSet, HashMap egLocation)
             throws IOException {
 
         BufferedReader reader = createInputFileReader(inputFilename);
@@ -177,23 +183,30 @@ public class NCBIParser extends InputFileParser {
                 boolean isRefSeq = (! columns[2].trim().equals("-"));
                 String rnaID = removeVersionNumber(handleBlankColumn(columns[3]));
                 String proteinID = removeVersionNumber(handleBlankColumn(columns[5]));
+                
+                String loc="",chr="";
+                String[] location=(String[])egLocation.get(entrezGeneID);
+                if(location!=null&&location.length==2){
+                    loc=location[1];
+                    chr=location[0];
+                }
 
                 if (isRefSeq) {
                     if (! rnaID.equals("")) {
-                        writeToInfoFile(taxonID,REF_SEQ_RNA_ID_TYPE,rnaID);
+                        writeToInfoFile(taxonID,REF_SEQ_RNA_ID_TYPE,rnaID,chr,loc);
                         writeToLinksFile(ENTREZ_GENE_ID_TYPE,entrezGeneID,REF_SEQ_RNA_ID_TYPE,rnaID);
                     }
                     if (! proteinID.equals("")) {
-                        writeToInfoFile(taxonID,REF_SEQ_PROTEIN_ID_TYPE,proteinID);
+                        writeToInfoFile(taxonID,REF_SEQ_PROTEIN_ID_TYPE,proteinID,chr,loc);
                         writeToLinksFile(ENTREZ_GENE_ID_TYPE,entrezGeneID,REF_SEQ_PROTEIN_ID_TYPE,proteinID);
                     }
                 } else {
                     if (! rnaID.equals("")) {
-                        writeToInfoFile(taxonID,NCBI_RNA_ID_TYPE,rnaID);
+                        writeToInfoFile(taxonID,NCBI_RNA_ID_TYPE,rnaID,chr,loc);
                         writeToLinksFile(ENTREZ_GENE_ID_TYPE,entrezGeneID,NCBI_RNA_ID_TYPE,rnaID);
                     }
                     if (! proteinID.equals("")) {
-                        writeToInfoFile(taxonID,NCBI_PROTEIN_ID_TYPE,proteinID);
+                        writeToInfoFile(taxonID,NCBI_PROTEIN_ID_TYPE,proteinID,chr,loc);
                         writeToLinksFile(ENTREZ_GENE_ID_TYPE,entrezGeneID,NCBI_PROTEIN_ID_TYPE,proteinID);
                     }                    
                 }
@@ -277,9 +290,9 @@ public class NCBIParser extends InputFileParser {
      * Only relevant organisms are included, as determined by the passed-in Set
      * of taxonomy IDs.
      */
-    private void processGeneInfoInputFile(String inputFilename,
+    private HashMap processGeneInfoInputFile(String inputFilename,
             Set relevantTaxonIDSet) throws IOException {
-        
+        HashMap egLocations=new HashMap();
         BufferedReader reader = createInputFileReader(inputFilename);
 
         String line;
@@ -327,22 +340,25 @@ public class NCBIParser extends InputFileParser {
                 }
 
                 // Write gene info to Info file
-                writeToInfoFile(taxonID, ENTREZ_GENE_ID_TYPE, entrezGeneID,
-                        chromosome, insertListDelim(mapLocations));
+                writeToInfoFile(taxonID, ENTREZ_GENE_ID_TYPE, entrezGeneID,chromosome, insertListDelim(mapLocations));
+                String[] loc=new String[2];
+                loc[0]=chromosome;
+                loc[1]=insertListDelim(mapLocations);
+                egLocations.put(entrezGeneID,loc);
                 
                 // Full Names, Gene Symbols and Synomyms are written to both the Info and Links files
                 if (!fullName.equals("")) {
-                    writeToInfoFile(taxonID,FULL_NAME_TYPE,fullName);
+                    writeToInfoFile(taxonID,FULL_NAME_TYPE,fullName,chromosome, insertListDelim(mapLocations));
                     writeToLinksFile(ENTREZ_GENE_ID_TYPE,entrezGeneID,FULL_NAME_TYPE,fullName);
                 }
                 if (! geneSymbol.equals("")) {
-                    writeToInfoFile(taxonID,GENE_SYMBOL_TYPE,geneSymbol);
+                    writeToInfoFile(taxonID,GENE_SYMBOL_TYPE,geneSymbol,chromosome, insertListDelim(mapLocations));
                     writeToLinksFile(ENTREZ_GENE_ID_TYPE,entrezGeneID,GENE_SYMBOL_TYPE,geneSymbol);
                 }
                 
                 for (int i = 0; i < synonyms.length; i++) {
                     String synonym = synonyms[i].trim();
-                    writeToInfoFile(taxonID, SYNONYM_TYPE, synonym);
+                    writeToInfoFile(taxonID, SYNONYM_TYPE, synonym,chromosome, insertListDelim(mapLocations));
                     writeToLinksFile(ENTREZ_GENE_ID_TYPE, entrezGeneID,
                             SYNONYM_TYPE, synonym);
                 }
@@ -355,6 +371,7 @@ public class NCBIParser extends InputFileParser {
         }
 
         reader.close();
+        return egLocations;
     }
 
     /*

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #use lib "/opt/ensembl_ucsc/bioperl-live";
-use lib "/opt/ensembl_ucsc/ensembl/modules";
+#use lib "/opt/ensembl_ucsc/ensembl/modules";
 
 use Bio::EnsEMBL::Registry;
 use XML::LibXML;
@@ -113,44 +113,45 @@ sub createXMLFile
 	my $registry = 'Bio::EnsEMBL::Registry';
 
 	my $dbAdaptorNum=-1;
-	my $tryEast=0;
-	my $tryMain=0;
+	my $ranEast=0;
 	
 	eval{
-	    #print "try local\n";
+	    print "try local\n";
 	    $dbAdaptorNum =$registry->load_registry_from_db(
 		-host => $ensHost, #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
 		-port => $ensPort,
 		-user => $ensUsr,
 		-pass => $ensPasswd
 	    );
+	    print "local finished:$dbAdaptorNum\n";
 	    1;
 	}or do{
 	    print "local ensembl DB is unavailable\n";
-	    $tryEast=1;
+	    $dbAdaptorNum=-1;
 	};
-	if($tryEast==1){
+	if($dbAdaptorNum==-1){
+	    $ranEast=1;
 	    eval{
 		    $dbAdaptorNum=$registry->load_registry_from_db(
 			-host => 'useastdb.ensembl.org', #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
 			-port => 5306,
 			-user => 'anonymous'
 		    );
-		    print "east mirror didn't fail:$dbAdaptorNum\n";
+		    print "east mirror finished:$dbAdaptorNum\n";
 		    1;
 	    }or do{
 		print "ensembl east DB is unavailable\n";
-		$tryMain=1;  
+		$dbAdaptorNum=-1;
 	    };
 	}
-	if($tryMain==1||($dbAdaptorNum<1 && $tryEast==1)){
+	if($ranEast==1 && $dbAdaptorNum<1){
 	    print "try main\n";
 	    # Enable this option if problems occur connecting the above option is faster, but only has current and previous versions of data
 	    $dbAdaptorNum=$registry->load_registry_from_db(
 		-host => 'ensembldb.ensembl.org', 
 		-user => 'anonymous'
 	    );
-	    print "try main didn't fail:$dbAdaptorNum\n";
+	    print "main finished:$dbAdaptorNum\n";
 	}
 	
 	
@@ -215,7 +216,7 @@ sub createXMLFile
 	
 	if($shortSpecies eq 'Rn'){
 	
-	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd);
+	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
 	    #find global min,max
 	    #print "gene size ".$$isoformHOH{Gene}[0]."\n";
 	    my $tmpGeneArray=$$isoformHOH{Gene};
@@ -274,7 +275,7 @@ sub createXMLFile
 	if($shortSpecies eq 'Rn'){
 	    #get expanded min max
 	    if($prevMin!=$minCoord||$prevMax!=$maxCoord){
-	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd);
+	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
 	    }
 	}
 	
@@ -344,6 +345,8 @@ sub createXMLFile
 	    
 	}
 	
+	my $geneListFile=$pngOutputFileName."geneList.txt";
+	open GLFILE, ">".$geneListFile;
 	
 	# Loop through  Ensembl Genes
 	my @addedGeneList=();
@@ -379,7 +382,7 @@ sub createXMLFile
 			geneSymbol => $geneExternalName,
 			source => "Ensembl"
 			};
-		
+		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
 #
 #		With the new picture look we don't have enough information to make the png file yet
 #		So commenting out the lines below.
@@ -495,6 +498,8 @@ sub createXMLFile
 		$cntGenes=$cntGenes+1;
 	    }# if to process only if chromosome is valid
 	} # loop through genes
+	
+	close GLFILE;
 	
 	# We're finished with the Genes
 	# Now we will define alternate IDs for the probesets we marked previously with 'yes' for alternateID

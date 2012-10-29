@@ -14,11 +14,12 @@
 <%
         extrasList.add("index.css");
 %>
+<%pageTitle="Browser/Software Requirements";%>
 
-<%@ include file="/web/common/basicHeader.jsp" %>
+<%@ include file="/web/common/header.jsp" %>
 
         <div id="overview-content">
-        <div id="welcome" style="height:735px; width:980px;">
+        <div id="welcome" style="height:735px; width:946px;">
 
                 <h2>Supported Browsers</h2>
                 <p>

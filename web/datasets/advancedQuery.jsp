@@ -96,6 +96,9 @@
 
    
 %>
+
+<%pageTitle="Create dataset - Advanced";%>
+
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
         <!-- use javascript to fill up the client-side array with saved combination values -->
         <%@ include file="/web/datasets/include/fillCombos.jsp" %>

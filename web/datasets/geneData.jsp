@@ -26,6 +26,9 @@
 
         mySessionHandler.createDatasetActivity("Looked at expression values for dataset", dbConn);
 %>
+
+<%pageTitle="Gene expression data";%>
+
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
         <script type="text/javascript">

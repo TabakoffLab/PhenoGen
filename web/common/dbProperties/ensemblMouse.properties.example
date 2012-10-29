@@ -1,0 +1,12 @@
+host=ensembldb.ensembl.org
+port=3306
+database_prefix=mus_musculus_core
+user=anonymous
+
+DRIVER_NAME=com.mysql.jdbc.Driver
+HOST=ensembldb.ensembl.org
+PORT=3306
+DATABASE=mus_musculus_core_40_36a
+USER=anonymous
+URL_PREFIX=jdbc:mysql://
+

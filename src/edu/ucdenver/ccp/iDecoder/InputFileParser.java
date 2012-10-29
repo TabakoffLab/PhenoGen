@@ -215,9 +215,11 @@ public abstract class InputFileParser {
      * @see #getInputSource()
      */
     protected void writeToLinksFile(String sourceIdenType, String sourceID, String destIdenType, String destID) throws IOException {
-        linkWriter.write(getInputSource() + OUTPUT_COLUMN_TERM + sourceIdenType + OUTPUT_COLUMN_TERM + 
+        if(destID!=null&&!destID.equals("null")){
+            linkWriter.write(getInputSource() + OUTPUT_COLUMN_TERM + sourceIdenType + OUTPUT_COLUMN_TERM + 
 			sourceID + OUTPUT_COLUMN_TERM + destIdenType + OUTPUT_COLUMN_TERM + destID + OUTPUT_COLUMN_TERM);
-        linkWriter.newLine();
+            linkWriter.newLine();
+        }
     }
 
     /**
@@ -273,7 +275,7 @@ public abstract class InputFileParser {
             writeToLinksFile(sourceIdenType,sourceID,destIdenType,destID);
         }
     }
-
+    
     /**
      * Writes identifiers to the Info file.
      * Output format is identical to the <code>writeToInfoFile</code> method.
@@ -281,12 +283,22 @@ public abstract class InputFileParser {
      * @see #writeToInfoFile(String, String, String, String, String, String)
      */
     protected void writeCollectionToInfoFile(String taxonID, String idenType, Collection idCollection) throws IOException {
+        this.writeCollectionToInfoFile(taxonID, idenType, idCollection, "", "");
+    }
+    
+    /**
+     * Writes identifiers to the Info file.
+     * Output format is identical to the <code>writeToInfoFile</code> method.
+     * 
+     * @see #writeToInfoFile(String, String, String, String, String, String)
+     */
+    protected void writeCollectionToInfoFile(String taxonID, String idenType, Collection idCollection,String chromosome,String mapLocation) throws IOException {
         for (Iterator iter = idCollection.iterator(); iter.hasNext();) {
             String thisID = (String) iter.next();
             // It's possible that a few blank values made it into the
             // Collection; simply skip them
             if (thisID.equals("")) continue;
-            writeToInfoFile(taxonID, idenType, thisID);
+            writeToInfoFile(taxonID, idenType, thisID,chromosome,mapLocation);
         }
     }
 

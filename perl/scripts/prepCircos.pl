@@ -58,7 +58,7 @@ my $debugLevel = 2;
 sub prepCircos
 {
 	# this routine creates configuration and data files for circos
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$selectedTissue)=@_;	
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$selectedTissue,$dsn,$usr,$passwd)=@_;	
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# if probeChromosome is not in chromosomeList then we don't want to create a links file
@@ -94,7 +94,7 @@ sub prepCircos
 	createCircosProbesetTextConfFile($dataDirectory,$confDirectory);
 	createCircosProbesetTextDataFile($dataDirectory,$geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$organism);
 	createCircosPvaluesConfFile($confDirectory,$dataDirectory,$cutoff,$organism,$selectedTissue);
-	my $eqtlAOHRef = readLocusSpecificPvalues($probeID,$organism,$chromosomeListRef);	
+	my $eqtlAOHRef = readLocusSpecificPvalues($probeID,$organism,$chromosomeListRef,$dsn,$usr,$passwd);	
 	createCircosPvaluesDataFiles($dataDirectory,$probeID,$organism,$eqtlAOHRef,$chromosomeListRef,$selectedTissue);
 	if($oneToCreateLinks == 1){
 		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$probeChromosome,$probeStart,$probeStop,$cutoff,$selectedTissue);	
@@ -216,12 +216,12 @@ sub createCircosProbesetTextConfFile{
 	print CONFFILE 'color            = black'."\n";
 	print CONFFILE 'file = '.$dataDirectory.'probesets.txt'."\n";
 	print CONFFILE 'r0 = 1.07r'."\n";
-	print CONFFILE 'r1 = 1.07r+300p'."\n";
-	print CONFFILE 'show_links     = no'."\n";
+	print CONFFILE 'r1 = 1.07r+500p'."\n";
+	print CONFFILE 'show_links     = yes'."\n";
 	print CONFFILE 'link_dims      = 0p,0p,70p,0p,10p'."\n";
-	print CONFFILE 'link_thickness = 2p'."\n";
+	print CONFFILE 'link_thickness = 5p'."\n";
 	print CONFFILE 'link_color     = red'."\n";
-	print CONFFILE 'label_size   = 25p'."\n";
+	print CONFFILE 'label_size   = 50p'."\n";
 	print CONFFILE 'label_font   = default'."\n";
 	print CONFFILE 'padding  = 0p'."\n";
 	print CONFFILE 'rpadding = 0p'."\n";
@@ -380,7 +380,7 @@ sub createCircosPvaluesDataFiles{
 		elsif($tissue eq 'Heart'){
 			print HEARTFILE $eqtlAOH[$i]{chromosome}." ".$eqtlAOH[$i]{location}." ".$stopLocation." ".$eqtlAOH[$i]{pvalue}."\n";
 		}
-		elsif($tissue eq 'BAT'){
+		elsif($tissue eq 'Brown Adipose'){
 			print BATFILE $eqtlAOH[$i]{chromosome}." ".$eqtlAOH[$i]{location}." ".$stopLocation." ".$eqtlAOH[$i]{pvalue}."\n";
 		}
 		else{
@@ -420,6 +420,9 @@ sub createCircosLinksConfAndData{
 			$tissue = $eqtlAOH[$i]{tissue};
 			if($tissue eq "Whole Brain"){
 				$tissue = "Brain";
+			}
+			elsif($tissue eq "Brown Adipose"){
+				$tissue = "BAT";
 			}
 			$keepLink = 0;
 			if($organism eq 'Rn'){

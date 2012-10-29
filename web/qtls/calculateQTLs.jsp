@@ -94,6 +94,8 @@
 
 %>
 
+<%pageTitle="Calculate QTLs";%>
+
 <%@ include file="/web/common/header.jsp" %>
 
 	<script type="text/javascript">

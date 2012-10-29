@@ -1,5 +1,6 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
-<%@ include file="/web/common/basicHeader.jsp" %>
+<%pageTitle="Current Datasets";%>
+<%@ include file="/web/common/header.jsp" %>
 <div style="margin:10px;">
 <a name="Mouse">
 <a href="#Mouse">Mouse</a><%=tenSpaces%><a href="#Rat">Rat</a><%=tenSpaces%><a href="index.jsp">Home</a>

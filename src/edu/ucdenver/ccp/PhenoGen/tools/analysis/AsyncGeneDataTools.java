@@ -223,6 +223,7 @@ public class AsyncGeneDataTools extends Thread {
                 log.error("Error writing exon probesets",e);
             }
             done=true;
+            ArrayList<GeneLoc> geneList=GeneLoc.readGeneListFile(outputDir,log);
             String ptransListFiletmp = outputDir + "tmp_psList_transcript.txt";
             String ptransListFile = outputDir + "tmp_psList_transcript.txt";
             File srcFile=new File(ptransListFiletmp);
@@ -235,10 +236,48 @@ public class AsyncGeneDataTools extends Thread {
                     while (rs.next()) {
                         int psid = rs.getInt(1);
                         String ch = rs.getString(2);
-                        int start = rs.getInt(3);
-                        int stop = rs.getInt(4);
+                        long start = rs.getLong(3);
+                        long stop = rs.getLong(4);
                         String level=rs.getString(5);
-                        psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\n");
+                        String ensemblId="",ensGeneSym="";
+                        double maxOverlapTC=0.0,maxOverlapGene=0.0,maxComb=0.0;
+                        GeneLoc maxGene=null;
+                        for(int i=0;i<geneList.size();i++){
+                            GeneLoc tmpLoc=geneList.get(i);
+                            long maxStart=tmpLoc.getStart();
+                            long minStop=tmpLoc.getStop();
+                            if(start>maxStart){
+                                maxStart=start;
+                            }
+                            if(stop<minStop){
+                                minStop=stop;
+                            }
+                            long genLen=tmpLoc.getStop()-tmpLoc.getStart();
+                            long tcLen=stop-start;
+                            double overlapLen=minStop-maxStart;
+                            double curTCperc=0.0,curGperc=0.0,comb=0.0;
+                            if(overlapLen>0){
+                                curTCperc=overlapLen/tcLen*100;
+                                curGperc=overlapLen/tcLen*100;
+                                comb=curTCperc+curGperc;
+                                if(comb>maxComb){
+                                    maxOverlapTC=curTCperc;
+                                    maxOverlapGene=curGperc;
+                                    maxComb=comb;
+                                    maxGene=tmpLoc;
+                                }
+                            }
+                            
+                        }
+                        if(maxGene!=null){
+                            String tmpGS=maxGene.getGeneSymbol();
+                            if(tmpGS.equals("")){
+                                tmpGS=maxGene.getID();
+                            }
+                            psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                        }else{
+                            psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                        }
                     }
                     ps.close();
                 }catch(SQLException ex){
@@ -616,5 +655,74 @@ public class AsyncGeneDataTools extends Thread {
         return done;
     }
     
+    
+    
 }
  
+class GeneLoc{
+    String id="",geneSymbol="";
+    long start=0,stop=0;
+    GeneLoc(String name,String symbol,long start, long stop){
+        id=name;
+        this.geneSymbol=symbol;
+        this.start=start;
+        this.stop=stop;
+    }
+
+    public String getID() {
+        return id;
+    }
+
+    public void setID(String id) {
+        this.id = id;
+    }
+
+    public String getGeneSymbol() {
+        return geneSymbol;
+    }
+
+    public void setGeneSymbol(String geneSymbol) {
+        this.geneSymbol = geneSymbol;
+    }
+
+    public long getStart() {
+        return start;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public long getStop() {
+        return stop;
+    }
+
+    public void setStop(long stop) {
+        this.stop = stop;
+    }
+    
+    public static ArrayList<GeneLoc> readGeneListFile(String outputDir, Logger log){
+        ArrayList<GeneLoc> ret=new ArrayList<GeneLoc>();
+        File inf=new File(outputDir+"geneList.txt");
+        try{
+        BufferedReader in = new BufferedReader(new FileReader(inf));
+        while(in.ready()){
+            String line=in.readLine();
+            String[] tabs=line.split("\t");
+            String ensID=tabs[0];
+            String geneSym=tabs[1];
+            String sStart=tabs[2];
+            String sStop=tabs[3];
+            long start=Long.parseLong(sStart);
+            long stop=Long.parseLong(sStop);
+            GeneLoc g=new GeneLoc(ensID,geneSym,start,stop);
+            ret.add(g);
+        }
+        in.close();
+        }catch(IOException e){
+            log.error("Error reading GeneList.txt.",e);
+        }
+        return ret;
+    }
+    
+}

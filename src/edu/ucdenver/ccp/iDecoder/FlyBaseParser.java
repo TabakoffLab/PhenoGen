@@ -45,16 +45,17 @@ public class FlyBaseParser extends InputFileParser {
         initializeOutputFiles();
         
         long startTime = System.currentTimeMillis();
-        String fileSpec = createFileSpec(inputDirectory,uniprotFilename);
-        processUniprotInputFile(fileSpec,taxonID); 
-        System.out.println("processed " + fileSpec + "\t" + (System.currentTimeMillis() - startTime)/1000 + " seconds");        
-        
-        startTime = System.currentTimeMillis();
-        fileSpec = createFileSpec(inputDirectory,geneMapFilename);
+        String fileSpec = createFileSpec(inputDirectory,geneMapFilename);
         processGeneMapInputFile(fileSpec,taxonID);
         System.out.println("processed " + fileSpec + "\t"
                 + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
-
+        
+        startTime = System.currentTimeMillis();
+        fileSpec = createFileSpec(inputDirectory,uniprotFilename);
+        processUniprotInputFile(fileSpec,taxonID); 
+        System.out.println("processed " + fileSpec + "\t" + (System.currentTimeMillis() - startTime)/1000 + " seconds");        
+        
+        
         finalizeOutputFiles();
     }
     

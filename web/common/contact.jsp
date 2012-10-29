@@ -11,8 +11,8 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
 <jsp:useBean id="myEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
-<% 
 
+<% 
 	extrasList.add("index.css"); 
 	String msg = "";
 	if (action != null && action.equals("Submit")) {
@@ -34,13 +34,13 @@
 	}
 	//mySessionHandler.createSessionActivity(session.getId(), "Looked at contact page", dbConn);
 %>
-
-	<%@ include file="/web/common/basicHeader.jsp" %>
+<%pageTitle="Contact Us";%>
+	<%@ include file="/web/common/header.jsp" %>
 	<script type="text/javascript">
         	var crumbs = ["Contact Us"];
 	</script>
-	<div id="primary-content">
-        	<div id="welcome" style="height:575px; width:980px;">
+
+        	<div id="welcome" style="height:575px; width:946px;">
 			<h2>Contact PhenoGen </h2>
                         <p> The quality, functionality, and continued maintenance of the PhenoGen Informatics 
 			website depends on feedback from you, our user.  We welcome your questions and appreciate 
@@ -82,7 +82,7 @@
         			<td>Feedback:</td>
             </tr>
 			<tr>
-				<td colspan="2"><textarea name="feedback" cols="60" rows="15"></textarea></td>
+				<td colspan="2"><textarea name="feedback" cols="80" rows="10"></textarea></td>
 			</tr>
 			<tr><td colspan="2">&nbsp;</td></tr>
 			<tr>
@@ -97,7 +97,7 @@
         	</form>
 			</center>
 		</div> <!-- // end welcome-->
-	</div> <!-- // end primary-content -->
+
 
 	<%@ include file="/web/common/footer.jsp" %>
   <script type="text/javascript">

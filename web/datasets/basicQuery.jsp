@@ -80,6 +80,9 @@
 
    
 %>
+
+<%pageTitle="Create dataset - Basic";%>
+
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
         <!-- use javascript to fill up the client-side array with saved combination values -->
         <%@ include file="/web/datasets/include/fillQueryCombos.jsp" %>
