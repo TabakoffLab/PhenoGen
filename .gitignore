@@ -3,6 +3,7 @@
 # An example file will be provided                  #
 #####################################################
 *.properties
+web.xml
 
 # Compiled source #
 ###################
