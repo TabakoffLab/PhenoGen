@@ -145,7 +145,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 							
 							for (int i=0; i< homologList.size(); i++) {
 								Identifier homologIdentifier = (Identifier) homologList.get(i);
-								if(homologIdentifier.getIdentifier().indexOf("T0")!=6){
+								if(homologIdentifier.getIdentifier().indexOf("ENSMUSG")>-1||homologIdentifier.getIdentifier().indexOf("ENSRNOG")>-1){
 									//myEnsemblIDs.add(homologIdentifier.getIdentifier());	
 									log.debug("RUNNING GDT for "+homologIdentifier.getIdentifier());
 									gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
@@ -333,8 +333,9 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	<span class="button" onclick="window.close()" style="width:150px;">Close this Window</span>
     </div>
 <%}%>
+<div style="padding-top:50px;"></div>
+<%@ include file="/web/common/footer.jsp" %>
 
-<%@ include file="/web/common/basicFooter.jsp" %>
 
 
 

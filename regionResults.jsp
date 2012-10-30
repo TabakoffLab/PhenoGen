@@ -1,4 +1,4 @@
-<div id="page" style="min-height:1050px;">
+<div id="page" style="min-height:1100px;">
 <span style="text-align:center;">
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
 
@@ -25,7 +25,7 @@
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);%>
 
-        <!--<div class="geneRegionControl">
+        <div class="geneRegionControl">
       		Zoom In:
           <form id="zoomIn" name="zoomIn" method="post" action="" style="display:inline-block;">
                       <input type="submit" name="action" id="refreshBTN" value="1.5x" onClick="return displayWorking()">
@@ -52,11 +52,7 @@
               <label>
               <input type="radio" name="radio" id="filteredRB" value="filteredGeneImage" />
              On</label>
-              <label for="flip-1">Flip switch:</label>
-<select name="flip-1" id="flip-1" data-role="slider">
-	<option value="off">Off</option>
-	<option value="on">On</option>
-</select>
+             
           </form>
 		 <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help2" src="../web/images/icons/help.png" /></div>
          <BR />
@@ -90,32 +86,46 @@
           </div><!--end Border Div -->
 
           <BR />
-          
+         </span><!-- ends center span -->
           
 
-<div class="cssTab">
+<div class="cssTab" style="position:relative; text-align:center">
     <ul>
       <li ><a href="#geneList" title="What genes are found in this area?">Genes Physically Located in Region</a></li>
       <li ><a href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a></li>
       <li ><a href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a></li>
      </ul>
-
-
+     
+<div id="loadingRegion"  style="text-align:center; position:relative; top:75px; left:-200px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Loading Region Data...</div>
 
 <!--<div class="title"><span class="trigger" name="geneList" style="text-align:left;">Gene List</span></div>-->
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
-    	
-    
-    
-            <div style="display:inline-block;text-align:left;">
+            <div style=" text-align:center;">
                   Filter Gene List:
-                  <form id="form1" name="form1" method="post" action="" style="display:inline-block;">
-                      <label style="color:#000000; margin-left:10px;">
+                  <form id="form1" name="form1" method="post" action="" >
+                      <label style="color:#000000; margin-left:20px;">
                         Exclude single exon RNA-Seq Transcripts:
                         <input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" />
-                       </label>       
+                       </label> 
+                       <BR />
+                       <label style="color:#000000; margin-left:20px;">
+                        eQTL P-Value Cut-off:
+                        <%
+							selectName = "cutoffValue";
+							selectedOption = Double.toString(pValueCutoff);
+							onChange = "";
+							style = "";
+							optionHash = new LinkedHashMap();
+										optionHash.put("0.10", "0.10");
+										optionHash.put("0.01", "0.01");
+										optionHash.put("0.001", "0.001");
+										optionHash.put("0.0001", "0.0001");
+										optionHash.put("0.00001", "0.00001");
+							%>
+							<%@ include file="/web/common/selectBox.jsp" %>
+                       </label>         
                   </form>
-           </div>
+            </div>
           
           
           <%
@@ -187,7 +197,7 @@
                     <TH>View Genome-Wide Associations</TH>
                     <%for(int i=0;i<tissuesList2.length;i++){%>
                     	<TH>Total # Locations P-Value < <%=pValueCutoff%> </TH>
-                        <TH>Min P-Value<BR />Location</TH>
+                        <TH>Minimum<BR /> P-Value<BR />Location</TH>
                     <%}%>
                     </tr>
                 </thead>
@@ -411,6 +421,26 @@
 
 <div id="eQTLListFromRegion" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
 
+		Filter Gene List and Circos Plot:
+                  <form id="form1" name="form1" method="post" action="" >
+                       <label style="color:#000000; margin-left:10px;">
+                        eQTL P-Value Cut-off:
+                        <%
+							selectName = "cutoffValue";
+							selectedOption = Double.toString(pValueCutoff);
+							onChange = "";
+							style = "";
+							optionHash = new LinkedHashMap();
+										optionHash.put("0.10", "0.10");
+										optionHash.put("0.01", "0.01");
+										optionHash.put("0.001", "0.001");
+										optionHash.put("0.0001", "0.0001");
+										optionHash.put("0.00001", "0.00001");
+							%>
+							<%@ include file="/web/common/selectBox.jsp" %>
+                       </label>         
+                  </form>
+
 		<div style="display:inline-block;text-align:left;">
         	Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls.
      	</div>
@@ -565,11 +595,11 @@
 
 
 
-</div><!-- end tabs-->          
+       
 
-</span>
 
-</div>
+
+</div><!-- ends page div -->
 
 
 
@@ -638,19 +668,20 @@ function positionHelp(vertPos){
 }
 
 $(document).ready(function() {
+	document.getElementById("loadingRegion").style.display = 'none';
 	
 	$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "575px"
+	"sScrollY": "550px"
 	});
 	
 	$('#tblBQTL').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "575px",
+	"sScrollY": "550px",
 	"bDeferRender": true
 	});
 	
@@ -658,14 +689,14 @@ $(document).ready(function() {
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "575px",
+	"sScrollY": "550px",
 	"bDeferRender": true
 	});
 	
 	 $('.cssTab div.modalTabContent').hide();
     $('.cssTab div.modalTabContent:first').show();
     $('.cssTab ul li a:first').addClass('selected');
-	
+	$('#tblGenes').dataTable().fnAdjustColumnSizing();
 	
 
 	$('#geneimageFiltered').hide();
@@ -702,6 +733,8 @@ $(document).ready(function() {
 			return;
 		}
   });
+  
+  
   
   $('#filteredRB').click( function(){
   		if($('#arrayOnRB').is(":checked")){
@@ -778,10 +811,21 @@ $(document).ready(function() {
             var currentTab = $(this).attr('href'); 
             $('.cssTab div.modalTabContent').hide();       
             $(currentTab).show();
-			var table = $.fn.dataTable.fnTables(false);
-            if ( table.length > 0 ) {
-                $(table).dataTable().fnAdjustColumnSizing();
-            }
+			
+			if(currentTab == "#geneList"){
+				$('#tblGenes').dataTable().fnAdjustColumnSizing();
+			}else if(currentTab == "#bQTLList"){
+				$('#tblBQTL').dataTable().fnAdjustColumnSizing();
+			}else if(currentTab == "#eQTLListFromRegion"){
+				$('#tblFrom').dataTable().fnAdjustColumnSizing();
+			}else{
+				var table = $.fn.dataTable.fnTables(false);
+            	if ( table.length > 0 ) {
+                	$(table).dataTable().fnAdjustColumnSizing();
+            	}
+			}
+			
+            
 			
             return false;
         });
