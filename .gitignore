@@ -16,8 +16,8 @@ affyPowerTools/bin/
 # data.							#
 #########################################################
 tmpData/
-userFiles/
-LODPlots/
+userFiles
+LODPlots
 
 # Compiled source #
 ###################
