@@ -102,16 +102,16 @@
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
             <div style=" text-align:center;">
                   Filter Gene List:
-                  <form id="form1" name="form1" method="post" action="" >
+                  
                       <label style="color:#000000; margin-left:20px;">
                         Exclude single exon RNA-Seq Transcripts:
                         <input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" />
                        </label> 
-                       <BR />
+                   <!--<form id="formPvalue" name="formPvalue" method="post" action="" >-->
                        <label style="color:#000000; margin-left:20px;">
                         eQTL P-Value Cut-off:
                         <%
-							selectName = "cutoffValue";
+							selectName = "pvalueCutoffSelect1";
 							selectedOption = Double.toString(pValueCutoff);
 							onChange = "";
 							style = "";
@@ -124,7 +124,7 @@
 							%>
 							<%@ include file="/web/common/selectBox.jsp" %>
                        </label>         
-                  </form>
+                  <!--</form>-->
             </div>
           
           
@@ -422,12 +422,12 @@
 <div id="eQTLListFromRegion" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
 
 		Filter Gene List and Circos Plot:
-                  <form id="form1" name="form1" method="post" action="" >
+                  <!--<form id="formPvalue" name="formPvalue" method="post" action="" > -->
                        <label style="color:#000000; margin-left:10px;">
                         eQTL P-Value Cut-off:
                         <%
-							selectName = "cutoffValue";
-							selectedOption = Double.toString(pValueCutoff);
+							selectName = "pvalueCutoffSelect2";
+							selectedOption = Double.toString(pValueCutoff).trim();
 							onChange = "";
 							style = "";
 							optionHash = new LinkedHashMap();
@@ -439,7 +439,7 @@
 							%>
 							<%@ include file="/web/common/selectBox.jsp" %>
                        </label>         
-                  </form>
+                  <!--</form>-->
 
 		<div style="display:inline-block;text-align:left;">
         	Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls.
@@ -829,6 +829,18 @@ $(document).ready(function() {
 			
             return false;
         });
+		
+		$('#pvalueCutoffSelect1').change( function(){
+			$('#pvalueCutoffInput').val($(this).val());
+			//alert($('#pvalueCutoffInput').val());
+			//$('#geneCentricForm').attr("action","Get Transcription Details");
+			$('#geneCentricForm').submit();
+		});
+		
+		$('#pvalueCutoffSelect2').change( function(){
+			$('#pvalueCutoffInput').val($(this).val());
+			$('#geneCentricForm').submit();
+		});
 	
 }); // end ready
 

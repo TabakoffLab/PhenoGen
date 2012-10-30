@@ -85,10 +85,11 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		selectedGene=Integer.parseInt(request.getParameter("geneSelect").trim());
 	}
 	
-	if(request.getParameter("pvalueCutoff")!=null){
-		pValueCutoff=Double.parseDouble(request.getParameter("pvalueCutoff").trim());
+	if(request.getParameter("pvalueCutoffInput")!=null){
+		pValueCutoff=Double.parseDouble(request.getParameter("pvalueCutoffInput").trim());
 	}
 	
+	log.debug("ACTION="+action+"  region="+region+"   gene="+myGene+"   pvalue="+pValueCutoff);
 	
 	if (    (((action != null) && action.equals("Get Transcription Details"))&&(!region))
 			|| (auto&&(!region))
@@ -292,7 +293,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 <form method="post" 
 		action="<%=formName%>"
 		enctype="application/x-www-form-urlencoded"
-		name="geneCentric">
+		name="geneCentricForm" id="geneCentricForm">
     	<label>Gene Identifier or Region:
   		<input type="text" name="geneTxt" id="geneTxt" size="35" value="<%= (myGene!=null)?myGene:"" %>">
   		</label>
@@ -303,7 +304,10 @@ pageTitle="Detailed Transcription Information "+myGene;%>
   </select>
   </label>
 
- <span style="padding-left:40px;"> <input type="submit" name="action" id="refreshBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
+ <span style="padding-left:40px;"> <input type="submit" name="refreshBTN" id="refreshBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
+ 
+ 	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
+    <input type="hidden" name="action" id="action" value="Get Transcription Details" />
   
 </form>
 </div>
