@@ -3,17 +3,11 @@ use strict;
 use warnings;
 use Cwd;
 use File::Copy;
-#require '/usr/share/tomcat/webapps/PhenoGen/perl/scripts/prepCircos.pl';
-#require '/usr/share/tomcat/webapps/PhenoGen/perl/scripts/readLocusSpecificPvalues.pl';
-#require '/usr/share/tomcat/webapps/PhenoGen/perl/scripts/postprocessCircos.pl';
+use Sys::Hostname;
 
 require 'prepCircos.pl';
 require 'readLocusSpecificPvalues.pl';
 require 'postprocessCircos.pl';
-
-#require '/usr/share/tomcat6/webapps/PhenoGenTEST/perl/scripts/prepCircos.pl';
-#require '/usr/share/tomcat6/webapps/PhenoGenTEST/perl/scripts/readLocusSpecificPvalues.pl';
-#require '/usr/share/tomcat6/webapps/PhenoGenTEST/perl/scripts/postprocessCircos.pl';
 
 sub setupDirectories{
 	# Check if these directories exist.
@@ -53,9 +47,10 @@ sub callCircos{
 	# Second, call circos
 	# Third, massage the svg output file created by circos
 	#
+	my $hostname = hostname;
+	print " host name $hostname \n";
 	my $baseDirectory = $geneCentricPath.$probeID."_".$timeStampString.'/';
 	print " base directory $baseDirectory \n";
-	#my $confDirectory = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/'.$geneName.'/'.$probeID.'/';
 	my $dataDirectory = $baseDirectory.'data/';
 	my $svgDirectory = $baseDirectory.'svg/';
 	my $confDirectory = $baseDirectory.'conf/';
@@ -63,12 +58,11 @@ sub callCircos{
 	#
 	# Create necessary directories if they do not already exist
 	#
-
 	setupDirectories($baseDirectory,$dataDirectory,$confDirectory,$svgDirectory);
 	my @chromosomeList = split(/;/, $chromosomeString);
 	my $chromosomeListRef = (\@chromosomeList);
 	print " Ready to call prepCircos \n";
-	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissuei,$dsn,$usr,$passwd);
+	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissuei,$dsn,$usr,$passwd,$hostname);
 	print " Finished prepCircos \n";	
 	
 
@@ -84,14 +78,33 @@ sub callCircos{
 	
 	
 	print " Calling Circos \n";
-	#my $circosBinary = '/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/bin/circos';
-	my $circosBinary = '/usr/local/circos-0.62-1/bin/circos';
-	my $perlBinary = '/usr/local/bin/perl';
+
+	my $circosBinary;
+	my $perlBinary;
+
+	if($hostname eq 'amc-kenny.ucdenver.pvt'){
+		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+		$perlBinary = '/usr/bin/perl';
+	}
+	elsif($hostname eq 'compbio.ucdenver.edu'){
+		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+		$perlBinary = '/usr/local/bin/perl';
+	}
+	elsif($hostname eq 'phenogen.ucdenver.edu'){
+		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+		$perlBinary = '/usr/local/bin/perl';
+	}
+	elsif($hostname eq 'stan.ucdenver.pvt'){
+		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+		$perlBinary = '/usr/local/bin/perl';
+	}
+	else{
+		die("Unrecognized Hostname:",$hostname,"\n");
+	}
+	
     my @systemArgs = ($perlBinary,$circosBinary, "-conf", $confDirectory."circos.conf");
-    #my @systemArgs = ($circosBinary, "-conf", $confDirectory."circos.conf");
     print " System call with these arguments: @systemArgs \n";
     system(@systemArgs);
-    #system("/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/bin/circos -conf /usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/ENSRNOG00000001300/7102228/conf/circos.conf");
     if ( $? == -1 )
 	{
   		print "System Call failed: $!\n";
@@ -106,7 +119,7 @@ sub callCircos{
 	
 	print " Finished running Circos \n";
 	print " Ready to call postprocessCircos \n";
-	postprocessCircos($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory);
+	postprocessCircos($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname);
 	print " Finished with Circos \n";
 }
 	my $arg1 = $ARGV[0]; # Ensembl Gene Name
@@ -126,8 +139,5 @@ sub callCircos{
 	my $arg15=$ARGV[14]; #user
 	my $arg16=$ARGV[15]; #password
 	callCircos($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11,$arg12,$arg13,$arg14,$arg15,$arg16);
-#callCircos 'ENSRNOG00000001300' 'P2rx4' 7102228 'transcript' 'rn12' 34943900 34961541 2.5 'Rn' "rn5;rn12;rnX" '/usr/share/tomcat/webapps/PhenoGenTEST/tmpData/geneData/ENSRNOG00000001300/' 'All';
 
 1;
-
-

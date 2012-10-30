@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use strict;
+
 #
 # Inputs: 
 #		probeID (this can be probeset or transcript)
@@ -58,7 +59,7 @@ my $debugLevel = 2;
 sub prepCircos
 {
 	# this routine creates configuration and data files for circos
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$selectedTissue,$dsn,$usr,$passwd)=@_;	
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$selectedTissue,$dsn,$usr,$passwd,$hostname)=@_;	
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# if probeChromosome is not in chromosomeList then we don't want to create a links file
@@ -82,12 +83,28 @@ sub prepCircos
 		print "Conf Directory: $confDirectory \n";
 		print "Data Directory: $dataDirectory \n";
 		print "One to create links: $oneToCreateLinks \n";
+		print "Hostname $hostname \n";
 		for (my $i = 0; $i < $numberOfChromosomes; $i++){
 			print " Chromosome ".$chromosomeList[$i]."\n";
 		}
 	}
 	my $genericConfLocation = '/usr/local/circos-0.62-1/etc/';
-	my $genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
+	my $genericConfLocation2;
+	if($hostname eq 'amc-kenny.ucdenver.pvt'){
+		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
+	}
+	elsif($hostname eq 'compbio.ucdenver.edu'){
+		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
+	}
+	elsif($hostname eq 'phenogen.ucdenver.edu'){
+		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
+	}
+	elsif($hostname eq 'stan.ucdenver.pvt'){
+		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
+	}
+	else{
+		die("Unrecognized Hostname:",$hostname,"\n");
+	}
 	my $karyotypeLocation = '/usr/local/circos-0.62-1/data/karyotype/';
 	createCircosConfFile($confDirectory,$genericConfLocation,$genericConfLocation2,$karyotypeLocation,$organism,$chromosomeListRef,$oneToCreateLinks,$oneToCreateLinks);
 	createCircosIdeogramConfFiles($confDirectory,$organism,$chromosomeListRef);
