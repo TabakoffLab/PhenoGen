@@ -151,7 +151,7 @@ public class Async_R_Session implements Runnable{
 						"\n Directory = "+ sessionPath);
                         try {
 				log.debug("sending message to notify administrator of problem");
-                                myAdminEmail.sendEmailToAdministrator();
+                                myAdminEmail.sendEmailToAdministrator("");
                         } catch (MessagingException e) {
 				log.error("error sending message to administrator");
 				throw new RuntimeException();

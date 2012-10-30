@@ -132,7 +132,7 @@ public class ExonDataTools {
                 myAdminEmail.setSubject("Exception thrown looking for previous results");
                 myAdminEmail.setContent("There was an error while looking for exon heatmap results in the DB.\n"+fullerrmsg);
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -233,7 +233,7 @@ public class ExonDataTools {
                     + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+","+perlArgs[9]+","+perlArgs[10]+","+perlArgs[11]+
                     ")\n\n"+myExec_session.getErrors());
             try {
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();
@@ -259,7 +259,7 @@ public class ExonDataTools {
                     + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
                     ")\n\n"+myExec_session.getErrors());
             try {
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();
@@ -294,7 +294,7 @@ public class ExonDataTools {
                 myAdminEmail.setContent("There was an error while running Affymetrix.Exon.HeatMap.R_HeatMapCorrData("
                         + rArgs[0] + " , " + rArgs[1] + " , " + rArgs[2] + "\n");
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -338,7 +338,7 @@ public class ExonDataTools {
                     myAdminEmail.setSubject("Exception thrown saving Exon results to DB");
                     myAdminEmail.setContent("There was an error while saving exon heatmap results in the DB.\n\n"+fullerrmsg);
                     try {
-                        myAdminEmail.sendEmailToAdministrator();
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
                         throw new RuntimeException();

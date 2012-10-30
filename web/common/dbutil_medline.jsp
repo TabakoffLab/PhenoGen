@@ -28,7 +28,7 @@
                         myMdlnErrorEmail.setSubject("Mdln Database is Unavailable");
                         myMdlnErrorEmail.setContent("The Mdln connection is unavailable.");
                         try {
-                        	myMdlnErrorEmail.sendEmailToAdministrator();
+                        	myMdlnErrorEmail.sendEmailToAdministrator(adminEmail);
                         } catch (Exception error) {
                                 log.error("exception while trying to send message to phenogen.help about mdlnConn connection", error);
                         }

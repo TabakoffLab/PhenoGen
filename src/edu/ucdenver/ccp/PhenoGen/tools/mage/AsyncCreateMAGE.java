@@ -189,7 +189,7 @@ public class AsyncCreateMAGE implements Runnable{
 				// Now just sent to administrator because they have to curate xml file before sending 
        	                	//myEmail.sendEmail();
 				log.debug("sending success message to administrator that MAGE-ML created successfully");
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 			} catch (Exception e) {
 				log.error("in exception of AsyncCreateMAGE while sending email", e);
 			}
@@ -224,7 +224,7 @@ public class AsyncCreateMAGE implements Runnable{
 						errorContent + "\n" +
 						"The directory is " + filePrefix;
                 		myEmail.setContent(errorContent);
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 				log.debug("just sent email to administrator notifying of perl errors");
 			} catch (Exception e) {
                         	log.error("exception while trying to send email message about perl", e);
@@ -259,7 +259,7 @@ public class AsyncCreateMAGE implements Runnable{
 						errorContent + "\n" +
 						"The directory is " + filePrefix;
                 		myEmail.setContent(errorContent);
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 				log.debug("just sent email to administrator notifying of validator errors");
 			} catch (Exception e) {
                         	log.error("exception while trying to send email message about validator", e);
@@ -298,7 +298,7 @@ public class AsyncCreateMAGE implements Runnable{
                                                 errorContent + "\n" +
                                                 "The directory is " + filePrefix;
                                 myEmail.setContent(errorContent);
-                                myEmail.sendEmailToAdministrator();
+                                myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                                 log.debug("just sent email to administrator notifying of perl errors");
                         } catch (Exception e2) {
                                 log.error("exception while trying to send email message about perl", e2);

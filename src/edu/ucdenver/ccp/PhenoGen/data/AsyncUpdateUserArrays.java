@@ -162,7 +162,7 @@ public class AsyncUpdateUserArrays implements Runnable{
 						"\n Thread name is "+thisThread.getName());
                         try {
 				log.debug("sending admin message");
-                                myAdminEmail.sendEmailToAdministrator();
+                                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 				log.debug("after sending admin message");
                         } catch (Exception e) {
 				log.error("error sending admin message", e);

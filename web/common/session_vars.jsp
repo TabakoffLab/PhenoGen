@@ -82,6 +82,7 @@
 	String javascriptDir = (String) session.getAttribute("javascriptDir");
 	String dbPropertiesFile = (String) session.getAttribute("dbPropertiesFile");
 	String ensDbPropertiesFile = (String) session.getAttribute("ensDbPropertiesFile");
+	String adminEmail = (String) session.getAttribute("adminEmail");
 
 	String userFilesRoot = (String) session.getAttribute("userFilesRoot");
 	String mainURL = (String) session.getAttribute("mainURL"); 

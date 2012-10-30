@@ -237,7 +237,7 @@ public class AsyncPromoterExtraction implements Runnable{
        	                	myEmail.sendEmail();
 				log.debug("just sent email to user notifying of extraction errors");
                 		myEmail.setContent(adminErrorContent);
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 				log.debug("just sent email to administrator notifying of extraction errors");
 			} catch (MessagingException e2) {
 				log.error("in exception of AsyncPromoterExtraction while sending email", e2);

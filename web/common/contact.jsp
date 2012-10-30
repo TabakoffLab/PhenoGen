@@ -23,7 +23,7 @@
 		myEmail.setSubject("PhenoGen "+subject);
 		myEmail.setContent("Feedback from "+ emailAddress + " :" + "\n\n" + feedback);
                 try {
-			myEmail.sendEmailToAdministrator();
+			myEmail.sendEmailToAdministrator(adminEmail);
 			//mySessionHandler.createSessionActivity(session.getId(), "Sent an email from contact page", dbConn);
                 } catch (Exception e) {
 			log.error("exception while trying to send feedback to administrator", e);

@@ -163,7 +163,7 @@ public class AsyncGeneDataTools extends Thread {
             myAdminEmail.setSubject("Exception thrown in AsyncGeneDataTools");
             myAdminEmail.setContent("There was an error while running AsyncGeneDataTools \nStackTrace:\n"+fullerrmsg);
             try {
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();

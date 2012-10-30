@@ -25,8 +25,9 @@ public class Email  {
 	private static String DEFAULT_TO = null;
 	private static String DEFAULT_FROM = "phenogen@ucdenver.edu";
 	//private static String administratorEmail = "inia.help@uchsc.edu";
-	private static String ADMINISTRATOR_EMAIL = "Spencer.Mahaffey@ucdenver.edu";
-	private static String ADMINISTRATOR2_EMAIL = "Laura.Clemens@ucdenver.edu";
+	//private static String ADMINISTRATOR_EMAIL = "Spencer.Mahaffey@ucdenver.edu";
+	//private static String ADMINISTRATOR2_EMAIL = "Laura.Clemens@ucdenver.edu";
+        private static String defaultAdmin="Spencer.Mahaffey@ucdenver.edu,Laura.Clemens@ucdenver.edu";
 	private Logger log = null;
 
 
@@ -146,7 +147,7 @@ public class Email  {
 					this.sendEmail();
 				} catch (InterruptedException ie) {
 					log.error("Got an InterruptedException when sleeping while waiting to deliver an email", ie);
-					this.sendEmailToAdministrator();
+					this.sendEmailToAdministrator(defaultAdmin);
 				}
 			} else {
 				log.error("there was something besides a connection error, so throwing the MessagingException", e);
@@ -156,10 +157,12 @@ public class Email  {
 		}
 	}
 
-	public void sendEmailToAdministrator() throws MessagingException, SendFailedException {
+	public void sendEmailToAdministrator(String adminEmail) throws MessagingException, SendFailedException {
 		log.debug("in sendEmailToAdministrator");
-	
-        	this.to = Email.ADMINISTRATOR_EMAIL;
+                String[] adminEmails=adminEmail.split(",");
+                if(adminEmails.length==0&&adminEmail.equals("")){
+                    adminEmails=this.defaultAdmin.split(",");
+                }
                 java.net.InetAddress localMachine =null;
                 try{
                     localMachine = java.net.InetAddress.getLocalHost();
@@ -167,9 +170,11 @@ public class Email  {
                     log.error("Unknown host exception while sending email.", ex);
                 }
 		this.content = "From Host:"+localMachine+"\nNOTE: This email was only sent to the administrator \n\n" +this.content;
-		sendEmail();
-        	this.to = Email.ADMINISTRATOR2_EMAIL;
-		sendEmail();
+                this.subject = localMachine+"::"+this.subject;
+                for(int i=0;i<adminEmails.length;i++){
+                    this.to = adminEmails[i];
+                    sendEmail();
+                }
 		log.debug("just sent email");
 	}
     

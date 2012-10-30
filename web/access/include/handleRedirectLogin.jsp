@@ -46,7 +46,7 @@
                         	myDbConnErrorEmail.setSubject("PhenoGen Database is Unavailable");
                         	myDbConnErrorEmail.setContent("The PhenoGen database connection is unavailable.");
                         	try {
-                        		myDbConnErrorEmail.sendEmailToAdministrator();
+                        		myDbConnErrorEmail.sendEmailToAdministrator(adminEmail);
                         	} catch (Exception error) {
                             	log.error("exception while trying to send message to phenogen.help about phenogen db connection", error);
                         	}

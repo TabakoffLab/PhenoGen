@@ -148,7 +148,7 @@ public class AsyncPromoter implements Runnable{
 				log.debug("just sent email to user notifying them of perl errors");
 
                 		myEmail.setContent(adminErrorContent);
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 				log.debug("just sent email to administrator notifying of perl errors");
 			} catch (MessagingException e2) {
 				log.error("in exception of AsyncPromoter while sending email", e2);

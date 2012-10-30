@@ -31,12 +31,13 @@ public class AsyncFileDownload implements Runnable{
         private boolean perFile=false;
 	private List<String> zipFileList = null;
         private User userLoggedIn=null;
+        private HttpServletRequest request;
 	
 	public AsyncFileDownload(HttpServletRequest request, ArrayList<String> checkedList, String downloadDir, String fileName,User userLoggedIn, boolean zipIt) {
 
 		log = Logger.getRootLogger();
 		log.debug("just instantiated AsyncFileDownload");
-
+		this.request=request;
 		this.checkedList = checkedList;
 		this.downloadDir = downloadDir;
 		this.fileName = fileName;
@@ -138,7 +139,7 @@ public class AsyncFileDownload implements Runnable{
                                 myEmail.setTo(userLoggedIn.getEmail());
                                 emailBody.append("This email was sent to " + userLoggedIn.getFull_name() + "\n\n");
                                 try {
-                                        myEmail.sendEmailToAdministrator();
+                                        myEmail.sendEmailToAdministrator((String) request.getSession().getAttribute("adminEmail"));
                                 } catch (Exception e2) {
                                         
                                 }

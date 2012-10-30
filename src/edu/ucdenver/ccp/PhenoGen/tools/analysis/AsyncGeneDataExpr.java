@@ -346,7 +346,7 @@ public class AsyncGeneDataExpr extends Thread {
                                 DSPath+","+sampleFile+","+outputDir+
                                 ") from AsyncGeneDataExpr Thread.\n");
                         try {
-                            myAdminEmail.sendEmailToAdministrator();
+                            myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                         } catch (Exception mailException) {
                             log.error("error sending message", mailException);
                             throw new RuntimeException();

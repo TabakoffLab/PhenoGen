@@ -94,6 +94,10 @@
 	<param-value>PERL5LIB=/opt/ensembl_ucsc/ensembl/modules,ORACLE_HOME=/usr/local/instantclient_10_2,TNS_ADMIN=/usr/local/instantclient_10_2,DYLD_LIBRARY_PATH=/usr/local/instantclient_10_2,LD_LIBRARY_PATH=/usr/local/instantclient_10_2,PATH=/usr/local/instantclient_10_2</param-value>
 </context-param>
 
+<context-param>
+	<param-name>adminEmail</param-name>
+	<param-value>admin1@domain.com,admin2@domain.com</param-value>
+</context-param>
 
 <!-- The rest of these parameters should never change -->
 

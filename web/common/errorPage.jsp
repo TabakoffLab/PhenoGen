@@ -92,7 +92,7 @@
 		myEmail.setContent(content);
 		log.debug("Sending an email message notifying phenogen.help that an error has occurred.");
         	try {
-        		myEmail.sendEmailToAdministrator();
+        		myEmail.sendEmailToAdministrator(adminEmail);
 			mySessionHandler.createSessionActivity(session.getId(), "Got error:  " + content, dbConn);
         	} catch (Exception e) {
                 	log.error("exception while trying to send message to phenogen.help about an error on website", e);

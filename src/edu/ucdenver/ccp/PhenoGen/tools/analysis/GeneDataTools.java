@@ -239,7 +239,7 @@ public class GeneDataTools {
                 myAdminEmail.setSubject("Exception thrown getting Gene Centric Results");
                 myAdminEmail.setContent("There was an error while getting gene centric results.\n"+fullerrmsg);
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -380,7 +380,7 @@ public class GeneDataTools {
                 myAdminEmail.setSubject("Exception thrown getting Gene Centric Results");
                 myAdminEmail.setContent("There was an error while getting gene centric results.\n"+fullerrmsg);
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -511,7 +511,7 @@ public class GeneDataTools {
             circosErrorMessage = circosErrorMessage + ")\n\n"+myExec_session.getErrors();
             myAdminEmail.setContent(circosErrorMessage);
             try {
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();
@@ -529,7 +529,7 @@ public class GeneDataTools {
             circosErrorMessage = circosErrorMessage + ")\n\n"+myExec_session.getErrors();
             myAdminEmail.setContent(circosErrorMessage);
             try {
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();
@@ -613,7 +613,7 @@ public class GeneDataTools {
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+","+perlArgs[9]+","+perlArgs[10]+","+perlArgs[11]+
                         ")\n\n"+myExec_session.getErrors());
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -627,7 +627,7 @@ public class GeneDataTools {
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
                         ")\n\n"+myExec_session.getErrors());
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -646,7 +646,7 @@ public class GeneDataTools {
                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
                 myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -730,7 +730,7 @@ public class GeneDataTools {
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+","+perlArgs[9]+","+perlArgs[10]+","+perlArgs[11]+
                         ")\n\n"+myExec_session.getErrors());
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -744,7 +744,7 @@ public class GeneDataTools {
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
                         ")\n\n"+myExec_session.getErrors());
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -763,7 +763,7 @@ public class GeneDataTools {
                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
                 myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -1426,7 +1426,7 @@ public class GeneDataTools {
                 myAdminEmail.setContent("There was an error while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+")\n\n"+myExec_session.getErrors());
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -1441,7 +1441,7 @@ public class GeneDataTools {
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+
                         ")\n\n"+myExec_session.getErrors());
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -1543,7 +1543,7 @@ public class GeneDataTools {
                     myAdminEmail.setContent("There was an error while running "
                             + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+")\n\n"+myExec_session.getErrors());
                     try {
-                        myAdminEmail.sendEmailToAdministrator();
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
                         throw new RuntimeException();

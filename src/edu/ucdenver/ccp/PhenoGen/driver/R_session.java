@@ -115,7 +115,7 @@ public class R_session {
                         	myAdminEmail.setContent("There was an error while running "+
 							tempRFilename + "\n\nFull Error Message:\n\n"+fullerrmsg+"\n\nFull Output:\n"+fullOutput); 
                         	try {
-                                	myAdminEmail.sendEmailToAdministrator();
+                                	myAdminEmail.sendEmailToAdministrator("");
 					return errorMsg;
                         	} catch (Exception e) {
 					log.error("error sending message", e);
@@ -145,7 +145,7 @@ public class R_session {
                         myAdminEmail.setContent("There was an error while running "+
 						tempRFilename + "\n\nFull Exception:\n"+fullerrmsg+"\n\nFull Output:\n"+fullOutput); 
                         try {
-                                myAdminEmail.sendEmailToAdministrator();
+                                myAdminEmail.sendEmailToAdministrator("");
                         } catch (Exception mailException) {
 				log.error("error sending message", mailException);
 				throw new RuntimeException();

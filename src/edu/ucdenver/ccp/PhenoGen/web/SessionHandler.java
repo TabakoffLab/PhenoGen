@@ -57,6 +57,7 @@ public class SessionHandler {
 	private String downloadURL = "";
 	private String host = "";
         private String perlEnvVar="";
+        private String adminEmail="";
 	
         private Dataset selectedDataset = null;
         private Dataset.DatasetVersion selectedDatasetVersion = null;
@@ -421,6 +422,14 @@ public class SessionHandler {
 		this.version = inInt;
 	}
 
+        public String getAdminEmail() {
+		return adminEmail;
+	}
+
+	public void setAdminEmail(String adminEmail) {
+		this.adminEmail = adminEmail;
+	}
+        
 	public int getGene_list_id() {
 		return gene_list_id;
 	}
@@ -485,6 +494,7 @@ public class SessionHandler {
                 session.setAttribute("ensDbPropertiesFile", this.getENSDbPropertiesFile());
 		//log.debug("in SessionHandler.dbPropertiesFile = "+ dbPropertiesFile);
                 session.setAttribute("perlEnvVar", this.getPerlEnvVar());
+                session.setAttribute("adminEmail", this.getAdminEmail());
                 
 
 	}

@@ -195,7 +195,7 @@ public class AsyncAffyPowerTools implements Runnable {
                 		myEmail.setContent(errorContent);
        	                	myEmail.sendEmail();
                 		myEmail.setContent(adminErrorContent);
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator("");
 				log.debug("just sent email to administrator notifying of Affymetrix Power Tools errors");
 			} catch (MessagingException e2) {
 				log.error("in exception of AsyncAffyPowerTools while sending email", e2);

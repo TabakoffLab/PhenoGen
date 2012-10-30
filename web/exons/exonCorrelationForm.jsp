@@ -128,7 +128,7 @@ if(myGeneArray!=null){
 			"' encountered system error 'No Ensembl IDs in Gene List' on PhenoGen website");
             myErrorEmail.setContent("This gene list(ID#"+selectedGeneList.getGene_list_id()+") is missing any identifiers that can be linked to Ensembl IDs.  Please report the type of identifiers in the gene list to the administrator.  An email has already been sent alerting the administrator to the problem.  It is possible a new identifier data source is needed to link the IDs to Ensembl IDs. Sorry for any inconvenience.");
             try {
-                        	myErrorEmail.sendEmailToAdministrator();
+                        	myErrorEmail.sendEmailToAdministrator(adminEmail);
                         } catch (Exception error) {
                                 log.error("exception while trying to send message to phenogen.help about jackson lab connection", error);
                         }
