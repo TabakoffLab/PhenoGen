@@ -5,10 +5,10 @@ use strict;
 #
 sub postprocessCircosReverse{
 
-	my($cutoff,$organism,$dataDirectory,$svgDirectory,$hostname) = @_;
-	
-	
-	#my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory)=@_;
+	my($cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueListRef) = @_;
+	my @tissueList = @{$tissueListRef};
+	my $numberOfTissues = scalar @tissueList;
+
 	# Open the file that has tooltip information for links
 	my $toolTipFileName = $dataDirectory."LinkToolTips.txt";
 	# Sample line in tooltip table: Link_Brown_Adipose_00004	19	53407142	19	53991142	1.8771290771
@@ -17,6 +17,7 @@ sub postprocessCircosReverse{
 	my $toolTipHashKey;
 	my $toolTipHashValue;
 	my $mbString;
+	my $pvalueString;
 	open my $TOOLTIPSFILEHANDLE,'<',$toolTipFileName || die ("Can't open $toolTipFileName:$!");
 	while(<$TOOLTIPSFILEHANDLE>){
 		@tipArray = split("\t", $_);
@@ -28,7 +29,8 @@ sub postprocessCircosReverse{
 		$toolTipHashValue = $toolTipHashValue ."Gene: ".$tipArray[3].':';
 		$mbString = sprintf "%.1f", $tipArray[4]/1000000;
 		$toolTipHashValue = $toolTipHashValue .$mbString." mb  ";
-		$toolTipHashValue = $toolTipHashValue." Negative Log pValue: ".$tipArray[5];
+		$pvalueString = sprintf "%.1f",$tipArray[5];
+		$toolTipHashValue = $toolTipHashValue." Negative Log pValue: ".$pvalueString;
 		chomp $toolTipHashValue;
 		$toolTipHash{$toolTipHashKey}=$toolTipHashValue;
 	}
@@ -155,19 +157,25 @@ sub postprocessCircosReverse{
 			elsif($nextLineIsPlot0>2){
 				$nextLineIsPlot0 = 0;
 				#Add lines for Tissue Labels and what yellow means
-				print $NEWSVGFILEHANDLE $_."\n";
-				print $NEWSVGFILEHANDLE '<text x="1475.0" y="450.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(107,154,200)" >Brain</text>'."\n";
-				if($organism eq "Rn"){
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="575.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(251,106,74)" >Heart</text>'."\n";
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="700.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(116,196,118)" >Liver</text>'."\n";
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="825.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(158,154,200)" >BAT</text>'."\n";
+				
+				my %colorHash;
+				$colorHash{'Brain'} = 'rgb(107,154,200)';
+				$colorHash{'Heart'} = 'rgb(251,106,74)';
+				$colorHash{'Liver'} = 'rgb(116,196,118)';
+				$colorHash{'BAT'} = 'rgb(158,154,200)';
+				my @yArray;
+				$yArray[0] = '450.0';
+				$yArray[1] = '575.0';
+				$yArray[2] = '700.0';
+				$yArray[3] = '825.0';		
+				
+				for(my $i = 0; $i < $numberOfTissues ; $i ++){
+					print $NEWSVGFILEHANDLE '<text x="1475.0" y="',$yArray[$i],'" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:',$colorHash{$tissueList[$i]},'" >',$tissueList[$i],'</text>'."\n";
 				}
 				print $NEWSVGFILEHANDLE '<text x="1475.0" y="255.0" font-size="40px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Megabases</text>'."\n";
 				print $NEWSVGFILEHANDLE '<text x="1475.0" y="60.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Yellow means</text>'."\n";
 				print $NEWSVGFILEHANDLE '<text x="1475.0" y="90.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >negative log</text>'."\n";
 				print $NEWSVGFILEHANDLE '<text x="1475.0" y="120.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >p-value > '.$cutoff.'</text>'."\n";
-				#print $NEWSVGFILEHANDLE '<text x="2680.0" y="2650.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Yellow means</text>'."\n";
-				#print $NEWSVGFILEHANDLE '<text x="2750.0" y="2680.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >negative log p-value > '.$cutoff.'</text>'."\n";
 			}
 			else{
 				print $NEWSVGFILEHANDLE $_."\n";

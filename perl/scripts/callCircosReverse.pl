@@ -41,7 +41,7 @@ sub setupDirectories{
 
 
 sub callCircosReverse{
-	my($cutoff,$organism,$geneCentricPath)=@_;
+	my($cutoff,$organism,$geneCentricPath,$tissueString,$chromosomeString)=@_;
 	#
 	# General outline of process:
 	# First, prep circos conf and data files
@@ -59,24 +59,37 @@ sub callCircosReverse{
 	my $confDirectory = $baseDirectory.'conf/';
 	print " conf directory $confDirectory \n";
 
-	my $chromosomeString;
-	if($organism eq 'Rn'){
-		$chromosomeString = "rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX";
+	if(!defined($chromosomeString)){
+		if($organism eq 'Rn'){
+			$chromosomeString = "rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX";
+		}
+		else
+		{
+			$chromosomeString = "mm1;mm2;mm3;mm4;mm5;mm6;mm7;mm8;mm9;mm10;mm11;mm12;mm13;mm14;mm15;mm16;mm17;mm18;mm19;mmX";
+		}
 	}
-	else
-	{
-		$chromosomeString = "mm1;mm2;mm3;mm4;mm5;mm6;mm7;mm8;mm9;mm10;mm11;mm12;mm13;mm14;mm15;mm16;mm17;mm18;mm19;mmX";
+	if(!defined($tissueString)){
+		if($organism eq 'Rn'){
+			$tissueString='Brain;Heart;Liver;BAT;';
+			#$tissueString='Brain;Liver;BAT;';
+		}
+		else{
+			$tissueString='Brain;';
+		}
 	}
-	my $tissue='All';
+	print " Chromosome String: $chromosomeString \n";
+	print " Tissue String: $tissueString \n";
 	#
 	# Create necessary directories if they do not already exist
 	#	
 	setupDirectories($baseDirectory,$dataDirectory,$confDirectory,$svgDirectory);
 	my @chromosomeList = split(/;/, $chromosomeString);
 	my $chromosomeListRef = (\@chromosomeList);
+	my @tissueList = split(/;/, $tissueString);
+	my $tissueListRef = (\@tissueList);
 	my $hostname = hostname;
 	print " Ready to call prepCircos \n";
-	prepCircosReverse($inputFileName,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissue,$hostname);
+	prepCircosReverse($inputFileName,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$hostname);
 	print " Finished prepCircos \n";	
 
 	#-- get current directory
@@ -135,15 +148,17 @@ sub callCircosReverse{
 	
 
 	print " Ready to call postprocessCircos \n";
-	postprocessCircosReverse($cutoff,$organism,$dataDirectory,$svgDirectory,$hostname);
+	postprocessCircosReverse($cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueListRef);
 	print " Finished with Circos \n";
 }
 
 	my $arg1 = $ARGV[0]; # Cutoff
 	my $arg2 = $ARGV[1]; # Organism
 	my $arg3 = $ARGV[2]; #	Region Centric Path
+	my $arg4 = $ARGV[3]; #	Tissue String
+	my $arg5 = $ARGV[4]; # Chromosome String
 
-	callCircosReverse($arg1, $arg2, $arg3);
+	callCircosReverse($arg1, $arg2, $arg3, $arg4, $arg5);
 
 
 
