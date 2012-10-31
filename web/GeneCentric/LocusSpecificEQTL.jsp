@@ -309,9 +309,9 @@
 				selectedTissueError=true;
 			}
 			else{
-				log.debug("could not get selected tissues");
-				log.debug("and we did not previously allow chromosome selection");
-				log.debug("therefore include all tissues");
+				//log.debug("could not get selected tissues");
+				//log.debug("and we did not previously allow chromosome selection");
+				//log.debug("therefore include all tissues");
 				// we are not allowing chromosome/tissue selection.  Include all tissues.
 				selectedTissues = new String[numberOfTissues];
 				selectedTissueError=false;
@@ -347,9 +347,9 @@
 			selectedChromosomeError=true;
 		}
 		else{
-			log.debug("could not get selected chromosomes");
-			log.debug("and we did not previously allow chromosome selection");
-			log.debug("therefore include all chromosomes");
+			//log.debug("could not get selected chromosomes");
+			//log.debug("and we did not previously allow chromosome selection");
+			//log.debug("therefore include all chromosomes");
 			// we are not allowing chromosome selection.  Include all chromosomes.
 			selectedChromosomes = new String[numberOfChromosomes];
 			selectedChromosomeError=false;
@@ -387,7 +387,13 @@
 				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
 			}
 			log.debug("Host Name "+hostName);
-			String filePrefixWithPath = (String)request.getParameter("geneCentricPath")+transcriptClusterID+"_circos";
+			String filePrefixWithPath;
+			if(request.getParameter("geneCentricPath")!=null){
+				filePrefixWithPath = (String)request.getParameter("geneCentricPath")+transcriptClusterID+"_circos";
+			}
+			else{
+				filePrefixWithPath = (String)session.getAttribute("geneCentricPath")+transcriptClusterID+"_circos";
+			}
 			// create the short svg directory name which incoporates the date for uniqueness
 			java.util.Date dNow = new java.util.Date( );
    			SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMddhhmmss");
@@ -418,12 +424,14 @@
      		perlScriptArguments[11]=chromosomeString;
      		perlScriptArguments[12]=geneCentricPath;
      		perlScriptArguments[13]=timeStampString;
-     		perlScriptArguments[14]="All";
+     		perlScriptArguments[14]=tissueString;
+     		//perlScriptArguments[14]="All";
      		perlScriptArguments[15]=dsn;
             perlScriptArguments[16]=OracleUserName;
             perlScriptArguments[17]=password;
 
 			log.debug(" Calling createCircosFiles from GeneDataTools");
+			//log.debug(" filePrefixWithPath "+filePrefixWithPath);
 			//
 			// call perl script
 			//
