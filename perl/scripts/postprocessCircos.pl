@@ -6,8 +6,10 @@ use strict;
 sub postprocessCircos{
 
 
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory)=@_;
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname, $tissueListRef)=@_;
 	# Open the file that has tooltip information for links
+	my @tissueList = @{$tissueListRef};
+	my $numberOfTissues = scalar @tissueList;
 	my $toolTipFileName = $dataDirectory."LinkToolTips.txt";
 	my %toolTipHash;
 	my @tipArray;
@@ -49,7 +51,7 @@ sub postprocessCircos{
 			next;
 		}
 		elsif($countFileLines == 3){
-			writeTopLines($NEWSVGFILEHANDLE);
+			writeTopLines($NEWSVGFILEHANDLE,$hostname);
 		}
 		else{
 			if($nextLineIsLinkPath == 1){
@@ -132,12 +134,26 @@ sub postprocessCircos{
 				#Look for the probe id text, for example: <text x="574.2" y="2446.5" font-size="32.5px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" transform="rotate(-45.1,574.2,2446.5)">7102228</text>
 				#Add lines for Tissue Labels and what yellow means
 				print $NEWSVGFILEHANDLE $_."\n";
-				print $NEWSVGFILEHANDLE '<text x="1475.0" y="450.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(107,154,200)" >Brain</text>'."\n";
-				if($organism eq "Rn"){
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="575.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(251,106,74)" >Heart</text>'."\n";
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="700.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(116,196,118)" >Liver</text>'."\n";
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="825.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(158,154,200)" >BAT</text>'."\n";
+				my %colorHash;
+				$colorHash{'Brain'} = 'rgb(107,154,200)';
+				$colorHash{'Heart'} = 'rgb(251,106,74)';
+				$colorHash{'Liver'} = 'rgb(116,196,118)';
+				$colorHash{'BAT'} = 'rgb(158,154,200)';
+				my @yArray;
+				$yArray[0] = '450.0';
+				$yArray[1] = '575.0';
+				$yArray[2] = '700.0';
+				$yArray[3] = '825.0';		
+				
+				for(my $i = 0; $i < $numberOfTissues ; $i ++){
+					print $NEWSVGFILEHANDLE '<text x="1475.0" y="',$yArray[$i],'" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:',$colorHash{$tissueList[$i]},'" >',$tissueList[$i],'</text>'."\n";
 				}
+				#print $NEWSVGFILEHANDLE '<text x="1475.0" y="450.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(107,154,200)" >Brain</text>'."\n";
+				#if($organism eq "Rn"){
+					#print $NEWSVGFILEHANDLE '<text x="1475.0" y="575.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(251,106,74)" >Heart</text>'."\n";
+					#print $NEWSVGFILEHANDLE '<text x="1475.0" y="700.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(116,196,118)" >Liver</text>'."\n";
+					#print $NEWSVGFILEHANDLE '<text x="1475.0" y="825.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(158,154,200)" >BAT</text>'."\n";
+				#}
 				print $NEWSVGFILEHANDLE '<text x="1475.0" y="255.0" font-size="40px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Megabases</text>'."\n";
 				print $NEWSVGFILEHANDLE '<text x="2680.0" y="2650.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Yellow means</text>'."\n";
 				print $NEWSVGFILEHANDLE '<text x="2750.0" y="2680.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >negative log p-value > '.$cutoff.'</text>'."\n";
@@ -153,13 +169,20 @@ sub postprocessCircos{
 1;
 
 sub writeTopLines{
-	my ($FILEHANDLE) = @_;
+	my ($FILEHANDLE,$hostname) = @_;
 	print $FILEHANDLE '<?xml version="1.0" standalone="no"?>'."\n";
 	print $FILEHANDLE '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n";
 	print $FILEHANDLE '<svg width="3000px" height="3000px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="init(evt)" cursor="move">'."\n";
-	print $FILEHANDLE '<script xlink:href="/PhenoGenTEST/javascript/SVGPanCircos.js"/>'."\n";
-	print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGenTEST/javascript/helper_functions.js" />'."\n";
-	print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGenTEST/javascript/textFlow.js" />'."\n";
+	if($hostname eq 'compbio.ucdenver.edu'){
+		print $FILEHANDLE '<script xlink:href="/PhenoGenTEST/javascript/SVGPanCircos.js"/>'."\n";
+		print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGenTEST/javascript/helper_functions.js" />'."\n";
+		print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGenTEST/javascript/textFlow.js" />'."\n";
+	}
+	else{
+		print $FILEHANDLE '<script xlink:href="/PhenoGen/javascript/SVGPanCircos.js"/>'."\n";
+		print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGen/javascript/helper_functions.js" />'."\n";
+		print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGen/javascript/textFlow.js" />'."\n";	
+	}
  	print $FILEHANDLE '<style type="text/css"> '."\n";
 	print $FILEHANDLE '.Heart'."\n";
 	print $FILEHANDLE '{'."\n";

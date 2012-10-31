@@ -2,66 +2,16 @@
 use strict;
 
 #
-# Inputs: 
-#		probeID (this can be probeset or transcript)
-#       psLevel (telling if this is at the transcript or probeset level) 
-#       cutoff (for the negative log p values)
-#       organism ('Rn','Mm' etc.)
-#       directory for storing specific circos conf files 
-#       directory for storing specific circos data files
-#
-#		we also need two more directories, but they will be fixed on each platform (dev, test and production)
-#		So, these can be coded from the host name or something...
-#       directory for storing generic circos conf files
-#       directory that has karyotype data
-#
-#
-#
-# Outputs:
-#		...
-#
-#
-#
-# Conf Files created during run:
-#		circosPValues.conf
-#		circosLinks.conf
-#       circosProbesetText.conf
-#       circos.conf
-#       ideogram.conf
-#
-#
-# Other required conf files:
-#
-#       housekeeping, colors and image should not need to be changed.
-#       housekeeping.conf
-#       colors_fonts_patterns.conf
-#       image.conf
-#
-#		ticks.conf can be created once by hand.
-#		ticks.conf
-#
-# Data Files created during run:
-#		circosProbesetText.conf requires 1 data file which depends on the probeset
-#		circosPValues.conf requires 1 data file for each tissue.  Each of these data files depends on the probeset
-#		circosLinks.conf requires the most data files.  For each tissue and probeset, there will be multiple data files
-#		Have to be sure that no links are created if the probeset chromosome is not included.
-#		There will be one file for each link. This will enable tooltips to show the location of the SNP for the link interactively.
-#
-# Other required data files:
-#		karyotype file - either mouse or rat
-#
-#
-#
-#
-#
 #
 my $debugLevel = 2;
 sub prepCircos
 {
 	# this routine creates configuration and data files for circos
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$selectedTissue,$dsn,$usr,$passwd,$hostname)=@_;	
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$dsn,$usr,$passwd,$hostname)=@_;	
 	my @chromosomeList = @{$chromosomeListRef};
+	my @tissueList = @{$tissueListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
+	my $numberOfTissues = scalar @tissueList;
 	# if probeChromosome is not in chromosomeList then we don't want to create a links file
 	my $oneToCreateLinks = 0;
 	for (my $i = 0 ; $i < $numberOfChromosomes; $i++){
@@ -87,6 +37,9 @@ sub prepCircos
 		for (my $i = 0; $i < $numberOfChromosomes; $i++){
 			print " Chromosome ".$chromosomeList[$i]."\n";
 		}
+		for (my $i = 0; $i < $numberOfTissues; $i++){
+			print " Tissue ".$tissueList[$i]."\n";
+		}
 	}
 	my $genericConfLocation = '/usr/local/circos-0.62-1/etc/';
 	my $genericConfLocation2;
@@ -110,11 +63,11 @@ sub prepCircos
 	createCircosIdeogramConfFiles($confDirectory,$organism,$chromosomeListRef);
 	createCircosProbesetTextConfFile($dataDirectory,$confDirectory);
 	createCircosProbesetTextDataFile($dataDirectory,$geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$organism);
-	createCircosPvaluesConfFile($confDirectory,$dataDirectory,$cutoff,$organism,$selectedTissue);
+	createCircosPvaluesConfFile($confDirectory,$dataDirectory,$cutoff,$organism,$tissueListRef);
 	my $eqtlAOHRef = readLocusSpecificPvalues($probeID,$organism,$chromosomeListRef,$dsn,$usr,$passwd);	
-	createCircosPvaluesDataFiles($dataDirectory,$probeID,$organism,$eqtlAOHRef,$chromosomeListRef,$selectedTissue);
+	createCircosPvaluesDataFiles($dataDirectory,$probeID,$organism,$eqtlAOHRef,$chromosomeListRef);
 	if($oneToCreateLinks == 1){
-		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$probeChromosome,$probeStart,$probeStop,$cutoff,$selectedTissue);	
+		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$probeChromosome,$probeStart,$probeStop,$cutoff,$tissueListRef);	
 	}
 }
 
@@ -265,7 +218,9 @@ sub createCircosProbesetTextDataFile{
 
 sub createCircosPvaluesConfFile{
 	# Create the circos configuration file that allows displaying pvalue histograms
-	my ($confDirectory,$dataDirectory,$cutoff,$organism,$selectedTissue)=@_;
+	my ($confDirectory,$dataDirectory,$cutoff,$organism,$tissueListRef)=@_;
+	my @tissueList = @{$tissueListRef};
+	my $numberOfTissues = scalar @tissueList;
 	if($debugLevel >= 2){
 		print " In createCircosPvaluesConfFile \n";
 	}
@@ -286,61 +241,37 @@ sub createCircosPvaluesConfFile{
 	my $innerRadius;
 	my $outerRadius;
 	my $plotFileName;
+	my %colorHash;
 	
+	$colorHash{'Heart'}='red';
+	$colorHash{'Brain'}='blue';
+	$colorHash{'Liver'}='green';
+	$colorHash{'BAT'}='purple';
+	my %filenameHash;
 	
-	# Need to define inner and outer radius
-	# It depends on how many tissues will be represented.
-	my $numberOfTissues = 1;
-	# The following values hold if there is only one tissue:
-	$innerRadius = '0.75r';
-	$outerRadius = '0.85r + 100p';
-	if(($organism eq 'Rn')&&($selectedTissue eq 'All')){
-		$numberOfTissues = 4;
+	$filenameHash{'Heart'}='circosHeartPValues.txt';
+	$filenameHash{'Brain'}='circosBrainPValues.txt';
+	$filenameHash{'Liver'}='circosLiverPValues.txt';
+	$filenameHash{'BAT'}='circosBATPValues.txt';	
+	
+	foreach my $key (keys(%colorHash)){
+	
+		print " key $key $colorHash{$key} \n";
+	
 	}
-	if(($organism eq 'Mm') || (($organism eq 'Rn')&&(($selectedTissue='all')||($selectedTissue='Brain')) )){
+	
+	my @innerRadiusArray = ('0.85r','0.75r','0.65r','0.55r');
+	my @outerRadiusArray = ('0.85r + 100p','0.75r + 100p','0.65r + 100p','0.55r + 100p');
+
+	for(my $i=0; $i<$numberOfTissues; $i++){
+		$plotColor = $colorHash{$tissueList[$i]};
+		$plotFileName = $dataDirectory.$filenameHash{$tissueList[$i]};
+		$innerRadius=$innerRadiusArray[$i];
+		$outerRadius=$outerRadiusArray[$i];
 		
-		$plotColor = 'blue';
-		if($numberOfTissues == 4){
-			$innerRadius = '0.85r';
-			$outerRadius = '0.85r +100p';
-		}
-		$plotFileName = $dataDirectory.'circosBrainPValues.txt';
 		writePlot($PLOTFILEHANDLE,$plotFileName,$plotColor,$innerRadius,$outerRadius,$cutoff);
 	}
-	# Heart is next.  Heart applies only to Rat
-	if(($organism eq 'Rn')&&(($selectedTissue='All')||($selectedTissue='Heart'))){
-	
-			
-		$plotColor = 'red';
-		if($numberOfTissues == 4){
-			$innerRadius = '0.75r';
-			$outerRadius = '0.75r +100p';
-		}
-		$plotFileName = $dataDirectory.'circosHeartPValues.txt';
-		writePlot($PLOTFILEHANDLE,$plotFileName,$plotColor,$innerRadius,$outerRadius,$cutoff);
-	}
-	# Liver is next. Liver applies only to Rat
-	if(($organism eq 'Rn')&&(($selectedTissue='All')||($selectedTissue='Liver'))){
-	
-		$plotColor = 'green';
-		if($numberOfTissues == 4){
-			$innerRadius = '0.65r';
-			$outerRadius = '0.65r +100p';
-		}
-		$plotFileName = $dataDirectory.'circosLiverPValues.txt';
-		writePlot($PLOTFILEHANDLE,$plotFileName,$plotColor,$innerRadius,$outerRadius,$cutoff);
-	}
-	
-	# BAT is next
-	if(($organism eq 'Rn')&&(($selectedTissue='All')||($selectedTissue='BAT'))){
-		$plotColor = 'purple';
-		if($numberOfTissues == 4){
-			$innerRadius = '0.55r';
-			$outerRadius = '0.55r +100p';
-		}
-		$plotFileName = $dataDirectory.'circosBATPValues.txt';
-		writePlot($PLOTFILEHANDLE,$plotFileName,$plotColor,$innerRadius,$outerRadius,$cutoff);
-	}
+
 	close($PLOTFILEHANDLE);	
 }
 
@@ -357,7 +288,7 @@ sub createCircosPvaluesDataFiles{
 	# The 2nd column is the location of the SNP 
 	# The 3rd column has been modified so the histogram shows up better.
 	# The 3rd column might be modified by adding 5000000
-	my ($dataDirectory,$probeID,$organism, $eqtlAOHRef,$chromosomeListRef,$selectedTissue) = @_;
+	my ($dataDirectory,$probeID,$organism, $eqtlAOHRef,$chromosomeListRef) = @_;
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	if($debugLevel >= 2){
@@ -414,7 +345,9 @@ sub createCircosLinksConfAndData{
 	# Create configuration and data file for circos links
 	# This is more complicated since there will be a varying number of data files
 	# Therefore, keeping the configuration and data file creation together
-	my ($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$probeChromosome,$probeStart,$probeStop,$cutoff,$selectedTissue) = @_;
+	my ($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$probeChromosome,$probeStart,$probeStop,$cutoff,$tissueListRef) = @_;
+	my @tissueList = @{$tissueListRef};
+	my $numberOfTissues = scalar @tissueList;
 	if($debugLevel >= 2){
 		print " In createCircosLinksConfAndData \n";
 	}
@@ -427,10 +360,7 @@ sub createCircosLinksConfAndData{
 	my $tissue;
 	my $linkColor;
 	my $keepLink;
-	my $numberOfTissues = 1;
-	if(($organism eq 'Rn')&&($selectedTissue eq 'All')){
-		$numberOfTissues = 4;
-	}
+
 	for($i=0;$i<$arrayLength;$i++){
 		if($eqtlAOH[$i]{pvalue} > $cutoff){
 			# Check whether we want this type of link
@@ -443,17 +373,15 @@ sub createCircosLinksConfAndData{
 			}
 			$keepLink = 0;
 			if($organism eq 'Rn'){
-				if($selectedTissue eq "All"){
-					$keepLink = 1;
-				}
-				elsif($selectedTissue eq $tissue){
+				for(my $j=0; $j< $numberOfTissues; $j++){
+					if($tissue eq $tissueList[$j]){
 						$keepLink = 1;
+					}
 				}
 			}
 			elsif($organism eq 'Mm'){
-				if($tissue eq "Brain"){
-					$keepLink = 1;
-				}
+				# We don't allow them to really choose tissues for mouse, so this will always be 1.
+				$keepLink = 1;
 			}
 			if($keepLink == 1){
 				$linkCount++;
@@ -534,10 +462,14 @@ sub writeLink{
 	if($numberOfTissues == 4){
 		print $FILEHANDLE  "radius = 0.55r"."\n";
 	}
+	elsif($numberOfTissues == 3){
+		print $FILEHANDLE  "radius = 0.65r"."\n";	
+	}
+	elsif($numberOfTissues == 2){
+		print $FILEHANDLE  "radius = 0.75r"."\n";
+	}
 	else{
-		# This is mouse
-		# Because we only have one tissue we make the link lines go farther out in the circle
-		print $FILEHANDLE "radius = 0.75r"."\n";
+		print $FILEHANDLE "radius = 0.85r"."\n";
 	}
 	print $FILEHANDLE  "bezier_radius = .1r"."\n";
 	print $FILEHANDLE  "show = yes"."\n";

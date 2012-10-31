@@ -40,7 +40,7 @@ sub setupDirectories{
 
 
 sub callCircos{
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$chromosomeString,$geneCentricPath,$timeStampString,$tissuei,$dsn,$usr,$passwd)=@_;
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$chromosomeString,$geneCentricPath,$timeStampString,$tissueString,$dsn,$usr,$passwd)=@_;
 	#
 	# General outline of process:
 	# First, prep circos conf and data files
@@ -55,14 +55,18 @@ sub callCircos{
 	my $svgDirectory = $baseDirectory.'svg/';
 	my $confDirectory = $baseDirectory.'conf/';
 	print " svg directory $svgDirectory \n";
+	print "Tissue String $tissueString \n";
+
 	#
 	# Create necessary directories if they do not already exist
 	#
 	setupDirectories($baseDirectory,$dataDirectory,$confDirectory,$svgDirectory);
 	my @chromosomeList = split(/;/, $chromosomeString);
 	my $chromosomeListRef = (\@chromosomeList);
+	my @tissueList = split(/;/, $tissueString);
+	my $tissueListRef = (\@tissueList);
 	print " Ready to call prepCircos \n";
-	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissuei,$dsn,$usr,$passwd,$hostname);
+	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$dsn,$usr,$passwd,$hostname);
 	print " Finished prepCircos \n";	
 	
 
@@ -119,7 +123,7 @@ sub callCircos{
 	
 	print " Finished running Circos \n";
 	print " Ready to call postprocessCircos \n";
-	postprocessCircos($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname);
+	postprocessCircos($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueListRef);
 	print " Finished with Circos \n";
 }
 	my $arg1 = $ARGV[0]; # Ensembl Gene Name
@@ -134,7 +138,7 @@ sub callCircos{
 	my $arg10= $ARGV[9]; # Chromosome String
 	my $arg11= $ARGV[10]; # geneCentricPath
 	my $arg12=$ARGV[11]; #time stamp string 
-	my $arg13=$ARGV[12]; #selected Tissue
+	my $arg13=$ARGV[12]; #selected Tissue String
 	my $arg14=$ARGV[13]; #dsn
 	my $arg15=$ARGV[14]; #user
 	my $arg16=$ARGV[15]; #password
