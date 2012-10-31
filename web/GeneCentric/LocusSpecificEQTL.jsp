@@ -411,7 +411,7 @@
      		// the 0 element in the perlScriptArguments array must be "perl" ??
      		perlScriptArguments[0] = "perl";
      		// the 1 element in the perlScriptArguments array must be the script name including path
-     		perlScriptArguments[1]="/usr/share/tomcat/webapps/PhenoGen/perl/scripts/callCircos.pl";
+     		perlScriptArguments[1]=perlScriptDirectory+"callCircos.pl";
      		perlScriptArguments[2]=ensemblIdentifier;
      		perlScriptArguments[3]=geneSymbol;
      		perlScriptArguments[4]=transcriptClusterID;
