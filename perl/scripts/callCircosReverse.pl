@@ -5,17 +5,10 @@ use Cwd;
 use File::Copy;
 use Sys::Hostname;
 
-#require '/usr/share/tomcat/webapps/PhenoGen/perl/scripts/prepCircos.pl';
-#require '/usr/share/tomcat/webapps/PhenoGen/perl/scripts/readLocusSpecificPvalues.pl';
-#require '/usr/share/tomcat/webapps/PhenoGen/perl/scripts/postprocessCircos.pl';
+require 'prepCircosReverse.pl';
+require 'postprocessCircosReverse.pl';
 
-require 'prepCircos.pl';
-require 'readLocusSpecificPvalues.pl';
-require 'postprocessCircos.pl';
 
-#require '/usr/share/tomcat6/webapps/PhenoGenTEST/perl/scripts/prepCircos.pl';
-#require '/usr/share/tomcat6/webapps/PhenoGenTEST/perl/scripts/readLocusSpecificPvalues.pl';
-#require '/usr/share/tomcat6/webapps/PhenoGenTEST/perl/scripts/postprocessCircos.pl';
 
 sub setupDirectories{
 	# Check if these directories exist.
@@ -47,34 +40,45 @@ sub setupDirectories{
 
 
 
-sub callCircos{
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$chromosomeString,$geneCentricPath,$timeStampString,$tissue)=@_;
+sub callCircosReverse{
+	my($cutoff,$organism,$geneCentricPath)=@_;
 	#
 	# General outline of process:
 	# First, prep circos conf and data files
 	# Second, call circos
 	# Third, massage the svg output file created by circos
 	#
-	my $baseDirectory = $geneCentricPath.$probeID."_".$timeStampString.'/';
+	my $cutoffString = sprintf "%d", $cutoff*10;
+	my $baseDirectory = $geneCentricPath.'/circos'.$cutoffString.'/';
+	my $inputFileName = $geneCentricPath.'/TranscriptClusterDetails.txt';
 	print " base directory $baseDirectory \n";
-	#my $confDirectory = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/'.$geneName.'/'.$probeID.'/';
 	my $dataDirectory = $baseDirectory.'data/';
+	print " data directory $dataDirectory \n";
 	my $svgDirectory = $baseDirectory.'svg/';
-	my $confDirectory = $baseDirectory.'conf/';
 	print " svg directory $svgDirectory \n";
+	my $confDirectory = $baseDirectory.'conf/';
+	print " conf directory $confDirectory \n";
+
+	my $chromosomeString;
+	if($organism eq 'Rn'){
+		$chromosomeString = "rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX";
+	}
+	else
+	{
+		$chromosomeString = "mm1;mm2;mm3;mm4;mm5;mm6;mm7;mm8;mm9;mm10;mm11;mm12;mm13;mm14;mm15;mm16;mm17;mm18;mm19;mmX";
+	}
+	my $tissue='All';
 	#
 	# Create necessary directories if they do not already exist
-	#
-
+	#	
 	setupDirectories($baseDirectory,$dataDirectory,$confDirectory,$svgDirectory);
 	my @chromosomeList = split(/;/, $chromosomeString);
 	my $chromosomeListRef = (\@chromosomeList);
+	my $hostname = hostname;
 	print " Ready to call prepCircos \n";
-	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissue);
+	prepCircosReverse($inputFileName,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissue,$hostname);
 	print " Finished prepCircos \n";	
-	
 
-	#
 	#-- get current directory
 	my $pwd = getcwd();
 	print " Current directory is $pwd \n";
@@ -84,10 +88,8 @@ sub callCircos{
 	my $newpwd = getcwd();
 	print " New directory is $newpwd \n";
 	
-	
 	print " Calling Circos \n";
-	
-	my $hostname = hostname;
+
 	my $circosBinary;
 	my $perlBinary;
 
@@ -110,11 +112,12 @@ sub callCircos{
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");
 	}
+	
     my @systemArgs = ($perlBinary,$circosBinary, "-conf", $confDirectory."circos.conf");
 
     print " System call with these arguments: @systemArgs \n";
     system(@systemArgs);
-    #system("/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/bin/circos -conf /usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/ENSRNOG00000001300/7102228/conf/circos.conf");
+
     if ( $? == -1 )
 	{
   		print "System Call failed: $!\n";
@@ -126,29 +129,24 @@ sub callCircos{
 
 	#-- go back to original directory
 	chdir($pwd);
-	
+
 	print " Finished running Circos \n";
+	
+	
+
 	print " Ready to call postprocessCircos \n";
-	postprocessCircos($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory);
+	postprocessCircosReverse($cutoff,$organism,$dataDirectory,$svgDirectory,$hostname);
 	print " Finished with Circos \n";
 }
-	my $arg1 = $ARGV[0]; # Ensembl Gene Name
-	my $arg2 = $ARGV[1]; # Gene Symbol
-	my $arg3 = $ARGV[2]; # Transcript Cluster ID
-	my $arg4 = $ARGV[3]; # PS level - transcript or probeset
-	my $arg5 = $ARGV[4]; # Transcript Cluster ID Chromosome
-	my $arg6 = $ARGV[5]; # Transcript Cluster ID Start
-	my $arg7 = $ARGV[6]; # Transcript Cluster ID Stop
-	my $arg8 = $ARGV[7]; #	Cutoff
-	my $arg9= $ARGV[8]; # Species
-	my $arg10= $ARGV[9]; # Chromosome String
-	my $arg11= $ARGV[10]; # geneCentricPath
-	my $arg12=$ARGV[11]; #time stamp string 
-	my $arg13=$ARGV[12]; #selected Tissue
-	callCircos($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11,$arg12,$arg13);
-#callCircos 'ENSRNOG00000001300' 'P2rx4' 7102228 'transcript' 'rn12' 34943900 34961541 2.5 'Rn' "rn5;rn12;rnX" '/usr/share/tomcat/webapps/PhenoGenTEST/tmpData/geneData/ENSRNOG00000001300/' 'All';
+
+	my $arg1 = $ARGV[0]; # Cutoff
+	my $arg2 = $ARGV[1]; # Organism
+	my $arg3 = $ARGV[2]; #	Region Centric Path
+
+	callCircosReverse($arg1, $arg2, $arg3);
+
+
 
 1;
-
 
 
