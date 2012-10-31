@@ -940,3 +940,14 @@ padding-left: 10px;
 	padding-right: 10px;
 	padding-top:20px;
 }
+
+table.geneFilter {
+	position:relative; 
+	width:100%; 
+	top:-56px;
+}
+
+table.geneFilter  TH{
+font-size:18px; font-weight:bold; background-color:#DEDEDE; text-align:center;
+}
+

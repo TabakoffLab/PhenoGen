@@ -3,8 +3,11 @@
 <%
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("jquery.dataTables.js");
+	extrasList.add("jquery.twosidedmultiselect.js");
+	
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
+	extrasList.add("tsmsselect.css");
 %>
 <%
 String myGene="";

@@ -1,11 +1,38 @@
+<style type="text/css">
+		/* Recommended styles for two sided multi-select*/
+		.tsmsselect {
+			width: 40%;
+			float: left;
+		}
+		
+		.tsmsselect select {
+			width: 100%;
+		}
+		
+		.tsmsoptions {
+			width: 20%;
+			float: left;
+		}
+		
+		.tsmsoptions p {
+			margin: 2px;
+			text-align: center;
+			font-size: larger;
+			cursor: pointer;
+		}
+		
+		.tsmsoptions p:hover {
+			color: White;
+			background-color: Silver;
+		}
+	</style>
 <div id="page" style="min-height:1100px;">
 <span style="text-align:center;">
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
 
-	<%
+<%
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
-	
 	if(myOrganism.equals("Rn")){
 		tissuesList1=new String[4];
 		tissuesList2=new String[4];
@@ -21,9 +48,158 @@
 		tissuesList1[0]="Brain";
 		tissuesList2[0]="Whole Brain";
 	}
+	
+	
 	String tmpURL=genURL.get(0);
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
-	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);%>
+	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+	
+	
+	
+	//Setup Variables copied from LocusSpecificEQTL.jsp for Laura's multiselects for chromosome and tissue.
+	String[] selectedChromosomes = null;
+	String[] selectedTissues = null;
+	String chromosomeString = null;
+	String tissueString = null;
+	Boolean selectedChromosomeError = null;
+	Boolean selectedTissueError = null;
+	
+	//
+	// Create chromosomeNameArray and chromosomeSelectedArray 
+	// These depend on the species
+	//
+	
+	int numberOfChromosomes;
+	String[] chromosomeNameArray = new String[25];
+
+	String[] chromosomeDisplayArray = new String[25];
+	String doubleQuote = "\"";
+	String isSelectedText = " selected="+doubleQuote+"true"+doubleQuote;
+	String isNotSelectedText = " ";
+	String chromosomeSelected = isNotSelectedText;
+	String speciesGeneChromosome= "Chr "+chromosome.replace("chr","");
+
+	if(myOrganism.equals("Mm")){
+		numberOfChromosomes = 20;
+		for(int i=0;i<numberOfChromosomes-1;i++){
+			chromosomeNameArray[i]="mm"+Integer.toString(i+1);
+			chromosomeDisplayArray[i]="Chr "+Integer.toString(i+1);
+		}
+		chromosomeNameArray[numberOfChromosomes-1] = "mmX";
+		chromosomeDisplayArray[numberOfChromosomes-1]="Chr X";
+	}else{
+		numberOfChromosomes = 21;
+		// assume if not mouse that it's rat
+		for(int i=0;i<numberOfChromosomes-1;i++){
+			chromosomeNameArray[i]="rn"+Integer.toString(i+1);
+			chromosomeDisplayArray[i]="Chr "+Integer.toString(i+1);
+		}
+		chromosomeNameArray[numberOfChromosomes-1] = "rnX";
+		chromosomeDisplayArray[numberOfChromosomes-1]="Chr X";
+	}
+	
+	//
+	// Create tissueNameArray and tissueSelectedArray
+	// These are only defined for Rat
+	//
+	int numberOfTissues;
+	String[] tissueNameArray = new String[4];
+	String tissueSelected = isNotSelectedText;
+	if(myOrganism.equals("Mm")){
+		numberOfTissues = 1;
+		tissueNameArray[0]="Brain";
+	}
+	else{
+		numberOfTissues = 4;
+		// assume if not mouse that it's rat
+		tissueNameArray[0]="Brain";
+		tissueNameArray[1]="Heart";
+		tissueNameArray[2]="Liver";
+		tissueNameArray[3]="BAT";
+	}
+	
+	// Get information about which tissues to view -- easier for mouse
+		
+		if(myOrganism.equals("Mm")){
+			tissueString = "Brain;";
+		}
+		else{
+			// we assume if not mouse that it's rat
+			if(request.getParameter("tissues")!=null){			
+				selectedTissues = request.getParameterValues("tissues");
+				log.debug("Getting selected tissues");
+				tissueString = "";
+				selectedTissueError = true;
+				for(int i=0; i< selectedTissues.length; i++){
+					selectedTissueError = false;
+					tissueString = tissueString + selectedTissues[i] + ";";
+				}
+				//log.debug(" Selected Tissues: " + tissueString);
+				//log.debug(" selectedTissueError: " + selectedTissueError);
+				// We insist that the tissue string be at least one long
+			}
+			/*else if(request.getParameter("chromosomeSelectionAllowed")!=null){
+				// We previously allowed chromosome/tissue selection, but now we got no tissues back
+				// Therefore we did not include any tissues
+				selectedTissueError=true;
+			}*/
+			else{
+				//log.debug("could not get selected tissues");
+				//log.debug("and we did not previously allow chromosome selection");
+				//log.debug("therefore include all tissues");
+				// we are not allowing chromosome/tissue selection.  Include all tissues.
+				selectedTissues = new String[numberOfTissues];
+				selectedTissueError=false;
+				tissueString = "";
+				for(int i=0; i< numberOfTissues; i++){
+					tissueString = tissueString + tissueNameArray[i] + ";";
+					selectedTissues[i]=tissueNameArray[i];
+				}
+			}
+		}
+		
+		
+		// Get information about which chromosomes to view
+
+		if(request.getParameter("chromosomes")!=null){			
+			selectedChromosomes = request.getParameterValues("chromosomes");
+			log.debug("Getting selected chromosomes");
+			chromosomeString = "";
+			selectedChromosomeError = true;
+			for(int i=0; i< selectedChromosomes.length; i++){
+				chromosomeString = chromosomeString + selectedChromosomes[i] + ";";
+				if(selectedChromosomes[i].equals(speciesGeneChromosome)){
+					selectedChromosomeError=false;
+				}
+			}
+			log.debug(" Selected Chromosomes: " + chromosomeString);
+			log.debug(" selectedChromosomeError: " + selectedChromosomeError);
+			// We insist that the chromosome string include speciesGeneChromosome 
+		}
+		else if(request.getParameter("chromosomeSelectionAllowed")!=null){
+			// We previously allowed chromosome selection, but now we got no chromosomes back
+			// Therefore we did not include the desired chromosome
+			selectedChromosomeError=true;
+		}
+		else{
+			//log.debug("could not get selected chromosomes");
+			//log.debug("and we did not previously allow chromosome selection");
+			//log.debug("therefore include all chromosomes");
+			// we are not allowing chromosome selection.  Include all chromosomes.
+			selectedChromosomes = new String[numberOfChromosomes];
+			selectedChromosomeError=false;
+			chromosomeString = "";
+			for(int i=0; i< numberOfChromosomes; i++){
+				chromosomeString = chromosomeString + chromosomeNameArray[i] + ";";
+				selectedChromosomes[i]=chromosomeNameArray[i];
+			}
+		}
+	
+%>
+    
+    <script>
+		var tisLen=<%=tissuesList1.length%>;
+    </script>
 
         <div class="geneRegionControl">
       		Zoom In:
@@ -89,7 +265,7 @@
          </span><!-- ends center span -->
           
 
-<div class="cssTab" style="position:relative; text-align:center">
+<div class="cssTab" style="position:relative;">
     <ul>
       <li ><a href="#geneList" title="What genes are found in this area?">Genes Physically Located in Region</a></li>
       <li ><a href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a></li>
@@ -100,16 +276,16 @@
 
 <!--<div class="title"><span class="trigger" name="geneList" style="text-align:left;">Gene List</span></div>-->
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
-            <div style=" text-align:center;">
-                  Filter Gene List:
-                  
-                      <label style="color:#000000; margin-left:20px;">
-                        Exclude single exon RNA-Seq Transcripts:
-                        <input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" />
-                       </label> 
-                   <!--<form id="formPvalue" name="formPvalue" method="post" action="" >-->
-                       <label style="color:#000000; margin-left:20px;">
-                        eQTL P-Value Cut-off:
+            	<table class="geneFilter">
+                	<thead>
+                    	<TH>Filter List</TH>
+                        <TH>View Columns</TH>
+                    </thead>
+                	<tbody>
+                    	<TR>
+                        	<td>Exclude single exon RNA-Seq Transcripts
+                        <input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" /><BR />
+						 eQTL P-Value Cut-off:
                         <%
 							selectName = "pvalueCutoffSelect1";
 							selectedOption = Double.toString(pValueCutoff);
@@ -123,9 +299,27 @@
 										optionHash.put("0.00001", "0.00001");
 							%>
 							<%@ include file="/web/common/selectBox.jsp" %>
-                       </label>         
-                  <!--</form>-->
-            </div>
+                        	<td>
+                            	Gene ID
+                                <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /><BR />
+                                Description
+                                <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /><BR />
+                                Location and Strand
+                                <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /><BR />
+                                Heritability
+                                <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /><BR />
+                                Detection Above Background
+                                <input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /><BR />
+                                eQTLs All
+                                <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /><BR />
+                                eQTLs Tissues
+                                <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />
+                            <TD>
+                            </TD>
+                        
+                        </TR>
+                        
+                  </table>
           
           
           <%
@@ -333,6 +527,41 @@
 </div><!-- end GeneList-->
 
 <div id="bQTLList" class="modalTabContent" style="display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
+	<table class="geneFilter">
+                	<thead>
+                    	<TH>Filter List</TH>
+                        <TH>View Columns</TH>
+                    </thead>
+                	<tbody>
+                    	<TR>
+                        	<td></td>
+                        	<td>
+                            	bQTL Symbol
+                                <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" /><BR />
+                            	Trait Method
+                                <input name="chkbox" type="checkbox" id="traitMethodCBX" value="traitMethodCBX" /><BR />
+                                Phenotype
+                                <input name="chkbox" type="checkbox" id="phenotypeCBX" value="phenotypeCBX" checked="checked" /><BR />
+                                Diseases
+                                <input name="chkbox" type="checkbox" id="diseaseCBX" value="diseaseCBX" checked="checked" /><BR />
+                                References
+                                <input name="chkbox" type="checkbox" id="refCBX" value="refCBX" checked="checked" /><BR />
+                                Associated bQTLs
+                                <input name="chkbox" type="checkbox" id="assocBQTLCBX" value="assocBQTLCBX"  /><BR />
+                                Location Method
+                                <input name="chkbox" type="checkbox" id="locMethodCBX" value="locMethodCBX"  /><BR />
+                                LOD Score
+                                <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" checked="checked" /><BR />
+                                P-Value
+                                <input name="chkbox" type="checkbox" id="pvalBQTLCBX" value="pvalBQTLCBX"  /><BR />
+                            <TD>
+                            </TD>
+                        
+                        </TR>
+                        
+                  </table>
+
+
 	<% ArrayList<BQTL> bqtls=gdt.getBQTLs(min,max,chromosome,myOrganism);
 	%>
 	<TABLE name="items" id="tblBQTL" class="list_base tablesorter" cellpadding="0" cellspacing="0">
@@ -345,14 +574,19 @@
                             MGI ID
                         <%}%>
                         </TH>
+                        <TH>QTL Symbol</TH>
                     	<TH>QTL Name</TH>
-                        <TH>Trait</TH><!-- combine trait-subtrait  and add title= method-->
+                        <TH>Trait</TH>
+                        <TH>Trait Method</TH>
                         <TH>Phenotype</TH>
                         <TH>Associated Diseases</TH>
                         <TH>References<BR />RGD Ref<HR />PubMed</TH>
                         <TH>Candidate Genes</TH>
-                        <TH>Related bQTLs</TH>
-                        <TH>Location</TH><!-- add title= location method-->
+                        <TH>Related bQTL Symbols</TH>
+                        <TH>Location</TH>
+                        <TH>Location Method</TH>
+                        <TH>LOD Score</TH>
+                        <TH>P-value</TH>
                     </TR>
                 </thead>
                 <%if(bqtls!=null&&bqtls.size()>0){%>
@@ -369,25 +603,37 @@
                             <%=curBQTL.getMGIID()%>
                         <%}%>
                         </TD>
+                        <TD><%=curBQTL.getSymbol()%></TD>
                         <TD><%=curBQTL.getName()%></TD>
-                        <TD title="<%=curBQTL.getTraitMethod()%>">
+                        <TD>
 						<%=curBQTL.getTrait()%>
 						<%if(curBQTL.getSubTrait()!=null){%>
-						<%=" - "+curBQTL.getSubTrait()%>
+							<%=" - "+curBQTL.getSubTrait()%>
                         <%}%>
                         </TD>
+                        
+                        <TD><%if(curBQTL.getTraitMethod()!=null && !curBQTL.getTraitMethod().equals("")){%>
+                        	<%=curBQTL.getTraitMethod()%>
+                        <%}%></TD>
+                        
                         <TD><%=curBQTL.getPhenotype()%></TD>
-                        <TD><%=curBQTL.getDiseases()%></TD>
+                        <TD><%=curBQTL.getDiseases().replaceAll(";","<HR>")%></TD>
                         <TD>
                         	<%	ArrayList<String> ref1=curBQTL.getRGDRef();
-							for(int j=0;j<ref1.size();j++){%>
-                            	<BR /><a href="http://rgd.mcw.edu/rgdweb/report/reference/main.html?id=<%=ref1.get(j)%>" target="_blank"><%=ref1.get(j)%></a>
+							for(int j=0;j<ref1.size();j++){
+								if(j!=0){%>
+                            		<BR />
+                                <%}%>
+                                <a href="http://rgd.mcw.edu/rgdweb/report/reference/main.html?id=<%=ref1.get(j)%>" target="_blank"><%=ref1.get(j)%></a>
                         	<%}%>
                         <HR />
                         
                          <%	ArrayList<String> ref2=curBQTL.getPubmedRef();
-							for(int j=0;j<ref2.size();j++){%>
-                            	<BR /><a href="http://www.ncbi.nlm.nih.gov/pubmed/<%=ref2.get(j)%>" target="_blank"><%=ref2.get(j)%></a>
+							for(int j=0;j<ref2.size();j++){
+								if(j!=0){%>
+                            		<BR />
+                                <%}%>
+                                <a href="http://www.ncbi.nlm.nih.gov/pubmed/<%=ref2.get(j)%>" target="_blank"><%=ref2.get(j)%></a>
                         <%}%>
                         </TD>
                         
@@ -404,6 +650,30 @@
                         </TD>
                         <TD title="Click to view QTL region in a new window."><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
                         chr<%=curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%></a></TD>
+                        <TD>
+                        <%String tmpMM=curBQTL.getMapMethod();
+                        if(tmpMM!=null){
+                        	if(tmpMM.indexOf("by")>0){
+                            	tmpMM=tmpMM.substring(tmpMM.indexOf("by"));
+                            }%>
+							<%=tmpMM%>
+                        <%}%>
+                        </TD>
+                        <TD>
+                        <%if(curBQTL.getLOD()==0){%>
+                        	N/A
+						<%}else{%>
+							<%=curBQTL.getLOD()%>
+                        <%}%>
+                        </TD>
+                        <TD>
+                        <%if(curBQTL.getPValue()==0){%>
+                        	N/A
+						<%}else{%>
+							<%=curBQTL.getPValue()%>
+                        <%}%>
+						</TD>
+                        
                     </tr>
                 	<%}
 				}%>
@@ -420,28 +690,154 @@
 
 
 <div id="eQTLListFromRegion" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
-
-		Filter Gene List and Circos Plot:
-                  <!--<form id="formPvalue" name="formPvalue" method="post" action="" > -->
-                       <label style="color:#000000; margin-left:10px;">
-                        eQTL P-Value Cut-off:
-                        <%
-							selectName = "pvalueCutoffSelect2";
-							selectedOption = Double.toString(pValueCutoff).trim();
-							onChange = "";
-							style = "";
-							optionHash = new LinkedHashMap();
-										optionHash.put("0.10", "0.10");
-										optionHash.put("0.01", "0.01");
-										optionHash.put("0.001", "0.001");
-										optionHash.put("0.0001", "0.0001");
-										optionHash.put("0.00001", "0.00001");
-							%>
-							<%@ include file="/web/common/selectBox.jsp" %>
-                       </label>         
-                  <!--</form>-->
-
-		<div style="display:inline-block;text-align:left;">
+		<table class="geneFilter">
+                	<thead>
+                    	<TH style="width:75%;">Filter List and Circos Plot</TH>
+                        <TH>View Columns</TH>
+                    </thead>
+                	<tbody>
+                    	<TR>
+                        	<td>
+                            	<table style="width:100%;">
+                                	<tbody>
+                                    	<TR>
+                                        <TD colspan="2" style="text-align:center;">
+                                            eQTL P-Value Cut-off:
+                                        <%
+                                            selectName = "pvalueCutoffSelect2";
+                                            selectedOption = Double.toString(pValueCutoff).trim();
+                                            onChange = "";
+                                            style = "";
+                                            optionHash = new LinkedHashMap();
+                                                        optionHash.put("0.10", "0.10");
+                                                        optionHash.put("0.01", "0.01");
+                                                        optionHash.put("0.001", "0.001");
+                                                        optionHash.put("0.0001", "0.0001");
+                                                        optionHash.put("0.00001", "0.00001");
+                                            %>
+                                            <%@ include file="/web/common/selectBox.jsp" %>
+                                         </TD>
+                                		</TR>
+                                    	<TR>
+                                       <%if(myOrganism.equals("Rn")){%>
+                                            <TD style="text-align:left; width:50%;">
+                                                <table style="width:100%;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="text-align:center;">
+                                                                <strong>Tissues: Include at least one tissue.</strong>
+                                                                <div class="inpageHelp" style="display:inline;">
+                                                                <img id="Help9d" src="web/images/icons/help.png"/>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <TR>
+                                                            <td style="text-align:center;">
+                                                                <strong>Excluded</strong><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
+                                                            </td>
+                                                        </TR>
+                                                        <tr>
+                                                            <td rowspan="3">
+                                                                
+                                                                <select name="tissues" class="multiselect" size="6" multiple="true">
+                                                                
+                                                                    <% 
+                                                                    
+                                                                    for(int i = 0; i < tissuesList1.length; i ++){
+                                                                        tissueSelected=isNotSelectedText;
+                                                                        if(selectedTissues != null){
+                                                                            for(int j=0; j< selectedTissues.length ;j++){
+                                                                                if(selectedTissues[j].equals(tissueNameArray[i])){
+                                                                                    tissueSelected=isSelectedText;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                
+                                                
+                                                                    %>
+                                                                    
+                                                                        <option value="<%=tissueNameArray[i]%>"<%=tissueSelected%>><%=tissuesList1[i]%></option>
+                                                                    
+                                                                    <%} // end of for loop
+                                                                    %>
+                                                
+                                                                </select>
+                                                
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                             </TD>
+                                        <%} // end of checking species is Rn %>
+                                        <TD style="text-align:left; width:50%;">
+                                            <table style="width:100%;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="text-align:center;">
+                                                            <strong>Chromosomes: (<%=chromosome%> must be included)</strong>
+                                                            <div class="inpageHelp" style="display:inline-block;">
+                                                            <img id="Help9c" src="web/images/icons/help.png"/>
+                                                            </div>
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="text-align:center;">
+                                                            <strong>Excluded</strong><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td rowspan="6">
+                                                            
+                                                            <select name="chromosomes" class="multiselect" size="6" multiple="true">
+                                                            
+                                                                <% 
+                                                                
+                                                                for(int i = 0; i < numberOfChromosomes; i ++){
+                                                                    chromosomeSelected=isNotSelectedText;
+                                                                    if(chromosomeDisplayArray[i].substring(4).equals(chromosome)){
+                                                                        chromosomeSelected=isSelectedText;
+                                                                    }
+                                                                    else {
+                                                                        if(selectedChromosomes != null){
+                                                                            for(int j=0; j< selectedChromosomes.length ;j++){
+                                                                                //log.debug(" selectedChromosomes element "+selectedChromosomes[j]+" "+chromosomeNameArray[i]);
+                                                                                if(selectedChromosomes[j].equals(chromosomeNameArray[i])){
+                                                                                    chromosomeSelected=isSelectedText;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                            
+                                            
+                                                                %>
+                                                                
+                                                                    <option value="<%=chromosomeNameArray[i]%>"<%=chromosomeSelected%>><%=chromosomeDisplayArray[i]%></option>
+                                                                
+                                                                <%} // end of for loop
+                                                                %>
+                                            
+                                                            </select>
+                                            
+                                                        </td>
+                                                    </tr>	
+                                                  </tbody>
+                                              </table>		
+                                         </TD>
+                                      </TR>
+                                   </tbody>
+                                </table>
+                            
+                            </td>
+                        	<td>
+                            	
+                            <TD>
+                            </TD>
+                        
+                        </TR>
+                        
+                  </table>
+		<div style="display:inline-block;text-align:center;">
         	Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls.
      	</div>
 
@@ -667,51 +1063,72 @@ function positionHelp(vertPos){
 	}
 }
 
+function displayColumns(table,colStart,colLen,showOrHide){
+	var colStop=colStart+colLen;
+	for(var i=colStart;i<colStop;i++){
+				table.dataTable().fnSetColumnVis( i, showOrHide );
+	}
+}
+
 $(document).ready(function() {
+	$(".multiselect").twosidedmultiselect();
+    var selectedChromosomes = $("#chromosomes")[0].options;
 	document.getElementById("loadingRegion").style.display = 'none';
 	
 	$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "550px"
+	"sScrollY": "600px"
 	});
 	
 	$('#tblBQTL').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "550px",
-	"bDeferRender": true
+	"sScrollY": "600px",
+	"bDeferRender": true,
+	"aoColumnDefs": [
+      { "bVisible": false, "aTargets": [ 1,4,9,11,13 ] }
+    ]
 	});
 	
 	$('#tblFrom').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "550px",
+	"sScrollY": "600px",
 	"bDeferRender": true
 	});
 	
 	 $('.cssTab div.modalTabContent').hide();
     $('.cssTab div.modalTabContent:first').show();
     $('.cssTab ul li a:first').addClass('selected');
-	$('#tblGenes').dataTable().fnAdjustColumnSizing();
 	
+
+	$('#tblGenes').dataTable().fnAdjustColumnSizing();
+	$('#tblGenes_filter').css({position: 'relative',top: '-32px'});
+	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
+	$('#tblBQTL_filter').css({position: 'relative',top: '-56px'});
+	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
 
 	$('#geneimageFiltered').hide();
 	$('#geneimageFilteredNoArray').hide();
 	$('#geneimageUnfilteredNoArray').hide();
 	
-	$('.inpageHelpContent').hide();
 	$('.singleExon').hide();
   
- 	$('.inpageHelpContent').dialog({ 
+ 	
+	
+	//Setup Help links
+	$('.inpageHelpContent').hide();
+	
+	$('.inpageHelpContent').dialog({ 
   		autoOpen: false,
 		dialogClass: "helpDialog"
 	});
-	
-  	$('#Help1').click( function(){  		
+  	
+	$('#Help1').click( function(){  		
 		$('#Help1Content').dialog("open").css({'height':500,'font-size':12});
 		positionHelp(211);
   	});
@@ -724,6 +1141,7 @@ $(document).ready(function() {
 		positionHelp(400);
   	});
 	
+	//Setup Fancy box for UCSC link
 	$('.fancybox').fancybox({
 		width:$(document).width(),
 		height:$(document).height(),
@@ -734,8 +1152,7 @@ $(document).ready(function() {
 		}
   });
   
-  
-  
+  //Setup UCSC Image Controls
   $('#filteredRB').click( function(){
   		if($('#arrayOnRB').is(":checked")){
 			$('#geneimageFiltered').show();
@@ -795,15 +1212,85 @@ $(document).ready(function() {
 
   });
   
-  $('#exclude1Exon').click( function(){
+ 
+  /* Setup Filtering/View Columns in tblGenes */
+	  $('#heritCBX').click( function(){
+			displayColumns($('#tblGenes').dataTable(), 8,tisLen,$('#heritCBX').is(":checked"));
+	  });
+	  $('#dabgCBX').click( function(){
+			displayColumns($('#tblGenes').dataTable(), 8+tisLen,tisLen,$('#heritCBX').is(":checked"));
+	  });
+	  $('#eqtlAllCBX').click( function(){
+			displayColumns($('#tblGenes').dataTable(), 8+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+	  });
+		$('#eqtlCBX').click( function(){
+			displayColumns($('#tblGenes').dataTable(), 8+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+	  });
+	  
+	   $('#geneIDCBX').click( function(){
+			displayColumns($('#tblGenes').dataTable(),0,1,$('#geneIDCBX').is(":checked"));
+	  });
+	  $('#geneDescCBX').click( function(){
+			displayColumns($('#tblGenes').dataTable(),2,1,$('#geneDescCBX').is(":checked"));
+	  });
+	  
+	  $('#geneLocCBX').click( function(){
+			displayColumns($('#tblGenes').dataTable(),3,2,$('#geneLocCBX').is(":checked"));
+	  });
+	  
+	  $('#pvalueCutoffSelect1').change( function(){
+				$('#pvalueCutoffInput').val($(this).val());
+				//alert($('#pvalueCutoffInput').val());
+				//$('#geneCentricForm').attr("action","Get Transcription Details");
+				$('#geneCentricForm').submit();
+			});
+	 $('#exclude1Exon').click( function(){
   		if($('#exclude1Exon').is(":checked")){
 			$('.singleExon').hide();
 		}else{
 			$('.singleExon').show();
 		}
-  });
+ 	 });
+		
+		
+	/* Seutp Filtering/Viewing in tblBQTL*/
 	
-   
+	  $('#bqtlSymCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),1,1,$('#bqtlSymCBX').is(":checked"));
+	  });
+	  $('#traitMethodCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),4,1,$('#traitMethodCBX').is(":checked"));
+	  });
+	  $('#assocBQTLCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),9,1,$('#assocBQTLCBX').is(":checked"));
+	  });
+	  $('#phenotypeCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),5,1,$('#phenotypeCBX').is(":checked"));
+	  });
+	  $('#diseaseCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),6,1,$('#diseaseCBX').is(":checked"));
+	  });
+	  $('#refCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),7,1,$('#refCBX').is(":checked"));
+	  });
+	  $('#locMethodCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),11,1,$('#locMethodCBX').is(":checked"));
+	  });
+	  $('#lodBQTLCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),12,1,$('#lodBQTLCBX').is(":checked"));
+	  });
+	  $('#pvalBQTLCBX').click( function(){
+			displayColumns($('#tblBQTL').dataTable(),13,1,$('#pvalBQTLCBX').is(":checked"));
+	  });
+	
+	/* Seutp Filtering/Viewing in tblFrom*/	
+	
+		$('#pvalueCutoffSelect2').change( function(){
+			$('#pvalueCutoffInput').val($(this).val());
+			$('#geneCentricForm').submit();
+		});
+	
+	//Setup Tabs
     $('.cssTab ul li a').click(function() {    
 
             $('.cssTab ul li a').removeClass('selected');
@@ -829,18 +1316,6 @@ $(document).ready(function() {
 			
             return false;
         });
-		
-		$('#pvalueCutoffSelect1').change( function(){
-			$('#pvalueCutoffInput').val($(this).val());
-			//alert($('#pvalueCutoffInput').val());
-			//$('#geneCentricForm').attr("action","Get Transcription Details");
-			$('#geneCentricForm').submit();
-		});
-		
-		$('#pvalueCutoffSelect2').change( function(){
-			$('#pvalueCutoffInput').val($(this).val());
-			$('#geneCentricForm').submit();
-		});
 	
 }); // end ready
 
