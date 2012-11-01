@@ -951,3 +951,12 @@ table.geneFilter  TH{
 font-size:18px; font-weight:bold; background-color:#DEDEDE; text-align:center;
 }
 
+div.columnLeft{
+	float:left;
+	width:50%;
+}
+
+div.columnRight{
+	float:right;
+	width:50%;
+}

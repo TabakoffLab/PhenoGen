@@ -310,6 +310,8 @@ pageTitle="Detailed Transcription Information "+myGene;%>
  <span style="padding-left:40px;"> <input type="submit" name="refreshBTN" id="refreshBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
  
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
+    <input type="hidden" name="tissues" id="tissues" value="" />
+    <input type="hidden" name="chromosomes" id="chromosomes" value="" />
     <input type="hidden" name="action" id="action" value="Get Transcription Details" />
   
 </form>

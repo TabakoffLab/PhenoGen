@@ -77,7 +77,7 @@
 	String isSelectedText = " selected="+doubleQuote+"true"+doubleQuote;
 	String isNotSelectedText = " ";
 	String chromosomeSelected = isNotSelectedText;
-	String speciesGeneChromosome= "Chr "+chromosome.replace("chr","");
+	String speciesGeneChromosome= myOrganism.toLowerCase()+chromosome.replace("chr","");
 
 	if(myOrganism.equals("Mm")){
 		numberOfChromosomes = 20;
@@ -125,16 +125,16 @@
 		}
 		else{
 			// we assume if not mouse that it's rat
-			if(request.getParameter("tissues")!=null){			
+			if(request.getParameter("tissues")!=null && !request.getParameter("tissues").equals("")){			
 				selectedTissues = request.getParameterValues("tissues");
-				log.debug("Getting selected tissues");
+				log.debug("Getting selected tissues:"+selectedTissues);
 				tissueString = "";
 				selectedTissueError = true;
 				for(int i=0; i< selectedTissues.length; i++){
 					selectedTissueError = false;
 					tissueString = tissueString + selectedTissues[i] + ";";
 				}
-				//log.debug(" Selected Tissues: " + tissueString);
+				log.debug(" Selected Tissues: " + tissueString);
 				//log.debug(" selectedTissueError: " + selectedTissueError);
 				// We insist that the tissue string be at least one long
 			}
@@ -161,9 +161,9 @@
 		
 		// Get information about which chromosomes to view
 
-		if(request.getParameter("chromosomes")!=null){			
+		if(request.getParameter("chromosomes")!=null && !request.getParameter("chromosomes").equals("")){			
 			selectedChromosomes = request.getParameterValues("chromosomes");
-			log.debug("Getting selected chromosomes");
+			log.debug("Getting selected chromosomes:"+selectedChromosomes);
 			chromosomeString = "";
 			selectedChromosomeError = true;
 			for(int i=0; i< selectedChromosomes.length; i++){
@@ -173,7 +173,7 @@
 				}
 			}
 			log.debug(" Selected Chromosomes: " + chromosomeString);
-			log.debug(" selectedChromosomeError: " + selectedChromosomeError);
+			//log.debug(" selectedChromosomeError: " + selectedChromosomeError);
 			// We insist that the chromosome string include speciesGeneChromosome 
 		}
 		else if(request.getParameter("chromosomeSelectionAllowed")!=null){
@@ -274,14 +274,17 @@
      
 <div id="loadingRegion"  style="text-align:center; position:relative; top:75px; left:-200px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Loading Region Data...</div>
 
-<!--<div class="title"><span class="trigger" name="geneList" style="text-align:left;">Gene List</span></div>-->
+
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
-            	<table class="geneFilter">
+            	<span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:999;left:-464px; top:6px;"></span>
+                <table class="geneFilter">
                 	<thead>
-                    	<TH>Filter List</TH>
-                        <TH>View Columns</TH>
+                    	<TR>
+                    	<TH style="width:50%">Filter List</TH>
+                        <TH style="width:50%">View Columns</TH>
+                        </TR>
                     </thead>
-                	<tbody>
+                	<tbody id="geneListFilter" style="display:none;">
                     	<TR>
                         	<td>Exclude single exon RNA-Seq Transcripts
                         <input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" /><BR />
@@ -300,20 +303,25 @@
 							%>
 							<%@ include file="/web/common/selectBox.jsp" %>
                         	<td>
-                            	Gene ID
-                                <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /><BR />
-                                Description
-                                <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /><BR />
-                                Location and Strand
-                                <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /><BR />
-                                Heritability
-                                <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /><BR />
-                                Detection Above Background
-                                <input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /><BR />
-                                eQTLs All
-                                <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /><BR />
-                                eQTLs Tissues
-                                <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />
+                            	<div class="columnLeft">
+                                	Gene ID
+                                    <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /><BR />
+                                    Description
+                                    <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /><BR />
+                                    Location and Strand
+                                    <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /><BR />
+                                    Heritability
+                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /><BR />
+                                </div>
+                                <div class="columnRight">
+                                	Detection Above Background
+                                	<input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /><BR />
+                                    eQTLs All
+                                    <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /><BR />
+                                    eQTLs Tissues
+                                    <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />
+                                </div>
+                                
                             <TD>
                             </TD>
                         
@@ -396,7 +404,7 @@
                     </tr>
                 </thead>
                 
-                <tbody>
+                <tbody style="text-align:center;">
 					<%DecimalFormat df2 = new DecimalFormat("#.##");
 					DecimalFormat df0 = new DecimalFormat("###");
 					DecimalFormat df4 = new DecimalFormat("#.####");
@@ -527,33 +535,40 @@
 </div><!-- end GeneList-->
 
 <div id="bQTLList" class="modalTabContent" style="display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
+	<span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:999;left:-464px; top:6px;"></span>
 	<table class="geneFilter">
                 	<thead>
-                    	<TH>Filter List</TH>
-                        <TH>View Columns</TH>
+                    	<TH style="width:50%">Filter List</TH>
+                        <TH style="width:50%">View Columns</TH>
                     </thead>
-                	<tbody>
+                	<tbody id="bqtlListFilter" style="display:none;">
                     	<TR>
                         	<td></td>
                         	<td>
-                            	bQTL Symbol
-                                <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" /><BR />
-                            	Trait Method
-                                <input name="chkbox" type="checkbox" id="traitMethodCBX" value="traitMethodCBX" /><BR />
-                                Phenotype
-                                <input name="chkbox" type="checkbox" id="phenotypeCBX" value="phenotypeCBX" checked="checked" /><BR />
-                                Diseases
-                                <input name="chkbox" type="checkbox" id="diseaseCBX" value="diseaseCBX" checked="checked" /><BR />
-                                References
-                                <input name="chkbox" type="checkbox" id="refCBX" value="refCBX" checked="checked" /><BR />
-                                Associated bQTLs
-                                <input name="chkbox" type="checkbox" id="assocBQTLCBX" value="assocBQTLCBX"  /><BR />
-                                Location Method
-                                <input name="chkbox" type="checkbox" id="locMethodCBX" value="locMethodCBX"  /><BR />
-                                LOD Score
-                                <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" checked="checked" /><BR />
-                                P-Value
-                                <input name="chkbox" type="checkbox" id="pvalBQTLCBX" value="pvalBQTLCBX"  /><BR />
+                            	<div class="columnLeft">
+                                	bQTL Symbol
+                                    <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" /><BR />
+                                    Trait Method
+                                    <input name="chkbox" type="checkbox" id="traitMethodCBX" value="traitMethodCBX" /><BR />
+                                    Phenotype
+                                    <input name="chkbox" type="checkbox" id="phenotypeCBX" value="phenotypeCBX" checked="checked" /><BR />
+                                    Diseases
+                                    <input name="chkbox" type="checkbox" id="diseaseCBX" value="diseaseCBX" checked="checked" /><BR />
+                                    References
+                                    <input name="chkbox" type="checkbox" id="refCBX" value="refCBX" checked="checked" /><BR />
+                                </div>
+                                <div class="columnRight">
+                                    Associated bQTLs
+                                    <input name="chkbox" type="checkbox" id="assocBQTLCBX" value="assocBQTLCBX"  /><BR />
+                                    Location Method
+                                    <input name="chkbox" type="checkbox" id="locMethodCBX" value="locMethodCBX"  /><BR />
+                                    LOD Score
+                                    <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" checked="checked" /><BR />
+                                    P-Value
+                                    <input name="chkbox" type="checkbox" id="pvalBQTLCBX" value="pvalBQTLCBX"  /><BR />
+                                </div>
+                            	
+                                
                             <TD>
                             </TD>
                         
@@ -590,7 +605,7 @@
                     </TR>
                 </thead>
                 <%if(bqtls!=null&&bqtls.size()>0){%>
-                <tbody>
+                <tbody style="text-align:center;">
                 <%for(int i=0;i<bqtls.size();i++){
 					BQTL curBQTL=bqtls.get(i);
 					if(curBQTL!=null){%>
@@ -690,12 +705,13 @@
 
 
 <div id="eQTLListFromRegion" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
+		<span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:999;left:-464px; top:6px;"></span>
 		<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:75%;">Filter List and Circos Plot</TH>
+                    	<TH style="width:65%;">Filter List and Circos Plot</TH>
                         <TH>View Columns</TH>
                     </thead>
-                	<tbody>
+                	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
                         	<td>
                             	<table style="width:100%;">
@@ -733,17 +749,17 @@
                                                         </tr>
                                                         <TR>
                                                             <td style="text-align:center;">
-                                                                <strong>Excluded</strong><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
+                                                                <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
                                                             </td>
                                                         </TR>
                                                         <tr>
-                                                            <td rowspan="3">
+                                                            <td>
                                                                 
-                                                                <select name="tissues" class="multiselect" size="6" multiple="true">
+                                                                <select name="tissuesMS" id="tissuesMS" class="multiselect" size="6" multiple="true">
                                                                 
                                                                     <% 
                                                                     
-                                                                    for(int i = 0; i < tissuesList1.length; i ++){
+                                                                    for(int i = 0; i < tissueNameArray.length; i ++){
                                                                         tissueSelected=isNotSelectedText;
                                                                         if(selectedTissues != null){
                                                                             for(int j=0; j< selectedTissues.length ;j++){
@@ -783,19 +799,19 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="text-align:center;">
-                                                            <strong>Excluded</strong><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
+                                                            <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td rowspan="6">
+                                                        <td>
                                                             
-                                                            <select name="chromosomes" class="multiselect" size="6" multiple="true">
+                                                            <select name="chromosomesMS" id="chromosomesMS" class="multiselect" size="6" multiple="true">
                                                             
                                                                 <% 
                                                                 
                                                                 for(int i = 0; i < numberOfChromosomes; i ++){
                                                                     chromosomeSelected=isNotSelectedText;
-                                                                    if(chromosomeDisplayArray[i].substring(4).equals(chromosome)){
+                                                                    if(chromosomeDisplayArray[i].substring(4).equals(chromosome.substring(3))){
                                                                         chromosomeSelected=isSelectedText;
                                                                     }
                                                                     else {
@@ -825,17 +841,46 @@
                                               </table>		
                                          </TD>
                                       </TR>
+                                      <TR>
+                                        <TD colspan="2" style="text-align:center;">
+                                          <input type="submit" name="filterBTN" id="filterBTN" value="Run Filter" onClick="return runFilter()">
+                                        </TD>
+                                	</TR>
                                    </tbody>
                                 </table>
                             
                             </td>
-                        	<td>
                             	
                             <TD>
+                            	<div class="columnLeft" style="width:60%;">
+                                	Gene ID
+                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /><BR />
+                                    Description
+                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /><BR />
+                                    Transcript ID and Annot.
+                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /><BR />
+                                     All Tissues P-values
+                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /><BR />
+                                    All Tissues # Locations
+                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/><BR />
+                                </div>
+                                <div class="columnRight" style="width:39%;">
+                                   <h3>Specific Tissues:</h3>
+                                    Whole Brain
+                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /><BR />
+                                    <%if(myOrganism.equals("Rn")){%>
+                                        Heart
+                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" /><BR />
+                                        Liver
+                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /><BR />
+                                        Brown Adipose
+                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/><BR />
+                                    <%}%>
+                                </div>
                             </TD>
                         
                         </TR>
-                        
+                        </tbody>
                   </table>
 		<div style="display:inline-block;text-align:center;">
         	Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls.
@@ -880,7 +925,7 @@
           </div>
 
 	<% 
-		ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"core",myOrganism);//this region controls what genes
+		ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"core",myOrganism,tissueString,chromosomeString);//this region controls what genes
 		log.debug("Trans Out SIZE:"+transOutQTLs.size());
 		if(transOutQTLs!=null && transOutQTLs.size()>0){
 			
@@ -909,7 +954,7 @@
                     	
                     </TR>
                 </thead>
-                <tbody>
+                <tbody style="text-align:center;">
 					<%DecimalFormat df4 = new DecimalFormat("#.####");
 					for(int i=0;i<transOutQTLs.size();i++){
 						TranscriptCluster tc=transOutQTLs.get(i);
@@ -1070,6 +1115,13 @@ function displayColumns(table,colStart,colLen,showOrHide){
 	}
 }
 
+function runFilter(){
+	$('#tissues').val($('#tissuesMS').val());
+	$('#chromosomes').val($('#chromosomesMS').val());
+	$('#pvalueCutoffInput').val($('#pvalueCutoffSelect2').val());
+	$('#geneCentricForm').submit();
+}
+
 $(document).ready(function() {
 	$(".multiselect").twosidedmultiselect();
     var selectedChromosomes = $("#chromosomes")[0].options;
@@ -1079,14 +1131,14 @@ $(document).ready(function() {
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "600px"
+	"sScrollY": "650px"
 	});
 	
 	$('#tblBQTL').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "600px",
+	"sScrollY": "650px",
 	"bDeferRender": true,
 	"aoColumnDefs": [
       { "bVisible": false, "aTargets": [ 1,4,9,11,13 ] }
@@ -1097,7 +1149,7 @@ $(document).ready(function() {
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "600px",
+	"sScrollY": "650px",
 	"bDeferRender": true
 	});
 	
@@ -1107,9 +1159,9 @@ $(document).ready(function() {
 	
 
 	$('#tblGenes').dataTable().fnAdjustColumnSizing();
-	$('#tblGenes_filter').css({position: 'relative',top: '-32px'});
+	//$('#tblGenes_filter').css({position: 'relative',top: '-7px'});
 	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
-	$('#tblBQTL_filter').css({position: 'relative',top: '-56px'});
+	//$('#tblBQTL_filter').css({position: 'relative',top: '-56px'});
 	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
 
 	$('#geneimageFiltered').hide();
@@ -1284,11 +1336,45 @@ $(document).ready(function() {
 	  });
 	
 	/* Seutp Filtering/Viewing in tblFrom*/	
-	
-		$('#pvalueCutoffSelect2').change( function(){
+	  $('#geneIDFCBX').click( function(){
+			displayColumns($('#tblFrom').dataTable(),0,1,$('#geneIDFCBX').is(":checked"));
+	  });
+	  $('#geneDescFCBX').click( function(){
+			displayColumns($('#tblFrom').dataTable(),2,1,$('#geneDescFCBX').is(":checked"));
+	  });
+	  
+	  $('#transAnnotCBX').click( function(){
+			displayColumns($('#tblFrom').dataTable(),3,2,$('#transAnnotCBX').is(":checked"));
+	  });
+	  $('#allPvalCBX').click( function(){
+	  		for(var i=0;i<tisLen;i++){
+				displayColumns($('#tblFrom').dataTable(),i*2+7,1,$('#allPvalCBX').is(":checked"));
+			}
+	  });
+	  $('#allLocCBX').click( function(){
+	  		for(var i=0;i<tisLen;i++){
+				displayColumns($('#tblFrom').dataTable(),i*2+8,1,$('#allLocCBX').is(":checked"));
+			}
+	  });
+	  $('#fromBrainCBX').click( function(){
+			displayColumns($('#tblFrom').dataTable(),7,2,$('#fromBrainCBX').is(":checked"));
+	  });
+	   $('#fromHeartCBX').click( function(){
+			displayColumns($('#tblFrom').dataTable(),9,2,$('#fromHeartCBX').is(":checked"));
+	  });
+	  $('#fromLiverCBX').click( function(){
+			displayColumns($('#tblFrom').dataTable(),11,2,$('#fromLiverCBX').is(":checked"));
+	  });
+	  $('#fromBATCBX').click( function(){
+			displayColumns($('#tblFrom').dataTable(),13,2,$('#fromBATCBX').is(":checked"));
+	  });
+		/*$('#pvalueCutoffSelect2').change( function(){
 			$('#pvalueCutoffInput').val($(this).val());
 			$('#geneCentricForm').submit();
-		});
+		});*/
+	
+	
+	setupExpandCollapseTable();
 	
 	//Setup Tabs
     $('.cssTab ul li a').click(function() {    

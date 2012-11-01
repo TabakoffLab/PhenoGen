@@ -1229,7 +1229,7 @@ public class GeneDataTools {
         return transcriptClusters;
     }
     
-    public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,double pvalue,String level,String organism){
+    public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,double pvalue,String level,String organism,String circosTissue,String circosChr){
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
@@ -1509,12 +1509,14 @@ public class GeneDataTools {
                 
                 //run circos scripts
                 boolean errorCircos=false;
-                perlArgs = new String[5];
+                perlArgs = new String[7];
                 perlArgs[0] = "perl";
                 perlArgs[1] = perlDir + "callCircosReverse.pl";
                 perlArgs[2] = Double.toString(-Math.log10(pvalue));
                 perlArgs[3] = organism;
                 perlArgs[4] = outputDir.substring(0,outputDir.length()-1);
+                perlArgs[5] = circosTissue;
+                perlArgs[6] = circosChr;
 
                 //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
                 
