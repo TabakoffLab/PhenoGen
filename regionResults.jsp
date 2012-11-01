@@ -126,7 +126,8 @@
 		else{
 			// we assume if not mouse that it's rat
 			if(request.getParameter("tissues")!=null && !request.getParameter("tissues").equals("")){			
-				selectedTissues = request.getParameterValues("tissues");
+				String tmpSelectedTissues = request.getParameter("tissues");
+				selectedTissues=tmpSelectedTissues.split(",");
 				log.debug("Getting selected tissues:"+selectedTissues);
 				tissueString = "";
 				selectedTissueError = true;
@@ -162,8 +163,9 @@
 		// Get information about which chromosomes to view
 
 		if(request.getParameter("chromosomes")!=null && !request.getParameter("chromosomes").equals("")){			
-			selectedChromosomes = request.getParameterValues("chromosomes");
-			log.debug("Getting selected chromosomes:"+selectedChromosomes);
+			String tmpSelectedChromosomes = request.getParameter("chromosomes");
+			selectedChromosomes=tmpSelectedChromosomes.split(",");
+			//log.debug("selected chr count:"+selectedChromosomes.length+":"+selectedChromosomes[0].toString());
 			chromosomeString = "";
 			selectedChromosomeError = true;
 			for(int i=0; i< selectedChromosomes.length; i++){
