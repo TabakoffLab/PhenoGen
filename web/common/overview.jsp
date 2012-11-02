@@ -28,7 +28,7 @@
                 
                 
                 <br/>
-				<p>Click the Overview option above to see examples of what you can do on our site.  To the right of Overview are the main areas of the site.  The functions with a <span style="color:#2d7a32;">green</span> background indicate publicly accessible parts of the site while the remaining <span style="color:#436f93;;">blue</span> functions require a login.</p>
+				<p>Click the Overview option above to see examples of what you can do on our site.  The options to the right of the Overview are the main areas of the site.  The functions with a <span style=" background-color:#2d7a32; color:#FFFFFF;">green background</span> indicate publicly accessible parts of the site, while the remaining functions with the <span style="background-color:#436f93; color:#FFFFFF;">blue background</span> require a login.</p>
 
             			<p>View the <a href="<%=commonDir%>PhenoGenDemo.ppt"  
 				title="Getting Started with PhenoGen Informatics Demo">Getting 
@@ -38,8 +38,8 @@
             			<p>Review the <a href="CurrentDataSets.jsp"  
 				title="Current Datasets">current datasets</a> that we have available for public use.</p>
             
-                        <H3> Why do we require a login?</H3>
-                        <p>For many of the tools that require a login there are multiple intermediate steps in the analisys or steps may take a long time to complete.  A login allows you to start a step and come back to the analysis/results at a later time.  This also allows you to upload data to the site and keep it private or to share it with individuals you approve to have access to it.</p>
+                        <H3 style="margin:10px;"> Why do we require a login?</H3>
+                        <p>For many of the tools that require a login, there are multiple intermediate steps in the analisys or steps that may take a long time to complete.  Logging in, allows you to start a step and come back to the analysis/results at a later time.  A login also allows you to upload data to the site and keep it private or to share it with individuals you approve.</p>
                 
                 	</div> <!-- // end overview-content -->
             	</div> <!-- // end overview-wrap -->

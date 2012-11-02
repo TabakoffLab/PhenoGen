@@ -31,7 +31,7 @@
 <%@ include file="/web/common/header.jsp"  %>
 
 <% if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%>
-	<h2>Select the download icon(<img src="<%=imagesDir%>icons/download_g.png" />) to download data from any of the datasets below.  For some data types multiple options may be available, for these types a window will be displayed allowing you to choose specific files.</h2>
+	<h2>Select the download icon(<img src="<%=imagesDir%>icons/download_g.png" />) to download data from any of the datasets below.  For some data types multiple options may be available. For these types, a window displays that allows you to choose specific files.</h2>
 	
 	
 	

@@ -284,11 +284,11 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
 
-                1. Enter a gene identifier(ex. gene symbol, probeset ID, ensembl ID, etc.) in the gene field.<BR />
+                1. Enter a gene identifier(e.g. gene symbol, probeset ID, ensembl ID, etc.) in the gene field.<BR />
                 or<BR />
                 Enter a region such as chr1:0-50000.(Chromosome 1 bp 0-50,000)<BR />
                 2. Choose a species.<BR />
-                3. Click get transcription details.<BR /><BR />
+                3. Click Get Transcription Details.<BR /><BR />
                 Hint: Try other synonyms if the first ID that you enter is not found.<BR /><BR /><BR />
 </div>
 

@@ -889,8 +889,8 @@ for(int i = 0; i < 25; i++){
 <H3><center>P-value Threshold Options</center></H3>
 <BR>
 <BR>
-Loci with p-values below the chosen threshold will be highlighted on the Circos plot in yellow; a line will connect the significant loci with the physical location of the gene.  
-All p-values will be displayed on the Circos graphic as the negative log base 10 of the p-value.
+Loci with p-values below the chosen threshold are highlighted on the Circos plot in yellow; a line connects the significant loci with the physical location of the gene.  
+All p-values are displayed on the Circos graphic as the negative log base 10 of the p-value.
 </div>
 </div>
 
@@ -900,10 +900,10 @@ All p-values will be displayed on the Circos graphic as the negative log base 10
 <BR>
 <BR>
 On the Affymetrix Exon Array, gene level expression summaries are labeled as transcript clusters.  
-Each gene may have more than one transcript cluster associated with it due to differences in annotation among databases and therefore, differences in which individual exons (probe sets) are included in the transcript cluster.  
+Each gene may have more than one transcript cluster associated with it, due to differences in annotation among databases and therefore, differences in which individual exons (probe sets) are included in the transcript cluster.  
 Transcript clusters given the designation of &ldquo;core&rdquo; are based on well-curated annotation on the gene.  
-&ldquo;Extended&rdquo; and &ldquo;full&rdquo; transcript clusters have are based on gene properties that are less thoroughly curated and more putative, respectively.  
-Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; have are highly putative for several reasons and therefore, are only included in the drop-down menu if no other transcript clusters are available.
+&ldquo;Extended&rdquo; and &ldquo;full&rdquo; transcript clusters are based on gene properties that are less thoroughly curated and more putative, respectively.  
+Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; have are highly putative for several reasons and therefore are only included in the drop-down menu if no other transcript clusters are available.
 </div>
 </div>
 
