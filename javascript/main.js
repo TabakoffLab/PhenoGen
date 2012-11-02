@@ -504,10 +504,11 @@ function setupExpandCollapseTable() {
 		var baseName = $(this).attr("name");
                 var thisHidden = $("tbody#" + baseName).is(":hidden");
                 $(this).toggleClass("less");
+				$('span[name='+baseName+']').toggleClass("less");
                 if (thisHidden) {
-			$("tbody#" + baseName).show();
+					$("tbody#" + baseName).show();
                 } else {
-			$("tbody#" + baseName).hide();
+					$("tbody#" + baseName).hide();
                 }
 	})
 }

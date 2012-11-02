@@ -1,31 +1,3 @@
-<style type="text/css">
-		/* Recommended styles for two sided multi-select*/
-		.tsmsselect {
-			width: 40%;
-			float: left;
-		}
-		
-		.tsmsselect select {
-			width: 100%;
-		}
-		
-		.tsmsoptions {
-			width: 20%;
-			float: left;
-		}
-		
-		.tsmsoptions p {
-			margin: 2px;
-			text-align: center;
-			font-size: larger;
-			cursor: pointer;
-		}
-		
-		.tsmsoptions p:hover {
-			color: White;
-			background-color: Silver;
-		}
-	</style>
 <div id="page" style="min-height:1100px;">
 <span style="text-align:center;">
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
@@ -278,12 +250,12 @@
 
 
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
-            	<span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:999;left:-464px; top:6px;"></span>
+            	
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
-                    	<TH style="width:50%">Filter List</TH>
-                        <TH style="width:50%">View Columns</TH>
+                    	<TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List</span></TH>
+                        <TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
                         </TR>
                     </thead>
                 	<tbody id="geneListFilter" style="display:none;">
@@ -381,8 +353,9 @@
                     	<%}%>
                     </tr>
                     <tr class="col_title">
-                    <TH>Gene ID</TH>
+                    
                     <TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
+                    <TH>Gene ID</TH>
                     <TH width="10%">Gene Description</TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
@@ -424,13 +397,6 @@
 						}
                         %>
                         <TR <%if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>class="singleExon"<%}%>>
-                            <TD >
-							<%if(curGene.getGeneID().startsWith("ENS")){%>
-                            	<a href="http://www.ensembl.org/<%=fullOrg%>/Gene/Summary?g=<%=curGene.getGeneID()%>" target="_blank" title="View Ensembl Gene Details"><%=curGene.getGeneID()%></a>
-                            <%}else{%>
-                            	<%=curGene.getGeneID()%>
-                            <%}%>
-                            </TD>
                             <TD title="View detailed transcription information for gene in a new window.">
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
                             	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=curGene.getGeneID()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
@@ -444,6 +410,15 @@
                             <%}%>
                                 </a>
                             </TD>
+                            
+                            <TD >
+							<%if(curGene.getGeneID().startsWith("ENS")){%>
+                            	<a href="http://www.ensembl.org/<%=fullOrg%>/Gene/Summary?g=<%=curGene.getGeneID()%>" target="_blank" title="View Ensembl Gene Details"><%=curGene.getGeneID()%></a>
+                            <%}else{%>
+                            	<%=curGene.getGeneID()%>
+                            <%}%>
+                            </TD>
+                            
                             <%	String description=curGene.getDescription();
 								String shortDesc=description;
         						String remain="";
@@ -537,11 +512,11 @@
 </div><!-- end GeneList-->
 
 <div id="bQTLList" class="modalTabContent" style="display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
-	<span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:999;left:-464px; top:6px;"></span>
+	
 	<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:50%">Filter List</TH>
-                        <TH style="width:50%">View Columns</TH>
+                    	<TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List</span></TH>
+                        <TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
                     	<TR>
@@ -707,11 +682,12 @@
 
 
 <div id="eQTLListFromRegion" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
-		<span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:999;left:-464px; top:6px;"></span>
+		
+        
 		<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:65%;">Filter List and Circos Plot</TH>
-                        <TH>View Columns</TH>
+                    	<TH style="width:65%;"><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List and Circos Plot</span></TH>
+                        <TH><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
                     </thead>
                 	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
@@ -884,8 +860,10 @@
                         </TR>
                         </tbody>
                   </table>
-		<div style="display:inline-block;text-align:center;">
-        	Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls.
+   	<div style="text-align:center; width:100%;"><span class="trigger less" name="circosPlot" >Gene Location Cicos Plot</span></div>
+    <div id="circosPlot" style="text-align:center;">
+		<div style="display:inline-block;text-align:center; width:100%;">
+        	<span id="circosMinMax"><img src="web/images/icons/magnifyingGlass_minus.png"></span>Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
      	</div>
 
 
@@ -922,9 +900,11 @@
 
 
           <div id="iframe_parent" align="center">
-               <iframe src=<%=iframeURL%> height=950 width=950  position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
+               <iframe id="circosIFrame" src=<%=iframeURL%> height=950 width=950  position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
                </iframe>
           </div>
+          <a href="http://genome.cshlp.org/content/early/2009/06/15/gr.092759.109.abstract" target="_blank" style="text-decoration: none">Circos: an Information Aesthetic for Comparative Genomics.</a>
+     </div><!-- end CircosPlot -->
 
 	<% 
 		ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"core",myOrganism,tissueString,chromosomeString);//this region controls what genes
@@ -941,8 +921,9 @@
                         <%}%>
                     </tr>
                 	<TR class="col_title">
+                   		<TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
                     	<TH>Gene ID</TH>
-                    	<TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
+                    	
                         <TH>Description</TH>
                         <TH>Transcript Cluster ID</TH>
                         <TH>Annotation Level</TH>
@@ -960,11 +941,16 @@
 					<%DecimalFormat df4 = new DecimalFormat("#.####");
 					for(int i=0;i<transOutQTLs.size();i++){
 						TranscriptCluster tc=transOutQTLs.get(i);
-						
+						String tcChr=myOrganism.toLowerCase()+tc.getChromosome();
+						boolean include=false;
+						for(int z=0;z<selectedChromosomes.length&&!include;z++){
+							if(selectedChromosomes[z].equals(tcChr)){
+								include=true;
+							}
+						}
+						if(include){
                         %>
                         <TR>
-                            <TD ><a href="http://www.ensembl.org/<%=fullOrg%>/Gene/Summary?g=<%=tc.getGeneID()%>" target="_blank" title="View Ensembl Gene Details"><%=tc.getGeneID()%></a></TD>
-                            
                             <TD ><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=tc.getGeneID()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for gene.">
 							<%if(tc.getGeneSymbol().equals("")){%>
 								No Gene Symbol
@@ -972,6 +958,9 @@
 								<%=tc.getGeneSymbol()%>
                             <%}%>
                             </a></TD>
+                            
+                            <TD ><a href="http://www.ensembl.org/<%=fullOrg%>/Gene/Summary?g=<%=tc.getGeneID()%>" target="_blank" title="View Ensembl Gene Details"><%=tc.getGeneID()%></a></TD>
+                            
                             <%	String description=tc.getGeneDescription();
 								String shortDesc=description;
         						String remain="";
@@ -1028,7 +1017,8 @@
                                 <%}%>
                             
                         </TR>
-                    <%}%>
+                    <%} //end if
+					}//end for tcOutQTLs%>
 
 				 </tbody>
               </table>
@@ -1129,14 +1119,20 @@ $(document).ready(function() {
     var selectedChromosomes = $("#chromosomes")[0].options;
 	document.getElementById("loadingRegion").style.display = 'none';
 	
-	$('#tblGenes').dataTable({
+	/*  Removed Fixed columns because it slowed the page down too much it was always recalculating the rows.*/
+	var tblGenesFixed=null;
+	var tblFromFixed=null;
+	var tblBQTLAdjust=false;
+	
+	var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
 	"sScrollY": "650px"
 	});
 	
-	$('#tblBQTL').dataTable({
+	
+	var tblBQTL=$('#tblBQTL').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
@@ -1147,7 +1143,7 @@ $(document).ready(function() {
     ]
 	});
 	
-	$('#tblFrom').dataTable({
+	var tblFrom=$('#tblFrom').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
@@ -1155,12 +1151,19 @@ $(document).ready(function() {
 	"bDeferRender": true
 	});
 	
-	 $('.cssTab div.modalTabContent').hide();
+	$('.cssTab div.modalTabContent').hide();
     $('.cssTab div.modalTabContent:first').show();
     $('.cssTab ul li a:first').addClass('selected');
 	
 
 	$('#tblGenes').dataTable().fnAdjustColumnSizing();
+	tblGenesFixed=new FixedColumns( tblGenes, {
+ 		"iLeftColumns": 1,
+		"iLeftWidth": 100
+ 	} );
+	
+	
+	
 	//$('#tblGenes_filter').css({position: 'relative',top: '-7px'});
 	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
 	//$('#tblBQTL_filter').css({position: 'relative',top: '-56px'});
@@ -1269,27 +1272,27 @@ $(document).ready(function() {
  
   /* Setup Filtering/View Columns in tblGenes */
 	  $('#heritCBX').click( function(){
-			displayColumns($('#tblGenes').dataTable(), 8,tisLen,$('#heritCBX').is(":checked"));
+			displayColumns(tblGenes, 8,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
-			displayColumns($('#tblGenes').dataTable(), 8+tisLen,tisLen,$('#heritCBX').is(":checked"));
+			displayColumns(tblGenes, 8+tisLen,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#eqtlAllCBX').click( function(){
-			displayColumns($('#tblGenes').dataTable(), 8+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+			displayColumns(tblGenes, 8+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
 	  });
 		$('#eqtlCBX').click( function(){
-			displayColumns($('#tblGenes').dataTable(), 8+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+			displayColumns(tblGenes, 8+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
 	  });
 	  
 	   $('#geneIDCBX').click( function(){
-			displayColumns($('#tblGenes').dataTable(),0,1,$('#geneIDCBX').is(":checked"));
+			displayColumns(tblGenes,1,1,$('#geneIDCBX').is(":checked"));
 	  });
 	  $('#geneDescCBX').click( function(){
-			displayColumns($('#tblGenes').dataTable(),2,1,$('#geneDescCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),2,1,$('#geneDescCBX').is(":checked"));
 	  });
 	  
 	  $('#geneLocCBX').click( function(){
-			displayColumns($('#tblGenes').dataTable(),3,2,$('#geneLocCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),3,2,$('#geneLocCBX').is(":checked"));
 	  });
 	  
 	  $('#pvalueCutoffSelect1').change( function(){
@@ -1310,65 +1313,65 @@ $(document).ready(function() {
 	/* Seutp Filtering/Viewing in tblBQTL*/
 	
 	  $('#bqtlSymCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),1,1,$('#bqtlSymCBX').is(":checked"));
+			displayColumns(tblBQTL,1,1,$('#bqtlSymCBX').is(":checked"));
 	  });
 	  $('#traitMethodCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),4,1,$('#traitMethodCBX').is(":checked"));
+			displayColumns(tblBQTL,4,1,$('#traitMethodCBX').is(":checked"));
 	  });
 	  $('#assocBQTLCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),9,1,$('#assocBQTLCBX').is(":checked"));
+			displayColumns(tblBQTL,9,1,$('#assocBQTLCBX').is(":checked"));
 	  });
 	  $('#phenotypeCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),5,1,$('#phenotypeCBX').is(":checked"));
+			displayColumns(tblBQTL,5,1,$('#phenotypeCBX').is(":checked"));
 	  });
 	  $('#diseaseCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),6,1,$('#diseaseCBX').is(":checked"));
+			displayColumns(tblBQTL,6,1,$('#diseaseCBX').is(":checked"));
 	  });
 	  $('#refCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),7,1,$('#refCBX').is(":checked"));
+			displayColumns(tblBQTL,7,1,$('#refCBX').is(":checked"));
 	  });
 	  $('#locMethodCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),11,1,$('#locMethodCBX').is(":checked"));
+			displayColumns(tblBQTL,11,1,$('#locMethodCBX').is(":checked"));
 	  });
 	  $('#lodBQTLCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),12,1,$('#lodBQTLCBX').is(":checked"));
+			displayColumns(tblBQTL,12,1,$('#lodBQTLCBX').is(":checked"));
 	  });
 	  $('#pvalBQTLCBX').click( function(){
-			displayColumns($('#tblBQTL').dataTable(),13,1,$('#pvalBQTLCBX').is(":checked"));
+			displayColumns(tblBQTL,13,1,$('#pvalBQTLCBX').is(":checked"));
 	  });
 	
 	/* Seutp Filtering/Viewing in tblFrom*/	
 	  $('#geneIDFCBX').click( function(){
-			displayColumns($('#tblFrom').dataTable(),0,1,$('#geneIDFCBX').is(":checked"));
+			displayColumns(tblFrom,1,1,$('#geneIDFCBX').is(":checked"));
 	  });
 	  $('#geneDescFCBX').click( function(){
-			displayColumns($('#tblFrom').dataTable(),2,1,$('#geneDescFCBX').is(":checked"));
+			displayColumns(tblFrom,2,1,$('#geneDescFCBX').is(":checked"));
 	  });
 	  
 	  $('#transAnnotCBX').click( function(){
-			displayColumns($('#tblFrom').dataTable(),3,2,$('#transAnnotCBX').is(":checked"));
+			displayColumns(tblFrom,3,2,$('#transAnnotCBX').is(":checked"));
 	  });
 	  $('#allPvalCBX').click( function(){
 	  		for(var i=0;i<tisLen;i++){
-				displayColumns($('#tblFrom').dataTable(),i*2+7,1,$('#allPvalCBX').is(":checked"));
+				displayColumns(tblFrom,i*2+7,1,$('#allPvalCBX').is(":checked"));
 			}
 	  });
 	  $('#allLocCBX').click( function(){
 	  		for(var i=0;i<tisLen;i++){
-				displayColumns($('#tblFrom').dataTable(),i*2+8,1,$('#allLocCBX').is(":checked"));
+				displayColumns(tblFrom,i*2+8,1,$('#allLocCBX').is(":checked"));
 			}
 	  });
 	  $('#fromBrainCBX').click( function(){
-			displayColumns($('#tblFrom').dataTable(),7,2,$('#fromBrainCBX').is(":checked"));
+			displayColumns(tblFrom,7,2,$('#fromBrainCBX').is(":checked"));
 	  });
 	   $('#fromHeartCBX').click( function(){
-			displayColumns($('#tblFrom').dataTable(),9,2,$('#fromHeartCBX').is(":checked"));
+			displayColumns(tblFrom,9,2,$('#fromHeartCBX').is(":checked"));
 	  });
 	  $('#fromLiverCBX').click( function(){
-			displayColumns($('#tblFrom').dataTable(),11,2,$('#fromLiverCBX').is(":checked"));
+			displayColumns(tblFrom,11,2,$('#fromLiverCBX').is(":checked"));
 	  });
 	  $('#fromBATCBX').click( function(){
-			displayColumns($('#tblFrom').dataTable(),13,2,$('#fromBATCBX').is(":checked"));
+			displayColumns(tblFrom,13,2,$('#fromBATCBX').is(":checked"));
 	  });
 		/*$('#pvalueCutoffSelect2').change( function(){
 			$('#pvalueCutoffInput').val($(this).val());
@@ -1377,6 +1380,21 @@ $(document).ready(function() {
 	
 	
 	setupExpandCollapseTable();
+	setupExpandCollapse();
+	//var tableRows = getRows();
+	//hoverRows(tableRows);
+	
+	$('#circosMinMax').click(function(){
+		if($('#circosIFrame').attr("height")>400){
+			$('> img',this).attr("src","web/images/icons/magnifyingGlass_plus.png");
+			$('#circosIFrame').attr("height",400);
+			$('#circosIFrame').attr("width",950);
+		}else{
+			$('> img',this).attr("src","web/images/icons/magnifyingGlass_minus.png");
+			$('#circosIFrame').attr("height",950);
+			$('#circosIFrame').attr("width",950);
+		}
+	});
 	
 	//Setup Tabs
     $('.cssTab ul li a').click(function() {    
@@ -1388,11 +1406,16 @@ $(document).ready(function() {
             $(currentTab).show();
 			
 			if(currentTab == "#geneList"){
-				$('#tblGenes').dataTable().fnAdjustColumnSizing();
-			}else if(currentTab == "#bQTLList"){
-				$('#tblBQTL').dataTable().fnAdjustColumnSizing();
-			}else if(currentTab == "#eQTLListFromRegion"){
-				$('#tblFrom').dataTable().fnAdjustColumnSizing();
+				//tblGenes.fnAdjustColumnSizing();
+			}else if(currentTab == "#bQTLList" && !tblBQTLAdjust){
+				tblBQTL.fnAdjustColumnSizing();
+				tblBQTLAdjust=true;
+			}else if(currentTab == "#eQTLListFromRegion" && tblFromFixed==null){
+				tblFrom.fnAdjustColumnSizing();
+				tblFromFixed=new FixedColumns( tblFrom, {
+						"iLeftColumns": 1,
+						"iLeftWidth": 100
+				} );
 			}else{
 				var table = $.fn.dataTable.fnTables(false);
             	if ( table.length > 0 ) {

@@ -3,6 +3,7 @@
 <%
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("jquery.dataTables.js");
+	extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	
 	extrasList.add("jquery.fancybox.css");

@@ -960,3 +960,31 @@ div.columnRight{
 	float:right;
 	width:50%;
 }
+
+
+/* Recommended styles for two sided multi-select*/
+		.tsmsselect {
+			width: 40%;
+			float: left;
+		}
+		
+		.tsmsselect select {
+			width: 100%;
+		}
+		
+		.tsmsoptions {
+			width: 20%;
+			float: left;
+		}
+		
+		.tsmsoptions p {
+			margin: 2px;
+			text-align: center;
+			font-size: larger;
+			cursor: pointer;
+		}
+		
+		.tsmsoptions p:hover {
+			color: White;
+			background-color: Silver;
+		}
