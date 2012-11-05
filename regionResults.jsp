@@ -173,6 +173,7 @@
     
     <script>
 		var tisLen=<%=tissuesList1.length%>;
+		var organism="<%=myOrganism%>";
     </script>
 
         <div class="geneRegionControl">
@@ -192,44 +193,45 @@
     
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; width:98%; text-align:center;">
         <div class="geneimageControl">
-      		Image Controls:
-          <form id="form1" name="form1" method="post" action="" style="display:inline-block;">
+      		
+          	<form>
+            Image Controls:
               <label style="color:#000000; margin-left:10px;">
                 Transcripts:</label>
-                <label>
-                <input name="radio" type="radio" id="unfilteredRB" value="unfilteredGeneImage" checked="checked" />
-                Off</label>
-              <label>
-              <input type="radio" name="radio" id="filteredRB" value="filteredGeneImage" />
-             On</label>
-             
-          </form>
-		 <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help2" src="../web/images/icons/help.png" /></div>
-         <BR />
-			<form id="form2" name="form2" method="post" action="" style="display:inline-block;">
-              <label style="color:#000000; margin-left:10px;">
-                UCSC/Affymetrix Tissue Expression Data(Source is UCSC Genome Browser):</label>
-                <label>
-                <input name="radio" type="radio" id="arrayOffRB" value="arrayOff" />
-                Off</label>
-              <label>
-              <input type="radio" name="radio" id="arrayOnRB" value="arrayOn" checked="checked" />
-             On</label>
-              
-          </form>
-          
+                <select name="transcriptSelect" id="transcriptSelect">
+                	<option value="geneimageUnfiltered" selected="selected">Hide</option>
+                    <option value="geneimageFiltered" >Show</option>
+                </select>
+              <label style="color:#000000; margin-left:10px;">Additional Track options:</label>
+             	<select name="lowerTrackSelect" id="lowerTrackSelect">
+                	<option value="NoArray">None</option>
+                    <option value="Array" selected="selected">UCSC/Affymetrix Tissue Expression Data(Source:UCSC)</option>
+                    <option value="Human">Human Proteins/Chr Mapping(Source:UCSC)</option>
+                </select>
+                <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help2" src="../web/images/icons/help.png" /></div>
+             </form>
+         
+		 
           </div><!--end imageControl div -->
         <div class="geneimage" >
             <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help1" src="../web/images/icons/help.png"  /></div>
     
-            <div id="geneimageUnfiltered"  style="display:inline-block;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.png"%>"/></a></div>
-            <div id="geneimageFiltered" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.png"%>"/></a></div>
+            <div id="geneimageUnfilteredArray" class="ucscImage"  style="display:inline-block;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.png"%>"/></a></div>
+            <div id="geneimageFilteredArray"  class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.png"%>"/></a></div>
             <%
 				String ucscURL_no_array=ucscURL.get(0).replace(".main",".main.noArray");
 				String ucscURLFiltered_no_array=ucscURLFiltered.get(0).replace(".main.trans",".main.trans.noArray");
 			%>
-             <div id="geneimageUnfilteredNoArray"  style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURL_no_array%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.noArray.png"%>"/></a></div>
-            <div id="geneimageFilteredNoArray" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered_no_array%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.noArray.png"%>"/></a></div>
+            <div id="geneimageUnfilteredNoArray" class="ucscImage"  style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURL_no_array%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.noArray.png"%>"/></a></div>
+            <div id="geneimageFilteredNoArray" class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered_no_array%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.noArray.png"%>"/></a></div>
+            <%
+				String ucscURL_human=ucscURL.get(0).replace(".main",".main.human");
+				String ucscURLFiltered_human=ucscURLFiltered.get(0).replace(".main.trans",".main.trans.human");
+			%>
+            <div id="geneimageUnfilteredHuman" class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURL_human%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.human.png"%>"/></a>
+            	<BR />Chromosome Color Key:<img src="<%= contextRoot+"web/images/"+myOrganism+"_colorchrom.gif"%>"></div>
+            <div id="geneimageFilteredHuman" class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered_human%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.human.png"%>"/></a>
+            	<BR /><BR />Chromosome Color Key:<img src="<%= contextRoot+"web/images/"+myOrganism+"_colorchrom.gif"%>"></div>
     
         </div><!-- end geneimage div -->
     
@@ -260,8 +262,11 @@
                     </thead>
                 	<tbody id="geneListFilter" style="display:none;">
                     	<TR>
-                        	<td>Exclude single exon RNA-Seq Transcripts
-                        <input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" /><BR />
+                        	<td>
+                            <%if(myOrganism.equals("Rn")){%>
+                                Exclude single exon RNA-Seq Transcripts
+                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" /><BR />
+                        	<%}%>
 						 eQTL P-Value Cut-off:
                         <%
 							selectName = "pvalueCutoffSelect1";
@@ -276,6 +281,7 @@
 										optionHash.put("0.00001", "0.00001");
 							%>
 							<%@ include file="/web/common/selectBox.jsp" %>
+                            </td>
                         	<td>
                             	<div class="columnLeft">
                                 	Gene ID
@@ -295,11 +301,11 @@
                                     eQTLs Tissues
                                     <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />
                                 </div>
-                                
-                            <TD>
+
                             </TD>
                         
                         </TR>
+                        </tbody>
                         
                   </table>
           
@@ -523,8 +529,14 @@
                         	<td></td>
                         	<td>
                             	<div class="columnLeft">
+                                	<%if(myOrganism.equals("Mm")){%>
+                                	RGD ID
+                                    <input name="chkbox" type="checkbox" id="rgdIDCBX" value="rgdIDCBX" /><BR />
+                                    Trait
+                                    <input name="chkbox" type="checkbox" id="traitCBX" value="traitCBX" /><BR />
+                                    <%}%>
                                 	bQTL Symbol
-                                    <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" /><BR />
+                                    <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" <%if(myOrganism.equals("Mm")){%>checked="checked"<%}%> /><BR />
                                     Trait Method
                                     <input name="chkbox" type="checkbox" id="traitMethodCBX" value="traitMethodCBX" /><BR />
                                     Phenotype
@@ -540,32 +552,29 @@
                                     Location Method
                                     <input name="chkbox" type="checkbox" id="locMethodCBX" value="locMethodCBX"  /><BR />
                                     LOD Score
-                                    <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" checked="checked" /><BR />
+                                    <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" <%if(myOrganism.equals("Rn")){%>checked="checked"<%}%>/><BR />
                                     P-Value
                                     <input name="chkbox" type="checkbox" id="pvalBQTLCBX" value="pvalBQTLCBX"  /><BR />
                                 </div>
                             	
-                                
-                            <TD>
                             </TD>
                         
                         </TR>
-                        
+                        </tbody>
                   </table>
 
 
 	<% ArrayList<BQTL> bqtls=gdt.getBQTLs(min,max,chromosome,myOrganism);
+	if(bqtls.size()>0){
+		log.debug("BQTLS >0 ");
 	%>
 	<TABLE name="items" id="tblBQTL" class="list_base tablesorter" cellpadding="0" cellspacing="0">
                 <THEAD>
                 	<TR class="col_title">
-                    	<TH>
-						<%if(myOrganism.equals("Rn")){%>
-                        	RGD ID
-                        <%}else{%>
-                            MGI ID
+                    	<%if(myOrganism.equals("Mm")){%>
+                    		<TH>MGI ID</TH>
                         <%}%>
-                        </TH>
+                        <TH>RGD ID</TH>
                         <TH>QTL Symbol</TH>
                     	<TH>QTL Name</TH>
                         <TH>Trait</TH>
@@ -587,13 +596,14 @@
 					BQTL curBQTL=bqtls.get(i);
 					if(curBQTL!=null){%>
                 	<tr>
+                    	<%if(myOrganism.equals("Mm")){%>
                     	<TD>
-						<%if(myOrganism.equals("Rn")){%>
-                        	<a href="http://rgd.mcw.edu/rgdweb/report/qtl/main.html?id=<%=curBQTL.getRGDID()%>" target="_blank"> 
-							<%=curBQTL.getRGDID()%></a>
-                        <%}else{%>
-                            <%=curBQTL.getMGIID()%>
+                        	<a href="http://www.informatics.jax.org/marker/MGI:<%=curBQTL.getMGIID()%>" target="_blank">
+							<%=curBQTL.getMGIID()%></a>
+                        </TD>
                         <%}%>
+                        <TD><a href="http://rgd.mcw.edu/rgdweb/report/qtl/main.html?id=<%=curBQTL.getRGDID()%>" target="_blank"> 
+							<%=curBQTL.getRGDID()%></a>
                         </TD>
                         <TD><%=curBQTL.getSymbol()%></TD>
                         <TD><%=curBQTL.getName()%></TD>
@@ -609,36 +619,48 @@
                         <%}%></TD>
                         
                         <TD><%=curBQTL.getPhenotype()%></TD>
-                        <TD><%=curBQTL.getDiseases().replaceAll(";","<HR>")%></TD>
+                        <TD>
+						<%if(curBQTL.getDiseases()!=null){%>
+							<%=curBQTL.getDiseases().replaceAll(";","<HR>")%>
+                        <%}%>
+                        </TD>
                         <TD>
                         	<%	ArrayList<String> ref1=curBQTL.getRGDRef();
+							if(ref1!=null){
 							for(int j=0;j<ref1.size();j++){
 								if(j!=0){%>
                             		<BR />
                                 <%}%>
                                 <a href="http://rgd.mcw.edu/rgdweb/report/reference/main.html?id=<%=ref1.get(j)%>" target="_blank"><%=ref1.get(j)%></a>
-                        	<%}%>
+                        	<%}
+							}%>
                         <HR />
                         
                          <%	ArrayList<String> ref2=curBQTL.getPubmedRef();
+						 if(ref2!=null){
 							for(int j=0;j<ref2.size();j++){
 								if(j!=0){%>
                             		<BR />
                                 <%}%>
                                 <a href="http://www.ncbi.nlm.nih.gov/pubmed/<%=ref2.get(j)%>" target="_blank"><%=ref2.get(j)%></a>
-                        <%}%>
+                        <%}
+						}%>
                         </TD>
                         
                         <TD>
                         <%	ArrayList<String> candidates=curBQTL.getCandidateGene();
+							if(candidates!=null){
 							for(int j=0;j<candidates.size();j++){%>
                             	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=candidates.get(j)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for gene."><%=candidates.get(j)%></a><BR />
-                        <%}%>
+                        	<%}
+							}%>
                         </TD>
                         <TD><%	ArrayList<String> relQTL=curBQTL.getRelatedQTL();
+							if(relQTL!=null){
 							for(int j=0;j<relQTL.size();j++){%>
                             	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=bQTL:<%=relQTL.get(j)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="Click to View bQTL Region in a new window."><%=relQTL.get(j)%></a><BR />
-                        <%}%>
+                        	<%}
+							}%>
                         </TD>
                         <TD title="Click to view QTL region in a new window."><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
                         chr<%=curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%></a></TD>
@@ -674,6 +696,9 @@
                 	No bQTLs to display.
                 <%}%>
     </table>
+    <%}else{%>
+    	No bQTLs found in region.
+    <%}%>
 </div><!-- end bQTL List-->
 
 
@@ -1019,11 +1044,13 @@
                         </TR>
                     <%} //end if
 					}//end for tcOutQTLs%>
-
+                   	 
 				 </tbody>
               </table>
               
-      <%}%>
+      <%}else{%>
+      No genes to display.  Try changing the filtering parameters.
+					<%}%>
 </div><!-- end eQTL List-->
 
 
@@ -1118,6 +1145,13 @@ $(document).ready(function() {
 	$(".multiselect").twosidedmultiselect();
     var selectedChromosomes = $("#chromosomes")[0].options;
 	document.getElementById("loadingRegion").style.display = 'none';
+	var bqtlTarget=[ 1,4,9,11,13 ];
+	if(organism == "Mm"){
+		bqtlTarget=[ 1,4,5,10,12,13,14 ];
+	}
+	
+	$('.ucscImage').hide();
+	$('#geneimageUnfilteredArray').show();
 	
 	/*  Removed Fixed columns because it slowed the page down too much it was always recalculating the rows.*/
 	var tblGenesFixed=null;
@@ -1139,7 +1173,7 @@ $(document).ready(function() {
 	"sScrollY": "650px",
 	"bDeferRender": true,
 	"aoColumnDefs": [
-      { "bVisible": false, "aTargets": [ 1,4,9,11,13 ] }
+      { "bVisible": false, "aTargets": bqtlTarget }
     ]
 	});
 	
@@ -1169,9 +1203,6 @@ $(document).ready(function() {
 	//$('#tblBQTL_filter').css({position: 'relative',top: '-56px'});
 	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
 
-	$('#geneimageFiltered').hide();
-	$('#geneimageFilteredNoArray').hide();
-	$('#geneimageUnfilteredNoArray').hide();
 	
 	$('.singleExon').hide();
   
@@ -1209,64 +1240,19 @@ $(document).ready(function() {
 		}
   });
   
-  //Setup UCSC Image Controls
-  $('#filteredRB').click( function(){
-  		if($('#arrayOnRB').is(":checked")){
-			$('#geneimageFiltered').show();
-			$('#geneimageUnfiltered').hide();
-			$('#geneimageFilteredNoArray').hide();
-			$('#geneimageUnfilteredNoArray').hide();
-		}else{
-			$('#geneimageFilteredNoArray').show();
-			$('#geneimageUnfilteredNoArray').hide();
-			$('#geneimageFiltered').hide();
-			$('#geneimageUnfiltered').hide();
-		}
+  
+  $('#transcriptSelect').change(function(){
+  		$('.ucscImage').hide();
+		var transVal=$(this).val();
+		var lowerVal=$('#lowerTrackSelect').val();
+		$('#'+transVal+lowerVal).show();
   });
   
-  $('#unfilteredRB').click( function(){
-  		if($('#arrayOnRB').is(":checked")){
-  			$('#geneimageFiltered').hide();
-			$('#geneimageUnfiltered').show();
-			$('#geneimageFilteredNoArray').hide();
-			$('#geneimageUnfilteredNoArray').hide();
-		}else{
-			$('#geneimageFilteredNoArray').hide();
-			$('#geneimageUnfilteredNoArray').show();
-			$('#geneimageFiltered').hide();
-			$('#geneimageUnfiltered').hide();
-		}
-
-  });
-  
-  
-  $('#arrayOnRB').click( function(){
-  		if($('#filteredRB').is(":checked")){
-			$('#geneimageFiltered').show();
-			$('#geneimageUnfiltered').hide();
-			$('#geneimageFilteredNoArray').hide();
-			$('#geneimageUnfilteredNoArray').hide();
-		}else{
-			$('#geneimageFilteredNoArray').hide();
-			$('#geneimageUnfilteredNoArray').hide();
-			$('#geneimageFiltered').hide();
-			$('#geneimageUnfiltered').show();
-		}
-  });
-  
-  $('#arrayOffRB').click( function(){
-  		if($('#filteredRB').is(":checked")){
-  			$('#geneimageFiltered').hide();
-			$('#geneimageUnfiltered').hide();
-			$('#geneimageFilteredNoArray').show();
-			$('#geneimageUnfilteredNoArray').hide();
-		}else{
-			$('#geneimageFilteredNoArray').hide();
-			$('#geneimageUnfilteredNoArray').show();
-			$('#geneimageFiltered').hide();
-			$('#geneimageUnfiltered').hide();
-		}
-
+   $('#lowerTrackSelect').change(function(){
+  		$('.ucscImage').hide();
+		var transVal=$('#transcriptSelect').val();
+		var lowerVal=$(this).val();
+		$('#'+transVal+lowerVal).show();
   });
   
  
@@ -1311,33 +1297,78 @@ $(document).ready(function() {
 		
 		
 	/* Seutp Filtering/Viewing in tblBQTL*/
-	
+	 $('#rgdIDCBX').click( function(){
+			displayColumns(tblBQTL,1,1,$('#rgdIDCBX').is(":checked"));
+	  });
 	  $('#bqtlSymCBX').click( function(){
-			displayColumns(tblBQTL,1,1,$('#bqtlSymCBX').is(":checked"));
+	  		var col=1;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#bqtlSymCBX').is(":checked"));
+	  });
+	  $('#traitCBX').click( function(){
+	  		var col=3;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#traitMethodCBX').is(":checked"));
 	  });
 	  $('#traitMethodCBX').click( function(){
-			displayColumns(tblBQTL,4,1,$('#traitMethodCBX').is(":checked"));
+	  		var col=4;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#traitMethodCBX').is(":checked"));
 	  });
 	  $('#assocBQTLCBX').click( function(){
-			displayColumns(tblBQTL,9,1,$('#assocBQTLCBX').is(":checked"));
+	  		var col=9;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#assocBQTLCBX').is(":checked"));
 	  });
 	  $('#phenotypeCBX').click( function(){
-			displayColumns(tblBQTL,5,1,$('#phenotypeCBX').is(":checked"));
+	  		var col=5;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#phenotypeCBX').is(":checked"));
 	  });
 	  $('#diseaseCBX').click( function(){
-			displayColumns(tblBQTL,6,1,$('#diseaseCBX').is(":checked"));
+	  		var col=6;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#diseaseCBX').is(":checked"));
 	  });
 	  $('#refCBX').click( function(){
-			displayColumns(tblBQTL,7,1,$('#refCBX').is(":checked"));
+	  		var col=7;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#refCBX').is(":checked"));
 	  });
 	  $('#locMethodCBX').click( function(){
-			displayColumns(tblBQTL,11,1,$('#locMethodCBX').is(":checked"));
+	  		var col=11;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#locMethodCBX').is(":checked"));
 	  });
 	  $('#lodBQTLCBX').click( function(){
-			displayColumns(tblBQTL,12,1,$('#lodBQTLCBX').is(":checked"));
+	  		var col=12;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#lodBQTLCBX').is(":checked"));
 	  });
 	  $('#pvalBQTLCBX').click( function(){
-			displayColumns(tblBQTL,13,1,$('#pvalBQTLCBX').is(":checked"));
+	  		var col=13;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#pvalBQTLCBX').is(":checked"));
 	  });
 	
 	/* Seutp Filtering/Viewing in tblFrom*/	

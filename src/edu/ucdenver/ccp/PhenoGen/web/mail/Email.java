@@ -159,8 +159,10 @@ public class Email  {
 
 	public void sendEmailToAdministrator(String adminEmail) throws MessagingException, SendFailedException {
 		log.debug("in sendEmailToAdministrator");
-                String[] adminEmails=adminEmail.split(",");
-                if(adminEmails.length==0&&adminEmail.equals("")){
+                String[] adminEmails=null;
+                if(adminEmail.length()>0){
+                    adminEmails=adminEmail.split(",");
+                }else{
                     adminEmails=this.defaultAdmin.split(",");
                 }
                 java.net.InetAddress localMachine =null;
@@ -172,8 +174,10 @@ public class Email  {
 		this.content = "From Host:"+localMachine+"\nNOTE: This email was only sent to the administrator \n\n" +this.content;
                 this.subject = localMachine+"::"+this.subject;
                 for(int i=0;i<adminEmails.length;i++){
-                    this.to = adminEmails[i];
-                    sendEmail();
+                    if(adminEmails[i].indexOf("@")>0){
+                        this.to = adminEmails[i];
+                        sendEmail();
+                    }
                 }
 		log.debug("just sent email");
 	}

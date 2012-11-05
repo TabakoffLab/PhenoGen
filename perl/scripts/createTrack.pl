@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-# PERL MODULES WE WILL BE USIN
 use strict;
 
 
@@ -8,7 +7,7 @@ use strict;
 
 sub createTrackFile{
 	# INPUT VARIABLES
-	# Reference to Gene Hash of Hash used to create xml file in routine writeXML.pl
+	# Reference to Gene Hash of Hash used to create xml file in routine writeXML_region.pl
 	# Counter for which gene we are on.
 	# Name of bed file to create
 	
@@ -152,14 +151,14 @@ sub createTrackFileRegion{
 	
 
 	# Read inputs
-	my($GeneHOHRef,  $twoTrackOutputFileName, $species, $includeTranscripts, $includeArray, $chr, $minCoord, $maxCoord) = @_; 
+	my($GeneHOHRef,  $twoTrackOutputFileName, $species, $includeTranscripts, $includeArray, $includeHuman, $chr, $minCoord, $maxCoord) = @_; 
 	# Dereference the hash and array
 	my %GeneHOH = %$GeneHOHRef;
 	my $geneListRef=$GeneHOH{Gene};
 	my @geneList=@$geneListRef;
 	
 	my $trackDB="mm9";
-	my $qtlTrack="";
+	my $qtlTrack="jaxQtl";
 	
 	if($species eq 'Rat'){
 		$trackDB="rn4";
@@ -174,107 +173,112 @@ sub createTrackFileRegion{
 	print TWOFILE "browser pack refGene\n";
 	
 	if($includeTranscripts==1){
-	print TWOFILE "track db=$trackDB priority=2 name='Transcripts' ";
-	print TWOFILE 'description="Transcripts"';
-	print TWOFILE "visibility=3 itemRgb=On group='genes' \n";
+		print TWOFILE "track db=$trackDB priority=2 name='Transcripts' ";
+		print TWOFILE 'description="Transcripts"';
+		print TWOFILE "visibility=3 itemRgb=On group='genes' \n";
 	
-	my $cntGenes=0;
-	foreach my $tmpGene (@geneList){
-		my $geneID=$GeneHOH{Gene}[$cntGenes]{ID};
-		my $transcriptArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
-		my $chr=$GeneHOH{Gene}[$cntGenes]{chromosome};
-		
-		if(index($chr,"chr")>-1){
-			$chr=substr($chr,3);
-		}
-		
-		my $strand=$GeneHOH{Gene}[$cntGenes]{strand};
-		
-		my @transcriptArray = @$transcriptArrayRef;
-		
-		my @exonHOH;
-		my $cntHOHExons=0;
-		my $convStrand=".";
-		my $cntTranscripts = 0;
-		
-		my $color="0,0,0";
-		if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
-			$color="157,17,0";
-		}else{
-			$color="0,0,255";
-		}
-		
-		foreach(@transcriptArray){
-			my $exonArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon};
-			my @exonArray = @$exonArrayRef;
-			my $cntExons = 0;
-			if(@exonArray==1){
-				$color="0,0,0";
+		my $cntGenes=0;
+		foreach my $tmpGene (@geneList){
+			my $geneID=$GeneHOH{Gene}[$cntGenes]{ID};
+			my $transcriptArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
+			my $chr=$GeneHOH{Gene}[$cntGenes]{chromosome};
+			
+			if(index($chr,"chr")>-1){
+				$chr=substr($chr,3);
 			}
-			my $trstart=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{start};
-			my $trstop=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{stop};
-			my $trstrand=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{strand};
-			if($trstrand==1){
-				$convStrand="+";
-			}elsif($trstrand==-1){
-				$convStrand="-";
-			}
-			my $trname=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{ID};
-			$trname  =~ s/ /_/g;
-			my $fulltrname=$geneID.".".$trname;
+			
+			my $strand=$GeneHOH{Gene}[$cntGenes]{strand};
+			
+			my @transcriptArray = @$transcriptArrayRef;
+			
+			my @exonHOH;
+			my $cntHOHExons=0;
+			my $convStrand=".";
+			my $cntTranscripts = 0;
+			
+			my $color="0,0,0";
 			if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
-				$fulltrname=$trname;
+				$color="157,17,0";
+			}else{
+				$color="0,0,255";
 			}
-			print TWOFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
-			my $tmpLens="";
-			my $tmpStarts="";
-			foreach(@exonArray){
-				my $currentExonStart = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{start};
-				my $currentExonStop = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{stop};
-				# find out if this exon is already in exonHOH
-				my $relStart=$currentExonStart-$trstart;
-				
-				my $tmpLen=$currentExonStop-$currentExonStart;
-				if($tmpLens eq ""){
-					$tmpLens="".$tmpLen;
-					$tmpStarts="".$relStart;
-				}else{
-					$tmpLens=$tmpLens.",".$tmpLen;
-					$tmpStarts=$tmpStarts.",".$relStart;
+			
+			foreach(@transcriptArray){
+				my $exonArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon};
+				my @exonArray = @$exonArrayRef;
+				my $cntExons = 0;
+				if(@exonArray==1){
+					$color="0,0,0";
 				}
-				
-				my $alreadyIncluded = 0;
-				for(my $cnt=0; $cnt < $cntHOHExons; $cnt++){
-					if($exonHOH[$cnt]{start} == $currentExonStart && $exonHOH[$cnt]{stop} == $currentExonStop ){
-						$alreadyIncluded = 1;
+				my $trstart=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{start};
+				my $trstop=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{stop};
+				my $trstrand=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{strand};
+				if($trstrand==1){
+					$convStrand="+";
+				}elsif($trstrand==-1){
+					$convStrand="-";
+				}
+				my $trname=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{ID};
+				$trname  =~ s/ /_/g;
+				my $fulltrname=$geneID.".".$trname;
+				if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
+					$fulltrname=$trname;
+				}
+				print TWOFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
+				my $tmpLens="";
+				my $tmpStarts="";
+				foreach(@exonArray){
+					my $currentExonStart = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{start};
+					my $currentExonStop = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{stop};
+					# find out if this exon is already in exonHOH
+					my $relStart=$currentExonStart-$trstart;
+					
+					my $tmpLen=$currentExonStop-$currentExonStart;
+					if($tmpLens eq ""){
+						$tmpLens="".$tmpLen;
+						$tmpStarts="".$relStart;
+					}else{
+						$tmpLens=$tmpLens.",".$tmpLen;
+						$tmpStarts=$tmpStarts.",".$relStart;
 					}
-				}	
-				
-				#print 	$GeneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ID}." include $alreadyIncluded\n";
-				if($alreadyIncluded == 0){
-					# Add this exon to the exonHOH
-					$exonHOH[$cntHOHExons]{ID} = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ID};
-					$exonHOH[$cntHOHExons]{start} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{start};
-					$exonHOH[$cntHOHExons]{stop} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{stop};
-					$exonHOH[$cntHOHExons]{coding_start} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{coding_start};
-					$exonHOH[$cntHOHExons]{coding_stop} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{coding_stop};
-					$exonHOH[$cntHOHExons]{strand} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{strand};
-					$exonHOH[$cntHOHExons]{chromosome} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{chromosome};
-					$exonHOH[$cntHOHExons]{alternateID2} =$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{alternateID2};
-					$cntHOHExons++;
+					
+					my $alreadyIncluded = 0;
+					for(my $cnt=0; $cnt < $cntHOHExons; $cnt++){
+						if($exonHOH[$cnt]{start} == $currentExonStart && $exonHOH[$cnt]{stop} == $currentExonStop ){
+							$alreadyIncluded = 1;
+						}
+					}	
+					
+					#print 	$GeneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ID}." include $alreadyIncluded\n";
+					if($alreadyIncluded == 0){
+						# Add this exon to the exonHOH
+						$exonHOH[$cntHOHExons]{ID} = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ID};
+						$exonHOH[$cntHOHExons]{start} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{start};
+						$exonHOH[$cntHOHExons]{stop} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{stop};
+						$exonHOH[$cntHOHExons]{coding_start} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{coding_start};
+						$exonHOH[$cntHOHExons]{coding_stop} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{coding_stop};
+						$exonHOH[$cntHOHExons]{strand} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{strand};
+						$exonHOH[$cntHOHExons]{chromosome} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{chromosome};
+						$exonHOH[$cntHOHExons]{alternateID2} =$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{alternateID2};
+						$cntHOHExons++;
+					}
+					$cntExons++;
 				}
-				$cntExons++;
+				print TWOFILE "$cntExons\t$tmpLens\t$tmpStarts\n";
+				$cntTranscripts++;
 			}
-			print TWOFILE "$cntExons\t$tmpLens\t$tmpStarts\n";
-			$cntTranscripts++;
+			$cntGenes=$cntGenes+1;
 		}
-		$cntGenes=$cntGenes+1;
-	}
 	}
 	if($includeArray==1){
 		print TWOFILE "browser pack affyExonTissues $qtlTrack\n";
 	}else{
 		print TWOFILE "browser pack $qtlTrack\n";
+	}
+	if($includeHuman==1){
+		print TWOFILE "browser dense chainNetHg19\n";
+		print TWOFILE "browser pack blastHg18KG\n";
+		#print TWOFILE "browser pack transMapAlnRefSeq\n";
 	}
 	close TWOFILE;
 	

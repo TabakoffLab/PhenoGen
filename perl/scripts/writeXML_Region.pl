@@ -409,11 +409,15 @@ sub createXMLFile
 		my $transTrackOutputFileName = $ucscDir.$folderName.".trans.tracks";
 		my $twoTrackOutputFileNameNoArray = $ucscDir.$folderName."_noArray.tracks";
 		my $transTrackOutputFileNameNoArray = $ucscDir.$folderName."_noArray.trans.tracks";
+		my $twoTrackOutputFileNameHuman = $ucscDir.$folderName."_human.tracks";
+		my $transTrackOutputFileNameHuman = $ucscDir.$folderName."_human.trans.tracks";
 		
-		createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileName,  $species,0,1,$chr,$minCoord,$maxCoord);
-		createTrackFileRegion(\%GeneHOH, $transTrackOutputFileName,  $species,1,1,$chr,$minCoord,$maxCoord);
-		createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileNameNoArray,  $species,0,0,$chr,$minCoord,$maxCoord);
-		createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameNoArray,  $species,1,0,$chr,$minCoord,$maxCoord);
+		createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileName,  $species,0,1,0,$chr,$minCoord,$maxCoord);
+		createTrackFileRegion(\%GeneHOH, $transTrackOutputFileName,  $species,1,1,0,$chr,$minCoord,$maxCoord);
+		createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileNameNoArray,  $species,0,0,0,$chr,$minCoord,$maxCoord);
+		createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameNoArray,  $species,1,0,0,$chr,$minCoord,$maxCoord);
+		createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileNameHuman,  $species,0,0,1,$chr,$minCoord,$maxCoord);
+		createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameHuman,  $species,1,0,1,$chr,$minCoord,$maxCoord);
 		
 		my $xml = new XML::Simple (RootName=>'GeneList');
 		my $data = $xml->XMLout(\%GeneHOH);
@@ -434,6 +438,8 @@ sub createXMLFile
 		my $newFilterPngOutputFileName = $outputDir."region.main.trans.png";
 		my $newPngOutputFileNameNoArray = $outputDir."region.main.noArray.png";
 		my $newFilterPngOutputFileNameNoArray = $outputDir."region.main.trans.noArray.png";
+		my $newPngOutputFileNameHuman = $outputDir."region.main.human.png";
+		my $newFilterPngOutputFileNameHuman = $outputDir."region.main.trans.human.png";
 		my $urlFile=$outputDir."Region.url";
 		
 		#my $geneStartSmaller = $geneStart-200;
@@ -483,6 +489,28 @@ sub createXMLFile
 		$tryCount=0;
 		while($newresultCode!=200 and $tryCount<3){
 		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray,(30+30*$tryCount));
+		    print "RESULT CODE2:$resultCode\n";
+		    if($tryCount==0){
+			my $url=substr($resultCode,index($resultCode,"<>")+2);
+		    }
+		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+		    $tryCount=$tryCount+1;
+		}
+		$newresultCode=0;
+		$tryCount=0;
+		while($newresultCode!=200 and $tryCount<3){
+		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman,(30+30*$tryCount));
+		    print "RESULT CODE2:$resultCode\n";
+		    if($tryCount==0){
+			my $url=substr($resultCode,index($resultCode,"<>")+2);
+		    }
+		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+		    $tryCount=$tryCount+1;
+		}
+		$newresultCode=0;
+		$tryCount=0;
+		while($newresultCode!=200 and $tryCount<3){
+		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman,(30+30*$tryCount));
 		    print "RESULT CODE2:$resultCode\n";
 		    if($tryCount==0){
 			my $url=substr($resultCode,index($resultCode,"<>")+2);
