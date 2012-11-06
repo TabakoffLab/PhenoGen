@@ -113,7 +113,7 @@ sub writeGeneIDs
                 my ($geneName, $geneRegion, $geneStart, $geneStop,$geneStrand) = getFeatureInfo($tmpgene);
                 my $geneExternalName =$tmpgene->external_name();
 		my $geneDescription  =$tmpgene->description();
-                print "$geneName\t$geneStrand\t\t$tcID\t$strand";
+                #print "$geneName\t$geneStrand\t\t$tcID\t$strand";
                 if($strand eq $geneStrand){
                     my $overLapTC=0.0;
                     my $overLapG=0.0;
@@ -131,18 +131,18 @@ sub writeGeneIDs
                     if($overlapLen>0){
                         $overLapTC=$overlapLen/$tcLen*100;
                         $overLapG=$overlapLen/$geneLen*100;
-                        print "overlapLen=$overlapLen  overLap=$overLapTC  $overLapG\n";
+                        #print "overlapLen=$overlapLen  overLap=$overLapTC  $overLapG\n";
                     }
                     if($overLapTC>=40.0 or $overLapG>=40.0){
                         $count++;
                         print OUT "$tcID\t$geneName\t$geneExternalName\t$geneStart\t$geneStop\t$overLapTC\t$overLapG\t$geneDescription\n";   
                     }
                 }else{
-                    print "\tnot equal\n";
+                    #print "\tnot equal\n";
                 }
                 
             }
-            print "$tcID\t #genes=$count\n";
+            #print "$tcID\t #genes=$count\n";
         }
         
         close IN;
