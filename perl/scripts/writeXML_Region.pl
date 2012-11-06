@@ -51,6 +51,28 @@ sub find
     return $ret;
 }
 
+
+# get Image calls createPNG it should increment the timeout time if the first request fails and try again up to 3 times starting with a 30s timeout +30s/failure.
+# it returns the result code allowing the main method to get the result code and url for the last attempt. Either the first successful attempt or last of 3 failed attempts.
+sub getImage{
+    my ($species,$chr,$minCoord,$maxCoord,$outputFileName,$trackFileName)=@_;
+    my $newresultCode=0;
+    my $tryCount=0;
+    my $resultCode="";
+    while($newresultCode!=200 and $tryCount<3){
+	eval{
+	    $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount));
+	    print "RESULT CODE2:$resultCode\n";
+	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+	    1;
+	}or do{
+	    $newresultCode=0;
+	};
+	$tryCount=$tryCount+1;
+    }
+    return $resultCode;
+}
+
 sub createXMLFile
 {
 	#This subroutine reads data from two sources
@@ -448,76 +470,95 @@ sub createXMLFile
 		my $tryCount=0;
 		open URLFILE, ">".$urlFile;
 		print URLFILE "$chr:$minCoord-$maxCoord\n";
-		while($newresultCode!=200 and $tryCount<3){
-		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileName,$twoTrackOutputFileName,(30+30*$tryCount));
-		    print "RESULT CODE:$resultCode\n";
-		    if($tryCount==0){
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-			print "URL:$url\n";
-			print URLFILE "$url\n";
-		    }
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
-		#sleep(15);
-		$newresultCode=0;
-		$tryCount=0;
-		while($newresultCode!=200 and $tryCount<3){
-		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileName,$transTrackOutputFileName,(30+30*$tryCount));
-		    print "RESULT CODE2:$resultCode\n";
-		    if($tryCount==0){
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-			print "URL:$url\n";
-			print URLFILE "$url\n";
-		    }
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
+		my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileName,$twoTrackOutputFileName);
+		    my $url=substr($resultCode,index($resultCode,"<>")+2);
+		    print "URL:$url\n";
+		    print URLFILE "$url\n";
+		
+		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileName,$transTrackOutputFileName);
+		    my $url=substr($resultCode,index($resultCode,"<>")+2);
+		    print "URL:$url\n";
+		    print URLFILE "$url\n";
 		close URLFILE;
-		$newresultCode=0;
-		$tryCount=0;
-		while($newresultCode!=200 and $tryCount<3){
-		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileNameNoArray,$twoTrackOutputFileNameNoArray,(30+30*$tryCount));
-		    print "RESULT CODE2:$resultCode\n";
-		    if($tryCount==0){
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-		    }
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
-		$newresultCode=0;
-		$tryCount=0;
-		while($newresultCode!=200 and $tryCount<3){
-		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray,(30+30*$tryCount));
-		    print "RESULT CODE2:$resultCode\n";
-		    if($tryCount==0){
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-		    }
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
-		$newresultCode=0;
-		$tryCount=0;
-		while($newresultCode!=200 and $tryCount<3){
-		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman,(30+30*$tryCount));
-		    print "RESULT CODE2:$resultCode\n";
-		    if($tryCount==0){
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-		    }
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
-		$newresultCode=0;
-		$tryCount=0;
-		while($newresultCode!=200 and $tryCount<3){
-		    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman,(30+30*$tryCount));
-		    print "RESULT CODE2:$resultCode\n";
-		    if($tryCount==0){
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-		    }
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
+		
+		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileNameNoArray,$twoTrackOutputFileNameNoArray);
+		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray);
+		
+		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman);
+		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman);
+		
+		#while($newresultCode!=200 and $tryCount<3){
+		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileName,$twoTrackOutputFileName,(30+30*$tryCount));
+		#    print "RESULT CODE:$resultCode\n";
+		#    if($tryCount==0){
+		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
+		#	print "URL:$url\n";
+		#	print URLFILE "$url\n";
+		#    }
+		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+		#    $tryCount=$tryCount+1;
+		#}
+		##sleep(15);
+		#$newresultCode=0;
+		#$tryCount=0;
+		#while($newresultCode!=200 and $tryCount<3){
+		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileName,$transTrackOutputFileName,(30+30*$tryCount));
+		#    print "RESULT CODE2:$resultCode\n";
+		#    if($tryCount==0){
+		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
+		#	print "URL:$url\n";
+		#	print URLFILE "$url\n";
+		#    }
+		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+		#    $tryCount=$tryCount+1;
+		#}
+		#close URLFILE;
+		#$newresultCode=0;
+		#$tryCount=0;
+		#while($newresultCode!=200 and $tryCount<3){
+		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileNameNoArray,$twoTrackOutputFileNameNoArray,(30+30*$tryCount));
+		#    print "RESULT CODE2:$resultCode\n";
+		#    if($tryCount==0){
+		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
+		#    }
+		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+		#    $tryCount=$tryCount+1;
+		#}
+		#$newresultCode=0;
+		#$tryCount=0;
+		#while($newresultCode!=200 and $tryCount<3){
+		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray,(30+30*$tryCount));
+		#    print "RESULT CODE2:$resultCode\n";
+		#    if($tryCount==0){
+		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
+		#    }
+		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+		#    $tryCount=$tryCount+1;
+		#}
+		#$newresultCode=0;
+		#$tryCount=0;
+		#while($newresultCode!=200 and $tryCount<3){
+		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman,(30+30*$tryCount));
+		#    print "RESULT CODE2:$resultCode\n";
+		#    if($tryCount==0){
+		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
+		#    }
+		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+		#    $tryCount=$tryCount+1;
+		#}
+		#my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman);
+		#print "RESULT CODE MAIN:$resultCode\n";
+		#$newresultCode=0;
+		#$tryCount=0;
+		#while($newresultCode!=200 and $tryCount<3){
+		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman,(30+30*$tryCount));
+		#    print "RESULT CODE2:$resultCode\n";
+		#    if($tryCount==0){
+		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
+		#    }
+		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+		#    $tryCount=$tryCount+1;
+		#}
 }
 #
 #	
