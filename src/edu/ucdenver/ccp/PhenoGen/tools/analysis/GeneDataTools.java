@@ -1506,7 +1506,8 @@ public class GeneDataTools {
                 }catch(IOException e){
                     log.error("Error reading Gene - Transcript IDs.",e);
                 }
-                
+                circosTissue=circosTissue.replaceAll(";;", ";");
+                circosChr=circosChr.replaceAll(";;", ";");
                 //run circos scripts
                 boolean errorCircos=false;
                 perlArgs = new String[7];

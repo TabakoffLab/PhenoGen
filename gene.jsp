@@ -321,6 +321,20 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	<div style="text-align:center;">
 	<span class="button" onclick="window.close()" style="width:150px;">Close this Window</span>
     </div>
+    <form method="post" 
+		action="<%=formName%>"
+		enctype="application/x-www-form-urlencoded"
+		name="geneCentricForm" id="geneCentricForm">
+        
+  		<input type="hidden" name="geneTxt" id="geneTxt" value="<%= (myGene!=null)?myGene:"" %>">
+ 		<input type="hidden" name="speciesCB" id="speciesCB" value="<%=(myOrganism!=null)?myOrganism:"" %>"> 
+ 	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
+    <input type="hidden" name="tissues" id="tissues" value="" />
+    <input type="hidden" name="chromosomes" id="chromosomes" value="" />
+    <input type="hidden" name="action" id="action" value="Get Transcription Details" />
+  
+</form>
+    
 <%}%>
 <script type="text/javascript">
 		document.getElementById("wait1").style.display = 'none';

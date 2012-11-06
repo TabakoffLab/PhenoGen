@@ -99,7 +99,7 @@
 			// we assume if not mouse that it's rat
 			if(request.getParameter("tissues")!=null && !request.getParameter("tissues").equals("")){			
 				String tmpSelectedTissues = request.getParameter("tissues");
-				selectedTissues=tmpSelectedTissues.split(",");
+				selectedTissues=tmpSelectedTissues.split(";");
 				log.debug("Getting selected tissues:"+selectedTissues);
 				tissueString = "";
 				selectedTissueError = true;
@@ -136,7 +136,7 @@
 
 		if(request.getParameter("chromosomes")!=null && !request.getParameter("chromosomes").equals("")){			
 			String tmpSelectedChromosomes = request.getParameter("chromosomes");
-			selectedChromosomes=tmpSelectedChromosomes.split(",");
+			selectedChromosomes=tmpSelectedChromosomes.split(";");
 			//log.debug("selected chr count:"+selectedChromosomes.length+":"+selectedChromosomes[0].toString());
 			chromosomeString = "";
 			selectedChromosomeError = true;
@@ -618,7 +618,10 @@
                         	<%=curBQTL.getTraitMethod()%>
                         <%}%></TD>
                         
-                        <TD><%=curBQTL.getPhenotype()%></TD>
+                        <TD>
+                        <%if(curBQTL.getPhenotype()!=null){%>
+							<%=curBQTL.getPhenotype()%></TD>
+                        <%}%>
                         <TD>
 						<%if(curBQTL.getDiseases()!=null){%>
 							<%=curBQTL.getDiseases().replaceAll(";","<HR>")%>
@@ -885,7 +888,7 @@
                         </TR>
                         </tbody>
                   </table>
-   	<div style="text-align:center; width:100%;"><span class="trigger less" name="circosPlot" >Gene Location Cicos Plot</span></div>
+   	<div style="text-align:center; width:100%;"><span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span></div>
     <div id="circosPlot" style="text-align:center;">
 		<div style="display:inline-block;text-align:center; width:100%;">
         	<span id="circosMinMax"><img src="web/images/icons/magnifyingGlass_minus.png"></span>Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
@@ -1135,15 +1138,29 @@ function displayColumns(table,colStart,colLen,showOrHide){
 }
 
 function runFilter(){
-	$('#tissues').val($('#tissuesMS').val());
-	$('#chromosomes').val($('#chromosomesMS').val());
+	var chrList = "";
+          $("#chromosomesMS option").each(function () {
+                chrList += $(this).val() + ";";
+              });
+	$('#chromosomes').val(chrList);
+	//alert(chrList);
+	var tisList = "";
+          $("#tissuesMS option").each(function () {
+                tisList += $(this).val() + ";";
+              });
+	$('#tissues').val(tisList);
+	//alert(tisList);
+	
+	//$('#tissues').val($('#tissuesMS').val());
+	//$('#chromosomes').val($('#chromosomesMS').val());
+	//alert("val:"+$('#chromosomesMS').val());
 	$('#pvalueCutoffInput').val($('#pvalueCutoffSelect2').val());
 	$('#geneCentricForm').submit();
 }
 
 $(document).ready(function() {
 	$(".multiselect").twosidedmultiselect();
-    var selectedChromosomes = $("#chromosomes")[0].options;
+    //var selectedChromosomes = $("#chromosomesMS")[0].options;
 	document.getElementById("loadingRegion").style.display = 'none';
 	var bqtlTarget=[ 1,4,9,11,13 ];
 	if(organism == "Mm"){
