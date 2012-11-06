@@ -17,8 +17,11 @@
 <jsp:useBean id="myArray" class="edu.ucdenver.ccp.PhenoGen.data.Array"> </jsp:useBean>
 
 <%
-			edu.ucdenver.ccp.PhenoGen.data.Array.ArrayCount[] myArrayCounts = myArray.getArrayCount(dbConn);
-        	int totalPublicArrays = myArrayCounts[0].getPublicCount();
+			int totalPublicArrays = 2130;
+			if(dbConn!=null){
+				edu.ucdenver.ccp.PhenoGen.data.Array.ArrayCount[] myArrayCounts = myArray.getArrayCount(dbConn);
+				totalPublicArrays=myArrayCounts[0].getPublicCount();
+			}
 %>
 
         <div id="welcome" style="height:575px; width:980px; overflow:auto;">

@@ -13,10 +13,14 @@
 <jsp:useBean id="myDbUtils" class="edu.ucdenver.ccp.PhenoGen.util.DbUtils"> </jsp:useBean>
 <%
         extrasList.add("index.css");
-
-	String[] versionValues = myDbUtils.getDBVersion(dbConn);
-	String dbVersion = versionValues[0];
-	String dbUpdateDate = versionValues[1];
+	String dbVersion="";
+	String dbUpdateDate="";
+	
+	if(dbConn!=null){
+		String[] versionValues = myDbUtils.getDBVersion(dbConn);
+		dbVersion = versionValues[0];
+		dbUpdateDate = versionValues[1];
+	}
 	//mySessionHandler.createSessionActivity(session.getId(), "Looked at site version page", dbConn);
 
 %>
@@ -31,10 +35,17 @@
         <div id="welcome" style="height:735px; width:946px;">
 
                 <h2>PhenoGen Website Version</h2>
+        <%if(dbVersion.equals("")&&dbUpdateDate.equals("")){%>
+        	 <p>
+                    Version: Temporarily Unavailable <BR>
+                    Last updated: Temporarily Unavailable 
+                </p>
+        <%}else{%>
                 <p>
-		Version: &nbsp; <%=dbVersion%> <BR>
-		Last updated: &nbsp; <%=dbUpdateDate%> 
-		</p>
+                    Version: &nbsp; <%=dbVersion%> <BR>
+                    Last updated: &nbsp; <%=dbUpdateDate%> 
+                </p>
+        <%}%>
 		<h2>Tools Used on This Website</h2>
 		<p><a href="http://www.cisreg.ca/cgi-bin/oPOSSUM/opossum" target="POSSUM Master">Promoter (oPOSSUM)</a>:&nbsp;&nbsp; version 2.0</p>
 		<p><a href="http://meme.nbcr.net/meme" target="MEME Master">Promoter (MEME)</a>:&nbsp;&nbsp; version 4.1</p>

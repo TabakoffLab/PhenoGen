@@ -7,7 +7,12 @@
                 <% if(!loginEnabled){ %>
         			<!-- Uncomment Line below when site is down.  comment out the form following to prevent logins -->
         			<%@ include file="/web/access/siteDown.jsp" %>
-                <% }else{ %>
+                <% }else if(dbConn==null){%>
+                	<form method="post" enctype="application/x-www-form-urlencoded" action="<%=actionForm%>" name="loginForm" id="login-form">
+                	<h3>Database is unavailable</h3>
+                    <p>The database is currently unavailable.  The administrator has been notified and every effort will be made to make the database available as soon as possible.</p>
+                    </form>
+				<%}else{ %>
                     <!-- Comment out the entire form below to prevent logins.  DON'T FORGET: also to comment out form in loginPage.jsp and createAnonymousSession.jsp -->
                     <form method="post" enctype="application/x-www-form-urlencoded" action="<%=actionForm%>" name="loginForm" id="login-form">
                             <label for="user_name">Username</label>

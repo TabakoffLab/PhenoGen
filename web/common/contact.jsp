@@ -28,9 +28,13 @@
                 } catch (Exception e) {
 			log.error("exception while trying to send feedback to administrator", e);
                 }
-		String msgNum = "ADM-003";
-		session.setAttribute("successMsg", msgNum);
-		response.sendRedirect(commonDir + "startPage.jsp");
+		if(dbConn!=null){
+			String msgNum = "ADM-003";
+			session.setAttribute("successMsg", msgNum);
+			response.sendRedirect(commonDir + "startPage.jsp");
+		}else{
+			response.sendRedirect(commonDir + "startPage.jsp");
+		}
 	}
 	//mySessionHandler.createSessionActivity(session.getId(), "Looked at contact page", dbConn);
 %>

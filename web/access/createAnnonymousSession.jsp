@@ -7,6 +7,9 @@
 	//uncomment following line when the site needs to be down.  This will just redirect users to the siteDownPage.jsp instead of trying to create a session.
 	if(!loginEnabled){
 		response.sendRedirect(accessDir+"siteDownPage.jsp");
+	}else if(dbConn==null){
+		session.setAttribute("errorPageMsg","The Database is currently unavailable.  The administrator has been notified and every effort will be made to return the database as soon as possible.");
+		response.sendRedirect(commonDir+"errorPage.jsp");
 	}else{
 	
 		//Comment out all code following during an update when the site is down.
