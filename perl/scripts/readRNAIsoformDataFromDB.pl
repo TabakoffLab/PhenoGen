@@ -169,7 +169,7 @@ sub readRNAIsoformDataFromDB{
 			}else{
 				#print "Adding transcript $trtmp_id::$cntTranscript\n";
 				
-				$geneHOH{Gene}[$cntGenes-1]{TranscriptList}{Transcript}[$cntTranscript] = {
+				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
 					ID => $trtmp_id,
 					score => $trtmp_score,
 					start=> $trtmp_start,
@@ -242,9 +242,9 @@ sub readRNAIsoformDataFromDB{
 			#print Data::Dumper->Dump(\@$probeArray);
 			if($cntGene>0){
 				#print "adding transcript".$trtmp_id."\n";
-				$geneHOH{Gene}[$cntGenes-1]{start}=$genetmp_start;
-				$geneHOH{Gene}[$cntGenes-1]{stop}=$genetmp_stop;
-				$geneHOH{Gene}[$cntGenes-1]{TranscriptList}{Transcript}[$cntTranscript] = {
+				$geneHOH{Gene}[$cntGene-1]{start}=$genetmp_start;
+				$geneHOH{Gene}[$cntGene-1]{stop}=$genetmp_stop;
+				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
 					ID => $trtmp_id,
 					score => $trtmp_score,
 					start=> $trtmp_start,
@@ -336,25 +336,26 @@ sub readRNAIsoformDataFromDB{
 	$query_handle->finish();
 	$connect->disconnect();
 	
-	
-	$geneHOH{Gene}[$cntGenes-1]{start}=$genetmp_start;
-	$geneHOH{Gene}[$cntGenes-1]{stop}=$genetmp_stop;
-	$geneHOH{Gene}[$cntGenes-1]{TranscriptList}{Transcript}[$cntTranscript] = {
-					ID => $trtmp_id,
-					score => $trtmp_score,
-					start=> $trtmp_start,
-					stop => $trtmp_stop,
-					fpkm => $trtmp_fpkm,
-					frac => $trtmp_frac,
-					conf_lo => $trtmp_conf_lo,
-					conf_hi => $trtmp_conf_hi,
-					cov => $trtmp_cov,
-					source => $trtmp_source,
-					strand => $trtmp_strand,
-					chromosome => $trtmp_chromosome,
-					exonList => {exon => \@$exonArray},
-					intronList => {intron => \@$intronArray}
-	};
+	if($cntGene>0){
+		$geneHOH{Gene}[$cntGene-1]{start}=$genetmp_start;
+		$geneHOH{Gene}[$cntGene-1]{stop}=$genetmp_stop;
+		$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
+						ID => $trtmp_id,
+						score => $trtmp_score,
+						start=> $trtmp_start,
+						stop => $trtmp_stop,
+						fpkm => $trtmp_fpkm,
+						frac => $trtmp_frac,
+						conf_lo => $trtmp_conf_lo,
+						conf_hi => $trtmp_conf_hi,
+						cov => $trtmp_cov,
+						source => $trtmp_source,
+						strand => $trtmp_strand,
+						chromosome => $trtmp_chromosome,
+						exonList => {exon => \@$exonArray},
+						intronList => {intron => \@$intronArray}
+		};
+	}
 	#close PSFILE;
 	
 	#print "Gene".scalar(keys %geneHOH)."\n";
