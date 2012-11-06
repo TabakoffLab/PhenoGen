@@ -493,9 +493,22 @@
 											<%=df4.format(maxEQTL.getPVal())%>
                                         <%}%>
                                         <!--</TD>
-                                        <TD>--><BR /><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()+"-"+maxEQTL.getMarker_end()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for this region.">
-                                        	chr<%=maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()+"-"+maxEQTL.getMarker_end()%>
-                                        </a>
+                                        <TD>--><BR />
+                                        	<%if(maxEQTL.getMarker_start()!=maxEQTL.getMarker_end()){%>
+                                                <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()+"-"+maxEQTL.getMarker_end()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for this region.">
+                                                    chr<%=maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()+"-"+maxEQTL.getMarker_end()%>
+                                                </a>
+                                            <%}else{
+												long start=maxEQTL.getMarker_start()-500000;
+												long stop=maxEQTL.getMarker_start()+500000;
+												if(start<1){
+													start=1;
+												}
+												%>
+                                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+start+"-"+stop%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for this region.">
+                                            		chr<%=maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()%>
+                                                 </a>
+                                            <%}%>
                                         </TD>
                                     <%}else{%>
                                         <TD class="leftBorder"></TD>
