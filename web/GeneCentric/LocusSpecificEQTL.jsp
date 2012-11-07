@@ -79,22 +79,24 @@
 			Boolean selectedTissueError = null;
 			Boolean circosReturnStatus = null;
 			String timeStampString = null;
-			Boolean allowChromosomeSelection = false;
+			Boolean allowChromosomeSelection = false; // This variable now controls both tissue and chromosome selection
 
 			//
 			//Configure Inputs from session variables, unless they are already defined on the page.
 			//
 			
 			LinkedHashMap inputHash = new LinkedHashMap();
-			if(request.getParameter("geneSymbol")!=null){
+			if(request.getParameter("hiddenGeneSymbol")!=null){
 				// The top of the form has already been filled in so get information from form
-				geneSymbol =(String)request.getParameter("geneSymbol");
-				geneCentricPath =(String)request.getParameter("geneCentricPath");		
+				geneSymbol =(String)request.getParameter("hiddenGeneSymbol");
+				geneCentricPath =(String)request.getParameter("hiddenGeneCentricPath");	
+				log.debug("Got geneCentricPath and geneSymbol from form "+ geneSymbol + "  " + geneCentricPath);
 			}
 			else{
 				// This is the first time to fill in the top of the form so get information from session variables
 				geneSymbol =(String)session.getAttribute("geneSymbol");
 				geneCentricPath =(String)session.getAttribute("geneCentricPath");
+				log.debug("Got geneCentricPath and geneSymbol from session variables "+ geneSymbol + "  " + geneCentricPath);
 			}
 
 			inputHash.put("geneSymbol",geneSymbol);
@@ -287,6 +289,7 @@
 		
 		if(species.equals("Mm")){
 			tissueString = "Brain;";
+			selectedTissueError = false;
 		}
 		else{
 			// we assume if not mouse that it's rat
@@ -305,7 +308,7 @@
 			}
 			else if(request.getParameter("chromosomeSelectionAllowed")!=null){
 				// We previously allowed chromosome/tissue selection, but now we got no tissues back
-				// Therefore we did not include any tissues
+				// Therefore we did not include any tissues which is an error.
 				selectedTissueError=true;
 			}
 			else{
@@ -361,7 +364,7 @@
 			allowChromosomeSelection=true;  // next time allow chromosome selection
 		}
 		
-		if(!selectedChromosomeError){
+		if((!selectedChromosomeError)&&(!selectedTissueError)){
 			//
 			// Initialize variables for calling perl scripts (which will call Circos executable)
 			//
@@ -454,10 +457,10 @@
 				log.debug("Circos run failed");
 				// be sure iframeURL is still null
 				iframeURL = null;
-			}
+			} // end of if(circosReturnStatus)
 			
-		}
-	}
+		} // end of if((!selectedChromosomeError)&&(!selectedTissueError)){
+	} //end of if(((action != null) && action.equals("Click to run Circos"))||auto) {
 	
 	// This is the end of the first big scriptlet
 %>
@@ -481,7 +484,7 @@
       			<%=geneSymbol%>
       		</td>
 		</tr>
-		<input type="hidden" id="geneCentricPath" name="geneCentricPath" value=<%=geneCentricPath%> />
+
       	<tr>
       		<td>
       			<strong>Ensembl Gene Name:</strong> 
@@ -504,31 +507,7 @@
 
 
 
-<%
-if(transcriptError==null){
-%>
-	<script>
-	document.getElementById("circosError1").innerHTML = "There was an error retrieving transcripts for <%=geneSymbol%>.  The website administrator has been informed.";
-	document.getElementById("circosError1").style.display = 'block';
-	document.getElementById("circosError1").style.color = "#ff0000";
-	</script>
-<%
-}
-else if(transcriptError)
-{
-%>
-	<script>
-	document.getElementById("circosError1").innerHTML = "There are no available transcript cluster IDs for <%=geneSymbol%>.  Please choose a different gene to view eQTL.";
-	document.getElementById("circosError1").style.display = 'block';
-	document.getElementById("circosError1").style.color = "#ff0000";
-	</script>
-<%
-} 
-else 
-{
 
-	// go ahead and make the rest of the form for entering options
-%>
 
 	<div class="title">Select Options Below:
 	
@@ -572,6 +551,37 @@ else
 				<%@ include file="/web/common/selectBox.jsp" %>
 			</td>			
 		</tr>
+
+		<input type="hidden" id="hiddenGeneCentricPath" name="hiddenGeneCentricPath" value=<%=geneCentricPath%> />
+		<input type="hidden" id="hiddenGeneSymbol" name="hiddenGeneSymbol" value=<%=geneSymbol%> />
+
+		<%
+			if(transcriptError==null){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
+		%>
+			<script>
+				document.getElementById("circosError1").innerHTML = "There was an error retrieving transcripts for <%=geneSymbol%>.  The website administrator has been informed.";
+				document.getElementById("circosError1").style.display = 'block';
+				document.getElementById("circosError1").style.color = "#ff0000";
+			</script>
+			</table>
+		</form>
+		<%
+			}
+			else if(transcriptError) // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
+			{
+		%>
+			<script>
+				document.getElementById("circosError1").innerHTML = "There are no available transcript cluster IDs for <%=geneSymbol%>.  Please choose a different gene to view eQTL.";
+				document.getElementById("circosError1").style.display = 'block';
+				document.getElementById("circosError1").style.color = "#ff0000";
+			</script>
+			</table>
+		</form>
+		<%
+			} 
+			else 
+			{ // go ahead and make the rest of the form for entering options
+		%>
 		
 		<tr>
 			<td>
@@ -765,7 +775,7 @@ else
 			</td>
 		</tr>		
 
-		<%}
+		<%} // end of if(allowChromosomeSelection||(request.getParameter("chromosomeSelectionAllowed")!=null))
 		else{%>
 		<tr>
 			<td>
@@ -776,7 +786,8 @@ else
 			</td>
 		</tr>
 		</div>
-		<%}%>
+		<%} // end of if(allowChromosomeSelection||(request.getParameter("chromosomeSelectionAllowed")!=null))
+		%>
 		
 		
 		
@@ -831,10 +842,19 @@ if((circosReturnStatus!=null)&&(!circosReturnStatus)){
    } // end of checking circosReturnStatus 
 %>
 
-
-
 <%
-if((selectedChromosomeError!=null)&&(selectedChromosomeError)){
+if((selectedTissueError!=null)&&(selectedTissueError)){
+	allowChromosomeSelection = true;
+%>
+	<script>
+	document.getElementById("circosError1").innerHTML = "Select at least one tissue.";
+	document.getElementById("circosError1").style.display = 'block';
+	document.getElementById("circosError1").style.color = "#ff0000";
+	</script>
+<%
+} // end of checking selectedTissueError 
+
+else if((selectedChromosomeError!=null)&&(selectedChromosomeError)){
 	allowChromosomeSelection = true;
 %>
 	<script>
