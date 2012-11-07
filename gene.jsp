@@ -286,7 +286,8 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 
                 1. Enter a gene identifier(e.g. gene symbol, probeset ID, ensembl ID, etc.) in the gene field.<BR />
                 or<BR />
-                Enter a region such as chr1:0-50000.(Chromosome 1 bp 0-50,000)<BR />
+                Enter a region such as "chr1:1-50000" which would be Chromosome 1 @ bp 1-50,000.<BR />
+                
                 2. Choose a species.<BR />
                 3. Click Get Transcription Details.<BR /><BR />
                 Hint: Try other synonyms if the first ID that you enter is not found.<BR /><BR /><BR />
@@ -301,13 +302,13 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     	<label>Gene Identifier or Region:
   		<input type="text" name="geneTxt" id="geneTxt" size="35" value="<%= (myGene!=null)?myGene:"" %>">
   		</label>
+       
   <label>Species:
   <select name="speciesCB" id="speciesCB">
   	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus</option>
     <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
   </label>
-
  <span style="padding-left:40px;"> <input type="submit" name="refreshBTN" id="refreshBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
  
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
