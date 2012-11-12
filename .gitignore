@@ -19,6 +19,13 @@ tmpData/
 userFiles
 LODPlots
 
+# Demo Files #
+##############
+.mp4
+.webm
+.ogg
+
+
 # Compiled source #
 ###################
 *.com
