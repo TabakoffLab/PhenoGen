@@ -45,7 +45,7 @@
                 
                 	</div> <!-- // end overview-content -->
             	</div> <!-- // end overview-wrap -->
-						<div class="demoVideo" style="float:right;position:relative;top:-450px;">
+						<div class="demoVideo" style="float:right;position:relative;top:-450px; padding-right:20px;">
                         	<h3>Overview Video</h3>
                         	<video width="420" height="300" controls="controls">
                                 <source src="<%=contextRoot%>web/demo/test.mp4" type="video/mp4">
@@ -54,6 +54,7 @@
                               	<object data="<%=contextRoot%>web/demo/test.mp4" width="400" height="280">
                               	</object>
                         	</video>
+                            <H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp?file=<%=contextRoot%>web/demo/test." target="_blank">Open in a new Window</a></H3><BR />
                             <H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp" target="_blank">View other demo videos</a></H3> 
                         </div>
             	
