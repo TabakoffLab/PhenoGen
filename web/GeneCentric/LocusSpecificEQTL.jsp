@@ -599,7 +599,11 @@ else
 				
                 		columns = transcriptClusterArray[transcriptClusterArrayOrder[i]].split("\t");
                 		transcriptClusterString = transcriptClusterArray[transcriptClusterArrayOrder[i]];
-                		optionHash.put(transcriptClusterString,columns[0]+ " " + columns[4]);
+						String tmpGeneSym="";
+						if(columns.length>5){
+							tmpGeneSym=" ("+columns[5]+")";
+						}
+                		optionHash.put(transcriptClusterString,columns[0]+ " " + columns[4] +tmpGeneSym );
                 	}
 				}
 				//log.debug(" optionHash for Transcript Cluster ID: "+optionHash);

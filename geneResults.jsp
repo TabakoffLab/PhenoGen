@@ -61,7 +61,9 @@ if(displayNoEnsembl){ %>
 
     <BR />
     <BR />
-    <div class="hidden"><a class="hiddenLink fancybox.iframe" href="web/GeneCentric/LocusSpecificEQTL.jsp" title="eQTL"></a></div>
+   
+	 <% String tmpPath=applicationRoot + contextRoot+"tmpData/geneData/" +firstEnsemblID.get(selectedGene) + "/";	%>
+    <div class="hidden"><a class="hiddenLink fancybox.iframe" href="web/GeneCentric/LocusSpecificEQTL.jsp?geneSymbol=<%=geneSymbol.get(selectedGene)%>&geneCentricPath=<%=tmpPath%>" title="eQTL"></a></div>
 	<%if(genURL.get(selectedGene)!=null && !genURL.get(selectedGene).startsWith("ERROR:")){%>
 		<script type="text/javascript">
             var ensembl="<%=selectedEnsemblID%>";
