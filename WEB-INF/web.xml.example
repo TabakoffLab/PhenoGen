@@ -215,4 +215,9 @@
 	</param-value>
 </context-param>
 
+<mime-mapping>
+    <extension>webm</extension>
+    <mime-type>video/webm</mime-type>
+  </mime-mapping>
+
 </web-app>

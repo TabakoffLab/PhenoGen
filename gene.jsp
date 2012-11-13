@@ -341,6 +341,16 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		document.getElementById("wait1").style.display = 'none';
 		//document.tooltip();
 </script>
+<div class="demo" style="text-align:center;">
+						<BR /><BR /><BR />
+                        Demonstration<BR />
+						<video width="800" height="560" controls="controls">
+                    		<source src="<%=contextRoot%>web/demo/test.mp4" type="video/mp4">
+                            <source src="<%=contextRoot%>web/demo/test.webm" type="video/webm">
+                          <object data="<%=contextRoot%>web/demo/test.mp4" width="800" height="560">
+                          </object>
+                        </video>
+</div>
 
 <%if(!region){%>
 
