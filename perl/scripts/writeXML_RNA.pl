@@ -6,7 +6,7 @@
 use Bio::EnsEMBL::Registry;
 use XML::LibXML;
 use XML::Simple;
-use data::Dumper;
+#use data::Dumper;
 
 #use Carp::Always;
 #use diagnostics;
