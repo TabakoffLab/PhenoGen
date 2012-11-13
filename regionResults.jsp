@@ -1166,67 +1166,67 @@ You have the option to filter the table based on the following parameters:<BR />
 </div></div>
 
 <div id="Help5aContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3></H3>
+<H3>RNA-Seq Column</H3>
 This column displays the number of transcripts reconstructed from the RNA-Seq data that match to this gene.  You can view a more detailed image by clicking on the gene symbol, which brings up the detailed transcription information for just that gene.
 </div></div>
 
 <div id="Help5bContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3></H3>
+<H3>Affy Exon Data Columns</H3>
 The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse data is from the Public ILSXISS RI Mice
-For rat data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)
+For rat data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)<BR /><BR />
 
-These datasets are available to the public for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  (A free login is required, this allows you to save your progress and come back after lengthy processing steps.)  
+These datasets are available to the public for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  (A free login is required, this allows you to save your progress and come back after lengthy processing steps.)  <BR /><BR />
 
-Columns:
-	Total number of non masked probesets 
-Number with a heritability of >0.33(Avg heritability for probesets >0.33)
-Number detected above background(DABG) (Avg % of samples DABG)
-Transcript Cluster ID corresponding to the gene with Annotation level
-Circos Plot to show all eQTLs across tissues.
-eQTL for the transcript cluster in each tissue
-	-minimum P-value and location
-	-total locations with a P-value < cut-off
+Columns:<BR />
+	Total number of non masked probesets<BR /> 
+Number with a heritability of >0.33(Avg heritability for probesets >0.33)<BR />
+Number detected above background(DABG) (Avg % of samples DABG)<BR />
+Transcript Cluster ID corresponding to the gene with Annotation level<BR />
+Circos Plot to show all eQTLs across tissues.<BR />
+eQTL for the transcript cluster in each tissue<BR />
+	-minimum P-value and location<BR />
+	-total locations with a P-value < cut-off<BR />
 
 </div></div>
 
 <div id="Help5cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3></H3>
+<H3>Heritablity</H3>
 The heritability indicates how well expression of a probeset correlates with the strain of mice/rats.  Since we have 20 or 60 strains we can calculate how well the expression is correlated to the strain.  Higher heritability indicates expression of a probeset is more influenced by genetics over unknown environmental factors.  Higher than 0.33 is considered of interest(??). 
 </div></div>
 
 <div id="Help5dContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3></H3>
+<H3>Detection Above Background(DABG)</H3>
 The exon arrays are normalized by the Affymetrix Power Tools software.  This assigns a probability that the probeset is detected above the background level.  The numbers reported are the number of probesets that are detected above background in at least 1% of samples.  This tends to eliminate most of the low or absent probesets, with out removing probesets that might be of interest in a strain or group.  The average percentage of samples where the probesets were detected above background is also reported for reference.
 </div></div>
 
-<div id="Help5eContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3></H3>
-The eQTL columns give you a general idea of where a gene in the region you have entered is controlled from.  For a variety of reasons eQTLs are currently only available at the gene (transcript cluster) level instead of the probeset level.  So the first columns give you information about the transcript cluster.  
+<div id="Help5eContent" class="inpageHelpContent" title="<center>Help-eQTLs</center>"><div class="help-content">
+<H3>eQTLs</H3>
+The eQTL columns give you a general idea of where a gene in the region you have entered is controlled from.  For a variety of reasons eQTLs are currently only available at the gene (transcript cluster) level instead of the probeset level.  So the first columns give you information about the transcript cluster.  <BR /><BR />
 
-Columns:
-	Transcript Cluster ID- Is the unique ID assigned by affymetrix.  
-	Location-Is the chromosomes and base pair coordinates where the gene is located. 
-	Annotation level- is related to the confidence in the gene.  Core is the highest confidence.  This level tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and will include additional regions beyond the Ensembl annotations.
-	Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.
-
-Tissue Columns
-	These columns summarize the data for each tissue.
-	Total # of locations with a P-value < (Selected Cutoff)- This is the # of locations associated with expression below a cutoff selected in the Filter List section above the table.
-	Minimum P-Value Location- Is the P-value and location of the minimum P-Value for the given tissue.  P-Value is in black above the location in blue.  The location will open a Detailed Transcription Information window for the given location.
+Columns:<BR />
+	Transcript Cluster ID- Is the unique ID assigned by affymetrix.  <BR />
+	Location-Is the chromosomes and base pair coordinates where the gene is located. <BR />
+	Annotation level- is related to the confidence in the gene.  Core is the highest confidence.  This level tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and will include additional regions beyond the Ensembl annotations.<BR />
+	Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.<BR />
+<BR />
+Tissue Columns<BR />
+	These columns summarize the data for each tissue.<BR />
+	Total # of locations with a P-value < (Selected Cutoff)- This is the # of locations associated with expression below a cutoff selected in the Filter List section above the table.<BR />
+	Minimum P-Value Location- Is the P-value and location of the minimum P-Value for the given tissue.  P-Value is in black above the location in blue.  The location will open a Detailed Transcription Information window for the given location.<BR />
 
 </div></div>
 
-<div id="Help5fContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3></H3>
+<div id="Help5fContent" class="inpageHelpContent" title="<center>Help-Transcript Cluster ID</center>"><div class="help-content">
+<H3>Transcript Cluster ID</H3>
 Transcript Cluster ID- Is the unique ID assigned by affymetrix.  eQTLs are calculated for this annotation at the Gene level by combining probeset data across the gene.
 </div></div>
 
-<div id="Help5gContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help5gContent" class="inpageHelpContent" title="<center>Help-Genome Wide Associations</center>"><div class="help-content">
 <H3>Genome Wide Associations</H3>
 Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.  It is a nice way to visualize the following columns.
 </div></div>
 
-<div id="Help6Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help6Content" class="inpageHelpContent" title="<center>Help-Filter/Display-bQTLs</center>"><div class="help-content">
 <H3>Filter/Display</H3>
 For this section you may only filter based on text in the table.  To search for a keyword just start typing and results will be filtered base on what has been entered.<BR />
 For the View Columns section you may choose which columns are displayed.  The options to view/hide are:<BR />
@@ -1249,7 +1249,7 @@ For the View Columns section you may choose which columns are displayed.  The op
 
 </div></div>
 
-<div id="Help7Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help7Content" class="inpageHelpContent" title="<center>Help-bQTL Tab</center>"><div class="help-content">
 <H3>bQTL Tab</H3>
 Summary-
 	The bQTL tab allows you to view bQTLs that correspond to the region.  <BR /><BR />
@@ -1260,7 +1260,7 @@ How is it calculated? Etc
 
 </div></div>
 
-<div id="Help8Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help8Content" class="inpageHelpContent" title="<center>Help-Region Determination Method</center>"><div class="help-content">
 <H3>Region Determination Method</H3>
 This column is the method used to determine the location.  A description of each method is below.<BR />
 	- by peak only-still looking for descriptions of each method.<BR />
@@ -1271,7 +1271,7 @@ This column is the method used to determine the location.  A description of each
 	- imported from external source<BR />
 </div></div>
 
-<div id="Help9Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help9Content" class="inpageHelpContent" title="<center>Help-Filter/View Columns-eQTLs</center>"><div class="help-content">
 <H3>Filter/View Columns</H3>
 You may filter the ciros plot and table by tissues, eQTL P-value, and chromosome.  Simply change the paramters you would like to filter by and click on Run Filter.<BR />
 <ul type="disc">
