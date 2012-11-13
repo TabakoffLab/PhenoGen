@@ -40,9 +40,22 @@
             
                         <H3 style="margin:10px;"> Why do we require a login?</H3>
                         <p>For many of the tools that require a login, there are multiple intermediate steps in the analisys or steps that may take a long time to complete.  Logging in, allows you to start a step and come back to the analysis/results at a later time.  A login also allows you to upload data to the site and keep it private or to share it with individuals you approve.</p>
+                        
+                        
                 
                 	</div> <!-- // end overview-content -->
             	</div> <!-- // end overview-wrap -->
-
+						<div class="demoVideo" style="float:right;position:relative;top:-450px;">
+                        	<h3>Overview Video</h3>
+                        	<video width="420" height="300" controls="controls">
+                                <source src="<%=contextRoot%>web/demo/test.mp4" type="video/mp4">
+                                <source src="<%=contextRoot%>web/demo/test.webm" type="video/webm">
+                            
+                              	<object data="<%=contextRoot%>web/demo/test.mp4" width="400" height="280">
+                              	</object>
+                        	</video>
+                            <H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp" target="_blank">View other demo videos</a></H3> 
+                        </div>
             	
 	</div><!-- // end welcome -->
+    

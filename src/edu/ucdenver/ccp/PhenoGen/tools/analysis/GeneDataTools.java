@@ -1230,10 +1230,10 @@ public class GeneDataTools {
     }
     
     public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,double pvalue,String level,String organism,String circosTissue,String circosChr){
+        ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
-        ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
         HashMap tmpHM=new HashMap();
         /*String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end,eq.LOD_SCORE "+
                             "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep, expression_qtls eq "+
