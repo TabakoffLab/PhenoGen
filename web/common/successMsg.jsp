@@ -27,7 +27,7 @@
 	//msg = msg + "  " + additionalInfo + "<BR><BR>" + homePage;
 
 	//session.setAttribute("additionalInfo", "");
-	//log.debug("caller is "+caller);
+	log.debug("caller is "+caller);
 	response.sendRedirect(caller);
 
 

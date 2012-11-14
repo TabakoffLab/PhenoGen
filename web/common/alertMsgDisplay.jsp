@@ -1,5 +1,5 @@
 <% 
-	//log.debug("alertMsgExists = "+alertMsgExists);
+	log.debug("alertMsgExists = "+alertMsgExists);
 	if (alertMsgExists) { 
 		String screenSize = (session.getAttribute("screenSize") != null ? 
 				(String) session.getAttribute("screenSize") : "");
@@ -28,6 +28,9 @@
 		</div>
 <% 
 		session.removeAttribute("screenSize");
+		session.removeAttribute("successMsg");
+		session.removeAttribute("additionalInfo");
+		session.removeAttribute("errorMsg");
 	} 
 %>
 
