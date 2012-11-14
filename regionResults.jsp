@@ -24,10 +24,10 @@
 		tissuesList2[0]="Whole Brain";
 	}
 	
-	
 	String tmpURL=genURL.get(0);
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+	
 	
 	
 	
@@ -487,7 +487,7 @@
                             	
                                 <TD><%=tc.getLevel()%></TD>
                                 <TD>
-                                <a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=curGene.getGeneSymbol()%>&ensID=<%=curGene.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>" 
+                                <a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=curGene.getGeneSymbol()%>&ensID=<%=curGene.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>&curDir=<%=folderName%>" 
                                 	target="_blank" title="View the circos plot for transcript cluster eQTLs">
 									View Location Plot
                                 </a></TD>
@@ -703,11 +703,10 @@
 							<%=tmpMM%>
                         <%}%>
                         </TD>
-                        <TD>
-                        <%if(curBQTL.getLOD()==0){%>
-                        	N/A
+                        <TD<%if(curBQTL.getLOD()==0){%>
+                        	title="Not available from the MGI/RGD data.">Not Available
 						<%}else{%>
-							<%=curBQTL.getLOD()%>
+							><%=curBQTL.getLOD()%>
                         <%}%>
                         </TD>
                         <TD
@@ -1252,7 +1251,7 @@ For the View Columns section you may choose which columns are displayed.  The op
 <div id="Help7Content" class="inpageHelpContent" title="<center>Help-bQTL Tab</center>"><div class="help-content">
 <H3>bQTL Tab</H3>
 Summary-
-	The bQTL tab allows you to view bQTLs that correspond to the region.  <BR /><BR />
+	The bQTL tab allows you to view <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that correspond to the region.  <BR /><BR />
 What is a bQTL?(View detailed bQTL information) 
 	Breifly a bQTL is a region that is associated with a particular phenotype or behavior (thus bQTL).  <BR /><BR />
 How is it calculated? Etc
