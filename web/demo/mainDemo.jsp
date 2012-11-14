@@ -13,52 +13,67 @@
 <% 	//extrasList.add("jquery-ui-1.8.23.min.js");
 	extrasList.add("/smoothness/jquery-ui-1.9.1.custom.css");
 	extrasList.add("index.css"); %>
-<%pageTitle="Overview Downloads";%>
+<%pageTitle="Demonstrations";%>
 
 <%@ include file="/web/common/header_noMenu.jsp" %>
 
-	<h2>Demos</h2>
+<%
+	Demo demo=new Demo();
+	ArrayList<String> categories=demo.getAllDemoCategories(dbConn);
+	HashMap demoHashMap=demo.getAllDemos(dbConn);
+	Demo defaultVideo=null;
+	for(int i=0;i<categories.size()&&defaultVideo==null;i++){
+		ArrayList<Demo> demoList=(ArrayList<Demo>)demoHashMap.get(categories.get(i));
+		for(int j=0;j<demoList.size();j++){
+			Demo curDemo=demoList.get(j);
+			if(curDemo.isDefaultVideo()){
+				defaultVideo=curDemo;
+			}
+		}
+	}
+%>
+
+	<h2>Demonstrations</h2>
+    <div id="leftDiv" style="display:inline-block;">
+    <div id="videoTitle" style="display:inline-block; text-align:center; width:100%;">
+    	<%=defaultVideo.getTitle()+" ("+defaultVideo.getTime()+")"%>
+    </div><BR />
     <div id="videoDiv" style="display:inline-block;">
 					<video id="video" width="640" height="480" controls="controls" autoplay="true">
-                    	<source id="videoWebm" src="test.webm" type="video/webm">
-  						<source id="videoMp4" src="test.mp4" type="video/mp4">
-                          <object id="videoObj" data="test.mp4" width="320" height="240">
+                    	<source id="videoWebm" src="<%=defaultVideo.getFileBase()%>.webm" type="video/webm">
+  						<source id="videoMp4" src="<%=defaultVideo.getFileBase()%>.mp4" type="video/mp4">
+                          <object id="videoObj" data="<%=defaultVideo.getFileBase()%>.mp4" width="320" height="240">
                           </object>
                         </video> 
-                        <div id="description" style="width:640px; height:200px; overflow:auto;">
+                        <!--<div id="description" style="width:640px; height:200px; overflow:auto;">
                         	Description of the above video.
-                        </div>
-	</div>
+                        </div>-->
+	</div><BR />
+    <div id="videoDesc" style="display:inline-block;">
+    	<%=defaultVideo.getDescription()%>
+    </div>
+    </div>
     
     <div id="accordion" style="width:350px; float:right;  display:inline-block;">
-    	<h3>Overview</h3>
-        <div style="text-align:left;">
-        	<table name="items" class="list_base" style="border:none; text-align:left;">
-            	<TR id="test">
-                	<TD>Overview</TD><TD>3:22</TD><TD>A short Description of the video.</TD>
-                </TR>
-                <TR id="microarray">
-                	<TD>Test</TD><TD>3:22</TD><TD>A short Description of the video.</TD>
-                </TR>
-            </table>
-        </div>
-        <H3>Detailed Transcription Information</H3>
-        <div>
-        </div>
-        <H3>Downloads</H3>
-        <div>
-        </div>
-        <H3>Microarray Analysis Tools</H3>
-        <div>
-        </div>
-        <H3>Gene List Analysis Tools</H3>
-        <div>
-        </div>
-    	<H3>QTL Tools</H3>
-        <div>
-        </div>
+    	<%for(int i=0;i<categories.size();i++){
+			ArrayList<Demo> demoList=(ArrayList<Demo>)demoHashMap.get(categories.get(i));
+			%>
+            <h3><%=categories.get(i)%></h3>
+            <div style="text-align:left;">
+                <table name="items" class="list_base" style="text-align:left; width:100%;">
+                	<%for(int j=0;j<demoList.size();j++){
+						Demo curDemo=demoList.get(j);%>
+                        <TR id="<%=curDemo.getFileBase()+":::"+curDemo.getTitle()+" ("+curDemo.getTime()+")"+":::"+curDemo.getDescription()%>">
+                            <TD class="<%if(curDemo==defaultVideo){%>selected<%}%>"><%=curDemo.getTitle()%></TD>
+                            <TD class="<%if(curDemo==defaultVideo){%>selected<%}%>"><%=curDemo.getTime()%></TD>
+                            <TD class="<%if(curDemo==defaultVideo){%>selected<%}%>"><%=curDemo.getDescription()%></TD>
+                        </TR>
+                    <%}%>
+                </table>
+            </div>
+        <%}%>
     </div>
-
+	
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -70,14 +85,13 @@ $(document).ready(function() {
 	tableRows.each(function(){
 		//---> click functionality
 		$(this).find("td").click( function() {
-			var file = $(this).parent("tr").attr("id");
-			//alert(file);
-			//$('#videoWebm').attr("src",file+".webm");
-			//$('#videoMp4').attr("src",file+".mp4");
-			//$('#videoObj').attr("data",file+".mp4");
-			//$('#video').remove();
-			//$('#video').play();
-			$('#videoDiv').html("<video id=\"video\" width=\"640\" height=\"480\" controls=\"controls\" autoplay=\"true\"><source id=\"videoWebm\" src=\""+file+".webm\" type=\"video/webm\"><source id=\"videoMp4\" src=\""+file+".mp4\" type=\"video/mp4\"><object id=\"videoObj\" data=\""+file+".mp4\" width=\"320\" height=\"240\"></object></video>");
+			tableRows.find("td").removeClass('selected');
+			$(this).parent("tr").find("td").addClass('selected');
+			var full = $(this).parent("tr").attr("id");
+			var list=full.split(":::");
+			$('#videoDiv').html("<video id=\"video\" width=\"640\" height=\"480\" controls=\"controls\" autoplay=\"true\"><source id=\"videoWebm\" src=\""+list[0]+".webm\" type=\"video/webm\"><source id=\"videoMp4\" src=\""+list[0]+".mp4\" type=\"video/mp4\"><object id=\"videoObj\" data=\""+list[0]+".mp4\" width=\"320\" height=\"240\"></object></video>");
+			$('#videoTitle').html(list[1]);
+			$('#videoDesc').html(list[2]);
 			$('#video').load();
 			return false;
 		});
