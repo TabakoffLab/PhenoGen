@@ -113,6 +113,7 @@ sub postprocessCircosReverse{
 				#Add two lines before the last line
 				#print " Found Last Line \n";
 				#print $_."\n";
+				print $NEWSVGFILEHANDLE '</g>'."\n";
 				print $NEWSVGFILEHANDLE '<rect class="tooltip_bg" id="tooltip_bg" x="0" y="0" rx="4" ry="4" width="60" height="60" visibility="hidden"/>'."\n";
 				print $NEWSVGFILEHANDLE '<text class="tooltip" id="tooltip" x="0" y="0" visibility="hidden">Tooltip</text>'."\n";
 				print $NEWSVGFILEHANDLE '</g>';
@@ -440,6 +441,7 @@ sub writeTopLines{
     print $FILEHANDLE ' '."\n";
     print $FILEHANDLE '    ]]>'."\n";
     print $FILEHANDLE '  </script>'."\n";
-    print $FILEHANDLE ' <g id="viewport" transform = "scale(.333)">';
+    print $FILEHANDLE ' <g id="viewport" transform = "scale(.333)">'."\n";
+    print $FILEHANDLE ' <g id="notooltips">'."\n";
 }
 1;
