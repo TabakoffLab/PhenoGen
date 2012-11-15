@@ -92,25 +92,21 @@ sub callCircos{
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
-		$inkscapeDirectory = '/Applications/Inkscape.app/Contents/Resources/bin/';
 	}
 	elsif($hostname eq 'compbio.ucdenver.edu'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/local/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
-		$inkscapeDirectory = '/usr/bin/';
 	}
 	elsif($hostname eq 'phenogen.ucdenver.edu'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/local/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
-		$inkscapeDirectory = '/usr/bin/';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/local/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
-		$inkscapeDirectory = '/Applications/Inkscape.app/Contents/Resources/bin/';
 	}
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");
@@ -141,9 +137,7 @@ sub callCircos{
 	#
 	# Now convert circos_new.svg to circos_new.pdf
 	#
-	#chdir($inkscapeDirectory);
-	#$newpwd = getcwd();
-	print " New directory is $newpwd \n";
+
 	
 	@systemArgs=($inkscapeBinary,'-z','-f',$svgDirectory."circos_new.svg",'-A',$svgDirectory."circos_new.pdf",'-b','rgb(255,255,255)','-i','notooltips','-j','-C');
 	print " System call with these arguments: @systemArgs \n";

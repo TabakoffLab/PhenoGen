@@ -105,22 +105,27 @@ sub callCircosReverse{
 
 	my $circosBinary;
 	my $perlBinary;
+	my $inkscapeBinary;
 
 	if($hostname eq 'amc-kenny.ucdenver.pvt'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/bin/perl';
+		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 	}
 	elsif($hostname eq 'compbio.ucdenver.edu'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/local/bin/perl';
+		$inkscapeBinary = '/usr/bin/inkscape';
 	}
 	elsif($hostname eq 'phenogen.ucdenver.edu'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/local/bin/perl';
+		$inkscapeBinary = '/usr/bin/inkscape';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/local/bin/perl';
+		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 	}
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");
@@ -150,6 +155,28 @@ sub callCircosReverse{
 	print " Ready to call postprocessCircos \n";
 	postprocessCircosReverse($cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueListRef);
 	print " Finished with Circos \n";
+			
+	#
+	# Now convert circos_new.svg to circos_new.pdf
+	#
+
+	
+	@systemArgs=($inkscapeBinary,'-z','-f',$svgDirectory."circos_new.svg",'-A',$svgDirectory."circos_new.pdf",'-b','rgb(255,255,255)','-i','notooltips','-j','-C');
+	print " System call with these arguments: @systemArgs \n";
+	
+    system(@systemArgs);
+    if ( $? == -1 )
+	{
+  		print "System Call failed: $!\n";
+	}
+	else
+	{
+  		printf "System Call exited with value %d", $? >> 8;
+	}
+	#-- go back to original directory
+	chdir($pwd);
+	
+	
 }
 
 	my $arg1 = $ARGV[0]; # Cutoff
