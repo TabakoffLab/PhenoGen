@@ -56,6 +56,7 @@
 			// Initialize some variables
 			//
 			String iframeURL = null;
+			String svgPdfFile = null;
 			String geneSymbol= null;
 			String geneCentricPath = null;			
 			String ensemblIdentifier = null;
@@ -375,7 +376,7 @@
  			String hostName=request.getServerName();
 
 			if(hostName.equals("amc-kenny.ucdenver.pvt")){
-				perlEnvironmentVariables += ":/usr/bin/perl:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/lib:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/bin";
+				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/lib:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/bin";
 			}
 			else if(hostName.equals("compbio.ucdenver.edu")){
 				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
@@ -450,6 +451,7 @@
 					shortGeneCentricPath = geneCentricPath.substring(geneCentricPath.indexOf("/PhenoGenTEST/"));
 				}
 				String svgFile = shortGeneCentricPath+transcriptClusterID+"_"+timeStampString+"/svg/circos_new.svg";
+				svgPdfFile = shortGeneCentricPath+transcriptClusterID+"_"+timeStampString+"/svg/circos_new.pdf";
 				iframeURL = svgFile;
 				allowChromosomeSelection=true;  // After the first time they run circos, let them select the chromosomes.
 			}
@@ -880,6 +882,12 @@ else if((selectedChromosomeError!=null)&&(selectedChromosomeError)){
 	</script>
 
 		<div align="center">
+		    Download Circos image:
+			<a href="<%=svgPdfFile%>" target="_blank">
+			<img src="../images/icons/download_g.png">
+			</a>
+			<BR>
+			<BR>
 		  Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls.
           <div id="iframe_parent" align="center">
                <iframe src=<%=iframeURL%> height=950 width=950  position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
