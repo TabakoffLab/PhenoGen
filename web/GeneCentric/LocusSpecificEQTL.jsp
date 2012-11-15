@@ -391,9 +391,9 @@
 				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
 			}
 			log.debug("Host Name "+hostName);
-			String filePrefixWithPath;
-			if(request.getParameter("geneCentricPath")!=null){
-				filePrefixWithPath = (String)request.getParameter("geneCentricPath")+transcriptClusterID+"_circos";
+			String filePrefixWithPath;			
+			if(request.getParameter("hiddenGeneCentricPath")!=null){
+				filePrefixWithPath = (String)request.getParameter("hiddenGeneCentricPath")+transcriptClusterID+"_circos";
 			}
 			else{
 				filePrefixWithPath = (String)session.getAttribute("geneCentricPath")+transcriptClusterID+"_circos";
