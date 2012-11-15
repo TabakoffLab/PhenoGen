@@ -43,6 +43,8 @@ import java.util.Set;
 
 
 
+
+
 public class GeneDataTools {
     private ArrayList<Thread> threadList=new ArrayList<Thread>();
     private String[] rErrorMsg = null;
@@ -79,6 +81,12 @@ public class GeneDataTools {
     private int usageID=-1;
     private int maxThreadRunning=1;
     String outputDir="";
+    
+    private String  returnGenURL="";
+    private String  returnUCSCURL= "";
+    private String  returnUCSCURLFiltered= "";
+    private String  returnOutputDir="";
+    private String returnGeneSymbol="";
     
     private String getNextID="select TRANS_DETAIL_USAGE_SEQ.nextVal from dual";
     private String insertUsage="insert into TRANS_DETAIL_USAGE (TRANS_DETAIL_ID,INPUT_ID,IDECODER_RESULT,RUN_DATE,ORGANISM) values (?,?,?,?,?)";
@@ -190,7 +198,7 @@ public class GeneDataTools {
         if(ensemblID1!=null && !ensemblID1.equals("")){
             //Define output directory
             outputDir = fullPath + "tmpData/geneData/" + ensemblID1 + "/";
-            session.setAttribute("geneCentricPath", outputDir);
+            //session.setAttribute("geneCentricPath", outputDir);
             log.debug("checking for path:"+outputDir);
             String folderName = ensemblID1;
             //String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
@@ -252,7 +260,7 @@ public class GeneDataTools {
         if(error){
             result=(String)session.getAttribute("genURL");
         }
-        this.setReturnSessionVar(error,ensemblID1);
+        this.setPublicVariables(error,ensemblID1);
         
         try{
             PreparedStatement ps=dbConn.prepareStatement(updateSQL, 
@@ -389,7 +397,7 @@ public class GeneDataTools {
         if(error){
             result=(String)session.getAttribute("genURL");
         }
-        this.setReturnSessionVar(error,folderName);
+        this.setPublicVariables(error,folderName);
         ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
         ret=this.mergeOverlapping(ret);
         this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID);
@@ -845,7 +853,8 @@ public class GeneDataTools {
         try{
                 urls=myFH.getFileContents(new File(outputDir + ensemblID1+".url"));
                 this.geneSymbol=urls[0];
-                session.setAttribute("geneSymbol", this.geneSymbol);
+                this.returnGeneSymbol=this.geneSymbol;
+                //session.setAttribute("geneSymbol", this.geneSymbol);
                 this.ucscURL=urls[1];
                 this.ucscURLfilter=urls[2];
                 int start=urls[1].indexOf("position=")+9;
@@ -895,7 +904,7 @@ public class GeneDataTools {
         }
     }
     
-    private void setReturnSessionVar(boolean error,String folderName){
+    /*private void setReturnSessionVar(boolean error,String folderName){
         if(!error){
             session.setAttribute("genURL",urlPrefix + "tmpData/geneData/" + folderName + "/");
             session.setAttribute("ucscURL", this.ucscURL);
@@ -916,7 +925,33 @@ public class GeneDataTools {
                 }
             }
         }
+    }*/
+    
+    private void setPublicVariables(boolean error,String folderName){
+        if(!error){
+            returnGenURL=urlPrefix + "tmpData/geneData/" + folderName + "/";
+            returnUCSCURL= this.ucscURL;
+            returnUCSCURLFiltered= this.ucscURLfilter;
+            returnOutputDir=outputDir;
+        }else{
+            String tmp=returnGenURL;
+            if(tmp.equals("")||!tmp.startsWith("ERROR:")){
+                returnGenURL="ERROR:Unknown Error";
+            }
+            returnUCSCURL= "";
+            returnUCSCURLFiltered= "";
+            if(folderName!=null && !folderName.equals("")){
+                try{
+                    new FileHandler().writeFile(returnGenURL,outputDir+"errMsg.txt");
+                }catch(IOException e){
+                    log.error("Error writing errMsg.txt",e);
+                }
+            }
+        }
+        
+        
     }
+    
     public HttpSession getSession() {
         return session;
     }
@@ -1230,10 +1265,10 @@ public class GeneDataTools {
     }
     
     public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,double pvalue,String level,String organism,String circosTissue,String circosChr){
+        ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
-        ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
         HashMap tmpHM=new HashMap();
         /*String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end,eq.LOD_SCORE "+
                             "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep, expression_qtls eq "+
@@ -1631,10 +1666,30 @@ public class GeneDataTools {
             }
         }
     }
+
+    public String getGenURL() {
+        return returnGenURL;
+    }
+
+    public String getUCSCURL() {
+        return returnUCSCURL;
+    }
+
+    public String getUCSCURLFiltered() {
+        return returnUCSCURLFiltered;
+    }
+
+    public String getOutputDir() {
+        return returnOutputDir;
+    }
+
+    public String getGeneSymbol() {
+        return returnGeneSymbol;
+    }
+    
+    
     
 }
-
-
 class RegionDirFilter implements FileFilter{
     String toCheck="";
     

@@ -1,6 +1,9 @@
 <div id="page" style="min-height:1100px;">
 <span style="text-align:center;">
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
+	<script>
+		$('.demo').hide();
+	</script>
 
 <%
 	String[] tissuesList1=new String[1];
@@ -21,10 +24,10 @@
 		tissuesList2[0]="Whole Brain";
 	}
 	
-	
 	String tmpURL=genURL.get(0);
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+	
 	
 	
 	
@@ -176,7 +179,7 @@
 		var organism="<%=myOrganism%>";
     </script>
 
-        <div class="geneRegionControl">
+        <!--<div class="geneRegionControl">
       		Zoom In:
           <form id="zoomIn" name="zoomIn" method="post" action="" style="display:inline-block;">
                       <input type="submit" name="action" id="refreshBTN" value="1.5x" onClick="return displayWorking()">
@@ -189,7 +192,7 @@
                       <input type="submit" name="action" id="refreshBTN" value="3x" onClick="return displayWorking()">
                       <input type="submit" name="action" id="refreshBTN" value="10x" onClick="return displayWorking()">      
           </form>
-          </div><!--end RegionControl div -->
+          </div>--><!--end RegionControl div -->
     
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; width:98%; text-align:center;">
         <div class="geneimageControl">
@@ -208,13 +211,13 @@
                     <option value="Array" selected="selected">UCSC/Affymetrix Tissue Expression Data(Source:UCSC)</option>
                     <option value="Human">Human Proteins/Chr Mapping(Source:UCSC)</option>
                 </select>
-                <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help2" src="../web/images/icons/help.png" /></div>
+                <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
              </form>
          
 		 
           </div><!--end imageControl div -->
         <div class="geneimage" >
-            <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help1" src="../web/images/icons/help.png"  /></div>
+            <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png"  /></div>
     
             <div id="geneimageUnfilteredArray" class="ucscImage"  style="display:inline-block;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.png"%>"/></a></div>
             <div id="geneimageFilteredArray"  class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.png"%>"/></a></div>
@@ -243,22 +246,25 @@
 
 <div class="cssTab" style="position:relative;">
     <ul>
-      <li ><a href="#geneList" title="What genes are found in this area?">Genes Physically Located in Region</a></li>
-      <li ><a href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a></li>
-      <li ><a href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a></li>
+      <li ><a href="#geneList" title="What genes are found in this area?">Genes Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help10" class="helpImage" src="../web/images/icons/help.png" /></div></li>
      </ul>
      
+     
 <div id="loadingRegion"  style="text-align:center; position:relative; top:75px; left:-200px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Loading Region Data...</div>
+<div id="changingTabs"  style="display:none;text-align:center; position:relative; top:0px; left:-150px;"><img src="<%=imagesDir%>wait.gif" alt="Changing Tabs..." /><BR />Changing Tabs...</div>
 
 
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
-            	
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
                     	<TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List</span></TH>
                         <TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
+                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999; top:23px; left:-3px;"><img id="Help4" class="helpImage" src="../web/images/icons/help.png" /></div>
                         </TR>
+                        
                     </thead>
                 	<tbody id="geneListFilter" style="display:none;">
                     	<TR>
@@ -335,16 +341,22 @@
                 <THEAD>
                     <tr>
                         <th colspan="6" class="topLine noSort noBox"></th>
-                        <th colspan="1" class="center noSort topLine">RNA-Seq Data</th>
-                        <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine">Affy Exon 1.0 ST Array Data</th>
+                        <th colspan="1" class="center noSort topLine">RNA-Seq Data<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
+							<%if(myOrganism.equals("Mm")){%>
+                            	Public ILSXISS RI Mice
+                            <%}else{%>
+                            	Public HXB/BXH RI Rats (Tissue, Exon Arrays)
+                            <%}%>
+                            )<div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr>
                         <th colspan="6"  class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability</th>
-                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG</th>
-                        <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)</th>
+                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="Help5c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<div class="inpageHelp" style="display:inline-block; "><img id="Help5d" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="Help5e" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr>
                         <th colspan="6"  class="topLine noSort noBox"></th>
@@ -375,9 +387,9 @@
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<BR />(Avg)</TH>
                     <%}%>
-                    <TH>Transcript Cluster ID</TH>
+                    <TH>Transcript Cluster ID <div class="inpageHelp" style="display:inline-block; "><img id="Help5f" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                     <TH>Annotation Level</TH>
-                    <TH>View Genome-Wide Associations</TH>
+                    <TH>View Genome-Wide Associations<div class="inpageHelp" style="display:inline-block; "><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                     <%for(int i=0;i<tissuesList2.length;i++){%>
                     	<TH>Total # Locations P-Value < <%=pValueCutoff%> </TH>
                         <TH>Minimum<BR /> P-Value<BR />Location</TH>
@@ -475,7 +487,7 @@
                             	
                                 <TD><%=tc.getLevel()%></TD>
                                 <TD>
-                                <a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=curGene.getGeneSymbol()%>&ensID=<%=curGene.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>" 
+                                <a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=curGene.getGeneSymbol()%>&ensID=<%=curGene.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>&curDir=<%=folderName%>" 
                                 	target="_blank" title="View the circos plot for transcript cluster eQTLs">
 									View Location Plot
                                 </a></TD>
@@ -505,7 +517,7 @@
 													start=1;
 												}
 												%>
-                                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+start+"-"+stop%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for this region.">
+                                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+start+"-"+stop%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for a region +- 500,000bp around the SNP location.">
                                             		chr<%=maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()%>
                                                  </a>
                                             <%}%>
@@ -536,6 +548,7 @@
                 	<thead>
                     	<TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List</span></TH>
                         <TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
+                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999;top:23px; left:-3px;"><img id="Help6" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
                     	<TR>
@@ -581,6 +594,7 @@
 	if(bqtls.size()>0){
 		log.debug("BQTLS >0 ");
 	%>
+    
 	<TABLE name="items" id="tblBQTL" class="list_base tablesorter" cellpadding="0" cellspacing="0">
                 <THEAD>
                 	<TR class="col_title">
@@ -597,8 +611,8 @@
                         <TH>References<BR />RGD Ref<HR />PubMed</TH>
                         <TH>Candidate Genes</TH>
                         <TH>Related bQTL Symbols</TH>
-                        <TH>Location</TH>
-                        <TH>Location Method</TH>
+                        <TH>bQTL Region</TH>
+                        <TH>Region Determination Method<div class="inpageHelp" style="display:inline-block; "><img id="Help8" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                         <TH>LOD Score</TH>
                         <TH>P-value</TH>
                     </TR>
@@ -674,11 +688,11 @@
                         <TD><%	ArrayList<String> relQTL=curBQTL.getRelatedQTL();
 							if(relQTL!=null){
 							for(int j=0;j<relQTL.size();j++){%>
-                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=bQTL:<%=relQTL.get(j)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="Click to View bQTL Region in a new window."><%=relQTL.get(j)%></a><BR />
+                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=bQTL:<%=relQTL.get(j)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="Click to view this bQTL region in a new window."><%=relQTL.get(j)%></a><BR />
                         	<%}
 							}%>
                         </TD>
-                        <TD title="Click to view QTL region in a new window."><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
+                        <TD title="Click to view this bQTL region in a new window."><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
                         chr<%=curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%></a></TD>
                         <TD>
                         <%String tmpMM=curBQTL.getMapMethod();
@@ -689,18 +703,17 @@
 							<%=tmpMM%>
                         <%}%>
                         </TD>
-                        <TD>
-                        <%if(curBQTL.getLOD()==0){%>
-                        	N/A
+                        <TD<%if(curBQTL.getLOD()==0){%>
+                        	title="Not available from the MGI/RGD data.">Not Available
 						<%}else{%>
-							<%=curBQTL.getLOD()%>
+							><%=curBQTL.getLOD()%>
                         <%}%>
                         </TD>
-                        <TD>
+                        <TD
                         <%if(curBQTL.getPValue()==0){%>
-                        	N/A
+                        	title="Not available from the MGI/RGD data.">Not Available
 						<%}else{%>
-							<%=curBQTL.getPValue()%>
+							><%=curBQTL.getPValue()%>
                         <%}%>
 						</TD>
                         
@@ -729,6 +742,7 @@
                 	<thead>
                     	<TH style="width:65%;"><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List and Circos Plot</span></TH>
                         <TH><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
+                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999;top:23px; left:-3px;"><img id="Help9" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
@@ -761,9 +775,7 @@
                                                         <tr>
                                                             <td style="text-align:center;">
                                                                 <strong>Tissues: Include at least one tissue.</strong>
-                                                                <div class="inpageHelp" style="display:inline;">
-                                                                <img id="Help9d" src="web/images/icons/help.png"/>
-                                                                </div>
+                                                                
                                                             </td>
                                                         </tr>
                                                         <TR>
@@ -810,9 +822,7 @@
                                                     <tr>
                                                         <td style="text-align:center;">
                                                             <strong>Chromosomes: (<%=chromosome%> must be included)</strong>
-                                                            <div class="inpageHelp" style="display:inline-block;">
-                                                            <img id="Help9c" src="web/images/icons/help.png"/>
-                                                            </div>
+                                                           
                                                         </td>
                                                         
                                                     </tr>
@@ -901,10 +911,11 @@
                         </TR>
                         </tbody>
                   </table>
-   	<div style="text-align:center; width:100%;"><span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span></div>
+                  
+   	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;"><span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span><div class="inpageHelp" style="display:inline-block;"><img id="Help11" class="helpImage" src="../web/images/icons/help.png" /></div></div>
     <div id="circosPlot" style="text-align:center;">
 		<div style="display:inline-block;text-align:center; width:100%;">
-        	<span id="circosMinMax"><img src="web/images/icons/magnifyingGlass_minus.png"></span>Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
+        	<span id="circosMinMax" style="cursor:pointer;"><img src="web/images/icons/circos_min.jpg"></span>Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
      	</div>
 
 
@@ -955,8 +966,19 @@
 	%>
 	<TABLE name="items" id="tblFrom" class="list_base tablesorter" cellpadding="0" cellspacing="0">
                 <THEAD>
+                	<tr>
+                        <th colspan="4" class="topLine noSort noBox"></th>
+                        	<th colspan="<%=tissuesList2.length*2+3%>" class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
+							<%if(myOrganism.equals("Mm")){%>
+                            	Public ILSXISS RI Mice
+                            <%}else{%>
+                            	Public HXB/BXH RI Rats (Tissue, Exon Arrays)
+                            <%}%>
+                            )<div class="inpageHelp" style="display:inline-block;"><img id="Help12c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                    </tr>
                		 <tr>
-                        <th colspan="7" class="topLine noSort noBox"></th>
+                        <th colspan="4" class="topLine noSort noBox"></th>
+                        <th colspan="3" class="leftBorder noSort noBox"></th>
                         <%for(int i=0;i<tissuesList2.length;i++){%>
                         	<th colspan="2" class="center noSort topLine">Tissue:<%=tissuesList2[i]%></th>
                         <%}%>
@@ -966,13 +988,13 @@
                     	<TH>Gene ID</TH>
                     	
                         <TH>Description</TH>
-                        <TH>Transcript Cluster ID</TH>
-                        <TH>Annotation Level</TH>
-                        <TH>Physical Location</TH>
-                        <TH>View Genome-Wide Associations</TH>
+                        <TH>Transcript Cluster ID<div class="inpageHelp" style="display:inline-block;"><img id="Help12a" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Annotation Level<div class="inpageHelp" style="display:inline-block;"><img id="Help12b" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Physical Location</TH> 
+                        <TH>View Genome-Wide Associations<div class="inpageHelp" style="display:inline-block;"><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                     	<%for(int i=0;i<tissuesList2.length;i++){%>
                             <TH title="Highlighted indicates a value less than or equal to the cutoff.">P-Value from region</TH>
-                            <TH># other locations P-value<<%=pValueCutoff%></TH>
+                            <TH title="Click on View Location Plot to see all locations below the cutoff."># other locations P-value<<%=pValueCutoff%></TH>
                             <!--<TH>Max LOD genome-wide</TH>-->
                         <%}%>
                     	
@@ -1047,7 +1069,7 @@
 											<%=df4.format(regEQTL.getPVal())%>
                                         <%}%>
                                         </TD>
-                                        <TD>
+                                        <TD title="Click on View Location Plot to see all locations below the cutoff.">
                                         <%if(qtlList!=null && qtlList.size()>0){%>
                                         	<%=qtlList.size()%>
 										<%}else{%>
@@ -1083,38 +1105,254 @@
     	<div class="error"><%=genURL.get(selectedGene)%><BR />The administrator has been notified of the problem and will investigate the error.  We apologize for any inconvenience.</div><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR />
 <%}%>
     
-
-<div id="Help1Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>UCSC Genome Browser Image</H3>
-The main image was generated by the <a target="_blank" href="http://genome.ucsc.edu/">UCSC Genome Browser</a>(click the image to open the browser at the position of the image).  There are a number of tracks which are illustrated in the image below and described in each numbered section following.
-<img src="ucsc_example.jpg" />  
-<ol>
-<li>The first track contains all of the Affymetrix Exon Probesets for the <a target="_blank" href="http://www.affymetrix.com/estore/browse/products.jsp?productId=131474&categoryId=35765&productName=GeneChip-Mouse-Exon-ST-Array#1_1">Mouse</a> or
-<a target="_blank" href="http://www.affymetrix.com/estore/browse/products.jsp?productId=131489&categoryId=35748&productName=GeneChip-Rat-Exon-ST-Array#1_1"> Rat</a> Affy Exon 1.0 ST array.  Below the image information about these probesets for a parental strains(Rat only) and <a target="_blank" href="http://www.jax.org/smsr/ristrain.html" >panels of recombinant inbred mice or rats</a> and various tissues will be displayed. </li>
-
-<li>The next track if present contains the numbered exons for the positive strand.  If transcripts exist for the positive strand each unique exon is given a number such that the first exon is 1.  If transcripts have differing overlapping exons then the exons are numbered 1a,1b,etc.</li>
-<li>Rat Only-The next track is a reconstruction of the transcriptome from RNA Sequencing.  These are the reconstructed transcripts computed by <a target="_blank" href="http://cufflinks.cbcb.umd.edu/index.html">CuffLinks</a> from RNA Sequencing data of Rat Brain.</li>
-<li>This track if present contains the numbered exons for the reverse strand.  If transcripts exist for the reverse strand each unique exon is given a number such that the first exon is 1.  If transcripts have differing overlapping exons then the exons are numbered 1a,1b,etc.</li>
-<li>Rat Only-CuffLinks cannot assemble all sequences.  There may be single exon "genes" from CuffLinks that in addition to being a signle gene could not be assigned to a strand.  These are numbered in this track.</li>
-<li>These are standard UCSC Tracks for the RefSeq gene(top blue color) and Ensembl transcripts(bottom brown color).</li>
-</ol></div></div>
-
-<div id="Help2Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+    
+<div id="Help1Content" class="inpageHelpContent" title="<center>Help-Image Controls</center>"><div class="help-content">
 <H3>UCSC Image Controls</H3>
-This control allows you to choose between two different versions of the UCSC genome browser image.  Occasionally you may also have the option to select a different gene.  This occurs when iDecoder found more than one Ensembl Gene Identifier associated with your gene.  However the gene most closely related to the identifier you enter is selected first.<BR /><BR />
-The unfiltered version of the image displays all the Affymetrix Exon probesets color coded by annotation level.<BR /><BR />
-The filtered version has only probesets that were detected above background in 1% or more of the samples.  Detection Above BackGround(DABG)-Calculates the p-value that the intensities in a probeset could have been observed by chance in a background distribution. <a target="_blank" href="http://www.affymetrix.com/partners_programs/programs/developer/tools/powertools.affx">Affymetrix for more information</a>. <BR />  It also has one track per tissue where data is available (Mouse-Brain Rat-Brain,Heart,Liver,Brown Adipose).  While this is a low percentage it filters out all of the probesets that are not detected above background.
+The controls above the UCSC image allow you to modify the information displayed in the image.<BR /><BR />
+
+A. The first control will toggle the transcript data track, which contains Ensembl transcripts(Brown, IDs begin with ENS) and in rat also contains reconstructed transcripts from RNA-Seq of Whole Brain( Blue – multi-exon transcripts, Black - single exon transcripts, begin with the tissue they are from, followed by a unique gene ID)<BR />
+	RNA-Seq Transcriptome Information<BR>
+		Transcripts were reconstructed from ???? using CuffLinks software. The raw read data is available for download in the Downloads section under RNA Sequencing BED/SAM Data Files.<BR />
+B. The second control will select the track displayed on the lower portion of the image.  For now there are three options:<BR />
+	1. None-which hides all the lower tracks.<BR />
+	2. UCSC/Affymetrix Tissue Expression Data- will display the Affy Exon tissue data provided by UCSC and Affymetrix.<BR />
+	3. Human Chromosome/Protein Mappings- will display in general what sections of the current organism map to a chromosome in the human genome based on the chromosome color key below the image. In mouse the lower track includes homologous proteins in Humans.<BR />
+
+</div></div>
+
+<div id="Help2Content" class="inpageHelpContent" title="<center>Help-UCSC Image</center>"><div class="help-content">
+<H3>UCSC Image</H3>
+The image displayed is generated from UCSC.  If you are not familiar with UCSC Genome Browser it displays different information in different lines moving horizontally across the image.  These lines are called tracks. 
+<BR />
+This image was constructed based on data from PhenoGen and UCSC and has multiple tracks, not all of which can be displayed simultaneously.  Although some tracks not marked as optional will always be displayed.
+<BR />
+Starting at the top:<BR />
+<ul>
+<li>Track 1(Optional, Default: Hidden)-Transcripts
+This track contains Ensembl transcripts(Brown, ID begins with ENS) and in rat also contains reconstructed transcripts from RNA-Seq of Whole Brain( Blue – multi-exon transcripts, Black - single exon transcripts, begin with the tissue they are from, followed by a unique gene ID)</li>
+<li>Track 2-bQTLs
+		These are Behavioral Quantitative Trait Loci.  This track shows the bQTLs located in the region entered.  This indicates some feature in this region is statistically associated with the observed Phenotype or Behavior.  For additional details about the phenotypes please see the complete list of and detailed table under the bQTLs Tab below the image.</li>
+<li>Track 3- RefSeq Genes
+		These are the Ref-Seq annotated genes in the region.  This will show the genes in the region with the highest level of confidence, while the tables in the tabs below may display additional genes from Ensembl that do not show up in this track.</li>
+<li>Track4 (Optional, Default: Displayed)- Affy Exon Array Expression Levels
+		This track shows the Affymetrix/UCSC generated data for multiple tissues.  This can be useful to quickly view where a gene might be expressed, although more detailed data for the tissues available on PhenoGen is displayed in the tables below or by selecting a particular gene to view Detailed Transcription Information.</li>
+<li>Track 5 (Optional, Default: Hidden) – Human Chromosome Mapping
+		This track along with the color coded image below will show what human chromosomes a region might correspond to.  In mouse this will also show a Ref-Seq like track(track#3) with human gene identifiers listed.</li>
+</ul>
+
+</div></div>
+
+<div id="Help3Content" class="inpageHelpContent" title="<center>Help-Gene in Region Tab</center>"><div class="help-content">
+<H3>Gene Physically Located in Region Tab</H3>
+This tab will display all the Ensembl genes located in this region along with any RNA-Seq genes that do not correspond to an Ensembl gene.<BR />
+Summary of Data for this tab:<BR />
+<ol type="1">
+<li>Gene Information(Ensembl ID, Gene Symbol, Location, description, # transcripts, # transcripts from RNA-Seq)</li>
+<li>Probeset detail (# Probesets, # whose expression is heritable(allows you to focus on expression differences controlled by genetics),# detected above background(DABG),(Avg % of samples DABG).</li>
+<li>Transcript Cluster(Does not mean individual transcripts, but actually the gene level) expression quantitative trait loci.  At the gene level this indicates regions of the genome that are statistically associated with expression of the gene.  The table will display the p-value and location with the minimum p-value for each tissue available.  If you would like to view all of the locations across tissues click on the view location plot link for the gene of interest.
+</li>
+</ol>
+</div></div>
+
+<div id="Help4Content" class="inpageHelpContent" title="<center>Help-Filter List/View Columns</center>"><div class="help-content">
+<H3>Filter List/View Columns</H3>
+Click on the + sign next to either Filter the list or change the displayed columns in the table.<BR />
+You have the option to filter the table based on the following parameters:<BR />
+1.	eQTL P-value cut-off: This changes the number of locations and possibly will remove/add minimum p-value locations, but does not filter the list of genes in the region.<BR />
+2.	Single Exon RNA-Seq transcripts: This will either display or hide all the RNA-Seq transcripts that are a single exon.<BR />
+3.	Search text in the table: This is a text based search of every column in the tabe.  For example if you would like to view a single gene start entering the symbol into the text box.  It will continue to filter as you type.  If you eliminate everything begin deleting a character at a time and rows will begin to show up.  You might also use this to find proteins that have a particular keyword in the description.
+
+</div></div>
+
+<div id="Help5aContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>RNA-Seq Column</H3>
+This column displays the number of transcripts reconstructed from the RNA-Seq data that match to this gene.  You can view a more detailed image by clicking on the gene symbol, which brings up the detailed transcription information for just that gene.
+</div></div>
+
+<div id="Help5bContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>Affy Exon Data Columns</H3>
+The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse data is from the Public ILSXISS RI Mice
+For rat data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)<BR /><BR />
+
+These datasets are available to the public for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  (A free login is required, this allows you to save your progress and come back after lengthy processing steps.)  <BR /><BR />
+
+Columns:<BR />
+	Total number of non masked probesets<BR /> 
+Number with a heritability of >0.33(Avg heritability for probesets >0.33)<BR />
+Number detected above background(DABG) (Avg % of samples DABG)<BR />
+Transcript Cluster ID corresponding to the gene with Annotation level<BR />
+Circos Plot to show all eQTLs across tissues.<BR />
+eQTL for the transcript cluster in each tissue<BR />
+	-minimum P-value and location<BR />
+	-total locations with a P-value < cut-off<BR />
+
+</div></div>
+
+<div id="Help5cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>Heritablity</H3>
+The heritability indicates how well expression of a probeset correlates with the strain of mice/rats.  Since we have 20 or 60 strains we can calculate how well the expression is correlated to the strain.  Higher heritability indicates expression of a probeset is more influenced by genetics over unknown environmental factors.  Higher than 0.33 is considered of interest(??). 
+</div></div>
+
+<div id="Help5dContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>Detection Above Background(DABG)</H3>
+The exon arrays are normalized by the Affymetrix Power Tools software.  This assigns a probability that the probeset is detected above the background level.  The numbers reported are the number of probesets that are detected above background in at least 1% of samples.  This tends to eliminate most of the low or absent probesets, with out removing probesets that might be of interest in a strain or group.  The average percentage of samples where the probesets were detected above background is also reported for reference.
+</div></div>
+
+<div id="Help5eContent" class="inpageHelpContent" title="<center>Help-eQTLs</center>"><div class="help-content">
+<H3>eQTLs</H3>
+The eQTL columns give you a general idea of where a gene in the region you have entered is controlled from.  For a variety of reasons eQTLs are currently only available at the gene (transcript cluster) level instead of the probeset level.  So the first columns give you information about the transcript cluster.  <BR /><BR />
+
+Columns:<BR />
+	Transcript Cluster ID- Is the unique ID assigned by affymetrix.  <BR />
+	Location-Is the chromosomes and base pair coordinates where the gene is located. <BR />
+	Annotation level- is related to the confidence in the gene.  Core is the highest confidence.  This level tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and will include additional regions beyond the Ensembl annotations.<BR />
+	Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.<BR />
+<BR />
+Tissue Columns<BR />
+	These columns summarize the data for each tissue.<BR />
+	Total # of locations with a P-value < (Selected Cutoff)- This is the # of locations associated with expression below a cutoff selected in the Filter List section above the table.<BR />
+	Minimum P-Value Location- Is the P-value and location of the minimum P-Value for the given tissue.  P-Value is in black above the location in blue.  The location will open a Detailed Transcription Information window for the given location.<BR />
+
+</div></div>
+
+<div id="Help5fContent" class="inpageHelpContent" title="<center>Help-Transcript Cluster ID</center>"><div class="help-content">
+<H3>Transcript Cluster ID</H3>
+Transcript Cluster ID- Is the unique ID assigned by affymetrix.  eQTLs are calculated for this annotation at the Gene level by combining probeset data across the gene.
+</div></div>
+
+<div id="Help5gContent" class="inpageHelpContent" title="<center>Help-Genome Wide Associations</center>"><div class="help-content">
+<H3>Genome Wide Associations</H3>
+Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.  It is a nice way to visualize the following columns.
+</div></div>
+
+<div id="Help6Content" class="inpageHelpContent" title="<center>Help-Filter/Display-bQTLs</center>"><div class="help-content">
+<H3>Filter/Display</H3>
+For this section you may only filter based on text in the table.  To search for a keyword just start typing and results will be filtered base on what has been entered.<BR />
+For the View Columns section you may choose which columns are displayed.  The options to view/hide are:<BR />
+<ul type="disc">
+	<li>bQTL Symbol-looks much like a gene symbol, but has been assigned to a bQTL by RGD or MGI.</li>
+	<li>Trait Method-A description of the method used to measure a particular phenotype.</li>
+	<li>Phenotype- A description or phrase to describe the characteristics measured.</li>
+	<li>Diseases-Diseases associated with the phenotype.</li>
+	<li>References-Both Pubmed and RGD/MGI curated references related to the bQTL.</li>
+	<li>Associated bQTLs-bQTLs that are related to the displayed bQTL.</li>
+	<li>Location Method-a brief description of the method used to determine the location of the bQTL.</li>
+		- by peak only- still looking for descriptions of each method.
+		- by peak w adj size
+		- by one flank and peak markers
+		- by one flank marker only
+		- by flanking markers
+		- imported from external source</li>
+	<li>LOD Score/P-value-When available(many are not reported directly by RGD/MGI) indicates the level of confidence the region contributes to the Phenotype.  Higher LOD Scores / Lower P-values indicate higher confidence in the association.</li>
+</ul>
+
+</div></div>
+
+<div id="Help7Content" class="inpageHelpContent" title="<center>Help-bQTL Tab</center>"><div class="help-content">
+<H3>bQTL Tab</H3>
+Summary-
+	The bQTL tab allows you to view <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that correspond to the region.  <BR /><BR />
+What is a bQTL?(View detailed bQTL information) 
+	Breifly a bQTL is a region that is associated with a particular phenotype or behavior (thus bQTL).  <BR /><BR />
+How is it calculated? Etc
+	bQTLs can be found for Recombinant Inbred Panels by measuring a trait/behavior across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation regions can be found that are correlated with a particular phenotype.  These are the regions listed here.  This may indicate that a gene or other feature is somehow influencing the phenotype.
+
+</div></div>
+
+<div id="Help8Content" class="inpageHelpContent" title="<center>Help-Region Determination Method</center>"><div class="help-content">
+<H3>Region Determination Method</H3>
+This column is the method used to determine the location.  A description of each method is below.<BR />
+	- by peak only-still looking for descriptions of each method.<BR />
+	- by peak w adj size<BR />
+	- by one flank and peak markers<BR />
+	- by one flank marker only<BR />
+	- by flanking markers<BR />
+	- imported from external source<BR />
+</div></div>
+
+<div id="Help9Content" class="inpageHelpContent" title="<center>Help-Filter/View Columns-eQTLs</center>"><div class="help-content">
+<H3>Filter/View Columns</H3>
+You may filter the ciros plot and table by tissues, eQTL P-value, and chromosome.  Simply change the paramters you would like to filter by and click on Run Filter.<BR />
+<ul type="disc">
+	<li>eQTL P-value- is the cutoff for to limit genes displayed to those that have a P-value for the selected region less than or equal to the cutoff.</li>
+	<li>Tissues(Rat Only)- Move the tissues to the excluded column if you do not want to include all of them.  This will keep only genes that have significant eQTLs in one of the tissues still included.</li>
+	<li>Chromosomes- Move any chromosomes to exclude into the exclude column.  This will filter out genes that are located on that chromosome.</li>
+</ul>
+
+View Columns
+You may show/hide various columns using the check boxes below View Columns.<br />
+<ul type="disc">
+	<li>Gene ID- The Ensembl gene ID that links directly to Ensembl.</li>
+	<li>Descriptioin- The Ensembl description of the gene.</li>
+	<li>Transcript ID and Annot.- The Transcript Cluster ID and Annotation Level which is the Affymetrix transcript cluster that corresponds to the gene and the level of confidence.</li>.
+	<li>All Tissues P-values- controls the P-values from region column across tissues.</li>
+	<li>All Tissues # Locations- controls the # other locations column across all tissues.</li>
+	<li>Specific Tissues: controls both columns for a specific tissue.</li>
+</ul>
+
+</div></div>
+
+<div id="Help10Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>eQTL Tab</H3>
+Summary- This tab show’s what genes might be controlled by a feature in this region.  There is at least an eQTL with a P-value below the cutoff in the highlighted(Blue) for the selected region in one or more tissues.  However please note the actual region may just overlap with the current region so the eQTL region associated with the P-value may be a different than the current region. 
+<BR />
+The circos plot shows where the genes with eQTLs in this region are physically located.  
+<BR />
+The table below lists all the genes and eQTLs for each gene in each tissue.  To view all the eQTLs for a gene use the View Location Plot link to bring up the circos plot that shows each eQTL for the selected Gene.
+<BR />
+Finally to view detailed transcript and probeset data click on a Gene Symbol to bring up a summary specific to that gene.
+<BR /><BR />
+What is an eQTL? (View detailed eQTL information)   
+An eQTL is a region that is correlated across recombinant inbred strains to expression of a gene(or in the case of our Affy data displayed, Transcript Cluster) or probeset.  This may indicate some feature in this region is influencing expression of the gene with a significant eQTL in the region.
+<BR /><BR />
+How is it calculated? 
+eQTLs can be found for Recombinant Inbred Panels by measuring expression across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation, regions can be found that are correlated with expression.   In this table this region overlaps with one of these regions that is assigned a P-value below the cutoff you selected.  This may indicate that a gene or other feature in this region or one of the other regions with a significant P-value is somehow influencing the expression of the gene.
+<BR /><BR />
+What does an eQTL for a transcript cluster mean? 
+At the transcript cluster level this is an eQTL for a gene and not individual	 probesets.  For now this is the only level available, although it is possible to add probeset level eQTLs in the future.
+
+</div></div>
+
+<div id="Help11Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>Circos Plot Gene Locations</H3>
+This plot shows all of the genes that have an eQTL in the region entered.  These genes correspond to the genes listed in the table below.
+<BR />
+The plot can be hidden altogether using the +/- button.  The size of the plot can also be controlled use the button next to the directions.
+<BR />
+When your mouse is inside the border below you can zoom in/out on the plot.  When your mouse is outside you will be able to scroll normally.  The controls inside the image can be used to zoom in/out and reset the image.  You may also click and drag to reposition the image.
+
+</div></div>
+
+<div id="Help12aContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>Transcript Cluster ID</H3>
+Transcript Cluster ID- Is the unique ID assigned by affymetrix.  eQTLs are calculated for this annotation at the Gene level by combining probeset data across the gene.
 </div></div>
 
 
-<div id="Help3Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>Filter/Display Controls</H3>
-The filters allow you to control what probesets are displayed.  Check the box next to the filter you would like to apply.  The filter will be immediately applied, unless input is required and then it will be applied as you input a value.<BR /><BR />
-The display controls allow you to make choices about how the data is displayed.  Any selections are immediately applied.<BR /><BR />
-The Filter and Display controls will have different options as you navigate through different tabs, but any settings will return once you navigate back to a tab.
+<div id="Help12bContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>Annotation level</H3>
+Annotation level- is related to the confidence in the gene.  Core is the highest confidence.  This level tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and will include additional regions beyond the Ensembl annotations.
 </div></div>
 
-
+<div id="Help12cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<H3>Affy Exon Data-eQTLs</H3>
+The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse data is from the Public ILSXISS RI Mice
+For rat data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)
+<BR />
+These datasets are available to the public for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  (A free login is required, this allows you to save your progress and come back after lengthy processing steps.)  
+<BR />
+Columns:<BR />
+<ul type="disc">
+<li>Transcript Cluster ID unique Affymetrix assigned id that corresponds to a gene. </li>
+<li>Annotation level confidence in the transcript cluster annotation</li>
+<li>Circos Plot to show all eQTLs for a specific gene across tissues.</li>
+<li>eQTL for the transcript cluster in each tissue</li>
+		<ul type="square">
+		<li>-P-value from this region</li>
+		<li>-total other locations with a P-value < cut-off</li>
+        </ul>
+</ul>
+</div></div>
 
 
 <script type="text/javascript">
@@ -1129,18 +1367,6 @@ function displayWorking(){
 function hideWorking(){
 	document.getElementById("wait1").style.display = 'none';
 	document.getElementById("inst").style.display= 'none';
-}
-
-function positionHelp(vertPos){
-	if(ie){
-			if(vertPos>300){
-				$('.helpDialog').css({'top':300,'left':$(window).width()*0.3,'width':$(window).width()*0.3});
-			}else{
-				$('.helpDialog').css({'top':vertPos,'left':$(window).width()*0.3,'width':$(window).width()*0.3});
-			}
-	}else{
-			$('.helpDialog').css({'top':vertPos,'left':$(window).width()*0.47,'width':$(window).width()*0.3});
-	}
 }
 
 function displayColumns(table,colStart,colLen,showOrHide){
@@ -1172,6 +1398,19 @@ function runFilter(){
 }
 
 $(document).ready(function() {
+	
+	//Setup Help links
+	$('.inpageHelpContent').hide();
+	
+	$('.inpageHelpContent').dialog({ 
+  		autoOpen: false,
+		dialogClass: "helpDialog",
+		width: 400,
+		maxHeight: 500,
+		zIndex: 9999
+	});
+	
+	
 	$(".multiselect").twosidedmultiselect();
     //var selectedChromosomes = $("#chromosomesMS")[0].options;
 	document.getElementById("loadingRegion").style.display = 'none';
@@ -1235,29 +1474,12 @@ $(document).ready(function() {
 
 	
 	$('.singleExon').hide();
-  
- 	
 	
-	//Setup Help links
-	$('.inpageHelpContent').hide();
-	
-	$('.inpageHelpContent').dialog({ 
-  		autoOpen: false,
-		dialogClass: "helpDialog"
+	$('.helpImage').click( function(){
+		var id=$(this).attr('id');
+		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
+		$('#'+id+'Content').dialog("open").css({'font-size':12});
 	});
-  	
-	$('#Help1').click( function(){  		
-		$('#Help1Content').dialog("open").css({'height':500,'font-size':12});
-		positionHelp(211);
-  	});
-  	$('#Help2').click( function(){  		
-		$('#Help2Content').dialog("open").css({'height':300,'font-size':12});
-		positionHelp(400);
-  	});
-	$('#Help3').click( function(){  		
-		$('#Help3Content').dialog("open").css({'height':300,'font-size':12});
-		positionHelp(400);
-  	});
 	
 	//Setup Fancy box for UCSC link
 	$('.fancybox').fancybox({
@@ -1447,11 +1669,11 @@ $(document).ready(function() {
 	
 	$('#circosMinMax').click(function(){
 		if($('#circosIFrame').attr("height")>400){
-			$('> img',this).attr("src","web/images/icons/magnifyingGlass_plus.png");
+			$('> img',this).attr("src","web/images/icons/circos_max.jpg");
 			$('#circosIFrame').attr("height",400);
 			$('#circosIFrame').attr("width",950);
 		}else{
-			$('> img',this).attr("src","web/images/icons/magnifyingGlass_minus.png");
+			$('> img',this).attr("src","web/images/icons/circos_min.jpg");
 			$('#circosIFrame').attr("height",950);
 			$('#circosIFrame').attr("width",950);
 		}
@@ -1459,34 +1681,30 @@ $(document).ready(function() {
 	
 	//Setup Tabs
     $('.cssTab ul li a').click(function() {    
-
-            $('.cssTab ul li a').removeClass('selected');
-            $(this).addClass('selected');
-            var currentTab = $(this).attr('href'); 
-            $('.cssTab div.modalTabContent').hide();       
-            $(currentTab).show();
-			
-			if(currentTab == "#geneList"){
-				//tblGenes.fnAdjustColumnSizing();
-			}else if(currentTab == "#bQTLList" && !tblBQTLAdjust){
-				tblBQTL.fnAdjustColumnSizing();
-				tblBQTLAdjust=true;
-			}else if(currentTab == "#eQTLListFromRegion" && tblFromFixed==null){
-				tblFrom.fnAdjustColumnSizing();
-				tblFromFixed=new FixedColumns( tblFrom, {
-						"iLeftColumns": 1,
-						"iLeftWidth": 100
-				} );
-			}else{
-				var table = $.fn.dataTable.fnTables(false);
-            	if ( table.length > 0 ) {
-                	$(table).dataTable().fnAdjustColumnSizing();
-            	}
-			}
-			
-            
-			
-            return false;
+			$('div#changingTabs').show(10);
+				//change the tab
+				$('.cssTab ul li a').removeClass('selected');
+				$(this).addClass('selected');
+				var currentTab = $(this).attr('href'); 
+				$('.cssTab div.modalTabContent').hide();       
+				$(currentTab).show();
+				
+				//adjust row and column widths if needed(only needs to be done once)
+				if(currentTab == "#geneList"){
+					//tblGenes.fnAdjustColumnSizing();
+				}else if(currentTab == "#bQTLList" && !tblBQTLAdjust){
+					tblBQTL.fnAdjustColumnSizing();
+					tblBQTLAdjust=true;
+				}else if(currentTab == "#eQTLListFromRegion" && tblFromFixed==null){
+					tblFrom.fnAdjustColumnSizing();
+					tblFromFixed=new FixedColumns( tblFrom, {
+							"iLeftColumns": 1,
+							"iLeftWidth": 100
+					} );
+				}
+				
+			$('div#changingTabs').hide(10);
+			return false;
         });
 	
 }); // end ready

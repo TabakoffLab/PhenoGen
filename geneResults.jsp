@@ -15,6 +15,10 @@ if(displayNoEnsembl){ %>
 <% } %>
 
 <%if(genURL.size()>0){%>
+	<script>
+		$('.demo').hide();
+	</script>
+
 	<%if(ucscURL.get(selectedGene)!=null && !ucscURL.get(selectedGene).equals("") ){%>
         <div class="geneimage" style="text-align:center">
             <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help1" src="../web/images/icons/help.png"  /></div>
@@ -61,7 +65,9 @@ if(displayNoEnsembl){ %>
 
     <BR />
     <BR />
-    <div class="hidden"><a class="hiddenLink fancybox.iframe" href="web/GeneCentric/LocusSpecificEQTL.jsp" title="eQTL"></a></div>
+   
+	 <% String tmpPath=applicationRoot + contextRoot+"tmpData/geneData/" +firstEnsemblID.get(selectedGene) + "/";	%>
+    <div class="hidden"><a class="hiddenLink fancybox.iframe" href="web/GeneCentric/LocusSpecificEQTL.jsp?hiddenGeneSymbol=<%=geneSymbol.get(selectedGene)%>&hiddenGeneCentricPath=<%=tmpPath%>" title="eQTL"></a></div>
 	<%if(genURL.get(selectedGene)!=null && !genURL.get(selectedGene).startsWith("ERROR:")){%>
 		<script type="text/javascript">
             var ensembl="<%=selectedEnsemblID%>";

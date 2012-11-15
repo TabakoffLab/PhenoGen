@@ -5,6 +5,7 @@
 *.properties
 web.xml
 build.xml
+.Rprofile
 
 # Users need to download platform specific tools from	#
 # Affymetrix and then current probeset files from 	#
@@ -18,6 +19,16 @@ affyPowerTools/bin/
 tmpData/
 userFiles
 LODPlots
+liftOver/
+
+# Demo Files #
+##############
+*.mp4
+*.webm
+*.ogg
+*.ogv
+*.swf
+
 
 # Compiled source #
 ###################
