@@ -307,7 +307,8 @@ pageTitle="Detailed Transcription Information "+myGene;%>
                 1. Enter a gene identifier(e.g. gene symbol, probeset ID, ensembl ID, etc.) in the gene field.<BR />
                 or<BR />
                 Enter a region such as "chr1:1-50000" which would be Chromosome 1 @ bp 1-50,000.<BR />
-                
+                or<BR />
+                Click on the Translate Human Region to Mouse/Rat to find regions on the Mouse/Rat genome that correspond to a region of interest in Human.<BR />
                 2. Choose a species.<BR />
                 3. Click Get Transcription Details.<BR /><BR />
                 Hint: Try other synonyms if the first ID that you enter is not found.<BR /><BR /><BR />
@@ -322,6 +323,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     	<label>Gene Identifier or Region:
   		<input type="text" name="geneTxt" id="geneTxt" size="35" value="<%= (myGene!=null)?myGene:"" %>">
   		</label>
+        
        
   <label>Species:
   <select name="speciesCB" id="speciesCB">
@@ -342,6 +344,8 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <input type="hidden" name="ucscFilterURLArray" id="ucscFilterURLArray" value="<%=ucscFilterURLString%>" />
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
 </form>
+Or
+<input type="submit" name="translateBTN" id="translateBTN" value="Translate Human Region to Mouse/Rat" onClick="openTranslateRegion()"> 
 </div>
 <%}else{%>
 	<div style="text-align:center;">
@@ -380,6 +384,21 @@ pageTitle="Detailed Transcription Information "+myGene;%>
                           </object>
                         </video>
 </div>
+<div class="translate">
+</div>
+
+<script type="text/javascript">
+	var translateDialog = createDialog(".translate" , {width: 700, height: 800, title: "<center>Translate Region</center>"});
+	function openTranslateRegion(){
+		$.get(	contextPath + "/web/GeneCentric/translateRegion.jsp", 
+				{region:"chr19:54000000-55000000"},
+				function(data){
+                    				translateDialog.dialog("open").html(data);
+									closeDialog(translateDialog);
+                				}
+			);
+	}
+</script>
 
 <%if(!region){%>
 
