@@ -139,7 +139,7 @@
 <H3>Human <%=humanRegion%> -> <%=fullSpecies%></H3>
 Min Ratio: <%=minRatio%> Min Length:<%=minLenPerc*100%>% (<%=minLen%> bp)
 <%if(lines.length>0){%>
-<table name="items" id="tblTranslate" class="list_base tablesorter" cellpadding="0" cellspacing="2">
+<table name="items" id="tblTranslate" class="list_base tablesorter translateTable" cellpadding="0" cellspacing="2">
 	<thead>
     	<TR class="col_title">
         	<TH>Target Chromosome</TH>
@@ -171,7 +171,7 @@ Min Ratio: <%=minRatio%> Min Length:<%=minLenPerc*100%>% (<%=minLen%> bp)
 </table>
 Click on a row above to view the region in the current page.
 <%}else{%>
-	No Regions matching criteria.  Try decreasing the minimum length or minimum ratio.
+	<BR /><BR />No Regions matching criteria.  Try decreasing the minimum length or minimum ratio.
 <%}%>
 </div>
 <script type="text/javascript">

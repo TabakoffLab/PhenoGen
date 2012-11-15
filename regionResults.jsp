@@ -911,15 +911,9 @@
                         </TR>
                         </tbody>
                   </table>
-                  
-   	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;"><span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span><div class="inpageHelp" style="display:inline-block;"><img id="Help11" class="helpImage" src="../web/images/icons/help.png" /></div></div>
-    <div id="circosPlot" style="text-align:center;">
-		<div style="display:inline-block;text-align:center; width:100%;">
-        	<span id="circosMinMax" style="cursor:pointer;"><img src="web/images/icons/circos_min.jpg"></span>Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
-     	</div>
-
-
-	<%
+        
+        
+<%
 		String shortRegionCentricPath;
 		String cutoffTimesTen; 
 		if(pValueCutoff == 0.1){
@@ -947,9 +941,18 @@
 			shortRegionCentricPath = regionCentricPath.substring(regionCentricPath.indexOf("/PhenoGenTEST/"));
 		}
 		String iframeURL = shortRegionCentricPath + "/circos"+cutoffTimesTen+"/svg/circos_new.svg";
+		String svgPdfFile= shortRegionCentricPath + "/circos"+cutoffTimesTen+"/svg/circos_new.pdf";
 	%>
-	
-
+                  
+   	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;"><span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span><div class="inpageHelp" style="display:inline-block;"><img id="Help11" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+    <div id="circosPlot" style="text-align:center;">
+		<div style="display:inline-block;text-align:center; width:100%;">
+        	<span id="circosMinMax" style="cursor:pointer;"><img src="web/images/icons/circos_min.jpg"></span>
+			<a href="<%=svgPdfFile%>" target="_blank">
+			<img src="web/images/icons/download_g.png" title:"Download Circos Image">
+			</a>
+            Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
+     	</div>
 
           <div id="iframe_parent" align="center">
                <iframe id="circosIFrame" src=<%=iframeURL%> height=950 width=950  position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">

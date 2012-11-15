@@ -9,11 +9,13 @@
 --%>
 
 <%@ include file="/web/common/session_vars.jsp"  %>
+<%@ include file="/web/common/javascriptLinks.jsp"  %>
+
 
 
 <%
 	String selectedRatio="0.1";
-	String selectedPerc="50";
+	String selectedPerc="0.1";
 	String humanRegion="";
 	String selectedSpecies="Mm";
 	if(request.getParameter("region")!=null){
@@ -24,13 +26,15 @@
 	}
 %>
 
-
+Fill in the form below to translate a Human region to regions on Mouse/Rat chromosomes.<BR />
+<div style=" border-color:#000000; border-style:solid; border-width:1px;">
 <form method="post" 
 		enctype="application/x-www-form-urlencoded"
 		name="translationForm" id="translationForm">
-    	<label>Human Region to translate:
+    	<BR />
+        <label>Human Region to translate:
   		<input type="text" name="transGeneTxt" id="transGeneTxt" size="35" value="<%=humanRegion%>">
-  		</label><BR />
+  		</label><BR /><BR />
         <label>Min Ratio in the target species region:
   <select name="transRatioCB" id="transRatioCB">
   	<option value="0.99" <%if(selectedRatio.equals("0.99")){%>selected<%}%>>>0.99</option>
@@ -45,7 +49,8 @@
     <option value="0.2" <%if(selectedRatio.equals("0.2")){%>selected<%}%>>>0.2</option>
     <option value="0.1" <%if(selectedRatio.equals("0.1")){%>selected<%}%>>>0.1</option>
   </select>
-  </label><BR />
+  </label><BR /><BR />
+  
   <label>Min length of the target species region(% of source region length):
   <select name="transLengthCB" id="transLengthCB">
     <option value="75" <%if(selectedPerc.equals("70")){%>selected<%}%>>> 75%</option>
@@ -56,24 +61,26 @@
     <option value="1" <%if(selectedPerc.equals("1")){%>selected<%}%>>> 1%</option>
     <option value="0.1" <%if(selectedPerc.equals("0.1")){%>selected<%}%>>> 0.1%</option>
   </select>
-  </label><br />
+  </label><br /><BR />
        
   <label>Target Species:
   <select name="transSpeciesCB" id="transSpeciesCB">
   	<option value="Mm"  <%if(selectedSpecies.equals("Mm")){%>selected<%}%>>Mus musculus</option>
     <option value="Rn"  <%if(selectedSpecies.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
-  </label><BR />
+  </label><BR /><BR />
  <div style="text-align:center; width:100%;"> <input type="button" name="translateBTN" id="translateBTN" value="Translate Region" onClick="runTranslation()">
  <span id="clearResults" style="display:none;"><input type="button" name="clearBTN" id="clearBTN" value="Clear Previous Results" onClick="clearResults()"><BR />
- 	<input name="chkbox" type="checkbox" id="prevResultsCBX" value="prevResultsCBX" />Do not keep previous results
+ 	<input name="chkbox" type="checkbox" id="prevResultsCBX" value="prevResultsCBX" /> Always clear previous results
  </span>
  <BR />
- <div id="waitTranslate"  style="background:#FFFFFF; display:none;"><img src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Please wait, Running Translation...</div>
+ 
  </div>
  
 
 </form>
+</div>
+<div style="text-align:center; width:100%;"><div id="waitTranslate"  style="background:#FFFFFF; display:none;"><img src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Please wait, Running Translation...</div></div>
 <div id="translateResults">
 	
 </div>
@@ -102,7 +109,12 @@
 									}else{
 										$('#translateResults').html(data+prevData);
 									}
-									var tableRows=$('#tblTranslate').find("tr").not(".title, .col_title");
+									
+									$("table.tablesorter").tablesorter({ widgets: ['zebra'],sortList: [[4,-1]]});
+									//$('.translateTable').find("tr.col_title").find("th").slice(4,5).addClass("headerSortDown");
+									
+									
+									var tableRows=$('.translateTable').find("tr").not(".title, .col_title");
 									stripeAndHoverTable(tableRows);
 									tableRows.each(function(){
 										//---> click functionality
