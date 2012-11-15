@@ -141,8 +141,8 @@ sub callCircos{
 	#
 	# Now convert circos_new.svg to circos_new.pdf
 	#
-	chdir($inkscapeDirectory);
-	$newpwd = getcwd();
+	#chdir($inkscapeDirectory);
+	#$newpwd = getcwd();
 	print " New directory is $newpwd \n";
 	
 	@systemArgs=($inkscapeBinary,'-z','-f',$svgDirectory."circos_new.svg",'-A',$svgDirectory."circos_new.pdf",'-b','rgb(255,255,255)','-i','notooltips','-j','-C');
