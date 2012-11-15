@@ -16,6 +16,7 @@ affyPowerTools/bin/
 # These should be linked but we don't want to check in	#
 # data.							#
 #########################################################
+hdf/
 tmpData/
 userFiles
 LODPlots
