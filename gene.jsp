@@ -390,8 +390,10 @@ Or
 <script type="text/javascript">
 	var translateDialog = createDialog(".translate" , {width: 700, height: 800, title: "<center>Translate Region</center>"});
 	function openTranslateRegion(){
+		var region=$('#geneTxt').val();
+		var species=$('#speciesCB').val();
 		$.get(	contextPath + "/web/GeneCentric/translateRegion.jsp", 
-				{region:"chr19:54000000-55000000"},
+				{region:region, species: species},
 				function(data){
                     				translateDialog.dialog("open").html(data);
 									closeDialog(translateDialog);

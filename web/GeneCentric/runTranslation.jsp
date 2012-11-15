@@ -17,6 +17,7 @@
 <%
 	//get parameters
 	String targetSpecies="Mm";
+	String fullSpecies="Mouse";
 	String targetChainFile="hg19ToMm9.over.chain";
 	String humanRegion="";
 	String chromosome="";
@@ -44,12 +45,14 @@
 		targetSpecies=request.getParameter("targetSpecies");
 		if(targetSpecies.equals("Mm")){
 			targetChainFile="hg19ToMm9.over.chain";
+			fullSpecies="Mouse";
 		}else if(targetSpecies.equals("Rn")){
 			targetChainFile="hg19ToRn4.over.chain";
+			fullSpecies="Rat";
 		}
 	}
 	if(request.getParameter("minLen")!=null){
-		minLenPerc=Integer.parseInt(request.getParameter("minLen"))/100.0;
+		minLenPerc=Double.parseDouble(request.getParameter("minLen"))/100.0;
 		minLen=(long)(origLen*minLenPerc);
 	}
 	if(request.getParameter("minRatio")!=null){
@@ -132,6 +135,10 @@
 %>
 
 <!-- Format Results-->
+<div style="text-align:center;">
+<H3>Human <%=humanRegion%> -> <%=fullSpecies%></H3>
+Min Ratio: <%=minRatio%> Min Length:<%=minLenPerc*100%>% (<%=minLen%> bp)
+<%if(lines.length>0){%>
 <table name="items" id="tblTranslate" class="list_base tablesorter" cellpadding="0" cellspacing="2">
 	<thead>
     	<TR class="col_title">
@@ -140,25 +147,36 @@
             <TH>Target Stop</TH>
             <TH>Target Size</TH>
             <TH>% of original length</TH>
+            <TH>View Region Transcription Information</TH>
         </TR>
     </thead>
     <tbody>
     	<%for(int i=0;i<lines.length;i++){
 			String[] col=lines[i].split("\t");
             if(col.length>4){
+				DecimalFormat df1 = new DecimalFormat("#.#");
 				long len=Long.parseLong(col[2])-Long.parseLong(col[1]);
 				double perc=len/origLen*100;%>
-                <TR>
+                <TR id="<%=col[0]+":"+col[1]+"-"+col[2]+":::"+targetSpecies%>">
                     <TD><%=col[0]%></TD>
                     <TD><%=col[1]%></TD>
                     <TD><%=col[2]%></TD>
                     <TD><%=len%></TD>
-                    <TD><%=perc%></TD>
+                    <TD><%=df1.format(perc)%></TD>
+                    <TD><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=col[0]+":"+col[1]+"-"+col[2]%>&speciesCB=<%=targetSpecies%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
                 </TR>
             <%}%>
         <%}%>
     </tbody>
 </table>
+Click on a row above to view the region in the current page.
+<%}else{%>
+	No Regions matching criteria.  Try decreasing the minimum length or minimum ratio.
+<%}%>
+</div>
 <script type="text/javascript">
 	$('#waitTranslate').hide();
+	
+	
+	
 </script>

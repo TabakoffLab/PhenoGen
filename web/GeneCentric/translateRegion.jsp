@@ -14,6 +14,14 @@
 <%
 	String selectedRatio="0.1";
 	String selectedPerc="50";
+	String humanRegion="";
+	String selectedSpecies="Mm";
+	if(request.getParameter("region")!=null){
+		humanRegion=request.getParameter("region");
+	}
+	if(request.getParameter("species")!=null){
+		selectedSpecies=request.getParameter("species");
+	}
 %>
 
 
@@ -21,7 +29,7 @@
 		enctype="application/x-www-form-urlencoded"
 		name="translationForm" id="translationForm">
     	<label>Human Region to translate:
-  		<input type="text" name="transGeneTxt" id="transGeneTxt" size="35" value="">
+  		<input type="text" name="transGeneTxt" id="transGeneTxt" size="35" value="<%=humanRegion%>">
   		</label><BR />
         <label>Min Ratio in the target species region:
   <select name="transRatioCB" id="transRatioCB">
@@ -52,11 +60,15 @@
        
   <label>Target Species:
   <select name="transSpeciesCB" id="transSpeciesCB">
-  	<option value="Mm" selected>Mus musculus</option>
-    <option value="Rn" >Rattus norvegicus</option>
+  	<option value="Mm"  <%if(selectedSpecies.equals("Mm")){%>selected<%}%>>Mus musculus</option>
+    <option value="Rn"  <%if(selectedSpecies.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
   </label><BR />
- <div style="text-align:center; width:100%;"> <input type="button" name="refreshBTN" id="refreshBTN" value="Translate Region" onClick="runTranslation()"><BR />
+ <div style="text-align:center; width:100%;"> <input type="button" name="translateBTN" id="translateBTN" value="Translate Region" onClick="runTranslation()">
+ <span id="clearResults" style="display:none;"><input type="button" name="clearBTN" id="clearBTN" value="Clear Previous Results" onClick="clearResults()"><BR />
+ 	<input name="chkbox" type="checkbox" id="prevResultsCBX" value="prevResultsCBX" />Do not keep previous results
+ </span>
+ <BR />
  <div id="waitTranslate"  style="background:#FFFFFF; display:none;"><img src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Please wait, Running Translation...</div>
  </div>
  
@@ -69,9 +81,13 @@
 	<div class="closeWindow">Close</div>
 
 <script type="text/javascript">
-		
+		function clearResults(){
+			$('#translateResults').html("");
+			$('#clearResults').hide();
+		}
 		function runTranslation(){
 			$('#waitTranslate').show();
+			$('#clearResults').show();
 			var regionTxt=$('#transGeneTxt').val();
 			var minLen=$('#transLengthCB').val();
 			var minRatio=$('#transRatioCB').val();
@@ -79,7 +95,33 @@
 			
 			$.get(	contextPath + "/web/GeneCentric/runTranslation.jsp", 
 				{region: regionTxt, minLen: minLen, minRatio: minRatio, targetSpecies: species},
-				function(data){ $('#translateResults').html(data);}
+				function(data){ 
+									var prevData="<BR><BR>"+$('#translateResults').html();
+									if($('#prevResultsCBX').is(":checked")){
+										$('#translateResults').html(data);
+									}else{
+										$('#translateResults').html(data+prevData);
+									}
+									var tableRows=$('#tblTranslate').find("tr").not(".title, .col_title");
+									stripeAndHoverTable(tableRows);
+									tableRows.each(function(){
+										//---> click functionality
+										$(this).find("td").slice(0,4).click( function() {
+											//tableRows.find("td").removeClass('selected');
+											//$(this).parent("tr").find("td").addClass('selected');
+											var id = $(this).parent("tr").attr("id");
+											var params=id.split(":::");
+											var region=params[0];
+											var species = params[1];
+											$('#geneTxt').val(region);
+											$('#speciesCB').val(species);
+											translateDialog.dialog("close");
+											return false;
+										});
+								
+										
+									});
+					}
 			);
 			
 			
