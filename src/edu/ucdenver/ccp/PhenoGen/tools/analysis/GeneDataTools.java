@@ -91,6 +91,7 @@ public class GeneDataTools {
     private String getNextID="select TRANS_DETAIL_USAGE_SEQ.nextVal from dual";
     private String insertUsage="insert into TRANS_DETAIL_USAGE (TRANS_DETAIL_ID,INPUT_ID,IDECODER_RESULT,RUN_DATE,ORGANISM) values (?,?,?,?,?)";
     String updateSQL="update TRANS_DETAIL_USAGE set TIME_TO_RETURN=? , RESULT=? where TRANS_DETAIL_ID=?";
+    private HashMap eQTLRegions=null;
     
     
 
@@ -1327,7 +1328,7 @@ public class GeneDataTools {
             log.debug("SQL eQTL FROM QUERY\n"+qtlQuery);
             PreparedStatement ps = dbConn.prepareStatement(qtlQuery);
             ResultSet rs = ps.executeQuery();
-            
+            eQTLRegions=new HashMap();
             TranscriptCluster curTC=null;
             while(rs.next()){
                 String tcID=rs.getString(1);
@@ -1353,8 +1354,13 @@ public class GeneDataTools {
                 long marker_start=rs.getLong(11);
                 long marker_end=rs.getLong(12);
                 //double tcLODScore=rs.getDouble(13);
-                if(marker_chr.equals(chr) && (marker_start>=min && marker_start<=max) || (marker_end>=min && marker_end<=max) || (marker_start<=min && marker_end>=max) ){
+                if(marker_chr.equals(chr) && ((marker_start>=min && marker_start<=max) || (marker_end>=min && marker_end<=max) || (marker_start<=min && marker_end>=max)) ){
                     curTC.addRegionEQTL(tissue,pval,marker_name,marker_chr,marker_start,marker_end,-1);
+                    DecimalFormat df=new DecimalFormat("#,###");
+                    String eqtl="chr"+marker_chr+":"+df.format(marker_start)+"-"+df.format(marker_end);
+                    if(!eQTLRegions.containsKey(eqtl)){
+                        eQTLRegions.put(eqtl, 1);
+                    }
                 }else{
                     curTC.addEQTL(tissue,pval,marker_name,marker_chr,marker_start,marker_end,-1);
                 }
@@ -1595,6 +1601,17 @@ public class GeneDataTools {
             e.printStackTrace(System.err);
         }
         return transcriptClusters;
+    }
+    
+    public ArrayList<String> getEQTLRegions(){
+        ArrayList<String> ret=new ArrayList<String>();
+        Set tmp=this.eQTLRegions.keySet();
+        Iterator itr=tmp.iterator();
+        while(itr.hasNext()){
+            String key=itr.next().toString();
+            ret.add(key);
+        }
+        return ret;
     }
     
     public ArrayList<BQTL> getBQTLs(int min,int max,String chr,String organism){

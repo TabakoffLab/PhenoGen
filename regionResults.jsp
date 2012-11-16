@@ -922,7 +922,17 @@
                         </TR>
                         </tbody>
                   </table>
-        
+<% 
+		ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"core",myOrganism,tissueString,chromosomeString);//this region controls what genes
+		ArrayList<String> eQTLRegions=gdt.getEQTLRegions();%>
+		<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-28px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span></div>
+        <div id="eQTLRegionNote" style="width:100%; position:relative; top:-28px">
+        Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region columns" correspond to the folowing region(s):<BR />
+		<%for(int i=0;i<eQTLRegions.size();i++){%>
+        	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=eQTLRegions.get(i)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank"><%=eQTLRegions.get(i)%></a><BR />
+        <%}%>
+        So the genes listed below could be controled from anywhere in the region(s) above.
+        </div>
         
 <%
 		String shortRegionCentricPath;
@@ -972,12 +982,13 @@
           <a href="http://genome.cshlp.org/content/early/2009/06/15/gr.092759.109.abstract" target="_blank" style="text-decoration: none">Circos: an Information Aesthetic for Comparative Genomics.</a>
      </div><!-- end CircosPlot -->
 
-	<% 
-		ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"core",myOrganism,tissueString,chromosomeString);//this region controls what genes
-		log.debug("Trans Out SIZE:"+transOutQTLs.size());
-		if(transOutQTLs!=null && transOutQTLs.size()>0){
-			
-	%>
+	
+		
+		<%if(transOutQTLs!=null && transOutQTLs.size()>0){%>
+        
+       			
+		<BR />	
+	
 	<TABLE name="items" id="tblFrom" class="list_base tablesorter" cellpadding="0" cellspacing="0">
                 <THEAD>
                 	<tr>
@@ -1069,14 +1080,14 @@
                                         
                                         <%if(regEQTL==null){%>
 
-												<TD class="leftBorder">>0.3</TD>
+											<TD class="leftBorder">>0.3</TD>
 
 										<%}else if(regEQTL.getPVal()<0.0001){%>
                                         	<TD class="leftBorder" style="background-color:#6e99bc; color:#FFFFFF;">
                                         	< 0.0001
 										<%}else{%>
                                         	<TD class="leftBorder"
-                                            <%if(regEQTL.getPVal()<=0.01){%>
+                                            <%if(regEQTL.getPVal()<=pValueCutoff){%>
                                             	style="background-color:#6e99bc; color:#FFFFFF;"
                                             <%}%>
                                             >

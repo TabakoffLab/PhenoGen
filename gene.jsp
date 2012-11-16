@@ -56,7 +56,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	boolean auto=false;
 	boolean region=false;
 	
-	double pValueCutoff=0.01;
+	double pValueCutoff=0.001;
 	
 	int rnaDatasetID=0;
 	int arrayTypeID=0;
@@ -380,6 +380,7 @@ Or
 		document.getElementById("wait1").style.display = 'none';
 		//document.tooltip();
 </script>
+<BR />
 <div class="demo" style="text-align:center;">
 						<BR /><BR /><BR />
                         Demonstration<BR />
@@ -390,12 +391,14 @@ Or
                           </object>
                         </video>
 </div>
+
 <div class="translate">
 </div>
 
 <script type="text/javascript">
 	var translateDialog = createDialog(".translate" , {width: 700, height: 800, title: "<center>Translate Region</center>", zIndex: 500});
 	function openTranslateRegion(){
+		$('.demo').hide();
 		var region=$('#geneTxt').val();
 		var species=$('#speciesCB').val();
 		$.get(	contextPath + "/web/GeneCentric/translateRegion.jsp", 
@@ -417,6 +420,7 @@ Or
 	<%@ include file="regionResults.jsp" %>
 
 <%}%>
+
 
 
 <%if(popup){%>
