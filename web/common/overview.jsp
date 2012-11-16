@@ -15,14 +15,14 @@
                 	<div id="overview-content">
             			<p>The PhenoGen Informatics web site is not only a microarray repository
 				but also a comprehensive toolbox for analyzing microarray data and 
-				researching candidate genes.  </p>
-				<p>The site is organized into five major sections: </p>
+				researching candidate genes and QTLs.  </p>
+				<p>The site is organized into five major sections which are explained in detail in the corresponding Overview Section: </p>
 				<ul>
-                	<li><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Transcription Information</a></li>
-                    <li><a href='<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp'>Downloads </a></li>
-                    <li><a href="<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>listDatasets.jsp">Microarray Analysis Tools (login required)</a></li>
-                    <li><a href='<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>listGeneLists.jsp'>Gene Analysis Tools (login required)</a></li>
-                    <li><a href='<%=accessDir%>checkLogin.jsp?url=<%=qtlsDir%>qtlMain.jsp'>QTL Tools (login required)</a></li>
+                	<li><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Transcription Information</a>-View exon/probest level data for a gene or gene level data for a genomic region.</li>
+                    <li><a href='<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp'>Downloads</a>-Download any public data</li>
+                    <li><a href="<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>listDatasets.jsp">Microarray Analysis Tools (login required)</a>-Tools to normalize, filter, differential expression, cluster, correlate array data.</li>
+                    <li><a href='<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>listGeneLists.jsp'>Gene Analysis Tools (login required)</a>-Tools to help gain insight into gene annotaion, expression, promoters, exon correlation, homology.</li>
+                    <li><a href='<%=accessDir%>checkLogin.jsp?url=<%=qtlsDir%>qtlMain.jsp'>QTL Tools (login required)</a>-Tools to calculate QTLs, create QTL lists, view QTLs associated with genes.</li>
                 </ul>
                 
                 
@@ -30,11 +30,11 @@
                 <br/>
 				<p>Click the Overview option above to see examples of what you can do on our site.  The options to the right of the Overview are the main areas of the site.  The functions with a <span style=" background-color:#2d7a32; color:#FFFFFF;">green background</span> indicate publicly accessible parts of the site, while the remaining functions with the <span style="background-color:#436f93; color:#FFFFFF;">blue background</span> require a login.</p>
 
-            			<p>View the <a href="<%=commonDir%>PhenoGenDemo.ppt"  
+            			<!--<p>View the <a href="<%=commonDir%>PhenoGenDemo.ppt"  
 				title="Getting Started with PhenoGen Informatics Demo">Getting 
 				Started With PhenoGen Informatics Demo</a> to learn how to get started.</p>
 
-				<BR>
+				<BR>-->
             			<p>Review the <a href="CurrentDataSets.jsp"  
 				title="Current Datasets">current datasets</a> that we have available for public use.</p>
             
