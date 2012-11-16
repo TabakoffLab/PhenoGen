@@ -12,9 +12,11 @@
 %>
 <%
 String myGene="";
+String myDisplayGene="";
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
 		myGene=request.getParameter("geneTxt").trim();
+		myGene=myGene.replaceAll(",","");
 }
 if(request.getParameter("newWindow")!=null&&request.getParameter("newWindow").equals("Y")){
 	popup=true;
@@ -98,6 +100,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	if (    (((action != null) && action.equals("Get Transcription Details"))&&(!region))
 			|| (auto&&(!region))
 		) {
+		myDisplayGene=myGene;
 		mySessionHandler.createSessionActivity(session.getId(), "Ran Transcription Details on "+myGene, dbConn);
 		myIDecoderClient.setNum_iterations(2);
 		iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
@@ -244,8 +247,11 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		chromosome=myGene.substring(0,myGene.indexOf(":"));
 		String minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-"));
 		String maxCoord=myGene.substring(myGene.indexOf("-")+1);
+		
 		min=Integer.parseInt(minCoord);
 		max=Integer.parseInt(maxCoord);
+		DecimalFormat df0 = new DecimalFormat("#,###");
+		myDisplayGene=chromosome+":"+df0.format(min)+"-"+df0.format(max);
 		fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,pValueCutoff);					
 		String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 		String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
@@ -308,7 +314,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
                 or<BR />
                 Enter a region such as "chr1:1-50000" which would be Chromosome 1 @ bp 1-50,000.<BR />
                 or<BR />
-                Click on the Translate Human Region to Mouse/Rat to find regions on the Mouse/Rat genome that correspond to a region of interest in Human.<BR />
+                Click on the Translate Region to Mouse/Rat to find regions on the Mouse/Rat genome that correspond to a region of interest in the Human/Mouse/Rat genome.<BR />
                 2. Choose a species.<BR />
                 3. Click Get Transcription Details.<BR /><BR />
                 Hint: Try other synonyms if the first ID that you enter is not found.<BR /><BR /><BR />
@@ -321,7 +327,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		enctype="application/x-www-form-urlencoded"
 		name="geneCentricForm" id="geneCentricForm">
     	<label>Gene Identifier or Region:
-  		<input type="text" name="geneTxt" id="geneTxt" size="35" value="<%= (myGene!=null)?myGene:"" %>">
+  		<input type="text" name="geneTxt" id="geneTxt" size="35" value="<%= (myDisplayGene!=null)?myDisplayGene:"" %>">
   		</label>
         
        
@@ -331,7 +337,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
   </label>
- <span style="padding-left:40px;"> <input type="submit" name="refreshBTN" id="refreshBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
+ <span style="padding-left:40px;"> <input type="submit" name="refreshBTN" id="getTrxBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
  
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
     <input type="hidden" name="tissues" id="tissues" value="" />
@@ -345,7 +351,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
 </form>
 Or
-<input type="submit" name="translateBTN" id="translateBTN" value="Translate Human Region to Mouse/Rat" onClick="openTranslateRegion()"> 
+<input type="submit" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
 </div>
 <%}else{%>
 	<div style="text-align:center;">
@@ -388,7 +394,7 @@ Or
 </div>
 
 <script type="text/javascript">
-	var translateDialog = createDialog(".translate" , {width: 700, height: 800, title: "<center>Translate Region</center>"});
+	var translateDialog = createDialog(".translate" , {width: 700, height: 800, title: "<center>Translate Region</center>", zIndex: 500});
 	function openTranslateRegion(){
 		var region=$('#geneTxt').val();
 		var species=$('#speciesCB').val();

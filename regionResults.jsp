@@ -27,7 +27,7 @@
 	String tmpURL=genURL.get(0);
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
-	
+	DecimalFormat dfC = new DecimalFormat("#,###");
 	
 	
 	
@@ -231,10 +231,21 @@
 				String ucscURL_human=ucscURL.get(0).replace(".main",".main.human");
 				String ucscURLFiltered_human=ucscURLFiltered.get(0).replace(".main.trans",".main.trans.human");
 			%>
-            <div id="geneimageUnfilteredHuman" class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURL_human%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.human.png"%>"/></a>
-            	<BR />Chromosome Color Key:<img src="<%= contextRoot+"web/images/"+myOrganism+"_colorchrom.gif"%>"></div>
-            <div id="geneimageFilteredHuman" class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered_human%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.human.png"%>"/></a>
-            	<BR /><BR />Chromosome Color Key:<img src="<%= contextRoot+"web/images/"+myOrganism+"_colorchrom.gif"%>"></div>
+            <div id="geneimageUnfilteredHuman" class="ucscImage" style="display:none;">
+            	<a class="fancybox fancybox.iframe" href="<%=ucscURL_human%>" title="UCSC Genome Browser">
+                	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.human.png"%>"/>
+                 </a>
+            	<BR /><BR />
+                Human Chromosome Color Key:<img src="<%= contextRoot+"web/images/"+myOrganism+"_colorchrom.gif"%>">
+                <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help13" class="helpImage" src="../web/images/icons/help.png" /></div>
+            </div>
+            <div id="geneimageFilteredHuman" class="ucscImage" style="display:none;">
+            <a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered_human%>" title="UCSC Genome Browser">
+            	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.human.png"%>"/>
+            </a>
+            <BR /><BR />
+            Human Chromosome Color Key:<img src="<%= contextRoot+"web/images/"+myOrganism+"_colorchrom.gif"%>">
+            <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help13" class="helpImage" src="../web/images/icons/help.png" /></div></div>
     
         </div><!-- end geneimage div -->
     
@@ -419,7 +430,7 @@
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
                             	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=curGene.getGeneID()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
                             <%}else{%>
-                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=chr+":"+curGene.getStart()+"-"+curGene.getEnd()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
+                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=chr+":"+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
                             <%}%>
                             <%if(curGene.getGeneSymbol()!=null&&!curGene.getGeneSymbol().equals("")){%>
 									<%=curGene.getGeneSymbol()%>
@@ -446,7 +457,7 @@
         						}
 							%>
                             <TD title="<%=remain%>"><%=shortDesc%></TD>
-                            <TD><%=chr+":"+curGene.getStart()+"-"+curGene.getEnd()%></TD>
+                            <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
                             <TD><%=curGene.getStrand()%></TD>
                             <TD><%=curGene.getTranscriptCountEns()%></TD>
                             <TD><%=curGene.getTranscriptCountRna()%></TD>
@@ -507,8 +518,8 @@
                                         <!--</TD>
                                         <TD>--><BR />
                                         	<%if(maxEQTL.getMarker_start()!=maxEQTL.getMarker_end()){%>
-                                                <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()+"-"+maxEQTL.getMarker_end()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for this region.">
-                                                    chr<%=maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()+"-"+maxEQTL.getMarker_end()%>
+                                                <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())+"-"+dfC.format(maxEQTL.getMarker_end())%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for this region.">
+                                                    chr<%=maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())+"-"+dfC.format(maxEQTL.getMarker_end())%>
                                                 </a>
                                             <%}else{
 												long start=maxEQTL.getMarker_start()-500000;
@@ -517,8 +528,8 @@
 													start=1;
 												}
 												%>
-                                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+start+"-"+stop%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for a region +- 500,000bp around the SNP location.">
-                                            		chr<%=maxEQTL.getMarkerChr()+":"+maxEQTL.getMarker_start()%>
+                                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+dfC.format(start)+"-"+dfC.format(stop)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for a region +- 500,000bp around the SNP location.">
+                                            		chr<%=maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())%>
                                                  </a>
                                             <%}%>
                                         </TD>
@@ -693,7 +704,7 @@
 							}%>
                         </TD>
                         <TD title="Click to view this bQTL region in a new window."><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
-                        chr<%=curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%></a></TD>
+                        chr<%=curBQTL.getChromosome()+":"+dfC.format(curBQTL.getStart())+"-"+dfC.format(curBQTL.getStop())%></a></TD>
                         <TD>
                         <%String tmpMM=curBQTL.getMapMethod();
                         if(tmpMM!=null){
@@ -1041,7 +1052,7 @@
                             <TD><%=tc.getTranscriptClusterID()%></TD>
                             <TD><%=tc.getLevel()%></TD>
                             
-                            <TD >chr<%=tc.getChromosome()+":"+tc.getStart()+"-"+tc.getEnd()%></TD>
+                            <TD >chr<%=tc.getChromosome()+":"+dfC.format(tc.getStart())+"-"+dfC.format(tc.getEnd())%></TD>
                             <TD ><a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=tc.getGeneSymbol()%>&ensID=<%=tc.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>" 
                                 	target="_blank" title="View the circos plot for transcript cluster eQTLs">View Location Plot</a></TD>
                             <%
@@ -1355,6 +1366,12 @@ Columns:<BR />
 		<li>-total other locations with a P-value < cut-off</li>
         </ul>
 </ul>
+</div></div>
+
+<div id="Help13Content" class="inpageHelpContent" title="<center>Help</center>">
+<div class="help-content">
+<H3>Human Chromosome Color Key</H3>
+The human/Net and Human/Chain tracks displayed indicate which chromosome in Humans maps to a particular colored region in the image.  This will only help to identify the chromosome where a gene that aligns to a particular color might reside.  In Mouse this also adds Human proteins that are homologous to the proteins in this region and by comparing the human homologs to the alignment track it is possible to see the chromosome that gene is on.  To better be able to zoom and manipulate the image you may always click on the image to open the UCSC Genome Browser which will enable you to zoom in/out and shift the region more easily to look at a gene/region of interest.
 </div></div>
 
 

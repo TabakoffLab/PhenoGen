@@ -16,18 +16,28 @@
 
 <%
 	//get parameters
+	String sourceVersion="hg19";
+	String fullSourceSpecies="Human";
+	
 	String targetSpecies="Mm";
+	String targetVersion="Mm9";
+	
 	String fullSpecies="Mouse";
 	String targetChainFile="hg19ToMm9.over.chain";
 	String humanRegion="";
+	String displayHumanRegion="";
 	String chromosome="";
 	long start=0,stop=0;
 	double minRatio=0.1;
 	double minLenPerc=0.5;
 	double origLen=0;
 	long minLen=0;
+	DecimalFormat df1 = new DecimalFormat("#.#");
+	DecimalFormat df0 = new DecimalFormat("#,###");
+	FileHandler fh= new FileHandler();
 	if(request.getParameter("region")!=null){
 		humanRegion=request.getParameter("region");
+		humanRegion=humanRegion.replaceAll(",","");
 		int colonInd=humanRegion.indexOf(":");
 		int dashInd=humanRegion.indexOf("-");
 		if(colonInd<dashInd && colonInd>-1 && dashInd>-1){
@@ -39,18 +49,30 @@
 			if(start>0 && stop > 0){
 				origLen=stop-start;
 			}
+			displayHumanRegion=chromosome+":"+df0.format(start)+"-"+df0.format(stop);
+		}
+	}
+	if(request.getParameter("sourceSpecies")!=null){
+		sourceVersion=request.getParameter("sourceSpecies");
+		if(sourceVersion.equals("mm9")){
+			fullSourceSpecies="Mouse";
+		}else if(sourceVersion.equals("rn4")){
+			fullSourceSpecies="Rat";
+		}else if(sourceVersion.equals("hg19")){
+			fullSourceSpecies="Human";
 		}
 	}
 	if(request.getParameter("targetSpecies")!=null){
 		targetSpecies=request.getParameter("targetSpecies");
 		if(targetSpecies.equals("Mm")){
-			targetChainFile="hg19ToMm9.over.chain";
 			fullSpecies="Mouse";
+			targetVersion="Mm9";
 		}else if(targetSpecies.equals("Rn")){
-			targetChainFile="hg19ToRn4.over.chain";
 			fullSpecies="Rat";
+			targetVersion="Rn4";
 		}
 	}
+	targetChainFile=sourceVersion+"To"+targetVersion+".over.chain";
 	if(request.getParameter("minLen")!=null){
 		minLenPerc=Double.parseDouble(request.getParameter("minLen"))/100.0;
 		minLen=(long)(origLen*minLenPerc);
@@ -83,7 +105,7 @@
 	
 	String contents=chromosome+"\t"+start+"\t"+stop+"\tregionInitial\t0\t.\n";
 	try{
-         new FileHandler().writeFile(contents,inputFile);
+         fh.writeFile(contents,inputFile);
     }catch(IOException e){
          log.error("Error writing "+inputFile,e);
     }
@@ -127,7 +149,7 @@
 	//read results
 	String[] lines=new String[0];
 	try{
-         lines=new FileHandler().getFileContents(new File(outputFile));
+         lines=fh.getFileContents(new File(outputFile));
     }catch(IOException e){
          log.error("Error writing "+inputFile,e);
     }
@@ -136,17 +158,17 @@
 
 <!-- Format Results-->
 <div style="text-align:center;">
-<H3>Human <%=humanRegion%> -> <%=fullSpecies%></H3>
+<H3><%=fullSourceSpecies%> <%=displayHumanRegion%> -> <%=fullSpecies%></H3>
 Min Ratio: <%=minRatio%> Min Length:<%=minLenPerc*100%>% (<%=minLen%> bp)
 <%if(lines.length>0){%>
 <table name="items" id="tblTranslate" class="list_base tablesorter translateTable" cellpadding="0" cellspacing="2">
 	<thead>
     	<TR class="col_title">
-        	<TH>Target Chromosome</TH>
-            <TH>Target Start</TH>
-            <TH>Target Stop</TH>
-            <TH>Target Size</TH>
-            <TH>% of original length</TH>
+        	<TH><%=fullSpecies%> Chromosome</TH>
+            <TH><%=fullSpecies%> Start</TH>
+            <TH><%=fullSpecies%> Stop</TH>
+            <TH><%=fullSpecies%> Region Size</TH>
+            <TH>% of <%=fullSourceSpecies%> Region Length</TH>
             <TH>View Region Transcription Information</TH>
         </TR>
     </thead>
@@ -154,16 +176,20 @@ Min Ratio: <%=minRatio%> Min Length:<%=minLenPerc*100%>% (<%=minLen%> bp)
     	<%for(int i=0;i<lines.length;i++){
 			String[] col=lines[i].split("\t");
             if(col.length>4){
-				DecimalFormat df1 = new DecimalFormat("#.#");
+				
 				long len=Long.parseLong(col[2])-Long.parseLong(col[1]);
-				double perc=len/origLen*100;%>
+				double perc=len/origLen*100;
+				double tmpStart=Double.parseDouble(col[1]);
+				double tmpStop=Double.parseDouble(col[2]);
+				
+				%>
                 <TR id="<%=col[0]+":"+col[1]+"-"+col[2]+":::"+targetSpecies%>">
                     <TD><%=col[0]%></TD>
-                    <TD><%=col[1]%></TD>
-                    <TD><%=col[2]%></TD>
-                    <TD><%=len%></TD>
+                    <TD><%=df0.format(tmpStart)%></TD>
+                    <TD><%=df0.format(tmpStop)%></TD>
+                    <TD><%=df0.format(len)%></TD>
                     <TD><%=df1.format(perc)%></TD>
-                    <TD><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=col[0]+":"+col[1]+"-"+col[2]%>&speciesCB=<%=targetSpecies%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
+                    <TD><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=col[0]+":"+df0.format(tmpStart)+"-"+df0.format(tmpStop)%>&speciesCB=<%=targetSpecies%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
                 </TR>
             <%}%>
         <%}%>
@@ -180,3 +206,8 @@ Click on a row above to view the region in the current page.
 	
 	
 </script>
+
+<%
+	//clean up files
+	 fh.deleteAllFilesPlusDirectory(new File(outputDir));
+%>

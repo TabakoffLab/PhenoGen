@@ -26,30 +26,46 @@
 	}
 %>
 
-Fill in the form below to translate a Human region to regions on Mouse/Rat chromosomes.<BR />
+Fill in the form below to translate a Human/Mouse/Rat region to regions on Mouse/Rat chromosomes.<BR />
 <div style=" border-color:#000000; border-style:solid; border-width:1px;">
 <form method="post" 
 		enctype="application/x-www-form-urlencoded"
 		name="translationForm" id="translationForm">
     	<BR />
-        <label>Human Region to translate:
+        <label>Region to translate:
   		<input type="text" name="transGeneTxt" id="transGeneTxt" size="35" value="<%=humanRegion%>">
   		</label><BR /><BR />
-        <label>Min Ratio in the target species region:
+        
+        <label>Source Species:
+  			<select name="transSourceSpeciesCB" id="transSourceSpeciesCB">
+           		<option value="hg19"  selected>Human (Hg19)</option> 
+  				<option value="mm9">Mouse (Mm9)</option>
+   				<option value="rn4">Rat (Rn4)</option>
+  			</select>
+  		</label>
+        ->
+        <label>Target Species:
+  <select name="transSpeciesCB" id="transSpeciesCB">
+  	<option value="Mm"  <%if(selectedSpecies.equals("Mm")){%>selected<%}%>>Mouse (Mm9)</option>
+    <option value="Rn"  <%if(selectedSpecies.equals("Rn")){%>selected<%}%>>Rat (Rn4)</option>
+  </select>
+  </label>
+        <BR /><BR />
+        
+        <label>Minimum ratio of bases that must map to target species region:
   <select name="transRatioCB" id="transRatioCB">
   	<option value="0.99" <%if(selectedRatio.equals("0.99")){%>selected<%}%>>>0.99</option>
     <option value="0.95" <%if(selectedRatio.equals("0.95")){%>selected<%}%>>>0.95</option>
-    <option value="0.90" <%if(selectedRatio.equals("0.90")){%>selected<%}%>>>0.9</option>
-    <option value="0.8" <%if(selectedRatio.equals("0.80")){%>selected<%}%>>>0.8</option>
-    <option value="0.75" <%if(selectedRatio.equals("0.75")){%>selected<%}%>>>0.75</option>
-    <option value="0.6" <%if(selectedRatio.equals("0.6")){%>selected<%}%>>>0.6</option>
+    <option value="0.9" <%if(selectedRatio.equals("0.9")){%>selected<%}%>>>0.9</option>
+    <option value="0.8" <%if(selectedRatio.equals("0.8")){%>selected<%}%>>>0.8</option>
     <option value="0.5" <%if(selectedRatio.equals("0.5")){%>selected<%}%>>>0.5</option>
     <option value="0.4" <%if(selectedRatio.equals("0.4")){%>selected<%}%>>>0.4</option>
     <option value="0.3" <%if(selectedRatio.equals("0.3")){%>selected<%}%>>>0.3</option>
     <option value="0.2" <%if(selectedRatio.equals("0.2")){%>selected<%}%>>>0.2</option>
     <option value="0.1" <%if(selectedRatio.equals("0.1")){%>selected<%}%>>>0.1</option>
+    <option value="0.05" <%if(selectedRatio.equals("0.05")){%>selected<%}%>>>0.05</option>
   </select>
-  </label><BR /><BR />
+  </label><div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpTranslate1" class="helpImageTranslate" src="../web/images/icons/help.png" /></div><BR /><BR />
   
   <label>Min length of the target species region(% of source region length):
   <select name="transLengthCB" id="transLengthCB">
@@ -60,15 +76,9 @@ Fill in the form below to translate a Human region to regions on Mouse/Rat chrom
     <option value="5" <%if(selectedPerc.equals("5")){%>selected<%}%>>> 5%</option>
     <option value="1" <%if(selectedPerc.equals("1")){%>selected<%}%>>> 1%</option>
     <option value="0.1" <%if(selectedPerc.equals("0.1")){%>selected<%}%>>> 0.1%</option>
+    <option value="0" <%if(selectedPerc.equals("0")){%>selected<%}%>>None</option>
   </select>
-  </label><br /><BR />
-       
-  <label>Target Species:
-  <select name="transSpeciesCB" id="transSpeciesCB">
-  	<option value="Mm"  <%if(selectedSpecies.equals("Mm")){%>selected<%}%>>Mus musculus</option>
-    <option value="Rn"  <%if(selectedSpecies.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
-  </select>
-  </label><BR /><BR />
+  </label><div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpTranslate2" class="helpImageTranslate" src="../web/images/icons/help.png" /></div><br /><BR />
  <div style="text-align:center; width:100%;"> <input type="button" name="translateBTN" id="translateBTN" value="Translate Region" onClick="runTranslation()">
  <span id="clearResults" style="display:none;"><input type="button" name="clearBTN" id="clearBTN" value="Clear Previous Results" onClick="clearResults()"><BR />
  	<input name="chkbox" type="checkbox" id="prevResultsCBX" value="prevResultsCBX" /> Always clear previous results
@@ -80,14 +90,58 @@ Fill in the form below to translate a Human region to regions on Mouse/Rat chrom
 
 </form>
 </div>
-<div style="text-align:center; width:100%;"><div id="waitTranslate"  style="background:#FFFFFF; display:none;"><img src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Please wait, Running Translation...</div></div>
+<div style="text-align:center; width:100%;"><div id="waitTranslate"  style="background:#FFFFFF; display:none;"><img class="helpImageTranslate"src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Please wait, Running Translation...</div></div>
 <div id="translateResults">
 	
 </div>
 
 	<div class="closeWindow">Close</div>
+    
+    
+<div id="HelpTranslate1Content" class="inpageHelpContentTranslate" title="<center>Help</center>"><div class="help-content">
+<H3>Minimum Ratio of bases to map to target region</H3>
+This specifies the portion of bases that must map to the target region. <BR /> 
+-For large regions you may have to keep this low to get any results.  <BR />
+-For small regions you may want to increase this so that you will get a close match if there is one.
+
+</div></div>
+<div id="HelpTranslate2Content" class="inpageHelpContentTranslate" title="<center>Help</center>"><div class="help-content">
+<H3>Minimum Length(target/source)</H3>
+This filters the results based on length of the target sequence and qeury sequence matched.  Results   
+</div></div>
 
 <script type="text/javascript">
+	$('.inpageHelpContentTranslate').hide();
+	
+	$('.inpageHelpContentTranslate').dialog({ 
+  		autoOpen: false,
+		dialogClass: "helpDialog",
+		width: 400,
+		maxHeight: 500,
+		zIndex: 99999
+	});
+
+	$('.helpImageTranslate').click( function(){
+		var id=$(this).attr('id');
+		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
+		$('#'+id+'Content').dialog("open").css({'font-size':12});
+	});
+	
+	 $('#transSourceSpeciesCB').change(function(){
+	 		var source=$('#transSourceSpeciesCB').val().substring(0,2);
+			var dest=$('#transSpeciesCB').val().toLowerCase();
+			if(source==dest){
+				alert("Please change the destination or source so they are not equal.");
+			}
+	 });
+	 $('#transSpeciesCB').change(function(){
+	 		var source=$('#transSourceSpeciesCB').val().substring(0,2);
+			var dest=$('#transSpeciesCB').val().toLowerCase();
+			if(source==dest){
+				alert("Please change the destination or source so they are not equal.");
+			}
+	 });
+
 		function clearResults(){
 			$('#translateResults').html("");
 			$('#clearResults').hide();
@@ -99,9 +153,10 @@ Fill in the form below to translate a Human region to regions on Mouse/Rat chrom
 			var minLen=$('#transLengthCB').val();
 			var minRatio=$('#transRatioCB').val();
 			var species=$('#transSpeciesCB').val();
+			var srcSpecies=$('#transSourceSpeciesCB').val();
 			
 			$.get(	contextPath + "/web/GeneCentric/runTranslation.jsp", 
-				{region: regionTxt, minLen: minLen, minRatio: minRatio, targetSpecies: species},
+				{region: regionTxt, minLen: minLen, minRatio: minRatio, targetSpecies: species, sourceSpecies: srcSpecies},
 				function(data){ 
 									var prevData="<BR><BR>"+$('#translateResults').html();
 									if($('#prevResultsCBX').is(":checked")){
@@ -111,7 +166,7 @@ Fill in the form below to translate a Human region to regions on Mouse/Rat chrom
 									}
 									
 									$("table.tablesorter").tablesorter({ widgets: ['zebra'],sortList: [[4,-1]]});
-									//$('.translateTable').find("tr.col_title").find("th").slice(4,5).addClass("headerSortDown");
+									$('.translateTable').find("tr.col_title").find("th").slice(4,5).addClass("headerSortDown");
 									
 									
 									var tableRows=$('.translateTable').find("tr").not(".title, .col_title");
@@ -128,6 +183,7 @@ Fill in the form below to translate a Human region to regions on Mouse/Rat chrom
 											$('#geneTxt').val(region);
 											$('#speciesCB').val(species);
 											translateDialog.dialog("close");
+											$("#getTrxBTN").eq(0).trigger('click');
 											return false;
 										});
 								
