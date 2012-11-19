@@ -12,7 +12,7 @@
 
 <% extrasList.add("index.css"); %>
 <%pageTitle="Overview Gene List Analaysis Tools";%>
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/basicHeader.jsp" %>
 
         <div id="welcome" style="height:575px; width:980px; overflow:auto;">
 

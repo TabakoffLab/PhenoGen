@@ -271,8 +271,8 @@
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
-                    	<TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List</span></TH>
-                        <TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
+                    	<TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
+                        <TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
                         <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999; top:23px; left:-3px;"><img id="Help4" class="helpImage" src="../web/images/icons/help.png" /></div>
                         </TR>
                         
@@ -557,8 +557,8 @@
 	
 	<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List</span></TH>
-                        <TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
+                    	<TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
+                        <TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
                         <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999;top:23px; left:-3px;"><img id="Help6" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
@@ -751,9 +751,9 @@
         
 		<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:65%;"><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:999;">Filter List and Circos Plot</span></TH>
-                        <TH><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:999;">View Columns</span></TH>
-                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999;top:23px; left:-3px;"><img id="Help9" class="helpImage" src="../web/images/icons/help.png" /></div>
+                    	<TH style="width:65%;"><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List and Circos Plot</span></TH>
+                        <TH><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
+                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:100;top:23px; left:-3px;"><img id="Help9" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
@@ -927,7 +927,7 @@
 		ArrayList<String> eQTLRegions=gdt.getEQTLRegions();%>
 		<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-28px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span></div>
         <div id="eQTLRegionNote" style="width:100%; position:relative; top:-28px">
-        Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region columns" correspond to the folowing region(s):<BR />
+        Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the folowing region(s):<BR />
 		<%for(int i=0;i<eQTLRegions.size();i++){%>
         	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=eQTLRegions.get(i)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank"><%=eQTLRegions.get(i)%></a><BR />
         <%}%>
@@ -992,8 +992,8 @@
 	<TABLE name="items" id="tblFrom" class="list_base tablesorter" cellpadding="0" cellspacing="0">
                 <THEAD>
                 	<tr>
-                        <th colspan="4" class="topLine noSort noBox"></th>
-                        	<th colspan="<%=tissuesList2.length*2+3%>" class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
+                        <th colspan="3" class="topLine noSort noBox"></th>
+                        <th colspan="<%=tissuesList2.length*2+4%>" class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
                             	Public ILSXISS RI Mice
                             <%}else{%>
@@ -1002,8 +1002,8 @@
                             )<div class="inpageHelp" style="display:inline-block;"><img id="Help12c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                		 <tr>
-                        <th colspan="4" class="topLine noSort noBox"></th>
-                        <th colspan="3" class="leftBorder noSort noBox"></th>
+                        <th colspan="3" class="topLine noSort noBox"></th>
+                        <th colspan="4" class="leftBorder noSort noBox"></th>
                         <%for(int i=0;i<tissuesList2.length;i++){%>
                         	<th colspan="2" class="center noSort topLine">Tissue:<%=tissuesList2[i]%></th>
                         <%}%>
@@ -1064,7 +1064,7 @@
                             <TD><%=tc.getLevel()%></TD>
                             
                             <TD >chr<%=tc.getChromosome()+":"+dfC.format(tc.getStart())+"-"+dfC.format(tc.getEnd())%></TD>
-                            <TD ><a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=tc.getGeneSymbol()%>&ensID=<%=tc.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>" 
+                            <TD ><a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=tc.getGeneSymbol()%>&ensID=<%=tc.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>&curDir=<%=folderName%>" 
                                 	target="_blank" title="View the circos plot for transcript cluster eQTLs">View Location Plot</a></TD>
                             <%
 							//String[] curTissues=tc.getTissueList();
