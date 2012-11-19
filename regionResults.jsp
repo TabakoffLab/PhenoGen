@@ -347,7 +347,8 @@
 						dTissues[i]=dTisAr[i].toString();
 					}
 				}*/
-		  %>
+				%>
+		 
           	<TABLE name="items"  id="tblGenes" class="list_base tablesorter" cellpadding="0" cellspacing="0" >
                 <THEAD>
                     <tr>
@@ -984,9 +985,21 @@
 
 	
 		
-		<%if(transOutQTLs!=null && transOutQTLs.size()>0){%>
-        
-       			
+		<%if(transOutQTLs!=null && transOutQTLs.size()>0){
+			if(transOutQTLs.size()<=200){
+				String idList="";
+				for(int i=0;i<transOutQTLs.size();i++){
+					TranscriptCluster tc=transOutQTLs.get(i);
+					if(i==0){
+						idList=tc.getTranscriptClusterID();
+					}else{
+						idList=idList+","+tc.getTranscriptClusterID();
+					}
+				}%>
+       			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a></div>
+        	<%}else{%>
+            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.</div>
+            <%}%>	
 		<BR />	
 	
 	<TABLE name="items" id="tblFrom" class="list_base tablesorter" cellpadding="0" cellspacing="0">

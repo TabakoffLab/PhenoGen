@@ -396,7 +396,7 @@ Or
 </div>
 
 <script type="text/javascript">
-	var translateDialog = createDialog(".translate" , {width: 700, height: 800, title: "<center>Translate Region</center>", zIndex: 500});
+	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "<center>Translate Region</center>", zIndex: 500});
 	function openTranslateRegion(){
 		$('.demo').hide();
 		var region=$('#geneTxt').val();

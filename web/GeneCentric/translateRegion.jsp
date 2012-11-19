@@ -91,7 +91,7 @@ Fill in the form below to translate a Human/Mouse/Rat region to regions on Mouse
 </form>
 </div>
 <div style="text-align:center; width:100%;"><div id="waitTranslate"  style="background:#FFFFFF; display:none;"><img class="helpImageTranslate"src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Please wait, Running Translation...</div></div>
-<div id="translateResults">
+<div id="translateResults" style="height:400px; overflow:auto;">
 	
 </div>
 
