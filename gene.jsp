@@ -240,9 +240,9 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	){
 		//if bQTL symbol submitted in the form bQTL:SymbolValue
 		//submit to gdt which returns a valid region.
-		if(myGene.toLowerCase().startsWith("bqtl") &&myGene.indexOf(":")>0){
+		/*if(myGene.toLowerCase().startsWith("bqtl") &&myGene.indexOf(":")>0){
 			myGene=gdt.getBQTLRegionFromSymbol(myGene,myOrganism,dbConn);
-		}
+		}*/
 		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,dbConn);
 		if(tmp!=null&&tmp.length==2){
 			rnaDatasetID=tmp[1];
