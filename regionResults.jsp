@@ -284,20 +284,15 @@
                                 Exclude single exon RNA-Seq Transcripts
                             	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" /><BR />
                         	<%}%>
-						 eQTL P-Value Cut-off:
-                        <%
-							selectName = "pvalueCutoffSelect1";
-							selectedOption = Double.toString(pValueCutoff);
-							onChange = "";
-							style = "";
-							optionHash = new LinkedHashMap();
-										optionHash.put("0.10", "0.10");
-										optionHash.put("0.01", "0.01");
-										optionHash.put("0.001", "0.001");
-										optionHash.put("0.0001", "0.0001");
-										optionHash.put("0.00001", "0.00001");
-							%>
-							<%@ include file="/web/common/selectBox.jsp" %>
+                        
+                            eQTL P-Value Cut-off:
+                                             <select name="pvalueCutoffSelect1" id="pvalueCutoffSelect1">
+                                            		<option value="0.1" <%if(Double.toString(pValueCutoff).equals("0.10")){%>selected<%}%>>0.1</option>
+                                                    <option value="0.01" <%if(Double.toString(pValueCutoff).equals("0.010")){%>selected<%}%>>0.01</option>
+                                                    <option value="0.001" <%if(Double.toString(pValueCutoff).equals("0.0010")){%>selected<%}%>>0.001</option>
+                                                    <option value="0.0001" <%if(Double.toString(pValueCutoff).equals("1.0E-4")){%>selected<%}%>>0.0001</option>
+                                                    <option value="0.00001" <%if(Double.toString(pValueCutoff).equals("1.0E-5")){%>selected<%}%>>0.00001</option>
+                                            </select>
                             </td>
                         	<td>
                             	<div class="columnLeft">
@@ -764,19 +759,14 @@
                                     	<TR>
                                         <TD colspan="2" style="text-align:center;">
                                             eQTL P-Value Cut-off:
-                                        <%
-                                            selectName = "pvalueCutoffSelect2";
-                                            selectedOption = Double.toString(pValueCutoff).trim();
-                                            onChange = "";
-                                            style = "";
-                                            optionHash = new LinkedHashMap();
-                                                        optionHash.put("0.10", "0.10");
-                                                        optionHash.put("0.01", "0.01");
-                                                        optionHash.put("0.001", "0.001");
-                                                        optionHash.put("0.0001", "0.0001");
-                                                        optionHash.put("0.00001", "0.00001");
-                                            %>
-                                            <%@ include file="/web/common/selectBox.jsp" %>
+                                            <select name="pvalueCutoffSelect2" id="pvalueCutoffSelect2">
+                                            		<option value="0.1" <%if(Double.toString(pValueCutoff).equals("0.10")){%>selected<%}%>>0.1</option>
+                                                    <option value="0.01" <%if(Double.toString(pValueCutoff).equals("0.010")){%>selected<%}%>>0.01</option>
+                                                    <option value="0.001" <%if(Double.toString(pValueCutoff).equals("0.0010")){%>selected<%}%>>0.001</option>
+                                                    <option value="0.0001" <%if(Double.toString(pValueCutoff).equals("1.0E-4")){%>selected<%}%>>0.0001</option>
+                                                    <option value="0.00001" <%if(Double.toString(pValueCutoff).equals("1.0E-5")){%>selected<%}%>>0.00001</option>
+                                            </select>
+                                            
                                          </TD>
                                 		</TR>
                                     	<TR>
@@ -1421,6 +1411,7 @@ function displayColumns(table,colStart,colLen,showOrHide){
 }
 
 function runFilter(){
+	$("#wait1").show();
 	var chrList = "";
           $("#chromosomesMS option").each(function () {
                 chrList += $(this).val() + ";";
@@ -1574,6 +1565,7 @@ $(document).ready(function() {
 	  });
 	  
 	  $('#pvalueCutoffSelect1').change( function(){
+	  			$("#wait1").show();
 				$('#pvalueCutoffInput').val($(this).val());
 				//alert($('#pvalueCutoffInput').val());
 				//$('#geneCentricForm').attr("action","Get Transcription Details");

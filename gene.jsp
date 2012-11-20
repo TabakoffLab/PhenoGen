@@ -92,7 +92,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	}
 	
 	if(request.getParameter("pvalueCutoffInput")!=null){
-		pValueCutoff=Double.parseDouble(request.getParameter("pvalueCutoffInput").trim());
+		pValueCutoff=Double.parseDouble(request.getParameter("pvalueCutoffInput"));
 	}
 	
 	log.debug("ACTION="+action+"  region="+region+"   gene="+myGene+"   pvalue="+pValueCutoff);
