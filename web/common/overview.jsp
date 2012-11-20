@@ -46,7 +46,7 @@
                 	</div> <!-- // end overview-content -->
             	</div> <!-- // end overview-wrap -->
 						
-            	 <div class="demoVideo" style="display:inline-block;float:right;position:relative;top:-450px; padding-right:10px;">
+            	 <!--<div class="demoVideo" style="display:inline-block;float:right;position:relative;top:-450px; padding-right:10px;">
                         	<h3>Overview Video</h3>
                         	<video width="400" height="300" controls="controls">
                                 <source src="<%=contextRoot%>web/demo/test.mp4" type="video/mp4">
@@ -57,6 +57,6 @@
                         	</video>
                             <H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp?file=<%=contextRoot%>web/demo/test." target="_blank">Open in a new Window</a></H3><BR />
                             <H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp" target="_blank">View other demo videos</a></H3> 
-                        </div>
+                        </div>-->
 	</div><!-- // end welcome -->
     

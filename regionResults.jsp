@@ -914,7 +914,7 @@
                         </tbody>
                   </table>
 <% 
-		ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"core",myOrganism,tissueString,chromosomeString);//this region controls what genes
+		ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"All",myOrganism,tissueString,chromosomeString);//this region controls what genes
 		ArrayList<String> eQTLRegions=gdt.getEQTLRegions();%>
 		<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-28px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span></div>
         <div id="eQTLRegionNote" style="width:100%; position:relative; top:-28px">
@@ -1495,10 +1495,10 @@ $(document).ready(function() {
 	
 
 	$('#tblGenes').dataTable().fnAdjustColumnSizing();
-	tblGenesFixed=new FixedColumns( tblGenes, {
+	/*tblGenesFixed=new FixedColumns( tblGenes, {
  		"iLeftColumns": 1,
 		"iLeftWidth": 100
- 	} );
+ 	} );*/
 
 	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
 	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
@@ -1729,10 +1729,10 @@ $(document).ready(function() {
 					tblBQTLAdjust=true;
 				}else if(currentTab == "#eQTLListFromRegion" && tblFromFixed==null){
 					tblFrom.fnAdjustColumnSizing();
-					tblFromFixed=new FixedColumns( tblFrom, {
+					/*tblFromFixed=new FixedColumns( tblFrom, {
 							"iLeftColumns": 1,
 							"iLeftWidth": 100
-					} );
+					} );*/
 				}
 				
 			$('div#changingTabs').hide(10);

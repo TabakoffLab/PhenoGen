@@ -1302,10 +1302,12 @@ public class GeneDataTools {
                                 "and ((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
                                 "and s.chromosome_id=c1.chromosome_id "+
                                 "and substr(c1.name,1,2)='"+chr+"' "+
-                                "and lse.probe_id=aep.probeset_id "+
-                                "and aep.pslevel='"+level+"' "+
-                                "and aep.psannotation='transcript' "+
-                                "and aep.array_type_id="+arrayTypeID+") "+
+                                "and lse.probe_id=aep.probeset_id ";
+                            if(!level.equals("All")){
+                                qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
+                            }
+                            qtlQuery=qtlQuery+"and aep.psannotation='transcript' "+
+                            "and aep.array_type_id="+arrayTypeID+") "+
                             "order by aep.transcript_cluster_id, s.tissue";
         
         String qtlQuery2="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end,eq.LOD_SCORE "+
@@ -1314,9 +1316,11 @@ public class GeneDataTools {
                             "and lse.pvalue< "+(-Math.log10(pvalue))+" "+
                             "and substr(c.name,1,2)='"+chr+"' "+
                             "and ((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
-                            "and lse.probe_id=aep.probeset_id "+
-                            "and aep.pslevel='"+level+"' "+
-                            "and aep.psannotation='transcript' "+
+                            "and lse.probe_id=aep.probeset_id ";
+                            if(!level.equals("All")){
+                                qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
+                            }
+                            qtlQuery=qtlQuery+"and aep.psannotation='transcript' "+
                             "and aep.array_type_id="+arrayTypeID+" "+
                             "and TO_CHAR(aep.probeset_id) = eq.identifier (+) "+
                             "and (s.tissue=eq.tissue or eq.tissue is null) "+
@@ -1664,6 +1668,54 @@ public class GeneDataTools {
         }
         return bqtl;
     }
+    
+    
+    /*public String getBQTLRegionFromSymbol(String qtlSymbol,String organism,Connection dbConn){
+        String region="";
+        String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
+                        "where pq.organism='"+organism+"' "+
+                        "and pq.";
+        try{ 
+        try{
+            log.debug("SQL eQTL FROM QUERY\n"+query);
+            PreparedStatement ps = dbConn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String id=Integer.toString(rs.getInt(1));
+                String mgiID=rs.getString(2);
+                String rgdID=rs.getString(3);
+                String symbol=rs.getString(5);
+                String name=rs.getString(6);
+                double lod=rs.getDouble(8);
+                double pvalue=rs.getDouble(9);
+                String trait=rs.getString(10);
+                String subTrait=rs.getString(11);
+                String traitMethod=rs.getString(12);
+                String phenotype=rs.getString(13);
+                String diseases=rs.getString(14);
+                String rgdRef=rs.getString(15);
+                String pubmedRef=rs.getString(16);
+                String relQTLs=rs.getString(17);
+                String candidGene=rs.getString(18);
+                long start=rs.getLong(19);
+                long stop=rs.getLong(20);
+                String mapMethod=rs.getString(21);
+                String chromosome=rs.getString(22);
+                BQTL tmpB=new BQTL(id,mgiID,rgdID,symbol,name,trait,subTrait,traitMethod,phenotype,diseases,rgdRef,pubmedRef,mapMethod,relQTLs,candidGene,lod,pvalue,start,stop,chromosome);
+                bqtl.add(tmpB);
+            }
+            ps.close();
+            
+        }catch(SQLException e){
+            log.error("Error retreiving bQTLs.",e);
+            e.printStackTrace(System.err);
+        }
+        }catch(Exception er){
+            er.printStackTrace(System.err);
+        }
+        return bqtl;
+    }*/
+    
     
     public void addQTLS(ArrayList<Gene> genes, ArrayList<EQTL> eqtls){
         HashMap eqtlInd=new HashMap();
