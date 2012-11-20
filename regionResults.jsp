@@ -545,6 +545,8 @@
 
 				 </tbody>
               </table>
+          <%}else{%>
+          	No genes found in this region.  Please expand the region and try again.
           <%}%>
 
 </div><!-- end GeneList-->
@@ -1461,6 +1463,7 @@ $(document).ready(function() {
 	var tblGenesFixed=null;
 	var tblFromFixed=null;
 	var tblBQTLAdjust=false;
+	var tblFromAdjust=false;
 	
 	var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
@@ -1727,8 +1730,9 @@ $(document).ready(function() {
 				}else if(currentTab == "#bQTLList" && !tblBQTLAdjust){
 					tblBQTL.fnAdjustColumnSizing();
 					tblBQTLAdjust=true;
-				}else if(currentTab == "#eQTLListFromRegion" && tblFromFixed==null){
+				}else if(currentTab == "#eQTLListFromRegion" && !tblFromAdjust){
 					tblFrom.fnAdjustColumnSizing();
+					tblFromAdjust=true;
 					/*tblFromFixed=new FixedColumns( tblFrom, {
 							"iLeftColumns": 1,
 							"iLeftWidth": 100
