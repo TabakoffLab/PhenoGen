@@ -1318,9 +1318,9 @@ public class GeneDataTools {
                             "and ((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
                             "and lse.probe_id=aep.probeset_id ";
                             if(!level.equals("All")){
-                                qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
+                                qtlQuery2=qtlQuery2+"and aep.pslevel='"+level+"' ";
                             }
-                            qtlQuery=qtlQuery+"and aep.psannotation='transcript' "+
+                            qtlQuery2=qtlQuery2+"and aep.psannotation='transcript' "+
                             "and aep.array_type_id="+arrayTypeID+" "+
                             "and TO_CHAR(aep.probeset_id) = eq.identifier (+) "+
                             "and (s.tissue=eq.tissue or eq.tissue is null) "+
