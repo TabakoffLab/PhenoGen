@@ -349,7 +349,7 @@
 				}*/
 				%>
 		 
-          	<TABLE name="items"  id="tblGenes" class="list_base tablesorter" cellpadding="0" cellspacing="0" >
+          	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0" >
                 <THEAD>
                     <tr>
                         <th colspan="6" class="topLine noSort noBox"></th>
@@ -607,7 +607,7 @@
 		log.debug("BQTLS >0 ");
 	%>
     
-	<TABLE name="items" id="tblBQTL" class="list_base tablesorter" cellpadding="0" cellspacing="0">
+	<TABLE name="items" id="tblBQTL" class="list_base" cellpadding="0" cellspacing="0">
                 <THEAD>
                 	<TR class="col_title">
                     	<%if(myOrganism.equals("Mm")){%>
@@ -1002,7 +1002,7 @@
             <%}%>	
 		<BR />	
 	
-	<TABLE name="items" id="tblFrom" class="list_base tablesorter" cellpadding="0" cellspacing="0">
+	<TABLE name="items" id="tblFrom" class="list_base" cellpadding="0" cellspacing="0">
                 <THEAD>
                 	<tr>
                         <th colspan="3" class="topLine noSort noBox"></th>
@@ -1508,18 +1508,14 @@ $(document).ready(function() {
  		"iLeftColumns": 1,
 		"iLeftWidth": 100
  	} );
-	
-	
-	
-	//$('#tblGenes_filter').css({position: 'relative',top: '-7px'});
+
 	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
-	//$('#tblBQTL_filter').css({position: 'relative',top: '-56px'});
 	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
 
 	
 	$('.singleExon').hide();
 	
-	$('.helpImage').click( function(){
+	$('.helpImage').click( function(event){
 		var id=$(this).attr('id');
 		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
 		$('#'+id+'Content').dialog("open").css({'font-size':12});
