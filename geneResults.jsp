@@ -185,14 +185,22 @@ function openeQTL(){
 };
 
 function displayWorking(){
-	document.getElementById("wait1").style.display = 'block';
-	document.getElementById("inst").style.display= 'none';
+	$('#wait1').show();
+	$('#inst').hide();
+	//document.getElementById("wait1").style.display = 'block';
+	//if(!popup){
+	//	document.getElementById("inst").style.display= 'none';
+	//}
 	return true;
 }
 
 function hideWorking(){
-	document.getElementById("wait1").style.display = 'none';
-	document.getElementById("inst").style.display= 'none';
+	$('#wait1').hide();
+	$('#inst').hide();
+	//document.getElementById("wait1").style.display = 'none';
+	//if(!popup){
+	//	document.getElementById("inst").style.display= 'none';
+	//}
 }
 
 function positionHelp(vertPos){

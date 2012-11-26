@@ -67,7 +67,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	
 	Set iDecoderAnswer;
 	
-	if(( myGene.toLowerCase().startsWith("chr") || myGene.toLowerCase().startsWith("bqtl") )&&myGene.indexOf(":")>0){
+	if(( myGene.toLowerCase().startsWith("chr") )&&myGene.indexOf(":")>0){
 		region=true;
 	}
 	if(request.getParameter("speciesCB")!=null){
@@ -238,11 +238,6 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 			|| ( auto && region )
 	
 	){
-		//if bQTL symbol submitted in the form bQTL:SymbolValue
-		//submit to gdt which returns a valid region.
-		/*if(myGene.toLowerCase().startsWith("bqtl") &&myGene.indexOf(":")>0){
-			myGene=gdt.getBQTLRegionFromSymbol(myGene,myOrganism,dbConn);
-		}*/
 		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,dbConn);
 		if(tmp!=null&&tmp.length==2){
 			rnaDatasetID=tmp[1];

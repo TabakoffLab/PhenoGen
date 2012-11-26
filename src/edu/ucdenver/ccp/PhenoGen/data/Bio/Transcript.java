@@ -171,7 +171,7 @@ public class Transcript {
     public void setHeritDabg(HashMap heritDabg,HashMap fullPSList){
         for(int i=0;i<fullTranscript.size();i++){
             TranscriptElement te=fullTranscript.get(i);
-            te.setHeritDabg(heritDabg,fullPSList);
+            te.setHeritDabg(heritDabg,fullPSList,strand);
         }
         //System.err.println("New Size:"+fullPSList.size());
         

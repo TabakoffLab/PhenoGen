@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 public class BQTL {
     String id="",mgiID="",rgdID="",symbol="",name="",trait="",subTrait="",traitMethod="",phenotype="",diseases="",mapMethod="";
     ArrayList<String> relatedQTL=new ArrayList<String>();
+    ArrayList<String> relatedQTLreason=new ArrayList<String>();
     ArrayList<String> candidateGene=new ArrayList<String>();
     ArrayList<String> rgdRef=new ArrayList<String>();
     ArrayList<String> pubmedRef=new ArrayList<String>();
@@ -46,11 +47,22 @@ public class BQTL {
         if(relQTLs!=null){
             String[] tmpRel=relQTLs.split(";");
             for(int i=0;i<tmpRel.length;i++){
-                relatedQTL.add(tmpRel[i]);
+                String reason="";
+                String tmpSymbol="";
+                if(tmpRel[i].indexOf("(")>0){
+                    tmpSymbol=tmpRel[i].substring(0,tmpRel[i].indexOf("(")-1);
+                    reason=tmpRel[i].substring(tmpRel[i].indexOf("(")+1,tmpRel[i].indexOf(")"));
+                }else{
+                    tmpSymbol=tmpRel[i];
+                }
+                if(!tmpSymbol.equals("")){
+                    relatedQTL.add(tmpSymbol);
+                    relatedQTLreason.add(reason);
+                }
             }
         }
         if(candidGene!=null){
-            String[] tmpCanGene=candidGene.split(",");
+            String[] tmpCanGene=candidGene.split(";");
             for(int i=0;i<tmpCanGene.length;i++){
                 candidateGene.add(tmpCanGene[i]);
             }
@@ -108,6 +120,10 @@ public class BQTL {
 
     public ArrayList<String> getRelatedQTL() {
         return relatedQTL;
+    }
+    
+    public ArrayList<String> getRelatedQTLReason() {
+        return relatedQTLreason;
     }
 
     public ArrayList<String> getCandidateGene() {

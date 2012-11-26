@@ -233,13 +233,13 @@ abstract public class TranscriptElement implements Comparable {
         return ret;
     }
     
-    public void setHeritDabg(HashMap heritDabg, HashMap fullPSList){
+    public void setHeritDabg(HashMap heritDabg, HashMap fullPSList,String transcriptStrand){
         //System.err.println("TE probeset size:"+probeset.size());
         for(int i=0;i<probeset.size();i++){
             ProbeSet ps=probeset.get(i);
             if(ps!=null){
                 //System.err.println("ps:"+ps.getProbeSetID()+":");
-                if(ps.isLocationUpdated()&&!fullPSList.containsKey(ps.getProbeSetID())){
+                if(ps.isLocationUpdated() && !fullPSList.containsKey(ps.getProbeSetID()) && ps.getStrand().equals(transcriptStrand)){
                     fullPSList.put(ps.getProbeSetID(), 1);
                 }
                 if(heritDabg.containsKey(ps.getProbeSetID())){

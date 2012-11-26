@@ -695,9 +695,19 @@
 							}%>
                         </TD>
                         <TD><%	ArrayList<String> relQTL=curBQTL.getRelatedQTL();
+								//ArrayList<String> relQTLreason=curBQTL.getRelatedQTLReason();
 							if(relQTL!=null){
-							for(int j=0;j<relQTL.size();j++){%>
-                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=bQTL:<%=relQTL.get(j)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="Click to view this bQTL region in a new window."><%=relQTL.get(j)%></a><BR />
+							for(int j=0;j<relQTL.size();j++){
+								String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism,dbConn);
+                            	if(regionQTL.startsWith("chr")){
+								%>
+                                    <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=regionQTL%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="Click to view this bQTL region in a new window.">
+                                    <%=relQTL.get(j)%>
+                                    </a>
+                                <%}else{%>
+                                	<%=relQTL.get(j)%>
+                                <%}%>
+                                <BR />
                         	<%}
 							}%>
                         </TD>
@@ -978,7 +988,7 @@
 	
 		
 		<%if(transOutQTLs!=null && transOutQTLs.size()>0){
-			if(transOutQTLs.size()<=200){
+			if(transOutQTLs.size()<=300){
 				String idList="";
 				for(int i=0;i<transOutQTLs.size();i++){
 					TranscriptCluster tc=transOutQTLs.get(i);

@@ -40,6 +40,7 @@ public class ProbeSet implements Comparable {
             this.strand="-";
         }else{
             //System.err.println("Unknown Strand Type:"+strand);
+            this.strand=".";
         }
         this.annotation=type;
         len=Math.abs(start-stop);
