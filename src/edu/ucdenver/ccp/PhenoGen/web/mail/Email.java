@@ -181,6 +181,8 @@ public class Email  {
                 }
 		log.debug("just sent email");
 	}
+        
+        
     
 	public void setSmtpHost(String host){
         	if (check(host)){
@@ -211,6 +213,24 @@ public class Email  {
         		this.content = content;
         	} else {
     			this.content = Email.DEFAULT_CONTENT;
+        	}
+	}
+        
+        public void setContent(String content,Exception e){
+        	if (check(content)){
+        		this.content = content;
+                        StackTraceElement[] st=e.getStackTrace();
+                        this.content=this.content+"\n\n\nStack Trace:\n"+e.getMessage();
+                        for(int i=0;i<st.length;i++){
+                            this.content=this.content+"\n\t"+st[i].toString();
+                        }
+        	} else {
+    			this.content = Email.DEFAULT_CONTENT;
+                        StackTraceElement[] st=e.getStackTrace();
+                        this.content=this.content+"\n\n\nStack Trace:\n"+e.getMessage();
+                        for(int i=0;i<st.length;i++){
+                            this.content=this.content+"\n\t"+st[i].toString();
+                        }
         	}
 	}
     

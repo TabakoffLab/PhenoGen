@@ -1266,6 +1266,7 @@ public class GeneDataTools {
     }
     
     public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,double pvalue,String level,String organism,String circosTissue,String circosChr){
+        session.removeAttribute("get");
         ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
@@ -1412,6 +1413,15 @@ public class GeneDataTools {
             out.close();
             }catch(IOException e){
                 log.error("I/O Exception trying to output transcluster.txt file.",e);
+                session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.getTransControllingEQTLS");
+                myAdminEmail.setContent("There was an error while running getTransControllingEQTLS.\nI/O Exception trying to output transcluster.txt file.",e);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                }
             }
             
             File ensPropertiesFile = new File(ensemblDBPropertiesFile);
@@ -1428,6 +1438,15 @@ public class GeneDataTools {
                 ensPassword=myENSProperties.getProperty("PASSWORD");
             }catch(IOException e){
                 log.error("I/O Exception trying to read properties file.",e);
+                session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.getTransControllingEQTLS");
+                myAdminEmail.setContent("There was an error while running getTransControllingEQTLS.\nI/O Exception trying to read properties file.",e);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                }
             }
             
             boolean error=false;
@@ -1465,6 +1484,7 @@ public class GeneDataTools {
             } catch (ExecException e) {
                 error=true;
                 log.error("In Exception of run writeGeneIDs.pl Exec_session", e);
+                session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
                 setError("Running Perl Script to match Transcript Clusters to Genes.");
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -1481,6 +1501,7 @@ public class GeneDataTools {
             if(myExec_session.getExitValue()!=0){
                 error=true;
                 Email myAdminEmail = new Email();
+                session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
                 myAdminEmail.setContent("There was an error while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+
@@ -1550,6 +1571,15 @@ public class GeneDataTools {
                     out.close();
                 }catch(IOException e){
                     log.error("Error reading Gene - Transcript IDs.",e);
+                    session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in GeneDataTools.getTransControllingEQTLS");
+                    myAdminEmail.setContent("There was an error while running getTransControllingEQTLS.\nI/O Exception trying to read Gene - Transcript IDs file.",e);
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                    }
                 }
                 circosTissue=circosTissue.replaceAll(";;", ";");
                 circosChr=circosChr.replaceAll(";;", ";");
@@ -1566,9 +1596,9 @@ public class GeneDataTools {
 
                 //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
                 
-                for (int i = 0; i < perlArgs.length; i++) {
+                /*for (int i = 0; i < perlArgs.length; i++) {
                     log.debug(i + " perlArgs::" + perlArgs[i]);
-                }
+                }*/
                 
                 for (int i = 0; i < envVar.length; i++) {
                     log.debug(i + " EnvVar::" + envVar[i]);
@@ -1585,6 +1615,7 @@ public class GeneDataTools {
                 } catch (ExecException e) {
                     error=true;
                     log.error("In Exception of run callCircosReverse.pl Exec_session", e);
+                    session.setAttribute("getTransControllingEQTLCircos","Error running Circos.  Unable to generate Circos image.  Please try again later.  The administrator has been notified of the problem.");
                     setError("Running Perl Script to match create circos plot.");
                     Email myAdminEmail = new Email();
                     myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -1602,8 +1633,18 @@ public class GeneDataTools {
             log.debug("Transcript Cluster Size:"+transcriptClusters.size());
         }catch(SQLException e){
             log.error("Error retreiving EQTLs.",e);
+            session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
             e.printStackTrace(System.err);
+            Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.getTransControllingEQTLS");
+                myAdminEmail.setContent("There was an error while running getTransControllingEQTLS.\n SQLException getting transcript clusters.",e);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                }
         }
+        
         return transcriptClusters;
     }
     
@@ -1619,6 +1660,7 @@ public class GeneDataTools {
     }
     
     public ArrayList<BQTL> getBQTLs(int min,int max,String chr,String organism){
+        session.removeAttribute("getBQTLsERROR");
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
@@ -1662,10 +1704,29 @@ public class GeneDataTools {
         }catch(SQLException e){
             log.error("Error retreiving bQTLs.",e);
             e.printStackTrace(System.err);
+            session.setAttribute("getBQTLsERROR","Error retreiving region bQTLs.  Please try again later.  The administrator has been notified of the problem.");
+             Email myAdminEmail = new Email();
+             myAdminEmail.setSubject("Exception thrown in GeneDataTools.getBQTLs");
+             myAdminEmail.setContent("There was an error while running getBQTLs.",e);
+            try {
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+            } catch (Exception mailException) {
+                log.error("error sending message", mailException);
+            }
         }
         }catch(Exception er){
             er.printStackTrace(System.err);
+            session.setAttribute("getBQTLsERROR","Error retreiving region bQTLs.  Please try again later.  The administrator has been notified of the problem.");
+             Email myAdminEmail = new Email();
+             myAdminEmail.setSubject("Exception thrown in GeneDataTools.getBQTLs");
+             myAdminEmail.setContent("There was an error while running getBQTLs.",er);
+            try {
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+            } catch (Exception mailException) {
+                log.error("error sending message", mailException);
+            }
         }
+        
         return bqtl;
     }
     
@@ -1694,12 +1755,31 @@ public class GeneDataTools {
             ps.close();
             
         }catch(SQLException e){
-            log.error("Error retreiving bQTLs.",e);
+            log.error("Error retreiving bQTL region from symbol.",e);
             e.printStackTrace(System.err);
+            session.setAttribute("getBQTLRegionFromSymbol","Error retreiving bQTL region from symbol.  Please try again later.  The administrator has been notified of the problem.");
+             Email myAdminEmail = new Email();
+             myAdminEmail.setSubject("Exception thrown in GeneDataTools.getBQTLs");
+             myAdminEmail.setContent("There was an error while running getBQTLs.",e);
+            try {
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+            } catch (Exception mailException) {
+                log.error("error sending message", mailException);
+            }
         }
         }catch(Exception er){
             er.printStackTrace(System.err);
+            session.setAttribute("getBQTLsERROR","Error retreiving bQTL region from symbol.  Please try again later.  The administrator has been notified of the problem.");
+             Email myAdminEmail = new Email();
+             myAdminEmail.setSubject("Exception thrown in GeneDataTools.getBQTLs");
+             myAdminEmail.setContent("There was an error while running getBQTLs.",er);
+            try {
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+            } catch (Exception mailException) {
+                log.error("error sending message", mailException);
+            }
         }
+        
         return region;
     }
     
