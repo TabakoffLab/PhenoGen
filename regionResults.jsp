@@ -253,7 +253,37 @@
 
           <BR />
          </span><!-- ends center span -->
-          
+
+
+<script type="text/javascript">
+	$('.ucscImage').hide();
+	$('#geneimageUnfilteredArray').show();
+	//Setup Fancy box for UCSC link
+	$('.fancybox').fancybox({
+		width:$(document).width(),
+		height:$(document).height(),
+		scrollOutside:false,
+		afterClose: function(){
+			$('body.noPrint').css("margin","5px auto 60px");
+			return;
+		}
+  });
+  
+  
+  $('#transcriptSelect').change(function(){
+  		$('.ucscImage').hide();
+		var transVal=$(this).val();
+		var lowerVal=$('#lowerTrackSelect').val();
+		$('#'+transVal+lowerVal).show();
+  });
+  
+   $('#lowerTrackSelect').change(function(){
+  		$('.ucscImage').hide();
+		var transVal=$('#transcriptSelect').val();
+		var lowerVal=$(this).val();
+		$('#'+transVal+lowerVal).show();
+  });
+</script>          
 
 <div class="cssTab" style="position:relative;">
     <ul>
@@ -1478,8 +1508,7 @@ $(document).ready(function() {
 		bqtlTarget=[ 1,4,5,10,12,13,14 ];
 	}
 	
-	$('.ucscImage').hide();
-	$('#geneimageUnfilteredArray').show();
+	
 	
 	/*  Removed Fixed columns because it slowed the page down too much it was always recalculating the rows.*/
 	var tblGenesFixed=null;
@@ -1537,31 +1566,10 @@ $(document).ready(function() {
 		$('#'+id+'Content').dialog("open").css({'font-size':12});
 	});
 	
-	//Setup Fancy box for UCSC link
-	$('.fancybox').fancybox({
-		width:$(document).width(),
-		height:$(document).height(),
-		scrollOutside:false,
-		afterClose: function(){
-			$('body.noPrint').css("margin","5px auto 60px");
-			return;
-		}
-  });
-  
-  
-  $('#transcriptSelect').change(function(){
-  		$('.ucscImage').hide();
-		var transVal=$(this).val();
-		var lowerVal=$('#lowerTrackSelect').val();
-		$('#'+transVal+lowerVal).show();
-  });
-  
-   $('#lowerTrackSelect').change(function(){
-  		$('.ucscImage').hide();
-		var transVal=$('#transcriptSelect').val();
-		var lowerVal=$(this).val();
-		$('#'+transVal+lowerVal).show();
-  });
+	
+	
+	
+	
   
  
   /* Setup Filtering/View Columns in tblGenes */
