@@ -52,7 +52,7 @@ sub prepCircosReverse
 	createCircosProbesetTextConfFile($dataDirectory,$confDirectory);
 
 
-	my $probeTextHashRef = createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$inputAOHRef,$cutoff,$tissueListRef);	
+	my $probeTextHashRef = createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$inputAOHRef,$cutoff,$tissueListRef,$chromosomeListRef);	
 	createCircosPvaluesDataFiles($dataDirectory,$organism,$inputAOHRef,$chromosomeListRef,$tissueListRef,$cutoff,$probeTextHashRef);
 }
 
@@ -262,7 +262,9 @@ sub createCircosLinksConfAndData{
 	# Create configuration and data file for circos links
 	# This is more complicated since there will be a varying number of data files
 	# Therefore, keeping the configuration and data file creation together
-	my ($dataDirectory,$organism,$confDirectory,$inputAOHRef,$cutoff,$tissueListRef) = @_;
+	my ($dataDirectory,$organism,$confDirectory,$inputAOHRef,$cutoff,$tissueListRef,$chromosomeListRef) = @_;
+	my @chromosomeList = @{$chromosomeListRef};
+	my $numberOfChromosomes = scalar @chromosomeList;
 	my @tissueList = @{$tissueListRef};
 	my $numberOfTissues = scalar @tissueList;
 	if($debugLevel >= 2){
@@ -275,14 +277,17 @@ sub createCircosLinksConfAndData{
 	my $linkCount = -1;
 	my $numberString;
 	my $tissue;
+	my $chromosome;
 	my $linkColor;
 	my $keepLink;
+	my $keepLink2;
 	my %probeTextHash;
 	my $gene_symbol;
 	for($i=0;$i<$arrayLength;$i++){
 		if($inputAOH[$i]{pvalue} > $cutoff){
 			# Check whether we want this type of link
 			$tissue = $inputAOH[$i]{tissue};
+			$chromosome = $inputAOH[$i]{probe_chromosome};
 			if($tissue eq "Whole Brain"){
 				$linkColor = 'blue';
 				$tissue="Brain";
@@ -303,7 +308,13 @@ sub createCircosLinksConfAndData{
 					$keepLink = 1;
 				}
 			}
-			if($keepLink == 1){
+			$keepLink2 = 0;
+			for(my $j=0; $j < $numberOfChromosomes; $j++){
+				if($chromosomeList[$j] eq $chromosome){
+					$keepLink2 = 1;
+				}
+			}			
+			if(($keepLink == 1)&&($keepLink2 ==1)){
 				#
 				# Add to the hash of probeset names
 				#
