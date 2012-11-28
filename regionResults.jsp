@@ -1037,9 +1037,9 @@
 						idList=idList+","+tc.getTranscriptClusterID();
 					}
 				}%>
-       			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a></div>
+       			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
         	<%}else{%>
-            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.</div>
+            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.<div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
             <%}%>	
 		<BR />	
 	
@@ -1191,14 +1191,18 @@
 <div id="Help1Content" class="inpageHelpContent" title="<center>Help-Image Controls</center>"><div class="help-content">
 <H3>UCSC Image Controls</H3>
 The controls above the UCSC image allow you to modify the information displayed in the image.<BR /><BR />
-
-A. The first control will toggle the transcript data track, which contains Ensembl transcripts(Brown, IDs begin with ENS) and in rat also contains reconstructed transcripts from RNA-Seq of Whole Brain( Blue – multi-exon transcripts, Black - single exon transcripts, begin with the tissue they are from, followed by a unique gene ID)<BR />
-	RNA-Seq Transcriptome Information<BR>
-		Transcripts were reconstructed from ???? using CuffLinks software. The raw read data is available for download in the Downloads section under RNA Sequencing BED/SAM Data Files.<BR />
-B. The second control will select the track displayed on the lower portion of the image.  For now there are three options:<BR />
-	1. None-which hides all the lower tracks.<BR />
-	2. UCSC/Affymetrix Tissue Expression Data- will display the Affy Exon tissue data provided by UCSC and Affymetrix.<BR />
-	3. Human Chromosome/Protein Mappings- will display in general what sections of the current organism map to a chromosome in the human genome based on the chromosome color key below the image. In mouse the lower track includes homologous proteins in Humans.<BR />
+<ol style="padding-left:25px; list-style-type:upper-alpha;">
+<li> The first control will toggle the transcript data track, which contains Ensembl transcripts(Brown, IDs begin with ENS) and in rat also contains reconstructed transcripts from RNA-Seq of Whole Brain( Blue – multi-exon transcripts, Black - single exon transcripts, begin with the tissue they are from, followed by a unique gene ID)<BR />
+	<p>RNA-Seq Transcriptome Information<BR>
+		Transcripts were reconstructed from sequencing BN-Lx and SHRH parental strains using CuffLinks software. The raw read data is available for download in the Downloads section under RNA Sequencing BED/SAM Data Files.</p><BR />
+</li>
+<li> The second control will select the track displayed on the lower portion of the image.  For now there are three options:<BR />
+	<ol style="padding-left:35px; list-style-type:decimal;">
+    <li> None-will hide all the lower tracks.</li>
+	<li> UCSC/Affymetrix Tissue Expression Data- will display the Affy Exon tissue data provided by UCSC and Affymetrix.</li>
+	<li> Human Chromosome/Protein Mappings- will display in general what sections of the current organism map to a chromosome in the human genome based on the chromosome color key below the image. In mouse the lower track includes homologous proteins in Humans.</li>
+    </ul>
+</li><BR />
 
 </div></div>
 
@@ -1209,16 +1213,16 @@ The image displayed is generated from UCSC.  If you are not familiar with UCSC G
 This image was constructed based on data from PhenoGen and UCSC and has multiple tracks, not all of which can be displayed simultaneously.  Although some tracks not marked as optional will always be displayed.
 <BR />
 Starting at the top:<BR />
-<ul>
+<ul style=" padding-left:25px; list-style:circle;">
 <li>Track 1(Optional, Default: Hidden)-Transcripts
-This track contains Ensembl transcripts(Brown, ID begins with ENS) and in rat also contains reconstructed transcripts from RNA-Seq of Whole Brain( Blue – multi-exon transcripts, Black - single exon transcripts, begin with the tissue they are from, followed by a unique gene ID)</li>
+This track contains Ensembl transcripts(Brown, ID begins with ENS) and in rat also contains reconstructed transcripts from RNA-Seq of Whole Brain( Blue – multi-exon transcripts, Black - single exon transcripts, begin with the tissue they are from, followed by a unique gene ID)</li><BR />
 <li>Track 2-bQTLs
-		These are Behavioral Quantitative Trait Loci.  This track shows the bQTLs located in the region entered.  This indicates some feature in this region is statistically associated with the observed Phenotype or Behavior.  For additional details about the phenotypes please see the complete list of and detailed table under the bQTLs Tab below the image.</li>
+		These are Behavioral Quantitative Trait Loci.  This track shows the bQTLs located in the region entered.  This indicates some feature in this region is statistically associated with the observed Phenotype or Behavior.  For additional details about the phenotypes please see the complete list of and detailed table under the bQTLs Tab below the image.</li><BR />
 <li>Track 3- RefSeq Genes
-		These are the Ref-Seq annotated genes in the region.  This will show the genes in the region with the highest level of confidence, while the tables in the tabs below may display additional genes from Ensembl that do not show up in this track.</li>
-<li>Track4 (Optional, Default: Displayed)- Affy Exon Array Expression Levels
-		This track shows the Affymetrix/UCSC generated data for multiple tissues.  This can be useful to quickly view where a gene might be expressed, although more detailed data for the tissues available on PhenoGen is displayed in the tables below or by selecting a particular gene to view Detailed Transcription Information.</li>
-<li>Track 5 (Optional, Default: Hidden) – Human Chromosome Mapping
+		These are the Ref-Seq annotated genes in the region.  This will show the genes in the region with the highest level of confidence, while the tables in the tabs below may display additional genes from Ensembl that do not show up in this track.</li><BR />
+<li>Track 4(Optional, Default: Displayed)- Affy Exon Array Expression Levels
+		This track shows the Affymetrix/UCSC generated data for multiple tissues.  This can be useful to quickly view where a gene might be expressed, although more detailed data for the tissues available on PhenoGen is displayed in the tables below or by selecting a particular gene to view Detailed Transcription Information.</li><BR />
+<li>Track 5(Optional, Default: Hidden) – Human Chromosome Mapping
 		This track along with the color coded image below will show what human chromosomes a region might correspond to.  In mouse this will also show a Ref-Seq like track(track#3) with human gene identifiers listed.</li>
 </ul>
 
@@ -1226,11 +1230,11 @@ This track contains Ensembl transcripts(Brown, ID begins with ENS) and in rat al
 
 <div id="Help3Content" class="inpageHelpContent" title="<center>Help-Gene in Region Tab</center>"><div class="help-content">
 <H3>Gene Physically Located in Region Tab</H3>
-This tab will display all the Ensembl genes located in this region along with any RNA-Seq genes that do not correspond to an Ensembl gene.<BR />
-Summary of Data for this tab:<BR />
-<ol type="1">
-<li>Gene Information(Ensembl ID, Gene Symbol, Location, description, # transcripts, # transcripts from RNA-Seq)</li>
-<li>Probeset detail (# Probesets, # whose expression is heritable(allows you to focus on expression differences controlled by genetics),# detected above background(DABG),(Avg % of samples DABG).</li>
+This tab will display all the Ensembl genes located in this region along with any RNA-Seq genes that do not correspond to an Ensembl gene.<BR /><BR />
+Summary of Data for this tab:<BR /><BR />
+<ol style=" list-style-type:decimal; padding-left:25px;">
+<li>Gene Information(Ensembl ID, Gene Symbol, Location, description, # transcripts, # transcripts from RNA-Seq)</li><BR />
+<li>Probeset detail (# Probesets, # whose expression is heritable(allows you to focus on expression differences controlled by genetics),# detected above background(DABG),(Avg % of samples DABG).</li><BR />
 <li>Transcript Cluster(Does not mean individual transcripts, but actually the gene level) expression quantitative trait loci.  At the gene level this indicates regions of the genome that are statistically associated with expression of the gene.  The table will display the p-value and location with the minimum p-value for each tissue available.  If you would like to view all of the locations across tissues click on the view location plot link for the gene of interest.
 </li>
 </ol>
@@ -1238,12 +1242,13 @@ Summary of Data for this tab:<BR />
 
 <div id="Help4Content" class="inpageHelpContent" title="<center>Help-Filter List/View Columns</center>"><div class="help-content">
 <H3>Filter List/View Columns</H3>
-Click on the + sign next to either Filter the list or change the displayed columns in the table.<BR />
+Click on the + sign next to either Filter the list or change the displayed columns in the table.<BR /><BR />
 You have the option to filter the table based on the following parameters:<BR />
-1.	eQTL P-value cut-off: This changes the number of locations and possibly will remove/add minimum p-value locations, but does not filter the list of genes in the region.<BR />
-2.	Single Exon RNA-Seq transcripts: This will either display or hide all the RNA-Seq transcripts that are a single exon.<BR />
-3.	Search text in the table: This is a text based search of every column in the tabe.  For example if you would like to view a single gene start entering the symbol into the text box.  It will continue to filter as you type.  If you eliminate everything begin deleting a character at a time and rows will begin to show up.  You might also use this to find proteins that have a particular keyword in the description.
-
+<ol style="list-style-type:decimal; padding-left:25px;">
+	<li>eQTL P-value cut-off: This changes the number of locations and possibly will remove/add minimum p-value locations, but does not filter the list of genes in the region.</li><BR />
+	<li>Single Exon RNA-Seq transcripts: This will either display or hide all the RNA-Seq transcripts that are a single exon.</li><BR />
+	<li>Search text in the table: This is a text based search of every column in the tabe.  For example if you would like to view a single gene start entering the symbol into the text box.  It will continue to filter as you type.  If you eliminate everything begin deleting a character at a time and rows will begin to show up.  You might also use this to find proteins that have a particular keyword in the description.</li>
+</ol>
 </div></div>
 
 <div id="Help5aContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
@@ -1259,25 +1264,30 @@ For rat data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, E
 These datasets are available to the public for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  (A free login is required, this allows you to save your progress and come back after lengthy processing steps.)  <BR /><BR />
 
 Columns:<BR />
-	Total number of non masked probesets<BR /> 
-Number with a heritability of >0.33(Avg heritability for probesets >0.33)<BR />
-Number detected above background(DABG) (Avg % of samples DABG)<BR />
-Transcript Cluster ID corresponding to the gene with Annotation level<BR />
-Circos Plot to show all eQTLs across tissues.<BR />
-eQTL for the transcript cluster in each tissue<BR />
-	-minimum P-value and location<BR />
-	-total locations with a P-value < cut-off<BR />
+<ul style="padding-left:25px; list-style-type:square;">
+	<li>Total number of non masked probesets</li><BR /> 
+	<li>Number with a heritability of >0.33(Avg heritability for probesets >0.33)</li><BR />
+	<li>Number detected above background(DABG) (Avg % of samples DABG)</li><BR />
+	<li>Transcript Cluster ID corresponding to the gene with Annotation level</li><BR />
+	<li>Circos Plot to show all eQTLs across tissues.</li><BR />
+	<li>eQTL for the transcript cluster in each tissue</li>
+    	<ul style="padding-left:35px; list-style-type:disc;">
+    	<li>minimum P-value and location</li>
+		<li>total locations with a P-value < cut-off</li>
+        </ul>
+        </li>
+</ul>
 
 </div></div>
 
 <div id="Help5cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>Heritablity</H3>
-The heritability indicates how well expression of a probeset correlates with the strain of mice/rats.  Since we have 20 or 60 strains we can calculate how well the expression is correlated to the strain.  Higher heritability indicates expression of a probeset is more influenced by genetics over unknown environmental factors.  Higher than 0.33 is considered of interest(??). 
+For each probe set on the Affymetrix Exon 1.0 ST Array (mouse or rat), we calculated a broad-sense heritability using an ANOVA model and expression data from the ILSXISS panel (mouse) or the HXB/BXH panel (rat).  The heritability threshold of 0.33 was chosen arbitrarily to represent an expression estimate with at least modest heritability. In the rat, we include the number of probesets at least modestly heritable in the four available tissues (brain, heart, liver, and brown adipose). 
 </div></div>
 
 <div id="Help5dContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>Detection Above Background(DABG)</H3>
-The exon arrays are normalized by the Affymetrix Power Tools software.  This assigns a probability that the probeset is detected above the background level.  The numbers reported are the number of probesets that are detected above background in at least 1% of samples.  This tends to eliminate most of the low or absent probesets, with out removing probesets that might be of interest in a strain or group.  The average percentage of samples where the probesets were detected above background is also reported for reference.
+For each probe set on the Affymetrix Exon 1.0 ST Array (mouse or rat) and each sample, we calculated a p-value associated with the expression of the probe set above background (DABG – detection above background).  Using a p-value threshold of 0.0001, we calculated the proportion of samples from the ILSXISS panel (mouse) or HXB/BXH panel (rat) that had expression values significantly different from background for a given probeset.  In the table, we report the number of probesets whose expression values were detected above background in more than 1% of samples and the average percentage of samples where the probesets were detected above background.
 </div></div>
 
 <div id="Help5eContent" class="inpageHelpContent" title="<center>Help-eQTLs</center>"><div class="help-content">
@@ -1304,14 +1314,14 @@ Transcript Cluster ID- Is the unique ID assigned by affymetrix.  eQTLs are calcu
 
 <div id="Help5gContent" class="inpageHelpContent" title="<center>Help-Genome Wide Associations</center>"><div class="help-content">
 <H3>Genome Wide Associations</H3>
-Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.  It is a nice way to visualize the following columns.
+Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.  It is a nice way to visualize the columns to the right.
 </div></div>
 
 <div id="Help6Content" class="inpageHelpContent" title="<center>Help-Filter/Display-bQTLs</center>"><div class="help-content">
-<H3>Filter/Display</H3>
+<H3>Filter List/View Columns</H3>
 For this section you may only filter based on text in the table.  To search for a keyword just start typing and results will be filtered base on what has been entered.<BR />
-For the View Columns section you may choose which columns are displayed.  The options to view/hide are:<BR />
-<ul type="disc">
+For the View Columns section you may choose which columns are displayed.<BR /><BR />The options to view/hide are:<BR />
+<ul style=" padding-left:25px; list-style-type:square;">
 	<li>bQTL Symbol-looks much like a gene symbol, but has been assigned to a bQTL by RGD or MGI.</li>
 	<li>Trait Method-A description of the method used to measure a particular phenotype.</li>
 	<li>Phenotype- A description or phrase to describe the characteristics measured.</li>
@@ -1319,12 +1329,15 @@ For the View Columns section you may choose which columns are displayed.  The op
 	<li>References-Both Pubmed and RGD/MGI curated references related to the bQTL.</li>
 	<li>Associated bQTLs-bQTLs that are related to the displayed bQTL.</li>
 	<li>Location Method-a brief description of the method used to determine the location of the bQTL.</li>
-		- by peak only- still looking for descriptions of each method.
-		- by peak w adj size
-		- by one flank and peak markers
-		- by one flank marker only
-		- by flanking markers
-		- imported from external source</li>
+    	<ul style="padding-left:35px; list-style-type:disc;">
+			<li> by peak only</li>
+			<li> by peak w adj size</li>
+			<li> by one flank and peak markers</li>
+			<li> by one flank marker only</li>
+			<li> by flanking markers</li>
+			<li> imported from external source</li>
+        </ul>
+    </li>
 	<li>LOD Score/P-value-When available(many are not reported directly by RGD/MGI) indicates the level of confidence the region contributes to the Phenotype.  Higher LOD Scores / Lower P-values indicate higher confidence in the association.</li>
 </ul>
 
@@ -1333,10 +1346,10 @@ For the View Columns section you may choose which columns are displayed.  The op
 <div id="Help7Content" class="inpageHelpContent" title="<center>Help-bQTL Tab</center>"><div class="help-content">
 <H3>bQTL Tab</H3>
 Summary-
-	The bQTL tab allows you to view <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that correspond to the region.  <BR /><BR />
+	The bQTL tab allows you to view <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that overlap with the region.  <BR /><BR />
 What is a bQTL?(View detailed bQTL information) 
 	Breifly a bQTL is a region that is associated with a particular phenotype or behavior (thus bQTL).  <BR /><BR />
-How is it calculated? Etc
+How is it calculated?
 	bQTLs can be found for Recombinant Inbred Panels by measuring a trait/behavior across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation regions can be found that are correlated with a particular phenotype.  These are the regions listed here.  This may indicate that a gene or other feature is somehow influencing the phenotype.
 
 </div></div>
@@ -1353,17 +1366,18 @@ This column is the method used to determine the location.  A description of each
 </div></div>
 
 <div id="Help9Content" class="inpageHelpContent" title="<center>Help-Filter/View Columns-eQTLs</center>"><div class="help-content">
-<H3>Filter/View Columns</H3>
+<H3>Filter Circos Plot and Table/View Columns</H3><BR />
+Filter Circos Plot/Table<BR />
 You may filter the ciros plot and table by tissues, eQTL P-value, and chromosome.  Simply change the paramters you would like to filter by and click on Run Filter.<BR />
-<ul type="disc">
+<ul style=" padding-left:25px; list-style-type:square;">
 	<li>eQTL P-value- is the cutoff for to limit genes displayed to those that have a P-value for the selected region less than or equal to the cutoff.</li>
 	<li>Tissues(Rat Only)- Move the tissues to the excluded column if you do not want to include all of them.  This will keep only genes that have significant eQTLs in one of the tissues still included.</li>
 	<li>Chromosomes- Move any chromosomes to exclude into the exclude column.  This will filter out genes that are located on that chromosome.</li>
 </ul>
-
-View Columns
+<BR /><BR />
+View Columns<BR />
 You may show/hide various columns using the check boxes below View Columns.<br />
-<ul type="disc">
+<ul style="padding-left:25px; list-style-type:square;">
 	<li>Gene ID- The Ensembl gene ID that links directly to Ensembl.</li>
 	<li>Descriptioin- The Ensembl description of the gene.</li>
 	<li>Transcript ID and Annot.- The Transcript Cluster ID and Annotation Level which is the Affymetrix transcript cluster that corresponds to the gene and the level of confidence.</li>.
@@ -1395,43 +1409,46 @@ At the transcript cluster level this is an eQTL for a gene and not individual	 p
 
 </div></div>
 
-<div id="Help11Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>Circos Plot Gene Locations</H3>
-This plot shows all of the genes that have an eQTL in the region entered.  These genes correspond to the genes listed in the table below.
-<BR />
+<div id="Help11Content" class="inpageHelpContent" title="<center>Help-Circos eQTL Plot</center>"><div class="help-content">
+<H3>Circos Plot eQTL Gene Locations</H3>
+This plot shows all of the genes that have an eQTL in the region entered.  These genes correspond to the genes listed in the table below.  If a higher number of genes are located in nearly the same region only the first 2-3 may be displayed.
+<BR /><BR />
 The plot can be hidden altogether using the +/- button.  The size of the plot can also be controlled use the button next to the directions.
-<BR />
+<BR /><BR />
 When your mouse is inside the border below you can zoom in/out on the plot.  When your mouse is outside you will be able to scroll normally.  The controls inside the image can be used to zoom in/out and reset the image.  You may also click and drag to reposition the image.
-
+<BR /><BR />
+You may download a PDF of the image by clicking on the download icon(<img src="web/images/icons/download_g.png">).
+<BR /><BR />
+You may also reduce or restore the verticle space used for the graphic by clicking on the <img src="web/images/icons/circos_min.jpg"> or <img src="web/images/icons/circos_max.jpg"> icons.
 </div></div>
 
-<div id="Help12aContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help12aContent" class="inpageHelpContent" title="<center>Help-Transcript Cluster ID</center>"><div class="help-content">
 <H3>Transcript Cluster ID</H3>
 Transcript Cluster ID- Is the unique ID assigned by affymetrix.  eQTLs are calculated for this annotation at the Gene level by combining probeset data across the gene.
 </div></div>
 
 
-<div id="Help12bContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help12bContent" class="inpageHelpContent" title="<center>Help-Annotation Level</center>"><div class="help-content">
 <H3>Annotation level</H3>
 Annotation level- is related to the confidence in the gene.  Core is the highest confidence.  This level tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and will include additional regions beyond the Ensembl annotations.
 </div></div>
 
-<div id="Help12cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help12cContent" class="inpageHelpContent" title="<center>Help-Affy Exon Data</center>"><div class="help-content">
 <H3>Affy Exon Data-eQTLs</H3>
 The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse data is from the Public ILSXISS RI Mice
 For rat data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)
-<BR />
+<BR /><BR />
 These datasets are available to the public for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  (A free login is required, this allows you to save your progress and come back after lengthy processing steps.)  
-<BR />
+<BR /><BR />
 Columns:<BR />
-<ul type="disc">
-<li>Transcript Cluster ID unique Affymetrix assigned id that corresponds to a gene. </li>
-<li>Annotation level confidence in the transcript cluster annotation</li>
-<li>Circos Plot to show all eQTLs for a specific gene across tissues.</li>
-<li>eQTL for the transcript cluster in each tissue</li>
-		<ul type="square">
-		<li>-P-value from this region</li>
-		<li>-total other locations with a P-value < cut-off</li>
+<ul style="list-style-type:square; padding-left:25px;">
+	<li>Transcript Cluster ID unique Affymetrix assigned id that corresponds to a gene. </li>
+	<li>Annotation level confidence in the transcript cluster annotation</li>
+	<li>Circos Plot to show all eQTLs for a specific gene across tissues.</li>
+	<li>eQTL for the transcript cluster in each tissue</li>
+		<ul style="list-style-type:disc; padding-left:35px;">
+		<li>P-value from this region</li>
+		<li>total other locations with a P-value < cut-off</li>
         </ul>
 </ul>
 </div></div>
@@ -1442,6 +1459,13 @@ Columns:<BR />
 The human/Net and Human/Chain tracks displayed indicate which chromosome in Humans maps to a particular colored region in the image.  This will only help to identify the chromosome where a gene that aligns to a particular color might reside.  In Mouse this also adds Human proteins that are homologous to the proteins in this region and by comparing the human homologs to the alignment track it is possible to see the chromosome that gene is on.  To better be able to zoom and manipulate the image you may always click on the image to open the UCSC Genome Browser which will enable you to zoom in/out and shift the region more easily to look at a gene/region of interest.
 </div></div>
 
+<div id="Help14Content" class="inpageHelpContent" title="<center>Help</center>">
+<div class="help-content">
+<H3>DAVID</H3>
+A list of genes can be imported into the DAVID website for additional information about function and also to look for a significant enrichment in function pathways by the list which might imply some biological meaning.  The link if available will open the summany where you can explore the genes that were processed automatically.
+<BR /><BR />
+Currently only lists of 300 genes are less are supported.  This is a limit of the method used to submit genes to the DAVID website.  We will either be replacing the site or supporting a different method to allow longer lists in the future.  If you perform filtering to get the list below 300 you will be able to click a link and immediately analyze data on the site, Otherwise you can copy one of the ID columns such as Gene IDs(Ensembl IDs) and submit them on your own.
+</div></div>
 
 <script type="text/javascript">
 

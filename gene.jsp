@@ -382,7 +382,7 @@ Or
 <BR />
 <div class="demo" style="text-align:center;">
 						<BR /><BR /><BR />
-                        Demonstration<BR />
+                        Detailed Transcription Information Demonstration<BR />
 						<video width="800" height="560" controls="controls">
                     		<source src="<%=contextRoot%>web/demo/test.mp4" type="video/mp4">
                             <source src="<%=contextRoot%>web/demo/test.webm" type="video/webm">
