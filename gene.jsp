@@ -57,6 +57,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	boolean region=false;
 	
 	double pValueCutoff=0.001;
+	double forwardPValueCutoff=0.01;
 	
 	int rnaDatasetID=0;
 	int arrayTypeID=0;
@@ -94,8 +95,11 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	if(request.getParameter("pvalueCutoffInput")!=null){
 		pValueCutoff=Double.parseDouble(request.getParameter("pvalueCutoffInput"));
 	}
+	if(request.getParameter("forwardPvalueCutoffInput")!=null){
+		forwardPValueCutoff=Double.parseDouble(request.getParameter("forwardPvalueCutoffInput"));
+	}
 	
-	log.debug("ACTION="+action+"  region="+region+"   gene="+myGene+"   pvalue="+pValueCutoff);
+	log.debug("ACTION="+action+"  region="+region+"   gene="+myGene+"   rev. pvalue="+pValueCutoff+"  for Pval="+forwardPValueCutoff);
 	
 	if (    (((action != null) && action.equals("Get Transcription Details"))&&(!region))
 			|| (auto&&(!region))
@@ -251,7 +255,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		max=Integer.parseInt(maxCoord);
 		DecimalFormat df0 = new DecimalFormat("#,###");
 		myDisplayGene=chromosome+":"+df0.format(min)+"-"+df0.format(max);
-		fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,pValueCutoff);					
+		fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff);					
 		String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 		String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
 		String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
@@ -339,6 +343,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
  <span style="padding-left:40px;"> <input type="submit" name="refreshBTN" id="getTrxBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
  
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
+    <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
     <input type="hidden" name="tissues" id="tissues" value="" />
     <input type="hidden" name="chromosomes" id="chromosomes" value="" />
     <input type="hidden" name="action" id="action" value="Get Transcription Details" />
@@ -364,6 +369,7 @@ Or
   		<input type="hidden" name="geneTxt" id="geneTxt" value="<%= (myGene!=null)?myGene:"" %>">
  		<input type="hidden" name="speciesCB" id="speciesCB" value="<%=(myOrganism!=null)?myOrganism:"" %>"> 
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
+    <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
     <input type="hidden" name="tissues" id="tissues" value="" />
     <input type="hidden" name="chromosomes" id="chromosomes" value="" />
     <input type="hidden" name="action" id="action" value="Get Transcription Details" />
