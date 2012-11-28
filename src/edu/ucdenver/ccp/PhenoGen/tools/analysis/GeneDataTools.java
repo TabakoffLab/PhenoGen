@@ -1594,6 +1594,21 @@ public class GeneDataTools {
                 perlArgs[5] = circosTissue;
                 perlArgs[6] = circosChr;
 
+                
+                
+                
+                //remove old circos directory
+                int cutoff=(int)-Math.log10(pvalue)*10;
+                String circosDir=outputDir+"circos"+cutoff;
+                File circosFile=new File(circosDir);
+                if(circosFile.exists()){
+                    try{
+                        myFH.deleteAllFilesPlusDirectory(circosFile);
+                    }catch(Exception e){
+                        log.error("Error trying to delete circos directory\n",e);
+                    }
+                }
+                    
                 //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
                 
                 /*for (int i = 0; i < perlArgs.length; i++) {
