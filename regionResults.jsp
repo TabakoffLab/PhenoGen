@@ -808,10 +808,10 @@
                                             eQTL P-Value Cut-off:
                                             <select name="pvalueCutoffSelect2" id="pvalueCutoffSelect2">
                                             		<!--<option value="0.1" <%if(Double.toString(pValueCutoff).equals("0.10")){%>selected<%}%>>0.1</option>-->
-                                                    <option value="0.01" <%if(Double.toString(pValueCutoff).equals("0.010")){%>selected<%}%>>0.01</option>
-                                                    <option value="0.001" <%if(Double.toString(pValueCutoff).equals("0.0010")){%>selected<%}%>>0.001</option>
-                                                    <option value="0.0001" <%if(Double.toString(pValueCutoff).equals("1.0E-4")){%>selected<%}%>>0.0001</option>
-                                                    <option value="0.00001" <%if(Double.toString(pValueCutoff).equals("1.0E-5")){%>selected<%}%>>0.00001</option>
+                                                    <option value="0.01" <%if(pValueCutoff==0.01){%>selected<%}%>>0.01</option>
+                                                    <option value="0.001" <%if(pValueCutoff==0.001){%>selected<%}%>>0.001</option>
+                                                    <option value="0.0001" <%if(pValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
+                                                    <option value="0.00001" <%if(pValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
                                             </select>
                                             
                                          </TD>
