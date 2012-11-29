@@ -92,6 +92,19 @@
                     <a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" class="button" style="margin: 0 0 0 40px;">Try it out</a>
 			</div> <!-- // end overview-content -->
             	</div> <!-- // end overview-wrap -->
+                
+                <div class="demoVideo" style="display:inline-block;float:right;position:relative;top:-450px; padding-right:10px;">
+                        	<span style="text-align:center;"><h3>Detail Transcription Information Demo</h3></span>
+                        	<video width="400" height="300" controls="controls">
+                                <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
+                                <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
+                            
+                              	<object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="400" height="280">
+                              	</object>
+                        	</video>
+                            <!--<H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp?file=<%=contextRoot%>web/demo/test." target="_blank">Open in a new Window</a></H3><BR />
+                            <H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp" target="_blank">View other demo videos</a></H3> -->
+                        </div>
         </div> <!-- // end welcome-->
 	
     
