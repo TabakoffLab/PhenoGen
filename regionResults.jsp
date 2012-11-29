@@ -1028,16 +1028,44 @@
 	<%}%>
 		
 		<%if(transOutQTLs!=null && transOutQTLs.size()>0){
-			if(transOutQTLs.size()<=300){
-				String idList="";
-				for(int i=0;i<transOutQTLs.size();i++){
-					TranscriptCluster tc=transOutQTLs.get(i);
+			//if(transOutQTLs.size()<=300){
+			String idList="";
+			for(int i=0;i<transOutQTLs.size();i++){
+				TranscriptCluster tc=transOutQTLs.get(i);
+				String tcChr=myOrganism.toLowerCase()+tc.getChromosome();
+				boolean include=false;
+				boolean tissueInclude=false;
+				for(int z=0;z<selectedChromosomes.length&&!include;z++){
+					if(selectedChromosomes[z].equals(tcChr)){
+						include=true;
+					}
+				}
+				for(int j=0;j<tissuesList2.length&&include&&!tissueInclude;j++){
+					boolean isTissueSelected=false;
+					for(int k=0;k<selectedTissues.length;k++){
+						if(selectedTissues[k].equals(tissueNameArray[j])){
+							isTissueSelected=true;
+						}
+					}
+					if(isTissueSelected){
+						ArrayList<EQTL> regionQTL=tc.getTissueRegionEQTL(tissuesList2[j]);
+						if(regionQTL!=null){
+							EQTL regQTL=regionQTL.get(0);
+							if(regQTL.getPVal()<=pValueCutoff){
+								tissueInclude=true;
+							}
+						}
+					}
+				}
+				if(include&&tissueInclude){
 					if(i==0){
 						idList=tc.getTranscriptClusterID();
 					}else{
 						idList=idList+","+tc.getTranscriptClusterID();
 					}
-				}%>
+				}
+			}
+			if(transOutQTLs.size()<=300){%>
        			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
         	<%}else{%>
             	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.<div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
@@ -1086,12 +1114,30 @@
 						TranscriptCluster tc=transOutQTLs.get(i);
 						String tcChr=myOrganism.toLowerCase()+tc.getChromosome();
 						boolean include=false;
+						boolean tissueInclude=false;
 						for(int z=0;z<selectedChromosomes.length&&!include;z++){
 							if(selectedChromosomes[z].equals(tcChr)){
 								include=true;
 							}
 						}
-						if(include){
+						for(int j=0;j<tissuesList2.length&&include&&!tissueInclude;j++){
+							boolean isTissueSelected=false;
+							for(int k=0;k<selectedTissues.length;k++){
+								if(selectedTissues[k].equals(tissueNameArray[j])){
+									isTissueSelected=true;
+								}
+							}
+							if(isTissueSelected){
+								ArrayList<EQTL> regionQTL=tc.getTissueRegionEQTL(tissuesList2[j]);
+								if(regionQTL!=null){
+									EQTL regQTL=regionQTL.get(0);
+									if(regQTL.getPVal()<=pValueCutoff){
+										tissueInclude=true;
+									}
+								}
+							}
+						}
+						if(include && tissueInclude){
                         %>
                         <TR>
                             <TD ><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=tc.getGeneID()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for gene.">
