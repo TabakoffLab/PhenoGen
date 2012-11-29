@@ -389,10 +389,10 @@ Or
 <div class="demo" style="text-align:center;">
 						<BR /><BR /><BR />
                         Detailed Transcription Information Demonstration<BR />
-						<video width="800" height="560" controls="controls">
+						<video width="800" height="650" controls="controls">
                     		<source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
                             <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                          <object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="800" height="560">
+                          <object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="800" height="650">
                           </object>
                         </video>
 </div>
