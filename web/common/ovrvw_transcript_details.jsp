@@ -95,13 +95,14 @@
                 
                 <div class="demoVideo" style="display:inline-block;float:right;position:relative;top:-450px; padding-right:10px;">
                         	<span style="text-align:center;"><h3>Detail Transcription Information Demo</h3></span>
-                        	<video width="400" height="300" controls="controls">
+                        	<video id="demoVid" width="400" height="300" controls="controls">
                                 <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
                                 <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
                             
                               	<object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="400" height="280">
                               	</object>
-                        	</video>
+                        	</video><BR />
+                            <div id="showOpenLargeVideo" style="display:none;text-align:center; width:100%;"><a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/detailed_transcript_fullv3" class="button" style="width:180px;" target="_blank" >View larger version</a></div>
                             <!--<H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp?file=<%=contextRoot%>web/demo/test." target="_blank">Open in a new Window</a></H3><BR />
                             <H3><a href="<%=contextRoot%>web/demo/mainDemo.jsp" target="_blank">View other demo videos</a></H3> -->
                         </div>
@@ -121,6 +122,30 @@
 				$("div."+baseName).removeClass("clicker");
 				$("div."+baseName).addClass("clickerLess");
             		});
+					
+				//if we are in IE need to offer a way to view a larger video.  Other browsers support fullscreen but not IE9 or lower.
+				//alert(navigator.userAgent);
+				if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
+ 					var ffversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+ 					if (ffversion<11)
+						$('#showOpenLargeVideo').show();
+				}else if (/Safari[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Safari/x.x or Safari x.x (ignoring remaining digits);
+					/Version[\/\s](\d+\.\d+)/.test(navigator.userAgent);
+ 					var sfversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+ 					if (sfversion<5)
+						$('#showOpenLargeVideo').show();
+				}else if (/Chrome[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Chrome/x.x or Chrome x.x (ignoring remaining digits);
+ 					var cversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+ 					if (cversion<21)
+						$('#showOpenLargeVideo').show();
+				}else if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
+ 					var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+					 if (ieversion<10)
+					  	$('#showOpenLargeVideo').show();
+				}else if (/Opera[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Opera/x.x or Opera x.x (ignoring remaining decimal places);
+ 					var oprversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+					$('#showOpenLargeVideo').show();
+				}
 					
         	});
 		
