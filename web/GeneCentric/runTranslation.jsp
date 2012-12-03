@@ -24,7 +24,7 @@
 	
 	String fullSpecies="Mouse";
 	String targetChainFile="hg19ToMm9.over.chain";
-	String humanRegion="";
+	String srcRegion="";
 	String displayHumanRegion="";
 	String chromosome="";
 	long start=0,stop=0;
@@ -36,18 +36,36 @@
 	DecimalFormat df0 = new DecimalFormat("#,###");
 	FileHandler fh= new FileHandler();
 	if(request.getParameter("region")!=null){
-		humanRegion=request.getParameter("region");
-		humanRegion=humanRegion.replaceAll(",","");
-		int colonInd=humanRegion.indexOf(":");
-		int dashInd=humanRegion.indexOf("-");
-		if(colonInd<dashInd && colonInd>-1 && dashInd>-1){
-			chromosome=humanRegion.substring(0,colonInd);
-			String startTmp=humanRegion.substring(colonInd+1,dashInd);
-			String stopTmp=humanRegion.substring(dashInd+1);
-			start=Long.parseLong(startTmp);
-			stop=Long.parseLong(stopTmp);
+		srcRegion=request.getParameter("region");
+		srcRegion=srcRegion.replaceAll(",","");
+		int colonInd=srcRegion.indexOf(":");
+		if(colonInd>0){
+			chromosome=srcRegion.substring(0,colonInd);
+			if(srcRegion.indexOf("+-")>0){
+					String minCoord=srcRegion.substring(srcRegion.indexOf(":")+1,srcRegion.indexOf("+-"));
+					String maxCoord=srcRegion.substring(srcRegion.indexOf("+-")+2);
+					int tmpInt=Integer.parseInt(maxCoord);
+					start=Long.parseLong(minCoord)-tmpInt;
+					stop=Long.parseLong(minCoord)+tmpInt;
+			}else if(srcRegion.indexOf("-+")>0){
+					String minCoord=srcRegion.substring(srcRegion.indexOf(":")+1,srcRegion.indexOf("-+"));
+					String maxCoord=srcRegion.substring(srcRegion.indexOf("-+")+2);
+					int tmpInt=Integer.parseInt(maxCoord);
+					start=Long.parseLong(minCoord)-tmpInt;
+					stop=Long.parseLong(minCoord)+tmpInt;
+			}else if (srcRegion.indexOf("+")>0){
+					String minCoord=srcRegion.substring(srcRegion.indexOf(":")+1,srcRegion.indexOf("+"));
+					String maxCoord=srcRegion.substring(srcRegion.indexOf("+")+1);
+					start=Long.parseLong(minCoord);
+					stop=start+Long.parseLong(maxCoord);
+			}else if(srcRegion.indexOf("-")>0){
+					String minCoord=srcRegion.substring(srcRegion.indexOf(":")+1,srcRegion.indexOf("-"));
+					String maxCoord=srcRegion.substring(srcRegion.indexOf("-")+1);
+					start=Long.parseLong(minCoord);
+					stop=Long.parseLong(maxCoord);
+			}
 			if(start>0 && stop > 0){
-				origLen=stop-start;
+					origLen=stop-start;
 			}
 			displayHumanRegion=chromosome+":"+df0.format(start)+"-"+df0.format(stop);
 		}
