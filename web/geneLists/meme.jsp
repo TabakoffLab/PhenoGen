@@ -59,8 +59,9 @@
 			java.sql.Timestamp timeNow = myObjectHandler.getNowAsTimestamp();
 
         		String geneListAnalysisDir = selectedGeneList.getGeneListAnalysisDir(userLoggedIn.getUserMainDir());
-        		String memeDir = selectedGeneList.getMemeDir(geneListAnalysisDir);
-        		String sequenceFileName = selectedGeneList.getUpstreamFileName(memeDir, upstreamLength, now);
+        		String memeDir = selectedGeneList.getMemeDir(geneListAnalysisDir,now);
+        		//String sequenceFileName = selectedGeneList.getUpstreamFileName(memeDir, upstreamLength, now);
+				String sequenceFileName = memeDir+"upstream_"+ upstreamLength + "bp.fasta.txt";
 
 			if (!myFileHandler.createDir(geneListAnalysisDir) || 
         			!myFileHandler.createDir(memeDir)) {
@@ -87,9 +88,10 @@
 				myGeneListAnalysis.setParameter_group_id(parameter_group_id);
 		
 				log.debug("now = "+now);
-	        		String memeFileName = selectedGeneList.getMemeFileName(memeDir, now);
+	        		//String memeFileName = selectedGeneList.getMemeFileName(memeDir, now);
+				String memeFileName = memeDir;
 
-				ParameterValue[] myParameterValues = new ParameterValue[5];
+				ParameterValue[] myParameterValues = new ParameterValue[6];
 				for (int i=0; i<myParameterValues.length; i++) {
 					myParameterValues[i] = new ParameterValue();
 					myParameterValues[i].setCreate_date();
@@ -106,6 +108,8 @@
                 		myParameterValues[3].setValue(minWidth);
                 		myParameterValues[4].setParameter("Maximum Motif Width");
                 		myParameterValues[4].setValue(maxWidth);
+						myParameterValues[5].setParameter("MEME Dir");
+                		myParameterValues[5].setValue(memeDir);
 
 				myGeneListAnalysis.setParameterValues(myParameterValues);
 
@@ -115,7 +119,7 @@
 						session,
 						sequenceFileName,
 						true,
-                                		myGeneListAnalysis));
+                        myGeneListAnalysis));
 
 				log.debug("Starting first thread to run PromoterExtraction: "+ thread.getName());
 
@@ -129,7 +133,7 @@
 						maxMotifs,
 						minWidth,
 						maxWidth,
-                                		myGeneListAnalysis,
+                        myGeneListAnalysis,
 						thread));
 
 				log.debug("Starting second thread to run Meme "+ thread2.getName());

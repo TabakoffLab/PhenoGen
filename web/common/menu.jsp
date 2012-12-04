@@ -121,7 +121,7 @@
 
   <!--<div id="crumb_trail"></div>-->
   
-  <script>
+  <script type="text/javascript">
   	var mouse_is_inside = false;
   
   	$(document).ready(function() {

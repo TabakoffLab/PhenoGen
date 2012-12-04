@@ -1133,6 +1133,15 @@ public class GeneList{
 	 * @param geneListAnalysisDir	the directory where all analyses for this GeneList will be held 
 	 * @return            a String containing the path for this MEME analysis
 	 */
+  	public String getMemeDir(String geneListAnalysisDir,String now) {
+		return geneListAnalysisDir + "MEME" + "/"+now+"/"; 
+  	}
+        
+        /**
+	 * Constructs the path where the files for a MEME analyses performed on this GeneList will be held.
+	 * @param geneListAnalysisDir	the directory where all analyses for this GeneList will be held 
+	 * @return            a String containing the path for this MEME analysis
+	 */
   	public String getMemeDir(String geneListAnalysisDir) {
 		return geneListAnalysisDir + "MEME" + "/"; 
   	}
