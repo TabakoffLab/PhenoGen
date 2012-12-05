@@ -439,17 +439,10 @@ Or
 		document.getElementById("wait1").style.display = 'none';
 		//document.tooltip();
 </script>
-<BR />
-<div class="demo" style="text-align:center;">
-						<BR /><BR /><BR />
-                        Detailed Transcription Information Demonstration<BR />
-						<video width="800" height="650" controls="controls">
-                    		<source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
-                            <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                          <object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="800" height="650">
-                          </object>
-                        </video>
-</div>
+
+
+
+
 
 <div class="translate">
 </div>
@@ -470,17 +463,109 @@ Or
 	}
 </script>
 
-<%if(!region){%>
-
+<%if(!region&&genURL.size()>0){%>
+	<div style="text-align:center;">
+        <div id="javaError" style="display:none;">
+            <BR /><BR />
+            <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for this page.  Please correct the error listed below.  <BR />
+            <BR />
+        </div>
+        
+        <span id="disabledJava" style="display:none;margin-left:40px;"><span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
+                    To enable Java in your browser or operating system, see:<BR><BR> 
+                    Firefox: <a href=\"http://support.mozilla.org/en-US/kb/unblocking-java-plugin\">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
+                    Internet Explorer: <a href=\"http://java.com/en/download/help/enable_browser.xml\">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
+                    Safari: <a href=\"http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html\">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
+                    Chrome: <a href=\"http://java.com/en/download/faq/chrome.xml\">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
+        
+        <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
+        <span id="installJava" style="display:none;" class="button">Install Java</span>
+    </div>
+    
+    <script src="http://www.java.com/js/deployJava.js"></script>
+            <script>
+                // check if current JRE version is greater than 1.5.0 
+                 if(!navigator.javaEnabled()){
+                        $('#javaError').css("display","inline-block");
+                        $('#disabledJava').css("display","inline-block");
+						alert("Java not enabled");
+                 }else if (deployJava.versionCheck('1.5.0+') == false) {
+                     $('#javaError').css("display","inline-block");
+                    $('#noJava').css("display","inline-block");                  
+                    $('#installJava').css("display","inline-block");
+                }
+                $('#installJava').click(function (){
+                    // Set deployJava.returnPage to make sure user comes back to 
+                    // your web site after installing the JRE
+                    deployJava.returnPage = location.href;
+                            
+                    // Install latest JRE or redirect user to another page to get JRE
+                    deployJava.installLatestJRE(); 
+                });	
+    </script>
 	<%@ include file="geneResults.jsp" %>
 
-<%}else{%>
+<%}else if(region && genURL.size()>0){%>
 
 	<%@ include file="regionResults.jsp" %>
 
+<%}else{%>
+	<div style="text-align:center;">
+        <div id="javaError" style="display:none;">
+            <BR /><BR />
+            <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for a specific gene.  Please correct the error listed below before proceeding with a specific gene.  You may view regions, but specific genes will not work until Java is installed or updated.<BR /><BR />
+            <BR />
+        </div>
+        
+        <span id="disabledJava" style="display:none;margin-left:40px;"><span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
+                    To enable Java in your browser or operating system, see:<BR><BR> 
+                    Firefox: <a href=\"http://support.mozilla.org/en-US/kb/unblocking-java-plugin\">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
+                    Internet Explorer: <a href=\"http://java.com/en/download/help/enable_browser.xml\">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
+                    Safari: <a href=\"http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html\">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
+                    Chrome: <a href=\"http://java.com/en/download/faq/chrome.xml\">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
+        
+        <span id="oldJava" style="color:#00AA00;display:none;">A newer Java version may be available click the Install button for the latest version.(You may still use all functions even if you see this message.)<BR /></span>
+        <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
+        <span id="installJava" style="display:none;" class="button">Install Java</span>
+    </div>
+    
+    <script src="http://www.java.com/js/deployJava.js"></script>
+            <script>
+                // check if current JRE version is greater than 1.5.0 
+                if(!navigator.javaEnabled()){
+                        $('#javaError').css("display","inline-block");
+                        $('#disabledJava').css("display","inline-block");
+                }else if (deployJava.versionCheck('1.5.0+') == false) {
+                     $('#javaError').css("display","inline-block");
+                    $('#noJava').css("display","inline-block");                  
+                    $('#installJava').css("display","inline-block");
+                }else{
+                    if (deployJava.versionCheck('1.7.0+') == false) {                   
+                        $('#oldJava').css("display","inline-block");
+                        $('#installJava').html("Update Java");
+                        $('#installJava').css("display","inline-block");
+                    }
+                }
+                $('#installJava').click(function (){
+                    // Set deployJava.returnPage to make sure user comes back to 
+                    // your web site after installing the JRE
+                    deployJava.returnPage = location.href;
+                            
+                    // Install latest JRE or redirect user to another page to get JRE
+                    deployJava.installLatestJRE(); 
+                });	
+    </script>
+	<div class="demo" style="text-align:center;">
+						<BR /><BR /><BR />
+                        Detailed Transcription Information Demonstration<BR />
+						<video width="800" height="650" controls="controls">
+                    		<source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
+                            <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
+                          <object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="800" height="650">
+                          </object>
+                        </video>
+	</div>
 <%}%>
-
-
 
 <%if(popup){%>
 	<div style="text-align:center;">

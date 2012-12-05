@@ -1,9 +1,7 @@
 <div id="page" style="min-height:1100px;">
 <span style="text-align:center;">
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
-	<script>
-		$('.demo').hide();
-	</script>
+
 
 <%
 	String[] tissuesList1=new String[1];

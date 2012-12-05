@@ -1,11 +1,6 @@
 
 
-<script type="text/javascript">
-        if(!navigator.javaEnabled()){
-                    document.write("<BR><BR><B>Error:</B>This feature requires the Java Plug-in which is either disabled or not installed.  Recent operating system and browser changes can disable java automatically.");
-                    document.write("  This was done because the old versions are vulnerable to an attack which could take over your computer without your knowledge and access files or steal critical information like banking credentials.<BR><BR>Please first update or install Java from <a href=\"http://www.Java.com\">Java.com</a><BR><BR>To enable Java in your browser or operating system, see:<BR><BR> Firefox: <a href=\"http://support.mozilla.org/en-US/kb/unblocking-java-plugin\">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>Internet Explorer: <a href=\"http://java.com/en/download/help/enable_browser.xml\">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>Safari: <a href=\"http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html\">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>Chrome: <a href=\"http://java.com/en/download/faq/chrome.xml\">http://java.com/en/download/faq/chrome.xml</a><BR>");
-        }
-</script>
+
 
 <% 
 //ERROR SECTION: NO ENSEMBL ID
@@ -15,10 +10,7 @@ if(displayNoEnsembl){ %>
 <% } %>
 
 <%if(genURL.size()>0){%>
-	<script>
-		$('.demo').hide();
-	</script>
-
+	
 	<%if(ucscURL.get(selectedGene)!=null && !ucscURL.get(selectedGene).equals("") ){%>
         <div class="geneimage" style="text-align:center">
             <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help1" src="../web/images/icons/help.png"  /></div>

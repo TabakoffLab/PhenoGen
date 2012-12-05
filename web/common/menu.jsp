@@ -117,6 +117,10 @@
 </div>
 <%@ include file="/web/access/include/accountBox.jsp" %>
 
+<span id="noJS" style="color:#FF0000;display:inline-block;" >This site requires JavaScript and it is currently disabled.  Please visit <a href="<%=commonDir%>siteRequirements.jsp">Browser Support/Software Requirments</a>.</span>
+<script type="text/javascript">	
+			$('#noJS').css("display","none");	
+</script>
 
 
   <!--<div id="crumb_trail"></div>-->
