@@ -1565,6 +1565,20 @@ function runFilter(){
 }
 
 $(document).ready(function() {
+	//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
+	//simply remove all whitespace from html in a table and put it back.
+	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
+ 		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+		if (ieversion<10){
+			var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
+			var tbhtml = $('#tblGenes').html();
+			$('#tblGenes').html(tbhtml.replace(expr, '><'));
+			tbhtml = $('#tblBQTL').html();
+			$('#tblBQTL').html(tbhtml.replace(expr, '><'));
+			tbhtml = $('#tblFrom').html();
+			$('#tblFrom').html(tbhtml.replace(expr, '><'));
+		}	
+	}
 	
 	//Setup Help links
 	$('.inpageHelpContent').hide();
