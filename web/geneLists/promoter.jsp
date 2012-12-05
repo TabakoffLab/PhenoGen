@@ -17,10 +17,13 @@
 	request.setAttribute( "selectedTabId", "promoter" );
         extrasList.add("promoter.js");
         extrasList.add("meme.js");
-        extrasList.add("createOpossum.js");
+    
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
-	optionsListModal.add("createNewOpossum");
+	if(!selectedGeneList.getOrganism().equals("Rn")){
+		extrasList.add("createOpossum.js");
+		optionsListModal.add("createNewOpossum");
+	}
 	optionsListModal.add("createNewMeme");
 	optionsListModal.add("createNewUpstream");
 
@@ -62,14 +65,14 @@
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
 	<div class="dataContainer" >
-<%
+<% if(!selectedGeneList.getOrganism().equals("Rn")){
 		myAnalysisResults = 
         		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "oPOSSUM", dbConn);
 		type = "oPOSSUM";
 %>
 		<%@ include file="/web/geneLists/include/formatAnalysisResults.jsp" %>
 		<BR><BR>
-<% 
+<% 	}
 		myAnalysisResults = 
         		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "MEME", dbConn);
 		type = "MEME";
