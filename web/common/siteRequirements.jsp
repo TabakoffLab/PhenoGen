@@ -64,7 +64,9 @@
 				if (deployJava.versionCheck('1.7.0+') == false) {                   
                 	$('#oldJava').css("display","inline-block");
 					$('#installJava').css("display","inline-block");
-            	}
+            	}else{
+					$('#installJava').css("display","none");
+				}
 				if(!navigator.javaEnabled()){
 					$('#disabledJava').css("display","inline-block");
 				}

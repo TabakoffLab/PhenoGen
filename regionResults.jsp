@@ -496,11 +496,17 @@
 									int count=Integer.parseInt(tmpH.toString());
 									double sum=Double.parseDouble(tmpHa.toString());
 									%>
-                                	<TD <%if(j==0){%>class="leftBorder"<%}%>><%=count%>
-                                    <%if(count>0){%><BR />(<%=df2.format(sum/count)%>)<%}%>
+                                	<TD <%if(j==0){%>class="leftBorder"<%}%>>
+										<%=count%>
+                                    	<%if(count>0){%>
+                                        	<BR />
+                                            (<%=df2.format(sum/count)%>)
+										<%}%>
                                     </TD>
                                 <%}else{%>
-                                	<TD <%if(j==0){%>class="leftBorder"<%}%>>N/A</TD>
+                                	<TD <%if(j==0){%>class="leftBorder"<%}%>>
+                                    N/A
+                                    </TD>
                                 <%}%>
                             <%}%>
                             <%for(int j=0;j<tissuesList1.length;j++){
@@ -524,10 +530,11 @@
                             	
                                 <TD><%=tc.getLevel()%></TD>
                                 <TD>
-                                <a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=curGene.getGeneSymbol()%>&ensID=<%=curGene.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>&curDir=<%=folderName%>" 
+                                	<a href="web/GeneCentric/setupLocusSpecificEQTL.jsp?geneSym=<%=curGene.getGeneSymbol()%>&ensID=<%=curGene.getGeneID()%>&chr=<%=tc.getChromosome()%>&start=<%=tc.getStart()%>&stop=<%=tc.getEnd()%>&level=<%=tc.getLevel()%>&tcID=<%=tc.getTranscriptClusterID()%>&curDir=<%=folderName%>" 
                                 	target="_blank" title="View the circos plot for transcript cluster eQTLs">
-									View Location Plot
-                                </a></TD>
+										View Location Plot
+                                	</a>
+                                </TD>
                                 <%for(int j=0;j<tissuesList2.length;j++){
 									//log.debug("TABLE1:"+tissuesList2[j]);
 									ArrayList<EQTL> qtlList=tc.getTissueEQTL(tissuesList2[j]);
@@ -536,13 +543,12 @@
 									%>
                                         <TD class="leftBorder"><%=qtlList.size()%></TD>
                                         <TD>
-                                        <%if(maxEQTL.getPVal()<0.0001){%>
-                                        	< 0.0001
-										<%}else{%>
-											<%=df4.format(maxEQTL.getPVal())%>
-                                        <%}%>
-                                        <!--</TD>
-                                        <TD>--><BR />
+                                        	<%if(maxEQTL.getPVal()<0.0001){%>
+                                        		< 0.0001
+											<%}else{%>
+												<%=df4.format(maxEQTL.getPVal())%>
+                                        	<%}%>
+                                        	<BR />
                                         	<%if(maxEQTL.getMarker_start()!=maxEQTL.getMarker_end()){%>
                                                 <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())+"-"+dfC.format(maxEQTL.getMarker_end())%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for this region.">
                                                     chr<%=maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())+"-"+dfC.format(maxEQTL.getMarker_end())%>
@@ -552,8 +558,7 @@
 												long stop=maxEQTL.getMarker_start()+500000;
 												if(start<1){
 													start=1;
-												}
-												%>
+												}%>
                                             	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+dfC.format(start)+"-"+dfC.format(stop)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for a region +- 500,000bp around the SNP location.">
                                             		chr<%=maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())%>
                                                  </a>

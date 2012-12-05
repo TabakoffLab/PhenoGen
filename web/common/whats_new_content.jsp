@@ -47,6 +47,9 @@
                     </ul>
 				<li>
 					<span class="highlight-dark">Demos:</span> View the video demo of our new features, with more demos coming soon.
+                </li>
+                <li>
+					<span class="highlight-dark">MEME Updated to v4.9:</span> MEME v4.9 is now available.  Old results are still avialable, but new analysis will use 4.9 which will also have better graphics display and will link to the main meme server for further analysis.
                 </li>                
 				</ul>
 
