@@ -93,9 +93,6 @@
 
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
-        <script type="text/javascript">
-            var crumbs = ["Home", "Analyze Microarray Data", "Cluster Analysis"];
-        </script>
         <%@ include file="/web/datasets/include/viewingPane.jsp" %>
                 <%@ include file="/web/datasets/include/analysisSteps.jsp" %>
 		<div class="brClear"></div>

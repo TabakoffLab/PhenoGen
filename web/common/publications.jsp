@@ -16,9 +16,6 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-        var crumbs = ["Publications"];
-</script>
         <div id="welcome" style="height:575px; width:946px; overflow:auto;">
 
 	<h2>Recent Publications</h2>

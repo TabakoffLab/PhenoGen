@@ -90,9 +90,7 @@
 %>
 <%@ include file="/web/common/headTags.jsp" %>
 
-<script type="text/javascript">
-    var crumbs = ["Home", "Research Genes", "Literature Search"];
-</script>
+
 
 	<form   method="post"
         	action="createLitSearch.jsp"

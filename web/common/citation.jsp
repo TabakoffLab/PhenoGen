@@ -16,10 +16,6 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-        var crumbs = ["Citations"];
-</script>
-
         <div id="overview-content">
         <div id="welcome" style="height:780px; width:946px; overflow:auto;">
 

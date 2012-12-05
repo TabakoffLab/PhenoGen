@@ -19,16 +19,19 @@
 	<%@ include file="/web/common/includeExtras.jsp" %>
 
 	<script type = "text/javascript" >
-        	var crumbs;
+        	//var crumbs;
         	var tablesorterSettings;
 
         	$(document).ready(function(){
-            		prepareCrumbTrail( crumbs ); // temporary solution to xml based sitemap 
-							//or database page association or session based tracks.
-        		setupIcons('<%=chosenOption%>');
+            //		prepareCrumbTrail( crumbs );
+			 // temporary solution to xml based sitemap 
+			//or database page association or session based tracks.
+        	
+			
+			setupIcons('<%=chosenOption%>');
 
-            		selectTab();
-            		/* setTimeout("setupMain()", 100); */
+            selectTab();
+            /* setTimeout("setupMain()", 100); */
 
 			var tooltipSettings = { showBody : " - ",
                 				track : true,

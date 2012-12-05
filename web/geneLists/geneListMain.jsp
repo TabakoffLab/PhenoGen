@@ -8,9 +8,6 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-	var crumbs = ["Home", "Research Genes"];
-</script>
 
     <div id="primary-content">
         <div id="welcome">

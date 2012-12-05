@@ -31,9 +31,7 @@
 
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
-	<script type="text/javascript">
-            var crumbs = ["Home", "Analyze Microarray Data", "Phenotypes"];
-	</script>
+
 
 	<%@ include file="/web/datasets/include/viewingPane.jsp" %>
 	<BR><BR>

@@ -87,9 +87,7 @@
         <!-- use javascript to fill up the client-side array with saved combination values -->
         <%@ include file="/web/datasets/include/fillQueryCombos.jsp" %>
 	<%@ include file="/web/datasets/include/createSteps.jsp" %>
-	<script type="text/javascript">
-        	var crumbs = ["Home", "Analyze Microarray Data", "Create New Dataset"]; 
-	</script>
+
 	<% if (dummyDatasetID != -99) { %>
 			<div style="float:right; clear:right; padding-right:14px;">(Dataset contains<input type="text" id="test" class="numArraysDisplay" size="1" onFocus="blur()" value="<%=dummyDataset.getDatasetChips(dbConn).length%>"/>arrays)</div>
 	<% } %> 

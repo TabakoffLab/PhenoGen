@@ -12,9 +12,6 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-	var crumbs = ["Home", "Analyze Microarray Data"];
-</script>
 
     <div id="primary-content">
         <div id="welcome">

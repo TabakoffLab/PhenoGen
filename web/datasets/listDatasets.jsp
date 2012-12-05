@@ -31,9 +31,6 @@
 <%pageTitle="Analyze Dataset";%>
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
-    <script type="text/javascript">
-        var crumbs = ["Home", "Analyze Microarray Data"]; 
-    </script>
 
     <div class="page-intro">
 	<p>Click on a dataset to select it for analysis.</p>

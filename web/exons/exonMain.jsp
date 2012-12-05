@@ -16,9 +16,7 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-	var crumbs = ["Home", "Explore Exons"];
-</script>
+
 
     <div id="primary-content">
         <div id="welcome" style="height:480px">

@@ -41,9 +41,7 @@
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
 	<%@ include file="/web/datasets/include/viewingPane.jsp" %>
-    <script type="text/javascript">
-        var crumbs = ["Home", "Analyze Microarray Data"]; 
-    </script>
+
 	<%
 	if ((selectedDataset.getDatasetVersions() == null || selectedDataset.getDatasetVersions().length == 0)) {
 	%>

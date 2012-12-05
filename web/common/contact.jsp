@@ -40,9 +40,6 @@
 %>
 <%pageTitle="Contact Us";%>
 	<%@ include file="/web/common/header.jsp" %>
-	<script type="text/javascript">
-        	var crumbs = ["Contact Us"];
-	</script>
 
         	<div id="welcome" style="height:575px; width:946px;">
 			<h2>Contact PhenoGen </h2>

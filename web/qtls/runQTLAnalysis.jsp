@@ -72,10 +72,6 @@
 <%@ include file="/web/common/header.jsp" %>
 
 <% if (selectedDataset.getDataset_id() != -99) { %>
-	<script type="text/javascript">
-            var crumbs = ["Home", "Investigate QTL Regions", "Calculate QTLs for phenotype"];
-	</script>
-
 
 	<%@ include file="/web/qtls/include/viewingPane.jsp" %>
 	<form name="runQTLAnalysis"

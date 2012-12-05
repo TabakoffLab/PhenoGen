@@ -31,9 +31,7 @@
 
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
-        <script type="text/javascript">
-                var crumbs = ["Home", "Analyze Microarray Data", "View Expression Values"];
-        </script>
+
 
 	<div class="title">Expression Values for a List of Genes in a Dataset</div>
         <div class="page-intro">

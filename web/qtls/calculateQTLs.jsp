@@ -98,9 +98,7 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-	<script type="text/javascript">
-            var crumbs = ["Home", "Investigate QTL Regions", "Calculate QTLs for phenotype"];
-	</script>
+
 
 	<form name="listPhenotypes"
 		method="post"

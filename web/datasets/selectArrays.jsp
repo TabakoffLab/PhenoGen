@@ -293,9 +293,7 @@
 		<center><a href="basicQuery.jsp"> Modfy Search Criteria </a> </center>
 		<% 
 	} else { %>
-		<script type="text/javascript">
-        		var crumbs = ["Home", "Analyze Microarray Data", "Create New Dataset"]; 
-		</script>
+
 		<div class="page-intro">
 			<p>
 			<ul class="square"><li>

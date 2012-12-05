@@ -80,9 +80,7 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-    var crumbs = ["Home", "Research Genes", "Analysis Statistics"];
-</script>
+
 
 <%@ include file="/web/geneLists/include/viewingPane.jsp" %> 
         <div class="page-intro">
@@ -132,7 +130,7 @@
 				Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 
 				if (thisIdentifier == null) {
 					//log.debug("identifier not found");
-					%> <td> &nbsp;</td><%
+					%> <td>&nbsp; </td><%
 				} else {
 					Set geneSymbols = 
 						myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
@@ -149,7 +147,7 @@
 					<% } else { 
 						//log.debug("no gene symbols");	
 						%>
-                            			<td> &nbsp;</td>
+                            			<td>&nbsp; </td>
 					<% } 
 				}
 				if (myGeneArray[i].getStatisticsValues() != null && myGeneArray[i].getStatisticsValues().size() > 0) {

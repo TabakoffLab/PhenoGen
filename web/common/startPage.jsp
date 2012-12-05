@@ -9,9 +9,6 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-    var crumbs = ["Home"];
-</script>
 
     <div id="primary-content">
         <div id="welcome">

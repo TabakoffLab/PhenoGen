@@ -27,9 +27,6 @@
 <%pageTitle="Version";%>
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-        var crumbs = ["Version Information"];
-</script>
 
         <div id="overview-content">
         <div id="welcome" style="height:735px; width:946px;">

@@ -10,9 +10,6 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-            var crumbs = ["Home", "Explore Exons","Exon Correlation"];
-	</script>
 
     
     <div class="leftTitle">Exon-Exon Correlations</div>

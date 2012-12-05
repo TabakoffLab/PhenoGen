@@ -51,9 +51,7 @@
 %>
 
 <%@ include file="/web/common/header.jsp" %>
-	<script type="text/javascript">
-		crumbs = ["Home", "Research Genes", "Literature"];
-	</script>
+
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 	<div class="page-intro">
