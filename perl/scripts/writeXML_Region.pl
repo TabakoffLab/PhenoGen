@@ -132,7 +132,7 @@ sub createXMLFile
 	my $ranEast=0;
 	
 	eval{
-	    print "try local\n";
+	    print "trying local\n";
 	    $dbAdaptorNum =$registry->load_registry_from_db(
 		-host => $ensHost, #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
 		-port => $ensPort,
@@ -146,6 +146,7 @@ sub createXMLFile
 	    $dbAdaptorNum=-1;
 	};
 	if($dbAdaptorNum==-1){
+	    print "trying useastdb\n";
 	    $ranEast=1;
 	    eval{
 		    $dbAdaptorNum=$registry->load_registry_from_db(
@@ -161,7 +162,7 @@ sub createXMLFile
 	    };
 	}
 	if($ranEast==1 && $dbAdaptorNum<1){
-	    print "try main\n";
+	    print "trying ensembldb\n";
 	    # Enable this option if problems occur connecting the above option is faster, but only has current and previous versions of data
 	    $dbAdaptorNum=$registry->load_registry_from_db(
 		-host => 'ensembldb.ensembl.org', 
