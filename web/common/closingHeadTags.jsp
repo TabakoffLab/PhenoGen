@@ -1,5 +1,4 @@
-
-
+<%@ include file="/web/common/googleAnalytics.jsp" %>
 
 </head>
 

@@ -6,6 +6,7 @@
 web.xml
 build.xml
 .Rprofile
+googleAnalytics.jsp
 
 # Users need to download platform specific tools from	#
 # Affymetrix and then current probeset files from 	#
