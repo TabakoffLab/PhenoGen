@@ -31,9 +31,11 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 <%}%>
 <jsp:useBean id="myIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
 
+<jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
+
 <% 
 
-	GeneDataTools gdt=new GeneDataTools();
+	//GeneDataTools gdt=new GeneDataTools();
     gdt.setSession(session);
 	
 	String myOrganism="";
