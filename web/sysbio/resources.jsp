@@ -20,6 +20,7 @@
 	Resource[] myExpressionResources = myResource.getExpressionResources();
 	Resource[] myMarkerResources = myResource.getMarkerResources();
 	Resource[] myRNASeqResources = myResource.getRNASeqResources();
+	Resource[] myGenotypeResources = myResource.getGenotypingResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
 	ArrayList checkedList = new ArrayList();
@@ -161,6 +162,42 @@
 				<% if (resource.getSAMDataFiles() != null && resource.getSAMDataFiles().length > 0) { %>
 					<td class="actionIcons">
 						<div class="linkedImg download" type="rnaseq"><div>
+					</td>
+				<% } else { %>
+                                	<td>&nbsp;</td>
+				<% } %>
+				</tr> 
+			<% } %>
+			</tbody>
+		</table>
+        
+        
+        <BR>
+		<BR>
+		<div class="title"> Genotyping CEL Data Files</div>
+		      <table id="genotypingFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
+            	<thead>
+                    <tr class="col_title">
+					<th>Organism</th>
+					<th>Strain</th>
+                    <th>Tissue</th>
+                    <th>Seq. Tech.</th>
+                    <th>Read Type</th>
+					<th>.CEL Files</th>
+					</tr>
+				</thead>
+			<tbody>
+			<% for (Resource resource: myGenotypeResources) { %> 
+				<tr id="<%=resource.getID()%>">  
+				<td> <%=resource.getOrganism()%> </td>
+				<td> <%=resource.getSource()%></td>
+                <td> <%=resource.getTissue()%></td>
+                <td> <%=resource.getTechType()%></td>
+
+                <td> <%=resource.getReadType()%></td>     
+				<% if (resource.getGenotypeDataFiles() != null && resource.getGenotypeDataFiles().length > 0) { %>
+					<td class="actionIcons">
+						<div class="linkedImg download" type="genotype"><div>
 					</td>
 				<% } else { %>
                                 	<td>&nbsp;</td>

@@ -263,25 +263,25 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		if(myGene.indexOf(":")>0){
 			chromosome=myGene.substring(0,myGene.indexOf(":"));
 			if(myGene.indexOf("+-")>0){
-				minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+-"));
-				maxCoord=myGene.substring(myGene.indexOf("+-")+2);
-				int tmpInt=Integer.parseInt(maxCoord);
+				minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+-")).trim();
+				maxCoord=myGene.substring(myGene.indexOf("+-")+2).trim();
+				int tmpInt=Integer.parseInt(maxCoord.trim());
 				min=Integer.parseInt(minCoord)-tmpInt;
 				max=Integer.parseInt(minCoord)+tmpInt;
 			}else if(myGene.indexOf("-+")>0){
-				minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-+"));
-				maxCoord=myGene.substring(myGene.indexOf("-+")+2);
+				minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-+")).trim();
+				maxCoord=myGene.substring(myGene.indexOf("-+")+2).trim();
 				int tmpInt=Integer.parseInt(maxCoord);
 				min=Integer.parseInt(minCoord)-tmpInt;
 				max=Integer.parseInt(minCoord)+tmpInt;
 			}else if (myGene.indexOf("+")>0){
-				minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+"));
-				maxCoord=myGene.substring(myGene.indexOf("+")+1);
+				minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+")).trim();
+				maxCoord=myGene.substring(myGene.indexOf("+")+1).trim();
 				min=Integer.parseInt(minCoord);
 				max=min+Integer.parseInt(maxCoord);
 			}else if(myGene.indexOf("-")>0){
-				minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-"));
-				maxCoord=myGene.substring(myGene.indexOf("-")+1);
+				minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-")).trim();
+				maxCoord=myGene.substring(myGene.indexOf("-")+1).trim();
 				min=Integer.parseInt(minCoord);
 				max=Integer.parseInt(maxCoord);
 			}else{
