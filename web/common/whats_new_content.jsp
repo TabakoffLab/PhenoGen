@@ -8,7 +8,7 @@
  *      
 --%>
 
-<div class="whats_new version"><p><h3>Version: v2.8</h3><BR /> Updated:12/1/2012</p></div>
+<div class="whats_new version"><p><h3>Version: v2.8</h3><BR /> Updated:12/16/2012</p></div>
 
 				<ul>
 				<li> 
@@ -43,14 +43,19 @@
                         </li>
                         
                         <li>Translate a region of interest from Human/Mouse/Rat to Mouse/Rat to view PhenoGen data.</li>
+                        <li style="list-style-type:none;"><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" class="button" style="width:140px;">Try it out</a></li>
                         
                     </ul>
+                </li><BR />
 				<li>
-					<span class="highlight-dark">Demos:</span> View the video demo of our new features, with more demos coming soon.
-                </li>
+					<span class="highlight-dark">Demos:</span> View the video demo of our Detailed Transcription Information features, with more demos coming soon. <a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/detailed_transcript_fullv3" class="button" style="width:100px;" target="_blank" >View Demo</a>
+                </li><BR />
                 <li>
-					<span class="highlight-dark">MEME Updated to v4.9:</span> MEME v4.9 is now available.  Old results are still avialable, but new analysis will use 4.9 which will also have better graphics display and will link to the main meme server for further analysis.
-                </li>                
+					<span class="highlight-dark">MEME Updated to v4.9:</span> MEME v4.9 is now available.  Old results are still avialable, but new analysis will use 4.9 which will also have better graphics display and will link to the main meme server for further analysis.  Available in <a href="<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>listGeneLists.jsp" class="button" style="width:180px;">Gene List Analysis</a>  
+                </li><BR />
+                <li>
+					<span class="highlight-dark">Human Genotyping Data Available:</span> Affymetrix Genome-Wide Human SNP Array 6.0 data for alcohol dependent subjects receiving outpatient treatment at the Medical University of Vienna (Austria). <a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp" class="button" style="width:180px;">View in downloads</a>
+                </li><BR />           
 				</ul>
 
 				<br/>
