@@ -47,7 +47,7 @@
 		<div class="brClear"></div>
 
 		<div class="title"> Expression Data Files</div>
-		      <table id="expressionFiles" name="items" class="list_base tablesorter" cellpadding="0" cellspacing="3">
+		      <table id="expressionFiles" name="items" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="98%">
             		<thead>
                                <tr class="col_title">
 					<th>Organism</th>
@@ -174,27 +174,24 @@
         
         <BR>
 		<BR>
-		<div class="title"> Genotyping CEL Data Files</div>
-		      <table id="genotypingFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
+		<div class="title">Human Genotype Data Files</div>
+		      <table id="genotypingFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="98%">
             	<thead>
                     <tr class="col_title">
-					<th>Organism</th>
-					<th>Strain</th>
-                    <th>Tissue</th>
-                    <th>Seq. Tech.</th>
-                    <th>Read Type</th>
-					<th>.CEL Files</th>
+					<th >Organism</th>
+					<th >Population</th>
+                    <th >Ancestry</th>
+                    <th >Array Type</th>
+					<th >.CEL Files</th>
 					</tr>
 				</thead>
 			<tbody>
 			<% for (Resource resource: myGenotypeResources) { %> 
 				<tr id="<%=resource.getID()%>">  
 				<td> <%=resource.getOrganism()%> </td>
-				<td> <%=resource.getSource()%></td>
-                <td> <%=resource.getTissue()%></td>
-                <td> <%=resource.getTechType()%></td>
-
-                <td> <%=resource.getReadType()%></td>     
+				<td> <%=resource.getPopulation()%></td>
+                <td> <%=resource.getAncestry()%></td>
+                <td> <%=resource.getTechType()%></td>    
 				<% if (resource.getGenotypeDataFiles() != null && resource.getGenotypeDataFiles().length > 0) { %>
 					<td class="actionIcons">
 						<div class="linkedImg download" type="genotype"><div>

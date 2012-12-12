@@ -54,6 +54,8 @@ public class Resource {
         private String readType;
         private String panelStr;
         private Dataset dataset;
+        private String population;
+        private String ancestry;
         //private String context="";
 
 
@@ -100,15 +102,14 @@ public class Resource {
                 setReadType(readType);
 	}
         
-        public Resource(int id, String organism, String strain,String tissue,String tech,String readType, GenotypeDataFile[] genotypeFileArray) {
+        public Resource(int id, String organism, String population,String ancestry,String tech, GenotypeDataFile[] genotypeFileArray) {
 		log = Logger.getRootLogger();
 		setID(id);
 		setOrganism(organism);
-		setSource(strain);
+		setPopulation(population);
 		setGenotypeDataFiles(genotypeFileArray);
-                setTissue(tissue);
+                setAncestry(ancestry);
                 setTechType(tech);
-                setReadType(readType);
 	}
 
 	public Resource(int id, String organism, String source, Dataset dataset, MarkerDataFile[] markerFileArray, EQTLDataFile[] eQTLFileArray,String paneltmp) {
@@ -268,6 +269,24 @@ public class Resource {
         public HeritabilityDataFile[] getHeritabilityDataFiles() {
                 return this.heritabilityDataFiles;
         }
+
+        public String getPopulation() {
+            return population;
+        }
+
+        public void setPopulation(String population) {
+            this.population = population;
+        }
+
+        public String getAncestry() {
+            return ancestry;
+        }
+
+        public void setAncestry(String ancestry) {
+            this.ancestry = ancestry;
+        }
+        
+        
 
 	public HttpSession getSession() {
 		log.debug("in getSession");
@@ -701,7 +720,8 @@ public class Resource {
                 genotypingFileList[2]=new GenotypeDataFile("Genotype CEL Files Part 3",seqFilePath+"Genotyping_3.zip");
                 genotypingFileList[3]=new GenotypeDataFile("Genotype CEL Files Part 4",seqFilePath+"Genotyping_4.zip");
                 genotypingFileList[4]=new GenotypeDataFile("Genotype CEL Files Part 5",seqFilePath+"Genotyping_5.zip");
-                resourceList.add(new Resource(70, "Human", "??","??","??","??", genotypingFileList ));
+                resourceList.add(new Resource(70, "Human", "Alcohol dependent subjects receiving outpatient treatment at the Medical University of Vienna (Austria)",
+                                            "self-reported European","Affymetrix Genome-Wide Human SNP Array 6.0", genotypingFileList ));
         	
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
 		return resourceArray;
