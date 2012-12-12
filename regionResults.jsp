@@ -1370,8 +1370,8 @@ Starting at the top:<BR />
 <ul style=" padding-left:25px; list-style:circle;">
 <li>Track 1(Optional, Default: Hidden)-Transcripts
 This track contains Ensembl transcripts(Brown, ID begins with ENS) and in rat also contains reconstructed transcripts from RNA-Seq of Whole Brain( Blue – multi-exon transcripts, Black - single exon transcripts, begin with the tissue they are from, followed by a unique gene ID)</li><BR />
-<li>Track 2-bQTLs
-		These are Behavioral Quantitative Trait Loci.  This track shows the bQTLs located in the region entered.  This indicates some feature in this region is statistically associated with the observed Phenotype or Behavior.  For additional details about the phenotypes please see the complete list of and detailed table under the bQTLs Tab below the image.</li><BR />
+<li>Track 2-<a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a>
+		These are Behavioral Quantitative Trait Loci.  This track shows the <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> located in the region entered.  This indicates some feature in this region is statistically associated with the observed Phenotype or Behavior.  For additional details about the phenotypes please see the complete list of and detailed table under the <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> Tab below the image.</li><BR />
 <li>Track 3- RefSeq Genes
 		These are the Ref-Seq annotated genes in the region.  This will show the genes in the region with the highest level of confidence, while the tables in the tabs below may display additional genes from Ensembl that do not show up in this track.</li><BR />
 <li>Track 4(Optional, Default: Displayed)- Affy Exon Array Expression Levels
@@ -1476,13 +1476,13 @@ Genome Wide Associations- Is a way to view all the locations with a P-value belo
 For this section you may only filter based on text in the table.  To search for a keyword just start typing and results will be filtered base on what has been entered.<BR />
 For the View Columns section you may choose which columns are displayed.<BR /><BR />The options to view/hide are:<BR />
 <ul style=" padding-left:25px; list-style-type:square;">
-	<li>bQTL Symbol-looks much like a gene symbol, but has been assigned to a bQTL by RGD or MGI.</li>
+	<li><a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a> Symbol-looks much like a gene symbol, but has been assigned to a bQTL by RGD or MGI.</li>
 	<li>Trait Method-A description of the method used to measure a particular phenotype.</li>
 	<li>Phenotype- A description or phrase to describe the characteristics measured.</li>
 	<li>Diseases-Diseases associated with the phenotype.</li>
-	<li>References-Both Pubmed and RGD/MGI curated references related to the bQTL.</li>
-	<li>Associated bQTLs-bQTLs that are related to the displayed bQTL.</li>
-	<li>Location Method-a brief description of the method used to determine the location of the bQTL.</li>
+	<li>References-Both Pubmed and RGD/MGI curated references related to the <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>.</li>
+	<li>Associated bQTLs-<a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that are related to the displayed <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>.</li>
+	<li>Location Method-a brief description of the method used to determine the location of the <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>.</li>
     	<ul style="padding-left:35px; list-style-type:disc;">
 			<li> by peak only</li>
 			<li> by peak w adj size</li>
@@ -1498,13 +1498,13 @@ For the View Columns section you may choose which columns are displayed.<BR /><B
 </div></div>
 
 <div id="Help7Content" class="inpageHelpContent" title="<center>Help-bQTL Tab</center>"><div class="help-content">
-<H3>bQTL Tab</H3>
+<H3><a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a> Tab</H3>
 Summary-
-	The bQTL tab allows you to view <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that overlap with the region.  <BR /><BR />
-What is a bQTL?(View detailed bQTL information) 
-	Breifly a bQTL is a region that is associated with a particular phenotype or behavior (thus bQTL).  <BR /><BR />
+	The <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a> tab allows you to view <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that overlap with the region.  <BR /><BR />
+What is a bQTL?(<a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">View detailed bQTL information</a>) 
+	Breifly a bQTL is a region that is associated with a particular phenotype or behavior (thus <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>).  <BR /><BR />
 How is it calculated?
-	bQTLs can be found for Recombinant Inbred Panels by measuring a trait/behavior across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation regions can be found that are correlated with a particular phenotype.  These are the regions listed here.  This may indicate that a gene or other feature is somehow influencing the phenotype.
+	<a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> can be found for Recombinant Inbred Panels by measuring a trait/behavior across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation regions can be found that are correlated with a particular phenotype.  These are the regions listed here.  This may indicate that a gene or other feature is somehow influencing the phenotype.
 
 </div></div>
 
