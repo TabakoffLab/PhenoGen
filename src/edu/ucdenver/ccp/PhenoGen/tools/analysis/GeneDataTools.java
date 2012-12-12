@@ -1459,6 +1459,7 @@ public class GeneDataTools {
                         //log.debug("create transcript cluster:"+tcID);
                     }
                     String tissue=rs.getString(7);
+                    log.debug("tissue:"+tissue+":");
                     double pval=Math.pow(10, (-1*rs.getDouble(8)));
                     String marker_name=rs.getString(9);
                     String marker_chr=rs.getString(10);
@@ -1722,10 +1723,10 @@ public class GeneDataTools {
             log.debug("transcript controlling Filtering");
             String[] includedTissues=circosTissue.split(";");
             for(int i=0;i<includedTissues.length;i++){
-                if(includedTissues.equals("Brain")){
-                    includedTissues[i]="WholeBrain";
-                }else if(includedTissues.equals("BAT")){
-                    includedTissues[i]="BrownAdipose";
+                if(includedTissues[i].equals("Brain")){
+                    includedTissues[i]="Whole Brain";
+                }else if(includedTissues[i].equals("BAT")){
+                    includedTissues[i]="Brown Adipose";
                 }
             }
             for(int i=0;i<beforeFilter.size();i++){
@@ -1733,6 +1734,7 @@ public class GeneDataTools {
                 boolean include=false;
                 for(int j=0;j<includedTissues.length&&!include;j++){
                     ArrayList<EQTL> regionQTL=tc.getTissueRegionEQTL(includedTissues[j]);
+                    
                     if(regionQTL!=null){
                             EQTL regQTL=regionQTL.get(0);
                             if(regQTL.getPVal()<=pvalue){
