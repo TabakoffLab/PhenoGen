@@ -1,3 +1,45 @@
+<script type="text/javascript">
+function displayWorking(){
+	document.getElementById("wait1").style.display = 'block';
+	document.getElementById("inst").style.display= 'none';
+	return true;
+}
+
+function hideWorking(){
+	document.getElementById("wait1").style.display = 'none';
+	document.getElementById("inst").style.display= 'none';
+}
+
+function displayColumns(table,colStart,colLen,showOrHide){
+	var colStop=colStart+colLen;
+	for(var i=colStart;i<colStop;i++){
+				table.dataTable().fnSetColumnVis( i, showOrHide );
+	}
+}
+
+function runFilter(){
+	$("#wait1").show();
+	var chrList = "";
+          $("#chromosomesMS option").each(function () {
+                chrList += $(this).val() + ";";
+              });
+	$('#chromosomes').val(chrList);
+	//alert(chrList);
+	var tisList = "";
+          $("#tissuesMS option").each(function () {
+                tisList += $(this).val() + ";";
+              });
+	$('#tissues').val(tisList);
+	//alert(tisList);
+	
+	//$('#tissues').val($('#tissuesMS').val());
+	//$('#chromosomes').val($('#chromosomesMS').val());
+	//alert("val:"+$('#chromosomesMS').val());
+	$('#pvalueCutoffInput').val($('#pvalueCutoffSelect2').val());
+	$('#geneCentricForm').submit();
+}
+</script>
+
 <div id="page" style="min-height:1100px;">
 <span style="text-align:center;">
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
@@ -286,12 +328,12 @@
 <div class="cssTab" style="position:relative;">
     <ul>
       <li ><a href="#geneList" title="What genes are found in this area?">Genes Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
-      <li ><a href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
-      <li ><a href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help10" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a class="disable" href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li><a  class="disable" href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help10" class="helpImage" src="../web/images/icons/help.png" /></div></li>
      </ul>
      
      
-<div id="loadingRegion"  style="text-align:center; position:relative; top:75px; left:-200px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Loading Region Data...</div>
+<div id="loadingRegion"  style="text-align:center; position:relative; top:0px; left:0px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Loading Region Data...<BR />The tabs to the left will be enabled once all the data loads.</div>
 <div id="changingTabs"  style="display:none;text-align:center; position:relative; top:0px; left:-150px;"><img src="<%=imagesDir%>wait.gif" alt="Changing Tabs..." /><BR />Changing Tabs...</div>
 
 
@@ -583,6 +625,70 @@
           <%}%>
 
 </div><!-- end GeneList-->
+
+<script type="text/javascript">
+	var tblGenes=$('#tblGenes').dataTable({
+	"bPaginate": false,
+	"bProcessing": true,
+	"sScrollX": "950px",
+	"sScrollY": "650px"
+	});
+	
+	$('.cssTab div.modalTabContent:first').show();
+	$('.cssTab ul li a:first').addClass('selected');
+	$('#tblGenes').dataTable().fnAdjustColumnSizing();
+	//tblGenesFixed=new FixedColumns( tblGenes, {
+ 	//	"iLeftColumns": 1,
+	//	"iLeftWidth": 100
+ 	//} );
+
+	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
+	$('.singleExon').hide();
+	
+	$('#heritCBX').click( function(){
+			displayColumns(tblGenes, 8,tisLen,$('#heritCBX').is(":checked"));
+	  });
+	  $('#dabgCBX').click( function(){
+			displayColumns(tblGenes, 8+tisLen,tisLen,$('#heritCBX').is(":checked"));
+	  });
+	  $('#eqtlAllCBX').click( function(){
+			displayColumns(tblGenes, 8+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+	  });
+		$('#eqtlCBX').click( function(){
+			displayColumns(tblGenes, 8+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+	  });
+	  
+	   $('#geneIDCBX').click( function(){
+			displayColumns(tblGenes,1,1,$('#geneIDCBX').is(":checked"));
+	  });
+	  $('#geneDescCBX').click( function(){
+			displayColumns($(tblGenes).dataTable(),2,1,$('#geneDescCBX').is(":checked"));
+	  });
+	  
+	  $('#geneLocCBX').click( function(){
+			displayColumns($(tblGenes).dataTable(),3,2,$('#geneLocCBX').is(":checked"));
+	  });
+	  
+	  $('#pvalueCutoffSelect1').change( function(){
+	  			$("#wait1").show();
+				$('#forwardPvalueCutoffInput').val($(this).val());
+				//alert($('#pvalueCutoffInput').val());
+				//$('#geneCentricForm').attr("action","Get Transcription Details");
+				$('#geneCentricForm').submit();
+			});
+	 $('#exclude1Exon').click( function(){
+  		if($('#exclude1Exon').is(":checked")){
+			$('.singleExon').hide();
+		}else{
+			$('.singleExon').show();
+		}
+ 	 });
+	 
+	 setupExpandCollapseTable();
+	setupExpandCollapse();
+</script>
+
+
 
 <div id="bQTLList" class="modalTabContent" style="display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
 	
@@ -1177,7 +1283,7 @@
 							for(int j=0;j<tissuesList2.length;j++){
 								//log.debug("TABLE2:"+tissuesList2[j]);
 									ArrayList<EQTL> regionQTL=tc.getTissueRegionEQTL(tissuesList2[j]);
-									ArrayList<EQTL> qtlList=tc.getTissueEQTL(tissuesList2[j]);
+									int qtlCount=tc.getTissueEQTL(tissuesList2[j],pValueCutoff);
 									EQTL regEQTL=null;
 									if(regionQTL!=null && regionQTL.size()>0){
 										regEQTL=regionQTL.get(0);
@@ -1201,11 +1307,7 @@
                                         <%}%>
                                         </TD>
                                         <TD title="Click on View Location Plot to see all locations below the cutoff.">
-                                        <%if(qtlList!=null && qtlList.size()>0){%>
-                                        	<%=qtlList.size()%>
-										<%}else{%>
-                                        	0
-                                        <%}%>
+                                        	<%=qtlCount%>
                                         </TD>
                                     
                                 <%}%>
@@ -1520,49 +1622,8 @@ Currently only lists of 300 genes are less are supported.  This is a limit of th
 </div></div>
 
 <script type="text/javascript">
-
-
-function displayWorking(){
-	document.getElementById("wait1").style.display = 'block';
-	document.getElementById("inst").style.display= 'none';
-	return true;
-}
-
-function hideWorking(){
-	document.getElementById("wait1").style.display = 'none';
-	document.getElementById("inst").style.display= 'none';
-}
-
-function displayColumns(table,colStart,colLen,showOrHide){
-	var colStop=colStart+colLen;
-	for(var i=colStart;i<colStop;i++){
-				table.dataTable().fnSetColumnVis( i, showOrHide );
-	}
-}
-
-function runFilter(){
-	$("#wait1").show();
-	var chrList = "";
-          $("#chromosomesMS option").each(function () {
-                chrList += $(this).val() + ";";
-              });
-	$('#chromosomes').val(chrList);
-	//alert(chrList);
-	var tisList = "";
-          $("#tissuesMS option").each(function () {
-                tisList += $(this).val() + ";";
-              });
-	$('#tissues').val(tisList);
-	//alert(tisList);
-	
-	//$('#tissues').val($('#tissuesMS').val());
-	//$('#chromosomes').val($('#chromosomesMS').val());
-	//alert("val:"+$('#chromosomesMS').val());
-	$('#pvalueCutoffInput').val($('#pvalueCutoffSelect2').val());
-	$('#geneCentricForm').submit();
-}
-
 $(document).ready(function() {
+	$('.cssTab ul li a').removeClass('disable');
 	//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
 	//simply remove all whitespace from html in a table and put it back.
 	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
@@ -1606,12 +1667,12 @@ $(document).ready(function() {
 	var tblBQTLAdjust=false;
 	var tblFromAdjust=false;
 	
-	var tblGenes=$('#tblGenes').dataTable({
+	/*var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
 	"sScrollY": "650px"
-	});
+	});*/
 	
 	
 	var tblBQTL=$('#tblBQTL').dataTable({
@@ -1633,22 +1694,22 @@ $(document).ready(function() {
 	"bDeferRender": true
 	});
 	
-	$('.cssTab div.modalTabContent').hide();
-    $('.cssTab div.modalTabContent:first').show();
+	//$('.cssTab div.modalTabContent').hide();
+    /*$('.cssTab div.modalTabContent:first').show();
     $('.cssTab ul li a:first').addClass('selected');
 	
 
 	$('#tblGenes').dataTable().fnAdjustColumnSizing();
-	/*tblGenesFixed=new FixedColumns( tblGenes, {
- 		"iLeftColumns": 1,
-		"iLeftWidth": 100
- 	} );*/
+	//tblGenesFixed=new FixedColumns( tblGenes, {
+ 	//	"iLeftColumns": 1,
+	//	"iLeftWidth": 100
+ 	//} );
 
-	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
+	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});*/
 	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
 
 	
-	$('.singleExon').hide();
+	
 	
 	$('.helpImage').click( function(event){
 		var id=$(this).attr('id');
@@ -1663,7 +1724,8 @@ $(document).ready(function() {
   
  
   /* Setup Filtering/View Columns in tblGenes */
-	  $('#heritCBX').click( function(){
+	//MOVED
+	/*	  $('#heritCBX').click( function(){
 			displayColumns(tblGenes, 8,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
@@ -1700,7 +1762,7 @@ $(document).ready(function() {
 		}else{
 			$('.singleExon').show();
 		}
- 	 });
+ 	 });*/
 		
 		
 	/* Seutp Filtering/Viewing in tblBQTL*/

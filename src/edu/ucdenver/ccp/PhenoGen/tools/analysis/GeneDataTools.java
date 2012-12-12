@@ -1330,20 +1330,46 @@ public class GeneDataTools {
     public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,double pvalue,String level,String organism,String circosTissue,String circosChr){
         //session.removeAttribute("get");
         ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
+        ArrayList<TranscriptCluster> beforeFilter=null;
+        
+        circosTissue=circosTissue.replaceAll(";;", ";");
+        circosChr=circosChr.replaceAll(";;", ";");
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
         String tmpRegion=chr+":"+min+"-"+max;
         String curParams="min="+min+",max="+max+",chr="+chr+",arrayid="+arrayTypeID+",pvalue="+pvalue+",level="+level+",org="+organism;
+        String curParamsMinusPval="min="+min+",max="+max+",chr="+chr+",arrayid="+arrayTypeID+",level="+level+",org="+organism;
         String curCircosParams="min="+min+",max="+max+",chr="+chr+",arrayid="+arrayTypeID+",pvalue="+pvalue+",level="+level+",org="+organism+",circosTissue="+circosTissue+",circosChr="+circosChr;
         boolean run=true;
+        boolean filter=false;
         if(this.cacheHM.containsKey(tmpRegion)){
             HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
             String testParam=(String)regionHM.get("controlledRegionParams");
+            String testMinusPval="";
+            int indPvalue=-1;
+            if(testParam!=null){
+                indPvalue=testParam.indexOf(",pvalue=")+8;
+                if(indPvalue>-1){
+                    testMinusPval=testParam.substring(0, indPvalue-8);
+                    testMinusPval=testMinusPval+testParam.substring(testParam.indexOf(",",indPvalue));
+                }
+            }
+            log.debug("\n"+curParamsMinusPval+"\n"+testMinusPval+"\n");
             if(curParams.equals(testParam)){
                 log.debug("\nreturning previous-controlling\n");
                 transcriptClusters=(ArrayList<TranscriptCluster>)regionHM.get("controlledRegion");
                 run=false;
+            }else if(curParamsMinusPval.equals(testMinusPval)){
+                log.debug("\nreturning Filtered\n");
+                
+                String testPval=testParam.substring(indPvalue,testParam.indexOf(",",indPvalue));
+                double testPvalue=Double.parseDouble(testPval);
+                if(pvalue<testPvalue){
+                    filter=true;
+                    run=false;
+                    beforeFilter=(ArrayList<TranscriptCluster>)regionHM.get("controlledRegion");
+                }
             }
         }
         if(run){
@@ -1486,6 +1512,7 @@ public class GeneDataTools {
                                 transcriptClusters.add(tmpC);
                                 String line=tmpC.getTranscriptClusterID()+"\t"+tmpC.getChromosome()+"\t"+tmpC.getStart()+"\t"+tmpC.getEnd()+"\t"+tmpC.getStrand()+"\n";
                                 out.write(line);
+                                
                             }
                         }
                     }
@@ -1691,10 +1718,35 @@ public class GeneDataTools {
                         log.error("error sending message", mailException);
                     }
             }
+        }else if(filter){//don't need to rerun just filter.
+            log.debug("transcript controlling Filtering");
+            String[] includedTissues=circosTissue.split(";");
+            for(int i=0;i<includedTissues.length;i++){
+                if(includedTissues.equals("Brain")){
+                    includedTissues[i]="WholeBrain";
+                }else if(includedTissues.equals("BAT")){
+                    includedTissues[i]="BrownAdipose";
+                }
+            }
+            for(int i=0;i<beforeFilter.size();i++){
+                TranscriptCluster tc=beforeFilter.get(i);
+                boolean include=false;
+                for(int j=0;j<includedTissues.length&&!include;j++){
+                    ArrayList<EQTL> regionQTL=tc.getTissueRegionEQTL(includedTissues[j]);
+                    if(regionQTL!=null){
+                            EQTL regQTL=regionQTL.get(0);
+                            if(regQTL.getPVal()<=pvalue){
+                                    include=true;
+                            }
+                    }
+                }
+                if(include){
+                    transcriptClusters.add(tc);
+                }
+            }
         }
         run=true;
-        if(this.cacheHM.containsKey(tmpRegion)){
-            
+        if(this.cacheHM.containsKey(tmpRegion)){   
             HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
             String testParam=(String)regionHM.get("controlledCircosRegionParams");
             if(curCircosParams.equals(testParam)){
@@ -1704,8 +1756,7 @@ public class GeneDataTools {
         }
         if(run){
             log.debug("\ngenerating new-circos\n");
-            circosTissue=circosTissue.replaceAll(";;", ";");
-            circosChr=circosChr.replaceAll(";;", ";");
+            
             //run circos scripts
             boolean errorCircos=false;
             String[] perlArgs = new String[7];

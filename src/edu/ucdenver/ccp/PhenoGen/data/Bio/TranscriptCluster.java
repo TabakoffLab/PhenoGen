@@ -216,6 +216,19 @@ public class TranscriptCluster {
     public ArrayList<EQTL> getTissueEQTL(String tissue){
         return (ArrayList<EQTL>) tissueEQTLs.get(tissue);
     }
+    public int getTissueEQTL(String tissue,double pvalue){
+        ArrayList<EQTL> list=(ArrayList<EQTL>) tissueEQTLs.get(tissue);
+        int ret=0;
+        if(list!=null&&list.size()>0){
+        for(int i=0;i<list.size();i++){
+            EQTL tmp=list.get(i);
+            if(tmp.getPVal()<=pvalue){
+                ret++;
+            }
+        }
+        }
+        return ret;
+    }
     
     public ArrayList<EQTL> getTissueRegionEQTL(String tissue){
         return (ArrayList<EQTL>) tissueRegionEQTL.get(tissue);
