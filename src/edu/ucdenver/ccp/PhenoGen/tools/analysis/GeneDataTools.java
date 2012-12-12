@@ -1355,13 +1355,13 @@ public class GeneDataTools {
                     testMinusPval=testMinusPval+testParam.substring(testParam.indexOf(",",indPvalue));
                 }
             }
-            log.debug("\n"+curParamsMinusPval+"\n"+testMinusPval+"\n");
+            //log.debug("\n"+curParamsMinusPval+"\n"+testMinusPval+"\n");
             if(curParams.equals(testParam)){
-                log.debug("\nreturning previous-controlling\n");
+                //log.debug("\nreturning previous-controlling\n");
                 transcriptClusters=(ArrayList<TranscriptCluster>)regionHM.get("controlledRegion");
                 run=false;
             }else if(curParamsMinusPval.equals(testMinusPval)){
-                log.debug("\nreturning Filtered\n");
+                //log.debug("\nreturning Filtered\n");
                 
                 String testPval=testParam.substring(indPvalue,testParam.indexOf(",",indPvalue));
                 double testPvalue=Double.parseDouble(testPval);
@@ -1373,7 +1373,7 @@ public class GeneDataTools {
             }
         }
         if(run){
-            log.debug("\ngenerating new-controlling\n");
+            //log.debug("\ngenerating new-controlling\n");
         //if(curParams.equals(this.controlledRegionParams)){
         //    transcriptClusters=this.controlledRegion;
         //}else{
@@ -1459,7 +1459,7 @@ public class GeneDataTools {
                         //log.debug("create transcript cluster:"+tcID);
                     }
                     String tissue=rs.getString(7);
-                    log.debug("tissue:"+tissue+":");
+                    //log.debug("tissue:"+tissue+":");
                     double pval=Math.pow(10, (-1*rs.getDouble(8)));
                     String marker_name=rs.getString(9);
                     String marker_chr=rs.getString(10);
@@ -1692,7 +1692,7 @@ public class GeneDataTools {
                     
 
                 }
-                log.debug("Transcript Cluster Size:"+transcriptClusters.size());
+                //log.debug("Transcript Cluster Size:"+transcriptClusters.size());
                 //this.controlledRegionParams=curParams;
                 //this.controlledRegion=transcriptClusters;
                 if(cacheHM.containsKey(tmpRegion)){
@@ -1720,7 +1720,7 @@ public class GeneDataTools {
                     }
             }
         }else if(filter){//don't need to rerun just filter.
-            log.debug("transcript controlling Filtering");
+            //log.debug("transcript controlling Filtering");
             String[] includedTissues=circosTissue.split(";");
             for(int i=0;i<includedTissues.length;i++){
                 if(includedTissues[i].equals("Brain")){
@@ -1752,12 +1752,12 @@ public class GeneDataTools {
             HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
             String testParam=(String)regionHM.get("controlledCircosRegionParams");
             if(curCircosParams.equals(testParam)){
-                log.debug("\nreturning previous-circos\n");
+                //log.debug("\nreturning previous-circos\n");
                 run=false;
             }
         }
         if(run){
-            log.debug("\ngenerating new-circos\n");
+            //log.debug("\ngenerating new-circos\n");
             
             //run circos scripts
             boolean errorCircos=false;
