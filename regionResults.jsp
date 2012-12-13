@@ -1423,7 +1423,7 @@ Columns:<BR />
 	<li>Number with a heritability of >0.33(Avg heritability for probesets >0.33)</li><BR />
 	<li>Number detected above background(DABG) (Avg % of samples DABG)</li><BR />
 	<li>Transcript Cluster ID corresponding to the gene with Annotation level</li><BR />
-	<li>Circos Plot to show all eQTLs across tissues.</li><BR />
+	<li>Circos Plot to show all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> across tissues.</li><BR />
 	<li>eQTL for the transcript cluster in each tissue</li>
     	<ul style="padding-left:35px; list-style-type:disc;">
     	<li>minimum P-value and location</li>
@@ -1446,7 +1446,7 @@ For each probe set on the Affymetrix Exon 1.0 ST Array (mouse or rat) and each s
 
 <div id="Help5eContent" class="inpageHelpContent" title="<center>Help-eQTLs</center>"><div class="help-content">
 <H3>eQTLs</H3>
-The eQTL columns give you a general idea of where a gene in the region you have entered is controlled from.  For a variety of reasons eQTLs are currently only available at the gene (transcript cluster) level instead of the probeset level.  So the first columns give you information about the transcript cluster.  <BR /><BR />
+The eQTL columns give you a general idea of where a gene in the region you have entered is controlled from.  For a variety of reasons <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are currently only available at the gene (transcript cluster) level instead of the probeset level.  So the first columns give you information about the transcript cluster.  <BR /><BR />
 
 Columns:<BR />
 	Transcript Cluster ID- Is the unique ID assigned by affymetrix.  <BR />
@@ -1463,7 +1463,7 @@ Tissue Columns<BR />
 
 <div id="Help5fContent" class="inpageHelpContent" title="<center>Help-Transcript Cluster ID</center>"><div class="help-content">
 <H3>Transcript Cluster ID</H3>
-Transcript Cluster ID- Is the unique ID assigned by affymetrix.  eQTLs are calculated for this annotation at the Gene level by combining probeset data across the gene.
+Transcript Cluster ID- Is the unique ID assigned by affymetrix.  <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are calculated for this annotation at the Gene level by combining probeset data across the gene.
 </div></div>
 
 <div id="Help5gContent" class="inpageHelpContent" title="<center>Help-Genome Wide Associations</center>"><div class="help-content">
@@ -1522,10 +1522,10 @@ This column is the method used to determine the location.  A description of each
 <div id="Help9Content" class="inpageHelpContent" title="<center>Help-Filter/View Columns-eQTLs</center>"><div class="help-content">
 <H3>Filter Circos Plot and Table/View Columns</H3><BR />
 Filter Circos Plot/Table<BR />
-You may filter the ciros plot and table by tissues, eQTL P-value, and chromosome.  Simply change the paramters you would like to filter by and click on Run Filter.<BR />
+You may filter the ciros plot and table by tissues, <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> P-value, and chromosome.  Simply change the paramters you would like to filter by and click on Run Filter.<BR />
 <ul style=" padding-left:25px; list-style-type:square;">
 	<li>eQTL P-value- is the cutoff for to limit genes displayed to those that have a P-value for the selected region less than or equal to the cutoff.</li>
-	<li>Tissues(Rat Only)- Move the tissues to the excluded column if you do not want to include all of them.  This will keep only genes that have significant eQTLs in one of the tissues still included.</li>
+	<li>Tissues(Rat Only)- Move the tissues to the excluded column if you do not want to include all of them.  This will keep only genes that have significant <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> in one of the tissues still included.</li>
 	<li>Chromosomes- Move any chromosomes to exclude into the exclude column.  This will filter out genes that are located on that chromosome.</li>
 </ul>
 <BR /><BR />
@@ -1544,28 +1544,28 @@ You may show/hide various columns using the check boxes below View Columns.<br /
 
 <div id="Help10Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>eQTL Tab</H3>
-Summary- This tab show’s what genes might be controlled by a feature in this region.  There is at least an eQTL with a P-value below the cutoff in the highlighted(Blue) for the selected region in one or more tissues.  However please note the actual region may just overlap with the current region so the eQTL region associated with the P-value may be a different than the current region. 
+Summary- This tab show’s what genes might be controlled by a feature in this region.  There is at least an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> with a P-value below the cutoff in the highlighted(Blue) for the selected region in one or more tissues.  However please note the actual region may just overlap with the current region so the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> region associated with the P-value may be a different than the current region. 
 <BR />
-The circos plot shows where the genes with eQTLs in this region are physically located.  
+The circos plot shows where the genes with <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> in this region are physically located.  
 <BR />
-The table below lists all the genes and eQTLs for each gene in each tissue.  To view all the eQTLs for a gene use the View Location Plot link to bring up the circos plot that shows each eQTL for the selected Gene.
+The table below lists all the genes and <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for each gene in each tissue.  To view all the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for a gene use the View Location Plot link to bring up the circos plot that shows each <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for the selected Gene.
 <BR />
 Finally to view detailed transcript and probeset data click on a Gene Symbol to bring up a summary specific to that gene.
 <BR /><BR />
-What is an eQTL? (View detailed eQTL information)   
-An eQTL is a region that is correlated across recombinant inbred strains to expression of a gene(or in the case of our Affy data displayed, Transcript Cluster) or probeset.  This may indicate some feature in this region is influencing expression of the gene with a significant eQTL in the region.
+What is an eQTL? (<a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">View detailed eQTL information</a>)   
+An eQTL is a region that is correlated across recombinant inbred strains to expression of a gene(or in the case of our Affy data displayed, Transcript Cluster) or probeset.  This may indicate some feature in this region is influencing expression of the gene with a significant <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> in the region.
 <BR /><BR />
 How is it calculated? 
-eQTLs can be found for Recombinant Inbred Panels by measuring expression across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation, regions can be found that are correlated with expression.   In this table this region overlaps with one of these regions that is assigned a P-value below the cutoff you selected.  This may indicate that a gene or other feature in this region or one of the other regions with a significant P-value is somehow influencing the expression of the gene.
+<a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> can be found for Recombinant Inbred Panels by measuring expression across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation, regions can be found that are correlated with expression.   In this table this region overlaps with one of these regions that is assigned a P-value below the cutoff you selected.  This may indicate that a gene or other feature in this region or one of the other regions with a significant P-value is somehow influencing the expression of the gene.
 <BR /><BR />
-What does an eQTL for a transcript cluster mean? 
-At the transcript cluster level this is an eQTL for a gene and not individual	 probesets.  For now this is the only level available, although it is possible to add probeset level eQTLs in the future.
+What does an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for a transcript cluster mean? 
+At the transcript cluster level this is an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for a gene and not individual	 probesets.  For now this is the only level available, although it is possible to add probeset level <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> in the future.
 
 </div></div>
 
 <div id="Help11Content" class="inpageHelpContent" title="<center>Help-Circos eQTL Plot</center>"><div class="help-content">
 <H3>Circos Plot eQTL Gene Locations</H3>
-This plot shows all of the genes that have an eQTL in the region entered.  These genes correspond to the genes listed in the table below.  If a higher number of genes are located in nearly the same region only the first 2-3 may be displayed.
+This plot shows all of the genes that have an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> in the region entered.  These genes correspond to the genes listed in the table below.  If a higher number of genes are located in nearly the same region only the first 2-3 may be displayed.
 <BR /><BR />
 The plot can be hidden altogether using the +/- button.  The size of the plot can also be controlled use the button next to the directions.
 <BR /><BR />
@@ -1578,7 +1578,7 @@ You may also reduce or restore the verticle space used for the graphic by clicki
 
 <div id="Help12aContent" class="inpageHelpContent" title="<center>Help-Transcript Cluster ID</center>"><div class="help-content">
 <H3>Transcript Cluster ID</H3>
-Transcript Cluster ID- Is the unique ID assigned by affymetrix.  eQTLs are calculated for this annotation at the Gene level by combining probeset data across the gene.
+Transcript Cluster ID- Is the unique ID assigned by affymetrix.  <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are calculated for this annotation at the Gene level by combining probeset data across the gene.
 </div></div>
 
 
@@ -1598,8 +1598,8 @@ Columns:<BR />
 <ul style="list-style-type:square; padding-left:25px;">
 	<li>Transcript Cluster ID unique Affymetrix assigned id that corresponds to a gene. </li>
 	<li>Annotation level confidence in the transcript cluster annotation</li>
-	<li>Circos Plot to show all eQTLs for a specific gene across tissues.</li>
-	<li>eQTL for the transcript cluster in each tissue</li>
+	<li>Circos Plot to show all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for a specific gene across tissues.</li>
+	<li><a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for the transcript cluster in each tissue</li>
 		<ul style="list-style-type:disc; padding-left:35px;">
 		<li>P-value from this region</li>
 		<li>total other locations with a P-value < cut-off</li>

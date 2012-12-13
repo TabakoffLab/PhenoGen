@@ -7,6 +7,8 @@ web.xml
 build.xml
 .Rprofile
 googleAnalytics.jsp
+bedSort
+bedToBigBed
 
 # Users need to download platform specific tools from	#
 # Affymetrix and then current probeset files from 	#

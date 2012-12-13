@@ -32,9 +32,9 @@ if ((action != null) && action.equals("Get Exon Correlations")) {
 		myGene=request.getParameter("geneTxt").trim();
 	}
 	
-	myIDecoderClient.setNum_iterations(10);
-	iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
 	myIDecoderClient.setNum_iterations(1);
+	iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
+	myIDecoderClient.setNum_iterations(0);
 	session.setAttribute("iDecoderAnswer", iDecoderAnswer);
 	session.setAttribute("exonCorGeneFile",null);
 	session.setAttribute("exonCorHeatFile",null);

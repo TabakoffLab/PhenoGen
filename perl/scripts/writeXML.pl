@@ -71,7 +71,7 @@ sub createXMLFile
 	#
 
 	# Read in the arguments for the subroutine	
-	my($bedOutputFileName, $pngOutputFileName, $xmlOutputFileName,$species,$type,$geneNames,$userName,$bedFileFolder,$dataSetID,$arrayTypeID)=@_;
+	my($bedOutputFileName, $pngOutputFileName, $xmlOutputFileName,$species,$type,$geneNames,$userName,$bedFileFolder,$dataSetID,$arrayTypeID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
 	
 	my @geneNamesList=split(/,/,$geneNames);
 	
@@ -94,26 +94,52 @@ sub createXMLFile
 	my $GeneHOHRef;
 
 
-
-	#
-	# Using perl API to read data from ensembl
-	#
-	#
-	
 	my $registry = 'Bio::EnsEMBL::Registry';
+	my $dbAdaptorNum=-1;
+	my $ranEast=0;
+	eval{
+	    print "trying local\n";
+	    $dbAdaptorNum =$registry->load_registry_from_db(
+		-host => $ensHost, #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
+		-port => $ensPort,
+		-user => $ensUsr,
+		-pass => $ensPasswd
+	    );
+	    print "local finished:$dbAdaptorNum\n";
+	    1;
+	}or do{
+	    print "local ensembl DB is unavailable\n";
+	    $dbAdaptorNum=-1;
+	};
+	if($dbAdaptorNum==-1){
+	    print "trying useastdb\n";
+	    $ranEast=1;
+	    eval{
+		    $dbAdaptorNum=$registry->load_registry_from_db(
+			-host => 'useastdb.ensembl.org', #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
+			-port => 5306,
+			-user => 'anonymous'
+		    );
+		    print "east mirror finished:$dbAdaptorNum\n";
+		    1;
+	    }or do{
+		print "ensembl east DB is unavailable\n";
+		$dbAdaptorNum=-1;
+	    };
+	}
+	if($ranEast==1 && $dbAdaptorNum<1){
+	    print "trying ensembldb\n";
+	    # Enable this option if problems occur connecting the above option is faster, but only has current and previous versions of data
+	    $dbAdaptorNum=$registry->load_registry_from_db(
+		-host => 'ensembldb.ensembl.org', 
+		-user => 'anonymous'
+	    );
+	    print "main finished:$dbAdaptorNum\n";
+	}
 	
-	#Use this option normally in production
-	#$registry->load_registry_from_db(
-    #	-host => 'useastdb.ensembl.org', #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
-    #	-port => 5306,
-	#-user => 'anonymous'
-	#);
+	
 
-	# Enable this option if problems occur connecting the above option is faster, but only has current and previous versions of data
-	$registry->load_registry_from_db(
-    	-host => 'ensembldb.ensembl.org', 
-	-user => 'anonymous'
-	);
+	print "connected\n";
 
 	#print "connected\n";
 	my $slice_adaptor = $registry->get_adaptor( $species, $type, 'Slice' );
@@ -182,7 +208,7 @@ sub createXMLFile
 		# We just have to read the probesets once for each gene.
 	    
 		    my ($probesetHOHRef)
-				= readAffyProbesetDataFromDB($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dataSetID);
+				= readAffyProbesetDataFromDB($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dataSetID,$dsn,$usr,$passwd);
 		    my @probesetHOH = @$probesetHOHRef;
 		    #print "get probesets\n";
 		    
@@ -363,7 +389,14 @@ sub createXMLFile
 	my $arg8 = $ARGV[7]; #path to bed files(bedSort,bedToBigBed, and x.chrom.sizes)
 	my $arg9 = $ARGV[8]; #dataset id
 	my $arg10= $ARGV[9]; #array type id
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10);
+	my $arg11= $ARGV[10];
+	my $arg12= $ARGV[11];
+	my $arg13= $ARGV[12];
+	my $arg14=$ARGV[13];
+	my $arg15=$ARGV[14];
+	my $arg16=$ARGV[15];
+	my $arg17=$ARGV[16];
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11, $arg12, $arg13, $arg14, $arg15, $arg16, $arg17);
 
 	
 	# Example call:
