@@ -38,6 +38,7 @@ import edu.ucdenver.ccp.util.Async_APT_Filecleanup;
 import edu.ucdenver.ccp.PhenoGen.web.ErrorException;
 import edu.ucdenver.ccp.util.HDF5.PhenoGen_HDF5_File;
 import java.sql.*;
+import java.util.Date;
 import java.util.logging.Level;
 
 /* for logging messages */
@@ -162,6 +163,7 @@ public class Statistic {
             File firstInputFile) throws RException {
             log.debug("filtermethod:" + filterMethodName + "\np1:" + parameter1 + "\np2:" + parameter2 + "\np3:" + parameter3);
             if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(ds.getArray_type())) {
+                Date startTimer=new Date();
                 int v = Integer.parseInt(version.substring(1));
                 User userLoggedIn = (User) session.getAttribute("userLoggedIn");
                 int userID = userLoggedIn.getUser_id();
@@ -317,6 +319,7 @@ public class Statistic {
                 //update cumulative filter reset(...,5)
                 //reset current filter reset(...,6)
                 //count current included probesets
+                Date doneFilterTimer=new Date();
                 log.debug("DONE FILTERING\nProcessing cleanup and Counting");
                 int count=-99;
                 try {
@@ -337,6 +340,7 @@ public class Statistic {
                 } catch (SQLException e) {
                     log.error("Filter SQL Exception:", e);
                 }
+                Date moveFilterTimer=new Date();
                 try{
                     if(count>0){
                         Thread thread;
@@ -358,9 +362,15 @@ public class Statistic {
                 }catch(IOException e){
                     log.error("Error writing filter count file or probeset list to HDF5 file",e);
                 }
+                Date moveToHDF5File=new Date();
                 log.debug("DONE PROCESSING. Count="+count);
                 dsfs.addFilterStep(filterMethodName,Parameter,count,-1,phenotypeParamGroupID,paramGroupID,dbConn);
                 log.debug("DONE FILTER STATS ENTRY");
+                double totalTime=(moveToHDF5File.getTime()-startTimer.getTime())/60000.0;
+                double filterTime=(doneFilterTimer.getTime()-startTimer.getTime())/60000.0;
+                double moveTime=(moveFilterTimer.getTime()-doneFilterTimer.getTime())/60000.0;
+                double moveHDF5=(moveToHDF5File.getTime()-moveFilterTimer.getTime())/1000.0;
+                log.debug("FILTER TIMING:\nTotal:"+totalTime+"min.\nFilter:"+filterTime+"min.\nMove to Cumulative:"+moveTime+"min.\nMove HDF5:"+moveHDF5+"sec.\n");
             } else {
                 log.debug("Not Exon array");
                 rFunction = platform + ".filter.genes";

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:lastBlockDepth="6" MadCap:lastHeight="3700" MadCap:lastWidth="994" MadCap:conditionTagExpression="" MadCap:disableMasterStylesheet="true" MadCap:tocPath="Detailed Transcription Information" MadCap:InPreviewMode="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="WebHelp" MadCap:PathToHelpSystem="../" MadCap:HelpSystemFileName="PhenoGen_Overview.xml" MadCap:SearchType="Stem">
+    <head>
+        <link href="SkinSupport/MadCap.css" rel="stylesheet" type="text/css" /><title>Detailed Transcription Information for Regions</title>
+        <link href="Resources/Stylesheets/PhenoGen.css" rel="stylesheet" type="text/css" />
+        <script src="SkinSupport/MadCapAll.js" type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Detailed_Transcription_Info_Regions.htm" style="">Open topic with navigation</a>
+        </p>
+        <h1><a name="kanchor23"></a>Detailed Transcription Information for Regions</h1>
+        <p>After you get transcription details for a region, you can:</p>
+        <ul>
+            <li value="1">View the resulting images with Ensembl and RNA-Seq (Rat only) transcripts or alignment to Human chromosomes when you choose an option above the image.</li>
+            <li value="2">Filter the result set and modify the display options.</li>
+            <li value="3">Click the image to view it in more detail in the UCSC Genome Browser where you can further customize your view of that region within their site..</li>
+        </ul>
+        <p>The first image is generated through the UCSC Genome Browser. The requested region is shown with behavioral and physiological QTL from the Rat Genome Database or the Mouse Genome Database, annotated RefSeq genes/transcripts, and expression data on normal tissue from the UCSC Genome Browser database. The image can be altered using the Image control options above the image to show or hide transcripts and to change the track options. </p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_1449247194_0" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_1449247194_0" style="display: none;">
+                <p>
+                    <img src="Images/detailedTranscription_Region.png" style="border-left-style: double;border-left-width: 4px;border-left-color: #808080;border-right-style: double;border-right-width: 4px;border-right-color: #808080;border-top-style: double;border-top-width: 4px;border-top-color: #808080;border-bottom-style: double;border-bottom-width: 4px;border-bottom-color: #808080;" />
+                </p>
+            </div>
+        </div>
+        <h2><a name="kanchor24"></a><a name="GenesLocatedRegionTab"></a>Genes Physically Located in a Region</h2>
+        <p>All Ensembl genes (including protein-coding and non-coding) are listed in the table. For regions in the rat genome, transcripts derived from a genome-guided transcriptome reconstruction using polyA+ selected RNA from the BN-Lx/CubPrin and SHR/OlaPrin strains that do not overlap an Ensembl gene are also listed. <a href="Detailed_Transcription_Info.htm#Transcri" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Transcriptome Reconstruction (Rat Only)"</a>.</p>
+        <p>The table has a row for each Ensembl gene, and each Ensembl gene may have multiple transcript (i.e., splice variants).</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_1449247194_1" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_1449247194_1" style="display: none;">
+                <p>
+                    <img src="Images/detailedTranscription_GenesRegion.png" style="border-left-style: double;border-left-width: 4px;border-left-color: #c0c0c0;border-right-style: double;border-right-width: 4px;border-right-color: #c0c0c0;border-top-style: double;border-top-width: 4px;border-top-color: #c0c0c0;border-bottom-style: double;border-bottom-width: 4px;border-bottom-color: #c0c0c0;" />
+                </p>
+            </div>
+        </div>
+        <h3># Ensembl Transcripts </h3>
+        <p>The # Ensembl Transcripts column lists the number of transcripts annotated by Ensembl that are associated with a particular gene.</p>
+        <h3>Transcripts (RNA-Seq) </h3>
+        <p>The Transcripts RNA-Seq column reports the number of transcripts from the transcriptome reconstruction in rat brain (i.e., the transcript must be expressed in brain to be identified in the reconstruction) that overlap the annotated gene. The RNA-Seq transcripts identified as being associated with a given gene are only required to be on the same strand and have some overlap in either exonic or intronic regions. There is no requirement that exonic regions of either overlap, so it is possible a transcript in this count might be located in an intronic region of the Ensembl transcript.</p>
+        <h3>Total Probesets</h3>
+        <p>The Total Probesets column reports the number of probe sets from the Affymetrix Exon 1.0 ST array that overlap the gene. The count includes any probe sets that fall within the start base pair and stop base pair, such as any associated RNA-Seq transcript start and stops that may extend past the start or stop of the annotated gene, and are on the same strand as the annotated gene. This count includes probe sets that fall in an annotated intron as long as the probe set is on the same strand as the gene. The count includes probe sets that have not been masked due to unreliable data (i.e., SNPs or non-uniquely aligning probe sets).</p>
+        <h3>Probesets &gt; 0.33 Heritability</h3>
+        <p> For each probe set on the Affymetrix Exon 1.0 ST Array (mouse or rat), we calculated a broad-sense heritability using an ANOVA model and expression data from the ILSXISS panel (mouse) or the HXB/BXH panel (rat). <a href="Viewing_Datasets.htm#publicDatasets" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Public Datasets"</a> for details. The heritability threshold of 0.33 was chosen arbitrarily to represent an expression estimate with at least modest heritability. In the rat, we include the number of probe sets at least modestly heritable in the four available tissues: brain, heart, liver, and brown adipose.</p>
+        <h3>Probesets &gt; 1% DABG</h3>
+        <p>  For each probe set on the Affymetrix Exon 1.0 ST Array (mouse or rat) and each sample, we calculated a p-value associated with the expression of the probe set above background (DABG – detection above background). Using a p-value threshold of 0.0001, we calculated the proportion of samples from the ILSXISS panel (mouse) or HXB/BXH panel (rat) that had expression values significantly different from background for a given probe set. In the table, we report the number of probe sets whose expression values were detected above background in more than 1% of samples.</p>
+        <h3>eQTLs (Gene/Transcript Cluster ID)</h3>
+        <p>eQTL were calculated for each transcript cluster (approximately gene) on the Affymetrix Exon 1.0 ST Array using the ILSXISS panel (mouse) and the HXB/BXH panel (rat). <a href="Viewing_Datasets.htm#publicDatasets" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Public Datasets"</a> for details. Locus-specific p-values were calculated using permutation methods for each transcript cluster/SNP pair.</p>
+        <p><b>Transcript Cluster –</b> The numeric ID that is used by Affymetrix to specify a group of probe sets that have been combined to estimate expression at the gene level rather than at the individual exon level.</p>
+        <p><b>Annotation Level –</b> Affymetrix indicates its confidence in <a name="kanchor25"></a>annotation of a particular transcript cluster by classifying it as core (most confidence), extended, or full (least confidence). This designation is based on the source of annotation for a gene. For more details, see the Affymetrix website at:&#160;<a href="http://www.affymetrix.com" target="_blank">http://www.affymetrix.com.</a></p>
+        <p><b>View Genome-Wide Associations –</b> A Circos graphic displays for this particular gene/transcript cluster when you click the link in this column. The graphic displays the locus-specific (location-specific), p-values across the genome for the gene. When examining data from rat, the locus-specific eQTL displays for each of the four tissues available.</p>
+        <p><b>Total # of Locations P-value &lt; 0.001 –</b> In this column, we calculated the number of locations (loci) within the genome  that the transcript cluster was significantly associated with (locus-specific p&lt;0.001). For rat, this is calculated for each of the four tissues separately.</p>
+        <p><b>Minimum P-Value Location –</b> This column gives the location of the locus with the smallest p-value for this transcript. This is the strongest eQTL for that gene. If no loci have a p-value less than 0.001, no results are displayed in this column. For rat, this is calculated for each of the four tissues separately. The p-value cutoff may be adjusted in the filtering section.</p>
+        <h2><a name="kanchor26"></a>bQTLs Overlapping Region</h2>
+        <p>The bQTL Overlapping Region table lists all the behavioral and physiological QTL reported in the Rat Genome Database (RGD) or the Mouse Genome Database (MGD)&#160;that overlap the genomic region selected. The column identified as <i>References</i> includes two links. The top link takes you to the related entry at the RGD or MGD and the bottom link takes you to the related journal article through PubMed. The second-to-last column is the whole region reported for the bQTL. When you click this link, a new window with the detailed transcriptome information for the region of that particular bQTL.</p>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_1449247194_2" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_1449247194_2" style="display: none;">
+                <p>
+                    <img src="Images/detailedTranscription_bQTLs.png" style="border-left-style: double;border-left-width: 4px;border-left-color: #c0c0c0;border-right-style: double;border-right-width: 4px;border-right-color: #c0c0c0;border-top-style: double;border-top-width: 4px;border-top-color: #c0c0c0;border-bottom-style: double;border-bottom-width: 4px;border-bottom-color: #c0c0c0;" />
+                </p>
+            </div>
+        </div>
+        <h2><a name="kanchor27"></a>Transcripts Controlled From Region (eQTL)</h2>
+        <p>The Transcripts Controlled from Region tab displays a Circos Plot that shows the physical location of genes controlled from the selected region.  P-values less than 0.001 are highlighted in yellow,  and links are drawn to connect the physical location of the transcript with the associated loci within the specified region. For rat, information on the four tissues available displays in different colors.</p>
+        <ol>
+            <li value="1"> Click <b>Filter List and Circos Plot</b> to select from a subset of chromosomes and tissues (for rat), and generate the plot again.</li>
+            <li value="2">Click <img src="Images/downloadIcon.gif"></img> to download the plot as a PDF.</li>
+        </ol>
+        <div class="MCDropDown">
+            <div class="MCDropDownHead"><a class="MCDropDownHotSpot" href="javascript:void(0);" id="MCDropDownHotSpot_1449247194_3" onclick="FMCDropDown( this ); return false;"><img style="border: none;margin-right: 5px;" src="SkinSupport/DropDownClosed.gif" MadCap:altsrc="SkinSupport/DropDownOpen.gif" onload="if ( typeof( FMCPreloadImage ) == 'function' ) { FMCPreloadImage( 'SkinSupport/DropDownOpen.gif' ); }" class="MCDropDownIcon" />Take a look</a>
+            </div>
+            <div class="MCDropDownBody" id="MCDropDownBody_1449247194_3" style="display: none;">
+                <p>
+                    <img src="Images/detailedTranscription_Circos.png" style="border-left-style: double;border-left-width: 4px;border-left-color: #c0c0c0;border-right-style: double;border-right-width: 4px;border-right-color: #c0c0c0;border-top-style: double;border-top-width: 4px;border-top-color: #c0c0c0;border-bottom-style: double;border-bottom-width: 4px;border-bottom-color: #c0c0c0;" />
+                </p>
+            </div>
+        </div>
+        <p>The table below the Circos Plot lists the genes whose expression is controlled from the chosen region. The first several columns are identical to the table in the first tab. <a href="#GenesLocatedRegionTab" target="" title="" alt="" class="MCXref" xrefformat="See {quote}{paratext}{quote}">See "Genes Physically Located in a Region"</a>. </p>
+        <p>The columns that differ are:</p>
+        <p style="font-weight: bold;">P-Value from Region</p>
+        <p>The minimum p-value in the chosen region is reported for each transcript cluster. For the rat, separate columns are reported for each of the four tissues. If a gene has a significant eQTL in this region in <i>any</i> tissue, minimum p-values are reported for all four tissues. eQTL that reach the p-value threshold are highlighted in blue. You can filter on a number of parameters to obtain a more reasonably sized list. You can decreases the minimum p-value to look for more significant eQTLs, or you can limit your search to particular chromosomes to view only genes located on the selected chromosomes.</p>
+        <p>The exact region may be larger or smaller than the region you entered. A list of the exact eQTL regions displays above the Circos Plot.</p>
+        <p style="font-weight: bold;"># other locations p-value&lt;0.001</p>
+        <p>This column counts the number of loci (locations) in the genome outside the chosen region that have a significant association with expression of this gene.</p>
+        <script type="text/javascript" src="SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>
