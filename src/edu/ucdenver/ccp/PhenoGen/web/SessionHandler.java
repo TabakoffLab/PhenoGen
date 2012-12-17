@@ -58,6 +58,7 @@ public class SessionHandler {
 	private String host = "";
         private String perlEnvVar="";
         private String adminEmail="";
+        private String maxRThreadCount="1";
 	
         private Dataset selectedDataset = null;
         private Dataset.DatasetVersion selectedDatasetVersion = null;
@@ -341,6 +342,14 @@ public class SessionHandler {
 	public void setPerlEnvVar(String inString) {
 		this.perlEnvVar = inString;
 	}
+        
+        public String getMaxRThreadCount() {
+		return this.maxRThreadCount;
+	}
+
+	public void setMaxRThreadCount(String maxCount) {
+		this.maxRThreadCount = maxCount;
+	}
 
 	public String getHost() {
 		return host;
@@ -495,7 +504,7 @@ public class SessionHandler {
 		//log.debug("in SessionHandler.dbPropertiesFile = "+ dbPropertiesFile);
                 session.setAttribute("perlEnvVar", this.getPerlEnvVar());
                 session.setAttribute("adminEmail", this.getAdminEmail());
-                
+                session.setAttribute("maxRThreadCount", this.getMaxRThreadCount());
 
 	}
 

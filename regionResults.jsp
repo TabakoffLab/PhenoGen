@@ -341,8 +341,8 @@ function runFilter(){
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
-                    	<TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
-                        <TH style="width:50%"><span class="trigger" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
+                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
+                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
                         <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999; top:23px; left:-3px;"><img id="Help4" class="helpImage" src="../web/images/icons/help.png" /></div>
                         </TR>
                         
@@ -684,8 +684,20 @@ function runFilter(){
 		}
  	 });
 	 
-	 setupExpandCollapseTable();
-	setupExpandCollapse();
+	 $("span[name='geneListFilter']").click(function(){
+		var baseName = $(this).attr("name");
+                var thisHidden = $("tbody#" + baseName).is(":hidden");
+                $(this).toggleClass("less");
+				$('span[name='+baseName+']').toggleClass("less");
+                if (thisHidden) {
+					$("tbody#" + baseName).show();
+                } else {
+					$("tbody#" + baseName).hide();
+                }
+	});
+	 
+	// setupExpandCollapseTable();
+	//setupExpandCollapse();
 </script>
 
 
@@ -1408,21 +1420,21 @@ You can filter the table based on:<BR />
 
 <div id="Help5aContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>RNA-Seq Column</H3>
-This column displays the number of transcripts reconstructed from the RNA-Seq data that match to this gene.  You can view a more detailed image by clicking on the gene symbol, which brings up the detailed transcription information for just that gene.
+This column displays the number of transcripts reconstructed from the RNA-Seq data that match to this gene.  Click the gene symbol to view a more detailed view of the transcription information for just that gene.
 </div></div>
 
 <div id="Help5bContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>Affy Exon Data Columns</H3>
-The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse data is from the Public ILSXISS RI Mice
-For rat data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)<BR /><BR />
+The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse, data is from the Public ILSXISS RI Mice
+For rat, data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)<BR /><BR />
 
-These datasets are available to the public for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  (A free login is required, this allows you to save your progress and come back after lengthy processing steps.)  <BR /><BR />
+These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets. A free login is required, which allows you to save your progress and come back after lengthy processing steps.  <BR /><BR />
 
 Columns:<BR />
 <ul style="padding-left:25px; list-style-type:square;">
-	<li>Total number of non masked probesets</li><BR /> 
-	<li>Number with a heritability of >0.33(Avg heritability for probesets >0.33)</li><BR />
-	<li>Number detected above background(DABG) (Avg % of samples DABG)</li><BR />
+	<li>Total number of non-masked probe sets</li><BR /> 
+	<li>Number with a heritability of >0.33 (Avg heritability for probesets >0.33)</li><BR />
+	<li>Number detected above background (DABG) (Avg % of samples DABG)</li><BR />
 	<li>Transcript Cluster ID corresponding to the gene with Annotation level</li><BR />
 	<li>Circos Plot to show all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> across tissues.</li><BR />
 	<li>eQTL for the transcript cluster in each tissue</li>
@@ -1437,7 +1449,7 @@ Columns:<BR />
 
 <div id="Help5cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>Heritablity</H3>
-For each probe set on the Affymetrix Exon 1.0 ST Array (mouse or rat), we calculated a broad-sense heritability using an ANOVA model and expression data from the ILSXISS panel (mouse) or the HXB/BXH panel (rat).  The heritability threshold of 0.33 was chosen arbitrarily to represent an expression estimate with at least modest heritability. In the rat, we include the number of probesets at least modestly heritable in the four available tissues (brain, heart, liver, and brown adipose). 
+For each probe set on the Affymetrix Exon 1.0 ST Array (mouse or rat), we calculated a broad-sense heritability using an ANOVA model and expression data from the ILSXISS panel (mouse) or the HXB/BXH panel (rat).  The heritability threshold of 0.33 was chosen arbitrarily to represent an expression estimate with at least modest heritability. In the rat, we include the number of probesets at least modestly heritable in the four available tissues (brain, heart, liver, and brown adipose).   Higher heritability indicates that expression of a probe set is influenced more by genetics than unknown environmental factors.
 </div></div>
 
 <div id="Help5dContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
@@ -1447,43 +1459,43 @@ For each probe set on the Affymetrix Exon 1.0 ST Array (mouse or rat) and each s
 
 <div id="Help5eContent" class="inpageHelpContent" title="<center>Help-eQTLs</center>"><div class="help-content">
 <H3>eQTLs</H3>
-The eQTL columns give you a general idea of where a gene in the region you have entered is controlled from.  For a variety of reasons <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are currently only available at the gene (transcript cluster) level instead of the probeset level.  So the first columns give you information about the transcript cluster.  <BR /><BR />
+The eQTL columns provide a general idea of where a gene, in the region you have entered, is controlled from.  Currently, <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are currently only available at the gene (transcript cluster) level instead of the probe set level, which means the first columns give you information about the transcript cluster.  <BR /><BR />
 
 Columns:<BR />
-	Transcript Cluster ID- Is the unique ID assigned by affymetrix.  <BR />
-	Location-Is the chromosomes and base pair coordinates where the gene is located. <BR />
-	Annotation level- is related to the confidence in the gene.  Core is the highest confidence.  This level tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and will include additional regions beyond the Ensembl annotations.<BR />
-	Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.<BR />
+	Transcript Cluster ID- The unique ID assigned by Affymetrix.  <BR />
+	Location-The chromosomes and base-pair coordinates where the gene is located. <BR />
+	Annotation level- Related to the confidence in the gene.  Core is the highest confidence.  This level tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower confidence and includes additional regions beyond the Ensembl annotations.<BR />
+	Genome Wide Associations- A way to view all the locations with a P-value below the cutoff selected.  Circos is used to create a plot of each region in each tissue associated with expression of the gene selected.<BR />
 <BR />
 Tissue Columns<BR />
 	These columns summarize the data for each tissue.<BR />
-	Total # of locations with a P-value < (Selected Cutoff)- This is the # of locations associated with expression below a cutoff selected in the Filter List section above the table.<BR />
-	Minimum P-Value Location- Is the P-value and location of the minimum P-Value for the given tissue.  P-Value is in black above the location in blue.  The location will open a Detailed Transcription Information window for the given location.<BR />
+	Total # of locations with a P-value < (Selected Cutoff)- The number of locations associated with expression below a cutoff selected in the Filter List section above the table.<BR />
+	Minimum P-Value Location- The P-value and location of the minimum P-Value for the given tissue.  P-Value is in black, above the location in blue.  Click the location to open a Detailed Transcription Information window for that location.<BR />
 
 </div></div>
 
 <div id="Help5fContent" class="inpageHelpContent" title="<center>Help-Transcript Cluster ID</center>"><div class="help-content">
 <H3>Transcript Cluster ID</H3>
-Transcript Cluster ID- Is the unique ID assigned by affymetrix.  <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are calculated for this annotation at the Gene level by combining probeset data across the gene.
+Transcript Cluster ID- The unique ID assigned by Affymetrix.  <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are calculated for this annotation at the gene level by combining probe set data across the gene.
 </div></div>
 
 <div id="Help5gContent" class="inpageHelpContent" title="<center>Help-Genome Wide Associations</center>"><div class="help-content">
 <H3>Genome Wide Associations</H3>
-Genome Wide Associations- Is a way to view all the locations with a P-value below the cutoff selected.  It uses circos to create a plot of each region in each tissue associated with expression of the gene selected.  It is a nice way to visualize the columns to the right.
+Genome Wide Associations- Shows all the locations with a P-value below the cutoff selected.  Circos is used to create a plot of each region in each tissue associated with expression of the gene selected.
 </div></div>
 
 <div id="Help6Content" class="inpageHelpContent" title="<center>Help-Filter/Display-bQTLs</center>"><div class="help-content">
 <H3>Filter List/View Columns</H3>
-For this section you may only filter based on text in the table.  To search for a keyword just start typing and results will be filtered base on what has been entered.<BR />
+For this section you may only filter based on text in the table.  To search for a keyword, start typing, and results are filtered based on your entry.<BR />
 For the View Columns section you may choose which columns are displayed.<BR /><BR />The options to view/hide are:<BR />
 <ul style=" padding-left:25px; list-style-type:square;">
-	<li><a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a> Symbol-looks much like a gene symbol, but has been assigned to a bQTL by RGD or MGI.</li>
+	<li><a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a> Symbol-Looks much like a gene symbol, but has been assigned to a bQTL by RGD or MGI.</li>
 	<li>Trait Method-A description of the method used to measure a particular phenotype.</li>
 	<li>Phenotype- A description or phrase to describe the characteristics measured.</li>
 	<li>Diseases-Diseases associated with the phenotype.</li>
-	<li>References-Both Pubmed and RGD/MGI curated references related to the <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>.</li>
+	<li>References-Both Pubmed and RGD/MGI-curated references related to the <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>.</li>
 	<li>Associated bQTLs-<a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that are related to the displayed <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>.</li>
-	<li>Location Method-a brief description of the method used to determine the location of the <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>.</li>
+	<li>Location Method-A brief description of the method used to determine the location of the <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>.</li>
     	<ul style="padding-left:35px; list-style-type:disc;">
 			<li> by peak only</li>
 			<li> by peak w adj size</li>
@@ -1493,26 +1505,25 @@ For the View Columns section you may choose which columns are displayed.<BR /><B
 			<li> imported from external source</li>
         </ul>
     </li>
-	<li>LOD Score/P-value-When available(many are not reported directly by RGD/MGI) indicates the level of confidence the region contributes to the Phenotype.  Higher LOD Scores / Lower P-values indicate higher confidence in the association.</li>
+	<li>LOD Score/P-value-When available(many are not reported directly by RGD/MGI) indicates the level of confidence the region contributes to the Phenotype.  Higher LOD Scores/Lower P-values indicate higher confidence in the association.</li>
 </ul>
 
 </div></div>
 
 <div id="Help7Content" class="inpageHelpContent" title="<center>Help-bQTL Tab</center>"><div class="help-content">
 <H3><a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a> Tab</H3>
-Summary-
 	The <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a> tab allows you to view <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> that overlap with the region.  <BR /><BR />
 What is a bQTL?(<a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">View detailed bQTL information</a>) 
-	Breifly a bQTL is a region that is associated with a particular phenotype or behavior (thus <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>).  <BR /><BR />
+	A Behavioral Quantitative Trait Loci or bQTL is a region that is associated with a particular phenotype or behavior (thus <a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTL</a>).  <BR /><BR />
 How is it calculated?
-	<a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> can be found for Recombinant Inbred Panels by measuring a trait/behavior across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation regions can be found that are correlated with a particular phenotype.  These are the regions listed here.  This may indicate that a gene or other feature is somehow influencing the phenotype.
+	<a href="<%=commonDir%>definitions.jsp#bQTLs" target="_blank">bQTLs</a> can be found for Recombinant Inbred Panels by measuring a trait/behavior across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation regions can be found that are correlated with a particular phenotype.  These are the regions listed in the table under this tab.  They may indicate that a gene or other feature is somehow influencing the phenotype.
 
 </div></div>
 
 <div id="Help8Content" class="inpageHelpContent" title="<center>Help-Region Determination Method</center>"><div class="help-content">
 <H3>Region Determination Method</H3>
-This column is the method used to determine the location.  A description of each method is below.<BR />
-	- by peak only-still looking for descriptions of each method.<BR />
+This column is the method used to determine the location.<BR />
+	- by peak only<BR />
 	- by peak w adj size<BR />
 	- by one flank and peak markers<BR />
 	- by one flank marker only<BR />
@@ -1523,44 +1534,44 @@ This column is the method used to determine the location.  A description of each
 <div id="Help9Content" class="inpageHelpContent" title="<center>Help-Filter/View Columns-eQTLs</center>"><div class="help-content">
 <H3>Filter Circos Plot and Table/View Columns</H3><BR />
 Filter Circos Plot/Table<BR />
-You may filter the ciros plot and table by tissues, <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> P-value, and chromosome.  Simply change the paramters you would like to filter by and click on Run Filter.<BR />
+You may filter the Ciros plot and table by tissues, <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> P-value, and chromosome.  Change the parameters by which you want to filter and click Run Filter.<BR />
 <ul style=" padding-left:25px; list-style-type:square;">
-	<li>eQTL P-value- is the cutoff for to limit genes displayed to those that have a P-value for the selected region less than or equal to the cutoff.</li>
-	<li>Tissues(Rat Only)- Move the tissues to the excluded column if you do not want to include all of them.  This will keep only genes that have significant <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> in one of the tissues still included.</li>
-	<li>Chromosomes- Move any chromosomes to exclude into the exclude column.  This will filter out genes that are located on that chromosome.</li>
+	<li>eQTL P-value- The cutoff to limit genes displayed to those that have a P-value for the selected region less than, or equal to, the cutoff.</li>
+	<li>Tissues(Rat Only)- Move tissues to the excluded column to keep only genes that have significant <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> in one of the included tissues.</li>
+	<li>Chromosomes- Move chromosomes to exclude into the Exclude column to filter out genes that are located on that chromosome.</li>
 </ul>
 <BR /><BR />
 View Columns<BR />
-You may show/hide various columns using the check boxes below View Columns.<br />
+Use the checkboxes below View Columns to show and hide columns.<br />
 <ul style="padding-left:25px; list-style-type:square;">
 	<li>Gene ID- The Ensembl gene ID that links directly to Ensembl.</li>
-	<li>Descriptioin- The Ensembl description of the gene.</li>
-	<li>Transcript ID and Annot.- The Transcript Cluster ID and Annotation Level which is the Affymetrix transcript cluster that corresponds to the gene and the level of confidence.</li>.
-	<li>All Tissues P-values- controls the P-values from region column across tissues.</li>
-	<li>All Tissues # Locations- controls the # other locations column across all tissues.</li>
-	<li>Specific Tissues: controls both columns for a specific tissue.</li>
+	<li>Description- The Ensembl description of the gene.</li>
+	<li>Transcript ID and Annot.- The Transcript Cluster ID and Annotation Level, which is the Affymetrix transcript cluster that corresponds to the gene and the level of confidence.</li>.
+	<li>All Tissues P-values- Controls the P-values from the region column, across tissues.</li>
+	<li>All Tissues # Locations- Controls the # other locations column across all tissues.</li>
+	<li>Specific Tissues- Controls both columns for a specific tissue.</li>
 </ul>
 
 </div></div>
 
 <div id="Help10Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>eQTL Tab</H3>
-Summary- This tab show’s what genes might be controlled by a feature in this region.  There is at least an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> with a P-value below the cutoff in the highlighted(Blue) for the selected region in one or more tissues.  However please note the actual region may just overlap with the current region so the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> region associated with the P-value may be a different than the current region. 
+This tab shows the genes that might be controlled by a feature in the choosen region.  There is at least an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> with a P-value below the cutoff in the highlighted(Blue) for the selected region in one or more tissues.  However, the actual region may just overlap with the current region, so the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> region associated with the P-value may be a different than the current region. 
 <BR />
-The circos plot shows where the genes with <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> in this region are physically located.  
+The Circos plot shows where the genes with <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> in this region are physically located.  
 <BR />
-The table below lists all the genes and <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for each gene in each tissue.  To view all the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for a gene use the View Location Plot link to bring up the circos plot that shows each <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for the selected Gene.
+The table below the Circos plot lists all the genes and <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for each gene in each tissue.  Use the View Location Plot link to view all the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for a gene in a Circos plot that shows each <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for the selected gene.
 <BR />
-Finally to view detailed transcript and probeset data click on a Gene Symbol to bring up a summary specific to that gene.
+Finally, to view detailed transcript and probe set data, click on a Gene Symbol to display a summary specific to that gene.
 <BR /><BR />
 What is an eQTL? (<a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">View detailed eQTL information</a>)   
 An eQTL is a region that is correlated across recombinant inbred strains to expression of a gene(or in the case of our Affy data displayed, Transcript Cluster) or probeset.  This may indicate some feature in this region is influencing expression of the gene with a significant <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> in the region.
 <BR /><BR />
 How is it calculated? 
-<a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> can be found for Recombinant Inbred Panels by measuring expression across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation, regions can be found that are correlated with expression.   In this table this region overlaps with one of these regions that is assigned a P-value below the cutoff you selected.  This may indicate that a gene or other feature in this region or one of the other regions with a significant P-value is somehow influencing the expression of the gene.
+<a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> can be found for Recombinant Inbred Panels by measuring expression across strains in the panel and then correlating the values to the genotype of each strain between markers.  Based on that correlation, regions can be found that are correlated with expression.   In the table, the region overlaps with one of the regions that is assigned a P-value below the cutoff you selected.  This may indicate that a gene or other feature in this region, or one of the other regions with a significant P-value, is somehow influencing the expression of the gene.
 <BR /><BR />
 What does an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for a transcript cluster mean? 
-At the transcript cluster level this is an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for a gene and not individual	 probesets.  For now this is the only level available, although it is possible to add probeset level <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> in the future.
+At the transcript cluster level, this is an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for a gene and not individual probe sets.  For now, this is the only level available.
 
 </div></div>
 
@@ -1568,38 +1579,38 @@ At the transcript cluster level this is an <a href="<%=commonDir%>definitions.js
 <H3>Circos Plot eQTL Gene Locations</H3>
 This plot shows all of the genes that have an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> in the region entered.  These genes correspond to the genes listed in the table below.  If a higher number of genes are located in nearly the same region only the first 2-3 may be displayed.
 <BR /><BR />
-The plot can be hidden altogether using the +/- button.  The size of the plot can also be controlled use the button next to the directions.
+The plot can be hidden using the +/- button.  The size of the plot can also be controlled using the button next to the directions.
 <BR /><BR />
-When your mouse is inside the border below you can zoom in/out on the plot.  When your mouse is outside you will be able to scroll normally.  The controls inside the image can be used to zoom in/out and reset the image.  You may also click and drag to reposition the image.
+When your mouse is inside the border below, you can zoom in/out on the plot.  When your mouse is outside the border you can scroll normally.  The controls inside the image can be used to zoom in and out and reset the image.  You can also click-and-drag to reposition the image.
 <BR /><BR />
-You may download a PDF of the image by clicking on the download icon(<img src="web/images/icons/download_g.png">).
+You can download a PDF of the image by clicking on the download icon(<img src="web/images/icons/download_g.png">).
 <BR /><BR />
-You may also reduce or restore the verticle space used for the graphic by clicking on the <img src="web/images/icons/circos_min.jpg"> or <img src="web/images/icons/circos_max.jpg"> icons.
+You can reduce or restore the verticle space used for the graphic by clicking on the <img src="web/images/icons/circos_min.jpg"> or <img src="web/images/icons/circos_max.jpg"> icons.
 </div></div>
 
 <div id="Help12aContent" class="inpageHelpContent" title="<center>Help-Transcript Cluster ID</center>"><div class="help-content">
 <H3>Transcript Cluster ID</H3>
-Transcript Cluster ID- Is the unique ID assigned by affymetrix.  <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are calculated for this annotation at the Gene level by combining probeset data across the gene.
+Transcript Cluster ID- The unique ID assigned by Affymetrix.  <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are calculated for this annotation at the gene level by combining probe set data across the gene.
 </div></div>
 
 
 <div id="Help12bContent" class="inpageHelpContent" title="<center>Help-Annotation Level</center>"><div class="help-content">
 <H3>Annotation level</H3>
-Annotation level- is related to the confidence in the gene.  Core is the highest confidence.  This level tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and will include additional regions beyond the Ensembl annotations.
+Annotation level- Related to the confidence in the gene.  Core is the highest confidence and tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and includes additional regions beyond the Ensembl annotations.
 </div></div>
 
 <div id="Help12cContent" class="inpageHelpContent" title="<center>Help-Affy Exon Data</center>"><div class="help-content">
 <H3>Affy Exon Data-eQTLs</H3>
-The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse data is from the Public ILSXISS RI Mice
-For rat data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)
+The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse, data is from the Public ILSXISS RI Mice
+For rat, data is from four datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays).
 <BR /><BR />
-These datasets are available to the public for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  (A free login is required, this allows you to save your progress and come back after lengthy processing steps.)  
+These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  A free login is required, which allows you to save your progress and come back after lengthy processing steps.  
 <BR /><BR />
 Columns:<BR />
 <ul style="list-style-type:square; padding-left:25px;">
-	<li>Transcript Cluster ID unique Affymetrix assigned id that corresponds to a gene. </li>
-	<li>Annotation level confidence in the transcript cluster annotation</li>
-	<li>Circos Plot to show all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for a specific gene across tissues.</li>
+	<li>Transcript Cluster ID- The unique Affymetrix-assigned id that corresponds to a gene. </li>
+	<li>Annotation Level- Confidence in the transcript cluster annotation</li>
+	<li>Circos Plot- Shows all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for a specific gene across tissues.</li>
 	<li><a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for the transcript cluster in each tissue</li>
 		<ul style="list-style-type:disc; padding-left:35px;">
 		<li>P-value from this region</li>
@@ -1617,9 +1628,9 @@ The human/Net and Human/Chain tracks displayed indicate which chromosome in Huma
 <div id="Help14Content" class="inpageHelpContent" title="<center>Help</center>">
 <div class="help-content">
 <H3>DAVID</H3>
-A list of genes can be imported into the DAVID website for additional information about function and also to look for a significant enrichment in function pathways by the list which might imply some biological meaning.  The link if available will open the summany where you can explore the genes that were processed automatically.
+A list of genes can be imported into the DAVID website for additional information about function and also to look for a significant enrichment in pathways, which might imply some biological meaning.  The link, when available, will open the summany page where you can explore the different DAVID tools.
 <BR /><BR />
-Currently only lists of 300 genes are less are supported.  This is a limit of the method used to submit genes to the DAVID website.  We will either be replacing the site or supporting a different method to allow longer lists in the future.  If you perform filtering to get the list below 300 you will be able to click a link and immediately analyze data on the site, Otherwise you can copy one of the ID columns such as Gene IDs(Ensembl IDs) and submit them on your own.
+Currently only lists of 300 genes are less are supported.  This is a limit of the method used to submit genes to the DAVID website.  We will either be replacing the site or supporting a different method to allow longer lists.  If you perform filtering to get the list below 300 you will be able to click a link and immediately analyze data on the site, Otherwise you can copy one of the ID columns such as Gene IDs(Ensembl IDs) and submit them on your own.
 </div></div>
 
 <script type="text/javascript">
@@ -1880,7 +1891,30 @@ $(document).ready(function() {
 		});*/
 	
 	
-	setupExpandCollapseTable();
+	//setupExpandCollapseTable();
+	$("span[name='bqtlListFilter']").click(function(){
+		var baseName = $(this).attr("name");
+                var thisHidden = $("tbody#" + baseName).is(":hidden");
+                $(this).toggleClass("less");
+				$('span[name='+baseName+']').toggleClass("less");
+                if (thisHidden) {
+					$("tbody#" + baseName).show();
+                } else {
+					$("tbody#" + baseName).hide();
+                }
+	});
+	$("span[name='fromListFilter']").click(function(){
+		var baseName = $(this).attr("name");
+                var thisHidden = $("tbody#" + baseName).is(":hidden");
+                $(this).toggleClass("less");
+				$('span[name='+baseName+']').toggleClass("less");
+                if (thisHidden) {
+					$("tbody#" + baseName).show();
+                } else {
+					$("tbody#" + baseName).hide();
+                }
+	});
+	
 	setupExpandCollapse();
 	//var tableRows = getRows();
 	//hoverRows(tableRows);

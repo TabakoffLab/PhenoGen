@@ -1045,7 +1045,9 @@ public class GeneDataTools {
         
         this.dbPropertiesFile = (String)session.getAttribute("dbPropertiesFile");
         this.ensemblDBPropertiesFile = (String)session.getAttribute("ensDbPropertiesFile");
-        
+        if(session.getAttribute("maxRThreadCount")!=null){
+            this.maxThreadRunning = Integer.parseInt((String)session.getAttribute("maxRThreadCount"));
+        }
     }
     
     public ArrayList<Gene> mergeOverlapping(ArrayList<Gene> initialList){

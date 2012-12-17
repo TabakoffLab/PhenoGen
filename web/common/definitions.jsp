@@ -89,7 +89,7 @@ HXB/BXH recombinant inbred rat panel normalized using RMA with poor quality prob
         <BR /><BR />
         What is the benefit?
             <div style="padding-left:20px; margin-left:10px;">
-            These strains are available for purchase so phenotypic or behavioral data collected elsewhere may be correlated to data on PhenoGen.  For example the BXH/HXB panels and ILSXISS panels have different alcohol consumption preferences.  If you collected your own data on these strains you can import the mean and variance for each strain and calculate bQTLs, which would indicate regions of the genome correlated with a preference or aversion to alcohol consumption.  You can also investigate regions that are correlated with expression of a gene or probe set, which can let you look for elements that control expression or even alternate splicing(when looking at control at the probe set level).
+            These strains are available so phenotypic or behavioral data collected elsewhere may be correlated to data on PhenoGen.  For example the BXH/HXB panels and ILSXISS panels have different alcohol consumption preferences.  If you collected your own data on these strains you can import the mean and variance for each strain and calculate bQTLs, which would indicate regions of the genome correlated with a preference or aversion to alcohol consumption.  You can also investigate regions that are correlated with expression of a gene or probe set, which can let you look for elements that control expression or even alternate splicing(when looking at control at the probe set level).
             </div>
         <BR /><BR />
         How can you use data from these panels on PhenoGen?

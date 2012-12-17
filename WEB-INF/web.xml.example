@@ -99,6 +99,11 @@
 	<param-value>admin1@domain.com,admin2@domain.com</param-value>
 </context-param>
 
+<context-param>
+	<param-name>maxRThreadCount</param-name>
+	<param-value>1</param-value>
+</context-param>
+
 <!-- The rest of these parameters should never change -->
 
 <context-param>

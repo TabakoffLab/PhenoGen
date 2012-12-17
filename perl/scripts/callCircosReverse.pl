@@ -119,7 +119,7 @@ sub callCircosReverse{
 	}
 	elsif($hostname eq 'phenogen.ucdenver.edu'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
-		$perlBinary = '/usr/local/bin/perl';
+		$perlBinary = '/opt/phenogen/perl-5.10.1/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
