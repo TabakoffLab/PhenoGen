@@ -187,9 +187,7 @@
 	<BR><BR>
     <div class="deleteItem"></div>
 
-<script type="text/javascript">
-	var crumbs = ["Home", "Analyze Microarray Data"];
-</script>
+
 <%@ include file="/web/common/footer.jsp" %>
 <script type="text/javascript">
 	$(document).ready(function() {

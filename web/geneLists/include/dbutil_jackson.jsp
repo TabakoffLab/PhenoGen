@@ -30,7 +30,7 @@
                         myErrorEmail.setSubject("Jackson Lab Database is Unavailable");
                         myErrorEmail.setContent("The MGI database connection is unavailable.");
                         try {
-                        	myErrorEmail.sendEmailToAdministrator();
+                        	myErrorEmail.sendEmailToAdministrator(adminEmail);
                         } catch (Exception error) {
                                 log.error("exception while trying to send message to phenogen.help about jackson lab connection", error);
                         }

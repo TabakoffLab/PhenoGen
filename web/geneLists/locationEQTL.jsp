@@ -385,11 +385,6 @@ log.debug("after call");
 	%>
 <%@ include file="/web/common/header.jsp" %> 
 	<script type="text/javascript">
-		<% if (fromQTL.equals("Y")) { %>
-	    		var crumbs = ["Home", "Investigate QTL Regions"];
-		<% } else { %>
-	    		var crumbs = ["Home", "Research Genes", "Location eQTL"];
-		<% } %>
 		var ctrlMode = "<%= mode %>";
 		var qtlListID = "<%= qtlListID %>";
 	  </script>

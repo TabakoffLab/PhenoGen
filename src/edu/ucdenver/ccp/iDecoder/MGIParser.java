@@ -1,6 +1,7 @@
 package edu.ucdenver.ccp.iDecoder;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -45,13 +46,13 @@ public class MGIParser extends InputFileParser {
         
         long startTime = System.currentTimeMillis();
         String fileSpec = createFileSpec(inputDirectory,coordinateFilename);
-        processMGICoordinateFile(fileSpec, taxonID);
+        HashMap locations=processMGICoordinateFile(fileSpec, taxonID);
         System.out.println("processed " + fileSpec + "\t"
                 + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
         
         startTime = System.currentTimeMillis();
         fileSpec = createFileSpec(inputDirectory,linksFilename);
-        processMGILinksFile(fileSpec, taxonID, unigenePrefix); 
+        processMGILinksFile(fileSpec, taxonID, unigenePrefix,locations); 
         System.out.println("processed " + fileSpec + "\t"
                 + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
         
@@ -70,7 +71,8 @@ public class MGIParser extends InputFileParser {
      * info in columns 6-9 are termed "representative" in the file (as opposed
      * to "NCBI" and "Ensembl", which the file also contains).
      */
-    private void processMGICoordinateFile(String inputFilename, String taxonID) throws IOException {
+    private HashMap processMGICoordinateFile(String inputFilename, String taxonID) throws IOException {
+        HashMap location=new HashMap();
         BufferedReader reader = createInputFileReader(inputFilename);
         
         String line;
@@ -98,6 +100,10 @@ public class MGIParser extends InputFileParser {
                 chromosome = columns[5].trim();
                 // concat base pairs and strand into "start-end (+/-)"
                 mapLocation = getMapLocation(columns[6], columns[7], columns[8]);
+                String[] loc=new String[2];
+                loc[0]=chromosome;
+                loc[1]=mapLocation;
+                location.put(mgiID,loc);
             }
             
             writeToInfoFile(taxonID,MGI_ID_TYPE,mgiID,chromosome,mapLocation);
@@ -105,12 +111,13 @@ public class MGIParser extends InputFileParser {
             // Since gene symbol is a primary ID, as well as a link ID, write to
             // both info and links files
             if (! geneSymbol.equals("")) {
-                writeToInfoFile(taxonID,GENE_SYMBOL_TYPE,geneSymbol);
+                writeToInfoFile(taxonID,GENE_SYMBOL_TYPE,geneSymbol,chromosome,mapLocation);
                 writeToLinksFile(MGI_ID_TYPE,mgiID,GENE_SYMBOL_TYPE,geneSymbol);
             }
         }
         
         reader.close();
+        return location;
     }
 
     /*
@@ -125,7 +132,7 @@ public class MGIParser extends InputFileParser {
      * parsers (and the iDecoder database).
      */
     private void processMGILinksFile(String inputFilename, String taxonID,
-            String unigenePrefix) throws IOException {
+            String unigenePrefix, HashMap locations) throws IOException {
 
         BufferedReader reader = createInputFileReader(inputFilename);
 
@@ -141,7 +148,13 @@ public class MGIParser extends InputFileParser {
             String dbName = columns[2].trim();
 
             if (dbName.equals("Ensembl Gene Model")) {
-                writeToInfoFile(taxonID, ENSEMBL_ID_TYPE, linkID);
+                String loc="",chr="";
+                String[] location=(String[])locations.get(mgiID);
+                if(location!=null&&location.length==2){
+                    loc=location[1];
+                    chr=location[0];
+                }
+                writeToInfoFile(taxonID, ENSEMBL_ID_TYPE, linkID,chr,loc);
                 writeToLinksFile(MGI_ID_TYPE,mgiID,ENSEMBL_ID_TYPE,linkID);
             } else if (dbName.equals("Entrez Gene")) {
                 writeToLinksFile(MGI_ID_TYPE,mgiID,ENTREZ_GENE_ID_TYPE,linkID);

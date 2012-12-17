@@ -45,9 +45,7 @@
 	}
 %>
 
-	<script type="text/javascript">
-		var crumbs = ["Home", "Research Genes", "Pathway"];
-	</script>
+
 	<BR><BR>
 
         <form   name="pathway" 

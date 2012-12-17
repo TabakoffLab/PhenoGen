@@ -180,7 +180,7 @@ public class Async_APT_Filecleanup implements Runnable{
                     + "\n Thread name is " + thisThread.getName());
             try {
                 //log.debug("sending message to notify administrator of problem");
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator("");
             } catch (MessagingException e) {
                 //log.error("error sending message to administrator",e);
                 throw new RuntimeException();

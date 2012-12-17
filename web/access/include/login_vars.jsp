@@ -73,6 +73,8 @@
                	value="<%=host%>" />
     <jsp:setProperty name="mySessionHandler" property="perlEnvVar" 
                	value="<%=application.getInitParameter(\"perlEnvVar\") %>" />    
+	<jsp:setProperty name="mySessionHandler" property="adminEmail" 
+               	value="<%=application.getInitParameter(\"adminEmail\") %>" />
    
 </jsp:useBean>
 
@@ -115,6 +117,7 @@
 	String downloadURL = mySessionHandler.getDownloadURL();
 	
 	String perlEnvVar = mySessionHandler.getPerlEnvVar();
+	String adminEmail = mySessionHandler.getAdminEmail();
 
 %>
 	

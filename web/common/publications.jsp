@@ -12,12 +12,11 @@
 
 <% extrasList.add("index.css"); %>
 
-<%@ include file="/web/common/basicHeader.jsp" %>
+<%pageTitle="Publications";%>
 
-<script type="text/javascript">
-        var crumbs = ["Publications"];
-</script>
-        <div id="welcome" style="height:575px; width:980px; overflow:auto;">
+<%@ include file="/web/common/header.jsp" %>
+
+        <div id="welcome" style="height:575px; width:946px; overflow:auto;">
 
 	<h2>Recent Publications</h2>
 	<div id="overview-wrap" >

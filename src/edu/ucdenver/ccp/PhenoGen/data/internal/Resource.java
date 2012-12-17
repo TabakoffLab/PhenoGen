@@ -31,6 +31,7 @@ public class Resource {
 	private ObjectHandler myObjectHandler = new ObjectHandler();
 	public MarkerDataFile[] markerDataFiles = null;
         public SAMDataFile[] samDataFiles = null;
+        public GenotypeDataFile[] genotypeDataFiles = null;
 	public ExpressionDataFile[] expressionDataFiles = null;
 	public EQTLDataFile[] eQTLDataFiles = null;
 	public HeritabilityDataFile[] heritabilityDataFiles = null;
@@ -53,6 +54,8 @@ public class Resource {
         private String readType;
         private String panelStr;
         private Dataset dataset;
+        private String population;
+        private String ancestry;
         //private String context="";
 
 
@@ -97,6 +100,16 @@ public class Resource {
                 setTissue(tissue);
                 setTechType(tech);
                 setReadType(readType);
+	}
+        
+        public Resource(int id, String organism, String population,String ancestry,String tech, GenotypeDataFile[] genotypeFileArray) {
+		log = Logger.getRootLogger();
+		setID(id);
+		setOrganism(organism);
+		setPopulation(population);
+		setGenotypeDataFiles(genotypeFileArray);
+                setAncestry(ancestry);
+                setTechType(tech);
 	}
 
 	public Resource(int id, String organism, String source, Dataset dataset, MarkerDataFile[] markerFileArray, EQTLDataFile[] eQTLFileArray,String paneltmp) {
@@ -225,6 +238,13 @@ public class Resource {
         public SAMDataFile[] getSAMDataFiles() {
                 return this.samDataFiles;
         }
+        
+        public void setGenotypeDataFiles(GenotypeDataFile[] inGenotypeDataFiles) {
+                this.genotypeDataFiles = inGenotypeDataFiles;
+        }
+        public GenotypeDataFile[] getGenotypeDataFiles() {
+                return this.genotypeDataFiles;
+        }
 
         public void setExpressionDataFiles(ExpressionDataFile[] inExpressionDataFiles) {
                 this.expressionDataFiles = inExpressionDataFiles;
@@ -250,6 +270,24 @@ public class Resource {
                 return this.heritabilityDataFiles;
         }
 
+        public String getPopulation() {
+            return population;
+        }
+
+        public void setPopulation(String population) {
+            this.population = population;
+        }
+
+        public String getAncestry() {
+            return ancestry;
+        }
+
+        public void setAncestry(String ancestry) {
+            this.ancestry = ancestry;
+        }
+        
+        
+
 	public HttpSession getSession() {
 		log.debug("in getSession");
 		return session;
@@ -273,9 +311,11 @@ public class Resource {
 		List<Resource> expressionResources = Arrays.asList(getExpressionResources());
 		List<Resource> markerResources = Arrays.asList(getMarkerResources());
                 List<Resource> rnaResources = Arrays.asList(getRNASeqResources());
+                List<Resource> genotypingResources = Arrays.asList(getGenotypingResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
                 allResources.addAll(rnaResources);
+                allResources.addAll(genotypingResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
 	}
@@ -663,6 +703,29 @@ public class Resource {
 		return resourceArray;
 
 	}
+        
+        
+        /**
+	 * Gets all the Genotyping resources
+	 * @return	an array of Resource objects
+	 */
+	public Resource[] getGenotypingResources() {
+		log.debug("in getGenotypingResources");
+                String seqFilePath="/userFiles/public/Genotyping/";
+		List<Resource> resourceList = new ArrayList<Resource>();
+                
+                GenotypeDataFile[] genotypingFileList = new GenotypeDataFile[5];
+                genotypingFileList[0]=new GenotypeDataFile("Genotype CEL Files Part 1",seqFilePath+"Genotyping_1.zip");
+                genotypingFileList[1]=new GenotypeDataFile("Genotype CEL Files Part 2",seqFilePath+"Genotyping_2.zip");
+                genotypingFileList[2]=new GenotypeDataFile("Genotype CEL Files Part 3",seqFilePath+"Genotyping_3.zip");
+                genotypingFileList[3]=new GenotypeDataFile("Genotype CEL Files Part 4",seqFilePath+"Genotyping_4.zip");
+                genotypingFileList[4]=new GenotypeDataFile("Genotype CEL Files Part 5",seqFilePath+"Genotyping_5.zip");
+                resourceList.add(new Resource(70, "Human", "Alcohol dependent subjects receiving outpatient treatment at the Medical University of Vienna (Austria)",
+                                            "self-reported European","Affymetrix Genome-Wide Human SNP Array 6.0", genotypingFileList ));
+        	
+                Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
+		return resourceArray;
+	}
 
 	/**
 	 * Returns one Resource object from an array of Resource objects
@@ -680,7 +743,10 @@ public class Resource {
         	int idx = Arrays.binarySearch(myResources, new Resource(id), new ResourceSortComparator());
 		log.debug("idx = " + idx);
 	
-        	Resource thisResource = myResources[idx];
+        	Resource thisResource = null;
+                if(idx>-1){
+                    thisResource=myResources[idx];
+                }
 
         	return thisResource;
 	}

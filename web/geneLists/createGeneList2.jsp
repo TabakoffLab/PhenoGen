@@ -166,7 +166,7 @@
 												genesNotFound +
 												"\n\n  The gene list ID is: "+geneListID);
                         					try {
-                                					myErrorEmail.sendEmailToAdministrator();
+                                					myErrorEmail.sendEmailToAdministrator(adminEmail);
                         					} catch (Exception error) {
                                 					log.error("exception while trying to send message to phenogen.help about "+
 											"genes not found by iDecoder", error);

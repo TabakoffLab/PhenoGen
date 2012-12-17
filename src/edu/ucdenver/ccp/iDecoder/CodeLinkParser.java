@@ -164,55 +164,55 @@ public class CodeLinkParser extends InputFileParser {
 		if (ncbiRNAIDs != null) {
             		for (int i = 0; i < ncbiRNAIDs.length; i++) {
                 		String ncbiRNAID = ncbiRNAIDs[i];
-                		writeToInfoFile(taxonID, NCBI_RNA_ID_TYPE, ncbiRNAID);
+                		writeToInfoFile(taxonID, NCBI_RNA_ID_TYPE, ncbiRNAID, chromosome, mapLocation);
                 		writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, NCBI_RNA_ID_TYPE, ncbiRNAID);
             		}
 		}
 
             for (int i = 0; i < unigeneIDs.length; i++) {
                 String unigeneID = unigeneIDs[i];
-                writeToInfoFile(taxonID, UNIGENE_ID_TYPE, unigeneID);
+                writeToInfoFile(taxonID, UNIGENE_ID_TYPE, unigeneID, chromosome, mapLocation);
                 writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, UNIGENE_ID_TYPE, unigeneID);
             }
 
             for (int i = 0; i < geneSymbols.length; i++) {
                 String geneSymbol = geneSymbols[i];
-                writeToInfoFile(taxonID, GENE_SYMBOL_TYPE, geneSymbol);
+                writeToInfoFile(taxonID, GENE_SYMBOL_TYPE, geneSymbol, chromosome, mapLocation);
                 writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, GENE_SYMBOL_TYPE, geneSymbol);
             }
 
             for (int i = 0; i < swissProtIDs.length; i++) {
                 String swissProtID = swissProtIDs[i];
-                writeToInfoFile(taxonID, SWISS_PROT_ID_TYPE, swissProtID);
+                writeToInfoFile(taxonID, SWISS_PROT_ID_TYPE, swissProtID, chromosome, mapLocation);
                 writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, SWISS_PROT_ID_TYPE, swissProtID);
             }
 
             for (int i = 0; i < mgiIDs_or_rgdIDs.length; i++) {
                 String mgiID_or_rgdID = mgiIDs_or_rgdIDs[i];
 		if (organism.equals("Mus musculus")) {
-                	writeToInfoFile(taxonID, MGI_ID_TYPE, mgiID_or_rgdID);
+                	writeToInfoFile(taxonID, MGI_ID_TYPE, mgiID_or_rgdID, chromosome, mapLocation);
                 	writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, MGI_ID_TYPE, mgiID_or_rgdID);
 		} else {
-                	writeToInfoFile(taxonID, RGD_ID_TYPE, mgiID_or_rgdID);
+                	writeToInfoFile(taxonID, RGD_ID_TYPE, mgiID_or_rgdID, chromosome, mapLocation);
                 	writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, RGD_ID_TYPE, mgiID_or_rgdID);
 		}
             }
 
             for (int i = 0; i < refSeqRNAIDs.length; i++) {
                 String refSeqRNAID = refSeqRNAIDs[i];
-                writeToInfoFile(taxonID, REF_SEQ_RNA_ID_TYPE, refSeqRNAID);
+                writeToInfoFile(taxonID, REF_SEQ_RNA_ID_TYPE, refSeqRNAID, chromosome, mapLocation);
                 writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, REF_SEQ_RNA_ID_TYPE, refSeqRNAID);
             }
 
             for (int i = 0; i < refSeqProteinIDs.length; i++) {
                 String refSeqProteinID = refSeqProteinIDs[i];
-                writeToInfoFile(taxonID, REF_SEQ_PROTEIN_ID_TYPE, refSeqProteinID);
+                writeToInfoFile(taxonID, REF_SEQ_PROTEIN_ID_TYPE, refSeqProteinID, chromosome, mapLocation);
                 writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, REF_SEQ_PROTEIN_ID_TYPE, refSeqProteinID);
             }
 
             for (int i = 0; i < ensemblIDs.length; i++) {
                 String ensemblID = ensemblIDs[i];
-                writeToInfoFile(taxonID, ENSEMBL_ID_TYPE, ensemblID);
+                writeToInfoFile(taxonID, ENSEMBL_ID_TYPE, ensemblID, chromosome, mapLocation);
                 writeToLinksFile(CODELINK_ID_TYPE, codeLinkID, ENSEMBL_ID_TYPE, ensemblID);
             }
 

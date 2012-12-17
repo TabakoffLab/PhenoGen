@@ -499,6 +499,20 @@ function setupExpandCollapse() {
 	})
 }
 
+function setupExpandCollapseTable() {
+	$("span.trigger").click(function(){
+		var baseName = $(this).attr("name");
+                var thisHidden = $("tbody#" + baseName).is(":hidden");
+                $(this).toggleClass("less");
+				$('span[name='+baseName+']').toggleClass("less");
+                if (thisHidden) {
+					$("tbody#" + baseName).show();
+                } else {
+					$("tbody#" + baseName).hide();
+                }
+	})
+}
+
 function enableField(field) {
         // To enable the field, remove the disabled attribute 
 	field.removeAttr('disabled');

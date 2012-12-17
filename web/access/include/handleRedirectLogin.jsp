@@ -46,7 +46,7 @@
                         	myDbConnErrorEmail.setSubject("PhenoGen Database is Unavailable");
                         	myDbConnErrorEmail.setContent("The PhenoGen database connection is unavailable.");
                         	try {
-                        		myDbConnErrorEmail.sendEmailToAdministrator();
+                        		myDbConnErrorEmail.sendEmailToAdministrator(adminEmail);
                         	} catch (Exception error) {
                             	log.error("exception while trying to send message to phenogen.help about phenogen db connection", error);
                         	}
@@ -104,11 +104,14 @@
 
                                 userLoggedIn.setUserMainDir(userFilesRoot);
                                 session.setAttribute("userLoggedIn", userLoggedIn);
-								if(redirUrl!=null && !redirUrl.equals("")){
+								if(redirUrl!=null && !redirUrl.equals("")  && !redirUrl.startsWith("http://" + mySessionHandler.getHost())){
 									log.debug("send redir:"+"http://" + mySessionHandler.getHost() +redirUrl);
 									response.sendRedirect("http://" + mySessionHandler.getHost() + redirUrl);
 									return;
 
+								}else if(redirUrl!=null && !redirUrl.equals("")  && redirUrl.startsWith("http://" + mySessionHandler.getHost())){
+									response.sendRedirect(redirUrl);
+									return;
 								}else{
 									log.debug("default redir:"+commonDir + "startPage.jsp");
                                 	response.sendRedirect(commonDir + "startPage.jsp");

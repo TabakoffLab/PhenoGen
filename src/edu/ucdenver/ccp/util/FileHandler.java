@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -531,7 +532,49 @@ public class FileHandler{
     		}
 		return outFile;
 	}
-
+        
+        /**
+ 	 * Copy one file to another
+   	 * @param inFile	the file to be read
+   	 * @param outFile	the file to be created
+	 * @return		the File object just created
+	 * @throws	IOException if an error occurs
+	 */
+	public boolean copyDir(File srcDir, File destDir) throws IOException {
+            boolean error=false;
+                File[] list=srcDir.listFiles();
+		log.info("in FileHandler.copyDir. srcDir = " + srcDir.getPath() + 
+					" destDir = " + 
+					destDir.getPath());
+                for(int i=0;i<list.length;i++){
+                    if(list[i].isDirectory()){
+                        String newDestDir=destDir.getAbsolutePath()+"/"+list[i].getName();
+                        File newDestFile=new File(newDestDir);
+                        if(!newDestFile.exists()){
+                            newDestFile.mkdirs();
+                        }
+                        boolean tmpError=copyDir(list[i],newDestFile);
+                        if(tmpError){
+                            error=true;
+                        }
+                    }else{
+                        String destName=destDir.getAbsolutePath()+"/"+list[i].getName();
+                        File destFile=new File(destName);
+                        try{
+                            copyFile(list[i],destFile);
+                        }catch(Exception e){
+                            error=true;
+                        }
+                    }
+                }
+                if(error){
+                    throw new IOException("Error copying srcDir="+ srcDir.getPath() + " destDir = " + 
+					destDir.getPath());
+                }
+		return error;
+	}
+        
+        
   	/**
  	 * Read the contents of a file and return it as a String array.
    	 * @param inFile	the file to be read
@@ -619,6 +662,46 @@ public class FileHandler{
 
 		String[] lineArray = (String[]) lines.toArray(new String [lines.size()] );
 		return lineArray;
+	}
+        
+        /**
+ 	 * Read the contents of a file and return it as a String array.
+   	 * @param inFile	the file to be read
+   	 * @param spaces	if this is "noSpaces", then remove all spaces on each line 
+	 * @return		a String array where each line of the file is one element of the array
+	 */
+	public String getFileMemeContents (File inFile) throws IOException{
+
+		StringBuffer lines = new StringBuffer();
+                String line="";
+		BufferedReader br = null;
+                boolean inScript=false;
+		log.debug("in getFileContents.  file = "+inFile.getPath());
+		//log.debug("spaces = "+spaces);
+		try {
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(inFile),"UTF-8"));
+		} catch(IOException e) {
+			log.error("in exception of getFileContents while setting up Buffered Reader", e);
+			throw e;
+		}
+		
+		try {
+			while (((line = br.readLine()) != null)) {
+                                    
+                                    lines.append(line+"\n");
+                    	}
+		} catch(IOException e) {
+			log.error("in exception of getFileContents while reading lines", e);
+			throw e;
+		}
+
+		String result=lines.toString();
+                    result=result.substring(result.indexOf("<style"));
+                    result=result.replaceFirst("</head>","");
+                    result=result.replaceFirst("<body onload=\"javascript:setup()\">","");
+                    result=result.replaceFirst("</body>","");
+                    result=result.replaceFirst("</html>","");
+		return result;
 	}
 
 	/** Determines whether a file contains a string.

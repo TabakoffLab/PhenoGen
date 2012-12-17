@@ -124,9 +124,7 @@
 	
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
-	<script type="text/javascript">
-		var crumbs = ["Home", "Analyze Microarray Data", "Normalize"];
-	</script>
+
 	<%@ include file="/web/datasets/include/viewingPane.jsp" %>
 	<div class="brClear"></div>
 	<%@ include file="/web/datasets/include/prepSteps.jsp" %>

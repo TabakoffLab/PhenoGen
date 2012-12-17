@@ -30,10 +30,6 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-
-	<script type="text/javascript">
-		var crumbs = ["Home", "Research Genes", "Exon Correlation Values"];
-	</script>
     <script language="JAVASCRIPT" type="text/javascript"><%
                 String program = "exonCor";
                 int duration = 120;

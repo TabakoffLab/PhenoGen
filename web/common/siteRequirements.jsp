@@ -14,11 +14,12 @@
 <%
         extrasList.add("index.css");
 %>
+<%pageTitle="Browser/Software Requirements";%>
 
-<%@ include file="/web/common/basicHeader.jsp" %>
+<%@ include file="/web/common/header.jsp" %>
 
         <div id="overview-content">
-        <div id="welcome" style="height:735px; width:980px;">
+        <div id="welcome" style="height:735px; width:946px;">
 
                 <h2>Supported Browsers</h2>
                 <p>
@@ -41,7 +42,7 @@
             <li>Java Plugin JRE 1.5+ is required for the Detailed Transcription Information feature.<BR />
                 (<span id="minJava" style="color:#009900;display:none;" >Java plugin meets the minimum requirements. <BR /></span>
                 <span id="oldJava" style="color:#FF0000;display:none;">A new version may be available click the Install button for the latest version.</span>
-                <span id="noJava" style="color:#FF0000;display:none;"> A newer version is required click the Install button for the latest version.</span><span id="installBTN" class="button">Install Java</span>)
+                <span id="noJava" style="color:#FF0000;display:none;"> A newer version is required click the Install button for the latest version.</span><span id="installJava" class="button">Install Java</span>)
             </li><BR /><BR />
         	<span id="disabledJava" style="display:none;margin-left:40px;"><span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
             To enable Java in your browser or operating system, see:<BR><BR> 
@@ -62,8 +63,11 @@
 				$('#minJava').css("display","inline-block");
 				if (deployJava.versionCheck('1.7.0+') == false) {                   
                 	$('#oldJava').css("display","inline-block");
+					$('#installJava').html("Update Java");
 					$('#installJava').css("display","inline-block");
-            	}
+            	}else{
+					$('#installJava').css("display","none");
+				}
 				if(!navigator.javaEnabled()){
 					$('#disabledJava').css("display","inline-block");
 				}
@@ -81,7 +85,7 @@
 	$(document).ready(function() {
 		$('#JS').css("display","inline-block");
 		$('#noJS').css("display","none");
-		$('#installBTN').click(function (){
+		$('#installJava').click(function (){
 			// Set deployJava.returnPage to make sure user comes back to 
         	// your web site after installing the JRE
             deployJava.returnPage = location.href;

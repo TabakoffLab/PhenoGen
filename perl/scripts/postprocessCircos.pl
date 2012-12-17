@@ -6,8 +6,10 @@ use strict;
 sub postprocessCircos{
 
 
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory)=@_;
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname, $tissueListRef)=@_;
 	# Open the file that has tooltip information for links
+	my @tissueList = @{$tissueListRef};
+	my $numberOfTissues = scalar @tissueList;
 	my $toolTipFileName = $dataDirectory."LinkToolTips.txt";
 	my %toolTipHash;
 	my @tipArray;
@@ -28,6 +30,7 @@ sub postprocessCircos{
 	close($TOOLTIPSFILEHANDLE);
 
 	my $modifiedLine;
+	my $modifiedTissue;
 	# Open the current and new circos svg file
 	my $fileName = $svgDirectory."circos.svg";
 	my $newFileName = $svgDirectory."circos_new.svg";
@@ -48,7 +51,7 @@ sub postprocessCircos{
 			next;
 		}
 		elsif($countFileLines == 3){
-			writeTopLines($NEWSVGFILEHANDLE);
+			writeTopLines($NEWSVGFILEHANDLE,$hostname);
 		}
 		else{
 			if($nextLineIsLinkPath == 1){
@@ -73,8 +76,14 @@ sub postprocessCircos{
 					$modifiedLine = '<g id="'.$toolTipHashKey;
 					$modifiedLine = $modifiedLine .'" onmousemove="ShowTooltip(evt,';
 					$modifiedLine = $modifiedLine ."\'".$toolTipHashValue."\'";
-					$modifiedLine = $modifiedLine.','."'".$1."'".')" onmouseout="HideTooltip(evt)" class="'.$1.'">';
-					print " Modified Link: ".$modifiedLine."\n";
+					$modifiedTissue = $1;
+					if($modifiedTissue eq 'Brown_Adipose'){
+						$modifiedTissue = 'BAT';
+					}
+					elsif($modifiedTissue eq 'Whole_Brain'){
+						$modifiedTissue = 'Brain';
+					}
+					$modifiedLine = $modifiedLine.','."'".$modifiedTissue."'".')" onmouseout="HideTooltip(evt)" class="'.$modifiedTissue.'">';
 					print $NEWSVGFILEHANDLE $modifiedLine."\n";
 					$nextLineIsLinkPath = 1;
 				}
@@ -88,9 +97,35 @@ sub postprocessCircos{
 				#Add two lines before the last line
 				#print " Found Last Line \n";
 				#print $_."\n";
+				# lines for tool tips
+				print $NEWSVGFILEHANDLE '</g>'."\n";
 				print $NEWSVGFILEHANDLE '<rect class="tooltip_bg" id="tooltip_bg" x="0" y="0" rx="4" ry="4" width="60" height="60" visibility="hidden"/>'."\n";
 				print $NEWSVGFILEHANDLE '<text class="tooltip" id="tooltip" x="0" y="0" visibility="hidden">Tooltip</text>'."\n";
-				print $NEWSVGFILEHANDLE '</g>';
+				print $NEWSVGFILEHANDLE '</g>'."\n";
+				
+				# New lines for controls
+				print $NEWSVGFILEHANDLE '<g>'."\n";
+				print $NEWSVGFILEHANDLE '  <rect class="controls" id="controls" x="25" y="10" rx="20" ry="20" width="130" height="180" visibility="hidden"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <text class="controlText" id="controlText1" x="70" y="50" visibility="hidden">Zoom In</text>'."\n";
+				print $NEWSVGFILEHANDLE '  <text class="controlText" id="controlText2" x="70" y="90" visibility="hidden">Zoom Out</text>'."\n";
+				print $NEWSVGFILEHANDLE '  <text class="controlText" id="controlText3" x="70" y="130" visibility="hidden">Reset</text>'."\n";  
+				print $NEWSVGFILEHANDLE '  <text class="controlText" id="controlText4" x="70" y="170" visibility="hidden">Help</text>'."\n"; 
+				print $NEWSVGFILEHANDLE '  <circle class="button"  cursor="pointer" cx="50" cy="40" r="16" onclick="zoom(evt,1.0)" onmousemove="ShowControlTooltip(evt)" onmouseout="HideControlTooltip(evt)"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <circle class="button"  cursor="pointer" cx="50" cy="80" r="16" onclick="zoom(evt,-1.0)" onmousemove="ShowControlTooltip(evt)" onmouseout="HideControlTooltip(evt)"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <circle class="button"  cursor="pointer" cx="50" cy="120" r="16" onclick="resetToOriginal(evt)"  onmousemove="ShowControlTooltip(evt)" onmouseout="HideControlTooltip(evt)"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <circle class="button"  cursor="pointer" cx="50" cy="160" r="16" onclick="ShowHelp(evt)"  onmousemove="ShowControlTooltip(evt)" onmouseout="HideControlTooltip(evt)"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <rect class="plus-minus" x="42" y="37" width="16" height="6"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <rect class="plus-minus" x="42" y="77" width="16" height="6"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <rect class="plus-minus" x="47" y="32" width="6" height="16"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <circle class="plus-minus" cx="50" cy="120" r="8"/>'."\n";
+				print $NEWSVGFILEHANDLE '  <text class="questionMark" x="45" y="170">?</text>'."\n";
+				print $NEWSVGFILEHANDLE '</g>'."\n";
+				print $NEWSVGFILEHANDLE '				<g>'."\n";
+				print $NEWSVGFILEHANDLE '<rect class="help" id="help" x="250" y="250" width="500" height="500" visibility="hidden"/>'."\n";
+				print $NEWSVGFILEHANDLE '<line id="closeHelpLine1" class="closeHelpLine" x1="725" y1="260" x2="740" y2="275" onclick="HideHelp(evt)" visibility="hidden" />'."\n";
+				print $NEWSVGFILEHANDLE '<line id="closeHelpLine2"  class="closeHelpLine" x1="725" y1="275" x2="740" y2="260" onclick="HideHelp(evt)" visibility="hidden"/>'."\n";
+				print $NEWSVGFILEHANDLE '<text class="helpText" id="helpText" visibility="hidden" x="275" y="290"></text>'."\n";
+				print $NEWSVGFILEHANDLE '</g>'."\n";
 				print $NEWSVGFILEHANDLE $_."\n";
 
 			}
@@ -100,12 +135,26 @@ sub postprocessCircos{
 				#Look for the probe id text, for example: <text x="574.2" y="2446.5" font-size="32.5px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" transform="rotate(-45.1,574.2,2446.5)">7102228</text>
 				#Add lines for Tissue Labels and what yellow means
 				print $NEWSVGFILEHANDLE $_."\n";
-				print $NEWSVGFILEHANDLE '<text x="1475.0" y="450.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(107,154,200)" >Brain</text>'."\n";
-				if($organism eq "Rn"){
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="575.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(251,106,74)" >Heart</text>'."\n";
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="700.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(116,196,118)" >Liver</text>'."\n";
-					print $NEWSVGFILEHANDLE '<text x="1475.0" y="825.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(158,154,200)" >BAT</text>'."\n";
+				my %colorHash;
+				$colorHash{'Brain'} = 'rgb(107,154,200)';
+				$colorHash{'Heart'} = 'rgb(251,106,74)';
+				$colorHash{'Liver'} = 'rgb(116,196,118)';
+				$colorHash{'BAT'} = 'rgb(158,154,200)';
+				my @yArray;
+				$yArray[0] = '450.0';
+				$yArray[1] = '575.0';
+				$yArray[2] = '700.0';
+				$yArray[3] = '825.0';		
+				
+				for(my $i = 0; $i < $numberOfTissues ; $i ++){
+					print $NEWSVGFILEHANDLE '<text x="1475.0" y="',$yArray[$i],'" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:',$colorHash{$tissueList[$i]},'" >',$tissueList[$i],'</text>'."\n";
 				}
+				#print $NEWSVGFILEHANDLE '<text x="1475.0" y="450.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(107,154,200)" >Brain</text>'."\n";
+				#if($organism eq "Rn"){
+					#print $NEWSVGFILEHANDLE '<text x="1475.0" y="575.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(251,106,74)" >Heart</text>'."\n";
+					#print $NEWSVGFILEHANDLE '<text x="1475.0" y="700.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(116,196,118)" >Liver</text>'."\n";
+					#print $NEWSVGFILEHANDLE '<text x="1475.0" y="825.0" font-size="64px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(158,154,200)" >BAT</text>'."\n";
+				#}
 				print $NEWSVGFILEHANDLE '<text x="1475.0" y="255.0" font-size="40px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Megabases</text>'."\n";
 				print $NEWSVGFILEHANDLE '<text x="2680.0" y="2650.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Yellow means</text>'."\n";
 				print $NEWSVGFILEHANDLE '<text x="2750.0" y="2680.0" font-size="32px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >negative log p-value > '.$cutoff.'</text>'."\n";
@@ -121,11 +170,20 @@ sub postprocessCircos{
 1;
 
 sub writeTopLines{
-	my ($FILEHANDLE) = @_;
+	my ($FILEHANDLE,$hostname) = @_;
 	print $FILEHANDLE '<?xml version="1.0" standalone="no"?>'."\n";
 	print $FILEHANDLE '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n";
-	print $FILEHANDLE '<svg width="3000px" height="3000px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="init(evt)">'."\n";
-	print $FILEHANDLE '<script xlink:href="/PhenoGenTEST/javascript/SVGPan.js"/>'."\n";
+	print $FILEHANDLE '<svg width="3000px" height="3000px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="init(evt)" cursor="move">'."\n";
+	if($hostname eq 'compbio.ucdenver.edu'){
+		print $FILEHANDLE '<script xlink:href="/PhenoGenTEST/javascript/SVGPanCircos.js"/>'."\n";
+		print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGenTEST/javascript/helper_functions.js" />'."\n";
+		print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGenTEST/javascript/textFlow.js" />'."\n";
+	}
+	else{
+		print $FILEHANDLE '<script xlink:href="/PhenoGen/javascript/SVGPanCircos.js"/>'."\n";
+		print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGen/javascript/helper_functions.js" />'."\n";
+		print $FILEHANDLE '<script type="text/ecmascript" xlink:href="/PhenoGen/javascript/textFlow.js" />'."\n";	
+	}
  	print $FILEHANDLE '<style type="text/css"> '."\n";
 	print $FILEHANDLE '.Heart'."\n";
 	print $FILEHANDLE '{'."\n";
@@ -179,7 +237,59 @@ sub writeTopLines{
     print $FILEHANDLE '}'."\n";
     print $FILEHANDLE '.BAT:hover{'."\n";
     print $FILEHANDLE '	opacity: 0.5;'."\n";
+    print $FILEHANDLE '}'."\n";    
+    print $FILEHANDLE '    .compass{'."\n";
+    print $FILEHANDLE '  			fill:			#fff;'."\n";
+    print $FILEHANDLE '  			stroke:			#000;'."\n";
+    print $FILEHANDLE '  			stroke-width:	1.5;'."\n";
+    print $FILEHANDLE '	}'."\n";
+    print $FILEHANDLE '	.button{'."\n";
+    print $FILEHANDLE '		    fill:           	#000;'."\n";
+    print $FILEHANDLE '			stroke:   			#000;'."\n";
+    print $FILEHANDLE '			stroke-miterlimit:	6;'."\n";
+    print $FILEHANDLE '			stroke-linecap:		round;'."\n";
+    print $FILEHANDLE '	}'."\n";
+    print $FILEHANDLE '	.button:hover{'."\n";
+    print $FILEHANDLE '			stroke-width:   	2;'."\n";
+    print $FILEHANDLE '	}'."\n";
+    print $FILEHANDLE '	.plus-minus{'."\n";
+    print $FILEHANDLE '			fill:	#fff;'."\n";
+    print $FILEHANDLE '			pointer-events: none;'."\n";
+    print $FILEHANDLE '	}'."\n";
+    print $FILEHANDLE '    .questionMark{'."\n";
+    print $FILEHANDLE '			fill:	#fff;'."\n";
+    print $FILEHANDLE '			pointer-events: none;'."\n";
+    print $FILEHANDLE '			font-size: 24px;'."\n";
+    print $FILEHANDLE '			font-family: Georgia, serif;'."\n";
     print $FILEHANDLE '}'."\n";
+    print $FILEHANDLE '	.controls{'."\n";
+    print $FILEHANDLE '		   stroke: #000;'."\n";
+    print $FILEHANDLE '		   fill: #fff;'."\n";
+    print $FILEHANDLE '	}'."\n";
+    print $FILEHANDLE '	.controlText{'."\n";
+    print $FILEHANDLE '		font-size: 18px;'."\n";
+    print $FILEHANDLE '		font-family: Georgia, serif;'."\n";
+    print $FILEHANDLE '	}'."\n";  
+    print $FILEHANDLE '    .help{'."\n";
+    print $FILEHANDLE '		   stroke: #000;'."\n";
+    print $FILEHANDLE '		   fill: #fff;'."\n";
+    print $FILEHANDLE '}'."\n";
+    print $FILEHANDLE '.helpText{'."\n";
+    print $FILEHANDLE '	font-size: 18px;'."\n";
+    print $FILEHANDLE '	font-family: Georgia, serif;'."\n";
+    print $FILEHANDLE '}'."\n";
+    print $FILEHANDLE '.closeHelp{'."\n";
+    print $FILEHANDLE '		   stroke: #000;'."\n";
+    print $FILEHANDLE '		   fill: #fff;'."\n";
+    print $FILEHANDLE '}'."\n";
+    print $FILEHANDLE '.closeHelpLine{'."\n";
+    print $FILEHANDLE '		   stroke: #000;'."\n";
+    print $FILEHANDLE '		   fill: #fff;'."\n";
+    print $FILEHANDLE '		   stroke-width: 4;'."\n";
+    print $FILEHANDLE '}'."\n";
+    print $FILEHANDLE '.closeHelpLine:hover{'."\n";
+    print $FILEHANDLE '	opacity: 0.5;'."\n";
+    print $FILEHANDLE '}'."\n";   
     print $FILEHANDLE '</style>'."\n";
     print $FILEHANDLE ' '."\n";
     print $FILEHANDLE '<script type="text/ecmascript">'."\n";
@@ -194,6 +304,20 @@ sub writeTopLines{
     print $FILEHANDLE ' '."\n";
     print $FILEHANDLE '	    tooltip = svgDocument.getElementById(\'tooltip\');'."\n";
     print $FILEHANDLE '	    tooltip_bg = svgDocument.getElementById(\'tooltip_bg\');'."\n";
+    print $FILEHANDLE '   	controls=svgDocument.getElementById(\'controls\');'."\n";
+    print $FILEHANDLE '	    controlText1=svgDocument.getElementById(\'controlText1\');'."\n";
+    print $FILEHANDLE '	   	controlText2=svgDocument.getElementById(\'controlText2\');'."\n";
+    print $FILEHANDLE '	    controlText3=svgDocument.getElementById(\'controlText3\');'."\n";
+    print $FILEHANDLE '	    controlText4=svgDocument.getElementById(\'controlText4\');'."\n";    
+    print $FILEHANDLE '    	helpText=svgDocument.getElementById(\'helpText\');'."\n";
+    print $FILEHANDLE '	   	help=svgDocument.getElementById(\'help\');'."\n";
+    print $FILEHANDLE '	   	closeHelpLine1=svgDocument.getElementById(\'closeHelpLine1\');'."\n";
+    print $FILEHANDLE '	   	closeHelpLine2=svgDocument.getElementById(\'closeHelpLine2\');'."\n";
+    print $FILEHANDLE '	   	var myText = "To zoom in, click on the plus button.  To zoom out, click on the minus button. ";'."\n";
+    print $FILEHANDLE '	   	myText = myText+"Alternatively, you can zoom in and out by using your mouse wheel. ";'."\n";
+    print $FILEHANDLE '	   	myText = myText+"To move the circos image, click with your mouse and drag into position. ";'."\n";
+    print $FILEHANDLE '	   	myText = myText+"If you want to return to the origional view, click on the reset button. ";'."\n";	
+    print $FILEHANDLE '		var dy = textFlow(myText,helpText,450,275,20,false);'."\n";    
     print $FILEHANDLE ' '."\n";
     print $FILEHANDLE '	}'."\n";
     print $FILEHANDLE ' '."\n";
@@ -202,20 +326,64 @@ sub writeTopLines{
     print $FILEHANDLE '		p.x = evt.pageX+xval;'."\n";
     print $FILEHANDLE '		p.y = evt.pageY+yval;'."\n";
     print $FILEHANDLE '		return p;'."\n";
-    print $FILEHANDLE ' 	}'."\n";  	
+    print $FILEHANDLE ' 	}'."\n";    
+    print $FILEHANDLE '    	function ShowHelp(evt)'."\n"; 
+    print $FILEHANDLE '	{'."\n"; 
+    print $FILEHANDLE '		var isVisible = help.getAttributeNS(null,"visibility");'."\n"; 
+    print $FILEHANDLE '		if(isVisible == "hidden"){'."\n"; 
+    print $FILEHANDLE '	 		helpText.setAttributeNS(null,"visibility","visible");'."\n"; 
+    print $FILEHANDLE ' 			help.setAttributeNS(null,"visibility","visible");'."\n"; 
+    print $FILEHANDLE ' 			closeHelpLine1.setAttributeNS(null,"visibility","visible");'."\n"; 
+    print $FILEHANDLE ' 			closeHelpLine2.setAttributeNS(null,"visibility","visible");'."\n"; 
+    print $FILEHANDLE '	 		helpText.setAttributeNS(null,"cursor","default");'."\n"; 
+    print $FILEHANDLE ' 			help.setAttributeNS(null,"cursor","default");'."\n"; 
+    print $FILEHANDLE ' 			closeHelpLine1.setAttributeNS(null,"cursor","pointer");'."\n"; 
+    print $FILEHANDLE ' 			closeHelpLine2.setAttributeNS(null,"cursor","pointer");'."\n"; 
+    print $FILEHANDLE ' 		}'."\n"; 
+    print $FILEHANDLE ' 	}'."\n"; 
+    print $FILEHANDLE ' 	function HideHelp(evt)'."\n"; 
+    print $FILEHANDLE ' 	{'."\n"; 
+    print $FILEHANDLE ' 			var isVisible = help.getAttributeNS(null,"visibility");'."\n"; 
+    print $FILEHANDLE '			if(isVisible != "hidden"){'."\n"; 
+    print $FILEHANDLE '	 			helpText.setAttributeNS(null,"visibility","hidden");'."\n"; 
+    print $FILEHANDLE ' 				help.setAttributeNS(null,"visibility","hidden");'."\n"; 
+    print $FILEHANDLE ' 				closeHelpLine1.setAttributeNS(null,"visibility","hidden");'."\n"; 
+    print $FILEHANDLE ' 				closeHelpLine2.setAttributeNS(null,"visibility","hidden");'."\n";
+    print $FILEHANDLE '	 			helpText.setAttributeNS(null,"cursor","move");'."\n"; 
+    print $FILEHANDLE ' 				help.setAttributeNS(null,"cursor","move");'."\n"; 
+    print $FILEHANDLE ' 				closeHelpLine1.setAttributeNS(null,"cursor","move");'."\n"; 
+    print $FILEHANDLE ' 				closeHelpLine2.setAttributeNS(null,"cursor","move");'."\n"; 
+    print $FILEHANDLE ' 			}'."\n"; 
+    print $FILEHANDLE '	}'."\n";   
+    print $FILEHANDLE '     	function ShowControlTooltip(evt)'."\n";
+    print $FILEHANDLE ' 	{'."\n";
+    print $FILEHANDLE ' 	 	controlText1.setAttributeNS(null,"visibility","visible");'."\n";
+    print $FILEHANDLE ' 	 	controlText2.setAttributeNS(null,"visibility","visible");'."\n";
+    print $FILEHANDLE ' 	 	controlText3.setAttributeNS(null,"visibility","visible");'."\n";
+    print $FILEHANDLE ' 	 	controlText4.setAttributeNS(null,"visibility","visible");'."\n";
+    print $FILEHANDLE ' 		controls.setAttributeNS(null,"visibility","visible");'."\n";
+    print $FILEHANDLE ' 	}'."\n";
+    print $FILEHANDLE ' 	function HideControlTooltip(evt)'."\n";
+    print $FILEHANDLE ' 	{'."\n";
+    print $FILEHANDLE ' 	 	controlText1.setAttributeNS(null,"visibility","hidden");'."\n";
+    print $FILEHANDLE ' 	 	controlText2.setAttributeNS(null,"visibility","hidden");'."\n";
+    print $FILEHANDLE ' 	 	controlText3.setAttributeNS(null,"visibility","hidden");'."\n";
+    print $FILEHANDLE ' 	 	controlText4.setAttributeNS(null,"visibility","hidden");'."\n";
+    print $FILEHANDLE ' 		controls.setAttributeNS(null,"visibility","hidden");'."\n";
+    print $FILEHANDLE ' 	}'."\n"; 
     print $FILEHANDLE '	function ShowTooltip(evt, mouseovertext, tissue)'."\n";
     print $FILEHANDLE '	{'."\n";
     print $FILEHANDLE '		var g = getRoot(svgDocument);'."\n";
     print $FILEHANDLE '		var k = g.getCTM();'."\n";
-    #print $FILEHANDLE '		console.log(" y matrix value ");'."\n";
-    #print $FILEHANDLE '		console.log(k.d);'."\n";
-    #print $FILEHANDLE '		console.log(" x matrix value ");'."\n";
-    #print $FILEHANDLE '		console.log(k.a);'."\n";
+    print $FILEHANDLE '		console.log(" y matrix value ");'."\n";
+    print $FILEHANDLE '		console.log(k.d);'."\n";
+    print $FILEHANDLE '		console.log(" x matrix value ");'."\n";
+    print $FILEHANDLE '		console.log(k.a);'."\n";
     print $FILEHANDLE '		var pToolTip = newGetEventPoint(evt,11,55*k.d).matrixTransform(g.getCTM().inverse());'."\n";
     print $FILEHANDLE '		var pToolTipBG = newGetEventPoint(evt,8,14*k.d).matrixTransform(g.getCTM().inverse());'."\n";		
-    #print $FILEHANDLE '		console.log(" points ");'."\n";
-    #print $FILEHANDLE '		console.log(pToolTip.x - pToolTipBG.x);'."\n";
-    #print $FILEHANDLE '		console.log(pToolTip.y - pToolTipBG.y);'."\n";
+    print $FILEHANDLE '		console.log(" points ");'."\n";
+    print $FILEHANDLE '		console.log(pToolTip.x - pToolTipBG.x);'."\n";
+    print $FILEHANDLE '		console.log(pToolTip.y - pToolTipBG.y);'."\n";
     print $FILEHANDLE '	    tooltip.setAttributeNS(null,"x",pToolTip.x);'."\n";
     print $FILEHANDLE '	    tooltip.setAttributeNS(null,"y",pToolTip.y);'."\n";
     print $FILEHANDLE '	    tooltip.firstChild.data = mouseovertext;'."\n";
@@ -253,6 +421,7 @@ sub writeTopLines{
     print $FILEHANDLE ' '."\n";
     print $FILEHANDLE '    ]]>'."\n";
     print $FILEHANDLE '  </script>'."\n";
-    print $FILEHANDLE ' <g id="viewport" transform = "scale(.333)">';
+    print $FILEHANDLE ' <g id="viewport" transform = "scale(.330)">'."\n";
+    print $FILEHANDLE ' <g id="notooltips">'."\n";
 }
 1;

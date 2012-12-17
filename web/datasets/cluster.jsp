@@ -358,10 +358,6 @@
 
 
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
-	<script type="text/javascript">
-            var crumbs = ["Home", "Analyze Microarray Data", "Cluster Analysis"];
-            //var crumbs = ["Home", "Analyze Microarray Data", "Cluster Analysis", "Filter Genes", "Cluster"];
-	</script>
 	<%
 	if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) { 
 		

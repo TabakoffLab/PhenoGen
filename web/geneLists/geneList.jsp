@@ -44,9 +44,7 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-    var crumbs = ["Home", "Research Genes", "List"];
-</script>
+
 
 <%@ include file="/web/geneLists/include/viewingPane.jsp" %>
         <div class="page-intro">
@@ -83,7 +81,7 @@
 						%><td><%
                 				for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 
                                     Identifier symbol = (Identifier) symbolItr.next();
-                					%><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=symbol.getIdentifier()%>&speciesCB=<%=selectedGeneList.getOrganism()%>&auto=Y"><%=symbol.getIdentifier()%></a><BR><%
+                					%><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=symbol.getIdentifier()%>&speciesCB=<%=selectedGeneList.getOrganism()%>&auto=Y&newWindow=Y"><%=symbol.getIdentifier()%></a><BR><%
 						}
 						%></td><% 
 					} else { 

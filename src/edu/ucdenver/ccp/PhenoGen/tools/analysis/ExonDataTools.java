@@ -23,8 +23,10 @@ import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Properties;
 
 public class ExonDataTools {
 
@@ -47,6 +49,8 @@ public class ExonDataTools {
     private String perlEnvVar="";
     private String ucscDir="";
     private String bedDir="";
+    private String dbPropertiesFile="";
+    private String ensemblDBPropertiesFile="";
 
     public ExonDataTools() {
         log = Logger.getRootLogger();
@@ -132,7 +136,7 @@ public class ExonDataTools {
                 myAdminEmail.setSubject("Exception thrown looking for previous results");
                 myAdminEmail.setContent("There was an error while looking for exon heatmap results in the DB.\n"+fullerrmsg);
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -178,8 +182,33 @@ public class ExonDataTools {
             log.error("Error getting dataset id",e);
         }
         
+        
+        Properties myProperties = new Properties();
+        File myPropertiesFile = new File(dbPropertiesFile);
+        try{
+            myProperties.load(new FileInputStream(myPropertiesFile));
+        }catch(Exception e){
+            log.error("Error Reading Oracle DB Properties",e);
+        }
+
+            String dsn="dbi:"+myProperties.getProperty("PLATFORM") +":"+myProperties.getProperty("DATABASE");
+            String dbUser=myProperties.getProperty("USER");
+            String dbPassword=myProperties.getProperty("PASSWORD");
+
+            File ensPropertiesFile = new File(ensemblDBPropertiesFile);
+            Properties myENSProperties = new Properties();
+            try{
+                myENSProperties.load(new FileInputStream(ensPropertiesFile));
+            }catch(Exception e){
+                log.error("Error Reading Oracle DB Properties",e);
+            }
+            String ensHost=myENSProperties.getProperty("HOST");
+            String ensPort=myENSProperties.getProperty("PORT");
+            String ensUser=myENSProperties.getProperty("USER");
+            String ensPassword=myENSProperties.getProperty("PASSWORD");
+        
         //construct perl Args
-        String[] perlArgs = new String[12];
+        String[] perlArgs = new String[19];
         perlArgs[0] = "perl";
         perlArgs[1] = perlDir + "writeXML.pl";
         perlArgs[2] = ucscDir;
@@ -197,22 +226,23 @@ public class ExonDataTools {
         perlArgs[9] = bedDir;
         perlArgs[10] = Integer.toString(dsID);
         perlArgs[11] = Integer.toString(arrayTypeID);
+        perlArgs[12]=dsn;
+        perlArgs[13]=dbUser;
+        perlArgs[14]=dbPassword;
+        perlArgs[15]=ensHost;
+        perlArgs[16]=ensPort;
+        perlArgs[17]=ensUser;
+        perlArgs[18]=ensPassword;
+        
         //print Perl Args
-        for (int i = 0; i < perlArgs.length; i++) {
+        /*for (int i = 0; i < perlArgs.length; i++) {
             log.debug(i + "::" + perlArgs[i]);
-        }
+        }*/
 
 
         //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
         String[] envVar=perlEnvVar.split(",");
         
-        //TODO Find a way to import Env Variables from a file.
-        /*String[] envVar = new String[5];
-        envVar[0] = "ORACLE_HOME=/usr/local/instantclient_10_2";
-        envVar[1] = "TNS_ADMIN=/usr/local/instantclient_10_2";
-        envVar[2] = "DYLD_LIBRARY_PATH=/usr/local/instantclient_10_2";
-        envVar[3] = "LD_LIBRARY_PATH=/usr/local/instantclient_10_2";
-        envVar[4] = "PATH=/usr/local/instantclient_10_2";*/
         for (int i = 0; i < envVar.length; i++) {
             log.debug(i + " EnvVar::" + envVar[i]);
         }
@@ -233,7 +263,7 @@ public class ExonDataTools {
                     + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+","+perlArgs[9]+","+perlArgs[10]+","+perlArgs[11]+
                     ")\n\n"+myExec_session.getErrors());
             try {
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();
@@ -259,7 +289,7 @@ public class ExonDataTools {
                     + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
                     ")\n\n"+myExec_session.getErrors());
             try {
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();
@@ -294,7 +324,7 @@ public class ExonDataTools {
                 myAdminEmail.setContent("There was an error while running Affymetrix.Exon.HeatMap.R_HeatMapCorrData("
                         + rArgs[0] + " , " + rArgs[1] + " , " + rArgs[2] + "\n");
                 try {
-                    myAdminEmail.sendEmailToAdministrator();
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
@@ -338,7 +368,7 @@ public class ExonDataTools {
                     myAdminEmail.setSubject("Exception thrown saving Exon results to DB");
                     myAdminEmail.setContent("There was an error while saving exon heatmap results in the DB.\n\n"+fullerrmsg);
                     try {
-                        myAdminEmail.sendEmailToAdministrator();
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
                         throw new RuntimeException();
@@ -376,7 +406,8 @@ public class ExonDataTools {
         this.perlEnvVar=(String)session.getAttribute("perlEnvVar");
         this.ucscDir=(String)session.getAttribute("ucscDir");
         this.bedDir=(String) session.getAttribute("bedDir");
-        
+        this.dbPropertiesFile = (String)session.getAttribute("dbPropertiesFile");
+        this.ensemblDBPropertiesFile = (String)session.getAttribute("ensDbPropertiesFile");
     }
 
     public HttpSession getSession() {

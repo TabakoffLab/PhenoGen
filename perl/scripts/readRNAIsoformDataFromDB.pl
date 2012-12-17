@@ -41,7 +41,7 @@ sub readRNAIsoformDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	#print "read probesets chr:$geneChrom\n";
@@ -169,7 +169,7 @@ sub readRNAIsoformDataFromDB{
 			}else{
 				#print "Adding transcript $trtmp_id::$cntTranscript\n";
 				
-				$geneHOH{Gene}[$cntGenes-1]{TranscriptList}{Transcript}[$cntTranscript] = {
+				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
 					ID => $trtmp_id,
 					score => $trtmp_score,
 					start=> $trtmp_start,
@@ -187,7 +187,11 @@ sub readRNAIsoformDataFromDB{
 				};
 				$cntTranscript++;
 				#print "adding transcript $isoform_id\n";
-				$trtmp_id=$tissue." Isoform ".$isoform_id;
+				if($shortName==0){
+					$trtmp_id=$tissue." Isoform ".$isoform_id;
+				}else{
+					$trtmp_id=$isoform_id;
+				}
 				$trtmp_score=$trscore;
 				$trtmp_start=$trstart;
 				$trtmp_stop=$trstop;
@@ -238,9 +242,9 @@ sub readRNAIsoformDataFromDB{
 			#print Data::Dumper->Dump(\@$probeArray);
 			if($cntGene>0){
 				#print "adding transcript".$trtmp_id."\n";
-				$geneHOH{Gene}[$cntGenes-1]{start}=$genetmp_start;
-				$geneHOH{Gene}[$cntGenes-1]{stop}=$genetmp_stop;
-				$geneHOH{Gene}[$cntGenes-1]{TranscriptList}{Transcript}[$cntTranscript] = {
+				$geneHOH{Gene}[$cntGene-1]{start}=$genetmp_start;
+				$geneHOH{Gene}[$cntGene-1]{stop}=$genetmp_stop;
+				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
 					ID => $trtmp_id,
 					score => $trtmp_score,
 					start=> $trtmp_start,
@@ -259,21 +263,31 @@ sub readRNAIsoformDataFromDB{
 				$cntTranscript++;
 			}
 			#print "adding gene $gene_id\n";
+			my $tmpGeneID=$tissue.".".$gene_id;
+			if($shortName==1){
+				my $shortGID=substr($gene_id,index($gene_id,".")+1);
+				$tmpGeneID=$tissue.".".$shortGID;
+			}
+			
 			#create next gene
 			$geneHOH{Gene}[$cntGene] = {
 				start => 0,
 				stop => 0,
-				ID => $tissue.".".$gene_id,
+				ID => $tmpGeneID,
 				strand=>$trstrand,
 				chromosome=>$chr,
 				biotype => "protein coding",
-				geneSymbol => "N/A",
+				geneSymbol => "",
 				source => "RNA Seq"
 				};
 			$cntGene++;
 			#print "adding transcript $isoform_id\n";
 			#reset variables
-			$trtmp_id=$tissue." Isoform ".$isoform_id;
+			if($shortName==0){
+				$trtmp_id=$tissue." Isoform ".$isoform_id;
+			}else{
+				$trtmp_id=$isoform_id;
+			}
 			$trtmp_score=$trscore;
 			$trtmp_start=$trstart;
 			$trtmp_stop=$trstop;
@@ -322,25 +336,26 @@ sub readRNAIsoformDataFromDB{
 	$query_handle->finish();
 	$connect->disconnect();
 	
-	
-	$geneHOH{Gene}[$cntGenes-1]{start}=$genetmp_start;
-	$geneHOH{Gene}[$cntGenes-1]{stop}=$genetmp_stop;
-	$geneHOH{Gene}[$cntGenes-1]{TranscriptList}{Transcript}[$cntTranscript] = {
-					ID => $trtmp_id,
-					score => $trtmp_score,
-					start=> $trtmp_start,
-					stop => $trtmp_stop,
-					fpkm => $trtmp_fpkm,
-					frac => $trtmp_frac,
-					conf_lo => $trtmp_conf_lo,
-					conf_hi => $trtmp_conf_hi,
-					cov => $trtmp_cov,
-					source => $trtmp_source,
-					strand => $trtmp_strand,
-					chromosome => $trtmp_chromosome,
-					exonList => {exon => \@$exonArray},
-					intronList => {intron => \@$intronArray}
-	};
+	if($cntGene>0){
+		$geneHOH{Gene}[$cntGene-1]{start}=$genetmp_start;
+		$geneHOH{Gene}[$cntGene-1]{stop}=$genetmp_stop;
+		$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
+						ID => $trtmp_id,
+						score => $trtmp_score,
+						start=> $trtmp_start,
+						stop => $trtmp_stop,
+						fpkm => $trtmp_fpkm,
+						frac => $trtmp_frac,
+						conf_lo => $trtmp_conf_lo,
+						conf_hi => $trtmp_conf_hi,
+						cov => $trtmp_cov,
+						source => $trtmp_source,
+						strand => $trtmp_strand,
+						chromosome => $trtmp_chromosome,
+						exonList => {exon => \@$exonArray},
+						intronList => {intron => \@$intronArray}
+		};
+	}
 	#close PSFILE;
 	
 	#print "Gene".scalar(keys %geneHOH)."\n";

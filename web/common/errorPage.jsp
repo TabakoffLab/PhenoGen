@@ -23,11 +23,16 @@
         // Initialize the logger to log debug messages
         //
 	log.info("in errorPage.jsp");
+	
+	String errorPageMsg="";
         String userName = "";
         String analysisPath = ""; 
         String content = ""; 
 
 	String sessionAlive = (String) request.getSession(false).getAttribute("userID");
+	if(session.getAttribute("errorPageMsg")!=null){
+		errorPageMsg=(String)session.getAttribute("errorPageMsg");
+	}
 	if (sessionAlive != null && !sessionAlive.equals("")) {
         	host = request.getHeader("host");
         	userName = (String) session.getAttribute("userName");
@@ -92,7 +97,7 @@
 		myEmail.setContent(content);
 		log.debug("Sending an email message notifying phenogen.help that an error has occurred.");
         	try {
-        		myEmail.sendEmailToAdministrator();
+        		myEmail.sendEmailToAdministrator(adminEmail);
 			mySessionHandler.createSessionActivity(session.getId(), "Got error:  " + content, dbConn);
         	} catch (Exception e) {
                 	log.error("exception while trying to send message to phenogen.help about an error on website", e);
@@ -122,20 +127,36 @@
 %>
 <%@ include file="/web/common/basicHeader.jsp" %>
 <div id="site-wrap">
-<h2>Sorry, but an error has occurred.</h2>
-<strong> 
-The system administrator has been notified and will investigate the problem.  Please check back later.
-</strong> 
+<%if(!errorPageMsg.equals("")){
+	if(errorPageMsg.contains("Database")&&errorPageMsg.contains("unavailable")){%>
+    	<h2>Database currently unavailable</h2>
+	<%}%>
+	<strong><%=errorPageMsg%></strong>
+<%}else{%>
+	<h2>Sorry, but an error has occurred.</h2>
+    <strong> 
+    	The system administrator has been notified and will investigate the problem.  Please check back later.
+    </strong>
+<%}%>
+ 
 <br>
 <br>
-Type of error:  <%=request.getAttribute("javax.servlet.error.exception") %>
-<br>
+<%if(request.getAttribute("javax.servlet.error.exception")!=null){%>
+    Type of error:  <%=request.getAttribute("javax.servlet.error.exception") %>
+    <br>
+<%}%>
+<%if(request.getAttribute("javax.servlet.error.request_uri")!=null){%>
 Name of program:  <%=request.getAttribute("javax.servlet.error.request_uri")%>
 <br>
+<%}%>
+<%if(request.getAttribute("javax.servlet.error.message")!=null){%>
 Error Message:  <%=request.getAttribute("javax.servlet.error.message") %>
-Content: <%=content%> 
-
 <BR>
+<%}%>
+<%if(content!=null){%>
+Content: <%=content%> 
+<BR>
+<%}%>
 <a href="<%=caller%>">Previous Page</a>
 <BR>
 </div>

@@ -301,7 +301,7 @@ public class RefSetCreator {
 	
 		RefSetCreator myRefSetCreator = new RefSetCreator();
 
-		File propertiesFile = new File("/usr/share/tomcat/webapps/PhenoGen/web/common/dbProperties/stan_halDev.properties");
+		File propertiesFile = new File("/usr/share/tomcat/webapps/PhenoGen/web/common/dbProperties/Dev.properties");
 		myRefSetCreator.setConnection(myRefSetCreator.getConnection(propertiesFile));
 		myRefSetCreator.getChips();
 

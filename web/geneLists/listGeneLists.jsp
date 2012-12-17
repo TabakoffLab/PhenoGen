@@ -26,10 +26,10 @@
 
 %>
 
+<%pageTitle="Analyze gene list";%>
+
 <%@ include file="/web/common/header.jsp"%>
-	<script type="text/javascript">
-		crumbs = ["Home", "Research Genes"]; 
-	</script>
+
 	<div class="page-intro">
 		<p>Click on a gene list to select it for further investigation.</p>
 	</div> <!-- // end page-intro -->

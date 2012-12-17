@@ -37,6 +37,7 @@ public class AsyncLitSearch implements Runnable {
 	        this.userLoggedIn = (User) session.getAttribute("userLoggedIn");
 	        this.dbPropertiesFile = (String) session.getAttribute("dbPropertiesFile");
         	this.mainURL = (String) session.getAttribute("mainURL");
+        	this.session=session;
         }
 
 	public void run() throws RuntimeException {
@@ -107,7 +108,7 @@ public class AsyncLitSearch implements Runnable {
                                 		log.debug("sending message to user");
                         			myEmail.sendEmail();
                                 		log.debug("sending message to administrator");
-                                		myAdminEmail.sendEmailToAdministrator();
+                                		myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                         	} catch (Exception e) {
                                 		log.error("error sending message to administrator");
                                 		throw new RuntimeException();

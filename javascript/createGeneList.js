@@ -53,30 +53,32 @@ function showGeneListFields() {
                 $("div#upload_div").show();
                 $("div#new_div").hide();
                 $("div#copyGeneLists").hide();
-		$("div#whatToDo").hide();
+				$("div#whatToDo").hide();
+				$("div#enterList").hide();
         // Enter new
         } else if (radioValue == 'new') {
                 $("div#upload_div").hide();
                 $("div#new_div").show();
-		$("textarea[name='inputGeneList']").val('');
-		enableField($("textarea[name='inputGeneList']"));
-		$("textarea[name='inputGeneList']").css({"margin-left" : "280px"});
+				$("textarea[name='inputGeneList']").val('');
+				enableField($("textarea[name='inputGeneList']"));
                 $("div#copyGeneLists").hide();
-		$("div#whatToDo").hide();
+				$("div#whatToDo").hide();
+				$("div#enterList").show();
         // Copy from existing
         } else if (radioValue == 'copy') {
                 $("div#upload_div").hide();
                 $("div#new_div").show();
-		$("textarea[name='inputGeneList']").val('');
-		enableField($("textarea[name='inputGeneList']"));
-		$("textarea[name='inputGeneList']").css({"margin-left" : "480px"});
+				$("textarea[name='inputGeneList']").val('');
+				enableField($("textarea[name='inputGeneList']"));
                 $("div#copyGeneLists").show();
-		$("div#whatToDo").hide();
+				$("div#whatToDo").hide();
+				$("div#enterList").hide();
         } else {
                 $("div#upload_div").hide();
                 $("div#new_div").hide();
                 $("div#copyGeneLists").hide();
-		$("div#whatToDo").hide();
+				$("div#whatToDo").hide();
+				$("div#enterList").hide();
         }
 
 }
@@ -88,20 +90,21 @@ function displayGeneList () {
         	type: "POST",
         	dataType: "html",
         	async: false,
-		data: {geneListID: geneListID},
+			data: {geneListID: geneListID},
         	url:  "getGeneList.jsp",
         	success: function(html){
-			var answer = jQuery.trim(html);
-            		var listDiv = $("textarea[name='inputGeneList']");
-			if ($.browser.mozilla) {
+				var answer = jQuery.trim(html);
+            	var listDiv = $("textarea[name='inputGeneList']");
 				listDiv.val(answer);
-			} else {
-				listDiv.html(answer);
-			}
+				/*if ($.browser.mozilla) {
+					listDiv.val(answer);
+				} else {
+					listDiv.html(answer);
+				}*/
         	},
         	error: function(XMLHttpRequest, textStatus, errorThrown) {
        	     		alert( "error retrieving gene list " + textStatus + " " + errorThrown );
-        	}
+        			}
 	});
 	$("div#whatToDo").show();
 	$("textarea[name='inputGeneList']").focus();

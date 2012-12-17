@@ -189,7 +189,7 @@ public class AsyncPathway implements Runnable{
                 		myEmail.setContent(errorContent);
        	                	myEmail.sendEmail();
                 		myEmail.setContent(adminErrorContent);
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 				log.debug("just sent email to administrator notifying of Pathway errors");
 			} catch (MessagingException e2) {
 				log.error("in exception of AsyncPathway while sending email", e2);

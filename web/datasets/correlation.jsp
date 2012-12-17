@@ -41,9 +41,6 @@
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
 <% if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) { %>
-	<script type="text/javascript">
-            var crumbs = ["Home", "Analyze Microarray Data", "Correlation Analysis"];
-	</script>
 
 	<%@ include file="/web/datasets/include/viewingPane.jsp" %>
 	<%@ include file="/web/datasets/include/analysisSteps.jsp" %>

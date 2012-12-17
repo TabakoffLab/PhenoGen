@@ -9,11 +9,13 @@
 --%>
 
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %> 
-
+<%@ include file="/web/common/header.jsp" %>
 <jsp:useBean id="myPromoter" class="edu.ucdenver.ccp.PhenoGen.data.Promoter"> </jsp:useBean>
 <% 	
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+
+	request.setAttribute( "selectedTabId", "promoter" );
 
 	userName = "";
 	int itemID = Integer.parseInt((String) request.getParameter("itemID"));
@@ -72,10 +74,8 @@ function popUpJaspar(url) {
 }
 </script>
 
-<%@ include file="/web/common/header.jsp" %>
-	<script type="text/javascript">
-		crumbs = ["Home", "Research Genes", "Promoter"];
-	</script>
+
+
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 

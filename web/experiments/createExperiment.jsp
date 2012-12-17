@@ -118,9 +118,7 @@
         <!-- use javascript to fill up the client-side array with permitted combinations of design types and factors -->
         <%@ include file="/web/experiments/include/fillCombos.jsp" %>
 
-    	<script type="text/javascript">
-        	var crumbs = ["Home", "Analyze Microarray Data", "Upload Data"]; 
-    	</script>
+
 	<%@ include file="/web/experiments/include/viewingPane.jsp" %>
 	<%@ include file="/web/experiments/include/uploadSteps.jsp" %>
 	<div class="brClear"></div>

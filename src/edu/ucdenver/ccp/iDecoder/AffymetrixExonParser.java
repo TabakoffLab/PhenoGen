@@ -303,11 +303,11 @@ public class AffymetrixExonParser extends InputFileParser {
 				geneSymbols.add(geneSymbol);
 				entrezGeneIDs.add(entrezGeneID);
 			}
-            		writeCollectionToInfoFile(taxonID, REF_SEQ_RNA_ID_TYPE, refSeqIDs);
-            		writeCollectionToInfoFile(taxonID, NCBI_RNA_ID_TYPE, genbankIDs);
-            		writeCollectionToInfoFile(taxonID, ENSEMBL_ID_TYPE, ensemblIDs);
-            		writeCollectionToInfoFile(taxonID, GENE_SYMBOL_TYPE, geneSymbols);
-            		writeCollectionToInfoFile(taxonID, ENTREZ_GENE_ID_TYPE, entrezGeneIDs);
+            		writeCollectionToInfoFile(taxonID, REF_SEQ_RNA_ID_TYPE, refSeqIDs, chr, mapLocation);
+            		writeCollectionToInfoFile(taxonID, NCBI_RNA_ID_TYPE, genbankIDs, chr, mapLocation);
+            		writeCollectionToInfoFile(taxonID, ENSEMBL_ID_TYPE, ensemblIDs, chr, mapLocation);
+            		writeCollectionToInfoFile(taxonID, GENE_SYMBOL_TYPE, geneSymbols, chr, mapLocation);
+            		writeCollectionToInfoFile(taxonID, ENTREZ_GENE_ID_TYPE, entrezGeneIDs, chr, mapLocation);
 
             		writeCollectionToLinksFile(AFFY_ID_TYPE, affyID, REF_SEQ_RNA_ID_TYPE, refSeqIDs);
 			writeCollectionToLinksFile(AFFY_ID_TYPE, affyID, NCBI_RNA_ID_TYPE, genbankIDs);

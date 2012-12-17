@@ -37,9 +37,6 @@
 
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
-        <script type="text/javascript">
-            var crumbs = ["Home", "Analyze Microarray Data", "Cluster Results"];
-        </script>
         <%@ include file="/web/datasets/include/viewingPane.jsp" %>
 	<div class="page-intro">
 		<p> Click on a row to view the details of that cluster analysis.

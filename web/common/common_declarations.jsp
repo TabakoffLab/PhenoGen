@@ -31,6 +31,7 @@
         import="edu.ucdenver.ccp.util.sql.*"
         import="edu.ucdenver.ccp.PhenoGen.util.*"
         import="edu.ucdenver.ccp.PhenoGen.data.*"
+		import="edu.ucdenver.ccp.PhenoGen.data.Bio.*"
         import="edu.ucdenver.ccp.PhenoGen.data.internal.*"
         import="edu.ucdenver.ccp.PhenoGen.driver.*"
         import="edu.ucdenver.ccp.PhenoGen.tools.oe.*"
@@ -67,6 +68,7 @@
 
         String caller = request.getHeader("referer");
         String host = request.getHeader("host");
+		String pageTitle="";
 	session.setAttribute("host", host);
 /*
 	for (Enumeration itr = request.getHeaderNames(); itr.hasMoreElements();) {

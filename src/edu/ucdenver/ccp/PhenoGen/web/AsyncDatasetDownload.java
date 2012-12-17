@@ -84,7 +84,7 @@ public class AsyncDatasetDownload implements Runnable{
 			myEmail.setTo(userLoggedIn.getEmail());
 			emailBody.append("This email was sent to " + userLoggedIn.getFull_name() + "\n\n");
 			try {
-				myEmail.sendEmailToAdministrator();
+				myEmail.sendEmailToAdministrator((String) request.getSession().getAttribute("adminEmail"));
 			} catch (Exception e2) {
 				throw new RuntimeException(e2);
 			}

@@ -33,7 +33,7 @@
 		myEmail.setContent("System error " + errorMsg + " when on page "+caller);
 		log.debug("Sending an email message notifying phenogen.help that an error has occurred.");
         	try {
-        		myEmail.sendEmailToAdministrator();
+        		myEmail.sendEmailToAdministrator(adminEmail);
 			mySessionHandler.createSessionActivity(session.getId(), "Got system error:  " + errorMsg, dbConn);
         	} catch (Exception e) {
                 	log.error("exception while trying to send message about an error on website", e);

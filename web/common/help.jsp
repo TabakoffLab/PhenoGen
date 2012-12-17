@@ -460,12 +460,16 @@
 		ELSE CLAUSE - all pages not listed above go to PhenoGen Overview
 *****************************************************************************/							
 	else {
-		fileName="Phenogen_Overview.htm";
+		fileName="Phenogen_Overview.htm#Overview";
+		//fileName="PhenoGen_Overview_Left.htm#CSHID=Overview.htm|StartTopic=Content%2FOverview.htm|SkinName=PhenoGen";
 	}
-	fileName="/helpdocs/Content/" + fileName;
+	//fileName="/helpdocs/Content/" + fileName;
+	fileName=request.getContextPath()+"/helpdocs/PhenoGen_Overview_CSH.htm#"+fileName;
+	
 	log.debug("fileName = "+fileName);
+	response.sendRedirect(fileName);
 	%><!-- <div align="right"><a href="javascript:window.close()">Close</a></div>--> <%
-	%><jsp:include page="<%=fileName%>" flush="true"/><%
+	%><!--<jsp:include page="<%=fileName%>" flush="true"/>--><%
 	%><!-- <center><a href="javascript:window.close()">Close</a></center><BR><BR>--> <%
 	 
 %>

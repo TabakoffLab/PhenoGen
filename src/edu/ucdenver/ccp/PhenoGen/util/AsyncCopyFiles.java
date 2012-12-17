@@ -93,7 +93,7 @@ public class AsyncCopyFiles implements Runnable{
 							"\n Thread name is "+thisThread.getName());
 			try {
 				log.debug("sending message to administrator");
-				myAdminEmail.sendEmailToAdministrator();
+				myAdminEmail.sendEmailToAdministrator("");
 			} catch (Exception e) {
 				log.error("error sending message to administrator");
 				throw new RuntimeException();

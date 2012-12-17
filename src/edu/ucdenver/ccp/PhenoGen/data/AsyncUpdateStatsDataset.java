@@ -199,7 +199,7 @@ public class AsyncUpdateStatsDataset implements Runnable{
 						"\n Email has been sent to "+userLoggedIn.getEmail());
                         	try {
 					myEmail.sendEmail();
-                                	myAdminEmail.sendEmailToAdministrator();
+                                	myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                         	} catch (Exception e) {
 					log.error("exception while trying to send message", e);
 					throw new RuntimeException();

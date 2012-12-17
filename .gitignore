@@ -3,6 +3,37 @@
 # An example file will be provided                  #
 #####################################################
 *.properties
+web.xml
+build.xml
+.Rprofile
+googleAnalytics.jsp
+bedSort
+bedToBigBed
+
+# Users need to download platform specific tools from	#
+# Affymetrix and then current probeset files from 	#
+# http://phenogen.ucdenver.edu				#
+#########################################################
+affyPowerTools/bin/
+
+# These should be linked but we don't want to check in	#
+# data.							#
+#########################################################
+tmpData/
+userFiles
+LODPlots
+liftOver/
+hdf/
+MEME/
+
+# Demo Files #
+##############
+*.mp4
+*.webm
+*.ogg
+*.ogv
+*.swf
+
 
 # Compiled source #
 ###################
@@ -38,6 +69,5 @@
 ._*
 .Spotlight-V100
 .Trashes
-Icon?
 ehthumbs.db
 Thumbs.db

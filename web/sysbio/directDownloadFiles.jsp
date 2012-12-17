@@ -13,7 +13,7 @@
 	int resource = (request.getParameter("resource") == null ? -99 : Integer.parseInt((String) request.getParameter("resource")));
 	String type = (request.getParameter("type") == null ? "" : (String) request.getParameter("type"));
 
-	log.info("in downloadFiles.jsp. user = " + user + ", resource = "+resource +", type = :"+type+":");
+	log.info("in directDownloadFiles.jsp. user = " + user + ", resource = "+resource +", type = :"+type+":");
 
 	log.debug("action = " + action);
 
@@ -28,7 +28,8 @@
 				(type.equals("heritability") ? thisResource.getHeritabilityDataFiles() : 
 				(type.equals("marker") ? thisResource.getMarkerDataFiles() : 
 				(type.equals("rnaseq") ? thisResource.getSAMDataFiles() :
-				null)))));
+				(type.equals("genotype") ? thisResource.getGenotypeDataFiles() :
+				null))))));
 
 	/*log.debug("dataFiles = "); myDebugger.print(dataFiles);
 	
@@ -90,7 +91,7 @@
 				<tr>  
 					<td> 
 					<center>
-						<a href="<%=dataFile.getFileName()%>" target="_blank" > <img src="../images/icons/download_g.png" /></a>
+						<a href="downloadLink.jsp?url=<%=dataFile.getFileName()%>" target="_blank" > <img src="../images/icons/download_g.png" /></a>
 					</center>
 					</td>  
 					<td><%=dataFile.getType()%></td>

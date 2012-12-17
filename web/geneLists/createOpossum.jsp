@@ -192,9 +192,7 @@
 
 
 <%@ include file="/web/common/headTags.jsp" %>
-<script type="text/javascript">
-    var crumbs = ["Home", "Research Genes", "Promoter"];
-</script>
+
 
 <% if (selectedGeneList.getOrganism().equals("Hs") || selectedGeneList.getOrganism().equals("Mm")) { %>
 

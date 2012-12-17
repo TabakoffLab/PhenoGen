@@ -11,15 +11,16 @@
 <%
         extrasList.add("index.css");
 	//mySessionHandler.createSessionActivity(session.getId(), "Looked at useful links page", dbConn);
-%>
-<%@ include file="/web/common/basicHeader.jsp" %>
 
-<script type="text/javascript">
-        var crumbs = ["Useful Links"];
-</script>
+%>
+
+<%pageTitle="Useful Links";%>
+
+<%@ include file="/web/common/header.jsp" %>
+
 
         <div id="overview-content">
-        <div id="welcome" style="height:650px; width:980px;">
+        <div id="welcome" style="height:650px; width:946px;">
 
 	<h2>Gene Expression databases:</h2>
 	<ul>

@@ -87,14 +87,14 @@ public class AsyncMeme implements Runnable{
 				"The MEME process called '"+
 				myGeneListAnalysis.getDescription() + "' that you initiated ";
 
-		String memeDir = perlDir + "MEME/meme410";
+		String memeDir = perlDir + "MEME/meme490";
 		String[] envVariables = new String[4];
 		envVariables[0] = "MEME_DIRECTORY=" + memeDir;
 		envVariables[1] = "MEME_BIN=" + memeDir + "/bin";
 		envVariables[2] = "MEME_LOGS=" + memeDir + "/LOGS";
 		envVariables[3] = "PATH=$PATH:$MEME_BIN";
 
-		String functionDir = perlDir + "MEME/meme410/bin/meme";
+		String functionDir = perlDir + "MEME/meme490/bin/meme";
                 String [] functionArgs = new String[] {
                 			functionDir,
                                         sequenceFileName,
@@ -128,8 +128,12 @@ public class AsyncMeme implements Runnable{
 				log.debug("just finished waiting on thread "+waitThread.getName());
 			}
 			myExecHandler.runExec();
-			new FileHandler().copyFile(new File(memeDir + "/bin/meme_out/meme.html"), new File(memeFileName + ".html"));	
-
+			//new FileHandler().copyFile(new File(memeDir + "/bin/meme_out/meme.html"), new File(memeFileName + ".html"));
+                        File src=new File(memeDir+"/bin/meme_out/");
+                        File dest=new File(memeFileName);
+                        
+                        new FileHandler().copyDir(src,dest);
+                        
 			String successContent = mainContent + "has completed.  " +
 						"You may now view the results on the website at " + mainURL + ". ";
 			myEmail.setSubject("MEME process has completed"); 
@@ -162,7 +166,7 @@ public class AsyncMeme implements Runnable{
                 		myEmail.setContent(errorContent);
        	                	myEmail.sendEmail();
                 		myEmail.setContent(adminErrorContent);
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 				log.debug("just sent email to administrator notifying of MEME errors");
 			} catch (MessagingException e2) {
 				log.error("in exception of AsyncMEME while sending email", e2);

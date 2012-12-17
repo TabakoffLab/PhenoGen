@@ -40,7 +40,7 @@
                         myEnsemblErrorEmail.setSubject("Ensembl Database is Unavailable");
                         myEnsemblErrorEmail.setContent("The Ensembl connection is unavailable.");
                         try {
-                        	myEnsemblErrorEmail.sendEmailToAdministrator();
+                        	myEnsemblErrorEmail.sendEmailToAdministrator(adminEmail);
                         } catch (Exception error) {
                                 log.error("exception while trying to send message to phenogen.help about ensembl lab connection", error);
                         }

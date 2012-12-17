@@ -174,7 +174,7 @@ public class Async_HDF5_FileHandler implements Runnable{
                     + "\n Thread name is " + thisThread.getName());
             try {
                 //log.debug("sending message to notify administrator of problem");
-                myAdminEmail.sendEmailToAdministrator();
+                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (MessagingException e) {
                 //log.error("error sending message to administrator",e);
                 throw new RuntimeException();

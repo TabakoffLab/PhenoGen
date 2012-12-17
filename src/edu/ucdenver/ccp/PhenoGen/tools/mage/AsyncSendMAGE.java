@@ -119,7 +119,7 @@ public class AsyncSendMAGE implements Runnable{
 			try {
 				log.debug("sending emails to user and ebi saying submission happened");
        	                	myEmail.sendEmail();
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
        	                	ebiEmail.sendEmail();
 			//} catch (SendFailedException e) {
 			} catch (MessagingException e) {
@@ -140,7 +140,7 @@ public class AsyncSendMAGE implements Runnable{
 						errorContent + "\n" +
 						"The directory is " + filePrefix;
                 		myEmail.setContent(errorContent);
-       	                	myEmail.sendEmailToAdministrator();
+       	                	myEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 				log.debug("just sent email to administrator notifying of submission errors");
 			//} catch (SendFailedException emailException) {
 			} catch (MessagingException emailException) {

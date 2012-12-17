@@ -692,7 +692,12 @@ div.closeWindow {
         background: transparent url("../web/images/tableftJ.gif") no-repeat left top;
         padding: 0 0 0 5px;
        
-        line-height: 30px;
+        /*line-height: 30px;*/
+		
+		
+		max-width:150px;
+		height: 40px;
+		text-align:center;
 	
 }
 
@@ -716,14 +721,14 @@ div.closeWindow {
 #arrayDetailsTab ul li a {
 
       font-weight: bold;
-        height: 27px;
+        height: 40px;
         overflow: hidden;
         background:url("../web/images/tabrightJ2.gif") no-repeat right top;
         display: block;
         color: #24618e;
         float: left;
         padding: 0 11px 0 3px;
-        
+		text-align:center;
 }
 
 
@@ -738,7 +743,7 @@ div.closeWindow {
         background: transparent url("../web/images/tableftJ.gif") no-repeat 0px -42px;;
         padding: 0 0 0 5px;
        
-        line-height: 30px;
+        /*line-height: 30px;*/
 	
 }
 
@@ -754,7 +759,7 @@ div.closeWindow {
   BORDER-LEFT: #808080 2px solid;
   BORDER-BOTTOM: #808080 2px solid;
   BORDER-RIGHT: #808080 2px solid;
-  position:absolute; top:5%; left:0; width:92%; height:110%;
+  position:absolute; top:7%; left:0; width:92%; height:110%;
 }
 
 
@@ -920,3 +925,66 @@ padding-left: 10px;
 .inpageHelpContent{
 	font-size:9px;
 }
+
+
+.header_status{
+	color:#FFFFFF;
+	text-align:right;
+	padding-right: 10px;
+	padding-top:20px;
+}
+
+.header_step{
+	color:#FFFFFF;
+	text-align:right;
+	padding-right: 10px;
+	padding-top:20px;
+}
+
+table.geneFilter {
+	position:relative; 
+	width:100%; 
+	top:-56px;
+}
+
+table.geneFilter  TH{
+font-size:18px; font-weight:bold; background-color:#DEDEDE; text-align:center;
+}
+
+div.columnLeft{
+	float:left;
+	width:50%;
+}
+
+div.columnRight{
+	float:right;
+	width:50%;
+}
+
+
+/* Recommended styles for two sided multi-select*/
+		.tsmsselect {
+			width: 40%;
+			float: left;
+		}
+		
+		.tsmsselect select {
+			width: 100%;
+		}
+		
+		.tsmsoptions {
+			width: 20%;
+			float: left;
+		}
+		
+		.tsmsoptions p {
+			margin: 2px;
+			text-align: center;
+			font-size: larger;
+			cursor: pointer;
+		}
+		
+		.tsmsoptions p:hover {
+			color: White;
+			background-color: Silver;
+		}

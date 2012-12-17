@@ -1,0 +1,8 @@
+DRIVER_NAME=org.postgresql.Driver
+HOST=adhoc.informatics.jax.org
+PORT=5432
+DATABASE=mgd
+USER=PUT_YOUR_USERNAME_HERE
+PASSWORD=YOUR_PASSWORD_HERE
+URL_PREFIX=jdbc:postgresql://
+

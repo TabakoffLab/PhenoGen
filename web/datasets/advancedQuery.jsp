@@ -96,14 +96,14 @@
 
    
 %>
+
+<%pageTitle="Create dataset - Advanced";%>
+
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
         <!-- use javascript to fill up the client-side array with saved combination values -->
         <%@ include file="/web/datasets/include/fillCombos.jsp" %>
 
 	<%@ include file="/web/datasets/include/createSteps.jsp" %>
-	<script type="text/javascript">
-        	var crumbs = ["Home", "Analyze Microarray Data", "Create New Dataset"]; 
-	</script>
 	<div class="page-intro">
 		<p> Specify criteria to search for arrays you would 
 		like to include in your dataset.<%=twoSpaces%>(<b>Note that 

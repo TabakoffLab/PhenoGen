@@ -25,11 +25,11 @@
         mySessionHandler.createSessionActivity(session.getId(), "Viewed all experiments", dbConn);
 
 %>
+
+<%pageTitle="Upload arrays";%>
+
 <%@ include file="/web/common/microarrayHeader.jsp" %>
 
-    <script type="text/javascript">
-        var crumbs = ["Home", "Analyze Microarray Data", "Upload Data"]; 
-    </script>
 
     <div class="page-intro">
 	<p>Listed below are the microarray experiments that you have created in PhenoGen.&nbsp;Click on an experiment row to complete the next step in the definition process.  <BR>

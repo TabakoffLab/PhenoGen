@@ -71,7 +71,11 @@
 		response.sendRedirect(qtlsDir + "savedQTL.jsp?name="+phenotype);
 	}	
 %>
+
+
+
 	<% if (fromMain) { %>
+    	<%pageTitle="Create QTL list";%>
 		<%@ include file="/web/common/header.jsp" %>
 	<% } else { %>
 		<%@ include file="/web/common/headTags.jsp" %>

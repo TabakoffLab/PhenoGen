@@ -16,9 +16,7 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<script type="text/javascript">
-	var crumbs = ["Home", "Investigate QTL Regions"];
-</script>
+
 
     <div id="primary-content">
         <div id="welcome" style="height:400px;width:946px;">

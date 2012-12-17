@@ -1214,7 +1214,7 @@ public class Dataset {
 				myEmail.setSubject("Error deleting files for Dataset");
 				myEmail.setContent("Path is "+dsPath);
 				try {
-					myEmail.sendEmailToAdministrator();
+					myEmail.sendEmailToAdministrator("");
 				} catch (Exception e) {
 					log.error("error sending message to administrator");
 				}
@@ -1306,7 +1306,7 @@ public class Dataset {
 			myEmail.setSubject("Error deleting cluster files for "+clusterPath);
 			myEmail.setContent("Path is "+clusterPath);
 			try {
-				myEmail.sendEmailToAdministrator();
+				myEmail.sendEmailToAdministrator("");
 			} catch (Exception e) {
 				log.error("error sending message to administrator");
 			}
@@ -1505,7 +1505,7 @@ public class Dataset {
                                 myErrorEmail.setContent("It's taking over a minute to copy files for "+this.getName()+
                                                         " to "+arrayDir);
 				try {
-                                	myErrorEmail.sendEmailToAdministrator();
+                                	myErrorEmail.sendEmailToAdministrator("");
 				} catch (Exception error) {
                                 	log.error("exception while trying to send message to adminstrator about files not copying", error);
 				}
@@ -3172,7 +3172,7 @@ public class Dataset {
 					myEmail.setSubject("Error deleting files for dataset version");
 					myEmail.setContent("Path is "+dsPath + "v" + version);
 					try {
-						myEmail.sendEmailToAdministrator();
+						myEmail.sendEmailToAdministrator("");
 					} catch (Exception e) {
 						log.error("error sending message to administrator");
 					}
@@ -3183,7 +3183,7 @@ public class Dataset {
 					myEmail.setSubject("Error deleting files for analysis of dataset version");
 					myEmail.setContent("Path is "+analysisPath);
 					try {
-						myEmail.sendEmailToAdministrator();
+						myEmail.sendEmailToAdministrator("");
 					} catch (Exception e) {
 						log.error("error sending message to administrator");
 					}

@@ -33,6 +33,7 @@
 %>
 	
 	<% if (fromMain) { %>
+    	<%pageTitle="Create gene list";%>
 		<%@ include file="/web/common/header.jsp" %>
 	<% } else { %>
 		<%@ include file="/web/common/includeExtras.jsp" %>
@@ -118,8 +119,8 @@
 		<div class="brClear"></div>
 
                 <div id="copyGeneLists">
-                        <h2 style="margin:10px 10px 0px 480px">Copy gene list from:</h2>
-                        <table style="margin-left:480px">
+                        <h2 style="margin:10px 10px 0px 70px">Copy gene list from:</h2>
+                        <table style="margin-left:70px">
                                 <%
                                 selectName = "copyFromID";
                                 selectedOption = "None";
@@ -144,10 +145,10 @@
 
 		<div class="brClear"></div>
 
-
-		<div id="whatToDo" style="margin:10px 0px 10px 480px">Add or remove identifiers from the list below:</div>
-                <div id="new_div"> 
-		<textarea name="inputGeneList" rows="10" cols="20"><%=(String)fieldValues.get("inputGeneList")%></textarea> 
+		<div id="enterList" style="margin:10px 0px 10px 70px">Enter identifiers below(1 per line):</div>
+		<div id="whatToDo" style="margin:10px 0px 10px 70px">Add or remove identifiers from the list below:</div>
+                <div id="new_div" style="margin-left:70px;"> 
+		<textarea name="inputGeneList" rows="10" cols="40"><%=(String)fieldValues.get("inputGeneList")%></textarea> 
 		</div>
 
 		<div class="page-intro">

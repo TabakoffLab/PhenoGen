@@ -1,12 +1,12 @@
 #!/usr/bin/perl
 
 #use lib "/opt/ensembl_ucsc/bioperl-live";
-use lib "/opt/ensembl_ucsc/ensembl/modules";
+#use lib "/opt/ensembl_ucsc/ensembl/modules";
 
 use Bio::EnsEMBL::Registry;
 use XML::LibXML;
 use XML::Simple;
-use data::Dumper;
+#use data::Dumper;
 
 #use Carp::Always;
 #use diagnostics;
@@ -54,6 +54,31 @@ sub find
 
     return $ret;
 }
+
+# get Image calls createPNG it should increment the timeout time if the first request fails and try again up to 3 times starting with a 30s timeout +30s/failure.
+# it returns the result code allowing the main method to get the result code and url for the last attempt. Either the first successful attempt or last of 3 failed attempts.
+sub getImage{
+    my ($species,$chr,$minCoord,$maxCoord,$outputFileName,$trackFileName,$geneName)=@_;
+    my $newresultCode=0;
+    my $tryCount=0;
+    my $resultCode="";
+    if($geneName eq ""){
+	$geneName="chr$chr:$minCoord-$maxCoord";
+    }
+    while($newresultCode!=200 and $tryCount<3){
+	eval{
+	    $resultCode=createPngRNA($species, $geneName , "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount));
+	    print "RESULT CODE2:$resultCode\n";
+	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+	    1;
+	}or do{
+	    $newresultCode=0;
+	};
+	$tryCount=$tryCount+1;
+    }
+    return $resultCode;
+}
+
 
 sub createXMLFile
 {
@@ -113,44 +138,45 @@ sub createXMLFile
 	my $registry = 'Bio::EnsEMBL::Registry';
 
 	my $dbAdaptorNum=-1;
-	my $tryEast=0;
-	my $tryMain=0;
+	my $ranEast=0;
 	
 	eval{
-	    #print "try local\n";
+	    print "try local\n";
 	    $dbAdaptorNum =$registry->load_registry_from_db(
 		-host => $ensHost, #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
 		-port => $ensPort,
 		-user => $ensUsr,
 		-pass => $ensPasswd
 	    );
+	    print "local finished:$dbAdaptorNum\n";
 	    1;
 	}or do{
 	    print "local ensembl DB is unavailable\n";
-	    $tryEast=1;
+	    $dbAdaptorNum=-1;
 	};
-	if($tryEast==1){
+	if($dbAdaptorNum==-1){
+	    $ranEast=1;
 	    eval{
 		    $dbAdaptorNum=$registry->load_registry_from_db(
 			-host => 'useastdb.ensembl.org', #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
 			-port => 5306,
 			-user => 'anonymous'
 		    );
-		    print "east mirror didn't fail:$dbAdaptorNum\n";
+		    print "east mirror finished:$dbAdaptorNum\n";
 		    1;
 	    }or do{
 		print "ensembl east DB is unavailable\n";
-		$tryMain=1;  
+		$dbAdaptorNum=-1;
 	    };
 	}
-	if($tryMain==1||($dbAdaptorNum<1 && $tryEast==1)){
+	if($ranEast==1 && $dbAdaptorNum<1){
 	    print "try main\n";
 	    # Enable this option if problems occur connecting the above option is faster, but only has current and previous versions of data
 	    $dbAdaptorNum=$registry->load_registry_from_db(
 		-host => 'ensembldb.ensembl.org', 
 		-user => 'anonymous'
 	    );
-	    print "try main didn't fail:$dbAdaptorNum\n";
+	    print "main finished:$dbAdaptorNum\n";
 	}
 	
 	
@@ -215,7 +241,7 @@ sub createXMLFile
 	
 	if($shortSpecies eq 'Rn'){
 	
-	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd);
+	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
 	    #find global min,max
 	    #print "gene size ".$$isoformHOH{Gene}[0]."\n";
 	    my $tmpGeneArray=$$isoformHOH{Gene};
@@ -274,7 +300,7 @@ sub createXMLFile
 	if($shortSpecies eq 'Rn'){
 	    #get expanded min max
 	    if($prevMin!=$minCoord||$prevMax!=$maxCoord){
-	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd);
+	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
 	    }
 	}
 	
@@ -344,6 +370,8 @@ sub createXMLFile
 	    
 	}
 	
+	my $geneListFile=$pngOutputFileName."geneList.txt";
+	open GLFILE, ">".$geneListFile;
 	
 	# Loop through  Ensembl Genes
 	my @addedGeneList=();
@@ -379,7 +407,7 @@ sub createXMLFile
 			geneSymbol => $geneExternalName,
 			source => "Ensembl"
 			};
-		
+		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
 #
 #		With the new picture look we don't have enough information to make the png file yet
 #		So commenting out the lines below.
@@ -496,6 +524,8 @@ sub createXMLFile
 	    }# if to process only if chromosome is valid
 	} # loop through genes
 	
+	close GLFILE;
+	
 	# We're finished with the Genes
 	# Now we will define alternate IDs for the probesets we marked previously with 'yes' for alternateID
 	# Also create the Bed file.
@@ -533,35 +563,19 @@ sub createXMLFile
 		
 		#my $geneStartSmaller = $geneStart-200;
 		#my $geneStopBigger = $geneStop+200;
-		my $newresultCode=0;
-		my $tryCount=0;
+		
 		open URLFILE, ">".$urlFile;
 		print URLFILE "$firstGeneSymbol\n";
-		while($newresultCode!=200 and $tryCount<3){
-		    my $resultCode=createPngRNA($species, $geneNameGlobal, "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileName,$twoTrackOutputFileName,(30+30*$tryCount));
-		    print "RESULT CODE:$resultCode\n";
-		    if($tryCount==0){
+		my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileName,$twoTrackOutputFileName,$geneNameGlobal);
+		#my $resultCode=createPngRNA($species, $geneNameGlobal, "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileName,$twoTrackOutputFileName,(30+30*$tryCount));
 			my $url=substr($resultCode,index($resultCode,"<>")+2);
 			print "URL:$url\n";
 			print URLFILE "$url\n";
-		    }
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
-		#sleep(15);
-		$newresultCode=0;
-		$tryCount=0;
-		while($newresultCode!=200 and $tryCount<3){
-		    my $resultCode=createPngRNA($species, $geneNameGlobal, "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileName,$filterTrackOutputFileName,(30+30*$tryCount));
-		    print "RESULT CODE2:$resultCode\n";
-		    if($tryCount==0){
+		my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileName,$filterTrackOutputFileName,$geneNameGlobal);
+		#my $resultCode=createPngRNA($species, $geneNameGlobal, "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileName,$filterTrackOutputFileName,(30+30*$tryCount));
 			my $url=substr($resultCode,index($resultCode,"<>")+2);
 			print "URL:$url\n";
 			print URLFILE "$url\n";
-		    }
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
 		close URLFILE;
 	
 	my $geneArrayRef = $GeneHOH{Gene};
@@ -577,22 +591,15 @@ sub createXMLFile
 		my $newPngOutputFileName = $pngOutputFileName."exCor_".$tmpGeneName.".png";
 		createTrackFile(\%GeneHOH, $cntGenes,  $indivTrackOutputFileName, $species);
 		my $newresultCode=0;
-		my $tryCount=0;
-		while($newresultCode!=200 and $tryCount<3){
-		    #sleep(10);
-		    my $resultCode=createPngRNA($species, "exCor_".$tmpGeneName, "chr".$chr, $tmpStart, $tmpStop, $newPngOutputFileName,$indivTrackOutputFileName,(30+30*$tryCount));
-		    print "RESULT CODE:$resultCode\n";
-		    if($tryCount==0){
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-			print "URL:$url\n";
-			print URLFILE "$url\n";
-		    }
+		my $resultCode=getImage($species,$chr,$tmpStart, $tmpStop,$newPngOutputFileName,$indivTrackOutputFileName,"exCor_".$tmpGeneName);
+		#my $resultCode=createPngRNA($species, "exCor_".$tmpGeneName, "chr".$chr, $tmpStart, $tmpStop, $newPngOutputFileName,$indivTrackOutputFileName,(30+30*$tryCount));
+		    my $url=substr($resultCode,index($resultCode,"<>")+2);
+		    print "URL:$url\n";
+		    print URLFILE "$url\n";
 		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    $tryCount=$tryCount+1;
-		}
-		if($newresultCode==200){
-		    unlink($indivTrackOutputFileName);
-		}
+		    if($newresultCode==200){
+		        unlink($indivTrackOutputFileName);
+		    }
 	    }
 	    $cntGenes=$cntGenes+1;
 	}

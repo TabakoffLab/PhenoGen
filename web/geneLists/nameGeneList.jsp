@@ -154,10 +154,7 @@
 <% if (!geneListSource.equals("QTL")) { %>
 	<%@ include file="/web/common/header.jsp" %>
 
-        <script type="text/javascript">
-                var crumbs = ["Home", "Research Genes"];
-                /* var crumbs = ["Home", "Research Genes", "Compare", "Save Gene List"]; */
-        </script>
+
 
         <%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 <% } %>

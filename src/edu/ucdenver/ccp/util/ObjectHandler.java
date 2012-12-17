@@ -424,6 +424,25 @@ public class ObjectHandler {
 		} 
 		return returnString;
 	}
+        
+        /**
+	 * Turn an ArrayList<String>  into a String object separated by the separator.  
+	 * @param inStuff	an ArrayList of String objects
+	 * @param separator	a String used to separate the individual String objects
+	 * @return		a String object separated by separator
+	 */
+	public String getAsSeparatedString(ArrayList<String> inStuff, String separator) {
+		String returnString = "";
+		for(int i=0;i<inStuff.size();i++){
+                    if(i==0){
+                        returnString=inStuff.get(i);
+                    }else{
+                        returnString=returnString+separator+inStuff.get(i);
+                    }
+                }
+		return returnString;
+	}
+        
 
 	/**
 	 * Turn a Set of String objects into a String object separated by the separator.  
@@ -829,6 +848,19 @@ public class ObjectHandler {
     		T[] array = (T[])java.lang.reflect.Array.newInstance(thisClass, stuff.size());
 		int i=0; 
 		for (T x : stuff) array[i++] = x;
+		return array;
+	}
+        
+        /** 
+	 * Gets an array of strings and returns an ArrayList<String>. 
+	 * @param array of strings
+	 * @return an ArrayList
+	 */
+        public ArrayList<String> getAsArrayList(String[] in) {
+		ArrayList<String> array=new ArrayList<String>();
+                for(int i=0;i<in.length;i++){
+                    array.add(in[i]);
+                }
 		return array;
 	}
 

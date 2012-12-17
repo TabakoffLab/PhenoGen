@@ -6,15 +6,16 @@
 					(session.getAttribute("successMsg") != null ? 
 						(String) session.getAttribute("successMsg") : "")) : "-99");
 
-	/*
-	log.debug("msgID = XXX" + msgID + "XXX"); 
+	
+	/*log.debug("msgID = XXX" + msgID + "XXX"); 
 	log.debug("successMsg = "+(String) session.getAttribute("successMsg"));
 	log.debug("errorMsg = "+(String) session.getAttribute("errorMsg"));
 	log.debug("additionalInfo = "+(String) session.getAttribute("additionalInfo"));
 	*/
+	
 	alertMsg = (alertMsgExists && !msgID.equals("-99") ? myMessage.getMessage(msgID, dbConn) : "") +
 		(!additionalInfo.equals("") ? "  " + additionalInfo : "");
-	//log.debug("msgID = " + msgID + ", alertMsg = xxx"+alertMsg + "xxx");
+	log.debug("msgID = " + msgID + ", alertMsg = xxx"+alertMsg + "xxx");
 	if (loggedIn && !alertMsg.equals("")) {
 		mySessionHandler.createSessionActivity(session.getId(), 
 				(selectedExperiment != null ? selectedExperiment.getExp_id() : -99), 
@@ -24,7 +25,7 @@
 				"Got this error/success msg:  " + alertMsg.substring(0,Math.min(alertMsg.length(),1980)),
 				dbConn);
 	}
-	session.removeAttribute("successMsg");
-	session.removeAttribute("additionalInfo");
-	session.removeAttribute("errorMsg");
+	//session.removeAttribute("successMsg");
+	//session.removeAttribute("additionalInfo");
+	//session.removeAttribute("errorMsg");
 %>

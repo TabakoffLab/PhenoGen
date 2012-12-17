@@ -555,14 +555,7 @@
 %>
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
-	<script type="text/javascript">
-	<%
-	if (analysisType.equals("diffExp")) { %>
-            var crumbs = ["Home", "Analyze Microarray Data", "Differential Expression Analysis", "Filter Genes"];
-	<% } else if (analysisType.equals("cluster")) { %>
-            var crumbs = ["Home", "Analyze Microarray Data", "Cluster Analysis", "Filter Genes"];
-	<% } %>
-	</script>
+	
 
 
 <% 

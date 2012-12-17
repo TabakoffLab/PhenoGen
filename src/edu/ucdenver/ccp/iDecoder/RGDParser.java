@@ -138,11 +138,11 @@ public class RGDParser extends InputFileParser {
             
             // Write Gene Symbol and Ensembl ID Info and Links
             if (!geneSymbol.equals("")) {
-                writeToInfoFile(taxonID, "Gene Symbol", geneSymbol);
+                writeToInfoFile(taxonID, "Gene Symbol", geneSymbol, chromosome, mapLocation);
                 writeToLinksFile(RGD_ID_TYPE,rgdID,"Gene Symbol",geneSymbol);
             }
             for (int i = 0; i < ensemblIDs.length; i++) {
-                writeToInfoFile(taxonID, "Ensembl ID", ensemblIDs[i]);
+                writeToInfoFile(taxonID, "Ensembl ID", ensemblIDs[i], chromosome, mapLocation);
                 writeToLinksFile(RGD_ID_TYPE,rgdID,"Ensembl ID",ensemblIDs[i]);
             }
             

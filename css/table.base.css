@@ -18,6 +18,7 @@ table.list_base {
     margin: 0 auto;
 }
 */
+
 table.list_base {
     border: solid 1px #ddd;
     margin: 0 auto;
@@ -52,6 +53,19 @@ table.list_base th.noSort.topLine {
     font-weight: bold;
 }
 
+table.list_base th.leftBorder {
+    border-left: solid 1px #999;
+    color: #416FBF;
+    font-weight: bold;
+}
+
+table.list_base th.rightBorder {
+    border-right: solid 1px #999;
+    color: #416FBF;
+    font-weight: bold;
+}
+
+
 table.list_base th.topLine.noBox {
     border: 0px;
 }
@@ -70,6 +84,35 @@ table.list_base td {
     padding: 0 3px;
     vertical-align: middle;
 }
+
+table.list_base td.leftBorder {
+	border-left: solid 1px #000000;
+    cursor: default;
+    padding: 0 3px;
+    vertical-align: middle;
+}
+
+table.list_base td.rightBorder {
+	border-right: solid 1px #000000;
+    cursor: default;
+    padding: 0 3px;
+    vertical-align: middle;
+}
+
+table.list_base td.leftBorder-light {
+	border-left: solid 1px #BBBBBB;
+    cursor: default;
+    padding: 0 3px;
+    vertical-align: middle;
+}
+
+table.list_base td.rightBorder-light {
+	border-right: solid 1px #BBBBBB;
+    cursor: default;
+    padding: 0 3px;
+    vertical-align: middle;
+}
+
 
 table.list_base td.sideHeading {
 	font-weight:bold;

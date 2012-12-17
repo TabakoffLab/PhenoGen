@@ -149,9 +149,7 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-	<script type="text/javascript">
-		var crumbs = ["Home", "Research Genes", "Save As"];
-	</script>
+
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 	<div class="page-intro">

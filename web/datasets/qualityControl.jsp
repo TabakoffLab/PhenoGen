@@ -179,9 +179,6 @@
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
 
-	<script type="text/javascript">
-		var crumbs = ["Home", "Analyze Microarray Data", "Run Quality Control Checks"];
-	</script>
 
 	<form	method="post" 
 		action="qualityControl.jsp" 

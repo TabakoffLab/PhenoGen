@@ -10,7 +10,7 @@
     <body>
         <p class="MCWebHelpFramesetLink" style="display: none;"><a href="../PhenoGen_Overview_CSH.htm#Differential_Expressions_Analysis.htm" style="">Open topic with navigation</a>
         </p>
-        <h1 style="background-color: Transparent;"><a name="kanchor51"></a>Differential Expression Analysis</h1>
+        <h1 style="background-color: Transparent;"><a name="kanchor64"></a>Differential Expression Analysis</h1>
         <p>The ultimate goal of differential expression analysis is to select genes 
  whose expression values are significantly different between two or more 
  groups of samples. Statistical tools are available for the following types 
@@ -34,14 +34,14 @@
         <p>If you have grouped the arrays in your dataset into only two groups, 
  you can perform parametric, non-parametric, or 2-way ANOVA statistical 
  analysis.</p>
-        <h3><a name="kanchor52"></a><a name="kanchor53"></a><a name="kanchor54"></a><a name="Parametric"></a>Parametric Analysis</h3>
+        <h3><a name="kanchor65"></a><a name="kanchor66"></a><a name="kanchor67"></a><a name="Parametric"></a>Parametric Analysis</h3>
         <p>The parametric analysis is a two-sample t-test 
  assuming equal variances and is executed using the R function <span style="font-style: italic;">t.test</span>. 
  This test is considered parametric because it assumes that the distribution 
  of expression values is normal within each group. However, expression 
  data is often not distributed normally and there are often not enough 
  observations to assume that the central limit theorem applies.</p>
-        <h3><a name="kanchor55"></a><a name="kanchor56"></a><a name="kanchor57"></a><a name="Non-Parametric"></a>Non-Parametric Analysis</h3>
+        <h3><a name="kanchor68"></a><a name="kanchor69"></a><a name="kanchor70"></a><a name="Non-Parametric"></a>Non-Parametric Analysis</h3>
         <p>A non-parametric test does not depend on the distribution of the expression 
  data. The Wilcoxon 
  rank sum test is invoked when you specify a non-parametric test. This 
@@ -72,7 +72,7 @@
             <li class="Bullet" value="2">Two-way ANOVA</li>
             <li class="Bullet" value="3">T-test with noise distribution</li>
         </ul>
-        <h3><a name="kanchor58"></a><a name="kanchor59"></a><a name="Statistics_for_Differential_Expression_Using_One_Way_ANOVA"></a>One-way 
+        <h3><a name="kanchor71"></a><a name="kanchor72"></a><a name="Statistics_for_Differential_Expression_Using_One_Way_ANOVA"></a>One-way 
  ANOVA Analysis</h3>
         <p>Use a one-way ANOVA model to compare the within-group variance and the 
  between-group variance of selected groups. You can choose from any of 
@@ -91,7 +91,7 @@
  Models and Empirical Bayes Methods for Assessing Differential Expression 
  in Microarray Experiments. Statistical Applications in Genetics and Molecular 
  Biology 3(1), Article 3.</p>
-        <h3><a name="kanchor60"></a><a name="kanchor61"></a><a name="Statistics_for_Differential_Expression_Using_Two_Way_ANOVA"></a>Two-way 
+        <h3><a name="kanchor73"></a><a name="kanchor74"></a><a name="Statistics_for_Differential_Expression_Using_Two_Way_ANOVA"></a>Two-way 
  ANOVA Analysis</h3>
         <p>Use a two-way ANOVA Analysis to input factors or use factors from the 
  array attributes in a two-way analysis of variance. You can test for four 
@@ -104,7 +104,7 @@
  F-statistics are reported in all cases. Factors that are entered as character 
  values are treated as categorical, and factors that are entered as numerical 
  values are treated as continuous.</p>
-        <h3><a name="kanchor62"></a><a name="kanchor63"></a><a name="T_test_with_Noise"></a>T-Test with Noise Distribution Analysis</h3>
+        <h3><a name="kanchor75"></a><a name="kanchor76"></a><a name="T_test_with_Noise"></a>T-Test with Noise Distribution Analysis</h3>
         <p>Use a t-test with noise distribution to determine a list of genes that 
  are differentially expressed between two groups in a replicate experiment, 
  i.e., "high" selected line from replicate 1, "low" 

@@ -23,9 +23,7 @@
 
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 
-    	<script type="text/javascript">
-        	var crumbs = ["Home", "Analyze Microarray Data", "Upload Data"]; 
-    	</script>
+
 
 	<%@ include file="/web/experiments/include/viewingPane.jsp" %>
 	<%@ include file="/web/experiments/include/uploadSteps.jsp" %>

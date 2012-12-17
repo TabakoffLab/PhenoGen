@@ -12,14 +12,12 @@
 
 <% extrasList.add("index.css"); %>
 
-<%@ include file="/web/common/basicHeader.jsp" %>
+<%pageTitle="Citations";%>
 
-<script type="text/javascript">
-        var crumbs = ["Citations"];
-</script>
+<%@ include file="/web/common/header.jsp" %>
 
         <div id="overview-content">
-        <div id="welcome" style="height:780px; width:980px; overflow:auto;">
+        <div id="welcome" style="height:780px; width:946px; overflow:auto;">
 
 	<h2>If you use this website in your research, please cite the following references:</h2>
 	<p>Website:</p>

@@ -123,7 +123,7 @@ public class AsyncUpdateQcStatus implements Runnable{
 							"\n Thread name is "+thisThread.getName());
                         	try {
                                 	myEmail.sendEmail();
-                                	myAdminEmail.sendEmailToAdministrator();
+                                	myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                         	} catch (Exception e) {
 					log.error("error sending message", e);
 					throw new RuntimeException();

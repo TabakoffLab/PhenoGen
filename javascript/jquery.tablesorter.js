@@ -9,7 +9,11 @@
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
- * 
+ *
+ *
+ *MODIFIED: 11/20/12-SM
+ *added condition to prevent bubbling the event to the header from a help bubble in the header.  TH.click now checks that the TH element was the target.
+ *
  */
 /**
  * 
@@ -715,7 +719,9 @@
 
                     function (e) {
                         var totalRows = ($this[0].tBodies[0] && $this[0].tBodies[0].rows.length) || 0;
-                        if (!this.sortDisabled && totalRows > 0) {
+						
+						/*NON STANDARD CHANGED IF STATEMENT BELOW*/
+                        if (!this.sortDisabled && totalRows > 0 && e.target.is("th")) {
                             // Only call sortStart if sorting is
                             // enabled.
                             $this.trigger("sortStart");

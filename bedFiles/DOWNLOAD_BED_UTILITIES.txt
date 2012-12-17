@@ -1,0 +1,2 @@
+1. Download bedSort and bedToBigBed from UCSC(http://hgdownload.cse.ucsc.edu/admin/exe/).
+2. Install them here with executable permissions.
