@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CatapultToc Version="1" DescendantCount="105">
+<CatapultToc Version="1" DescendantCount="107">
     <TocEntry Title="PhenoGen Informatics Overview" Link="/Content/Overview.htm" StartSection="false" PageNumberReset="reset" PageNumber="1" StartChapter="true" ComputeToc="false" PageNumberFormat="decimal" ComputedResetPageLayout="true" ComputedFirstTopic="true" DescendantCount="0" />
     <TocEntry Title="Getting Started" Link="/Content/Getting_Started.htm" StartChapter="false" PageNumber="1" PageNumberReset="continue" StartSection="true" ComputedResetPageLayout="true" ComputedFirstTopic="false" DescendantCount="9">
         <TocEntry Title="PhenoGen Website Overview" Link="/Content/Phenogen_Overview.htm" ComputedFirstTopic="false" DescendantCount="0" />
@@ -12,7 +12,10 @@
         <TocEntry Title="Using the PhenoGen Website" Link="/Content/Using_the_PhenoGen_Website.htm" ComputedFirstTopic="false" DescendantCount="0" />
         <TocEntry Title="Using the Online Help" Link="/Content/Using_the_PhenoGen_Website.htm#UsingOnlineHelp" ComputedFirstTopic="false" DescendantCount="0" />
     </TocEntry>
-    <TocEntry Title="Detailed Transcription Information" Link="/Content/Detailed_Transcription_Info.htm" StartSection="true" PageNumber="1" PageNumberReset="continue" StartChapter="false" ReplaceMergeNode="false" ComputedResetPageLayout="true" ComputedFirstTopic="false" DescendantCount="0" />
+    <TocEntry Title="Detailed Transcription Information" Link="/Content/Detailed_Transcription_Info.htm" ComputedFirstTopic="false" DescendantCount="2">
+        <TocEntry Title="For Gene Identifiers" Link="/Content/Detailed_Transcription_Info_Genes.htm" ReplaceMergeNode="false" ComputedFirstTopic="false" DescendantCount="0" />
+        <TocEntry Title="For Regions" Link="/Content/Detailed_Transcription_Info_Regions.htm" ComputedFirstTopic="false" DescendantCount="0" />
+    </TocEntry>
     <TocEntry Title="Analyzing Microarrays" Link="/Content/Analyzing_Microarray_Data.htm" StartChapter="false" PageNumber="1" PageNumberReset="continue" StartSection="true" ComputedResetPageLayout="true" ComputedFirstTopic="false" DescendantCount="41">
         <TocEntry Title="Viewing Datasets" Link="/Content/Viewing_Datasets.htm" ComputedFirstTopic="false" DescendantCount="0" />
         <TocEntry Title="Viewing Datasets Details" Link="/Content/Viewing_Dataset_Details.htm" ComputedFirstTopic="false" DescendantCount="0" />
