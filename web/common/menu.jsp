@@ -89,7 +89,7 @@
        <%@ include file="/web/common/helpFileURL.jsp"%>
        <li class='has-sub hideLogin <%if(mainMenuSelected.equals("help")){%>selected<%}%>'><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=helpFileURL%>" target="_blank" <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu1line">Help</span></a>
             	<ul>
-                	<%if(!helpFileURL.equals(request.getContextPath()+"/helpdocs/PhenoGen_Overview_CSH.htm?filename=Phenogen_Overview.htm")){ %>
+                	<%if(!helpFileURL.equals(request.getContextPath()+"/helpdocs/PhenoGen_Overview_CSH.htm?filename=Phenogen_Overview.htm#Overview")){ %>
                 		<li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=helpFileURL%>" target="_blank"><span>Page Specific Help</span></a></li>
                     <%}%>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=request.getContextPath()%>/helpdocs/PhenoGen_Overview_CSH.htm#Phenogen_Overview.htm#Overview" target="_blank"><span>Help Overview</span></a></li>

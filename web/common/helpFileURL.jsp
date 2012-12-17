@@ -364,6 +364,15 @@
 		fileNameHelpURL="Registration.htm";
 	}
 	
+	
+	
+/****************************************************************************
+		Detailed Transcription Information Help Pages
+****************************************************************************/
+	else if (currentPage.endsWith("gene.jsp")) {
+		fileNameHelpURL="Detailed_Transcription_Info.htm";
+	}
+	
 
 /*****************************************************************************
 		ELSE CLAUSE - all pages not listed above go to PhenoGen Overview

@@ -75,6 +75,8 @@
                	value="<%=application.getInitParameter(\"perlEnvVar\") %>" />    
 	<jsp:setProperty name="mySessionHandler" property="adminEmail" 
                	value="<%=application.getInitParameter(\"adminEmail\") %>" />
+	<jsp:setProperty name="mySessionHandler" property="maxRThreadCount" 
+               	value="<%=application.getInitParameter(\"maxRThreadCount\") %>" />
    
 </jsp:useBean>
 
@@ -118,7 +120,7 @@
 	
 	String perlEnvVar = mySessionHandler.getPerlEnvVar();
 	String adminEmail = mySessionHandler.getAdminEmail();
-
+	String maxRThreadCount= mySessionHandler.getMaxRThreadCount();
 %>
 	
 
