@@ -92,7 +92,7 @@ public class AsyncMeme implements Runnable{
 		envVariables[0] = "MEME_DIRECTORY=" + memeDir;
 		envVariables[1] = "MEME_BIN=" + memeDir + "/bin";
 		envVariables[2] = "MEME_LOGS=" + memeDir + "/LOGS";
-		envVariables[3] = "PATH=$PATH:$MEME_BIN";
+		envVariables[3] = "PATH=/usr/bin:/bin:$PATH:$MEME_BIN";
 
 		String functionDir = perlDir + "MEME/meme490/bin/meme";
                 String [] functionArgs = new String[] {
