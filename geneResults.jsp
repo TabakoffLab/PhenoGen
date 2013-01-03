@@ -36,10 +36,10 @@ if(displayNoEnsembl){ %>
           </form>
       <% } %>
 	  <%if(ucscURL.size()>1){%>
-      		<form id="geneSelection" name="geneSelection" method="post" action="">
+      		<form id="geneSelection" name="geneSelection" method="" action="">
             
                 <label>Multiple genes were returned please select the gene of Interest:
-                <select name="geneSelect" id="geneSelect" >
+                <select name="geneSelectCBX" id="geneSelectCBX" >
                     <%for(int i=0;i<firstEnsemblID.size();i++){
                         %>
                         <option value="<%=i%>" <%if(i==selectedGene){%>selected<%}%>>
@@ -50,7 +50,7 @@ if(displayNoEnsembl){ %>
                 </select>
                 </label>
             
-            <input type="submit" name="action" id="selGeneBTN" value="Go" onClick="return displayWorking()">
+            <input type="submit" name="action" id="selGeneBTN" value="Go" onClick="return displayGo()">
             </form>
       <% }%>
 	</div><!--end imageControl div -->
@@ -179,10 +179,16 @@ function openeQTL(){
 function displayWorking(){
 	$('#wait1').show();
 	$('#inst').hide();
-	//document.getElementById("wait1").style.display = 'block';
-	//if(!popup){
-	//	document.getElementById("inst").style.display= 'none';
-	//}
+	$('input#action').val("Get Transcription Details");
+	return true;
+}
+
+function displayGo(){
+	$('#wait1').show();
+	$('#inst').hide();
+	$('input#action').val("Go");
+	$('input#geneSelect').val($('#geneSelectCBX').val());
+	$('form#geneCentricForm').submit();
 	return true;
 }
 

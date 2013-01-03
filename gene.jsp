@@ -97,7 +97,9 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 			auto=true;
 		}
 	}
-	if(request.getParameter("geneSelect")!=null){
+	log.debug("Selected Gene="+request.getParameter("geneSelect"));
+	if(request.getParameter("geneSelect")!=null && !(request.getParameter("geneSelect").equals("")) ){
+		
 		selectedGene=Integer.parseInt(request.getParameter("geneSelect").trim());
 	}
 	
@@ -110,8 +112,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	
 	log.debug("ACTION="+action+"  region="+region+"   gene="+myGene+"   rev. pvalue="+pValueCutoff+"  for Pval="+forwardPValueCutoff);
 	
-	if (    (((action != null) && action.equals("Get Transcription Details"))&&(!region))
-			|| (auto&&(!region))
+	if (    (((action != null) && action.equals("Get Transcription Details")) && (!region))  || (auto && (!region))
 		) {
 		myDisplayGene=myGene;
 		mySessionHandler.createSessionActivity(session.getId(), "Ran Transcription Details on "+myGene, dbConn);
@@ -212,29 +213,31 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 							gdt.getGeneCentricData(myGene,"",panel,myOrganism,rnaDatasetID,arrayTypeID);
 							displayNoEnsembl=true;
 					}
-
             	}else{
 					displayNoEnsembl=true;
 				}
         }else{
 			displayNoEnsembl=true;
 		}
-	}else if (((action != null) && action.equals("Go"))) {
+	}else if ((action != null) && action.equals("Go")) {
 		//iDecoderAnswer=(Set)session.getAttribute("iDecoderAnswer");
 		//List myIdentifierList=null;
         //ArrayList<String> myEnsemblIDs=new ArrayList<String>();
+		log.debug("Selecting a new gene");
 		if(request.getParameter("genURLArray")!=null){
+			log.debug("genURLArray !=null");
 			String[] tmpgenURL=request.getParameter("genURLArray").trim().split(",");
 			String[] tmpGeneSym=request.getParameter("geneSymArray").trim().split(",");
 			String[] tmpURL=request.getParameter("ucscURLArray").trim().split(",");
 			String[] tmpFilterURL=request.getParameter("ucscFilterURLArray").trim().split(",");
 			String[] tmpFirstENS=request.getParameter("firstENSArray").trim().split(",");
 			genURL=oh.getAsArrayList(tmpgenURL);
-			geneSymbol=oh.getAsArrayList(tmpgenURL);
-			ucscURL=oh.getAsArrayList(tmpgenURL);
-			ucscURLFiltered=oh.getAsArrayList(tmpgenURL);
-			firstEnsemblID=oh.getAsArrayList(tmpgenURL);
+			geneSymbol=oh.getAsArrayList(tmpGeneSym);
+			ucscURL=oh.getAsArrayList(tmpURL);
+			ucscURLFiltered=oh.getAsArrayList(tmpFilterURL);
+			firstEnsemblID=oh.getAsArrayList(tmpFirstENS);
 		}else{
+			log.debug("genURLArray == null");
 			displayNoEnsembl=true;
 		}
         /*if(iDecoderAnswer!=null){
@@ -409,6 +412,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <input type="hidden" name="ucscURLArray" id="ucscURLArray" value="<%=ucscURLString%>" />
     <input type="hidden" name="ucscFilterURLArray" id="ucscFilterURLArray" value="<%=ucscFilterURLString%>" />
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
+    <input type="hidden" name="geneSelect" id="geneSelect" value="<%=selectedGene%>" />
 </form>
 Or
 <input type="submit" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
@@ -434,6 +438,7 @@ Or
     <input type="hidden" name="ucscURLArray" id="ucscURLArray" value="<%=ucscURLString%>" />
     <input type="hidden" name="ucscFilterURLArray" id="ucscFilterURLArray" value="<%=ucscFilterURLString%>" />
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
+    <input type="hidden" name="geneSelect" id="geneSelect" value="<%=selectedGene%>" />
 </form>
     
 <%}%>
@@ -512,6 +517,11 @@ Or
 	<%@ include file="regionResults.jsp" %>
 
 <%}else{%>
+
+	<%if(displayNoEnsembl){ %>
+        <BR /><div class="error">ERROR:No Ensembl ID found for the ID entered.<BR /><BR />The Gene ID entered could not be translated to an Ensembl ID to retreive gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
+	<% } %>
+
 	<div style="text-align:center;">
         <div id="javaError" style="display:none;">
             <BR /><BR />
