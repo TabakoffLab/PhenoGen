@@ -143,7 +143,7 @@ public class EnsemblParser extends InputFileParser {
 		columns = line.split(INPUT_COLUMN_DELIM);
                 if(columns.length==2&&columns[1].trim().length()>1){
                     String ensemblGeneID = columns[0].trim();
-                    String ensemblTransID = columns[1].trim();            
+                    String ensemblTransID = columns[1].trim();
                     writeToLinksFile(ENSEMBL_ID_TYPE,ensemblGeneID,secondType,ensemblTransID);
                 }
 	}
