@@ -121,6 +121,8 @@ public class EnsemblParser extends InputFileParser {
      * The format of the first 2 columns is:
      * 
      * Ensembl Gene ID<,>Ensembl Transcript ID
+     * or
+     * Ensembl Gene ID<,>UniGene Symbol
      */
     private void processLinkInputFile(String inputFilename, String taxonID) throws IOException {
 	BufferedReader reader = createInputFileReader(inputFilename);
@@ -130,13 +132,20 @@ public class EnsemblParser extends InputFileParser {
         
         // Skip the first line
         line = reader.readLine();
+        
+        String secondType=ENSEMBL_ID_TYPE;
+        if(inputFilename.indexOf("UniProt")>-1){
+            secondType=GENE_SYMBOL_TYPE;
+        }
 
 	while (reader.ready()) {
 		line = reader.readLine();
 		columns = line.split(INPUT_COLUMN_DELIM);
-		String ensemblGeneID = columns[0].trim();
-		String ensemblTransID = columns[1].trim();            
-		writeToLinksFile(ENSEMBL_ID_TYPE,ensemblGeneID,ENSEMBL_ID_TYPE,ensemblTransID);
+                if(columns.length==2&&columns[1].trim().length()>1){
+                    String ensemblGeneID = columns[0].trim();
+                    String ensemblTransID = columns[1].trim();            
+                    writeToLinksFile(ENSEMBL_ID_TYPE,ensemblGeneID,secondType,ensemblTransID);
+                }
 	}
         
 	reader.close();
