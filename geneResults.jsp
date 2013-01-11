@@ -1,5 +1,30 @@
 
+<script type="text/javascript">
+function displayWorking(){
+	$('#wait1').show();
+	$('#inst').hide();
+	$('input#action').val("Get Transcription Details");
+	return true;
+}
 
+function displayGo(){
+	$('#wait1').show();
+	$('#inst').hide();
+	$('input#action').val("Go");
+	$('input#geneSelect').val($('#geneSelectCBX').val());
+	$('form#geneCentricForm').submit();
+	return true;
+}
+
+function hideWorking(){
+	$('#wait1').hide();
+	$('#inst').hide();
+	//document.getElementById("wait1").style.display = 'none';
+	//if(!popup){
+	//	document.getElementById("inst").style.display= 'none';
+	//}
+}
+</script>
 
 
 <% 
@@ -12,7 +37,7 @@ if(displayNoEnsembl){ %>
 <%if(genURL.size()>0){%>
 	
 	<%if(ucscURL.get(selectedGene)!=null && !ucscURL.get(selectedGene).equals("") ){%>
-        <div class="geneimage" style="text-align:center">
+        <div class="geneimage" style="text-align:center;">
             <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help1" src="../web/images/icons/help.png"  /></div>
     
             <div id="geneimageUnfiltered"  style="display:inline-block;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(selectedGene)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/"+selectedEnsemblID+".main.png"%>"/></a></div>
@@ -60,26 +85,57 @@ if(displayNoEnsembl){ %>
    
 	 <% String tmpPath=applicationRoot + contextRoot+"tmpData/geneData/" +firstEnsemblID.get(selectedGene) + "/";	%>
     <div class="hidden"><a class="hiddenLink fancybox.iframe" href="web/GeneCentric/LocusSpecificEQTL.jsp?hiddenGeneSymbol=<%=geneSymbol.get(selectedGene)%>&hiddenGeneCentricPath=<%=tmpPath%>" title="eQTL"></a></div>
+    <div id="macBugDesc" style="display:none;color:#FF0000;">On your Mac OS X version and Java version the applet below is not being displayed correctly.  This problem is a result of the last update from Oracle and will hopefully be fixed with the next version at which point we will update the applet.  We are very sorry for any inconvenience.  If you would like to use windows or Mac OS X 10.6 the applet will be displayed correctly.  We have done what we can to improve the applets appearance until Oracle fixes this bug, and we are very sorry for any inconvenience.</div>
+    
 	<%if(genURL.get(selectedGene)!=null && !genURL.get(selectedGene).startsWith("ERROR:")){%>
+    	<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
 		<script type="text/javascript">
             var ensembl="<%=selectedEnsemblID%>";
             var genURL="<%=genURL.get(selectedGene)%>";
+			var appletWidth=1000;
+			var appletHeight=1200;
+			var jre=deployJava.getJREs();
+			var bug=0;
+			var bugString='false';
+			//alert(":"+jre+":");
+			if (/Mac OS X[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
+ 					var macVersion=new Number(RegExp.$1) // capture x.x portion and store as a number
+ 					if (macVersion==10.7||macVersion==10.8){
+						if (jre.indexOf("1.7.0_07")>-1||jre.indexOf("1.7.0_08")>-1||jre.indexOf("1.7.0_09")>-1||jre.indexOf("1.7.0_10")>-1){
+								bug=1;
+								appletHeight=700;
+								bugString='true';
+								$('div#macBugDesc').show();
+						}
+					}
+			}
         </script>
-        <script type="text/javascript" src="http://java.com/js/deployJava.js"></script>
+        
         <script type="text/javascript">
             var attributes = {
+				id:			'geneApplet',
                 code:       "genecentricviewer.GeneCentricViewer",
-                archive:    "/web/GeneCentric/GeneCentricViewer.jar, /web/GeneCentric/lib/ExonCorrelationViewer2.jar, /web/GeneCentric/lib/swing-layout-1.0.4.jar",
-                width:      1000,
-                height:     1200
+                archive:    "/web/GeneCentric/GeneCentricViewer.jar",
+                width:      appletWidth,
+                height:     appletHeight
             };
-            var parameters = {jnlp_href:"/web/GeneCentric/launch.jnlp",
+            var parameters = {
+				java_status_events: 'true',
+				jnlp_href:"/web/GeneCentric/launch.jnlp",
                 main_ensembl_id:ensembl,
-                genURL:genURL
+                genURL:genURL,
+				macBug:bugString
             }; 
-            var version = "1.5"; 
-            deployJava.runApplet(attributes, parameters, version);
+            var version = "1.6"; 
+			//if(bug==0){
+            	deployJava.runApplet(attributes, parameters, version);
+			//}else{
+			//	$('div#macBugDesc').show();
+			//	window.open("web/GeneCentric/macBug_geneResults.jsp?selectedEnsemblID=<%=selectedEnsemblID%>&selGeneSym=<%=geneSymbol.get(selectedGene)%>&selURL=<%=genURL.get(selectedGene)%>","Gene View:<%=selectedEnsemblID%>");
+				
+			//}
         </script>
+        
     <%}else{%>
     	<div class="error"><%=genURL.get(selectedGene)%><BR />The administrator has been notified of the problem and will investigate the error.  We apologize for any inconvenience.</div><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR />
     <%}%>
@@ -174,32 +230,9 @@ function openeQTL(){
 	//$(".hidden").css('display','block');
 	$(".hiddenLink").eq(0).trigger('click');
 	
-};
-
-function displayWorking(){
-	$('#wait1').show();
-	$('#inst').hide();
-	$('input#action').val("Get Transcription Details");
-	return true;
 }
 
-function displayGo(){
-	$('#wait1').show();
-	$('#inst').hide();
-	$('input#action').val("Go");
-	$('input#geneSelect').val($('#geneSelectCBX').val());
-	$('form#geneCentricForm').submit();
-	return true;
-}
 
-function hideWorking(){
-	$('#wait1').hide();
-	$('#inst').hide();
-	//document.getElementById("wait1").style.display = 'none';
-	//if(!popup){
-	//	document.getElementById("inst").style.display= 'none';
-	//}
-}
 
 function positionHelp(vertPos){
 	if(ie){
@@ -237,6 +270,26 @@ function openExonCorr(){
 		positionHelp(850);
 }
 
+/*var READY = 2;
+function registerAppletStateHandler() {
+        // register onLoad handler if applet has
+        // not loaded yet
+	if (geneApplet.status < READY)  {                 
+            geneApplet.onLoad = onLoadHandler;
+	} else if (geneApplet.status >= READY) {
+           	
+	}
+}
+    
+    function onLoadHandler() {
+        if(geneApplet.getDownloadFinished()){
+			
+		}else{
+		
+		}
+    }*/
+
+
 $(document).ready(function() {
 	
 	if(auto=="true"){
@@ -245,7 +298,7 @@ $(document).ready(function() {
   	}
 	$('#geneimageFiltered').hide();
 
-	
+	//registerAppletStateHandler();
 	//if(genURL!=null){
   	//	document.getElementById("inst").style.display= 'none';
 		
