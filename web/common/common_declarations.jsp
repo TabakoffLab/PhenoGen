@@ -41,6 +41,7 @@
         import="edu.ucdenver.ccp.PhenoGen.tools.mage.*"
         import="edu.ucdenver.ccp.PhenoGen.tools.analysis.*"
         import="edu.ucdenver.ccp.PhenoGen.tools.pathway.*"
+		import="edu.ucdenver.ccp.PhenoGen.tools.databases.*"
         import="edu.ucdenver.ccp.PhenoGen.tools.*"
         import="edu.ucdenver.ccp.PhenoGen.web.*"
         import="edu.ucdenver.ccp.PhenoGen.web.mail.*"

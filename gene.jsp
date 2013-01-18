@@ -53,6 +53,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	String filteredImg="";
 	String panel="";
 	String chromosome="";
+	LinkGenerator lg=new LinkGenerator(session);
 	
 	boolean displayNoEnsembl=false;
 	boolean auto=false;

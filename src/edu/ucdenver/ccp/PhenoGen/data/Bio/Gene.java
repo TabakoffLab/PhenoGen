@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
 
 public class Gene {
     String geneID="",bioType="",chromosome="",strand="",geneSymbol="",source="",description="";
-    long start=0,end=0,length=0;
+    long start=0,end=0,length=0,min=-1,max=-1;
     int probesetCountTotal=0,probesetCountEns=0,probesetCountRNA=0,heritCount=0,dabgCount=0;
     double exonCoverageEns=0,exonCoverageRna=0;
     HashMap fullProbeList=new HashMap();
@@ -633,6 +633,42 @@ public class Gene {
             }
         }
         //System.out.println("Probeset Array List Size at read:"+ret.size());
+        return ret;
+    }
+    
+    public long[] getMinMaxCoord(){
+        if(min<0 && max<0){
+            for(int i=0;i<transcripts.size();i++){
+                if(transcripts.get(i).getStart()<transcripts.get(i).getStop()){
+                    if(min<0&&max<0){
+                        min=transcripts.get(i).getStart();
+                        max=transcripts.get(i).getStop();
+                    }else{
+                        if(min>transcripts.get(i).getStart()){
+                            min=transcripts.get(i).getStart();
+                        }
+                        if(max<transcripts.get(i).getStop()){
+                            max=transcripts.get(i).getStop();
+                        }
+                    }
+                }else if(transcripts.get(i).getStop()<transcripts.get(i).getStart()){
+                    if(min<0&&max<0){
+                        min=transcripts.get(i).getStop();
+                        max=transcripts.get(i).getStart();
+                    }else{
+                        if(min>transcripts.get(i).getStop()){
+                            min=transcripts.get(i).getStop();
+                        }
+                        if(max<transcripts.get(i).getStart()){
+                            max=transcripts.get(i).getStart();
+                        }
+                    }
+                }
+            }
+        }
+        long[] ret=new long[2];
+        ret[0]=min;
+        ret[1]=max;
         return ret;
     }
 }

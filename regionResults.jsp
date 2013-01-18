@@ -38,6 +38,42 @@ function runFilter(){
 	$('#pvalueCutoffInput').val($('#pvalueCutoffSelect2').val());
 	$('#geneCentricForm').submit();
 }
+
+
+function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
+			$.ajax({
+				url: contextPath + "/web/GeneCentric/geneRegionView.jsp",
+   				type: 'GET',
+				data: {region: regionTxt, species: speciesTxt,gene: geneTxt},
+				dataType: 'html',
+    			success: function(data2){ 
+        			$('#viewTrxDialog').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('#viewTrxDialog').html("<div>An error occurred generating this page.  Please try back later.</div>");
+    			}
+			});
+			
+			
+			/*$.get(	contextPath + "/web/GeneCentric/geneRegionView.jsp", 
+					{region: regionTxt, species: speciesTxt,gene: geneTxt},
+					function(data){
+							$('#viewTrxDialog').html(data);
+					});*/
+			
+			/*$.get(	contextPath + "/web/GeneCentric/geneRegionView.jsp", 
+					{region: regionTxt, species: speciesTxt,gene: geneTxt})
+			.done(function(data){
+							$('#viewTrxDialog').html(data);
+					})
+			.fail( function(){
+					alert("Error");
+					}
+			);*/
+			
+}
+
+
 </script>
 
 <div id="page" style="min-height:1100px;">
@@ -417,8 +453,8 @@ function runFilter(){
           	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0" >
                 <THEAD>
                     <tr>
-                        <th colspan="6" class="topLine noSort noBox"></th>
-                        <th colspan="1" class="center noSort topLine">RNA-Seq Data<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="5" class="topLine noSort noBox"></th>
+                        <th colspan="3" class="center noSort topLine">Transcript Information</th>
                         <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
                             	Public ILSXISS RI Mice
@@ -428,15 +464,17 @@ function runFilter(){
                             )<div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr>
-                        <th colspan="6"  class="topLine noSort noBox"></th>
-                        <th colspan="1"  class="leftBorder rightBorder noSort"></th>
+                        <th colspan="5"  class="topLine noSort noBox"></th>
+                        <th colspan="2"  class="leftBorder  noSort"></th>
+                        <th colspan="1"  class="rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="Help5c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<div class="inpageHelp" style="display:inline-block; "><img id="Help5d" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="Help5e" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr>
-                        <th colspan="6"  class="topLine noSort noBox"></th>
+                        <th colspan="5"  class="topLine noSort noBox"></th>
+                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts</th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="leftBorder rightBorder noSort noBox"></th>
@@ -454,8 +492,9 @@ function runFilter(){
                     <TH width="10%">Gene Description</TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
-                    <TH># Ensembl Transcripts</TH>
-                    <TH>Transcripts (RNA-Seq)</TH>
+                    <TH>Ensembl</TH>
+                    <TH>RNA-Seq<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                    <TH>View Transcripts and Probesets</TH>
                     <TH>Total Probesets</TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
@@ -491,42 +530,78 @@ function runFilter(){
 							chr="chr"+chr;
 						}
                         %>
-                        <TR <%if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>class="singleExon"<%}%>>
+                        <TR 
+						<% String geneID="";
+						if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>class="singleExon"<%}%>>
                             <TD title="View detailed transcription information for gene in a new window.">
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
-                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=curGene.getGeneID()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
+                            	<a href="<%=lg.getGeneLink(curGene.getGeneID(),myOrganism,true,true,false)%>" target="_blank">
                             <%}else{%>
-                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=chr+":"+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
+                            	<a href="<%=lg.getRegionLink(chr,curGene.getStart(),curGene.getEnd(),myOrganism,true,true,false)%>" target="_blank">
                             <%}%>
-                            <%if(curGene.getGeneSymbol()!=null&&!curGene.getGeneSymbol().equals("")){%>
+                            <%if(curGene.getGeneSymbol()!=null&&!curGene.getGeneSymbol().equals("")){
+								geneID=curGene.getGeneSymbol();%>
 									<%=curGene.getGeneSymbol()%>
-                            <%}else{%>
+                            <%}else{
+								geneID=curGene.getGeneID();%>
                                 	No Gene Symbol
                             <%}%>
                                 </a>
                             </TD>
-                            
+                            <%String description=curGene.getDescription();
+									String shortDesc=description;
+									String remain="";
+									if(description.indexOf("[")>0){
+										shortDesc=description.substring(0,description.indexOf("["));
+										remain=description.substring(description.indexOf("[")+1,description.indexOf("]"));
+									}
+							%>
                             <TD >
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
-                            	<a href="http://www.ensembl.org/<%=fullOrg%>/Gene/Summary?g=<%=curGene.getGeneID()%>" target="_blank" title="View Ensembl Gene Details"><%=curGene.getGeneID()%></a>
+                            	<a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(curGene.getGeneID(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=curGene.getGeneID()%></a><BR />	
+                                <span style="font-size:10px;">
+								<%
+																
+									String tmpGS=curGene.getGeneID();
+									String shortOrg="Mouse";
+									String allenID="";
+									if(myOrganism.equals("Rn")){
+                                    	shortOrg="Rat";
+									}
+									if(curGene.getGeneSymbol()!=null&&!curGene.getGeneSymbol().equals("")){
+										tmpGS=curGene.getGeneSymbol();
+										allenID=curGene.getGeneSymbol();
+                            		}
+									if(allenID.equals("")&&!shortDesc.equals("")){
+										allenID=shortDesc;
+									}%>
+                                    All Organisms:<a href="<%=LinkGenerator.getNCBILink(tmpGS)%>" target="_blank">NCBI</a> |
+                                    <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS)%>" target="_blank">UniProt</a> <BR />
+                                   <%=shortOrg%>: <a href="<%=LinkGenerator.getNCBILink(tmpGS,myOrganism)%>" target="_blank">NCBI</a> | <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS,myOrganism)%>" target="_blank">UniProt</a> | 
+                                    <%if(myOrganism.equals("Mm")){%>
+                                        <a href="<%=LinkGenerator.getMGILink(tmpGS)%>" target="_blank">MGI</a> 
+                                        <%if(!allenID.equals("")){%>
+                                        	| <a href="<%=LinkGenerator.getBrainAtlasLink(allenID)%>" target="_blank">Allen Brain Atlas</a>
+                                        <%}%>
+                                    <%}else{%>
+                                        <a href="<%=LinkGenerator.getRGDLink(tmpGS,myOrganism)%>" target="_blank">RGD</a>
+                                    <%}%>
+                                 </span>
                             <%}else{%>
                             	<%=curGene.getGeneID()%>
                             <%}%>
                             </TD>
                             
-                            <%	String description=curGene.getDescription();
-								String shortDesc=description;
-        						String remain="";
-								if(description.indexOf("[")>0){
-            						shortDesc=description.substring(0,description.indexOf("["));
-									remain=description.substring(description.indexOf("[")+1,description.indexOf("]"));
-        						}
+                            <%	
 							%>
                             <TD title="<%=remain%>"><%=shortDesc%></TD>
                             <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
                             <TD><%=curGene.getStrand()%></TD>
                             <TD><%=curGene.getTranscriptCountEns()%></TD>
-                            <TD><%=curGene.getTranscriptCountRna()%></TD>
+                            <TD>
+								<%=curGene.getTranscriptCountRna()%>
+                            </TD>
+                            <TD><span id="<%=chr+":"+(curGene.getMinMaxCoord()[0]-500)+"-"+(curGene.getMinMaxCoord()[1]+500)%>" name="<%=geneID%>" class="viewTrx">View</span></TD>
                             <TD><%=curGene.getProbeCount()%></TD>
                             <!--<TD></TD>-->
                             <%for(int j=0;j<tissuesList1.length;j++){
@@ -590,7 +665,7 @@ function runFilter(){
                                         	<%}%>
                                         	<BR />
                                         	<%if(maxEQTL.getMarker_start()!=maxEQTL.getMarker_end()){%>
-                                                <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())+"-"+dfC.format(maxEQTL.getMarker_end())%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for this region.">
+                                                <a href="<%=lg.getRegionLink(maxEQTL.getMarkerChr(),maxEQTL.getMarker_start(),maxEQTL.getMarker_end(),myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for this region.">
                                                     chr<%=maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())+"-"+dfC.format(maxEQTL.getMarker_end())%>
                                                 </a>
                                             <%}else{
@@ -599,7 +674,7 @@ function runFilter(){
 												if(start<1){
 													start=1;
 												}%>
-                                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+maxEQTL.getMarkerChr()+":"+dfC.format(start)+"-"+dfC.format(stop)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for a region +- 500,000bp around the SNP location.">
+                                            	<a href="<%=lg.getRegionLink(maxEQTL.getMarkerChr(),start,stop,myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for a region +- 500,000bp around the SNP location.">
                                             		chr<%=maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())%>
                                                  </a>
                                             <%}%>
@@ -626,7 +701,31 @@ function runFilter(){
 
 </div><!-- end GeneList-->
 
+<div id="viewTrxDialog" class="trxDialog"></div>
+
+<div id="viewTrxDialogOriginal"  style="display:none;"><div class="waitTrx"  style="text-align:center; position:relative; top:0px; left:0px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Please wait loading transcript data...</div></div>
+
 <script type="text/javascript">
+	var spec="<%=myOrganism%>";
+	
+	$('#viewTrxDialog').dialog({
+		autoOpen: false,
+		dialogClass: "transcriptDialog",
+		width: 960,
+		height: 400,
+		zIndex: 999
+	});
+	
+	$('.viewTrx').click( function(event){
+		var id=$(this).attr('id');
+		var name=$(this).attr('name');
+		$('.waitTrx').show();
+		$('#viewTrxDialog').html($('#viewTrxDialogOriginal').html());
+		$('#viewTrxDialog').dialog( "option", "position",{ my: "center bottom", at: "center top", of: $(this) });
+		$('#viewTrxDialog').dialog("open").css({'font-size':12});
+		openTranscriptDialog(id,spec,name);
+	});
+	
 	var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
@@ -649,7 +748,7 @@ function runFilter(){
 			displayColumns(tblGenes, 8,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
-			displayColumns(tblGenes, 8+tisLen,tisLen,$('#heritCBX').is(":checked"));
+			displayColumns(tblGenes, 8+tisLen,tisLen,$('#dabgCBX').is(":checked"));
 	  });
 	  $('#eqtlAllCBX').click( function(){
 			displayColumns(tblGenes, 8+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
@@ -786,11 +885,11 @@ function runFilter(){
                 	<tr>
                     	<%if(myOrganism.equals("Mm")){%>
                     	<TD>
-                        	<a href="http://www.informatics.jax.org/marker/MGI:<%=curBQTL.getMGIID()%>" target="_blank">
+                        	<a href="<%=LinkGenerator.getMGIQTLLink(curBQTL.getMGIID())%>" target="_blank">
 							<%=curBQTL.getMGIID()%></a>
                         </TD>
                         <%}%>
-                        <TD><a href="http://rgd.mcw.edu/rgdweb/report/qtl/main.html?id=<%=curBQTL.getRGDID()%>" target="_blank"> 
+                        <TD><a href="<%=LinkGenerator.getRGDQTLLink(curBQTL.getRGDID())%>" target="_blank"> 
 							<%=curBQTL.getRGDID()%></a>
                         </TD>
                         <TD><%=curBQTL.getSymbol()%></TD>
@@ -822,7 +921,7 @@ function runFilter(){
 								if(j!=0){%>
                             		<BR />
                                 <%}%>
-                                <a href="http://rgd.mcw.edu/rgdweb/report/reference/main.html?id=<%=ref1.get(j)%>" target="_blank"><%=ref1.get(j)%></a>
+                                <a href="<%=LinkGenerator.getRGDRefLink(ref1.get(j))%>" target="_blank"><%=ref1.get(j)%></a>
                         	<%}
 							}%>
                         <HR />
@@ -833,7 +932,7 @@ function runFilter(){
 								if(j!=0){%>
                             		<BR />
                                 <%}%>
-                                <a href="http://www.ncbi.nlm.nih.gov/pubmed/<%=ref2.get(j)%>" target="_blank"><%=ref2.get(j)%></a>
+                                <a href="<%=LinkGenerator.getPubmedRefLink(ref2.get(j))%>" target="_blank"><%=ref2.get(j)%></a>
                         <%}
 						}%>
                         </TD>
@@ -842,7 +941,7 @@ function runFilter(){
                         <%	ArrayList<String> candidates=curBQTL.getCandidateGene();
 							if(candidates!=null){
 							for(int j=0;j<candidates.size();j++){%>
-                            	<a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=candidates.get(j)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for gene."><%=candidates.get(j)%></a><BR />
+                            	<a href="<%=lg.getGeneLink(candidates.get(j),myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for gene."><%=candidates.get(j)%></a><BR />
                         	<%}
 							}%>
                         </TD>
@@ -853,7 +952,7 @@ function runFilter(){
 								String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism,dbConn);
                             	if(regionQTL.startsWith("chr")){
 								%>
-                                    <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=regionQTL%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="Click to view this bQTL region in a new window.">
+                                    <a href="<%=lg.getGeneLink(regionQTL,myOrganism,true,true,false)%>" target="_blank" title="Click to view this bQTL region in a new window.">
                                     <%=relQTL.get(j)%>
                                     </a>
                                 <%}else{%>
@@ -863,7 +962,7 @@ function runFilter(){
                         	<%}
 							}%>
                         </TD>
-                        <TD title="Click to view this bQTL region in a new window."><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%="chr"+curBQTL.getChromosome()+":"+curBQTL.getStart()+"-"+curBQTL.getStop()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank">
+                        <TD title="Click to view this bQTL region in a new window."><a href="<%=lg.getRegionLink(curBQTL.getChromosome(),curBQTL.getStart(),curBQTL.getStop(),myOrganism,true,true,false)%>" target="_blank">
                         chr<%=curBQTL.getChromosome()+":"+dfC.format(curBQTL.getStart())+"-"+dfC.format(curBQTL.getStop())%></a></TD>
                         <TD>
                         <%String tmpMM=curBQTL.getMapMethod();
@@ -1081,8 +1180,7 @@ function runFilter(){
                         </TR>
                         </tbody>
                   </table>
-<% 
-		ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"All",myOrganism,tissueString,chromosomeString);//this region controls what genes
+<% ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"All",myOrganism,tissueString,chromosomeString);//this region controls what genes
 		ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
         if(session.getAttribute("getTransControllingEQTL")==null){%>
             <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-28px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span></div>
@@ -1263,7 +1361,7 @@ function runFilter(){
 						if(include && tissueInclude){
                         %>
                         <TR>
-                            <TD ><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=tc.getGeneID()%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank" title="View Detailed Transcription Information for gene.">
+                            <TD ><a href="<%=lg.getGeneLink(tc.getGeneID(),myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for gene.">
 							<%if(tc.getGeneSymbol().equals("")){%>
 								No Gene Symbol
 							<%}else{%>
@@ -1271,7 +1369,26 @@ function runFilter(){
                             <%}%>
                             </a></TD>
                             
-                            <TD ><a href="http://www.ensembl.org/<%=fullOrg%>/Gene/Summary?g=<%=tc.getGeneID()%>" target="_blank" title="View Ensembl Gene Details"><%=tc.getGeneID()%></a></TD>
+                            <TD ><a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tc.getGeneID(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tc.getGeneID()%></a><BR />	
+                                <span style="font-size:10px;">
+								<%String tmpGS=tc.getGeneID();
+									String shortOrg="Mouse";
+									if(myOrganism.equals("Rn")){
+                                    	shortOrg="Rat";
+									}
+									if(tc.getGeneSymbol()!=null&&!tc.getGeneSymbol().equals("")){
+										tmpGS=tc.getGeneSymbol();
+                            		}%>
+                                    All Organisms:<a href="<%=LinkGenerator.getNCBILink(tmpGS)%>" target="_blank">NCBI</a> |
+                                    <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS)%>" target="_blank">UniProt</a> <BR />
+                                   <%=shortOrg%>: <a href="<%=LinkGenerator.getNCBILink(tmpGS,myOrganism)%>" target="_blank">NCBI</a> | <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS,myOrganism)%>" target="_blank">UniProt</a> | 
+                                    <%if(myOrganism.equals("Mm")){%>
+                                        <a href="" target="_blank">MGI</a>
+                                    <%}else{%>
+                                        <a href="<%=LinkGenerator.getRGDLink(tmpGS,myOrganism)%>" target="_blank">RGD</a>
+                                    <%}%>
+                                 </span>
+                             </TD>
                             
                             <%	String description=tc.getGeneDescription();
 								String shortDesc=description;
@@ -1633,8 +1750,12 @@ A list of genes can be imported into the DAVID website for additional informatio
 Currently only lists of 300 genes are less are supported.  This is a limit of the method used to submit genes to the DAVID website.  We will either be replacing the site or supporting a different method to allow longer lists.  If you perform filtering to get the list below 300 you will be able to click a link and immediately analyze data on the site, Otherwise you can copy one of the ID columns such as Gene IDs(Ensembl IDs) and submit them on your own.
 </div></div>
 
+
+
+
 <script type="text/javascript">
 $(document).ready(function() {
+	
 	$('.cssTab ul li a').removeClass('disable');
 	//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
 	//simply remove all whitespace from html in a table and put it back.
@@ -1728,7 +1849,6 @@ $(document).ready(function() {
 		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
 		$('#'+id+'Content').dialog("open").css({'font-size':12});
 	});
-	
 	
 	
 	

@@ -456,6 +456,110 @@ public class GeneDataTools {
         return ret;
     }
 
+    public void getRegionGeneView(String chromosome,int minCoord,int maxCoord,
+            String panel,
+            String organism,int RNADatasetID,int arrayTypeID) {
+        
+        chromosome=chromosome.toLowerCase();
+        
+        //Setup a String in the format YYYYMMDDHHMM to append to the folder
+        Date start = new Date();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(start);
+        String datePart=Integer.toString(gc.get(gc.MONTH)+1)+
+                Integer.toString(gc.get(gc.DAY_OF_MONTH))+
+                Integer.toString(gc.get(gc.YEAR))+"_"+
+                Integer.toString(gc.get(gc.HOUR_OF_DAY))+
+                Integer.toString(gc.get(gc.MINUTE))+
+                Integer.toString(gc.get(gc.SECOND));
+        String rOutputPath = "";
+        outputDir="";
+        String result="";
+        this.minCoord=minCoord;
+        this.maxCoord=maxCoord;
+        this.chrom=chromosome;
+        String inputID=organism+":"+chromosome+":"+minCoord+"-"+maxCoord;
+        
+        //EnsemblIDList can be a comma separated list break up the list
+        boolean error=false;
+
+            //Define output directory
+            outputDir = fullPath + "tmpData/regionData/trx" +organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart + "/";
+            //session.setAttribute("geneCentricPath", outputDir);
+            log.debug("checking for path:"+outputDir);
+            String folderName = "trx"+organism+chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart;
+            //String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
+            //publicPath = publicPath.substring(0, publicPath.indexOf("/Affy.NormVer.h5"));
+            RegionDirFilter rdf=new RegionDirFilter("trx"+organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_");
+            File mainDir=new File(fullPath + "tmpData/regionData");
+            File[] list=mainDir.listFiles(rdf);
+            try {
+                File geneDir=new File(outputDir);
+                //File errorFile=new File(outputDir+"errMsg.txt");
+                if(geneDir.exists()){
+                        //do nothing just need to set session var
+                        String errors;
+                        errors = loadErrorMessage();
+                        if(errors.equals("")){
+                            getUCSCUrls("RegionView");
+                            result="cache hit files not generated";
+                        }else{
+                            result="Previous Result had errors. Trying again.";
+                            generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                            
+                            //error=true;
+                            //this.setError(errors);
+                        }
+                }else{
+                    if(list.length>0){
+                        outputDir=list[0].getAbsolutePath()+"/";
+                        int second=outputDir.lastIndexOf("/",outputDir.length()-2);
+                        folderName=outputDir.substring(second+1,outputDir.length()-1);
+                        String errors;
+                        errors = loadErrorMessage();
+                        if(errors.equals("")){
+                            getUCSCUrls("RegionView");
+                            result="cache hit files not generated";
+                        }else{
+                            result="Previous Result had errors. Trying again.";
+                            generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                            
+                            //error=true;
+                            //this.setError(errors);
+                        }
+                    }else{
+                        generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                        result="New Region generated successfully";
+                    }
+                }
+                
+                
+            } catch (Exception e) {
+                error=true;
+                
+                log.error("In Exception getting Gene Centric Results", e);
+                Email myAdminEmail = new Email();
+                String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+                myAdminEmail.setSubject("Exception thrown getting Gene Centric Results");
+                myAdminEmail.setContent("There was an error while getting gene centric results.\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+            }
+        if(error){
+            result=(String)session.getAttribute("genURL");
+        }
+        this.setPublicVariables(error,folderName);
+    }
+    
+    
     public boolean generateFiles(String organism,String rOutputPath, String ensemblIDList,String folderName,String ensemblID1,int RNADatasetID,int arrayTypeID) {
         log.debug("generate files");
         AsyncGeneDataTools prevThread=null;
@@ -503,6 +607,30 @@ public class GeneDataTools {
             
         }else{       
             boolean ucscComplete=getUCSCUrls("Region");
+            if(!ucscComplete){
+                   completedSuccessfully=false;
+            }
+        }
+        return completedSuccessfully;
+    }
+    
+    public boolean generateRegionViewFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID) {
+        log.debug("generate files");
+        boolean completedSuccessfully = false;
+        log.debug("outputDir:"+outputDir);
+        File outDirF = new File(outputDir);
+        //Mkdir if some are missing    
+        if (!outDirF.exists()) {
+            log.debug("make output dir");
+            outDirF.mkdirs();
+        }
+        
+        boolean createdXML=this.createRegionViewImagesXMLFiles(folderName,organism,arrayTypeID,RNADatasetID);
+        
+        if(!createdXML){ 
+            
+        }else{       
+            boolean ucscComplete=getUCSCUrls("RegionView");
             if(!ucscComplete){
                    completedSuccessfully=false;
             }
@@ -810,6 +938,125 @@ public class GeneDataTools {
         }
         return completedSuccessfully;
     }
+    
+    
+    public boolean createRegionViewImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
+        boolean completedSuccessfully=false;
+        try{
+            int publicUserID=new User().getUser_id("public",dbConn);
+
+            Properties myProperties = new Properties();
+            File myPropertiesFile = new File(dbPropertiesFile);
+            myProperties.load(new FileInputStream(myPropertiesFile));
+
+            String dsn="dbi:"+myProperties.getProperty("PLATFORM") +":"+myProperties.getProperty("DATABASE");
+            String dbUser=myProperties.getProperty("USER");
+            String dbPassword=myProperties.getProperty("PASSWORD");
+
+            File ensPropertiesFile = new File(ensemblDBPropertiesFile);
+            Properties myENSProperties = new Properties();
+            myENSProperties.load(new FileInputStream(ensPropertiesFile));
+            String ensHost=myENSProperties.getProperty("HOST");
+            String ensPort=myENSProperties.getProperty("PORT");
+            String ensUser=myENSProperties.getProperty("USER");
+            String ensPassword=myENSProperties.getProperty("PASSWORD");
+            //construct perl Args
+            String[] perlArgs = new String[20];
+            perlArgs[0] = "perl";
+            perlArgs[1] = perlDir + "writeXML_RegionView.pl";
+            perlArgs[2] = ucscDir+ucscGeneDir;
+            perlArgs[3] = outputDir;
+            perlArgs[4] = folderName;
+            if (organism.equals("Rn")) {
+                perlArgs[5] = "Rat";
+            } else if (organism.equals("Mm")) {
+                perlArgs[5] = "Mouse";
+            }
+            perlArgs[6] = "Core";
+            if(chrom.startsWith("chr")){
+                chrom=chrom.substring(3);
+            }
+            perlArgs[7] = chrom;
+            perlArgs[8] = Integer.toString(minCoord);
+            perlArgs[9] = Integer.toString(maxCoord);
+            perlArgs[10] = Integer.toString(arrayTypeID);
+            perlArgs[11] = Integer.toString(rnaDatasetID);
+            perlArgs[12] = Integer.toString(publicUserID);
+            perlArgs[13] = dsn;
+            perlArgs[14] = dbUser;
+            perlArgs[15] = dbPassword;
+            perlArgs[16] = ensHost;
+            perlArgs[17] = ensPort;
+            perlArgs[18] = ensUser;
+            perlArgs[19] = ensPassword;
+
+
+            //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+            String[] envVar=perlEnvVar.split(",");
+
+            for (int i = 0; i < envVar.length; i++) {
+                log.debug(i + " EnvVar::" + envVar[i]);
+            }
+
+
+            //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir);
+
+            try {
+
+                myExec_session.runExec();
+
+            } catch (ExecException e) {
+                log.error("In Exception of run writeXML_RNA.pl Exec_session", e);
+                setError("Running Perl Script to get Gene and Transcript details/images.");
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                myAdminEmail.setContent("There was an error while running "
+                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+","+perlArgs[9]+","+perlArgs[10]+","+perlArgs[11]+
+                        ")\n\n"+myExec_session.getErrors());
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+            }
+
+            if(myExec_session.getExitValue()!=0){
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                myAdminEmail.setContent("There was an error while running "
+                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
+                        ")\n\n"+myExec_session.getErrors());
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+            }else{
+                completedSuccessfully=true;
+            }
+        }catch(Exception e){
+            log.error("Error getting DB properties or Public User ID.",e);
+            String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+            Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
+                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+        }
+        return completedSuccessfully;
+    }
+    
     
     public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         AsyncGeneDataTools agdt;         
