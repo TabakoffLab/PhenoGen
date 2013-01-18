@@ -1359,6 +1359,13 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 							}
 						}
 						if(include && tissueInclude){
+								String description=tc.getGeneDescription();
+								String shortDesc=description;
+        						String remain="";
+								if(description.indexOf("[")>0){
+            						shortDesc=description.substring(0,description.indexOf("["));
+									remain=description.substring(description.indexOf("[")+1,description.indexOf("]"));
+        						}
                         %>
                         <TR>
                             <TD ><a href="<%=lg.getGeneLink(tc.getGeneID(),myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for gene.">
@@ -1373,31 +1380,32 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                                 <span style="font-size:10px;">
 								<%String tmpGS=tc.getGeneID();
 									String shortOrg="Mouse";
+									String allenID="";
 									if(myOrganism.equals("Rn")){
                                     	shortOrg="Rat";
 									}
 									if(tc.getGeneSymbol()!=null&&!tc.getGeneSymbol().equals("")){
 										tmpGS=tc.getGeneSymbol();
-                            		}%>
+                            			allenID=tc.getGeneSymbol();
+                            		}
+									if(allenID.equals("")&&!shortDesc.equals("")){
+										allenID=shortDesc;
+									}%>
                                     All Organisms:<a href="<%=LinkGenerator.getNCBILink(tmpGS)%>" target="_blank">NCBI</a> |
                                     <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS)%>" target="_blank">UniProt</a> <BR />
                                    <%=shortOrg%>: <a href="<%=LinkGenerator.getNCBILink(tmpGS,myOrganism)%>" target="_blank">NCBI</a> | <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS,myOrganism)%>" target="_blank">UniProt</a> | 
                                     <%if(myOrganism.equals("Mm")){%>
-                                        <a href="" target="_blank">MGI</a>
+                                        <a href="<%=LinkGenerator.getMGILink(tmpGS)%>" target="_blank">MGI</a> 
+                                        <%if(!allenID.equals("")){%>
+                                        	| <a href="<%=LinkGenerator.getBrainAtlasLink(allenID)%>" target="_blank">Allen Brain Atlas</a>
+                                        <%}%>
                                     <%}else{%>
                                         <a href="<%=LinkGenerator.getRGDLink(tmpGS,myOrganism)%>" target="_blank">RGD</a>
                                     <%}%>
                                  </span>
                              </TD>
                             
-                            <%	String description=tc.getGeneDescription();
-								String shortDesc=description;
-        						String remain="";
-								if(description.indexOf("[")>0){
-            						shortDesc=description.substring(0,description.indexOf("["));
-									remain=description.substring(description.indexOf("[")+1,description.indexOf("]"));
-        						}
-							%>
+                            
                             
                             <TD title="<%=remain%>"><%=shortDesc%></TD>
                             
