@@ -17,12 +17,12 @@ function setupPage() {
 	var tableRows = getRows();
 	stripeTable( tableRows );
 
-	tableRows.each(function(){
-        	var rowCells = $(this).find("td");
+	//tableRows.each(function(){
+    //   	var rowCells = $(this).find("td");
 
         	//---> center text under description
-        	rowCells.slice(2,rowCells.length).css({"text-align" : "center"});
-	});
+    //    	rowCells.slice(2,rowCells.length).css({"text-align" : "center"});
+	//});
 	
 	setupDownloadLink('stats');
 }

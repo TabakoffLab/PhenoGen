@@ -20,60 +20,85 @@
 		//log.debug("columnHeadings ="); myDebugger.print(columnHeadings);
 		List<String> indexHeadings = new ArrayList<String>();
 		List<String> groupMeanHeadings = new ArrayList<String>();
-		String output = "Accession ID,Gene ID,";
-                for (int j=0; j<columnHeadings.length; j++) {
-			if (indexHash.containsKey(columnHeadings[j])) {
-				indexHeadings.add(columnHeadings[j]);
-                	}                 
-		}
-		// Then print the headings that are group means
-                for (int j=0; j<columnHeadings.length; j++) {
-			if (!indexHash.containsKey(columnHeadings[j])) {
-				groupMeanHeadings.add(columnHeadings[j]);
-			}
-		}
-		output = output + (indexHeadings.size() > 0 ? myObjectHandler.getAsSeparatedString(indexHeadings, ",") + "," : "") +
-					(groupMeanHeadings.size() > 0 ? myObjectHandler.getAsSeparatedString(groupMeanHeadings, ",") + "," : "");
-		output = output + "\r\n"; 
-		for (int i=0; i<myGeneArray.length; i++) {
-			Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 			
-			output = output + myGeneArray[i].getGene_id() + ","; 
-			if (thisIdentifier != null) {
-				Set geneSymbols = myIDecoderClient.getValues(myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
-										new String[] {"Gene Symbol"}));
-				if (geneSymbols.size() > 0) { 						
-					output = output + myObjectHandler.getAsSeparatedString(geneSymbols, "///");
-				} 
-			}
-			output = output + ",";
-			if (myGeneArray[i].getStatisticsValues() != null && myGeneArray[i].getStatisticsValues().size() > 0) {
-				List<String> indexValues = new ArrayList<String>();
-				List<String> groupMeanValues = new ArrayList<String>();
-				// First print those values that are not group means
-                                       for (int j=0; j<myGeneArray[i].getStatisticsValues().size(); j++) {
-					if (indexHash.containsValue(j)) {
-						indexValues.add(Double.toString(myGeneArray[i].getStatisticsValues().get(j)));
-                			}                 
-				}
-				// Then print those values that are group means
-                                       for (int j=0; j<myGeneArray[i].getStatisticsValues().size(); j++) {
-					if (!indexHash.containsValue(j)) {
-						groupMeanValues.add(Double.toString(myGeneArray[i].getStatisticsValues().get(j)));
-                			}                 
-				}
-				output = output + (indexValues.size() > 0 ? myObjectHandler.getAsSeparatedString(indexValues, ",") + "," : "") +
-							(groupMeanValues.size() > 0 ? myObjectHandler.getAsSeparatedString(groupMeanValues, ",") + "," : "");
-			}
-			output = output + "\r\n";
-		}
-		mySessionHandler.createGeneListActivity("Downloaded Gene List With Statistics", dbConn);
+		
+		//create file and use a bufferedwritter
 		String fileName = userLoggedIn.getUserGeneListsDir() + "downloads/" + selectedGeneList.getGene_list_name() + "Gene_List_Statistics.csv";
-		myFileHandler.writeFile(output, fileName);
-		request.setAttribute("fullFileName", fileName);
-		myFileHandler.downloadFile(request, response);
-		// This is required to avoid the getOutputStream() has already been called for this response error
-		out.clear();
-		out = pageContext.pushBody(); 
+		try{
+			BufferedWriter outF=new BufferedWriter(new FileWriter(new File(fileName)));
+			
+			outF.write("Accession ID,Gene ID,");
+			for (int j=0; j<columnHeadings.length; j++) {
+				if (indexHash.containsKey(columnHeadings[j])) {
+					indexHeadings.add(columnHeadings[j]);
+				}                 
+			}
+			// Then print the headings that are group means
+			for (int j=0; j<columnHeadings.length; j++) {
+				if (!indexHash.containsKey(columnHeadings[j])) {
+					groupMeanHeadings.add(columnHeadings[j]);
+				}
+			}
+			outF.write((indexHeadings.size() > 0 ? myObjectHandler.getAsSeparatedString(indexHeadings, ",") + "," : "") +
+						(groupMeanHeadings.size() > 0 ? myObjectHandler.getAsSeparatedString(groupMeanHeadings, ",") + "," : ""));
+			outF.write("\r\n"); 
+			for (int i=0; i<myGeneArray.length; i++) {
+				Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 			
+				outF.write(myGeneArray[i].getGene_id() + ","); 
+				if (thisIdentifier != null) {
+					Set geneSymbols = myIDecoderClient.getValues(myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
+											new String[] {"Gene Symbol"}));
+					if (geneSymbols.size() > 0) { 						
+						outF.write(myObjectHandler.getAsSeparatedString(geneSymbols, "///"));
+					} 
+				}
+				outF.write(",");
+				if (myGeneArray[i].getStatisticsValues() != null && myGeneArray[i].getStatisticsValues().size() > 0) {
+					List<String> indexValues = new ArrayList<String>();
+					List<String> groupMeanValues = new ArrayList<String>();
+					// First print those values that are not group means
+										   for (int j=0; j<myGeneArray[i].getStatisticsValues().size(); j++) {
+						if (indexHash.containsValue(j)) {
+							indexValues.add(Double.toString(myGeneArray[i].getStatisticsValues().get(j)));
+								}                 
+					}
+					// Then print those values that are group means
+										   for (int j=0; j<myGeneArray[i].getStatisticsValues().size(); j++) {
+						if (!indexHash.containsValue(j)) {
+							groupMeanValues.add(Double.toString(myGeneArray[i].getStatisticsValues().get(j)));
+								}                 
+					}
+					outF.write((indexValues.size() > 0 ? myObjectHandler.getAsSeparatedString(indexValues, ",") + "," : "") +
+								(groupMeanValues.size() > 0 ? myObjectHandler.getAsSeparatedString(groupMeanValues, ",") + "," : ""));
+				}
+				outF.write("\r\n");
+			}
+			outF.flush();
+			outF.close();
+			mySessionHandler.createGeneListActivity("Downloaded Gene List With Statistics", dbConn);
+			//myFileHandler.writeFile(output, fileName);
+			request.setAttribute("fullFileName", fileName);
+			myFileHandler.downloadFile(request, response);
+			// This is required to avoid the getOutputStream() has already been called for this response error
+			out.clear();
+			out = pageContext.pushBody(); 
+		}catch(IOException e){
+			log.error("Error writing stats download file.",e);
+            String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+            Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("IOException thrown in stats.jsp");
+                myAdminEmail.setContent("There was an error writing to the download file.\n\nFull Stacktrace:\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+		}
+		
 	}
 	mySessionHandler.createGeneListActivity("Looked at analysis statistics for gene list", dbConn);
 %>
