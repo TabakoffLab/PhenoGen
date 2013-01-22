@@ -121,7 +121,7 @@
 
 		mySessionHandler.createGeneListActivity("Downloaded Basic Annotation for Gene List", dbConn);
        	} else {
-		if (selectedGeneList.getNumber_of_genes() > 200) { 
+		if (selectedGeneList.getNumber_of_genes() > 400) { 
 			response.sendRedirect("advancedAnnotation.jsp");
 		} else {
 
@@ -329,7 +329,7 @@
 			<div class="brClear"></div>
 
 			<div class="scrollable">
-			<% if (selectedGeneList.getNumber_of_genes() <= 200) { %>
+			<% if (selectedGeneList.getNumber_of_genes() <= 400) { %>
 				<%@ include file="/web/geneLists/include/formatAnnotationResults.jsp" %> 
 			<% } %>
 			</div>

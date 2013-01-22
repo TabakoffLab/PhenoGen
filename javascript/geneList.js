@@ -13,12 +13,12 @@ function setupPage() {
 	//---> set default sort column
         $("table[name='items']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
 
-    tableRows.each(function(){
-        var rowCells = $(this).find("td");
+    //tableRows.each(function(){
+    //    var rowCells = $(this).find("td");
 
         //---> center text under description
-        rowCells.slice(2,rowCells.length).css({"text-align" : "center"});
-    });
+    //    rowCells.slice(2,rowCells.length).css({"text-align" : "center"});
+    //});
    
 	setupDownloadLink('geneList');
 }
