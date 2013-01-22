@@ -151,9 +151,9 @@
 		onSubmit="return IsAdvancedAnnotationComplete()"
         	enctype="application/x-www-form-urlencoded">
 
-		<% if (selectedGeneList.getNumber_of_genes() > 200) { %>
+		<% if (selectedGeneList.getNumber_of_genes() > 400) { %>
 			<div class="tab-intro">
-			<p>Since your gene list contains more than 200 genes, 
+			<p>Since your gene list contains more than 400 genes, 
 				the results cannot be displayed online.<%=twoSpaces%>
 				You may only download the results.
 			</p>
@@ -169,7 +169,7 @@
 			 <!-- <input type="submit" name = "action" value="Download"> -->
                 <input type="button" name = "action" value="Download" id="downloadBtn">
 				 
-			<% if (selectedGeneList.getNumber_of_genes() <= 200) { %>
+			<% if (selectedGeneList.getNumber_of_genes() <= 400) { %>
 				<%=tenSpaces%>
 				<input type="submit" name = "action" value="Run"> 
 			

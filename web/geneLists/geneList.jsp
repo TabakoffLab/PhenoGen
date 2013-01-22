@@ -11,34 +11,55 @@
 	log.debug("geneListOrganism="+selectedGeneList.getOrganism());
 	//log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
        	if ((action != null) && action.equals("Download")) {
-		log.debug("action is Download");
-		mySessionHandler.createGeneListActivity("Downloaded Gene List", dbConn);
-		String output = "";
-		for (int i=0; i<myGeneArray.length; i++) {
-			Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 			
-			if (thisIdentifier != null) {
-				myIDecoderClient.setNum_iterations(1);
-				Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
-										new String[] {"Gene Symbol"});
-				if (geneSymbols.size() > 0) { 						
-                			for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 
-						Identifier symbol = (Identifier) symbolItr.next();                					
-						output = output + myGeneArray[i].getGene_id() + "," + symbol.getIdentifier() + "\r\n";
+			log.debug("action is Download");
+			mySessionHandler.createGeneListActivity("Downloaded Gene List", dbConn);
+			String fileName = userLoggedIn.getUserGeneListsDir() + "downloads/" + selectedGeneList.getGene_list_name() + "Gene_List_Contents.csv";
+			try{
+				BufferedWriter outF=new BufferedWriter(new FileWriter(new File(fileName)));
+				for (int i=0; i<myGeneArray.length; i++) {
+					Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 			
+					if (thisIdentifier != null) {
+						myIDecoderClient.setNum_iterations(1);
+						Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
+												new String[] {"Gene Symbol"});
+						if (geneSymbols.size() > 0) { 						
+							for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 
+								Identifier symbol = (Identifier) symbolItr.next();                					
+								outF.write(myGeneArray[i].getGene_id() + "," + symbol.getIdentifier() + "\r\n");
+							}
+						} else {
+							outF.write(myGeneArray[i].getGene_id() + "\r\n");
+						} 
+					}                       
+				}
+				outF.flush();
+				outF.close();
+				
+				//myFileHandler.writeFile(output, fileName);
+				request.setAttribute("fullFileName", fileName);
+				myFileHandler.downloadFile(request, response);
+				// This is required to avoid the getOutputStream() has already been called for this response error
+				out.clear();
+				out = pageContext.pushBody(); 
+		//		response.sendRedirect(geneListsDir + "downloadGeneListInCSV.jsp?geneName=" + selectedGeneList.getGene_list_name());
+			}catch(IOException e){
+				log.error("Error writing genelist download file.",e);
+				String fullerrmsg=e.getMessage();
+						StackTraceElement[] tmpEx=e.getStackTrace();
+						for(int i=0;i<tmpEx.length;i++){
+							fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+						}
+				Email myAdminEmail = new Email();
+					myAdminEmail.setSubject("IOException thrown in geneList.jsp");
+					myAdminEmail.setContent("There was an error writing to the download file.\n\nFull Stacktrace:\n"+fullerrmsg);
+					try {
+						myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+					} catch (Exception mailException) {
+						log.error("error sending message", mailException);
+						throw new RuntimeException();
 					}
-				} else {
-					output = output + myGeneArray[i].getGene_id() + "\r\n";
-				} 
-			}                       
+			}
 		}
-		String fileName = userLoggedIn.getUserGeneListsDir() + "downloads/" + selectedGeneList.getGene_list_name() + "Gene_List_Contents.csv";
-		myFileHandler.writeFile(output, fileName);
-		request.setAttribute("fullFileName", fileName);
-		myFileHandler.downloadFile(request, response);
-		// This is required to avoid the getOutputStream() has already been called for this response error
-		out.clear();
-		out = pageContext.pushBody(); 
-//		response.sendRedirect(geneListsDir + "downloadGeneListInCSV.jsp?geneName=" + selectedGeneList.getGene_list_name());
-	}
         mySessionHandler.createGeneListActivity("Viewed geneList contents", dbConn);
 %>
 
