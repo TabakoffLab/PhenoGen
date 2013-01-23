@@ -24,8 +24,8 @@ sub createTrackFile{
 	my $orgBB="mouseBigBed.bb";
 	
 	if($species eq 'Rat'){
-		$trackDB="rn4";
-		$orgBB="ratBigBed.bb";
+		$trackDB="rn5";
+		$orgBB="none";
 	}
 	
 	# Write out file with tracks
@@ -33,9 +33,13 @@ sub createTrackFile{
 	open TWOFILE, $newTwoTrackOutputFileName or die " Could not open two track file $newTwoTrackOutputFileName for writing $!\n\n";
 	
 	print TWOFILE "browser hide all\n";
-	print TWOFILE "track db=$trackDB type=bigBed priority=1 name='Affy".$species."Probesets' ";
-	print TWOFILE 'description="Probesets from Affymetrix Exon 1.0 ST Array: Red=Core Green=Full Blue=Extended" ';
-	print TWOFILE 'visibility=3 itemRgb=On bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/'.$orgBB."\n";
+	if($orgBB eq "mouseBigBed.bb"){
+		print TWOFILE "track db=$trackDB type=bigBed priority=1 name='Affy".$species."Probesets' ";
+		print TWOFILE 'description="Probesets from Affymetrix Exon 1.0 ST Array: Red=Core Green=Full Blue=Extended" ';
+		print TWOFILE 'visibility=3 itemRgb=On bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/'.$orgBB."\n";
+	}else{
+		##########TODO:add probesets from DB
+	}
 	print TWOFILE "track db=$trackDB priority=2 name='".$geneName." Transcripts' ";
 	print TWOFILE 'description="Transcripts for Gene:'.$geneName.'" ';
 	print TWOFILE "visibility=3 itemRgb=Off \n";
@@ -152,10 +156,13 @@ sub createTrackFileRegion{
 	
 
 	# Read inputs
-	my($GeneHOHRef,  $twoTrackOutputFileName, $species, $includeTranscripts, $includeArray, $includeHuman, $chr, $minCoord, $maxCoord) = @_; 
+	my($GeneHOHRef, $qtlHOHRef, $twoTrackOutputFileName, $species, $includeTranscripts, $includeArray, $includeHuman, $chr, $minCoord, $maxCoord) = @_; 
 	# Dereference the hash and array
 	my %GeneHOH = %$GeneHOHRef;
 	my $geneListRef=$GeneHOH{Gene};
+	my %qtlHOH = %$qtlHOHRef;
+	my $qtlListRef=$qtlHOH{QTL};
+	
 	my @geneList=();
 	eval{
 		@geneList=@$geneListRef;
@@ -163,11 +170,18 @@ sub createTrackFileRegion{
 		@geneList=();
 	};
 	
+	my @qtlList=();
+	eval{
+		@qtlList=@$qtlListRef;
+	}or do{
+		@qtlList=();
+	};
+	
 	my $trackDB="mm9";
 	my $qtlTrack="jaxQtl";
 	
 	if($species eq 'Rat'){
-		$trackDB="rn4";
+		$trackDB="rn5";
 		$qtlTrack="rgdQtl";
 	}
 	
@@ -277,16 +291,38 @@ sub createTrackFileRegion{
 			}
 		}
 	}
-	if($includeArray==1){
-		print TWOFILE "browser pack affyExonTissues $qtlTrack\n";
+	
+	## These tracks are not available in Rn5.  We'll remove them for now.
+	
+	
+	if($species eq 'Rat'){
+		print TWOFILE "track db=$trackDB priority=3 name='bQTLs' ";
+		print TWOFILE 'description="bQTLs"';
+		print TWOFILE "visibility=3 \n";
+		if(@qtlList>0){
+			my $cntQTL=0;
+			foreach my $tmpQTL (@qtlList){
+				my $qtlName=$qtlHOH{QTL}[$cntQTL]{name};
+				my $qtlStart=$qtlHOH{QTL}[$cntQTL]{start};
+				my $qtlStop=$qtlHOH{QTL}[$cntQTL]{stop};
+				print TWOFILE "chr$chr\t$qtlStart\t$qtlStop\t$qtlName\t0\t.\n";
+				$cntQTL++;
+			}
+		}
 	}else{
 		print TWOFILE "browser pack $qtlTrack\n";
 	}
-	if($includeHuman==1){
-		print TWOFILE "browser dense chainNetHg19\n";
-		print TWOFILE "browser pack blastHg18KG\n";
+	
+	#if($includeArray==1){
+		#	print TWOFILE "browser pack affyExonTissues $qtlTrack\n";
+	#}else{
+	#	print TWOFILE "browser pack $qtlTrack\n";
+	#}
+	#if($includeHuman==1){
+	#	print TWOFILE "browser dense chainNetHg19\n";
+	#	print TWOFILE "browser pack blastHg18KG\n";
 		#print TWOFILE "browser pack transMapAlnRefSeq\n";
-	}
+	#}
 	close TWOFILE;
 	
 	

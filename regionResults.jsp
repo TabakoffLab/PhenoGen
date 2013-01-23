@@ -281,12 +281,12 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                 	<option value="geneimageUnfiltered" selected="selected">Hide</option>
                     <option value="geneimageFiltered" >Show</option>
                 </select>
-              <label style="color:#000000; margin-left:10px;">Additional Track options:</label>
+              <!--<label style="color:#000000; margin-left:10px;">Additional Track options:</label>
              	<select name="lowerTrackSelect" id="lowerTrackSelect">
                 	<option value="NoArray">None</option>
                     <option value="Array" selected="selected">UCSC/Affymetrix Tissue Expression Data(Source:UCSC)</option>
                     <option value="Human">Human Proteins/Chr Mapping(Source:UCSC)</option>
-                </select>
+                </select>-->
                 <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
              </form>
          
@@ -294,34 +294,10 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
           </div><!--end imageControl div -->
         <div class="geneimage" >
             <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png"  /></div>
-    
-            <div id="geneimageUnfilteredArray" class="ucscImage"  style="display:inline-block;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.png"%>"/></a></div>
-            <div id="geneimageFilteredArray"  class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.png"%>"/></a></div>
-            <%
-				String ucscURL_no_array=ucscURL.get(0).replace(".main",".main.noArray");
-				String ucscURLFiltered_no_array=ucscURLFiltered.get(0).replace(".main.trans",".main.trans.noArray");
-			%>
-            <div id="geneimageUnfilteredNoArray" class="ucscImage"  style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURL_no_array%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.noArray.png"%>"/></a></div>
-            <div id="geneimageFilteredNoArray" class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered_no_array%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.noArray.png"%>"/></a></div>
-            <%
-				String ucscURL_human=ucscURL.get(0).replace(".main",".main.human");
-				String ucscURLFiltered_human=ucscURLFiltered.get(0).replace(".main.trans",".main.trans.human");
-			%>
-            <div id="geneimageUnfilteredHuman" class="ucscImage" style="display:none;">
-            	<a class="fancybox fancybox.iframe" href="<%=ucscURL_human%>" title="UCSC Genome Browser">
-                	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.human.png"%>"/>
-                 </a>
-            	<BR /><BR />
-                Human Chromosome Color Key:<img src="<%= contextRoot+"web/images/"+myOrganism+"_colorchrom.gif"%>">
-                <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help13" class="helpImage" src="../web/images/icons/help.png" /></div>
-            </div>
-            <div id="geneimageFilteredHuman" class="ucscImage" style="display:none;">
-            <a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered_human%>" title="UCSC Genome Browser">
-            	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.human.png"%>"/>
-            </a>
-            <BR /><BR />
-            Human Chromosome Color Key:<img src="<%= contextRoot+"web/images/"+myOrganism+"_colorchrom.gif"%>">
-            <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help13" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+
+            <div id="geneimageUnfilteredNoArray" class="ucscImage"  style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.noArray.png"%>"/></a></div>
+            <div id="geneimageFilteredNoArray" class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.noArray.png"%>"/></a></div>
+            
     
         </div><!-- end geneimage div -->
     
@@ -333,7 +309,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 
 <script type="text/javascript">
 	$('.ucscImage').hide();
-	$('#geneimageUnfilteredArray').show();
+	$('#geneimageUnfilteredNoArray').show();
 	//Setup Fancy box for UCSC link
 	$('.fancybox').fancybox({
 		width:$(document).width(),
@@ -349,16 +325,17 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
   $('#transcriptSelect').change(function(){
   		$('.ucscImage').hide();
 		var transVal=$(this).val();
-		var lowerVal=$('#lowerTrackSelect').val();
+		//var lowerVal=$('#lowerTrackSelect').val();
+		var lowerVal="NoArray";
 		$('#'+transVal+lowerVal).show();
   });
   
-   $('#lowerTrackSelect').change(function(){
-  		$('.ucscImage').hide();
-		var transVal=$('#transcriptSelect').val();
-		var lowerVal=$(this).val();
-		$('#'+transVal+lowerVal).show();
-  });
+  // $('#lowerTrackSelect').change(function(){
+  //		$('.ucscImage').hide();
+  //	var transVal=$('#transcriptSelect').val();
+//		var lowerVal=$(this).val();
+//		$('#'+transVal+lowerVal).show();
+//  });
 </script>          
 
 <div class="cssTab" style="position:relative;">
