@@ -67,7 +67,7 @@ sub getImage{
     }
     while($newresultCode!=200 and $tryCount<3){
 	eval{
-	    $resultCode=createPngRNA($species, $geneName , "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount));
+	    $resultCode=createPngRNA($species, $geneName , "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount),950,20,8);
 	    print "RESULT CODE2:$resultCode\n";
 	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
 	    1;
@@ -306,7 +306,7 @@ sub createXMLFile
 	
 	# Get all of the probesets for this gene by reading from Affy Probeset Tables in database
 	# We just have to read the probesets once   
-	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoHeritDABG("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
+	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoHeritDABG("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd,0);#TODO change 0 to 1 before production.
 	my @probesetHOH = @$probesetHOHRef;
 	
 	#process RNA genes/transcripts and assign probesets.
@@ -540,7 +540,7 @@ sub createXMLFile
 		my %tissueProbes=%$tissueProbesRef;
 		
 		
-		$GeneHOHRef = addAlternateID_RNA(\%GeneHOH, $newBedOutputFileName,$twoTrackOutputFileName,$filterTrackOutputFileName,$bigBedOutputFileNameNoPath,$species,$minCoord,$maxCoord,\%tissueProbes);
+		$GeneHOHRef = addAlternateID_RNA(\%GeneHOH, $newBedOutputFileName,$twoTrackOutputFileName,$filterTrackOutputFileName,$bigBedOutputFileNameNoPath,$species,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH);
 		%GeneHOH = %$GeneHOHRef;
 		
 		my $xml = new XML::Simple (RootName=>'GeneList');

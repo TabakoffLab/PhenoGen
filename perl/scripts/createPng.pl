@@ -44,7 +44,7 @@ sub createPng{
 	my $urlbeginning = 'http://genome.ucsc.edu/cgi-bin/hgTracks';
 	my $urldb;
 	if($species eq 'Rat') {
-		$urldb = '?db=rn4';
+		$urldb = '?db=rn5';
 	}
 	else{
 		$urldb = '?db=mm9';
@@ -120,7 +120,7 @@ sub createPngRNA{
 
 	# Read inputs
 
-	my($species, $geneName, $geneChrom,$geneStart,$geneStop,$pngFileName,$twoTrackFileName,$timeOut)=@_;
+	my($species, $geneName, $geneChrom,$geneStart,$geneStop,$pngFileName,$twoTrackFileName,$timeOut,$imageWidth,$labelWidth,$textSize)=@_;
 		$m = WWW::Mechanize->new(
 					 timeout => $timeOut
 					 );
@@ -145,7 +145,7 @@ sub createPngRNA{
 	my $urlbeginning = 'http://genome.ucsc.edu/cgi-bin/hgTracks';
 	my $urldb;
 	if($species eq 'Rat') {
-		$urldb = '?db=rn4';
+		$urldb = '?db=rn5';
 	}
 	else{
 		$urldb = '?db=mm9';
@@ -200,7 +200,7 @@ sub createPngRNA{
 	if($debugging >= 1){
 		print " Current HGSID: $currentHgsid \n\n";
 	}
-	my $pngUrl = 'http://www.genome.ucsc.edu/cgi-bin/hgRenderTracks?hgt.internal=1&hgsid='.$currentHgsid;
+	my $pngUrl = 'http://www.genome.ucsc.edu/cgi-bin/hgRenderTracks?pix='.$imageWidth.'&hgt.labelWidth='.$labelWidth.'&textSize='.$textSize.'&hgt.internal=1&hgsid='.$currentHgsid;
 	if($debugging >= 1){
 		print " Here is the URL to get the png file\n\n";
 		print " For gene $geneName \n\n";

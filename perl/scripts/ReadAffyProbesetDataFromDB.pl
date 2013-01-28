@@ -56,7 +56,7 @@ sub readAffyProbesetDataFromDB{
 
 	$probesetTablename = 'Affy_Exon_ProbeSet';
 	$probeTablename = 'Affy_Exon_Probes';
-	$heritTablename = 'Probeset_Herit_Dabg';
+	$heritTablename = 'Probeset_Hecrit_Dabg';
 	$chromosomeTablename = 'Chromosomes';
 	
 	# DATA SOURCE NAME
@@ -217,7 +217,7 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dsn,$usr,$passwd,$nonMaskedOnly)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	print "read probesets chr:$geneChrom\n";
@@ -253,8 +253,11 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
 		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID
-		order by s.probeset_id";
+		and s.Array_TYPE_ID = $arrayTypeID ";
+		if($nonMaskedOnly==1){
+			$query=$query." and s.updatedlocation='Y' ";
+		}
+		$query=$query." order by s.probeset_id";
 	}
 	elsif(length($geneChromNumber) == 2) {
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.PROBESTART, p.PROBESTOP, p.STRAND, p.PROBESEQUENCE
@@ -266,8 +269,11 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
 		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID
-		order by s.probeset_id";
+		and s.Array_TYPE_ID = $arrayTypeID ";
+		if($nonMaskedOnly==1){
+			$query=$query." and s.updatedlocation='Y' ";
+		}
+		$query=$query." order by s.probeset_id";
 
 	}
 	else{

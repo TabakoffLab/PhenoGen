@@ -61,7 +61,7 @@ sub getImage{
     my $resultCode="";
     while($newresultCode!=200 and $tryCount<3){
 	eval{
-	    $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount));
+	    $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount),850,15,8);
 	    print "RESULT CODE2:$resultCode\n";
 	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
 	    1;
@@ -190,7 +190,7 @@ sub createXMLFile
 	    print "gene list:".@genelist."\n";
 	}
 	
-	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
+	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd,0);
 	my @probesetHOH = @$probesetHOHRef;
 	
 	if($shortSpecies eq 'Rn'){
@@ -438,9 +438,11 @@ sub createXMLFile
 		my $tissueProbesRef=readTissueAffyProbesetDataFromDB($chr,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,1,$dsn,$usr,$passwd);
 		my %tissueProbes=%$tissueProbesRef;
 		
-		createTrackFileRegionView(\%GeneHOH, $twoTrackOutputFileName,  $species,1,0,$chr,$minCoord,$maxCoord,\%tissueProbes);
-		createTrackFileRegionView(\%GeneHOH, $noProbeTrackOutputFileName,  $species,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes);
-		createTrackFileRegionView(\%GeneHOH, $filterProbeTrackOutputFileName,  $species,1,1,$chr,$minCoord,$maxCoord,\%tissueProbes);
+		
+		
+		createTrackFileRegionView(\%GeneHOH, $twoTrackOutputFileName,  $species,1,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH);
+		createTrackFileRegionView(\%GeneHOH, $noProbeTrackOutputFileName,  $species,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH);
+		createTrackFileRegionView(\%GeneHOH, $filterProbeTrackOutputFileName,  $species,1,1,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH);
 		#createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameNoArray,  $species,1,0,0,$chr,$minCoord,$maxCoord);
 		#createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileNameHuman,  $species,0,0,1,$chr,$minCoord,$maxCoord);
 		#createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameHuman,  $species,1,0,1,$chr,$minCoord,$maxCoord);
