@@ -1,4 +1,5 @@
 <script type="text/javascript">
+var innerTabInd=0;
 function displayWorking(){
 	document.getElementById("wait1").style.display = 'block';
 	document.getElementById("inst").style.display= 'none';
@@ -76,7 +77,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 
 </script>
 
-<div id="page" style="min-height:1100px;">
+<div id="page" style="min-height:1500px;">
 <span style="text-align:center;">
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
 
@@ -338,19 +339,32 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 //  });
 </script>          
 
-<div class="cssTab" style="position:relative;">
+<div class="cssTab" id="mainTab" >
     <ul>
-      <li ><a href="#geneList" title="What genes are found in this area?">Genes Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?">Features Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li ><a class="disable" href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li><a  class="disable" href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help10" class="helpImage" src="../web/images/icons/help.png" /></div></li>
      </ul>
      
      
 <div id="loadingRegion"  style="text-align:center; position:relative; top:0px; left:0px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Loading Region Data...<BR />The tabs to the left will be enabled once all the data loads.</div>
+
 <div id="changingTabs"  style="display:none;text-align:center; position:relative; top:0px; left:-150px;"><img src="<%=imagesDir%>wait.gif" alt="Changing Tabs..." /><BR />Changing Tabs...</div>
 
 
-<div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
+<div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:1000px;">
+
+	<div class="cssTab" id="inRegionTab" style="position:relative; left:-460px; height:27px;">
+    <ul>
+      <li >
+      	<a  href="#codingList" title="" style="height:20px;">Protein Coding Genes</a>
+      	</li>
+      <li >
+      	<a  href="#noncodingList" title="" style="height:20px;">Non-coding Features</a>
+        </li>
+   </ul>
+
+   <div id="codingList" class="innerTabContent" style="display:none; position:relative;top:40px;left:460px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:solid;width:1000px;">
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
@@ -675,8 +689,15 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
           <%}else{%>
           	No genes found in this region.  Please expand the region and try again.
           <%}%>
+          
+          </div><!-- end codingList-->
+ 			<div id="noncodingList" class="innerTabContent" style="display:none; position:relative;top:40px;left:460px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:solid;width:995px;">
+ 			</div> 
+      </div><!-- end inRegion cssTab -->        
 
 </div><!-- end GeneList-->
+
+
 
 <div id="viewTrxDialog" class="trxDialog"></div>
 
@@ -710,8 +731,10 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 	"sScrollY": "650px"
 	});
 	
-	$('.cssTab div.modalTabContent:first').show();
-	$('.cssTab ul li a:first').addClass('selected');
+	$('#mainTab div.modalTabContent:first').show();
+	$('#mainTab ul li a:first').addClass('selected');
+	$('#inRegionTab div.innerTabContent:first').show();
+	$('#inRegionTab ul li a:first').addClass('selected');
 	$('#tblGenes').dataTable().fnAdjustColumnSizing();
 	//tblGenesFixed=new FixedColumns( tblGenes, {
  	//	"iLeftColumns": 1,
@@ -1442,7 +1465,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 </div><!-- end eQTL List-->
 
 
-
+</div><!-- end mainTab cssTab -->
        
 
 
@@ -1741,7 +1764,7 @@ Currently only lists of 300 genes are less are supported.  This is a limit of th
 <script type="text/javascript">
 $(document).ready(function() {
 	
-	$('.cssTab ul li a').removeClass('disable');
+	$('#mainTab ul li a').removeClass('disable');
 	//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
 	//simply remove all whitespace from html in a table and put it back.
 	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
@@ -2037,18 +2060,27 @@ $(document).ready(function() {
 	});
 	
 	//Setup Tabs
-    $('.cssTab ul li a').click(function() {    
+    $('#mainTab ul li a').click(function() {    
 			$('div#changingTabs').show(10);
 				//change the tab
-				$('.cssTab ul li a').removeClass('selected');
+				$('#mainTab ul li a').removeClass('selected');
 				$(this).addClass('selected');
 				var currentTab = $(this).attr('href'); 
-				$('.cssTab div.modalTabContent').hide();       
+				$('#mainTab div.modalTabContent').hide();       
 				$(currentTab).show();
 				
 				//adjust row and column widths if needed(only needs to be done once)
 				if(currentTab == "#geneList"){
 					//tblGenes.fnAdjustColumnSizing();
+					if(innerTabInd==0){
+						$('#noncodingList').hide();
+						$('#codingList').show();
+						$('#inRegionTab ul li a:first').addClass('selected');
+					}else{
+						$('#codingList').hide();
+						$('#noncodingList').show();
+						$('#inRegionTab ul li a:last').addClass('selected');
+					}
 				}else if(currentTab == "#bQTLList" && !tblBQTLAdjust){
 					tblBQTL.fnAdjustColumnSizing();
 					tblBQTLAdjust=true;
@@ -2062,6 +2094,30 @@ $(document).ready(function() {
 				}
 				
 			$('div#changingTabs').hide(10);
+			return false;
+        });
+		
+		$('#inRegionTab ul li a').click(function() {    
+				
+				//change the tab
+				$('#inRegionTab ul li a').removeClass('selected');
+				$(this).addClass('selected');
+				var currentTab = $(this).attr('href'); 
+				$('#inRegionTab div.innerTabContent').hide();       
+				$(currentTab).show();
+				
+				//adjust row and column widths if needed(only needs to be done once)
+				if(currentTab == "#codingList"){
+					innerTabInd=0;
+					//tblGenes.fnAdjustColumnSizing();
+				}else if(currentTab == "#noncodingList"){
+					innerTabInd=1;
+					//tblBQTL.fnAdjustColumnSizing();
+					//tblBQTLAdjust=true;
+				}
+				$('#geneList').show();
+				$('#geneTabID').addClass('selected');
+			//$('div#changingTabs').hide(10);
 			return false;
         });
 	
