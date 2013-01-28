@@ -48,6 +48,12 @@ sub readQTLDataFromDB{
 	my %qtlHOH; # giant array of hashes and arrays containing QTL data
 	
 	
+	if($organism eq 'Mouse'){
+		$organism="Mm";
+	}elsif($organism eq 'Rat'){
+		$organism="Rn";
+	}
+	
 	# PERL DBI CONNECT
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
@@ -77,7 +83,7 @@ sub readQTLDataFromDB{
 	else{
 		die "Something is wrong with the bQTL query \n";
 	}
-	#print $query."\n";
+	print "QTL Query:".$query."\n";
 	$query_handle = $connect->prepare($query) or die (" bQTL query prepare failed \n");
 
 # EXECUTE THE QUERY
@@ -91,11 +97,12 @@ sub readQTLDataFromDB{
 	
 	
 	while($query_handle->fetch()) {
+		print "processing:QTL:$qtl_name\n";
 		$qtlHOH{QTL}[$cntQTL] = {
 			name => $qtl_name,
 			chromosome => $qtl_chrom,
 			start=> $qtl_start,
-			stop => $qtl_stop,
+			stop => $qtl_stop
 		};
 		$cntQTL++;
 	}

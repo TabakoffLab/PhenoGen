@@ -296,15 +296,16 @@ sub createTrackFileRegion{
 	
 	
 	if($species eq 'Rat'){
-		print TWOFILE "track db=$trackDB priority=3 name='bQTLs' ";
-		print TWOFILE 'description="bQTLs"';
-		print TWOFILE "visibility=3 \n";
+		print TWOFILE "track db=$trackDB priority=1 name='bQTLs' ";
+		print TWOFILE 'description="bQTLs" ';
+		print TWOFILE "visibility=3 centerLabelsDense=\"on\" \n";
 		if(@qtlList>0){
 			my $cntQTL=0;
 			foreach my $tmpQTL (@qtlList){
 				my $qtlName=$qtlHOH{QTL}[$cntQTL]{name};
 				my $qtlStart=$qtlHOH{QTL}[$cntQTL]{start};
 				my $qtlStop=$qtlHOH{QTL}[$cntQTL]{stop};
+				$qtlName =~ s/ /_/g;
 				print TWOFILE "chr$chr\t$qtlStart\t$qtlStop\t$qtlName\t0\t.\n";
 				$cntQTL++;
 			}
@@ -339,11 +340,12 @@ sub createTrackFileRegionView{
 	
 
 	# Read inputs
-	my($GeneHOHRef,  $twoTrackOutputFileName, $species,$includeProbes,$filterProbes, $chr, $minCoord, $maxCoord,$tissueProbesRef) = @_; 
+	my($GeneHOHRef,  $twoTrackOutputFileName, $species,$includeProbes,$filterProbes, $chr, $minCoord, $maxCoord,$tissueProbesRef,$nonMaskedProbesRef) = @_; 
 	# Dereference the hash and array
 	my %GeneHOH = %$GeneHOHRef;
 	my $geneListRef=$GeneHOH{Gene};
 	my %tissueProbes=%$tissueProbesRef;
+	my @nonMaskedProbes=@$nonMaskedProbesRef;
 	
 	my @geneList=();
 	eval{
@@ -357,9 +359,9 @@ sub createTrackFileRegionView{
 	my $orgBB="mouseBigBed.bb";
 	
 	if($species eq 'Rat'){
-		$trackDB="rn4";
+		$trackDB="rn5";
 		$qtlTrack="rgdQtl";
-		$orgBB="ratBigBed.bb";
+		$orgBB="none";
 	}
 	
 	# Write out file with tracks
@@ -370,9 +372,38 @@ sub createTrackFileRegionView{
 	print TWOFILE "browser pack refGene\n";
 	if($includeProbes==1){
 		if($filterProbes==0){
-			print TWOFILE "track db=$trackDB type=bigBed priority=1 name='Affy".$species."Probesets' ";
-			print TWOFILE 'description="Probesets from Affymetrix Exon 1.0 ST Array: Red=Core Green=Full Blue=Extended" ';
-			print TWOFILE 'visibility=3 itemRgb=On bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/'.$orgBB."\n";
+			if($species eq 'Rat'){
+				my $coreColor="255,0,0";
+				my $fullColor="0,100,0";
+				my $extendedColor="0,0,255";
+				my $cntColor=0;
+				print TWOFILE 'track db='.$trackDB." name=\"All Probesets\" ";
+				print TWOFILE "description=\"All Probesets: Red=Core Blue=Extended Green=Full\" ";
+				print TWOFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
+				my $curInd=0;
+				foreach(@nonMaskedProbes){
+					my $strand=".";
+					if($nonMaskedProbes[$curInd]{strand}==-1){
+						$strand="-";
+					}elsif($nonMaskedProbes[$curInd]{strand}==1){
+						$strand="+";
+					}
+					my $color=$fullColor;
+					if($nonMaskedProbes[$curInd]{type} eq 'core'){
+						$color=$coreColor;
+					}elsif($nonMaskedProbes[$curInd]{type} eq 'extended'){
+						$color=$extendedColor;
+					}
+					print TWOFILE "chr$chr\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
+					$curInd++;
+				}
+				$cntColor++;
+			
+			}else{
+				print TWOFILE "track db=$trackDB type=bigBed priority=1 name='Affy".$species."Probesets' ";
+				print TWOFILE 'description="Probesets from Affymetrix Exon 1.0 ST Array: Red=Core Green=Full Blue=Extended" ';
+				print TWOFILE 'visibility=3 itemRgb=On bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/'.$orgBB."\n";
+			}
 		}else{
 			my $coreColor="255,0,0";
 			my $fullColor="0,100,0";
