@@ -761,6 +761,9 @@ public class GeneDataTools {
 
             for (int i = 0; i < envVar.length; i++) {
                 log.debug(i + " EnvVar::" + envVar[i]);
+                if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }
             }
 
 
@@ -878,6 +881,9 @@ public class GeneDataTools {
 
             for (int i = 0; i < envVar.length; i++) {
                 log.debug(i + " EnvVar::" + envVar[i]);
+                if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }
             }
 
 
@@ -996,6 +1002,9 @@ public class GeneDataTools {
 
             for (int i = 0; i < envVar.length; i++) {
                 log.debug(i + " EnvVar::" + envVar[i]);
+                if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }
             }
 
 
@@ -1828,6 +1837,9 @@ public class GeneDataTools {
 
                 for (int i = 0; i < envVar.length; i++) {
                     log.debug(i + " EnvVar::" + envVar[i]);
+                    if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                    }
                 }
 
 

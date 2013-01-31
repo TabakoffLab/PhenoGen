@@ -968,6 +968,11 @@ color: #4C7298;
 cursor:pointer;
 }
 
+.viewSMNC{
+text-decoration:underline;
+color: #4C7298;
+cursor:pointer;
+}
 
 /* Recommended styles for two sided multi-select*/
 		.tsmsselect {

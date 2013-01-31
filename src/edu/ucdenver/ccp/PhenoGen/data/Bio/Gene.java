@@ -527,6 +527,7 @@ public class Gene {
             if(nodes.item(i).getNodeName().equals("Transcript")){
                 ArrayList<Exon> exons=null;
                 ArrayList<Intron> introns=null;
+                ArrayList<Annotation> annot=null;
                 NodeList children=nodes.item(i).getChildNodes();
                 for(int j=0;j<children.getLength();j++){
                     //System.out.println(j+":"+children.item(j).getNodeName());
@@ -536,13 +537,21 @@ public class Gene {
                     if(children.item(j).getNodeName().equals("intronList")){
                         introns=readIntrons(children.item(j).getChildNodes());
                     }
+                    if(children.item(j).getNodeName().equals("annotationList")){
+                        annot=readAnnotations(children.item(j).getChildNodes());
+                    }
                 }
                 NamedNodeMap nnm=nodes.item(i).getAttributes();
                 long start=Long.parseLong(nnm.getNamedItem("start").getNodeValue());
                 long end=Long.parseLong(nnm.getNamedItem("stop").getNodeValue());
+                
                 Transcript tmptrans=new Transcript(nnm.getNamedItem("ID").getNodeValue(),nnm.getNamedItem("strand").getNodeValue(),start,end);
                 tmptrans.setExon(exons);
                 tmptrans.setIntron(introns);
+                tmptrans.setAnnotation(annot);
+                if(nnm.getNamedItem("category")!=null){
+                    tmptrans.setCategory(nnm.getNamedItem("category").getNodeValue());
+                }
                 tmptrans.fillFullTranscript();
                 transcripts.add(tmptrans); 
             }
@@ -582,6 +591,23 @@ public class Gene {
         //System.out.println("Exon Array List Size at read:"+ret.size());
         return ret;
     }
+    
+    private static ArrayList<Annotation> readAnnotations(NodeList annotationNodes) {
+        ArrayList<Annotation> ret=new ArrayList<Annotation>();
+        for(int z=0;z<annotationNodes.getLength();z++){
+            //System.out.println("exonNodes"+z+":"+exonNodes.item(z).getNodeName());
+            if (annotationNodes.item(z).getNodeName().equals("annotation")) {
+                NamedNodeMap attrib=annotationNodes.item(z).getAttributes();
+                String source=attrib.getNamedItem("source").getNodeValue();
+                String value=attrib.getNamedItem("annot_value").getNodeValue();
+                Annotation tmp=new Annotation(source,value,"transcript");
+                ret.add(tmp);
+            }
+        }
+        //System.out.println("Exon Array List Size at read:"+ret.size());
+        return ret;
+    }
+    
     private static ArrayList<Intron> readIntrons(NodeList intronNodes) {
         ArrayList<Intron> ret=new ArrayList<Intron>();
         for(int z=0;z<intronNodes.getLength();z++){

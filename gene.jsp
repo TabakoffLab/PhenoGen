@@ -5,6 +5,7 @@
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
+	//extrasList.add("processing-1.4.1.min.js");
 	
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
@@ -474,17 +475,18 @@ Or
 <%if(!region&&genURL.size()>0){%>
 	<div style="text-align:center;">
         <div id="javaError" style="display:none;">
-            <BR /><BR />
+            <BR /><BR /><br />
             <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for this page.  Please correct the error listed below.  <BR />
             <BR />
         </div>
         
-        <span id="disabledJava" style="display:none;margin-left:40px;"><span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
+        <span id="disabledJava" style="display:none;margin-left:40px;">
+        <span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
                     To enable Java in your browser or operating system, see:<BR><BR> 
-                    Firefox: <a href=\"http://support.mozilla.org/en-US/kb/unblocking-java-plugin\">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
-                    Internet Explorer: <a href=\"http://java.com/en/download/help/enable_browser.xml\">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
-                    Safari: <a href=\"http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html\">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
-                    Chrome: <a href=\"http://java.com/en/download/faq/chrome.xml\">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
+                    Firefox: <a href="http://support.mozilla.org/en-US/kb/unblocking-java-plugin" target="_blank">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
+                    Internet Explorer: <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
+                    Safari: <a href="http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html" target="_blank">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
+                    Chrome: <a href="http://java.com/en/download/faq/chrome.xml" target="_blank">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
         
         <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
         <span id="installJava" style="display:none;" class="button">Install Java</span>
@@ -497,7 +499,7 @@ Or
                         $('#javaError').css("display","inline-block");
                         $('#disabledJava').css("display","inline-block");
 						alert("Java not enabled");
-                 }else if (deployJava.versionCheck('1.5.0+') == false) {
+                 }else if (deployJava.versionCheck('1.6.0+') == false) {
                      $('#javaError').css("display","inline-block");
                     $('#noJava').css("display","inline-block");                  
                     $('#installJava').css("display","inline-block");
@@ -585,7 +587,7 @@ Or
 	<span class="button" onclick="window.close()" style="width:150px;">Close this Window</span>
     </div>
 <%}%>
-<div style="padding-top:50px;"></div>
+<div><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /></div>
 <%@ include file="/web/common/footer.jsp" %>
 
 

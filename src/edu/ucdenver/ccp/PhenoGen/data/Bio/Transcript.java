@@ -19,8 +19,9 @@ public class Transcript {
     ArrayList<Exon> exons=new ArrayList<Exon>();
     ArrayList<Intron> introns=new ArrayList<Intron>();
     ArrayList<TranscriptElement> fullTranscript=new ArrayList<TranscriptElement>();
+    ArrayList<Annotation> fullAnnotation=new ArrayList<Annotation>();
     String ID="";
-    String strand="";
+    String strand="",category="";
     long start=0,stop=0,len=0;
     
     public Transcript(String ID){
@@ -59,6 +60,14 @@ public class Transcript {
         }
     }
     
+    public void setAnnotation(ArrayList<Annotation> annot){
+        this.fullAnnotation=annot;
+    }
+    
+    public ArrayList<Annotation> getAnnotation(){
+        return this.fullAnnotation;
+    }
+    
     public void fillFullTranscript(){
         this.fullTranscript=new ArrayList<TranscriptElement>();
         if(exons!=null){
@@ -84,6 +93,14 @@ public class Transcript {
     
     public ArrayList<Intron> getIntrons() {
         return introns;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
     
     

@@ -34,12 +34,15 @@
         <BR />
         <ul>
         	<li>JavaScript must be enabled. (
-            		<span id="noJS" style="color:#FF0000;display:inline-block;" >JavaScript is Currently Disabled.</span>
-                    <span id="JS" style="color:#009900;display:none;">Your Browser Has JavaScript Enabled.</span>)
+            		<span id="noJSsite" style="color:#FF0000;display:inline-block;" >JavaScript is Currently Disabled.</span>
+                    <span id="JSsite" style="color:#009900;display:none;">Your Browser Has JavaScript Enabled.</span>)
            	</li><BR /><BR />
+        	<script type="text/javascript">
+				$('#JSsite').show();
+				$('#noJSsite').hide();
+			</script>
         
-        
-            <li>Java Plugin JRE 1.5+ is required for the Detailed Transcription Information feature.<BR />
+            <li>Java Plugin JRE 1.6+ is required for the Detailed Transcription Information feature.<BR />
                 (<span id="minJava" style="color:#009900;display:none;" >Java plugin meets the minimum requirements. <BR /></span>
                 <span id="oldJava" style="color:#FF0000;display:none;">A new version may be available click the Install button for the latest version.</span>
                 <span id="noJava" style="color:#FF0000;display:none;"> A newer version is required click the Install button for the latest version.</span><span id="installJava" class="button">Install Java</span>)
@@ -54,7 +57,7 @@
 		
 		
 		<script src="http://www.java.com/js/deployJava.js"></script>
-		<script>
+		<script type="text/javascript">
             // check if current JRE version is greater than 1.5.0 
             if (deployJava.versionCheck('1.5.0+') == false) { 
 				$('#noJava').css("display","inline-block");                  
@@ -83,8 +86,7 @@
         
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#JS').css("display","inline-block");
-		$('#noJS').css("display","none");
+		
 		$('#installJava').click(function (){
 			// Set deployJava.returnPage to make sure user comes back to 
         	// your web site after installing the JRE

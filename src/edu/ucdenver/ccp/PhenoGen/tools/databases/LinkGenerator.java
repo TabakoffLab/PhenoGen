@@ -16,6 +16,9 @@ public class LinkGenerator {
         }
     }
     
+    
+    
+    
     static public String getMGILink(String term){
         return "http://www.informatics.jax.org/searches/marker_report.cgi?op%3AmarkerSymname=contains&markerSymname="+term+"&symnameBreadth=CM&chromosome=&op%3Acoords=between&coords=&coordUnits=bp&startMarker=&endMarker=&op%3Acytoband=%3D&cytoband=&op%3Aoffset=between&offset=&op%3Ago_term=contains&go_term=&_Ontology_key=Molecular+Function&_Ontology_key=Biological+Process&_Ontology_key=Cellular+Component&interpro=&phenotypes=&clone=&sort=Nomenclature&*limit=500&format=Web";
     }
