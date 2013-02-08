@@ -560,7 +560,7 @@ div.closeWindow {
 }
 
 /* Used for expanding/contracting */
-.trigger{
+.trigger,.tblTrigger,.triggerImage{
         cursor: pointer;
         /* needed for IE?  Don't think so */
 	/* cursor: hand; */
@@ -964,10 +964,15 @@ div.columnRight{
 
 .viewTrx{
 text-decoration:underline;
-color: #4C7298;
+color: #FFFFFF;
 cursor:pointer;
 }
 
+.viewSMNC{
+text-decoration:underline;
+color: #FFFFFF;
+cursor:pointer;
+}
 
 /* Recommended styles for two sided multi-select*/
 		.tsmsselect {

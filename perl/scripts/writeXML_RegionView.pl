@@ -11,6 +11,7 @@ use XML::Simple;
 use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromDB.pl';
+require 'readSNPDataFromDB.pl';
 require 'createTrack.pl';
 require 'createPng.pl';
 
@@ -431,6 +432,7 @@ sub createXMLFile
 		my $twoTrackOutputFileName = $ucscDir.$folderName.".trx.tracks";
 		my $noProbeTrackOutputFileName = $ucscDir.$folderName.".trx.noProbe.tracks";
 		my $filterProbeTrackOutputFileName = $ucscDir.$folderName.".trx.filterProbe.tracks";
+		my $snpTrackOutputFileName = $ucscDir.$folderName.".trx.snp.tracks";
 		#my $transTrackOutputFileNameNoArray = $ucscDir.$folderName."_noArray.trans.tracks";
 		#my $twoTrackOutputFileNameHuman = $ucscDir.$folderName."_human.tracks";
 		#my $transTrackOutputFileNameHuman = $ucscDir.$folderName."_human.trans.tracks";
@@ -438,11 +440,14 @@ sub createXMLFile
 		my $tissueProbesRef=readTissueAffyProbesetDataFromDB($chr,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,1,$dsn,$usr,$passwd);
 		my %tissueProbes=%$tissueProbesRef;
 		
+		my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		my %snpHOH=%$snpRef;
 		
 		
-		createTrackFileRegionView(\%GeneHOH, $twoTrackOutputFileName,  $species,1,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH);
-		createTrackFileRegionView(\%GeneHOH, $noProbeTrackOutputFileName,  $species,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH);
-		createTrackFileRegionView(\%GeneHOH, $filterProbeTrackOutputFileName,  $species,1,1,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH);
+		createTrackFileRegionView(\%GeneHOH, $twoTrackOutputFileName,  $species,1,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
+		createTrackFileRegionView(\%GeneHOH, $noProbeTrackOutputFileName,  $species,0,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
+		createTrackFileRegionView(\%GeneHOH, $filterProbeTrackOutputFileName,  $species,1,1,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
+		createTrackFileRegionView(\%GeneHOH, $snpTrackOutputFileName,  $species,0,0,1,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
 		#createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameNoArray,  $species,1,0,0,$chr,$minCoord,$maxCoord);
 		#createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileNameHuman,  $species,0,0,1,$chr,$minCoord,$maxCoord);
 		#createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameHuman,  $species,1,0,1,$chr,$minCoord,$maxCoord);
@@ -465,6 +470,7 @@ sub createXMLFile
 		my $newPngOutputFileName = $outputDir."region.main.png";
 		my $newNoProbePngOutputFileName = $outputDir."region.main.noProbe.png";
 		my $newFilterProbeOutputFileNameNoArray = $outputDir."region.main.probeFilter.png";
+		my $newSnpOutputFileNameNoArray = $outputDir."region.main.snp.png";
 		#my $newFilterPngOutputFileNameNoArray = $outputDir."region.main.trans.noArray.png";
 		#my $newPngOutputFileNameHuman = $outputDir."region.main.human.png";
 		#my $newFilterPngOutputFileNameHuman = $outputDir."region.main.trans.human.png";
@@ -487,6 +493,7 @@ sub createXMLFile
 		close URLFILE;
 		
 		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterProbeOutputFileNameNoArray,$filterProbeTrackOutputFileName);
+		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newSnpOutputFileNameNoArray,$snpTrackOutputFileName);
 		#$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray);
 		
 		#$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman);

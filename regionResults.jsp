@@ -1,5 +1,12 @@
 <script type="text/javascript">
-var innerTabInd=0;
+var trackString="coding,noncoding,snp,smallnc";
+var minCoord=<%=min%>;
+var maxCoord=<%=max%>;
+var chr="<%=chromosome%>";
+var filterExpanded=0;
+
+var organism="<%=myOrganism%>";
+
 function displayWorking(){
 	document.getElementById("wait1").style.display = 'block';
 	document.getElementById("inst").style.display= 'none';
@@ -16,6 +23,32 @@ function displayColumns(table,colStart,colLen,showOrHide){
 	for(var i=colStart;i<colStop;i++){
 				table.dataTable().fnSetColumnVis( i, showOrHide );
 	}
+}
+
+function expandCollapse(baseName){
+	 var thisHidden = $("tbody#" + baseName).is(":hidden");
+	 $('#'+baseName+'1').toggleClass("less");
+	 $('#'+baseName+'2').toggleClass("less");
+		if (thisHidden) {
+			$("tbody#" + baseName).show();
+			filterExpanded=1;
+		} else {
+			$("tbody#" + baseName).hide();
+			filterExpanded=0;
+		}
+}
+
+function setFilterTableStatus(baseName){
+	 var thisHidden = $("tbody#" + baseName).is(":hidden");
+		if (thisHidden&&filterExpanded==1) {
+			$("tbody#" + baseName).show();
+			$('#'+baseName+'1').toggleClass("less");
+			$('#'+baseName+'2').toggleClass("less");
+		} else if(!thisHidden && filterExpanded==0) {
+			$("tbody#" + baseName).hide();
+			$('#'+baseName+'1').toggleClass("less");
+			$('#'+baseName+'2').toggleClass("less");
+		}
 }
 
 function runFilter(){
@@ -55,34 +88,61 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
     			}
 			});
 			
-			
-			/*$.get(	contextPath + "/web/GeneCentric/geneRegionView.jsp", 
-					{region: regionTxt, species: speciesTxt,gene: geneTxt},
-					function(data){
-							$('#viewTrxDialog').html(data);
-					});*/
-			
-			/*$.get(	contextPath + "/web/GeneCentric/geneRegionView.jsp", 
-					{region: regionTxt, species: speciesTxt,gene: geneTxt})
-			.done(function(data){
-							$('#viewTrxDialog').html(data);
-					})
-			.fail( function(){
-					alert("Error");
-					}
-			);*/
-			
+}
+
+function openSmallNonCoding(id){
+			$.ajax({
+				url: contextPath + "/web/GeneCentric/viewSmallNonCoding.jsp",
+   				type: 'GET',
+				data: {id: id},
+				dataType: 'html',
+    			success: function(data2){ 
+        			$('#viewTrxDialog').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('#viewTrxDialog').html("<div>An error occurred generating this page.  Please try back later.</div>");
+    			}
+			});
 }
 
 
+function updateTrackString(){
+	trackString="";
+	$("input[name='trackcbx']").each( function (){
+		if($(this).is(":checked")){
+			if(trackString==""){
+				trackString=$(this).val();
+			}else{
+				trackString=trackString+","+$(this).val();
+			}
+		}
+	});
+}
+
+function updateUCSCImage(){
+			$.ajax({
+				url: contextPath + "/web/GeneCentric/updateUCSCImage.jsp",
+   				type: 'GET',
+				data: {trackList: trackString,species: organism,chromosome: chr, minCoord: minCoord, maxCoord: maxCoord},
+				dataType: 'html',
+    			success: function(data2){ 
+        			$('#geneImage').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('#geneImage').html("<div>An error occurred generating this image.  Please try back later.</div>");
+    			}
+			});
+}
 </script>
 
-<div id="page" style="min-height:1500px;">
-<span style="text-align:center;">
+
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
 
 
 <%
+
+	ArrayList<SmallNonCodingRNA> smncRNA=gdt.getSmallNonCodingRNA(min,max,chromosome,rnaDatasetID,myOrganism);
+	log.debug("SMALL NON CODING SIZE:"+smncRNA.size());
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
 	if(myOrganism.equals("Rn")){
@@ -248,13 +308,12 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 				selectedChromosomes[i]=chromosomeNameArray[i];
 			}
 		}
-	
 %>
     
     <script>
 		var tisLen=<%=tissuesList1.length%>;
-		var organism="<%=myOrganism%>";
     </script>
+<div id="page" style="min-height:1000px;text-align:center;">
 
         <!--<div class="geneRegionControl">
       		Zoom In:
@@ -270,47 +329,54 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                       <input type="submit" name="action" id="refreshBTN" value="10x" onClick="return displayWorking()">      
           </form>
           </div>--><!--end RegionControl div -->
-    
+    <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
+    <span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
+    <div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
+    </div>
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; width:98%; text-align:center;">
-        <div class="geneimageControl">
+        
+        <div id="collapsableImage" class="geneimage" >
+            <div id="geneImage" class="ucscImage"  style="display:inline-block;">
+            	<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
+            	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.coding.noncoding.smallnc.png"%>"/></a>
+            </div>
+        </div><!-- end geneimage div -->
+    	<div class="geneimageControl">
       		
           	<form>
-            Image Controls:
-              <label style="color:#000000; margin-left:10px;">
+            Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
+            <input name="trackcbx" type="checkbox" id="codingCBX" value="coding" checked="checked" /> Protein Coding/PolyA+
+            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" /> Non Coding/NonPolyA+
+            <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small Non Coding RNA: 
+            <select>
+            	<option value="1" selected="selected">Dense</option>
+                <option value="3" >Pack</option>
+            </select><BR />
+           	<input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels
+            <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos
+            <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs
+            <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts
+              <!--<label style="color:#000000; margin-left:10px;">
                 Transcripts:</label>
                 <select name="transcriptSelect" id="transcriptSelect">
                 	<option value="geneimageUnfiltered" selected="selected">Hide</option>
                     <option value="geneimageFiltered" >Show</option>
-                </select>
+                </select>-->
               <!--<label style="color:#000000; margin-left:10px;">Additional Track options:</label>
              	<select name="lowerTrackSelect" id="lowerTrackSelect">
                 	<option value="NoArray">None</option>
                     <option value="Array" selected="selected">UCSC/Affymetrix Tissue Expression Data(Source:UCSC)</option>
                     <option value="Human">Human Proteins/Chr Mapping(Source:UCSC)</option>
                 </select>-->
-                <div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
+                
              </form>
          
 		 
           </div><!--end imageControl div -->
-        <div class="geneimage" >
-            <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png"  /></div>
-
-            <div id="geneimageUnfilteredNoArray" class="ucscImage"  style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.noArray.png"%>"/></a></div>
-            <div id="geneimageFilteredNoArray" class="ucscImage" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.trans.noArray.png"%>"/></a></div>
-            
-    
-        </div><!-- end geneimage div -->
-    
-          </div><!--end Border Div -->
-
-          <BR />
-         </span><!-- ends center span -->
-
-
+    </div><!--end Border Div -->
+    <BR />
 <script type="text/javascript">
-	$('.ucscImage').hide();
-	$('#geneimageUnfilteredNoArray').show();
+	
 	//Setup Fancy box for UCSC link
 	$('.fancybox').fancybox({
 		width:$(document).width(),
@@ -321,22 +387,6 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 			return;
 		}
   });
-  
-  
-  $('#transcriptSelect').change(function(){
-  		$('.ucscImage').hide();
-		var transVal=$(this).val();
-		//var lowerVal=$('#lowerTrackSelect').val();
-		var lowerVal="NoArray";
-		$('#'+transVal+lowerVal).show();
-  });
-  
-  // $('#lowerTrackSelect').change(function(){
-  //		$('.ucscImage').hide();
-  //	var transVal=$('#transcriptSelect').val();
-//		var lowerVal=$(this).val();
-//		$('#'+transVal+lowerVal).show();
-//  });
 </script>          
 
 <div class="cssTab" id="mainTab" >
@@ -354,17 +404,6 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:1000px;">
 
-	<div class="cssTab" id="inRegionTab" style="position:relative; left:-460px; height:27px;">
-    <ul>
-      <li >
-      	<a  href="#codingList" title="" style="height:20px;">Protein Coding Genes</a>
-      	</li>
-      <li >
-      	<a  href="#noncodingList" title="" style="height:20px;">Non-coding Features</a>
-        </li>
-   </ul>
-
-   <div id="codingList" class="innerTabContent" style="display:none; position:relative;top:40px;left:460px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:solid;width:1000px;">
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
@@ -379,7 +418,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                         	<td>
                             <%if(myOrganism.equals("Rn")){%>
                                 Exclude single exon RNA-Seq Transcripts
-                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" checked="checked" /><BR />
+                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" /><BR />
                         	<%}%>
                         
                             eQTL P-Value Cut-off:
@@ -390,6 +429,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                                                     <option value="0.0001" <%if(forwardPValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
                                                     <option value="0.00001" <%if(forwardPValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
                                             </select>
+                                            Require an eQTL below cut-off<input name="chkbox" type="checkbox" id="rqQTLCBX" value="rqQTLCBX"/>
                             </td>
                         	<td>
                             	<div class="columnLeft">
@@ -397,12 +437,17 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                                     <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /><BR />
                                     Description
                                     <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /><BR />
+                                    BioType
+                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked" /><BR />
+                                    Tracks
+                                    <input name="chkbox" type="checkbox" id="geneTracksCBX" value="geneTracksCBX" checked="checked" /><BR />
                                     Location and Strand
                                     <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /><BR />
-                                    Heritability
-                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /><BR />
+                                   
                                 </div>
                                 <div class="columnRight">
+                                 	Heritability
+                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /><BR />
                                 	Detection Above Background
                                 	<input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /><BR />
                                     eQTLs All
@@ -417,6 +462,18 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                         </tbody>
                         
                   </table>
+                  <script type="text/javascript">
+				            $("span.triggerImage").click(function(){
+							var baseName = $(this).attr("name");
+									var thisHidden = $("div#" + baseName).is(":hidden");
+									$(this).toggleClass("less");
+									if (thisHidden) {
+								$("div#" + baseName).show();
+									} else {
+								$("div#" + baseName).hide();
+									}
+							});
+				</script>
           
           
           <%
@@ -441,11 +498,11 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 				}*/
 				%>
 		 
-          	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0" >
+          	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
                 <THEAD>
                     <tr>
-                        <th colspan="5" class="topLine noSort noBox"></th>
-                        <th colspan="3" class="center noSort topLine">Transcript Information</th>
+                        <th colspan="10" class="topLine noSort noBox"></th>
+                        <th colspan="4" class="center noSort topLine">Transcript Information</th>
                         <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
                             	Public ILSXISS RI Mice
@@ -454,18 +511,22 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                             <%}%>
                             )<div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
-                    <tr>
-                        <th colspan="5"  class="topLine noSort noBox"></th>
-                        <th colspan="2"  class="leftBorder  noSort"></th>
-                        <th colspan="1"  class="rightBorder noSort"></th>
+                    <tr style="text-align:center;">
+                        <th colspan="10"  class="topLine noSort noBox"></th>
+                        <th colspan="1"  class="leftBorder rightBorder noSort"></th>
+                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="Help5c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<div class="inpageHelp" style="display:inline-block; "><img id="Help5d" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="Help5e" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
-                    <tr>
-                        <th colspan="5"  class="topLine noSort noBox"></th>
+                    <tr style="text-align:center;">
+                        <th colspan="4"  class="topLine noSort noBox"></th>
+                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table</th>
+                        <th colspan="3"  class="topLine noSort noBox"></th>
                         <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts</th>
+                        <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="leftBorder rightBorder noSort noBox"></th>
@@ -481,25 +542,31 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                     <TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
                     <TH>Gene ID</TH>
                     <TH width="10%">Gene Description</TH>
+                    <TH>BioType</TH>
+                    <TH>Protein Coding / PolyA+</TH>
+                    <TH>Non-Coding / Non PolyA+</TH>
+                    <TH>Small Non-Coding RNA</TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
+                    <TH>SNPs / Indels</TH>
                     <TH>Ensembl</TH>
-                    <TH>RNA-Seq<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
-                    <TH>View Transcripts and Probesets</TH>
+                    <TH>RNA-Seq</TH>
+                    <TH>Total Reads<HR />Read Sequences</TH>
+                    <TH>View Details</TH>
                     <TH>Total Probesets</TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
-                    	<TH><%=tissuesList1[i]%> Count<BR />(Avg)</TH>
+                    	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</TH>
                     <%}%>
                     <%for(int i=0;i<tissuesList1.length;i++){%>
-                    	<TH><%=tissuesList1[i]%> Count<BR />(Avg)</TH>
+                    	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</TH>
                     <%}%>
                     <TH>Transcript Cluster ID <div class="inpageHelp" style="display:inline-block; "><img id="Help5f" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                     <TH>Annotation Level</TH>
                     <TH>View Genome-Wide Associations<div class="inpageHelp" style="display:inline-block; "><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                     <%for(int i=0;i<tissuesList2.length;i++){%>
                     	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> </TH>
-                        <TH>Minimum<BR /> P-Value<BR />Location</TH>
+                        <TH>Minimum<BR /> P-Value<HR />Location</TH>
                     <%}%>
                     </tr>
                 </thead>
@@ -521,9 +588,20 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 							chr="chr"+chr;
 						}
                         %>
-                        <TR 
+                        <TR class="
 						<% String geneID="";
-						if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>class="singleExon"<%}%>>
+						if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>
+                        	singleExon
+						<%}
+                        if(curGene.getBioType().equals("protein_coding")){%>
+                        	coding
+						<%}else{%>
+                        	noncoding
+						<%}%>
+                        <%if(curGene.getGeneID().startsWith("ENS")){%>
+                        	ensembl
+                        <%}%>
+                        ">
                             <TD title="View detailed transcription information for gene in a new window.">
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
                             	<a href="<%=lg.getGeneLink(curGene.getGeneID(),myOrganism,true,true,false)%>" target="_blank">
@@ -548,6 +626,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 									}
 							%>
                             <TD >
+                           
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
                             	<a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(curGene.getGeneID(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=curGene.getGeneID()%></a><BR />	
                                 <span style="font-size:10px;">
@@ -582,19 +661,87 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                             	<%=curGene.getGeneID()%>
                             <%}%>
                             </TD>
-                            
-                            <%	
+                             
+                            <%String bioType=curGene.getBioType();
+							  ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript> tmpTrx=curGene.getTranscripts();
 							%>
-                            <TD title="<%=remain%>"><%=shortDesc%></TD>
+                            <TD title="<%=remain%>">
+								<%=shortDesc%>
+                                <% HashMap displayed=new HashMap();
+								HashMap bySource=new HashMap();
+								for(int k=0;k<tmpTrx.size();k++){
+                                	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> annot=tmpTrx.get(k).getAnnotation();
+									if(annot!=null&&annot.size()>0){
+										for(int j=0;j<annot.size();j++){
+											if(!annot.get(j).getSource().equals("AKA")&&!annot.get(j).getSource().equals("AlignedSequences")){
+												String tmpHTML=annot.get(j).getDisplayHTMLString(true);
+												if(!displayed.containsKey(tmpHTML)){
+													displayed.put(tmpHTML,1);
+													if(bySource.containsKey(annot.get(j).getSource())){
+														String list=bySource.get(annot.get(j).getSource()).toString();
+														list=list+", "+tmpHTML;
+														bySource.put(annot.get(j).getSource(),list);
+													}else{
+														bySource.put(annot.get(j).getSource(),tmpHTML);
+													}
+                                            		
+                                                }
+                                        	}
+                                    	}
+                                	}
+								}
+								Set keys=bySource.keySet();
+                				Iterator itr=keys.iterator();
+								while(itr.hasNext()){
+									String source=itr.next().toString();
+									String values=bySource.get(source).toString();
+								%>
+                                	<%="<BR>"+source+":"+values%>
+                                <%}%>
+                            </TD>
+                            
+                            <TD><%=bioType%></TD>
+                            <%if(bioType.equals("protein_coding")){%>
+                                <TD class="leftBorder">X</TD>
+                                <TD class="leftBorder"></TD>
+                            <%}else{%>
+                                <TD class="leftBorder"></TD>
+                                <TD class="leftBorder">X</TD>
+                            <%}%>
+                            <TD class="leftBorder rightBorder"></TD>
                             <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
                             <TD><%=curGene.getStrand()%></TD>
-                            <TD><%=curGene.getTranscriptCountEns()%></TD>
+                            <TD></TD>
+                            <TD class="leftBorder"><%=curGene.getTranscriptCountEns()%></TD>
                             <TD>
 								<%=curGene.getTranscriptCountRna()%>
+                                <%if(curGene.getTranscriptCountRna()>0){
+									String tmpList="";
+									if(curGene.getTranscriptCountRna()>1){
+										for(int l=0;l<tmpTrx.size();l++){
+											if(!tmpTrx.get(l).getID().startsWith("ENS")){
+												if(tmpList.equals("")){
+													tmpList="<span class=\"tblTrigger\" name=\"fg_"+i+"\">"+tmpTrx.get(l).getID()+"</span><div id=\"fg_"+i+"\" style=\"display:none;\">";
+												}else{
+													tmpList=tmpList+tmpTrx.get(l).getID()+"<BR>";
+												}
+											}	
+										}
+										tmpList=tmpList+"</div>";
+									}else{
+										for(int l=0;l<tmpTrx.size();l++){
+											if(!tmpTrx.get(l).getID().startsWith("ENS")){
+												tmpList=tmpTrx.get(l).getID();
+											}	
+										}
+									}%>
+                                	<BR /><%=tmpList%>
+                            	<%}%>
                             </TD>
+                            <TD></TD>
                             <TD><span id="<%=chr+":"+(curGene.getMinMaxCoord()[0]-500)+"-"+(curGene.getMinMaxCoord()[1]+500)%>" name="<%=geneID%>" class="viewTrx">View</span></TD>
-                            <TD><%=curGene.getProbeCount()%></TD>
-                            <!--<TD></TD>-->
+                            <TD class="leftBorder"><%=curGene.getProbeCount()%></TD>
+                            
                             <%for(int j=0;j<tissuesList1.length;j++){
 								Object tmpH=hCount.get(tissuesList1[j]);
 								Object tmpHa=hSum.get(tissuesList1[j]);
@@ -683,22 +830,153 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                              <%}%>
                         </TR>
                     <%}%>
+					<%if(smncRNA!=null){
+						for(int i=0;i<smncRNA.size();i++){
+							SmallNonCodingRNA rna=smncRNA.get(i);
+							%>
+                        	<tr class="smallnc">
+                                <TD>smRNA_<%=rna.getId()%></TD>
+                                <TD><% ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> ens=rna.getAnnotationBySource("Ensembl");
+									if(ens!=null&&ens.size()>0){
+										for(int k=0;k<ens.size();k++){%>
+											<%=ens.get(k).getEnsemblLink()%>
+                                        <%}%>
+                                        <BR />	
+                                		<span style="font-size:10px;">
+											<%                
+                                                String tmpGS=ens.get(0).getDisplayHTMLString(false);
+												if(tmpGS.indexOf("-")>0){
+													tmpGS=tmpGS.substring(0,tmpGS.indexOf("-"));
+												}
+                                                String shortOrg="Mouse";
+                                                String allenID="";
+                                                if(myOrganism.equals("Rn")){
+                                                    shortOrg="Rat";
+                                                }
+                                                %>
+                                                All Organisms:<a href="<%=LinkGenerator.getNCBILink(tmpGS)%>" target="_blank">NCBI</a> |
+                                                <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS)%>" target="_blank">UniProt</a> <BR />
+                                               <%=shortOrg%>: <a href="<%=LinkGenerator.getNCBILink(tmpGS,myOrganism)%>" target="_blank">NCBI</a> | <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS,myOrganism)%>" target="_blank">UniProt</a> | 
+                                                <%if(myOrganism.equals("Mm")){%>
+                                                    <a href="<%=LinkGenerator.getMGILink(tmpGS)%>" target="_blank">MGI</a> 
+                                                    <%if(!allenID.equals("")){%>
+                                                        | <a href="<%=LinkGenerator.getBrainAtlasLink(allenID)%>" target="_blank">Allen Brain Atlas</a>
+                                                    <%}%>
+                                                <%}else{%>
+                                                    <a href="<%=LinkGenerator.getRGDLink(tmpGS,myOrganism)%>" target="_blank">RGD</a>
+                                                <%}%>
+                                             </span>
+									<%}%>
+                                </TD>
+                                <TD>
+									<% HashMap displayed=new HashMap();
+                                    HashMap bySource=new HashMap();
+									ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> annot=rna.getAnnotations();
+									if(annot!=null&&annot.size()>0){
+										for(int j=0;j<annot.size();j++){
+											
+												String tmpHTML=annot.get(j).getDisplayHTMLString(true);
+												if(!displayed.containsKey(tmpHTML)){
+													displayed.put(tmpHTML,1);
+													if(bySource.containsKey(annot.get(j).getSource())){
+														String list=bySource.get(annot.get(j).getSource()).toString();
+														list=list+", "+tmpHTML;
+														bySource.put(annot.get(j).getSource(),list);
+													}else{
+														bySource.put(annot.get(j).getSource(),tmpHTML);
+													}
+													
+												}
+										}
+									}
+                                    
+                                    Set keys=bySource.keySet();
+                                    Iterator itr=keys.iterator();
+                                    while(itr.hasNext()){
+                                        String source=itr.next().toString();
+                                        String values=bySource.get(source).toString();
+                                    %>
+                                        <%="<BR>"+source+":"+values%>
+                                    <%}%>
+                                </TD>
+                                <TD>Small Non-Coding RNA</TD>
+                                <TD class="leftBorder"></TD>
+                                <TD class="leftBorder"></TD>
+                                <TD class="leftBorder rightBorder">X</TD>
+                                <TD>chr<%=rna.getChromosome()+":"+rna.getStart()+"-"+rna.getStop()%></TD>
+                                <TD><%=rna.getStrand()%></TD>
+                                <TD>
+    							<% String bnlx="";
+								   String shrh="";
+								   int bnlxCount=0;
+								   int shrhCount=0;
+								   ArrayList<SequenceVariant> vars=rna.getVariant();
+								   for(int j=0;j<vars.size();j++){
+								   		SequenceVariant v=vars.get(j);
+										if(v.getStrain().equals("BNLX")){
+											bnlx=bnlx+"<span title=\""+v.getType()+"@"+v.getStart()+"\">";
+											if(bnlxCount==0){
+												bnlx=bnlx+v.getRefSeq()+":"+v.getStrainSeq();
+											}else{
+												bnlx=bnlx+","+v.getRefSeq()+":"+v.getStrainSeq();
+											}
+											bnlx=bnlx+"</span>";
+											bnlxCount++;
+										}else if(v.getStrain().equals("SHRH")){
+											shrh=shrh+"<span title=\""+v.getType()+"@"+v.getStart()+"\">";
+											if(shrhCount==0){
+												shrh=shrh+v.getRefSeq()+":"+v.getStrainSeq();
+											}else{
+												shrh=shrh+","+v.getRefSeq()+":"+v.getStrainSeq();
+											}
+											shrh=shrh+"</span>";
+											shrhCount++;
+										}
+								   }
+								%>
+                                <%if(bnlxCount>0){
+									bnlx="BNLX:"+bnlx;%>
+                                    <%=bnlx%>
+                                <%}
+								if(bnlxCount>0&&shrhCount>0){%>
+                                <BR />
+                                <%}
+								if(shrhCount>0){
+									shrh="SHRH:"+shrh;%>
+                                    <%=shrh%>
+                                <%}%>
+                                </TD>
+                                <TD class="leftBorder"></TD>
+                                <TD></TD>
 
+                                
+                                <TD><%=rna.getTotalReads()%><BR /><%=rna.getSeq().size()%></TD>
+                                <TD><span id="<%=rna.getId()%>" class="viewSMNC">View</span></TD>
+                                <TD class="leftBorder"></TD>
+                                
+                                <%for(int j=0;j<tissuesList1.length;j++){%>
+                                   <TD <%if(j==0){%>class="leftBorder"<%}%>></TD>
+                                <%}%>
+                                <%for(int j=0;j<tissuesList1.length;j++){%>
+                                    <TD <%if(j==0){%>class="leftBorder"<%}%>></TD>
+                                <%}%>
+                                <TD class="leftBorder"></TD>
+                                <TD></TD>
+                                <TD></TD>
+                                <%for(int j=0;j<tissuesList2.length;j++){%>
+                                    <TD class="leftBorder"></TD>
+                                    <TD></TD>
+                                <%}%>
+                        </tr>
+                    <%}
+					}%>
 				 </tbody>
               </table>
           <%}else{%>
           	No genes found in this region.  Please expand the region and try again.
           <%}%>
-          
-          </div><!-- end codingList-->
- 			<div id="noncodingList" class="innerTabContent" style="display:none; position:relative;top:40px;left:460px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:solid;width:995px;">
- 			</div> 
-      </div><!-- end inRegion cssTab -->        
 
 </div><!-- end GeneList-->
-
-
-
 <div id="viewTrxDialog" class="trxDialog"></div>
 
 <div id="viewTrxDialogOriginal"  style="display:none;"><div class="waitTrx"  style="text-align:center; position:relative; top:0px; left:0px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Please wait loading transcript data...</div></div>
@@ -724,17 +1002,24 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 		openTranscriptDialog(id,spec,name);
 	});
 	
+	$('.viewSMNC').click( function(event){
+		var id=$(this).attr('id');
+		openSmallNonCoding(id);
+		$('#viewTrxDialog').dialog( "option", "position",{ my: "center bottom", at: "center top", of: $(this) });
+		$('#viewTrxDialog').dialog("open").css({'font-size':12});
+	})
+	
 	var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "650px"
+	"sScrollY": "750px"
 	});
+	
+	
 	
 	$('#mainTab div.modalTabContent:first').show();
 	$('#mainTab ul li a:first').addClass('selected');
-	$('#inRegionTab div.innerTabContent:first').show();
-	$('#inRegionTab ul li a:first').addClass('selected');
 	$('#tblGenes').dataTable().fnAdjustColumnSizing();
 	//tblGenesFixed=new FixedColumns( tblGenes, {
  	//	"iLeftColumns": 1,
@@ -742,19 +1027,19 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
  	//} );
 
 	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
-	$('.singleExon').hide();
+	//$('.singleExon').hide();
 	
 	$('#heritCBX').click( function(){
-			displayColumns(tblGenes, 8,tisLen,$('#heritCBX').is(":checked"));
+			displayColumns(tblGenes, 15,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
-			displayColumns(tblGenes, 8+tisLen,tisLen,$('#dabgCBX').is(":checked"));
+			displayColumns(tblGenes, 15+tisLen,tisLen,$('#dabgCBX').is(":checked"));
 	  });
 	  $('#eqtlAllCBX').click( function(){
-			displayColumns(tblGenes, 8+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+			displayColumns(tblGenes, 15+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
 	  });
 		$('#eqtlCBX').click( function(){
-			displayColumns(tblGenes, 8+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+			displayColumns(tblGenes, 15+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
 	  });
 	  
 	   $('#geneIDCBX').click( function(){
@@ -764,8 +1049,15 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 			displayColumns($(tblGenes).dataTable(),2,1,$('#geneDescCBX').is(":checked"));
 	  });
 	  
+	  $('#geneBioTypeCBX').click( function(){
+			displayColumns($(tblGenes).dataTable(),3,1,$('#geneBioTypeCBX').is(":checked"));
+	  });
+	  $('#geneTracksCBX').click( function(){
+			displayColumns($(tblGenes).dataTable(),4,4,$('#geneTracksCBX').is(":checked"));
+	  });
+	  
 	  $('#geneLocCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),3,2,$('#geneLocCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),8,2,$('#geneLocCBX').is(":checked"));
 	  });
 	  
 	  $('#pvalueCutoffSelect1').change( function(){
@@ -783,20 +1075,35 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 		}
  	 });
 	 
-	 $("span[name='geneListFilter']").click(function(){
+	 $("input[name='trackcbx']").change( function(){
+
+	 		var type=$(this).val();
+			updateTrackString();
+			updateUCSCImage();
+			if(type=="coding" || type=="noncoding" || type=="smallnc"){
+				if($(this).is(":checked")){
+					$('tr.'+type).show();
+				}else{
+					$('tr.'+type).hide();
+				}
+				
+			}
+			
+	 });
+	 
+	 $("span.tblTrigger").click(function(){
 		var baseName = $(this).attr("name");
-                var thisHidden = $("tbody#" + baseName).is(":hidden");
+                var thisHidden = $("div#" + baseName).is(":hidden");
                 $(this).toggleClass("less");
-				$('span[name='+baseName+']').toggleClass("less");
                 if (thisHidden) {
-					$("tbody#" + baseName).show();
+			$("div#" + baseName).show();
                 } else {
-					$("tbody#" + baseName).hide();
+			$("div#" + baseName).hide();
                 }
 	});
+	
+	
 	 
-	// setupExpandCollapseTable();
-	//setupExpandCollapse();
 </script>
 
 
@@ -805,8 +1112,8 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 	
 	<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
-                        <TH style="width:50%"><span class="trigger" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
+                    	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
+                        <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
                         <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999;top:23px; left:-3px;"><img id="Help6" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
@@ -1013,8 +1320,8 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
         
 		<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:65%;"><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List and Circos Plot</span></TH>
-                        <TH><span class="trigger" name="fromListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
+                    	<TH style="width:65%;"><span class="trigger" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">Filter List and Circos Plot</span></TH>
+                        <TH><span class="trigger" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">View Columns</span></TH>
                         <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:100;top:23px; left:-3px;"><img id="Help9" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="fromListFilter" style="display:none;">
@@ -1428,9 +1735,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 									%>
                                         
                                         <%if(regEQTL==null){%>
-
 											<TD class="leftBorder">>0.3</TD>
-
 										<%}else if(regEQTL.getPVal()<0.0001){%>
                                         	<TD class="leftBorder" style="background-color:#6e99bc; color:#FFFFFF;">
                                         	< 0.0001
@@ -1446,7 +1751,6 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
                                         <TD title="Click on View Location Plot to see all locations below the cutoff.">
                                         	<%=qtlCount%>
                                         </TD>
-                                    
                                 <%}%>
                             
                         </TR>
@@ -1463,13 +1767,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
      	<strong><%=session.getAttribute("getTransControllingEQTL")%></strong>
      <%}%>
 </div><!-- end eQTL List-->
-
-
-</div><!-- end mainTab cssTab -->
-       
-
-
-
+</div><!--end MainTab-->
 </div><!-- ends page div -->
 
 
@@ -1808,6 +2106,7 @@ $(document).ready(function() {
 	var tblBQTLAdjust=false;
 	var tblFromAdjust=false;
 	
+	
 	/*var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
@@ -2020,27 +2319,19 @@ $(document).ready(function() {
 	
 	
 	//setupExpandCollapseTable();
-	$("span[name='bqtlListFilter']").click(function(){
+	/*$("span[name='bqtlListFilter']").click(function(){
 		var baseName = $(this).attr("name");
-                var thisHidden = $("tbody#" + baseName).is(":hidden");
-                $(this).toggleClass("less");
-				$('span[name='+baseName+']').toggleClass("less");
-                if (thisHidden) {
-					$("tbody#" + baseName).show();
-                } else {
-					$("tbody#" + baseName).hide();
-                }
+        expandCollapse(baseName);
 	});
 	$("span[name='fromListFilter']").click(function(){
 		var baseName = $(this).attr("name");
-                var thisHidden = $("tbody#" + baseName).is(":hidden");
-                $(this).toggleClass("less");
-				$('span[name='+baseName+']').toggleClass("less");
-                if (thisHidden) {
-					$("tbody#" + baseName).show();
-                } else {
-					$("tbody#" + baseName).hide();
-                }
+        expandCollapse(baseName);
+	});*/
+	
+	$(".trigger").click(function(){
+		var baseName = $(this).attr("name");
+		$(this).toggleClass("less");
+        expandCollapse(baseName);      
 	});
 	
 	setupExpandCollapse();
@@ -2072,21 +2363,21 @@ $(document).ready(function() {
 				//adjust row and column widths if needed(only needs to be done once)
 				if(currentTab == "#geneList"){
 					//tblGenes.fnAdjustColumnSizing();
-					if(innerTabInd==0){
-						$('#noncodingList').hide();
-						$('#codingList').show();
-						$('#inRegionTab ul li a:first').addClass('selected');
-					}else{
-						$('#codingList').hide();
-						$('#noncodingList').show();
-						$('#inRegionTab ul li a:last').addClass('selected');
+					
+					setFilterTableStatus("geneListFilter");
+					
+				}else if(currentTab == "#bQTLList"){
+					if(!tblBQTLAdjust){
+						tblBQTL.fnAdjustColumnSizing();
+						tblBQTLAdjust=true;
 					}
-				}else if(currentTab == "#bQTLList" && !tblBQTLAdjust){
-					tblBQTL.fnAdjustColumnSizing();
-					tblBQTLAdjust=true;
-				}else if(currentTab == "#eQTLListFromRegion" && !tblFromAdjust){
-					tblFrom.fnAdjustColumnSizing();
-					tblFromAdjust=true;
+					setFilterTableStatus("bqtlListFilter");
+				}else if(currentTab == "#eQTLListFromRegion" ){
+					if(!tblFromAdjust){
+						tblFrom.fnAdjustColumnSizing();
+						tblFromAdjust=true;
+					}
+					setFilterTableStatus("fromListFilter");
 					/*tblFromFixed=new FixedColumns( tblFrom, {
 							"iLeftColumns": 1,
 							"iLeftWidth": 100
@@ -2097,7 +2388,7 @@ $(document).ready(function() {
 			return false;
         });
 		
-		$('#inRegionTab ul li a').click(function() {    
+		/*$('#inRegionTab ul li a').click(function() {    
 				
 				//change the tab
 				$('#inRegionTab ul li a').removeClass('selected');
@@ -2109,17 +2400,22 @@ $(document).ready(function() {
 				//adjust row and column widths if needed(only needs to be done once)
 				if(currentTab == "#codingList"){
 					innerTabInd=0;
+					setFilterTableStatus("geneListFilter");
 					//tblGenes.fnAdjustColumnSizing();
 				}else if(currentTab == "#noncodingList"){
 					innerTabInd=1;
-					//tblBQTL.fnAdjustColumnSizing();
-					//tblBQTLAdjust=true;
+					
+					setFilterTableStatus("smallnoncodeFilter");
+					if(!tblSMNCAdjust){
+						tblSMNonCoding.fnAdjustColumnSizing();
+						tblSMNCADjust=true;
+					}
 				}
 				$('#geneList').show();
 				$('#geneTabID').addClass('selected');
 			//$('div#changingTabs').hide(10);
 			return false;
-        });
+        });*/
 	
 }); // end ready
 

@@ -1,12 +1,11 @@
 #!/usr/bin/perl
 
-#use lib "/opt/ensembl/src/bioperl-live";
+#use lib "/opt/ensembl/src/bioperl-live";cpan
 #use lib "/opt/ensembl/src/ensembl/modules";
 
 use Bio::EnsEMBL::Registry;
 use XML::LibXML;
 use XML::Simple;
-use data::Dumper;
 #use Carp::Always;
 #use diagnostics;
 

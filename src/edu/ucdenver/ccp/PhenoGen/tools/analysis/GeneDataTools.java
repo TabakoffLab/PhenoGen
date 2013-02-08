@@ -10,6 +10,10 @@ import edu.ucdenver.ccp.PhenoGen.data.Bio.BQTL;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.EQTL;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptCluster;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.SmallNonCodingRNA;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.RNASequence;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.SequenceVariant;
 import edu.ucdenver.ccp.PhenoGen.driver.PerlHandler;
 import edu.ucdenver.ccp.PhenoGen.driver.PerlException;
 import edu.ucdenver.ccp.PhenoGen.driver.ExecHandler;
@@ -69,7 +73,6 @@ public class GeneDataTools {
     private String bedDir="";
     private String geneSymbol="";
     private String ucscURL="";
-    private String ucscURLfilter="";
     private String deMeanURL="";
     private String deFoldDiffURL="";
     private String chrom="";
@@ -84,7 +87,6 @@ public class GeneDataTools {
     
     private String  returnGenURL="";
     private String  returnUCSCURL= "";
-    private String  returnUCSCURLFiltered= "";
     private String  returnOutputDir="";
     private String returnGeneSymbol="";
     
@@ -362,7 +364,8 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            getUCSCUrls("Region");
+                            String[] results=this.createRegionImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
@@ -379,7 +382,8 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            getUCSCUrls("Region");
+                            String[] results=this.createRegionImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
@@ -603,13 +607,19 @@ public class GeneDataTools {
         
         boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,arrayTypeID,RNADatasetID);
         
+        
         if(!createdXML){ 
             
-        }else{       
-            boolean ucscComplete=getUCSCUrls("Region");
-            if(!ucscComplete){
-                   completedSuccessfully=false;
+        }else{
+            String[] url=this.createRegionImage("default",organism,outputDir,chrom,minCoord,maxCoord);
+            if(url!=null){
+                
+                completedSuccessfully=true;
             }
+            getUCSCUrl(url[1].replaceFirst(".png",".url"));
+            //if(!ucscComplete){
+            //       completedSuccessfully=false;
+            //}
         }
         return completedSuccessfully;
     }
@@ -761,6 +771,9 @@ public class GeneDataTools {
 
             for (int i = 0; i < envVar.length; i++) {
                 log.debug(i + " EnvVar::" + envVar[i]);
+                if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }
             }
 
 
@@ -878,6 +891,9 @@ public class GeneDataTools {
 
             for (int i = 0; i < envVar.length; i++) {
                 log.debug(i + " EnvVar::" + envVar[i]);
+                if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }
             }
 
 
@@ -939,6 +955,176 @@ public class GeneDataTools {
         return completedSuccessfully;
     }
     
+    public String[] getUCSCRegionImage(String csvTrackList,String organism,String chr,int min, int max){
+        RegionDirFilter rdf=new RegionDirFilter(organism+ chr+"_"+min+"_"+max+"_");
+        File mainDir=new File(fullPath + "tmpData/regionData");
+        File[] list=mainDir.listFiles(rdf);
+        String[] ret=new String[2];
+        if(list.length>0){
+            String tmpoutputDir=list[0].getAbsolutePath()+"/";
+            int second=tmpoutputDir.lastIndexOf("/",tmpoutputDir.length()-2);
+            //String folderName=tmpoutputDir.substring(second+1,tmpoutputDir.length()-1);
+            String[] tmp=this.createRegionImage(csvTrackList, organism, tmpoutputDir, chr, min, max);
+            ret[0]=tmp[1].substring(tmp[1].indexOf("tmpData/regionData"));
+            ret[1]=tmp[2];       
+        }
+        return ret;
+    }
+    
+    public String[] createRegionImage(String csvTrackList,String organism,String outputDir,String chrom,int minCoord,int maxCoord){
+        String[] ret=new String[3];
+        ret[0]="";//generic filename
+        ret[1]="";//image path
+        ret[2]="";//url
+         log.debug("Image outputDir:"+outputDir+"\n"+csvTrackList);       
+        String[] list=csvTrackList.split(",");
+        String url=null;
+        int lblWidth=12;
+        if(list.length>0&&list[0].equals("default")){
+            list=new String[3];
+            list[0]="coding";
+            list[1]="noncoding";
+            list[2]="smallnc";
+            //list[3]="snp";
+            //list[4]="qtl";
+            
+        }
+        String tmpPath=outputDir.substring(0,outputDir.lastIndexOf("_",outputDir.lastIndexOf("_")-1));
+        tmpPath=tmpPath.substring(tmpPath.lastIndexOf("/"));
+        String fileName=this.ucscDir+this.ucscGeneDir+tmpPath;
+        String pngFileName="ucsc";
+        for(int i=0;i<list.length;i++){
+            //if(!list[i].equals("refseq")){
+                String tmp=list[i];
+                fileName=fileName+"."+tmp;
+                pngFileName=pngFileName+"."+tmp;
+                if(list[i].contains("qtl")){
+                    lblWidth=35;
+                }
+            //}
+        }
+        String genericFileName=fileName;
+        ret[0]=genericFileName;
+        fileName=fileName+".track";
+        pngFileName=pngFileName+".png";
+        String urlFile=pngFileName.replace(".png",".url");
+        log.debug("Image Files\n"+fileName+"\n"+outputDir+tmpPath+".png\n");
+        
+        File trackFile=new File(fileName);
+        File pngFile=new File(outputDir+pngFileName);
+        ret[1]=outputDir+pngFileName;
+        if(pngFile.exists()&&trackFile.exists()){
+            
+        }else{
+            if(chrom.startsWith("chr")){
+                    chrom=chrom.substring(3);
+            }
+            BufferedWriter out;
+            BufferedReader in;
+            try{
+                out = new BufferedWriter(new FileWriter(trackFile));
+                out.write("browser position chr"+chrom+":"+minCoord+"-"+maxCoord+"\n");
+                out.write("browser hide all\n");
+                for(int i=0;i<list.length;i++){
+                    File curTrack=new File(outputDir+list[i]+".track");
+                    if(curTrack.exists()){
+                        in= new BufferedReader(new FileReader(curTrack));
+                        while(in.ready()){
+                            String line=in.readLine();
+                            if(line!=null){
+                                out.write(line+"\n");
+                            }
+                        }
+                        in.close();
+                    }else{
+                        if(list[i].equals("refseq")){
+                            out.write("browser pack refGene\n");
+                        }
+                        if(list[i].equals("helicos")){
+                            out.write("track db=rn5 type=bigWig name=\"Helicos\" description=\"Helicos RNA-Seq Reads\" visibility=1 color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/Helicos_All_Samples_ge2.bw\n");
+                            
+                        }
+                    }
+                }
+                out.flush();
+                out.close();
+                
+                String[] perlArgs = new String[10];
+                perlArgs[0] = "perl";
+                perlArgs[1] = perlDir + "call_createPng.pl";
+                if (organism.equals("Rn")) {
+                    perlArgs[2] = "Rat";
+                } else if (organism.equals("Mm")) {
+                    perlArgs[2] = "Mouse";
+                }
+                
+                perlArgs[3] = chrom;
+                perlArgs[4] = Integer.toString(minCoord);
+                perlArgs[5] = Integer.toString(maxCoord);
+                perlArgs[6] = outputDir+pngFileName;
+                perlArgs[7] = fileName;
+                perlArgs[8] = Integer.toString(lblWidth);
+                perlArgs[9] = outputDir+urlFile;
+
+                //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+                String[] envVar=perlEnvVar.split(",");
+
+                for (int i = 0; i < envVar.length; i++) {
+                    log.debug(i + " EnvVar::" + envVar[i]);
+                    if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                    }
+                }
+
+
+                //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+"png");
+
+                try {
+
+                    myExec_session.runExec();
+
+                } catch (ExecException e) {
+                    log.error("In Exception of run createPng.pl Exec_session", e);
+                    setError("Running Perl Script to get get UCSC image.");
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+","+perlArgs[9]+","+perlArgs[10]+","+perlArgs[11]+
+                            ")\n\n"+myExec_session.getErrors());
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                    }
+                }
+
+                if(myExec_session.getExitValue()!=0){
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
+                            ")\n\n"+myExec_session.getErrors());
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                    }
+                }else{
+                    //this.getUCSCUrl(outputDir+urlFile);
+                }
+            }catch(IOException e){
+                log.error("IO ERROR creating  region PNG",e);
+            }
+            
+        }
+        ret[2]=this.getUCSCUrlwoGlobal(outputDir+urlFile);
+        
+        return ret;
+    }
+    
     
     public boolean createRegionViewImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
         boolean completedSuccessfully=false;
@@ -996,6 +1182,9 @@ public class GeneDataTools {
 
             for (int i = 0; i < envVar.length; i++) {
                 log.debug(i + " EnvVar::" + envVar[i]);
+                if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }
             }
 
 
@@ -1124,6 +1313,45 @@ public class GeneDataTools {
     }
     
     
+    private String getUCSCUrlwoGlobal(String urlFile){
+        String ret="error";
+        try{
+                String[] urls=myFH.getFileContents(new File(urlFile));
+                ret=urls[1];
+                ret=ret.replaceFirst("&position=", "&pix='800'&position=");
+        }catch(IOException e){
+                log.error("Error reading url file "+urlFile,e);
+        }
+        return ret;
+    }
+    private boolean getUCSCUrl(String urlFile){
+        boolean error=false;
+        String[] urls;
+        try{
+                urls=myFH.getFileContents(new File(urlFile));
+                this.geneSymbol=urls[0];
+                this.returnGeneSymbol=this.geneSymbol;
+                
+                //session.setAttribute("geneSymbol", this.geneSymbol);
+                this.ucscURL=urls[1];
+                this.ucscURL=this.ucscURL.replaceFirst("&position=", "&pix='800'&position=");
+                int start=urls[1].indexOf("position=")+9;
+                int end=urls[1].indexOf("&",start);
+                String position=urls[1].substring(start,end);
+                String[] split=position.split(":");
+                String chromosome=split[0].substring(3);
+                String[] split2=split[1].split("-");
+                this.minCoord=Integer.parseInt(split2[0]);
+                this.maxCoord=Integer.parseInt(split2[1]);
+                this.chrom=chromosome;
+                log.debug(ucscURL+"\n");
+        }catch(IOException e){
+                log.error("Error reading url file "+urlFile,e);
+                setError("Reading URL File");
+                error=true;
+        }
+        return error;
+    }
     
     private boolean getUCSCUrls(String ensemblID1){
         boolean error=false;
@@ -1135,7 +1363,6 @@ public class GeneDataTools {
                 
                 //session.setAttribute("geneSymbol", this.geneSymbol);
                 this.ucscURL=urls[1];
-                this.ucscURLfilter=urls[2];
                 int start=urls[1].indexOf("position=")+9;
                 int end=urls[1].indexOf("&",start);
                 String position=urls[1].substring(start,end);
@@ -1145,7 +1372,7 @@ public class GeneDataTools {
                 this.minCoord=Integer.parseInt(split2[0]);
                 this.maxCoord=Integer.parseInt(split2[1]);
                 this.chrom=chromosome;
-                log.debug(ucscURL+"\n"+ucscURLfilter);
+                log.debug(ucscURL+"\n");
         }catch(IOException e){
                 log.error("Error reading url file "+outputDir + ensemblID1,e);
                 setError("Reading URL File");
@@ -1210,7 +1437,6 @@ public class GeneDataTools {
         if(!error){
             returnGenURL=urlPrefix + "tmpData/geneData/" + folderName + "/";
             returnUCSCURL= this.ucscURL;
-            returnUCSCURLFiltered= this.ucscURLfilter;
             returnOutputDir=outputDir;
         }else{
             String tmp=returnGenURL;
@@ -1218,7 +1444,6 @@ public class GeneDataTools {
                 returnGenURL="ERROR:Unknown Error";
             }
             returnUCSCURL= "";
-            returnUCSCURLFiltered= "";
             if(folderName!=null && !folderName.equals("")){
                 try{
                     new FileHandler().writeFile(returnGenURL,outputDir+"errMsg.txt");
@@ -1828,6 +2053,9 @@ public class GeneDataTools {
 
                 for (int i = 0; i < envVar.length; i++) {
                     log.debug(i + " EnvVar::" + envVar[i]);
+                    if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                    }
                 }
 
 
@@ -2082,6 +2310,173 @@ public class GeneDataTools {
         return transcriptClusters;
     }
     
+    public ArrayList<SmallNonCodingRNA> getSmallNonCodingRNA(int min,int max,String chr,int rnaDatasetID,String organism){
+        //session.removeAttribute("get");
+        HashMap smncID=new HashMap();
+        ArrayList<SmallNonCodingRNA> smncRNA=new ArrayList<SmallNonCodingRNA>();
+        if(chr.startsWith("chr")){
+            chr=chr.substring(3);
+        }
+        String tmpRegion=chr+":"+min+"-"+max;
+        String curParams="min="+min+",max="+max+",chr="+chr+",org="+organism;
+  
+        boolean run=true;
+        if(this.cacheHM.containsKey(tmpRegion)){
+            HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
+            String testParam=(String)regionHM.get("smallNonCodingParams");
+            if(curParams.equals(testParam)){
+                //log.debug("\nreturning previous-controlling\n");
+                smncRNA=(ArrayList<SmallNonCodingRNA>)regionHM.get("smallNonCoding");
+                run=false;
+            }
+        }
+        if(run){
+            HashMap tmpHM=new HashMap();
+
+            String smncQuery="Select rsn.rna_smnc_id,rsn.feature_start,rsn.feature_stop,rsn.sample_count,rsn.total_reads,rsn.strand,rsn.reference_seq,c.name "+
+                             "from rna_sm_noncoding rsn, chromosomes c "+ 
+                             "where c.chromosome_id=rsn.chromosome_id "+
+                             "and c.name = '"+chr+"' "+
+                             "and rsn.rna_dataset_id="+rnaDatasetID+" "+
+                             "and ((rsn.feature_start>="+min+" and rsn.feature_start<="+max+") OR (rsn.feature_stop>="+min+" and rsn.feature_stop<="+max+") OR (rsn.feature_start<="+min+" and rsn.feature_stop>="+max+")) ";
+
+            String smncSeqQuery="select s.* from rna_smnc_seq s "+
+                                "where s.rna_smnc_id in ("+
+                                "select rsn.rna_smnc_id "+
+                                "from rna_sm_noncoding rsn, chromosomes c "+ 
+                                "where c.chromosome_id=rsn.chromosome_id "+
+                                "and  c.name =  '"+chr+"' "+
+                                "and rsn.rna_dataset_id="+rnaDatasetID+" "+
+                                "and ((rsn.feature_start>="+min+" and rsn.feature_start<="+max+") OR (rsn.feature_stop>="+min+" and rsn.feature_stop<="+max+") OR (rsn.feature_start<="+min+" and rsn.feature_stop>="+max+")) "+
+                                ")";
+                                
+            String smncAnnotQuery="select a.rna_smnc_annot_id,a.rna_smnc_id,a.annotation,s.shrt_name from rna_smnc_annot a,rna_annot_src s "+
+                                "where s.rna_annot_src_id=a.source_id "+
+                                "and a.rna_smnc_id in ("+
+                                "select rsn.rna_smnc_id "+
+                                "from rna_sm_noncoding rsn, chromosomes c "+ 
+                                "where c.chromosome_id=rsn.chromosome_id "+
+                                "and  c.name =  '"+chr+"' "+
+                                "and rsn.rna_dataset_id="+rnaDatasetID+" "+
+                                "and ((rsn.feature_start>="+min+" and rsn.feature_start<="+max+") OR (rsn.feature_stop>="+min+" and rsn.feature_stop<="+max+") OR (rsn.feature_start<="+min+" and rsn.feature_stop>="+max+")) "+
+                                ")";
+           
+           String smncVarQuery="select v.* from rna_smnc_variant v "+
+                                "where v.rna_smnc_id in ("+
+                                "select rsn.rna_smnc_id "+
+                                "from rna_sm_noncoding rsn, chromosomes c "+ 
+                                "where c.chromosome_id=rsn.chromosome_id "+
+                                "and  c.name =  '"+chr+"' "+
+                                "and rsn.rna_dataset_id="+rnaDatasetID+" "+
+                                "and ((rsn.feature_start>="+min+" and rsn.feature_start<="+max+") OR (rsn.feature_stop>="+min+" and rsn.feature_stop<="+max+") OR (rsn.feature_start<="+min+" and rsn.feature_stop>="+max+")) "+
+                                ")";
+
+            try{
+                log.debug("SQL smnc FROM QUERY\n"+smncQuery);
+                PreparedStatement ps = dbConn.prepareStatement(smncQuery);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next()){
+                    int id=rs.getInt(1);
+                    int start=rs.getInt(2);
+                    int stop=rs.getInt(3);
+                    String smplCount=rs.getString(4);
+                    int total=rs.getInt(5);
+                    int strand=rs.getInt(6);
+                    String ref=rs.getString(7);
+                    String chrom=rs.getString(8);
+                    SmallNonCodingRNA tmpSmnc=new SmallNonCodingRNA(id,start,stop,chrom,ref,strand,total);
+                    smncRNA.add(tmpSmnc);
+                    smncID.put(id,tmpSmnc);
+                }
+                ps.close();
+                log.debug("SQL smncSeq FROM QUERY\n"+smncSeqQuery);
+                ps = dbConn.prepareStatement(smncSeqQuery);
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    int id=rs.getInt(1);
+                    int smID=rs.getInt(2);
+                    String seq=rs.getString(3);
+                    int readCount=rs.getInt(4);
+                    int unique=rs.getInt(5);
+                    int offset=rs.getInt(6);
+                    int bnlx=rs.getInt(7);
+                    int shrh=rs.getInt(8);
+                    HashMap match=new HashMap();
+                    match.put("BNLX", bnlx);
+                    match.put("SHRH", shrh);
+                    RNASequence tmpSeq=new RNASequence(id,seq,readCount,unique,offset,match);
+                    if(smncID.containsKey(smID)){
+                        SmallNonCodingRNA tmp=(SmallNonCodingRNA)smncID.get(smID);
+                        tmp.addSequence(tmpSeq);
+                    }
+                }
+                ps.close();
+                log.debug("SQL smncAnnot FROM QUERY\n"+smncAnnotQuery);
+                ps = dbConn.prepareStatement(smncAnnotQuery);
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    int id=rs.getInt(1);
+                    int smID=rs.getInt(2);
+                    String annot=rs.getString(3);
+                    String src=rs.getString(4);
+                    Annotation tmpAnnot=new Annotation(id,src,annot,"smnc");
+                    if(smncID.containsKey(smID)){
+                        log.debug("adding:"+smID);
+                        SmallNonCodingRNA tmp=(SmallNonCodingRNA)smncID.get(smID);
+                        tmp.addAnnotation(tmpAnnot);
+                    }else{
+                        log.debug("ID not found:"+smID);
+                    }
+                }
+                ps.close();
+                ps = dbConn.prepareStatement(smncVarQuery);
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    int id=rs.getInt(1);
+                    int smID=rs.getInt(2);
+                    int start=rs.getInt(3);
+                    int stop=rs.getInt(4);
+                    String refSeq=rs.getString(5);
+                    String strainSeq=rs.getString(6);
+                    String type=rs.getString(7);
+                    String strain=rs.getString(8);
+                    SequenceVariant tmpVar=new SequenceVariant(id,start,stop,refSeq,strainSeq,type,strain);
+                    if(smncID.containsKey(smID)){
+                        SmallNonCodingRNA tmp=(SmallNonCodingRNA)smncID.get(smID);
+                        tmp.addVariant(tmpVar);
+                    }
+                }
+                ps.close();
+                if(cacheHM.containsKey(tmpRegion)){
+                    HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
+                    regionHM.put("smallNonCodingParams",curParams); 
+                    regionHM.put("smallNonCoding",smncRNA);
+                }else{
+                    HashMap regionHM=new HashMap();
+                    regionHM.put("smallNonCodingParams",curParams); 
+                    regionHM.put("smallNonCoding",smncRNA);       
+                    cacheHM.put(tmpRegion,regionHM);
+                    this.cacheList.add(tmpRegion);
+                }
+                
+            
+            }catch(SQLException e){
+                log.error("Error retreiving SMNCs.",e);
+                //session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
+                e.printStackTrace(System.err);
+                Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in GeneDataTools.getSmallNonCodingRNA");
+                    myAdminEmail.setContent("There was an error while running getSmallNonCodingRNA.\n",e);
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                    }
+            }
+        }
+        return smncRNA;
+    }
+    
     public ArrayList<String> getEQTLRegions(){
         ArrayList<String> ret=new ArrayList<String>();
         Set tmp=this.eQTLRegions.keySet();
@@ -2207,7 +2602,7 @@ public class GeneDataTools {
         
         try{ 
         try{
-            log.debug("SQL eQTL FROM QUERY\n"+query);
+            //log.debug("SQL eQTL FROM QUERY\n"+query);
             PreparedStatement ps = dbConn.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
@@ -2304,9 +2699,7 @@ public class GeneDataTools {
         return returnUCSCURL;
     }
 
-    public String getUCSCURLFiltered() {
-        return returnUCSCURLFiltered;
-    }
+    
 
     public String getOutputDir() {
         return returnOutputDir;

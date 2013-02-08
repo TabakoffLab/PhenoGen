@@ -24,7 +24,6 @@ if(request.getParameter("gene")!=null){
 	
 
 	ArrayList<String> ucscURL=new ArrayList<String>();
-	ArrayList<String> ucscURLFiltered=new ArrayList<String>();
 	ArrayList<String> genURL=new ArrayList<String>();
 	ArrayList<String> geneSymbol=new ArrayList<String>();
 	ArrayList<String> firstEnsemblID=new ArrayList<String>();
@@ -84,7 +83,7 @@ if(request.getParameter("gene")!=null){
 					String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 					String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
 					String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
-					String tmpUcscURLFiltered =gdt.getUCSCURLFiltered();//(String)session.getAttribute("ucscURLFiltered");
+					
 					if(tmpURL!=null){
 						genURL.add(tmpURL);
 						if(tmpGeneSymbol==null){
@@ -96,11 +95,6 @@ if(request.getParameter("gene")!=null){
 							ucscURL.add("");
 						}else{
 							ucscURL.add(tmpUcscURL);
-						}
-						if(tmpUcscURLFiltered==null){
-							ucscURLFiltered.add("");
-						}else{
-							ucscURLFiltered.add(tmpUcscURLFiltered);
 						}
 					}
 				}else{
