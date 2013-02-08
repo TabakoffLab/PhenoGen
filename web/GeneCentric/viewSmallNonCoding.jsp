@@ -97,11 +97,11 @@
                 <TD><%=s.getSequence()%></TD>
                 <TD><%=s.getReadCount()%></TD>
                 <TD><%if(s.getUniqueAlignment()<=10){%>
-						<%s.getUniqueAlignment()%>
-					}else{
+						<%=s.getUniqueAlignment()%>
+					<%}else{%>
                     	>10
-					}
-					%></TD>
+					<%}%>
+                </TD>
                 <TD>
                 	<%if(s.getStrainMatch("BNLX")){%>
                     	X
