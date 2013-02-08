@@ -253,34 +253,13 @@ sub createTrackFileRegion{
 						# find out if this exon is already in exonHOH
 						my $relStart=$currentExonStart-$trstart;
 						
-						my $tmpLen=$currentExonStop-$currentExonStart;
+						my $tmpLen=$currentExonStop-$currentExonStart+1;
 						if($tmpLens eq ""){
 							$tmpLens="".$tmpLen;
 							$tmpStarts="".$relStart;
 						}else{
 							$tmpLens=$tmpLens.",".$tmpLen;
 							$tmpStarts=$tmpStarts.",".$relStart;
-						}
-						
-						my $alreadyIncluded = 0;
-						for(my $cnt=0; $cnt < $cntHOHExons; $cnt++){
-							if($exonHOH[$cnt]{start} == $currentExonStart && $exonHOH[$cnt]{stop} == $currentExonStop ){
-								$alreadyIncluded = 1;
-							}
-						}	
-						
-						#print 	$GeneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ID}." include $alreadyIncluded\n";
-						if($alreadyIncluded == 0){
-							# Add this exon to the exonHOH
-							$exonHOH[$cntHOHExons]{ID} = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ID};
-							$exonHOH[$cntHOHExons]{start} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{start};
-							$exonHOH[$cntHOHExons]{stop} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{stop};
-							$exonHOH[$cntHOHExons]{coding_start} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{coding_start};
-							$exonHOH[$cntHOHExons]{coding_stop} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{coding_stop};
-							$exonHOH[$cntHOHExons]{strand} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{strand};
-							$exonHOH[$cntHOHExons]{chromosome} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{chromosome};
-							$exonHOH[$cntHOHExons]{alternateID2} =$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{alternateID2};
-							$cntHOHExons++;
 						}
 						$cntExons++;
 					}
@@ -340,11 +319,12 @@ sub createTrackFileRegionView{
 	
 
 	# Read inputs
-	my($GeneHOHRef,  $twoTrackOutputFileName, $species,$includeProbes,$filterProbes, $chr, $minCoord, $maxCoord,$tissueProbesRef,$nonMaskedProbesRef) = @_; 
+	my($GeneHOHRef,  $twoTrackOutputFileName, $species,$includeProbes,$filterProbes, $includeSnps, $chr, $minCoord, $maxCoord,$tissueProbesRef,$nonMaskedProbesRef,$snpRef) = @_; 
 	# Dereference the hash and array
 	my %GeneHOH = %$GeneHOHRef;
 	my $geneListRef=$GeneHOH{Gene};
 	my %tissueProbes=%$tissueProbesRef;
+	
 	my @nonMaskedProbes=@$nonMaskedProbesRef;
 	
 	my @geneList=();
@@ -352,6 +332,15 @@ sub createTrackFileRegionView{
 		@geneList=@$geneListRef;
 	}or do{
 		@geneList=();
+	};
+	
+	my %snpHOH = %$snpRef;
+	my $snpListRef=$snpHOH{Snp};
+	my @snpList=();
+	eval{
+		@snpList=@$snpListRef;
+	}or do{
+		@snpList=();
 	};
 	
 	my $trackDB="mm9";
@@ -489,7 +478,7 @@ sub createTrackFileRegionView{
 					if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
 						$fulltrname=$trname;
 					}
-					print TWOFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
+					
 					my $tmpLens="";
 					my $tmpStarts="";
 					foreach(@exonArray){
@@ -499,6 +488,12 @@ sub createTrackFileRegionView{
 						my $relStart=$currentExonStart-$trstart;
 						
 						my $tmpLen=$currentExonStop-$currentExonStart;
+						if($tmpLen==0){
+							$tmpLen=1;
+						}
+						if(($trstart+$relStart+$tmpLen)>$trstop){
+							$trstop=$trstop+$tmpLen;
+						}
 						if($tmpLens eq ""){
 							$tmpLens="".$tmpLen;
 							$tmpStarts="".$relStart;
@@ -529,12 +524,56 @@ sub createTrackFileRegionView{
 						}
 						$cntExons++;
 					}
+					print TWOFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
 					print TWOFILE "$cntExons\t$tmpLens\t$tmpStarts\n";
 					$cntTranscripts++;
 				}
 				$cntGenes=$cntGenes+1;
 			}
 		}
+	if($includeSnps){	
+		print TWOFILE "track db=$trackDB name='BNLX/SHRH SNPs and Indels' ";
+		print TWOFILE "description='BNLX/SHRH DNA SNPs and Indels  BNLX-Blue SHRH-Red' ";
+		print TWOFILE "visibility=3 itemRgb=On \n";
+		if(@snpList>0){
+			my $cntSnp=0;
+			foreach my $tmpSnp (@snpList){
+				my $chr=$snpHOH{Snp}[$cntSnp]{chromosome};
+				my $strain=$snpHOH{Snp}[$cntSnp]{strain};
+				my $refSeq=$snpHOH{Snp}[$cntSnp]{refSeq};
+				my $strainSeq=$snpHOH{Snp}[$cntSnp]{strainSeq};
+				my $start=$snpHOH{Snp}[$cntSnp]{start};
+				my $stop=$snpHOH{Snp}[$cntSnp]{stop};
+				my $type=$snpHOH{Snp}[$cntSnp]{type};
+				my $name=$strain."_".$refSeq.":".$strainSeq;
+				if(index($strainSeq,",")>0){
+					$name=$strain."_".$refSeq.":".substr($strainSeq,0,index($strainSeq,","));
+				}
+				my $color="0,0,0";
+				if($type eq "SNP"){
+					if($strain eq "BNLX"){
+						$color="0,0,255";
+					}elsif($strain eq "SHRH"){
+						$color="255,0,0";
+					}else{
+						$color="50,50,50";
+					}
+				}else{
+					if($strain eq "BNLX"){
+						$color="0,0,150";
+					}elsif($strain eq "SHRH"){
+						$color="150,0,0";
+					}else{
+						$color="100,100,100";
+					}
+				}
+				if($strain ne ""){
+					print TWOFILE "chr$chr\t$start\t$stop\t$name\t0\t.\t$start\t$stop\t$color\n";
+				}
+				$cntSnp++;
+			}
+		}
+	}
 	close TWOFILE;
 	
 	

@@ -33,7 +33,8 @@ function hideWorking(){
                 <select name="gvSelect" id="gvSelect">
                 	<option value="giProbe" selected="selected">with Probesets</option>
                     <option value="gifiltered" >with Probesets Detected Above Background(DABG) in >1% samples</option>
-                    <option value="giNoProbe" >without Probesets</option>
+                    <option value="snps" >with SNPs and Indels</option>
+                    <option value="giNoProbe" >without Probesets or SNPs</option>
                 </select>
         <div class="geneimage" >
             <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png"  /></div>
@@ -41,22 +42,27 @@ function hideWorking(){
             <div id="giProbe" class="ucscImage2" style="display:inline-block;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.png"%>"/></a></div>
          <%}else{%>
          <%}%>
-      	<%if(ucscURLFiltered.size()>0){%>
-            <div id="giNoProbe"  class="ucscImage2" style="display:none;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURLFiltered.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.noProbe.png"%>"/></a></div>
-        <%}else{%>
-        	
-        <%}%>
+      	<%if(ucscURL.size()>0){%>
+            <%
+				String ucscURL_noProbe=ucscURL.get(0).replace(".trx",".trx.noProbe");
+			%>
+            <div id="giNoProbe"  class="ucscImage2" style="display:none;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURL_noProbe%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.noProbe.png"%>"/></a></div>
+            <%}%>
         <%if(ucscURL.size()>0){%>
             <%
 				String ucscURL_filterProbe=ucscURL.get(0).replace(".trx",".trx.filterProbe");
 			%>
             <div id="gifiltered" class="ucscImage2"  style="display:none;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURL_filterProbe%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.probeFilter.png"%>"/></a></div>
             <%}%>
-    
+    	<%if(ucscURL.size()>0){%>
+            <%
+				String ucscURL_snp=ucscURL.get(0).replace(".trx",".trx.snp");
+			%>
+            <div id="snps" class="ucscImage2"  style="display:none;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURL_snp%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.snp.png"%>"/></a></div>
+            <%}%>
         </div><!-- end geneimage div -->
     
           </div><!--end Border Div -->
-          <div>For more detailed transcript information including sequence please click on the Gene Symbol in the table to open the Detailed Gene View and select the RNA-Seq Tab.</div>
          </span><!-- ends center span -->
 
 

@@ -5,6 +5,7 @@ use strict;
 my $m = WWW::Mechanize->new();
 
 
+
 sub createPng{
 
 
@@ -213,9 +214,4 @@ sub createPngRNA{
 	return $retString;
 }
 
-return 1;
-
-
-
-
-
+1;

@@ -110,7 +110,7 @@ sub readRNAIsoformDataFromDB{
 	else{
 		die "Something is wrong with the RNA Isoform query \nChromosome#:$geneChrom\n";
 	}
-	#print $query."\n";
+	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
 
 # EXECUTE THE QUERY
@@ -150,11 +150,16 @@ sub readRNAIsoformDataFromDB{
 	
 	while($query_handle->fetch()) {
 		if($gene_id eq $previousGeneName){
-			if($isoform_id==$previousTranscript){
+			print "\nchecking:$isoform_id\t:$previousTranscript:\n";
+			if($isoform_id eq $previousTranscript){
 				#print "adding exon $enumber\n";
 				$$exonArray[$cntExon]{ID}=$enumber;
 				$$exonArray[$cntExon]{start}=$estart;
-				$$exonArray[$cntExon]{stop}=$estop;
+				#if($estart==$estop){
+				#	$$exonArray[$cntExon]{stop}=$estop+1;
+				#}else{
+					$$exonArray[$cntExon]{stop}=$estop;
+				#}
 				my $intStart=$$exonArray[$cntExon-1]{stop}+1;
 				my $intStop=$$exonArray[$cntExon]{start}-1;
 				if($$exonArray[$cntExon]{start}>$$exonArray[$cntExon]{stop}){

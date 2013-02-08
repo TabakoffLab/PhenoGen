@@ -44,6 +44,44 @@ table.list_base tr.col_title th {
 
 }
 
+table.list_base tr.coding.odd td{
+	background:#2A75A9;
+} 
+table.list_base tr.coding.ensembl.odd td{
+	background:#8F6048;
+}
+table.list_base tr.coding td a,table.list_base tr.noncoding td a,table.list_base tr.smallnc td a{
+	color:#FFFFFF;
+	text-decoration:underline;
+}
+table.list_base tr.coding.even td{
+	background:#2F7BAF;
+} 
+table.list_base tr.coding.ensembl.even td{
+	background:#996A52;
+}
+
+table.list_base tr.noncoding.ensembl.odd td{
+	background:#DFC184;
+}
+table.list_base tr.noncoding.odd td{
+	background:#7EB5D6;
+} 
+table.list_base tr.noncoding.ensembl.even td{
+	background:#E9CB8E;
+}
+table.list_base tr.noncoding.even td{
+	background:#89BFE0;
+}
+
+table.list_base tr.smallnc.odd td{
+	background:	#628B61;
+}
+table.list_base tr.smallnc.even td{
+	background:	#6C946B;
+} 
+
+
 table.list_base th.noSort.topLine {
     border-bottom: 0px;
     border-top: solid 1px #999;

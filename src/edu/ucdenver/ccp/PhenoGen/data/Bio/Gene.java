@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -503,7 +505,7 @@ public class Gene {
                     }
                     Gene tmpG=new Gene(geneID,start,stop,chr,strand,biotype,geneSymbol,source,description);
                     NodeList transcripts=genes.item(i).getChildNodes();
-                    ArrayList<Transcript> tmp=readTranscripts(transcripts.item(1).getChildNodes());
+                    ArrayList<Transcript> tmp=readTranscripts(transcripts.item(1).getChildNodes(),geneID);
                     tmpG.setTranscripts(tmp);
                     genelist.add(tmpG);
                 }
@@ -521,8 +523,12 @@ public class Gene {
         return genelist;
         
     }
-    private static ArrayList<Transcript> readTranscripts(NodeList nodes) {
+    private static ArrayList<Transcript> readTranscripts(NodeList nodes,String geneID) {
         ArrayList<Transcript> transcripts=new ArrayList<Transcript>();
+        String tissue="";
+        if(!geneID.startsWith("ENS")&&geneID.indexOf(".")>-1){
+            tissue=geneID.substring(0,geneID.indexOf("."));
+        }
         for(int i=0;i<nodes.getLength();i++){
             if(nodes.item(i).getNodeName().equals("Transcript")){
                 ArrayList<Exon> exons=null;
@@ -544,8 +550,15 @@ public class Gene {
                 NamedNodeMap nnm=nodes.item(i).getAttributes();
                 long start=Long.parseLong(nnm.getNamedItem("start").getNodeValue());
                 long end=Long.parseLong(nnm.getNamedItem("stop").getNodeValue());
-                
-                Transcript tmptrans=new Transcript(nnm.getNamedItem("ID").getNodeValue(),nnm.getNamedItem("strand").getNodeValue(),start,end);
+                String trID=nnm.getNamedItem("ID").getNodeValue();
+                if(!trID.startsWith("ENS")){
+                    Matcher m=Pattern.compile("_0+").matcher(trID);
+                    if(m.find()){
+                        int startPos=m.end();
+                        trID=tissue+"."+trID.substring(startPos);
+                    }
+                }
+                Transcript tmptrans=new Transcript(trID,nnm.getNamedItem("strand").getNodeValue(),start,end);
                 tmptrans.setExon(exons);
                 tmptrans.setIntron(introns);
                 tmptrans.setAnnotation(annot);

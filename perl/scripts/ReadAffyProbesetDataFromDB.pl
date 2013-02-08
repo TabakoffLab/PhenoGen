@@ -72,7 +72,7 @@ sub readAffyProbesetDataFromDB{
 	# There's got to be a better way to handle the chromosome...
 	if(length($geneChromNumber) == 1){
 		
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.PROBESTART, p.PROBESTOP, p.STRAND, p.PROBESEQUENCE
+		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $heritTablename h on s.probeset_id = h.probeset_id
 		left outer join $probeTablename p on p.probeset_id = s.probeset_id
@@ -84,10 +84,11 @@ sub readAffyProbesetDataFromDB{
 		and s.psannotation <> 'transcript'
 		and s.Array_TYPE_ID = $arrayTypeID
 		and h.dataset_id = $dataSetID
+		and s.updatedlocation='Y'
 		order by s.probeset_id";
 	}
 	elsif(length($geneChromNumber) == 2) {
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.PROBESTART, p.PROBESTOP, p.STRAND, p.PROBESEQUENCE
+		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $heritTablename h on s.probeset_id = h.probeset_id
 		left outer join $probeTablename p on p.probeset_id = s.probeset_id
@@ -99,6 +100,7 @@ sub readAffyProbesetDataFromDB{
 		and s.psannotation <> 'transcript'
 		and s.Array_TYPE_ID = $arrayTypeID
 		and h.dataset_id = $dataSetID
+		and s.updatedlocation='Y'
 		order by s.probeset_id";
 
 	}
@@ -113,7 +115,7 @@ sub readAffyProbesetDataFromDB{
 
 # BIND TABLE COLUMNS TO VARIABLES
 
-	$query_handle->bind_columns(undef ,\$dbname, \$dbchromStart, \$dbchromStop,\$dbstrand, \$dbtype, \$dbsequence, \$dbupdloc, \$dbherit, \$dbdabg, \$dbprobename, \$dbprobeStart, \$dbprobeStop, \$dbprobestrand, \$dbprobesequence);
+	$query_handle->bind_columns(undef ,\$dbname, \$dbchromStart, \$dbchromStop,\$dbstrand, \$dbtype, \$dbsequence, \$dbupdloc, \$dbherit, \$dbdabg, \$dbprobename, \$dbprobestrand, \$dbprobesequence);
 # Loop through results, adding to array of hashes.
 	my $continue=1;
 	my @tmpArr=();
@@ -217,7 +219,7 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dsn,$usr,$passwd,$nonMaskedOnly)=@_;   
+	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dsn,$usr,$passwd)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	print "read probesets chr:$geneChrom\n";
@@ -253,11 +255,9 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
 		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID ";
-		if($nonMaskedOnly==1){
-			$query=$query." and s.updatedlocation='Y' ";
-		}
-		$query=$query." order by s.probeset_id";
+		and s.Array_TYPE_ID = $arrayTypeID 
+		and s.updatedlocation='Y' 
+		order by s.probeset_id";
 	}
 	elsif(length($geneChromNumber) == 2) {
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.PROBESTART, p.PROBESTOP, p.STRAND, p.PROBESEQUENCE
@@ -269,11 +269,9 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
 		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID ";
-		if($nonMaskedOnly==1){
-			$query=$query." and s.updatedlocation='Y' ";
-		}
-		$query=$query." order by s.probeset_id";
+		and s.Array_TYPE_ID = $arrayTypeID 
+		and s.updatedlocation='Y' 
+		order by s.probeset_id";
 
 	}
 	else{
@@ -422,6 +420,7 @@ sub readTissueAffyProbesetDataFromDB{
 		and s.Array_TYPE_ID = $arrayTypeID
 		and rd.rna_dataset_id=$rnaDatasetID
                 and h.dabg>$percCutoff
+		and s.updatedlocation='Y'
 		order by s.probeset_id";
 	}
 	elsif(length($geneChrom) == 2) {
@@ -438,6 +437,7 @@ sub readTissueAffyProbesetDataFromDB{
 		and s.Array_TYPE_ID = $arrayTypeID
 		and rd.rna_dataset_id=$rnaDatasetID
         and h.dabg>$percCutoff
+		and s.updatedlocation='Y'
 		order by s.probeset_id";
 
 	}
@@ -520,6 +520,7 @@ sub readAffyProbesetDataFromDBwoProbes{
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
 		and s.psannotation <> 'transcript'
 		and s.Array_TYPE_ID = $arrayTypeID
+		and s.updatedlocation='Y'
 		order by s.probeset_id";
 	}
 	elsif(length($geneChromNumber) == 2) {
@@ -532,6 +533,7 @@ sub readAffyProbesetDataFromDBwoProbes{
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
 		and s.psannotation <> 'transcript'
 		and s.Array_TYPE_ID = $arrayTypeID
+		and s.updatedlocation='Y'
 		order by s.probeset_id";
 
 	}
@@ -631,6 +633,7 @@ sub readTissueEQTLProbesetDataFromDB{
 		and s.Array_TYPE_ID = $arrayTypeID
 		and rd.rna_dataset_id=$rnaDatasetID
                 and h.dabg>$percCutoff
+		and s.updatedlocation='Y'
 		order by s.probeset_id";
 	}
 	elsif(length($geneChrom) == 2) {
@@ -646,7 +649,8 @@ sub readTissueEQTLProbesetDataFromDB{
 		and s.psannotation <> 'transcript'
 		and s.Array_TYPE_ID = $arrayTypeID
 		and rd.rna_dataset_id=$rnaDatasetID
-        and h.dabg>$percCutoff
+		and h.dabg>$percCutoff
+		and s.updatedlocation='Y'
 		order by s.probeset_id";
 
 	}

@@ -42,7 +42,7 @@ if(displayNoEnsembl){ %>
     
             <div id="geneimageUnfiltered"  style="display:inline-block;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(selectedGene)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/"+selectedEnsemblID+".main.png"%>"/></a></div>
     
-            <div id="geneimageFiltered" style="display:none;"><a class="fancybox fancybox.iframe" href="<%=ucscURLFiltered.get(selectedGene)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/"+selectedEnsemblID+".main.filter.png"%>"/></a></div>
+            <div id="geneimageFiltered" style="display:none;"><a class="fancybox fancybox.iframe" href="" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/"+selectedEnsemblID+".main.filter.png"%>"/></a></div>
     
         </div><!-- end geneimage div -->
     
