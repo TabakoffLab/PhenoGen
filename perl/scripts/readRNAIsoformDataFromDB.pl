@@ -9,7 +9,7 @@ use Data::Dumper qw(Dumper);
 
 use Text::CSV;
 
-require 'ReadAnnotationDataFromDB.pl';
+require 'readAnnotationDataFromDB.pl';
 #use strict; Fix this
 
 sub addChr{
