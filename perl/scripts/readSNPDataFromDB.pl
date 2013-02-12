@@ -92,7 +92,7 @@ sub readSNPDataFromDB{
 	
 	my $cntSnp=0;
 	while($query_handle->fetch()) {
-		print "SETUP\t$id\t$strain\t$start\t$ref_seq\n";
+		#print "SETUP\t$id\t$strain\t$start\t$ref_seq\n";
 		$snpHOH{Snp}[$cntSnp] = {
 					ID => $id,
 					strain => $strain,

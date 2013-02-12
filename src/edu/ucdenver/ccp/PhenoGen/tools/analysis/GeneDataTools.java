@@ -505,14 +505,12 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            getUCSCUrls("RegionView");
+                            String[] results=this.createRegionImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
                             generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
-                            
-                            //error=true;
-                            //this.setError(errors);
                         }
                 }else{
                     if(list.length>0){
@@ -522,14 +520,12 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            getUCSCUrls("RegionView");
+                            String[] results=this.createRegionImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
                             generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
-                            
-                            //error=true;
-                            //this.setError(errors);
                         }
                     }else{
                         generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
@@ -639,11 +635,16 @@ public class GeneDataTools {
         
         if(!createdXML){ 
             
-        }else{       
-            boolean ucscComplete=getUCSCUrls("RegionView");
-            if(!ucscComplete){
-                   completedSuccessfully=false;
+        }else{
+            String[] url=this.createRegionImage("probe,coding,refseq",organism,outputDir,chrom,minCoord,maxCoord);
+            if(url!=null){
+                completedSuccessfully=true;
             }
+            getUCSCUrl(url[1].replaceFirst(".png",".url"));
+            //boolean ucscComplete=getUCSCUrls("RegionView");
+            //if(!ucscComplete){
+            //       completedSuccessfully=false;
+            //}
         }
         return completedSuccessfully;
     }
@@ -970,6 +971,22 @@ public class GeneDataTools {
         }
         return ret;
     }
+    public String[] getUCSCRegionViewImage(String csvTrackList,String organism,String chr,int min, int max){
+        log.debug("RegionView Track List:\n"+csvTrackList+"\n");
+        RegionDirFilter rdf=new RegionDirFilter("trx"+organism+ chr+"_"+min+"_"+max+"_");
+        File mainDir=new File(fullPath + "tmpData/regionData");
+        File[] list=mainDir.listFiles(rdf);
+        String[] ret=new String[2];
+        if(list.length>0){
+            String tmpoutputDir=list[0].getAbsolutePath()+"/";
+            int second=tmpoutputDir.lastIndexOf("/",tmpoutputDir.length()-2);
+            //String folderName=tmpoutputDir.substring(second+1,tmpoutputDir.length()-1);
+            String[] tmp=this.createRegionImage(csvTrackList, organism, tmpoutputDir, chr, min, max);
+            ret[0]=tmp[1].substring(tmp[1].indexOf("tmpData/regionData"));
+            ret[1]=tmp[2];       
+        }
+        return ret;
+    }
     
     public String[] createRegionImage(String csvTrackList,String organism,String outputDir,String chrom,int minCoord,int maxCoord){
         String[] ret=new String[3];
@@ -993,9 +1010,16 @@ public class GeneDataTools {
         tmpPath=tmpPath.substring(tmpPath.lastIndexOf("/"));
         String fileName=this.ucscDir+this.ucscGeneDir+tmpPath;
         String pngFileName="ucsc";
+        HashMap trackVisSelection=new HashMap();
         for(int i=0;i<list.length;i++){
             //if(!list[i].equals("refseq")){
                 String tmp=list[i];
+                if(tmp.indexOf(".")>0){
+                    String[] tmp2;
+                    tmp2 = tmp.split("\\.");
+                    //tmp=tmp2[0]+tmp2[1];
+                    trackVisSelection.put(tmp2[0], tmp2[1]);
+                }
                 fileName=fileName+"."+tmp;
                 pngFileName=pngFileName+"."+tmp;
                 if(list[i].contains("qtl")){
@@ -1026,12 +1050,27 @@ public class GeneDataTools {
                 out.write("browser position chr"+chrom+":"+minCoord+"-"+maxCoord+"\n");
                 out.write("browser hide all\n");
                 for(int i=0;i<list.length;i++){
-                    File curTrack=new File(outputDir+list[i]+".track");
+                    String filePart=list[i];
+                    if(list[i].indexOf(".")>-1){
+                        filePart=list[i].substring(0,list[i].indexOf("."));
+                    }
+                    String changeTrack="";
+                    if(trackVisSelection.containsKey(filePart)){
+                            changeTrack=trackVisSelection.get(filePart).toString();
+                    }
+                    File curTrack=new File(outputDir+filePart+".track");
                     if(curTrack.exists()){
+                        
                         in= new BufferedReader(new FileReader(curTrack));
                         while(in.ready()){
                             String line=in.readLine();
                             if(line!=null){
+                                if(!changeTrack.equals("")&&line.indexOf("visibility=")>-1){
+                                    String tmpLine=line.substring(0, line.indexOf("visibility="));
+                                    tmpLine=tmpLine+" visibility="+changeTrack+" ";
+                                    tmpLine=tmpLine+line.substring(line.indexOf("visibility=")+12);
+                                    line=tmpLine;
+                                }
                                 out.write(line+"\n");
                             }
                         }
@@ -1040,8 +1079,12 @@ public class GeneDataTools {
                         if(list[i].equals("refseq")){
                             out.write("browser pack refGene\n");
                         }
-                        if(list[i].equals("helicos")){
-                            out.write("track db=rn5 type=bigWig name=\"Helicos\" description=\"Helicos RNA-Seq Reads\" visibility=1 color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/Helicos_All_Samples_ge2.bw\n");
+                        if(filePart.equals("helicos")){
+                            String vis="1";
+                            if(!changeTrack.equals("")){
+                                vis=changeTrack;
+                            }
+                            out.write("track db=rn5 type=bigWig name=\"Helicos\" description=\"Helicos RNA-Seq Reads\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/Helicos_All_Samples_ge2.bw\n");
                             
                         }
                     }

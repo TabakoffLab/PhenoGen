@@ -150,7 +150,7 @@ sub readRNAIsoformDataFromDB{
 	
 	while($query_handle->fetch()) {
 		if($gene_id eq $previousGeneName){
-			print "\nchecking:$isoform_id\t:$previousTranscript:\n";
+			#print "\nchecking:$isoform_id\t:$previousTranscript:\n";
 			if($isoform_id eq $previousTranscript){
 				#print "adding exon $enumber\n";
 				$$exonArray[$cntExon]{ID}=$enumber;
@@ -262,7 +262,7 @@ sub readRNAIsoformDataFromDB{
 			}
 			my $bioType="protein_coding";
 			if($trcategory ne "PolyA+"){
-				$bioType="non-protein_coding";
+				$bioType="Long Non-Coding RNA";
 			}
 			#create next gene
 			$geneHOH{Gene}[$cntGene] = {

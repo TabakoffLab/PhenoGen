@@ -12,8 +12,9 @@ use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
-require 'createTrack.pl';
-require 'createPng.pl';
+require 'readSmallNCDataFromDB.pl';
+require 'createBED.pl';
+
 
 
 sub getFeatureInfo
@@ -55,24 +56,24 @@ sub find
 
 # get Image calls createPNG it should increment the timeout time if the first request fails and try again up to 3 times starting with a 30s timeout +30s/failure.
 # it returns the result code allowing the main method to get the result code and url for the last attempt. Either the first successful attempt or last of 3 failed attempts.
-sub getImage{
-    my ($species,$chr,$minCoord,$maxCoord,$outputFileName,$trackFileName)=@_;
-    my $newresultCode=0;
-    my $tryCount=0;
-    my $resultCode="";
-    while($newresultCode!=200 and $tryCount<3){
-	eval{
-	    $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount),850,15,8);
-	    print "RESULT CODE2:$resultCode\n";
-	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-	    1;
-	}or do{
-	    $newresultCode=0;
-	};
-	$tryCount=$tryCount+1;
-    }
-    return $resultCode;
-}
+#sub getImage{
+#    my ($species,$chr,$minCoord,$maxCoord,$outputFileName,$trackFileName)=@_;
+#    my $newresultCode=0;
+#    my $tryCount=0;
+#    my $resultCode="";
+#    while($newresultCode!=200 and $tryCount<3){
+#	eval{
+#	    $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount),850,15,8);
+#	    print "RESULT CODE2:$resultCode\n";
+#	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+#	    1;
+#	}or do{
+#	    $newresultCode=0;
+#	};
+#	$tryCount=$tryCount+1;
+#    }
+#    return $resultCode;
+#}
 
 sub createXMLFile
 {
@@ -425,29 +426,40 @@ sub createXMLFile
 	} # loop through genes
 	close GLFILE;
 	
-		#my $newBedOutputFileName = $pngOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".bed";
-		# convert to big bed file.  Not sure if this is exactly necessary ...
-		#my $bigBedOutputFileName = $bedOutputFileName.$geneNameGlobal."..bb";
-		#my $bigBedOutputFileNameNoPath = $$geneNameGlobal."..bb";
-		my $twoTrackOutputFileName = $ucscDir.$folderName.".trx.tracks";
-		my $noProbeTrackOutputFileName = $ucscDir.$folderName.".trx.noProbe.tracks";
-		my $filterProbeTrackOutputFileName = $ucscDir.$folderName.".trx.filterProbe.tracks";
-		my $snpTrackOutputFileName = $ucscDir.$folderName.".trx.snp.tracks";
-		#my $transTrackOutputFileNameNoArray = $ucscDir.$folderName."_noArray.trans.tracks";
-		#my $twoTrackOutputFileNameHuman = $ucscDir.$folderName."_human.tracks";
-		#my $transTrackOutputFileNameHuman = $ucscDir.$folderName."_human.trans.tracks";
+	my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	my %snpHOH=%$snpRef;
+	
+	my $smncRef=readSmallNoncodingDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	my %smncHOH=%$smncRef;
+	
+		#my $twoTrackOutputFileName = $outputDir.$folderName."/trx.tracks";
+		#my $noProbeTrackOutputFileName = $outputDir.$folderName."/probe.tracks";
+		#my $filterProbeTrackOutputFileName = $outputDir.$folderName."/filterprobe.tracks";
+		#my $snpTrackOutputFileName = $outputDir.$folderName."/snp.tracks";
+		#my $smncTrackOutputFileName = $outputDir.$folderName."/smnc.tracks";
 		
 		my $tissueProbesRef=readTissueAffyProbesetDataFromDB($chr,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,1,$dsn,$usr,$passwd);
 		my %tissueProbes=%$tissueProbesRef;
 		
 		my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 		my %snpHOH=%$snpRef;
+
+		my $trackDB="mm9";
+		if($species eq 'Rat'){
+			$trackDB="rn5";
+		}
 		
+		createSNPTrack(\%snpHOH,$outputDir."snp.track",$trackDB);
+		createProteinCodingTrack(\%GeneHOH,$outputDir."coding.track",$trackDB,1);
+		createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
+		createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
+		createProbesetTrack(\@probesetHOH,$outputDir."probe.track",$trackDB,$chr);
+		createFilteredProbesetTrack(\%tissueProbes,$outputDir."filterprobe.track",$trackDB,$chr);
 		
-		createTrackFileRegionView(\%GeneHOH, $twoTrackOutputFileName,  $species,1,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
-		createTrackFileRegionView(\%GeneHOH, $noProbeTrackOutputFileName,  $species,0,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
-		createTrackFileRegionView(\%GeneHOH, $filterProbeTrackOutputFileName,  $species,1,1,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
-		createTrackFileRegionView(\%GeneHOH, $snpTrackOutputFileName,  $species,0,0,1,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
+		#createTrackFileRegionView(\%GeneHOH, $twoTrackOutputFileName,  $species,1,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
+		#createTrackFileRegionView(\%GeneHOH, $noProbeTrackOutputFileName,  $species,0,0,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
+		#createTrackFileRegionView(\%GeneHOH, $filterProbeTrackOutputFileName,  $species,1,1,0,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
+		#createTrackFileRegionView(\%GeneHOH, $snpTrackOutputFileName,  $species,0,0,1,$chr,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,\%snpHOH);
 		#createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameNoArray,  $species,1,0,0,$chr,$minCoord,$maxCoord);
 		#createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileNameHuman,  $species,0,0,1,$chr,$minCoord,$maxCoord);
 		#createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameHuman,  $species,1,0,1,$chr,$minCoord,$maxCoord);
@@ -464,40 +476,40 @@ sub createXMLFile
 		print XMLFILE $data;
 		close XMLFILE;
 		
+		##
+		## Create the png file for this gene
 		#
-		# Create the png file for this gene
-		
-		my $newPngOutputFileName = $outputDir."region.main.png";
-		my $newNoProbePngOutputFileName = $outputDir."region.main.noProbe.png";
-		my $newFilterProbeOutputFileNameNoArray = $outputDir."region.main.probeFilter.png";
-		my $newSnpOutputFileNameNoArray = $outputDir."region.main.snp.png";
-		#my $newFilterPngOutputFileNameNoArray = $outputDir."region.main.trans.noArray.png";
-		#my $newPngOutputFileNameHuman = $outputDir."region.main.human.png";
-		#my $newFilterPngOutputFileNameHuman = $outputDir."region.main.trans.human.png";
-		my $urlFile=$outputDir."RegionView.url";
-		
-		my $newresultCode=0;
-		my $tryCount=0;
-		open URLFILE, ">".$urlFile;
-		print URLFILE "$chr:$minCoord-$maxCoord\n";
-		my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileName,$twoTrackOutputFileName);
-		my $url=substr($resultCode,index($resultCode,"<>")+2);
-		print "URL:$url\n";
-		print URLFILE "$url\n";
-		
-		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newNoProbePngOutputFileName,$noProbeTrackOutputFileName);
-		$url=substr($resultCode,index($resultCode,"<>")+2);
-		print "URL:$url\n";
-		print URLFILE "$url\n";
-		
-		close URLFILE;
-		
-		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterProbeOutputFileNameNoArray,$filterProbeTrackOutputFileName);
-		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newSnpOutputFileNameNoArray,$snpTrackOutputFileName);
-		#$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray);
-		
-		#$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman);
-		#$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman);
+		#my $newPngOutputFileName = $outputDir."region.main.png";
+		#my $newNoProbePngOutputFileName = $outputDir."region.main.noProbe.png";
+		#my $newFilterProbeOutputFileNameNoArray = $outputDir."region.main.probeFilter.png";
+		#my $newSnpOutputFileNameNoArray = $outputDir."region.main.snp.png";
+		##my $newFilterPngOutputFileNameNoArray = $outputDir."region.main.trans.noArray.png";
+		##my $newPngOutputFileNameHuman = $outputDir."region.main.human.png";
+		##my $newFilterPngOutputFileNameHuman = $outputDir."region.main.trans.human.png";
+		#my $urlFile=$outputDir."RegionView.url";
+		#
+		#my $newresultCode=0;
+		#my $tryCount=0;
+		#open URLFILE, ">".$urlFile;
+		#print URLFILE "$chr:$minCoord-$maxCoord\n";
+		#my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileName,$twoTrackOutputFileName);
+		#my $url=substr($resultCode,index($resultCode,"<>")+2);
+		#print "URL:$url\n";
+		#print URLFILE "$url\n";
+		#
+		#$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newNoProbePngOutputFileName,$noProbeTrackOutputFileName);
+		#$url=substr($resultCode,index($resultCode,"<>")+2);
+		#print "URL:$url\n";
+		#print URLFILE "$url\n";
+		#
+		#close URLFILE;
+		#
+		#$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterProbeOutputFileNameNoArray,$filterProbeTrackOutputFileName);
+		#$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newSnpOutputFileNameNoArray,$snpTrackOutputFileName);
+		##$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray);
+		#
+		##$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman);
+		##$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman);
 		
 }
 #

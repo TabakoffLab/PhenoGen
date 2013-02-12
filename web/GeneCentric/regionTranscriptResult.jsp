@@ -1,4 +1,8 @@
 <script type="text/javascript">
+	var gvtrackString="probe,coding,refseq";
+	var gvminCoord=<%=min%>;
+	var gvmaxCoord=<%=max%>;
+
 /*function displayWorking(){
 	document.getElementById("wait1").style.display = 'block';
 	document.getElementById("inst").style.display= 'none';
@@ -11,6 +15,48 @@ function hideWorking(){
 }*/
 
 
+function gvupdateTrackString(){
+	gvtrackString="";
+	$("input[name='gvtrackcbx']").each( function (){
+		if($(this).is(":checked")){
+			if(gvtrackString==""){
+				gvtrackString=$(this).val();
+			}else{
+				gvtrackString=gvtrackString+","+$(this).val();
+			}
+			if($(this).attr("id")=="gvsnpCBX"){
+				gvtrackString=gvtrackString+"."+$("#gvsnpSelect").val();
+			}else if($(this).attr("id")=="gvhelicosCBX"){
+				gvtrackString=gvtrackString+"."+$("#gvhelicosSelect").val();
+			}
+		}
+		
+	});
+}
+
+function gvupdateUCSCImage(){
+			$.ajax({
+				url: contextPath + "/web/GeneCentric/updateUCSCImage.jsp",
+   				type: 'GET',
+				data: {trackList: gvtrackString,species: organism,chromosome: chr, minCoord: gvminCoord, maxCoord: gvmaxCoord,type:"geneView"},
+				dataType: 'html',
+				beforeSend: function(){
+					$('#gvgeneImage').hide();
+					$('#gvimgLoad').show();
+				},
+				complete: function(){
+					$('#gvimgLoad').hide();
+					$('#gvgeneImage').show();
+				},
+    			success: function(data2){ 
+        			$('#gvgeneImage').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('#gvgeneImage').html("<div>An error occurred generating this image.  Please try back later.</div>");
+    			}
+			});
+}
+
 </script>
 <span style="text-align:center;width:100%;">
 	
@@ -22,55 +68,40 @@ function hideWorking(){
 	DecimalFormat dfC = new DecimalFormat("#,###");
 %>
     
-    <script>
-		var organism="<%=myOrganism%>";
-    </script>
-
     
-    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; width:98%; text-align:center;">
+    <div style="width:100%; text-align:center;">
     	<H2>Transcripts for <%=myGeneID%></H2>
-        <label>View:</label>
-                <select name="gvSelect" id="gvSelect">
-                	<option value="giProbe" selected="selected">with Probesets</option>
-                    <option value="gifiltered" >with Probesets Detected Above Background(DABG) in >1% samples</option>
-                    <option value="snps" >with SNPs and Indels</option>
-                    <option value="giNoProbe" >without Probesets or SNPs</option>
-                </select>
-        <div class="geneimage" >
-            <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png"  /></div>
-    	<%if(ucscURL.size()>0){%>
-            <div id="giProbe" class="ucscImage2" style="display:inline-block;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.png"%>"/></a></div>
-         <%}else{%>
-         <%}%>
-      	<%if(ucscURL.size()>0){%>
-            <%
-				String ucscURL_noProbe=ucscURL.get(0).replace(".trx",".trx.noProbe");
-			%>
-            <div id="giNoProbe"  class="ucscImage2" style="display:none;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURL_noProbe%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.noProbe.png"%>"/></a></div>
-            <%}%>
-        <%if(ucscURL.size()>0){%>
-            <%
-				String ucscURL_filterProbe=ucscURL.get(0).replace(".trx",".trx.filterProbe");
-			%>
-            <div id="gifiltered" class="ucscImage2"  style="display:none;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURL_filterProbe%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.probeFilter.png"%>"/></a></div>
-            <%}%>
-    	<%if(ucscURL.size()>0){%>
-            <%
-				String ucscURL_snp=ucscURL.get(0).replace(".trx",".trx.snp");
-			%>
-            <div id="snps" class="ucscImage2"  style="display:none;"><a class="fancyboxExt fancybox.iframe" href="<%=ucscURL_snp%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/region.main.snp.png"%>"/></a></div>
-            <%}%>
-        </div><!-- end geneimage div -->
+        <div id="gvimgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
+        <div id="gvgeneImage" class="gvucscImage"  style="display:inline-block;">
+            	<a class="fancyboxExt fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
+            	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.probe.coding.refseq.png"%>"/></a>
+            </div>
+        <div class="gvgeneimageControl">
+            Image Tracks:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
+            <input name="gvtrackcbx" type="checkbox" id="gvprobeCBX" value="probe" checked="checked" /> All Non-Masked Probesets
+            <input name="gvtrackcbx" type="checkbox" id="gvfilterprobeCBX" value="filterprobe"  />Probsets Detected Above Background >1% of samples
+            <input name="gvtrackcbx" type="checkbox" id="gvcodingCBX" value="coding" checked="checked" /> Protein Coding/PolyA+<BR />
+            <input name="gvtrackcbx" type="checkbox" id="gvnoncodingCBX" value="noncoding" />Long Non-Coding/NonPolyA+ 
+            <input name="gvtrackcbx" type="checkbox" id="gvsmallncCBX" value="smallnc"  /> Small RNA 
+           	<input name="gvtrackcbx" type="checkbox" id="gvsnpCBX" value="snp" /> SNPs/Indels:
+             <select name="gvtrackSelect" id="gvsnpSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="3" >Pack</option>
+            </select>
+            <input name="gvtrackcbx" type="checkbox" id="gvhelicosCBX" value="helicos" /> Helicos Data:
+            <select name="gvtrackSelect" id="gvhelicosSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="2" >full</option>
+            </select>
+            <input name="gvtrackcbx" type="checkbox" id="gvrefseqCBX" value="refseq" checked="checked"/> RefSeq Transcripts
+          </div><!--end imageControl div -->
     
           </div><!--end Border Div -->
          </span><!-- ends center span -->
 
 
 <script type="text/javascript">
-	$(".waitTrx").hide();
-	
-	$('.ucscImage2').hide();
-	$('#giProbe').show();
+	$(".waitTrx").hide();	
 	//Setup Fancy box for UCSC link
 	$('.fancyboxExt').fancybox({
 		width:$(document).width(),
@@ -82,12 +113,23 @@ function hideWorking(){
 		}
   });
   
+  $("input[name='gvtrackcbx']").change( function(){
+			gvupdateTrackString();
+			gvupdateUCSCImage();
+			
+	 });
+	 
+	 $("select[name='gvtrackSelect']").change( function(){
+	 	var id=$(this).attr("id");
+		var cbx=id.replace("Select","CBX");
+		if($("#"+cbx).is(":checked")){
+			gvupdateTrackString();
+			gvupdateUCSCImage();
+		}
+	 });
   
-  $('#gvSelect').change(function(){
-  		$('.ucscImage2').hide();
-		var transVal=$(this).val();
-		$('#'+transVal).show();
-  });
+  
+ 
 </script>
 
 

@@ -115,7 +115,13 @@ function updateTrackString(){
 			}else{
 				trackString=trackString+","+$(this).val();
 			}
+			if($(this).attr("id")=="snpCBX"){
+				trackString=trackString+"."+$("#snpSelect").val();
+			}else if($(this).attr("id")=="helicosCBX"){
+				trackString=trackString+"."+$("#helicosSelect").val();
+			}
 		}
+		
 	});
 }
 
@@ -123,8 +129,16 @@ function updateUCSCImage(){
 			$.ajax({
 				url: contextPath + "/web/GeneCentric/updateUCSCImage.jsp",
    				type: 'GET',
-				data: {trackList: trackString,species: organism,chromosome: chr, minCoord: minCoord, maxCoord: maxCoord},
+				data: {trackList: trackString,species: organism,chromosome: chr, minCoord: minCoord, maxCoord: maxCoord,type:"region"},
 				dataType: 'html',
+				beforeSend: function(){
+					$('#geneImage').hide();
+					$('#imgLoad').show();
+				},
+				complete: function(){
+					$('#imgLoad').hide();
+					$('#geneImage').show();
+				},
     			success: function(data2){ 
         			$('#geneImage').html(data2);
     			},
@@ -336,6 +350,7 @@ function updateUCSCImage(){
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; width:98%; text-align:center;">
         
         <div id="collapsableImage" class="geneimage" >
+       		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block;">
             	<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
             	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.coding.noncoding.smallnc.png"%>"/></a>
@@ -346,14 +361,19 @@ function updateUCSCImage(){
           	<form>
             Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
             <input name="trackcbx" type="checkbox" id="codingCBX" value="coding" checked="checked" /> Protein Coding/PolyA+
-            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" /> Non Coding/NonPolyA+
-            <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small Non Coding RNA: 
-            <select>
+            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" />Long Non-Coding/NonPolyA+
+            <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA 
+           <BR />
+           	<input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
+             <select name="trackSelect" id="snpSelect">
             	<option value="1" selected="selected">Dense</option>
                 <option value="3" >Pack</option>
-            </select><BR />
-           	<input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels
-            <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos
+            </select>
+            <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
+            <select name="trackSelect" id="helicosSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="2" >full</option>
+            </select>
             <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs
             <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts
               <!--<label style="color:#000000; margin-left:10px;">
@@ -544,8 +564,8 @@ function updateUCSCImage(){
                     <TH width="10%">Gene Description</TH>
                     <TH>BioType</TH>
                     <TH>Protein Coding / PolyA+</TH>
-                    <TH>Non-Coding / Non PolyA+</TH>
-                    <TH>Small Non-Coding RNA</TH>
+                    <TH>Long Non-Coding / Non PolyA+</TH>
+                    <TH>Small RNA</TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
                     <TH>SNPs / Indels</TH>
@@ -1089,6 +1109,16 @@ function updateUCSCImage(){
 				
 			}
 			
+	 });
+	 
+	 $("select[name='trackSelect']").change( function(){
+	 	var id=$(this).attr("id");
+		var cbx=id.replace("Select","CBX");
+		if($("#"+cbx).is(":checked")){
+			alert("checked "+cbx);
+			updateTrackString();
+			updateUCSCImage();
+		}
 	 });
 	 
 	 $("span.tblTrigger").click(function(){

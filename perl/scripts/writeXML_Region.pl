@@ -41,14 +41,14 @@ sub find
     my $lookForGene = shift;
     my $list=shift;
     my $ret=0;
-    print "Find: $lookForGene\n";
+    #print "Find: $lookForGene\n";
     foreach(my $testName, @$list){
-	print "$$testName:$lookForGene ";
+	#print "$$testName:$lookForGene ";
 	if($$testName eq $lookForGene){
-	    print "Found";
+	    #print "Found";
 	    $ret=1;
 	}
-	print "\n";
+	#print "\n";
     }
 
     return $ret;
@@ -171,7 +171,7 @@ sub createXMLFile
 	while(my $tmpgene=shift @{$genes}){
 	    push(@genelist, $tmpgene);
 	    push(@slicelist, $tmpslice);
-	    print "gene list:".@genelist."\n";
+	    #print "gene list:".@genelist."\n";
 	}
 	
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
@@ -183,7 +183,7 @@ sub createXMLFile
 	    #process RNA genes/transcripts and assign probesets.
 	    $tmpGeneArray=$$isoformHOH{Gene};
 	    foreach my $tmpgene ( @$tmpGeneArray){
-		print "gene:".$$tmpgene{ID}."\n";
+		# "gene:".$$tmpgene{ID}."\n";
 		$GeneHOH{Gene}[$cntGenes]=$tmpgene;
 		$cntGenes++;
 		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
@@ -276,7 +276,7 @@ sub createXMLFile
 		my $geneBioType    = $gene->biotype();
 		my $geneExternalName    =$gene->external_name();
 		my $geneDescription      =$gene->description();
-		print "adding:$geneName:$geneExternalName\n";
+		# "adding:$geneName:$geneExternalName\n";
 		
 		push(@addedGeneList,$geneName);
 		$GeneHOH{Gene}[$cntGenes] = {
@@ -293,7 +293,7 @@ sub createXMLFile
 		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
 
 		    #Get the transcripts for this gene
-		    print "getting transcripts for ".$geneExternalName."\n";
+		    #print "getting transcripts for ".$geneExternalName."\n";
 		    my $transcripts = $gene->get_all_Transcripts();
 
 		    $cntTranscripts = 0;
@@ -312,7 +312,7 @@ sub createXMLFile
 			my $cntExons = 0;
 			my $cntIntrons=0;
 			
-			print "getting exons for $transcriptName\n";
+			#print "getting exons for $transcriptName\n";
 			# On to the exons
 			#sort first so introns can be created as we go
 			my @tmpExons= @{ $transcript->get_all_Exons() };
@@ -443,7 +443,7 @@ sub createXMLFile
 	createSNPTrack(\%snpHOH,$outputDir."snp.track",$trackDB);
 	createProteinCodingTrack(\%GeneHOH,$outputDir."coding.track",$trackDB,1);
 	createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
-	createSmallNonCoding(\%smncHOH,$outputDir."smallnc.track",$trackDB,$chr);
+	createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
 
 }
 #

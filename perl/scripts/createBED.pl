@@ -51,7 +51,7 @@ sub createSNPTrack{
 	open OFILE, ">".$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
 	
 	print OFILE "track db=$trackDB name='BNLX/SHRH SNPs and Indels' ";
-	print OFILE "description='BNLX/SHRH DNA SNPs and Indels  BNLX-Blue SHRH-Red' ";
+	print OFILE "description='BNLX/SHRH DNA SNPs and Indels  BNLX-Blue SHRH-Red SNP-Brighter Indel-Darker' ";
 	print OFILE "visibility=3 itemRgb=On \n";
 	if(@snpList>0){
 		my $cntSnp=0;
@@ -63,7 +63,7 @@ sub createSNPTrack{
 			my $start=$snpHOH{Snp}[$cntSnp]{start};
 			my $stop=$snpHOH{Snp}[$cntSnp]{stop};
 			my $type=$snpHOH{Snp}[$cntSnp]{type};
-			my $name=$strain."_".$refSeq.":".$strainSeq;
+			my $name=$refSeq.":".$strainSeq;
 			my $color="0,0,0";
 			if($type eq "SNP"){
 				if($strain eq "BNLX"){
@@ -103,9 +103,9 @@ sub createProteinCodingTrack{
 		@geneList=();
 	};
 	
-	my $trackDesc="Protein Coding / PolyA+(RNA-Seq)";
+	my $trackDesc="Ensembl Protein Coding / RNA-Seq PolyA+";
 	if($proteinCoding==0){
-		$trackDesc="Non-Coding / Non-PolyA+(RNA-Seq)";
+		$trackDesc="Long Ensembl Non-Coding / RNA-Seq Non-PolyA+ (>=350bp)";
 	}
 	
 	open OFILE, ">".$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
@@ -117,8 +117,10 @@ sub createProteinCodingTrack{
 			my $cntGenes=0;
 			foreach my $tmpGene (@geneList){
 				my $biotype=$GeneHOH{Gene}[$cntGenes]{biotype};
-				print "::$biotype::\n";
-				if(($biotype eq "protein_coding" and $proteinCoding==1) or ($biotype ne "protein_coding" and $proteinCoding==0)){
+				my $gLen=$GeneHOH{Gene}[$cntGenes]{stop}-$GeneHOH{Gene}[$cntGenes]{start};
+				$gLen=abs($gLen);
+				#print "::$biotype::\n";
+				if(($biotype eq "protein_coding" and $proteinCoding==1) or ($biotype ne "protein_coding" and $proteinCoding==0 and $gLen>=350)){
 					my $geneID=$GeneHOH{Gene}[$cntGenes]{ID};
 					my $transcriptArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
 					my $chr=$GeneHOH{Gene}[$cntGenes]{chromosome};
@@ -220,8 +222,10 @@ sub createProteinCodingTrack{
 
 
 sub createSmallNonCoding{
-	my($smncHOHRef, $outputFile,$trackDB,$chr) = @_; 
+	my($smncHOHRef,$geneHOHRef, $outputFile,$trackDB,$chr) = @_; 
 	my %smncHOH = %$smncHOHRef;
+	my %geneHOH=%$geneHOHRef;
+	
 	my $smncListRef=$smncHOH{smnc};
 	my @smncList=();
 	eval{
@@ -229,9 +233,18 @@ sub createSmallNonCoding{
 	}or do{
 		@smncList=();
 	};
+	
+	my $geneListRef=$geneHOH{Gene};
+	my @geneList=();
+	eval{
+		@geneList=@$geneListRef;
+	}or do{
+		@geneList=();
+	};
+	
 	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
-	print OFILE "track db=$trackDB name='Small Non-Coding' ";
-	print OFILE 'description="Small Non-Coding Features" ';
+	print OFILE "track db=$trackDB name='Small RNA' ";
+	print OFILE 'description="Small RNA <350bp" ';
 	print OFILE "visibility=3 itemRgb=On \n";
 	if(@smncList>0){
 		my $cntSmnc=0;
@@ -250,7 +263,136 @@ sub createSmallNonCoding{
 			$cntSmnc++;
 		}
 	}
+	if(@geneList>0){
+		my $cntGenes=0;
+		foreach my $tmpGene (@geneList){
+			my $biotype=$geneHOH{Gene}[$cntGenes]{biotype};
+			my $gLen=$geneHOH{Gene}[$cntGenes]{stop}-$geneHOH{Gene}[$cntGenes]{start};
+			$gLen=abs($gLen);
+			if($biotype ne "protein_coding"  and $gLen<350){
+				my $geneID=$geneHOH{Gene}[$cntGenes]{ID};
+				my $transcriptArrayRef = $geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
+				my $strand=$geneHOH{Gene}[$cntGenes]{strand};
+				my @transcriptArray = @$transcriptArrayRef;
+				my @exonHOH;
+				my $cntHOHExons=0;
+				my $convStrand=".";
+				my $cntTranscripts = 0;
+				my $color="0,0,0";
+				if($geneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
+					$color="223,193,132";
+				}else{
+					$color="126,181,214";
+				}
+				foreach(@transcriptArray){
+					my $trstart=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{start};
+					my $trstop=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{stop};
+					my $trstrand=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{strand};
+					if($trstrand==1){
+						$convStrand="+";
+					}elsif($trstrand==-1){
+						$convStrand="-";
+					}
+					my $trname=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{ID};
+					my $genePart=substr($geneID,0,index($geneID,"."));
+					my $fulltrname=$genePart;
+					if($geneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
+						$fulltrname=$trname;
+					}else{
+						my $trPart=substr($trname,index($trname,"_")+1);
+						$trPart =~ s/^\s+//g;
+						$trPart =~ s/^0*//;
+						$fulltrname=$fulltrname.".".$trPart;
+					}
+					print OFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\n";
+					$cntTranscripts++;
+				}
+			}
+			$cntGenes=$cntGenes+1;
+		}
+	}
+	
 	close OFILE;
 	return 1;
 }
+
+sub createFilteredProbesetTrack{
+	my($tissueProbesRef, $outputFile,$trackDB,$chr) = @_; 
+	my %tissueProbes=%$tissueProbesRef;
+	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	
+	my $coreColor="255,0,0";
+	my $fullColor="0,100,0";
+	my $extendedColor="0,0,255";
+	my $cntColor=0;
+	foreach my $key (keys %tissueProbes){
+		print OFILE 'track db='.$trackDB." name=\"Probesets above background in $key\" ";
+		print OFILE "description=\"Affy Exon Probesets detected above background in $key: Red=Core Blue=Extended Green=Full\" ";
+		print OFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
+		my $probeRef=$tissueProbes{$key}{pslist};
+		my @probeset=@$probeRef;
+		my $curInd=0;
+		foreach(@probeset){
+			my $score=round($tissueProbes{$key}{pslist}[$curInd]{dabg}*10);
+			my $color=$fullColor;
+			my $strand=".";
+			if($tissueProbes{$key}{pslist}[$curInd]{strand}==-1){
+				$strand="-";
+			}elsif($tissueProbes{$key}{pslist}[$curInd]{strand}==1){
+				$strand="+";
+			}
+		
+			if($tissueProbes{$key}{pslist}[$curInd]{level} eq 'core'){
+				$color=$coreColor;
+			}elsif($tissueProbes{$key}{pslist}[$curInd]{level} eq 'extended'){
+				$color=$extendedColor;
+			}
+			print OFILE "chr$chr\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$tissueProbes{$key}{pslist}[$curInd]{ID}."\t$score\t$strand\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$color."\n";
+			$curInd++;
+		}
+		$cntColor++;
+	}
+	close OFILE;
+	
+}
+
+sub createProbesetTrack{
+	my($nonMaskedProbesRef, $outputFile,$trackDB,$chr) = @_; 
+	my @nonMaskedProbes=@$nonMaskedProbesRef;
+	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	if($trackDB eq 'rn5'){
+		my $coreColor="255,0,0";
+		my $fullColor="0,100,0";
+		my $extendedColor="0,0,255";
+		my $cntColor=0;
+		print OFILE 'track db='.$trackDB." name=\"All Probesets\" ";
+		print OFILE "description=\"All Probesets: Red=Core Blue=Extended Green=Full\" ";
+		print OFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
+		my $curInd=0;
+		foreach(@nonMaskedProbes){
+			my $strand=".";
+			if($nonMaskedProbes[$curInd]{strand}==-1){
+				$strand="-";
+			}elsif($nonMaskedProbes[$curInd]{strand}==1){
+				$strand="+";
+			}
+			my $color=$fullColor;
+			if($nonMaskedProbes[$curInd]{type} eq 'core'){
+				$color=$coreColor;
+			}elsif($nonMaskedProbes[$curInd]{type} eq 'extended'){
+				$color=$extendedColor;
+			}
+			print OFILE "chr$chr\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
+			$curInd++;
+		}
+		$cntColor++;
+	}else{
+		print OFILE "track db=$trackDB type=bigBed  name='Affy Mouse Probesets' ";
+		print OFILE 'description="Probesets from Affymetrix Exon 1.0 ST Array: Red=Core Green=Full Blue=Extended" ';
+		print OFILE "visibility=3 itemRgb=On bigDataUrl=http://ucsc:JU7etr5t\@phenogen.ucdenver.edu/ucsc/mouseBigBed.bb\n";
+	}
+	close OFILE;
+	
+}
+
 return 1;

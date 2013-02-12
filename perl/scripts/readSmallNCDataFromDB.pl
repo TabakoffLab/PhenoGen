@@ -104,7 +104,7 @@ sub readSmallNoncodingDataFromDB{
 	
 	my $cntSmnc=0;
 	while($query_handle->fetch()) {
-		print "SMNC SETUP\t$id\t$start\t$seq\n";
+		#print "SMNC SETUP\t$id\t$start\t$seq\n";
 		$smncHOH{smnc}[$cntSmnc] = {
 			ID => $id,
 			start => $start,
