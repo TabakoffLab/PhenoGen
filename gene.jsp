@@ -73,7 +73,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	
 	Set iDecoderAnswer;
 	
-	if(( myGene.toLowerCase().startsWith("chr") )&&myGene.indexOf(":")>0){
+	if(( myGene.toLowerCase().startsWith("chr") || myGene.toLowerCase().startsWith("ch") )&&myGene.indexOf(":")>0){
 		log.debug("myGene:"+myGene);
 		region=true;
 		if(myGene.indexOf("-")<0 && myGene.indexOf("+")<0){

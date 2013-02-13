@@ -24,6 +24,9 @@ public class Transcript {
     String strand="",category="";
     long start=0,stop=0,len=0;
     
+    public Transcript(){
+        
+    }
     public Transcript(String ID){
         this(ID,"",0,0);
     }

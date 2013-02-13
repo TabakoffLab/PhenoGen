@@ -19,23 +19,27 @@ import org.apache.log4j.Logger;
  *
  * @author smahaffey
  */
-public class SmallNonCodingRNA {
-    int id=0,start=0,stop=0;
+public class SmallNonCodingRNA extends Transcript{
     String chromosome="",sample_count="",refSeq="";
-    String strand="";
     int totalReads=0;
     ArrayList<RNASequence> seq=new ArrayList<RNASequence>();
     ArrayList<SequenceVariant> variant=new ArrayList<SequenceVariant>();
     HashMap annotHM=new HashMap();
-    ArrayList<Annotation> annotList=new ArrayList<Annotation>();
+    int numID=0;
+    //ArrayList<Annotation> annotList=new ArrayList<Annotation>();
     
     public SmallNonCodingRNA(int id, int start,int stop, String chr,String refSeq,int strand,int totalReads){
+        //this(id,strand,start,stop);
+        //this.chromosome=chr;
+        //this.refSeq=refSeq;
         this(id,start,stop,chr,refSeq,strand);
         this.totalReads=totalReads;
     }
     
-    public SmallNonCodingRNA(int id, int start,int stop, String chr,String refSeq,int strand){
-        this.id=id;
+    public SmallNonCodingRNA(int id, long start,long stop, String chr,String refSeq,int strand){
+        //this(id,strand,start,stop);
+        this.ID="smRNA_"+Integer.toString(id);
+        this.numID=id;
         this.start=start;
         this.stop=stop;
         this.chromosome=chr;
@@ -50,7 +54,7 @@ public class SmallNonCodingRNA {
     }
     
     public SmallNonCodingRNA(int id,Connection conn, Logger log){
-        this.id=id;
+        this.ID=Integer.toString(id);
         String smncQuery="Select rsn.rna_smnc_id,rsn.feature_start,rsn.feature_stop,rsn.sample_count,rsn.total_reads,rsn.strand,rsn.reference_seq,c.name "+
                              "from rna_sm_noncoding rsn, chromosomes c "+ 
                              "where rsn.rna_smnc_id="+id+" "+
@@ -146,28 +150,8 @@ public class SmallNonCodingRNA {
             }
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getStart() {
-        return start;
-    }
-
-    public void setStart(int start) {
-        this.start = start;
-    }
-
-    public int getStop() {
-        return stop;
-    }
-
-    public void setStop(int stop) {
-        this.stop = stop;
+    public int getNumberID(){
+        return this.numID;
     }
 
     public String getChromosome() {
@@ -194,13 +178,7 @@ public class SmallNonCodingRNA {
         this.refSeq = refSeq;
     }
 
-    public String getStrand() {
-        return strand;
-    }
 
-    public void setStrand(String strand) {
-        this.strand = strand;
-    }
 
     public int getTotalReads() {
         return totalReads;
@@ -234,7 +212,7 @@ public class SmallNonCodingRNA {
     }
     
     public void addAnnotation(Annotation annot){
-        this.annotList.add(annot);
+        this.fullAnnotation.add(annot);
         if(this.annotHM.containsKey(annot.getSource())){
             ArrayList<Annotation> tmp=(ArrayList<Annotation>)annotHM.get(annot.getSource());
             tmp.add(annot);
@@ -254,6 +232,6 @@ public class SmallNonCodingRNA {
         return ret;
     }
     public ArrayList<Annotation> getAnnotations(){
-        return this.annotList;
+        return this.fullAnnotation;
     }
 }

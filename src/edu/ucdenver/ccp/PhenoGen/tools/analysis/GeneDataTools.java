@@ -462,7 +462,7 @@ public class GeneDataTools {
 
     public void getRegionGeneView(String chromosome,int minCoord,int maxCoord,
             String panel,
-            String organism,int RNADatasetID,int arrayTypeID) {
+            String organism,int RNADatasetID,int arrayTypeID,String trackDefault) {
         
         chromosome=chromosome.toLowerCase();
         
@@ -483,6 +483,7 @@ public class GeneDataTools {
         this.maxCoord=maxCoord;
         this.chrom=chromosome;
         String inputID=organism+":"+chromosome+":"+minCoord+"-"+maxCoord;
+        
         
         //EnsemblIDList can be a comma separated list break up the list
         boolean error=false;
@@ -505,12 +506,12 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            String[] results=this.createRegionImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            String[] results=this.createRegionImage(trackDefault, organism,outputDir,chrom,minCoord,maxCoord);
                             getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                            generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID,trackDefault);
                         }
                 }else{
                     if(list.length>0){
@@ -520,15 +521,15 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            String[] results=this.createRegionImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            String[] results=this.createRegionImage(trackDefault, organism,outputDir,chrom,minCoord,maxCoord);
                             getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                            generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID,trackDefault);
                         }
                     }else{
-                        generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                        generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID,trackDefault);
                         result="New Region generated successfully";
                     }
                 }
@@ -568,7 +569,7 @@ public class GeneDataTools {
         File outDirF = new File(outputDir);
         //Mkdir if some are missing    
         if (!outDirF.exists()) {
-            log.debug("make output dir");
+            //log.debug("make output dir");
             outDirF.mkdirs();
         }
         
@@ -597,7 +598,7 @@ public class GeneDataTools {
         File outDirF = new File(outputDir);
         //Mkdir if some are missing    
         if (!outDirF.exists()) {
-            log.debug("make output dir");
+            //log.debug("make output dir");
             outDirF.mkdirs();
         }
         
@@ -620,14 +621,14 @@ public class GeneDataTools {
         return completedSuccessfully;
     }
     
-    public boolean generateRegionViewFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID) {
+    public boolean generateRegionViewFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID,String defaultTrack) {
         log.debug("generate files");
         boolean completedSuccessfully = false;
         log.debug("outputDir:"+outputDir);
         File outDirF = new File(outputDir);
         //Mkdir if some are missing    
         if (!outDirF.exists()) {
-            log.debug("make output dir");
+            //log.debug("make output dir");
             outDirF.mkdirs();
         }
         
@@ -636,7 +637,7 @@ public class GeneDataTools {
         if(!createdXML){ 
             
         }else{
-            String[] url=this.createRegionImage("probe,coding,refseq",organism,outputDir,chrom,minCoord,maxCoord);
+            String[] url=this.createRegionImage(defaultTrack,organism,outputDir,chrom,minCoord,maxCoord);
             if(url!=null){
                 completedSuccessfully=true;
             }
@@ -653,7 +654,7 @@ public class GeneDataTools {
    		// 
    	    boolean completedSuccessfully=false;
    	    String circosErrorMessage;
-   		log.debug(" in GeneDataTools.createCircosFiles ");
+   		//log.debug(" in GeneDataTools.createCircosFiles ");
    		// perlScriptArguments is an array of strings
    		// perlScriptArguments[0] is "perl" or maybe includes the path??
    		// perlScriptArguments[1] is the filename including directory of the perl script
@@ -1293,9 +1294,9 @@ public class GeneDataTools {
     public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         AsyncGeneDataTools agdt;         
         agdt = new AsyncGeneDataTools(session,outputDir,chr, min, max,arrayTypeID,rnaDS_ID,usageID);
-        log.debug("Getting ready to start");
+        //log.debug("Getting ready to start");
         agdt.start();
-        log.debug("Started AsyncGeneDataTools");
+        //log.debug("Started AsyncGeneDataTools");
         return agdt;
     }
     
@@ -1315,7 +1316,7 @@ public class GeneDataTools {
             ResultSet rs = ps.executeQuery();
             try{
                 
-                log.debug("Getting ready to start");
+                //log.debug("Getting ready to start");
                 File indivf=new File(outputDir+"Panel_Expr_indiv_tmp.txt");
                 File groupf=new File(outputDir+"Panel_Expr_group_tmp.txt");
                 BufferedWriter outGroup=new BufferedWriter(new FileWriter(groupf));
@@ -1342,7 +1343,7 @@ public class GeneDataTools {
                 }
                 ps.close();
                 
-                log.debug("Started AsyncGeneDataExpr");
+                //log.debug("Started AsyncGeneDataExpr");
             }catch(IOException ioe){
                 
             }
@@ -1387,7 +1388,7 @@ public class GeneDataTools {
                 this.minCoord=Integer.parseInt(split2[0]);
                 this.maxCoord=Integer.parseInt(split2[1]);
                 this.chrom=chromosome;
-                log.debug(ucscURL+"\n");
+                //log.debug(ucscURL+"\n");
         }catch(IOException e){
                 log.error("Error reading url file "+urlFile,e);
                 setError("Reading URL File");
@@ -1415,7 +1416,7 @@ public class GeneDataTools {
                 this.minCoord=Integer.parseInt(split2[0]);
                 this.maxCoord=Integer.parseInt(split2[1]);
                 this.chrom=chromosome;
-                log.debug(ucscURL+"\n");
+                //log.debug(ucscURL+"\n");
         }catch(IOException e){
                 log.error("Error reading url file "+outputDir + ensemblID1,e);
                 setError("Reading URL File");
@@ -1527,36 +1528,36 @@ public class GeneDataTools {
     }
     
     public void setSession(HttpSession inSession) {
-        log.debug("in GeneDataTools.setSession");
+        //log.debug("in GeneDataTools.setSession");
         this.session = inSession;
         
-        log.debug("start");
+        //log.debug("start");
         this.dbConn = (Connection) session.getAttribute("dbConn");
-        log.debug("db");
+        //log.debug("db");
         this.perlDir = (String) session.getAttribute("perlDir") + "scripts/";
-        log.debug("perl"+perlDir);
+        //log.debug("perl"+perlDir);
         String contextRoot = (String) session.getAttribute("contextRoot");
-        log.debug("context"+contextRoot);
+        //log.debug("context"+contextRoot);
         String appRoot = (String) session.getAttribute("applicationRoot");
-        log.debug("app"+appRoot);
+        //log.debug("app"+appRoot);
         this.fullPath = appRoot + contextRoot;
-        log.debug("fullpath");
+        //log.debug("fullpath");
         this.rFunctDir = (String) session.getAttribute("rFunctionDir");
-        log.debug("rFunction");
+        //log.debug("rFunction");
         this.userFilesRoot = (String) session.getAttribute("userFilesRoot");
-        log.debug("userFilesRoot");
+        //log.debug("userFilesRoot");
         this.urlPrefix=(String)session.getAttribute("mainURL");
         if(urlPrefix.endsWith(".jsp")){
             urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
         }
-        log.debug("mainURL");
+        //log.debug("mainURL");
         this.perlEnvVar=(String)session.getAttribute("perlEnvVar");
-        log.debug("PerlEnv");
+        //log.debug("PerlEnv");
         this.ucscDir=(String)session.getAttribute("ucscDir");
         this.ucscGeneDir=(String)session.getAttribute("ucscGeneDir");
-        log.debug("ucsc");
+        //log.debug("ucsc");
         this.bedDir=(String) session.getAttribute("bedDir");
-        log.debug("bedDir");
+        //log.debug("bedDir");
         
         this.dbPropertiesFile = (String)session.getAttribute("dbPropertiesFile");
         this.ensemblDBPropertiesFile = (String)session.getAttribute("ensDbPropertiesFile");
@@ -1654,7 +1655,7 @@ public class GeneDataTools {
                 }
             }
             ps.close();
-            log.debug("HashMap size:"+probesets.size());
+            //log.debug("HashMap size:"+probesets.size());
         }catch(SQLException e){
             log.error("Error retreiving Herit/DABG.",e);
             System.err.println("Error retreiving Herit/DABG.");
@@ -1742,7 +1743,7 @@ public class GeneDataTools {
             }
             ps.close();
             //log.debug("EQTL size:"+eqtls.size());
-            log.debug("Tissue Size:"+tissues.size());
+            //log.debug("Tissue Size:"+tissues.size());
         }catch(SQLException e){
             log.error("Error retreiving EQTLs.",e);
         }
@@ -1822,7 +1823,7 @@ public class GeneDataTools {
                     transcriptClusters.add(curTC);
                 }
                 ps.close();
-                log.debug("Transcript Cluster Size:"+transcriptClusters.size());
+                //log.debug("Transcript Cluster Size:"+transcriptClusters.size());
                 if(cacheHM.containsKey(tmpRegion)){
                     HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
                     regionHM.put("fromRegionParams",curParams);        
@@ -2464,7 +2465,7 @@ public class GeneDataTools {
                     String src=rs.getString(4);
                     Annotation tmpAnnot=new Annotation(id,src,annot,"smnc");
                     if(smncID.containsKey(smID)){
-                        log.debug("adding:"+smID);
+                        //log.debug("adding:"+smID);
                         SmallNonCodingRNA tmp=(SmallNonCodingRNA)smncID.get(smID);
                         tmp.addAnnotation(tmpAnnot);
                     }else{

@@ -3,11 +3,23 @@
 <%
 String myGene="";
 String myGeneID="";
+String type="";
+String trackDefault="probe,coding,refseq";
 if(request.getParameter("region")!=null){
 		myGene=request.getParameter("region");
 }
 if(request.getParameter("gene")!=null){
 		myGeneID=request.getParameter("gene");
+		if(myGeneID.indexOf(":")>-1){
+			String[] tmp=myGeneID.split(":");
+			myGeneID=tmp[1];
+			type=tmp[0];
+			if(type.equals("longRNA")){
+				trackDefault="probe,noncoding,refseq";
+			}else if(type.equals("smallRNA")){
+				trackDefault="probe,smallnc,refseq";
+			}
+		}
 }
 %>
 
@@ -79,7 +91,7 @@ if(request.getParameter("gene")!=null){
 					}
 					DecimalFormat df0 = new DecimalFormat("#,###");
 					log.debug("Calling GENEDATATOOLS");
-					gdt.getRegionGeneView(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID);					
+					gdt.getRegionGeneView(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,trackDefault);					
 					String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 					String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
 					String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");

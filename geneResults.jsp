@@ -100,8 +100,9 @@ if(displayNoEnsembl){ %>
 			//alert(":"+jre+":");
 			if (/Mac OS X[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
  					var macVersion=new Number(RegExp.$1) // capture x.x portion and store as a number
- 					if (macVersion==10.7||macVersion==10.8){
-						if (jre.indexOf("1.7.0_07")>-1||jre.indexOf("1.7.0_08")>-1||jre.indexOf("1.7.0_09")>-1||jre.indexOf("1.7.0_10")>-1){
+ 					if (macVersion>=10.7){
+						var update=jre.substring(jre.indexOf("_")+1);
+						if (update>10){
 								bug=1;
 								appletHeight=700;
 								bugString='true';

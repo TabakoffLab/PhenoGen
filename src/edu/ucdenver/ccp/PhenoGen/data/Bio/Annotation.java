@@ -157,4 +157,21 @@ public class Annotation {
         return "<a href=\"http://www.ensembl.org/Rattus_norvegicus/Gene/Summary?g="+values[0]+"\" target=\"_blank\" title=\"View Ensembl Gene Details\">"+values[0]+"</a>";
     }
     
+    public String getEnsemblGeneID(){
+        String ret=null;
+        String[] values=value.split(":");
+        if(this.shortSource.equals("Ensembl")){
+            ret=values[0];
+        }
+        return ret;
+        
+    }
+    public String getEnsemblTranscriptID(){
+        String ret=null;
+        String[] values=value.split(":");
+        if(this.shortSource.equals("Ensembl")){
+            ret=values[1];
+        }
+        return ret;
+    }
 }

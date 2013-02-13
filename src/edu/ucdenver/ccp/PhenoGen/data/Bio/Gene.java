@@ -187,6 +187,10 @@ public class Gene {
         }
     }
     
+    public void addTranscript(Transcript toAdd) {
+            transcripts.add(toAdd);
+    }
+    
     public int getTranscriptCountEns(){
         int count=0;
         for(int i=0;i<transcripts.size();i++){
@@ -421,7 +425,7 @@ public class Gene {
     }
     
     public void addTranscriptCluster(HashMap transcriptClustersCore,HashMap transcriptClustersExt,HashMap transcriptClustersFull,Logger log){
-        log.debug("process Gene:"+this.geneID);
+        //log.debug("process Gene:"+this.geneID);
         TranscriptCluster max=this.getMaxOverlap(transcriptClustersCore);
         if(max!=null){
             tc=max;

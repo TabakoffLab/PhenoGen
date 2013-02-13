@@ -66,6 +66,7 @@ function gvupdateUCSCImage(){
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
 	DecimalFormat dfC = new DecimalFormat("#,###");
+	String tmpFile="ucsc."+trackDefault.replaceAll(",",".")+".png";
 %>
     
     
@@ -74,26 +75,26 @@ function gvupdateUCSCImage(){
         <div id="gvimgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
         <div id="gvgeneImage" class="gvucscImage"  style="display:inline-block;">
             	<a class="fancyboxExt fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
-            	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.probe.coding.refseq.png"%>"/></a>
+            	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/"+tmpFile%>"/></a>
             </div>
         <div class="gvgeneimageControl">
             Image Tracks:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
-            <input name="gvtrackcbx" type="checkbox" id="gvprobeCBX" value="probe" checked="checked" /> All Non-Masked Probesets
-            <input name="gvtrackcbx" type="checkbox" id="gvfilterprobeCBX" value="filterprobe"  />Probsets Detected Above Background >1% of samples
-            <input name="gvtrackcbx" type="checkbox" id="gvcodingCBX" value="coding" checked="checked" /> Protein Coding/PolyA+<BR />
-            <input name="gvtrackcbx" type="checkbox" id="gvnoncodingCBX" value="noncoding" />Long Non-Coding/NonPolyA+ 
-            <input name="gvtrackcbx" type="checkbox" id="gvsmallncCBX" value="smallnc"  /> Small RNA 
-           	<input name="gvtrackcbx" type="checkbox" id="gvsnpCBX" value="snp" /> SNPs/Indels:
+            <input name="gvtrackcbx" type="checkbox" id="gvprobeCBX" value="probe" <%if(tmpFile.contains(".probe.")){%>checked="checked"<%}%> /> All Non-Masked Probesets
+            <input name="gvtrackcbx" type="checkbox" id="gvfilterprobeCBX" value="filterprobe" <%if(tmpFile.contains(".filterprobe.")){%>checked="checked"<%}%> />Probsets Detected Above Background >1% of samples
+            <input name="gvtrackcbx" type="checkbox" id="gvcodingCBX" value="coding" <%if(tmpFile.contains(".coding.")){%>checked="checked"<%}%> /> Protein Coding/PolyA+<BR />
+            <input name="gvtrackcbx" type="checkbox" id="gvnoncodingCBX" value="noncoding" <%if(tmpFile.contains(".noncoding.")){%>checked="checked"<%}%> />Long Non-Coding/NonPolyA+ 
+            <input name="gvtrackcbx" type="checkbox" id="gvsmallncCBX" value="smallnc" <%if(tmpFile.contains(".smallnc.")){%>checked="checked"<%}%>  /> Small RNA 
+           	<input name="gvtrackcbx" type="checkbox" id="gvsnpCBX" value="snp" <%if(tmpFile.contains(".snp")){%>checked="checked"<%}%> /> SNPs/Indels:
              <select name="gvtrackSelect" id="gvsnpSelect">
             	<option value="1" selected="selected">Dense</option>
                 <option value="3" >Pack</option>
             </select>
-            <input name="gvtrackcbx" type="checkbox" id="gvhelicosCBX" value="helicos" /> Helicos Data:
+            <input name="gvtrackcbx" type="checkbox" id="gvhelicosCBX" value="helicos" <%if(tmpFile.contains(".helicos")){%>checked="checked"<%}%>/> Helicos Data:
             <select name="gvtrackSelect" id="gvhelicosSelect">
             	<option value="1" selected="selected">Dense</option>
                 <option value="2" >full</option>
             </select>
-            <input name="gvtrackcbx" type="checkbox" id="gvrefseqCBX" value="refseq" checked="checked"/> RefSeq Transcripts
+            <input name="gvtrackcbx" type="checkbox" id="gvrefseqCBX" value="refseq" <%if(tmpFile.contains(".refseq.")){%>checked="checked"<%}%>/> RefSeq Transcripts
           </div><!--end imageControl div -->
     
           </div><!--end Border Div -->

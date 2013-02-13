@@ -1,9 +1,14 @@
 <%@ include file="/web/common/session_vars.jsp" %>
 
-<% int smncID=0;
+<%  String[] smncList;
+	int smncID=0;
+
 	if(request.getParameter("id")!=null){
 		smncID=Integer.parseInt(request.getParameter("id").toString());
-	}	
+	}
+	if(request.getParameter()!=null){
+		smncList
+	}
 	
 	SmallNonCodingRNA rna=new SmallNonCodingRNA(smncID,dbConn,log);
 %>
@@ -12,7 +17,7 @@
 
 <div style=" text-align:center;">
 
-<H2><%="SMNC_"+rna.getId()+"  chr"+rna.getChromosome()+":"+rna.getStart()+"-"+rna.getStop()%></H2>
+<H2><%="SMNC_"+rna.getID()+"  chr"+rna.getChromosome()+":"+rna.getStart()+"-"+rna.getStop()%></H2>
 <BR />
 <canvas id="sketch"></canvas>
 

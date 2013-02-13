@@ -154,9 +154,30 @@ function updateUCSCImage(){
 
 
 <%
-
+	HashMap skipSMRNA=new HashMap();
 	ArrayList<SmallNonCodingRNA> smncRNA=gdt.getSmallNonCodingRNA(min,max,chromosome,rnaDatasetID,myOrganism);
-	log.debug("SMALL NON CODING SIZE:"+smncRNA.size());
+	
+	//Match smncRNA to ensembl based on annotations
+	
+	for(int m=0;m<smncRNA.size();m++){
+		SmallNonCodingRNA tmpRNA=smncRNA.get(m);
+		ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> tmpAnnot=tmpRNA.getAnnotationBySource("Ensembl");
+		if(tmpAnnot!=null&&tmpAnnot.size()>0){
+			boolean found=false;
+			String smncEnsID=tmpAnnot.get(0).getEnsemblGeneID();
+			for(int n=0;n<fullGeneList.size()&&!found;n++){
+				if(fullGeneList.get(n).getGeneID().equals(smncEnsID)){
+					fullGeneList.get(n).addTranscript(tmpRNA);
+					//smncRNA.remove(m);
+					skipSMRNA.put(tmpRNA.getID(),1);
+					found=true;
+					//m--;
+				}
+			}
+		}
+	}
+	
+	
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
 	if(myOrganism.equals("Rn")){
@@ -344,14 +365,23 @@ function updateUCSCImage(){
           </form>
           </div>--><!--end RegionControl div -->
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
-    <span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
-    <div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
+    	<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
+    	<div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
+        <span style="font-size:12px; font-weight:normal;">
+        <input name="imageSizeCbx" type="checkbox" id="imageSizeCbx" checked="checked" /> Scroll Image - Viewable Size:
+        <select name="imageSizeSelect" id="imageSizeSelect">
+        		<option value="200" >Smaller</option>
+            	<option value="400" selected="selected">Normal</option>
+                <option value="600" >Larger</option>
+                <option value="800" >Largest</option>
+            </select>
+        </span>
     </div>
-    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; width:98%; text-align:center;">
+    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
         
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
-            <div id="geneImage" class="ucscImage"  style="display:inline-block;">
+            <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
             	<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
             	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.coding.noncoding.smallnc.png"%>"/></a>
             </div>
@@ -407,6 +437,23 @@ function updateUCSCImage(){
 			return;
 		}
   });
+  	$('#imageSizeCbx').change( function(){
+		if($(this).is(":checked")){
+			$('#geneImage').css({"height":"400px","overflow":"auto"});
+			$('#imageSizeSelect').prop('disabled', false);
+		}else{
+			$('#geneImage').css({"height":"","overflow":""});
+			$('#imageSizeSelect').prop('disabled', 'disabled');
+		}
+		
+	});
+	
+	$('#imageSizeSelect').change( function(){
+		if($('#imageSizeCbx').is(":checked")){
+			var size=$(this).val()+"px";
+			$('#geneImage').css({"height":size,"overflow":"auto"});
+		}
+	});
 </script>          
 
 <div class="cssTab" id="mainTab" >
@@ -521,7 +568,7 @@ function updateUCSCImage(){
           	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
                 <THEAD>
                     <tr>
-                        <th colspan="10" class="topLine noSort noBox"></th>
+                        <th colspan="11" class="topLine noSort noBox"></th>
                         <th colspan="4" class="center noSort topLine">Transcript Information</th>
                         <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
@@ -532,7 +579,7 @@ function updateUCSCImage(){
                             )<div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
-                        <th colspan="10"  class="topLine noSort noBox"></th>
+                        <th colspan="11"  class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
@@ -542,7 +589,7 @@ function updateUCSCImage(){
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="Help5e" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
-                        <th colspan="4"  class="topLine noSort noBox"></th>
+                        <th colspan="5"  class="topLine noSort noBox"></th>
                         <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table</th>
                         <th colspan="3"  class="topLine noSort noBox"></th>
                         <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts</th>
@@ -558,7 +605,7 @@ function updateUCSCImage(){
                     	<%}%>
                     </tr>
                     <tr class="col_title">
-                    
+                    <TH>Image ID (Transcript/Feature ID)</TH>
                     <TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
                     <TH>Gene ID</TH>
                     <TH width="10%">Gene Description</TH>
@@ -604,6 +651,8 @@ function updateUCSCImage(){
 						HashMap hSum=curGene.getHeritAvg();
                         HashMap dSum=curGene.getDabgAvg();
 						String chr=curGene.getChromosome();
+						String viewClass="codingRNA";
+						ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript> tmpTrx=curGene.getTranscripts();
 						if(!chr.startsWith("chr")){
 							chr="chr"+chr;
 						}
@@ -616,9 +665,11 @@ function updateUCSCImage(){
                         if(curGene.getBioType().equals("protein_coding")){%>
                         	coding
 						<%}else{
-							if(curGene.getLength()>=350){%>
+							if(curGene.getLength()>=350){
+								viewClass="longRNA";%>
                         		noncoding
-                            <%}else{%>
+                            <%}else{
+								viewClass="smallRNA";%>
                             	smallnc
                             <%}%>
 						<%}%>
@@ -626,6 +677,31 @@ function updateUCSCImage(){
                         	ensembl
                         <%}%>
                         ">
+                        	<TD>
+                            	<%	String tmpList="";
+									if((curGene.getTranscriptCountRna()+curGene.getTranscriptCountEns()) > 5){
+										tmpList="<span class=\"tblTrigger\" name=\"fg_"+i+"\">";
+										for(int l=0;l<tmpTrx.size();l++){
+												if(l<5){
+														tmpList=tmpList+tmpTrx.get(l).getID()+"<BR>";
+												}else if(l==5){
+													tmpList=tmpList+"</span><span id=\"fg_"+i+"\" style=\"display:none;\">"+tmpTrx.get(l).getID()+"<BR>";
+												}else{
+													tmpList=tmpList+tmpTrx.get(l).getID()+"<BR>";
+												}
+										}
+										tmpList=tmpList+"</span>";
+									}else{
+										for(int l=0;l<tmpTrx.size();l++){
+												if(l==0){
+														tmpList=tmpTrx.get(l).getID()+"<BR>";
+												}else{
+														tmpList=tmpList+tmpTrx.get(l).getID()+"<BR>";
+												}
+										}
+									}%>
+                                	<%=tmpList%>
+                            </TD>
                             <TD title="View detailed transcription information for gene in a new window.">
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
                             	<a href="<%=lg.getGeneLink(curGene.getGeneID(),myOrganism,true,true,false)%>" target="_blank">
@@ -687,7 +763,7 @@ function updateUCSCImage(){
                             </TD>
                              
                             <%String bioType=curGene.getBioType();
-							  ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript> tmpTrx=curGene.getTranscripts();
+							  
 							%>
                             <TD title="<%=remain%>">
 								<%=shortDesc%>
@@ -759,31 +835,9 @@ function updateUCSCImage(){
                             <TD class="leftBorder"><%=curGene.getTranscriptCountEns()%></TD>
                             <TD>
 								<%=curGene.getTranscriptCountRna()%>
-                                <%if(curGene.getTranscriptCountRna()>0){
-									String tmpList="";
-									if(curGene.getTranscriptCountRna()>1){
-										for(int l=0;l<tmpTrx.size();l++){
-											if(!tmpTrx.get(l).getID().startsWith("ENS")){
-												if(tmpList.equals("")){
-													tmpList="<span class=\"tblTrigger\" name=\"fg_"+i+"\">"+tmpTrx.get(l).getID()+"</span><div id=\"fg_"+i+"\" style=\"display:none;\">";
-												}else{
-													tmpList=tmpList+tmpTrx.get(l).getID()+"<BR>";
-												}
-											}	
-										}
-										tmpList=tmpList+"</div>";
-									}else{
-										for(int l=0;l<tmpTrx.size();l++){
-											if(!tmpTrx.get(l).getID().startsWith("ENS")){
-												tmpList=tmpTrx.get(l).getID();
-											}	
-										}
-									}%>
-                                	<BR /><%=tmpList%>
-                            	<%}%>
                             </TD>
                             <TD></TD>
-                            <TD><span id="<%=chr+":"+(curGene.getMinMaxCoord()[0]-500)+"-"+(curGene.getMinMaxCoord()[1]+500)%>" name="<%=geneID%>" class="viewTrx">View</span></TD>
+                            <TD><span id="<%=chr+":"+(curGene.getMinMaxCoord()[0]-500)+"-"+(curGene.getMinMaxCoord()[1]+500)%>" name="<%=viewClass%>:<%=geneID%>" class="viewTrx">View</span></TD>
                             <TD class="leftBorder"><%=curGene.getProbeCount()%></TD>
                             
                             <%for(int j=0;j<tissuesList1.length;j++){
@@ -877,9 +931,11 @@ function updateUCSCImage(){
 					<%if(smncRNA!=null){
 						for(int i=0;i<smncRNA.size();i++){
 							SmallNonCodingRNA rna=smncRNA.get(i);
+							if(!skipSMRNA.containsKey(rna.getID())){
 							%>
                         	<tr class="smallnc">
-                                <TD>smRNA_<%=rna.getId()%></TD>
+                            	<TD><%=rna.getID()%></TD>
+                                <TD></TD>
                                 <TD><% ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> ens=rna.getAnnotationBySource("Ensembl");
 									if(ens!=null&&ens.size()>0){
 										for(int k=0;k<ens.size();k++){%>
@@ -994,8 +1050,14 @@ function updateUCSCImage(){
                                 <TD></TD>
 
                                 
-                                <TD><%=rna.getTotalReads()%><BR /><%=rna.getSeq().size()%></TD>
-                                <TD><span id="<%=rna.getId()%>" class="viewSMNC">View</span></TD>
+                                <TD>
+									<%=rna.getTotalReads()%><BR />
+									<%=rna.getSeq().size()%><BR />
+                                    <span id="<%=rna.getNumberID()%>" class="viewSMNC">View RNA-Seq</span>
+                                </TD>
+                                <TD>
+                                    <span id="chr<%=rna.getChromosome()+":"+(rna.getStart()-20)+"-"+(rna.getStop()+20)%>" name="smallRNA:<%=rna.getID()%>" class="viewTrx">View</span>                               
+                                 </TD>
                                 <TD class="leftBorder"></TD>
                                 
                                 <%for(int j=0;j<tissuesList1.length;j++){%>
@@ -1013,6 +1075,7 @@ function updateUCSCImage(){
                                 <%}%>
                         </tr>
                     <%}
+					}
 					}%>
 				 </tbody>
               </table>
@@ -1058,7 +1121,7 @@ function updateUCSCImage(){
 	"bProcessing": true,
 	"sScrollX": "950px",
 	"sScrollY": "750px",
-	"aaSorting": [[ 4, "desc" ]]
+	"aaSorting": [[ 5, "desc" ]]
 	});
 	
 	
@@ -1075,30 +1138,30 @@ function updateUCSCImage(){
 	//$('.singleExon').hide();
 	
 	$('#heritCBX').click( function(){
-			displayColumns(tblGenes, 15,tisLen,$('#heritCBX').is(":checked"));
+			displayColumns(tblGenes, 16,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
-			displayColumns(tblGenes, 15+tisLen,tisLen,$('#dabgCBX').is(":checked"));
+			displayColumns(tblGenes, 16+tisLen,tisLen,$('#dabgCBX').is(":checked"));
 	  });
 	  $('#eqtlAllCBX').click( function(){
-			displayColumns(tblGenes, 15+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+			displayColumns(tblGenes, 16+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
 	  });
 		$('#eqtlCBX').click( function(){
-			displayColumns(tblGenes, 15+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+			displayColumns(tblGenes, 16+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
 	  });
 	  
 	   $('#geneIDCBX').click( function(){
-			displayColumns(tblGenes,1,1,$('#geneIDCBX').is(":checked"));
+			displayColumns(tblGenes,2,1,$('#geneIDCBX').is(":checked"));
 	  });
 	  $('#geneDescCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),2,1,$('#geneDescCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),3,1,$('#geneDescCBX').is(":checked"));
 	  });
 	  
 	  $('#geneBioTypeCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),3,1,$('#geneBioTypeCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),4,1,$('#geneBioTypeCBX').is(":checked"));
 	  });
 	  $('#geneTracksCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),4,4,$('#geneTracksCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),5,3,$('#geneTracksCBX').is(":checked"));
 	  });
 	  
 	  $('#geneLocCBX').click( function(){
@@ -1148,12 +1211,12 @@ function updateUCSCImage(){
 	 
 	 $("span.tblTrigger").click(function(){
 		var baseName = $(this).attr("name");
-                var thisHidden = $("div#" + baseName).is(":hidden");
+                var thisHidden = $("span#" + baseName).is(":hidden");
                 $(this).toggleClass("less");
                 if (thisHidden) {
-			$("div#" + baseName).show();
+			$("span#" + baseName).show();
                 } else {
-			$("div#" + baseName).hide();
+			$("span#" + baseName).hide();
                 }
 	});
 	
