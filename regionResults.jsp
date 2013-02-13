@@ -615,8 +615,12 @@ function updateUCSCImage(){
 						<%}
                         if(curGene.getBioType().equals("protein_coding")){%>
                         	coding
-						<%}else{%>
-                        	noncoding
+						<%}else{
+							if(curGene.getLength()>=350){%>
+                        		noncoding
+                            <%}else{%>
+                            	smallnc
+                            <%}%>
 						<%}%>
                         <%if(curGene.getGeneID().startsWith("ENS")){%>
                         	ensembl
@@ -720,15 +724,35 @@ function updateUCSCImage(){
                                 <%}%>
                             </TD>
                             
-                            <TD><%=bioType%></TD>
+                            <TD>
+                            	<%if(!curGene.getGeneID().startsWith("ENS")){
+									String tmpTitle="Based on detection in PolyA+";
+									if(!bioType.equals("protein_coding")){
+										tmpTitle="Based on detection in Non-PolyA+";
+									}%>
+                                	<span title="<%=tmpTitle%>">
+                                	<%=bioType%>*
+                                    </span>
+                                <%}else{%>
+									<%=bioType%>
+                            	<%}%>
+                            </TD>
                             <%if(bioType.equals("protein_coding")){%>
                                 <TD class="leftBorder">X</TD>
                                 <TD class="leftBorder"></TD>
-                            <%}else{%>
-                                <TD class="leftBorder"></TD>
-                                <TD class="leftBorder">X</TD>
+                                <TD class="leftBorder rightBorder"></TD>
+                            <%}else{
+								if(curGene.getLength()>=350){%>
+                                    <TD class="leftBorder"></TD>
+                                    <TD class="leftBorder">X</TD>
+                                    <TD class="leftBorder rightBorder"></TD>
+                                <%}else{%>
+                                	<TD class="leftBorder"></TD>
+                                    <TD class="leftBorder"></TD>
+                                    <TD class="leftBorder rightBorder">X</TD>
+                                <%}%>
                             <%}%>
-                            <TD class="leftBorder rightBorder"></TD>
+                            
                             <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
                             <TD><%=curGene.getStrand()%></TD>
                             <TD></TD>
@@ -919,11 +943,11 @@ function updateUCSCImage(){
                                         <%="<BR>"+source+":"+values%>
                                     <%}%>
                                 </TD>
-                                <TD>Small Non-Coding RNA</TD>
+                                <TD><span title="<350bp includes Coding and Non-Coding RNA">Small RNA*</span></TD>
                                 <TD class="leftBorder"></TD>
                                 <TD class="leftBorder"></TD>
                                 <TD class="leftBorder rightBorder">X</TD>
-                                <TD>chr<%=rna.getChromosome()+":"+rna.getStart()+"-"+rna.getStop()%></TD>
+                                <TD>chr<%=rna.getChromosome()+":"+dfC.format(rna.getStart())+"-"+dfC.format(rna.getStop())%></TD>
                                 <TD><%=rna.getStrand()%></TD>
                                 <TD>
     							<% String bnlx="";
@@ -1033,7 +1057,8 @@ function updateUCSCImage(){
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "750px"
+	"sScrollY": "750px",
+	"aaSorting": [[ 4, "desc" ]]
 	});
 	
 	

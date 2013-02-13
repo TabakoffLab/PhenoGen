@@ -141,15 +141,15 @@ sub createProteinCodingTrack{
 					my $color="0,0,0";
 					if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
 						if($proteinCoding==1){
-							$color="143,96,72";
-						}else{
 							$color="223,193,132";
+						}else{
+							$color="181,138,165";
 						}
 					}else{
 						if($proteinCoding==1){
-							$color="42,117,169";
-						}else{
 							$color="126,181,214";
+						}else{
+							$color="206,207,206";
 						}
 					}
 					
@@ -259,7 +259,7 @@ sub createSmallNonCoding{
 			}elsif($smncStrand==-1){
 				$strand="-";
 			}
-			print OFILE "chr$chr\t$smncStart\t$smncStop\tsmRNA_$smncID\t0\t$strand\t$smncStart\t$smncStop\t98,139,97\n";
+			print OFILE "chr$chr\t$smncStart\t$smncStop\tsmRNA_$smncID\t0\t$strand\t$smncStart\t$smncStop\t153,204,153\n";
 			$cntSmnc++;
 		}
 	}
@@ -280,9 +280,9 @@ sub createSmallNonCoding{
 				my $cntTranscripts = 0;
 				my $color="0,0,0";
 				if($geneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
-					$color="223,193,132";
+					$color="255,204,0";
 				}else{
-					$color="126,181,214";
+					$color="153,204,153";
 				}
 				foreach(@transcriptArray){
 					my $trstart=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{start};
