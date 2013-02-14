@@ -1184,7 +1184,6 @@ function updateUCSCImage(){
  	 });
 	 
 	 $("input[name='trackcbx']").change( function(){
-
 	 		var type=$(this).val();
 			updateTrackString();
 			updateUCSCImage();
@@ -1203,7 +1202,6 @@ function updateUCSCImage(){
 	 	var id=$(this).attr("id");
 		var cbx=id.replace("Select","CBX");
 		if($("#"+cbx).is(":checked")){
-			alert("checked "+cbx);
 			updateTrackString();
 			updateUCSCImage();
 		}

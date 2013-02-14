@@ -174,8 +174,16 @@ sub createXMLFile
 	    #print "gene list:".@genelist."\n";
 	}
 	
+	#read Probests
+	
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
+	
+	#read SNPs/Indels
+	
+	my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	my %snpHOH=%$snpRef;
+	my @snpList=$snpHOH{Snp};
 	
 	if($shortSpecies eq 'Rn'){
 	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1);
@@ -244,6 +252,32 @@ sub createXMLFile
 				}
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
+			
+			#match snps/indels to exons
+			my $cntSnps=0;
+			my $cntMatchingSnps=0;
+			foreach(@snpList){
+				#if($exonStart<$exonStop){# if gene is in the forward direction
+				    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
+					($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
+				    ){
+					    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
+					    $cntMatchingSnps++;
+					    print "Exon Variant";
+				    }
+				#}else{# gene is in reverse direction
+				#    if((($snpHOH{Snp}[$cntSnps]{start} <= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} >= $exonStop) or 
+				#    ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} >= $exonStop))
+				#    
+				#    ){
+				#	    #This is a probeset overlapping the current exon
+				#	    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
+				#	    $cntMatchingSnps++;
+				#	    print "Exon Variant";
+				#    }
+				#}
+				$cntSnps++;
+			} # loop through snps/indels
 			$cntIntron++;
 		    }
 		}
@@ -425,10 +459,7 @@ sub createXMLFile
 	my $qtlRef=readQTLDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	my %qtlHOH=%$qtlRef;
 	
-	#read SNPs/Indels
 	
-	my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
-	my %snpHOH=%$snpRef;
 	
 	my $smncRef=readSmallNoncodingDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	my %smncHOH=%$smncRef;

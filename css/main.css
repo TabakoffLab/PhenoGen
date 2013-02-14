@@ -961,18 +961,17 @@ div.columnRight{
 	width:50%;
 }
 
+tr.smallnc.ensembl .viewSMNC, tr.smallnc.ensembl .viewTrx{
+	color: #4C7298;
+}
 
-.viewTrx{
+.viewTrx,.viewSMNC{
 text-decoration:underline;
 color: #FFFFFF;
 cursor:pointer;
 }
 
-.viewSMNC{
-text-decoration:underline;
-color: #FFFFFF;
-cursor:pointer;
-}
+
 
 /* Recommended styles for two sided multi-select*/
 		.tsmsselect {
