@@ -495,7 +495,7 @@ Or
                  if(!navigator.javaEnabled()){
                         $('#javaError').css("display","inline-block");
                         $('#disabledJava').css("display","inline-block");
-						alert("Java not enabled");
+						//alert("Java not enabled");
                  }else if (deployJava.versionCheck('1.5.0+') == false) {
                      $('#javaError').css("display","inline-block");
                     $('#noJava').css("display","inline-block");                  
