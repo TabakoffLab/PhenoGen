@@ -87,6 +87,8 @@ if(displayNoEnsembl){ %>
     <div class="hidden"><a class="hiddenLink fancybox.iframe" href="web/GeneCentric/LocusSpecificEQTL.jsp?hiddenGeneSymbol=<%=geneSymbol.get(selectedGene)%>&hiddenGeneCentricPath=<%=tmpPath%>" title="eQTL"></a></div>
     <div id="macBugDesc" style="display:none;color:#FF0000;">On your Mac OS X version and Java version the applet below is not being displayed correctly.  This problem is a result of the last update from Oracle and will hopefully be fixed with the next version at which point we will update the applet.  We are very sorry for any inconvenience.  If you would like to use windows or Mac OS X 10.6 the applet will be displayed correctly.  We have done what we can to improve the applets appearance until Oracle fixes this bug, and we are very sorry for any inconvenience.</div>
     
+    <div id="unsupportedChrome" style="display:none;color:#FF0000;">A Java plugin is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  Please try using Safari or FireFox with the Java Plugin installed.  Note: In browsers that support the 64-bit plugin you will be prompted to install Java if it is not already installed.</div>
+    
 	<%if(genURL.get(selectedGene)!=null && !genURL.get(selectedGene).startsWith("ERROR:")){%>
     	<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
 		<script type="text/javascript">
@@ -97,12 +99,28 @@ if(displayNoEnsembl){ %>
 			var jre=deployJava.getJREs();
 			var bug=0;
 			var bugString='false';
-			//alert(":"+jre+":");
-			if (/Mac OS X[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
- 					var macVersion=new Number(RegExp.$1) // capture x.x portion and store as a number
- 					if (macVersion>=10.7){
-						var update=jre.substring(jre.indexOf("_")+1);
-						if (update>10){
+			var unsupportedChrome=0;
+			//
+			//alert("Initial:"+jre+":"+navigator.userAgent);
+			if (/Mac OS X[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
+ 					//var macVersion=new Number(RegExp.$1); // capture x.x portion and store as a number
+					var tmpAgent=new String(navigator.userAgent);
+					//alert("Detected Mac OS X:"+tmpAgent);
+					if(/Chrome/.test(tmpAgent)){
+						var update=new String(jre);
+						//alert("chrome update:"+update);
+						if(update.length==0){
+							//alert("unsupported");
+							unsupportedChrome=1;
+						}
+					}
+					else if (/10[_\.][789]/.test(tmpAgent)){
+						//alert("Mac Ver >=10.7:");
+						var tmpUp=new String(jre);
+						var update=tmpUp.substr((tmpUp.indexOf("_")+1));
+						//alert("update:"+update);
+						if(update>=10){
+							//alert("update >10");
 								bug=1;
 								appletHeight=700;
 								bugString='true';
@@ -113,28 +131,27 @@ if(displayNoEnsembl){ %>
         </script>
         
         <script type="text/javascript">
-            var attributes = {
-				id:			'geneApplet',
-                code:       "genecentricviewer.GeneCentricViewer",
-                archive:    "/web/GeneCentric/GeneCentricViewer.jar",
-                width:      appletWidth,
-                height:     appletHeight
-            };
-            var parameters = {
-				java_status_events: 'true',
-				jnlp_href:"/web/GeneCentric/launch.jnlp",
-                main_ensembl_id:ensembl,
-                genURL:genURL,
-				macBug:bugString
-            }; 
-            var version = "1.6"; 
-			//if(bug==0){
+			if(unsupportedChrome==0){
+				var attributes = {
+					id:			'geneApplet',
+					code:       "genecentricviewer.GeneCentricViewer",
+					archive:    "/web/GeneCentric/GeneCentricViewer.jar",
+					width:      appletWidth,
+					height:     appletHeight
+				};
+				var parameters = {
+					java_status_events: 'true',
+					jnlp_href:"/web/GeneCentric/launch.jnlp",
+					main_ensembl_id:ensembl,
+					genURL:genURL,
+					macBug:bugString
+				}; 
+				var version = "1.6"; 
             	deployJava.runApplet(attributes, parameters, version);
-			//}else{
-			//	$('div#macBugDesc').show();
-			//	window.open("web/GeneCentric/macBug_geneResults.jsp?selectedEnsemblID=<%=selectedEnsemblID%>&selGeneSym=<%=geneSymbol.get(selectedGene)%>&selURL=<%=genURL.get(selectedGene)%>","Gene View:<%=selectedEnsemblID%>");
-				
-			//}
+			}else{
+				$('#unsupportedChrome').show();
+			}
+
         </script>
         
     <%}else{%>
