@@ -183,7 +183,8 @@ sub createXMLFile
 	
 	my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	my %snpHOH=%$snpRef;
-	my @snpList=$snpHOH{Snp};
+	my $snpListRef=$snpHOH{Snp};
+	my @snpList=@$snpListRef;
 	
 	if($shortSpecies eq 'Rn'){
 	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1);
@@ -214,7 +215,7 @@ sub createXMLFile
 			my $cntMatchingProbesets=0;
 			my $cntMatchingIntronProbesets=0;
 			foreach(@probesetHOH){
-				if($exonStart<$exonStop){# if gene is in the forward direction
+				#if($exonStart<$exonStop){# if gene is in the forward direction
 				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
 					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
 				       and
@@ -231,25 +232,25 @@ sub createXMLFile
 						    $probesetHOH[$cntProbesets];
 					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
 				    }
-				}else{# gene is in reverse direction
-				    if((($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
-				    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
-				    and
-					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
-				    ){
-					    #This is a probeset overlapping the current exon
-					    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
-					    $cntMatchingProbesets=$cntMatchingProbesets+1;
-				    }elsif((($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
-					    ($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop))
-					and
-					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
-				    ){
-					    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-						    $probesetHOH[$cntProbesets];
-					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-				    }
-				}
+				#}else{# gene is in reverse direction
+				#    if((($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
+				#    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
+				#    and
+				#	$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				#    ){
+				#	    #This is a probeset overlapping the current exon
+				#	    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
+				#	    $cntMatchingProbesets=$cntMatchingProbesets+1;
+				#    }elsif((($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
+				#	    ($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop))
+				#	and
+				#	$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				#    ){
+				#	    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
+				#		    $probesetHOH[$cntProbesets];
+				#	    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
+				#    }
+				#}
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
@@ -390,7 +391,7 @@ sub createXMLFile
 				my $cntMatchingProbesets=0;
 				my $cntMatchingIntronProbesets=0;
 				foreach(@probesetHOH){
-					if($exonStart<$exonStop){# if gene is in the forward direction
+					#if($exonStart<$exonStop){# if gene is in the forward direction
 					    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or 
 						($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
 					       and
@@ -409,28 +410,45 @@ sub createXMLFile
 							    $probesetHOH[$cntProbesets];
 						    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
 					    }
-					}else{# gene is in reverse direction
-					    if((($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
-					    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
-					       and
-					        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
-					    ){
-						    #This is a probeset overlapping the current exon
-						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ProbesetList}{Probeset}[$cntMatchingProbesets] = 
-							    $probesetHOH[$cntProbesets];
-						    $cntMatchingProbesets=$cntMatchingProbesets+1;
-					    }elsif((($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
-						($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop))
-						   and
-					        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
-					    ){
-						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{intronList}{intron}[$cntIntrons-1]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-							    $probesetHOH[$cntProbesets];
-						    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-					    }
-					}
+					#}else{# gene is in reverse direction
+					#    if((($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
+					#    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
+					#       and
+					#        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
+					#    ){
+					#	    #This is a probeset overlapping the current exon
+					#	    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ProbesetList}{Probeset}[$cntMatchingProbesets] = 
+					#		    $probesetHOH[$cntProbesets];
+					#	    $cntMatchingProbesets=$cntMatchingProbesets+1;
+					#    }elsif((($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
+					#	($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop))
+					#	   and
+					#        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
+					#    ){
+					#	    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{intronList}{intron}[$cntIntrons-1]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
+					#		    $probesetHOH[$cntProbesets];
+					#	    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
+					#    }
+					#}
 					$cntProbesets = $cntProbesets+1;
 				} # loop through probesets
+				
+				#match snps/indels to exons
+				my $cntSnps=0;
+				my $cntMatchingSnps=0;
+				foreach(@snpList){
+				    print "check snp".$snpHOH{Snp}[$cntSnps]{start}."-".$snpHOH{Snp}[$cntSnps]{stop};
+					#if($exonStart<$exonStop){# if gene is in the forward direction
+					    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
+						($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
+					    ){
+						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
+						    $cntMatchingSnps++;
+						    print "Exon Variant";
+					    }
+					$cntSnps++;
+				} # loop through snps/indels
+				
 				$cntExons=$cntExons+1;
 				#print "finished matching probesets\n";
 		    } # loop through exons

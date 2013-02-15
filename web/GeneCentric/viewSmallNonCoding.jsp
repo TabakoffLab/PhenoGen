@@ -6,9 +6,9 @@
 	if(request.getParameter("id")!=null){
 		smncID=Integer.parseInt(request.getParameter("id").toString());
 	}
-	if(request.getParameter()!=null){
+	/*if(request.getParameter()!=null){
 		smncList
-	}
+	}*/
 	
 	SmallNonCodingRNA rna=new SmallNonCodingRNA(smncID,dbConn,log);
 %>

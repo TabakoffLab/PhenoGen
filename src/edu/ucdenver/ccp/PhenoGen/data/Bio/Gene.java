@@ -8,6 +8,7 @@ import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptCluster;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.ProbeSet;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.EQTL;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.EQTLCount;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.SequenceVariant;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class Gene {
     HashMap qtls=new HashMap();
     HashMap qtlCounts=new HashMap();
     HashMap totalCounts=new HashMap();
+    HashMap snps=new HashMap();
     TranscriptCluster tc=null;
     
     
@@ -179,16 +181,20 @@ public class Gene {
 
     public void setTranscripts(ArrayList<Transcript> transcripts) {
         this.transcripts = transcripts;
+        this.setupSnps(transcripts);
     }
     
     public void addTranscripts(ArrayList<Transcript> toAdd) {
         for(int i=0;i<toAdd.size();i++){
             transcripts.add(toAdd.get(i));
         }
+        this.setupSnps(toAdd);
     }
     
     public void addTranscript(Transcript toAdd) {
             transcripts.add(toAdd);
+            ArrayList<Transcript> tmp=new ArrayList<Transcript>();
+            this.setupSnps(tmp);
     }
     
     public int getTranscriptCountEns(){
@@ -482,6 +488,57 @@ public class Gene {
         return tc;
     }
     
+    public int getSnpCount(String strain,String type){
+        int ret=0;
+        HashMap m=(HashMap)snps.get(strain);
+        if(m!=null){
+            HashMap t=(HashMap)m.get(type);
+            if(t!=null){
+                ret=t.size();
+            }
+        }
+        return ret;
+    }
+    
+    private void setupSnps(ArrayList<Transcript> addedTranscripts){
+        //fill strain specific
+        for(int i=0;i<addedTranscripts.size();i++){
+            ArrayList<SequenceVariant> trVar=addedTranscripts.get(i).getVariants();
+            for(int j=0;j<trVar.size();j++){
+                HashMap strain=null;
+                HashMap type=null;
+                if(snps.containsKey(trVar.get(j).getStrain())){
+                    strain=(HashMap)snps.get(trVar.get(j).getStrain());
+                }else{
+                    strain=new HashMap();
+                    snps.put(trVar.get(j).getStrain(), strain);
+                }
+                if(strain.containsKey(trVar.get(j).getShortType())){
+                    type=(HashMap)strain.get(trVar.get(j).getShortType());
+                }else{
+                    type=new HashMap();
+                    strain.put(trVar.get(j).getShortType(), type);
+                }
+                if(type.containsKey(trVar.get(j).getId())){
+                    
+                }else{
+                    type.put(trVar.get(j).getId(), trVar);
+                }
+            }
+        }
+        //find common variants
+        /*HashMap common=null;
+        if(snps.containsKey("common")){
+            common=(HashMap)snps.get("common");
+        }else{
+            common=new HashMap();
+            snps.put("common", common);
+        }
+        Object[] keyArr=snps.keySet().;*/
+        
+        
+    }
+    
     //Methods to read Gene Data from RegionXML file.
     public static ArrayList<Gene> readGenes(String url) {
         ArrayList<Gene> genelist=new ArrayList<Gene>();
@@ -599,9 +656,20 @@ public class Gene {
                          probesets=readProbeSet(probeNodes);
                      }
                 }
+                
+                ArrayList<SequenceVariant> varList=new ArrayList<SequenceVariant>();
+                //NodeList children=exonNodes.item(z).getChildNodes();
+                for (int x = 0; x < children.getLength(); x++) {
+                    if(children.item(x).getNodeName().equals("VariantList")){
+                         NodeList varNodes=children.item(x).getChildNodes();
+                         varList=readVariant(varNodes);
+                     }
+                }
+                
                 Exon tmp=new Exon(exonStart,exonStop,ExonID);
                 tmp.setProteinCoding(CodeStart,CodeStop);
                 tmp.setProbeSets(probesets);
+                tmp.setVariants(varList);
                 ret.add(tmp);
             }
         }
@@ -672,6 +740,31 @@ public class Gene {
                 locUpdate=attrib.getNamedItem("updatedlocation").getNodeValue();
                 type=attrib.getNamedItem("type").getNodeValue();
                 ProbeSet tmp=new ProbeSet(probeStart,probeStop,probeID,seq,strand,type,locUpdate);
+                ret.add(tmp);
+            }
+        }
+        //System.out.println("Probeset Array List Size at read:"+ret.size());
+        return ret;
+    }
+    
+    private static ArrayList<SequenceVariant> readVariant(NodeList varNodes){
+        ArrayList<SequenceVariant> ret=new ArrayList<SequenceVariant>();
+        for(int z=0;z<varNodes.getLength();z++){
+            if (varNodes.item(z).getNodeName().equals("Variant")) {
+                NamedNodeMap attrib=varNodes.item(z).getAttributes();
+                int ID=Integer.parseInt(attrib.getNamedItem("ID").getNodeValue());
+                //System.err.println("reading ProbeID:"+probeID);
+                int start=-1,stop=-1;
+                
+                String refSeq="",chr="",strainSeq="",type="",strain="";
+                start=Integer.parseInt(attrib.getNamedItem("start").getNodeValue());
+                stop=Integer.parseInt(attrib.getNamedItem("stop").getNodeValue());
+                refSeq=attrib.getNamedItem("refSeq").getNodeValue();
+                strainSeq=attrib.getNamedItem("strainSeq").getNodeValue();
+                strain=attrib.getNamedItem("strain").getNodeValue();
+                type=attrib.getNamedItem("type").getNodeValue();
+                chr=attrib.getNamedItem("chromosome").getNodeValue();
+                SequenceVariant tmp=new SequenceVariant(ID,start,stop,refSeq,strainSeq,type,strain);
                 ret.add(tmp);
             }
         }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Exon;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Intron;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptElement;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.SequenceVariant;
 import java.util.HashMap;
 
 /* for logging messages */
@@ -20,6 +21,7 @@ public class Transcript {
     ArrayList<Intron> introns=new ArrayList<Intron>();
     ArrayList<TranscriptElement> fullTranscript=new ArrayList<TranscriptElement>();
     ArrayList<Annotation> fullAnnotation=new ArrayList<Annotation>();
+    ArrayList<SequenceVariant> snps=new ArrayList<SequenceVariant>();
     String ID="";
     String strand="",category="";
     long start=0,stop=0,len=0;
@@ -54,6 +56,12 @@ public class Transcript {
     public void setExon(ArrayList<Exon> exons){
         this.exons=exons;
         Collections.sort(this.exons);
+        for(int i=0;i<this.exons.size();i++){
+            ArrayList<SequenceVariant> tmp=this.exons.get(i).getVariants();
+            for(int j=0;j<tmp.size();j++){
+                snps.add(tmp.get(j));
+            }
+        }
     }
     
     public void setIntron(ArrayList<Intron> introns){
@@ -212,5 +220,7 @@ public class Transcript {
     public void setStop(long stop) {
         this.stop = stop;
     }
-    
+    public ArrayList<SequenceVariant> getVariants(){
+        return snps;
+    }
 }

@@ -831,7 +831,14 @@ function updateUCSCImage(){
                             
                             <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
                             <TD><%=curGene.getStrand()%></TD>
-                            <TD></TD>
+                            <TD>
+                            	<%if(curGene.getSnpCount("BNLX","SNP")>0 || curGene.getSnpCount("BNLX","Indel")>0 ){%>
+                            		BNLX: <%=curGene.getSnpCount("BNLX","SNP")%> / <%=curGene.getSnpCount("BNLX","Indel")%><BR />
+                                <%}%>
+                                <%if(curGene.getSnpCount("SHRH","SNP")>0 || curGene.getSnpCount("SHRH","Indel")>0){%>
+                                	SHRH: <%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%>
+                                <%}%>
+                            </TD>
                             <TD class="leftBorder"><%=curGene.getTranscriptCountEns()%></TD>
                             <TD>
 								<%=curGene.getTranscriptCountRna()%>

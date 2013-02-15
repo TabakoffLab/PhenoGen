@@ -67,6 +67,14 @@ public class SequenceVariant {
     public String getType() {
         return type;
     }
+    
+    public String getShortType() {
+        String ret="Indel";
+        if(type.equals("SNP")){
+            ret="SNP";
+        }
+        return ret;
+    }
 
     public void setType(String type) {
         this.type = type;
