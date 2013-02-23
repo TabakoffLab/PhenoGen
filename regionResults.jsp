@@ -90,11 +90,15 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 			
 }
 
-function openSmallNonCoding(id){
+function openSmallNonCoding(id,name){
+		var params={id: id,name: name};
+		if(id.indexOf(",")>0){
+			params={idList: id,name: name};
+		}
 			$.ajax({
 				url: contextPath + "/web/GeneCentric/viewSmallNonCoding.jsp",
    				type: 'GET',
-				data: {id: id},
+				data: params,
 				dataType: 'html',
     			success: function(data2){ 
         			$('#viewTrxDialog').html(data2);
@@ -104,6 +108,8 @@ function openSmallNonCoding(id){
     			}
 			});
 }
+
+
 
 
 function updateTrackString(){
@@ -348,7 +354,7 @@ function updateUCSCImage(){
     <script>
 		var tisLen=<%=tissuesList1.length%>;
     </script>
-<div id="page" style="min-height:1000px;text-align:center;">
+<div id="page" style="min-height:1050px;text-align:center;">
 
         <!--<div class="geneRegionControl">
       		Zoom In:
@@ -476,7 +482,7 @@ function updateUCSCImage(){
                     	<TR>
                     	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
                         <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
-                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999; top:23px; left:-3px;"><img id="Help4" class="helpImage" src="../web/images/icons/help.png" /></div>
+                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999; top:4px; left:-3px;"><img id="Help4" class="helpImage" src="../web/images/icons/help.png" /></div>
                         </TR>
                         
                     </thead>
@@ -615,7 +621,7 @@ function updateUCSCImage(){
                     <TH>Small RNA</TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
-                    <TH>SNPs / Indels</TH>
+                    <TH title="SNPs and Indels that fall in an exon of at least one transcript." >Exon SNPs / Indels</TH>
                     <TH>Ensembl</TH>
                     <TH>RNA-Seq</TH>
                     <TH>Total Reads<HR />Read Sequences</TH>
@@ -832,6 +838,9 @@ function updateUCSCImage(){
                             <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
                             <TD><%=curGene.getStrand()%></TD>
                             <TD>
+                            	<%if(curGene.getSnpCount("common","SNP")>0 || curGene.getSnpCount("common","Indel")>0 ){%>
+                            		Common: <%=curGene.getSnpCount("common","SNP")%> / <%=curGene.getSnpCount("common","Indel")%><BR />
+                                <%}%>
                             	<%if(curGene.getSnpCount("BNLX","SNP")>0 || curGene.getSnpCount("BNLX","Indel")>0 ){%>
                             		BNLX: <%=curGene.getSnpCount("BNLX","SNP")%> / <%=curGene.getSnpCount("BNLX","Indel")%><BR />
                                 <%}%>
@@ -843,7 +852,24 @@ function updateUCSCImage(){
                             <TD>
 								<%=curGene.getTranscriptCountRna()%>
                             </TD>
-                            <TD></TD>
+                            <TD>
+                            	<%if(curGene.getTranscriptCountRna()>0 && !bioType.equals("protein_coding") && curGene.getLength()<350 ){
+									ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript> smRNAList=curGene.getSMNCTranscripts();
+									String tmpIDList="";
+									String tmpNameList="";
+									for(int n=0;n<smRNAList.size();n++){
+										SmallNonCodingRNA tmpRNA=(SmallNonCodingRNA)smRNAList.get(n);
+										if(n==0){
+											tmpIDList=Integer.toString(tmpRNA.getNumberID());
+											tmpNameList=tmpRNA.getID();
+										}else{
+											tmpIDList=tmpIDList+","+tmpRNA.getNumberID();
+											tmpNameList=tmpNameList+","+tmpRNA.getID();
+										}
+									}%>
+                            		<span id="<%=tmpIDList+":"+tmpNameList%>" class="viewSMNC">View RNA-Seq</span>
+                                <%}%>
+                            </TD>
                             <TD><span id="<%=chr+":"+(curGene.getMinMaxCoord()[0]-500)+"-"+(curGene.getMinMaxCoord()[1]+500)%>" name="<%=viewClass%>:<%=geneID%>" class="viewTrx">View</span></TD>
                             <TD class="leftBorder"><%=curGene.getProbeCount()%></TD>
                             
@@ -1013,44 +1039,15 @@ function updateUCSCImage(){
                                 <TD>chr<%=rna.getChromosome()+":"+dfC.format(rna.getStart())+"-"+dfC.format(rna.getStop())%></TD>
                                 <TD><%=rna.getStrand()%></TD>
                                 <TD>
-    							<% String bnlx="";
-								   String shrh="";
-								   int bnlxCount=0;
-								   int shrhCount=0;
-								   ArrayList<SequenceVariant> vars=rna.getVariant();
-								   for(int j=0;j<vars.size();j++){
-								   		SequenceVariant v=vars.get(j);
-										if(v.getStrain().equals("BNLX")){
-											bnlx=bnlx+"<span title=\""+v.getType()+"@"+v.getStart()+"\">";
-											if(bnlxCount==0){
-												bnlx=bnlx+v.getRefSeq()+":"+v.getStrainSeq();
-											}else{
-												bnlx=bnlx+","+v.getRefSeq()+":"+v.getStrainSeq();
-											}
-											bnlx=bnlx+"</span>";
-											bnlxCount++;
-										}else if(v.getStrain().equals("SHRH")){
-											shrh=shrh+"<span title=\""+v.getType()+"@"+v.getStart()+"\">";
-											if(shrhCount==0){
-												shrh=shrh+v.getRefSeq()+":"+v.getStrainSeq();
-											}else{
-												shrh=shrh+","+v.getRefSeq()+":"+v.getStrainSeq();
-											}
-											shrh=shrh+"</span>";
-											shrhCount++;
-										}
-								   }
-								%>
-                                <%if(bnlxCount>0){
-									bnlx="BNLX:"+bnlx;%>
-                                    <%=bnlx%>
-                                <%}
-								if(bnlxCount>0&&shrhCount>0){%>
-                                <BR />
-                                <%}
-								if(shrhCount>0){
-									shrh="SHRH:"+shrh;%>
-                                    <%=shrh%>
+    							
+                                <%if(rna.getSnpCount("common","SNP")>0 || rna.getSnpCount("common","Indel")>0 ){%>
+                            		Common: <%=rna.getSnpCount("common","SNP")%> / <%=rna.getSnpCount("common","Indel")%><BR />
+                                <%}%>
+                            	<%if(rna.getSnpCount("BNLX","SNP")>0 || rna.getSnpCount("BNLX","Indel")>0 ){%>
+                            		BNLX: <%=rna.getSnpCount("BNLX","SNP")%> / <%=rna.getSnpCount("BNLX","Indel")%><BR />
+                                <%}%>
+                                <%if(rna.getSnpCount("SHRH","SNP")>0 || rna.getSnpCount("SHRH","Indel")>0){%>
+                                	SHRH: <%=rna.getSnpCount("SHRH","SNP")%> / <%=rna.getSnpCount("SHRH","Indel")%>
                                 <%}%>
                                 </TD>
                                 <TD class="leftBorder"></TD>
@@ -1060,7 +1057,7 @@ function updateUCSCImage(){
                                 <TD>
 									<%=rna.getTotalReads()%><BR />
 									<%=rna.getSeq().size()%><BR />
-                                    <span id="<%=rna.getNumberID()%>" class="viewSMNC">View RNA-Seq</span>
+                                    <span id="<%=rna.getNumberID()+":"+rna.getID()%>" class="viewSMNC">View RNA-Seq</span>
                                 </TD>
                                 <TD>
                                     <span id="chr<%=rna.getChromosome()+":"+(rna.getStart()-20)+"-"+(rna.getStop()+20)%>" name="smallRNA:<%=rna.getID()%>" class="viewTrx">View</span>                               
@@ -1117,8 +1114,10 @@ function updateUCSCImage(){
 	});
 	
 	$('.viewSMNC').click( function(event){
-		var id=$(this).attr('id');
-		openSmallNonCoding(id);
+		var tmpID=$(this).attr('id');
+		var id=tmpID.substr(0,tmpID.indexOf(":"));
+		var name=tmpID.substr(tmpID.indexOf(":")+1);
+		openSmallNonCoding(id,name);
 		$('#viewTrxDialog').dialog( "option", "position",{ my: "center bottom", at: "center top", of: $(this) });
 		$('#viewTrxDialog').dialog("open").css({'font-size':12});
 	})
@@ -1126,9 +1125,16 @@ function updateUCSCImage(){
 	var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
+	"bStateSave": true,
+	"bAutoWidth": true,
 	"sScrollX": "950px",
-	"sScrollY": "750px",
-	"aaSorting": [[ 5, "desc" ]]
+	"sScrollY": "650px",
+	"aaSorting": [[ 5, "desc" ]],
+	"sDom": '<"leftSearch"fr><t>'
+	/*"oTableTools": {
+			"sSwfPath": "/css/swf/copy_csv_xls_pdf.swf"
+		}*/
+
 	});
 	
 	
@@ -1200,7 +1206,7 @@ function updateUCSCImage(){
 				}else{
 					$('tr.'+type).hide();
 				}
-				
+				tblGenes.fnDraw();
 			}
 			
 	 });
@@ -1231,13 +1237,13 @@ function updateUCSCImage(){
 
 
 
-<div id="bQTLList" class="modalTabContent" style="display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
+<div id="bQTLList" class="modalTabContent" style="display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:100%;">
 	
 	<table class="geneFilter">
                 	<thead>
                     	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
                         <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
-                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999;top:23px; left:-3px;"><img id="Help6" class="helpImage" src="../web/images/icons/help.png" /></div>
+                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999;top:4px; left:-3px;"><img id="Help6" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
                     	<TR>
@@ -1438,14 +1444,14 @@ function updateUCSCImage(){
 
 
 
-<div id="eQTLListFromRegion" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px; border-style:inset;width:995px;">
+<div id="eQTLListFromRegion" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:100%;">
 		
         
 		<table class="geneFilter">
                 	<thead>
                     	<TH style="width:65%;"><span class="trigger" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">Filter List and Circos Plot</span></TH>
                         <TH><span class="trigger" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">View Columns</span></TH>
-                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:100;top:23px; left:-3px;"><img id="Help9" class="helpImage" src="../web/images/icons/help.png" /></div>
+                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:100;top:4px; left:-3px;"><img id="Help9" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
@@ -1613,8 +1619,8 @@ function updateUCSCImage(){
 <% ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"All",myOrganism,tissueString,chromosomeString);//this region controls what genes
 		ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
         if(session.getAttribute("getTransControllingEQTL")==null){%>
-            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-28px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span></div>
-            <div id="eQTLRegionNote" style="width:100%; position:relative; top:-28px">
+            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-71px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span></div>
+            <div id="eQTLRegionNote" style="width:100%; position:relative; top:-71px">
             Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the folowing region(s):<BR />
             <%for(int i=0;i<eQTLRegions.size();i++){%>
                 <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=eQTLRegions.get(i)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank"><%=eQTLRegions.get(i)%></a><BR />
@@ -1653,11 +1659,23 @@ function updateUCSCImage(){
 		String svgPdfFile= shortRegionCentricPath + "/circos"+cutoffTimesTen+"/svg/circos_new.pdf";
 	%>
                   
-   	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;"><span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span><div class="inpageHelp" style="display:inline-block;"><img id="Help11" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+   	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;top:-62px; position:relative;">
+    	<span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span>
+    	<div class="inpageHelp" style="display:inline-block;"><img id="Help11" class="helpImage" src="../web/images/icons/help.png" /></div>
+        <span style="font-size:12px; font-weight:normal;">
+        Adjust Vertical Viewable Size:
+        <select name="circosSizeSelect" id="circosSizeSelect">
+        		<option value="200" >Smallest</option>
+            	<option value="475" >Half</option>
+                <option value="950" selected="selected">Full</option>
+                <option value="1000" >Maximized</option>
+            </select>
+        </span>
+    </div> 
     <%if(session.getAttribute("getTransControllingEQTLCircos")==null){%>
-    <div id="circosPlot" style="text-align:center;">
+    <div id="circosPlot" style="text-align:center; top:-62px; position:relative;">
 		<div style="display:inline-block;text-align:center; width:100%;">
-        	<span id="circosMinMax" style="cursor:pointer;"><img src="web/images/icons/circos_min.jpg"></span>
+        	<!--<span id="circosMinMax" style="cursor:pointer;"><img src="web/images/icons/circos_min.jpg"></span>-->
 			<a href="<%=svgPdfFile%>" target="_blank">
 			<img src="web/images/icons/download_g.png" title:"Download Circos Image">
 			</a>
@@ -1882,7 +1900,7 @@ function updateUCSCImage(){
                    	 
 				 </tbody>
               </table>
-              
+              <BR /><BR /><BR />
       <%}else{%>
       No genes to display.  Try changing the filtering parameters.
 					<%}%>
@@ -2246,7 +2264,8 @@ $(document).ready(function() {
 	"bDeferRender": true,
 	"aoColumnDefs": [
       { "bVisible": false, "aTargets": bqtlTarget }
-    ]
+    ],
+	"sDom": '<"leftSearch"fr><t>'
 	});
 	
 	var tblFrom=$('#tblFrom').dataTable({
@@ -2254,7 +2273,8 @@ $(document).ready(function() {
 	"bProcessing": true,
 	"sScrollX": "950px",
 	"sScrollY": "650px",
-	"bDeferRender": true
+	"bDeferRender": true,
+	"sDom": '<"leftSearch"fr><t>'
 	});
 	
 	//$('.cssTab div.modalTabContent').hide();
@@ -2460,8 +2480,16 @@ $(document).ready(function() {
 	setupExpandCollapse();
 	//var tableRows = getRows();
 	//hoverRows(tableRows);
-	
-	$('#circosMinMax').click(function(){
+	$('#circosSizeSelect').change( function(){
+			var size=$(this).val();
+			$('#circosIFrame').attr("height",size);
+			if(size<=950){
+				$('#circosIFrame').attr("width",950);
+			}else{
+				$('#circosIFrame').attr("width",size-2);
+			}
+	});
+	/*$('#circosMinMax').click(function(){
 		if($('#circosIFrame').attr("height")>400){
 			$('> img',this).attr("src","web/images/icons/circos_max.jpg");
 			$('#circosIFrame').attr("height",400);
@@ -2471,7 +2499,7 @@ $(document).ready(function() {
 			$('#circosIFrame').attr("height",950);
 			$('#circosIFrame').attr("width",950);
 		}
-	});
+	});*/
 	
 	//Setup Tabs
     $('#mainTab ul li a').click(function() {    

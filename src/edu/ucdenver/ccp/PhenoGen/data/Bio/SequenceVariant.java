@@ -88,6 +88,8 @@ public class SequenceVariant {
         this.strain = strain;
     }
     
-    
+    public String toString(){
+        return "ID:"+this.id+" Start:"+start+" Stop:"+stop+"refSeq:"+refSeq+" StrainSeq:"+strainSeq;
+    }
     
 }

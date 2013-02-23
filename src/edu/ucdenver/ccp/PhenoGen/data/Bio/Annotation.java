@@ -90,12 +90,13 @@ public class Annotation {
                     ret=values[0];
                 }
             }else if(shortSource.equals("mirDeep")){
-                String[] values=value.split(":");
-                if(withLinks){
-                    ret=values[1];
-                }else{
-                    ret=values[1];
-                }
+                //String[] values=value.split(":");
+                //if(withLinks){
+                //    ret=values[1];
+                //}else{
+                //    ret=values[1];
+                //}
+                ret=value;
             }
         }
         return ret;
@@ -141,12 +142,13 @@ public class Annotation {
                     ret=values[0];
                 }
             }else if(shortSource.equals("mirDeep")){
-                String[] values=value.split(":");
+                /*String[] values=value.split(":");
                 if(withLinks){
                     ret=values[1];
                 }else{
                     ret=values[1];
-                }
+                }*/
+                ret=value;
             }
         }
         return ret;

@@ -3,6 +3,7 @@ package edu.ucdenver.ccp.PhenoGen.data.Bio;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.RNASequence;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.SequenceVariant;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.MirDeepAnnotation;
 import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 /* for logging messages */
@@ -24,6 +26,7 @@ public class SmallNonCodingRNA extends Transcript{
     int totalReads=0;
     ArrayList<RNASequence> seq=new ArrayList<RNASequence>();
     ArrayList<SequenceVariant> variant=new ArrayList<SequenceVariant>();
+    HashMap variantHM=new HashMap();
     HashMap annotHM=new HashMap();
     int numID=0;
     //ArrayList<Annotation> annotList=new ArrayList<Annotation>();
@@ -69,6 +72,8 @@ public class SmallNonCodingRNA extends Transcript{
            
         String smncVarQuery="select v.* from rna_smnc_variant v "+
                                 "where v.rna_smnc_id="+id;
+        String smncMirQuery="select * from rna_smnc_mirdeep where rna_smnc_annot_id in (select rna_smnc_annot_id from rna_smnc_annot "+
+                                "where rna_smnc_id="+id+" )";
 
             try{
                 log.debug("SQL smnc FROM QUERY\n"+smncQuery);
@@ -110,6 +115,36 @@ public class SmallNonCodingRNA extends Transcript{
                     this.addSequence(tmpSeq);
                 }
                 ps.close();
+                
+                HashMap tmpMDAnnot=new HashMap();
+                ps = conn.prepareStatement(smncMirQuery);
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    int mdid=rs.getInt(1);
+                    String provID=rs.getString(3);
+                    String rfam=rs.getString(6);
+                    int mature=rs.getInt(8);
+                    int star=rs.getInt(10);
+                    int total=rs.getInt(7);
+                    int loop=rs.getInt(9);
+                    double score=rs.getDouble(4);
+                    double prob=rs.getDouble(5);
+                    String matureSeq=rs.getString(12);
+                    String starSeq=rs.getString(13);
+                    String preCurSeq=rs.getString(14);
+                    long start=rs.getLong(16);
+                    long stop=rs.getLong(17);
+                    String strand=rs.getString(18);
+                    String chr=rs.getString(15);
+                    boolean sig=false;
+                    if(rs.getInt(11)==1){
+                        sig=true;
+                    }
+                    MirDeepAnnotation tmpAnnot=new MirDeepAnnotation(mdid,provID,rfam,mature,star,total,loop,score,prob,matureSeq,starSeq,preCurSeq,start,stop,strand,chr,sig);
+                    tmpMDAnnot.put(provID, tmpAnnot);
+                }
+                ps.close();
+                
                 log.debug("SQL smncAnnot FROM QUERY\n"+smncAnnotQuery);
                 ps = conn.prepareStatement(smncAnnotQuery);
                 rs = ps.executeQuery();
@@ -117,10 +152,18 @@ public class SmallNonCodingRNA extends Transcript{
                     int subid=rs.getInt(1);
                     String annot=rs.getString(3);
                     String src=rs.getString(4);
-                    Annotation tmpAnnot=new Annotation(subid,src,annot,"smnc");
-                    this.addAnnotation(tmpAnnot);
+                    if(!src.equals("mirDeep")){
+                        Annotation tmpAnnot=new Annotation(subid,src,annot,"smnc");
+                        this.addAnnotation(tmpAnnot);
+                    }else{
+                        Annotation tmp=(Annotation)tmpMDAnnot.get(annot);
+                        if(tmp!=null){
+                            this.addAnnotation(tmp);
+                        }
+                    }
                 }
                 ps.close();
+                
                 ps = conn.prepareStatement(smncVarQuery);
                 rs = ps.executeQuery();
                 while(rs.next()){
@@ -209,6 +252,7 @@ public class SmallNonCodingRNA extends Transcript{
     }
     public void addVariant(SequenceVariant var){
         this.variant.add(var);
+        setupSnps(var);
     }
     
     public void addAnnotation(Annotation annot){
@@ -234,4 +278,118 @@ public class SmallNonCodingRNA extends Transcript{
     public ArrayList<Annotation> getAnnotations(){
         return this.fullAnnotation;
     }
+    
+    public int getSnpCount(String strain,String type){
+        int ret=0;
+        HashMap m=(HashMap)variantHM.get(strain);
+        if(m!=null){
+            HashMap t=(HashMap)m.get(type);
+            if(t!=null){
+                ret=t.size();
+            }
+        }
+        return ret;
+    }
+    
+    private void setupSnps(SequenceVariant v){
+        //Logger log = Logger.getRootLogger();
+        //fill strain specific
+                HashMap strain=null;
+                HashMap type=null;
+                if(this.variantHM.containsKey(v.getStrain())){
+                    strain=(HashMap)variantHM.get(v.getStrain());
+                }else{
+                    strain=new HashMap();
+                    variantHM.put(v.getStrain(), strain);
+                }
+                if(strain.containsKey(v.getShortType())){
+                    type=(HashMap)strain.get(v.getShortType());
+                }else{
+                    type=new HashMap();
+                    strain.put(v.getShortType(), type);
+                }
+                if(type.containsKey(v.getId())){
+                    
+                }else{
+                    type.put(v.getId(), v);
+                }
+
+        //find common variants
+        HashMap common=null;
+        if(variantHM.containsKey("common")){
+            common=(HashMap)variantHM.get("common");
+        }else{
+            common=new HashMap();
+            variantHM.put("common", common);
+        }
+        //Need to make this work for different strains in the future but for now this will work.
+        HashMap bnlx=(HashMap)variantHM.get("BNLX");
+        HashMap shrh=(HashMap)variantHM.get("SHRH");
+        if(bnlx!=null&&shrh!=null){
+            Iterator bnlxKey=bnlx.keySet().iterator();
+            while(bnlxKey.hasNext()){
+                String bTypeKey=(String)bnlxKey.next();
+                HashMap bTypeHM=(HashMap)bnlx.get(bTypeKey);
+                HashMap sTypeHM=(HashMap)shrh.get(bTypeKey);
+                //log.debug("bType:"+bTypeKey);
+                ArrayList<Integer> bToRemove=new ArrayList<Integer>();
+                ArrayList<Integer> sToRemove=new ArrayList<Integer>();
+                if(bTypeHM!=null&&sTypeHM!=null){
+                    //log.debug("TYPE MATCH");
+                    matchCommon(common,bTypeHM,sTypeHM,bToRemove,sToRemove);
+                    while(!bToRemove.isEmpty()){
+                        Integer tmp=bToRemove.get(0);
+                        bTypeHM.remove(tmp.intValue());
+                        bToRemove.remove(0);
+                    }
+                    while(!sToRemove.isEmpty()){
+                        Integer tmp=sToRemove.get(0);
+                        sTypeHM.remove(tmp.intValue());
+                        sToRemove.remove(0);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void matchCommon(HashMap common,HashMap bTypeHM,HashMap sTypeHM,ArrayList<Integer> bToRemove,ArrayList<Integer> sToRemove){
+       //Logger log = Logger.getRootLogger();
+       Iterator bnlxKey=bTypeHM.keySet().iterator();
+        while(bnlxKey.hasNext()){
+                int bk=((Integer)bnlxKey.next()).intValue();
+                SequenceVariant bv=(SequenceVariant)bTypeHM.get(bk);
+                if(bv!=null){
+                    //log.debug("bnlxVar:"+bv.toString());
+                    boolean foundMatch=false;
+                    Iterator shrhKey=sTypeHM.keySet().iterator();
+                    while(!foundMatch&&shrhKey.hasNext()){
+                        int sk=((Integer)shrhKey.next()).intValue();
+                        SequenceVariant sv=(SequenceVariant)sTypeHM.get(sk);
+                        if(sv!=null&& bv.getShortType().equals(sv.getShortType())){
+                            //log.debug(" Compare to shrhVar:"+sv.toString());
+                            if(bv.getStart()==sv.getStart() && bv.getStop()==sv.getStop() && 
+                                    bv.getRefSeq().equals(sv.getRefSeq()) && bv.getStrainSeq().equals(sv.getStrainSeq())){
+                                HashMap type;
+                                if(common.containsKey(bv.getShortType())){
+                                    type=(HashMap)common.get(bv.getShortType());
+                                }else{
+                                    type=new HashMap();
+                                    common.put(bv.getShortType(), type);
+                                }
+                                //log.debug("FOUND MATCH");
+                                foundMatch=true;
+                                ArrayList<SequenceVariant> combined=new ArrayList<SequenceVariant>();
+                                combined.add(sv);
+                                combined.add(bv);
+                                type.put(bv.getId()+":"+sv.getId(),combined);
+                                sToRemove.add(sk);
+                                bToRemove.add(bk);
+                            }
+                        }
+                    }
+                }
+
+            }
+    }
+    
 }

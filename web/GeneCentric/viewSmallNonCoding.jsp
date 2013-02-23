@@ -1,23 +1,49 @@
 <%@ include file="/web/common/session_vars.jsp" %>
 
-<%  String[] smncList;
+<%  String[] smncList=null;
+	String[] nameList=null;
+	String name="";
+	String smnc="";
 	int smncID=0;
+	SmallNonCodingRNA rna;
 
 	if(request.getParameter("id")!=null){
 		smncID=Integer.parseInt(request.getParameter("id").toString());
 	}
-	/*if(request.getParameter()!=null){
-		smncList
-	}*/
+	if(request.getParameter("idList")!=null){
+		smnc=request.getParameter("idList");
+		smncList=smnc.split(",");
+		if(request.getParameter("id")==null){
+			smncID=Integer.parseInt(smncList[0]);
+		}
+		if(request.getParameter("name")!=null){
+			name=request.getParameter("name");
+			nameList=name.split(",");
+		}
+	}
+	rna=new SmallNonCodingRNA(smncID,dbConn,log);
 	
-	SmallNonCodingRNA rna=new SmallNonCodingRNA(smncID,dbConn,log);
 %>
+<script type="text/javascript">
+	var idList="<%=smnc%>";
+	var nameList="<%=name%>";
+	var id=<%=smncID%>;
+</script>
 <script src="/javascript/processing-1.4.1.min.js"></script>
+<div id="smncContent" style=" text-align:center;">
+<%if(smncList!=null&&smncList.length>0){%>
+	<div style="text-align:left;">
+    RNA-Seq Small RNA to View:
+    <select name="smrnaSelect" id="smrnaSelect">
+        <%for(int i=0;i<smncList.length;i++){%>
+            <option value="<%=smncList[i]%>" <%if(Integer.toString(smncID).equals(smncList[i])){%>selected<%}%>><%=nameList[i]%></option>
+        <%}%>
+    </select>
+    </div>
+<%}%>
 
+<H2 ><%="SMNC_"+rna.getID()+"  chr"+rna.getChromosome()+":"+rna.getStart()+"-"+rna.getStop()%></H2> 
 
-<div style=" text-align:center;">
-
-<H2><%="SMNC_"+rna.getID()+"  chr"+rna.getChromosome()+":"+rna.getStart()+"-"+rna.getStop()%></H2>
 <BR />
 <canvas id="sketch"></canvas>
 
@@ -51,7 +77,6 @@
 									ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> annot=rna.getAnnotations();
 									if(annot!=null&&annot.size()>0){
 										for(int j=0;j<annot.size();j++){
-											
 												String tmpHTML=annot.get(j).getLongDisplayHTMLString(true);
 												if(!displayed.containsKey(tmpHTML)){
 													displayed.put(tmpHTML,1);
@@ -72,9 +97,14 @@
                                     while(itr.hasNext()){
                                         String source=itr.next().toString();
                                         String values=bySource.get(source).toString();
+										if(!source.equals("mirDeep")){
                                     %>
                                         <%="<BR>"+source+":"+values%>
-                                    <%}%>
+                                    <%}
+									}
+									if(bySource.get("mirDeep")!=null){%>
+										<%="<BR>mirDeep:"+bySource.get("mirDeep").toString()%>
+									<%}%>
 </div>
 
 <BR />
@@ -126,6 +156,27 @@
 </div>
 
 <script type="text/javascript">
+function updateSmallNonCoding(idList,nameList,id){
+			var params={idList: idList,name: nameList, id: id};
+			$.ajax({
+				url: contextPath + "/web/GeneCentric/viewSmallNonCoding.jsp",
+   				type: 'GET',
+				data: params,
+				dataType: 'html',
+    			success: function(data2){ 
+        			$('#smncContent').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('#viewTrxDialog').html("<div>An error occurred generating this page.  Please try back later.</div>");
+    			}
+			});
+}
+
+	$('#smrnaSelect').change( function (){
+		id=$(this).val();
+		//alert(id);
+		updateSmallNonCoding(idList,nameList,id)
+	});
 	var tblSMNC=$('#tblViewSMNC').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
@@ -133,4 +184,5 @@
 	"sScrollY": "350px"
 	});
 	tblSMNC.dataTable().fnAdjustColumnSizing();
+	
 </script>

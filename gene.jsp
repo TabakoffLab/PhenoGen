@@ -3,13 +3,19 @@
 <%
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("jquery.dataTables.js");
-	extrasList.add("FixedColumns.min.js");
+	//extrasList.add("TableTools.min.js");
+	//extrasList.add("ZeroClipboard.js");
+	//extrasList.add("ColReorder.min.js");
+	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	//extrasList.add("processing-1.4.1.min.js");
 	
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
+	//extrasList.add("ColReorder.css");
+	//extrasList.add("TableTools_JUI.css");
+	//extrasList.add("TableTools.css");
 %>
 <%
 String myGene="";
@@ -587,7 +593,7 @@ Or
 	<span class="button" onclick="window.close()" style="width:150px;">Close this Window</span>
     </div>
 <%}%>
-<div><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /></div>
+
 <%@ include file="/web/common/footer.jsp" %>
 
 

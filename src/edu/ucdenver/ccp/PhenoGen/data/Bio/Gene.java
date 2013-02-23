@@ -217,6 +217,16 @@ public class Gene {
         return count;
     }
     
+    public ArrayList<Transcript> getSMNCTranscripts(){
+        ArrayList<Transcript> ret=new ArrayList<Transcript>();
+        for(int i=0;i<transcripts.size();i++){
+            if(transcripts.get(i).getID().startsWith("smRNA")){
+                ret.add(transcripts.get(i));
+            }
+        }
+        return ret;
+    }
+    
     public int getProbeCount(){
         return fullProbeList.size();
     }
@@ -501,6 +511,7 @@ public class Gene {
     }
     
     private void setupSnps(ArrayList<Transcript> addedTranscripts){
+        //Logger log = Logger.getRootLogger();
         //fill strain specific
         for(int i=0;i<addedTranscripts.size();i++){
             ArrayList<SequenceVariant> trVar=addedTranscripts.get(i).getVariants();
@@ -522,21 +533,86 @@ public class Gene {
                 if(type.containsKey(trVar.get(j).getId())){
                     
                 }else{
-                    type.put(trVar.get(j).getId(), trVar);
+                    type.put(trVar.get(j).getId(), trVar.get(j));
                 }
             }
         }
         //find common variants
-        /*HashMap common=null;
+        HashMap common=null;
         if(snps.containsKey("common")){
             common=(HashMap)snps.get("common");
         }else{
             common=new HashMap();
             snps.put("common", common);
         }
-        Object[] keyArr=snps.keySet().;*/
-        
-        
+        //Need to make this work for different strains in the future but for now this will work.
+        HashMap bnlx=(HashMap)snps.get("BNLX");
+        HashMap shrh=(HashMap)snps.get("SHRH");
+        if(bnlx!=null&&shrh!=null){
+            Iterator bnlxKey=bnlx.keySet().iterator();
+            while(bnlxKey.hasNext()){
+                String bTypeKey=(String)bnlxKey.next();
+                HashMap bTypeHM=(HashMap)bnlx.get(bTypeKey);
+                HashMap sTypeHM=(HashMap)shrh.get(bTypeKey);
+                //log.debug("bType:"+bTypeKey);
+                ArrayList<Integer> bToRemove=new ArrayList<Integer>();
+                ArrayList<Integer> sToRemove=new ArrayList<Integer>();
+                if(bTypeHM!=null&&sTypeHM!=null){
+                    //log.debug("TYPE MATCH");
+                    matchCommon(common,bTypeHM,sTypeHM,bToRemove,sToRemove);
+                    while(!bToRemove.isEmpty()){
+                        Integer tmp=bToRemove.get(0);
+                        bTypeHM.remove(tmp.intValue());
+                        bToRemove.remove(0);
+                    }
+                    while(!sToRemove.isEmpty()){
+                        Integer tmp=sToRemove.get(0);
+                        sTypeHM.remove(tmp.intValue());
+                        sToRemove.remove(0);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void matchCommon(HashMap common,HashMap bTypeHM,HashMap sTypeHM,ArrayList<Integer> bToRemove,ArrayList<Integer> sToRemove){
+       //Logger log = Logger.getRootLogger();
+       Iterator bnlxKey=bTypeHM.keySet().iterator();
+        while(bnlxKey.hasNext()){
+                int bk=((Integer)bnlxKey.next()).intValue();
+                SequenceVariant bv=(SequenceVariant)bTypeHM.get(bk);
+                if(bv!=null){
+                    //log.debug("bnlxVar:"+bv.toString());
+                    boolean foundMatch=false;
+                    Iterator shrhKey=sTypeHM.keySet().iterator();
+                    while(!foundMatch&&shrhKey.hasNext()){
+                        int sk=((Integer)shrhKey.next()).intValue();
+                        SequenceVariant sv=(SequenceVariant)sTypeHM.get(sk);
+                        if(sv!=null&& bv.getShortType().equals(sv.getShortType())){
+                            //log.debug(" Compare to shrhVar:"+sv.toString());
+                            if(bv.getStart()==sv.getStart() && bv.getStop()==sv.getStop() && 
+                                    bv.getRefSeq().equals(sv.getRefSeq()) && bv.getStrainSeq().equals(sv.getStrainSeq())){
+                                HashMap type;
+                                if(common.containsKey(bv.getShortType())){
+                                    type=(HashMap)common.get(bv.getShortType());
+                                }else{
+                                    type=new HashMap();
+                                    common.put(bv.getShortType(), type);
+                                }
+                                //log.debug("FOUND MATCH");
+                                foundMatch=true;
+                                ArrayList<SequenceVariant> combined=new ArrayList<SequenceVariant>();
+                                combined.add(sv);
+                                combined.add(bv);
+                                type.put(bv.getId()+":"+sv.getId(),combined);
+                                sToRemove.add(sk);
+                                bToRemove.add(bk);
+                            }
+                        }
+                    }
+                }
+
+            }
     }
     
     //Methods to read Gene Data from RegionXML file.

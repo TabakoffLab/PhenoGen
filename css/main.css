@@ -944,7 +944,7 @@ padding-left: 10px;
 table.geneFilter {
 	position:relative; 
 	width:100%; 
-	top:-56px;
+	top:-77px;
 }
 
 table.geneFilter  TH{
@@ -971,7 +971,10 @@ color: #FFFFFF;
 cursor:pointer;
 }
 
-
+.leftSearch{
+	float:left;
+	text-align:left;
+}
 
 /* Recommended styles for two sided multi-select*/
 		.tsmsselect {
