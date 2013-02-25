@@ -42,7 +42,7 @@
     </div>
 <%}%>
 
-<H2 ><%="SMNC_"+rna.getID()+"  chr"+rna.getChromosome()+":"+rna.getStart()+"-"+rna.getStop()%></H2> 
+<H2 ><%="SMNC_"+rna.getID()%></H2> 
 
 <BR />
 <canvas id="sketch"></canvas>

@@ -49,8 +49,8 @@ public class MirDeepAnnotation extends edu.ucdenver.ccp.PhenoGen.data.Bio.Annota
         + "<tr><TD>Mature Sequence: "+matureSeq.toUpperCase()+"</TD><TD>Star Sequence: "+starSeq.toUpperCase()+"</TD></TR>"
         + "<tr><TD colspan=\"2\">Precursor Sequence: "+preCurSeq.toUpperCase()+"</TD></TR>"
         + "<tr><TD colspan=\"2\"><H3>Read Counts</H3></TD></TR>"
-        + "<tr><TD>Total Read Counts:"+total+"</TD><TD>Mature Read Counts:"+mature+"</TD></TR>"
-        + "<tr><TD>Star Read Counts:"+star+"</TD><TD>Loop Read Counts:"+loop+"</TD></TR>";
+        + "<tr><TD>Total Read Counts: "+total+"</TD><TD>Mature Read Counts: "+mature+"</TD></TR>"
+        + "<tr><TD>Star Read Counts: "+star+"</TD><TD>Loop Read Counts: "+loop+"</TD></TR>";
         ret=ret+"</tbody></table>";
         return ret;
     }

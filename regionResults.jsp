@@ -465,8 +465,8 @@ function updateUCSCImage(){
 <div class="cssTab" id="mainTab" >
     <ul>
       <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?">Features Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
-      <li ><a class="disable" href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
-      <li><a  class="disable" href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help10" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="bqtlTabID" class="disable" href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li><a  id="eqtlTabID" class="disable" href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help10" class="helpImage" src="../web/images/icons/help.png" /></div></li>
      </ul>
      
      
@@ -1440,7 +1440,9 @@ function updateUCSCImage(){
 </div><!-- end bQTL List-->
 
 
-
+<script type="text/javascript">
+	$('#bqtlTabID').removeClass('disable');
+</script>
 
 
 
@@ -2302,51 +2304,6 @@ $(document).ready(function() {
 	
 	
 	
-	
-  
- 
-  /* Setup Filtering/View Columns in tblGenes */
-	//MOVED
-	/*	  $('#heritCBX').click( function(){
-			displayColumns(tblGenes, 8,tisLen,$('#heritCBX').is(":checked"));
-	  });
-	  $('#dabgCBX').click( function(){
-			displayColumns(tblGenes, 8+tisLen,tisLen,$('#heritCBX').is(":checked"));
-	  });
-	  $('#eqtlAllCBX').click( function(){
-			displayColumns(tblGenes, 8+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
-	  });
-		$('#eqtlCBX').click( function(){
-			displayColumns(tblGenes, 8+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
-	  });
-	  
-	   $('#geneIDCBX').click( function(){
-			displayColumns(tblGenes,1,1,$('#geneIDCBX').is(":checked"));
-	  });
-	  $('#geneDescCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),2,1,$('#geneDescCBX').is(":checked"));
-	  });
-	  
-	  $('#geneLocCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),3,2,$('#geneLocCBX').is(":checked"));
-	  });
-	  
-	  $('#pvalueCutoffSelect1').change( function(){
-	  			$("#wait1").show();
-				$('#forwardPvalueCutoffInput').val($(this).val());
-				//alert($('#pvalueCutoffInput').val());
-				//$('#geneCentricForm').attr("action","Get Transcription Details");
-				$('#geneCentricForm').submit();
-			});
-	 $('#exclude1Exon').click( function(){
-  		if($('#exclude1Exon').is(":checked")){
-			$('.singleExon').hide();
-		}else{
-			$('.singleExon').show();
-		}
- 	 });*/
-		
-		
 	/* Seutp Filtering/Viewing in tblBQTL*/
 	 $('#rgdIDCBX').click( function(){
 			displayColumns(tblBQTL,1,1,$('#rgdIDCBX').is(":checked"));
