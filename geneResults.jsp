@@ -1,29 +1,13 @@
 
 <script type="text/javascript">
-function displayWorking(){
-	$('#wait1').show();
-	$('#inst').hide();
-	$('input#action').val("Get Transcription Details");
-	return true;
-}
-
-function displayGo(){
-	$('#wait1').show();
-	$('#inst').hide();
-	$('input#action').val("Go");
-	$('input#geneSelect').val($('#geneSelectCBX').val());
-	$('form#geneCentricForm').submit();
-	return true;
-}
-
-function hideWorking(){
-	$('#wait1').hide();
-	$('#inst').hide();
-	//document.getElementById("wait1").style.display = 'none';
-	//if(!popup){
-	//	document.getElementById("inst").style.display= 'none';
-	//}
-}
+var trackString="probe,numExonPlus,numExonMinus,refseq";
+var minCoord=<%=min%>;
+var maxCoord=<%=max%>;
+var chr="<%=chromosome%>";
+var filterExpanded=0;
+var organism="<%=myOrganism%>";
+var ucscgeneID="<%=selectedEnsemblID%>";
+var ucsctype="Gene";
 </script>
 
 
@@ -37,7 +21,7 @@ if(displayNoEnsembl){ %>
 <%if(genURL.size()>0){%>
 	
 	<%if(ucscURL.get(selectedGene)!=null && !ucscURL.get(selectedGene).equals("") ){%>
-        <div class="geneimage" style="text-align:center;">
+       <!-- <div class="geneimage" style="text-align:center;">
             <div class="inpageHelp" style="display:inline-block;position:relative;float:right;"><img id="Help1" src="../web/images/icons/help.png"  /></div>
     
             <div id="geneimageUnfiltered"  style="display:inline-block;"><a class="fancybox fancybox.iframe" href="<%=ucscURL.get(selectedGene)%>" title="UCSC Genome Browser"><img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/"+selectedEnsemblID+".main.png"%>"/></a></div>
@@ -47,7 +31,7 @@ if(displayNoEnsembl){ %>
         </div><!-- end geneimage div -->
     
     
-        <div class="geneimageControl" style="text-align:center">
+       <!-- <div class="geneimageControl" style="text-align:center">
       
           <form id="form1" name="form1" method="post" action="">
               <label>
@@ -80,8 +64,265 @@ if(displayNoEnsembl){ %>
       <% }%>
 	</div><!--end imageControl div -->
 
+
+<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
+    	<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
+    	<div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
+        <span style="font-size:12px; font-weight:normal;">
+        <input name="imageSizeCbx" type="checkbox" id="imageSizeCbx" checked="checked" /> Scroll Image - Viewable Size:
+        <select name="imageSizeSelect" id="imageSizeSelect">
+        		<option value="200" >Smaller</option>
+            	<option value="400" selected="selected">Normal</option>
+                <option value="600" >Larger</option>
+                <option value="800" >Largest</option>
+            </select>
+        </span>
+    </div>
+    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
+        
+        <div id="collapsableImage" class="geneimage" >
+       		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
+            <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
+            	<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
+            	<img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/ucsc.probe.numExonPlus.numExonMinus.refseq.png"%>"/></a>
+            </div>
+        </div><!-- end geneimage div -->
+    	<div class="geneimageControl">
+      		
+          	<form>
+            Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
+            <input name="trackcbx" type="checkbox" id="probeCBX" value="probe" checked="checked" /> All Non-Masked Probesets
+            <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="filterprobe" />Probsets Detected Above Background >1% of samples
+            <BR />
+            <input name="trackcbx" type="checkbox" id="exonPlusCBX" value="numExonPlus" checked="checked" />+ Strand Protein Coding/PolyA+
+            <input name="trackcbx" type="checkbox" id="exonMinusCBX" value="numExonMinus" checked="checked" />- Strand Protein Coding/PolyA+
+            <input name="trackcbx" type="checkbox" id="exonUkwnCBX" value="numExonUkwn" />Unknown Strand Protein Coding/PolyA+
+            <BR />
+            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" />Long Non-Coding/NonPolyA+
+            <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" /> Small RNA 
+           	<input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
+             <select name="trackSelect" id="snpSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="3" >Pack</option>
+            </select>
+            <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
+            <select name="trackSelect" id="helicosSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="2" >full</option>
+            </select>
+            <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs
+            <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" checked="checked" /> RefSeq Transcripts
+              <!--<label style="color:#000000; margin-left:10px;">
+                Transcripts:</label>
+                <select name="transcriptSelect" id="transcriptSelect">
+                	<option value="geneimageUnfiltered" selected="selected">Hide</option>
+                    <option value="geneimageFiltered" >Show</option>
+                </select>-->
+              <!--<label style="color:#000000; margin-left:10px;">Additional Track options:</label>
+             	<select name="lowerTrackSelect" id="lowerTrackSelect">
+                	<option value="NoArray">None</option>
+                    <option value="Array" selected="selected">UCSC/Affymetrix Tissue Expression Data(Source:UCSC)</option>
+                    <option value="Human">Human Proteins/Chr Mapping(Source:UCSC)</option>
+                </select>-->
+                
+             </form>
+         
+		 
+          </div><!--end imageControl div -->
+    </div><!--end Border Div -->
+    <BR />
+<script type="text/javascript">
+	
+	//Setup Fancy box for UCSC link
+	$('.fancybox').fancybox({
+		width:$(document).width(),
+		height:$(document).height(),
+		scrollOutside:false,
+		afterClose: function(){
+			$('body.noPrint').css("margin","5px auto 60px");
+			return;
+		}
+  });
+  	$('#imageSizeCbx').change( function(){
+		if($(this).is(":checked")){
+			$('#geneImage').css({"height":"400px","overflow":"auto"});
+			$('#imageSizeSelect').prop('disabled', false);
+		}else{
+			$('#geneImage').css({"height":"","overflow":""});
+			$('#imageSizeSelect').prop('disabled', 'disabled');
+		}
+		
+	});
+	
+	$('#imageSizeSelect').change( function(){
+		if($('#imageSizeCbx').is(":checked")){
+			var size=$(this).val()+"px";
+			$('#geneImage').css({"height":size,"overflow":"auto"});
+		}
+	});
+</script>
+
     <BR />
     <BR />
+    
+ <div id="viewTrxDialog" class="trxDialog"></div>
+
+<div id="viewTrxDialogOriginal"  style="display:none;"><div class="waitTrx"  style="text-align:center; position:relative; top:0px; left:0px;"><img src="<%=imagesDir%>wait.gif" alt="Loading..." /><BR />Please wait loading transcript data...</div></div>
+
+<script type="text/javascript">
+	var spec="<%=myOrganism%>";
+	
+	$('#viewTrxDialog').dialog({
+		autoOpen: false,
+		dialogClass: "transcriptDialog",
+		width: 960,
+		height: 400,
+		zIndex: 999
+	});
+	
+	$('.viewTrx').click( function(event){
+		var id=$(this).attr('id');
+		var name=$(this).attr('name');
+		$('.waitTrx').show();
+		$('#viewTrxDialog').html($('#viewTrxDialogOriginal').html());
+		$('#viewTrxDialog').dialog( "option", "position",{ my: "center bottom", at: "center top", of: $(this) });
+		$('#viewTrxDialog').dialog("open").css({'font-size':12});
+		openTranscriptDialog(id,spec,name);
+	});
+	
+	$('.viewSMNC').click( function(event){
+		var tmpID=$(this).attr('id');
+		var id=tmpID.substr(0,tmpID.indexOf(":"));
+		var name=tmpID.substr(tmpID.indexOf(":")+1);
+		openSmallNonCoding(id,name);
+		$('#viewTrxDialog').dialog( "option", "position",{ my: "center bottom", at: "center top", of: $(this) });
+		$('#viewTrxDialog').dialog("open").css({'font-size':12});
+	})
+	
+	/*var tblGenes=$('#tblGenes').dataTable({
+	"bPaginate": false,
+	"bProcessing": true,
+	"bStateSave": true,
+	"bAutoWidth": true,
+	"sScrollX": "950px",
+	"sScrollY": "650px",
+	"aaSorting": [[ 5, "desc" ]],
+	"sDom": '<"leftSearch"fr><t>'
+	/*"oTableTools": {
+			"sSwfPath": "/css/swf/copy_csv_xls_pdf.swf"
+		}*/
+
+	//});
+	
+	
+	
+	/*$('#mainTab div.modalTabContent:first').show();
+	$('#mainTab ul li a:first').addClass('selected');
+	$('#geneTabID').click(function() {    
+			$('div#changingTabs').show(10);
+				//change the tab
+				$('#mainTab ul li a').removeClass('selected');
+				$(this).addClass('selected');
+				var currentTab = $(this).attr('href'); 
+				$('#mainTab div.modalTabContent').hide();       
+				$(currentTab).show();
+				//adjust row and column widths if needed(only needs to be done once)
+				setFilterTableStatus("geneListFilter");
+				
+			$('div#changingTabs').hide(10);
+			return false;
+        });
+	$('#tblGenes').dataTable().fnAdjustColumnSizing();
+
+	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
+	//$('.singleExon').hide();
+	
+	$('#heritCBX').click( function(){
+			displayColumns(tblGenes, 16,tisLen,$('#heritCBX').is(":checked"));
+	  });
+	  $('#dabgCBX').click( function(){
+			displayColumns(tblGenes, 16+tisLen,tisLen,$('#dabgCBX').is(":checked"));
+	  });
+	  $('#eqtlAllCBX').click( function(){
+			displayColumns(tblGenes, 16+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+	  });
+		$('#eqtlCBX').click( function(){
+			displayColumns(tblGenes, 16+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+	  });
+	  
+	   $('#geneIDCBX').click( function(){
+			displayColumns(tblGenes,2,1,$('#geneIDCBX').is(":checked"));
+	  });
+	  $('#geneDescCBX').click( function(){
+			displayColumns($(tblGenes).dataTable(),3,1,$('#geneDescCBX').is(":checked"));
+	  });
+	  
+	  $('#geneBioTypeCBX').click( function(){
+			displayColumns($(tblGenes).dataTable(),4,1,$('#geneBioTypeCBX').is(":checked"));
+	  });
+	  $('#geneTracksCBX').click( function(){
+			displayColumns($(tblGenes).dataTable(),5,3,$('#geneTracksCBX').is(":checked"));
+	  });
+	  
+	  $('#geneLocCBX').click( function(){
+			displayColumns($(tblGenes).dataTable(),8,2,$('#geneLocCBX').is(":checked"));
+	  });
+	  
+	  $('#pvalueCutoffSelect1').change( function(){
+	  			$("#wait1").show();
+				$('#forwardPvalueCutoffInput').val($(this).val());
+				//alert($('#pvalueCutoffInput').val());
+				//$('#geneCentricForm').attr("action","Get Transcription Details");
+				$('#geneCentricForm').submit();
+			});
+	 $('#exclude1Exon').click( function(){
+  		if($('#exclude1Exon').is(":checked")){
+			$('.singleExon').hide();
+		}else{
+			$('.singleExon').show();
+		}
+ 	 });*/
+	 
+	 $("input[name='trackcbx']").change( function(){
+	 		var type=$(this).val();
+			updateTrackString();
+			updateUCSCImage();
+			//if(type=="coding" || type=="noncoding" || type=="smallnc"){
+				/*if($('#rqQTLCBX').is(":checked")){
+					$('tr.'+type).hide();
+					type=type+".eqtl";
+				}*/
+			//	if($(this).is(":checked")){
+			//		$('tr.'+type).show();
+			//	}else{
+			//		$('tr.'+type).hide();
+			//	}
+			//	tblGenes.fnDraw();
+			//}
+			
+	 });
+	 
+	 $("select[name='trackSelect']").change( function(){
+	 	var id=$(this).attr("id");
+		var cbx=id.replace("Select","CBX");
+		if($("#"+cbx).is(":checked")){
+			updateTrackString();
+			updateUCSCImage();
+		}
+	 });
+	 
+	 /*$("span.tblTrigger").click(function(){
+		var baseName = $(this).attr("name");
+                var thisHidden = $("span#" + baseName).is(":hidden");
+                $(this).toggleClass("less");
+                if (thisHidden) {
+			$("span#" + baseName).show();
+                } else {
+			$("span#" + baseName).hide();
+                }
+	}); */
+</script>
+   
    
 	 <% String tmpPath=applicationRoot + contextRoot+"tmpData/geneData/" +firstEnsemblID.get(selectedGene) + "/";	%>
     <div class="hidden"><a class="hiddenLink fancybox.iframe" href="web/GeneCentric/LocusSpecificEQTL.jsp?hiddenGeneSymbol=<%=geneSymbol.get(selectedGene)%>&hiddenGeneCentricPath=<%=tmpPath%>" title="eQTL"></a></div>

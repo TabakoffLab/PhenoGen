@@ -246,7 +246,7 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 	# There's got to be a better way to handle the chromosome...
 	if(length($geneChromNumber) == 1){
 		
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.PROBESTART, p.PROBESTOP, p.STRAND, p.PROBESEQUENCE
+		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $probeTablename p on p.probeset_id = s.probeset_id
 		where s.chromosome_id = c.chromosome_id
@@ -260,7 +260,7 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		order by s.probeset_id";
 	}
 	elsif(length($geneChromNumber) == 2) {
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.PROBESTART, p.PROBESTOP, p.STRAND, p.PROBESEQUENCE
+		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $probeTablename p on p.probeset_id = s.probeset_id
 		where s.chromosome_id = c.chromosome_id
@@ -285,7 +285,7 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 
 # BIND TABLE COLUMNS TO VARIABLES
 
-	$query_handle->bind_columns(undef ,\$dbname, \$dbchromStart, \$dbchromStop,\$dbstrand, \$dbtype, \$dbsequence, \$dbupdloc, \$dbprobename, \$dbprobeStart, \$dbprobeStop, \$dbprobestrand, \$dbprobesequence);
+	$query_handle->bind_columns(undef ,\$dbname, \$dbchromStart, \$dbchromStop,\$dbstrand, \$dbtype, \$dbsequence, \$dbupdloc, \$dbprobename, \$dbprobestrand, \$dbprobesequence);
 # Loop through results, adding to array of hashes.
 	my $continue=1;
 	my @tmpArr=();
@@ -306,8 +306,6 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		if($dbname eq $previousdbName){
 			#print "Adding probe $dbname\n";
 			$$probeArray[$cntProbes]{ID}=$dbprobename;
-			$$probeArray[$cntProbes]{start}=$dbprobeStart;
-			$$probeArray[$cntProbes]{stop}=$dbprobeStop;
 			$$probeArray[$cntProbes]{strand}=$dbprobestrand;
 			$$probeArray[$cntProbes]{sequence}=$dbprobesequence;
 			$cntProbes++;
@@ -344,8 +342,6 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 			
 			
 			$$probeArray[$cntProbes]{ID}=$dbprobename;
-			$$probeArray[$cntProbes]{start}=$dbprobeStart;
-			$$probeArray[$cntProbes]{stop}=$dbprobeStop;
 			$$probeArray[$cntProbes]{strand}=$dbprobestrand;
 			$$probeArray[$cntProbes]{sequence}=$dbprobesequence;
 			$cntProbes++;

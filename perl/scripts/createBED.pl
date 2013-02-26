@@ -382,7 +382,9 @@ sub createProbesetTrack{
 			}elsif($nonMaskedProbes[$curInd]{type} eq 'extended'){
 				$color=$extendedColor;
 			}
-			print OFILE "chr$chr\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
+			if($nonMaskedProbes[$curInd]{start}>0&&$nonMaskedProbes[$curInd]{stop}>0){
+				print OFILE "chr$chr\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
+			}
 			$curInd++;
 		}
 		$cntColor++;
@@ -395,4 +397,168 @@ sub createProbesetTrack{
 	
 }
 
+
+sub createNumberedExonTrack{
+	my($sortedExonRef, $outputFile,$trackDB,$strand,$chr) = @_;
+	my @sortedExon=@$sortedExonRef;
+	my $fullStrand="+";
+	my $shortStrand="+";
+	if($strand==-1){
+		$fullStrand="-";
+		$shortStrand="-";
+	}elsif($strand==0){
+		$fullStrand="Unknown";
+		$shortStrand=".";
+	}
+	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	print OFILE 'track db='.$trackDB.' name="'.$fullStrand.' Strand Exons" ';
+	print OFILE 'description="Numbered Exons for the '.$fullStrand.' Strand Transcripts" ';
+	print OFILE 'visibility=3 colorByStrand="255,0,0 0,0,255"'."\n";
+	my $curIndex=0;
+	foreach(@sortedExon){
+		my $start=$sortedExon[$curIndex]{start};
+		my $stop=$sortedExon[$curIndex]{stop};
+		my $strand=$sortedExon[$curIndex]{strand};
+		my $name=$sortedExon[$curIndex]{alternateID2};
+		print OFILE "chr$chr\t$start\t$stop\t$name\t0\t$shortStrand\n";
+		$curIndex++;
+	}
+	close OFILE;
+}
+sub createStrandedCodingTrack{
+	my($GeneHOHRef, $outputFile,$trackDB,$curStrand,$chr) = @_;
+	my %GeneHOH = %$GeneHOHRef;
+	my $geneListRef=$GeneHOH{Gene};
+	my @geneList=();
+	eval{
+		@geneList=@$geneListRef;
+	}or do{
+		@geneList=();
+	};
+	my $fullStrand="+";
+	my $shortStrand="+";
+	if($curStrand==-1){
+		$fullStrand="-";
+		$shortStrand="-";
+	}elsif($curStrand==0){
+		$fullStrand="Unknown";
+		$shortStrand=".";
+	}
+	open OFILE, '>>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	print OFILE "track db=$trackDB name='".$fullStrand." Strand Transcripts' ";
+	print OFILE 'description="'.$fullStrand.' Strand Transcripts"';
+	print OFILE "visibility=3 itemRgb=On \n";
+	if(@geneList>0){
+		my $cntGenes=0;
+		foreach my $tmpGene (@geneList){
+			my $geneID=$GeneHOH{Gene}[$cntGenes]{ID};
+			my $strand=$GeneHOH{Gene}[$cntGenes]{strand};
+			if($strand==$curStrand){
+				my $transcriptArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
+				my $chr=$GeneHOH{Gene}[$cntGenes]{chromosome};
+				
+				if(index($chr,"chr")>-1){
+					$chr=substr($chr,3);
+				}
+				
+				my @transcriptArray = @$transcriptArrayRef;
+				
+				my @exonHOH;
+				my $cntHOHExons=0;
+				my $convStrand=".";
+				my $cntTranscripts = 0;
+				
+				my $color="255,0,0";
+				if($strand==-1){
+					$color="0,0,255";
+				}elsif($strand==0){
+					$color="0,0,0";
+				}
+				#if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
+				#	$color="197,17,0";
+				#}
+				
+				foreach(@transcriptArray){
+					my $exonArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon};
+					my @exonArray = @$exonArrayRef;
+					my $cntExons = 0;
+					
+					my $trstart=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{start};
+					my $trstop=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{stop};
+					my $trstrand=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{strand};
+					if($trstrand==1){
+						$convStrand="+";
+					}elsif($trstrand==-1){
+						$convStrand="-";
+					}elsif($trstrand==0){
+						$convStrand=".";
+					}
+					my $trname=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{ID};
+					#$trname  =~ s/ /_/g;
+					my $genePart=substr($geneID,0,index($geneID,"."));
+					my $fulltrname=$genePart;
+					if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
+						$fulltrname=$trname;
+					}else{
+						my $trPart=substr($trname,index($trname,"_")+1);
+						$trPart =~ s/^\s+//g;
+						$trPart =~ s/^0*//;
+						$fulltrname=$fulltrname.".".$trPart;
+					}
+					
+					my $tmpLens="";
+					my $tmpStarts="";
+					foreach(@exonArray){
+						my $currentExonStart = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{start};
+						my $currentExonStop = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{stop};
+						# find out if this exon is already in exonHOH
+						my $relStart=$currentExonStart-$trstart;
+						
+						my $tmpLen=$currentExonStop-$currentExonStart;
+						if($tmpLen==0){
+								$tmpLen=1;
+						}
+						if(($trstart+$relStart+$tmpLen)>$trstop){
+								$trstop=$trstop+$tmpLen;
+						}
+						if($tmpLens eq ""){
+							$tmpLens="".$tmpLen;
+							$tmpStarts="".$relStart;
+						}else{
+							$tmpLens=$tmpLens.",".$tmpLen;
+							$tmpStarts=$tmpStarts.",".$relStart;
+						}
+						
+						my $alreadyIncluded = 0;
+						for(my $cnt=0; $cnt < $cntHOHExons; $cnt++){
+							if($exonHOH[$cnt]{start} == $currentExonStart && $exonHOH[$cnt]{stop} == $currentExonStop ){
+								$alreadyIncluded = 1;
+							}
+						}	
+						
+						#print 	$GeneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ID}." include $alreadyIncluded\n";
+						if($alreadyIncluded == 0){
+							# Add this exon to the exonHOH
+							$exonHOH[$cntHOHExons]{ID} = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ID};
+							$exonHOH[$cntHOHExons]{start} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{start};
+							$exonHOH[$cntHOHExons]{stop} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{stop};
+							$exonHOH[$cntHOHExons]{coding_start} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{coding_start};
+							$exonHOH[$cntHOHExons]{coding_stop} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{coding_stop};
+							$exonHOH[$cntHOHExons]{strand} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{strand};
+							$exonHOH[$cntHOHExons]{chromosome} =  $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{chromosome};
+							$exonHOH[$cntHOHExons]{alternateID2} =$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{alternateID2};
+							$cntHOHExons++;
+						}
+						$cntExons++;
+					}
+					print OFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
+					print OFILE "$cntExons\t$tmpLens\t$tmpStarts\n";
+					$cntTranscripts++;
+				}
+			}
+			$cntGenes=$cntGenes+1;
+		}
+	}
+	close OFILE;
+}
 return 1;

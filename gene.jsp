@@ -1,6 +1,7 @@
 <%@ include file="/web/common/session_vars.jsp" %>
 
 <%
+	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("jquery.dataTables.js");
 	//extrasList.add("TableTools.min.js");
@@ -178,8 +179,10 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 								if(homologIdentifier.getIdentifier().indexOf("ENSMUSG")>-1||homologIdentifier.getIdentifier().indexOf("ENSRNOG")>-1){
 									//myEnsemblIDs.add(homologIdentifier.getIdentifier());	
 									log.debug("RUNNING GDT for "+homologIdentifier.getIdentifier());
-									gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
-									
+									fullGeneList=gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
+									min=gdt.getMinCoord();
+									max=gdt.getMaxCoord();
+									chromosome=gdt.getChromosome();
 									String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 									String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
 									String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
@@ -206,6 +209,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 										if(tmpGeneSymbol!=null && tmpGeneSymbol.equals(myGene)){
 											selectedGene=i;
 											selectedEnsemblID=homologIdentifier.getIdentifier();
+											
 										}
 									}
 								}

@@ -4,155 +4,14 @@ var minCoord=<%=min%>;
 var maxCoord=<%=max%>;
 var chr="<%=chromosome%>";
 var filterExpanded=0;
+var tblBQTLAdjust=false;
+var tblFromAdjust=false;
 
 var organism="<%=myOrganism%>";
-
-function displayWorking(){
-	document.getElementById("wait1").style.display = 'block';
-	document.getElementById("inst").style.display= 'none';
-	return true;
-}
-
-function hideWorking(){
-	document.getElementById("wait1").style.display = 'none';
-	document.getElementById("inst").style.display= 'none';
-}
-
-function displayColumns(table,colStart,colLen,showOrHide){
-	var colStop=colStart+colLen;
-	for(var i=colStart;i<colStop;i++){
-				table.dataTable().fnSetColumnVis( i, showOrHide );
-	}
-}
-
-function expandCollapse(baseName){
-	 var thisHidden = $("tbody#" + baseName).is(":hidden");
-	 $('#'+baseName+'1').toggleClass("less");
-	 $('#'+baseName+'2').toggleClass("less");
-		if (thisHidden) {
-			$("tbody#" + baseName).show();
-			filterExpanded=1;
-		} else {
-			$("tbody#" + baseName).hide();
-			filterExpanded=0;
-		}
-}
-
-function setFilterTableStatus(baseName){
-	 var thisHidden = $("tbody#" + baseName).is(":hidden");
-		if (thisHidden&&filterExpanded==1) {
-			$("tbody#" + baseName).show();
-			$('#'+baseName+'1').toggleClass("less");
-			$('#'+baseName+'2').toggleClass("less");
-		} else if(!thisHidden && filterExpanded==0) {
-			$("tbody#" + baseName).hide();
-			$('#'+baseName+'1').toggleClass("less");
-			$('#'+baseName+'2').toggleClass("less");
-		}
-}
-
-function runFilter(){
-	$("#wait1").show();
-	var chrList = "";
-          $("#chromosomesMS option").each(function () {
-                chrList += $(this).val() + ";";
-              });
-	$('#chromosomes').val(chrList);
-	//alert(chrList);
-	var tisList = "";
-          $("#tissuesMS option").each(function () {
-                tisList += $(this).val() + ";";
-              });
-	$('#tissues').val(tisList);
-	//alert(tisList);
-	
-	//$('#tissues').val($('#tissuesMS').val());
-	//$('#chromosomes').val($('#chromosomesMS').val());
-	//alert("val:"+$('#chromosomesMS').val());
-	$('#pvalueCutoffInput').val($('#pvalueCutoffSelect2').val());
-	$('#geneCentricForm').submit();
-}
+var ucsctype="region";
+var ucscgeneID="";
 
 
-function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
-			$.ajax({
-				url: contextPath + "/web/GeneCentric/geneRegionView.jsp",
-   				type: 'GET',
-				data: {region: regionTxt, species: speciesTxt,gene: geneTxt},
-				dataType: 'html',
-    			success: function(data2){ 
-        			$('#viewTrxDialog').html(data2);
-    			},
-    			error: function(xhr, status, error) {
-        			$('#viewTrxDialog').html("<div>An error occurred generating this page.  Please try back later.</div>");
-    			}
-			});
-			
-}
-
-function openSmallNonCoding(id,name){
-		var params={id: id,name: name};
-		if(id.indexOf(",")>0){
-			params={idList: id,name: name};
-		}
-			$.ajax({
-				url: contextPath + "/web/GeneCentric/viewSmallNonCoding.jsp",
-   				type: 'GET',
-				data: params,
-				dataType: 'html',
-    			success: function(data2){ 
-        			$('#viewTrxDialog').html(data2);
-    			},
-    			error: function(xhr, status, error) {
-        			$('#viewTrxDialog').html("<div>An error occurred generating this page.  Please try back later.</div>");
-    			}
-			});
-}
-
-
-
-
-function updateTrackString(){
-	trackString="";
-	$("input[name='trackcbx']").each( function (){
-		if($(this).is(":checked")){
-			if(trackString==""){
-				trackString=$(this).val();
-			}else{
-				trackString=trackString+","+$(this).val();
-			}
-			if($(this).attr("id")=="snpCBX"){
-				trackString=trackString+"."+$("#snpSelect").val();
-			}else if($(this).attr("id")=="helicosCBX"){
-				trackString=trackString+"."+$("#helicosSelect").val();
-			}
-		}
-		
-	});
-}
-
-function updateUCSCImage(){
-			$.ajax({
-				url: contextPath + "/web/GeneCentric/updateUCSCImage.jsp",
-   				type: 'GET',
-				data: {trackList: trackString,species: organism,chromosome: chr, minCoord: minCoord, maxCoord: maxCoord,type:"region"},
-				dataType: 'html',
-				beforeSend: function(){
-					$('#geneImage').hide();
-					$('#imgLoad').show();
-				},
-				complete: function(){
-					$('#imgLoad').hide();
-					$('#geneImage').show();
-				},
-    			success: function(data2){ 
-        			$('#geneImage').html(data2);
-    			},
-    			error: function(xhr, status, error) {
-        			$('#geneImage').html("<div>An error occurred generating this image.  Please try back later.</div>");
-    			}
-			});
-}
 </script>
 
 
@@ -668,7 +527,10 @@ function updateUCSCImage(){
 						if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>
                         	singleExon
 						<%}
-                        if(curGene.getBioType().equals("protein_coding")){%>
+						if(tc!=null){%>
+                        	eqtl
+                        <%}
+						if(curGene.getBioType().equals("protein_coding")){%>
                         	coding
 						<%}else{
 							if(curGene.getLength()>=350){
@@ -1141,6 +1003,26 @@ function updateUCSCImage(){
 	
 	$('#mainTab div.modalTabContent:first').show();
 	$('#mainTab ul li a:first').addClass('selected');
+	$('#geneTabID').click(function() {    
+			$('div#changingTabs').show(10);
+				//change the tab
+				$('#mainTab ul li a').removeClass('selected');
+				$(this).addClass('selected');
+				var currentTab = $(this).attr('href'); 
+				$('#mainTab div.modalTabContent').hide();       
+				$(currentTab).show();
+				//adjust row and column widths if needed(only needs to be done once)
+				setFilterTableStatus("geneListFilter");
+				
+			$('div#changingTabs').hide(10);
+			return false;
+        });
+	
+	
+	
+	
+	
+	
 	$('#tblGenes').dataTable().fnAdjustColumnSizing();
 	//tblGenesFixed=new FixedColumns( tblGenes, {
  	//	"iLeftColumns": 1,
@@ -1201,6 +1083,10 @@ function updateUCSCImage(){
 			updateTrackString();
 			updateUCSCImage();
 			if(type=="coding" || type=="noncoding" || type=="smallnc"){
+				/*if($('#rqQTLCBX').is(":checked")){
+					$('tr.'+type).hide();
+					type=type+".eqtl";
+				}*/
 				if($(this).is(":checked")){
 					$('tr.'+type).show();
 				}else{
@@ -1441,7 +1327,116 @@ function updateUCSCImage(){
 
 
 <script type="text/javascript">
+	var bqtlTarget=[ 1,4,9,11,13 ];
+	if(organism == "Mm"){
+		bqtlTarget=[ 1,4,5,10,12,13,14 ];
+	}
+	var tblBQTL=$('#tblBQTL').dataTable({
+	"bPaginate": false,
+	"bProcessing": true,
+	"sScrollX": "950px",
+	"sScrollY": "650px",
+	"bDeferRender": true,
+	"aoColumnDefs": [
+      { "bVisible": false, "aTargets": bqtlTarget }
+    ],
+	"sDom": '<"leftSearch"fr><t>'
+	});
+	
+	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
 	$('#bqtlTabID').removeClass('disable');
+	$('#bqtlTabID').click(function() {    
+			$('div#changingTabs').show(10);
+				//change the tab
+				$('#mainTab ul li a').removeClass('selected');
+				$(this).addClass('selected');
+				var currentTab = $(this).attr('href'); 
+				$('#mainTab div.modalTabContent').hide();       
+				$(currentTab).show();
+				//adjust row and column widths if needed(only needs to be done once)
+				if(!tblBQTLAdjust){
+						tblBQTL.fnAdjustColumnSizing();
+						tblBQTLAdjust=true;
+				}
+				setFilterTableStatus("bqtlListFilter");
+				
+			$('div#changingTabs').hide(10);
+			return false;
+        });
+	/* Seutp Filtering/Viewing in tblBQTL*/
+	 $('#rgdIDCBX').click( function(){
+			displayColumns(tblBQTL,1,1,$('#rgdIDCBX').is(":checked"));
+	  });
+	  $('#bqtlSymCBX').click( function(){
+	  		var col=1;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#bqtlSymCBX').is(":checked"));
+	  });
+	  $('#traitCBX').click( function(){
+	  		var col=3;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#traitMethodCBX').is(":checked"));
+	  });
+	  $('#traitMethodCBX').click( function(){
+	  		var col=4;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#traitMethodCBX').is(":checked"));
+	  });
+	  $('#assocBQTLCBX').click( function(){
+	  		var col=9;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#assocBQTLCBX').is(":checked"));
+	  });
+	  $('#phenotypeCBX').click( function(){
+	  		var col=5;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#phenotypeCBX').is(":checked"));
+	  });
+	  $('#diseaseCBX').click( function(){
+	  		var col=6;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#diseaseCBX').is(":checked"));
+	  });
+	  $('#refCBX').click( function(){
+	  		var col=7;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#refCBX').is(":checked"));
+	  });
+	  $('#locMethodCBX').click( function(){
+	  		var col=11;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#locMethodCBX').is(":checked"));
+	  });
+	  $('#lodBQTLCBX').click( function(){
+	  		var col=12;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#lodBQTLCBX').is(":checked"));
+	  });
+	  $('#pvalBQTLCBX').click( function(){
+	  		var col=13;
+			if(organism=="Mm"){
+				col=col+1;
+			}
+			displayColumns(tblBQTL,col,1,$('#pvalBQTLCBX').is(":checked"));
+	  });	
 </script>
 
 
@@ -2235,40 +2230,13 @@ $(document).ready(function() {
 	
 	$(".multiselect").twosidedmultiselect();
     //var selectedChromosomes = $("#chromosomesMS")[0].options;
+	
+	
 	document.getElementById("loadingRegion").style.display = 'none';
-	var bqtlTarget=[ 1,4,9,11,13 ];
-	if(organism == "Mm"){
-		bqtlTarget=[ 1,4,5,10,12,13,14 ];
-	}
 	
 	
 	
-	/*  Removed Fixed columns because it slowed the page down too much it was always recalculating the rows.*/
-	var tblGenesFixed=null;
-	var tblFromFixed=null;
-	var tblBQTLAdjust=false;
-	var tblFromAdjust=false;
 	
-	
-	/*var tblGenes=$('#tblGenes').dataTable({
-	"bPaginate": false,
-	"bProcessing": true,
-	"sScrollX": "950px",
-	"sScrollY": "650px"
-	});*/
-	
-	
-	var tblBQTL=$('#tblBQTL').dataTable({
-	"bPaginate": false,
-	"bProcessing": true,
-	"sScrollX": "950px",
-	"sScrollY": "650px",
-	"bDeferRender": true,
-	"aoColumnDefs": [
-      { "bVisible": false, "aTargets": bqtlTarget }
-    ],
-	"sDom": '<"leftSearch"fr><t>'
-	});
 	
 	var tblFrom=$('#tblFrom').dataTable({
 	"bPaginate": false,
@@ -2279,19 +2247,28 @@ $(document).ready(function() {
 	"sDom": '<"leftSearch"fr><t>'
 	});
 	
-	//$('.cssTab div.modalTabContent').hide();
-    /*$('.cssTab div.modalTabContent:first').show();
-    $('.cssTab ul li a:first').addClass('selected');
 	
-
-	$('#tblGenes').dataTable().fnAdjustColumnSizing();
-	//tblGenesFixed=new FixedColumns( tblGenes, {
- 	//	"iLeftColumns": 1,
-	//	"iLeftWidth": 100
- 	//} );
-
-	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});*/
-	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
+	$('#eqtlTabID').click(function() {    
+			$('div#changingTabs').show(10);
+				//change the tab
+				$('#mainTab ul li a').removeClass('selected');
+				$(this).addClass('selected');
+				var currentTab = $(this).attr('href'); 
+				$('#mainTab div.modalTabContent').hide();       
+				$(currentTab).show();
+				//adjust row and column widths if needed(only needs to be done once)
+				if(!tblFromAdjust){
+						tblFrom.fnAdjustColumnSizing();
+						tblFromAdjust=true;
+					}
+					setFilterTableStatus("fromListFilter");
+				
+			$('div#changingTabs').hide(10);
+			return false;
+        });
+	
+	
+	
 
 	
 	
@@ -2304,80 +2281,7 @@ $(document).ready(function() {
 	
 	
 	
-	/* Seutp Filtering/Viewing in tblBQTL*/
-	 $('#rgdIDCBX').click( function(){
-			displayColumns(tblBQTL,1,1,$('#rgdIDCBX').is(":checked"));
-	  });
-	  $('#bqtlSymCBX').click( function(){
-	  		var col=1;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#bqtlSymCBX').is(":checked"));
-	  });
-	  $('#traitCBX').click( function(){
-	  		var col=3;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#traitMethodCBX').is(":checked"));
-	  });
-	  $('#traitMethodCBX').click( function(){
-	  		var col=4;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#traitMethodCBX').is(":checked"));
-	  });
-	  $('#assocBQTLCBX').click( function(){
-	  		var col=9;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#assocBQTLCBX').is(":checked"));
-	  });
-	  $('#phenotypeCBX').click( function(){
-	  		var col=5;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#phenotypeCBX').is(":checked"));
-	  });
-	  $('#diseaseCBX').click( function(){
-	  		var col=6;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#diseaseCBX').is(":checked"));
-	  });
-	  $('#refCBX').click( function(){
-	  		var col=7;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#refCBX').is(":checked"));
-	  });
-	  $('#locMethodCBX').click( function(){
-	  		var col=11;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#locMethodCBX').is(":checked"));
-	  });
-	  $('#lodBQTLCBX').click( function(){
-	  		var col=12;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#lodBQTLCBX').is(":checked"));
-	  });
-	  $('#pvalBQTLCBX').click( function(){
-	  		var col=13;
-			if(organism=="Mm"){
-				col=col+1;
-			}
-			displayColumns(tblBQTL,col,1,$('#pvalBQTLCBX').is(":checked"));
-	  });
+	
 	
 	/* Seutp Filtering/Viewing in tblFrom*/	
 	  $('#geneIDFCBX').click( function(){
@@ -2459,7 +2363,7 @@ $(document).ready(function() {
 	});*/
 	
 	//Setup Tabs
-    $('#mainTab ul li a').click(function() {    
+    /*$('#mainTab ul li a').click(function() {    
 			$('div#changingTabs').show(10);
 				//change the tab
 				$('#mainTab ul li a').removeClass('selected');
@@ -2486,15 +2390,15 @@ $(document).ready(function() {
 						tblFromAdjust=true;
 					}
 					setFilterTableStatus("fromListFilter");
-					/*tblFromFixed=new FixedColumns( tblFrom, {
-							"iLeftColumns": 1,
-							"iLeftWidth": 100
-					} );*/
+					//tblFromFixed=new FixedColumns( tblFrom, {
+					//		"iLeftColumns": 1,
+					//		"iLeftWidth": 100
+					//} );
 				}
 				
 			$('div#changingTabs').hide(10);
 			return false;
-        });
+        });*/
 		
 		/*$('#inRegionTab ul li a').click(function() {    
 				
