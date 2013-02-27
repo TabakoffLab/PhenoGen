@@ -215,7 +215,7 @@ sub createXMLFile
 			my $cntMatchingProbesets=0;
 			my $cntMatchingIntronProbesets=0;
 			foreach(@probesetHOH){
-				#if($exonStart<$exonStop){# if gene is in the forward direction
+				
 				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
 					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
 				       and
@@ -232,25 +232,7 @@ sub createXMLFile
 						    $probesetHOH[$cntProbesets];
 					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
 				    }
-				#}else{# gene is in reverse direction
-				#    if((($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
-				#    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
-				#    and
-				#	$probesetHOH[$cntProbesets]{strand}==$tmpStrand
-				#    ){
-				#	    #This is a probeset overlapping the current exon
-				#	    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
-				#	    $cntMatchingProbesets=$cntMatchingProbesets+1;
-				#    }elsif((($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
-				#	    ($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop))
-				#	and
-				#	$probesetHOH[$cntProbesets]{strand}==$tmpStrand
-				#    ){
-				#	    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-				#		    $probesetHOH[$cntProbesets];
-				#	    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-				#    }
-				#}
+				
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
@@ -285,16 +267,16 @@ sub createXMLFile
 		my ($geneName, $geneRegion, $geneStart, $geneStop,$geneStrand) = getFeatureInfo($gene);
 		my $geneChrom = "chr$geneRegion";
 		my $found=0;
-		#print "Find: $geneName\n";
+		print "Find: $geneName\n";
 		foreach my $testName (@addedGeneList){
-		    #print "$testName:$geneName ";
+		    print "$testName:$geneName ";
 		    if($testName eq $geneName){
-			#print "Found";
+			print "Found";
 			$found=1;
 		    }else{
-			#print "Not found";
+			print "Not found";
 		    }
-		    #print "\n";
+		    print "\n";
 		}
 
 	    if(length($geneRegion)<3&&$found==0){

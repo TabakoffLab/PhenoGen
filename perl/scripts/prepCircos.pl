@@ -89,7 +89,7 @@ sub createCircosConfFile{
 	print CONFFILE '<<include '.$genericConfLocation2.'ticks.conf>>'."\n";
 
 	if($organism eq 'Rn'){
-		print CONFFILE 'karyotype   = '.$karyotypeLocation.'karyotype.rat.rn4.txt'."\n";
+		print CONFFILE 'karyotype   = '.$karyotypeLocation.'karyotype.rat.rn5.txt'."\n";
 	}
 	elsif($organism eq 'Mm'){
 		 print CONFFILE 'karyotype   = '.$karyotypeLocation.'karyotype.mouse.mm9.txt'."\n";

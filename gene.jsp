@@ -42,7 +42,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 
 <% 
-
+	
 	//GeneDataTools gdt=new GeneDataTools();
     gdt.setSession(session);
 	
@@ -98,6 +98,23 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 			panel="ILS/ISS";
 			fullOrg="Mus_musculus";
 		}
+	}
+	String[] tissuesList1=new String[1];
+	String[] tissuesList2=new String[1];
+	if(myOrganism.equals("Rn")){
+		tissuesList1=new String[4];
+		tissuesList2=new String[4];
+		tissuesList1[0]="Brain";
+		tissuesList2[0]="Whole Brain";
+		tissuesList1[1]="Heart";
+		tissuesList2[1]="Heart";
+		tissuesList1[2]="Liver";
+		tissuesList2[2]="Liver";
+		tissuesList1[3]="Brown Adipose";
+		tissuesList2[3]="Brown Adipose";
+	}else{
+		tissuesList1[0]="Brain";
+		tissuesList2[0]="Whole Brain";
 	}
 	
 	if(request.getParameter("auto")!=null){

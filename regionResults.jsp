@@ -42,25 +42,6 @@ var ucscgeneID="";
 		}
 	}
 	
-	
-	String[] tissuesList1=new String[1];
-	String[] tissuesList2=new String[1];
-	if(myOrganism.equals("Rn")){
-		tissuesList1=new String[4];
-		tissuesList2=new String[4];
-		tissuesList1[0]="Brain";
-		tissuesList2[0]="Whole Brain";
-		tissuesList1[1]="Heart";
-		tissuesList2[1]="Heart";
-		tissuesList1[2]="Liver";
-		tissuesList2[2]="Liver";
-		tissuesList1[3]="Brown Adipose";
-		tissuesList2[3]="Brown Adipose";
-	}else{
-		tissuesList1[0]="Brain";
-		tissuesList2[0]="Whole Brain";
-	}
-	
 	String tmpURL=genURL.get(0);
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
