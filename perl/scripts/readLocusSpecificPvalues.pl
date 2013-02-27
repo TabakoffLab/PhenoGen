@@ -29,7 +29,7 @@ sub readLocusSpecificPvalues{
 	#INPUT VARIABLES: $probeID, $organism
 
 	# Read inputs
-	my($probeID,$organism,$chromosomeListRef)=@_;   
+	my($probeID,$organism,$chromosomeListRef,$dsn,$usr,$passwd)=@_;   
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# $hostname is used to determine the connection to the database.
@@ -44,44 +44,10 @@ sub readLocusSpecificPvalues{
 	#Initializing Array
 
 	my @eqtlAOH; # array of hashes containing location specific eqtl data
-		
-	#Set up to read the Locus Specific Pvalue information from three tables in the database.
-	my $host = '//phenogen.ucdenver.edu';
-	my $port = '1521';
-	my ($service_name, $platform, $usr, $passwd);
-	if($hostname eq 'amc-kenny.ucdenver.pvt'){
-		$service_name = 'dev.ucdenver.pvt';
-		$platform = 'Oracle';
-		$usr = 'INIA';
-		$passwd = 'INIA_dev';
-	}
-	elsif($hostname eq 'compbio.ucdenver.edu'){
-		$service_name = 'test.ucdenver.pvt';
-		$platform = 'Oracle';
-		$usr = 'INIA';
-		$passwd = 'INIA_test';
-	}
-	elsif($hostname eq 'phenogen.ucdenver.edu'){
-		$service_name = 'prod.ucdenver.pvt';
-		$platform = 'Oracle';
-		$usr = 'INIA';
-		$passwd = 'INIA_olleH';
-	}
-	else{
-		die("Unrecognized Hostname:",$hostname,"\n");
-	}
 
 	my $locationSpecificEQTLTablename = 'Location_Specific_EQTL';
 	my $snpTablename = 'SNPS';
 	my $chromosomeTablename = 'Chromosomes';
-	
-	# DATA SOURCE NAME
-	my $dsn = "dbi:$platform:$service_name";
-	if($debugLevel >= 1){
-		print "dsn: $dsn \n";
-		print "usr: $usr \n";
-		print "passwd: $passwd \n";
-	}
 	
 	# PERL DBI CONNECT
 	my $connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");

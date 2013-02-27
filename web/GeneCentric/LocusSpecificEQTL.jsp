@@ -6,7 +6,9 @@
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("tsmsselect.css");	
-
+	ArrayList<String> geneSymbol=new ArrayList<String>();
+	int selectedGene=0;
+	String gcPath="";
 %>
 
 
