@@ -56,7 +56,7 @@ sub readAffyProbesetDataFromDB{
 
 	$probesetTablename = 'Affy_Exon_ProbeSet';
 	$probeTablename = 'Affy_Exon_Probes';
-	$heritTablename = 'Probeset_Hecrit_Dabg';
+	$heritTablename = 'Probeset_Herit_Dabg';
 	$chromosomeTablename = 'Chromosomes';
 	
 	# DATA SOURCE NAME

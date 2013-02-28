@@ -17,9 +17,10 @@ sub addAlternateID{
 	my $debugging = 0; # Set this variable to 1 or 2 to print out debugging information
 
 	# Read inputs
-	my($GeneHOHRef, $cntGenes, $bedOutputFileName, $twoTrackOutputFileName, $bigBedOutputFileName,$species) = @_; 
+	my($GeneHOHRef, $cntGenes, $bedOutputFileName, $twoTrackOutputFileName, $bigBedOutputFileName,$species,$probesetRef) = @_; 
 	# Dereference the hash and array
 	my %GeneHOH = %$GeneHOHRef;
+	my @probeset=@$probesetRef;
 	
 	
 	# Make an array of hashes for exons corresponding to the current gene.
@@ -216,11 +217,35 @@ sub addAlternateID{
 		
 	}
 	elsif($species eq 'Rat'){
+		my $coreColor="255,0,0";
+		my $fullColor="0,100,0";
+		my $extendedColor="0,0,255";
+		my $cntColor=0;
+		print TWOFILE 'track db=rn5'." name=\"All Probesets\" ";
+		print TWOFILE "description=\"All Probesets: Red=Core Blue=Extended Green=Full\" ";
+		print TWOFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
+		my $curInd=0;
+		foreach(@probeset){
+			my $strand=".";
+			if($probeset[$curInd]{strand}==-1){
+				$strand="-";
+			}elsif($probeset[$curInd]{strand}==1){
+				$strand="+";
+			}
+			my $color=$fullColor;
+			if($probeset[$curInd]{type} eq 'core'){
+				$color=$coreColor;
+			}elsif($probeset[$curInd]{type} eq 'extended'){
+				$color=$extendedColor;
+			}
+			if($probeset[$curInd]{start}>0&&$probeset[$curInd]{stop}>0){
+				print TWOFILE $probeset[$curInd]{chromosome}."\t".$probeset[$curInd]{start}."\t".$probeset[$curInd]{stop}."\t".$probeset[$curInd]{ID}."\t0\t$strand\t".$probeset[$curInd]{start}."\t".$probeset[$curInd]{stop}."\t".$color."\n";
+			}
+			$curInd++;
+		}
+		$cntColor++;
 		
-		print TWOFILE 'track db=rn4 type=bigBed name="AffyRatProbesets" ';
-		print TWOFILE 'description="Affy Rat Exon Probesets: Red=Core Green=Full Blue=Extended" ';
-		print TWOFILE 'visibility=3 itemRgb=On bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/ratBigBed.bb'."\n";
-		print TWOFILE 'track db=rn4 type=bigBed name="Exons_';
+		print TWOFILE 'track db=rn5 type=bigBed name="Exons_';
 		print TWOFILE $GeneHOH{Gene}[$cntGenes]{ID}.'" ';
 		print TWOFILE 'description="Exons For Gene '.$GeneHOH{Gene}[$cntGenes]{ID}.'" visibility=3 itemRgb=On bigDataUrl=';
 		print TWOFILE 'http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/'.$bigBedOutputFileName;

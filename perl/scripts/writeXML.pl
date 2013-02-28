@@ -321,7 +321,7 @@ sub createXMLFile
 		my $bigBedOutputFileName = $bedOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".bb";
 		my $bigBedOutputFileNameNoPath = $GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".bb";
 		my $twoTrackOutputFileName = $bedOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".2tracks";
-		$GeneHOHRef = addAlternateID(\%GeneHOH, $cntGenes,$newBedOutputFileName,$twoTrackOutputFileName,$bigBedOutputFileNameNoPath,$species);
+		$GeneHOHRef = addAlternateID(\%GeneHOH, $cntGenes,$newBedOutputFileName,$twoTrackOutputFileName,$bigBedOutputFileNameNoPath,$species,\@probesetHOH);
 		%GeneHOH = %$GeneHOHRef;
 		# Convert the bed file to a big bed file
 		# The big bed file must end up in the directory /data/ucsc on phenogen
@@ -340,9 +340,9 @@ sub createXMLFile
 		}
 		$cntGenes=$cntGenes+1;
 		#delete files that are no longer needed.  PNGs are saved so the files to generate them are no longer needed.
-		unlink($newBedOutputFileName);
-		unlink($bigBedOutputFileName);
-		unlink($twoTrackOutputFileName);
+		#unlink($newBedOutputFileName);
+		#unlink($bigBedOutputFileName);
+		#unlink($twoTrackOutputFileName);
 	    }# if to process only if chromosome is valid
 	} # loop through genes
 	# create xml object
