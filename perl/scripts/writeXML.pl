@@ -340,9 +340,9 @@ sub createXMLFile
 		}
 		$cntGenes=$cntGenes+1;
 		#delete files that are no longer needed.  PNGs are saved so the files to generate them are no longer needed.
-		#unlink($newBedOutputFileName);
-		#unlink($bigBedOutputFileName);
-		#unlink($twoTrackOutputFileName);
+		unlink($newBedOutputFileName);
+		unlink($bigBedOutputFileName);
+		unlink($twoTrackOutputFileName);
 	    }# if to process only if chromosome is valid
 	} # loop through genes
 	# create xml object
