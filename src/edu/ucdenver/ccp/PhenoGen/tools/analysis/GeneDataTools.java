@@ -623,7 +623,7 @@ public class GeneDataTools {
             String[] url=this.createImage("probe,numExonPlus,numExonMinus,refseq",organism,outputDir,chrom,minCoord,maxCoord);
             if(url!=null){
                 completedSuccessfully=true;
-                generateGeneRegionFiles( organism,folderName, RNADatasetID, arrayTypeID);
+                generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);
             }
             getUCSCUrl(url[1].replaceFirst(".png",".url"));
             //boolean ucscComplete=getUCSCUrls(ensemblID1);
