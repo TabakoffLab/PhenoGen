@@ -71,29 +71,96 @@ if(displayNoEnsembl){ %>
     	<div class="geneimageControl">
       		
           	<form>
-            Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
-            <input name="trackcbx" type="checkbox" id="probeCBX" value="probe" checked="checked" /> All Non-Masked Probesets
-            <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="filterprobe" />Probsets Detected Above Background >1% of samples
-            <BR />
-            <input name="trackcbx" type="checkbox" id="exonPlusCBX" value="numExonPlus" checked="checked" />+ Strand Protein Coding/PolyA+
-            <input name="trackcbx" type="checkbox" id="exonMinusCBX" value="numExonMinus" checked="checked" />- Strand Protein Coding/PolyA+
-            <input name="trackcbx" type="checkbox" id="exonUkwnCBX" value="numExonUkwn" />Unknown Strand Protein Coding/PolyA+
-            <BR />
-            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" />Long Non-Coding/NonPolyA+
-            <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" /> Small RNA 
-           	<input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
-             <select name="trackSelect" id="snpSelect">
-            	<option value="1" selected="selected">Dense</option>
-                <option value="3" >Pack</option>
-            </select>
-            <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
-            <select name="trackSelect" id="helicosSelect">
-            	<option value="1" selected="selected">Dense</option>
-                <option value="2" >full</option>
-            </select>
-            <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs
-            <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" checked="checked" /> RefSeq Transcripts
-                
+            <table style="text-align:left; width:100%;">
+            	<TR><TD colspan="3">
+            Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div><BR />
+            	</TD></TR>
+               	<TR>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="probeCBX" value="probe" checked="checked" /> All Non-Masked Probesets
+                <select name="trackSelect" id="probeSelect">
+                    <option value="1" >Dense</option>
+                    <option value="3" selected="selected">Pack</option>
+                    <option value="2" >Full</option>
+                </select>
+                </TD>
+                <TD colspan="2">
+                <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="filterprobe" />Probsets Detected Above Background >1% of samples
+                <select name="trackSelect" id="filterprobeSelect">
+                    <option value="1" >Dense</option>
+                    <option value="3" selected="selected">Pack</option>
+                    <option value="2" >Full</option>
+                </select>
+                </TD>
+            </TR>
+            <TR>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="exonPlusCBX" value="numExonPlus" checked="checked" />+ Strand Protein Coding/PolyA+
+                <select name="trackSelect" id="exonPlusSelect">
+                    <option value="1" >Dense</option>
+                    <option value="3" selected="selected">Pack</option>
+                    <option value="2" >Full</option>
+                </select>
+                </TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="exonMinusCBX" value="numExonMinus" checked="checked" />- Strand Protein Coding/PolyA+
+                <select name="trackSelect" id="exonMinusSelect">
+                    <option value="1" >Dense</option>
+                    <option value="3" selected="selected">Pack</option>
+                    <option value="2" >Full</option>
+                </select>
+                </TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="exonUkwnCBX" value="numExonUkwn" />Unknown Strand Protein Coding/PolyA+
+                <select name="trackSelect" id="exonUkwnSelect">
+                    <option value="1" >Dense</option>
+                    <option value="3" selected="selected">Pack</option>
+                    <option value="2" >Full</option>
+                </select>
+                </TD>
+            </TR>
+            <TR>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" />Long Non-Coding/NonPolyA+
+                <select name="trackSelect" id="noncodingSelect">
+                    <option value="1" >Dense</option>
+                    <option value="3" selected="selected">Pack</option>
+                    <option value="2" >Full</option>
+                </select>
+                </TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" /> Small RNA
+                <select name="trackSelect" id="smallncSelect">
+                    <option value="1" >Dense</option>
+                    <option value="3" selected="selected">Pack</option>
+                    <option value="2" >Full</option>
+                </select> 
+                </TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
+                 <select name="trackSelect" id="snpSelect">
+                    <option value="1" selected="selected">Dense</option>
+                    <option value="3" >Pack</option>
+                    <option value="2" >Full</option>
+                </select>
+                </TD>
+            </TR>
+            <TR>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
+                <select name="trackSelect" id="helicosSelect">
+                    <option value="1" selected="selected">Dense</option>
+                    <option value="2" >Full</option>
+                </select>
+                </TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs
+                </TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" checked="checked" /> RefSeq Transcripts
+                 </TD>
+             </TR>
+             </table>   
              </form>
          
 		 

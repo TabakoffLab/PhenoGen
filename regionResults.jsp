@@ -235,23 +235,60 @@ var ucscgeneID="";
     	<div class="geneimageControl">
       		
           	<form>
+            <table style="text-align:left; width:100%;">
+            	<TR><TD colspan="4">
             Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
+            </TD>
+            </TR>
+            <TR><TD>
             <input name="trackcbx" type="checkbox" id="codingCBX" value="coding" checked="checked" /> Protein Coding/PolyA+
+            <select name="trackSelect" id="codingSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >full</option>
+            </select>
+            </TD>
+            <TD>
             <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" />Long Non-Coding/NonPolyA+
+            <select name="trackSelect" id="noncodingSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >full</option>
+            </select>
+            </TD>
+            <TD>
             <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA 
-           <BR />
+            <select name="trackSelect" id="smallncSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >full</option>
+            </select>
+            </TD>
+            <TD></TD>
+            </TR>
+           	<TR>
+            <TD>
            	<input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
              <select name="trackSelect" id="snpSelect">
             	<option value="1" selected="selected">Dense</option>
                 <option value="3" >Pack</option>
             </select>
+            </TD>
+            <TD>
             <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
             <select name="trackSelect" id="helicosSelect">
             	<option value="1" selected="selected">Dense</option>
                 <option value="2" >full</option>
             </select>
+            </TD>
+            <TD>
             <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs
+            </TD>
+            <TD>
             <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts
+            </TD>
+            </TR>
+            </table>
               <!--<label style="color:#000000; margin-left:10px;">
                 Transcripts:</label>
                 <select name="transcriptSelect" id="transcriptSelect">

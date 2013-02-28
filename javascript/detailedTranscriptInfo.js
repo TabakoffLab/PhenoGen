@@ -123,15 +123,13 @@ function updateTrackString(){
 			}else{
 				trackString=trackString+","+$(this).val();
 			}
-			if($(this).attr("id")=="snpCBX"){
-				trackString=trackString+"."+$("#snpSelect").val();
-			}else if($(this).attr("id")=="helicosCBX"){
-				trackString=trackString+"."+$("#helicosSelect").val();
+			var idStr=new String($(this).attr("id"));
+			var prefix=idStr.substr(0,idStr.length-3);
+			if($("#"+prefix+"Select").length==1){
+				trackString=trackString+"."+$("#"+prefix+"Select").val();
 			}
 		}
-		
 	});
-	
 }
 
 function updateUCSCImage(){
