@@ -214,7 +214,7 @@ if(displayNoEnsembl){ %>
 <div class="cssTab" id="mainTab" >
     <ul>
       <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?" style="top:-30px; z-index:10;">Features<BR />Physically Located Gene Region</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;z-index:11;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
-      <li ><a id="qtlTabID" href="#qtlList" title="" style="top:-30px; z-index:10;">eQTL</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;z-index:11;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="qtlTabID" href="#qtlList" title="" style="top:-30px; z-index:10;width:75px;">eQTL</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;z-index:11;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li ><a id="affyTabID" href="#affyExon" title="" style="top:-30px;z-index:10;">Affy Exon<BR />Probeset Details</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;z-index:11;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       
      </ul>
@@ -974,7 +974,7 @@ if(displayNoEnsembl){ %>
 	});
 </script>
 <div id="qtlList" class="modalTabContent" style=" display:none; position:relative;top:27px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:1000px;">
-	<%@ include file="/web/GeneCentric/lsEQTLPart.jsp" %>
+	<%@ include file="/web/GeneCentric/geneEQTLPart.jsp" %>
 </div>
 
 <script type="text/javascript">
