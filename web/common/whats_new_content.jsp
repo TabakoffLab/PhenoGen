@@ -8,6 +8,75 @@
  *      
 --%>
 
+
+<div class="whats_new version"><p><h3>Version: v2.9</h3><BR /> Updated:2/28/2013</p></div>
+				<ul>
+                <li>
+					<span class="highlight-dark">New Rat Genome:</span> All of our public data has been updated to Rn5.  Probes were aligned to the rat genome version 5 and then new masks were generated.  All of the datasets were renormalized to use the new masks.  Previous results are still available, but new analysis will need to use the new datasets. 
+                </li><BR /> 
+				<li> 
+                    <span class="highlight-dark">Detailed Transcription Information:</span>
+                    <ul >
+                    	<li>Regions have been updated to include more RNA-Seq data(Rat only):
+                        	<ul style="padding-left:30px;">
+                                        <li><div class="clicker" name="branch7">UCSC Image allows control of individual tracks  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch7">
+                                        	The image now allows you to turn tracks off and on idividually as well as gives you control of the density of the track.
+                                        </span>
+                                        <li><div  class="clicker" name="branch8">Several New Image Tracks(Rat only)&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch8">
+                                        	There are new tracks available for the Rat:
+                                            	<ul>
+                                                	<li>Small RNAs from Brain RNA-Seq.</li>
+                                                    <li>Long Non-Coding RNAs from Brain RNA-Seq</li>
+                                                    <li>SNP/Indels- from DNA Sequencing of the BN-Lx and SHR strains.</li>
+                                                    <li>Helicos Read Counts - Read Counts from the Helicos Brain RNA-Seq</li>
+                                                </ul>
+                                        </span>
+                                        <li><div  class="clicker" name="branch9">Features located in region table includes additional information &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch9">
+                                        	The table include the following changes IDs used in the image are listed in the table, columns to allow you to sort the table based on tracks in the image, rows in the table are color coded to match the track in the image, SNP/Indel counts that occur within an exon for each gene(Rat only), Small RNA (sequence and total read counts, Rat only).  The links have been added so now you can get to NCBI, UniProt, RGD, MGI, and  Allen Brain Atlas pages for each gene listed in the tables.                                       </span>
+                                        
+                                     </ul>
+                        </li>
+                        <li>Gene views have been updated to include the following:
+                        	<ul style="padding-left:30px;">
+                            			<li><div class="clicker" name="branch10">The list of features in a region is now displayed for the region of a gene. &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch10">
+                                        	All of the features that would be listed for a region can now be viewed when they fall within the region covered by a gene.  So Long-Noncoding RNAs and Small RNAs that overlap with a gene are listed in the table.  
+                                        </span>
+                                        <li><div class="clicker" name="branch11">UCSC Image allows control of individual tracks  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch11">
+                                        	The image now allows you to turn tracks off and on idividually as well as gives you control of the density of the track.
+                                        </span>
+                                        <li><div  class="clicker" name="branch12">New Several Image Tracks(Rat only)&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch12">
+                                        	There are new tracks available for the Rat:
+                                            	<ul>
+                                                	<li>Small RNAs from Brain RNA-Seq.</li>
+                                                    <li>Long Non-Coding RNAs from Brain RNA-Seq</li>
+                                                    <li>SNP/Indels- from DNA Sequencing of the BN-Lx and SHR strains.</li>
+                                                    <li>Helicos Read Counts - Read Counts from the Helicos Brain RNA-Seq</li>
+                                                </ul>
+                                        </span>
+                                        <li><div  class="clicker" name="branch13">eQTLs for a gene are displayed on the same page&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch13">
+                                        	Instead of opening in a seperate page you can now navigate between features found in the gene region, eQTLs and Detailed Affy Probeset information using tabs on the page.
+                                        </span>
+                                     </ul>
+                        </li>
+                        <li style="list-style-type:none;"><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" class="button" style="width:140px;">Try it out</a></li>
+                    </ul>
+                </li><BR />
+                
+                <li>
+					<span class="highlight-dark">Rat Parental Strian DNA Sequence Available:</span> The parental strains for the Public Rat Array/RNS-Seq datasets is available for download and snps/indels from the sequencing can be displayed in the image on the Detailed Transcription Information page. <a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp" class="button" style="width:180px;">View in downloads</a>
+                </li><BR />           
+				</ul>
+
+
+				<hr/>
+
 <div class="whats_new version"><p><h3>Version: v2.8</h3><BR /> Updated:12/16/2012</p></div>
 
 				<ul>
@@ -58,7 +127,7 @@
                 </li><BR />           
 				</ul>
 
-				<br/>
+				<hr/>
             			
                         
 <div class="whats_new version"><p><h3>Version: v2.7</h3><BR /> Updated:9/1/2012</p></div>

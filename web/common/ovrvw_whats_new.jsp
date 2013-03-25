@@ -20,8 +20,13 @@
 		
 	<h2>What's New</h2>
     <div id="overview-wrap"  >
-                	<div id="overview-content-wide">
+    <div><img src="<%=imagesDir%>detailed_region_ex.jpg" alt="Detailed Region Example" style="display:inline-block;width:45%;float:right;">
+                	<div id="overview-content-wide" style="display:inline-block;top:-440px; position:relative;">
+                    
             			<%@ include file="/web/common/whats_new_content.jsp" %>
+                        </div>
+                        
+</div>
             	</div> <!-- // end overview-wrap -->
 	</div><!-- // end welcome -->
     

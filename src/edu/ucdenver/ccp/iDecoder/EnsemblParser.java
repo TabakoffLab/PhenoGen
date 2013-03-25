@@ -136,6 +136,9 @@ public class EnsemblParser extends InputFileParser {
         String secondType=ENSEMBL_ID_TYPE;
         if(inputFilename.indexOf("UniProt")>-1){
             secondType=GENE_SYMBOL_TYPE;
+        }else if(inputFilename.indexOf("affy")>-1){
+            secondType=AFFY_ID_TYPE;
+            
         }
 
 	while (reader.ready()) {

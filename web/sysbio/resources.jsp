@@ -20,6 +20,7 @@
 	Resource[] myExpressionResources = myResource.getExpressionResources();
 	Resource[] myMarkerResources = myResource.getMarkerResources();
 	Resource[] myRNASeqResources = myResource.getRNASeqResources();
+	Resource[] myDNASeqResources = myResource.getDNASeqResources();
 	Resource[] myGenotypeResources = myResource.getGenotypingResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
@@ -159,6 +160,37 @@
                 <td> <%=resource.getTechType()%></td>
                 <td> <%=resource.getRNAType()%></td>
                 <td> <%=resource.getReadType()%></td>     
+				<% if (resource.getSAMDataFiles() != null && resource.getSAMDataFiles().length > 0) { %>
+					<td class="actionIcons">
+						<div class="linkedImg download" type="rnaseq"><div>
+					</td>
+				<% } else { %>
+                                	<td>&nbsp;</td>
+				<% } %>
+				</tr> 
+			<% } %>
+			</tbody>
+		</table>
+        
+        
+        <BR>
+		<BR>
+        <div class="title"> DNA Sequencing Data Files</div>
+		      <table id="dnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
+            		<thead>
+                               <tr class="col_title">
+					<th>Organism</th>
+					<th>Strain</th>
+                    <th>Seq. Tech.</th>
+					<th>.fasta Files</th>
+				</tr>
+			</thead>
+			<tbody>
+			<% for (Resource resource: myDNASeqResources) { %> 
+				<tr id="<%=resource.getID()%>">  
+				<td> <%=resource.getOrganism()%> </td>
+				<td> <%=resource.getSource()%></td>
+                <td> <%=resource.getTechType()%></td>  
 				<% if (resource.getSAMDataFiles() != null && resource.getSAMDataFiles().length > 0) { %>
 					<td class="actionIcons">
 						<div class="linkedImg download" type="rnaseq"><div>

@@ -160,17 +160,17 @@ public class AffymetrixParser extends InputFileParser {
 
             // Since gene symbol and Ensembl IDs are primary IDs, as well as
             // being link IDs, write them to both the info and links files.
-            for (int i = 0; i < geneSymbols.length; i++) {
+            /*for (int i = 0; i < geneSymbols.length; i++) {
                 String geneSymbol = geneSymbols[i];
-                writeToInfoFile(taxonID, GENE_SYMBOL_TYPE, geneSymbol,chr,loc);
+                //writeToInfoFile(taxonID, GENE_SYMBOL_TYPE, geneSymbol,chr,loc);
                 writeToLinksFile(AFFY_ID_TYPE, affyID, GENE_SYMBOL_TYPE, geneSymbol);
-            }
+            }*/
 
-            for (int i = 0; i < ensemblIDs.length; i++) {
+            /*for (int i = 0; i < ensemblIDs.length; i++) {
                 String ensemblID = ensemblIDs[i];
-                writeToInfoFile(taxonID, ENSEMBL_ID_TYPE, ensemblID,chr,loc);
-                writeToLinksFile(AFFY_ID_TYPE, affyID, ENSEMBL_ID_TYPE, ensemblID);
-            }
+                //writeToInfoFile(taxonID, ENSEMBL_ID_TYPE, ensemblID,chr,loc);
+                //writeToLinksFile(AFFY_ID_TYPE, affyID, ENSEMBL_ID_TYPE, ensemblID);
+            }*/
 
             // The rest are link IDs only
             writeCollectionToLinksFile(AFFY_ID_TYPE, affyID, UNIGENE_ID_TYPE,

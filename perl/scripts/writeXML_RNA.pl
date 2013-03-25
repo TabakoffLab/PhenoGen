@@ -242,9 +242,21 @@ sub createXMLFile
 	#get RNA isoform Gene list
 	$prevMin=$minCoord-1000;
 	$prevMax=$maxCoord+1000;
+	#read SNPs/Indels
+	
+	
+	my %snpHOH;
+	my @snpList=();
 	
 	if($shortSpecies eq 'Rn'){
-	
+	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    %snpHOH=%$snpRef;
+	    my $snpListRef=$snpHOH{Snp};
+	    eval{
+		@snpList=@$snpListRef;
+	    }or do{
+		@snpList=();
+	    };
 	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
 	    #find global min,max
 	    #print "gene size ".$$isoformHOH{Gene}[0]."\n";
@@ -313,12 +325,7 @@ sub createXMLFile
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoHeritDABG("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
 	
-	#read SNPs/Indels
 	
-	my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
-	my %snpHOH=%$snpRef;
-	my $snpListRef=$snpHOH{Snp};
-	my @snpList=@$snpListRef;
 	
 	#process RNA genes/transcripts and assign probesets.
 	$tmpGeneArray=$$isoformHOH{Gene};

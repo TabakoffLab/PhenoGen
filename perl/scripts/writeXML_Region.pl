@@ -181,12 +181,19 @@ sub createXMLFile
 	
 	#read SNPs/Indels
 	
-	my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
-	my %snpHOH=%$snpRef;
-	my $snpListRef=$snpHOH{Snp};
-	my @snpList=@$snpListRef;
+	my %snpHOH;
+	my @snpList=();
 	
 	if($shortSpecies eq 'Rn'){
+	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    %snpHOH=%$snpRef;
+	    my $snpListRef=$snpHOH{Snp};
+	    eval{
+		@snpList=@$snpListRef;
+	    }or do{
+		@snpList=();
+	    };
+	    
 	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1);
 	    my $tmpGeneArray=$$isoformHOH{Gene};
 	    #process RNA genes/transcripts and assign probesets.
