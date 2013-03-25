@@ -97,12 +97,28 @@ function IsGroupArraysFormComplete() {
 	// have to multiply by 1 to turn into integer
 	var numGroupsVal = $("input[name='numGroups']").val() * 1;
 	for (var i=0; i<numGroupsVal + 1; i++) {
+		var groupNumAssigned=0;
 		var groupLabelName = 'groupLabel' + i;
 		var groupLabel = $("input[id='" + groupLabelName + "']");
 		if (groupLabel.val() == 'Name this Group' ||
 			groupLabel.val() == '') {
 			alert('You must enter a name for this group.')
 			groupLabel.focus();
+			return false;
+		}
+		$("td."+groupLabelName+" input[type='radio']").each(
+			function(){
+				if($(this).is(":checked")){
+					groupNumAssigned++;
+				}
+			}
+		);
+		if(i>0 && groupNumAssigned==0){
+			if(numGroupsVal==2){
+				alert("You have not assigned any arrays to Group:"+groupLabel.val()+" You cannot proceed with only one group.");
+			}else{
+				alert("You have not assigned any arrays to Group:"+groupLabel.val()+" You should delete this group if you do not have any arrays to assign to the group.");
+			}
 			return false;
 		}
 	}
@@ -125,9 +141,11 @@ function replicateWarning() {
 function checkButtonUsedToSubmit(form, numRows){
 	if (action != null && action.equals("Skip >")) {	
 		return true;
+	}else if (action != null){
+ 		return checkGroupRadioButtons(form, numRows);
 	}else{
-		return checkGroupRadioButtons(form, numRows);
-	}
+		return false;
+ 	}
 }
 
 function checkGroupRadioButtons(form, numRows){
