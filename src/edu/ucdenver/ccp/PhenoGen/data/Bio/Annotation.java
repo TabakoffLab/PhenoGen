@@ -14,8 +14,13 @@ public class Annotation {
     String shortSource="";
     String value="";
     String type="transcript";
+    String reason="";
     int id=0;
     
+    public Annotation(String source, String value,String type,String reason){
+        this(source,value,type);
+        this.reason=reason;
+    }
     public Annotation(int id,String source, String value,String type){
         this(source,value,type);
         this.id=id;
@@ -162,7 +167,7 @@ public class Annotation {
     public String getEnsemblGeneID(){
         String ret=null;
         String[] values=value.split(":");
-        if(this.shortSource.equals("Ensembl")){
+        if(this.shortSource.equals("Ensembl")||this.shortSource.equals("AKA")){
             ret=values[0];
         }
         return ret;
@@ -176,4 +181,16 @@ public class Annotation {
         }
         return ret;
     }
+    public String getAKAToolTip(){
+        String[] tmp=value.split(":");
+        String toDisplay="";
+        if(tmp!=null && tmp.length==3){
+            if(!tmp[1].equals("")){
+                toDisplay="Transcript Match: "+tmp[1]+" ";
+            }
+        }
+        toDisplay=toDisplay+reason;
+        return toDisplay;
+    }
+   
 }

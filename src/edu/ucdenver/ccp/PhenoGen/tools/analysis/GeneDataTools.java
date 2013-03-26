@@ -453,7 +453,8 @@ public class GeneDataTools {
         }
         this.setPublicVariables(error,folderName);
         ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
-        ret=this.mergeOverlapping(ret);
+        //ret=this.mergeOverlapping(ret);
+        ret=this.mergeAnnotatedOverlapping(ret);
         this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID);
         //ArrayList<String> tissues=new ArrayList<String>();
         //ArrayList<EQTL> probeeQTLs=this.getProbeEQTLs(minCoord, maxCoord, chromosome, arrayTypeID,tissues);
@@ -1706,6 +1707,33 @@ public class GeneDataTools {
         }
         for(int i=0;i<singleExon.size();i++){
             mainGenes.add(singleExon.get(i));
+        }
+        return mainGenes;
+    }
+    
+    public ArrayList<Gene> mergeAnnotatedOverlapping(ArrayList<Gene> initialList){
+        ArrayList<Gene> mainGenes=new ArrayList<Gene>();
+        ArrayList<Gene> rnaGenes=new ArrayList<Gene>();
+        ArrayList<Gene> singleExon=new ArrayList<Gene>();
+        HashMap<String,Gene> hm=new HashMap<String,Gene>();
+        for(int i=0;i<initialList.size();i++){
+            if(initialList.get(i).getSource().equals("Ensembl")){
+                mainGenes.add(initialList.get(i));
+                hm.put(initialList.get(i).getGeneID(),initialList.get(i));
+            }else{
+                rnaGenes.add(initialList.get(i));
+            }
+        }
+        for(int i=0;i<rnaGenes.size();i++){
+            String ens=rnaGenes.get(i).getEnsemblAnnotation();
+            if(hm.containsKey(ens)){
+                Gene tmpG=hm.get(ens);
+                ArrayList<Transcript> tmpTrx=rnaGenes.get(i).getTranscripts();
+                tmpG.addTranscripts(tmpTrx);
+            }else{
+                //add to main
+                mainGenes.add(rnaGenes.get(i)); 
+            }
         }
         return mainGenes;
     }

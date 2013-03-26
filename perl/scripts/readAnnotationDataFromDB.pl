@@ -62,7 +62,7 @@ sub readTranscriptAnnotationDataFromDB{
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
 	if(length($geneChrom) == 1){
-		$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name
+		$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name,rta.match_reason
 		from rna_transcripts_annot rta, rna_annot_src ras
 		where rta.source_id=ras.rna_annot_src_id
 		and rta.rna_transcript_id in
@@ -81,7 +81,7 @@ sub readTranscriptAnnotationDataFromDB{
 		order by rta.rna_transcript_id";
 	}
 	elsif(length($geneChrom) == 2) {
-		$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name
+		$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name,rta.match_reason
 		from rna_transcripts_annot rta, rna_annot_src ras
 		where rta.source_id=ras.rna_annot_src_id
 		and rta.rna_transcript_id in
@@ -113,24 +113,27 @@ sub readTranscriptAnnotationDataFromDB{
 	my $trID;
 	my $annotation;
 	my $src_name;
+	my $reason;
 	my $curCount=0;
 	my $previousID="";
 
 
-	$query_handle->bind_columns(\$trID,\$annotation,\$src_name);
+	$query_handle->bind_columns(\$trID,\$annotation,\$src_name,\$reason);
 # Loop through results, adding to array of hashes.
 	
 	while($query_handle->fetch()) {
 		if($trID eq $previousID){
 			$annotHOH{$trID}[$curCount]= {
 					source => $src_name,
-					annot_value=> $annotation
+					annot_value=> $annotation,
+					reason => $reason
 				};
 		}else{
 			$curCount=0;
 			$annotHOH{$trID}[$curCount]= {
 					source => $src_name,
-					annot_value=> $annotation
+					annot_value=> $annotation,
+					reason => $reason
 				};
 			$previousID=$trID;
 		}

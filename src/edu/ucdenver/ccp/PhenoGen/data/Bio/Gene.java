@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
  */
 
 public class Gene {
-    String geneID="",bioType="",chromosome="",strand="",geneSymbol="",source="",description="";
+    String geneID="",bioType="",chromosome="",strand="",geneSymbol="",source="",description="",ensemblAnnot="";
     long start=0,end=0,length=0,min=-1,max=-1;
     int probesetCountTotal=0,probesetCountEns=0,probesetCountRNA=0,heritCount=0,dabgCount=0;
     double exonCoverageEns=0,exonCoverageRna=0;
@@ -173,6 +173,10 @@ public class Gene {
         this.description = description;
     }
     
+    public String getEnsemblAnnotation(){
+        return this.ensemblAnnot;
+    }
+    
     
 
     public ArrayList<Transcript> getTranscripts() {
@@ -181,12 +185,36 @@ public class Gene {
 
     public void setTranscripts(ArrayList<Transcript> transcripts) {
         this.transcripts = transcripts;
-        this.setupSnps(transcripts);
+        if(transcripts!=null){
+            for(int i=0;i<transcripts.size();i++){
+                ArrayList<Annotation> annot=transcripts.get(i).getAnnotationBySource("AKA");
+                if(annot!=null && annot.size()>=1){
+                String geneID=annot.get(0).getEnsemblGeneID();
+                    if(this.ensemblAnnot.equals("")){
+                        ensemblAnnot=geneID;
+                    }else if(ensemblAnnot.equals(geneID)){
+
+                    }else{
+                        System.err.println("ERROR: Gene is assigned multiple ensembl genes:"+this.geneID+":"+ensemblAnnot+":"+geneID);               
+                    }
+                }
+            }
+            this.setupSnps(transcripts);
+        }
     }
     
     public void addTranscripts(ArrayList<Transcript> toAdd) {
         for(int i=0;i<toAdd.size();i++){
             transcripts.add(toAdd.get(i));
+            ArrayList<Annotation> annot=toAdd.get(i).getAnnotationBySource("AKA");
+            String geneID=annot.get(0).getEnsemblGeneID();
+            if(this.ensemblAnnot.equals("")){
+                ensemblAnnot=geneID;
+            }else if(ensemblAnnot.equals(geneID)){
+                
+            }else{
+                System.err.println("ERROR: Gene is assigned multiple ensembl genes:"+this.geneID+":"+ensemblAnnot+":"+geneID);               
+            }
         }
         this.setupSnps(toAdd);
     }
@@ -194,7 +222,19 @@ public class Gene {
     public void addTranscript(Transcript toAdd) {
             transcripts.add(toAdd);
             ArrayList<Transcript> tmp=new ArrayList<Transcript>();
+            tmp.add(toAdd);
             this.setupSnps(tmp);
+            ArrayList<Annotation> annot=toAdd.getAnnotationBySource("AKA");
+            if(annot!=null && annot.size()>0){
+                String geneID=annot.get(0).getEnsemblGeneID();
+                if(this.ensemblAnnot.equals("")){
+                    ensemblAnnot=geneID;
+                }else if(ensemblAnnot.equals(geneID)){
+
+                }else{
+                    System.err.println("ERROR: Gene is assigned multiple ensembl genes:"+this.geneID+":"+ensemblAnnot+":"+geneID);               
+                }
+            }
     }
     
     public int getTranscriptCountEns(){
@@ -761,7 +801,8 @@ public class Gene {
                 NamedNodeMap attrib=annotationNodes.item(z).getAttributes();
                 String source=attrib.getNamedItem("source").getNodeValue();
                 String value=attrib.getNamedItem("annot_value").getNodeValue();
-                Annotation tmp=new Annotation(source,value,"transcript");
+                String reason=attrib.getNamedItem("reason").getNodeValue();
+                Annotation tmp=new Annotation(source,value,"transcript",reason);
                 ret.add(tmp);
             }
         }

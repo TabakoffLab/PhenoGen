@@ -21,6 +21,7 @@ public class Transcript {
     ArrayList<Intron> introns=new ArrayList<Intron>();
     ArrayList<TranscriptElement> fullTranscript=new ArrayList<TranscriptElement>();
     ArrayList<Annotation> fullAnnotation=new ArrayList<Annotation>();
+    HashMap<String,ArrayList<Annotation>> annotBySource=new HashMap<String,ArrayList<Annotation>>();
     ArrayList<SequenceVariant> snps=new ArrayList<SequenceVariant>();
     String ID="";
     String strand="",category="";
@@ -73,6 +74,29 @@ public class Transcript {
     
     public void setAnnotation(ArrayList<Annotation> annot){
         this.fullAnnotation=annot;
+        if(fullAnnotation!=null){
+            for(int i=0;i<fullAnnotation.size();i++){
+                String source=fullAnnotation.get(i).getSource();
+                if(annotBySource.containsKey(source)){
+                    ArrayList<Annotation> tmp=annotBySource.get(source);
+                    tmp.add(fullAnnotation.get(i));
+                }else{
+                    ArrayList<Annotation> tmp=new ArrayList<Annotation>();
+                    tmp.add(fullAnnotation.get(i));
+                    annotBySource.put(source,tmp);
+                }
+            }
+        }
+    }
+    
+    public ArrayList<Annotation> getAnnotationBySource(String source){
+        ArrayList<Annotation> ret;
+        if(annotBySource.containsKey(source)){
+            ret=annotBySource.get(source);            
+        }else{
+            ret=new ArrayList<Annotation>();
+        }
+        return ret;
     }
     
     public ArrayList<Annotation> getAnnotation(){
@@ -97,6 +121,35 @@ public class Transcript {
     public String getID() {
         return ID;
     }
+    
+    public String getIDwToolTip(){
+        String ret="";
+        if(ID.startsWith("ENS")){
+            ret=ID;
+        }else{
+            ArrayList<Annotation> annot=this.getAnnotationBySource("AKA");
+            if(annot!=null && annot.size()==1){
+                ret="<span title=\""+annot.get(0).getAKAToolTip()+"\">"+ID+"</span>";
+            }else{
+                ret=ID;
+            }
+        }
+        return ret;
+    }
+    public String getMatchReason(){
+        String ret="";
+        if(ID.startsWith("ENS")){
+            ret="";
+        }else{
+            ArrayList<Annotation> annot=this.getAnnotationBySource("AKA");
+            if(annot!=null && annot.size()==1){
+                ret=annot.get(0).getAKAToolTip();
+            }else{
+                ret="";
+            }
+        }
+        return ret;
+    }   
 
     public ArrayList<Exon> getExons() {
         return exons;

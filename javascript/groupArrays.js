@@ -42,10 +42,10 @@ function setupPage() {
 var addedColumnWidth = 145;
 
 function deleteGroup( e ) {
-/* Need this if deleting groups from middle
+/* Need this if deleting groups from middle*/
 	var numGroupsField= $("input[name='numGroups']");
 	numGroupsField.val(numGroupsField.val() - 1);
-*/
+
     var selectors = e.data;
 
     var addedCols = $(this).parents("tr").find("th").size();

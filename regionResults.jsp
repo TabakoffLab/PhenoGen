@@ -379,23 +379,26 @@ var ucscgeneID="";
                                                     <option value="0.0001" <%if(forwardPValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
                                                     <option value="0.00001" <%if(forwardPValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
                                             </select>
-                                            Require an eQTL below cut-off<input name="chkbox" type="checkbox" id="rqQTLCBX" value="rqQTLCBX"/>
+                                            <!--Require an eQTL below cut-off<input name="chkbox" type="checkbox" id="rqQTLCBX" value="rqQTLCBX"/>-->
                             </td>
                         	<td>
                             	<div class="columnLeft">
+                                	RNA-Seq Transcript Matches
+                                    <input name="chkbox" type="checkbox" id="matchesCBX" value="matchesCBX" checked="checked"/><BR />
                                 	Gene ID
                                     <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /><BR />
                                     Description
                                     <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /><BR />
                                     BioType
-                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked" /><BR />
+                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked"/><BR />
                                     Tracks
                                     <input name="chkbox" type="checkbox" id="geneTracksCBX" value="geneTracksCBX" checked="checked" /><BR />
-                                    Location and Strand
-                                    <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /><BR />
+                                    
                                    
                                 </div>
                                 <div class="columnRight">
+                               		Location and Strand
+                                    <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /><BR />
                                  	Heritability
                                     <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /><BR />
                                 	Detection Above Background
@@ -451,7 +454,7 @@ var ucscgeneID="";
           	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
                 <THEAD>
                     <tr>
-                        <th colspan="11" class="topLine noSort noBox"></th>
+                        <th colspan="12" class="topLine noSort noBox"></th>
                         <th colspan="4" class="center noSort topLine">Transcript Information</th>
                         <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
@@ -462,7 +465,7 @@ var ucscgeneID="";
                             )<div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
-                        <th colspan="11"  class="topLine noSort noBox"></th>
+                        <th colspan="12"  class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
@@ -472,7 +475,7 @@ var ucscgeneID="";
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="Help5e" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
-                        <th colspan="5"  class="topLine noSort noBox"></th>
+                        <th colspan="6"  class="topLine noSort noBox"></th>
                         <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table</th>
                         <th colspan="3"  class="topLine noSort noBox"></th>
                         <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts</th>
@@ -489,6 +492,7 @@ var ucscgeneID="";
                     </tr>
                     <tr class="col_title">
                     <TH>Image ID (Transcript/Feature ID)</TH>
+                    <TH>RNA-Seq Transcript Matches</th>
                     <TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
                     <TH>Gene ID</TH>
                     <TH width="10%">Gene Description</TH>
@@ -569,24 +573,53 @@ var ucscgeneID="";
 										tmpList="<span class=\"tblTrigger\" name=\"fg_"+i+"\">";
 										for(int l=0;l<tmpTrx.size();l++){
 												if(l<5){
-														tmpList=tmpList+tmpTrx.get(l).getID()+"<BR>";
+														tmpList=tmpList+tmpTrx.get(l).getIDwToolTip()+"<BR>";
 												}else if(l==5){
-													tmpList=tmpList+"</span><span id=\"fg_"+i+"\" style=\"display:none;\">"+tmpTrx.get(l).getID()+"<BR>";
+													tmpList=tmpList+"</span><span id=\"fg_"+i+"\" style=\"display:none;\">"+tmpTrx.get(l).getIDwToolTip()+"<BR>";
 												}else{
-													tmpList=tmpList+tmpTrx.get(l).getID()+"<BR>";
+													tmpList=tmpList+tmpTrx.get(l).getIDwToolTip()+"<BR>";
 												}
 										}
 										tmpList=tmpList+"</span>";
 									}else{
 										for(int l=0;l<tmpTrx.size();l++){
 												if(l==0){
-														tmpList=tmpTrx.get(l).getID()+"<BR>";
+														tmpList=tmpTrx.get(l).getIDwToolTip()+"<BR>";
 												}else{
-														tmpList=tmpList+tmpTrx.get(l).getID()+"<BR>";
+														tmpList=tmpList+tmpTrx.get(l).getIDwToolTip()+"<BR>";
 												}
 										}
 									}%>
                                 	<%=tmpList%>
+                            </TD>
+                            <TD>
+                            	<%	String tmpList2="";
+										if(curGene.getGeneID().startsWith("ENS")){
+											if(tmpTrx.size()>1){
+												tmpList2="<span class=\"tblTrigger\" name=\"rg_"+i+"\">";
+												int idx=0;
+												for(int l=0;l<tmpTrx.size();l++){
+													if(!tmpTrx.get(l).getID().startsWith("ENS")){
+														if(idx==0){
+															tmpList2=tmpList2+"<B>"+tmpTrx.get(l).getID()+"</B> - <BR>"+tmpTrx.get(l).getMatchReason()+"</span><BR><span id=\"rg_"+i+"\" style=\"display:none;\">";
+														}else{
+															tmpList2=tmpList2+"<B>"+tmpTrx.get(l).getID()+"</B> - <BR>"+tmpTrx.get(l).getMatchReason()+"<BR>";
+														}
+														idx++;
+													}
+												}
+												tmpList2=tmpList2+"</span>";
+												if(idx==0){
+													tmpList2="";
+												}
+											}else if(tmpTrx.size()==1){
+												if(!tmpTrx.get(0).getID().startsWith("ENS")){
+													tmpList2=tmpList2+"<B>"+tmpTrx.get(0).getID()+"</B> - <BR>"+tmpTrx.get(0).getMatchReason();
+												}
+											}
+										}
+									%>
+                                	<%=tmpList2%>
                             </TD>
                             <TD title="View detailed transcription information for gene in a new window.">
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
@@ -719,13 +752,13 @@ var ucscgeneID="";
                             <TD><%=curGene.getStrand()%></TD>
                             <TD>
                             	<%if(curGene.getSnpCount("common","SNP")>0 || curGene.getSnpCount("common","Indel")>0 ){%>
-                            		Common: <%=curGene.getSnpCount("common","SNP")%> / <%=curGene.getSnpCount("common","Indel")%><BR />
+                            		Common:<BR /><%=curGene.getSnpCount("common","SNP")%> / <%=curGene.getSnpCount("common","Indel")%><BR />
                                 <%}%>
                             	<%if(curGene.getSnpCount("BNLX","SNP")>0 || curGene.getSnpCount("BNLX","Indel")>0 ){%>
-                            		BNLX: <%=curGene.getSnpCount("BNLX","SNP")%> / <%=curGene.getSnpCount("BNLX","Indel")%><BR />
+                            		BNLX:<BR /><%=curGene.getSnpCount("BNLX","SNP")%> / <%=curGene.getSnpCount("BNLX","Indel")%><BR />
                                 <%}%>
                                 <%if(curGene.getSnpCount("SHRH","SNP")>0 || curGene.getSnpCount("SHRH","Indel")>0){%>
-                                	SHRH: <%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%>
+                                	SHRH:<BR /><%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%>
                                 <%}%>
                             </TD>
                             <TD class="leftBorder"><%=curGene.getTranscriptCountEns()%></TD>
@@ -848,6 +881,7 @@ var ucscgeneID="";
 							%>
                         	<tr class="smallnc">
                             	<TD><%=rna.getID()%></TD>
+                                <TD></TD>
                                 <TD></TD>
                                 <TD><% ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> ens=rna.getAnnotationBySource("Ensembl");
 									if(ens!=null&&ens.size()>0){
@@ -1002,6 +1036,8 @@ var ucscgeneID="";
 		$('#viewTrxDialog').dialog("open").css({'font-size':12});
 	})
 	
+	//var geneTargets=[1];
+	
 	var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
@@ -1009,7 +1045,10 @@ var ucscgeneID="";
 	"bAutoWidth": true,
 	"sScrollX": "950px",
 	"sScrollY": "650px",
-	"aaSorting": [[ 5, "desc" ]],
+	"aaSorting": [[ 6, "desc" ]],
+	/*"aoColumnDefs": [
+      { "bVisible": false, "aTargets": geneTargets }
+    ],*/
 	"sDom": '<"leftSearch"fr><t>'
 	/*"oTableTools": {
 			"sSwfPath": "/css/swf/copy_csv_xls_pdf.swf"
@@ -1051,34 +1090,36 @@ var ucscgeneID="";
 	//$('.singleExon').hide();
 	
 	$('#heritCBX').click( function(){
-			displayColumns(tblGenes, 16,tisLen,$('#heritCBX').is(":checked"));
+			displayColumns(tblGenes, 17,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
-			displayColumns(tblGenes, 16+tisLen,tisLen,$('#dabgCBX').is(":checked"));
+			displayColumns(tblGenes, 17+tisLen,tisLen,$('#dabgCBX').is(":checked"));
 	  });
 	  $('#eqtlAllCBX').click( function(){
-			displayColumns(tblGenes, 16+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+			displayColumns(tblGenes, 17+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
 	  });
 		$('#eqtlCBX').click( function(){
-			displayColumns(tblGenes, 16+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+			displayColumns(tblGenes, 17+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
 	  });
-	  
+	  $('#matchesCBX').click( function(){
+			displayColumns(tblGenes,1,1,$('#matchesCBX').is(":checked"));
+	  });
 	   $('#geneIDCBX').click( function(){
-			displayColumns(tblGenes,2,1,$('#geneIDCBX').is(":checked"));
+			displayColumns(tblGenes,3,1,$('#geneIDCBX').is(":checked"));
 	  });
 	  $('#geneDescCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),3,1,$('#geneDescCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),4,1,$('#geneDescCBX').is(":checked"));
 	  });
 	  
 	  $('#geneBioTypeCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),4,1,$('#geneBioTypeCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),5,1,$('#geneBioTypeCBX').is(":checked"));
 	  });
 	  $('#geneTracksCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),5,3,$('#geneTracksCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),6,3,$('#geneTracksCBX').is(":checked"));
 	  });
 	  
 	  $('#geneLocCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),8,2,$('#geneLocCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),9,2,$('#geneLocCBX').is(":checked"));
 	  });
 	  
 	  $('#pvalueCutoffSelect1').change( function(){
