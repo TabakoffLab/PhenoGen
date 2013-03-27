@@ -50,6 +50,7 @@
 #	3/17/09	Laura Saba	Modified:	removed title and footer from dendrogram
 #	8/12/09	Laura Saba	Modified:	added code to eliminate cluster objects with zero variance and to generate an error file
 #	3/27/12 Spencer Mahaffey Modified: Read/Write HDF5 and support multiple filters/stats per version.
+#	3/27/13 Spencer Mahaffey added: 3/27/13 Laura Saba  Modified:	updated coding of kmeans graphic to handle situation when more than 1024 genes/samples are in one cluster (limitation due to color palette)
 #
 ####################################################
 
@@ -467,9 +468,10 @@ statistics.Clustering.HDF5 <- function(InputFile,VersionPath, SampleFile, Cluste
 			bitmap(file = paste("Cluster",k,".png",sep=""), type = 'png16m', width = 3.333, height = 3.333, res = 300)
 				plot(ForGraphs[tmp[1],],type="l",ylim=c(min(ForGraphs)-0.5,max(ForGraphs)+0.5),ann=FALSE,xaxt="n")
 				if (NumInGroup>1){
-					palette(rainbow(NumInGroup))
+					if(NumInGroup<1025) palette(rainbow(NumInGroup))
+					if(NumInGroup>1024) palette(rainbow(1024))
 					for (i in 2:NumInGroup){
-						lines(ForGraphs[tmp[i],],type="l",col=i)
+						lines(ForGraphs[tmp[i],],type="l",col=(i %% 1024))
 					}
 				}
 				title(main=paste("Cluster",k,sep=" "),ylab="Gene Expression")
