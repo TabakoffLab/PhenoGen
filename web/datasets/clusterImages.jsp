@@ -112,7 +112,9 @@ Download
 			String [] fileContents = myFileHandler.getFileContents(new File(analysisPath + "GeneTable.txt"));
 			for (int i=0; i<fileContents.length; i++) {
 				String[] columns = fileContents[i].split("[\\s]");
-				%><tr><td><%=columns[0]%></td><td><%=columns[1]%></td></tr><%
+				if(columns.length>1){
+					%><tr><td><%=columns[0]%></td><td><%=columns[1]%></td></tr><%
+				}
 			}
 			%>
 			</tbody>
@@ -136,7 +138,9 @@ Download
 			String [] fileContents = myFileHandler.getFileContents(new File(analysisPath + "SampleTable.txt"));
 			for (int i=0; i<fileContents.length; i++) {
 				String[] columns = fileContents[i].split("[\\s]");
-				%><tr><td><%=columns[0]%></td><td><%=columns[1]%></td></tr><%
+				if(columns.length>1){
+					%><tr><td><%=columns[0]%></td><td><%=columns[1]%></td></tr><%
+				}
 			}
 			%>
 			</tbody>
@@ -161,7 +165,9 @@ Download
 			String [] fileContents = myFileHandler.getFileContents(new File(analysisPath + "GeneTable.txt"));
 			for (int i=0; i<fileContents.length; i++) {
 				String[] columns = fileContents[i].split("[\\s]");
+				if(columns.length>1){
 				%><tr><td><%=columns[0]%></td><td><%=columns[1].replaceAll("\"", "")%></td></tr><%
+				}
 
 			}
 			%>

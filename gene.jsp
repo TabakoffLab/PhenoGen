@@ -541,10 +541,11 @@ Or
                 });	
     </script>
 	<%@ include file="geneResults.jsp" %>
-
+	<%@ include file="geneResultsHelp.jsp" %>
 <%}else if(region && genURL.size()>0){%>
 
 	<%@ include file="regionResults.jsp" %>
+    <%@ include file="regionResultsHelp.jsp" %>
 
 <%}else{%>
 
