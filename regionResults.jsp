@@ -1931,8 +1931,12 @@ var ucscgeneID="";
 									}
 									%>
                                         
-                                        <%if(regEQTL==null){%>
-											<TD class="leftBorder">>0.3</TD>
+                                        <%if(regEQTL==null){
+                                        	if(myOrganism.equals("Mm")){%>
+												<TD class="leftBorder">>0.3</TD>
+                                            <%}else{%>
+                                            	<TD class="leftBorder">>0.2</TD>
+                                            <%}%>
 										<%}else if(regEQTL.getPVal()<0.0001){%>
                                         	<TD class="leftBorder" style="background-color:#6e99bc; color:#FFFFFF;">
                                         	< 0.0001

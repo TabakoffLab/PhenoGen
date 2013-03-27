@@ -29,7 +29,7 @@
 	var nameList="<%=name%>";
 	var id=<%=smncID%>;
 </script>
-<script src="/javascript/processing-1.4.1.min.js"></script>
+<script src="<%=contextRoot%>javascript/processing-1.4.1.min.js"></script>
 <div id="smncContent" style=" text-align:center;">
 <%if(smncList!=null&&smncList.length>0){%>
 	<div style="text-align:left;">
