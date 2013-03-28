@@ -114,13 +114,13 @@
 	<thead>
     	<TR >
         	<TH colspan="3"></TH>
-            <TH colspan="2" class="topLine leftBorder rightBorder">Perfect Match to Genome</TH>
+            <TH colspan="2" class="topLine leftBorder rightBorder">Perfect Match to Genome<span title="Indicates if the sequence is a perfect match to the genome."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
         </TR>
     	<TR class="col_title">
-        	<TH>Read Sequences</TH>
-            <TH>Total Read Counts</TH>
-            <TH># Alignments to Genome</TH>
-            <TH>BNLX Genome</TH>
+        	<TH>Read Sequences <span title="Read Seaquences from RNA-Seq"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+            <TH>Total Read Counts <span title="Total read count from all BN-Lx and SHRH samples"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+            <TH># Alignments to Genome <span title="The number of locations the sequence aligns in the genome."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+            <TH>BN-Lx Genome</TH>
             <TH>SHRH Genome</TH>
         </TR>
         	</thead>
