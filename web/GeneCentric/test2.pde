@@ -56,7 +56,7 @@ void setup(){
 
 void draw(){
   if(lengthSeq>0){
-    widthPerBase=(width-(margin+rtMargin))/lengthSeq;
+    widthPerBase=(width-(margin+rtMargin)*1.0)/lengthSeq;
   }else{
     widthPerBase=2;
   }
@@ -71,7 +71,7 @@ void draw(){
   
   //draw reference rectangles
   fill(49,122,255);
-  rect(rtMargin+halfWidth,topMargin,widthPerBase*lengthSeq,ht*1.5);
+  rect(rtMargin+halfWidth,topMargin,widthPerBase*lengthSeq-halfWidth,ht*1.5);
   
   //draw read seq rectangles
   for(int p=0, end=sequences.size(); p<end; p++) {
@@ -117,9 +117,9 @@ class Sequence {
   void draw(){
       fill(98, 139, 97);
          int os=(int)widthPerBase*offset;
-         int len=(int)widthPerBase*(seq.length()+1);
+         int len=(int)widthPerBase*seq.length()-halfWidth;
          int curY=startY+(ht*vertNum)+(margin*vertNum);
-         rect(rtMargin+os,curY,len, ht);
+         rect(rtMargin+halfWidth+os,curY,len, ht);
   }
 }
 
