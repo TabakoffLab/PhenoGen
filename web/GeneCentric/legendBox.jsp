@@ -11,7 +11,7 @@
                     <TD>Phenogen RNA-Seq (CuffLinks) Transcripts</TD>
                 </TR>
                 
-                <TR><TD colspan="2">Track - Long Non-Coding/NonPolyA+</TD></TR>
+                <TR ><TD colspan="2" style="margin-top:15px;">Track - Long Non-Coding/NonPolyA+</TD></TR>
                 <TR>
                 	<TD class="noncoding ensembl odd"></TD>
                     <TD>Ensembl Long Non-Coding</TD>
@@ -20,8 +20,8 @@
                 	<TD class="noncoding odd"></TD>
                     <TD>Non-PolyA+ PhenoGen RNA-Seq</TD>
                 </TR>
-                
-                <TR><TD colspan="2">Track - Small RNA</TD></TR>
+         
+                <TR ><TD colspan="2" style="margin-top:15px;">Track - Small RNA</TD></TR>
                 <TR>
                 	<TD class="smallnc odd"></TD>
                     <TD>Ensembl Small RNA <350bp</TD>
@@ -31,7 +31,8 @@
                     <TD>PhenoGen Small RNA <350bp</TD>
                 </TR>
                 
-                <TR><TD colspan="2">Track - SNPs/Indels</TD></TR>
+      
+                <TR ><TD colspan="2" style="margin-top:15px;">Track - SNPs/Indels (Image only)</TD></TR>
                 <TR>
                 	<TD class="snp bnlx"></TD>
                     <TD>SNP BN-Lx</TD>
@@ -48,7 +49,8 @@
                 	<TD class="indel shrh"></TD>
                     <TD>Indel SHRH</TD>
                 </TR>
-                <TR><TD colspan="2">Track - Helicos</TD></TR>
+                
+                <TR ><TD colspan="2" style="margin-top:15px;">Track - Helicos (Image only)</TD></TR>
                 <TR>
                 	<TD class="helicos"></TD>
                     <TD>Read Counts from Helicos</TD>

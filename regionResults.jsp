@@ -237,7 +237,7 @@ var ucscgeneID="";
     	<div class="geneimageControl">
       		
             <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
-             Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+             Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpUCSCImageControl" class="helpImage" src="../web/images/icons/help.png" /></div>
              
             </div>
 
@@ -292,7 +292,7 @@ var ucscgeneID="";
             </select>
              <span title=
              <%if(myOrganism.equals("Rn")){%>
-             	"This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."
+             	"This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."
              <%}else{%>
              	""
              <%}%>
@@ -305,7 +305,7 @@ var ucscgeneID="";
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
             </select>
-             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD class="topLine">
             <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA 
@@ -314,7 +314,7 @@ var ucscgeneID="";
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
             </select>
-             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             </TR>
            	
@@ -356,7 +356,7 @@ var ucscgeneID="";
 		autoOpen: false,
 		dialogClass: "legendDialog",
 		width: 350,
-		height: 400,
+		height: 350,
 		zIndex: 999
 	});
   	$('#imageSizeCbx').change( function(){
@@ -496,11 +496,11 @@ var ucscgeneID="";
 					}
 				}*/
 				%>
-		 
+		 	
           	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
                 <THEAD>
                     <tr>
-                        <th colspan="12" class="topLine noSort noBox"></th>
+                        <th colspan="12" class="topLine noSort noBox" style="text-align:left;"><span class="legendBtn2">Legend <img src="../web/images/icons/help.png"></span></th>
                         <th colspan="4" class="center noSort topLine">Transcript Information<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
@@ -1069,6 +1069,10 @@ var ucscgeneID="";
 
 <script type="text/javascript">
 	var spec="<%=myOrganism%>";
+	$('.legendBtn2').click( function(){
+		$('#legendDialog').dialog( "option", "position",{ my: "left top", at: "left bottom", of: $(this) });
+		$('#legendDialog').dialog("open");
+	});
 	
 	$('#viewTrxDialog').dialog({
 		autoOpen: false,

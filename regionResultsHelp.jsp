@@ -21,8 +21,22 @@ You may add tracks using the controls below.  All of the tracks are color coded 
 
 <div id="HelpUCSCImageControlContent" class="inpageHelpContent" title="<center>Help-Image Controls</center>"><div class="help-content">
 <H3>UCSC Image Controls</H3>
-
-
+The controls in this section determine what information is included in the image above and tables below.
+<BR /><BR />
+Each track includes information about it.  Hold your mouse over the <img src="<%=imagesDir%>icons/info.gif"> icon to display additional information.
+<BR /><BR />
+Check the box next to the track you would like to include in the image.  The image should then be generated and appear shortly.  For some tracks, you may control the way the track is displayed.  You can change this by selecting the option next to the track.(ex.
+             <select name="example" id="example">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="3" >Pack</option>
+                <option value="2" >Full</option>
+            </select> )
+<BR /><BR />
+Dense-This is the most compressed view.  Generally with no labels for features and all features compressed into a single line of the display. <BR />
+Pack-Fits features in as there is room for both the label and feature.  This saves vertical space over the full view.  <BR />
+Full-Each entry in the track has a dedicated line of the display.  The label for each entry can be found at the far left.  Entries will be order from top to bottom in order of their occurence from left to right.
+<BR /><BR />
+The best option depends on what you are looking for so try them and find what will work for you.
 </div></div>
 
 
