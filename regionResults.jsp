@@ -513,7 +513,7 @@ var ucscgeneID="";
                     <tr style="text-align:center;">
                         <th colspan="12"  class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<span title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block; "><img id="Help5c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
@@ -524,7 +524,7 @@ var ucscgeneID="";
                         <th colspan="6"  class="topLine noSort noBox"></th>
                         <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="3"  class="topLine noSort noBox"></th>
-                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts<span title="The number of transcripts assigned to this gene.  Ensembl is the number of ensembl annotated transcripts.  RNA-Seq is the number of RNA-Seq transcripts assigned to this gene.  The RNA-Seq Transcript Matches column contains additional details about why transcripts were or were not matched to a particular gene."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
@@ -561,7 +561,7 @@ var ucscgeneID="";
                     <TH>Small RNA <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
-                    <TH title="SNPs and Indels that fall in an exon of at least one transcript." >Exon SNPs / Indels<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH  >Exon SNPs / Indels<span title="A count of SNPs and Indels that fall in an exon of at least one transcript. Counts are summarized for each parental strain and when the same SNP/Indel occurs in both a count of common SNPs/Indels is included."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Ensembl</TH>
                     <TH>RNA-Seq</TH>
                     <TH>Total Reads
@@ -576,12 +576,12 @@ var ucscgeneID="";
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</span></TH>
                     <%}%>
-                    <TH>Transcript Cluster ID <div class="inpageHelp" style="display:inline-block; "><img id="Help5f" class="helpImage" src="../web/images/icons/help.png" /></div><span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Transcript Cluster ID <span title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Annotation Level<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>View Genome-Wide Associations<div class="inpageHelp" style="display:inline-block; "><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div><span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>View Genome-Wide Associations<span title="Genome Wide Associations- Shows all the locations with a P-value below the cutoff selected.  Circos is used to create a plot of each region in each tissue associated with expression of the gene selected."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%for(int i=0;i<tissuesList2.length;i++){%>
-                    	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH>Minimum<BR /> P-Value<<HR />Location<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> <span title="The total number of locations genome wide with an eQTL p-value for this transcript cluster below the cut-off."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Minimum<BR /> P-Value<HR />Location<span title="The minimum eQTL p-value genome-wide and the location of the minimum p-value.  Click the location to view that region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%}%>
                     </tr>
                 </thead>
