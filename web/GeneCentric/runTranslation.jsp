@@ -63,6 +63,11 @@
 					start=Long.parseLong(minCoord);
 					stop=Long.parseLong(maxCoord);
 			}
+			if(start>stop){
+				int tmp=start;
+				start=stop;
+				stop=tmp;
+			}
 			if(start>0 && stop > 0){
 					origLen=stop-start;
 			}
@@ -71,7 +76,7 @@
 	}
 	if(request.getParameter("sourceSpecies")!=null){
 		sourceVersion=request.getParameter("sourceSpecies");
-		if(sourceVersion.equals("mm9")){
+		if(sourceVersion.equals("mm10")){
 			fullSourceSpecies="Mouse";
 		}else if(sourceVersion.equals("rn4")){
 			fullSourceSpecies="Rat";
@@ -217,9 +222,6 @@ Click on a row above to view the region in the current page.
 </div>
 <script type="text/javascript">
 	$('#waitTranslate').hide();
-	
-	
-	
 </script>
 
 <%

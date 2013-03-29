@@ -19,7 +19,7 @@ sub createQTLTrack{
 	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
 	print OFILE "track db=$trackDB name='bQTLs' ";
 	print OFILE 'description="bQTLs" ';
-	print OFILE "visibility=3 centerLabelsDense=\"on\" \n";
+	print OFILE "visibility=2 centerLabelsDense=\"on\" \n";
 	if(@qtlList>0){
 		my $cntQTL=0;
 		foreach my $tmpQTL (@qtlList){

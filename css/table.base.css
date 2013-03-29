@@ -166,6 +166,10 @@ table.list_base td.leftBorder {
     vertical-align: middle;
 }
 
+table.list_base td.topLine {
+	border-top: solid 1px #BBBBBB;
+}
+
 table.list_base td.rightBorder {
 	border-right: solid 1px #000000;
     cursor: default;

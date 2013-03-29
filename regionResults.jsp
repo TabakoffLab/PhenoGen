@@ -210,7 +210,7 @@ var ucscgeneID="";
           </div>--><!--end RegionControl div -->
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
     		<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
-    		<div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
+    		<div class="inpageHelp" style="display:inline-block;"><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
             
     		<span style="font-size:12px; font-weight:normal; float:left;"><span class="legendBtn">Legend <img src="../web/images/icons/help.png"></span></span>
             
@@ -242,43 +242,9 @@ var ucscgeneID="";
             </div>
 
           	<form>
-            <table style="text-align:left; width:100%;">
-            
-            <TR>
-            <TD>
-            <span style=" font-weight:bold;">Image Tracks and Table Filters</span>
-            </TD>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="codingCBX" value="coding" checked="checked" /> Protein Coding/PolyA+
-            <select name="trackSelect" id="codingSelect">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >full</option>
-            </select>
-             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" />Long Non-Coding/NonPolyA+
-            <select name="trackSelect" id="noncodingSelect">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >full</option>
-            </select>
-             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA 
-            <select name="trackSelect" id="smallncSelect">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >full</option>
-            </select>
-             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            <TD></TD>
-            </TR>
-           	<TR style="border-top:thin;">
-            <TD>
+            <table class="list_base" style="text-align:left; width:100%;" cellspacing="0">
+            <TR >
+            <TD class="rightBorder">
             <span style=" font-weight:bold;">Image Tracks</span>
             </TD>
             <%if(myOrganism.equals("Rn")){%>
@@ -288,26 +254,70 @@ var ucscgeneID="";
             	<option value="1" selected="selected">Dense</option>
                 <option value="3" >Pack</option>
             </select>
-             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
             <select name="trackSelect" id="helicosSelect">
             	<option value="1" selected="selected">Dense</option>
-                <option value="2" >full</option>
+                <option value="2" >Full</option>
             </select>
-             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <%}%>
             <TD>
             <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs  
-            <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span title="This track will display the publicly available bQTLs from RGD. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are avaialbe under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            
+            </TR>
+             <TR >
+            <TD class="rightBorder">
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts  
-            <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             </TR>
+            <TR>
+            <TD class="rightBorder topLine">
+            <span style=" font-weight:bold;">Image Tracks and Table Filters</span><span title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            <TD class="topLine">
+            <input name="trackcbx" type="checkbox" id="codingCBX" value="coding" checked="checked" /> Protein Coding<%if (myOrganism.equals("Rn")){%>/PolyA+<%}%>
+            <select name="trackSelect" id="codingSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >Full</option>
+            </select>
+             <span title=
+             <%if(myOrganism.equals("Rn")){%>
+             	"This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."
+             <%}else{%>
+             	""
+             <%}%>
+             ><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            <TD class="topLine">
+            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" />Long Non-Coding<%if (myOrganism.equals("Rn")){%>/NonPolyA+<%}%>
+            <select name="trackSelect" id="noncodingSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >Full</option>
+            </select>
+             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            <TD class="topLine">
+            <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA 
+            <select name="trackSelect" id="smallncSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >Full</option>
+            </select>
+             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+           	
             </table>
               <!--<label style="color:#000000; margin-left:10px;">
                 Transcripts:</label>
@@ -527,14 +537,27 @@ var ucscgeneID="";
                     	<%}%>
                     </tr>
                     <tr class="col_title">
-                    <TH>Image ID (Transcript/Feature ID) <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>RNA-Seq Transcript Matches <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
-                    <TH>Gene Symbol<BR />(click for detailed transcription view) <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Image ID (Transcript/Feature ID) <span title="Feature IDs that correspond to features in the various image tracks above."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>RNA-Seq Transcript Matches <span title="Information about how a RNA-Seq transcript was matched to an Ensembl Gene/Transcript.  Click if a + icon is present to view the remaining transcripts."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                    <TH>Gene Symbol<BR />(click for detailed transcription view) <span title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Gene ID</TH>
-                    <TH width="10%">Gene Description <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>BioType <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Protein Coding / PolyA+ <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Long Non-Coding / Non PolyA+ <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH width="10%">Gene Description <span title="The description from Ensembl or annotations from various sources if the feature is not found in Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>BioType <span title="The Ensembl biotype or RNA-Seq fraction and size."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Protein Coding 
+                    <%if(myOrganism.equals("Rn")){%>
+                    	/ PolyA+ 
+                    	<span title="This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.">
+                    <%}else{%>
+                    	<span title="This track consists of transcripts from Ensembl.  Tracks are labeled with an Ensembl ID.  See the legend for the color coding.">
+                    <%}%>
+                    <img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Long Non-Coding
+                    <%if(myOrganism.equals("Rn")){%>
+                     / Non PolyA+ <span title="">
+                     <%}else{%>
+                     	<span title="">
+                     <%}%>
+                     <img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Small RNA <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
