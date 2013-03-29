@@ -168,7 +168,7 @@ if(displayNoEnsembl){ %>
     </div><!--end Border Div -->
     <BR />
 <script type="text/javascript">
-	
+	hideWorking();
 	//Setup Fancy box for UCSC link
 	$('.fancybox').fancybox({
 		width:$(document).width(),
@@ -1240,11 +1240,11 @@ function registerAppletStateHandler() {
 
 $(document).ready(function() {
 	
-	if(auto=="true"){
+	/*if(auto=="true"){
   		displayWorking();
 		auto="false";
-  	}
-	$('#geneimageFiltered').hide();
+  	}*/
+	//$('#geneimageFiltered').hide();
 
 	//registerAppletStateHandler();
 	//if(genURL!=null){

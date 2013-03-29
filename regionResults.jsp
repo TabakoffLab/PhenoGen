@@ -10,8 +10,6 @@ var tblFromAdjust=false;
 var organism="<%=myOrganism%>";
 var ucsctype="region";
 var ucscgeneID="";
-
-
 </script>
 
 
@@ -211,20 +209,24 @@ var ucscgeneID="";
           </form>
           </div>--><!--end RegionControl div -->
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
-    	<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
-    	<div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
-        <span style="font-size:12px; font-weight:normal;">
-        <input name="imageSizeCbx" type="checkbox" id="imageSizeCbx" checked="checked" /> Scroll Image - Viewable Size:
-        <select name="imageSizeSelect" id="imageSizeSelect">
-        		<option value="200" >Smaller</option>
-            	<option value="400" selected="selected">Normal</option>
-                <option value="600" >Larger</option>
-                <option value="800" >Largest</option>
-            </select>
-        </span>
+    		<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
+    		<div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
+            
+    		<span style="font-size:12px; font-weight:normal; float:left;"><span class="legendBtn">Legend <img src="../web/images/icons/help.png"></span></span>
+            
+        	<span style="font-size:12px; font-weight:normal; float:right;">
+        		<input name="imageSizeCbx" type="checkbox" id="imageSizeCbx" checked="checked" /> Scroll Image - Viewable Size:
+        		<select name="imageSizeSelect" id="imageSizeSelect">
+        			<option value="200" >Smaller</option>
+            		<option value="400" selected="selected">Normal</option>
+                	<option value="600" >Larger</option>
+                	<option value="800" >Largest</option>
+            	</select>
+            	<span title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
+        	</span>
     </div>
-    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
-        
+    
+    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">    
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
@@ -234,19 +236,26 @@ var ucscgeneID="";
         </div><!-- end geneimage div -->
     	<div class="geneimageControl">
       		
+            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
+             Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+             
+            </div>
+
           	<form>
             <table style="text-align:left; width:100%;">
-            	<TR><TD colspan="4">
-            Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div>
+            
+            <TR>
+            <TD>
+            <span style=" font-weight:bold;">Image Tracks and Table Filters</span>
             </TD>
-            </TR>
-            <TR><TD>
+            <TD>
             <input name="trackcbx" type="checkbox" id="codingCBX" value="coding" checked="checked" /> Protein Coding/PolyA+
             <select name="trackSelect" id="codingSelect">
             	<option value="1" >Dense</option>
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >full</option>
             </select>
+             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" />Long Non-Coding/NonPolyA+
@@ -255,6 +264,7 @@ var ucscgeneID="";
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >full</option>
             </select>
+             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA 
@@ -263,16 +273,22 @@ var ucscgeneID="";
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >full</option>
             </select>
+             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD></TD>
             </TR>
-           	<TR>
+           	<TR style="border-top:thin;">
+            <TD>
+            <span style=" font-weight:bold;">Image Tracks</span>
+            </TD>
+            <%if(myOrganism.equals("Rn")){%>
             <TD>
            	<input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
              <select name="trackSelect" id="snpSelect">
             	<option value="1" selected="selected">Dense</option>
                 <option value="3" >Pack</option>
             </select>
+             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
@@ -280,12 +296,16 @@ var ucscgeneID="";
             	<option value="1" selected="selected">Dense</option>
                 <option value="2" >full</option>
             </select>
+             <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            <%}%>
+            <TD>
+            <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs  
+            <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD>
-            <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs
-            </TD>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts
+            <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts  
+            <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             </TR>
             </table>
@@ -308,8 +328,10 @@ var ucscgeneID="";
           </div><!--end imageControl div -->
     </div><!--end Border Div -->
     <BR />
+    <div id="legendDialog"  title="<center>UCSC Image/Table Rows Legend</center>" class="legendDialog" style="display:none">
+                <%@ include file="/web/GeneCentric/legendBox.jsp" %>
+    </div>
 <script type="text/javascript">
-	
 	//Setup Fancy box for UCSC link
 	$('.fancybox').fancybox({
 		width:$(document).width(),
@@ -320,6 +342,13 @@ var ucscgeneID="";
 			return;
 		}
   });
+  $('#legendDialog').dialog({
+		autoOpen: false,
+		dialogClass: "legendDialog",
+		width: 350,
+		height: 400,
+		zIndex: 999
+	});
   	$('#imageSizeCbx').change( function(){
 		if($(this).is(":checked")){
 			$('#geneImage').css({"height":"400px","overflow":"auto"});
@@ -337,6 +366,12 @@ var ucscgeneID="";
 			$('#geneImage').css({"height":size,"overflow":"auto"});
 		}
 	});
+	
+	$('.legendBtn').click( function(){
+		$('#legendDialog').dialog( "option", "position",{ my: "left top", at: "left bottom", of: $(this) });
+		$('#legendDialog').dialog("open");
+	});
+	
 </script>          
 
 <div class="cssTab" id="mainTab" >
@@ -357,9 +392,9 @@ var ucscgeneID="";
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
-                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
-                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
-                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999; top:4px; left:-3px;"><img id="Help4" class="helpImage" src="../web/images/icons/help.png" /></div>
+                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span><span title="Click the + icon to view filtering Options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span><span title="Click the + icon to view Columns you can show/hide in the table below."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        
                         </TR>
                         
                     </thead>
@@ -367,46 +402,47 @@ var ucscgeneID="";
                     	<TR>
                         	<td>
                             <%if(myOrganism.equals("Rn")){%>
-                                Exclude single exon RNA-Seq Transcripts
-                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" /><BR />
+                                
+                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" /> Exclude single exon RNA-Seq Transcripts <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                         	<%}%>
                         
-                            eQTL P-Value Cut-off:
+                            				eQTL P-Value Cut-off:
                                              <select name="pvalueCutoffSelect1" id="pvalueCutoffSelect1">
                                             		<option value="0.1" <%if(forwardPValueCutoff==0.1){%>selected<%}%>>0.1</option>
                                                     <option value="0.01" <%if(forwardPValueCutoff==0.01){%>selected<%}%>>0.01</option>
                                                     <option value="0.001" <%if(forwardPValueCutoff==0.001){%>selected<%}%>>0.001</option>
                                                     <option value="0.0001" <%if(forwardPValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
                                                     <option value="0.00001" <%if(forwardPValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
-                                            </select>
-                                            <!--Require an eQTL below cut-off<input name="chkbox" type="checkbox" id="rqQTLCBX" value="rqQTLCBX"/>-->
+                                            </select> 
+                                            <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+                                            <!--<input name="chkbox" type="checkbox" id="rqQTLCBX" value="rqQTLCBX"/>Require an eQTL below cut-off<span title=""><img src="<%=imagesDir%>icons/info.gif"></span>-->
                             </td>
                         	<td>
                             	<div class="columnLeft">
-                                	RNA-Seq Transcript Matches
-                                    <input name="chkbox" type="checkbox" id="matchesCBX" value="matchesCBX" checked="checked"/><BR />
-                                	Gene ID
-                                    <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /><BR />
-                                    Description
-                                    <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /><BR />
-                                    BioType
-                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked"/><BR />
-                                    Tracks
-                                    <input name="chkbox" type="checkbox" id="geneTracksCBX" value="geneTracksCBX" checked="checked" /><BR />
+                                	
+                                    <input name="chkbox" type="checkbox" id="matchesCBX" value="matchesCBX" checked="checked"/> RNA-Seq Transcript Matches <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                	
+                                    <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /> Gene ID <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /> Description <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked"/> BioType <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="geneTracksCBX" value="geneTracksCBX" checked="checked" /> Tracks <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
                                    
                                 </div>
                                 <div class="columnRight">
-                               		Location and Strand
-                                    <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /><BR />
-                                 	Heritability
-                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /><BR />
-                                	Detection Above Background
-                                	<input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /><BR />
-                                    eQTLs All
-                                    <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /><BR />
-                                    eQTLs Tissues
-                                    <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />
+                               		
+                                    <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /> Location and Strand <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                 	
+                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /> Heritability <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                	
+                                	<input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /> Detection Above Background <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /> eQTLs All <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />eQTLs Tissues <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
                                 </div>
 
                             </TD>
@@ -455,30 +491,30 @@ var ucscgeneID="";
                 <THEAD>
                     <tr>
                         <th colspan="12" class="topLine noSort noBox"></th>
-                        <th colspan="4" class="center noSort topLine">Transcript Information</th>
+                        <th colspan="4" class="center noSort topLine">Transcript Information<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
                             	Public ILSXISS RI Mice
                             <%}else{%>
                             	Public HXB/BXH RI Rats (Tissue, Exon Arrays)
                             <%}%>
-                            )<div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                            )<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
                         <th colspan="12"  class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="Help5c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
-                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<div class="inpageHelp" style="display:inline-block; "><img id="Help5d" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block; "><img id="Help5c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block; "><img id="Help5d" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="Help5e" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
                         <th colspan="6"  class="topLine noSort noBox"></th>
-                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table</th>
+                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="3"  class="topLine noSort noBox"></th>
-                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts</th>
+                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
@@ -491,36 +527,38 @@ var ucscgeneID="";
                     	<%}%>
                     </tr>
                     <tr class="col_title">
-                    <TH>Image ID (Transcript/Feature ID)</TH>
-                    <TH>RNA-Seq Transcript Matches</th>
-                    <TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
+                    <TH>Image ID (Transcript/Feature ID) <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>RNA-Seq Transcript Matches <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                    <TH>Gene Symbol<BR />(click for detailed transcription view) <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Gene ID</TH>
-                    <TH width="10%">Gene Description</TH>
-                    <TH>BioType</TH>
-                    <TH>Protein Coding / PolyA+</TH>
-                    <TH>Long Non-Coding / Non PolyA+</TH>
-                    <TH>Small RNA</TH>
+                    <TH width="10%">Gene Description <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>BioType <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Protein Coding / PolyA+ <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Long Non-Coding / Non PolyA+ <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Small RNA <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
-                    <TH title="SNPs and Indels that fall in an exon of at least one transcript." >Exon SNPs / Indels</TH>
+                    <TH title="SNPs and Indels that fall in an exon of at least one transcript." >Exon SNPs / Indels<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Ensembl</TH>
                     <TH>RNA-Seq</TH>
-                    <TH>Total Reads<HR />Read Sequences</TH>
-                    <TH>View Details</TH>
-                    <TH>Total Probesets</TH>
+                    <TH>Total Reads
+                    <HR />Read Sequences<span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+                    </TH>
+                    <TH>View Details<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Total Probesets<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
-                    	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</TH>
+                    	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</span></TH>
                     <%}%>
                     <%for(int i=0;i<tissuesList1.length;i++){%>
-                    	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</TH>
+                    	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</span></TH>
                     <%}%>
-                    <TH>Transcript Cluster ID <div class="inpageHelp" style="display:inline-block; "><img id="Help5f" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
-                    <TH>Annotation Level</TH>
-                    <TH>View Genome-Wide Associations<div class="inpageHelp" style="display:inline-block; "><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                    <TH>Transcript Cluster ID <div class="inpageHelp" style="display:inline-block; "><img id="Help5f" class="helpImage" src="../web/images/icons/help.png" /></div><span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Annotation Level<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>View Genome-Wide Associations<div class="inpageHelp" style="display:inline-block; "><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div><span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%for(int i=0;i<tissuesList2.length;i++){%>
-                    	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> </TH>
-                        <TH>Minimum<BR /> P-Value<HR />Location</TH>
+                    	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Minimum<BR /> P-Value<<HR />Location<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%}%>
                     </tr>
                 </thead>
@@ -1186,8 +1224,8 @@ var ucscgeneID="";
 	
 	<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
-                        <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
+                    	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span><span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span><span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                         <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999;top:4px; left:-3px;"><img id="Help6" class="helpImage" src="../web/images/icons/help.png" /></div>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
@@ -1196,31 +1234,31 @@ var ucscgeneID="";
                         	<td>
                             	<div class="columnLeft">
                                 	<%if(myOrganism.equals("Mm")){%>
-                                	RGD ID
-                                    <input name="chkbox" type="checkbox" id="rgdIDCBX" value="rgdIDCBX" /><BR />
-                                    Trait
-                                    <input name="chkbox" type="checkbox" id="traitCBX" value="traitCBX" /><BR />
+                                	
+                                    <input name="chkbox" type="checkbox" id="rgdIDCBX" value="rgdIDCBX" /> RGD ID <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="traitCBX" value="traitCBX" /> Trait <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     <%}%>
-                                	bQTL Symbol
-                                    <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" <%if(myOrganism.equals("Mm")){%>checked="checked"<%}%> /><BR />
-                                    Trait Method
-                                    <input name="chkbox" type="checkbox" id="traitMethodCBX" value="traitMethodCBX" /><BR />
-                                    Phenotype
-                                    <input name="chkbox" type="checkbox" id="phenotypeCBX" value="phenotypeCBX" checked="checked" /><BR />
-                                    Diseases
-                                    <input name="chkbox" type="checkbox" id="diseaseCBX" value="diseaseCBX" checked="checked" /><BR />
-                                    References
-                                    <input name="chkbox" type="checkbox" id="refCBX" value="refCBX" checked="checked" /><BR />
+                                	
+                                    <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" <%if(myOrganism.equals("Mm")){%>checked="checked"<%}%> /> bQTL Symbol <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="traitMethodCBX" value="traitMethodCBX" /> Trait Method <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="phenotypeCBX" value="phenotypeCBX" checked="checked" /> Phenotype <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="diseaseCBX" value="diseaseCBX" checked="checked" /> Diseases <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="refCBX" value="refCBX" checked="checked" /> References <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 </div>
                                 <div class="columnRight">
-                                    Associated bQTLs
-                                    <input name="chkbox" type="checkbox" id="assocBQTLCBX" value="assocBQTLCBX"  /><BR />
-                                    Location Method
-                                    <input name="chkbox" type="checkbox" id="locMethodCBX" value="locMethodCBX"  /><BR />
-                                    LOD Score
-                                    <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" <%if(myOrganism.equals("Rn")){%>checked="checked"<%}%>/><BR />
-                                    P-Value
-                                    <input name="chkbox" type="checkbox" id="pvalBQTLCBX" value="pvalBQTLCBX"  /><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="assocBQTLCBX" value="assocBQTLCBX"  /> Associated bQTLs <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="locMethodCBX" value="locMethodCBX"  /> Location Method <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" <%if(myOrganism.equals("Rn")){%>checked="checked"<%}%>/> LOD Score <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="pvalBQTLCBX" value="pvalBQTLCBX"  /> P-Value <span title="testing"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 </div>
                             	
                             </TD>
@@ -1240,22 +1278,22 @@ var ucscgeneID="";
                 <THEAD>
                 	<TR class="col_title">
                     	<%if(myOrganism.equals("Mm")){%>
-                    		<TH>MGI ID</TH>
+                    		<TH>MGI ID <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
                         <%}%>
-                        <TH>RGD ID</TH>
-                        <TH>QTL Symbol</TH>
-                    	<TH>QTL Name</TH>
-                        <TH>Trait</TH>
-                        <TH>Trait Method</TH>
-                        <TH>Phenotype</TH>
-                        <TH>Associated Diseases</TH>
-                        <TH>References<BR />RGD Ref<HR />PubMed</TH>
-                        <TH>Candidate Genes</TH>
-                        <TH>Related bQTL Symbols</TH>
-                        <TH>bQTL Region</TH>
-                        <TH>Region Determination Method<div class="inpageHelp" style="display:inline-block; "><img id="Help8" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
-                        <TH>LOD Score</TH>
-                        <TH>P-value</TH>
+                        <TH>RGD ID <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>QTL Symbol <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                    	<TH>QTL Name <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Trait <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Trait Method <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Phenotype <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Associated Diseases <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>References<BR />RGD Ref<HR />PubMed <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Candidate Genes <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Related bQTL Symbols <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>bQTL Region <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Region Determination Method <span title=""><img src="<%=imagesDir%>icons/info.gif"><div class="inpageHelp" style="display:inline-block; "><img id="Help8" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>LOD Score <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>P-value <span title=""><img src="<%=imagesDir%>icons/info.gif"></TH>
                     </TR>
                 </thead>
                 <%if(bqtls!=null&&bqtls.size()>0){%>
@@ -1520,12 +1558,14 @@ var ucscgeneID="";
                                             eQTL P-Value Cut-off:
                                             <select name="pvalueCutoffSelect2" id="pvalueCutoffSelect2">
                                             		<!--<option value="0.1" <%if(Double.toString(pValueCutoff).equals("0.10")){%>selected<%}%>>0.1</option>-->
-                                                    <option value="0.01" <%if(pValueCutoff==0.01){%>selected<%}%>>0.01</option>
+                                                    <!--<option value="0.01" <%if(pValueCutoff==0.01){%>selected<%}%>>0.01</option>-->
                                                     <option value="0.001" <%if(pValueCutoff==0.001){%>selected<%}%>>0.001</option>
+                                                    <option value="0.0005" <%if(pValueCutoff==0.0005){%>selected<%}%>>0.0005</option>
                                                     <option value="0.0001" <%if(pValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
+                                                    <option value="0.00005" <%if(pValueCutoff==0.00005){%>selected<%}%>>0.00005</option>
                                                     <option value="0.00001" <%if(pValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
                                             </select>
-                                            
+                                            <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
                                          </TD>
                                 		</TR>
                                     	<TR>
@@ -1536,7 +1576,7 @@ var ucscgeneID="";
                                                         <tr>
                                                             <td style="text-align:center;">
                                                                 <strong>Tissues: Include at least one tissue.</strong>
-                                                                
+                                                                <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
                                                             </td>
                                                         </tr>
                                                         <TR>
@@ -1583,7 +1623,7 @@ var ucscgeneID="";
                                                     <tr>
                                                         <td style="text-align:center;">
                                                             <strong>Chromosomes: (<%=chromosome%> must be included)</strong>
-                                                           
+                                                           <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
                                                         </td>
                                                         
                                                     </tr>
@@ -1632,6 +1672,37 @@ var ucscgeneID="";
                                          </TD>
                                       </TR>
                                       <TR>
+                                      	<TD colspan="2" style="text-align:left;">
+                                                <table style="width:100%;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="text-align:center;">
+                                                                <strong>Transcript Annotation Level</strong>
+                                                                <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                            </td>
+                                                        </tr>
+                                                        <TR>
+                                                            <td style="text-align:center;">
+                                                                <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
+                                                            </td>
+                                                        </TR>
+                                                        <tr>
+                                                            <td>
+                                                                
+                                                                <select name="trxAnnotMS" id="trxAnnotMS" class="multiselect" size="4" multiple="true">
+                                                                  	<option value="core" selected>Core</option>
+																	<option value="extended" selected>Extended</option>
+                                                					<option value="full" selected>Full</option>
+																	<option value="ambiguous" >Ambiguous</option>
+                                                                </select>
+                                                
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                             </TD>
+                                      </TR>
+                                      <TR>
                                         <TD colspan="2" style="text-align:center;">
                                           <input type="submit" name="filterBTN" id="filterBTN" value="Run Filter" onClick="return runFilter()">
                                         </TD>
@@ -1643,28 +1714,28 @@ var ucscgeneID="";
                             	
                             <TD>
                             	<div class="columnLeft" style="width:60%;">
-                                	Gene ID
-                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /><BR />
-                                    Description
-                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /><BR />
-                                    Transcript ID and Annot.
-                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /><BR />
-                                     All Tissues P-values
-                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /><BR />
-                                    All Tissues # Locations
-                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/><BR />
+                                	
+                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /> Gene ID <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /> Description <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /> Transcript ID and Annot. <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                     
+                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /> All Tissues P-values <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/> All Tissues # Locations <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 </div>
                                 <div class="columnRight" style="width:39%;">
                                    <h3>Specific Tissues:</h3>
-                                    Whole Brain
-                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /> Whole Brain <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     <%if(myOrganism.equals("Rn")){%>
-                                        Heart
-                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" /><BR />
-                                        Liver
-                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /><BR />
-                                        Brown Adipose
-                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/><BR />
+                                       
+                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" />  Heart <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        
+                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /> Liver <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        
+                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/> Brown Adipose <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     <%}%>
                                 </div>
                             </TD>
@@ -1675,7 +1746,7 @@ var ucscgeneID="";
 <% ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"All",myOrganism,tissueString,chromosomeString);//this region controls what genes
 		ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
         if(session.getAttribute("getTransControllingEQTL")==null){%>
-            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-71px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span></div>
+            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-71px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span><span title=""><img src="<%=imagesDir%>icons/info.gif"></span></div>
             <div id="eQTLRegionNote" style="width:100%; position:relative; top:-71px">
             Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the folowing region(s):<BR />
             <%for(int i=0;i<eQTLRegions.size();i++){%>
@@ -1698,10 +1769,14 @@ var ucscgeneID="";
 		}
 		else if(pValueCutoff == 0.0001){
 			cutoffTimesTen = "40";
+		}else if(pValueCutoff == 0.00001){
+			cutoffTimesTen = "50";
 		}
 		else
 		{
-			cutoffTimesTen = "50";		
+			double tmpD=-1*Math.log10(pValueCutoff)*10;
+			int tmp=(int)tmpD;
+			cutoffTimesTen=Integer.toString(tmp);		
 		}
 		String regionCentricPath= applicationRoot+contextRoot+"tmpData/regionData/"+folderName;
 		//String regionCentricPath = "/usr/share/tomcat/webapps/PhenoGen/tmpData/regionData/Rnchr19_54000000_55000000_10242012_175139";
@@ -1727,6 +1802,7 @@ var ucscgeneID="";
                 <option value="1000" >Maximized</option>
             </select>
         </span>
+        <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
     </div> 
     <%if(session.getAttribute("getTransControllingEQTLCircos")==null){%>
     <div id="circosPlot" style="text-align:center; top:-62px; position:relative;">
@@ -1793,7 +1869,7 @@ var ucscgeneID="";
 			if(idListCount<=300){%>
        			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
         	<%}else{%>
-            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.<div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
             <%}%>	
 		<BR />	
 	
@@ -1817,17 +1893,17 @@ var ucscgeneID="";
                         <%}%>
                     </tr>
                 	<TR class="col_title">
-                   		<TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
+                   		<TH>Gene Symbol<BR />(click for detailed transcription view) <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     	<TH>Gene ID</TH>
                     	
-                        <TH>Description</TH>
-                        <TH>Transcript Cluster ID<div class="inpageHelp" style="display:inline-block;"><img id="Help12a" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
-                        <TH>Annotation Level<div class="inpageHelp" style="display:inline-block;"><img id="Help12b" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
-                        <TH>Physical Location</TH> 
-                        <TH>View Genome-Wide Associations<div class="inpageHelp" style="display:inline-block;"><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Description <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Transcript Cluster ID <span title=""><img src="<%=imagesDir%>icons/info.gif"></span> <div class="inpageHelp" style="display:inline-block;"><img id="Help12a" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Annotation Level <span title=""><img src="<%=imagesDir%>icons/info.gif"></span> <div class="inpageHelp" style="display:inline-block;"><img id="Help12b" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Physical Location <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH> 
+                        <TH>View Genome-Wide Associations <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                     	<%for(int i=0;i<tissuesList2.length;i++){%>
-                            <TH title="Highlighted indicates a value less than or equal to the cutoff.">P-Value from region</TH>
-                            <TH title="Click on View Location Plot to see all locations below the cutoff."># other locations P-value<<%=pValueCutoff%></TH>
+                            <TH title="Highlighted indicates a value less than or equal to the cutoff.">P-Value from region <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                            <TH title="Click on View Location Plot to see all locations below the cutoff."># other locations P-value<<%=pValueCutoff%> <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                             <!--<TH>Max LOD genome-wide</TH>-->
                         <%}%>
                     	
@@ -2123,17 +2199,7 @@ $(document).ready(function() {
 				$('#circosIFrame').attr("width",size-2);
 			}
 	});
-	/*$('#circosMinMax').click(function(){
-		if($('#circosIFrame').attr("height")>400){
-			$('> img',this).attr("src","web/images/icons/circos_max.jpg");
-			$('#circosIFrame').attr("height",400);
-			$('#circosIFrame').attr("width",950);
-		}else{
-			$('> img',this).attr("src","web/images/icons/circos_min.jpg");
-			$('#circosIFrame').attr("height",950);
-			$('#circosIFrame').attr("width",950);
-		}
-	});*/
+
 	
 	//Setup Tabs
     /*$('#mainTab ul li a').click(function() {    

@@ -44,10 +44,10 @@ table.list_base tr.col_title th {
 
 }
 
-table.list_base tr.coding.odd td{
+table.list_base tr.coding.odd td,table.list_base tr td.coding.odd{
 	background:#7EB5D6;
 } 
-table.list_base tr.coding.ensembl.odd td{
+table.list_base tr.coding.ensembl.odd td,table.list_base tr td.coding.ensembl.odd{
 	background:#DFC184;
 }
 table.list_base tr.smallnc.ensembl td a{
@@ -66,10 +66,10 @@ table.list_base tr.coding.ensembl.even td{
 	background:#E9CA8D;
 }
 
-table.list_base tr.noncoding.ensembl.odd td{
+table.list_base tr.noncoding.ensembl.odd td,table.list_base tr td.noncoding.ensembl.odd{
 	background:#B58AA5;
 }
-table.list_base tr.noncoding.odd td{
+table.list_base tr.noncoding.odd td,table.list_base tr td.noncoding.odd{
 	background:#CECFCE;
 } 
 table.list_base tr.noncoding.ensembl.even td{
@@ -79,19 +79,44 @@ table.list_base tr.noncoding.even td{
 	background:#D9DAD9;
 }
 
-table.list_base tr.smallnc.odd td{
+table.list_base tr.smallnc.odd td,table.list_base tr td.smallnc.odd{
 	background:	#99CC99;
 }
 table.list_base tr.smallnc.even td{
 	background:	#A3D4A3;
 }
-table.list_base tr.smallnc.ensembl.odd td{
+table.list_base tr.smallnc.ensembl.odd td,table.list_base tr td.smallnc.ensembl.odd{
 	background:	#FFFF66;
 }
 table.list_base tr.smallnc.ensembl.even td{
 	background: #F8F85C;
 }
 
+
+
+table.list_base tr td.snp.bnlx{
+	background:#0000FF;
+}
+
+table.list_base tr td.snp.shrh{
+	background:#FF0000;
+}
+
+table.list_base tr td.indel.bnlx{
+	background:#000096;
+}
+
+table.list_base tr td.indel.shrh{
+	background:#960000;
+}
+table.list_base tr td.helicos{ 
+background-image: -ms-linear-gradient(left, #FFFFFF 0%, #000000 100%);
+background-image: -moz-linear-gradient(left, #FFFFFF 0%, #000000 100%);
+background-image: -o-linear-gradient(left, #FFFFFF 0%, #000000 100%);
+background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #FFFFFF), color-stop(1, #000000));
+background-image: -webkit-linear-gradient(left, #FFFFFF 0%, #000000 100%);
+background-image: linear-gradient(to right, #FFFFFF 0%, #000000 100%);
+}
 
 table.list_base th.noSort.topLine {
     border-bottom: 0px;
@@ -177,6 +202,7 @@ table.sideHeading td.header{
 table.sideHeading td{
 	vertical-align: top;
 }
+
 
 /*
 table.list_base td.selected {

@@ -17,7 +17,7 @@ if(request.getParameter("gene")!=null){
 			if(type.equals("longRNA")){
 				trackDefault="probe,noncoding,refseq";
 			}else if(type.equals("smallRNA")){
-				trackDefault="probe,smallnc,refseq";
+				trackDefault="probe,smallnc";
 			}
 		}
 }

@@ -117,7 +117,7 @@ class Sequence {
   void draw(){
       fill(98, 139, 97);
          int os=(int)widthPerBase*offset;
-         int len=(int)widthPerBase*seq.length()-halfWidth;
+         int len=(int)widthPerBase*seq.length();
          int curY=startY+(ht*vertNum)+(margin*vertNum);
          rect(rtMargin+halfWidth+os,curY,len, ht);
   }

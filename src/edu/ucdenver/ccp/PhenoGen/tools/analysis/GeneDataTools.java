@@ -2060,9 +2060,11 @@ public class GeneDataTools {
                                     "and s.chromosome_id=c1.chromosome_id "+
                                     "and substr(c1.name,1,2)='"+chr+"' "+
                                     "and lse.probe_id=aep.probeset_id ";
-                                if(!level.equals("All")){
+                                /*if(!level.equals("All")){
                                     qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
-                                }
+                                }else{*/
+                                    qtlQuery=qtlQuery+"and aep.pslevel<>'ambiguous' ";
+                                //}
                                 qtlQuery=qtlQuery+"and aep.psannotation='transcript' "+
                                 "and aep.array_type_id="+arrayTypeID+") "+
                                 "order by aep.transcript_cluster_id, s.tissue";

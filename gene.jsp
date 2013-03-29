@@ -67,7 +67,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	boolean auto=false;
 	boolean region=false;
 	
-	double pValueCutoff=0.001;
+	double pValueCutoff=0.0001;
 	double forwardPValueCutoff=0.01;
 	
 	int rnaDatasetID=0;
