@@ -434,6 +434,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
     <input type="hidden" name="tissues" id="tissues" value="" />
     <input type="hidden" name="chromosomes" id="chromosomes" value="" />
+    <input type="hidden" name="levels" id="levels" value="" />
     <input type="hidden" name="action" id="action" value="Get Transcription Details" />
     
   	<input type="hidden" name="genURLArray" id="genURLArray" value="<%=genURLString%>" />
@@ -461,6 +462,7 @@ Or
     <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
     <input type="hidden" name="tissues" id="tissues" value="" />
     <input type="hidden" name="chromosomes" id="chromosomes" value="" />
+    <input type="hidden" name="levels" id="levels" value="" />
     <input type="hidden" name="action" id="action" value="Get Transcription Details" />
   	<input type="hidden" name="genURLArray" id="genURLArray" value="<%=genURLString%>" />
     <input type="hidden" name="geneSymArray" id="geneSymArray" value="<%=geneSymString%>" />

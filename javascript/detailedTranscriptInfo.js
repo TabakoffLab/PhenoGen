@@ -67,7 +67,12 @@ function runFilter(){
               });
 	$('#tissues').val(tisList);
 	//alert(tisList);
-	
+	var levelList = "";
+          $("#trxAnnotMS option").each(function () {
+                levelList += $(this).val() + ";";
+              });
+	$('#levels').val(levelList);
+	//alert(levelList);
 	//$('#tissues').val($('#tissuesMS').val());
 	//$('#chromosomes').val($('#chromosomesMS').val());
 	//alert("val:"+$('#chromosomesMS').val());

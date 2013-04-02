@@ -50,10 +50,30 @@ var ucscgeneID="";
 	//Setup Variables copied from LocusSpecificEQTL.jsp for Laura's multiselects for chromosome and tissue.
 	String[] selectedChromosomes = null;
 	String[] selectedTissues = null;
+	String[] selectedLevels=null;
 	String chromosomeString = null;
 	String tissueString = null;
 	Boolean selectedChromosomeError = null;
 	Boolean selectedTissueError = null;
+	String levelString="core;extended;full";
+	
+	
+	
+	if(request.getParameter("levels")!=null && !request.getParameter("levels").equals("")){			
+				String tmpSelectedLevels = request.getParameter("levels");
+				selectedLevels=tmpSelectedLevels.split(";");
+				log.debug("Getting selected levels:"+tmpSelectedLevels);
+				levelString = "";
+				//selectedLevelError = true;
+				for(int i=0; i< selectedLevels.length; i++){
+					//selectedLevelsError = false;
+					levelString = levelString + selectedLevels[i] + ";";
+				}
+	}else{
+		log.debug("Getting selected levels: NULL Using defaults.");
+		selectedLevels=levelString.split(";");
+	}
+	
 	
 	//
 	// Create chromosomeNameArray and chromosomeSelectedArray 
@@ -88,6 +108,9 @@ var ucscgeneID="";
 		chromosomeNameArray[numberOfChromosomes-1] = "rnX";
 		chromosomeDisplayArray[numberOfChromosomes-1]="Chr X";
 	}
+	
+	
+	
 	
 	//
 	// Create tissueNameArray and tissueSelectedArray
@@ -816,10 +839,10 @@ var ucscgeneID="";
                             		Common:<BR /><%=curGene.getSnpCount("common","SNP")%> / <%=curGene.getSnpCount("common","Indel")%><BR />
                                 <%}%>
                             	<%if(curGene.getSnpCount("BNLX","SNP")>0 || curGene.getSnpCount("BNLX","Indel")>0 ){%>
-                            		BNLX:<BR /><%=curGene.getSnpCount("BNLX","SNP")%> / <%=curGene.getSnpCount("BNLX","Indel")%><BR />
+                            		BN-Lx:<BR /><%=curGene.getSnpCount("BNLX","SNP")%> / <%=curGene.getSnpCount("BNLX","Indel")%><BR />
                                 <%}%>
                                 <%if(curGene.getSnpCount("SHRH","SNP")>0 || curGene.getSnpCount("SHRH","Indel")>0){%>
-                                	SHRH:<BR /><%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%>
+                                	SHR:<BR /><%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%>
                                 <%}%>
                             </TD>
                             <TD class="leftBorder"><%=curGene.getTranscriptCountEns()%></TD>
@@ -1019,10 +1042,10 @@ var ucscgeneID="";
                             		Common: <%=rna.getSnpCount("common","SNP")%> / <%=rna.getSnpCount("common","Indel")%><BR />
                                 <%}%>
                             	<%if(rna.getSnpCount("BNLX","SNP")>0 || rna.getSnpCount("BNLX","Indel")>0 ){%>
-                            		BNLX: <%=rna.getSnpCount("BNLX","SNP")%> / <%=rna.getSnpCount("BNLX","Indel")%><BR />
+                            		BN-Lx: <%=rna.getSnpCount("BNLX","SNP")%> / <%=rna.getSnpCount("BNLX","Indel")%><BR />
                                 <%}%>
                                 <%if(rna.getSnpCount("SHRH","SNP")>0 || rna.getSnpCount("SHRH","Indel")>0){%>
-                                	SHRH: <%=rna.getSnpCount("SHRH","SNP")%> / <%=rna.getSnpCount("SHRH","Indel")%>
+                                	SHR: <%=rna.getSnpCount("SHRH","SNP")%> / <%=rna.getSnpCount("SHRH","Indel")%>
                                 <%}%>
                                 </TD>
                                 <TD class="leftBorder"></TD>
@@ -1717,10 +1740,10 @@ var ucscgeneID="";
                                                             <td>
                                                                 
                                                                 <select name="trxAnnotMS" id="trxAnnotMS" class="multiselect" size="4" multiple="true">
-                                                                  	<option value="core" selected>Core</option>
-																	<option value="extended" selected>Extended</option>
-                                                					<option value="full" selected>Full</option>
-																	<option value="ambiguous" >Ambiguous</option>
+                                                                  	<option value="core" <%if(levelString.contains("core")){%>selected<%}%>>Core</option>
+																	<option value="extended" <%if(levelString.contains("extended")){%>selected<%}%>>Extended</option>
+                                                					<option value="full" <%if(levelString.contains("full")){%>selected<%}%>>Full</option>
+																	<option value="ambiguous" <%if(levelString.contains("ambiguous")){%>selected<%}%>>Ambiguous</option>
                                                                 </select>
                                                 
                                                             </td>
@@ -1770,10 +1793,14 @@ var ucscgeneID="";
                         </TR>
                         </tbody>
                   </table>
-<% ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,"All",myOrganism,tissueString,chromosomeString);//this region controls what genes
-		ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
-        if(session.getAttribute("getTransControllingEQTL")==null){%>
-            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-71px"><span class="trigger less" name="eQTLRegionNote" >EQTL Region</span><span title=""><img src="<%=imagesDir%>icons/info.gif"></span></div>
+<% ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
+	ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
+  if(session.getAttribute("getTransControllingEQTL")==null){
+  	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
+            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-71px">
+            	<span class="trigger less" name="eQTLRegionNote" >EQTL Region</span>
+                <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+            </div>
             <div id="eQTLRegionNote" style="width:100%; position:relative; top:-71px">
             Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the folowing region(s):<BR />
             <%for(int i=0;i<eQTLRegions.size();i++){%>
@@ -1852,10 +1879,7 @@ var ucscgeneID="";
     	<strong><%=session.getAttribute("getTransControllingEQTLCircos")%></strong><BR /><BR /><BR />
         </div><!-- end CircosPlot -->
 	<%}%>
-		
-		<%if(transOutQTLs!=null && transOutQTLs.size()>0){
-			//if(transOutQTLs.size()<=300){
-			String idList="";
+			<%String idList="";
 			int idListCount=0;
 			for(int i=0;i<transOutQTLs.size();i++){
 				TranscriptCluster tc=transOutQTLs.get(i);
@@ -2064,10 +2088,71 @@ var ucscgeneID="";
 				 </tbody>
               </table>
               <BR /><BR /><BR />
-      <%}else{%>
-      No genes to display.  Try changing the filtering parameters.
-					<%}%>
+              
+              <script type="text/javascript">
+			  	var tblFrom=$('#tblFrom').dataTable({
+					"bPaginate": false,
+					"bProcessing": true,
+					"sScrollX": "950px",
+					"sScrollY": "650px",
+					"bDeferRender": true,
+					"sDom": '<"leftSearch"fr><t>'
+					});
+	
+					$('#geneIDFCBX').click( function(){
+							displayColumns(tblFrom,1,1,$('#geneIDFCBX').is(":checked"));
+					  });
+					  $('#geneDescFCBX').click( function(){
+							displayColumns(tblFrom,2,1,$('#geneDescFCBX').is(":checked"));
+					  });
+					  
+					  $('#transAnnotCBX').click( function(){
+							displayColumns(tblFrom,3,2,$('#transAnnotCBX').is(":checked"));
+					  });
+					  $('#allPvalCBX').click( function(){
+							for(var i=0;i<tisLen;i++){
+								displayColumns(tblFrom,i*2+7,1,$('#allPvalCBX').is(":checked"));
+							}
+					  });
+					  $('#allLocCBX').click( function(){
+							for(var i=0;i<tisLen;i++){
+								displayColumns(tblFrom,i*2+8,1,$('#allLocCBX').is(":checked"));
+							}
+					  });
+					  $('#fromBrainCBX').click( function(){
+							displayColumns(tblFrom,7,2,$('#fromBrainCBX').is(":checked"));
+					  });
+					   $('#fromHeartCBX').click( function(){
+							displayColumns(tblFrom,9,2,$('#fromHeartCBX').is(":checked"));
+					  });
+					  $('#fromLiverCBX').click( function(){
+							displayColumns(tblFrom,11,2,$('#fromLiverCBX').is(":checked"));
+					  });
+					  $('#fromBATCBX').click( function(){
+							displayColumns(tblFrom,13,2,$('#fromBATCBX').is(":checked"));
+					  });
+					  
+					  
+						$('#circosSizeSelect').change( function(){
+								var size=$(this).val();
+								$('#circosIFrame').attr("height",size);
+								if(size<=950){
+									$('#circosIFrame').attr("width",950);
+								}else{
+									$('#circosIFrame').attr("width",size-2);
+								}
+						});
+			  </script>
+      	<%}else{%>
+        	<script type="text/javascript">
+				tblFromAdjust=true;
+			</script>
+      		No genes to display.  Try changing the filtering parameters.
+		<%}%>
      <%}else{%>
+    	 <script type="text/javascript">
+			 tblFromAdjust=true;
+			</script>
      	<strong><%=session.getAttribute("getTransControllingEQTL")%></strong>
      <%}%>
 </div><!-- end eQTL List-->
@@ -2111,19 +2196,6 @@ $(document).ready(function() {
 	document.getElementById("loadingRegion").style.display = 'none';
 	
 	
-	
-	
-	
-	var tblFrom=$('#tblFrom').dataTable({
-	"bPaginate": false,
-	"bProcessing": true,
-	"sScrollX": "950px",
-	"sScrollY": "650px",
-	"bDeferRender": true,
-	"sDom": '<"leftSearch"fr><t>'
-	});
-	
-	
 	$('#eqtlTabID').click(function() {    
 			$('div#changingTabs').show(10);
 				//change the tab
@@ -2159,54 +2231,7 @@ $(document).ready(function() {
 	
 	
 	
-	/* Seutp Filtering/Viewing in tblFrom*/	
-	  $('#geneIDFCBX').click( function(){
-			displayColumns(tblFrom,1,1,$('#geneIDFCBX').is(":checked"));
-	  });
-	  $('#geneDescFCBX').click( function(){
-			displayColumns(tblFrom,2,1,$('#geneDescFCBX').is(":checked"));
-	  });
-	  
-	  $('#transAnnotCBX').click( function(){
-			displayColumns(tblFrom,3,2,$('#transAnnotCBX').is(":checked"));
-	  });
-	  $('#allPvalCBX').click( function(){
-	  		for(var i=0;i<tisLen;i++){
-				displayColumns(tblFrom,i*2+7,1,$('#allPvalCBX').is(":checked"));
-			}
-	  });
-	  $('#allLocCBX').click( function(){
-	  		for(var i=0;i<tisLen;i++){
-				displayColumns(tblFrom,i*2+8,1,$('#allLocCBX').is(":checked"));
-			}
-	  });
-	  $('#fromBrainCBX').click( function(){
-			displayColumns(tblFrom,7,2,$('#fromBrainCBX').is(":checked"));
-	  });
-	   $('#fromHeartCBX').click( function(){
-			displayColumns(tblFrom,9,2,$('#fromHeartCBX').is(":checked"));
-	  });
-	  $('#fromLiverCBX').click( function(){
-			displayColumns(tblFrom,11,2,$('#fromLiverCBX').is(":checked"));
-	  });
-	  $('#fromBATCBX').click( function(){
-			displayColumns(tblFrom,13,2,$('#fromBATCBX').is(":checked"));
-	  });
-		/*$('#pvalueCutoffSelect2').change( function(){
-			$('#pvalueCutoffInput').val($(this).val());
-			$('#geneCentricForm').submit();
-		});*/
 	
-	
-	//setupExpandCollapseTable();
-	/*$("span[name='bqtlListFilter']").click(function(){
-		var baseName = $(this).attr("name");
-        expandCollapse(baseName);
-	});
-	$("span[name='fromListFilter']").click(function(){
-		var baseName = $(this).attr("name");
-        expandCollapse(baseName);
-	});*/
 	
 	$(".trigger").click(function(){
 		var baseName = $(this).attr("name");
@@ -2215,17 +2240,8 @@ $(document).ready(function() {
 	});
 	
 	setupExpandCollapse();
-	//var tableRows = getRows();
-	//hoverRows(tableRows);
-	$('#circosSizeSelect').change( function(){
-			var size=$(this).val();
-			$('#circosIFrame').attr("height",size);
-			if(size<=950){
-				$('#circosIFrame').attr("width",950);
-			}else{
-				$('#circosIFrame').attr("width",size-2);
-			}
-	});
+	
+	
 
 	
 	//Setup Tabs
