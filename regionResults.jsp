@@ -384,7 +384,8 @@ var ucscgeneID="";
 	});
   	$('#imageSizeCbx').change( function(){
 		if($(this).is(":checked")){
-			$('#geneImage').css({"height":"400px","overflow":"auto"});
+			var size=$('#imageSizeSelect').val()+"px";
+			$('#geneImage').css({"height":size,"overflow":"auto"});
 			$('#imageSizeSelect').prop('disabled', false);
 		}else{
 			$('#geneImage').css({"height":"","overflow":""});
@@ -1100,7 +1101,7 @@ var ucscgeneID="";
 	$('#viewTrxDialog').dialog({
 		autoOpen: false,
 		dialogClass: "transcriptDialog",
-		width: 960,
+		width: 970,
 		height: 400,
 		zIndex: 999
 	});

@@ -47,20 +47,24 @@ if(displayNoEnsembl){ %>
 
 <%if(genURL.size()>0){%>
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
-    	<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
-    	<div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
-        <span style="font-size:12px; font-weight:normal;">
-        <input name="imageSizeCbx" type="checkbox" id="imageSizeCbx" checked="checked" /> Scroll Image - Viewable Size:
-        <select name="imageSizeSelect" id="imageSizeSelect">
-        		<option value="200" >Smaller</option>
-            	<option value="400" selected="selected">Normal</option>
-                <option value="600" >Larger</option>
-                <option value="800" >Largest</option>
-            </select>
-        </span>
+    		<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
+    		<div class="inpageHelp" style="display:inline-block;"><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+            
+    		<span style="font-size:12px; font-weight:normal; float:left;"><span class="legendBtn">Legend <img src="../web/images/icons/help.png"></span></span>
+            
+        	<span style="font-size:12px; font-weight:normal; float:right;">
+        		<input name="imageSizeCbx" type="checkbox" id="imageSizeCbx" checked="checked" /> Scroll Image - Viewable Size:
+        		<select name="imageSizeSelect" id="imageSizeSelect">
+        			<option value="200" >Smaller</option>
+            		<option value="400" selected="selected">Normal</option>
+                	<option value="600" >Larger</option>
+                	<option value="800" >Largest</option>
+            	</select>
+            	<span title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
+        	</span>
     </div>
-    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
-        
+    
+        <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
@@ -69,13 +73,16 @@ if(displayNoEnsembl){ %>
             </div>
         </div><!-- end geneimage div -->
     	<div class="geneimageControl">
-      		
+      		<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
+             Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpUCSCImageControl" class="helpImage" src="../web/images/icons/help.png" /></div>
+             
+            </div>
           	<form>
-            <table style="text-align:left; width:100%;">
-            	<TR><TD colspan="3">
-            Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="Help1" class="helpImage" src="../web/images/icons/help.png" /></div><BR />
-            	</TD></TR>
-               	<TR>
+            <table class="list_base" style="text-align:left; width:100%;" cellspacing="0">	
+            <TR>
+				<TD class="rightBorder">
+            		<span style=" font-weight:bold;">Image Tracks</span>
+            	</TD>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="probeCBX" value="probe" checked="checked" /> All Non-Masked Probesets
                 <select name="trackSelect" id="probeSelect">
@@ -83,43 +90,86 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
+                <span title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
-                <TD colspan="2">
+                <TD>
                 <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="filterprobe" />Probsets Detected Above Background >1% of samples
                 <select name="trackSelect" id="filterprobeSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
+                <span title="The non-masked Affymetrix Exon 1.0 ST probsets detected above background in >1% of samples in each tissue available."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
             </TR>
+            <%if(myOrganism.equals("Rn")){%>
             <TR>
+            	<TD class="rightBorder"></TD>
+            	<TD>
+                <input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
+                 <select name="trackSelect" id="snpSelect">
+                    <option value="1" selected="selected">Dense</option>
+                    <option value="3" >Pack</option>
+                    <option value="2" >Full</option>
+                </select>
+                <span title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
+                </TD>
                 <TD>
+                <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
+                <select name="trackSelect" id="helicosSelect">
+                    <option value="1" selected="selected">Dense</option>
+                    <option value="2" >Full</option>
+                </select>
+                <span title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
+                </TD>
+             </TR>
+             <%}%>
+             <TR>
+            	<TD class="rightBorder"></TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs <span title="This track will display the publicly available bQTLs from RGD. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are avaialbe under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
+                </TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" checked="checked" /> RefSeq Transcripts <span title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
+                 </TD>
+             </TR>
+            <TR>
+            	<TD class="rightBorder topLine">
+            		<span style=" font-weight:bold;">Image Tracks and Table Filters</span>
+                    <span title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above.">
+                    	<img src="<%=imagesDir%>icons/info.gif"></span>
+            	</TD>
+                <TD  class="topLine">
                 <input name="trackcbx" type="checkbox" id="exonPlusCBX" value="numExonPlus" checked="checked" />+ Strand Protein Coding/PolyA+
                 <select name="trackSelect" id="exonPlusSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
+                <span title="This track consists of transcripts on the + strand from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
-                <TD>
+                <TD  class="topLine">
                 <input name="trackcbx" type="checkbox" id="exonMinusCBX" value="numExonMinus" checked="checked" />- Strand Protein Coding/PolyA+
                 <select name="trackSelect" id="exonMinusSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
+                <span title="This track consists of transcripts on the - strand from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
-                <TD>
+                
+            </TR>
+            <TR>
+            	<TD class="rightBorder"></TD>
+            	<TD >
                 <input name="trackcbx" type="checkbox" id="exonUkwnCBX" value="numExonUkwn" />Unknown Strand Protein Coding/PolyA+
                 <select name="trackSelect" id="exonUkwnSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
+                <span title="This track consists of single exon RNAs from RNA-Seq where the strand could not be determined."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
-            </TR>
-            <TR>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" />Long Non-Coding/NonPolyA+
                 <select name="trackSelect" id="noncodingSelect">
@@ -127,7 +177,12 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
+                <span title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
+                
+            </TR>
+            <TR>
+            	<TD class="rightBorder"></TD>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" /> Small RNA
                 <select name="trackSelect" id="smallncSelect">
@@ -135,31 +190,11 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select> 
+                <span title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
-                <TD>
-                <input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
-                 <select name="trackSelect" id="snpSelect">
-                    <option value="1" selected="selected">Dense</option>
-                    <option value="3" >Pack</option>
-                    <option value="2" >Full</option>
-                </select>
-                </TD>
+                <TD></TD>
             </TR>
-            <TR>
-                <TD>
-                <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
-                <select name="trackSelect" id="helicosSelect">
-                    <option value="1" selected="selected">Dense</option>
-                    <option value="2" >Full</option>
-                </select>
-                </TD>
-                <TD>
-                <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs
-                </TD>
-                <TD>
-                <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" checked="checked" /> RefSeq Transcripts
-                 </TD>
-             </TR>
+            
              </table>   
              </form>
          
@@ -167,6 +202,9 @@ if(displayNoEnsembl){ %>
           </div><!--end imageControl div -->
     </div><!--end Border Div -->
     <BR />
+    <div id="legendDialog"  title="<center>UCSC Image/Table Rows Legend</center>" class="legendDialog" style="display:none">
+                <%@ include file="/web/GeneCentric/legendBox.jsp" %>
+    </div>
 <script type="text/javascript">
 	hideWorking();
 	//Setup Fancy box for UCSC link
@@ -207,6 +245,18 @@ if(displayNoEnsembl){ %>
 								$("div#" + baseName).hide();
 									}
 							});
+							
+	$('#legendDialog').dialog({
+		autoOpen: false,
+		dialogClass: "legendDialog",
+		width: 350,
+		height: 350,
+		zIndex: 999
+	});
+	$('.legendBtn').click( function(){
+		$('#legendDialog').dialog( "option", "position",{ my: "left top", at: "left bottom", of: $(this) });
+		$('#legendDialog').dialog("open");
+	});
 </script>
 
     <BR />

@@ -109,6 +109,17 @@ table.list_base tr td.indel.bnlx{
 table.list_base tr td.indel.shrh{
 	background:#960000;
 }
+
+table.list_base tr td.corePS{
+	background:#FF0000;
+}
+table.list_base tr td.extendedPS{
+	background:#0000FF;
+}
+table.list_base tr td.fullPS{
+	background:#009A00;
+}
+
 table.list_base tr td.helicos{ 
 background-image: -ms-linear-gradient(left, #FFFFFF 0%, #000000 100%);
 background-image: -moz-linear-gradient(left, #FFFFFF 0%, #000000 100%);

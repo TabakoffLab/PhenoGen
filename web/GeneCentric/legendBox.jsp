@@ -1,7 +1,22 @@
         <div id="legend_box">
         		<table class="list_base">
                     <tbody>
-                 <TR><TD colspan="2">Track - Protein Coding/PolyA+</TD></TR>
+                    <%if(!region){%>
+                             <TR ><TD colspan="2" style="margin-top:15px;">Tracks - All Non-Masked Probesets and Probsets Detected Above Background >1% of samples</TD></TR>
+                            <TR>
+                                <TD class="corePS"></TD>
+                                <TD>Core</TD>
+                            </TR>
+                            <TR>
+                                <TD class="extendedPS"></TD>
+                                <TD>Extended</TD>
+                            </TR>
+                            <TR>
+                                <TD class="fullPS"></TD>
+                                <TD>Full</TD>
+                            </TR>
+                	<%}%>   
+                 <TR><TD colspan="2" <%if(!region){%>style="padding-top:15px;"<%}%>>Track - Protein Coding/PolyA+</TD></TR>
                 <TR >
                 	<TD class="coding ensembl odd" width="15%"></TD>
                     <TD>Ensembl Transcripts</TD>
@@ -11,7 +26,7 @@
                     <TD>Phenogen RNA-Seq (CuffLinks) Transcripts</TD>
                 </TR>
                 
-                <TR ><TD colspan="2" style="margin-top:15px;">Track - Long Non-Coding/NonPolyA+</TD></TR>
+                <TR ><TD colspan="2" style="padding-top:15px;">Track - Long Non-Coding/NonPolyA+</TD></TR>
                 <TR>
                 	<TD class="noncoding ensembl odd"></TD>
                     <TD>Ensembl Long Non-Coding</TD>
@@ -21,7 +36,7 @@
                     <TD>Non-PolyA+ PhenoGen RNA-Seq</TD>
                 </TR>
          
-                <TR ><TD colspan="2" style="margin-top:15px;">Track - Small RNA</TD></TR>
+                <TR ><TD colspan="2" style="padding-top:15px;">Track - Small RNA</TD></TR>
                 <TR>
                 	<TD class="smallnc odd"></TD>
                     <TD>Ensembl Small RNA <350bp</TD>
@@ -32,7 +47,7 @@
                 </TR>
                 
       
-                <TR ><TD colspan="2" style="margin-top:15px;">Track - SNPs/Indels (Image only)</TD></TR>
+                <TR ><TD colspan="2" style="padding-top:15px;">Track - SNPs/Indels (Image only)</TD></TR>
                 <TR>
                 	<TD class="snp bnlx"></TD>
                     <TD>SNP BN-Lx</TD>
@@ -50,11 +65,13 @@
                     <TD>Indel SHRH</TD>
                 </TR>
                 
-                <TR ><TD colspan="2" style="margin-top:15px;">Track - Helicos (Image only)</TD></TR>
+                <TR  ><TD colspan="2" style="padding-top:15px;">Track - Helicos (Image only)</TD></TR>
                 <TR>
                 	<TD class="helicos"></TD>
                     <TD>Read Counts from Helicos</TD>
                 </TR>
+                
+                
                 </tbody>
                 </table>
         </div> <!-- // end legend -->

@@ -469,11 +469,16 @@ sub createStrandedCodingTrack{
 				my $cntTranscripts = 0;
 				
 				my $color="255,0,0";
-				if($strand==-1){
-					$color="0,0,255";
-				}elsif($strand==0){
-					$color="0,0,0";
+				if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
+					$color="223,193,132";
+				}else{
+					$color="126,181,214";
 				}
+				#if($strand==-1){
+				#	$color="0,0,255";
+				#}elsif($strand==0){
+				#	$color="0,0,0";
+				#}
 				#if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
 				#	$color="197,17,0";
 				#}
