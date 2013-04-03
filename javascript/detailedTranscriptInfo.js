@@ -159,3 +159,44 @@ function updateUCSCImage(){
     			}
 			});
 }
+
+	function gvupdateTrackString(){
+		gvtrackString="";
+		$("input[name='gvtrackcbx']").each( function (){
+			if($(this).is(":checked")){
+				if(gvtrackString==""){
+					gvtrackString=$(this).val();
+				}else{
+					gvtrackString=gvtrackString+","+$(this).val();
+				}
+				var idStr=new String($(this).attr("id"));
+				var prefix=idStr.substr(0,idStr.length-3);
+				if($("#"+prefix+"Select").length==1){
+					gvtrackString=gvtrackString+"."+$("#"+prefix+"Select").val();
+				}
+			}
+		});
+	}
+
+function gvupdateUCSCImage(){
+			$.ajax({
+				url: contextPath + "/web/GeneCentric/updateUCSCImage.jsp",
+   				type: 'GET',
+				data: {trackList: gvtrackString,species: organism,chromosome: chr, minCoord: gvminCoord, maxCoord: gvmaxCoord,type:"geneView"},
+				dataType: 'html',
+				beforeSend: function(){
+					$('#gvgeneImage').hide();
+					$('#gvimgLoad').show();
+				},
+				complete: function(){
+					$('#gvimgLoad').hide();
+					$('#gvgeneImage').show();
+				},
+    			success: function(data2){ 
+        			$('#gvgeneImage').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('#gvgeneImage').html("<div>An error occurred generating this image.  Please try back later.</div>");
+    			}
+			});
+}

@@ -2,59 +2,7 @@
 	var gvtrackString="probe,coding,refseq";
 	var gvminCoord=<%=min%>;
 	var gvmaxCoord=<%=max%>;
-
-/*function displayWorking(){
-	document.getElementById("wait1").style.display = 'block';
-	document.getElementById("inst").style.display= 'none';
-	return true;
-}
-
-function hideWorking(){
-	document.getElementById("wait1").style.display = 'none';
-	document.getElementById("inst").style.display= 'none';
-}*/
-
-
-function gvupdateTrackString(){
-	gvtrackString="";
-	$("input[name='gvtrackcbx']").each( function (){
-		if($(this).is(":checked")){
-			if(gvtrackString==""){
-				gvtrackString=$(this).val();
-			}else{
-				gvtrackString=trackString+","+$(this).val();
-			}
-			var idStr=new String($(this).attr("id"));
-			var prefix=idStr.substr(0,idStr.length-3);
-			if($("#"+prefix+"Select").length==1){
-				gvtrackString=gvtrackString+"."+$("#"+prefix+"Select").val();
-			}
-		}
-	});
-}
-
-function gvupdateUCSCImage(){
-			$.ajax({
-				url: contextPath + "/web/GeneCentric/updateUCSCImage.jsp",
-   				type: 'GET',
-				data: {trackList: gvtrackString,species: organism,chromosome: chr, minCoord: gvminCoord, maxCoord: gvmaxCoord,type:"geneView"},
-				dataType: 'html',
-				beforeSend: function(){
-					$('#gvgeneImage').hide();
-					$('#gvimgLoad').show();
-				},
-				complete: function(){
-					$('#gvimgLoad').hide();
-					$('#gvgeneImage').show();
-				},
-    			success: function(data2){ 
-        			$('#gvgeneImage').html(data2);
-    			},
-    			error: function(xhr, status, error) {
-        			$('#gvgeneImage').html("<div>An error occurred generating this image.  Please try back later.</div>");
-    			}
-			});
-}
+	
 
 </script>
 <span style="text-align:center;width:100%;">
@@ -88,7 +36,7 @@ function gvupdateUCSCImage(){
         	</span>
     </div>
         <div id="gvimgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
-        <div id="gvgeneImage" class="gvucscImage"  style="display:inline-block;">
+        <div id="gvgeneImage" class="gvucscImage"  style="display:inline-block;text-align:left;">
             	<a class="fancyboxExt fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
             	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/"+tmpFile%>"/></a>
             </div>
@@ -106,9 +54,10 @@ function gvupdateUCSCImage(){
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
+                <span title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 
-            	<TD>
+            	<TD colspan="2">
            			<input name="gvtrackcbx" type="checkbox" id="gvfilterprobeCBX" value="filterprobe" <%if(tmpFile.contains(".filterprobe.")){%>checked="checked"<%}%> />Probsets Detected Above Background >1% of samples
             		<select name="gvtrackSelect" id="gvfilterprobeSelect">
                     <option value="1" >Dense</option>
@@ -119,6 +68,31 @@ function gvupdateUCSCImage(){
                 </TD>
             </TR>
             <TR>
+            	<TD>
+            <input name="gvtrackcbx" type="checkbox" id="gvsnpCBX" value="snp" <%if(tmpFile.contains(".snp")){%>checked="checked"<%}%> /> SNPs/Indels:
+             <select name="gvtrackSelect" id="gvsnpSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="3" >Pack</option>
+                <option value="2" >Full</option>
+            </select>
+            <span title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
+            	</TD>
+                <TD>
+            	<input name="gvtrackcbx" type="checkbox" id="gvhelicosCBX" value="helicos" <%if(tmpFile.contains(".helicos")){%>checked="checked"<%}%>/> Helicos Data:
+            	
+	            <select name="gvtrackSelect" id="gvhelicosSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="2" >Full</option>
+            </select>
+            <span title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
+            	</TD>
+                <TD>
+            		<input name="gvtrackcbx" type="checkbox" id="gvrefseqCBX" value="refseq" <%if(tmpFile.contains(".refseq.")){%>checked="checked"<%}%>/> RefSeq Transcripts
+                    <span title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
+            	</TD>
+            </TR>
+            
+            <TR>
                 <TD>
             		<input name="gvtrackcbx" type="checkbox" id="gvcodingCBX" value="coding" <%if(tmpFile.contains(".coding.")){%>checked="checked"<%}%> /> Protein Coding/PolyA+
                     <select name="gvtrackSelect" id="gvcodingSelect">
@@ -126,6 +100,7 @@ function gvupdateUCSCImage(){
                         <option value="3" selected="selected">Pack</option>
                         <option value="2" >Full</option>
                     </select>
+                    <span title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
             	<TD>
                 <input name="gvtrackcbx" type="checkbox" id="gvnoncodingCBX" value="noncoding" <%if(tmpFile.contains(".noncoding.")){%>checked="checked"<%}%> />Long Non-Coding/NonPolyA+
@@ -136,38 +111,15 @@ function gvupdateUCSCImage(){
                     </select>
                     <span title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span> 
                 </TD>
-            </TR>
-            <TR>
-            	<TD>
+                <TD>
             <input name="gvtrackcbx" type="checkbox" id="gvsmallncCBX" value="smallnc" <%if(tmpFile.contains(".smallnc.")){%>checked="checked"<%}%>  /> Small RNA
             <select name="gvtrackSelect" id="gvsmallncSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select> 
+                <span title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
-                
-           		<TD>
-            <input name="gvtrackcbx" type="checkbox" id="gvsnpCBX" value="snp" <%if(tmpFile.contains(".snp")){%>checked="checked"<%}%> /> SNPs/Indels:
-             <select name="gvtrackSelect" id="gvsnpSelect">
-            	<option value="1" selected="selected">Dense</option>
-                <option value="3" >Pack</option>
-                <option value="2" >Full</option>
-            </select>
-            	</TD>
-            </TR>
-            <TR>
-            	<TD>
-            	<input name="gvtrackcbx" type="checkbox" id="gvhelicosCBX" value="helicos" <%if(tmpFile.contains(".helicos")){%>checked="checked"<%}%>/> Helicos Data:
-            	
-	            <select name="gvtrackSelect" id="gvhelicosSelect">
-            	<option value="1" selected="selected">Dense</option>
-                <option value="2" >Full</option>
-            </select>
-            </TD>
-				<TD>
-            <input name="gvtrackcbx" type="checkbox" id="gvrefseqCBX" value="refseq" <%if(tmpFile.contains(".refseq.")){%>checked="checked"<%}%>/> RefSeq Transcripts
-            </TD>
             </TR>
           </table>
           </div><!--end imageControl div -->
@@ -175,7 +127,9 @@ function gvupdateUCSCImage(){
           </div><!--end Border Div -->
          </span><!-- ends center span -->
 	<div id="gvlegendDialog"  title="<center>UCSC Image Legend</center>" class="legendDialog" style="display:none">
+    			<%region=false;%>
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
+                <%region=true;%>
     </div>
 
 <script type="text/javascript">

@@ -54,6 +54,7 @@ if(result==null || result.length<2 || result[1].equals("error")){
 }else{
 		html="<a class=\"fancybox fancybox.iframe\" href=\""+result[1]+"\" title=\"UCSC Genome Browser\"><img src=\""+result[0]+"\"/></a>";
 }
+log.debug("Update UCSC IMAGE returned html\n"+html);
 
 %>
 

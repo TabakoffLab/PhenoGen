@@ -379,7 +379,7 @@ var ucscgeneID="";
 		autoOpen: false,
 		dialogClass: "legendDialog",
 		width: 350,
-		height: 350,
+		height: 380,
 		zIndex: 999
 	});
   	$('#imageSizeCbx').change( function(){
@@ -410,7 +410,7 @@ var ucscgeneID="";
 
 <div class="cssTab" id="mainTab" >
     <ul>
-      <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?">Features Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?">Features Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="HelpGenesInRegion" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li ><a id="bqtlTabID" class="disable" href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li><a  id="eqtlTabID" class="disable" href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="Help10" class="helpImage" src="../web/images/icons/help.png" /></div></li>
      </ul>
@@ -532,7 +532,7 @@ var ucscgeneID="";
                             <%}else{%>
                             	Public HXB/BXH RI Rats (Tissue, Exon Arrays)
                             <%}%>
-                            )<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                            )<div class="inpageHelp" style="display:inline-block; "><img id="HelpAffyExon" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
                         <th colspan="12"  class="topLine noSort noBox"></th>
@@ -1101,7 +1101,7 @@ var ucscgeneID="";
 	$('#viewTrxDialog').dialog({
 		autoOpen: false,
 		dialogClass: "transcriptDialog",
-		width: 970,
+		width: 990,
 		height: 400,
 		zIndex: 999
 	});

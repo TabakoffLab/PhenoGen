@@ -1,30 +1,6 @@
-    
-    
-
-
-
-
-<div id="Help3Content" class="inpageHelpContent" title="<center>Help-Gene in Region Tab</center>"><div class="help-content">
-<H3>Gene Physically Located in Region Tab</H3>
-This tab will display all the Ensembl genes located in the chosen region, as well as any RNA-Seq genes that do not correspond to an Ensembl gene.<BR /><BR />
-Data Summary:<BR /><BR />
-<ol style=" list-style-type:decimal; padding-left:25px;">
-<li>Gene Information(Ensembl ID, Gene Symbol, Location, description, # transcripts, # transcripts from RNA-Seq)</li>
-	<span style="margin-left:35px;">Click on a Gene Symbol to view detailed transcript and probe set data for a particular gene.</span><BR /><BR />
-<li>Probe Set detail (# Probe Sets, # whose expression is heritable(allows you to focus on expression differences controlled by genetics),# detected above background(DABG),(Avg % of samples DABG).</li><BR />
-<li>Transcript Cluster Expression Quantitative Trait Loci (at the gene level)\   At the gene level, this indicates regions of the genome that are statistically associated with expression of the gene.  The table displays the p-value and location with the minimum p-value for each tissue available.  Click the view location plot link to view all of the locations across tissues.
-</li>
-</ol>
-</div></div>
-
-
-
-
-
-<div id="Help5bContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="HelpAffyExonContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>Affy Exon Data Columns</H3>
-The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse, data is from the Public ILSXISS RI Mice
-For rat, data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)<BR /><BR />
+The Affy Exon PhenoGen data displays data calculated from public datasets. Data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)<BR /><BR />
 
 These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets. A free login is required, which allows you to save your progress and come back after lengthy processing steps.  <BR /><BR />
 
@@ -44,6 +20,28 @@ Columns:<BR />
 </ul>
 
 </div></div>
+
+<div id="HelpGenesInRegionContent" class="inpageHelpContent" title="<center>Help-Gene in Region Tab</center>"><div class="help-content">
+<H3>Features Physically Located in Region Tab</H3>
+This tab will display all the Ensembl features located in the chosen region, as well as any RNA-Seq features that do not correspond to an Ensembl gene.<BR /><BR />
+
+Data Summary:<BR /><BR />
+<ol style=" list-style-type:decimal; padding-left:25px;">
+
+<li>Gene Information(Ensembl ID, Gene Symbol, Location, description, # transcripts, # transcripts from RNA-Seq, links to databases)</li>
+<li>A description of how RNA-Seq transcripts match to annotated transcripts.</li>
+<li>SNPs/Indels present in the recombinant inbred panel parental strains that fall in an exon of at least one annotated transcript exon or a generated(RNA-Seq) exon.</li>   
+<li>Probe Set detail (# Probe Sets, # whose expression is heritable(allows you to focus on expression differences controlled by genetics),# detected above background(DABG),(Avg % of samples DABG).</li>
+<li>Transcript Cluster Expression Quantitative Trait Loci (at the gene level)\   At the gene level, this indicates regions of the genome that are statistically associated with expression of the gene.  The table displays the p-value and location with the minimum p-value for each tissue available.  Click the view location plot link to view all of the locations across tissues.
+</li>
+</ol>
+</div></div>
+
+
+
+
+
+
 
 <div id="Help5cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
 <H3>Heritablity</H3>
