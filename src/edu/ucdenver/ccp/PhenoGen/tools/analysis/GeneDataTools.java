@@ -1753,7 +1753,8 @@ public class GeneDataTools {
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and substr(c.name,1,2) = '"+chr+"' "+
+                                //"and substr(c.name,1,2) = '"+chr+"' "+
+                                "and c.name = '"+chr+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -1845,7 +1846,8 @@ public class GeneDataTools {
                           "from Chromosomes c, Affy_Exon_ProbeSet s "+
                           "left outer join expression_qtls eq on eq.identifier = TO_CHAR (s.probeset_id) "+
                           "where s.chromosome_id = c.chromosome_id "+
-                          "and substr(c.name,1,2) = '"+chr+"'"+
+                          //"and substr(c.name,1,2) = '"+chr+"'"+
+                          "and c.name = '"+chr+"'"+
                           "and ((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                           "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
                           "and s.psannotation <> 'transcript' " +
@@ -2087,7 +2089,8 @@ public class GeneDataTools {
                                 "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+//, expression_qtls eq "+
                                 "where s.snp_id=lse.snp_id "+
                                 "and lse.pvalue< "+(-Math.log10(pvalue))+" "+
-                                "and substr(c.name,1,2)='"+chr+"' "+
+                                //"and substr(c.name,1,2)='"+chr+"' "+
+                                "and c.name='"+chr+"' "+
                                 "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
                                 " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
                                 "and s.organism ='"+organism+"' "+
@@ -2165,7 +2168,8 @@ public class GeneDataTools {
                             "((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
                             "and s.chromosome_id=c.chromosome_id "+
                             "and s.organism ='"+organism+"' "+
-                            "and substr(c.name,1,2)='"+chr+"' ";
+                            //"and substr(c.name,1,2)='"+chr+"' ";
+                            "and c.name='"+chr+"' ";
                     ps = dbConn.prepareStatement(snpQ);
                     rs = ps.executeQuery();
                     int snpcount=0;
@@ -2740,7 +2744,8 @@ public class GeneDataTools {
             String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
                             "where pq.organism='"+organism+"' "+
                             "and ((pq.qtl_start>="+min+" and pq.qtl_start<="+max+") or (pq.qtl_end>="+min+" and pq.qtl_end<="+max+") or (pq.qtl_start<="+min+" and pq.qtl_end>="+max+")) "+
-                            "and substr(c.name,1,2)='"+chr+"' "+
+                            //"and substr(c.name,1,2)='"+chr+"' "+
+                            "and c.name='"+chr+"' "+ 
                             "and c.chromosome_id=pq.chromosome";
             try{ 
             try{

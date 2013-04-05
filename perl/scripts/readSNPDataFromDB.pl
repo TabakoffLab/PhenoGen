@@ -56,29 +56,29 @@ sub readSNPDataFromDB{
 	
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChrom) == 1){
+	#if(length($geneChrom) == 1){
 		$query ="Select snp.dna_var_id,snp.strain,snp.ref_Seq,snp.strain_seq,snp.var_start,snp.var_stop,snp.type,c.name as \"chromosome\"
 			from DNA_VARIANT snp, chromosomes c 
 			where 
 			c.chromosome_id=snp.chromosome_id 
-			and substr(c.name,1,1) =  '".$geneChrom."' "."
+			and c.name =  '".$geneChrom."' "."
 			and snp.organism = '".$organism."' "."
 			and ((snp.Var_Start>=$geneStart and snp.Var_Start<=$geneStop) OR (snp.Var_Stop>=$geneStart and snp.Var_Stop<=$geneStop) OR (snp.Var_Start<=$geneStart and snp.Var_Stop>=$geneStop))
 			order by snp.Var_Start";
-	}
-	elsif(length($geneChrom) == 2) {
-		$query ="Select snp.dna_var_id,snp.strain,snp.ref_Seq,snp.strain_seq,snp.var_start,snp.var_stop,snp.type,c.name as \"chromosome\"
-			from DNA_VARIANT snp, chromosomes c 
-			where 
-			c.chromosome_id=snp.chromosome_id 
-			and substr(c.name,1,2) =  '".$geneChrom."' "."
-			and snp.organism = '".$organism."' "."
-			and ((snp.Var_Start>=$geneStart and snp.Var_Start<=$geneStop) OR (snp.Var_Stop>=$geneStart and snp.Var_Stop<=$geneStop) OR (snp.Var_Start<=$geneStart and snp.Var_Stop>=$geneStop))
-			order by snp.Var_Start";
-	}
-	else{
-		die "Something is wrong with the RNA Isoform query \nChromosome#:$geneChrom\n";
-	}
+	#}
+	#elsif(length($geneChrom) == 2) {
+	#	$query ="Select snp.dna_var_id,snp.strain,snp.ref_Seq,snp.strain_seq,snp.var_start,snp.var_stop,snp.type,c.name as \"chromosome\"
+	#		from DNA_VARIANT snp, chromosomes c 
+	#		where 
+	#		c.chromosome_id=snp.chromosome_id 
+	#		and substr(c.name,1,2) =  '".$geneChrom."' "."
+	#		and snp.organism = '".$organism."' "."
+	#		and ((snp.Var_Start>=$geneStart and snp.Var_Start<=$geneStop) OR (snp.Var_Stop>=$geneStart and snp.Var_Stop<=$geneStop) OR (snp.Var_Start<=$geneStart and snp.Var_Stop>=$geneStop))
+	#		order by snp.Var_Start";
+	#}
+	#else{
+	#	die "Something is wrong with the RNA Isoform query \nChromosome#:$geneChrom\n";
+	#}
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
 

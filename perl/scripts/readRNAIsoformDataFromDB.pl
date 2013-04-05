@@ -69,13 +69,13 @@ sub readRNAIsoformDataFromDB{
 	
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChrom) == 1){
+	#if(length($geneChrom) == 1){
 		$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,c.name as \"chromosome\",
 			re.enumber,re.estart,re.estop ,rt.rna_transcript_id 
 			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
 			where 
 			c.chromosome_id=rt.chromosome_id 
-			and substr(c.name,1,1) =  '".$geneChrom."' "."
+			and c.name =  '".$geneChrom."' "."
 			and re.rna_transcript_id=rt.rna_transcript_id 
 			and rt.rna_dataset_id=rd.rna_dataset_id 
 			and rd.organism = '".$organism."' "."
@@ -87,29 +87,29 @@ sub readRNAIsoformDataFromDB{
 				$query=$query." and rt.category=".$type;	
 			}
 			$query=$query." order by rt.trstart,rt.gene_id,rt.isoform_id,re.enumber";
-	}
-	elsif(length($geneChrom) == 2) {
-		$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,c.name as \"chromosome\",
-			re.enumber,re.estart,re.estop,rt.rna_transcript_id 
-			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
-			where 
-			c.chromosome_id=rt.chromosome_id 
-			and substr(c.name,1,2) =  '".$geneChrom."' "."
-			and re.rna_transcript_id=rt.rna_transcript_id 
-			and rt.rna_dataset_id=rd.rna_dataset_id 
-			and rd.organism = '".$organism."' "."
-			and rd.user_id= $publicUserID  
-			and rd.visible=1 
-			and rd.strain_panel like '".$panel."' "."
-			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))";
-			if($type ne "Any"){
-				$query=$query." and rt.category=".$type;	
-			}
-			$query=$query."order by rt.trstart,rt.gene_id,rt.isoform_id,re.enumber";
-	}
-	else{
-		die "Something is wrong with the RNA Isoform query \nChromosome#:$geneChrom\n";
-	}
+	#}
+	#elsif(length($geneChrom) == 2) {
+	#	$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,c.name as \"chromosome\",
+	#		re.enumber,re.estart,re.estop,rt.rna_transcript_id 
+	#		from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
+	#		where 
+	#		c.chromosome_id=rt.chromosome_id 
+	#		and c.name,1,2) =  '".$geneChrom."' "."
+	#		and re.rna_transcript_id=rt.rna_transcript_id 
+	#		and rt.rna_dataset_id=rd.rna_dataset_id 
+	#		and rd.organism = '".$organism."' "."
+	#		and rd.user_id= $publicUserID  
+	#		and rd.visible=1 
+	#		and rd.strain_panel like '".$panel."' "."
+	#		and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))";
+	#		if($type ne "Any"){
+	#			$query=$query." and rt.category=".$type;	
+	#		}
+	#		$query=$query."order by rt.trstart,rt.gene_id,rt.isoform_id,re.enumber";
+	#}
+	#else{
+	#	die "Something is wrong with the RNA Isoform query \nChromosome#:$geneChrom\n";
+	#}
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
 

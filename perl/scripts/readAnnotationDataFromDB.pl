@@ -61,7 +61,7 @@ sub readTranscriptAnnotationDataFromDB{
 	
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChrom) == 1){
+	#if(length($geneChrom) == 1){
 		$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name,rta.match_reason
 		from rna_transcripts_annot rta, rna_annot_src ras
 		where rta.source_id=ras.rna_annot_src_id
@@ -70,7 +70,7 @@ sub readTranscriptAnnotationDataFromDB{
 			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
 			where 
 			c.chromosome_id=rt.chromosome_id 
-			and substr(c.name,1,1) =  '".$geneChrom."' "."
+			and c.name =  '".$geneChrom."' "."
 			and re.rna_transcript_id=rt.rna_transcript_id 
 			and rt.rna_dataset_id=rd.rna_dataset_id 
 			and rd.organism = '".$organism."' "."
@@ -79,29 +79,29 @@ sub readTranscriptAnnotationDataFromDB{
 			and rd.strain_panel like '".$panel."' "."
 			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop)))
 		order by rta.rna_transcript_id";
-	}
-	elsif(length($geneChrom) == 2) {
-		$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name,rta.match_reason
-		from rna_transcripts_annot rta, rna_annot_src ras
-		where rta.source_id=ras.rna_annot_src_id
-		and rta.rna_transcript_id in
-		(Select rt.rna_transcript_id
-			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
-			where 
-			c.chromosome_id=rt.chromosome_id 
-			and substr(c.name,1,2) =  '".$geneChrom."' "."
-			and re.rna_transcript_id=rt.rna_transcript_id 
-			and rt.rna_dataset_id=rd.rna_dataset_id 
-			and rd.organism = '".$organism."' "."
-			and rd.user_id= $publicUserID  
-			and rd.visible=1 
-			and rd.strain_panel like '".$panel."' "."
-			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop)))
-		order by rta.rna_transcript_id";
-	}
-	else{
-		die "Something is wrong with the annotation query \nChromosome#:$geneChrom\n";
-	}
+	#}
+	#elsif(length($geneChrom) == 2) {
+	#	$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name,rta.match_reason
+	#	from rna_transcripts_annot rta, rna_annot_src ras
+	#	where rta.source_id=ras.rna_annot_src_id
+	#	and rta.rna_transcript_id in
+	#	(Select rt.rna_transcript_id
+	#		from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
+	#		where 
+	#		c.chromosome_id=rt.chromosome_id 
+	#		and substr(c.name,1,2) =  '".$geneChrom."' "."
+	#		and re.rna_transcript_id=rt.rna_transcript_id 
+	#		and rt.rna_dataset_id=rd.rna_dataset_id 
+	#		and rd.organism = '".$organism."' "."
+	#		and rd.user_id= $publicUserID  
+	#		and rd.visible=1 
+	#		and rd.strain_panel like '".$panel."' "."
+	#		and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop)))
+	#	order by rta.rna_transcript_id";
+	#}
+	#else{
+	#	die "Something is wrong with the annotation query \nChromosome#:$geneChrom\n";
+	#}
 	#print $query."\n";
 	my $query_handle = $connect->prepare($query) or die (" RNA annotation query prepare failed \n");
 
@@ -176,7 +176,7 @@ sub readSmallNCAnnotationDataFromDB{
 	
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChrom) == 1){
+	#if(length($geneChrom) == 1){
 		$query ="select rsa.rna_smnc_id,rsa.rna_smnc_annot_id, rsa.annotation, ras.shrt_name
 		from rna_smnc_annot rsa, rna_annot_src ras
 		where rsa.source_id=ras.rna_annot_src_id
@@ -185,7 +185,7 @@ sub readSmallNCAnnotationDataFromDB{
 			from rna_dataset rd, rna_sm_noncoding rs, chromosomes c 
 			where 
 			c.chromosome_id=rs.chromosome_id 
-			and substr(c.name,1,1) =  '".$geneChrom."' "."
+			and c.name =  '".$geneChrom."' "."
 			and rs.rna_dataset_id=rd.rna_dataset_id 
 			and rd.organism = '".$organism."' "."
 			and rd.user_id= $publicUserID  
@@ -193,28 +193,28 @@ sub readSmallNCAnnotationDataFromDB{
 			and rd.strain_panel like '".$panel."' "."
 			and ((rs.feature_start>=$geneStart and rs.feature_start<=$geneStop) OR (rs.feature_stop>=$geneStart and rs.feature_stop<=$geneStop) OR (rs.feature_start<=$geneStart and rs.feature_stop>=$geneStop)))
 		order by rsa.rna_smnc_id";
-	}
-	elsif(length($geneChrom) == 2) {
-		$query ="select rsa.rna_smnc_id,rsa.rna_smnc_annot_id, rsa.annotation, ras.shrt_name
-		from rna_smnc_annot rsa, rna_annot_src ras
-		where rsa.source_id=ras.rna_annot_src_id
-		and rsa.rna_smnc_id in
-		(Select rs.rna_smnc_id
-			from rna_dataset rd, rna_sm_noncoding rs, chromosomes c 
-			where 
-			c.chromosome_id=rs.chromosome_id 
-			and substr(c.name,1,2) =  '".$geneChrom."' "."
-			and rs.rna_dataset_id=rd.rna_dataset_id 
-			and rd.organism = '".$organism."' "."
-			and rd.user_id= $publicUserID  
-			and rd.visible=1 
-			and rd.strain_panel like '".$panel."' "."
-			and ((rs.feature_start>=$geneStart and rs.feature_start<=$geneStop) OR (rs.feature_stop>=$geneStart and rs.feature_stop<=$geneStop) OR (rs.feature_start<=$geneStart and rs.feature_stop>=$geneStop)))
-		order by rsa.rna_smnc_id";
-	}
-	else{
-		die "Something is wrong with the annotation query \nChromosome#:$geneChrom\n";
-	}
+	#}
+	#elsif(length($geneChrom) == 2) {
+	#	$query ="select rsa.rna_smnc_id,rsa.rna_smnc_annot_id, rsa.annotation, ras.shrt_name
+	#	from rna_smnc_annot rsa, rna_annot_src ras
+	#	where rsa.source_id=ras.rna_annot_src_id
+	#	and rsa.rna_smnc_id in
+	#	(Select rs.rna_smnc_id
+	#		from rna_dataset rd, rna_sm_noncoding rs, chromosomes c 
+	#		where 
+	#		c.chromosome_id=rs.chromosome_id 
+	#		and c.name =  '".$geneChrom."' "."
+	#		and rs.rna_dataset_id=rd.rna_dataset_id 
+	#		and rd.organism = '".$organism."' "."
+	#		and rd.user_id= $publicUserID  
+	#		and rd.visible=1 
+	#		and rd.strain_panel like '".$panel."' "."
+	#		and ((rs.feature_start>=$geneStart and rs.feature_start<=$geneStop) OR (rs.feature_stop>=$geneStart and rs.feature_stop<=$geneStop) OR (rs.feature_start<=$geneStart and rs.feature_stop>=$geneStop)))
+	#	order by rsa.rna_smnc_id";
+	#}
+	#else{
+	#	die "Something is wrong with the annotation query \nChromosome#:$geneChrom\n";
+	#}
 	#print $query."\n";
 	my $query_handle = $connect->prepare($query) or die (" RNA annotation query prepare failed \n");
 

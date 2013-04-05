@@ -70,14 +70,14 @@ sub readAffyProbesetDataFromDB{
 
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChromNumber) == 1){
+	#if(length($geneChromNumber) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $heritTablename h on s.probeset_id = h.probeset_id
 		left outer join $probeTablename p on p.probeset_id = s.probeset_id
 		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,1) =  "."'".$geneChromNumber."'"."
+		and c.name =  "."'".$geneChromNumber."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -86,27 +86,27 @@ sub readAffyProbesetDataFromDB{
 		and h.dataset_id = $dataSetID
 		and s.updatedlocation='Y'
 		order by s.probeset_id";
-	}
-	elsif(length($geneChromNumber) == 2) {
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
-		from $chromosomeTablename c, $probesetTablename s
-		left outer join $heritTablename h on s.probeset_id = h.probeset_id
-		left outer join $probeTablename p on p.probeset_id = s.probeset_id
-		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
-		and 
-		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-		(s.psstop >= $geneStart and s.psstop <= $geneStop))
-		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID
-		and h.dataset_id = $dataSetID
-		and s.updatedlocation='Y'
-		order by s.probeset_id";
-
-	}
-	else{
-		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-	}
+	#}
+	#elsif(length($geneChromNumber) == 2) {
+	#	$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
+	#	from $chromosomeTablename c, $probesetTablename s
+	#	left outer join $heritTablename h on s.probeset_id = h.probeset_id
+	#	left outer join $probeTablename p on p.probeset_id = s.probeset_id
+	#	where s.chromosome_id = c.chromosome_id
+	#	and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
+	#	and 
+	#	((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
+	#	(s.psstop >= $geneStart and s.psstop <= $geneStop))
+	#	and s.psannotation <> 'transcript'
+	#	and s.Array_TYPE_ID = $arrayTypeID
+	#	and h.dataset_id = $dataSetID
+	#	and s.updatedlocation='Y'
+	#	order by s.probeset_id";
+	#
+	#}
+	#else{
+	#	die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
+	#}
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 
@@ -244,13 +244,13 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChromNumber) == 1){
+	#if(length($geneChromNumber) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $probeTablename p on p.probeset_id = s.probeset_id
 		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,1) =  "."'".$geneChromNumber."'"."
+		and c.name =  "."'".$geneChromNumber."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -258,25 +258,25 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		and s.Array_TYPE_ID = $arrayTypeID 
 		and s.updatedlocation='Y' 
 		order by s.probeset_id";
-	}
-	elsif(length($geneChromNumber) == 2) {
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
-		from $chromosomeTablename c, $probesetTablename s
-		left outer join $probeTablename p on p.probeset_id = s.probeset_id
-		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
-		and 
-		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-		(s.psstop >= $geneStart and s.psstop <= $geneStop))
-		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID 
-		and s.updatedlocation='Y' 
-		order by s.probeset_id";
-
-	}
-	else{
-		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-	}
+	#}
+	#elsif(length($geneChromNumber) == 2) {
+	#	$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
+	#	from $chromosomeTablename c, $probesetTablename s
+	#	left outer join $probeTablename p on p.probeset_id = s.probeset_id
+	#	where s.chromosome_id = c.chromosome_id
+	#	and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
+	#	and 
+	#	((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
+	#	(s.psstop >= $geneStart and s.psstop <= $geneStop))
+	#	and s.psannotation <> 'transcript'
+	#	and s.Array_TYPE_ID = $arrayTypeID 
+	#	and s.updatedlocation='Y' 
+	#	order by s.probeset_id";
+	#
+	#}
+	#else{
+	#	die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
+	#}
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 
@@ -401,14 +401,14 @@ sub readTissueAffyProbesetDataFromDB{
 
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChrom) == 1){
+	#if(length($geneChrom) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $heritTablename h on s.probeset_id = h.probeset_id
                 left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
 		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,1) =  "."'".$geneChrom."'"."
+		and c.name =  "."'".$geneChrom."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -418,28 +418,28 @@ sub readTissueAffyProbesetDataFromDB{
                 and h.dabg>$percCutoff
 		and s.updatedlocation='Y'
 		order by s.probeset_id";
-	}
-	elsif(length($geneChrom) == 2) {
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
-		from $chromosomeTablename c, $probesetTablename s
-		left outer join $heritTablename h on s.probeset_id = h.probeset_id
-        left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
-		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,2) = "."'".$geneChrom."'"."
-		and 
-		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-		(s.psstop >= $geneStart and s.psstop <= $geneStop))
-		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID
-		and rd.rna_dataset_id=$rnaDatasetID
-        and h.dabg>$percCutoff
-		and s.updatedlocation='Y'
-		order by s.probeset_id";
-
-	}
-	else{
-		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-	}
+#	}
+#	elsif(length($geneChrom) == 2) {
+#		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
+#		from $chromosomeTablename c, $probesetTablename s
+#		left outer join $heritTablename h on s.probeset_id = h.probeset_id
+#        left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
+#		where s.chromosome_id = c.chromosome_id
+#		and substr(c.name,1,2) = "."'".$geneChrom."'"."
+#		and 
+#		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
+#		(s.psstop >= $geneStart and s.psstop <= $geneStop))
+#		and s.psannotation <> 'transcript'
+#		and s.Array_TYPE_ID = $arrayTypeID
+#		and rd.rna_dataset_id=$rnaDatasetID
+#        and h.dabg>$percCutoff
+#		and s.updatedlocation='Y'
+#		order by s.probeset_id";
+#
+#	}
+#	else{
+#		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
+#	}
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 
@@ -505,12 +505,12 @@ sub readAffyProbesetDataFromDBwoProbes{
 
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChromNumber) == 1){
+	#if(length($geneChromNumber) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation
 		from $chromosomeTablename c, $probesetTablename s
 		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,1) =  "."'".$geneChromNumber."'"."
+		and c.name =  "."'".$geneChromNumber."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -518,24 +518,24 @@ sub readAffyProbesetDataFromDBwoProbes{
 		and s.Array_TYPE_ID = $arrayTypeID
 		and s.updatedlocation='Y'
 		order by s.probeset_id";
-	}
-	elsif(length($geneChromNumber) == 2) {
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation
-		from $chromosomeTablename c, $probesetTablename s
-		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
-		and 
-		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-		(s.psstop >= $geneStart and s.psstop <= $geneStop))
-		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID
-		and s.updatedlocation='Y'
-		order by s.probeset_id";
-
-	}
-	else{
-		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-	}
+	#}
+	#elsif(length($geneChromNumber) == 2) {
+	#	$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation
+	#	from $chromosomeTablename c, $probesetTablename s
+	#	where s.chromosome_id = c.chromosome_id
+	#	and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
+	#	and 
+	#	((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
+	#	(s.psstop >= $geneStart and s.psstop <= $geneStop))
+	#	and s.psannotation <> 'transcript'
+	#	and s.Array_TYPE_ID = $arrayTypeID
+	#	and s.updatedlocation='Y'
+	#	order by s.probeset_id";
+	#
+	#}
+	#else{
+	#	die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
+	#}
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 
@@ -614,14 +614,14 @@ sub readTissueEQTLProbesetDataFromDB{
 
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChrom) == 1){
+	#if(length($geneChrom) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $heritTablename h on s.probeset_id = h.probeset_id
                 left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
 		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,1) =  "."'".$geneChrom."'"."
+		and c.name =  "."'".$geneChrom."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -631,28 +631,28 @@ sub readTissueEQTLProbesetDataFromDB{
                 and h.dabg>$percCutoff
 		and s.updatedlocation='Y'
 		order by s.probeset_id";
-	}
-	elsif(length($geneChrom) == 2) {
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
-		from $chromosomeTablename c, $probesetTablename s
-		left outer join $heritTablename h on s.probeset_id = h.probeset_id
-        left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
-		where s.chromosome_id = c.chromosome_id
-		and substr(c.name,1,2) = "."'".$geneChrom."'"."
-		and 
-		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-		(s.psstop >= $geneStart and s.psstop <= $geneStop))
-		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID
-		and rd.rna_dataset_id=$rnaDatasetID
-		and h.dabg>$percCutoff
-		and s.updatedlocation='Y'
-		order by s.probeset_id";
-
-	}
-	else{
-		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-	}
+#	}
+#	elsif(length($geneChrom) == 2) {
+#		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
+#		from $chromosomeTablename c, $probesetTablename s
+#		left outer join $heritTablename h on s.probeset_id = h.probeset_id
+#        left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
+#		where s.chromosome_id = c.chromosome_id
+#		and substr(c.name,1,2) = "."'".$geneChrom."'"."
+#		and 
+#		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
+#		(s.psstop >= $geneStart and s.psstop <= $geneStop))
+#		and s.psannotation <> 'transcript'
+#		and s.Array_TYPE_ID = $arrayTypeID
+#		and rd.rna_dataset_id=$rnaDatasetID
+#		and h.dabg>$percCutoff
+#		and s.updatedlocation='Y'
+#		order by s.probeset_id";
+#
+#	}
+#	else{
+#		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
+#	}
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 

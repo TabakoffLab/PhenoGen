@@ -60,29 +60,29 @@ sub readQTLDataFromDB{
 	
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChrom) == 1){
+	#if(length($geneChrom) == 1){
 		$query ="Select pq.QTL_NAME,c.NAME,pq.QTL_START,pq.QTL_END
 			from public_qtls pq,chromosomes c 
 			where 
 			c.chromosome_id=pq.chromosome 
-			and substr(c.name,1,1) =  '".$geneChrom."' "."
+			and c.name =  '".$geneChrom."' "."
 			and pq.organism = '".$organism."' "."
 			and ((pq.QTL_START>=$geneStart and pq.QTL_START<=$geneStop) OR (pq.QTL_END>=$geneStart and pq.QTL_END<=$geneStop) OR (pq.QTL_START<=$geneStart and pq.QTL_END>=$geneStop))
 			order by pq.QTL_NAME";
-	}
-	elsif(length($geneChrom) == 2) {
-		$query ="Select pq.QTL_NAME,c.NAME,pq.QTL_START,pq.QTL_END
-			from public_qtls pq,chromosomes c 
-			where 
-			c.chromosome_id=pq.chromosome 
-			and substr(c.name,1,2) =  '".$geneChrom."' "."
-			and pq.organism = '".$organism."' "."
-			and ((pq.QTL_START>=$geneStart and pq.QTL_START<=$geneStop) OR (pq.QTL_END>=$geneStart and pq.QTL_END<=$geneStop) OR (pq.QTL_START<=$geneStart and pq.QTL_END>=$geneStop))
-			order by pq.QTL_NAME";
-	}
-	else{
-		die "Something is wrong with the bQTL query \n";
-	}
+	#}
+	#elsif(length($geneChrom) == 2) {
+	#	$query ="Select pq.QTL_NAME,c.NAME,pq.QTL_START,pq.QTL_END
+	#		from public_qtls pq,chromosomes c 
+	#		where 
+	#		c.chromosome_id=pq.chromosome 
+	#		and substr(c.name,1,2) =  '".$geneChrom."' "."
+	#		and pq.organism = '".$organism."' "."
+	#		and ((pq.QTL_START>=$geneStart and pq.QTL_START<=$geneStop) OR (pq.QTL_END>=$geneStart and pq.QTL_END<=$geneStop) OR (pq.QTL_START<=$geneStart and pq.QTL_END>=$geneStop))
+	#		order by pq.QTL_NAME";
+	#}
+	#else{
+	#	die "Something is wrong with the bQTL query \n";
+	#}
 	print "QTL Query:".$query."\n";
 	$query_handle = $connect->prepare($query) or die (" bQTL query prepare failed \n");
 

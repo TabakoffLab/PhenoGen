@@ -60,12 +60,12 @@ sub readSmallNoncodingDataFromDB{
 	
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	if(length($geneChrom) == 1){
+	#if(length($geneChrom) == 1){
 		$query ="Select rsn.rna_smnc_id,rsn.feature_start,rsn.feature_stop,rsn.total_reads,rsn.strand,rsn.reference_seq,c.name as \"chromosome\"
 			from rna_sm_noncoding rsn, rna_dataset rd, chromosomes c 
 			where 
 			c.chromosome_id=rsn.chromosome_id 
-			and substr(c.name,1,1) =  '".$geneChrom."' "."
+			and c.name =  '".$geneChrom."' "."
 			and rd.organism = '".$organism."' "."
 			and rd.user_id= $publicUserID  
 			and rd.visible=1 
@@ -73,24 +73,24 @@ sub readSmallNoncodingDataFromDB{
 			and rsn.rna_dataset_id=rd.rna_dataset_id
 			and ((rsn.feature_start>=$geneStart and rsn.feature_start<=$geneStop) OR (rsn.feature_stop>=$geneStart and rsn.feature_stop<=$geneStop) OR (rsn.feature_start<=$geneStart and rsn.feature_stop>=$geneStop))
 			order by rsn.rna_smnc_id";
-	}
-	elsif(length($geneChrom) == 2) {
-		$query ="Select rsn.rna_smnc_id,rsn.feature_start,rsn.feature_stop,rsn.total_reads,rsn.strand,rsn.reference_seq,c.name as \"chromosome\"
-			from rna_sm_noncoding rsn, rna_dataset rd, chromosomes c 
-			where 
-			c.chromosome_id=rsn.chromosome_id 
-			and substr(c.name,1,2) =  '".$geneChrom."' "."
-			and rd.organism = '".$organism."' "."
-			and rd.user_id= $publicUserID  
-			and rd.visible=1 
-			and rd.strain_panel like '".$panel."' "."
-			and rsn.rna_dataset_id=rd.rna_dataset_id
-			and ((rsn.feature_start>=$geneStart and rsn.feature_start<=$geneStop) OR (rsn.feature_stop>=$geneStart and rsn.feature_stop<=$geneStop) OR (rsn.feature_start<=$geneStart and rsn.feature_stop>=$geneStop))
-			order by rsn.rna_smnc_id";
-	}
-	else{
-		die "Something is wrong with the RNA Isoform query \nChromosome#:$geneChrom\n";
-	}
+	#}
+	#elsif(length($geneChrom) == 2) {
+	#	$query ="Select rsn.rna_smnc_id,rsn.feature_start,rsn.feature_stop,rsn.total_reads,rsn.strand,rsn.reference_seq,c.name as \"chromosome\"
+	#		from rna_sm_noncoding rsn, rna_dataset rd, chromosomes c 
+	#		where 
+	#		c.chromosome_id=rsn.chromosome_id 
+	#		and substr(c.name,1,2) =  '".$geneChrom."' "."
+	#		and rd.organism = '".$organism."' "."
+	#		and rd.user_id= $publicUserID  
+	#		and rd.visible=1 
+	#		and rd.strain_panel like '".$panel."' "."
+	#		and rsn.rna_dataset_id=rd.rna_dataset_id
+	#		and ((rsn.feature_start>=$geneStart and rsn.feature_start<=$geneStop) OR (rsn.feature_stop>=$geneStart and rsn.feature_stop<=$geneStop) OR (rsn.feature_start<=$geneStart and rsn.feature_stop>=$geneStop))
+	#		order by rsn.rna_smnc_id";
+	#}
+	#else{
+	#	die "Something is wrong with the RNA Isoform query \nChromosome#:$geneChrom\n";
+	#}
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
 
