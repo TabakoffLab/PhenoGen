@@ -1906,7 +1906,7 @@ public class GeneDataTools {
             log.debug("\ngenerating new-controlled from\n");
             String qtlQuery="select aep.transcript_cluster_id,c1.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c2.name,s.snp_start,s.snp_end,eq.LOD_SCORE "+
                                 "from affy_exon_probeset aep, location_specific_eqtl lse, snps s, chromosomes c1,chromosomes c2, expression_QTLS eq "+
-                                "where substr(c1.name,1,2)='"+chr+"' "+
+                                "where c1.name='"+chr+"' "+
                                 "and ((aep.psstart >="+min+" and aep.psstart <="+max+") or (aep.psstop>="+min+" and aep.psstop <="+max+")or (aep.psstop<="+min+" and aep.psstop >="+max+")) "+
                                 "and aep.psannotation = 'transcript' ";
             if(level.equals("All")){
@@ -1915,6 +1915,7 @@ public class GeneDataTools {
                 qtlQuery=qtlQuery+"and aep.pslevel = '"+level+"' ";
             }
             qtlQuery=qtlQuery+"and aep.array_type_id="+arrayTypeID+" "+
+                                "and aep.updatedlocation='Y' "+
                                 "and lse.probe_id=aep.probeset_id "+
                                 "and s.snp_id=lse.snp_id "+
                                 "and lse.pvalue >= "+(-Math.log10(pvalue))+" "+
@@ -2056,6 +2057,7 @@ public class GeneDataTools {
                                 "and c2.chromosome_id=aep.chromosome_id "+
                                 "and c.chromosome_id=s.chromosome_id "+
                                 "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
+                                "and aep.updatedlocation='Y' "+
                                 "and aep.transcript_cluster_id in "+
                                     "(select aep.transcript_cluster_id "+
                                     "from location_specific_eqtl lse, snps s, chromosomes c1 , affy_exon_probeset aep "+
@@ -2066,6 +2068,7 @@ public class GeneDataTools {
                                     "and s.chromosome_id=c1.chromosome_id "+
                                     "and s.organism ='"+organism+"' "+
                                     "and substr(c1.name,1,2)='"+chr+"' "+
+                                    "and aep.updatedlocation='Y' "+
                                     "and lse.probe_id=aep.probeset_id ";
                                 if(!level.equals("All")){
                                     qtlQuery=qtlQuery+" and ( ";
@@ -2109,6 +2112,7 @@ public class GeneDataTools {
                                 }
                                 qtlQuery2=qtlQuery2+"and aep.psannotation='transcript' "+
                                 "and aep.array_type_id="+arrayTypeID+" "+
+                                "and aep.updatedlocation='Y' "+
                                 //"and TO_CHAR(aep.probeset_id) = eq.identifier (+) "+
                                 //"and (s.tissue=eq.tissue or eq.tissue is null) "+
                                 "and s.chromosome_id=c.chromosome_id "+

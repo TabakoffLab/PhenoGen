@@ -78,6 +78,7 @@ sub createXMLFile
 	# Read in the arguments for the subroutine	
 	my($ucscDir, $outputDir, $folderName,$species,$type,$chromosome,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,$publicID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
 	
+	my $scriptStart=time();
 	my $shortSpecies="";
 	if($species eq "Rat"){
 	    $shortSpecies="Rn";
@@ -175,16 +176,18 @@ sub createXMLFile
 	}
 	
 	#read Probests
-	
+	my $psTimeStart=time();
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
-	
+	my $psTimeEnd=time();
+	print "Probeset Time=".($psTimeEnd-$psTimeStart)."sec\n";
 	#read SNPs/Indels
 	
 	my %snpHOH;
 	my @snpList=();
 	
 	if($shortSpecies eq 'Rn'){
+	    my $sTimeStart=time();
 	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	    %snpHOH=%$snpRef;
 	    my $snpListRef=$snpHOH{Snp};
@@ -193,9 +196,14 @@ sub createXMLFile
 	    }or do{
 		@snpList=();
 	    };
-	    
+	    my $sTimeEnd=time();
+	    print "SNP Time=".($sTimeEnd-$sTimeStart)."sec\n";
+	    my $iTimeStart=time();
 	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1);
 	    my $tmpGeneArray=$$isoformHOH{Gene};
+	    my $iTimeEnd=time();
+	    print "Isoform Time=".($iTimeEnd-$iTimeStart)."sec\n";
+	    
 	    #process RNA genes/transcripts and assign probesets.
 	    $tmpGeneArray=$$isoformHOH{Gene};
 	    foreach my $tmpgene ( @$tmpGeneArray){
@@ -253,7 +261,7 @@ sub createXMLFile
 				    ){
 					    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
 					    $cntMatchingSnps++;
-					    print "Exon Variant";
+					    #print "Exon Variant";
 				    }
 				
 				$cntSnps++;
@@ -264,8 +272,8 @@ sub createXMLFile
 	    }
 	}
 	
-	my $geneListFile=$outputDir."geneList.txt";
-	open GLFILE, ">".$geneListFile;
+	#my $geneListFile=$outputDir."geneList.txt";
+	#open GLFILE, ">".$geneListFile;
 	
 	# Loop through  Ensembl Genes
 	my @addedGeneList=();
@@ -274,16 +282,16 @@ sub createXMLFile
 		my ($geneName, $geneRegion, $geneStart, $geneStop,$geneStrand) = getFeatureInfo($gene);
 		my $geneChrom = "chr$geneRegion";
 		my $found=0;
-		print "Find: $geneName\n";
+		#print "Find: $geneName\n";
 		foreach my $testName (@addedGeneList){
-		    print "$testName:$geneName ";
+		    #print "$testName:$geneName ";
 		    if($testName eq $geneName){
-			print "Found";
+			#print "Found";
 			$found=1;
 		    }else{
-			print "Not found";
+			#print "Not found";
 		    }
-		    print "\n";
+		    #print "\n";
 		}
 
 	    if(length($geneRegion)<3&&$found==0){
@@ -304,7 +312,7 @@ sub createXMLFile
 			source => "Ensembl",
 			description => $geneDescription
 			};
-		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
+		#print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
 
 		    #Get the transcripts for this gene
 		    #print "getting transcripts for ".$geneExternalName."\n";
@@ -416,14 +424,14 @@ sub createXMLFile
 				my $cntSnps=0;
 				my $cntMatchingSnps=0;
 				foreach(@snpList){
-				    print "check snp".$snpHOH{Snp}[$cntSnps]{start}."-".$snpHOH{Snp}[$cntSnps]{stop};
+				    #print "check snp".$snpHOH{Snp}[$cntSnps]{start}."-".$snpHOH{Snp}[$cntSnps]{stop};
 					#if($exonStart<$exonStop){# if gene is in the forward direction
 					    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
 						($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
 					    ){
 						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
 						    $cntMatchingSnps++;
-						    print "Exon Variant";
+						    #print "Exon Variant";
 					    }
 					$cntSnps++;
 				} # loop through snps/indels
@@ -437,7 +445,7 @@ sub createXMLFile
 		$cntGenes=$cntGenes+1;
 	    }# if to process only if chromosome is valid
 	} # loop through genes
-	close GLFILE;
+	#close GLFILE;
 	
 	##output XML file
 	my $xml = new XML::Simple (RootName=>'GeneList');
@@ -453,13 +461,17 @@ sub createXMLFile
 	close XMLFILE;
 	
 	#read QTLs
+	my $qStart=time();
 	my $qtlRef=readQTLDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	my %qtlHOH=%$qtlRef;
+	my $qEnd=time();
+	print "QTLs completed in ".($qEnd-$qStart)." sec.\n";
 	
-	
-	
+	my $smStart=time();
 	my $smncRef=readSmallNoncodingDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	my %smncHOH=%$smncRef;
+	my $smEnd=time();
+	print "Small RNA completed in ".($smEnd-$smStart)." sec.\n";
 	
 	my $trackDB="mm9";
 	if($species eq 'Rat'){
@@ -472,7 +484,8 @@ sub createXMLFile
 	createProteinCodingTrack(\%GeneHOH,$outputDir."coding.track",$trackDB,1);
 	createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
 	createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
-
+	my $scriptEnd=time();
+	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 }
 #
 #	

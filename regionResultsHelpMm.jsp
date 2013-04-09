@@ -48,7 +48,24 @@ For each probe set on the Affymetrix Mouse Exon 1.0 ST Array and each sample, we
 </div></div>
 
 
-
+<div id="HelpeQTLAffyContent" class="inpageHelpContent" title="<center>Help-Affy Exon Data</center>"><div class="help-content">
+<H3>Affy Exon Data-eQTLs</H3>
+The Affy Exon PhenoGen data displays data calculated from public datasets.  Data is from the Public ILSXISS RI Mice
+<BR /><BR />
+These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  A free login is required, which allows you to save your progress and come back after lengthy processing steps.  
+<BR /><BR />
+Columns:<BR />
+<ul style="list-style-type:square; padding-left:25px;">
+	<li>Transcript Cluster ID- The unique Affymetrix-assigned id that corresponds to a gene. </li>
+	<li>Annotation Level- Confidence in the transcript cluster annotation</li>
+	<li>Circos Plot- Shows all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for a specific gene across tissues.</li>
+	<li><a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for the transcript cluster in each tissue</li>
+		<ul style="list-style-type:disc; padding-left:35px;">
+		<li>P-value from this region</li>
+		<li>total other locations with a P-value < cut-off</li>
+        </ul>
+</ul>
+</div></div>
 
 
 
@@ -131,23 +148,7 @@ This column is the method used to determine the location.<BR />
 
 
 
-<div id="Help11Content" class="inpageHelpContent" title="<center>Help-Circos eQTL Plot</center>"><div class="help-content">
-<H3>Circos Plot eQTL Gene Locations</H3>
-This plot shows all of the genes that have an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> in the region entered.  These genes correspond to the genes listed in the table below.  If a higher number of genes are located in nearly the same region only the first 2-3 may be displayed.
-<BR /><BR />
-The plot can be hidden using the +/- button.  The size of the plot can also be controlled using the button next to the directions.
-<BR /><BR />
-When your mouse is inside the border below, you can zoom in/out on the plot.  When your mouse is outside the border you can scroll normally.  The controls inside the image can be used to zoom in and out and reset the image.  You can also click-and-drag to reposition the image.
-<BR /><BR />
-You can download a PDF of the image by clicking on the download icon(<img src="web/images/icons/download_g.png">).
-<BR /><BR />
-You can reduce or restore the verticle space used for the graphic by clicking on the <img src="web/images/icons/circos_min.jpg"> or <img src="web/images/icons/circos_max.jpg"> icons.
-</div></div>
 
-<div id="Help12aContent" class="inpageHelpContent" title="<center>Help-Transcript Cluster ID</center>"><div class="help-content">
-<H3>Transcript Cluster ID</H3>
-Transcript Cluster ID- The unique ID assigned by Affymetrix.  <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are calculated for this annotation at the gene level by combining probe set data across the gene.
-</div></div>
 
 
 <div id="Help12bContent" class="inpageHelpContent" title="<center>Help-Annotation Level</center>"><div class="help-content">
@@ -155,25 +156,7 @@ Transcript Cluster ID- The unique ID assigned by Affymetrix.  <a href="<%=common
 Annotation level- Related to the confidence in the gene.  Core is the highest confidence and tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower and includes additional regions beyond the Ensembl annotations.
 </div></div>
 
-<div id="Help12cContent" class="inpageHelpContent" title="<center>Help-Affy Exon Data</center>"><div class="help-content">
-<H3>Affy Exon Data-eQTLs</H3>
-The Affy Exon PhenoGen data displays data calculated from public datasets.  For mouse, data is from the Public ILSXISS RI Mice
-For rat, data is from four datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays).
-<BR /><BR />
-These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  A free login is required, which allows you to save your progress and come back after lengthy processing steps.  
-<BR /><BR />
-Columns:<BR />
-<ul style="list-style-type:square; padding-left:25px;">
-	<li>Transcript Cluster ID- The unique Affymetrix-assigned id that corresponds to a gene. </li>
-	<li>Annotation Level- Confidence in the transcript cluster annotation</li>
-	<li>Circos Plot- Shows all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> for a specific gene across tissues.</li>
-	<li><a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> for the transcript cluster in each tissue</li>
-		<ul style="list-style-type:disc; padding-left:35px;">
-		<li>P-value from this region</li>
-		<li>total other locations with a P-value < cut-off</li>
-        </ul>
-</ul>
-</div></div>
+
 
 <div id="Help13Content" class="inpageHelpContent" title="<center>Help</center>">
 <div class="help-content">

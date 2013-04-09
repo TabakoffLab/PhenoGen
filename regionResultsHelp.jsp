@@ -89,6 +89,18 @@ At the transcript cluster level, this is an <a href="<%=commonDir%>definitions.j
 
 </div></div>
 
+
+<div id="HelpRevCircosContent" class="inpageHelpContent" title="<center>Help-Circos eQTL Plot</center>"><div class="help-content">
+<H3>Circos Plot eQTL Gene Locations</H3>
+This plot shows all of the genes that have an <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> in the region entered.  These genes correspond to the genes listed in the table below.  If a higher number of genes are located in nearly the same region only the first 2-3 may be displayed.
+<BR /><BR />
+The plot can be hidden using the +/- button.  The size of the plot can also be controlled using the Adjust Vertical Viewable Size dropdown list.
+<BR /><BR />
+When your mouse is inside the border below, you can zoom in/out on the plot.  When your mouse is outside the border you can scroll normally.  The controls inside the image can be used to zoom in and out and reset the image.  You can also click-and-drag to reposition the image.
+<BR /><BR />
+You can download a PDF of the image by clicking on the download icon(<img src="web/images/icons/download_g.png">).
+</div></div>
+
 <script type="text/javascript">
 //Setup Help links
 	$('.inpageHelpContent').hide();

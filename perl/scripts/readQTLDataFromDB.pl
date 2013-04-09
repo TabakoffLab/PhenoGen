@@ -97,7 +97,7 @@ sub readQTLDataFromDB{
 	
 	
 	while($query_handle->fetch()) {
-		print "processing:QTL:$qtl_name\n";
+		#print "processing:QTL:$qtl_name\n";
 		$qtlHOH{QTL}[$cntQTL] = {
 			name => $qtl_name,
 			chromosome => $qtl_chrom,

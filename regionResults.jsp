@@ -410,7 +410,7 @@ var ucscgeneID="";
 
 <div class="cssTab" id="mainTab" >
     <ul>
-      <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?">Features Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="HelpGenesInRegion" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?">Features<BR />Physically Located in Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="HelpGenesInRegion" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li ><a id="bqtlTabID" class="disable" href="#bQTLList" title="What bQTLs occur in this area?">bQTLs<BR />Overlapping Region</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="HelpbQTLInRegion" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li><a  id="eqtlTabID" class="disable" href="#eQTLListFromRegion" title="What does this region control?">Transcripts Controlled from Region(eQTLs)</a><div class="inpageHelp" style="float:right;position: relative; top: -53px; left:-2px;"><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></li>
      </ul>
@@ -1844,7 +1844,7 @@ var ucscgeneID="";
                   
    	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;top:-62px; position:relative;">
     	<span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span>
-    	<div class="inpageHelp" style="display:inline-block;"><img id="Help11" class="helpImage" src="../web/images/icons/help.png" /></div>
+    	<div class="inpageHelp" style="display:inline-block;"><img id="HelpRevCircos" class="helpImage" src="../web/images/icons/help.png" /></div>
         <span style="font-size:12px; font-weight:normal;">
         Adjust Vertical Viewable Size:
         <select name="circosSizeSelect" id="circosSizeSelect">
@@ -1932,7 +1932,7 @@ var ucscgeneID="";
                             <%}else{%>
                             	Public HXB/BXH RI Rats (Tissue, Exon Arrays)
                             <%}%>
-                            )<div class="inpageHelp" style="display:inline-block;"><img id="Help12c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                            )<div class="inpageHelp" style="display:inline-block;"><img id="HelpeQTLAffy" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                		 <tr>
                         <th colspan="3" class="topLine noSort noBox"></th>
@@ -1942,11 +1942,11 @@ var ucscgeneID="";
                         <%}%>
                     </tr>
                 	<TR class="col_title">
-                   		<TH>Gene Symbol<BR />(click for detailed transcription view) <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                   		<TH>Gene Symbol<BR />(click for detailed transcription view) <span title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     	<TH>Gene ID</TH>
                     	
-                        <TH>Description <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH>Transcript Cluster ID <span title=""><img src="<%=imagesDir%>icons/info.gif"></span> <div class="inpageHelp" style="display:inline-block;"><img id="Help12a" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Description <span title="The description from Ensembl if available."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Transcript Cluster ID <span title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span> </TH>
                         <TH>Annotation Level <span title=""><img src="<%=imagesDir%>icons/info.gif"></span> <div class="inpageHelp" style="display:inline-block;"><img id="Help12b" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                         <TH>Physical Location <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH> 
                         <TH>View Genome-Wide Associations <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
@@ -1997,15 +1997,24 @@ var ucscgeneID="";
         						}
                         %>
                         <TR>
-                            <TD ><a href="<%=lg.getGeneLink(tc.getGeneID(),myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for gene.">
+                            <TD >
+                            <%if(!tc.getGeneID().equals("")){%>
+                            <a href="<%=lg.getGeneLink(tc.getGeneID(),myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for gene.">
+                            
 							<%if(tc.getGeneSymbol().equals("")){%>
 								No Gene Symbol
 							<%}else{%>
 								<%=tc.getGeneSymbol()%>
                             <%}%>
-                            </a></TD>
+                            </a>
+							<%}else{%>
+                            	No Gene Symbol
+                            <%}%>
+                            </TD>
                             
-                            <TD ><a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tc.getGeneID(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tc.getGeneID()%></a><BR />	
+                            <TD >
+                            	 <%if(!tc.getGeneID().equals("")){%>
+                            <a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tc.getGeneID(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tc.getGeneID()%></a><BR />	
                                 <span style="font-size:10px;">
 								<%String tmpGS=tc.getGeneID();
 									String shortOrg="Mouse";
@@ -2032,6 +2041,7 @@ var ucscgeneID="";
                                         <a href="<%=LinkGenerator.getRGDLink(tmpGS,myOrganism)%>" target="_blank">RGD</a>
                                     <%}%>
                                  </span>
+                                 <%}%>
                              </TD>
                             
                             
