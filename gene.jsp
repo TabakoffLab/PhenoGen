@@ -9,11 +9,12 @@
 	//extrasList.add("ColReorder.min.js");
 	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
-	//extrasList.add("processing-1.4.1.min.js");
+	extrasList.add("jquery.tooltipster.min.js");
 	
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
+	extrasList.add("tooltipster.css");
 	//extrasList.add("ColReorder.css");
 	//extrasList.add("TableTools_JUI.css");
 	//extrasList.add("TableTools.css");
@@ -37,6 +38,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 <%}else{%>
 <%@ include file="/web/common/header_noBorder.jsp" %>
 <%}%>
+
 <jsp:useBean id="myIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
 
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>

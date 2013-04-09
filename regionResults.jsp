@@ -245,7 +245,7 @@ var ucscgeneID="";
                 	<option value="600" >Larger</option>
                 	<option value="800" >Largest</option>
             	</select>
-            	<span title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
+            	<span class="Imagetooltip" title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
         	</span>
     </div>
     
@@ -277,7 +277,7 @@ var ucscgeneID="";
             	<option value="1" selected="selected">Dense</option>
                 <option value="3" >Pack</option>
             </select>
-             <span title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span class="Imagetooltip" title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
@@ -285,12 +285,12 @@ var ucscgeneID="";
             	<option value="1" selected="selected">Dense</option>
                 <option value="2" >Full</option>
             </select>
-             <span title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span class="Imagetooltip" title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <%}%>
             <TD>
             <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs  
-            <span title="This track will display the publicly available bQTLs from RGD. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are avaialbe under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span class="Imagetooltip" title="This track will display the publicly available bQTLs from RGD. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are avaialbe under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             
             </TR>
@@ -299,12 +299,12 @@ var ucscgeneID="";
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts  
-            <span title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span class="Imagetooltip" title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             </TR>
             <TR>
             <TD class="rightBorder topLine">
-            <span style=" font-weight:bold;">Image Tracks and Table Filters</span><span title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above."><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span style=" font-weight:bold;">Image Tracks and Table Filters</span><span class="Imagetooltip" title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD class="topLine">
             <input name="trackcbx" type="checkbox" id="codingCBX" value="coding" checked="checked" /> Protein Coding<%if (myOrganism.equals("Rn")){%>/PolyA+<%}%>
@@ -313,7 +313,7 @@ var ucscgeneID="";
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
             </select>
-             <span title=
+             <span class="Imagetooltip" title=
              <%if(myOrganism.equals("Rn")){%>
              	"This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."
              <%}else{%>
@@ -328,7 +328,7 @@ var ucscgeneID="";
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
             </select>
-             <span title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD class="topLine">
             <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA 
@@ -337,7 +337,7 @@ var ucscgeneID="";
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
             </select>
-             <span title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span class="Imagetooltip" title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             </TR>
            	
@@ -406,6 +406,14 @@ var ucscgeneID="";
 		$('#legendDialog').dialog("open");
 	});
 	
+	$('.Imagetooltip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: -95,
+		offsetY: 5,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
 </script>          
 
 <div class="cssTab" id="mainTab" >
@@ -426,8 +434,8 @@ var ucscgeneID="";
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
-                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span><span title="Click the + icon to view filtering Options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span><span title="Click the + icon to view Columns you can show/hide in the table below."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span><span class="geneListToolTip" title="Click the + icon to view filtering Options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span><span class="geneListToolTip" title="Click the + icon to view Columns you can show/hide in the table below."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                         
                         </TR>
                         
@@ -437,7 +445,7 @@ var ucscgeneID="";
                         	<td>
                             <%if(myOrganism.equals("Rn")){%>
                                 
-                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" /> Exclude single exon RNA-Seq Transcripts <span title="This will hide the single exon transcripts from the table when selected."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" /> Exclude single exon RNA-Seq Transcripts <span class="geneListToolTip" title="This will hide the single exon transcripts from the table when selected."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                         	<%}%>
                         
                             				eQTL P-Value Cut-off:
@@ -448,35 +456,35 @@ var ucscgeneID="";
                                                     <option value="0.0001" <%if(forwardPValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
                                                     <option value="0.00001" <%if(forwardPValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
                                             </select> 
-                                            <span title="This will filter out eQTL with lower confidence than the selected threshold.(will not remove rows from the table just the entries in the eQTL columns)"><img src="<%=imagesDir%>icons/info.gif"></span>
+                                            <span class="geneListToolTip" title="This will filter out eQTL with lower confidence than the selected threshold.(will not remove rows from the table just the entries in the eQTL columns)"><img src="<%=imagesDir%>icons/info.gif"></span>
                                             <!--<input name="chkbox" type="checkbox" id="rqQTLCBX" value="rqQTLCBX"/>Require an eQTL below cut-off<span title=""><img src="<%=imagesDir%>icons/info.gif"></span>-->
                             </td>
                         	<td>
                             	<div class="columnLeft">
                                 	
-                                    <input name="chkbox" type="checkbox" id="matchesCBX" value="matchesCBX" checked="checked"/> RNA-Seq Transcript Matches <span title="Shows/Hides a description of the reason the RNA-Seq transcript was matched to the Ensembl Gene/Transcript."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="matchesCBX" value="matchesCBX" checked="checked"/> RNA-Seq Transcript Matches <span class="geneListToolTip" title="Shows/Hides a description of the reason the RNA-Seq transcript was matched to the Ensembl Gene/Transcript."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 	
-                                    <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /> Gene ID <span title="Shows/Hides the Gene ID column containing the Ensembl Gene ID and links to external Databases when available."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /> Gene ID <span class="geneListToolTip" title="Shows/Hides the Gene ID column containing the Ensembl Gene ID and links to external Databases when available."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /> Description <span title="Shows/Hides Gene Description column whichcontains the Ensembl Description or any annotations for RNA-Seq transcripts not associated with an Ensembl Gene/Transcript"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /> Description <span class="geneListToolTip" title="Shows/Hides Gene Description column whichcontains the Ensembl Description or any annotations for RNA-Seq transcripts not associated with an Ensembl Gene/Transcript"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked"/> BioType <span title="Shows/Hides Ensembl biotype or RNA-Seq category column."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked"/> BioType <span class="geneListToolTip" title="Shows/Hides Ensembl biotype or RNA-Seq category column."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="geneTracksCBX" value="geneTracksCBX" checked="checked" /> Tracks <span title="Shows/Hides the Image Tracks columns which contain an X when a feature appears in one of the three tracks."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneTracksCBX" value="geneTracksCBX" checked="checked" /> Tracks <span class="geneListToolTip" title="Shows/Hides the Image Tracks columns which contain an X when a feature appears in one of the three tracks."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
                                    
                                 </div>
                                 <div class="columnRight">
                                		
-                                    <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /> Location and Strand <span title="Shows/Hides the Chromosome, Start base pair, End base pair, and strand columns for the feature."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /> Location and Strand <span class="geneListToolTip" title="Shows/Hides the Chromosome, Start base pair, End base pair, and strand columns for the feature."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                  	
-                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /> Heritability <span title="Shows/Hides all of the Affymetrix Probeset Heritability data."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /> Heritability <span class="geneListToolTip" title="Shows/Hides all of the Affymetrix Probeset Heritability data."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 	
-                                	<input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /> Detection Above Background <span title="Shows/Hides all of the Affymetrix Probeset Detection Above Background data."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                	<input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /> Detection Above Background <span class="geneListToolTip" title="Shows/Hides all of the Affymetrix Probeset Detection Above Background data."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /> eQTLs All <span title="Shows/Hides all of the eQTL columns."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /> eQTLs All <span class="geneListToolTip" title="Shows/Hides all of the eQTL columns."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />eQTLs Tissues <span title="Shows/Hides all of the eQTL tissue specific columns while preserving a list of transcript clusters with a link to the circos plot."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                    <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />eQTLs Tissues <span class="geneListToolTip" title="Shows/Hides all of the eQTL tissue specific columns while preserving a list of transcript clusters with a link to the circos plot."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 </div>
 
                             </TD>
@@ -537,7 +545,7 @@ var ucscgeneID="";
                     <tr style="text-align:center;">
                         <th colspan="12"  class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<span title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<span class="geneListToolTip" title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeHerit" class="helpImage" src="../web/images/icons/help.png" /></div></th>
@@ -546,9 +554,9 @@ var ucscgeneID="";
                     </tr>
                     <tr style="text-align:center;">
                         <th colspan="6"  class="topLine noSort noBox"></th>
-                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table<span title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table<span class="geneListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="3"  class="topLine noSort noBox"></th>
-                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts<span title="The number of transcripts assigned to this gene.  Ensembl is the number of ensembl annotated transcripts.  RNA-Seq is the number of RNA-Seq transcripts assigned to this gene.  The RNA-Seq Transcript Matches column contains additional details about why transcripts were or were not matched to a particular gene."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts<span class="geneListToolTip" title="The number of transcripts assigned to this gene.  Ensembl is the number of ensembl annotated transcripts.  RNA-Seq is the number of RNA-Seq transcripts assigned to this gene.  The RNA-Seq Transcript Matches column contains additional details about why transcripts were or were not matched to a particular gene."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
@@ -561,38 +569,38 @@ var ucscgeneID="";
                     	<%}%>
                     </tr>
                     <tr class="col_title">
-                    <TH>Image ID (Transcript/Feature ID) <span title="Feature IDs that correspond to features in the various image tracks above."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>RNA-Seq Transcript Matches <span title="Information about how a RNA-Seq transcript was matched to an Ensembl Gene/Transcript.  Click if a + icon is present to view the remaining transcripts."><img src="<%=imagesDir%>icons/info.gif"></span></th>
-                    <TH>Gene Symbol<span title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Image ID (Transcript/Feature ID) <span class="geneListToolTip" title="Feature IDs that correspond to features in the various image tracks above."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>RNA-Seq Transcript Matches <span class="geneListToolTip" title="Information about how a RNA-Seq transcript was matched to an Ensembl Gene/Transcript.  Click if a + icon is present to view the remaining transcripts."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                    <TH>Gene Symbol<span class="geneListToolTip" title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Gene ID</TH>
-                    <TH width="10%">Gene Description <span title="The description from Ensembl or annotations from various sources if the feature is not found in Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>BioType <span title="The Ensembl biotype or RNA-Seq fraction and size."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH width="10%">Gene Description <span class="geneListToolTip" title="The description from Ensembl or annotations from various sources if the feature is not found in Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>BioType <span class="geneListToolTip" title="The Ensembl biotype or RNA-Seq fraction and size."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Protein Coding 
                     <%if(myOrganism.equals("Rn")){%>
                     	/ PolyA+ 
-                    	<span title="This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.">
+                    	<span class="geneListToolTip" title="This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.">
                     <%}else{%>
-                    	<span title="This track consists of transcripts from Ensembl.  Tracks are labeled with an Ensembl ID.  See the legend for the color coding.">
+                    	<span class="geneListToolTip" title="This track consists of transcripts from Ensembl.  Tracks are labeled with an Ensembl ID.  See the legend for the color coding.">
                     <%}%>
                     <img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Long Non-Coding
                     <%if(myOrganism.equals("Rn")){%>
-                     / Non PolyA+ <span title="This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.">
+                     / Non PolyA+ <span class="geneListToolTip" title="This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.">
                      <%}else{%>
-                     	<span title="This track consists of transcripts from Ensembl with all BioTypes other than protein_coding.  Tracks are labeled with an Ensembl ID.  See the legend for the color coding.">
+                     	<span class="geneListToolTip" title="This track consists of transcripts from Ensembl with all BioTypes other than protein_coding.  Tracks are labeled with an Ensembl ID.  See the legend for the color coding.">
                      <%}%>
                      <img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Small RNA <span title="This track consists of features with a length less than 350 base pairs.  It may include coding and non-coding features.  See the legend for color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Small RNA <span class="geneListToolTip" title="This track consists of features with a length less than 350 base pairs.  It may include coding and non-coding features.  See the legend for color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
-                    <TH  >Exon SNPs / Indels<span title="A count of SNPs and Indels that fall in an exon of at least one transcript. Counts are summarized for each parental strain and when the same SNP/Indel occurs in both a count of common SNPs/Indels is included."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH  >Exon SNPs / Indels<span class="geneListToolTip" title="A count of SNPs and Indels that fall in an exon of at least one transcript. Counts are summarized for each parental strain and when the same SNP/Indel occurs in both a count of common SNPs/Indels is included."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Ensembl</TH>
                     <TH>RNA-Seq</TH>
                     <TH>Total Reads
-                    <HR />Read Sequences<span title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span>
+                    <HR />Read Sequences<span class="geneListToolTip" title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span>
                     </TH>
-                    <TH>View Details<span title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Total Probesets<span title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>View Details<span class="geneListToolTip" title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Total Probesets<span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</span></TH>
@@ -600,12 +608,12 @@ var ucscgeneID="";
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</span></TH>
                     <%}%>
-                    <TH>Transcript Cluster ID <span title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Annotation Level<span title="The annotation level of the Transcript Cluster.  This denotes the confidence in the annotation by Affymetrix.  The confidence decreases from highest to lowest in the following order: Core,Extended,Full,Ambiguous."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>View Genome-Wide Associations<span title="Genome Wide Associations- Shows all the locations with a P-value below the cutoff selected.  Circos is used to create a plot of each region in each tissue associated with expression of the gene selected."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Transcript Cluster ID <span class="geneListToolTip" title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Annotation Level<span class="geneListToolTip" title="The annotation level of the Transcript Cluster.  This denotes the confidence in the annotation by Affymetrix.  The confidence decreases from highest to lowest in the following order: Core,Extended,Full,Ambiguous."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>View Genome-Wide Associations<span class="geneListToolTip" title="Genome Wide Associations- Shows all the locations with a P-value below the cutoff selected.  Circos is used to create a plot of each region in each tissue associated with expression of the gene selected."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%for(int i=0;i<tissuesList2.length;i++){%>
-                    	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> <span title="The total number of locations genome wide with an eQTL p-value for this transcript cluster below the cut-off."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH>Minimum<BR /> P-Value<HR />Location<span title="The minimum eQTL p-value genome-wide and the location of the minimum p-value.  Click the location to view that region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> <span class="geneListToolTip" title="The total number of locations genome wide with an eQTL p-value for this transcript cluster below the cut-off."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Minimum<BR /> P-Value<HR />Location<span class="geneListToolTip" title="The minimum eQTL p-value genome-wide and the location of the minimum p-value.  Click the location to view that region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%}%>
                     </tr>
                 </thead>
@@ -1265,7 +1273,14 @@ var ucscgeneID="";
                 }
 	});
 	
-	
+	$('.geneListToolTip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: -95,
+		offsetY: 5,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
 	 
 </script>
 
@@ -1275,8 +1290,8 @@ var ucscgeneID="";
 	
 	<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span><span title="Click the + icon to view fitlering options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span><span title="Click the + icon to view options to show or hide additional columns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span><span class="bQTLListToolTip" title="Click the + icon to view fitlering options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span><span class="bQTLListToolTip" title="Click the + icon to view options to show or hide additional columns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
                     	<TR>
@@ -1285,30 +1300,30 @@ var ucscgeneID="";
                             	<div class="columnLeft">
                                 	<%if(myOrganism.equals("Mm")){%>
                                 	
-                                    <input name="chkbox" type="checkbox" id="rgdIDCBX" value="rgdIDCBX" /> RGD ID <span title="Shows/Hides the Rat Genome Database ID and link."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="rgdIDCBX" value="rgdIDCBX" /> RGD ID <span class="bQTLListToolTip" title="Shows/Hides the Rat Genome Database ID and link."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="traitCBX" value="traitCBX" /> Trait <span title="Shows/Hides a breif description of the trait for the bQTL."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="traitCBX" value="traitCBX" /> Trait <span class="bQTLListToolTip" title="Shows/Hides a breif description of the trait for the bQTL."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     <%}%>
                                 	
-                                    <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" <%if(myOrganism.equals("Mm")){%>checked="checked"<%}%> /> bQTL Symbol <span title="Shows the bQTL Symbol assigned by RGD."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="bqtlSymCBX" value="bqtlSymCBX" <%if(myOrganism.equals("Mm")){%>checked="checked"<%}%> /> bQTL Symbol <span class="bQTLListToolTip" title="Shows the bQTL Symbol assigned by RGD."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="traitMethodCBX" value="traitMethodCBX" /> Trait Method <span title="Shows/Hides how quantitative traits were calculated or measured."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="traitMethodCBX" value="traitMethodCBX" /> Trait Method <span class="bQTLListToolTip" title="Shows/Hides how quantitative traits were calculated or measured."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="phenotypeCBX" value="phenotypeCBX" checked="checked" /> Phenotype <span title="Shows/Hides the phenotype associated with the bQTL."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="phenotypeCBX" value="phenotypeCBX" checked="checked" /> Phenotype <span class="bQTLListToolTip" title="Shows/Hides the phenotype associated with the bQTL."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="diseaseCBX" value="diseaseCBX" checked="checked" /> Diseases <span title="Shows/Hides diseases associated with the bQTL."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="diseaseCBX" value="diseaseCBX" checked="checked" /> Diseases <span class="bQTLListToolTip" title="Shows/Hides diseases associated with the bQTL."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="refCBX" value="refCBX" checked="checked" /> References <span title="Shows/Hides RGD and/or PubMed references."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="refCBX" value="refCBX" checked="checked" /> References <span class="bQTLListToolTip" title="Shows/Hides RGD and/or PubMed references."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 </div>
                                 <div class="columnRight">
                                     
-                                    <input name="chkbox" type="checkbox" id="assocBQTLCBX" value="assocBQTLCBX"  /> Associated bQTLs <span title="Shows/Hides bQTL symbols for associated bQTLs. Includes a link to the bQTL region."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="assocBQTLCBX" value="assocBQTLCBX"  /> Associated bQTLs <span class="bQTLListToolTip" title="Shows/Hides bQTL symbols for associated bQTLs. Includes a link to the bQTL region."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="locMethodCBX" value="locMethodCBX"  /> Location Method <span title="Shows/Hides the method used to determine the bQTL region."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="locMethodCBX" value="locMethodCBX"  /> Location Method <span class="bQTLListToolTip" title="Shows/Hides the method used to determine the bQTL region."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" <%if(myOrganism.equals("Rn")){%>checked="checked"<%}%>/> LOD Score <span title="Shows/Hides the LOD Scores if available."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="lodBQTLCBX" value="lodBQTLCBX" <%if(myOrganism.equals("Rn")){%>checked="checked"<%}%>/> LOD Score <span class="bQTLListToolTip" title="Shows/Hides the LOD Scores if available."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="pvalBQTLCBX" value="pvalBQTLCBX"  /> P-Value <span title="Shows/Hides the P-value for the bQTL if available."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="pvalBQTLCBX" value="pvalBQTLCBX"  /> P-Value <span class="bQTLListToolTip" title="Shows/Hides the P-value for the bQTL if available."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 </div>
                             	
                             </TD>
@@ -1328,22 +1343,22 @@ var ucscgeneID="";
                 <THEAD>
                 	<TR class="col_title">
                     	<%if(myOrganism.equals("Mm")){%>
-                    		<TH>MGI ID <span title="MGI ID and link to MGI."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                    		<TH>MGI ID <span class="bQTLListToolTip" title="MGI ID and link to MGI."><img src="<%=imagesDir%>icons/info.gif"></TH>
                         <%}%>
-                        <TH>RGD ID <span title="RGD ID and link to RGD."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>QTL Symbol <span title="bQTL Symbol assigned by the databases."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                    	<TH>QTL Name <span title="bQTL name assigned by the databases"><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>Trait <span title="A breif description of the phenotype."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>Trait Method <span title="The method used to quantify the trait."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>Phenotype <span title="A longer description of the phenotype associated with the bQTL."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>Associated Diseases <span title="Any diseases associated with the database."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>References<BR />RGD Ref<HR />PubMed <span title="References for the bQTL with links to the appropriate database."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>Candidate Genes <span title="Candidate Genes in the bQTL region as noted by RGD.  The link will open a Detailed Transcription Information page on PhenoGen for the gene."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>Related bQTL Symbols <span title="Any additional bQTLs RGD has found to be associated with this bQTL.  The link will open that region on PhenoGen."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>bQTL Region <span title="The region associated with the bQTL."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>Region Determination Method <span title="The method used to determine the bQTL region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH>LOD Score <span title="The LOD Score associated with this bQTL if available. bQTLs from RGD and MGI do not always have the LOD Score."><img src="<%=imagesDir%>icons/info.gif"></TH>
-                        <TH>P-value <span title="The p-value associated with this bQTL if available.  bQTLs from RGD and MGI do not always have the p-value."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>RGD ID <span class="bQTLListToolTip" title="RGD ID and link to RGD."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>QTL Symbol <span class="bQTLListToolTip" title="bQTL Symbol assigned by the databases."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                    	<TH>QTL Name <span class="bQTLListToolTip" title="bQTL name assigned by the databases"><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Trait <span class="bQTLListToolTip" title="A breif description of the phenotype."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Trait Method <span class="bQTLListToolTip" title="The method used to quantify the trait."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Phenotype <span class="bQTLListToolTip" title="A longer description of the phenotype associated with the bQTL."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Associated Diseases <span class="bQTLListToolTip" title="Any diseases associated with the database."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>References<BR />RGD Ref<HR />PubMed <span class="bQTLListToolTip" title="References for the bQTL with links to the appropriate database."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Candidate Genes <span class="bQTLListToolTip" title="Candidate Genes in the bQTL region as noted by RGD.  The link will open a Detailed Transcription Information page on PhenoGen for the gene."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Related bQTL Symbols <span class="bQTLListToolTip" title="Any additional bQTLs RGD has found to be associated with this bQTL.  The link will open that region on PhenoGen."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>bQTL Region <span class="bQTLListToolTip" title="The region associated with the bQTL."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>Region Determination Method <span class="bQTLListToolTip" title="The method used to determine the bQTL region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>LOD Score <span class="bQTLListToolTip" title="The LOD Score associated with this bQTL if available. bQTLs from RGD and MGI do not always have the LOD Score."><img src="<%=imagesDir%>icons/info.gif"></TH>
+                        <TH>P-value <span class="bQTLListToolTip" title="The p-value associated with this bQTL if available.  bQTLs from RGD and MGI do not always have the p-value."><img src="<%=imagesDir%>icons/info.gif"></TH>
                     </TR>
                 </thead>
                 <%if(bqtls!=null&&bqtls.size()>0){%>
@@ -1583,7 +1598,16 @@ var ucscgeneID="";
 				col=col+1;
 			}
 			displayColumns(tblBQTL,col,1,$('#pvalBQTLCBX').is(":checked"));
-	  });	
+	  });
+	  $('.bQTLListToolTip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		//offsetX: -95,
+		//offsetY: 5,
+		arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+	});	
 </script>
 
 
@@ -1593,8 +1617,8 @@ var ucscgeneID="";
         
 		<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:65%;"><span class="trigger" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">Filter List and Circos Plot</span><span title="Click the + icon to view filter options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH><span class="trigger" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">View Columns</span><span title="Click the + icon to view columns available to show/hide."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH style="width:65%;"><span class="trigger" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">Filter List and Circos Plot</span><span class="eQTLListToolTip" title="Click the + icon to view filter options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH><span class="trigger" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">View Columns</span><span class="eQTLListToolTip" title="Click the + icon to view columns available to show/hide."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     </thead>
                 	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
@@ -1614,7 +1638,7 @@ var ucscgeneID="";
                                                     <option value="0.00005" <%if(pValueCutoff==0.00005){%>selected<%}%>>0.00005</option>
                                                     <option value="0.00001" <%if(pValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
                                             </select>
-                                            <span title="Remove Genes from both the image(Circos Plot) and table which don't have P-value less than the selected cut-off in one of the included tissues."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                            <span class="eQTLListToolTip" title="Remove Genes from both the image(Circos Plot) and table which don't have P-value less than the selected cut-off in one of the included tissues."><img src="<%=imagesDir%>icons/info.gif"></span>
                                          </TD>
                                 		</TR>
                                     	<TR>
@@ -1625,7 +1649,7 @@ var ucscgeneID="";
                                                         <tr>
                                                             <td style="text-align:center;">
                                                                 <strong>Tissues: Include at least one tissue.</strong>
-                                                                <span title="Removes excluded tissues from the image(Circos Plot), does not remove the column for the tissue in the table(see View Columns for that option), but will remove rows where only the excluded tissue met the p-value cut-off."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                                <span class="eQTLListToolTip" title="Removes excluded tissues from the image(Circos Plot), does not remove the column for the tissue in the table(see View Columns for that option), but will remove rows where only the excluded tissue met the p-value cut-off."><img src="<%=imagesDir%>icons/info.gif"></span>
                                                             </td>
                                                         </tr>
                                                         <TR>
@@ -1672,7 +1696,7 @@ var ucscgeneID="";
                                                     <tr>
                                                         <td style="text-align:center;">
                                                             <strong>Chromosomes: (<%=chromosome%> must be included)</strong>
-                                                           <span title="Remove/Adds Chromosomes to the image(Circos Plot) and will remove or add Genes in the table so only genes located on included chromosomes are displayed."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                           <span class="eQTLListToolTip" title="Remove/Adds Chromosomes to the image(Circos Plot) and will remove or add Genes in the table so only genes located on included chromosomes are displayed."><img src="<%=imagesDir%>icons/info.gif"></span>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1726,7 +1750,7 @@ var ucscgeneID="";
                                                         <tr>
                                                             <td style="text-align:center;">
                                                                 <strong>Transcript Annotation Level</strong>
-                                                                <span title="Filters the genes displayed in both the image(Circos Plot) and table to only those annotated with the included annotations.  Annotations are related to confidence in the Affymetrix annotation and range from High to Low in the following order: Core,Extended,Full,Abiguous."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                                <span class="eQTLListToolTip" title="Filters the genes displayed in both the image(Circos Plot) and table to only those annotated with the included annotations.  Annotations are related to confidence in the Affymetrix annotation and range from High to Low in the following order: Core,Extended,Full,Abiguous."><img src="<%=imagesDir%>icons/info.gif"></span>
                                                             </td>
                                                         </tr>
                                                         <TR>
@@ -1763,27 +1787,27 @@ var ucscgeneID="";
                             <TD>
                             	<div class="columnLeft" style="width:60%;">
                                 	
-                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /> Gene ID <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /> Gene ID <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /> Description <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /> Description <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /> Transcript ID and Annot. <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /> Transcript ID and Annot. <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                      
-                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /> All Tissues P-values <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /> All Tissues P-values <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/> All Tissues # Locations <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/> All Tissues # Locations <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 </div>
                                 <div class="columnRight" style="width:39%;">
                                    <h3>Specific Tissues:</h3>
                                     
-                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /> Whole Brain <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /> Whole Brain <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     <%if(myOrganism.equals("Rn")){%>
                                        
-                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" />  Heart <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" />  Heart <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                         
-                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /> Liver <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /> Liver <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                         
-                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/> Brown Adipose <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/> Brown Adipose <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     <%}%>
                                 </div>
                             </TD>
@@ -1797,7 +1821,7 @@ var ucscgeneID="";
   	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
             <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-71px">
             	<span class="trigger less" name="eQTLRegionNote" >EQTL Region</span>
-                <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span>
             </div>
             <div id="eQTLRegionNote" style="width:100%; position:relative; top:-71px">
             Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the folowing region(s):<BR />
@@ -1854,7 +1878,7 @@ var ucscgeneID="";
                 <option value="1000" >Maximized</option>
             </select>
         </span>
-        <span title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+        <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span>
     </div> 
     <%if(session.getAttribute("getTransControllingEQTLCircos")==null){%>
     <div id="circosPlot" style="text-align:center; top:-62px; position:relative;">
@@ -1918,7 +1942,7 @@ var ucscgeneID="";
 			if(idListCount<=300){%>
        			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
         	<%}else{%>
-            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.<span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.<span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
             <%}%>	
 		<BR />	
 	
@@ -1942,17 +1966,17 @@ var ucscgeneID="";
                         <%}%>
                     </tr>
                 	<TR class="col_title">
-                   		<TH>Gene Symbol<BR />(click for detailed transcription view) <span title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                   		<TH>Gene Symbol<BR />(click for detailed transcription view) <span class="eQTLListToolTip" title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     	<TH>Gene ID</TH>
                     	
-                        <TH>Description <span title="The description from Ensembl if available."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH>Transcript Cluster ID <span title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span> </TH>
-                        <TH>Annotation Level <span title=""><img src="<%=imagesDir%>icons/info.gif"></span> <div class="inpageHelp" style="display:inline-block;"><img id="Help12b" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
-                        <TH>Physical Location <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH> 
-                        <TH>View Genome-Wide Associations <span title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Description <span class="eQTLListToolTip" title="The description from Ensembl if available."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Transcript Cluster ID <span class="eQTLListToolTip" title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span> </TH>
+                        <TH>Annotation Level <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span> <div class="inpageHelp" style="display:inline-block;"><img id="Help12b" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Physical Location <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH> 
+                        <TH>View Genome-Wide Associations <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
                     	<%for(int i=0;i<tissuesList2.length;i++){%>
-                            <TH title="Highlighted indicates a value less than or equal to the cutoff.">P-Value from region <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                            <TH title="Click on View Location Plot to see all locations below the cutoff."># other locations P-value<<%=pValueCutoff%> <span title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                            <TH title="Highlighted indicates a value less than or equal to the cutoff.">P-Value from region <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                            <TH title="Click on View Location Plot to see all locations below the cutoff."># other locations P-value<<%=pValueCutoff%> <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                             <!--<TH>Max LOD genome-wide</TH>-->
                         <%}%>
                     	
@@ -2149,6 +2173,14 @@ var ucscgeneID="";
 								}else{
 									$('#circosIFrame').attr("width",size-2);
 								}
+						});
+						$('.eQTLListToolTip').tooltipster({
+							position: 'top-right',
+							maxWidth: 250,
+							offsetX: -95,
+							offsetY: 5,
+							interactive: true,
+							interactiveTolerance: 350
 						});
 			  </script>
       	<%}else{%>
