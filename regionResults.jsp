@@ -409,8 +409,9 @@ var ucscgeneID="";
 	$('.Imagetooltip').tooltipster({
 		position: 'top-right',
 		maxWidth: 250,
-		offsetX: -95,
+		offsetX: 24,
 		offsetY: 5,
+		//arrow: false,
 		interactive: true,
    		interactiveTolerance: 350
 	});
@@ -434,8 +435,8 @@ var ucscgeneID="";
                 <table class="geneFilter">
                 	<thead>
                     	<TR>
-                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span><span class="geneListToolTip" title="Click the + icon to view filtering Options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span><span class="geneListToolTip" title="Click the + icon to view Columns you can show/hide in the table below."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left;">Filter List</span><span class="geneListToolTip" title="Click the + icon to view filtering Options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left;">View Columns</span><span class="geneListToolTip" title="Click the + icon to view Columns you can show/hide in the table below."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                         
                         </TR>
                         
@@ -1276,8 +1277,9 @@ var ucscgeneID="";
 	$('.geneListToolTip').tooltipster({
 		position: 'top-right',
 		maxWidth: 250,
-		offsetX: -95,
+		offsetX: 24,
 		offsetY: 5,
+		//arrow: false,
 		interactive: true,
    		interactiveTolerance: 350
 	});
@@ -1290,8 +1292,8 @@ var ucscgeneID="";
 	
 	<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span><span class="bQTLListToolTip" title="Click the + icon to view fitlering options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span><span class="bQTLListToolTip" title="Click the + icon to view options to show or hide additional columns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left;">Filter List</span><span class="bQTLListToolTip" title="Click the + icon to view fitlering options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left;">View Columns</span><span class="bQTLListToolTip" title="Click the + icon to view options to show or hide additional columns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
                     	<TR>
@@ -1602,9 +1604,9 @@ var ucscgeneID="";
 	  $('.bQTLListToolTip').tooltipster({
 		position: 'top-right',
 		maxWidth: 250,
-		//offsetX: -95,
-		//offsetY: 5,
-		arrow: false,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
 		interactive: true,
    		interactiveTolerance: 350
 	});	
@@ -1617,8 +1619,8 @@ var ucscgeneID="";
         
 		<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:65%;"><span class="trigger" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">Filter List and Circos Plot</span><span class="eQTLListToolTip" title="Click the + icon to view filter options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH><span class="trigger" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left; z-index:100;">View Columns</span><span class="eQTLListToolTip" title="Click the + icon to view columns available to show/hide."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH style="width:65%;"><span class="trigger" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left;">Filter List and Circos Plot</span><span class="eQTLListToolTip" title="Click the + icon to view filter options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH><span class="trigger" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left;">View Columns</span><span class="eQTLListToolTip" title="Click the + icon to view columns available to show/hide."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     </thead>
                 	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
@@ -2177,8 +2179,9 @@ var ucscgeneID="";
 						$('.eQTLListToolTip').tooltipster({
 							position: 'top-right',
 							maxWidth: 250,
-							offsetX: -95,
+							offsetX: 24,
 							offsetY: 5,
+							//arrow: false,
 							interactive: true,
 							interactiveTolerance: 350
 						});
