@@ -361,7 +361,7 @@ var ucscgeneID="";
           </div><!--end imageControl div -->
     </div><!--end Border Div -->
     <BR />
-    <div id="legendDialog"  title="<center>UCSC Image/Table Rows Legend</center>" class="legendDialog" style="display:none">
+    <div id="legendDialog"  title="UCSC Image/Table Rows Legend" class="legendDialog" style="display:none">
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
     </div>
 <script type="text/javascript">
@@ -546,7 +546,7 @@ var ucscgeneID="";
                     <tr style="text-align:center;">
                         <th colspan="12"  class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<span class="geneListToolTip" title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq <span class="geneListToolTip" title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeHerit" class="helpImage" src="../web/images/icons/help.png" /></div></th>
@@ -555,9 +555,9 @@ var ucscgeneID="";
                     </tr>
                     <tr style="text-align:center;">
                         <th colspan="6"  class="topLine noSort noBox"></th>
-                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table<span class="geneListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" >Image Tracks Represented in Table<span class="geneListToolTip" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="3"  class="topLine noSort noBox"></th>
-                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts<span class="geneListToolTip" title="The number of transcripts assigned to this gene.  Ensembl is the number of ensembl annotated transcripts.  RNA-Seq is the number of RNA-Seq transcripts assigned to this gene.  The RNA-Seq Transcript Matches column contains additional details about why transcripts were or were not matched to a particular gene."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts <span class="geneListToolTip" title="The number of transcripts assigned to this gene.  Ensembl is the number of ensembl annotated transcripts.  RNA-Seq is the number of RNA-Seq transcripts assigned to this gene.  The RNA-Seq Transcript Matches column contains additional details about why transcripts were or were not matched to a particular gene."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
@@ -594,14 +594,14 @@ var ucscgeneID="";
                     <TH>Small RNA <span class="geneListToolTip" title="This track consists of features with a length less than 350 base pairs.  It may include coding and non-coding features.  See the legend for color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
-                    <TH  >Exon SNPs / Indels<span class="geneListToolTip" title="A count of SNPs and Indels that fall in an exon of at least one transcript. Counts are summarized for each parental strain and when the same SNP/Indel occurs in both a count of common SNPs/Indels is included."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH  >Exon SNPs / Indels <span class="geneListToolTip" title="A count of SNPs and Indels that fall in an exon of at least one transcript. Counts are summarized for each parental strain and when the same SNP/Indel occurs in both a count of common SNPs/Indels is included."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Ensembl</TH>
                     <TH>RNA-Seq</TH>
                     <TH>Total Reads
-                    <HR />Read Sequences<span class="geneListToolTip" title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span>
+                    <HR />Read Sequences <span class="geneListToolTip" title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span>
                     </TH>
-                    <TH>View Details<span class="geneListToolTip" title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Total Probesets<span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>View Details <span class="geneListToolTip" title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Total Probesets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</span></TH>
@@ -610,11 +610,11 @@ var ucscgeneID="";
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</span></TH>
                     <%}%>
                     <TH>Transcript Cluster ID <span class="geneListToolTip" title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Annotation Level<span class="geneListToolTip" title="The annotation level of the Transcript Cluster.  This denotes the confidence in the annotation by Affymetrix.  The confidence decreases from highest to lowest in the following order: Core,Extended,Full,Ambiguous."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Annotation Level <span class="geneListToolTip" title="The annotation level of the Transcript Cluster.  This denotes the confidence in the annotation by Affymetrix.  The confidence decreases from highest to lowest in the following order: Core,Extended,Full,Ambiguous."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>View Genome-Wide Associations<span class="geneListToolTip" title="Genome Wide Associations- Shows all the locations with a P-value below the cutoff selected.  Circos is used to create a plot of each region in each tissue associated with expression of the gene selected."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%for(int i=0;i<tissuesList2.length;i++){%>
                     	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> <span class="geneListToolTip" title="The total number of locations genome wide with an eQTL p-value for this transcript cluster below the cut-off."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH>Minimum<BR /> P-Value<HR />Location<span class="geneListToolTip" title="The minimum eQTL p-value genome-wide and the location of the minimum p-value.  Click the location to view that region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Minimum<BR /> P-Value<HR />Location <span class="geneListToolTip" title="The minimum eQTL p-value genome-wide and the location of the minimum p-value.  Click the location to view that region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%}%>
                     </tr>
                 </thead>
@@ -689,28 +689,24 @@ var ucscgeneID="";
                             <TD>
                             	<%	String tmpList2="";
 										if(curGene.getGeneID().startsWith("ENS")){
-											if(tmpTrx.size()>1){
-												tmpList2="<span class=\"tblTrigger\" name=\"rg_"+i+"\">";
+												tmpList2="";
 												int idx=0;
 												for(int l=0;l<tmpTrx.size();l++){
 													if(!tmpTrx.get(l).getID().startsWith("ENS")){
-														if(idx==0){
-															tmpList2=tmpList2+"<B>"+tmpTrx.get(l).getID()+"</B> - <BR>"+tmpTrx.get(l).getMatchReason()+"</span><BR><span id=\"rg_"+i+"\" style=\"display:none;\">";
-														}else{
-															tmpList2=tmpList2+"<B>"+tmpTrx.get(l).getID()+"</B> - <BR>"+tmpTrx.get(l).getMatchReason()+"<BR>";
-														}
+														tmpList2=tmpList2+"<B>"+tmpTrx.get(l).getID()+"</B> - <BR>"+tmpTrx.get(l).getMatchReason()+"<BR>";
 														idx++;
 													}
 												}
-												tmpList2=tmpList2+"</span>";
-												if(idx==0){
-													tmpList2="";
+												if(idx>1){
+													tmpList2="<span class=\"tblTrigger\" name=\"rg_"+i+"\">"+tmpList2;
+													int ind1=tmpList2.indexOf("<BR>");
+													int ind2=tmpList2.indexOf("<BR>",ind1+4);
+													String newTmp=tmpList2.substring(0,ind2);
+													newTmp=newTmp+"</span><BR><span id=\"rg_"+i+"\" style=\"display:none;\">"+tmpList2.substring(ind2+4);
+													tmpList2=newTmp;
+													tmpList2=tmpList2+"</span>";
 												}
-											}else if(tmpTrx.size()==1){
-												if(!tmpTrx.get(0).getID().startsWith("ENS")){
-													tmpList2=tmpList2+"<B>"+tmpTrx.get(0).getID()+"</B> - <BR>"+tmpTrx.get(0).getMatchReason();
-												}
-											}
+											
 										}
 									%>
                                 	<%=tmpList2%>
@@ -1752,7 +1748,7 @@ var ucscgeneID="";
                                                         <tr>
                                                             <td style="text-align:center;">
                                                                 <strong>Transcript Annotation Level</strong>
-                                                                <span class="eQTLListToolTip" title="Filters the genes displayed in both the image(Circos Plot) and table to only those annotated with the included annotations.  Annotations are related to confidence in the Affymetrix annotation and range from High to Low in the following order: Core,Extended,Full,Abiguous."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                                <span class="eQTLListToolTip" title="Filters the genes displayed in both the image(Circos Plot) and table to only those annotated with the included annotations.  Annotations are related to confidence in the Affymetrix annotation and range from High to Low in the following order: <BR> <ul><li>-Core</li><li>-Extended</li><li>-Full</li><li>-Ambiguous</li></ul>"><img src="<%=imagesDir%>icons/info.gif"></span>
                                                             </td>
                                                         </tr>
                                                         <TR>
@@ -1789,27 +1785,27 @@ var ucscgeneID="";
                             <TD>
                             	<div class="columnLeft" style="width:60%;">
                                 	
-                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /> Gene ID <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /> Gene ID <span class="eQTLListToolTip" title="Shows/Hides the Gene ID and links"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /> Description <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /> Description <span class="eQTLListToolTip" title="Shows/Hides the gene description from Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /> Transcript ID and Annot. <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /> Transcript ID and Annot. <span class="eQTLListToolTip" title="Shows/Hides the Affymetrix transcript cluster id and annotation level."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                      
-                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /> All Tissues P-values <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /> All Tissues P-values <span class="eQTLListToolTip" title="Shows/Hides the P-value from the region for each tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
-                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/> All Tissues # Locations <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/> All Tissues # Locations <span class="eQTLListToolTip" title="Shows/Hides the count of the other eQTLs for the gene with a P-value below the cutoff."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                 </div>
                                 <div class="columnRight" style="width:39%;">
                                    <h3>Specific Tissues:</h3>
                                     
-                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /> Whole Brain <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /> Whole Brain <span class="eQTLListToolTip" title="Shows/Hides columns associated with brain tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     <%if(myOrganism.equals("Rn")){%>
                                        
-                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" />  Heart <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" />  Heart <span class="eQTLListToolTip" title="Shows/Hides columns associated with heart tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                         
-                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /> Liver <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /> Liver <span class="eQTLListToolTip" title="Shows/Hides columns associated with liver tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                         
-                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/> Brown Adipose <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/> Brown Adipose <span class="eQTLListToolTip" title="Shows/Hides columns associated with brown adipose tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     <%}%>
                                 </div>
                             </TD>
@@ -1823,7 +1819,7 @@ var ucscgeneID="";
   	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
             <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-71px">
             	<span class="trigger less" name="eQTLRegionNote" >EQTL Region</span>
-                <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="eQTLListToolTip" title="This section lists the regions being reported as begin associated with control of the genes following.  It is important to note that the region entered may only be close to or overlap with a defined SNP or Region between SNPs and may larger than the region selected or may only include part of the region selected."><img src="<%=imagesDir%>icons/info.gif"></span>
             </div>
             <div id="eQTLRegionNote" style="width:100%; position:relative; top:-71px">
             Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the folowing region(s):<BR />
@@ -1880,7 +1876,7 @@ var ucscgeneID="";
                 <option value="1000" >Maximized</option>
             </select>
         </span>
-        <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+        <span class="eQTLListToolTip" title="To control the viewable area of the Circos Plot below simply select your prefered size."><img src="<%=imagesDir%>icons/info.gif"></span>
     </div> 
     <%if(session.getAttribute("getTransControllingEQTLCircos")==null){%>
     <div id="circosPlot" style="text-align:center; top:-62px; position:relative;">
@@ -1942,9 +1938,9 @@ var ucscgeneID="";
 				}
 			}
 			if(idListCount<=300){%>
-       			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+       			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div></div>
         	<%}else{%>
-            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own.<span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help14" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own <a href="http://david.abcc.ncifcrf.gov/" target="_blank">here</a>.<span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div></div>
             <%}%>	
 		<BR />	
 	
@@ -1972,13 +1968,13 @@ var ucscgeneID="";
                     	<TH>Gene ID</TH>
                     	
                         <TH>Description <span class="eQTLListToolTip" title="The description from Ensembl if available."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH>Transcript Cluster ID <span class="eQTLListToolTip" title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span> </TH>
-                        <TH>Annotation Level <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span> <div class="inpageHelp" style="display:inline-block;"><img id="Help12b" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
-                        <TH>Physical Location <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH> 
-                        <TH>View Genome-Wide Associations <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                        <TH>Transcript Cluster ID <span class="eQTLListToolTip" title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  <a href='<%=commonDir%>definitions.jsp#eQTLs' target='_blank'>eQTLs</a> are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span> </TH>
+                        <TH>Annotation Level <span class="eQTLListToolTip" title="Annotation level from Affymetrix is related to the confidence of the annotation of the gene.  Core is the highest confidence and tends to correspond very closely with the Ensembl gene annotation. Extended is lower confidence and may include additional regions outside of the Ensembl annotated exons.  Full is even lower.  Ambiguous is the lowest confidence."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Physical Location <span class="eQTLListToolTip" title="This is the location of the gene in the genome.  It includes the chromosome and the starting basepair and end base pair for the gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH> 
+                        <TH>View Genome-Wide Associations <span class="eQTLListToolTip" title="Genome Wide Associations- Shows all the locations with a P-value below the cutoff selected. Circos is used to create a plot of each region in each tissue associated with expression of the gene selected."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     	<%for(int i=0;i<tissuesList2.length;i++){%>
-                            <TH title="Highlighted indicates a value less than or equal to the cutoff.">P-Value from region <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                            <TH title="Click on View Location Plot to see all locations below the cutoff."># other locations P-value<<%=pValueCutoff%> <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                            <TH title="Highlighted indicates a value less than or equal to the cutoff.">P-Value from region <span class="eQTLListToolTip" title="The P-value associated with this region.  Note that this region may only partially overlap with the region this P-value refers to or may be much larger."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                            <TH title="Click on View Location Plot to see all locations below the cutoff."># other locations P-value<<%=pValueCutoff%> <span class="eQTLListToolTip" title="The number of other locations with eQTLs that have a P-value below the selected cut-off."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                             <!--<TH>Max LOD genome-wide</TH>-->
                         <%}%>
                     	
@@ -2257,12 +2253,6 @@ $(document).ready(function() {
 			$('div#changingTabs').hide(10);
 			return false;
         });
-	
-	
-	
-
-	
-	
 	
 	$('.helpImage').click( function(event){
 		var id=$(this).attr('id');

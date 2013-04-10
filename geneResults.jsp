@@ -60,7 +60,7 @@ if(displayNoEnsembl){ %>
                 	<option value="600" >Larger</option>
                 	<option value="800" >Largest</option>
             	</select>
-            	<span title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
+            	<span class="Imagetooltip" title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
         	</span>
     </div>
     
@@ -90,7 +90,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="filterprobe" />Probsets Detected Above Background >1% of samples
@@ -99,7 +99,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="The non-masked Affymetrix Exon 1.0 ST probsets detected above background in >1% of samples in each tissue available."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="The non-masked Affymetrix Exon 1.0 ST probsets detected above background in >1% of samples in each tissue available."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
             </TR>
             <%if(myOrganism.equals("Rn")){%>
@@ -112,7 +112,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" >Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
@@ -120,23 +120,23 @@ if(displayNoEnsembl){ %>
                     <option value="1" selected="selected">Dense</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
              </TR>
              <%}%>
              <TR>
             	<TD class="rightBorder"></TD>
                 <TD>
-                <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs <span title="This track will display the publicly available bQTLs from RGD. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are avaialbe under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs <span class="Imagetooltip" title="This track will display the publicly available bQTLs from RGD. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are avaialbe under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD>
-                <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" checked="checked" /> RefSeq Transcripts <span title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" checked="checked" /> RefSeq Transcripts <span class="Imagetooltip" title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
                  </TD>
              </TR>
             <TR>
             	<TD class="rightBorder topLine">
             		<span style=" font-weight:bold;">Image Tracks and Table Filters</span>
-                    <span title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above.">
+                    <span class="Imagetooltip" title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above.">
                     	<img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
                 <TD  class="topLine">
@@ -146,7 +146,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="This track consists of transcripts on the + strand from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="This track consists of transcripts on the + strand from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD  class="topLine">
                 <input name="trackcbx" type="checkbox" id="exonMinusCBX" value="numExonMinus" checked="checked" />- Strand Protein Coding/PolyA+
@@ -155,7 +155,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="This track consists of transcripts on the - strand from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="This track consists of transcripts on the - strand from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 
             </TR>
@@ -168,7 +168,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="This track consists of single exon RNAs from RNA-Seq where the strand could not be determined."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="This track consists of single exon RNAs from RNA-Seq where the strand could not be determined."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" />Long Non-Coding/NonPolyA+
@@ -177,7 +177,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 
             </TR>
@@ -190,7 +190,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select> 
-                <span title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD></TD>
             </TR>
@@ -202,7 +202,7 @@ if(displayNoEnsembl){ %>
           </div><!--end imageControl div -->
     </div><!--end Border Div -->
     <BR />
-    <div id="legendDialog"  title="<center>UCSC Image/Table Rows Legend</center>" class="legendDialog" style="display:none">
+    <div id="legendDialog"  title="UCSC Image/Table Rows Legend" class="legendDialog" style="display:none">
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
     </div>
 <script type="text/javascript">
@@ -257,24 +257,33 @@ if(displayNoEnsembl){ %>
 		$('#legendDialog').dialog( "option", "position",{ my: "left top", at: "left bottom", of: $(this) });
 		$('#legendDialog').dialog("open");
 	});
+	$('.Imagetooltip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
 </script>
 
     <BR />
 
 <div class="cssTab" id="mainTab" >
     <ul>
-      <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?" style="top:-30px; z-index:10;">Features<BR />Physically Located Gene Region</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;z-index:11;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
-      <li ><a id="qtlTabID" href="#qtlList" title="" style="top:-30px; z-index:10;width:75px;">eQTL</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;z-index:11;"><img id="Help3" class="helpImage" src="../web/images/icons/help.png" /></div></li>
-      <li ><a id="affyTabID" href="#affyExon" title="" style="top:-30px;z-index:10;">Affy Exon<BR />Probeset Details</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;z-index:11;"><img id="Help7" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?" style="top:-30px;">Features<BR />Physically Located Gene Region</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpGenesInRegion" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="qtlTabID" href="#qtlList" title="" style="top:-30px;width:75px;">eQTL</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpForwardeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="affyTabID" href="#affyExon" title="" style="top:-30px;">Affy Exon<BR />Probeset Details</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpAffyJavaData" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       
      </ul>
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:27px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:1000px;">
  <table class="geneFilter">
                 	<thead>
                     	<TR>
-                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">Filter List</span></TH>
-                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left; z-index:100;">View Columns</span></TH>
-                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; z-index:999; top:4px; left:-3px;"><img id="Help4" class="helpImage" src="../web/images/icons/help.png" /></div>
+                    	<TH style="width:50%"><span class="trigger" id="geneListFilter1" name="geneListFilter" style=" position:relative;text-align:left;">Filter List</span><span class="geneListToolTip" title="Click the + icon to view filtering Options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH style="width:50%"><span class="trigger" id="geneListFilter2" name="geneListFilter" style=" position:relative;text-align:left;">View Columns</span><span class="geneListToolTip" title="Click the + icon to view Columns you can show/hide in the table below."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <div class="inpageHelp" style="display:inline-block; position:relative;float:right; top:4px; left:-3px;"><img id="Help4" class="helpImage" src="../web/images/icons/help.png" /></div>
                         </TR>
                         
                     </thead>
@@ -351,31 +360,31 @@ if(displayNoEnsembl){ %>
           	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
                 <THEAD>
                     <tr>
-                        <th colspan="11" class="topLine noSort noBox"></th>
+                        <th colspan="12" class="topLine noSort noBox"></th>
                         <th colspan="4" class="center noSort topLine">Transcript Information</th>
-                        <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
+                        <th colspan="<%=4+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
                             	Public ILSXISS RI Mice
                             <%}else{%>
                             	Public HXB/BXH RI Rats (Tissue, Exon Arrays)
                             <%}%>
-                            )<div class="inpageHelp" style="display:inline-block; "><img id="Help5b" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                            )<div class="inpageHelp" style="display:inline-block; "><img id="HelpAffyExon" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
-                        <th colspan="11"  class="topLine noSort noBox"></th>
+                        <th colspan="12"  class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq<div class="inpageHelp" style="display:inline-block;"><img id="Help5a" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq <span class="geneListToolTip" title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="Help5c" class="helpImage" src="../web/images/icons/help.png" /></div></th>
-                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<div class="inpageHelp" style="display:inline-block; "><img id="Help5d" class="helpImage" src="../web/images/icons/help.png" /></div></th>
-                        <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="Help5e" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeHerit" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeDABG" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTL" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
-                        <th colspan="5"  class="topLine noSort noBox"></th>
-                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks.">Image Tracks Represented in Table</th>
+                        <th colspan="6"  class="topLine noSort noBox"></th>
+                        <th colspan="3"  class="topLine leftBorder rightBorder noSort">Image Tracks Represented in Table <span class="geneListToolTip" title="The tracks in the image above that are represented in this table.  Each item is in one of the 4 tracks."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="3"  class="topLine noSort noBox"></th>
-                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts</th>
+                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts <span class="geneListToolTip" title="The number of transcripts assigned to this gene.  Ensembl is the number of ensembl annotated transcripts.  RNA-Seq is the number of RNA-Seq transcripts assigned to this gene.  The RNA-Seq Transcript Matches column contains additional details about why transcripts were or were not matched to a particular gene."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
@@ -388,22 +397,36 @@ if(displayNoEnsembl){ %>
                     	<%}%>
                     </tr>
                     <tr class="col_title">
-                    <TH>Image ID (Transcript/Feature ID)</TH>
-                    <TH>Gene Symbol<BR />(click for detailed transcription view)</TH>
+                    <TH>Image ID (Transcript/Feature ID) <span class="geneListToolTip" title="Feature IDs that correspond to features in the various image tracks above."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>RNA-Seq Transcript Matches <span class="geneListToolTip" title="Information about how a RNA-Seq transcript was matched to an Ensembl Gene/Transcript.  Click if a + icon is present to view the remaining transcripts."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                    <TH>Gene Symbol <span class="geneListToolTip" title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Gene ID</TH>
-                    <TH width="10%">Gene Description</TH>
-                    <TH>BioType</TH>
-                    <TH>Protein Coding / PolyA+</TH>
-                    <TH>Long Non-Coding / Non PolyA+</TH>
-                    <TH>Small RNA</TH>
+                    <TH width="10%">Gene Description <span class="geneListToolTip" title="The description from Ensembl or annotations from various sources if the feature is not found in Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>BioType <span class="geneListToolTip" title="The Ensembl biotype or RNA-Seq fraction and size."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Protein Coding 
+					<%if(myOrganism.equals("Rn")){%>
+                    	/ PolyA+ 
+                    	<span class="geneListToolTip" title="This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.">
+                    <%}else{%>
+                    	<span class="geneListToolTip" title="This track consists of transcripts from Ensembl.  Tracks are labeled with an Ensembl ID.  See the legend for the color coding.">
+                    <%}%>
+                    <img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Long Non-Coding
+					<%if(myOrganism.equals("Rn")){%>
+                     / Non PolyA+ <span class="geneListToolTip" title="This track consists of transcripts from Ensembl and reconstructed transcripts(from CuffLinks) from RNA-Seq.  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.">
+                     <%}else{%>
+                     	<span class="geneListToolTip" title="This track consists of transcripts from Ensembl with all BioTypes other than protein_coding.  Tracks are labeled with an Ensembl ID.  See the legend for the color coding.">
+                     <%}%>
+                     <img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Small RNA <span class="geneListToolTip" title="This track consists of features with a length less than 350 base pairs.  It may include coding and non-coding features.  See the legend for color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
-                    <TH title="SNPs and Indels that fall in an exon of at least one transcript." >Exon SNPs / Indels</TH>
+                    <TH >Exon SNPs / Indels <span class="geneListToolTip" title="A count of SNPs and Indels that fall in an exon of at least one transcript. Counts are summarized for each parental strain and when the same SNP/Indel occurs in both a count of common SNPs/Indels is included."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Ensembl</TH>
                     <TH>RNA-Seq</TH>
-                    <TH>Total Reads<HR />Read Sequences</TH>
-                    <TH>View Details</TH>
-                    <TH>Total Probesets</TH>
+                    <TH>Total Reads<HR />Read Sequences<span class="geneListToolTip" title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>View Details <span class="geneListToolTip" title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Total Probesets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</TH>
@@ -411,12 +434,12 @@ if(displayNoEnsembl){ %>
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</TH>
                     <%}%>
-                    <TH>Transcript Cluster ID <div class="inpageHelp" style="display:inline-block; "><img id="Help5f" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
-                    <TH>Annotation Level</TH>
-                    <TH>View Genome-Wide Associations<div class="inpageHelp" style="display:inline-block; "><img id="Help5g" class="helpImage" src="../web/images/icons/help.png" /></div></TH>
+                    <TH>Transcript Cluster ID <span class="geneListToolTip" title="Transcript Cluster ID- The unique ID assigned by Affymetrix.  eQTLs are calculated for this annotation at the gene level by combining probe set data across the gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Annotation Level <span class="geneListToolTip" title="The annotation level of the Transcript Cluster.  This denotes the confidence in the annotation by Affymetrix.  The confidence decreases from highest to lowest in the following order: Core,Extended,Full,Ambiguous."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>View Genome-Wide Associations <span class="geneListToolTip" title="Genome Wide Associations- Shows all the locations with a P-value below the cutoff selected.  Circos is used to create a plot of each region in each tissue associated with expression of the gene selected."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%for(int i=0;i<tissuesList2.length;i++){%>
-                    	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> </TH>
-                        <TH>Minimum<BR /> P-Value<HR />Location</TH>
+                    	<TH>Total # Locations P-Value < <%=forwardPValueCutoff%> <span class="geneListToolTip" title="The total number of locations genome wide with an eQTL p-value for this transcript cluster below the cut-off."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH>Minimum<BR /> P-Value<HR />Location <span class="geneListToolTip" title="The minimum eQTL p-value genome-wide and the location of the minimum p-value.  Click the location to view that region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%}%>
                     </tr>
                 </thead>
@@ -487,6 +510,31 @@ if(displayNoEnsembl){ %>
 										}
 									}%>
                                 	<%=tmpList%>
+                            </TD>
+                            <TD>
+                            	<%	String tmpList2="";
+										if(curGene.getGeneID().startsWith("ENS")){
+												tmpList2="";
+												int idx=0;
+												for(int l=0;l<tmpTrx.size();l++){
+													if(!tmpTrx.get(l).getID().startsWith("ENS")){
+														tmpList2=tmpList2+"<B>"+tmpTrx.get(l).getID()+"</B> - <BR>"+tmpTrx.get(l).getMatchReason()+"<BR>";
+														idx++;
+													}
+												}
+												if(idx>1){
+													tmpList2="<span class=\"tblTrigger\" name=\"rg_"+i+"\">"+tmpList2;
+													int ind1=tmpList2.indexOf("<BR>");
+													int ind2=tmpList2.indexOf("<BR>",ind1+4);
+													String newTmp=tmpList2.substring(0,ind2);
+													newTmp=newTmp+"</span><BR><span id=\"rg_"+i+"\" style=\"display:none;\">"+tmpList2.substring(ind2+4);
+													tmpList2=newTmp;
+													tmpList2=tmpList2+"</span>";
+												}
+											
+										}
+									%>
+                                	<%=tmpList2%>
                             </TD>
                             <TD title="View detailed transcription information for gene in a new window.">
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
@@ -749,6 +797,7 @@ if(displayNoEnsembl){ %>
                         	<tr class="smallnc">
                             	<TD><%=rna.getID()%></TD>
                                 <TD></TD>
+                                <TD></TD>
                                 <TD><% ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> ens=rna.getAnnotationBySource("Ensembl");
 									if(ens!=null&&ens.size()>0){
 										for(int k=0;k<ens.size();k++){%>
@@ -908,7 +957,7 @@ if(displayNoEnsembl){ %>
 	"bAutoWidth": true,
 	"sScrollX": "950px",
 	"sScrollY": "650px",
-	"aaSorting": [[ 5, "desc" ]],
+	"aaSorting": [[ 6, "desc" ]],
 	"sDom": '<"leftSearch"fr><t>'
 	/*"oTableTools": {
 			"sSwfPath": "/css/swf/copy_csv_xls_pdf.swf"
@@ -1022,6 +1071,15 @@ if(displayNoEnsembl){ %>
 			$("span#" + baseName).hide();
                 }
 	});
+	$('.geneListToolTip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
 </script>
 <div id="qtlList" class="modalTabContent" style=" display:none; position:relative;top:27px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:1000px;">
 	<%@ include file="/web/GeneCentric/geneEQTLPart.jsp" %>
@@ -1088,7 +1146,7 @@ if(displayNoEnsembl){ %>
 					}
 			}
         </script>
-        <div style="position:relative;top:-75px; z-index:0;">
+        <div >
         <script type="text/javascript">
 			if(unsupportedChrome==0){
 				var attributes = {
@@ -1141,70 +1199,7 @@ if(displayNoEnsembl){ %>
 
 </div><!-- end MainTab-->
 
-<div id="Help1Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>UCSC Genome Browser Image</H3>
-The main image was generated by the <a target="_blank" href="http://genome.ucsc.edu/">UCSC Genome Browser</a>(click the image to open a window in your browser at the position of the image).  The image that follows shows numbered tracks.  Below the image, each numbered section describes the associated track.
-<img src="ucsc_example.jpg" />  
-<ol>
-<li>The first track contains all of the Affymetrix Exon Probe Sets for the <a target="_blank" href="http://www.affymetrix.com/estore/browse/products.jsp?productId=131474&categoryId=35765&productName=GeneChip-Mouse-Exon-ST-Array#1_1">Mouse</a> or
-<a target="_blank" href="http://www.affymetrix.com/estore/browse/products.jsp?productId=131489&categoryId=35748&productName=GeneChip-Rat-Exon-ST-Array#1_1"> Rat</a> Affy Exon 1.0 ST array.  Below the image, information about these probe sets for parental strains and <a target="_blank" href="http://www.jax.org/smsr/ristrain.html" >panels of recombinant inbred mice or rats</a> and various tissues are displayed. </li>
 
-<li>The second track (if present) contains the numbered exons for the positive strand.  If transcripts exist for the positive strand, each unique exon is given a number such that the first exon is 1.  If transcripts have differing, overlapping exons, then the exons are numbered 1a, 1b, etc.</li>
-<li>Rat Only: The third track is a reconstruction of the transcriptome from RNA Sequencing computed by <a target="_blank" href="http://cufflinks.cbcb.umd.edu/index.html">CuffLinks</a> from RNA Sequencing data of Rat Brain.</li>
-<li>This fourth track (if present) contains the numbered exons for the reverse strand.  If transcripts exist for the reverse strand, each unique exon is given a number such that the first exon is 1.  If transcripts have differing, overlapping exons, then the exons are numbered 1a, 1b, etc.</li>
-<li>Rat Only: The fifth track contains single exon transcripts from CuffLinks that are numbered in the same manner as other exon number tracks.  However in addition to being single exon "genes" they were not able to be assigned to a strand.</li>
-<li>The sixth track shows standard UCSC Tracks for the RefSeq gene(top, blue color) and Ensembl transcripts(bottom, brown color).</li>
-</ol></div></div>
-
-<div id="Help2Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>UCSC Image Controls</H3>
-This control allows you to choose between two different versions of the UCSC genome browser image.  Occasionally you may also have the option to select a different gene.  This occurs when iDecoder found more than one Ensembl Gene Identifier associated with your gene.  However the gene most closely related to the identifier you enter is selected first.<BR /><BR />
-The unfiltered version of the image displays all the Affymetrix Exon probesets color coded by annotation level.<BR /><BR />
-The filtered version has only probesets that were detected above background in 1% or more of the samples.  Detection Above BackGround(DABG)-Calculates the p-value that the intensities in a probeset could have been observed by chance in a background distribution. <a target="_blank" href="http://www.affymetrix.com/partners_programs/programs/developer/tools/powertools.affx">Affymetrix for more information</a>. <BR />  It also has one track per tissue where data is available (Mouse-Brain Rat-Brain,Heart,Liver,Brown Adipose).  While this is a low percentage it filters out all of the probesets that are not detected above background.
-</div></div>
-
-
-<div id="Help3Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>Filter/Display Controls</H3>
-The filters allow you to control the probe sets that are displayed.  Check the box next to the filter you want to apply.  The filter is immediately applied, unless input is required, and then it is applied after you input a value.<BR /><BR />
-The display controls allow you to choose how the data is displayed.  Any selections are immediately applied.<BR /><BR />
-The Filter and Display controls will have different options as you navigate through different tabs.  However, any selections you make on a tab will be preserved when you navigate back to a tab.
-</div></div>
-<div id="Help4Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>Parental Expression</H3>
-This tab has heat maps for the expression and fold difference between the Parental Strains(Rat BN-Lx/SHR or Mouse ILS/ISS).  To switch between the two heatmaps use the Display: Mean Values and Fold Difference options.<BR /><BR />
-Use the buttons at the top left to control the size of the rows and columns.<BR /><BR />
-The legend can be found next to the column and row size buttons and provides a reference for the range of the values displayed.<BR /><BR />
-The Probeset IDs along the left side are color coded to match the UCSC genome browser graphic above.<BR /><BR />
-
-</div></div>
-<div id="Help5Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>Heritability</H3>
-Heritability is calculated from individual expression values in the panel of recombinant inbred rodents. The broad sense heritability is calculated from a 1-way ANOVA model comparing the within-strain variance to the between-strain variance. A higher heritability indicates more of the variance in expression and is determined by genetic factors rather than non-genetic factors in this particular RI panel. This tab allows you to view the heritability of unambiguous probesets.  For Affymetrix exon arrays, a probeset typically consist of 4 unique probes.  Prior to analysis, we eliminated (masked) individual probes if their sequence did not align uniquely to the genome or if the probe targeted a region of the genome that harbored a known single nucleotide polymorphism (SNP) between the two parental strains of the RI panel.  Entire probesets were eliminated if less than three probes within the probeset remained after masking.   Probes that target a region with a known SNP may indicate dramatic differences in expression when expression levels are similar but hybridization efficiency differ.
-<BR /><BR />
-If a probeset of interest is missing, adjust the filtering to allow additional probes (allow introns, opposite strand, make sure all other filters are unchecked, etc.) If it still does not display, it means that the probeset was masked and there is no heritability data because the probeset data would be inaccurate.
-
-</div></div>
-
-<div id="Help6Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>Panel Expression</H3>
-These are the normalized log transformed expression values.  This tab shows expression values for each probeset accross all strains in the panel.  Note: Because of the normalization, do not compare normalized values between different probesets, but you can compare them accross strains.  <BR /><BR />
-
-There are three ways to view the data.  The default produces a separate graph for each probeset.  Notice the range and size varies with each probeset.  The size varies directly with the range of values so you can quickly scan for more variable or consistent probesets. <BR /><BR />
-
-The next method, if you view probesets grouped into one graph by tissue, shows the variability by strain in a single graph.  This allows you to look for probesets that vary significantly between strains.   Do not compare expression between probesets along the X-axis because the normalization does not allow comparison of expression values between probesets.  <BR /><BR />
-
-The last method displays probesets in a series accross strains.  Again, it is important that you do not use this to compare expression values between probesets.  The best way to compare expression is to use the Exon Correlation Tab.<BR /><BR />
-
-Masking: Probesets have been masked because the sequence for the probe set does not match the strain of mice or rats and as a result, the data from the probe set would be misleading or inaccurate.  If a probeset of interest is missing, adjust the filtering to allow additional probes(allow introns, opposite strand, make sure all other filters are unchecked, etc.) If it still does not display it means that the probeset was masked and there is no heritability data because the probeset data would be inaccurate.
-
-</div></div>
-<div id="Help7Content" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3>Exon Correlation</H3>
-This tab allows you to compare probeset expression, which should not be done directly in the expression tab.  This heatmap shows a selected transcript accross the top and draws exons that are represented by probesets along the top of the heatmap.  Exons that are excluded are color-coded to match the legend at the bottom of the page that shows why the exon was excluded from the heatmap.  Some exons may have multiple probesets representing them.<BR /><BR />
-
-The heatmap is colored according to the correlation of one probeset to another across the strains in the panel.
-</div></div>
 
 
 
@@ -1301,7 +1296,11 @@ $(document).ready(function() {
   	//	document.getElementById("inst").style.display= 'none';
 		
   	//}
-  
+  $(".trigger").click(function(){
+		var baseName = $(this).attr("name");
+		$(this).toggleClass("less");
+        expandCollapse(baseName);      
+	});
   setupExpandCollapse();
   
   $('.fancybox').fancybox({
@@ -1337,18 +1336,20 @@ $(document).ready(function() {
   		autoOpen: false,
 		dialogClass: "helpDialog"
 	});
-  $('#Help1').click( function(){  		
+	
+	$('.helpImage').click( function(event){
+		var id=$(this).attr('id');
+		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
+		$('#'+id+'Content').dialog("open").css({'font-size':12});
+	});
+ /* $('#Help1').click( function(){  		
 		$('#Help1Content').dialog("open").css({'height':500,'font-size':12});
 		positionHelp(211);
   });
   $('#Help2').click( function(){  		
 		$('#Help2Content').dialog("open").css({'height':300,'font-size':12});
 		positionHelp(400);
-  });
-  
-  
-  
-  
+  });*/
 	
 }); // end ready
 

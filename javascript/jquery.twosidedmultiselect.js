@@ -7,6 +7,8 @@
     // Contributions by: 
     //     Mat Schaffer (http://matschaffer.com/)
     //     Eric Van Bocxlaer
+	
+	//Modified 4/10/13 by Spencer Mahaffey to remove the use of jquery.fn.live for compatibility with jQuery 1.9+
 
 	var selectIds = new Array();
 	var nameModifier = "tsms";
@@ -14,8 +16,23 @@
 
 	function AddDoubleClickEvents(targetName) {
         // Event handlers
-	
-		$("#" + targetName).live("dblclick", function() {
+		
+		$(document).on("dblclick","#"+targetName, function() {
+			$(this).children(":selected").remove().appendTo("#" + targetName + nameModifier);
+			$("#" + targetName + nameModifier + " options").removeAttr("selected");
+			OrderMyList();
+			return false;
+		});
+		
+		$(document).on("dblclick","#" + targetName + nameModifier, function() {
+			$(this).children(":selected").remove().appendTo("#" + targetName);
+			$("#" + targetName + nameModifier + " options").removeAttr("selected");
+			OrderMyList();
+			return false;
+		});
+		
+		//Changed to above for compatibility with jQuery1.9+
+		/*$("#" + targetName).live("dblclick", function() {
 			$(this).children(":selected").remove().appendTo("#" + targetName + nameModifier);
 			$("#" + targetName + nameModifier + " options").removeAttr("selected");
 			OrderMyList();
@@ -27,7 +44,7 @@
 			$("#" + targetName + nameModifier + " options").removeAttr("selected");
 			OrderMyList();
 			return false;
-		});
+		});*/
 	};
 	
 	function OrderMyList() {
