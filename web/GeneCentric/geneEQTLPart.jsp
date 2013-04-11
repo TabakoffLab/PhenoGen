@@ -246,7 +246,7 @@
 	<div style="text-align:center;">
 		<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;width:1000px;text-align:left;">
     	<span class="trigger less" name="circosOption" >eQTL Image Options</span>
-    	<div class="inpageHelp" style="display:inline-block;"><img id="Help2" class="helpImage" src="../web/images/icons/help.png" /></div>
+    	<span class="eQTLtooltip" title="The controls in this section allow you to change the chromosomes and tissues included in the image as well as the P-value threshold.  If you can't see them click on the + icon.  Once you make changes click on the Click to Run Circos button."><img src="<%=imagesDir%>icons/info.gif"></span>
 		</div>
     
 
@@ -259,9 +259,7 @@
 		<tr>
 			<td>
 				<strong>P-value Threshold for Highlighting:</strong> 
-					<div class="inpageHelp" style="display:inline-block;">
-					<img id="Help9a" src="/web/images/icons/help.png"/>
-					</div>
+				<span class="eQTLtooltip" title="Loci with p-values below the chosen threshold are highlighted on the Circos plot in yellow; a line connects the significant loci with the physical location of the gene. All p-values are displayed on the Circos graphic as the negative log base 10 of the p-value."><img src="<%=imagesDir%>icons/info.gif"></span>	
 			
 				<%
 				selectName = "cutoffValue";
@@ -320,9 +318,14 @@
 		<tr>
 			<td>
 							<strong>Transcript Cluster ID:</strong>
-							<div class="inpageHelp" style="display:inline-block;">
+                            <span class="eQTLtooltip" title="On the Affymetrix Exon Array, gene level expression summaries are labeled as transcript clusters.  
+Each gene may have more than one transcript cluster associated with it, due to differences in annotation among databases and therefore, differences in which individual exons (probe sets) are included in the transcript cluster.  <BR><BR>
+Transcript clusters given the designation of &ldquo;core&rdquo; are based on well-curated annotation on the gene.  
+&ldquo;Extended&rdquo; and &ldquo;full&rdquo; transcript clusters are based on gene properties that are less thoroughly curated and more putative, respectively.  
+Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; have are highly putative for several reasons and therefore are only included in the drop-down menu if no other transcript clusters are available."><img src="<%=imagesDir%>icons/info.gif"></span>
+							<!--<div class="inpageHelp" style="display:inline-block;">
 							<img id="Help9b" src="/web/images/icons/help.png"/>
-							</div>
+							</div>-->
 			
 			<%
 				// Set up the select box:
@@ -367,7 +370,9 @@
                                                         <tr>
                                                             <td style="text-align:center;">
                                                                 <strong>Tissues: Include at least one tissue.</strong>
-                                                                
+                                                                <span class="eQTLtooltip" title="Select tissues to be displayed in Circos plot by using arrows to move tissues to the box on the right.  
+Moving tissues to the box on the left will eliminate them from the Circos plot.  
+At least one tissue MUST be included in the Circos plot."><img src="<%=imagesDir%>icons/info.gif"></span>
                                                             </td>
                                                         </tr>
                                                         <TR>
@@ -414,7 +419,9 @@
                                                     <tr>
                                                         <td style="text-align:center;">
                                                             <strong>Chromosomes: (<%=chromosome%> must be included)</strong>
-                                                           
+                                                           <span class="eQTLtooltip" title="Select chromosomes to be displayed in Circos plot by using arrows to move chromosomes to the box on the right.
+Moving chromosomes to the box on the left will eliminate them from the Circos plot.  
+The chromosome where the gene is physically located MUST be included in the Circos plot."><img src="<%=imagesDir%>icons/info.gif"></span>
                                                         </td>
                                                         
                                                     </tr>
@@ -509,50 +516,7 @@
 </div>
 
 
-<div id="Help9aContent" class="inpageHelpContent" title="<center>Help</center>">
-<div class="help-content">
-<H3><center>P-value Threshold Options</center></H3>
-<BR>
-<BR>
-Loci with p-values below the chosen threshold are highlighted on the Circos plot in yellow; a line connects the significant loci with the physical location of the gene.  
-All p-values are displayed on the Circos graphic as the negative log base 10 of the p-value.
-</div>
-</div>
 
-
-<div id="Help9bContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3><center>Transcript Cluster Options</center></H3>
-<BR>
-<BR>
-On the Affymetrix Exon Array, gene level expression summaries are labeled as transcript clusters.  
-Each gene may have more than one transcript cluster associated with it, due to differences in annotation among databases and therefore, differences in which individual exons (probe sets) are included in the transcript cluster.  
-Transcript clusters given the designation of &ldquo;core&rdquo; are based on well-curated annotation on the gene.  
-&ldquo;Extended&rdquo; and &ldquo;full&rdquo; transcript clusters are based on gene properties that are less thoroughly curated and more putative, respectively.  
-Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; have are highly putative for several reasons and therefore are only included in the drop-down menu if no other transcript clusters are available.
-</div>
-</div>
-
-
-<div id="Help9cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3><center>Chromosome Options</center></H3>
-<BR>
-<BR>
-Select chromosomes to be displayed in Circos plot by using arrows to move chromosomes to the box on the right.  
-Moving chromosomes to the box on the left will eliminate them from the Circos plot.  
-The chromosome where the gene is physically located MUST be included in the Circos plot.
-</div>
-</div>
-
-
-<div id="Help9dContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
-<H3><center>Tissue Options</center></H3>
-<BR>
-<BR>
-Select tissues to be displayed in Circos plot by using arrows to move tissues to the box on the right.  
-Moving tissues to the box on the left will eliminate them from the Circos plot.  
-At least one tissue MUST be included in the Circos plot.
-</div>
-</div>
 
 <script>
 	
@@ -574,7 +538,7 @@ At least one tissue MUST be included in the Circos plot.
 			height:$(document).height()
 		});
 		
-		$('.inpageHelpContent').hide();
+		/*$('.inpageHelpContent').hide();
   
   		$('.inpageHelpContent').dialog({ 
   			autoOpen: false,
@@ -603,7 +567,22 @@ At least one tissue MUST be included in the Circos plot.
   			$('#Help9dContent').dialog("open").css({'height':220,'font-size':12});
 			$('.helpDialog').css({'top':450,'left':$(window).width()*0.08,'width':$(window).width()*0.33});
 			return false;
-  		}); 
+  		}); */
+		$(".trigger").click(function(){
+		var baseName = $(this).attr("name");
+		$(this).toggleClass("less");
+        expandCollapse(baseName);      
+	});
+		
+		$('.eQTLtooltip').tooltipster({
+		position: 'top-right',
+		maxWidth: 350,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+		});
 	});
 
 </script>

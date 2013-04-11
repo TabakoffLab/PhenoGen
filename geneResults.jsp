@@ -8,6 +8,7 @@ var filterExpanded=0;
 var organism="<%=myOrganism%>";
 var ucscgeneID="<%=selectedEnsemblID%>";
 var ucsctype="Gene";
+var tisLen=<%=tissuesList1.length%>;
 </script>
 
 
@@ -84,7 +85,8 @@ if(displayNoEnsembl){ %>
             		<span style=" font-weight:bold;">Image Tracks</span>
             	</TD>
                 <TD>
-                <input name="trackcbx" type="checkbox" id="probeCBX" value="probe" checked="checked" /> All Non-Masked Probesets
+                <input name="trackcbx" type="checkbox" id="probeCBX" value="probe" checked="checked" /> 
+                All Non-Masked Pro besets
                 <select name="trackSelect" id="probeSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
@@ -93,7 +95,8 @@ if(displayNoEnsembl){ %>
                 <span class="Imagetooltip" title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD>
-                <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="filterprobe" />Probsets Detected Above Background >1% of samples
+                <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="filterprobe" />
+                Presets Detected Above Background >1% of samples
                 <select name="trackSelect" id="filterprobeSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
@@ -274,7 +277,9 @@ if(displayNoEnsembl){ %>
     <ul>
       <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?" style="top:-30px;">Features<BR />Physically Located Gene Region</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpGenesInRegion" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li ><a id="qtlTabID" href="#qtlList" title="" style="top:-30px;width:75px;">eQTL</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpForwardeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></li>
-      <li ><a id="affyTabID" href="#affyExon" title="" style="top:-30px;">Affy Exon<BR />Probeset Details</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpAffyJavaData" class="helpImage" src="../web/images/icons/help.png" /></div></li>
+      <li ><a id="affyTabID" href="#affyExon" title="" style="top:-30px;">Affy Exon<BR />
+      Pro beset Details</a>
+        <div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpAffyJavaData" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       
      </ul>
 <div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:27px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:1000px;">
@@ -292,7 +297,9 @@ if(displayNoEnsembl){ %>
                         	<td>
                             <%if(myOrganism.equals("Rn")){%>
                                 Exclude single exon RNA-Seq Transcripts
-                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" /><BR />
+                            	<input name="chkbox" type="checkbox" id="exclude1Exon" value="exclude1Exon" />
+                                <span class="geneListToolTip" title="This will hide the single exon transcripts from the table when selected."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <BR />
                         	<%}%>
                         
                             eQTL P-Value Cut-off:
@@ -303,31 +310,34 @@ if(displayNoEnsembl){ %>
                                                     <option value="0.0001" <%if(forwardPValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
                                                     <option value="0.00001" <%if(forwardPValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
                                             </select>
-                                            Require an eQTL below cut-off<input name="chkbox" type="checkbox" id="rqQTLCBX" value="rqQTLCBX"/>
+                                            <span class="geneListToolTip" title="This will filter out eQTL with lower confidence than the selected threshold.(will not remove rows from the table just the entries in the eQTL columns)"><img src="<%=imagesDir%>icons/info.gif"></span>
+                                            <!--Require an eQTL below cut-off<input name="chkbox" type="checkbox" id="rqQTLCBX" value="rqQTLCBX"/>-->
                             </td>
                         	<td>
                             	<div class="columnLeft">
-                                	Gene ID
-                                    <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /><BR />
-                                    Description
-                                    <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /><BR />
-                                    BioType
-                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked" /><BR />
-                                    Tracks
-                                    <input name="chkbox" type="checkbox" id="geneTracksCBX" value="geneTracksCBX" checked="checked" /><BR />
-                                    Location and Strand
-                                    <input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /><BR />
+                                	<input name="chkbox" type="checkbox" id="matchesCBX" value="matchesCBX" checked="checked"/> RNA-Seq Transcript Matches <span class="geneListToolTip" title="Shows/Hides a description of the reason the RNA-Seq transcript was matched to the Ensembl Gene/Transcript."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                	
+                                    <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /> Gene ID <span class="geneListToolTip" title="Shows/Hides the Gene ID column containing the Ensembl Gene ID and links to external Databases when available."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                   
+                                    <input name="chkbox" type="checkbox" id="geneDescCBX" value="geneDescCBX" checked="checked" /> Description <span class="geneListToolTip" title="Shows/Hides Gene Description column whichcontains the Ensembl Description or any annotations for RNA-Seq transcripts not associated with an Ensembl Gene/Transcript"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="geneBioTypeCBX" value="geneBioTypeCBX" checked="checked" /> BioType <span class="geneListToolTip" title="Shows/Hides Ensembl biotype or RNA-Seq category column."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="geneTracksCBX" value="geneTracksCBX" checked="checked" /> Tracks <span class="geneListToolTip" title="Shows/Hides the Image Tracks columns which contain an X when a feature appears in one of the three tracks."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    
                                    
                                 </div>
                                 <div class="columnRight">
-                                 	Heritability
-                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /><BR />
-                                	Detection Above Background
-                                	<input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /><BR />
-                                    eQTLs All
-                                    <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /><BR />
-                                    eQTLs Tissues
-                                    <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" />
+                                	<input name="chkbox" type="checkbox" id="geneLocCBX" value="geneLocCBX" checked="checked" /> Location and Strand <span class="geneListToolTip" title="Shows/Hides the Chromosome, Start base pair, End base pair, and strand columns for the feature."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                 	
+                                    <input name="chkbox" type="checkbox" id="heritCBX" value="heritCBX" checked="checked" /> Heritability <span class="geneListToolTip" title="Shows/Hides all of the Affymetrix Probeset Heritability data."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                	
+                                	<input name="chkbox" type="checkbox" id="dabgCBX" value="dabgCBX" checked="checked" /> Detection Above Background <span class="geneListToolTip" title="Shows/Hides all of the Affymetrix Probeset Detection Above Background data."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="eqtlAllCBX" value="eqtlAllCBX" checked="checked" /> eQTLs All <span class="geneListToolTip" title="Shows/Hides all of the eQTL columns."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="eqtlCBX" value="eqtlCBX" checked="checked" /> eQTLs Tissues <span class="geneListToolTip" title="Shows/Hides all of the eQTL tissue specific columns while preserving a list of transcript clusters with a link to the circos plot."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 </div>
 
                             </TD>
@@ -376,8 +386,10 @@ if(displayNoEnsembl){ %>
                         <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq <span class="geneListToolTip" title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeHerit" class="helpImage" src="../web/images/icons/help.png" /></div></th>
-                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeDABG" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Pro besets > 0.33 Heritability
+                          <div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeHerit" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Pro besets > 1% DABG
+                          <div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeDABG" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTL" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
@@ -426,7 +438,7 @@ if(displayNoEnsembl){ %>
                     <TH>RNA-Seq</TH>
                     <TH>Total Reads<HR />Read Sequences<span class="geneListToolTip" title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>View Details <span class="geneListToolTip" title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Total Probesets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Total Pro besets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</TH>
@@ -988,34 +1000,37 @@ if(displayNoEnsembl){ %>
 	//$('.singleExon').hide();
 	
 	$('#heritCBX').click( function(){
-			displayColumns(tblGenes, 16,tisLen,$('#heritCBX').is(":checked"));
+			displayColumns(tblGenes, 17,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
-			displayColumns(tblGenes, 16+tisLen,tisLen,$('#dabgCBX').is(":checked"));
+			displayColumns(tblGenes, 17+tisLen,tisLen,$('#dabgCBX').is(":checked"));
 	  });
 	  $('#eqtlAllCBX').click( function(){
-			displayColumns(tblGenes, 16+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+			displayColumns(tblGenes, 17+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
 	  });
 		$('#eqtlCBX').click( function(){
-			displayColumns(tblGenes, 16+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+			displayColumns(tblGenes, 17+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
 	  });
 	  
 	   $('#geneIDCBX').click( function(){
-			displayColumns(tblGenes,2,1,$('#geneIDCBX').is(":checked"));
+			displayColumns(tblGenes,3,1,$('#geneIDCBX').is(":checked"));
+	  });
+	  $('#matchesCBX').click( function(){
+			displayColumns(tblGenes,1,1,$('#matchesCBX').is(":checked"));
 	  });
 	  $('#geneDescCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),3,1,$('#geneDescCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),4,1,$('#geneDescCBX').is(":checked"));
 	  });
 	  
 	  $('#geneBioTypeCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),4,1,$('#geneBioTypeCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),5,1,$('#geneBioTypeCBX').is(":checked"));
 	  });
 	  $('#geneTracksCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),5,3,$('#geneTracksCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),6,3,$('#geneTracksCBX').is(":checked"));
 	  });
 	  
 	  $('#geneLocCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),8,2,$('#geneLocCBX').is(":checked"));
+			displayColumns($(tblGenes).dataTable(),9,2,$('#geneLocCBX').is(":checked"));
 	  });
 	  
 	  $('#pvalueCutoffSelect1').change( function(){
@@ -1104,7 +1119,7 @@ if(displayNoEnsembl){ %>
     <div class="hidden"><a class="hiddenLink fancybox.iframe" href="web/GeneCentric/LocusSpecificEQTL.jsp?hiddenGeneSymbol=<%=geneSymbol.get(selectedGene)%>&hiddenGeneCentricPath=<%=gcPath%>" title="eQTL"></a></div>
     <div id="macBugDesc" style="display:none;color:#FF0000;">On your Mac OS X version and Java version the applet below is not being displayed correctly.  This problem is a result of the last update from Oracle and will hopefully be fixed with the next version at which point we will update the applet.  We are very sorry for any inconvenience.  If you would like to use windows or Mac OS X 10.6 the applet will be displayed correctly.  We have done what we can to improve the applets appearance until Oracle fixes this bug, and we are very sorry for any inconvenience.</div>
     
-    <div id="unsupportedChrome" style="display:none;color:#FF0000;">A Java plugin is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  Please try using Safari or FireFox with the Java Plugin installed.  Note: In browsers that support the 64-bit plugin you will be prompted to install Java if it is not already installed.</div>
+    <div id="unsupportedChrome" style="display:none;color:#FF0000;">A Java plug in is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.</div>
     
 	<%if(genURL.get(selectedGene)!=null && !genURL.get(selectedGene).startsWith("ERROR:")){%>
     	<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>

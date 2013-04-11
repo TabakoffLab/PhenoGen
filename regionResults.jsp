@@ -549,8 +549,10 @@ var ucscgeneID="";
                         <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq <span class="geneListToolTip" title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probesets > 0.33 Heritability<div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeHerit" class="helpImage" src="../web/images/icons/help.png" /></div></th>
-                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probesets > 1% DABG<div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeDABG" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Pro besets > 0.33 Heritability
+                          <div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeHerit" class="helpImage" src="../web/images/icons/help.png" /></div></th>
+                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Pro besets > 1% DABG
+                          <div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeDABG" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" >eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTL" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
@@ -601,7 +603,7 @@ var ucscgeneID="";
                     <HR />Read Sequences <span class="geneListToolTip" title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span>
                     </TH>
                     <TH>View Details <span class="geneListToolTip" title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Total Probesets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Total Pro besets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</span></TH>
@@ -1822,14 +1824,14 @@ var ucscgeneID="";
                 <span class="eQTLListToolTip" title="This section lists the regions being reported as begin associated with control of the genes following.  It is important to note that the region entered may only be close to or overlap with a defined SNP or Region between SNPs and may larger than the region selected or may only include part of the region selected."><img src="<%=imagesDir%>icons/info.gif"></span>
             </div>
             <div id="eQTLRegionNote" style="width:100%; position:relative; top:-71px">
-            Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the folowing region(s):<BR />
+            Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the following region(s):<BR />
             <%for(int i=0;i<eQTLRegions.size();i++){%>
                 <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=eQTLRegions.get(i)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank"><%=eQTLRegions.get(i)%></a><BR />
             <%}%>
-            So the genes listed below could be controled from anywhere in the region(s) above.
+            So the genes listed below could be controlled from anywhere in the region(s) above.
             </div>
         
-<%
+            <%
 		String shortRegionCentricPath;
 		String cutoffTimesTen; 
 		if(pValueCutoff == 0.1){

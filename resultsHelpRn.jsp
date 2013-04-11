@@ -2,12 +2,12 @@
 <H3>Affy Exon Data Columns</H3>
 The Affy Exon PhenoGen data displays data calculated from public datasets. Data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)<BR /><BR />
 
-These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets. A free login is required, which allows you to save your progress and come back after lengthy processing steps.  <BR /><BR />
+These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Microarray Analysis Tools -> Analyze precompiled datasets. A free login is required, which allows you to save your progress and come back after lengthy processing steps.  <BR /><BR />
 
 Columns:<BR />
 <ul style="padding-left:25px; list-style-type:square;">
 	<li>Total number of non-masked probe sets</li><BR /> 
-	<li>Number with a heritability of >0.33 (Avg heritability for probesets >0.33)</li><BR />
+	<li>Number with a heritability of >0.33 (Avg heritability for probe sets >0.33)</li><BR />
 	<li>Number detected above background (DABG) (Avg % of samples DABG)</li><BR />
 	<li>Transcript Cluster ID corresponding to the gene with Annotation level</li><BR />
 	<li>Circos Plot to show all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> across tissues.</li><BR />
@@ -38,20 +38,22 @@ Data Summary:<BR /><BR />
 </div></div>
 
 <div id="HelpProbeHeritContent" class="inpageHelpContent" title="Help"><div class="help-content">
-<H3>Heritablity</H3>
-For each probe set on the Affymetrix Rat Exon 1.0 ST Array, we calculated a broad-sense heritability using an ANOVA model and expression data from the HXB/BXH panel.  The heritability threshold of 0.33 was chosen arbitrarily to represent an expression estimate with at least modest heritability. We include the number of probesets at least modestly heritable in the four available tissues (brain, heart, liver, and brown adipose).   Higher heritability indicates that expression of a probe set is influenced more by genetics than unknown environmental factors.
-</div></div>
+<H3>Heritability</H3>
+For each probe set on the Affymetrix Rat Exon 1.0 ST Array, we calculated a broad-sense heritability using an ANOVA model and expression data from the HXB/BXH panel.  The heritability threshold of 0.33 was chosen arbitrarily to represent an expression estimate with at least modest heritability. We include the number of probe sets at least modestly heritable in the four available tissues (brain, heart, liver, and brown adipose).   Higher heritability indicates that expression of a probe set is influenced more by genetics than unknown environmental factors.
+</div>
+</div>
 
 <div id="HelpProbeDABGContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>Detection Above Background(DABG)</H3>
-For each probe set on the Affymetrix Rat Exon 1.0 ST Array and each sample, we calculated a p-value associated with the expression of the probe set above background (DABG – detection above background).  Using a p-value threshold of 0.0001, we calculated the proportion of samples from the HXB/BXH panel that had expression values significantly different from background for a given probeset.  In the table, we report the number of probesets whose expression values were detected above background in more than 1% of samples and the average percentage of samples where the probesets were detected above background.
-</div></div>
+For each probe set on the Affymetrix Rat Exon 1.0 ST Array and each sample, we calculated a p-value associated with the expression of the probe set above background (DABG – detection above background).  Using a p-value threshold of 0.0001, we calculated the proportion of samples from the HXB/BXH panel that had expression values significantly different from background for a given probe set.  In the table, we report the number of probe sets whose expression values were detected above background in more than 1% of samples and the average percentage of samples where the probe sets were detected above background.
+</div>
+</div>
 
 <div id="HelpeQTLAffyContent" class="inpageHelpContent" title="Help-Affy Exon Data"><div class="help-content">
 <H3>Affy Exon Data-eQTLs</H3>
 The Affy Exon PhenoGen data displays data calculated from public datasets.  Data is from four datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays).
 <BR /><BR />
-These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Mircoarray Analysis Tools -> Analyze precompiled datasets.  A free login is required, which allows you to save your progress and come back after lengthy processing steps.  
+These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Microarray Analysis Tools -> Analyze precompiled datasets.  A free login is required, which allows you to save your progress and come back after lengthy processing steps.  
 <BR /><BR />
 Columns:<BR />
 <ul style="list-style-type:square; padding-left:25px;">

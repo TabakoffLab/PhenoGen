@@ -395,7 +395,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
 
-                1. Enter a gene identifier(e.g. gene symbol, probeset ID, ensembl ID, etc.) in the gene field.<BR />
+                1. Enter a gene identifier(e.g. gene symbol, probe set ID, ensembl ID, etc.) in the gene field.<BR />
                 or<BR />
                 Enter a region such as
                 	<div style="padding-left:20px;">
@@ -554,7 +554,8 @@ Or
 <%}else{%>
 
 	<%if(displayNoEnsembl){ %>
-        <BR /><div class="error">ERROR:No Ensembl ID found for the ID entered.<BR /><BR />The Gene ID entered could not be translated to an Ensembl ID to retreive gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
+        <BR /><div class="error">ERROR:No Ensembl ID found for the ID entered.<BR /><BR />
+        The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
 	<% } %>
 
 	<div style="text-align:center;">
