@@ -394,7 +394,8 @@ sub addAlternateID_RNA{
 				if($include==1){
 					$genesProcessed[$cntGene]=1;
 					print "gene id:".$GeneHOH{Gene}[$cntGene]{ID}."\nstrand:".$GeneHOH{Gene}[$cntGene]{strand}."\n";
-					if($GeneHOH{Gene}[$cntGene]{ID} eq ""){
+					my $biotype=$GeneHOH{Gene}[$cntGene]{biotype};
+					if($GeneHOH{Gene}[$cntGene]{ID} eq "" or $biotype ne "protein_coding"){
 						
 					}else{
 						# There is one transcript array corresponding to the current gene.

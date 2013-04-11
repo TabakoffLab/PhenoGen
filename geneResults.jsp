@@ -1,6 +1,6 @@
 
 <script type="text/javascript">
-var trackString="probe,numExonPlus,numExonMinus,refseq";
+var trackString="probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq";
 var minCoord=<%=min%>;
 var maxCoord=<%=max%>;
 var chr="<%=chromosome%>";
@@ -70,7 +70,7 @@ if(displayNoEnsembl){ %>
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
             	<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
-            	<img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/ucsc.probe.numExonPlus.numExonMinus.refseq.png"%>"/></a>
+            	<img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/ucsc.probe.numExonPlus.numExonMinus.noncoding.smallnc.refseq.png"%>"/></a>
             </div>
         </div><!-- end geneimage div -->
     	<div class="geneimageControl">
@@ -174,7 +174,7 @@ if(displayNoEnsembl){ %>
                 <span class="Imagetooltip" title="This track consists of single exon RNAs from RNA-Seq where the strand could not be determined."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD>
-                <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" />Long Non-Coding/NonPolyA+
+                <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" />Long Non-Coding/NonPolyA+
                 <select name="trackSelect" id="noncodingSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
@@ -187,7 +187,7 @@ if(displayNoEnsembl){ %>
             <TR>
             	<TD class="rightBorder"></TD>
                 <TD>
-                <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" /> Small RNA
+                <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA
                 <select name="trackSelect" id="smallncSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
@@ -483,8 +483,14 @@ if(displayNoEnsembl){ %>
 						if(tc!=null){%>
                         	eqtl
                         <%}
-						if(curGene.getBioType().equals("protein_coding")){%>
-                        	coding
+						if(curGene.getBioType().equals("protein_coding")){
+							if(curGene.getStrand().equals("+")){%>
+                        		numExonPlus
+                            <%}else if(curGene.getStrand().equals("-")){%>
+                            	numExonMinus
+                            <%}else{%>
+                            	numExonUkwn
+							<%}%>
 						<%}else{
 							if(curGene.getLength()>=350){
 								viewClass="longRNA";%>
@@ -1052,18 +1058,18 @@ if(displayNoEnsembl){ %>
 	 		var type=$(this).val();
 			updateTrackString();
 			updateUCSCImage();
-			//if(type=="coding" || type=="noncoding" || type=="smallnc"){
+			if(type=="numExonUkwn" || type=="numExonPlus" || type=="numExonMinus" || type=="noncoding" || type=="smallnc"){
 				/*if($('#rqQTLCBX').is(":checked")){
 					$('tr.'+type).hide();
 					type=type+".eqtl";
 				}*/
-			//	if($(this).is(":checked")){
-			//		$('tr.'+type).show();
-			//	}else{
-			//		$('tr.'+type).hide();
-			//	}
-			//	tblGenes.fnDraw();
-			//}
+				if($(this).is(":checked")){
+					$('tr.'+type).show();
+				}else{
+					$('tr.'+type).hide();
+				}
+				tblGenes.fnDraw();
+			}
 			
 	 });
 	 

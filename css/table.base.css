@@ -44,25 +44,25 @@ table.list_base tr.col_title th {
 
 }
 
-table.list_base tr.coding.odd td,table.list_base tr td.coding.odd{
+table.list_base tr.coding.odd td,table.list_base tr td.coding.odd,table.list_base tr.numExonPlus.odd td,table.list_base tr.numExonMinus.odd td,table.list_base tr.numExonUknw.odd td{
 	background:#7EB5D6;
 } 
-table.list_base tr.coding.ensembl.odd td,table.list_base tr td.coding.ensembl.odd{
+table.list_base tr.coding.ensembl.odd td,table.list_base tr td.coding.ensembl.odd,table.list_base tr.numExonPlus.ensembl.odd td,table.list_base tr.numExonMinus.ensembl.odd td,table.list_base tr.numExonUknw.ensembl.odd td{
 	background:#DFC184;
 }
 table.list_base tr.smallnc.ensembl td a{
 	color:#4C7298;
 	text-decoration:underline;
 }
-table.list_base tr.coding td a,table.list_base tr.noncoding td a,table.list_base tr.smallnc td a{
+table.list_base tr.coding td a,table.list_base tr.noncoding td a,table.list_base tr.smallnc td a,table.list_base tr.numExonPlus td a,table.list_base tr.numExonMinus td a,table.list_base tr.numExonUknw td a{
 	color:#FFFFFF;
 	text-decoration:underline;
 }
 
-table.list_base tr.coding.even td{
+table.list_base tr.coding.even td,table.list_base tr.numExonPlus.even td,table.list_base tr.numExonMinus.even td,table.list_base tr.numExonUknw.even td{
 	background:#89BEDF;
 } 
-table.list_base tr.coding.ensembl.even td{
+table.list_base tr.coding.ensembl.even td,table.list_base tr.numExonPlus.ensembl.even td,table.list_base tr.numExonMinus.ensembl.even td,table.list_base tr.numExonUknw.ensembl.even td{
 	background:#E9CA8D;
 }
 

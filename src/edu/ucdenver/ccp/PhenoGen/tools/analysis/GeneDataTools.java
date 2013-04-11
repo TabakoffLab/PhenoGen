@@ -236,7 +236,7 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            String[] results=this.createImage("probe,numExonPlus,numExonMinus,refseq", organism,outputDir,chrom,minCoord,maxCoord);
+                            String[] results=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq", organism,outputDir,chrom,minCoord,maxCoord);
                             getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             //getUCSCUrls(ensemblID1);
                             result="cache hit files not generated";
@@ -622,7 +622,7 @@ public class GeneDataTools {
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
             }
-            String[] url=this.createImage("probe,numExonPlus,numExonMinus,refseq",organism,outputDir,chrom,minCoord,maxCoord);
+            String[] url=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq",organism,outputDir,chrom,minCoord,maxCoord);
             if(url!=null){
                 completedSuccessfully=true;
                 generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);

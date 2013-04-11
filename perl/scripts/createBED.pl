@@ -453,7 +453,8 @@ sub createStrandedCodingTrack{
 		foreach my $tmpGene (@geneList){
 			my $geneID=$GeneHOH{Gene}[$cntGenes]{ID};
 			my $strand=$GeneHOH{Gene}[$cntGenes]{strand};
-			if($strand==$curStrand){
+			my $biotype=$GeneHOH{Gene}[$cntGenes]{biotype};
+			if($strand==$curStrand and $biotype eq "protein_coding"){
 				my $transcriptArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
 				my $chr=$GeneHOH{Gene}[$cntGenes]{chromosome};
 				

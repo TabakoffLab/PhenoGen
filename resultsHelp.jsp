@@ -91,7 +91,7 @@ At the transcript cluster level, this is an <a href="<%=commonDir%>definitions.j
 
 <div id="HelpForwardeQTLTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>eQTL Tab</H3>
-
+This tab shows a Circos Plot of the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> associated with the selected Transcript Cluster(Gene).  The lines connect from the location of the gene to the region/SNP associated with expression of the gene.  Each tissue contains yellow/black lines that indicate the P-value of that association.  Yellow indicates the P-value is below the selected threshold.  The controls available under this tab let you select the p-value, chromosomes, and tissues(if applicable) to include in the image.
 </div></div>
 
 
