@@ -71,8 +71,21 @@ Columns:<BR />
 
 <div id="HelpAffyJavaDataContent" class="inpageHelpContent" title="Help-Affy Exon Data"><div class="help-content">
 <H3>Affy Exon Data-eQTLs</H3>
-
-</div></div>
+	This tab requires the Java Plug-in to be installed and enabled.  It is recommended to install the latest version of java for your computer.  Note that only an older version is available on Mac OS X (Snow Leopard(10.6) and earlier), however, this version is still supported.
+    <BR /><BR />
+    On this tab you can explore data at the probe set level.  The following views are available:<BR />
+    <ul style="list-style-type:square; padding-left:25px;">
+    	<li>expression levels of the parental strains for the inbred panel(ILS and ISS).</li>
+        <li>heritability of each probe set.</li>
+        <li>normalized probe set level expression across strains.</li>
+        <li>exon-exon expression correlation.</li>
+        </ul>
+        <BR />
+    This data is from the Public ILSXISS RI Mice dataset available under Microarray Analysis Tools -> Analyze precompiled datasets.<BR /><BR />
+    
+    The data can be filtered to look at only probe sets that fall within a given transcript or based on detection above background or heritability, to help determine possible alternate splicing that may affect phenotypes.
+</div>
+</div>
 
 
 <script type="text/javascript">

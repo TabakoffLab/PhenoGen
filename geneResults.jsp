@@ -86,7 +86,7 @@ if(displayNoEnsembl){ %>
             	</TD>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="probeCBX" value="probe" checked="checked" /> 
-                All Non-Masked Pro besets
+                All Non-Masked Probe sets
                 <select name="trackSelect" id="probeSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
@@ -278,7 +278,7 @@ if(displayNoEnsembl){ %>
       <li ><a id="geneTabID" href="#geneList" title="What genes are found in this area?" style="top:-30px;">Features<BR />Physically Located Gene Region</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpGenesInRegion" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li ><a id="qtlTabID" href="#qtlList" title="" style="top:-30px;width:75px;">eQTL</a><div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpForwardeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       <li ><a id="affyTabID" href="#affyExon" title="" style="top:-30px;">Affy Exon<BR />
-      Pro beset Details</a>
+      Probe Set Details</a>
         <div class="inpageHelp" style="float:right;position: relative; top: -84px; left:-2px;"><img id="HelpAffyJavaData" class="helpImage" src="../web/images/icons/help.png" /></div></li>
       
      </ul>

@@ -114,16 +114,16 @@
 	<thead>
     	<TR >
         	<TH colspan="3"></TH>
-            <TH colspan="2" class="topLine leftBorder rightBorder">Perfect Match to Genome<span title="Indicates if the sequence is a perfect match to the genome."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+            <TH colspan="2" class="topLine leftBorder rightBorder">Perfect Match to Genome<span class="smncToolTip" title="An 'X' indicates that the base sequence aligns exactly (i.e. without any mismatches between bases) to the strain-specific genome."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
         </TR>
     	<TR class="col_title">
-        	<TH>Read Sequences <span title="Read Seaquences from RNA-Seq"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-            <TH>Total Read Counts <span title="Total read count from all BN-Lx and SHRH samples"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-            <TH># Alignments to Genome <span title="The number of locations the sequence aligns in the genome."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+        	<TH>Read Sequences <span class="smncToolTip" title="Base sequences from reads generated using RNA-Seq of small (<200 nucleotide) RNA."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+            <TH>Total Read Counts <span class="smncToolTip" title="Number of reads with this base sequence generated from brain samples of 3 BN-Lx/CubPrin rats and 3 SHR/OlaPrin rats."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+            <TH># Alignments to Genome <span class="smncToolTip" title="The number of physical locations in the strain-specific genome to which this base sequence aligns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
             <TH>BN-Lx Genome</TH>
             <TH>SHRH Genome</TH>
         </TR>
-        	</thead>
+    </thead>
     <tbody>
     	<% 
 		for(int i=0;i<seqList.size();i++){
@@ -177,12 +177,26 @@ function updateSmallNonCoding(idList,nameList,id){
 		//alert(id);
 		updateSmallNonCoding(idList,nameList,id)
 	});
+	
+	$('.smncToolTip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
+	
 	var tblSMNC=$('#tblViewSMNC').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "900px",
 	"sScrollY": "350px"
 	});
-	tblSMNC.dataTable().fnAdjustColumnSizing();
+	//tblSMNC.dataTable().fnAdjustColumnSizing();
+	
+	
+	
 	
 </script>
