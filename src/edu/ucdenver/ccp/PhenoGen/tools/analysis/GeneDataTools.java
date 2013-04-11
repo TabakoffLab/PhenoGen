@@ -628,6 +628,11 @@ public class GeneDataTools {
                 generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);
             }
             getUCSCUrl(url[1].replaceFirst(".png",".url"));
+            
+            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
+            
+            
+            
             //boolean ucscComplete=getUCSCUrls(ensemblID1);
             //if(!ucscComplete){
             //       completedSuccessfully=false;
@@ -727,6 +732,119 @@ public class GeneDataTools {
             //}
         }
         return completedSuccessfully;
+    }
+    
+    private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+        String probeQuery="select s.Probeset_ID "+
+                                "from Chromosomes c, Affy_Exon_ProbeSet s "+
+                                "where s.chromosome_id = c.chromosome_id "+
+                                "and substr(c.name,1,2) = '"+chr+"' "+
+                            "and "+
+                            "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
+                            "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
+                            "and s.psannotation <> 'transcript' " +
+                            "and s.Array_TYPE_ID = "+arrayTypeID;
+        
+        String probeTransQuery="select s.Probeset_ID,c.name,s.PSSTART,s.PSSTOP,s.PSLEVEL "+
+                                "from Chromosomes c, Affy_Exon_ProbeSet s "+
+                                "where s.chromosome_id = c.chromosome_id "+
+                                "and substr(c.name,1,2) = '"+chr+"' "+
+                            "and "+
+                            "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
+                            "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
+                            "and s.psannotation like 'transcript' " +
+                            "and s.Array_TYPE_ID = " + arrayTypeID +
+                            " and exists(select l.probe_id from location_specific_eqtl l where s.probeset_id = l.probe_id)";
+        
+        log.debug("PSLEVEL SQL:"+probeQuery);
+        log.debug("Transcript Level SQL:"+probeTransQuery);
+            String pListFile=outputDir+"tmp_psList.txt";
+            try{
+                BufferedWriter psout=new BufferedWriter(new FileWriter(new File(pListFile)));
+                try{
+                    PreparedStatement ps = dbConn.prepareStatement(probeQuery);
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        int psid = rs.getInt(1);
+                        psout.write(psid + "\n");
+                    }
+                    ps.close();
+                }catch(SQLException ex){
+                    log.error("Error getting exon probesets",ex);
+                }
+                psout.flush();
+                psout.close();
+            }catch(IOException e){
+                log.error("Error writing exon probesets",e);
+            }
+            
+            ArrayList<GeneLoc> geneList=GeneLoc.readGeneListFile(outputDir,log);
+            String ptransListFiletmp = outputDir + "tmp_psList_transcript.txt";
+            String ptransListFile = outputDir + "tmp_psList_transcript.txt";
+            File srcFile=new File(ptransListFiletmp);
+            File destFile=new File(ptransListFile);
+            try{
+                BufferedWriter psout = new BufferedWriter(new FileWriter(srcFile));
+                try{
+                    PreparedStatement ps = dbConn.prepareStatement(probeTransQuery);
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        int psid = rs.getInt(1);
+                        String ch = rs.getString(2);
+                        long start = rs.getLong(3);
+                        long stop = rs.getLong(4);
+                        String level=rs.getString(5);
+                        String ensemblId="",ensGeneSym="";
+                        double maxOverlapTC=0.0,maxOverlapGene=0.0,maxComb=0.0;
+                        GeneLoc maxGene=null;
+                        for(int i=0;i<geneList.size();i++){
+                            GeneLoc tmpLoc=geneList.get(i);
+                            long maxStart=tmpLoc.getStart();
+                            long minStop=tmpLoc.getStop();
+                            if(start>maxStart){
+                                maxStart=start;
+                            }
+                            if(stop<minStop){
+                                minStop=stop;
+                            }
+                            long genLen=tmpLoc.getStop()-tmpLoc.getStart();
+                            long tcLen=stop-start;
+                            double overlapLen=minStop-maxStart;
+                            double curTCperc=0.0,curGperc=0.0,comb=0.0;
+                            if(overlapLen>0){
+                                curTCperc=overlapLen/tcLen*100;
+                                curGperc=overlapLen/tcLen*100;
+                                comb=curTCperc+curGperc;
+                                if(comb>maxComb){
+                                    maxOverlapTC=curTCperc;
+                                    maxOverlapGene=curGperc;
+                                    maxComb=comb;
+                                    maxGene=tmpLoc;
+                                }
+                            }
+                            
+                        }
+                        if(maxGene!=null){
+                            String tmpGS=maxGene.getGeneSymbol();
+                            if(tmpGS.equals("")){
+                                tmpGS=maxGene.getID();
+                            }
+                            psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                        }else{
+                            psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                        }
+                    }
+                    ps.close();
+                }catch(SQLException ex){
+                    log.error("Error getting transcript probesets",ex);
+                }
+                psout.flush();
+                psout.close();
+            }catch(IOException e){
+                log.error("Error writing transcript probesets",e);
+            }
+            srcFile.renameTo(destFile);
+            
     }
     
      	public boolean createCircosFiles(String perlScriptDirectory, String perlEnvironmentVariables, String[] perlScriptArguments,String filePrefixWithPath){
