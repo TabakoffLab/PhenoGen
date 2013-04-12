@@ -11,6 +11,8 @@
 <% 
 	//Re-set this to reflect asynchronous process finishing
 	session.setAttribute("privateDatasetsForUser", null);
+	//Re-set to reflect analysis being performed on a dataset
+	session.setAttribute("publicDatasets", null);
  %>
 
 <%@ include file="/web/datasets/include/datasetHeader.jsp"  %>
