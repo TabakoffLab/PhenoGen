@@ -324,10 +324,11 @@ sub createFilteredProbesetTrack{
 	my $coreColor="255,0,0";
 	my $fullColor="0,100,0";
 	my $extendedColor="0,0,255";
+	my $ambiguousColor="0,0,0";
 	my $cntColor=0;
 	foreach my $key (keys %tissueProbes){
 		print OFILE 'track db='.$trackDB." name=\"Probesets above background in $key\" ";
-		print OFILE "description=\"Affy Exon Probesets detected above background in $key: Red=Core Blue=Extended Green=Full\" ";
+		print OFILE "description=\"Affy Exon Probesets detected above background in $key: Red=Core Blue=Extended Green=Full Black=Ambiguous\" ";
 		print OFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
 		my $probeRef=$tissueProbes{$key}{pslist};
 		my @probeset=@$probeRef;
@@ -346,6 +347,10 @@ sub createFilteredProbesetTrack{
 				$color=$coreColor;
 			}elsif($tissueProbes{$key}{pslist}[$curInd]{level} eq 'extended'){
 				$color=$extendedColor;
+			}elsif($tissueProbes{$key}{pslist}[$curInd]{level} eq 'full'){
+				$color=$fullColor;
+			}else{
+				$color=$ambiguousColor;
 			}
 			print OFILE "chr$chr\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$tissueProbes{$key}{pslist}[$curInd]{ID}."\t$score\t$strand\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$color."\n";
 			$curInd++;
@@ -364,9 +369,10 @@ sub createProbesetTrack{
 		my $coreColor="255,0,0";
 		my $fullColor="0,100,0";
 		my $extendedColor="0,0,255";
+		my $ambiguousColor="0,0,0";
 		my $cntColor=0;
 		print OFILE 'track db='.$trackDB." name=\"All Probesets\" ";
-		print OFILE "description=\"All Probesets: Red=Core Blue=Extended Green=Full\" ";
+		print OFILE "description=\"All Probesets: Red=Core Blue=Extended Green=Full Black=Ambiguous\" ";
 		print OFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
 		my $curInd=0;
 		foreach(@nonMaskedProbes){
@@ -381,6 +387,10 @@ sub createProbesetTrack{
 				$color=$coreColor;
 			}elsif($nonMaskedProbes[$curInd]{type} eq 'extended'){
 				$color=$extendedColor;
+			}elsif($nonMaskedProbes[$curInd]{type} eq 'full'){
+				$color=$fullColor;
+			}else{
+				$color=$ambiguousColor;
 			}
 			if($nonMaskedProbes[$curInd]{start}>0&&$nonMaskedProbes[$curInd]{stop}>0){
 				print OFILE "chr$chr\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";

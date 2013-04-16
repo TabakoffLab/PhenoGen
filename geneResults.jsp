@@ -86,7 +86,7 @@ if(displayNoEnsembl){ %>
             	</TD>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="probeCBX" value="probe" checked="checked" /> 
-                All Non-Masked Probe sets
+                Affymetrix Exon Array Probe Sets
                 <select name="trackSelect" id="probeSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
@@ -96,7 +96,7 @@ if(displayNoEnsembl){ %>
                 </TD>
                 <TD>
                 <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="filterprobe" />
-                Presets Detected Above Background >1% of samples
+                Affy Exon Probe Sets Detected Above Background >1% of samples
                 <select name="trackSelect" id="filterprobeSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>

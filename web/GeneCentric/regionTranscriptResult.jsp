@@ -32,7 +32,7 @@
                 	<option value="600" >Larger</option>
                 	<option value="800" >Largest</option>
             	</select>
-            	<span title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
+            	<span class="regionViewToolTip" title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
         	</span>
     </div>
         <div id="gvimgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
@@ -48,23 +48,23 @@
             <table class="list_base" style="text-align:left; width:100%;" cellspacing="0">	
             <TR>
                 <TD>
-            	<input name="gvtrackcbx" type="checkbox" id="gvprobeCBX" value="probe" <%if(tmpFile.contains(".probe.")){%>checked="checked"<%}%> /> All Non-Masked Probesets
+            	<input name="gvtrackcbx" type="checkbox" id="gvprobeCBX" value="probe" <%if(tmpFile.contains(".probe.")){%>checked="checked"<%}%> /> Affymetrix Exon Array Probe Sets
             	<select name="gvtrackSelect" id="gvprobeSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="regionViewToolTip" title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 
             	<TD colspan="2">
-           			<input name="gvtrackcbx" type="checkbox" id="gvfilterprobeCBX" value="filterprobe" <%if(tmpFile.contains(".filterprobe.")){%>checked="checked"<%}%> />Probsets Detected Above Background >1% of samples
+           			<input name="gvtrackcbx" type="checkbox" id="gvfilterprobeCBX" value="filterprobe" <%if(tmpFile.contains(".filterprobe.")){%>checked="checked"<%}%> />Affy Exon Probe Sets Detected Above Background >1% of samples
             		<select name="gvtrackSelect" id="gvfilterprobeSelect">
                     <option value="1" >Dense</option>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span title="The non-masked Affymetrix Exon 1.0 ST probsets detected above background in >1% of samples in each tissue available."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="regionViewToolTip" title="The non-masked Affymetrix Exon 1.0 ST probsets detected above background in >1% of samples in each tissue available."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
             </TR>
             <TR>
@@ -75,7 +75,7 @@
                 <option value="3" >Pack</option>
                 <option value="2" >Full</option>
             </select>
-            <span title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span class="regionViewToolTip" title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
                 <TD>
             	<input name="gvtrackcbx" type="checkbox" id="gvhelicosCBX" value="helicos" <%if(tmpFile.contains(".helicos")){%>checked="checked"<%}%>/> Helicos Data:
@@ -84,11 +84,11 @@
             	<option value="1" selected="selected">Dense</option>
                 <option value="2" >Full</option>
             </select>
-            <span title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span class="regionViewToolTip" title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
                 <TD>
             		<input name="gvtrackcbx" type="checkbox" id="gvrefseqCBX" value="refseq" <%if(tmpFile.contains(".refseq.")){%>checked="checked"<%}%>/> RefSeq Transcripts
-                    <span title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
+                    <span class="regionViewToolTip" title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
             </TR>
             
@@ -100,7 +100,7 @@
                         <option value="3" selected="selected">Pack</option>
                         <option value="2" >Full</option>
                     </select>
-                    <span title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
+                    <span class="regionViewToolTip" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
             	<TD>
                 <input name="gvtrackcbx" type="checkbox" id="gvnoncodingCBX" value="noncoding" <%if(tmpFile.contains(".noncoding.")){%>checked="checked"<%}%> />Long Non-Coding/NonPolyA+
@@ -109,7 +109,7 @@
                         <option value="3" selected="selected">Pack</option>
                         <option value="2" >Full</option>
                     </select>
-                    <span title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span> 
+                    <span class="regionViewToolTip" title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span> 
                 </TD>
                 <TD>
             <input name="gvtrackcbx" type="checkbox" id="gvsmallncCBX" value="smallnc" <%if(tmpFile.contains(".smallnc.")){%>checked="checked"<%}%>  /> Small RNA
@@ -118,7 +118,7 @@
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select> 
-                <span title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="regionViewToolTip" title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
             </TR>
           </table>
@@ -126,7 +126,7 @@
     
           </div><!--end Border Div -->
          </span><!-- ends center span -->
-	<div id="gvlegendDialog"  title="<center>UCSC Image Legend</center>" class="legendDialog" style="display:none">
+	<div id="gvlegendDialog"  title="UCSC Image Legend" class="legendDialog" style="display:none">
     			<%region=false;%>
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
                 <%region=true;%>
@@ -190,6 +190,22 @@
 			var size=$(this).val()+"px";
 			$('#gvgeneImage').css({"height":size,"overflow":"auto"});
 		}
+	});
+	
+	
+	$('.regionViewToolTip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
+	$('.helpImage').click( function(event){
+		var id=$(this).attr('id');
+		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
+		$('#'+id+'Content').dialog("open").css({'font-size':12});
 	});
 </script>
 
