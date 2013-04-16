@@ -1331,7 +1331,7 @@ public class Statistic {
 					String outputFileNameIndiv,
                                         String outputFileNameGroup,
 					String analysisPath,
-                                        String xmlFilename,
+                                        //String xmlFilename,
                                         String plotFilename,
                                         long threadNum) throws RException {
 						
@@ -1344,8 +1344,8 @@ public class Statistic {
                 functionArgs[2] = "Platform = '" + platform + "'";
 		functionArgs[3] = "OutputFileIndiv = '" + outputFileNameIndiv + "'";
                 functionArgs[4] = "OutputFileGroup = '" + outputFileNameGroup + "'";
-                functionArgs[5] = "XMLFileName = '" +xmlFilename+ "'";
-                functionArgs[6] = "plotFileName ='" +plotFilename+"'";
+                //functionArgs[5] = "XMLFileName = '" +xmlFilename+ "'";
+                functionArgs[5] = "plotFileName ='" +plotFilename+"'";
                 
                 if(inputFileName.endsWith(".h5")){
                             functionArgs[0]=functionArgs[0]+", VersionPath='"+version+"', SampleFile='"+sampleFile+"'";

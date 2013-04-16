@@ -192,7 +192,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		setupPage();
-		setTimeout("setupMain()", 100); 
+		setTimeout("setupMain()", 100);
 	});
 </script>
 

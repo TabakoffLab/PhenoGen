@@ -1527,7 +1527,10 @@ public class GeneDataTools {
             PreparedStatement ps = dbConn.prepareStatement(datasetQuery);
             ResultSet rs = ps.executeQuery();
             try{
-                
+                String ver="v6";
+                if(arrayTypeID==21){
+                    ver="v3";
+                }
                 //log.debug("Getting ready to start");
                 File indivf=new File(outputDir+"Panel_Expr_indiv_tmp.txt");
                 File groupf=new File(outputDir+"Panel_Expr_group_tmp.txt");
@@ -1536,7 +1539,7 @@ public class GeneDataTools {
                 ArrayList<AsyncGeneDataExpr> localList=new ArrayList<AsyncGeneDataExpr>();
                 SyncAndClose sac=new SyncAndClose(start,localList,dbConn,outGroup,outIndiv,usageID,outputDir);
                 while(rs.next()){
-                    AsyncGeneDataExpr agde=new AsyncGeneDataExpr(session,outputDir+"tmp_psList.txt",outputDir,prevThread,threadList,maxThreadRunning,outGroup,outIndiv,sac);
+                    AsyncGeneDataExpr agde=new AsyncGeneDataExpr(session,outputDir+"tmp_psList.txt",outputDir,prevThread,threadList,maxThreadRunning,outGroup,outIndiv,sac,ver);
                     String dataset_id=Integer.toString(rs.getInt("DATASET_ID"));
                     int iDSID=rs.getInt("DATASET_ID");
                     String tissue=rs.getString("TISSUE");
@@ -1544,8 +1547,8 @@ public class GeneDataTools {
                     edu.ucdenver.ccp.PhenoGen.data.Dataset sDataSet=new edu.ucdenver.ccp.PhenoGen.data.Dataset();
                     edu.ucdenver.ccp.PhenoGen.data.Dataset curDS=sDataSet.getDataset(iDSID,dbConn);
                     String DSPath=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/Affy.NormVer.h5";
-                    String sampleFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/v3_samples.txt";
-                    String groupFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/v3_groups.txt";
+                    String sampleFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/"+ver+"_samples.txt";
+                    String groupFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/"+ver+"_groups.txt";
                     String outGroupFile="group_"+tissueNoSpaces+"_exprVal.txt";
                     String outIndivFile="indiv_"+tissueNoSpaces+"_exprVal.txt";
                     agde.add(DSPath,sampleFile,groupFile,outGroupFile,outIndivFile,tissue,curDS.getPlatform());

@@ -51,6 +51,7 @@ public class AsyncGeneDataExpr extends Thread {
         private String perlEnvVar="";
         private String ucscDir="";
         private String bedDir="";
+        private String ver="";
         private Connection dbConn = null;
         String outputDir="";
         String pListFile="";
@@ -71,8 +72,9 @@ public class AsyncGeneDataExpr extends Thread {
         BufferedWriter outGroup;
         BufferedWriter outIndiv;
         SyncAndClose sac;
+       
         
-    public AsyncGeneDataExpr(HttpSession inSession,String pListFile,String outputDir,AsyncGeneDataTools prevThread,ArrayList<Thread> threadList,int maxThreadCount,BufferedWriter outGroup,BufferedWriter outIndiv,SyncAndClose sac ) {
+    public AsyncGeneDataExpr(HttpSession inSession,String pListFile,String outputDir,AsyncGeneDataTools prevThread,ArrayList<Thread> threadList,int maxThreadCount,BufferedWriter outGroup,BufferedWriter outIndiv,SyncAndClose sac,String ver ) {
                 this.session = inSession;
                 this.pListFile=pListFile;
                 this.outputDir=outputDir;
@@ -85,6 +87,7 @@ public class AsyncGeneDataExpr extends Thread {
                 this.outGroup=outGroup;
                 this.outIndiv=outIndiv;
                 this.sac=sac;
+                this.ver=ver;
 
                 log.debug("AsyncGeneDataExpr Start");
 
@@ -326,13 +329,13 @@ public class AsyncGeneDataExpr extends Thread {
                     try {
                         myStatistic.callHeatMapOutputRawSpecificBoth(platform,
                                 DSPath,
-                                "v3",
+                                ver,
                                 sampleFile,
                                 outputDir + "tmp_psList.txt",
                                 outIndivFile,
                                 outGroupFile,
                                 outputDir,
-                                outputDir + "Gene.xml",
+                                //outputDir + "Gene.xml",
                                 outputDir + tissueNoSpaces +"_exonCorHeatMap.txt",
                                 thisThread.getId());
 
