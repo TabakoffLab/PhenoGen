@@ -1546,9 +1546,9 @@ public class GeneDataTools {
                     String tissueNoSpaces=tissue.replaceAll(" ", "_");
                     edu.ucdenver.ccp.PhenoGen.data.Dataset sDataSet=new edu.ucdenver.ccp.PhenoGen.data.Dataset();
                     edu.ucdenver.ccp.PhenoGen.data.Dataset curDS=sDataSet.getDataset(iDSID,dbConn);
-                    String DSPath=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/Affy.NormVer.h5";
-                    String sampleFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/"+ver+"_samples.txt";
-                    String groupFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/"+ver+"_groups.txt";
+                    String DSPath=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/Affy.allPS.h5";
+                    String sampleFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/allPS_samples.txt";
+                    String groupFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/allPS_groups.txt";
                     String outGroupFile="group_"+tissueNoSpaces+"_exprVal.txt";
                     String outIndivFile="indiv_"+tissueNoSpaces+"_exprVal.txt";
                     agde.add(DSPath,sampleFile,groupFile,outGroupFile,outIndivFile,tissue,curDS.getPlatform());
