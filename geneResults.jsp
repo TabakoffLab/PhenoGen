@@ -386,9 +386,9 @@ if(displayNoEnsembl){ %>
                         <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq <span class="geneListToolTip" title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq and view(under View Details) links can provide more ddetail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
-                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Pro besets > 0.33 Heritability
+                        <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probe Sets > 0.33 Heritability
                           <div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeHerit" class="helpImage" src="../web/images/icons/help.png" /></div></th>
-                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Pro besets > 1% DABG
+                        <th colspan="<%=tissuesList1.length%>" class="center noSort topLine">Probe Sets > 1% DABG
                           <div class="inpageHelp" style="display:inline-block; "><img id="HelpProbeDABG" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" title="eQTLs at the Gene Level.  These are calculated for Transcript Clusters which are Gene Level and not individual transcripts.">eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTL" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
