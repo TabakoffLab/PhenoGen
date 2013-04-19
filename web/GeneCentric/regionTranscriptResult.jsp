@@ -22,7 +22,7 @@
     		<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image for <%=myGeneID%></span>
     		<div class="inpageHelp" style="display:inline-block;"><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
             
-    		<span style="font-size:12px; font-weight:normal; float:left;"><span class="gvlegendBtn">Legend <img src="../web/images/icons/help.png"></span></span>
+    		<span style="font-size:12px; font-weight:normal; float:left;"><span class="gvlegendBtn"><img src="../web/images/icons/legend_7.png"></span></span>
             
         	<span style="font-size:12px; font-weight:normal; float:right;">
         		<input name="gvimageSizeCbx" type="checkbox" id="gvimageSizeCbx" /> Scroll Image - Viewable Size:
@@ -75,7 +75,7 @@
                 <option value="3" >Pack</option>
                 <option value="2" >Full</option>
             </select>
-            <span class="regionViewToolTip" title="SNP/Indels from DNA sequencing of the genomes of the two parental strains(BN-Lx/SHRH) used to create the recombinant inbred panel used for most of the data displayed on this page.  SNPs/Indels are in relation to the reference BN-Lx genome(Rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span class="regionViewToolTip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
                 <TD>
             	<input name="gvtrackcbx" type="checkbox" id="gvhelicosCBX" value="helicos" <%if(tmpFile.contains(".helicos")){%>checked="checked"<%}%>/> Helicos Data:
@@ -84,11 +84,11 @@
             	<option value="1" selected="selected">Dense</option>
                 <option value="2" >Full</option>
             </select>
-            <span class="regionViewToolTip" title="Helicos RNA-Seq data was also collected from the same parental strains(BN-Lx/SHRH).  While all other data on this page is from the Illumina RNA-Seq the read counts across all the helicos samples are available in this track."><img src="<%=imagesDir%>icons/info.gif"></span>
+            <span class="regionViewToolTip" title="Helicos Single Molecule RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
                 <TD>
             		<input name="gvtrackcbx" type="checkbox" id="gvrefseqCBX" value="refseq" <%if(tmpFile.contains(".refseq.")){%>checked="checked"<%}%>/> RefSeq Transcripts
-                    <span class="regionViewToolTip" title="RefSeq Transcripts if a refSeq Transcript is available it will be displayed at the bottom of the image in a blue color."><img src="<%=imagesDir%>icons/info.gif"></span>
+                    <span class="regionViewToolTip" title="Transcripts from the rat RefSeq database are displayed in blue."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
             </TR>
             
@@ -100,7 +100,7 @@
                         <option value="3" selected="selected">Pack</option>
                         <option value="2" >Full</option>
                     </select>
-                    <span class="regionViewToolTip" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
+                    <span class="regionViewToolTip" title="This track consists of transcripts from both the Ensembl database (Brown with Ensembl Transcript ID) and the PhenoGen de novo genome-guided transcriptome reconstruction based on paired-end RNA-Seq data generated from polyA+ selected RNA on the BN-Lx and SHR inbred rat strains (Light blue with label indicating tissue RNA was extracted from and including a unique numeric ID).  See legend for more details on color codes.  Including/excluding this track also filters related rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
             	</TD>
             	<TD>
                 <input name="gvtrackcbx" type="checkbox" id="gvnoncodingCBX" value="noncoding" <%if(tmpFile.contains(".noncoding.")){%>checked="checked"<%}%> />Long Non-Coding/NonPolyA+

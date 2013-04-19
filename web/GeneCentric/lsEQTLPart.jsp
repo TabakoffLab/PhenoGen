@@ -908,7 +908,7 @@ for(int i = 0; i < 25; i++){
 </div>
 
 
-<div id="Help9aContent" class="inpageHelpContent" title="<center>Help</center>">
+<div id="Help9aContent" class="inpageHelpContent" title="Help">
 <div class="help-content">
 <H3><center>P-value Threshold Options</center></H3>
 <BR>
@@ -919,7 +919,7 @@ All p-values are displayed on the Circos graphic as the negative log base 10 of 
 </div>
 
 
-<div id="Help9bContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help9bContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3><center>Transcript Cluster Options</center></H3>
 <BR>
 <BR>
@@ -932,7 +932,7 @@ Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; hav
 </div>
 
 
-<div id="Help9cContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help9cContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3><center>Chromosome Options</center></H3>
 <BR>
 <BR>
@@ -943,7 +943,7 @@ The chromosome where the gene is physically located MUST be included in the Circ
 </div>
 
 
-<div id="Help9dContent" class="inpageHelpContent" title="<center>Help</center>"><div class="help-content">
+<div id="Help9dContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3><center>Tissue Options</center></H3>
 <BR>
 <BR>

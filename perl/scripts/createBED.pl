@@ -120,7 +120,7 @@ sub createProteinCodingTrack{
 				my $gLen=$GeneHOH{Gene}[$cntGenes]{stop}-$GeneHOH{Gene}[$cntGenes]{start};
 				$gLen=abs($gLen);
 				#print "::$biotype::\n";
-				if(($biotype eq "protein_coding" and $proteinCoding==1) or ($biotype ne "protein_coding" and $proteinCoding==0 and $gLen>=350)){
+				if(($biotype eq "protein_coding" and $proteinCoding==1 and $gLen>=200) or ($biotype ne "protein_coding" and $proteinCoding==0 and $gLen>=200)){
 					my $geneID=$GeneHOH{Gene}[$cntGenes]{ID};
 					my $transcriptArrayRef = $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
 					my $chr=$GeneHOH{Gene}[$cntGenes]{chromosome};
@@ -269,7 +269,7 @@ sub createSmallNonCoding{
 			my $biotype=$geneHOH{Gene}[$cntGenes]{biotype};
 			my $gLen=$geneHOH{Gene}[$cntGenes]{stop}-$geneHOH{Gene}[$cntGenes]{start};
 			$gLen=abs($gLen);
-			if($biotype ne "protein_coding"  and $gLen<350){
+			if($gLen<200){
 				my $geneID=$geneHOH{Gene}[$cntGenes]{ID};
 				my $transcriptArrayRef = $geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
 				my $strand=$geneHOH{Gene}[$cntGenes]{strand};
@@ -328,7 +328,7 @@ sub createFilteredProbesetTrack{
 	my $cntColor=0;
 	foreach my $key (keys %tissueProbes){
 		print OFILE 'track db='.$trackDB." name=\"Probesets above background in $key\" ";
-		print OFILE "description=\"Affy Exon Probesets detected above background in $key: Red=Core Blue=Extended Green=Full Black=Ambiguous\" ";
+		print OFILE "description=\"Probe sets from Affymetrix Exon Array 1.0 ST detected above background in $key: Red=Core Blue=Extended Green=Full Black=Ambiguous\" ";
 		print OFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
 		my $probeRef=$tissueProbes{$key}{pslist};
 		my @probeset=@$probeRef;
@@ -372,7 +372,7 @@ sub createProbesetTrack{
 		my $ambiguousColor="0,0,0";
 		my $cntColor=0;
 		print OFILE 'track db='.$trackDB." name=\"All Probesets\" ";
-		print OFILE "description=\"All Probesets: Red=Core Blue=Extended Green=Full Black=Ambiguous\" ";
+		print OFILE "description=\"Non-Masked Probe sets from Affymetrix Exon Array 1.0 ST: Red=Core Blue=Extended Green=Full Black=Ambiguous\" ";
 		print OFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
 		my $curInd=0;
 		foreach(@nonMaskedProbes){
