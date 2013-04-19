@@ -105,7 +105,7 @@ sub createProteinCodingTrack{
 	
 	my $trackDesc="Ensembl Protein Coding / RNA-Seq PolyA+";
 	if($proteinCoding==0){
-		$trackDesc="Long Ensembl Non-Coding / RNA-Seq Non-PolyA+ (>=350bp)";
+		$trackDesc="Long Ensembl Non-Coding / RNA-Seq Non-PolyA+ (>=200bp)";
 	}
 	
 	open OFILE, ">".$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
@@ -244,7 +244,7 @@ sub createSmallNonCoding{
 	
 	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
 	print OFILE "track db=$trackDB name='Small RNA' ";
-	print OFILE 'description="Small RNA <350bp" ';
+	print OFILE 'description="Small RNA <200bp" ';
 	print OFILE "visibility=3 itemRgb=On \n";
 	if(@smncList>0){
 		my $cntSmnc=0;
