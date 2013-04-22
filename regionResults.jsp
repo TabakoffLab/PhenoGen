@@ -494,8 +494,9 @@ var ucscgeneID="";
                             </td>
                         	<td>
                             	<div class="columnLeft">
-                                	
+                                	<%if(myOrganism.equals("Rn")){%>
                                     <input name="chkbox" type="checkbox" id="matchesCBX" value="matchesCBX" checked="checked"/> RNA-Seq Transcript Matches <span class="geneListToolTip" title="Shows/Hides a description of the reason the RNA-Seq transcript was matched to the Ensembl Gene/Transcript."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <%}%>
                                 	
                                     <input name="chkbox" type="checkbox" id="geneIDCBX" value="geneIDCBX" checked="checked" /> Gene ID <span class="geneListToolTip" title="Shows/Hides the Gene ID column containing the Ensembl Gene ID and links to external Databases when available."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
                                     
@@ -565,8 +566,20 @@ var ucscgeneID="";
           	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
                 <THEAD>
                     <tr>
-                        <th colspan="12" class="topLine noSort noBox" style="text-align:left;"><span class="legendBtn"><img src="../web/images/icons/legend_7.png"></span></th>
-                        <th colspan="4" class="center noSort topLine">Transcript Information</th>
+                        <th 
+                        <%if(myOrganism.equals("Rn")){%>
+                        colspan="12"
+                        <%}else{%>
+                        colspan="10"
+                        <%}%> 
+                        class="topLine noSort noBox" style="text-align:left;"><span class="legendBtn"><img src="../web/images/icons/legend_7.png"></span></th>
+                        <th 
+                        <%if(myOrganism.equals("Rn")){%>
+                        colspan="4"
+                        <%}else{%>
+                        colspan="2"
+                        <%}%> 
+                        class="center noSort topLine">Transcript Information</th>
                         <th colspan="<%=5+tissuesList1.length*2+tissuesList2.length*2%>"  class="center noSort topLine" title="Dataset is available by going to Microarray Analysis Tools -> Analyze Precompiled Dataset or Downloads.">Affy Exon 1.0 ST PhenoGen Public Dataset(
 							<%if(myOrganism.equals("Mm")){%>
                             	Public ILSXISS RI Mice
@@ -576,9 +589,17 @@ var ucscgeneID="";
                             )<div class="inpageHelp" style="display:inline-block; "><img id="HelpAffyExon" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
-                        <th colspan="12"  class="topLine noSort noBox"></th>
+                        <th 
+                        <%if(myOrganism.equals("Rn")){%>
+                        colspan="12"
+                        <%}else{%>
+                        colspan="10"
+                        <%}%>   
+                        class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
+                        <%if(myOrganism.equals("Rn")){%>
                         <th colspan="2"  class="leftBorder rightBorder topLine noSort">RNA-Seq <span class="geneListToolTip" title="These columns summarize the # of transcripts reconstructed from the RNA-Seq data that match to this gene.  When read level data is available, the total reads for a feature and # of unique sequence reads is available in the next column.  The view RNA-Seq(currently it is only available for the small RNA fraction) and view(under View Details) links can provide more detail on read sequences and reconstructed transcripts respectively."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <%}%>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="center noSort topLine">Probe Sets > 0.33 Heritability
@@ -588,11 +609,31 @@ var ucscgeneID="";
                         <th colspan="<%=3+tissuesList2.length*2%>" class="center noSort topLine" >eQTLs(Gene/Transcript Cluster ID)<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTL" class="helpImage" src="../web/images/icons/help.png" /></div></th>
                     </tr>
                     <tr style="text-align:center;">
-                        <th colspan="6"  class="topLine noSort noBox"></th>
+                        <th 
+                        <%if(myOrganism.equals("Rn")){%>
+                        colspan="6"
+                        <%}else{%>
+                        colspan="5"
+                        <%}%>  
+                        class="topLine noSort noBox"></th>
                         <th colspan="3"  class="topLine leftBorder rightBorder noSort" >Image Tracks Represented in Table</th>
-                        <th colspan="3"  class="topLine noSort noBox"></th>
-                        <th colspan="2"  class="topLine leftBorder rightBorder noSort"># Transcripts <span class="geneListToolTip" title="The number of transcripts assigned to this gene.  Ensembl is the number of ensembl annotated transcripts.  RNA-Seq is the number of RNA-Seq transcripts assigned to this gene.  The RNA-Seq Transcript Matches column contains additional details about why transcripts were or were not matched to a particular gene."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <th 
+                        <%if(myOrganism.equals("Rn")){%>
+                        colspan="3"
+                        <%}else{%>
+                        colspan="2"
+                        <%}%>  
+                        class="topLine noSort noBox"></th>
+                        <th 
+                        <%if(myOrganism.equals("Rn")){%>
+                        colspan="2"
+                        <%}else{%>
+                        colspan="1"
+                        <%}%>  
+                        class="topLine leftBorder rightBorder noSort"># Transcripts <span class="geneListToolTip" title="The number of transcripts assigned to this gene.  Ensembl is the number of ensembl annotated transcripts.  RNA-Seq is the number of RNA-Seq transcripts assigned to this gene.  The RNA-Seq Transcript Matches column contains additional details about why transcripts were or were not matched to a particular gene."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                        <%if(myOrganism.equals("Rn")){%>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
+                        <%}%>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
                         <th colspan="<%=tissuesList1.length%>"  class="leftBorder rightBorder noSort noBox"></th>
@@ -603,9 +644,12 @@ var ucscgeneID="";
                     		<TH colspan="2" class="center noSort topLine"><%=tissuesList2[i]%></TH>
                     	<%}%>
                     </tr>
+                    
                     <tr class="col_title">
                     <TH>Image ID (Transcript/Feature ID) <span class="geneListToolTip" title="Feature IDs that correspond to features in the various image tracks above."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <%if(myOrganism.equals("Rn")){%>
                     <TH>RNA-Seq Transcript Matches <span class="geneListToolTip" title="Information about how a RNA-Seq transcript was matched to an Ensembl Gene/Transcript.  Click if a + icon is present to view the remaining transcripts."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                    <%}%>
                     <TH>Gene Symbol<span class="geneListToolTip" title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Gene ID</TH>
                     <TH width="10%">Gene Description <span class="geneListToolTip" title="The description from Ensembl or annotations from various sources if the feature is not found in Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
@@ -628,12 +672,16 @@ var ucscgeneID="";
                     <TH>Small RNA <span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are less than 350 bp and transcribed features from the small RNA fraction (<200 bp).  This track may include protein-coding and non-protein-coding features.  See legend for details on color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
+                    <%if(myOrganism.equals("Rn")){%>
                     <TH  >Exon SNPs / Indels <span class="geneListToolTip" title="A count of SNPs and indels identified in the DNA-Seq data for the BN-Lx and SHR strains that fall within an exon (including untranslated regions) of at least one transcript.  Number of SNPs is on the left side of the / number of indels is on the right.  Counts are summarized for each strain when compared to the BN reference genome (Rn5).  When the same SNP/indel occurs in both, a count of the common SNPs/indels is included.  When these common counts occur they have been subtracted from the strain specific counts."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <%}%>
                     <TH>Ensembl</TH>
+                    <%if(myOrganism.equals("Rn")){%>
                     <TH>RNA-Seq</TH>
                     <TH>Total Reads
                     <HR />Read Sequences <span class="geneListToolTip" title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span>
                     </TH>
+                    <%}%>
                     <TH>View Details <span class="geneListToolTip" title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Total Probe Sets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     
@@ -718,6 +766,7 @@ var ucscgeneID="";
 									}%>
                                 	<%=tmpList%>
                             </TD>
+                            <%if(myOrganism.equals("Rn")){%>
                             <TD>
                             	<%	String tmpList2="";
 										if(curGene.getGeneID().startsWith("ENS")){
@@ -743,6 +792,7 @@ var ucscgeneID="";
 									%>
                                 	<%=tmpList2%>
                             </TD>
+                            <%}%>
                             <TD title="View detailed transcription information for gene in a new window.">
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
                             	<a href="<%=lg.getGeneLink(curGene.getGeneID(),myOrganism,true,true,false)%>" target="_blank">
@@ -843,23 +893,23 @@ var ucscgeneID="";
                             
                             <TD>
                             	<%if(!curGene.getGeneID().startsWith("ENS")){
-									String tmpTitle="Based on detection in PolyA+";
+									String tmpTitle="Based on detection in PolyA+ fraction";
 									if(!bioType.equals("protein_coding")){
-										tmpTitle="Based on detection in Non-PolyA+";
+										tmpTitle="Based on detection only in TotalRNA fraction";
 									}%>
                                 	<span title="<%=tmpTitle%>">
-                                	<%=bioType%>*
+                                	<%=bioType%>
                                     </span>
                                 <%}else{%>
 									<%=bioType%>
                             	<%}%>
                             </TD>
-                            <%if(bioType.equals("protein_coding")){%>
+                            <%if(bioType.equals("protein_coding")&& curGene.getLength()>=200){%>
                                 <TD class="leftBorder">X</TD>
                                 <TD class="leftBorder"></TD>
                                 <TD class="leftBorder rightBorder"></TD>
                             <%}else{
-								if(curGene.getLength()>=350){%>
+								if(curGene.getLength()>=200){%>
                                     <TD class="leftBorder"></TD>
                                     <TD class="leftBorder">X</TD>
                                     <TD class="leftBorder rightBorder"></TD>
@@ -872,6 +922,7 @@ var ucscgeneID="";
                             
                             <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
                             <TD><%=curGene.getStrand()%></TD>
+                            <%if(myOrganism.equals("Rn")){%>
                             <TD>
                             	<%if(curGene.getSnpCount("common","SNP")>0 || curGene.getSnpCount("common","Indel")>0 ){%>
                             		Common:<BR /><%=curGene.getSnpCount("common","SNP")%> / <%=curGene.getSnpCount("common","Indel")%><BR />
@@ -883,7 +934,9 @@ var ucscgeneID="";
                                 	SHR:<BR /><%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%>
                                 <%}%>
                             </TD>
+                            <%}%>
                             <TD class="leftBorder"><%=curGene.getTranscriptCountEns()%></TD>
+                            <%if(myOrganism.equals("Rn")){%>
                             <TD>
 								<%=curGene.getTranscriptCountRna()%>
                             </TD>
@@ -905,6 +958,7 @@ var ucscgeneID="";
                             		<span id="<%=tmpIDList+":"+tmpNameList%>" class="viewSMNC">View RNA-Seq</span>
                                 <%}%>
                             </TD>
+                            <%}%>
                             <TD><span id="<%=chr+":"+(curGene.getMinMaxCoord()[0]-500)+"-"+(curGene.getMinMaxCoord()[1]+500)%>" name="<%=viewClass%>:<%=geneID%>" class="viewTrx">View</span></TD>
                             <TD class="leftBorder"><%=curGene.getProbeCount()%></TD>
                             
@@ -1003,7 +1057,9 @@ var ucscgeneID="";
 							%>
                         	<tr class="smallnc">
                             	<TD><%=rna.getID()%></TD>
-                                <TD></TD>
+                                <%if(myOrganism.equals("Rn")){%>
+                                	<TD></TD>
+                                <%}%>
                                 <TD></TD>
                                 <TD><% ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> ens=rna.getAnnotationBySource("Ensembl");
 									if(ens!=null&&ens.size()>0){
@@ -1068,12 +1124,13 @@ var ucscgeneID="";
                                         <%="<BR>"+source+":"+values%>
                                     <%}%>
                                 </TD>
-                                <TD><span title="<350bp includes Coding and Non-Coding RNA">Small RNA*</span></TD>
+                                <TD><span title="<200bp includes Coding and Non-Coding RNA">Small RNA</span></TD>
                                 <TD class="leftBorder"></TD>
                                 <TD class="leftBorder"></TD>
                                 <TD class="leftBorder rightBorder">X</TD>
                                 <TD>chr<%=rna.getChromosome()+":"+dfC.format(rna.getStart())+"-"+dfC.format(rna.getStop())%></TD>
                                 <TD><%=rna.getStrand()%></TD>
+                                <%if(myOrganism.equals("Rn")){%>
                                 <TD>
     							
                                 <%if(rna.getSnpCount("common","SNP")>0 || rna.getSnpCount("common","Indel")>0 ){%>
@@ -1086,15 +1143,18 @@ var ucscgeneID="";
                                 	SHR: <%=rna.getSnpCount("SHRH","SNP")%> / <%=rna.getSnpCount("SHRH","Indel")%>
                                 <%}%>
                                 </TD>
+                                <%}%>
                                 <TD class="leftBorder"></TD>
-                                <TD></TD>
-
-                                
-                                <TD>
-									<%=rna.getTotalReads()%><BR />
-									<%=rna.getSeq().size()%><BR />
-                                    <span id="<%=rna.getNumberID()+":"+rna.getID()%>" class="viewSMNC">View RNA-Seq</span>
-                                </TD>
+                                <%if(myOrganism.equals("Rn")){%>
+                                    <TD></TD>
+    
+                                    
+                                    <TD>
+                                        <%=rna.getTotalReads()%><BR />
+                                        <%=rna.getSeq().size()%><BR />
+                                        <span id="<%=rna.getNumberID()+":"+rna.getID()%>" class="viewSMNC">View RNA-Seq</span>
+                                    </TD>
+                                <%}%>
                                 <TD>
                                     <span id="chr<%=rna.getChromosome()+":"+(rna.getStart()-20)+"-"+(rna.getStop()+20)%>" name="smallRNA:<%=rna.getID()%>" class="viewTrx">View</span>                               
                                  </TD>
@@ -1160,18 +1220,22 @@ var ucscgeneID="";
 		openSmallNonCoding(id,name);
 		$('#viewTrxDialog').dialog( "option", "position",{ my: "center bottom", at: "center top", of: $(this) });
 		$('#viewTrxDialog').dialog("open").css({'font-size':12});
-	})
+	});
 	
 	//var geneTargets=[1];
+	var sortCol=6;
+	if(spec =="Mm"){
+		sortCol=5;
+	}
 	
 	var tblGenes=$('#tblGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
-	"bStateSave": true,
+	"bStateSave": false,
 	"bAutoWidth": true,
 	"sScrollX": "950px",
 	"sScrollY": "650px",
-	"aaSorting": [[ 6, "desc" ]],
+	"aaSorting": [[ sortCol, "desc" ]],
 	/*"aoColumnDefs": [
       { "bVisible": false, "aTargets": geneTargets }
     ],*/
@@ -1216,36 +1280,72 @@ var ucscgeneID="";
 	//$('.singleExon').hide();
 	
 	$('#heritCBX').click( function(){
-			displayColumns(tblGenes, 17,tisLen,$('#heritCBX').is(":checked"));
+			var tmpCol=17;
+			if(spec=="Mm"){
+				tmpCol=13;
+			}
+			displayColumns(tblGenes, tmpCol,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
-			displayColumns(tblGenes, 17+tisLen,tisLen,$('#dabgCBX').is(":checked"));
+	  		var tmpCol=17+tisLen;
+			if(spec=="Mm"){
+				tmpCol=13+tisLen;
+			}
+			displayColumns(tblGenes, tmpCol ,tisLen,$('#dabgCBX').is(":checked"));
 	  });
 	  $('#eqtlAllCBX').click( function(){
-			displayColumns(tblGenes, 17+tisLen*2,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+	  		var tmpCol=17+tisLen*2;
+			if(spec=="Mm"){
+				tmpCol=13+tisLen*2;
+			}
+			displayColumns(tblGenes, tmpCol,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
 	  });
 		$('#eqtlCBX').click( function(){
-			displayColumns(tblGenes, 17+tisLen*2+3,tisLen*2,$('#eqtlCBX').is(":checked"));
+			var tmpCol=17+tisLen*2+3;
+			if(spec=="Mm"){
+				tmpCol=13+tisLen*2+3;
+			}
+			displayColumns(tblGenes, tmpCol,tisLen*2,$('#eqtlCBX').is(":checked"));
 	  });
 	  $('#matchesCBX').click( function(){
 			displayColumns(tblGenes,1,1,$('#matchesCBX').is(":checked"));
 	  });
 	   $('#geneIDCBX').click( function(){
-			displayColumns(tblGenes,3,1,$('#geneIDCBX').is(":checked"));
+	   		var tmpCol=3;
+			if(spec=="Mm"){
+				tmpCol=2;
+			}
+			displayColumns(tblGenes,tmpCol,1,$('#geneIDCBX').is(":checked"));
 	  });
 	  $('#geneDescCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),4,1,$('#geneDescCBX').is(":checked"));
+	  		var tmpCol=4;
+			if(spec=="Mm"){
+				tmpCol=3;
+			}
+			displayColumns($(tblGenes).dataTable(),tmpCol,1,$('#geneDescCBX').is(":checked"));
 	  });
 	  
 	  $('#geneBioTypeCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),5,1,$('#geneBioTypeCBX').is(":checked"));
+	  		var tmpCol=5;
+			if(spec=="Mm"){
+				tmpCol=4;
+			}
+			displayColumns($(tblGenes).dataTable(),tmpCol,1,$('#geneBioTypeCBX').is(":checked"));
 	  });
 	  $('#geneTracksCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),6,3,$('#geneTracksCBX').is(":checked"));
+	  		var tmpCol=6;
+			if(spec=="Mm"){
+				tmpCol=5;
+			}
+			displayColumns($(tblGenes).dataTable(),tmpCol,3,$('#geneTracksCBX').is(":checked"));
 	  });
 	  
 	  $('#geneLocCBX').click( function(){
-			displayColumns($(tblGenes).dataTable(),9,2,$('#geneLocCBX').is(":checked"));
+	  		var tmpCol=9;
+			if(spec=="Mm"){
+				tmpCol=8;
+			}
+			displayColumns($(tblGenes).dataTable(),tmpCol,2,$('#geneLocCBX').is(":checked"));
 	  });
 	  
 	  $('#pvalueCutoffSelect1').change( function(){
