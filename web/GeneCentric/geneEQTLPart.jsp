@@ -245,7 +245,7 @@
     
 	<div style="text-align:center;">
 		<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;width:1000px;text-align:left;">
-    	<span class="trigger less" name="circosOption" >eQTL Image Options</span>
+    	<span class="trigger less" id="circosOption1" name="circosOption" >eQTL Image Options</span>
     	<span class="eQTLtooltip" title="The controls in this section allow you to change the chromosomes and tissues included in the image as well as the P-value threshold.  If you can't see them click on the + icon.  Once you make changes click on the Click to Run Circos button."><img src="<%=imagesDir%>icons/info.gif"></span>
 		</div>
     
@@ -255,6 +255,7 @@
 
 
       	<table name="items" class="list_base" cellpadding="0" cellspacing="3" style="width:1000px;position:relative;top:-56px;text-align:left;" >
+        <tbody id="circosOption">
  
 		<tr>
 			<td>
@@ -295,6 +296,7 @@
 				document.getElementById("circosError1").style.display = 'block';
 				document.getElementById("circosError1").style.color = "#ff0000";
 			</script>
+            </tbody>
 			</table>
 
 		<%
@@ -307,6 +309,7 @@
 				document.getElementById("circosError1").style.display = 'block';
 				document.getElementById("circosError1").style.color = "#ff0000";
 			</script>
+            </tbody>
 			</table>
 
 		<%
@@ -487,6 +490,7 @@ The chromosome where the gene is physically located MUST be included in the Circ
 					<a href="http://genome.cshlp.org/content/early/2009/06/15/gr.092759.109.abstract" target="_blank" style="text-decoration: none">Circos: an Information Aesthetic for Comparative Genomics.</a>
 				</td>
 		</tr>
+        </tbody>
       	</table>
 
     </div>
@@ -568,11 +572,11 @@ The chromosome where the gene is physically located MUST be included in the Circ
 			$('.helpDialog').css({'top':450,'left':$(window).width()*0.08,'width':$(window).width()*0.33});
 			return false;
   		}); */
-		$(".trigger").click(function(){
+		/*$(".triggerEQTL").click(function(){
 		var baseName = $(this).attr("name");
 		$(this).toggleClass("less");
         expandCollapse(baseName);      
-	});
+	});*/
 		
 		$('.eQTLtooltip').tooltipster({
 		position: 'top-right',

@@ -49,10 +49,9 @@ if(displayNoEnsembl){ %>
 <%if(genURL.size()>0){%>
 <script type="text/javascript">
 	$(document).on('click','.trigger',function(event){
-			
 			var baseName = $(this).attr("name");
-			alert(baseName);
-			$(this).toggleClass("less");
+			//alert(baseName);
+			//$(this).toggleClass("less");
 			expandCollapse(baseName);
 	});
 	$(document).on('click','.helpImage', function(event){
@@ -178,7 +177,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span class="Imagetooltip" title="This track consists of – strand transcripts from both the Ensembl database (Brown with Ensembl Transcript ID) and the PhenoGen de novo genome-guided transcriptome reconstruction based on paired-end RNA-Seq data generated from polyA+ selected RNA on the BN-Lx and SHR inbred rat strains (Light blue with label indicating tissue RNA was extracted from and including a unique numeric ID).  See legend for more details on color codes.  Including/excluding this track also filters related rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="This track consists of &ndash; strand transcripts from both the Ensembl database (Brown with Ensembl Transcript ID) and the PhenoGen de novo genome-guided transcriptome reconstruction based on paired-end RNA-Seq data generated from polyA+ selected RNA on the BN-Lx and SHR inbred rat strains (Light blue with label indicating tissue RNA was extracted from and including a unique numeric ID).  See legend for more details on color codes.  Including/excluding this track also filters related rows from the table below."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 
             </TR>
@@ -428,19 +427,19 @@ if(displayNoEnsembl){ %>
                     <TH>Protein Coding 
 					<%if(myOrganism.equals("Rn")){%>
                     	/ PolyA+ 
-                    	<span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from one of the 3 tracks in the image above that consists of protein-coding transcripts from Ensembl and transcripts from the transcriptome reconstruction that were identified in the polyA+ fraction of RNA.">
+                    	<span class="geneListToolTip" title="An &quot;X&quot; in this column indicates that this feature is from one of the 3 tracks in the image above that consists of protein-coding transcripts from Ensembl and transcripts from the transcriptome reconstruction that were identified in the polyA+ fraction of RNA.">
                     <%}else{%>
-                    	<span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from one of the 3 tracks in the image above that consists of protein-coding transcripts from Ensembl.">
+                    	<span class="geneListToolTip" title="An &quot;X&quot; in this column indicates that this feature is from one of the 3 tracks in the image above that consists of protein-coding transcripts from Ensembl.">
                     <%}%>
                     <img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Long Non-Coding
 					<%if(myOrganism.equals("Rn")){%>
-                     / Non PolyA+ <span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and transcripts from the transcriptome reconstruction that were identified in only in the total RNA fraction.">
+                     / Non PolyA+ <span class="geneListToolTip" title="An &quot;X&quot; in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and transcripts from the transcriptome reconstruction that were identified in only in the total RNA fraction.">
                      <%}else{%>
-                     	<span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and greater than or equal to 200 base pairs in length.">
+                     	<span class="geneListToolTip" title="An &quot;X&quot; in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and greater than or equal to 200 base pairs in length.">
                      <%}%>
                      <img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Small RNA <span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are less than 350 bp and transcribed features from the small RNA fraction (<200 bp).  This track may include protein-coding and non-protein-coding features.  See legend for details on color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Small RNA <span class="geneListToolTip" title="An &quot;X&quot; in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are less than 350 bp and transcribed features from the small RNA fraction (<200 bp).  This track may include protein-coding and non-protein-coding features.  See legend for details on color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
                     <TH >Exon SNPs / Indels <span class="geneListToolTip" title="A count of SNPs and indels identified in the DNA-Seq data for the BN-Lx and SHR strains that fall within an exon (including untranslated regions) of at least one transcript.  Number of SNPs is on the left side of the / number of indels is on the right.  Counts are summarized for each strain when compared to the BN reference genome (Rn5).  When the same SNP/indel occurs in both, a count of the common SNPs/indels is included.  When these common counts occur they have been subtracted from the strain specific counts."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
@@ -1343,7 +1342,7 @@ $(document).ready(function() {
 		scrollOutside:false
   });
   
-  $('#filteredRB').click( function(){
+  /*$('#filteredRB').click( function(){
 			$('#geneimageFiltered').show();
 			$('#geneimageUnfiltered').hide();
   });
@@ -1352,7 +1351,7 @@ $(document).ready(function() {
   			$('#geneimageFiltered').hide();
 			$('#geneimageUnfiltered').show();
 
-  });
+  });*/
   
   $('.inpageHelpContent').hide();
   

@@ -28,13 +28,16 @@ function displayColumns(table,colStart,colLen,showOrHide){
 }
 
 function expandCollapse(baseName){
+	//alert("expand collapse");
 	 var thisHidden = $("tbody#" + baseName).is(":hidden");
 	 $('#'+baseName+'1').toggleClass("less");
 	 $('#'+baseName+'2').toggleClass("less");
 		if (thisHidden) {
+			//alert("hidden");
 			$("tbody#" + baseName).show();
 			filterExpanded=1;
 		} else {
+			//alert("vis");
 			$("tbody#" + baseName).hide();
 			filterExpanded=0;
 		}
