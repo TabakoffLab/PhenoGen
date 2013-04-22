@@ -745,7 +745,7 @@ public class GeneDataTools {
                             "and s.psannotation <> 'transcript' " +
                             "and s.Array_TYPE_ID = "+arrayTypeID;
         
-        String probeTransQuery="select s.Probeset_ID,c.name,s.PSSTART,s.PSSTOP,s.PSLEVEL "+
+        String probeTransQuery="select s.Probeset_ID,c.name,s.PSSTART,s.PSSTOP,s.PSLEVEL,s.Strand "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 "and substr(c.name,1,2) = '"+chr+"' "+
@@ -794,35 +794,38 @@ public class GeneDataTools {
                         long start = rs.getLong(3);
                         long stop = rs.getLong(4);
                         String level=rs.getString(5);
+                        String strand=rs.getString(6);
+                        
                         String ensemblId="",ensGeneSym="";
                         double maxOverlapTC=0.0,maxOverlapGene=0.0,maxComb=0.0;
                         GeneLoc maxGene=null;
                         for(int i=0;i<geneList.size();i++){
                             GeneLoc tmpLoc=geneList.get(i);
-                            long maxStart=tmpLoc.getStart();
-                            long minStop=tmpLoc.getStop();
-                            if(start>maxStart){
-                                maxStart=start;
-                            }
-                            if(stop<minStop){
-                                minStop=stop;
-                            }
-                            long genLen=tmpLoc.getStop()-tmpLoc.getStart();
-                            long tcLen=stop-start;
-                            double overlapLen=minStop-maxStart;
-                            double curTCperc=0.0,curGperc=0.0,comb=0.0;
-                            if(overlapLen>0){
-                                curTCperc=overlapLen/tcLen*100;
-                                curGperc=overlapLen/tcLen*100;
-                                comb=curTCperc+curGperc;
-                                if(comb>maxComb){
-                                    maxOverlapTC=curTCperc;
-                                    maxOverlapGene=curGperc;
-                                    maxComb=comb;
-                                    maxGene=tmpLoc;
+                            if(tmpLoc.getStrand().equals(strand)){
+                                long maxStart=tmpLoc.getStart();
+                                long minStop=tmpLoc.getStop();
+                                if(start>maxStart){
+                                    maxStart=start;
+                                }
+                                if(stop<minStop){
+                                    minStop=stop;
+                                }
+                                long genLen=tmpLoc.getStop()-tmpLoc.getStart();
+                                long tcLen=stop-start;
+                                double overlapLen=minStop-maxStart;
+                                double curTCperc=0.0,curGperc=0.0,comb=0.0;
+                                if(overlapLen>0){
+                                    curTCperc=overlapLen/tcLen*100;
+                                    curGperc=overlapLen/tcLen*100;
+                                    comb=curTCperc+curGperc;
+                                    if(comb>maxComb){
+                                        maxOverlapTC=curTCperc;
+                                        maxOverlapGene=curGperc;
+                                        maxComb=comb;
+                                        maxGene=tmpLoc;
+                                    }
                                 }
                             }
-                            
                         }
                         if(maxGene!=null){
                             String tmpGS=maxGene.getGeneSymbol();

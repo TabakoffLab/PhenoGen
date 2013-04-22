@@ -441,7 +441,7 @@ sub createXMLFile
 			geneSymbol => $geneExternalName,
 			source => "Ensembl"
 			};
-		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
+		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\t$geneStrand\n";
 #
 #		With the new picture look we don't have enough information to make the png file yet
 #		So commenting out the lines below.

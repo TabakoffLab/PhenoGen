@@ -248,10 +248,6 @@
     	<span class="trigger less" id="circosOption1" name="circosOption" >eQTL Image Options</span>
     	<span class="eQTLtooltip" title="The controls in this section allow you to change the chromosomes and tissues included in the image as well as the P-value threshold.  If you can't see them click on the + icon.  Once you make changes click on the Click to Run Circos button."><img src="<%=imagesDir%>icons/info.gif"></span>
 		</div>
-    
-
-	
-	<div id="circosOption">
 
 
       	<table name="items" class="list_base" cellpadding="0" cellspacing="3" style="width:1000px;position:relative;top:-56px;text-align:left;" >
@@ -493,7 +489,6 @@ The chromosome where the gene is physically located MUST be included in the Circ
         </tbody>
       	</table>
 
-    </div>
 
 <BR>
 <BR /><BR /><BR />
