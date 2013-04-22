@@ -12,7 +12,7 @@
 <div class="whats_new version"><p><h3>Version: v2.9</h3><BR /> Updated:2/28/2013</p></div>
 				<ul>
                 <li>
-					<span class="highlight-dark">New Rat Genome:</span> All of our public data has been updated to Rn5.  Probes were aligned to the rat genome version 5 and then new masks were generated.  All of the datasets were renormalized to use the new masks.  Previous results are still available, but new analysis will need to use the new datasets. 
+					<span class="highlight-dark">New Rat Genome:</span> All of our public data has been updated to Rn5.  Probes were aligned to the rat genome version 5 and then new masks were generated.  All of the datasets were renormalized to use the new masks.  Previous results are still available, but new analyses will use the new versions of the datasets. 
                 </li><BR /> 
 				<li> 
                     <span class="highlight-dark">Detailed Transcription Information:</span>
@@ -21,7 +21,7 @@
                         	<ul style="padding-left:30px;">
                                         <li><div class="clicker" name="branch7">UCSC Image allows control of individual tracks  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch7">
-                                        	The image now allows you to turn tracks off and on idividually as well as gives you control of the density of the track.
+                                        	The image now allows you to turn tracks off and on individually as well as gives you control of the density of the track.
                                         </span>
                                         <li><div  class="clicker" name="branch8">Several New Image Tracks(Rat only)&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch8">
@@ -35,7 +35,16 @@
                                         </span>
                                         <li><div  class="clicker" name="branch9">Features located in region table includes additional information &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch9">
-                                        	The table include the following changes IDs used in the image are listed in the table, columns to allow you to sort the table based on tracks in the image, rows in the table are color coded to match the track in the image, SNP/Indel counts that occur within an exon for each gene(Rat only), Small RNA (sequence and total read counts, Rat only).  The links have been added so now you can get to NCBI, UniProt, RGD, MGI, and  Allen Brain Atlas pages for each gene listed in the tables.                                       </span>
+                                        	The table includes the following changes:
+                                            <ol type="1">
+                                            	<li>IDs used in the image are listed in the table</li>
+                                                <li>Columns were added to allow the user to sort the table based on tracks in the image.</li>
+                                                <li>Rows in the table are color coded to match the track in the image.</li>
+                                                <li>SNP/indel counts within an exon for each gene (rat only) were added.</li>
+                                                <li>Small RNA information such as read sequence and total read counts were added (rat only).</li>
+                                                <li>Links have been added for NCBI, UniProt, RGD, MGI, and Allen Brain Atlas for each gene listed in the table.</li>
+                                            </ol>
+                                       </span>
                                         
                                      </ul>
                         </li>
@@ -43,11 +52,11 @@
                         	<ul style="padding-left:30px;">
                             			<li><div class="clicker" name="branch10">The list of features in a region is now displayed for the region of a gene. &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch10">
-                                        	All of the features that would be listed for a region can now be viewed when they fall within the region covered by a gene.  So Long-Noncoding RNAs and Small RNAs that overlap with a gene are listed in the table.  
+                                        	All features within the genomic region of the gene will be listed in the table.  This includes long non-coding RNAs and small RNA.  
                                         </span>
                                         <li><div class="clicker" name="branch11">UCSC Image allows control of individual tracks  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch11">
-                                        	The image now allows you to turn tracks off and on idividually as well as gives you control of the density of the track.
+                                        	The image now allows you to turn tracks off and on individually as well as gives you control of the density of the track.
                                         </span>
                                         <li><div  class="clicker" name="branch12">New Several Image Tracks(Rat only)&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch12">
@@ -70,7 +79,7 @@
                 </li><BR />
                 
                 <li>
-					<span class="highlight-dark">Rat Parental Strian DNA Sequence Available:</span> The parental strains for the Public Rat Array/RNS-Seq datasets is available for download and snps/indels from the sequencing can be displayed in the image on the Detailed Transcription Information page. <a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp" class="button" style="width:180px;">View in downloads</a>
+					<span class="highlight-dark">Rat Parental Strian DNA Sequence Available:</span> DNA sequence information from parental strain (BN-Lx and SHR) of the HXB/BXH recombinant inbred panel is available:  The strain-specific genome of parental strains of the Public Rat Array/RNA-Seq datasets is available for download and the SNPs/indels can be displayed in the image on the Detailed Transcriptome Information page. <a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp" class="button" style="width:180px;">View in downloads</a>
                 </li><BR />           
 				</ul>
 

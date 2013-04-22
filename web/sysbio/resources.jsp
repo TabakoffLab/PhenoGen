@@ -15,6 +15,8 @@
 	
 	log.debug("action = "+action);
 	extrasList.add("resources.js");
+	extrasList.add("jquery.tooltipster.js");
+	extrasList.add("tooltipster.css");
 	mySessionHandler.createSessionActivity(session.getId(), "Looked at download systems biology resources page", dbConn);
 
 	Resource[] myExpressionResources = myResource.getExpressionResources();
@@ -175,7 +177,7 @@
         
         <BR>
 		<BR>
-        <div class="title"> DNA Sequencing Data Files</div>
+        <div class="title"> Strain-specific Rat Genomes (Rn5) <span class="toolTip" title="SNPs between the reference genome and the strain have been replaced with the nucleotide from the strain."><img src="<%=imagesDir%>icons/info.gif"></span></div>
 		      <table id="dnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
             		<thead>
                                <tr class="col_title">
@@ -244,8 +246,17 @@
 <%@ include file="/web/common/footer.jsp"  %>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$('.toolTip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+		});
 		setupPage();
-        	setTimeout("setupMain()", 100);
+        setTimeout("setupMain()", 100);
 	});
 </script>
 

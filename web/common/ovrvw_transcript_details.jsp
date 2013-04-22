@@ -22,9 +22,10 @@
             <div id="overview-wrap" >
                 	<div id="overview-content-wide">
                         <p>This tool provides a way to explore various data for transcripts of a specific gene or data for a region of a genome.  
-                        You may use the Trascript Detail Tool to:
+                        You may use the Detailed Transcriptome Tool to:
                         <ul>
-                        	<li>View a region of a Mouse or Rat genome with array expression data and for Rat RNA-Seq transcripts:<BR />
+                        	<li>View a region of the mouse or rat genomes that includes information on array expression data and transcripts expressed in rat brain identified in RNA-Seq data:
+<BR />
                             	Data Availalbe:<BR />
                                 	<ul >
                                         <li><div class="clicker" name="branch1">View UCSC Image of region  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
@@ -37,10 +38,11 @@
                                         </span>
                                         <li><div  class="clicker" name="branch3">View Heritability and Detection Above Background across tissues availble for genes in the region&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch3">
-                                        	We have exon array data for 2 recombinant inbred panels and various tissues (ILSXISS Mice(Whole Brain) and HXB/BXH Rats(Whole Brain, Heart, Liver, Brown Adipose).  This data is summarized for each region to include the # and avgerage heritability of probesets with a significant heritability and # and average percentage of samples where probesets were detected above background.  These are summarized for each gene in each tissue.                                         </span>
+                                        	We have exon array data for 2 recombinant inbred panels and various tissues (ILSXISS Mice(Whole Brain) and HXB/BXH Rats(Whole Brain, Heart, Liver, Brown Adipose).  These data are summarized for each region to include the # and average heritability of probesets with a significant heritability and # and average percentage of samples where probesets were detected above background.  These are summarized for each gene in each tissue.                                         </span>
                                         <li><div  class="clicker" name="branch4">View eQTLs for genes in the region&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch4">
-                                        	For genes in the region eQTL with the minimum P-value and its location is summarized across tissues.  All locations and tissues can be summarized in a circos plot.
+                                        	For genes in this region, the location of the gene’s eQTL with the smallest p-value is reported.  All possible eQTL across multiple tissues are visualized in a Circos plot.
+
                                         </span>
                                         <li><div  class="clicker" name="branch5">View bQTLs overlapping the region&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch5">
@@ -48,7 +50,7 @@
                                         </span>
                                         <li><div  class="clicker" name="branch6">View genes controlled from the region&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch6">
-                                        	eQTLs are calculated for the recombinant inbred panels at the Gene level(Affy Exon Transcript Clusters having a core annotation)).  This is used to return a list of genes that have a core transcript cluster and an eQTL that overlaps the region.
+                                        	eQTLs are calculated for the recombinant inbred panels at the Gene level(Affy Exon Transcript Clusters having a core annotation).  This is used to return a list of genes that have a core transcript cluster and an eQTL that overlaps the region.
                                         </span>
                                      </ul>
                              </li><BR />
@@ -62,15 +64,15 @@
                                         </span>
                                         <li><div  class="clicker" name="branch21">View Parental Strain(Rat) Transcriptome Reconstruction&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch21">
-                                        	For the Rat RNA-Sequencing was performed on the Parental Strains in Whole Brain.  The transcriptome was reconstructed from this data using CuffLinks.  These transcipts are shown with the Ensembl transcripts for comparison and you can use these transcripts to filter probesets or view exon-exon correlations on these transcripts.
+                                        	The rat brain RNA-Seq data were used to reconstruct the rat brain transcriptome using CuffLinks.  These transcipts are shown with the Ensembl transcripts for comparison and you can use these transcripts to filter probesets or view exon-exon correlations on these transcripts.
                                         </span>
                                         <li><div  class="clicker" name="branch22">View Panel Heritability accross tissues&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch22">
-                                        	The second tab contains graphs of the heritability of displayed probesets.  You can filter on a number of parameters to view only probesets of interest.  But you can use this to look for possible probesets and exons where expression may be correlated with the strain.
+                                        	The second tab contains graphs of the heritability of displayed probesets.  You can filter on a number of parameters to view only probesets of interest.
                                         </span>
                                         <li><div  class="clicker" name="branch23">View Panel Expression accross tissues&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch23">
-                                        	You can also view individual probeset normalized expression acrosss strains and tissues.
+                                        	You can also view the normalized expression of individual probesets across recombinant inbred strains and across tissues.
                                         </span>
                                         <li><div  class="clicker" name="branch24">View Exon Correlation Tool&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                             <span class="branch" id="branch24">
