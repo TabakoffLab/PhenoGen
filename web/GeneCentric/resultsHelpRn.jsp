@@ -39,13 +39,19 @@ Data Summary:<BR /><BR />
 
 <div id="HelpProbeHeritContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>Heritability</H3>
-For each probe set on the Affymetrix Rat Exon 1.0 ST Array, we calculated a broad-sense heritability using an ANOVA model and expression data from the HXB/BXH panel.  The heritability threshold of 0.33 was chosen arbitrarily to represent an expression estimate with at least modest heritability. We include the number of probe sets at least modestly heritable in the four available tissues (brain, heart, liver, and brown adipose).   Higher heritability indicates that expression of a probe set is influenced more by genetics than unknown environmental factors.
+For each non-masked probe set on the Affymetrix Rat Exon 1.0 ST Array, a broad-sense heritability was calculated using an ANOVA model and expression data from the HXB/BXH panel.  The heritability threshold of 0.33 was chosen arbitrarily to represent an expression estimate with at least modest heritability.  Higher heritability indicates that expression of a probe set is influenced more by genetics than unknown environmental factors.<BR /><BR />
+Heritability data is included for all four available tissues (brain, heart, liver, and brown adipose).<BR />
+Count indicates the number of probe set that have a heritability higher than 0.33.<BR />
+The Avg is the average heritability among the probe sets above 0.33.
+
 </div>
 </div>
 
 <div id="HelpProbeDABGContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>Detection Above Background(DABG)</H3>
-For each probe set on the Affymetrix Rat Exon 1.0 ST Array and each sample, we calculated a p-value associated with the expression of the probe set above background (DABG – detection above background).  Using a p-value threshold of 0.0001, we calculated the proportion of samples from the HXB/BXH panel that had expression values significantly different from background for a given probe set.  In the table, we report the number of probe sets whose expression values were detected above background in more than 1% of samples and the average percentage of samples where the probe sets were detected above background.
+For each non-masked probe set on the Affymetrix Rat Exon 1.0 ST Array and each sample, a Detection Above BackGround p-value was calculated for each probeset using Affymetrix Power Tools.  A p-value less than 0.0001 was used as a threshold for detection.   Using the p-value threshold of 0.0001, the proportion of samples from the HXB/BXH panel that had expression values significantly different from background was calculated for each probe set.<BR /><BR />
+Count is the number of probe sets for this gene that were detected above background in at least 1% of samples.<BR />
+The Avg is the average across probe sets(only those probe sets >1%) of the proportion of samples that were above detection limits.
 </div>
 </div>
 

@@ -200,7 +200,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select>
-                <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>350bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 
             </TR>
@@ -213,7 +213,7 @@ if(displayNoEnsembl){ %>
                     <option value="3" selected="selected">Pack</option>
                     <option value="2" >Full</option>
                 </select> 
-                <span class="Imagetooltip" title="This track consists of small RNAs(<350bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
+                <span class="Imagetooltip" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
                 </TD>
                 <TD></TD>
             </TR>
@@ -437,7 +437,7 @@ if(displayNoEnsembl){ %>
 					<%if(myOrganism.equals("Rn")){%>
                      / Non PolyA+ <span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and transcripts from the transcriptome reconstruction that were identified in only in the total RNA fraction.">
                      <%}else{%>
-                     	<span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and greater than or equal to 350 base pairs in length.">
+                     	<span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and greater than or equal to 200 base pairs in length.">
                      <%}%>
                      <img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Small RNA <span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are less than 350 bp and transcribed features from the small RNA fraction (<200 bp).  This track may include protein-coding and non-protein-coding features.  See legend for details on color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
