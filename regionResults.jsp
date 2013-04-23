@@ -136,6 +136,8 @@ var ucscgeneID="";
 		
 		if(myOrganism.equals("Mm")){
 			tissueString = "Brain;";
+			selectedTissues=new String[1];
+			selectedTissues[0]="Brain";
 		}
 		else{
 			// we assume if not mouse that it's rat
@@ -1945,7 +1947,8 @@ var ucscgeneID="";
                         </TR>
                         </tbody>
                   </table>
-<% ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
+<% log.debug("before eQTL table constr");
+ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
 	ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
   if(session.getAttribute("getTransControllingEQTL")==null){
   	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
@@ -2030,12 +2033,15 @@ var ucscgeneID="";
     	<div id="circosPlot" style="text-align:center;">
     	<strong><%=session.getAttribute("getTransControllingEQTLCircos")%></strong><BR /><BR /><BR />
         </div><!-- end CircosPlot -->
-	<%}%>
+	<%}
+	log.debug("end circos");%>
 			<%String idList="";
 			int idListCount=0;
+			log.debug("before outer");
 			for(int i=0;i<transOutQTLs.size();i++){
 				TranscriptCluster tc=transOutQTLs.get(i);
 				String tcChr=myOrganism.toLowerCase()+tc.getChromosome();
+				log.debug("after chr outer");
 				boolean include=false;
 				boolean tissueInclude=false;
 				for(int z=0;z<selectedChromosomes.length&&!include;z++){
@@ -2043,9 +2049,12 @@ var ucscgeneID="";
 						include=true;
 					}
 				}
+				log.debug("after chr loop");
 				for(int j=0;j<tissuesList2.length&&include&&!tissueInclude;j++){
+					log.debug("jTis:"+tissueNameArray[j]);
 					boolean isTissueSelected=false;
 					for(int k=0;k<selectedTissues.length;k++){
+						log.debug("ktis:"+selectedTissues[k]);
 						if(selectedTissues[k].equals(tissueNameArray[j])){
 							isTissueSelected=true;
 						}
@@ -2060,6 +2069,7 @@ var ucscgeneID="";
 						}
 					}
 				}
+				log.debug("after tissue loop");
 				if(include&&tissueInclude){
 					if(i==0){
 						idList=tc.getTranscriptClusterID();
@@ -2069,11 +2079,13 @@ var ucscgeneID="";
 					idListCount++;
 				}
 			}
+			log.debug("after outer for loop");
 			if(idListCount<=300){%>
        			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div></div>
         	<%}else{%>
             	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own <a href="http://david.abcc.ncifcrf.gov/" target="_blank">here</a>.<span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div></div>
-            <%}%>	
+            <%}
+			log.debug("end DAVID setup");%>	
 		<BR />	
 	
 	<TABLE name="items" id="tblFrom" class="list_base" cellpadding="0" cellspacing="0">
