@@ -304,7 +304,7 @@ var ucscgeneID="";
             	<option value="1" selected="selected">Dense</option>
                 <option value="3" >Pack</option>
             </select>
-             <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5)."><img src="<%=imagesDir%>icons/info.gif"></span>
+             <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence for example<BR>T:A is a SNP where T was changed to an A in the strain specific Sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:

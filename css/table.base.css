@@ -119,6 +119,9 @@ table.list_base tr td.extendedPS{
 table.list_base tr td.fullPS{
 	background:#009A00;
 }
+table.list_base tr td.ambPS{
+	background:#000000;
+}
 
 table.list_base tr td.helicos{ 
 background-image: -ms-linear-gradient(left, #FFFFFF 0%, #000000 100%);

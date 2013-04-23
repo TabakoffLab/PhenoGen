@@ -51,7 +51,7 @@ sub createSNPTrack{
 	open OFILE, ">".$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
 	
 	print OFILE "track db=$trackDB name='BNLX/SHRH SNPs and Indels' ";
-	print OFILE "description='BNLX/SHRH DNA SNPs and Indels  BNLX-Blue SHRH-Red SNP-Brighter Indel-Darker' ";
+	print OFILE "description='BN-Lx/SHR DNA SNPs and Indels  BN-Lx-Blue SHR-Red SNP-Brighter Indel-Darker' ";
 	print OFILE "visibility=3 itemRgb=On \n";
 	if(@snpList>0){
 		my $cntSnp=0;

@@ -15,8 +15,12 @@
                                 <TD class="fullPS"></TD>
                                 <TD>Full</TD>
                             </TR>
+                            <TR>
+                                <TD class="ambPS"></TD>
+                                <TD>Ambiguous</TD>
+                            </TR>
                 	<%}%>   
-                 <TR><TD colspan="2" <%if(!region){%>style="padding-top:15px;"<%}%>>Track - Protein Coding/PolyA+</TD></TR>
+                 <TR><TD colspan="2" <%if(!region){%>style="padding-top:15px;"<%}%>>Track - Protein Coding<%if(myOrganism.equals("Rn")){%>/PolyA+<%}%></TD></TR>
                 <TR >
                 	<TD class="coding ensembl odd" width="15%"></TD>
                     <TD>Ensembl Transcripts</TD>
@@ -26,7 +30,7 @@
                     <TD>Phenogen RNA-Seq (CuffLinks) Transcripts</TD>
                 </TR>
                 
-                <TR ><TD colspan="2" style="padding-top:15px;">Track - Long Non-Coding/NonPolyA+</TD></TR>
+                <TR ><TD colspan="2" style="padding-top:15px;">Track - Long Non-Coding<%if(myOrganism.equals("Rn")){%>/NonPolyA+<%}%></TD></TR>
                 <TR>
                 	<TD class="noncoding ensembl odd"></TD>
                     <TD>Ensembl Long Non-Coding</TD>
@@ -58,17 +62,17 @@
                 </TR>
                 <TR>
                 	<TD class="snp shrh"></TD>
-                    <TD>SNP SHRH</TD>
+                    <TD>SNP SHR</TD>
                 </TR>
                 <TR>
                 	<TD class="indel shrh"></TD>
-                    <TD>Indel SHRH</TD>
+                    <TD>Indel SHR</TD>
                 </TR>
                 
                 <TR  ><TD colspan="2" style="padding-top:15px;">Track - Helicos (Image only)</TD></TR>
                 <TR>
                 	<TD class="helicos"></TD>
-                    <TD>Read Counts from Helicos</TD>
+                    <TD>Read Depth from Helicos</TD>
                 </TR>
                 
                 
