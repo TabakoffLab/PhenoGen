@@ -144,9 +144,9 @@ sub writeGeneIDs
             }
             #print "$tcID\t #genes=$count\n";
         }
-        
-        close IN;
         close OUT;
+        close IN;
+        
         
 }
 
