@@ -1621,6 +1621,7 @@ var ucscgeneID="";
 
 
 <script type="text/javascript">
+	var bQTLSize=<%=bqtls.size()%>;
 	var bqtlTarget=[ 1,4,9,11,13 ];
 	if(organism == "Mm"){
 		bqtlTarget=[ 1,4,5,10,12,13,14 ];
@@ -1648,7 +1649,7 @@ var ucscgeneID="";
 				$('#mainTab div.modalTabContent').hide();       
 				$(currentTab).show();
 				//adjust row and column widths if needed(only needs to be done once)
-				if(!tblBQTLAdjust){
+				if(!tblBQTLAdjust&&bQTLSize>0){
 						tblBQTL.fnAdjustColumnSizing();
 						tblBQTLAdjust=true;
 				}
