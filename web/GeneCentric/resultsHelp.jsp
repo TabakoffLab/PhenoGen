@@ -40,7 +40,8 @@ The best option depends on what you are looking for so try them and find what wi
 
 <div id="HelpeQTLContent" class="inpageHelpContent" title="Help-eQTLs"><div class="help-content">
 <H3>eQTLs</H3>
-The eQTL columns provide a general idea of where a gene, in the region you have entered, is controlled from.  Currently, <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> are currently only available at the gene (transcript cluster) level instead of the probe set level, which means the first columns give you information about the transcript cluster.  <BR /><BR />
+<a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTL</a> are calculated for transcript clusters, which are approximately equivalent to a gene-level estimate of expression by combining multiple probesets that target the same gene.  The combination of probesets for each transcript cluster is defined by Affymetrix to include probesets that target regions that are included in all transcripts of a gene.
+<BR /><BR />
 
 Columns:<BR />
 	Transcript Cluster ID- The unique ID assigned by Affymetrix.  <BR />

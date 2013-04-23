@@ -2,7 +2,7 @@
 <H3>Affy Exon Data Columns</H3>
 The Affy Exon PhenoGen data displays data calculated from public datasets. Data is from 4 datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays)<BR /><BR />
 
-These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Microarray Analysis Tools -> Analyze precompiled datasets. A free login is required, which allows you to save your progress and come back after lengthy processing steps.  <BR /><BR />
+These datasets are available for <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>listDatasets.jsp">analysis</a> or to <a href='<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp'>download</a>.  To perform an analysis on PhenoGen go to Microarray Analysis Tools -> Analyze precompiled datasets. A free login is required, which allows you to save your progress and come back after lengthy processing steps.  <BR /><BR />
 
 Columns:<BR />
 <ul style="padding-left:25px; list-style-type:square;">
@@ -59,7 +59,7 @@ The Avg is the average across probe sets(only those probe sets >1%) of the propo
 <H3>Affy Exon Data-eQTLs</H3>
 The Affy Exon PhenoGen data displays data calculated from public datasets.  Data is from four datasets(one per tissue)Public HXB/BXH RI Rats (Tissue, Exon Arrays).
 <BR /><BR />
-These datasets are available for analysis or downloading.  To perform an analysis on PhenoGen go to Microarray Analysis Tools -> Analyze precompiled datasets.  A free login is required, which allows you to save your progress and come back after lengthy processing steps.  
+These datasets are available for <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>listDatasets.jsp">analysis</a> or to <a href='<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp'>download</a>.  To perform an analysis on PhenoGen go to Microarray Analysis Tools -> Analyze precompiled datasets.  A free login is required, which allows you to save your progress and come back after lengthy processing steps.  
 <BR /><BR />
 Columns:<BR />
 <ul style="list-style-type:square; padding-left:25px;">

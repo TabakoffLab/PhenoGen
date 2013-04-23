@@ -2518,6 +2518,7 @@ public class GeneDataTools {
 
                         }
                         out.close();
+                        log.debug("Done-transcript cluster details.");
                     }catch(IOException e){
                         log.error("Error reading Gene - Transcript IDs.",e);
                         session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
@@ -2533,7 +2534,7 @@ public class GeneDataTools {
                     
 
                 }
-                //log.debug("Transcript Cluster Size:"+transcriptClusters.size());
+                log.debug("Transcript Cluster Size:"+transcriptClusters.size());
                 //this.controlledRegionParams=curParams;
                 //this.controlledRegion=transcriptClusters;
                 if(cacheHM.containsKey(tmpRegion)){
@@ -2561,7 +2562,7 @@ public class GeneDataTools {
                     }
             }
         }else if(filter){//don't need to rerun just filter.
-            //log.debug("transcript controlling Filtering");
+            log.debug("transcript controlling Filtering");
             String[] includedTissues=circosTissue.split(";");
             for(int i=0;i<includedTissues.length;i++){
                 if(includedTissues[i].equals("Brain")){
@@ -2598,7 +2599,7 @@ public class GeneDataTools {
             }
         }
         if(run){
-            //log.debug("\ngenerating new-circos\n");
+            log.debug("\ngenerating new-circos\n");
             
             //run circos scripts
             boolean errorCircos=false;
