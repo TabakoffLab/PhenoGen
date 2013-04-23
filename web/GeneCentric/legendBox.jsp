@@ -39,11 +39,11 @@
                 <TR ><TD colspan="2" style="padding-top:15px;">Track - Small RNA</TD></TR>
                 <TR>
                 	<TD class="smallnc odd"></TD>
-                    <TD>Ensembl Small RNA <350bp</TD>
+                    <TD>Ensembl Small RNA <200bp</TD>
                 </TR>
                 <TR>
                 	<TD class="smallnc ensembl odd"></TD>
-                    <TD>PhenoGen Small RNA <350bp</TD>
+                    <TD>PhenoGen Small RNA <200bp</TD>
                 </TR>
                 
       

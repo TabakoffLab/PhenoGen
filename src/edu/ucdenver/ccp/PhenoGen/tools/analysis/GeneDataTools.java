@@ -2257,7 +2257,7 @@ public class GeneDataTools {
                 TranscriptCluster curTC=null;
                 while(rs.next()){
                     String tcID=rs.getString(1);
-                    //log.debug("process:"+tcID);
+                    log.debug("process:"+tcID);
                     String tcChr=rs.getString(2);
                     int tcStrand=rs.getInt(3);
                     long tcStart=rs.getLong(4);
@@ -2270,10 +2270,10 @@ public class GeneDataTools {
                             //transcriptClusters.add(curTC);
                         }
                         curTC=new TranscriptCluster(tcID,tcChr,Integer.toString(tcStrand),tcStart,tcStop,tcLevel);
-                        //log.debug("create transcript cluster:"+tcID);
+                        log.debug("create transcript cluster:"+tcID);
                     }
                     String tissue=rs.getString(7);
-                    //log.debug("tissue:"+tissue+":");
+                    log.debug("tissue:"+tissue+":");
                     double pval=Math.pow(10, (-1*rs.getDouble(8)));
                     String marker_name=rs.getString(9);
                     String marker_chr=rs.getString(10);
@@ -2464,6 +2464,7 @@ public class GeneDataTools {
                 }
                 if(!error){
                     try{
+                        log.debug("Read TC_to_Gene");
                         BufferedReader in = new BufferedReader(new FileReader(new File(outputDir+"TC_to_Gene.txt")));
                         while(in.ready()){
                             String line=in.readLine();
@@ -2485,33 +2486,36 @@ public class GeneDataTools {
                             }
                         }
                         in.close();
+                        log.debug("write transcriptclusterdetails.txt");
                         BufferedWriter out= new BufferedWriter(new FileWriter(new File(outputDir+"TranscriptClusterDetails.txt")));
                         for(int i=0;i<transcriptClusters.size();i++){
                             TranscriptCluster tc=transcriptClusters.get(i);
                             HashMap hm=tc.getTissueRegionEQTLs();
                             Set key=hm.keySet();
-                            Object[] tissue=key.toArray();
-                            for(int j=0;j<tissue.length;j++){
-                                String line="";
-                                ArrayList<EQTL> tmpEQTLArr=(ArrayList<EQTL>)hm.get(tissue[j].toString());
-                                if(tmpEQTLArr!=null && tmpEQTLArr.size()>0){
-                                    EQTL tmpEQTL=tmpEQTLArr.get(0);
-                                    if(tmpEQTL.getMarkerChr().equals(chr) && 
-                                            ((tmpEQTL.getMarker_start()>=min && tmpEQTL.getMarker_start()<=max) || 
-                                            (tmpEQTL.getMarker_end()>=min && tmpEQTL.getMarker_end()<=max) || 
-                                            (tmpEQTL.getMarker_start()<=min && tmpEQTL.getMarker_end()>=max))
-                                            ){
-                                        line=tmpEQTL.getMarkerName()+"\t"+tmpEQTL.getMarkerChr()+"\t"+tmpEQTL.getMarker_start();
-                                        line=line+"\t"+tc.getTranscriptClusterID()+"\t"+tc.getChromosome()+"\t"+tc.getStart()+"\t"+tc.getEnd();
-                                        String tmpGeneSym=tc.getGeneSymbol();
-                                        if(tmpGeneSym==null||tmpGeneSym.equals("")){
-                                            tmpGeneSym=tc.getGeneID();
+                            if(key!=null){
+                                Object[] tissue=key.toArray();
+                                for(int j=0;j<tissue.length;j++){
+                                    String line="";
+                                    ArrayList<EQTL> tmpEQTLArr=(ArrayList<EQTL>)hm.get(tissue[j].toString());
+                                    if(tmpEQTLArr!=null && tmpEQTLArr.size()>0){
+                                        EQTL tmpEQTL=tmpEQTLArr.get(0);
+                                        if(tmpEQTL.getMarkerChr().equals(chr) && 
+                                                ((tmpEQTL.getMarker_start()>=min && tmpEQTL.getMarker_start()<=max) || 
+                                                (tmpEQTL.getMarker_end()>=min && tmpEQTL.getMarker_end()<=max) || 
+                                                (tmpEQTL.getMarker_start()<=min && tmpEQTL.getMarker_end()>=max))
+                                                ){
+                                            line=tmpEQTL.getMarkerName()+"\t"+tmpEQTL.getMarkerChr()+"\t"+tmpEQTL.getMarker_start();
+                                            line=line+"\t"+tc.getTranscriptClusterID()+"\t"+tc.getChromosome()+"\t"+tc.getStart()+"\t"+tc.getEnd();
+                                            String tmpGeneSym=tc.getGeneSymbol();
+                                            if(tmpGeneSym==null||tmpGeneSym.equals("")){
+                                                tmpGeneSym=tc.getGeneID();
+                                            }
+                                            if(tmpGeneSym==null||tmpGeneSym.equals("")){
+                                                tmpGeneSym=tc.getTranscriptClusterID();
+                                            }
+                                            line=line+"\t"+tmpGeneSym+"\t"+tissue[j].toString()+"\t"+tmpEQTL.getNegLogPVal()+"\n";
+                                            out.write(line);
                                         }
-                                        if(tmpGeneSym==null||tmpGeneSym.equals("")){
-                                            tmpGeneSym=tc.getTranscriptClusterID();
-                                        }
-                                        line=line+"\t"+tmpGeneSym+"\t"+tissue[j].toString()+"\t"+tmpEQTL.getNegLogPVal()+"\n";
-                                        out.write(line);
                                     }
                                 }
                             }
