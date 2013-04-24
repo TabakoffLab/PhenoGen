@@ -1285,8 +1285,11 @@ if(displayNoEnsembl){ %>
 			}
 
         </script>
+        
         </div>
         <div id="macBugDesc" style="display:none;color:#FF0000;">The applet above is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  When Oracle fixes this bug we will update the applet to provide a more optimal experience.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
+        <BR /><BR /><BR />
+        
         <script type="text/javascript">
 			if(bug==1){
 				$('div#macBugDesc').show();
