@@ -51,6 +51,8 @@
 #	8/12/09	Laura Saba	Modified:	added code to eliminate cluster objects with zero variance and to generate an error file
 #	3/27/12 Spencer Mahaffey Modified: Read/Write HDF5 and support multiple filters/stats per version.
 #	3/27/13 Spencer Mahaffey added: 3/27/13 Laura Saba  Modified:	updated coding of kmeans graphic to handle situation when more than 1024 genes/samples are in one cluster (limitation due to color palette)
+#	4/5/13 Spencer Mahaffey	Modified:	Changed line 140-144 adding in Laura Saba's changes to fix a bug.
+#
 #
 ####################################################
 
@@ -137,7 +139,7 @@ statistics.Clustering.HDF5 <- function(InputFile,VersionPath, SampleFile, Cluste
 
 	####  Calculate Group Means and Group Standard Deviations
 	GroupMeans<-c()
-	for (i in 1:length(unique.groups)) GroupMeans <- cbind(GroupMeans,rowMeans(Avgdata[,groups[[unique.groups[i]]]]))
+	#	for (i in 1:length(unique.groups)) GroupMeans <- cbind(GroupMeans,rowMeans(Avgdata[,groups[[unique.groups[i]]]]))	for (i in 1:length(unique.groups)){		if(length(groups[[unique.groups[i]]])>1) GroupMeans <- cbind(GroupMeans,rowMeans(Avgdata[,groups[[unique.groups[i]]]]))		if(length(groups[[unique.groups[i]]])==1) GroupMeans <- cbind(GroupMeans,Avgdata[,groups[[unique.groups[i]]]])		}
 	colnames(GroupMeans) <- paste(group.labels$grp.name,"Mean",sep=".")
 	GroupVars <- sqrt(t(apply(Avgdata,groups = groups, unique.groups=unique.groups,1,group.var)))
 	colnames(GroupVars) <- paste(group.labels$grp.name,"StdDev",sep=".")

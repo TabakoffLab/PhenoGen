@@ -2426,6 +2426,7 @@ public class Dataset {
 				thisVersion.setParameters(pvArray);
 				thisVersion.setGeneLists(glArray);
 			}
+                        setupDatasetParameterValues(userLoggedIn.getUser_id(), thisDataset, conn);
 		}
 		
 		myResults.close();

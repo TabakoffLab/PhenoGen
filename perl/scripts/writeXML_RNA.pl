@@ -15,6 +15,10 @@ use XML::Simple;
 
 require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromDB.pl';
+require 'readQTLDataFromDB.pl';
+require 'readSNPDataFromDB.pl';
+require 'readSmallNCDataFromDB.pl';
+require 'createBED.pl';
 require 'createPng.pl';
 require 'addAlternateID.pl';
 require 'createTrack.pl';
@@ -67,7 +71,7 @@ sub getImage{
     }
     while($newresultCode!=200 and $tryCount<3){
 	eval{
-	    $resultCode=createPngRNA($species, $geneName , "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount));
+	    $resultCode=createPngRNA($species, $geneName , "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount),950,20,8);
 	    print "RESULT CODE2:$resultCode\n";
 	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
 	    1;
@@ -99,7 +103,7 @@ sub createXMLFile
 	#
 
 	# Read in the arguments for the subroutine	
-	my($bedOutputFileName, $pngOutputFileName, $xmlOutputFileName,$species,$type,$geneNames,$bedFileFolder,$arrayTypeID,$rnaDatasetID,$publicID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
+	my($bedOutputFileName, $outputDir, $xmlOutputFileName,$species,$type,$geneNames,$bedFileFolder,$arrayTypeID,$rnaDatasetID,$publicID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
 	
 	my @geneNamesList=split(/,/,$geneNames);
 	my $geneNameGlobal=$geneNamesList[0];
@@ -238,9 +242,21 @@ sub createXMLFile
 	#get RNA isoform Gene list
 	$prevMin=$minCoord-1000;
 	$prevMax=$maxCoord+1000;
+	#read SNPs/Indels
+	
+	
+	my %snpHOH;
+	my @snpList=();
 	
 	if($shortSpecies eq 'Rn'){
-	
+	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    %snpHOH=%$snpRef;
+	    my $snpListRef=$snpHOH{Snp};
+	    eval{
+		@snpList=@$snpListRef;
+	    }or do{
+		@snpList=();
+	    };
 	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
 	    #find global min,max
 	    #print "gene size ".$$isoformHOH{Gene}[0]."\n";
@@ -309,6 +325,8 @@ sub createXMLFile
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoHeritDABG("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
 	
+	
+	
 	#process RNA genes/transcripts and assign probesets.
 	$tmpGeneArray=$$isoformHOH{Gene};
 	foreach my $tmpgene ( @$tmpGeneArray){
@@ -363,6 +381,22 @@ sub createXMLFile
 					}
 					$cntProbesets = $cntProbesets+1;
 				} # loop through probesets
+				
+				#match snps/indels to exons
+				my $cntSnps=0;
+				my $cntMatchingSnps=0;
+				foreach(@snpList){
+					
+					    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
+						($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
+					    ){
+						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
+						    $cntMatchingSnps++;
+						    print "Exon Variant";
+					    }
+					
+					$cntSnps++;
+				} # loop through snps/indels
 		    $cntIntron++;
 		}
 	    }
@@ -370,7 +404,7 @@ sub createXMLFile
 	    
 	}
 	
-	my $geneListFile=$pngOutputFileName."geneList.txt";
+	my $geneListFile=$outputDir."geneList.txt";
 	open GLFILE, ">".$geneListFile;
 	
 	# Loop through  Ensembl Genes
@@ -407,7 +441,7 @@ sub createXMLFile
 			geneSymbol => $geneExternalName,
 			source => "Ensembl"
 			};
-		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
+		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\t$geneStrand\n";
 #
 #		With the new picture look we don't have enough information to make the png file yet
 #		So commenting out the lines below.
@@ -512,6 +546,21 @@ sub createXMLFile
 					}
 					$cntProbesets = $cntProbesets+1;
 				} # loop through probesets
+				#match snps/indels to exons
+				my $cntSnps=0;
+				my $cntMatchingSnps=0;
+				foreach(@snpList){
+					
+					    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
+						($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
+					    ){
+						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
+						    $cntMatchingSnps++;
+						    print "Exon Variant";
+					    }
+					
+					$cntSnps++;
+				} # loop through snps/indels
 				$cntExons=$cntExons+1;
 				#print "finished matching probesets\n";
 		    } # loop through exons
@@ -527,20 +576,11 @@ sub createXMLFile
 	close GLFILE;
 	
 	# We're finished with the Genes
-	# Now we will define alternate IDs for the probesets we marked previously with 'yes' for alternateID
-	# Also create the Bed file.
-		my $newBedOutputFileName = $pngOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".bed";
-		# convert to big bed file.  Not sure if this is exactly necessary ...
-		#my $bigBedOutputFileName = $bedOutputFileName.$geneNameGlobal."..bb";
-		my $bigBedOutputFileNameNoPath = $$geneNameGlobal."..bb";
-		my $twoTrackOutputFileName = $bedOutputFileName.$geneNameGlobal.".tracks";
-		my $filterTrackOutputFileName = $bedOutputFileName.$geneNameGlobal.".filter.tracks";
-		
 		my $tissueProbesRef=readTissueAffyProbesetDataFromDB($chr,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,1,$dsn,$usr,$passwd);
 		my %tissueProbes=%$tissueProbesRef;
 		
 		
-		$GeneHOHRef = addAlternateID_RNA(\%GeneHOH, $newBedOutputFileName,$twoTrackOutputFileName,$filterTrackOutputFileName,$bigBedOutputFileNameNoPath,$species,$minCoord,$maxCoord,\%tissueProbes);
+		$GeneHOHRef = addAlternateID_RNA(\%GeneHOH,$species,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,$outputDir);
 		%GeneHOH = %$GeneHOHRef;
 		
 		my $xml = new XML::Simple (RootName=>'GeneList');
@@ -554,64 +594,59 @@ sub createXMLFile
 		print XMLFILE $data;
 		close XMLFILE;
 		
-		#
-		# Create the png file for this gene
+		#read QTLs
+		my $qtlRef=readQTLDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		my %qtlHOH=%$qtlRef;
 		
-		my $newPngOutputFileName = $pngOutputFileName.$geneNameGlobal.".main.png";
-		my $newFilterPngOutputFileName = $pngOutputFileName.$geneNameGlobal.".main.filter.png";
-		my $urlFile=$pngOutputFileName.$geneNameGlobal.".url";
+		my $smncRef=readSmallNoncodingDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		my %smncHOH=%$smncRef;
 		
-		#my $geneStartSmaller = $geneStart-200;
-		#my $geneStopBigger = $geneStop+200;
+		my $trackDB="mm9";
+		if($species eq 'Rat'){
+			$trackDB="rn5";
+		}
 		
-		open URLFILE, ">".$urlFile;
-		print URLFILE "$firstGeneSymbol\n";
-		my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileName,$twoTrackOutputFileName,$geneNameGlobal);
-		#my $resultCode=createPngRNA($species, $geneNameGlobal, "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileName,$twoTrackOutputFileName,(30+30*$tryCount));
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-			print "URL:$url\n";
-			print URLFILE "$url\n";
-		my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileName,$filterTrackOutputFileName,$geneNameGlobal);
-		#my $resultCode=createPngRNA($species, $geneNameGlobal, "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileName,$filterTrackOutputFileName,(30+30*$tryCount));
-			my $url=substr($resultCode,index($resultCode,"<>")+2);
-			print "URL:$url\n";
-			print URLFILE "$url\n";
-		close URLFILE;
-	
-	my $geneArrayRef = $GeneHOH{Gene};
-	my @geneArray = @$geneArrayRef;
-	$cntGenes=0;
-	foreach(@geneArray){
-	    my $tmpGeneName=$GeneHOH{Gene}[$cntGenes]{ID};
-	    if(!($tmpGeneName eq "")){
-		my $tmpStart=$GeneHOH{Gene}[$cntGenes]{start};
-		my $tmpStop=$GeneHOH{Gene}[$cntGenes]{stop};
-		#create gene image for ExonCorrelationViewer
-		my $indivTrackOutputFileName = $bedOutputFileName."exCor_".$tmpGeneName.".tracks";
-		my $newPngOutputFileName = $pngOutputFileName."exCor_".$tmpGeneName.".png";
-		createTrackFile(\%GeneHOH, $cntGenes,  $indivTrackOutputFileName, $species);
-		my $newresultCode=0;
-		my $resultCode=getImage($species,$chr,$tmpStart, $tmpStop,$newPngOutputFileName,$indivTrackOutputFileName,"exCor_".$tmpGeneName);
-		#my $resultCode=createPngRNA($species, "exCor_".$tmpGeneName, "chr".$chr, $tmpStart, $tmpStop, $newPngOutputFileName,$indivTrackOutputFileName,(30+30*$tryCount));
-		    my $url=substr($resultCode,index($resultCode,"<>")+2);
-		    print "URL:$url\n";
-		    print URLFILE "$url\n";
-		    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		    if($newresultCode==200){
-		        unlink($indivTrackOutputFileName);
+		#create bed files in region folder
+		
+		createQTLTrack(\%qtlHOH,$outputDir."qtl.track",$trackDB,$chr);
+		createSNPTrack(\%snpHOH,$outputDir."snp.track",$trackDB);
+		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonPlus.track",$trackDB,1,$chr);
+		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonMinus.track",$trackDB,-1,$chr);
+		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonUkwn.track",$trackDB,0,$chr);
+		createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
+		createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
+		createProbesetTrack(\@probesetHOH,$outputDir."probe.track",$trackDB,$chr);
+		createFilteredProbesetTrack(\%tissueProbes,$outputDir."filterprobe.track",$trackDB,$chr);
+		
+		open LOCFILE,">".$outputDir."location.txt";
+		print LOCFILE "chr$chr\n$minCoord\n$maxCoord\n";
+		close LOCFILE;
+		
+		my $geneArrayRef = $GeneHOH{Gene};
+		my @geneArray = @$geneArrayRef;
+		$cntGenes=0;
+		foreach(@geneArray){
+		    my $tmpGeneName=$GeneHOH{Gene}[$cntGenes]{ID};
+		    if(!($tmpGeneName eq "")){
+			my $tmpStart=$GeneHOH{Gene}[$cntGenes]{start};
+			my $tmpStop=$GeneHOH{Gene}[$cntGenes]{stop};
+			#create gene image for ExonCorrelationViewer
+			my $indivTrackOutputFileName = $bedOutputFileName."exCor_".$tmpGeneName.".tracks";
+			my $newPngOutputFileName = $outputDir."exCor_".$tmpGeneName.".png";
+			createTrackFile(\%GeneHOH, $cntGenes,  $indivTrackOutputFileName, $species);
+			my $newresultCode=0;
+			my $resultCode=getImage($species,$chr,$tmpStart, $tmpStop,$newPngOutputFileName,$indivTrackOutputFileName,"exCor_".$tmpGeneName);
+			#my $resultCode=createPngRNA($species, "exCor_".$tmpGeneName, "chr".$chr, $tmpStart, $tmpStop, $newPngOutputFileName,$indivTrackOutputFileName,(30+30*$tryCount));
+			    my $url=substr($resultCode,index($resultCode,"<>")+2);
+			    #print "URL:$url\n";
+			    #print URLFILE "$url\n";
+			    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
+			    if($newresultCode==200){
+				unlink($indivTrackOutputFileName);
+			    }
 		    }
-	    }
-	    $cntGenes=$cntGenes+1;
-	}
-
-		
-	# create xml object
-	# There are several different versions of the call illustrated below
-	#$xml = new XML::Simple (NoAttr=>1, RootName=>'GeneList');
-	#$xml = new XML::Simple (RootName=>'GeneList', xmldecl => '<?xml version="1.0">');
-	# keeping the examples commented out.
-	
-	
+		    $cntGenes=$cntGenes+1;
+		}
 }
 #
 #	

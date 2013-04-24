@@ -39,7 +39,7 @@
                     <li> <div class="clicker" name="branch17"> Download recently generated RNA-Seq data
 						&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"> </div> 
 					<span class="branch" id="branch17">
-					RNA-Seq data from whole brain of three biological replicates of two inbred rat strains (BN-Lx/CubPrin and SHR/OlaPrin, the progenitors of the HXB/BXH panel) was generated from polyA+ RNA sequencing on the Illumina HiSeq2000 sequencer in 100X100 paired end reads and from total RNA (after reduction of ribosomal RNA) on the Helicos Heliscope Single Molecule sequencer.
+					RNA-Seq data from whole brain of three biological replicates of two inbred rat strains (BN-Lx/CubPrin and SHR/OlaPrin, the progenitors of the HXB/BXH panel) were generated from polyA+ RNA sequencing on the Illumina HiSeq2000 sequencer in 100X100 paired end reads and from total RNA (after reduction of ribosomal RNA) on the Helicos Heliscope Single Molecule sequencer.
 					</span>
 
 				</ul>

@@ -48,15 +48,23 @@ Affymetrix.HeatMap.output.Specific.Gene.HDF5 <- function(InputFile,VersionPath,S
 	objects()
 	dim(Avgdata)
 	
+	####Old method that used xml file except a probeset list file is created and read later so there is no reason to do that.
+	#ps <- as.matrix(findXMLProbes(XMLFileName))
+	#print(ps)
 	
-	ps <- as.matrix(findXMLProbes(XMLFileName))
-	print(ps)
+	#Sig_list <- c()
+	#for(i in ps){
+	#	Sig_list = c(Sig_list, which(rownames(Avgdata)==i))
+	#}
+	#length(ps)
+	#length(Sig_list)
 	
+	tmpGeneList <- scan(GeneList)
+	tmpMatrixGL <- as.matrix(tmpGeneList)
 	Sig_list <- c()
-	for(i in ps){
+	for(i in tmpMatrixGL){
 		Sig_list = c(Sig_list, which(rownames(Avgdata)==i))
 	}
-	length(ps)
 	length(Sig_list)
 
 
@@ -164,24 +172,24 @@ Affymetrix.HeatMap.output.Specific.Gene.HDF5 <- function(InputFile,VersionPath,S
 	
 }
 
-findXMLProbes <- function(InputXMLFileName) {
+# findXMLProbes <- function(InputXMLFileName) {
 
-	###########################################
-	#   Load Packages & Setup Working Space   #
-	###########################################
+	# ###########################################
+	# #   Load Packages & Setup Working Space   #
+	# ###########################################
 
-	library(XML)
+	# library(XML)
 
 
-	doc = xmlParse(InputXMLFileName)
-	allExonProbeNodes = getNodeSet(doc,"/GeneList/Gene/TranscriptList/Transcript/exonList/exon/ProbesetList/Probeset")
-	allIntronProbeNodes = getNodeSet(doc,"/GeneList/Gene/TranscriptList/Transcript/intronList/intron/ProbesetList/Probeset")
-	probeNameListe <- sapply(allExonProbeNodes, xmlGetAttr, "ID")
-	probeNameListi <- sapply(allIntronProbeNodes, xmlGetAttr, "ID")
-	probeNames <-c(probeNameListe,probeNameListi)
-	uniqueProbeNames <- noquote(unique(probeNames))
+	# doc = xmlParse(InputXMLFileName)
+	# allExonProbeNodes = getNodeSet(doc,"/GeneList/Gene/TranscriptList/Transcript/exonList/exon/ProbesetList/Probeset")
+	# allIntronProbeNodes = getNodeSet(doc,"/GeneList/Gene/TranscriptList/Transcript/intronList/intron/ProbesetList/Probeset")
+	# probeNameListe <- sapply(allExonProbeNodes, xmlGetAttr, "ID")
+	# probeNameListi <- sapply(allIntronProbeNodes, xmlGetAttr, "ID")
+	# probeNames <-c(probeNameListe,probeNameListi)
+	# uniqueProbeNames <- noquote(unique(probeNames))
 	
-}
+# }
 
 ###  Function needed to calculate group standard errors
 	summary.stderr<-function(Avgdata,groups){

@@ -125,6 +125,8 @@
 	GOI <- read.table(GeneList,sep="\t")
 	row.names(GOI)<-GOI[,1]
 
+	
+
 	###  Attach appropriate sample names to CodeLink data and remove non-Discovery probes	
 	if(Platform=="CodeLink"){
 		samples <- unlist(strsplit(as.character(Snames),"/"))

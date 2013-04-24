@@ -487,16 +487,17 @@ function checkUncheckAll( id, name ) {
 }
 
 function setupExpandCollapse() {
-	$("span.trigger").click(function(){
+	$(document).on('click','span.trigger', function (event){
+	//$("span.trigger").click(function(){
 		var baseName = $(this).attr("name");
-                var thisHidden = $("div#" + baseName).is(":hidden");
-                $(this).toggleClass("less");
-                if (thisHidden) {
+        var thisHidden = $("div#" + baseName).is(":hidden");
+        $(this).toggleClass("less");
+        if (thisHidden) {
 			$("div#" + baseName).show();
-                } else {
+        } else {
 			$("div#" + baseName).hide();
-                }
-	})
+        }
+	});
 }
 
 function setupExpandCollapseTable() {

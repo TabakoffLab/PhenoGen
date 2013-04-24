@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptElement;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.ProbeSet;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.SequenceVariant;
 import java.util.HashMap;
 
 
@@ -19,6 +20,7 @@ abstract public class TranscriptElement implements Comparable {
     String ID="",exclusionReason="";
     boolean exclude=false;
     ArrayList<ProbeSet> probeset=new ArrayList<ProbeSet>();
+    ArrayList<SequenceVariant> variant=new ArrayList<SequenceVariant>();
     long start=-1,stop=-1,len=-1;
     int number=-1;
     String type="";
@@ -93,6 +95,12 @@ abstract public class TranscriptElement implements Comparable {
             exclude=true;
         }
         
+    }
+    public void setVariants(ArrayList<SequenceVariant> vars){
+        this.variant=vars;
+    }
+    public ArrayList<SequenceVariant> getVariants(){
+        return this.variant;
     }
     
     public int getIncludedProbeSetCount(boolean includeIntrons){

@@ -11,8 +11,11 @@ use XML::Simple;
 use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromDB.pl';
-require 'createTrack.pl';
-require 'createPng.pl';
+require 'readQTLDataFromDB.pl';
+require 'readSNPDataFromDB.pl';
+require 'readSmallNCDataFromDB.pl';
+require 'createBED.pl';
+
 
 
 sub getFeatureInfo
@@ -38,40 +41,21 @@ sub find
     my $lookForGene = shift;
     my $list=shift;
     my $ret=0;
-    print "Find: $lookForGene\n";
+    #print "Find: $lookForGene\n";
     foreach(my $testName, @$list){
-	print "$$testName:$lookForGene ";
+	#print "$$testName:$lookForGene ";
 	if($$testName eq $lookForGene){
-	    print "Found";
+	    #print "Found";
 	    $ret=1;
 	}
-	print "\n";
+	#print "\n";
     }
 
     return $ret;
 }
 
 
-# get Image calls createPNG it should increment the timeout time if the first request fails and try again up to 3 times starting with a 30s timeout +30s/failure.
-# it returns the result code allowing the main method to get the result code and url for the last attempt. Either the first successful attempt or last of 3 failed attempts.
-sub getImage{
-    my ($species,$chr,$minCoord,$maxCoord,$outputFileName,$trackFileName)=@_;
-    my $newresultCode=0;
-    my $tryCount=0;
-    my $resultCode="";
-    while($newresultCode!=200 and $tryCount<3){
-	eval{
-	    $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount));
-	    print "RESULT CODE2:$resultCode\n";
-	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-	    1;
-	}or do{
-	    $newresultCode=0;
-	};
-	$tryCount=$tryCount+1;
-    }
-    return $resultCode;
-}
+
 
 sub createXMLFile
 {
@@ -94,6 +78,7 @@ sub createXMLFile
 	# Read in the arguments for the subroutine	
 	my($ucscDir, $outputDir, $folderName,$species,$type,$chromosome,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,$publicID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
 	
+	my $scriptStart=time();
 	my $shortSpecies="";
 	if($species eq "Rat"){
 	    $shortSpecies="Rn";
@@ -187,19 +172,42 @@ sub createXMLFile
 	while(my $tmpgene=shift @{$genes}){
 	    push(@genelist, $tmpgene);
 	    push(@slicelist, $tmpslice);
-	    print "gene list:".@genelist."\n";
+	    #print "gene list:".@genelist."\n";
 	}
 	
+	#read Probests
+	my $psTimeStart=time();
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
+	my $psTimeEnd=time();
+	print "Probeset Time=".($psTimeEnd-$psTimeStart)."sec\n";
+	#read SNPs/Indels
+	
+	my %snpHOH;
+	my @snpList=();
 	
 	if($shortSpecies eq 'Rn'){
+	    my $sTimeStart=time();
+	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    %snpHOH=%$snpRef;
+	    my $snpListRef=$snpHOH{Snp};
+	    eval{
+		@snpList=@$snpListRef;
+	    }or do{
+		@snpList=();
+	    };
+	    my $sTimeEnd=time();
+	    print "SNP Time=".($sTimeEnd-$sTimeStart)."sec\n";
+	    my $iTimeStart=time();
 	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1);
 	    my $tmpGeneArray=$$isoformHOH{Gene};
+	    my $iTimeEnd=time();
+	    print "Isoform Time=".($iTimeEnd-$iTimeStart)."sec\n";
+	    
 	    #process RNA genes/transcripts and assign probesets.
 	    $tmpGeneArray=$$isoformHOH{Gene};
 	    foreach my $tmpgene ( @$tmpGeneArray){
-		print "gene:".$$tmpgene{ID}."\n";
+		# "gene:".$$tmpgene{ID}."\n";
 		$GeneHOH{Gene}[$cntGenes]=$tmpgene;
 		$cntGenes++;
 		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
@@ -222,7 +230,7 @@ sub createXMLFile
 			my $cntMatchingProbesets=0;
 			my $cntMatchingIntronProbesets=0;
 			foreach(@probesetHOH){
-				if($exonStart<$exonStop){# if gene is in the forward direction
+				
 				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
 					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
 				       and
@@ -239,35 +247,33 @@ sub createXMLFile
 						    $probesetHOH[$cntProbesets];
 					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
 				    }
-				}else{# gene is in reverse direction
-				    if((($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
-				    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
-				    and
-					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
-				    ){
-					    #This is a probeset overlapping the current exon
-					    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
-					    $cntMatchingProbesets=$cntMatchingProbesets+1;
-				    }elsif((($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
-					    ($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop))
-					and
-					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
-				    ){
-					    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-						    $probesetHOH[$cntProbesets];
-					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-				    }
-				}
+				
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
+			
+			#match snps/indels to exons
+			my $cntSnps=0;
+			my $cntMatchingSnps=0;
+			foreach(@snpList){
+				
+				    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
+					($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
+				    ){
+					    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
+					    $cntMatchingSnps++;
+					    #print "Exon Variant";
+				    }
+				
+				$cntSnps++;
+			} # loop through snps/indels
 			$cntIntron++;
 		    }
 		}
 	    }
 	}
 	
-	my $geneListFile=$outputDir."geneList.txt";
-	open GLFILE, ">".$geneListFile;
+	#my $geneListFile=$outputDir."geneList.txt";
+	#open GLFILE, ">".$geneListFile;
 	
 	# Loop through  Ensembl Genes
 	my @addedGeneList=();
@@ -292,7 +298,7 @@ sub createXMLFile
 		my $geneBioType    = $gene->biotype();
 		my $geneExternalName    =$gene->external_name();
 		my $geneDescription      =$gene->description();
-		print "adding:$geneName:$geneExternalName\n";
+		# "adding:$geneName:$geneExternalName\n";
 		
 		push(@addedGeneList,$geneName);
 		$GeneHOH{Gene}[$cntGenes] = {
@@ -306,10 +312,10 @@ sub createXMLFile
 			source => "Ensembl",
 			description => $geneDescription
 			};
-		print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
+		#print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
 
 		    #Get the transcripts for this gene
-		    print "getting transcripts for ".$geneExternalName."\n";
+		    #print "getting transcripts for ".$geneExternalName."\n";
 		    my $transcripts = $gene->get_all_Transcripts();
 
 		    $cntTranscripts = 0;
@@ -328,7 +334,7 @@ sub createXMLFile
 			my $cntExons = 0;
 			my $cntIntrons=0;
 			
-			print "getting exons for $transcriptName\n";
+			#print "getting exons for $transcriptName\n";
 			# On to the exons
 			#sort first so introns can be created as we go
 			my @tmpExons= @{ $transcript->get_all_Exons() };
@@ -372,7 +378,7 @@ sub createXMLFile
 				my $cntMatchingProbesets=0;
 				my $cntMatchingIntronProbesets=0;
 				foreach(@probesetHOH){
-					if($exonStart<$exonStop){# if gene is in the forward direction
+					#if($exonStart<$exonStop){# if gene is in the forward direction
 					    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or 
 						($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
 					       and
@@ -391,28 +397,45 @@ sub createXMLFile
 							    $probesetHOH[$cntProbesets];
 						    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
 					    }
-					}else{# gene is in reverse direction
-					    if((($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
-					    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
-					       and
-					        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
-					    ){
-						    #This is a probeset overlapping the current exon
-						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ProbesetList}{Probeset}[$cntMatchingProbesets] = 
-							    $probesetHOH[$cntProbesets];
-						    $cntMatchingProbesets=$cntMatchingProbesets+1;
-					    }elsif((($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
-						($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop))
-						   and
-					        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
-					    ){
-						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{intronList}{intron}[$cntIntrons-1]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-							    $probesetHOH[$cntProbesets];
-						    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-					    }
-					}
+					#}else{# gene is in reverse direction
+					#    if((($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
+					#    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
+					#       and
+					#        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
+					#    ){
+					#	    #This is a probeset overlapping the current exon
+					#	    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ProbesetList}{Probeset}[$cntMatchingProbesets] = 
+					#		    $probesetHOH[$cntProbesets];
+					#	    $cntMatchingProbesets=$cntMatchingProbesets+1;
+					#    }elsif((($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
+					#	($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop))
+					#	   and
+					#        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
+					#    ){
+					#	    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{intronList}{intron}[$cntIntrons-1]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
+					#		    $probesetHOH[$cntProbesets];
+					#	    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
+					#    }
+					#}
 					$cntProbesets = $cntProbesets+1;
 				} # loop through probesets
+				
+				#match snps/indels to exons
+				my $cntSnps=0;
+				my $cntMatchingSnps=0;
+				foreach(@snpList){
+				    #print "check snp".$snpHOH{Snp}[$cntSnps]{start}."-".$snpHOH{Snp}[$cntSnps]{stop};
+					#if($exonStart<$exonStop){# if gene is in the forward direction
+					    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
+						($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
+					    ){
+						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
+						    $cntMatchingSnps++;
+						    #print "Exon Variant";
+					    }
+					$cntSnps++;
+				} # loop through snps/indels
+				
 				$cntExons=$cntExons+1;
 				#print "finished matching probesets\n";
 		    } # loop through exons
@@ -422,144 +445,47 @@ sub createXMLFile
 		$cntGenes=$cntGenes+1;
 	    }# if to process only if chromosome is valid
 	} # loop through genes
-	close GLFILE;
+	#close GLFILE;
 	
-		#my $newBedOutputFileName = $pngOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".bed";
-		# convert to big bed file.  Not sure if this is exactly necessary ...
-		#my $bigBedOutputFileName = $bedOutputFileName.$geneNameGlobal."..bb";
-		#my $bigBedOutputFileNameNoPath = $$geneNameGlobal."..bb";
-		my $twoTrackOutputFileName = $ucscDir.$folderName.".tracks";
-		my $transTrackOutputFileName = $ucscDir.$folderName.".trans.tracks";
-		my $twoTrackOutputFileNameNoArray = $ucscDir.$folderName."_noArray.tracks";
-		my $transTrackOutputFileNameNoArray = $ucscDir.$folderName."_noArray.trans.tracks";
-		my $twoTrackOutputFileNameHuman = $ucscDir.$folderName."_human.tracks";
-		my $transTrackOutputFileNameHuman = $ucscDir.$folderName."_human.trans.tracks";
-		
-		createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileName,  $species,0,1,0,$chr,$minCoord,$maxCoord);
-		createTrackFileRegion(\%GeneHOH, $transTrackOutputFileName,  $species,1,1,0,$chr,$minCoord,$maxCoord);
-		createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileNameNoArray,  $species,0,0,0,$chr,$minCoord,$maxCoord);
-		createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameNoArray,  $species,1,0,0,$chr,$minCoord,$maxCoord);
-		createTrackFileRegion(\%GeneHOH, $twoTrackOutputFileNameHuman,  $species,0,0,1,$chr,$minCoord,$maxCoord);
-		createTrackFileRegion(\%GeneHOH, $transTrackOutputFileNameHuman,  $species,1,0,1,$chr,$minCoord,$maxCoord);
-		
-		my $xml = new XML::Simple (RootName=>'GeneList');
-		my $data = $xml->XMLout(\%GeneHOH);
-		# open xml file
-		my $xmlOutputFileName=">$outputDir/Region.xml";
-		open XMLFILE, $xmlOutputFileName or die " Could not open XML file $xmlOutputFileName for writing $!\n\n";
-		# write the header 
-		print XMLFILE '<?xml version="1.0" encoding="UTF-8"?>';
-		print XMLFILE "\n\n";
-		# Write the xml data
-		print XMLFILE $data;
-		close XMLFILE;
-		
-		#
-		# Create the png file for this gene
-		
-		my $newPngOutputFileName = $outputDir."region.main.png";
-		my $newFilterPngOutputFileName = $outputDir."region.main.trans.png";
-		my $newPngOutputFileNameNoArray = $outputDir."region.main.noArray.png";
-		my $newFilterPngOutputFileNameNoArray = $outputDir."region.main.trans.noArray.png";
-		my $newPngOutputFileNameHuman = $outputDir."region.main.human.png";
-		my $newFilterPngOutputFileNameHuman = $outputDir."region.main.trans.human.png";
-		my $urlFile=$outputDir."Region.url";
-		
-		#my $geneStartSmaller = $geneStart-200;
-		#my $geneStopBigger = $geneStop+200;
-		my $newresultCode=0;
-		my $tryCount=0;
-		open URLFILE, ">".$urlFile;
-		print URLFILE "$chr:$minCoord-$maxCoord\n";
-		my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileName,$twoTrackOutputFileName);
-		    my $url=substr($resultCode,index($resultCode,"<>")+2);
-		    print "URL:$url\n";
-		    print URLFILE "$url\n";
-		
-		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileName,$transTrackOutputFileName);
-		    my $url=substr($resultCode,index($resultCode,"<>")+2);
-		    print "URL:$url\n";
-		    print URLFILE "$url\n";
-		close URLFILE;
-		
-		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileNameNoArray,$twoTrackOutputFileNameNoArray);
-		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray);
-		
-		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman);
-		$resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman);
-		
-		#while($newresultCode!=200 and $tryCount<3){
-		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileName,$twoTrackOutputFileName,(30+30*$tryCount));
-		#    print "RESULT CODE:$resultCode\n";
-		#    if($tryCount==0){
-		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
-		#	print "URL:$url\n";
-		#	print URLFILE "$url\n";
-		#    }
-		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		#    $tryCount=$tryCount+1;
-		#}
-		##sleep(15);
-		#$newresultCode=0;
-		#$tryCount=0;
-		#while($newresultCode!=200 and $tryCount<3){
-		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileName,$transTrackOutputFileName,(30+30*$tryCount));
-		#    print "RESULT CODE2:$resultCode\n";
-		#    if($tryCount==0){
-		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
-		#	print "URL:$url\n";
-		#	print URLFILE "$url\n";
-		#    }
-		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		#    $tryCount=$tryCount+1;
-		#}
-		#close URLFILE;
-		#$newresultCode=0;
-		#$tryCount=0;
-		#while($newresultCode!=200 and $tryCount<3){
-		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileNameNoArray,$twoTrackOutputFileNameNoArray,(30+30*$tryCount));
-		#    print "RESULT CODE2:$resultCode\n";
-		#    if($tryCount==0){
-		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
-		#    }
-		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		#    $tryCount=$tryCount+1;
-		#}
-		#$newresultCode=0;
-		#$tryCount=0;
-		#while($newresultCode!=200 and $tryCount<3){
-		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileNameNoArray,$transTrackOutputFileNameNoArray,(30+30*$tryCount));
-		#    print "RESULT CODE2:$resultCode\n";
-		#    if($tryCount==0){
-		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
-		#    }
-		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		#    $tryCount=$tryCount+1;
-		#}
-		#$newresultCode=0;
-		#$tryCount=0;
-		#while($newresultCode!=200 and $tryCount<3){
-		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newPngOutputFileNameHuman,$twoTrackOutputFileNameHuman,(30+30*$tryCount));
-		#    print "RESULT CODE2:$resultCode\n";
-		#    if($tryCount==0){
-		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
-		#    }
-		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		#    $tryCount=$tryCount+1;
-		#}
-		#my $resultCode=getImage($species,$chr,$minCoord,$maxCoord,$newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman);
-		#print "RESULT CODE MAIN:$resultCode\n";
-		#$newresultCode=0;
-		#$tryCount=0;
-		#while($newresultCode!=200 and $tryCount<3){
-		#    my $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $newFilterPngOutputFileNameHuman,$transTrackOutputFileNameHuman,(30+30*$tryCount));
-		#    print "RESULT CODE2:$resultCode\n";
-		#    if($tryCount==0){
-		#	my $url=substr($resultCode,index($resultCode,"<>")+2);
-		#    }
-		#    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		#    $tryCount=$tryCount+1;
-		#}
+	##output XML file
+	my $xml = new XML::Simple (RootName=>'GeneList');
+	my $data = $xml->XMLout(\%GeneHOH);
+	# open xml file
+	my $xmlOutputFileName=">$outputDir/Region.xml";
+	open XMLFILE, $xmlOutputFileName or die " Could not open XML file $xmlOutputFileName for writing $!\n\n";
+	# write the header 
+	print XMLFILE '<?xml version="1.0" encoding="UTF-8"?>';
+	print XMLFILE "\n\n";
+	# Write the xml data
+	print XMLFILE $data;
+	close XMLFILE;
+	
+	#read QTLs
+	my $qStart=time();
+	my $qtlRef=readQTLDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	my %qtlHOH=%$qtlRef;
+	my $qEnd=time();
+	print "QTLs completed in ".($qEnd-$qStart)." sec.\n";
+	
+	my $smStart=time();
+	my $smncRef=readSmallNoncodingDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	my %smncHOH=%$smncRef;
+	my $smEnd=time();
+	print "Small RNA completed in ".($smEnd-$smStart)." sec.\n";
+	
+	my $trackDB="mm9";
+	if($species eq 'Rat'){
+		$trackDB="rn5";
+	}
+	
+	#create bed files in region folder
+	createQTLTrack(\%qtlHOH,$outputDir."qtl.track",$trackDB,$chr);
+	createSNPTrack(\%snpHOH,$outputDir."snp.track",$trackDB);
+	createProteinCodingTrack(\%GeneHOH,$outputDir."coding.track",$trackDB,1);
+	createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
+	createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
+	my $scriptEnd=time();
+	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 }
 #
 #	
@@ -582,8 +508,4 @@ sub createXMLFile
 	my $arg17=$ARGV[16];
 	my $arg18=$ARGV[17];
 	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18);
-
-	
-	# Example call:
-	# perl writeXML.pl /Users/clemensl/TestingOutput/ /Users/clemensl/TestingOutput/ /Users/clemensl/TestingOutput/gene.xml Mouse Core ENSMUSG00000029064
 

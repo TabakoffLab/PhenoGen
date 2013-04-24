@@ -133,7 +133,7 @@ sub writeGeneIDs
                         $overLapG=$overlapLen/$geneLen*100;
                         #print "overlapLen=$overlapLen  overLap=$overLapTC  $overLapG\n";
                     }
-                    if($overLapTC>=40.0 or $overLapG>=40.0){
+                    if(($overLapTC>=50.0 and $overLapG>=30.0) or ($overLapG>=50.0 and $overLapTC>=30.0)){
                         $count++;
                         print OUT "$tcID\t$geneName\t$geneExternalName\t$geneStart\t$geneStop\t$overLapTC\t$overLapG\t$geneDescription\n";   
                     }
@@ -144,9 +144,9 @@ sub writeGeneIDs
             }
             #print "$tcID\t #genes=$count\n";
         }
-        
-        close IN;
         close OUT;
+        close IN;
+        
         
 }
 

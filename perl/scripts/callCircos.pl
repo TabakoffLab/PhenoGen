@@ -105,7 +105,7 @@ sub callCircos{
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
-		$perlBinary = '/usr/local/bin/perl';
+		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 	}
 	else{
@@ -114,7 +114,7 @@ sub callCircos{
 
 
 	
-    my @systemArgs = ($perlBinary,$circosBinary, "-conf", $confDirectory."circos.conf");
+    my @systemArgs = ($perlBinary,$circosBinary, "-conf", $confDirectory."circos.conf", "-noparanoid");
     print " System call with these arguments: @systemArgs \n";
     system(@systemArgs);
     if ( $? == -1 )

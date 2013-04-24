@@ -51,6 +51,7 @@ public class AsyncGeneDataExpr extends Thread {
         private String perlEnvVar="";
         private String ucscDir="";
         private String bedDir="";
+        private String ver="";
         private Connection dbConn = null;
         String outputDir="";
         String pListFile="";
@@ -71,8 +72,9 @@ public class AsyncGeneDataExpr extends Thread {
         BufferedWriter outGroup;
         BufferedWriter outIndiv;
         SyncAndClose sac;
+       
         
-    public AsyncGeneDataExpr(HttpSession inSession,String pListFile,String outputDir,AsyncGeneDataTools prevThread,ArrayList<Thread> threadList,int maxThreadCount,BufferedWriter outGroup,BufferedWriter outIndiv,SyncAndClose sac ) {
+    public AsyncGeneDataExpr(HttpSession inSession,String pListFile,String outputDir,AsyncGeneDataTools prevThread,ArrayList<Thread> threadList,int maxThreadCount,BufferedWriter outGroup,BufferedWriter outIndiv,SyncAndClose sac,String ver ) {
                 this.session = inSession;
                 this.pListFile=pListFile;
                 this.outputDir=outputDir;
@@ -85,6 +87,7 @@ public class AsyncGeneDataExpr extends Thread {
                 this.outGroup=outGroup;
                 this.outIndiv=outIndiv;
                 this.sac=sac;
+                this.ver=ver;
 
                 log.debug("AsyncGeneDataExpr Start");
 
@@ -310,47 +313,53 @@ public class AsyncGeneDataExpr extends Thread {
             
             
             while (!DSPathList.isEmpty()) {
-                String sampleFile=sampleFileList.remove(0);
-                String DSPath=DSPathList.remove(0);
-                String outIndivFile=outIndivFileList.remove(0);
-                String outGroupFile=outGroupFileList.remove(0);
-                String groupFile=groupFileList.remove(0);
-                String tissue=tissueList.remove(0);
-                String tissueNoSpaces=tissue.replaceAll(" ", "_");
-                String platform=platformList.remove(0);
-                String outGroupPath=outputDir+outGroupFile;
-                String outIndivPath=outputDir+outIndivFile;
-                try {
-                    myStatistic.callHeatMapOutputRawSpecificBoth(platform,
-                            DSPath,
-                            "v3",
-                            sampleFile,
-                            outputDir + "tmp_psList.txt",
-                            outIndivFile,
-                            outGroupFile,
-                            outputDir,
-                            outputDir + "Gene.xml",
-                            outputDir + tissueNoSpaces +"_exonCorHeatMap.txt",
-                            thisThread.getId());
-                    
-                    sac.processFiles(this,groupFile,outGroupPath,outIndivPath,tissue);
-                    doneThread=true;
-                    sac.done(this,"AsyncGeneDataExpr completed normally");
-                } catch (RException e) {
-                    doneThread=true;
-                    sac.done(this,"AsyncGeneDataExpr("+tissue+","+thisThread.getId()+") had errors.");
-                    log.error("Error outputing Avg Values", e);
-                    Email myAdminEmail = new Email();
-                        myAdminEmail.setSubject("Exception in R_session: output.Raw.Specific.Gene.Both");
-                        myAdminEmail.setContent("There was an error while running output.Raw.Specific.Gene.Both("+tissue+","+thisThread.getId()+","+
-                                DSPath+","+sampleFile+","+outputDir+
-                                ") from AsyncGeneDataExpr Thread.\n");
-                        try {
-                            myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-                        } catch (Exception mailException) {
-                            log.error("error sending message", mailException);
-                            throw new RuntimeException();
-                        }
+                String psListFile=outputDir + "tmp_psList.txt";
+                File psFile=new File(psListFile);
+                if(psFile.length()>0){
+                    String sampleFile=sampleFileList.remove(0);
+                    String DSPath=DSPathList.remove(0);
+                    String outIndivFile=outIndivFileList.remove(0);
+                    String outGroupFile=outGroupFileList.remove(0);
+                    String groupFile=groupFileList.remove(0);
+                    String tissue=tissueList.remove(0);
+                    String tissueNoSpaces=tissue.replaceAll(" ", "_");
+                    String platform=platformList.remove(0);
+                    String outGroupPath=outputDir+outGroupFile;
+                    String outIndivPath=outputDir+outIndivFile;
+                    try {
+                        myStatistic.callHeatMapOutputRawSpecificBoth(platform,
+                                DSPath,
+                                ver,
+                                sampleFile,
+                                outputDir + "tmp_psList.txt",
+                                outIndivFile,
+                                outGroupFile,
+                                outputDir,
+                                //outputDir + "Gene.xml",
+                                outputDir + tissueNoSpaces +"_exonCorHeatMap.txt",
+                                thisThread.getId());
+
+                        sac.processFiles(this,groupFile,outGroupPath,outIndivPath,tissue);
+                        doneThread=true;
+                        sac.done(this,"AsyncGeneDataExpr completed normally");
+                    } catch (RException e) {
+                        doneThread=true;
+                        sac.done(this,"AsyncGeneDataExpr("+tissue+","+thisThread.getId()+") had errors.");
+                        log.error("Error outputing Avg Values", e);
+                        Email myAdminEmail = new Email();
+                            myAdminEmail.setSubject("Exception in R_session: output.Raw.Specific.Gene.Both");
+                            myAdminEmail.setContent("There was an error while running output.Raw.Specific.Gene.Both("+tissue+","+thisThread.getId()+","+
+                                    DSPath+","+sampleFile+","+outputDir+
+                                    ") from AsyncGeneDataExpr Thread.\n");
+                            try {
+                                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                            } catch (Exception mailException) {
+                                log.error("error sending message", mailException);
+                                throw new RuntimeException();
+                            }
+                    }
+                }else{
+                    log.debug("NO PROBESETS");
                 }
                 
             }

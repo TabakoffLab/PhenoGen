@@ -120,9 +120,9 @@ public class AsyncGeneDataTools extends Thread {
         }
         Date start=new Date();
         try{
+            //outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
             callDEHeatMap(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
             callPanelHerit(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
-            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
             done=true;
             Date end=new Date();
             try{
@@ -660,13 +660,14 @@ public class AsyncGeneDataTools extends Thread {
 }
  
 class GeneLoc{
-    String id="",geneSymbol="";
+    String id="",geneSymbol="",strand;
     long start=0,stop=0;
-    GeneLoc(String name,String symbol,long start, long stop){
+    GeneLoc(String name,String symbol,long start, long stop,String strand){
         id=name;
         this.geneSymbol=symbol;
         this.start=start;
         this.stop=stop;
+        this.strand=strand;
     }
 
     public String getID() {
@@ -701,6 +702,10 @@ class GeneLoc{
         this.stop = stop;
     }
     
+    public String getStrand(){
+        return strand;
+    }
+    
     public static ArrayList<GeneLoc> readGeneListFile(String outputDir, Logger log){
         ArrayList<GeneLoc> ret=new ArrayList<GeneLoc>();
         File inf=new File(outputDir+"geneList.txt");
@@ -713,9 +718,10 @@ class GeneLoc{
             String geneSym=tabs[1];
             String sStart=tabs[2];
             String sStop=tabs[3];
+            String strand=tabs[4];
             long start=Long.parseLong(sStart);
             long stop=Long.parseLong(sStop);
-            GeneLoc g=new GeneLoc(ensID,geneSym,start,stop);
+            GeneLoc g=new GeneLoc(ensID,geneSym,start,stop,strand);
             ret.add(g);
         }
         in.close();

@@ -1,16 +1,10 @@
 
 	<!-- Line 4673 of jquery-1.5.js and jquery-1.7.js(line 5432-5444) jquery1.8.3(7069-7079) has been modified. Do not forget to change in new file -->
-	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.8.3.js"></script>
-	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-ui-1.9.2.min.js"></script> 
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.ui.widget.js"></script> -->
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.ui.dialog.js"></script> -->
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.ui.mouse.js"></script> -->
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.ui.draggable.js"></script>--> 
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.ui.position.js"></script> -->
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.ui.resizable.js"></script> -->
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.ui.sortable.js"></script> -->
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.ui.button.js"></script> -->
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-ui.js"></script> -->
+	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.8.3.js"></script>-->
+    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.9.1.min.js"></script>
+    <!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.1.1.min.js"></script>-->
+    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.1.1.js"></script>
+	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-ui-1.10.2.min.js"></script> 
 	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tooltip.js"></script>
 
 	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tablesorter.js"></script>

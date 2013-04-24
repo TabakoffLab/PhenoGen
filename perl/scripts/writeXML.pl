@@ -1,12 +1,11 @@
 #!/usr/bin/perl
 
-#use lib "/opt/ensembl/src/bioperl-live";
+#use lib "/opt/ensembl/src/bioperl-live";cpan
 #use lib "/opt/ensembl/src/ensembl/modules";
 
 use Bio::EnsEMBL::Registry;
 use XML::LibXML;
 use XML::Simple;
-use data::Dumper;
 #use Carp::Always;
 #use diagnostics;
 
@@ -322,7 +321,7 @@ sub createXMLFile
 		my $bigBedOutputFileName = $bedOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".bb";
 		my $bigBedOutputFileNameNoPath = $GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".bb";
 		my $twoTrackOutputFileName = $bedOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".2tracks";
-		$GeneHOHRef = addAlternateID(\%GeneHOH, $cntGenes,$newBedOutputFileName,$twoTrackOutputFileName,$bigBedOutputFileNameNoPath,$species);
+		$GeneHOHRef = addAlternateID(\%GeneHOH, $cntGenes,$newBedOutputFileName,$twoTrackOutputFileName,$bigBedOutputFileNameNoPath,$species,\@probesetHOH);
 		%GeneHOH = %$GeneHOHRef;
 		# Convert the bed file to a big bed file
 		# The big bed file must end up in the directory /data/ucsc on phenogen

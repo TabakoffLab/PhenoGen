@@ -58,6 +58,7 @@
 		<div class="brClear"></div>
 		<%@ include file="/web/datasets/include/preAnalysisSteps.jsp" %>
 		<div class="brClear"></div>
+    <%if(!selectedDataset.getName().startsWith("Public HXB/BXH RI Rats (") ||(selectedDataset.getName().startsWith("Public HXB/BXH RI Rats (") && selectedDatasetVersion.getVersion()>3)){%>
     <div class="page-intro">
                         <p>You may perform any of the following types of analyses on your normalized dataset.</p>
                         <% if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(selectedDataset.getArray_type())) { %>
@@ -91,6 +92,11 @@
         <input type="hidden" name="action" value="">
     	</form>
 	</div>
+    <%}else{%>
+    	<div class="page-intro">
+                        <p>This is a previous version of the dataset for an earlier version of the genome.  A newer version is available for new analysis, while this version has been preserved for access to previous analyses.</p>
+       </div>
+    <%}%>
     <BR />
     <% if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(selectedDataset.getArray_type())) { %>
         <div class="list_container">
@@ -192,7 +198,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		setupPage();
-		setTimeout("setupMain()", 100); 
+		setTimeout("setupMain()", 100);
 	});
 </script>
 

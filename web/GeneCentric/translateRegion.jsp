@@ -39,15 +39,17 @@ Fill in the form below to translate a Human/Mouse/Rat region to regions on Mouse
         <label>Source Species:
   			<select name="transSourceSpeciesCB" id="transSourceSpeciesCB">
            		<option value="hg19"  selected>Human (Hg19)</option> 
-  				<option value="mm9">Mouse (Mm9)</option>
+  				<option value="mm9" disabled="disabled">Mouse (Mm9)(Not Supported)</option>
+                <option value="mm10">Mouse (Mm10)</option>
    				<option value="rn4">Rat (Rn4)</option>
+   				<option value="rn5" disabled="disabled">Rat (Rn5)(Not Supported)</option>
   			</select>
   		</label>
         ->
         <label>Target Species:
   <select name="transSpeciesCB" id="transSpeciesCB">
-  	<option value="Mm"  <%if(selectedSpecies.equals("Mm")){%>selected<%}%>>Mouse (Mm9)</option>
-    <option value="Rn"  <%if(selectedSpecies.equals("Rn")){%>selected<%}%>>Rat (Rn4)</option>
+  	<option value="Mm9"  <%if(selectedSpecies.equals("Mm")){%>selected<%}%>>Mouse (Mm9)</option>
+    <option value="Rn5"  <%if(selectedSpecies.equals("Rn")){%>selected<%}%>>Rat (Rn5)</option>
   </select>
   </label>
         <BR /><BR />
@@ -65,7 +67,11 @@ Fill in the form below to translate a Human/Mouse/Rat region to regions on Mouse
     <option value="0.1" <%if(selectedRatio.equals("0.1")){%>selected<%}%>>>0.1</option>
     <option value="0.05" <%if(selectedRatio.equals("0.05")){%>selected<%}%>>>0.05</option>
   </select>
-  </label><div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpTranslate1" class="helpImageTranslate" src="../web/images/icons/help.png" /></div><BR /><BR />
+  </label>
+  <span title="This specifies the portion of bases that must map to the target region. For large regions you may have to keep this low to get any results.  For small regions you may want to increase this so that you will get a close match if there is one."><img src="<%=imagesDir%>icons/info.gif"></span>
+  
+  
+  <BR /><BR />
   
   <label>Min length of the target species region(% of source region length):
   <select name="transLengthCB" id="transLengthCB">
@@ -78,7 +84,10 @@ Fill in the form below to translate a Human/Mouse/Rat region to regions on Mouse
     <option value="0.1" <%if(selectedPerc.equals("0.1")){%>selected<%}%>>> 0.1%</option>
     <option value="0" <%if(selectedPerc.equals("0")){%>selected<%}%>>None</option>
   </select>
-  </label><div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpTranslate2" class="helpImageTranslate" src="../web/images/icons/help.png" /></div><br /><BR />
+  </label>
+  <span title="This filters the results based on length of the target sequence and qeury sequence matched."><img src="<%=imagesDir%>icons/info.gif"></span>
+
+  <br /><BR />
  <div style="text-align:center; width:100%;"> <input type="button" name="translateBTN" id="translateBTN" value="Translate Region" onClick="runTranslation()">
  <span id="clearResults" style="display:none;"><input type="button" name="clearBTN" id="clearBTN" value="Clear Previous Results" onClick="clearResults()"><BR />
  	<input name="chkbox" type="checkbox" id="prevResultsCBX" value="prevResultsCBX" /> Always clear previous results
@@ -98,7 +107,7 @@ Fill in the form below to translate a Human/Mouse/Rat region to regions on Mouse
 	<div class="closeWindow">Close</div>
     
     
-<div id="HelpTranslate1Content" class="inpageHelpContentTranslate" title="<center>Help</center>"><div class="help-content">
+<!--<div id="HelpTranslate1Content" class="inpageHelpContentTranslate" title="<center>Help</center>"><div class="help-content">
 <H3>Minimum Ratio of bases to map to target region</H3>
 This specifies the portion of bases that must map to the target region. <BR /> 
 -For large regions you may have to keep this low to get any results.  <BR />
@@ -108,7 +117,7 @@ This specifies the portion of bases that must map to the target region. <BR />
 <div id="HelpTranslate2Content" class="inpageHelpContentTranslate" title="<center>Help</center>"><div class="help-content">
 <H3>Minimum Length(target/source)</H3>
 This filters the results based on length of the target sequence and qeury sequence matched.  Results   
-</div></div>
+</div></div>-->
 
 <script type="text/javascript">
 	$('.inpageHelpContentTranslate').hide();
@@ -128,17 +137,21 @@ This filters the results based on length of the target sequence and qeury sequen
 	});
 	
 	 $('#transSourceSpeciesCB').change(function(){
-	 		var source=$('#transSourceSpeciesCB').val().substring(0,2);
+	 		var source=$('#transSourceSpeciesCB').val();
 			var dest=$('#transSpeciesCB').val().toLowerCase();
 			if(source==dest){
 				alert("Please change the destination or source so they are not equal.");
+			}else if((source=='mm9'&&dest=='rn5')||(source=='rn5'&&dest=='mm9')){
+				alert("This conversion is not supported.  Sorry for any inconvenience.  Please change the destination or source.");
 			}
 	 });
 	 $('#transSpeciesCB').change(function(){
-	 		var source=$('#transSourceSpeciesCB').val().substring(0,2);
+	 		var source=$('#transSourceSpeciesCB').val();
 			var dest=$('#transSpeciesCB').val().toLowerCase();
 			if(source==dest){
 				alert("Please change the destination or source so they are not equal.");
+			}else if((source=='mm9'&&dest=='rn5')||(source=='rn5'&&dest=='mm9')){
+				alert("This conversion is not supported.  Sorry for any inconvenience.  Please change the destination or source.");
 			}
 	 });
 

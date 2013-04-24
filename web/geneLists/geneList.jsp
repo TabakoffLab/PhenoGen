@@ -19,7 +19,7 @@
 				for (int i=0; i<myGeneArray.length; i++) {
 					Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 			
 					if (thisIdentifier != null) {
-						myIDecoderClient.setNum_iterations(1);
+						myIDecoderClient.setNum_iterations(3);
 						Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
 												new String[] {"Gene Symbol"});
 						if (geneSymbols.size() > 0) { 						
@@ -90,6 +90,7 @@
 			</thead>
 			<tbody>
 			<%
+					myIDecoderClient.setNum_iterations(1);
 	                session.setAttribute("myGeneArray", myGeneArray);
                 	for (int i=0; i<myGeneArray.length; i++) {
 				%>

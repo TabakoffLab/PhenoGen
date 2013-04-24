@@ -44,6 +44,94 @@ table.list_base tr.col_title th {
 
 }
 
+table.list_base tr.coding.odd td,table.list_base tr td.coding.odd,table.list_base tr.numExonPlus.odd td,table.list_base tr.numExonMinus.odd td,table.list_base tr.numExonUknw.odd td{
+	background:#7EB5D6;
+} 
+table.list_base tr.coding.ensembl.odd td,table.list_base tr td.coding.ensembl.odd,table.list_base tr.numExonPlus.ensembl.odd td,table.list_base tr.numExonMinus.ensembl.odd td,table.list_base tr.numExonUknw.ensembl.odd td{
+	background:#DFC184;
+}
+table.list_base tr.smallnc.ensembl td a{
+	color:#4C7298;
+	text-decoration:underline;
+}
+table.list_base tr.coding td a,table.list_base tr.noncoding td a,table.list_base tr.smallnc td a,table.list_base tr.numExonPlus td a,table.list_base tr.numExonMinus td a,table.list_base tr.numExonUknw td a{
+	color:#FFFFFF;
+	text-decoration:underline;
+}
+
+table.list_base tr.coding.even td,table.list_base tr.numExonPlus.even td,table.list_base tr.numExonMinus.even td,table.list_base tr.numExonUknw.even td{
+	background:#89BEDF;
+} 
+table.list_base tr.coding.ensembl.even td,table.list_base tr.numExonPlus.ensembl.even td,table.list_base tr.numExonMinus.ensembl.even td,table.list_base tr.numExonUknw.ensembl.even td{
+	background:#E9CA8D;
+}
+
+table.list_base tr.noncoding.ensembl.odd td,table.list_base tr td.noncoding.ensembl.odd{
+	background:#B58AA5;
+}
+table.list_base tr.noncoding.odd td,table.list_base tr td.noncoding.odd{
+	background:#CECFCE;
+} 
+table.list_base tr.noncoding.ensembl.even td{
+	background:#BE95AE;
+}
+table.list_base tr.noncoding.even td{
+	background:#D9DAD9;
+}
+
+table.list_base tr.smallnc.odd td,table.list_base tr td.smallnc.odd{
+	background:	#99CC99;
+}
+table.list_base tr.smallnc.even td{
+	background:	#A3D4A3;
+}
+table.list_base tr.smallnc.ensembl.odd td,table.list_base tr td.smallnc.ensembl.odd{
+	background:	#FFFF66;
+}
+table.list_base tr.smallnc.ensembl.even td{
+	background: #F8F85C;
+}
+
+
+
+table.list_base tr td.snp.bnlx{
+	background:#0000FF;
+}
+
+table.list_base tr td.snp.shrh{
+	background:#FF0000;
+}
+
+table.list_base tr td.indel.bnlx{
+	background:#000096;
+}
+
+table.list_base tr td.indel.shrh{
+	background:#960000;
+}
+
+table.list_base tr td.corePS{
+	background:#FF0000;
+}
+table.list_base tr td.extendedPS{
+	background:#0000FF;
+}
+table.list_base tr td.fullPS{
+	background:#009A00;
+}
+table.list_base tr td.ambPS{
+	background:#000000;
+}
+
+table.list_base tr td.helicos{ 
+background-image: -ms-linear-gradient(left, #FFFFFF 0%, #000000 100%);
+background-image: -moz-linear-gradient(left, #FFFFFF 0%, #000000 100%);
+background-image: -o-linear-gradient(left, #FFFFFF 0%, #000000 100%);
+background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #FFFFFF), color-stop(1, #000000));
+background-image: -webkit-linear-gradient(left, #FFFFFF 0%, #000000 100%);
+background-image: linear-gradient(to right, #FFFFFF 0%, #000000 100%);
+}
+
 table.list_base th.noSort.topLine {
     border-bottom: 0px;
     border-top: solid 1px #999;
@@ -92,6 +180,10 @@ table.list_base td.leftBorder {
     vertical-align: middle;
 }
 
+table.list_base td.topLine {
+	border-top: solid 1px #BBBBBB;
+}
+
 table.list_base td.rightBorder {
 	border-right: solid 1px #000000;
     cursor: default;
@@ -128,6 +220,7 @@ table.sideHeading td.header{
 table.sideHeading td{
 	vertical-align: top;
 }
+
 
 /*
 table.list_base td.selected {

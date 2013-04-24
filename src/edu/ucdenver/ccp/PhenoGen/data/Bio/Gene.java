@@ -8,6 +8,7 @@ import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptCluster;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.ProbeSet;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.EQTL;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.EQTLCount;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.SequenceVariant;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,8 +38,8 @@ import org.xml.sax.SAXException;
  */
 
 public class Gene {
-    String geneID="",bioType="",chromosome="",strand="",geneSymbol="",source="",description="";
-    long start=0,end=0,length=0;
+    String geneID="",bioType="",chromosome="",strand="",geneSymbol="",source="",description="",ensemblAnnot="";
+    long start=0,end=0,length=0,min=-1,max=-1;
     int probesetCountTotal=0,probesetCountEns=0,probesetCountRNA=0,heritCount=0,dabgCount=0;
     double exonCoverageEns=0,exonCoverageRna=0;
     HashMap fullProbeList=new HashMap();
@@ -47,6 +50,7 @@ public class Gene {
     HashMap qtls=new HashMap();
     HashMap qtlCounts=new HashMap();
     HashMap totalCounts=new HashMap();
+    HashMap snps=new HashMap();
     TranscriptCluster tc=null;
     
     
@@ -169,6 +173,10 @@ public class Gene {
         this.description = description;
     }
     
+    public String getEnsemblAnnotation(){
+        return this.ensemblAnnot;
+    }
+    
     
 
     public ArrayList<Transcript> getTranscripts() {
@@ -177,12 +185,56 @@ public class Gene {
 
     public void setTranscripts(ArrayList<Transcript> transcripts) {
         this.transcripts = transcripts;
+        if(transcripts!=null){
+            for(int i=0;i<transcripts.size();i++){
+                ArrayList<Annotation> annot=transcripts.get(i).getAnnotationBySource("AKA");
+                if(annot!=null && annot.size()>=1){
+                String geneID=annot.get(0).getEnsemblGeneID();
+                    if(this.ensemblAnnot.equals("")){
+                        ensemblAnnot=geneID;
+                    }else if(ensemblAnnot.equals(geneID)){
+
+                    }else{
+                        System.err.println("ERROR: Gene is assigned multiple ensembl genes:"+this.geneID+":"+ensemblAnnot+":"+geneID);               
+                    }
+                }
+            }
+            this.setupSnps(transcripts);
+        }
     }
     
     public void addTranscripts(ArrayList<Transcript> toAdd) {
         for(int i=0;i<toAdd.size();i++){
             transcripts.add(toAdd.get(i));
+            ArrayList<Annotation> annot=toAdd.get(i).getAnnotationBySource("AKA");
+            String geneID=annot.get(0).getEnsemblGeneID();
+            if(this.ensemblAnnot.equals("")){
+                ensemblAnnot=geneID;
+            }else if(ensemblAnnot.equals(geneID)){
+                
+            }else{
+                System.err.println("ERROR: Gene is assigned multiple ensembl genes:"+this.geneID+":"+ensemblAnnot+":"+geneID);               
+            }
         }
+        this.setupSnps(toAdd);
+    }
+    
+    public void addTranscript(Transcript toAdd) {
+            transcripts.add(toAdd);
+            ArrayList<Transcript> tmp=new ArrayList<Transcript>();
+            tmp.add(toAdd);
+            this.setupSnps(tmp);
+            ArrayList<Annotation> annot=toAdd.getAnnotationBySource("AKA");
+            if(annot!=null && annot.size()>0){
+                String geneID=annot.get(0).getEnsemblGeneID();
+                if(this.ensemblAnnot.equals("")){
+                    ensemblAnnot=geneID;
+                }else if(ensemblAnnot.equals(geneID)){
+
+                }else{
+                    System.err.println("ERROR: Gene is assigned multiple ensembl genes:"+this.geneID+":"+ensemblAnnot+":"+geneID);               
+                }
+            }
     }
     
     public int getTranscriptCountEns(){
@@ -203,6 +255,16 @@ public class Gene {
             }
         }
         return count;
+    }
+    
+    public ArrayList<Transcript> getSMNCTranscripts(){
+        ArrayList<Transcript> ret=new ArrayList<Transcript>();
+        for(int i=0;i<transcripts.size();i++){
+            if(transcripts.get(i).getID().startsWith("smRNA")){
+                ret.add(transcripts.get(i));
+            }
+        }
+        return ret;
     }
     
     public int getProbeCount(){
@@ -419,7 +481,7 @@ public class Gene {
     }
     
     public void addTranscriptCluster(HashMap transcriptClustersCore,HashMap transcriptClustersExt,HashMap transcriptClustersFull,Logger log){
-        log.debug("process Gene:"+this.geneID);
+        //log.debug("process Gene:"+this.geneID);
         TranscriptCluster max=this.getMaxOverlap(transcriptClustersCore);
         if(max!=null){
             tc=max;
@@ -476,6 +538,123 @@ public class Gene {
         return tc;
     }
     
+    public int getSnpCount(String strain,String type){
+        int ret=0;
+        HashMap m=(HashMap)snps.get(strain);
+        if(m!=null){
+            HashMap t=(HashMap)m.get(type);
+            if(t!=null){
+                ret=t.size();
+            }
+        }
+        return ret;
+    }
+    
+    private void setupSnps(ArrayList<Transcript> addedTranscripts){
+        //Logger log = Logger.getRootLogger();
+        //fill strain specific
+        for(int i=0;i<addedTranscripts.size();i++){
+            ArrayList<SequenceVariant> trVar=addedTranscripts.get(i).getVariants();
+            for(int j=0;j<trVar.size();j++){
+                HashMap strain=null;
+                HashMap type=null;
+                if(snps.containsKey(trVar.get(j).getStrain())){
+                    strain=(HashMap)snps.get(trVar.get(j).getStrain());
+                }else{
+                    strain=new HashMap();
+                    snps.put(trVar.get(j).getStrain(), strain);
+                }
+                if(strain.containsKey(trVar.get(j).getShortType())){
+                    type=(HashMap)strain.get(trVar.get(j).getShortType());
+                }else{
+                    type=new HashMap();
+                    strain.put(trVar.get(j).getShortType(), type);
+                }
+                if(type.containsKey(trVar.get(j).getId())){
+                    
+                }else{
+                    type.put(trVar.get(j).getId(), trVar.get(j));
+                }
+            }
+        }
+        //find common variants
+        HashMap common=null;
+        if(snps.containsKey("common")){
+            common=(HashMap)snps.get("common");
+        }else{
+            common=new HashMap();
+            snps.put("common", common);
+        }
+        //Need to make this work for different strains in the future but for now this will work.
+        HashMap bnlx=(HashMap)snps.get("BNLX");
+        HashMap shrh=(HashMap)snps.get("SHRH");
+        if(bnlx!=null&&shrh!=null){
+            Iterator bnlxKey=bnlx.keySet().iterator();
+            while(bnlxKey.hasNext()){
+                String bTypeKey=(String)bnlxKey.next();
+                HashMap bTypeHM=(HashMap)bnlx.get(bTypeKey);
+                HashMap sTypeHM=(HashMap)shrh.get(bTypeKey);
+                //log.debug("bType:"+bTypeKey);
+                ArrayList<Integer> bToRemove=new ArrayList<Integer>();
+                ArrayList<Integer> sToRemove=new ArrayList<Integer>();
+                if(bTypeHM!=null&&sTypeHM!=null){
+                    //log.debug("TYPE MATCH");
+                    matchCommon(common,bTypeHM,sTypeHM,bToRemove,sToRemove);
+                    while(!bToRemove.isEmpty()){
+                        Integer tmp=bToRemove.get(0);
+                        bTypeHM.remove(tmp.intValue());
+                        bToRemove.remove(0);
+                    }
+                    while(!sToRemove.isEmpty()){
+                        Integer tmp=sToRemove.get(0);
+                        sTypeHM.remove(tmp.intValue());
+                        sToRemove.remove(0);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void matchCommon(HashMap common,HashMap bTypeHM,HashMap sTypeHM,ArrayList<Integer> bToRemove,ArrayList<Integer> sToRemove){
+       //Logger log = Logger.getRootLogger();
+       Iterator bnlxKey=bTypeHM.keySet().iterator();
+        while(bnlxKey.hasNext()){
+                int bk=((Integer)bnlxKey.next()).intValue();
+                SequenceVariant bv=(SequenceVariant)bTypeHM.get(bk);
+                if(bv!=null){
+                    //log.debug("bnlxVar:"+bv.toString());
+                    boolean foundMatch=false;
+                    Iterator shrhKey=sTypeHM.keySet().iterator();
+                    while(!foundMatch&&shrhKey.hasNext()){
+                        int sk=((Integer)shrhKey.next()).intValue();
+                        SequenceVariant sv=(SequenceVariant)sTypeHM.get(sk);
+                        if(sv!=null&& bv.getShortType().equals(sv.getShortType())){
+                            //log.debug(" Compare to shrhVar:"+sv.toString());
+                            if(bv.getStart()==sv.getStart() && bv.getStop()==sv.getStop() && 
+                                    bv.getRefSeq().equals(sv.getRefSeq()) && bv.getStrainSeq().equals(sv.getStrainSeq())){
+                                HashMap type;
+                                if(common.containsKey(bv.getShortType())){
+                                    type=(HashMap)common.get(bv.getShortType());
+                                }else{
+                                    type=new HashMap();
+                                    common.put(bv.getShortType(), type);
+                                }
+                                //log.debug("FOUND MATCH");
+                                foundMatch=true;
+                                ArrayList<SequenceVariant> combined=new ArrayList<SequenceVariant>();
+                                combined.add(sv);
+                                combined.add(bv);
+                                type.put(bv.getId()+":"+sv.getId(),combined);
+                                sToRemove.add(sk);
+                                bToRemove.add(bk);
+                            }
+                        }
+                    }
+                }
+
+            }
+    }
+    
     //Methods to read Gene Data from RegionXML file.
     public static ArrayList<Gene> readGenes(String url) {
         ArrayList<Gene> genelist=new ArrayList<Gene>();
@@ -503,7 +682,7 @@ public class Gene {
                     }
                     Gene tmpG=new Gene(geneID,start,stop,chr,strand,biotype,geneSymbol,source,description);
                     NodeList transcripts=genes.item(i).getChildNodes();
-                    ArrayList<Transcript> tmp=readTranscripts(transcripts.item(1).getChildNodes());
+                    ArrayList<Transcript> tmp=readTranscripts(transcripts.item(1).getChildNodes(),geneID);
                     tmpG.setTranscripts(tmp);
                     genelist.add(tmpG);
                 }
@@ -521,12 +700,17 @@ public class Gene {
         return genelist;
         
     }
-    private static ArrayList<Transcript> readTranscripts(NodeList nodes) {
+    private static ArrayList<Transcript> readTranscripts(NodeList nodes,String geneID) {
         ArrayList<Transcript> transcripts=new ArrayList<Transcript>();
+        String tissue="";
+        if(!geneID.startsWith("ENS")&&geneID.indexOf(".")>-1){
+            tissue=geneID.substring(0,geneID.indexOf("."));
+        }
         for(int i=0;i<nodes.getLength();i++){
             if(nodes.item(i).getNodeName().equals("Transcript")){
                 ArrayList<Exon> exons=null;
                 ArrayList<Intron> introns=null;
+                ArrayList<Annotation> annot=null;
                 NodeList children=nodes.item(i).getChildNodes();
                 for(int j=0;j<children.getLength();j++){
                     //System.out.println(j+":"+children.item(j).getNodeName());
@@ -536,13 +720,28 @@ public class Gene {
                     if(children.item(j).getNodeName().equals("intronList")){
                         introns=readIntrons(children.item(j).getChildNodes());
                     }
+                    if(children.item(j).getNodeName().equals("annotationList")){
+                        annot=readAnnotations(children.item(j).getChildNodes());
+                    }
                 }
                 NamedNodeMap nnm=nodes.item(i).getAttributes();
                 long start=Long.parseLong(nnm.getNamedItem("start").getNodeValue());
                 long end=Long.parseLong(nnm.getNamedItem("stop").getNodeValue());
-                Transcript tmptrans=new Transcript(nnm.getNamedItem("ID").getNodeValue(),nnm.getNamedItem("strand").getNodeValue(),start,end);
+                String trID=nnm.getNamedItem("ID").getNodeValue();
+                if(!trID.startsWith("ENS")){
+                    Matcher m=Pattern.compile("_0+").matcher(trID);
+                    if(m.find()){
+                        int startPos=m.end();
+                        trID=tissue+"."+trID.substring(startPos);
+                    }
+                }
+                Transcript tmptrans=new Transcript(trID,nnm.getNamedItem("strand").getNodeValue(),start,end);
                 tmptrans.setExon(exons);
                 tmptrans.setIntron(introns);
+                tmptrans.setAnnotation(annot);
+                if(nnm.getNamedItem("category")!=null){
+                    tmptrans.setCategory(nnm.getNamedItem("category").getNodeValue());
+                }
                 tmptrans.fillFullTranscript();
                 transcripts.add(tmptrans); 
             }
@@ -573,15 +772,44 @@ public class Gene {
                          probesets=readProbeSet(probeNodes);
                      }
                 }
+                
+                ArrayList<SequenceVariant> varList=new ArrayList<SequenceVariant>();
+                //NodeList children=exonNodes.item(z).getChildNodes();
+                for (int x = 0; x < children.getLength(); x++) {
+                    if(children.item(x).getNodeName().equals("VariantList")){
+                         NodeList varNodes=children.item(x).getChildNodes();
+                         varList=readVariant(varNodes);
+                     }
+                }
+                
                 Exon tmp=new Exon(exonStart,exonStop,ExonID);
                 tmp.setProteinCoding(CodeStart,CodeStop);
                 tmp.setProbeSets(probesets);
+                tmp.setVariants(varList);
                 ret.add(tmp);
             }
         }
         //System.out.println("Exon Array List Size at read:"+ret.size());
         return ret;
     }
+    
+    private static ArrayList<Annotation> readAnnotations(NodeList annotationNodes) {
+        ArrayList<Annotation> ret=new ArrayList<Annotation>();
+        for(int z=0;z<annotationNodes.getLength();z++){
+            //System.out.println("exonNodes"+z+":"+exonNodes.item(z).getNodeName());
+            if (annotationNodes.item(z).getNodeName().equals("annotation")) {
+                NamedNodeMap attrib=annotationNodes.item(z).getAttributes();
+                String source=attrib.getNamedItem("source").getNodeValue();
+                String value=attrib.getNamedItem("annot_value").getNodeValue();
+                String reason=attrib.getNamedItem("reason").getNodeValue();
+                Annotation tmp=new Annotation(source,value,"transcript",reason);
+                ret.add(tmp);
+            }
+        }
+        //System.out.println("Exon Array List Size at read:"+ret.size());
+        return ret;
+    }
+    
     private static ArrayList<Intron> readIntrons(NodeList intronNodes) {
         ArrayList<Intron> ret=new ArrayList<Intron>();
         for(int z=0;z<intronNodes.getLength();z++){
@@ -633,6 +861,67 @@ public class Gene {
             }
         }
         //System.out.println("Probeset Array List Size at read:"+ret.size());
+        return ret;
+    }
+    
+    private static ArrayList<SequenceVariant> readVariant(NodeList varNodes){
+        ArrayList<SequenceVariant> ret=new ArrayList<SequenceVariant>();
+        for(int z=0;z<varNodes.getLength();z++){
+            if (varNodes.item(z).getNodeName().equals("Variant")) {
+                NamedNodeMap attrib=varNodes.item(z).getAttributes();
+                int ID=Integer.parseInt(attrib.getNamedItem("ID").getNodeValue());
+                //System.err.println("reading ProbeID:"+probeID);
+                int start=-1,stop=-1;
+                
+                String refSeq="",chr="",strainSeq="",type="",strain="";
+                start=Integer.parseInt(attrib.getNamedItem("start").getNodeValue());
+                stop=Integer.parseInt(attrib.getNamedItem("stop").getNodeValue());
+                refSeq=attrib.getNamedItem("refSeq").getNodeValue();
+                strainSeq=attrib.getNamedItem("strainSeq").getNodeValue();
+                strain=attrib.getNamedItem("strain").getNodeValue();
+                type=attrib.getNamedItem("type").getNodeValue();
+                chr=attrib.getNamedItem("chromosome").getNodeValue();
+                SequenceVariant tmp=new SequenceVariant(ID,start,stop,refSeq,strainSeq,type,strain);
+                ret.add(tmp);
+            }
+        }
+        //System.out.println("Probeset Array List Size at read:"+ret.size());
+        return ret;
+    }
+    
+    public long[] getMinMaxCoord(){
+        if(min<0 && max<0){
+            for(int i=0;i<transcripts.size();i++){
+                if(transcripts.get(i).getStart()<transcripts.get(i).getStop()){
+                    if(min<0&&max<0){
+                        min=transcripts.get(i).getStart();
+                        max=transcripts.get(i).getStop();
+                    }else{
+                        if(min>transcripts.get(i).getStart()){
+                            min=transcripts.get(i).getStart();
+                        }
+                        if(max<transcripts.get(i).getStop()){
+                            max=transcripts.get(i).getStop();
+                        }
+                    }
+                }else if(transcripts.get(i).getStop()<transcripts.get(i).getStart()){
+                    if(min<0&&max<0){
+                        min=transcripts.get(i).getStop();
+                        max=transcripts.get(i).getStart();
+                    }else{
+                        if(min>transcripts.get(i).getStop()){
+                            min=transcripts.get(i).getStop();
+                        }
+                        if(max<transcripts.get(i).getStart()){
+                            max=transcripts.get(i).getStart();
+                        }
+                    }
+                }
+            }
+        }
+        long[] ret=new long[2];
+        ret[0]=min;
+        ret[1]=max;
         return ret;
     }
 }

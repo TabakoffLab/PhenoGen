@@ -73,9 +73,9 @@ public class FileGetter extends HttpServlet {
 	files.add(new String[] {affyExonMain, mainDir + "Affymetrix/", "RaEx-1_0-st-v1.na31.rn4.probeset.csv.zip"});
 	files.add(new String[] {affyExonMain, mainDir + "Affymetrix/", "RaEx-1_0-st-v1.na31.rn4.probeset.csv.zip"});
 */
-	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "fbgn_NAseq_Uniprot_fb_2012_06.tsv.gz"});
-	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "gene_map_table_fb_2012_06.tsv.gz"}); 
-	files.add(new String[] {mgiMain, mainDir + "MGI/", "MGI_Coordinate.rpt"});
+	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "fbgn_NAseq_Uniprot_fb_2013_01.tsv.gz"});
+	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "gene_map_table_fb_2013_01.tsv.gz"}); 
+	files.add(new String[] {mgiMain, mainDir + "MGI/", "MGI_Coordinate_build37.rpt"});
         files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene2accession.gz"}); 
 	files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene2unigene"}); 
 	files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene_info.gz"}); 

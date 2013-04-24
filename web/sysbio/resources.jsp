@@ -15,11 +15,14 @@
 	
 	log.debug("action = "+action);
 	extrasList.add("resources.js");
+	extrasList.add("jquery.tooltipster.js");
+	extrasList.add("tooltipster.css");
 	mySessionHandler.createSessionActivity(session.getId(), "Looked at download systems biology resources page", dbConn);
 
 	Resource[] myExpressionResources = myResource.getExpressionResources();
 	Resource[] myMarkerResources = myResource.getMarkerResources();
 	Resource[] myRNASeqResources = myResource.getRNASeqResources();
+	Resource[] myDNASeqResources = myResource.getDNASeqResources();
 	Resource[] myGenotypeResources = myResource.getGenotypingResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
@@ -174,6 +177,37 @@
         
         <BR>
 		<BR>
+        <div class="title"> Strain-specific Rat Genomes (Rn5) <span class="toolTip" title="SNPs between the reference genome and the strain have been replaced with the nucleotide from the strain."><img src="<%=imagesDir%>icons/info.gif"></span></div>
+		      <table id="dnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
+            		<thead>
+                               <tr class="col_title">
+					<th>Organism</th>
+					<th>Strain</th>
+                    <th>Seq. Tech.</th>
+					<th>.fasta Files</th>
+				</tr>
+			</thead>
+			<tbody>
+			<% for (Resource resource: myDNASeqResources) { %> 
+				<tr id="<%=resource.getID()%>">  
+				<td> <%=resource.getOrganism()%> </td>
+				<td> <%=resource.getSource()%></td>
+                <td> <%=resource.getTechType()%></td>  
+				<% if (resource.getSAMDataFiles() != null && resource.getSAMDataFiles().length > 0) { %>
+					<td class="actionIcons">
+						<div class="linkedImg download" type="rnaseq"><div>
+					</td>
+				<% } else { %>
+                                	<td>&nbsp;</td>
+				<% } %>
+				</tr> 
+			<% } %>
+			</tbody>
+		</table>
+        
+        
+        <BR>
+		<BR>
 		<div class="title">Human Genotype Data Files</div>
 		      <table id="genotypingFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="98%">
             	<thead>
@@ -212,8 +246,17 @@
 <%@ include file="/web/common/footer.jsp"  %>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$('.toolTip').tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+		});
 		setupPage();
-        	setTimeout("setupMain()", 100);
+        setTimeout("setupMain()", 100);
 	});
 </script>
 

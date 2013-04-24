@@ -560,7 +560,7 @@ div.closeWindow {
 }
 
 /* Used for expanding/contracting */
-.trigger{
+.trigger,.tblTrigger,.triggerImage{
         cursor: pointer;
         /* needed for IE?  Don't think so */
 	/* cursor: hand; */
@@ -804,6 +804,7 @@ div.whats-new ol{
 
 div.whats-new li{ 
 		padding-top:8px;
+		
 }
 
 div.whats-new  SPAN.highlight-dark {
@@ -944,7 +945,7 @@ padding-left: 10px;
 table.geneFilter {
 	position:relative; 
 	width:100%; 
-	top:-56px;
+	top:-77px;
 }
 
 table.geneFilter  TH{
@@ -961,6 +962,19 @@ div.columnRight{
 	width:50%;
 }
 
+tr.smallnc.ensembl .viewSMNC, tr.smallnc.ensembl .viewTrx{
+	color: #4C7298;
+}
+
+.viewTrx,.viewSMNC{
+text-decoration:underline;
+color: #FFFFFF;
+cursor:pointer;
+}
+
+.leftSearch{
+	text-align:left;
+}
 
 /* Recommended styles for two sided multi-select*/
 		.tsmsselect {
@@ -988,3 +1002,9 @@ div.columnRight{
 			color: White;
 			background-color: Silver;
 		}
+		
+.legendBtn,.legendBtn2,.gvlegendBtn{
+	cursor:pointer;
+}
+
+

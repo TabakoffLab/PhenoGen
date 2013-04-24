@@ -19,8 +19,7 @@
 	String sourceVersion="hg19";
 	String fullSourceSpecies="Human";
 	
-	String targetSpecies="Mm";
-	String targetVersion="Mm9";
+	String targetSpecies="Mm9";
 	
 	String fullSpecies="Mouse";
 	String targetChainFile="hg19ToMm9.over.chain";
@@ -64,6 +63,11 @@
 					start=Long.parseLong(minCoord);
 					stop=Long.parseLong(maxCoord);
 			}
+			if(start>stop){
+				int tmp=start;
+				start=stop;
+				stop=tmp;
+			}
 			if(start>0 && stop > 0){
 					origLen=stop-start;
 			}
@@ -72,7 +76,7 @@
 	}
 	if(request.getParameter("sourceSpecies")!=null){
 		sourceVersion=request.getParameter("sourceSpecies");
-		if(sourceVersion.equals("mm9")){
+		if(sourceVersion.equals("mm10")){
 			fullSourceSpecies="Mouse";
 		}else if(sourceVersion.equals("rn4")){
 			fullSourceSpecies="Rat";
@@ -82,15 +86,13 @@
 	}
 	if(request.getParameter("targetSpecies")!=null){
 		targetSpecies=request.getParameter("targetSpecies");
-		if(targetSpecies.equals("Mm")){
+		if(targetSpecies.subString(0,2).equals("Mm")){
 			fullSpecies="Mouse";
-			targetVersion="Mm9";
-		}else if(targetSpecies.equals("Rn")){
+		}else if(targetSpecies.subString(0,2).equals("Rn")){
 			fullSpecies="Rat";
-			targetVersion="Rn4";
 		}
 	}
-	targetChainFile=sourceVersion+"To"+targetVersion+".over.chain";
+	targetChainFile=sourceVersion+"To"+targetSpecies+".over.chain";
 	if(request.getParameter("minLen")!=null){
 		minLenPerc=Double.parseDouble(request.getParameter("minLen"))/100.0;
 		minLen=(long)(origLen*minLenPerc);
@@ -201,13 +203,13 @@ Min Ratio: <%=minRatio%> Min Length:<%=minLenPerc*100%>% (<%=minLen%> bp)
 				double tmpStop=Double.parseDouble(col[2]);
 				
 				%>
-                <TR id="<%=col[0]+":"+col[1]+"-"+col[2]+":::"+targetSpecies%>">
+                <TR id="<%=col[0]+":"+col[1]+"-"+col[2]+":::"+targetSpecies.subString(0,2)%>">
                     <TD><%=col[0]%></TD>
                     <TD><%=df0.format(tmpStart)%></TD>
                     <TD><%=df0.format(tmpStop)%></TD>
                     <TD><%=df0.format(len)%></TD>
                     <TD><%=df1.format(perc)%></TD>
-                    <TD><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=col[0]+":"+df0.format(tmpStart)+"-"+df0.format(tmpStop)%>&speciesCB=<%=targetSpecies%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
+                    <TD><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=col[0]+":"+df0.format(tmpStart)+"-"+df0.format(tmpStop)%>&speciesCB=<%=targetSpecies.subString(0,2)%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
                 </TR>
             <%}%>
         <%}%>
@@ -220,9 +222,6 @@ Click on a row above to view the region in the current page.
 </div>
 <script type="text/javascript">
 	$('#waitTranslate').hide();
-	
-	
-	
 </script>
 
 <%
