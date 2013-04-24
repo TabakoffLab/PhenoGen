@@ -127,8 +127,9 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	}
 	log.debug("Selected Gene="+request.getParameter("geneSelect"));
 	if(request.getParameter("geneSelect")!=null && !(request.getParameter("geneSelect").equals("")) ){
-		
-		selectedGene=Integer.parseInt(request.getParameter("geneSelect").trim());
+		selectedEnsemblID=request.getParameter("geneSelect").trim();
+		//selectedGene=Integer.parseInt(request.getParameter("geneSelect").trim());
+		//log.debug("Selected Gene:"+selectedGene);
 	}
 	
 	if(request.getParameter("pvalueCutoffInput")!=null){
@@ -198,10 +199,13 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 								if(homologIdentifier.getIdentifier().indexOf("ENSMUSG")>-1||homologIdentifier.getIdentifier().indexOf("ENSRNOG")>-1){
 									//myEnsemblIDs.add(homologIdentifier.getIdentifier());	
 									log.debug("RUNNING GDT for "+homologIdentifier.getIdentifier());
-									fullGeneList=gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
-									min=gdt.getMinCoord();
-									max=gdt.getMaxCoord();
-									chromosome=gdt.getChromosome();
+									ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
+									if(i==0){
+										min=gdt.getMinCoord();
+										max=gdt.getMaxCoord();
+										chromosome=gdt.getChromosome();
+										fullGeneList=tmpGeneList;
+									}
 									String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 									String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
 									String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
@@ -228,7 +232,10 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 										if(tmpGeneSymbol!=null && tmpGeneSymbol.equals(myGene)){
 											selectedGene=i;
 											selectedEnsemblID=homologIdentifier.getIdentifier();
-											
+											min=gdt.getMinCoord();
+											max=gdt.getMaxCoord();
+											chromosome=gdt.getChromosome();
+											fullGeneList=tmpGeneList;
 										}
 									}
 								}
@@ -250,12 +257,14 @@ pageTitle="Detailed Transcription Information "+myGene;%>
         }else{
 			displayNoEnsembl=true;
 		}
-	}else if ((action != null) && action.equals("Go")) {
+	}/*else if ((action != null) && action.equals("Go")) {
 		//iDecoderAnswer=(Set)session.getAttribute("iDecoderAnswer");
 		//List myIdentifierList=null;
         //ArrayList<String> myEnsemblIDs=new ArrayList<String>();
 		log.debug("Selecting a new gene");
-		if(request.getParameter("genURLArray")!=null){
+		log.debug("\nGene:"+selectedEnsemblID+"\nurl:"+lg.getGeneLink(selectedEnsemblID,myOrganism,true,true,false));
+		response.sendRedirect(lg.getGeneLink(selectedEnsemblID,myOrganism,true,true,false));
+		/*if(request.getParameter("genURLArray")!=null){
 			log.debug("genURLArray !=null");
 			String[] tmpgenURL=request.getParameter("genURLArray").trim().split(",");
 			String[] tmpGeneSym=request.getParameter("geneSymArray").trim().split(",");
@@ -267,10 +276,12 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 			ucscURL=oh.getAsArrayList(tmpURL);
 			//ucscURLFiltered=oh.getAsArrayList(tmpFilterURL);
 			firstEnsemblID=oh.getAsArrayList(tmpFirstENS);
+			log.debug("selected ind:"+selectedGene+"\nGene:"+firstEnsemblID.get(selectedGene)+"\nurl:"+lg.getGeneLink(firstEnsemblID.get(selectedGene),myOrganism,true,true,false));
+			
 		}else{
 			log.debug("genURLArray == null");
 			displayNoEnsembl=true;
-		}
+		}*/
         /*if(iDecoderAnswer!=null){
                	genURL=(ArrayList<String>)session.getAttribute("genURLArray");
 				geneSymbol=(ArrayList<String>)session.getAttribute("ucscURLArray");
@@ -280,7 +291,9 @@ pageTitle="Detailed Transcription Information "+myGene;%>
         }else{
 			displayNoEnsembl=true;
 		}*/
-	}else if(
+	
+	//}
+	else if(
 		(((action != null) && action.equals("Get Transcription Details"))&& region )
 			|| ( auto && region )
 	

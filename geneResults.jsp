@@ -6,7 +6,7 @@ var maxCoord=<%=max%>;
 var chr="<%=chromosome%>";
 var filterExpanded=0;
 var organism="<%=myOrganism%>";
-var ucscgeneID="<%=selectedEnsemblID%>";
+var ucscgeneID="<%=firstEnsemblID.get(selectedGene)%>";
 var ucsctype="Gene";
 var tisLen=<%=tissuesList1.length%>;
 </script>
@@ -37,7 +37,7 @@ var tisLen=<%=tissuesList1.length%>;
 		}
 	}
 	
-	String tmpURL=genURL.get(0);
+	String tmpURL=genURL.get(selectedGene);
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
 	DecimalFormat dfC = new DecimalFormat("#,###");
@@ -66,6 +66,25 @@ if(displayNoEnsembl){ %>
 	});
 	//setupExpandCollapse();
 </script>
+<%if(genURL.size()>1){%>
+<BR /><BR />
+      		
+            
+                <label><span style="font-weight:bold;">Multiple genes were returned please select the gene of Interest:</span>
+                <select name="geneSelectCBX" id="geneSelectCBX" >
+                    <%for(int i=0;i<firstEnsemblID.size();i++){
+                        %>
+                        <option value="<%=firstEnsemblID.get(i)%>" <%if(i==selectedGene){%>selected<%}%>>
+						<%if(geneSymbol.get(i)!=null){%><%="chr"+geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) <%}else{%><%=firstEnsemblID.get(i)%> <%}%>
+						<%if(genURL.get(i)!=null && genURL.get(i).startsWith("ERROR:")){%>Error<%}%>
+                        </option>
+                    <%}%>
+                </select>
+                </label>
+            
+            <input type="submit" name="action" id="selGeneBTN" value="Go" onClick="enterSelectedGene()">
+            
+      <% }%>
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
     		<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
     		<div class="inpageHelp" style="display:inline-block;"><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
@@ -89,7 +108,7 @@ if(displayNoEnsembl){ %>
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
             	<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
-            	<img src="<%= contextRoot+"tmpData/geneData/"+selectedEnsemblID+"/ucsc.probe.numExonPlus.numExonMinus.noncoding.smallnc.refseq.png"%>"/></a>
+            	<img src="<%= contextRoot+"tmpData/geneData/"+firstEnsemblID.get(selectedGene)+"/ucsc.probe.numExonPlus.numExonMinus.noncoding.smallnc.refseq.png"%>"/></a>
             </div>
         </div><!-- end geneimage div -->
     	<div class="geneimageControl">
@@ -375,7 +394,18 @@ if(displayNoEnsembl){ %>
 		  	String[] hTissues=new String[0];
 			String[] dTissues=new String[0];
 		  	if(fullGeneList.size()>0){
-		  		edu.ucdenver.ccp.PhenoGen.data.Bio.Gene tmpGene=fullGeneList.get(0);
+				edu.ucdenver.ccp.PhenoGen.data.Bio.Gene tmpGene=fullGeneList.get(0);
+				log.debug("check:tmpGene:"+tmpGene.getGeneID()+"::"+firstEnsemblID.get(selectedGene));
+					if(!tmpGene.getGeneID().equals(firstEnsemblID.get(selectedGene))){
+						boolean found=false;
+						for(int i=1;i<fullGeneList.size()&&!found;i++){
+							log.debug("check:tmpGene:"+fullGeneList.get(i).getGeneID()+"::"+firstEnsemblID.get(selectedGene));
+		  					if(fullGeneList.get(i).getGeneID().equals(firstEnsemblID.get(selectedGene))){
+								tmpGene=fullGeneList.get(i);
+								found=true;
+							}
+						}
+					}
 				%>
 		 
           	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >

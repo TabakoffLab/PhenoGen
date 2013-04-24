@@ -84,6 +84,12 @@ function runFilter(){
 }
 
 
+function enterSelectedGene(){
+	var ensID=$("#geneSelectCBX").val();
+	$("#geneTxt").val(ensID);
+	$('#geneCentricForm').submit();
+}
+
 function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 			$.ajax({
 				url: contextPath + "/web/GeneCentric/geneRegionView.jsp",
