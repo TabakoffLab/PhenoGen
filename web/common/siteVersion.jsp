@@ -49,7 +49,7 @@
 		<p><a href="http://www.r-project.org/" target="R Master">R</a>:&nbsp;&nbsp;version 2.11.1</p>
 		<p><a href="http://www.bioconductor.org/" target="R Master">BioConductor</a>:&nbsp;&nbsp;version 2.6</p>
 		<!-- <p><a href="http://www.atlassian.com/" target="JIRA">JIRA</a>: &nbsp;&nbsp;version 3.1.1-#81 Professional Edition</p> -->
-		<p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on Dec 13th, 2012 with annotation data from the following sources:</p>
+		<p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on Mar 8th, 2013 with annotation data from the following sources:</p>
 		</p>
 		<ul>
 			<li>Annotation file for Affymetrix Genechip Drosophila Genome [DrosGenome1] na32
