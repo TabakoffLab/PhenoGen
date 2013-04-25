@@ -2197,7 +2197,7 @@ public class GeneDataTools {
                                     " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
                                     "and s.chromosome_id=c1.chromosome_id "+
                                     "and s.organism ='"+organism+"' "+
-                                    "and substr(c1.name,1,2)='"+chr+"' "+
+                                    "and c1.name='"+chr+"' "+
                                     "and aep.updatedlocation='Y' "+
                                     "and lse.probe_id=aep.probeset_id ";
                                 if(!level.equals("All")){
