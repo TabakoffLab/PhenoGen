@@ -9,7 +9,7 @@
 --%>
 
 
-    <div id="welcome" style="height:575px; width:980px; overflow:auto;">
+    <div id="welcome" style="height:750px; width:980px; overflow:auto;">
 		<h2 class="homePage">Welcome to PhenoGen Informatics</h2>
 	<div id="overview-wrap" class="welcomeContent descContent">
                 	<div id="overview-content-wide">
@@ -41,7 +41,13 @@
                         <H3 style="margin:10px;"> Why do we require a login?</H3>
                         <p>For many of the tools that require a login, there are multiple intermediate steps in the analisys or steps that may take a long time to complete.  Logging in, allows you to start a step and come back to the analysis/results at a later time.  A login also allows you to upload data to the site and keep it private or to share it with individuals you approve.</p>
                         
-                       
+                       <h3 style="margin:10px;">Acknowledgements</h3>
+                        <H4 style="margin:10px;">Funding</H4>
+                        <p>We would like to thank the National Institue on Alcohol Abuse and Alcoholism (<a href="http://www.niaaa.nih.gov/">NIAAA</a>) for continued funding to develop and support this site.  The Banbury Fund for supporting the development of this site.</p>
+                        <h4 style="margin:10px;">Recombinant Inbred Panels</h4>
+                        <p>We are grateful to the following investigators for providing the recombinant inbred panels found on the site.<BR />
+                        HXB/BXH Rat RI Panel was provided by <a href="http://pharmacology.ucsd.edu/faculty/printz.html">Morton Prinz</a>(UC San Diego).<BR />
+                        ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and <a href="http://profiles.ucdenver.edu/ProfileDetails.aspx?From=SE&Person=568">John DeFries</a>(CU Boulder).</p>
                 
                 	</div> <!-- // end overview-content -->
             	</div> <!-- // end overview-wrap -->

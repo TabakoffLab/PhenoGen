@@ -89,7 +89,7 @@ if(displayNoEnsembl){ %>
     		<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
     		<div class="inpageHelp" style="display:inline-block;"><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
             
-    		<span style="font-size:12px; font-weight:normal; float:left;"><span class="legendBtn"><img title="Click to view the legend." src="../web/images/icons/legend_7.png"></span></span>
+    		<span style="font-size:12px; font-weight:normal; float:left;"><span class="legendBtn"><img title="Click to view the Color Code Key." src="../web/images/icons/legend_7.png"><span style="position:relative;top:-7px;">Color Code Key</span></span></span>
             
         	<span style="font-size:12px; font-weight:normal; float:right;">
         		<input name="imageSizeCbx" type="checkbox" id="imageSizeCbx" checked="checked" /> Scroll Image - Viewable Size:
@@ -243,7 +243,7 @@ if(displayNoEnsembl){ %>
           </div><!--end imageControl div -->
     </div><!--end Border Div -->
     <BR />
-    <div id="legendDialog"  title="UCSC Image/Table Rows Legend" class="legendDialog" style="display:none">
+    <div id="legendDialog"  title="UCSC Image/Table Rows Color Code Key" class="legendDialog" style="display:none">
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
     </div>
 <script type="text/javascript">
@@ -417,7 +417,7 @@ if(displayNoEnsembl){ %>
                         <%}else{%>
                         colspan="10"
                         <%}%> 
-                        class="topLine noSort noBox"><span class="legendBtn"><img src="../web/images/icons/legend_7.png"></span></th>
+                        class="topLine noSort noBox"><span class="legendBtn"><img src="../web/images/icons/legend_7.png"><span style="position:relative;top:-7px;">Color Code Key</span></span></th>
                         <th <%if(myOrganism.equals("Rn")){%>
                         colspan="4"
                         <%}else{%>
@@ -480,9 +480,9 @@ if(displayNoEnsembl){ %>
                     	<%}%>
                     </tr>
                     <tr class="col_title">
-                    <TH>Image ID (Transcript/Feature ID) <span class="geneListToolTip" title="Feature IDs that correspond to features in the various image tracks above."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Image ID (Transcript/Feature ID) <span class="geneListToolTip" title="Feature IDs that correspond to features in the various image tracks above.<%if(myOrganism.equals("Rn")){%> In addition to Ensembl transcripts, RNA-Seq transcripts, that begin with the tissue where they were identified, will be listed in this column, when they partially or fully match to an Ensembl transcript.  If none are listed there was not a match that met our matching criteria. Please refer to the next column for a description of matching criteria.<%}%>"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%if(myOrganism.equals("Rn")){%>
-                    <TH>RNA-Seq Transcript Matches <span class="geneListToolTip" title="Information about how a RNA-Seq transcript was matched to an Ensembl Gene/Transcript.  Click if a + icon is present to view the remaining transcripts."><img src="<%=imagesDir%>icons/info.gif"></span></th>
+                    <TH>RNA-Seq Transcript Matches <span class="geneListToolTip" title="Information about how a RNA-Seq transcript was matched to an Ensembl Gene/Transcript.  Click if a + icon is present to view the remaining transcripts.<BR><BR>Any partial matches first list the percentage of exons matched and the transcript that was the closest match.<BR> An exon for exon match to a transcript lists the Ensembl Transcript ID and then the # of exons matching each rule. <BR><BR> Rules:<BR>-Perfect Match-the start and stop base pairs exactly align.<BR>-Fuzzy Match-the start and stop base pairs are within 5bp.<BR>-3'/5' Extended/truncated the 3'/5' end of the RNA-Seq transcript is extended or truncated.<BR>-Internal Exon extended/shifted exons not at the begining or end of the transcript and are noted as either extended at a single end or both ends or shifted in one direction.<BR><BR>Additional Rules:<BR>Cufflinks assigns transcripts to genes and on occassion transcripts in the same Cufflinks gene will match to transcripts from different genes.  In this instance the message will reflect that the transcript was assigned to a different gene but changed assignment based on another transcript belonging to the same Cufflinks gene matching a different Ensembl gene.<BR>In other instances Cufflinks created a transcript that spans multiple genes.  It can either be assigned to a specific gene based on other transcripts in the Cufflinks gene or not assigned to a gene.  In either instance it will be noted that the transcript spans multiple genes."><img src="<%=imagesDir%>icons/info.gif"></span></th>
                     <%}%>
                     <TH>Gene Symbol <span class="geneListToolTip" title="The Gene Symbol from Ensembl if available.  Click to view detailed information for that gene."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Gene ID</TH>
@@ -515,7 +515,7 @@ if(displayNoEnsembl){ %>
                     <TH>Total Reads<HR />Read Sequences<span class="geneListToolTip" title="For Small RNAs from RNA-Seq this column includes the total number of reads for the feature and the number of unique reads."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <%}%>
                     <TH>View Details <span class="geneListToolTip" title="This column links to a UCSC image of the gene, with controls to view any of the available tracks in the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Total Probe Sets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap the region."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH>Total Probe Sets <span class="geneListToolTip" title="The total number of non-masked probesets that overlap with any region of an Ensembl transcript<%if(myOrganism.equals("Rn")){%> or an RNA-Seq transcript<%}%>."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     
                     <%for(int i=0;i<tissuesList1.length;i++){%>
                     	<TH><%=tissuesList1[i]%> Count<HR />(Avg)</TH>
@@ -1219,7 +1219,7 @@ if(displayNoEnsembl){ %>
 	});
 	$('.geneListToolTip').tooltipster({
 		position: 'top-right',
-		maxWidth: 250,
+		maxWidth: 450,
 		offsetX: 24,
 		offsetY: 5,
 		//arrow: false,

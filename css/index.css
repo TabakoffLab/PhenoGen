@@ -10,7 +10,8 @@ h1 { float: left; margin-left: 10px; font-size: 24px; font-weight: normal; line-
 h2 { height: 40px; margin-bottom: 10px; padding-left: 10px; font-size: 16px; font-weight: normal; line-height: 40px; color: #36424e; background: #e4e7ea; }
 h2.homePage { margin-bottom: 0px; }
 h2.recentPub {margin-bottom:0; padding-top: 5px;}
-a, a:focus { color: #658cb2; text-decoration: underline; outline: none; }
+a, a:focus { color: #749BC1; /*##658cb2;*/
+ text-decoration: underline; outline: none; }
 a:hover { color: #1d2f42; }
 p { margin-bottom: 8px; padding: 0 10px; }
 
