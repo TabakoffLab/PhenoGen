@@ -50,7 +50,7 @@
         <%}%>
    		
 
-       		<li class="hideLogin <%if(mainMenuSelected.equals("transcript")){%>selected<%}%>" ><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu3line">Detailed Transcription Information</span></a></li>
+       		<li class="hideLogin <%if(mainMenuSelected.equals("transcript")){%>selected<%}%>" ><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu4line">Detailed Genome / Transcription Information</span></a></li>
        		<li class="hideLogin <%if(mainMenuSelected.equals("download")){%>selected<%}%>"><a href='<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp' <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu1line">Downloads</span></a></li>
        
        <li class='has-sub hideLogin <%if(mainMenuSelected.equals("microarray")){%>selected<%}%>'><span class="noLink"><span class="menu2line">Microarray Analysis Tools</span></span>
@@ -82,6 +82,7 @@
                 	<li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>publications.jsp"><span>Recent Publications</span></a></li>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>siteVersion.jsp"><span>Version Information</span></a></li>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>citation.jsp"><span>Citations</span></a></li>
+                    <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>acknowledgements.jsp"><span>Acknowledgements</span></a></li>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>usefulLinks.jsp"><span>Useful Links</span></a></li>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=https://github.com/TabakoffLab/PhenoGen" target="Phenogen Source Code">Source Code (GitHub)</a></li>
                 </ul>

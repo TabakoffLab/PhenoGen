@@ -103,6 +103,11 @@ void draw(){
   text(chr,width/2,coordY);
   text("BNLX:",0,56);
   text("SHRH:",0,70);
+  fill(49,122,255);
+  text("Ref.",0,topMargin+10);
+  fill(98, 139, 97);
+   text("Read",0,topMargin+30);
+   text("Seq.",0,topMargin+45);
 }
 
 class Sequence {
