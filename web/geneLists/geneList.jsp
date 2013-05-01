@@ -103,7 +103,7 @@
 						%><td><%
                 				for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 
                                     Identifier symbol = (Identifier) symbolItr.next();
-                					%><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=symbol.getIdentifier()%>&speciesCB=<%=selectedGeneList.getOrganism()%>&auto=Y&newWindow=Y"><%=symbol.getIdentifier()%></a><BR><%
+                					%><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=symbol.getIdentifier()%>&speciesCB=<%=selectedGeneList.getOrganism()%>&auto=Y&newWindow=Y" target="_blank"><%=symbol.getIdentifier()%></a><BR><%
 						}
 						%></td><% 
 					} else { 
