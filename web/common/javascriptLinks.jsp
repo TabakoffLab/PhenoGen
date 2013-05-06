@@ -27,7 +27,7 @@
             selectTab();
             /* setTimeout("setupMain()", 100); */
 
-			var tooltipSettings = { showBody : " - ",
+			/*var tooltipSettings = { showBody : " - ",
                 				track : true,
                                         	delay: 250,
                                         	showURL: false,
@@ -35,7 +35,7 @@
                                         	left: 10,
                                         	extraClass: "extra_class"
                                         	};
-			$("span.info").tooltip( tooltipSettings );
+			$("span.info").tooltip( tooltipSettings );*/
 
 			tablesorterSettings = { widgets: ['zebra'] };
 			$("table.tablesorter").tablesorter(tablesorterSettings);
