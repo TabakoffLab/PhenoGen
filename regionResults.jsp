@@ -216,6 +216,7 @@ var ucscgeneID="";
     
     <script>
 		var tisLen=<%=tissuesList1.length%>;
+		var folderName="<%=folderName%>";
 		/*$(".trigger").click(function(){
 			var baseName = $(this).attr("name");
 			$(this).toggleClass("less");
@@ -280,8 +281,201 @@ var ucscgeneID="";
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
-            	<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
-            	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.coding.noncoding.smallnc.png"%>"/></a>
+            	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+                <script type="text/javascript">
+
+registerKeyboardHandler = function(callback) {
+  var callback = callback;
+  d3.select(window).on("keydown", callback);  
+};
+
+var yArr=new Array();
+var width=990;
+var margin=10;
+var halfWindowWidth = 0;
+
+var mw=width-margin;
+var mh=400;
+var data=[];
+//vars for manipulation
+var downx = Math.NaN;
+var downscalex;
+var downPanx=Math.NaN;
+
+
+if($(window).width()>1000){
+	halfWindowWidth=($(window).width()-1000)/2;
+}
+var y=0;
+
+var xScale = d3.scale.linear().
+  domain([minCoord, maxCoord]). // your data minimum and maximum
+  range([0, 990]); // the pixels to map to, e.g., the width of the diagram.
+  
+  var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("top")
+	.ticks(6)
+	.tickSize(8)
+    .tickPadding(10);
+	
+var vis=d3.select(".ucscImage");
+var scale = vis.append("svg:svg")
+    .attr("width", width)
+    .attr("height", 60)
+	.attr("pointer-events", "all")
+    .attr("class", "scale")
+	.attr("pointer-events", "all")
+	.on("mousedown", mdown)
+	.style("cursor", "ew-resize");
+
+var svg = vis.append("svg:svg")
+    .attr("width", width)
+    .attr("height", 800)
+    .attr("class", "track")
+	.attr("id","svg1")
+	.attr("pointer-events", "all")
+	.style("cursor", "move")
+    .on("mousedown", mPandown);
+	
+var tt=d3.select("body").append("div")   
+    .attr("class", "testToolTip")               
+    .style("opacity", 0);
+
+	
+scale.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0,55)")
+      .call(xAxis);
+	  
+d3.select(".x.axis").append("text").text(chr).attr("x", ((width-(margin*2))/2)).attr("y",-40);
+
+
+function key(d) {return d.Name};
+
+function calcY(start,end){
+	var tmpY=0;
+	var found=false;
+	for (var i=0;i<yArr.length&&!found;i++){
+			if((yArr[i]+20)<xScale(start)){
+				found=true;
+				tmpY=i*15;
+				if(xScale(end)>yArr[i]){
+					yArr[i]=xScale(end);
+				}
+			}
+	}
+	return tmpY;
+}
+
+function drawGenes(){
+	data.sort(function(a,b) {return a.start-b.start;});
+	for(var j=0;j<100;j++){
+		yArr[j]=0;
+	}
+	
+	//update
+	var gene=svg.selectAll(".gene")
+   			.data(data,key)
+			.attr("transform",function(d){ return "translate("+xScale(d.start)+","+calcY(d.start,d.end)+")";});
+			
+  	
+			
+	//add new
+	gene.enter().append("g")
+			.attr("class","gene")
+			.attr("transform",function(d){ return "translate("+xScale(d.start)+","+calcY(d.start,d.end)+")";})
+			.append("rect")
+    	.attr("height",10)
+		.attr("width",function(d) { return xScale(d.end)-xScale(d.start); })
+		.attr("title",function (d){return d.Name;})
+		.attr("stroke","black")
+		.attr("stroke-width","1")
+		.attr("id",function(d){return d.Name;})
+	//.attr("title",function(d){return d.html;})
+		.style("fill",function(d) { var color=d3.rgb("#000000"); if((new String(d.Name)).indexOf("ENS")>-1){color=d3.rgb("#DFC184");}else{color=d3.rgb("#7EB5D6");} return color;})
+		.style("cursor", "pointer")
+		.on("mousedown", function(d) {
+        		var p = d3.mouse(vis[0][1]);
+        		downx = x.invert(p[0]);
+        		downscalex = x;
+      		})
+		.on("mouseover", function(d) { 
+			d3.select(this).style("fill","green");
+			     
+            tt.transition()        
+                .duration(200)      
+                .style("opacity", .9);      
+            tt.html(d.html)  
+                .style("left", (d3.event.pageX-halfWindowWidth) + "px")     
+                .style("top", (d3.event.pageY - 50) + "px");  
+            })
+		.on("mouseout", function(d) {  
+			d3.select(this).style("fill",function(d) { var color=d3.rgb("#000000"); if((new String(d.Name)).indexOf("ENS")>-1){color=d3.rgb("#DFC184");}else{color=d3.rgb("#7EB5D6");} return color;});
+            tt.transition()        
+                .duration(1800)      
+                .style("opacity", 0);  
+        });
+		
+	//	svg.selectAll(".gene text")
+	var rect=svg.selectAll("rect").attr("width",function(d) { return xScale(d.end)-xScale(d.start); });
+	 gene.exit().remove();
+	
+}
+
+function mmove(){
+        if (!isNaN(downx)) {
+          var p = d3.mouse(vis[0][0]), rupx = p[0];
+          if (rupx != 0) {
+            	xScale.domain([downscalex.domain()[0],  mw * (downx - downscalex.domain()[0]) / rupx + downscalex.domain()[0]]);
+			scale.select(".x.axis").call(xAxis);
+			drawGenes();
+          }
+		  //drawGenes();
+          //redrawAxis();
+        }else if(!isNaN(downPanx)){
+			var p = d3.mouse(vis[0][0]), rupx = p[0];
+			  if (rupx != 0) {
+					var dist=downPanx-rupx;
+					var scaleDist=(downscalex.domain()[1]-downscalex.domain()[0])/mw;
+					
+					xScale.domain([downscalex.domain()[0]+dist*scaleDist ,  dist*scaleDist + downscalex.domain()[1]]);
+
+				scale.select(".x.axis").call(xAxis);
+				drawGenes();
+				downPanx=p[0];
+			  }
+		}
+}
+function mdown() {
+        var p = d3.mouse(vis[0][0]);
+        downx = xScale.invert(p[0]);
+        downscalex = xScale;
+}
+
+function mPandown() {
+        var p = d3.mouse(vis[0][0]);
+        downPanx = p[0];
+        downscalex = xScale;
+}
+
+
+function mup() {
+        downx = Math.NaN;
+		downPanx = Math.NaN;
+}
+
+	d3.json("web/GeneCentric/tracks/geneTrack.jsp?folderName="+folderName,function (d){
+		data=d;
+		drawGenes();
+	});
+	
+	d3.select('body')
+      .on("mousemove", mmove)
+	  .on("mouseup", mup);
+</script>
+            	<!--<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
+            	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.coding.noncoding.smallnc.png"%>"/></a>-->
             </div>
         </div><!-- end geneimage div -->
     	<div class="geneimageControl">

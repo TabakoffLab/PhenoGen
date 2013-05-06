@@ -58,6 +58,7 @@ var data=[];
 //vars for manipulation
 var downx = Math.NaN;
 var downscalex;
+var downPanx=Math.NaN;
 
 
 if($(window).width()>1000){
@@ -86,7 +87,8 @@ var scale = vis.append("svg:svg")
 	.attr("pointer-events", "all")
     .attr("class", "scale")
 	.attr("pointer-events", "all")
-	.on("mousedown", mdown);
+	.on("mousedown", mdown)
+	.style("cursor", "ew-resize");
 /*var rectScale=scale.append("rect")
 	.attr({
 		"x":0,"y":0,
@@ -105,13 +107,9 @@ var svg = vis.append("svg:svg")
     .attr("class", "track")
 	.attr("id","svg1")
 	.attr("pointer-events", "all")
-    /*.on("mousedown", function(d) {
-        var p = d3.mouse(vis[0][1]);
-        downx = x.invert(p[0]);
-        downscalex = x;
-		d3.event.preventDefault();
-      	d3.event.stopPropagation();
-      })*/;
+	.style("cursor", "move")
+    .on("mousedown", mPandown);
+	
 var tt=d3.select("body").append("div")   
     .attr("class", "testToolTip")               
     .style("opacity", 0);
@@ -199,14 +197,19 @@ function drawGenes(){
 	for(var j=0;j<100;j++){
 		yArr[j]=0;
 	}
+	
+	//update
 	var gene=svg.selectAll(".gene")
    			.data(data,key)
-  			.enter().append("g")
-			.attr("class","gene")
 			.attr("transform",function(d){ return "translate("+xScale(d.start)+","+calcY(d.start,d.end)+")";});
 			
-	
-	gene.append("rect")
+  	
+			
+	//add new
+	gene.enter().append("g")
+			.attr("class","gene")
+			.attr("transform",function(d){ return "translate("+xScale(d.start)+","+calcY(d.start,d.end)+")";})
+			.append("rect")
     	.attr("height",10)
 		.attr("width",function(d) { return xScale(d.end)-xScale(d.start); })
 		.attr("title",function (d){return d.Name;})
@@ -215,6 +218,7 @@ function drawGenes(){
 		.attr("id",function(d){return d.Name;})
 	//.attr("title",function(d){return d.html;})
 		.style("fill",function(d) { var color=d3.rgb("#000000"); if((new String(d.Name)).indexOf("ENS")>-1){color=d3.rgb("#DFC184");}else{color=d3.rgb("#7EB5D6");} return color;})
+		.style("cursor", "pointer")
 		.on("mousedown", function(d) {
         		var p = d3.mouse(vis[0][1]);
         		downx = x.invert(p[0]);
@@ -237,7 +241,12 @@ function drawGenes(){
                 .style("opacity", 0);  
         });
 		
+	//	svg.selectAll(".gene text")
+	var rect=svg.selectAll("rect").attr("width",function(d) { return xScale(d.end)-xScale(d.start); });
+	//var text=svg.selectAll("text")
+	/*
 	gene.append("text")
+		.attr("class", "strandText")
 	  .text(function(d){
 	  	var dirStr=" ";
 		var dirChar=".";
@@ -277,9 +286,9 @@ function drawGenes(){
             tt.transition()        
                 .duration(1800)      
                 .style("opacity", 0);  
-        });
+        });*/
 	  	
-	 //gene.exit().remove();
+	 gene.exit().remove();
 	//gene.attr("transform",function(d){ return "translate("+xScale(d.start)+","+calcY(d.start,d.end);}).transition().duration(750);
 	
 }
@@ -354,68 +363,48 @@ function plot_drag() {
     d3.select('body').style("cursor", "move");
 }*/
 
-function redrawAxis(){
-	var tx = function(d) { 
-      return "translate(" + xScale(d) + ",0)"; 
-    };
-    stroke = function(d) { 
-      return  "#000000" ; 
-    };
-    fx = xScale.tickFormat(10);
 
-    // Regenerate x-ticks…
-    var gx = scale.selectAll("g.x")
-        .data(xScale.ticks(8), String)
-        .attr("transform", tx);
-
-    gx.select("text")
-        .text(fx);
-
-    var gxe = gx.enter().insert("g", "a")
-        .attr("class", "x")
-        .attr("transform", tx);
-
-    gxe.append("line")
-        .attr("stroke", stroke)
-        .attr("y1", 35)
-        .attr("y2", 60);
-
-    gxe.append("text")
-        .attr("class", "axis")
-        .attr("y", 30)
-        .attr("dy", "1em")
-        .attr("text-anchor", "middle")
-        .text(fx)
-        .style("cursor", "ew-resize")
-        .on("mouseover", function(d) { d3.select(this).style("font-weight", "bold");})
-        .on("mouseout",  function(d) { d3.select(this).style("font-weight", "normal");});
-        //.on("mousedown.drag",  xaxis_drag())
-        //.on("touchstart.drag", xaxis_drag());
-
-    gx.exit().remove();
-
-    
-    //scale.call(d3.behavior.zoom().x(xScale).on("zoom", drawGenes()));
-	drawGenes();
-}
 
 function mmove(){
         if (!isNaN(downx)) {
-			
           var p = d3.mouse(vis[0][0]), rupx = p[0];
           if (rupx != 0) {
-            xScale.domain([downscalex.domain()[0],  mw * (downx - downscalex.domain()[0]) / rupx + downscalex.domain()[0]]);
+            	xScale.domain([downscalex.domain()[0],  mw * (downx - downscalex.domain()[0]) / rupx + downscalex.domain()[0]]);
+			scale.select(".x.axis").call(xAxis);
+			drawGenes();
           }
-          redrawAxis();
-        }
+		  //drawGenes();
+          //redrawAxis();
+        }else if(!isNaN(downPanx)){
+			var p = d3.mouse(vis[0][0]), rupx = p[0];
+			  if (rupx != 0) {
+					var dist=downPanx-rupx;
+					var scaleDist=(downscalex.domain()[1]-downscalex.domain()[0])/mw;
+					
+					xScale.domain([downscalex.domain()[0]+dist*scaleDist ,  dist*scaleDist + downscalex.domain()[1]]);
+
+				scale.select(".x.axis").call(xAxis);
+				drawGenes();
+				downPanx=p[0];
+			  }
+		}
 }
 function mdown() {
         var p = d3.mouse(vis[0][0]);
         downx = xScale.invert(p[0]);
         downscalex = xScale;
 }
+
+function mPandown() {
+        var p = d3.mouse(vis[0][0]);
+        downPanx = p[0];
+        downscalex = xScale;
+}
+
+
 function mup() {
         downx = Math.NaN;
+		downPanx = Math.NaN;
 }
 
 	$('#wait1').hide();

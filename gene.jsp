@@ -10,6 +10,8 @@
 	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("jquery.tooltipster.js");
+	//extrasList.add("jquery.svg.min.js");
+	//extrasList.add("jquery.svgdom.min.js");
 	
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
@@ -19,6 +21,34 @@
 	//extrasList.add("TableTools_JUI.css");
 	//extrasList.add("TableTools.css");
 %>
+<style>
+div.testToolTip {   
+  position: absolute;           
+  text-align: center;
+  max-width: 320px;
+  min-height:50px;                  
+  /*height: 300px;   */              
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: #d3d3d3;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;    
+  color:#000000;
+  text-align:left;     
+}
+.axis path{
+	fill:none;
+	stroke:black;
+	shape-rendering: crispEdges;
+}
+
+.tick{
+	fill:none;
+	stroke: black;
+}
+</style>
+
 <%
 String myGene="";
 String myDisplayGene="";
