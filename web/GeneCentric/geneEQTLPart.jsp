@@ -108,12 +108,16 @@
 			// Read in transcriptClusterID information from file
 			// Also get the chromosome that corresponds to the gene symbol
 			//
-
+		boolean fileError=false;
+		try{
           	transcriptClusterArray = myFileHandler.getFileContents(new File(transcriptClusterFileName));
+		}catch(IOException e){
+			fileError=true;
+		}
           	String[] columns;
 			log.debug("transcriptClusterArray length = "+transcriptClusterArray.length);
 			// If the length of the transcript Cluster Array is 0, return an error.
-			if(transcriptClusterArray.length == 0){
+			if(transcriptClusterArray==null || transcriptClusterArray.length == 0){
 				log.debug(" the transcript cluster file is empty ");
 				transcriptClusterArray = new String[1];
 				transcriptClusterArray[0]="No Available	xx	xxxxxxxx	xxxxxxxx	Transcripts";
@@ -285,7 +289,17 @@
 		<input type="hidden" id="hiddenGeneSymbol" name="hiddenGeneSymbol" value=<%=geneSymbolinternal%> />
 
 		<%
-			if(transcriptError==null){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
+			if(fileError){%>
+            	<script>
+				document.getElementById("circosError1").innerHTML = "There was an error retrieving transcripts for <%=geneSymbolinternal%>.  Try refreshing the page.  The website administrator has been informed of the error.";
+				document.getElementById("circosError1").style.display = 'block';
+				document.getElementById("circosError1").style.color = "#ff0000";
+				</script>
+            </tbody>
+			</table>
+			
+        <%
+			}else if(transcriptError==null){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
 		%>
 			<script>
 				document.getElementById("circosError1").innerHTML = "There was an error retrieving transcripts for <%=geneSymbolinternal%>.  The website administrator has been informed.";
