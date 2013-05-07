@@ -290,38 +290,24 @@
 
 		<%
 			if(fileError){%>
-            	<script>
-				document.getElementById("circosError1").innerHTML = "There was an error retrieving transcripts for <%=geneSymbolinternal%>.  Try refreshing the page.  The website administrator has been informed of the error.";
-				document.getElementById("circosError1").style.display = 'block';
-				document.getElementById("circosError1").style.color = "#ff0000";
-				</script>
+            	
             </tbody>
 			</table>
-			
+			<div style="display:block; color:#FF0000;">There was an error retrieving transcripts for <%=geneSymbolinternal%>.  Try refreshing the page.  The website administrator has been informed of the error. </div>
         <%
 			}else if(transcriptError==null){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
 		%>
-			<script>
-				document.getElementById("circosError1").innerHTML = "There was an error retrieving transcripts for <%=geneSymbolinternal%>.  The website administrator has been informed.";
-				document.getElementById("circosError1").style.display = 'block';
-				document.getElementById("circosError1").style.color = "#ff0000";
-			</script>
             </tbody>
 			</table>
-
+			<div style="display:block; color:#FF0000;">There was an error retrieving transcripts for <%=geneSymbolinternal%>.  The website administrator has been informed.</div>
 		<%
 			}
 			else if(transcriptError) // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
 			{
 		%>
-			<script>
-				document.getElementById("circosError1").innerHTML = "There are no available transcript cluster IDs for <%=geneSymbolinternal%>.  Please choose a different gene to view eQTL.";
-				document.getElementById("circosError1").style.display = 'block';
-				document.getElementById("circosError1").style.color = "#ff0000";
-			</script>
             </tbody>
 			</table>
-
+			<div style="display:block; color:#FF0000;">There are no available transcript cluster IDs for <%=geneSymbolinternal%>.  Please choose a different gene to view eQTL.</div>
 		<%
 			} 
 			else 
