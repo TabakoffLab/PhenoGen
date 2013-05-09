@@ -25,7 +25,7 @@
 div.testToolTip {   
   position: absolute;           
   text-align: center;
-  max-width: 320px;
+  max-width: 400px;
   min-height:50px;                  
   /*height: 300px;   */              
   padding: 2px;             

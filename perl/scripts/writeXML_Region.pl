@@ -55,6 +55,118 @@ sub find
 }
 
 
+sub findEnsembl{
+    my $annotRef=shift;
+    my $curCount=shift;
+    my $ens="";
+
+	my %rnaHOH=%$annotRef;
+	my $annotListRef=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation};
+	my @annotArr=();
+	eval{
+		    @annotArr=@$annotListRef;
+	    }or do{
+		    @annotArr=();
+	    };
+	
+	my $count=0;
+	foreach(@annotArr){
+	    my $source=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation}[$count]{source};
+	    #print "checking source:".$source."\n";
+	    if($source eq "AKA"){
+		$ens=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation}[$count]{annot_value};
+		$ens=substr($ens,0,index($ens,":"));
+		#print "Found:$ens\n";
+		last;
+	    }
+	}
+    return $ens;
+}
+
+sub mergeByAnnotation{
+    #print "CALLED MERGE ANNOTATION\n";
+    my $geneHOHRef=shift;
+    
+    my %geneHOH=%$geneHOHRef;
+    my $geneListRef=$geneHOH{Gene};
+    my @geneList=();
+	eval{
+		@geneList=@$geneListRef;
+	}or do{
+		@geneList=();
+	};
+    my %mainGenes;
+    my %rnaGenes;
+    my %hm;
+    
+    my $geneCount=0;
+    my $mainCount=0;
+    my $rnaCount=0;
+    foreach(@geneList){
+	if($geneHOH{Gene}[$geneCount]{source} eq ("Ensembl")){
+	    $mainGenes{Gene}[$mainCount]=$geneHOH{Gene}[$geneCount];
+	    $hm{$geneHOH{Gene}[$geneCount]{ID}}=$mainCount;
+	    $mainCount++;
+	    
+	}else{
+	    $rnaGenes{Gene}[$rnaCount]=$geneHOH{Gene}[$geneCount];
+	    $rnaCount++;
+	}
+	$geneCount++;
+    }
+    
+    my @rnaList=();
+    my $rnaGeneRef=$rnaGenes{Gene};
+    eval{
+	    @rnaList=@$rnaGeneRef;
+    }or do{
+	    @rnaList=();
+    };
+
+    $rnaCount=0;
+    foreach(@rnaList){
+	my $ens=findEnsembl(\%rnaGenes,$rnaCount);
+	print "aka match".$rnaGenes{Gene}[$rnaCount]{ID}."\t".$ens."\n";
+	if(defined $hm{$ens}){
+	    print "defined\n";
+	    my $tmpGeneIndex=$hm{$ens};
+	    my $tmpGeneArrRef=$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript};
+	    my @tmpGeneTxArr=@$tmpGeneArrRef;
+	    my $tmpCount=@tmpGeneTxArr;
+	    my @trxList=();
+	    my $trxListRef=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript};
+	    eval{
+		@trxList=@$trxListRef;
+	    }or do{
+		@trxList=();
+	    };
+	    my $trxCount=0;
+	    print "before mainLen:".$tmpCount." txAdd:".@trxList."\n";
+	    my $extStart=$mainGenes{Gene}[$tmpGeneIndex]{start};
+	    my $extStop=$mainGenes{Gene}[$tmpGeneIndex]{stop};
+	    foreach(@trxList){
+		print "loop:$trxCount\n";
+		$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript}[$tmpCount]=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount];
+		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start}<$extStart){
+		    $extStart=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start};
+		    $mainGenes{Gene}[$tmpGeneIndex]{extStart}=$extStart;
+		}
+		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{stop}>$extStop){
+		    $extStop=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{stop};
+		    $mainGenes{Gene}[$tmpGeneIndex]{extStop}=$extStop;
+		}
+		$tmpCount++;
+		$trxCount++;
+	    }
+	}else{
+	    $mainGenes{Gene}[$mainCount]=$rnaGenes{Gene}[$rnaCount];
+	    $mainCount++;
+	}
+	$rnaCount++;
+    }
+    
+    return \%mainGenes;
+}
 
 
 sub createXMLFile
@@ -209,6 +321,8 @@ sub createXMLFile
 	    foreach my $tmpgene ( @$tmpGeneArray){
 		# "gene:".$$tmpgene{ID}."\n";
 		$GeneHOH{Gene}[$cntGenes]=$tmpgene;
+		$GeneHOH{Gene}[$cntGenes]{extStart}=$GeneHOH{Gene}[$cntGenes]{start};
+		$GeneHOH{Gene}[$cntGenes]{extStop}=$GeneHOH{Gene}[$cntGenes]{stop};
 		$cntGenes++;
 		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
 		foreach my $tmptranscript (@$tmpTransArray){
@@ -310,7 +424,9 @@ sub createXMLFile
 			biotype => $geneBioType,
 			geneSymbol => $geneExternalName,
 			source => "Ensembl",
-			description => $geneDescription
+			description => $geneDescription,
+			extStart => $geneStart ,
+			extStop => $geneStop
 			};
 		#print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
 
@@ -446,6 +562,9 @@ sub createXMLFile
 	    }# if to process only if chromosome is valid
 	} # loop through genes
 	#close GLFILE;
+	
+	my $geneHOHRef=mergeByAnnotation(\%GeneHOH);
+	%GeneHOH=%$geneHOHRef;
 	
 	##output XML file
 	my $xml = new XML::Simple (RootName=>'GeneList');

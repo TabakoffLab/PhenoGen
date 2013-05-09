@@ -59,6 +59,95 @@ sub find
     return $ret;
 }
 
+sub findEnsembl{
+    my $annotRef=shift;
+    my %annotList=%$annotRef;
+    my $annotListRef=$annotList{annotationList};
+    my @annotArr=();
+    eval{
+		@annotArr=@$annotListRef;
+	}or do{
+		@annotArr=();
+	};
+    my $ens="";
+    my $count=0;
+    foreach(@annotArr){
+	my $source=$annotList{annotationList}{annotation}[$count]{source};
+	if($source eq "Ensembl"){
+	    $ens=$annotList{annotationList}{annotation}[$count]{annot_value};
+	    $ens=substr($ens,0,index($ens,":"));
+	    last;
+	}
+    }
+    return $ens;
+}
+
+sub mergeByAnnotation{
+    my $geneHOHRef=shift;
+    
+    my %geneHOH=%$geneHOHRef;
+    my $geneListRef=$GeneHOH{Gene};
+    my @geneList=();
+	eval{
+		@geneList=@$geneListRef;
+	}or do{
+		@geneList=();
+	};
+    my %mainGenes;
+    my %rnaGenes;
+    my %hm;
+    
+    my $geneCount=0;
+    my $mainCount=0;
+    my $rnaCount=0;
+    foreach(@geneList){
+	if($geneHOH{Gene}[$geneCount]{source} eq ("Ensembl")){
+	    $mainGenes{Gene}[$mainCount]=$geneHOH{Gene}[$geneCount];
+	    $mainCount++;
+	    $hm{$geneHOH{Gene}[$geneCount]{ID}}=$geneHOH{Gene}[$geneCount];
+	}else{
+	    $rnaGenes{Gene}[$mainCount]=$geneHOH{Gene}[$geneCount];
+	    $rnaCount++;
+	}
+    }
+    
+    my @rnaList=();
+    eval{
+	    my $rnaGeneRef=$rnaGenes{Gene};
+	    @rnaList=@$rnaGeneRef;
+    }or do{
+	    @rnaList=();
+    };
+
+    $rnaCount=0;
+    foreach(@rnaList){
+	my $ens=findEnsembl(\$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[0]);
+	if(defined $hm{$ens}){
+	    my $tmpGeneRef=$hm{$ens};
+	    my %tmpGene=%tmpGeneRef;
+	    my @tmpGeneTxArr=@$tmpGene{TranscriptList}{Transcript};
+	    my $tmpCount=@tmpGeneTxArr;
+	    my @trxList=();
+	    eval{
+		@trxList=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript};
+	    }or do{
+		@trxList=();
+	    };
+	    my $trxCount=0;
+	    foreach(@trxList){
+		%tmpGene{TranscriptList}{Transcript}[$tmpCount]=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount];
+		$tmpCount++;
+		$trxCount++;
+	    }
+	}else{
+	    $mainGenes{Gene}[$mainCount]=$rnaGenes{Gene}[$rnaCount];
+	    $mainCount++;
+	}
+    }
+    
+    return \$mainGeneHOH;
+}
+
 # get Image calls createPNG it should increment the timeout time if the first request fails and try again up to 3 times starting with a 30s timeout +30s/failure.
 # it returns the result code allowing the main method to get the result code and url for the last attempt. Either the first successful attempt or last of 3 failed attempts.
 sub getImage{
