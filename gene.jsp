@@ -10,8 +10,7 @@
 	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("jquery.tooltipster.js");
-	//extrasList.add("jquery.svg.min.js");
-	//extrasList.add("jquery.svgdom.min.js");
+	extrasList.add("d3.v3.min.js");
 	
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
