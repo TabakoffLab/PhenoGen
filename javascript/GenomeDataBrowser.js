@@ -217,7 +217,7 @@ function calcY(start,end){
 	var tmpY=-299999999;
 	var found=false;
 	for (var iy=0;iy<yArr.length&&!found;iy++){
-			if((yArr[iy]+15)<xScale(start)){
+			if((yArr[iy]+10)<xScale(start)){
 				found=true;
 				tmpY=iy*15;
 				if(xScale(end)>yArr[iy]){
@@ -312,7 +312,7 @@ function drawGenes(){
 	
 	var tmpYMax=-1;
 	for(var j=0;j<100&&tmpYMax==-1;j++){
-		if(yArr[j]==0){
+		if(yArr[j]==-299999999){
 			svg.attr("height", j*15);
 			tmpYMax=j;
 		}

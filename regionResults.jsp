@@ -281,6 +281,7 @@ var ucscgeneID="";
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
+            	<span class="settings" style="position:relative;top:-43px;left:960px;"><img src="<%=imagesDir%>icons/gear.png"></span>
 <script src="javascript/GenomeDataBrowser.js" type="text/javascript"></script>
 <script type="text/javascript">
 	setupGenomeDataBrowser(".ucscImage",960);
@@ -291,54 +292,122 @@ var ucscgeneID="";
 	});
 
 </script>
-
             	<!--<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
             	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.coding.noncoding.smallnc.png"%>"/></a>-->
- <ul id="menu" style="display:none;">
-  <li class="ui-state-disabled"><a href="#">Aberdeen</a></li>
-  <li><a href="#">Ada</a></li>
-  <li><a href="#">Adamsville</a></li>
-  <li><a href="#">Addyston</a></li>
-  <li>
-    <a href="#">Delphi</a>
-    <ul>
-      <li class="ui-state-disabled"><a href="#">Ada</a></li>
-      <li><a href="#">Saarland</a></li>
-      <li><a href="#">Salzburg</a></li>
-    </ul>
-  </li>
-  <li><a href="#">Saarland</a></li>
-  <li>
-    <a href="#">Salzburg</a>
-    <ul>
-      <li>
-        <a href="#">Delphi</a>
-        <ul>
-          <li><a href="#">Ada</a></li>
-          <li><a href="#">Saarland</a></li>
-          <li><a href="#">Salzburg</a></li>
-        </ul>
-      </li>
-      <li>
-        <a href="#">Delphi</a>
-        <ul>
-          <li><a href="#">Ada</a></li>
-          <li><a href="#">Saarland</a></li>
-          <li><a href="#">Salzburg</a></li>
-        </ul>
-      </li>
-      <li><a href="#">Perch</a></li>
-    </ul>
-  </li>
-  <li class="ui-state-disabled"><a href="#">Amesville</a></li>
-</ul>
-<script type="text/javascript">
-	$('#menu').menu();
-	
-</script>
             </div>
         </div><!-- end geneimage div -->
-    	<div class="geneimageControl">
+        
+        <div class="geneimageSettings" style="display:none;position:relative;top:-402px;left:698px;width:300px;border:solid;border-color:#000000;border-width:1px;">
+        	<span style="position:relative;left:-107px;color:#000000;">Settings:</span>
+        	<span class="closeBtn" style="position:relative;top:23px;left:110px;"><img src="<%=imagesDir%>/icons/close.png"></span>
+
+            <table class="list_base" style="text-align:left; width:100%;" cellspacing="0">
+            <TR >
+            <TD >
+            <span style=" font-weight:bold;">Image Tracks</span>
+            </TD>
+            </TR>
+            <%if(myOrganism.equals("Rn")){%>
+            <TR>
+            <TD>
+           	<input name="trackcbx" type="checkbox" id="snpCBX" value="snp" /> SNPs/Indels:
+             <select name="trackSelect" id="snpSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="3" >Pack</option>
+            </select>
+             <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+            <TR>
+            <TD>
+            <input name="trackcbx" type="checkbox" id="helicosCBX" value="helicos" /> Helicos Data:
+            <select name="trackSelect" id="helicosSelect">
+            	<option value="1" selected="selected">Dense</option>
+                <option value="2" >Full</option>
+            </select>
+             <span class="Imagetooltip" title="Helicos Single Molecule RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+            <%}%>
+            <TR>
+            <TD>
+            <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs  
+            <span class="Imagetooltip" title="This track will display the publicly available bQTLs from Rat Genome Database. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are available under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+             <TR >
+            <TD>
+            <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts  
+            <span class="Imagetooltip" title="Transcripts from the rat RefSeq database are displayed in blue."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+            <TR>
+            <TD class="topLine">
+            <span style=" font-weight:bold;">Image Tracks and Table Filters</span><span class="Imagetooltip" title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+            <TR>
+            <TD >
+            <input name="trackcbx" type="checkbox" id="codingCBX" value="coding" checked="checked" /> Protein Coding<%if (myOrganism.equals("Rn")){%>/PolyA+<%}%>
+            <select name="trackSelect" id="codingSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >Full</option>
+            </select>
+             <span class="Imagetooltip" title=
+             <%if(myOrganism.equals("Rn")){%>
+             	"This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."
+             <%}else{%>
+             	""
+             <%}%>
+             ><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+            <TR>
+            <TD >
+            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="noncoding" checked="checked" />Long Non-Coding<%if (myOrganism.equals("Rn")){%>/NonPolyA+<%}%>
+            <select name="trackSelect" id="noncodingSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >Full</option>
+            </select>
+             <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+            <TR>
+            <TD>
+            <input name="trackcbx" type="checkbox" id="smallncCBX" value="smallnc" checked="checked" /> Small RNA 
+            <select name="trackSelect" id="smallncSelect">
+            	<option value="1" >Dense</option>
+                <option value="3" selected="selected">Pack</option>
+                <option value="2" >Full</option>
+            </select>
+             <span class="Imagetooltip" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </TD>
+            </TR>
+           	
+            </table>
+          </div>
+        
+        <script type="text/javascript">
+			$(document).on("click",".settings",function(){
+					if(!$('.geneimageSettings').is(":visible")){
+						$('.geneimageSettings').fadeIn("fast");
+					}else{
+						$('.geneimageSettings').fadeOut("fast");
+					}
+					return false;
+				});
+			$(document).on("click",".closeBtn",function(){
+					if($('.geneimageSettings').is(":visible")){
+						$('.geneimageSettings').fadeOut("fast");
+					}
+					return false;
+				});
+		</script>
+        
+        
+    	<!--<div class="geneimageControl">
       		
             <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
              Image Tracks/Table Filter:<div class="inpageHelp" style="display:inline-block; margin-left:10px;"><img id="HelpUCSCImageControl" class="helpImage" src="../web/images/icons/help.png" /></div>
@@ -436,10 +505,10 @@ var ucscgeneID="";
                     <option value="Human">Human Proteins/Chr Mapping(Source:UCSC)</option>
                 </select>-->
                 
-             </form>
+             <!--</form>
          
 		 
-          </div><!--end imageControl div -->
+          </div>--><!--end imageControl div -->
     </div><!--end Border Div -->
     <BR />
     <div id="legendDialog"  title="UCSC Image/Table Rows Color Code Key" class="legendDialog" style="display:none">

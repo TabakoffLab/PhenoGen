@@ -564,7 +564,20 @@ sub createXMLFile
 	#close GLFILE;
 	
 	my $geneHOHRef=mergeByAnnotation(\%GeneHOH);
-	%GeneHOH=%$geneHOHRef;
+	my %tmpGeneHOH=%$geneHOHRef;
+	
+	my $geneListRef=$tmpGeneHOH{Gene};
+	my @geneList=();
+	eval{
+		@geneList=@$geneListRef;
+	}or do{
+		@geneList=();
+	};
+	
+	print "list before sort:".@geneList."\n";
+	my @sortedlist = sort { $a->{start} <=> $b->{start} } @geneList;
+	print "sorted List:".@sortedlist."\n";
+	$GeneHOH{Gene}=\@sortedlist;
 	
 	##output XML file
 	my $xml = new XML::Simple (RootName=>'GeneList');
