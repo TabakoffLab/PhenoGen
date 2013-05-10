@@ -157,7 +157,7 @@
  </tr>
  <tr>
   <td class="center"> 4 </td>
-  <td> sinusoidal edotheliad cells from liver (fresh/cultured) </td>
+  <td> sinusoidal endothelial cells from liver (fresh/cultured) </td>
   <td class="center"> 4 </td>
   <td> Affymetrix Rat Exon Array </td>
   <td> BN-Lx/CubPrin, PD/CubPrin, SHR/NCrlPrin, SHR/OlaPrin </td>
