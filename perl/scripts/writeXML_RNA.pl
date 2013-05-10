@@ -61,32 +61,38 @@ sub find
 
 sub findEnsembl{
     my $annotRef=shift;
-    my %annotList=%$annotRef;
-    my $annotListRef=$annotList{annotationList};
-    my @annotArr=();
-    eval{
-		@annotArr=@$annotListRef;
-	}or do{
-		@annotArr=();
-	};
+    my $curCount=shift;
     my $ens="";
-    my $count=0;
-    foreach(@annotArr){
-	my $source=$annotList{annotationList}{annotation}[$count]{source};
-	if($source eq "Ensembl"){
-	    $ens=$annotList{annotationList}{annotation}[$count]{annot_value};
-	    $ens=substr($ens,0,index($ens,":"));
-	    last;
+
+	my %rnaHOH=%$annotRef;
+	my $annotListRef=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation};
+	my @annotArr=();
+	eval{
+		    @annotArr=@$annotListRef;
+	    }or do{
+		    @annotArr=();
+	    };
+	
+	my $count=0;
+	foreach(@annotArr){
+	    my $source=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation}[$count]{source};
+	    #print "checking source:".$source."\n";
+	    if($source eq "AKA"){
+		$ens=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation}[$count]{annot_value};
+		$ens=substr($ens,0,index($ens,":"));
+		#print "Found:$ens\n";
+		last;
+	    }
 	}
-    }
     return $ens;
 }
 
 sub mergeByAnnotation{
+    #print "CALLED MERGE ANNOTATION\n";
     my $geneHOHRef=shift;
     
     my %geneHOH=%$geneHOHRef;
-    my $geneListRef=$GeneHOH{Gene};
+    my $geneListRef=$geneHOH{Gene};
     my @geneList=();
 	eval{
 		@geneList=@$geneListRef;
@@ -103,17 +109,19 @@ sub mergeByAnnotation{
     foreach(@geneList){
 	if($geneHOH{Gene}[$geneCount]{source} eq ("Ensembl")){
 	    $mainGenes{Gene}[$mainCount]=$geneHOH{Gene}[$geneCount];
+	    $hm{$geneHOH{Gene}[$geneCount]{ID}}=$mainCount;
 	    $mainCount++;
-	    $hm{$geneHOH{Gene}[$geneCount]{ID}}=$geneHOH{Gene}[$geneCount];
+	    
 	}else{
-	    $rnaGenes{Gene}[$mainCount]=$geneHOH{Gene}[$geneCount];
+	    $rnaGenes{Gene}[$rnaCount]=$geneHOH{Gene}[$geneCount];
 	    $rnaCount++;
 	}
+	$geneCount++;
     }
     
     my @rnaList=();
+    my $rnaGeneRef=$rnaGenes{Gene};
     eval{
-	    my $rnaGeneRef=$rnaGenes{Gene};
 	    @rnaList=@$rnaGeneRef;
     }or do{
 	    @rnaList=();
@@ -121,21 +129,36 @@ sub mergeByAnnotation{
 
     $rnaCount=0;
     foreach(@rnaList){
-	my $ens=findEnsembl(\$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[0]);
+	my $ens=findEnsembl(\%rnaGenes,$rnaCount);
+	print "aka match".$rnaGenes{Gene}[$rnaCount]{ID}."\t".$ens."\n";
 	if(defined $hm{$ens}){
-	    my $tmpGeneRef=$hm{$ens};
-	    my %tmpGene=%tmpGeneRef;
-	    my @tmpGeneTxArr=@$tmpGene{TranscriptList}{Transcript};
+	    print "defined\n";
+	    my $tmpGeneIndex=$hm{$ens};
+	    my $tmpGeneArrRef=$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript};
+	    my @tmpGeneTxArr=@$tmpGeneArrRef;
 	    my $tmpCount=@tmpGeneTxArr;
 	    my @trxList=();
+	    my $trxListRef=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript};
 	    eval{
-		@trxList=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript};
+		@trxList=@$trxListRef;
 	    }or do{
 		@trxList=();
 	    };
 	    my $trxCount=0;
+	    print "before mainLen:".$tmpCount." txAdd:".@trxList."\n";
+	    my $extStart=$mainGenes{Gene}[$tmpGeneIndex]{start};
+	    my $extStop=$mainGenes{Gene}[$tmpGeneIndex]{stop};
 	    foreach(@trxList){
-		%tmpGene{TranscriptList}{Transcript}[$tmpCount]=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount];
+		print "loop:$trxCount\n";
+		$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript}[$tmpCount]=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount];
+		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start}<$extStart){
+		    $extStart=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start};
+		    $mainGenes{Gene}[$tmpGeneIndex]{extStart}=$extStart;
+		}
+		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{stop}>$extStop){
+		    $extStop=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{stop};
+		    $mainGenes{Gene}[$tmpGeneIndex]{extStop}=$extStop;
+		}
 		$tmpCount++;
 		$trxCount++;
 	    }
@@ -143,9 +166,10 @@ sub mergeByAnnotation{
 	    $mainGenes{Gene}[$mainCount]=$rnaGenes{Gene}[$rnaCount];
 	    $mainCount++;
 	}
+	$rnaCount++;
     }
     
-    return \$mainGeneHOH;
+    return \%mainGenes;
 }
 
 # get Image calls createPNG it should increment the timeout time if the first request fails and try again up to 3 times starting with a 30s timeout +30s/failure.

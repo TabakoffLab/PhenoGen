@@ -710,6 +710,12 @@ function drawTrx(d,i){
 }
 
 function setupTranscripts(d){
+
+	var e = jQuery.Event("keyup");
+	e.which = 32; // # Some key code value
+	//filter table
+	$('#tblGenes_filter input').val(d.getAttribute("ID")).trigger(e);
+
 	txType="none";
 	if(d.getAttribute("biotype")=="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
 		txType="protein";
@@ -747,6 +753,45 @@ function setupTranscripts(d){
       		.attr("class", "tr x axis")
       		.attr("transform", "translate(0,55)")
       		.call(txXAxis);
+		var closeBtn=txScale.append("g")
+			.attr("class","close")
+			.attr("transform", "translate(944,0)")
+			.attr("cursor","default")
+			.on("mouseover", function(d) { 
+				d3.select(this).select("rect").style("fill","#789abd");
+            })
+			.on("mouseout", function(d) {  
+			  	d3.select(this).select("rect").style("fill","#98badd");
+        	})
+			.on("mousedown", function(d) {
+				d3.select(".txscale").remove();
+				d3.select(".txtrack").remove();
+				$('#tblGenes_filter input').val("").trigger(e);
+				txSvg=null;
+			});
+			closeBtn.append("rect")
+				.attr("rx",3)
+				.attr("ry",3)
+    			.attr("height",16)
+				.attr("width",16)
+				.attr("fill","#98badd")
+				.attr("stroke","#789abd")
+				.attr("stroke-width",1);
+				//.attr("fill",function(d){return d3.rgb("#98badd");});
+			closeBtn.append("line")
+					.attr("x1",3)
+					.attr("x2",13)
+					.attr("y1",3)
+					.attr("y2",13)
+					.attr("stroke","white")
+					.attr("stroke-width",2);
+			closeBtn.append("line")
+					.attr("x1",13)
+					.attr("x2",3)
+					.attr("y1",3)
+					.attr("y2",13)
+					.attr("stroke","white")
+					.attr("stroke-width",2);
 	  
 		d3.select(".tr.x.axis").append("text").text(d.getAttribute("ID")).attr("x", ((width-(margin*2))/2)).attr("y",-40).attr("class","axisLbl");
 	}else{
@@ -772,7 +817,8 @@ function setupTranscripts(d){
 			.attr("pointer-events", "all")
 			.style("cursor", "pointer")
 			.on("mouseover", function(d) { 
-						//d3.select(this).style("fill","green");
+						d3.select(this).selectAll("line").style("stroke","green");
+						d3.select(this).selectAll("rect").style("fill","green");
             			tt.transition()        
 							.duration(200)      
 							.style("opacity", .9);      
@@ -780,7 +826,9 @@ function setupTranscripts(d){
 							.style("left", (d3.event.pageX-halfWindowWidth) + "px")     
 							.style("top", (d3.event.pageY - 50) + "px");  
             	})
-			.on("mouseout", function(d) {  
+			.on("mouseout", function(d) {
+					d3.select(this).selectAll("line").style("stroke",colorTx);
+					d3.select(this).selectAll("rect").style("fill",colorTx);  
 					//d3.select(this).style("fill",color);
 					tt.transition()
 						 .delay(1000)       
