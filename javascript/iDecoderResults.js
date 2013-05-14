@@ -9,7 +9,7 @@
 function setupPage() {
 
    var tableRows = getRows();
-   var itemDetails = createDialog(".itemDetails" , {width: 900, height: 500, title: "<center>Download</center>"});
+   var itemDetails = createDialog(".itemDetails" , {width: 900, height: 500, title: "Download"});
             $("#download").click(function(){
 
                var iDecoderChoice        = new Array();

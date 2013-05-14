@@ -45,7 +45,7 @@ function setupCreateNewPathwayButton() {
             newItem = 
 		createDialog("div.createPathway", 
 				{position:[250,150], width: 700, height: 350, 
-				title: "<center>Create a New Pathway Analysis</center>"});
+				title: "Create a New Pathway Analysis"});
         $.get("pathway.jsp", function(data){
             newItem.dialog("open").html(data);
 		closeDialog(newItem);

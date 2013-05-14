@@ -6,11 +6,11 @@
 
 function setupPage() {
 	
-    var itemDetails = createDialog(".itemDetails", {width: 700, height: 800, title: "<center>Experiment Details</center>"});
+    var itemDetails = createDialog(".itemDetails", {width: 700, height: 800, title: "Experiment Details"});
 	
-    var chooseUser = createDialog(".chooseUserDetails", {width: 500, height: 500, title: "<center>Grant Array Access to Individual</center>"});
+    var chooseUser = createDialog(".chooseUserDetails", {width: 500, height: 500, title: "Grant Array Access to Individual"});
 	
-    var confirmGrantAccessToPublic = createDialog(".confirmGrantAccessToPublic" , {width: 500, height: 300, title: "<center>Grant Open Access</center>"});
+    var confirmGrantAccessToPublic = createDialog(".confirmGrantAccessToPublic" , {width: 500, height: 300, title: "Grant Open Access"});
 	
     var tableRows = getRows();
     stripeAndHoverTable( tableRows );

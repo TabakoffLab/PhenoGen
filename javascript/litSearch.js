@@ -41,7 +41,7 @@ function setupCreateNewButton() {
 	$("div[name='createNewLitSearch']").click(function(){
 		if (newItem == undefined) {
 			newItem = createDialog("div.createLitSearch", 
-				{width: 700, height: 450, title: "<center>Create New Literature Search</center>"});
+				{width: 700, height: 450, title: "Create New Literature Search"});
 		}
 		$.get("createLitSearch.jsp", function(data){
 			newItem.dialog("open").html(data);

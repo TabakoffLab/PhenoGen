@@ -74,7 +74,7 @@ function setupCreateNewOpossumButton() {
         if (newItem == undefined) {
             newItem = createDialog("div.createOpossum", 
 				{position:[250,150], width: 600, height: 350, 
-				title: "<center>Create New Opossum Analysis</center>"});
+				title: "Create New Opossum Analysis"});
 	}
         $.get("createOpossum.jsp", function(data){
             newItem.dialog("open").html(data);
@@ -94,7 +94,7 @@ function setupCreateNewMEMEButton() {
         if (newItem == undefined) {
             newItem = createDialog("div.createMeme", 
 				{position:[250,150], width: 600, height: 350, 
-				title: "<center>Create New MEME Analysis</center>"});
+				title: "Create New MEME Analysis"});
 	}
         $.get("meme.jsp", function(data){
             newItem.dialog("open").html(data);
@@ -114,7 +114,7 @@ function setupCreateNewUpstreamButton() {
         if ( newItem == undefined )
             newItem = createDialog("div.createUpstream", 
 					{position:[250,150], width: 600, height: 350, 
-					title: "<center>Create New Upstream Extraction</center>"});
+					title: "Create New Upstream Extraction"});
 
         $.get("upstream.jsp", function(data){
             newItem.dialog("open").html(data);

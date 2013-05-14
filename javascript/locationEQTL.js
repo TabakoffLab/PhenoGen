@@ -127,7 +127,7 @@ function setupSaveDisplayedGenes() {
         	$.get("nameGeneList.jsp?geneListSource=QTL", function(data){
             		if ( nameGeneList == undefined ) {
                 		nameGeneList = createDialog("div.saveDisplayedGenes", 
-					{ width: 720, height: 350, title: "<center>Save Displayed Genes</center>"});
+					{ width: 720, height: 350, title: "Save Displayed Genes"});
 			}
             		nameGeneList.dialog("open").html(data);
         	});

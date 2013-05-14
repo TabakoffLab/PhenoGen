@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------- */
 
  function setupPage(){
-      var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Pathway Plot</center>"});
+      var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Pathway Plot"});
 	
       $("#PathwayPlotLink").click(function(){
             

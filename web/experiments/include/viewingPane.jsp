@@ -13,7 +13,7 @@
 	// setup Details click
 	$(document).ready(function() {
 		var detailsBox = 
-			createDialog(".object_details", {width: 700, height: 800, title: "<center>Experiment Details</center>"});
+			createDialog(".object_details", {width: 700, height: 800, title: "Experiment Details"});
 		$("span.details").click(function(){
 			var experimentID = $(this).attr("experimentID");
 			var parameters = {experimentID: experimentID} 

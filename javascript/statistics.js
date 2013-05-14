@@ -7,7 +7,7 @@
  *  this function sets up all the functionality for this page
 /*/
 function setupPage() {
-	var arrayDetails = createDialog(".arrayDetails" , {width: 833, height: 900, title: "<center>Array Details</center>", scrollbars: "yes"});
+	var arrayDetails = createDialog(".arrayDetails" , {width: 833, height: 900, title: "Array Details", scrollbars: "yes"});
 
 	var tableRows = getRows();
 	tableRows.each( function(){

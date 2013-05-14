@@ -10,7 +10,7 @@
 /*/
 
 function setupPage() {
-	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Gene List Details</center>"});
+	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Gene List Details"});
 
 	//---> set default sort column
 	$("table[id='geneLists']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortUp");

@@ -36,7 +36,7 @@ function setupSaveClusterGeneList() {
 	// setup save new gene list button
 	$("div[name='saveClusterGeneList']").click(function(){
         	if ( newList == undefined ) {
-			newList = createDialog("div.saveClusterList" , {width: 600, height: 400, title: "<center>Save Gene List</center>"});
+			newList = createDialog("div.saveClusterList" , {width: 600, height: 400, title: "Save Gene List"});
 		}
 		var clusterNumber = $(this).attr("id");
 		var datasetID = $("input[name='datasetID']").val();

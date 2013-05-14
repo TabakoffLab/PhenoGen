@@ -8,7 +8,7 @@
 /*/
 function setupPage() {
 
-	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Grouping Details</center>"});
+	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Grouping Details"});
 	// setup view Details click
 
 	var tableRows = getRows();
