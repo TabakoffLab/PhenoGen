@@ -15,9 +15,9 @@ function setupPage() {
 	var versionDetails; 
 	var detailsBox;
         if (itemDetails == undefined)
-		itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Dataset Details</center>"});
+		itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Dataset Details"});
         if (versionDetails == undefined)
-		versionDetails = createDialog(".versionDetails" , {width: 700, height: 800, title: "<center>Dataset Version Details</center>"});
+		versionDetails = createDialog(".versionDetails" , {width: 700, height: 800, title: "Dataset Version Details"});
 
 	//---> set default sort column
 	$("table[id='datasets']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");

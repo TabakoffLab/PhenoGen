@@ -27,7 +27,7 @@
 	// setup Details click
 	$(document).ready(function() {
 		var detailsBox = 
-			createDialog(".object_details", {width: 700, height: 800, title: "<center>Phenotype Details</center>"});
+			createDialog(".object_details", {width: 700, height: 800, title: "Phenotype Details"});
 		$("span.details").click(function(){
 			var phenotypeParameterGroupID = $("input[name='phenotypeParameterGroupID']").val();
 			var datasetID = $("input[name='datasetID']").val();

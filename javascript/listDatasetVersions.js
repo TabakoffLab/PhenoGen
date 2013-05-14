@@ -13,7 +13,7 @@ var deleteModal; // modal used for delete dataset information/interaction box
 
 function setupPage( ) {
 
-	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Dataset Version Details</center>"});
+	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Dataset Version Details"});
 	$("table[name='items']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
 
 	var tableRows = getRows();

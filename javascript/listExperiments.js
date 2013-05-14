@@ -12,7 +12,7 @@ var editModal; // modal used for editing experiment information
 var deleteModal; // modal used for delete experiment information/interaction box
 
 function setupPage() {
-	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Experiment Details</center>"});
+	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Experiment Details"});
 	
 	
 

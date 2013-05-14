@@ -68,7 +68,7 @@ function setupShowPages() {
  *  this function sets up the events for the EDIT button
 /*/
 function setupEditButton() {
-	var modalOptions = {height: 600, width: 750, position: [250,20], title: "<center>Edit Hybridization Details</center>"};
+	var modalOptions = {height: 600, width: 750, position: [250,20], title: "Edit Hybridization Details"};
         if ( editModal == undefined ) {
 		editModal = createDialog( ".editItem", modalOptions );
 	}

@@ -11,7 +11,7 @@ var downloadModal; // modal used for download dataset information/interaction bo
 
 function setupPage() {
 
-	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 400, title: "<center>Phenotype Details</center>", position:[200,100]});
+	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 400, title: "Phenotype Details", position:[200,100]});
 
 	//---> set default sort column to phenotype name ascending
         $("table[name='items']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
@@ -102,7 +102,7 @@ function setupCreatePhenotypeData() {
 	// setup create new phenotype button
 	$("div[id='createNewPhenotype']").click(function(){
         	if ( newData == undefined ) {
-			var dialogSettings = {width: 800, height: 800, title: "<center>Create Phenotype Data</center>"};
+			var dialogSettings = {width: 800, height: 800, title: "Create Phenotype Data"};
 			/* browser.safari true means the browser is Safari */
 			//if ($.browser.safari) $.extend(dialogSettings, {modal:false});
 			newData = createDialog("div.createPhenotypeData", dialogSettings); 

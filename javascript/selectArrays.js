@@ -12,7 +12,7 @@ function setupPage() {
 	var userDetails = createDialog(".userDetails" , 
 			{width: 700, height: 200, title: "Principal Investigator Details"});
 	var arrayDetails = createDialog(".arrayDetails" , 
-			{width: 950, height: 900, title: "<center>Array Details</center>", scrollbars: "yes"});
+			{width: 950, height: 900, title: "Array Details", scrollbars: "yes"});
 
 	clickCheckBox();
 	setupFinalizeDataset();

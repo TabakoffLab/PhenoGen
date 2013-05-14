@@ -12,7 +12,7 @@ var itemDetails;
 var deleteModal; // modal used for deleting information 
 
 function setupPage() {
-	itemDetails = createDialog(".itemDetails" , {width: 600, height: 400, title: "<center>Protocol Details</center>"});
+	itemDetails = createDialog(".itemDetails" , {width: 600, height: 400, title: "Protocol Details"});
 
 	setupTable($("table[id='growth']"));
 	setupTable($("table[id='treatment']"));
@@ -69,7 +69,7 @@ function setupCreateProtocol() {
 	// setup create new Protocol buttons
 	$("div[name='createNewProtocol']").click(function(){
         	if ( newProtocol == undefined ) {
-			newProtocol = createDialog("div.createProtocol" , {width: 600, height: 400, title: "<center>Create New Protocol</center>"});
+			newProtocol = createDialog("div.createProtocol" , {width: 600, height: 400, title: "Create New Protocol"});
 		}
 		var protocolType = $(this).attr("id");
 		var parameters = {protocolType: protocolType};

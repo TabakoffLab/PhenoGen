@@ -12,7 +12,7 @@ var deleteModal; // modal used for delete gene list information/interaction box
 
 function setupPage() {
 
-	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Gene List Details</center>"});
+	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Gene List Details"});
 
 	//---> set default sort column to date descending
         $("table[name='items']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortUp");
@@ -66,7 +66,7 @@ function setupCreateNewList() {
 	// setup create new gene list button
 	$("div[name='createGeneList']").click(function(){
         	if ( newList == undefined ) {
-			var dialogSettings = {width: 800, height: 600, title: "<center>Create Gene List</center>"};
+			var dialogSettings = {width: 800, height: 600, title: "Create Gene List"};
 			/* browser.safari true means the browser is Safari */
 			//if ($.browser.safari) $.extend(dialogSettings, {modal:false});
 			newList = createDialog("div.newGeneList", dialogSettings); 
