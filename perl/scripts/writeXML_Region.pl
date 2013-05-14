@@ -15,7 +15,7 @@ require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'createBED.pl';
-
+require 'createXMLTrack.pl';
 
 
 sub getFeatureInfo
@@ -611,11 +611,11 @@ sub createXMLFile
 	}
 	
 	#create bed files in region folder
-	createQTLTrack(\%qtlHOH,$outputDir."qtl.track",$trackDB,$chr);
-	createSNPTrack(\%snpHOH,$outputDir."snp.track",$trackDB);
-	createProteinCodingTrack(\%GeneHOH,$outputDir."coding.track",$trackDB,1);
-	createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
-	createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
+	createQTLXMLTrack(\%qtlHOH,$outputDir."qtl.xml",$trackDB,$chr);
+	createSNPXMLTrack(\%snpHOH,$outputDir."snp.xml",$trackDB);
+	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."coding.xml",$trackDB,1);
+	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."noncoding.xml",$trackDB,0);
+	createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.xml",$trackDB,$chr);
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 }

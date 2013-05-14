@@ -265,7 +265,7 @@ var ucscgeneID="";
             
     		<span style="font-size:12px; font-weight:normal; float:left;"><span class="legendBtn"><img title="Click to view the color key." src="../web/images/icons/legend_7.png"> <span style="position:relative;top:-7px;">Color Code Key</span> </span></span>
             
-        	<span style="font-size:12px; font-weight:normal; float:right;">
+        	<!--<span style="font-size:12px; font-weight:normal; float:right;">
         		<input name="imageSizeCbx" type="checkbox" id="imageSizeCbx" checked="checked" /> Scroll Image - Viewable Size:
         		<select name="imageSizeSelect" id="imageSizeSelect">
         			<option value="200" >Smaller</option>
@@ -274,14 +274,14 @@ var ucscgeneID="";
                 	<option value="800" >Largest</option>
             	</select>
             	<span class="Imagetooltip" title="This lets you control the viewable size of the image. In larger regions you can check this to allow simultaneous viewing of the image and table.  In smaller regions unchecking the box will allow you to view the entire image without scrolling."><img src="<%=imagesDir%>icons/info.gif"></span>
-        	</span>
+        	</span>-->
     </div>
     
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">    
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
-            <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
-            	<span class="settings" style="position:relative;top:-43px;left:960px;"><img src="<%=imagesDir%>icons/gear.png"></span>
+            <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
+            	<span class="settings" style="position:relative;top:14px;left:470px;"><img src="<%=imagesDir%>icons/gear.png"></span>
 <script src="javascript/GenomeDataBrowser.js" type="text/javascript"></script>
 <script type="text/javascript">
 	setupGenomeDataBrowser(".ucscImage",960);
@@ -404,6 +404,29 @@ var ucscgeneID="";
 					}
 					return false;
 				});
+			$("input[name='trackcbx']").change( function(){
+	 			var type=$(this).val();
+				var idStr=new String($(this).attr("id"));
+				var prefix=idStr.substr(0,idStr.length-3);
+				if($(this).is(":checked")){
+					addTrack(type,"topLevel",$("#"+prefix+"Select").val());
+				}else{
+					removeTrack(type,"topLevel");
+				}
+				
+					/*updateTrackString();
+					updateUCSCImage();
+					if(type=="coding" || type=="noncoding" || type=="smallnc"){
+		
+						if($(this).is(":checked")){
+							$('tr.'+type).show();
+						}else{
+							$('tr.'+type).hide();
+						}
+						tblGenes.fnDraw();
+					}*/
+			
+	 		});
 		</script>
         
         
@@ -1488,15 +1511,12 @@ var ucscgeneID="";
 		}
  	 });
 	 
-	 $("input[name='trackcbx']").change( function(){
+	 /*$("input[name='trackcbx']").change( function(){
 	 		var type=$(this).val();
 			updateTrackString();
 			updateUCSCImage();
 			if(type=="coding" || type=="noncoding" || type=="smallnc"){
-				/*if($('#rqQTLCBX').is(":checked")){
-					$('tr.'+type).hide();
-					type=type+".eqtl";
-				}*/
+
 				if($(this).is(":checked")){
 					$('tr.'+type).show();
 				}else{
@@ -1514,7 +1534,7 @@ var ucscgeneID="";
 			updateTrackString();
 			updateUCSCImage();
 		}
-	 });
+	 });*/
 	 
 	 $("span.tblTrigger").click(function(){
 		var baseName = $(this).attr("name");

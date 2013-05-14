@@ -22,6 +22,7 @@ require 'createBED.pl';
 require 'createPng.pl';
 require 'addAlternateID.pl';
 require 'createTrack.pl';
+require 'createXMLTrack.pl';
 
 
 sub getFeatureInfo
@@ -722,7 +723,7 @@ sub createXMLFile
 		#create bed files in region folder
 		
 		createQTLTrack(\%qtlHOH,$outputDir."qtl.track",$trackDB,$chr);
-		createSNPTrack(\%snpHOH,$outputDir."snp.track",$trackDB);
+		createSNPXMLTrack(\%snpHOH,$outputDir."snp.xml",$trackDB);
 		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonPlus.track",$trackDB,1,$chr);
 		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonMinus.track",$trackDB,-1,$chr);
 		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonUkwn.track",$trackDB,0,$chr);
