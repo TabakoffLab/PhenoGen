@@ -6,7 +6,7 @@ var margin=0;
 var halfWindowWidth = 0;
 var mw=width-margin;
 var mh=400;
-var data=[];
+
 //vars for manipulation
 var downx = Math.NaN;
 var downscalex;
@@ -54,7 +54,8 @@ function setupGenomeDataBrowser(div,imageWidth){
 		halfWindowWidth=($(window).width()-1000)/2;
 	}
 	vis=d3.select(div);
-	topLevel=vis.append("div").attr("id","topLevel").style("max-height","350px").style("overflow","auto");
+	var topDiv=vis.append("div").attr("id","topLevel").style("max-height","350px").style("overflow","auto");
+	
 	
 	xScale = d3.scale.linear().
   		domain([minCoord, maxCoord]). // your data minimum and maximum
@@ -67,7 +68,7 @@ function setupGenomeDataBrowser(div,imageWidth){
 	.tickSize(8)
     .tickPadding(10);
 	
-	scale = topLevel.append("svg:svg")
+	scale = topDiv.append("svg:svg")
     .attr("width", width)
     .attr("height", 60)
 	.attr("pointer-events", "all")
@@ -82,17 +83,8 @@ function setupGenomeDataBrowser(div,imageWidth){
       .call(xAxis);
 	  
 	d3.select(".x.axis").append("text").text(chr).attr("x", ((width-(margin*2))/2)).attr("y",-40);
+	topLevel=topDiv.append("ul").attr("class","sortable");
 	
-	svg = topLevel.append("svg:svg")
-    .attr("width", width)
-    .attr("height", 800)
-    .attr("class", "track")
-	.attr("id","topLevelgene")
-	.attr("pointer-events", "all")
-	.style("cursor", "move")
-    .on("mousedown", mPandown);
-	
-	svg.append("text").text("Genes").attr("x",width/2-20).attr("y",12);
 	
 	tt=d3.select("body").append("div")   
     .attr("class", "testToolTip")               
@@ -106,6 +98,9 @@ function setupGenomeDataBrowser(div,imageWidth){
 
 function addTrack(track,level,density){
 	var levelDiv=d3.select("#"+level);
+	if(level=="topLevel"){
+		levelDiv=levelDiv.select("ul").append("li");
+	}
 	if(track=="snp"){
 		d3.xml("tmpData/regionData/"+folderName+"/snp.xml",function (d){
 			var snp=d.documentElement.getElementsByTagName("Snp");
@@ -118,6 +113,24 @@ function addTrack(track,level,density){
 			var qtl=d.documentElement.getElementsByTagName("QTL");
 			console.log(qtl);
 			setupQTL(qtl,levelDiv)
+		});
+	}else if(track=="coding"){
+		d3.xml("tmpData/regionData/"+folderName+"/coding.xml",function (d){
+		var data=d.documentElement.getElementsByTagName("Gene");
+		console.log(data);
+		setupGeneTrack(data,track,"Protein Coding / PolyA+");
+	});
+	}else if(track=="noncoding"){
+		d3.xml("tmpData/regionData/"+folderName+"/noncoding.xml",function (d){
+		var data=d.documentElement.getElementsByTagName("Gene");
+		console.log(data);
+		setupGeneTrack(data,track,"Long Non-Coding / Non-PolyA+");
+		});
+	}else if(track=="smallnc"){
+		d3.xml("tmpData/regionData/"+folderName+"/smallnc.xml",function (d){
+		var data=d.documentElement.getElementsByTagName("smnc");
+		console.log(data);
+		setupGeneTrack(data,track,"Small RNA (<200 bp)");
 		});
 	}
 	
@@ -179,7 +192,13 @@ function createToolTipTx(d){
 
 function createToolTipSNP(d){
 	var tooltip="";
-	tooltip="Type:"+d.getAttribute("type")+"<BR>Strain: "+d.getAttribute("strain")+"<BR>Sequence: "+d.getAttribute("refSeq")+"->"+d.getAttribute("strainSeq")+"<BR>Location:"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop");
+	tooltip="Type: "+d.getAttribute("type")+"<BR>Strain: "+d.getAttribute("strain")+"<BR>Sequence: "+d.getAttribute("refSeq")+"->"+d.getAttribute("strainSeq")+"<BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop");
+	return tooltip;
+}
+
+function createToolTipQTL(d){
+	var tooltip="";
+	tooltip="Name: "+d.getAttribute("name")+"<BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Trait:<BR>"+d.getAttribute("trait")+"<BR><BR>Phenotype:<BR>"+d.getAttribute("phenotype")+"<BR><BR>Candidate Genes:<BR>"+d.getAttribute("candidate");
 	return tooltip;
 }
 
@@ -332,12 +351,25 @@ function getFirstChildByName(parentNode,name){
 
 
 //Drawing Functions
-function drawGenes(){
-	//data.sort(function(a,b) {return a.getAttribute("start")-b.getAttribute("start");});
+function setupGeneTrack(data,trackclass,label){
+	var svg=d3.select("#topLevel"+trackclass);
+	console.log(svg);
+	if(svg[0][0]==null){
+		var dragDiv=topLevel.append("li");
+		svg = dragDiv.append("svg:svg")
+		.attr("width", width)
+		.attr("height", 800)
+		.attr("class", "track draggable")
+		.attr("id","topLevel"+trackclass)
+		.attr("pointer-events", "all")
+		.style("cursor", "move")
+		.on("mousedown", mPandown);
+		svg.append("text").text(label).attr("x",width/2-20).attr("y",12);
+	}
+	
 	for(var j=0;j<100;j++){
 		yArr[j]=-299999999;
 	}
-	
 	//update
 	var gene=svg.selectAll(".gene")
    			.data(data,key)
@@ -362,7 +394,8 @@ function drawGenes(){
 		//.style("fill",function(d) { var color=d3.rgb("#000000"); if((new String(d.getAttribute("ID"))).indexOf("ENS")>-1){color=d3.rgb("#DFC184");}else{color=d3.rgb("#7EB5D6");} return color;})
 		.style("fill",color)
 		.style("cursor", "pointer")
-		.on("mousedown", setupTranscripts)
+		.on("click", setupTranscripts)
+		.on("dblclick", zoomToGene)
 		.on("mouseover", function(d) { 
 			d3.select(this).style("fill","green");
             tt.transition()        
@@ -388,35 +421,40 @@ function drawGenes(){
 	var tmpYMax=-1;
 	for(var j=0;j<100&&tmpYMax==-1;j++){
 		if(yArr[j]==-299999999){
-			svg.attr("height", j*15);
+			svg.attr("height", (j+1)*15);
 			tmpYMax=j;
 		}
 	}
 	
 }
 
-function redrawGene(level){
-	for(var j=0;j<100;j++){
-		yArr[j]=-299999999;
-	}
-	d3.select("#topLevelgene").selectAll("g.gene").attr("transform",function (d){
-														   var st=xScale(d.getAttribute("start"));
-															return "translate("+st+","+calcY(d.getAttribute("start"),d.getAttribute("stop"))+")";
-														});
-	d3.select("#topLevelgene").selectAll("g.gene rect").attr("width",function(d) {
-							   var wX=1;
-							   if(xScale(d.getAttribute("stop"))-xScale(d.getAttribute("start"))>1){
-								   wX=xScale(d.getAttribute("stop"))-xScale(d.getAttribute("start"));
-							   }
-							   return wX;
-							   }
-								)
-				.attr("stroke",colorStroke);
-	var tmpYMax=-1;
-	for(var j=0;j<100&&tmpYMax==-1;j++){
-		if(yArr[j]==-299999999){
-			svg.attr("height", (j+1)*15);
-			tmpYMax=j;
+function redrawGene(trackClass){
+	//console.log("#topLevel"+trackClass);
+	var svg=d3.select("#topLevel"+trackClass);
+	if(svg[0][0]!=null){
+		//console.log(svg);
+		for(var j=0;j<100;j++){
+			yArr[j]=-299999999;
+		}
+		d3.select("#topLevel"+trackClass).selectAll("g.gene").attr("transform",function (d){
+															   var st=xScale(d.getAttribute("start"));
+																return "translate("+st+","+calcY(d.getAttribute("start"),d.getAttribute("stop"))+")";
+															});
+		d3.select("#topLevel"+trackClass).selectAll("g.gene rect").attr("width",function(d) {
+								   var wX=1;
+								   if(xScale(d.getAttribute("stop"))-xScale(d.getAttribute("start"))>1){
+									   wX=xScale(d.getAttribute("stop"))-xScale(d.getAttribute("start"));
+								   }
+								   return wX;
+								   }
+									)
+					.attr("stroke",colorStroke);
+		var tmpYMax=-1;
+		for(var j=0;j<100&&tmpYMax==-1;j++){
+			if(yArr[j]==-299999999){
+				d3.select("#topLevel"+trackClass).attr("height", (j+1)*15);
+				tmpYMax=j;
+			}
 		}
 	}
 }
@@ -628,12 +666,12 @@ function redrawTrx(){
 }
 
 function setupSNP(snp,level,density){
-	
+
 	snpSvg = level.append("svg:svg")
 			.attr("width", width)
 			.attr("height", 100)
 			.attr("id",level.attr("id")+"snp")
-			.attr("class","track")
+			.attr("class","track draggable")
 			.attr("pointer-events", "all")
 			.on("mousedown", mPandown)
 			.style("cursor", "move");
@@ -697,14 +735,14 @@ function setupSNP(snp,level,density){
 	
 	snps.exit().remove();
 	if(density==1){
-		snpSvg.attr("height", 15);
+		snpSvg.attr("height", 30);
 	}else if(density==2){
 		snpSvg.attr("height", (snps.length+1)*15);
 	}else if(density==3){
 		var tmpYMax=-1;
 		for(var j=0;j<100&&tmpYMax==-1;j++){
 			if(tmpYArr[j]==-299999999){
-				snpSvg.attr("height", j*15);
+				snpSvg.attr("height", (j+1)*15);
 				tmpYMax=j;
 			}
 		}
@@ -735,14 +773,14 @@ function redrawSnp(level){
 							   }
 								);
 	if(density==1){
-		snpSvg.attr("height", 15);
+		snpSvg.attr("height", 30);
 	}else if(density==2){
-		snpSvg.attr("height", snps.length*15);
+		snpSvg.attr("height", (snps.length+1)*15);
 	}else if(density==3){
 		var tmpYMax=-1;
 		for(var j=0;j<100&&tmpYMax==-1;j++){
 			if(tmpYArr[j]==-299999999){
-				snpSvg.attr("height", j*15);
+				snpSvg.attr("height", (j+1)*15);
 				tmpYMax=j;
 			}
 		}
@@ -755,7 +793,7 @@ function setupQTL(qtl,level,density){
 			.attr("width", width)
 			.attr("height", 100)
 			.attr("id",level.attr("id")+"qtl")
-			.attr("class","track")
+			.attr("class","track draggable")
 			.attr("pointer-events", "all")
 			.on("mousedown", mPandown)
 			.style("cursor", "move");
@@ -764,14 +802,14 @@ function setupQTL(qtl,level,density){
 	
 	//update
 	var qtls=qtlSvg.selectAll(".qtl")
-   			.data(qtl,keyName)
-			.attr("transform",function(d,i){ return "translate("+xScale(d.getAttribute("start"))+","+i*15+")";});
+   			.data(qtl,key)
+			.attr("transform",function(d,i){ return "translate("+xScale(d.getAttribute("start"))+","+(i+1)*15+")";});
 			
   	
 			
 	//add new
 	qtls.enter().append("g")
-			.attr("class","snp")
+			.attr("class","qtl")
 			.attr("transform",function(d,i){ return "translate("+xScale(d.getAttribute("start"))+","+(i+1)*15+")";})
 			.append("rect")
     	.attr("height",10)
@@ -784,7 +822,7 @@ function setupQTL(qtl,level,density){
 							   }
 							   return wX;
 							   })
-		.attr("id",function(d){return d.getAttribute("ID");})
+		.attr("id",function(d){return d.getAttribute("Name");})
 		.style("fill","blue")
 		.style("cursor", "pointer")
 		//.on("mousedown", setupTranscripts)
@@ -823,19 +861,16 @@ function setupQTL(qtl,level,density){
 
 
 function redrawQTL(level){
-	var snpSvg=d3.select("#"+level+"snp");
-	var density=$("#snpSelect").val();
+	var qtlSvg=d3.select("#"+level+"qtl");
+	var density=2;
 	
 	var tmpYArr=new Array();
-	for(var j=0;j<100;j++){
-		tmpYArr[j]=-299999999;
-	}
 	
-	d3.select("#"+level+"snp").selectAll("g.snp").attr("transform",function (d,i){
+	var qtls=d3.select("#"+level+"qtl").selectAll("g.qtl").attr("transform",function (d,i){
 														   var st=xScale(d.getAttribute("start"));
-															return "translate("+st+","+calcYTrack(d.getAttribute("start"),d.getAttribute("stop"),tmpYArr,density,i,2)+")";
+															return "translate("+st+","+(i+1)*15+")";
 														});
-	d3.select("#"+level+"snp").selectAll("g.snp rect").attr("width",function(d) {
+	d3.select("#"+level+"qtl").selectAll("g.qtl rect").attr("width",function(d) {
 							   var wX=1;
 							   if(xScale(d.getAttribute("stop"))-xScale(d.getAttribute("start"))>1){
 								   wX=xScale(d.getAttribute("stop"))-xScale(d.getAttribute("start"));
@@ -843,25 +878,15 @@ function redrawQTL(level){
 							   return wX;
 							   }
 								);
-	if(density==1){
-		snpSvg.attr("height", 15);
-	}else if(density==2){
-		snpSvg.attr("height", snps.length*15);
-	}else if(density==3){
-		var tmpYMax=-1;
-		for(var j=0;j<100&&tmpYMax==-1;j++){
-			if(tmpYArr[j]==-299999999){
-				snpSvg.attr("height", j*15);
-				tmpYMax=j;
-			}
-		}
-	}
+	
 }
 
 
 function redraw(level){
 	if(level=="topLevel"){
-		redrawGene(level);	
+		redrawGene("coding");
+		redrawGene("noncoding");
+		redrawGene("smallnc");
 		redrawSnp(level);
 		redrawQTL(level);
 	}else{
@@ -967,5 +992,19 @@ function mup() {
 		txdownPanx = Math.NaN;
 }
 
+
+function zoomToGene(d){
+	
+	var len=d.getAttribute("stop")-d.getAttribute("start");
+	len=len*0.25;
+	var minx=d.getAttribute("start")-len;
+	var maxx=(d.getAttribute("stop")*1)+len;
+	//console.log(minx+"-"+maxx)
+	if(maxx<=chrMax && minx>=1){
+            		xScale.domain([minx,maxx]);
+					scale.select(".x.axis").call(xAxis);
+					redraw("topLevel");
+	}
+}
 
 

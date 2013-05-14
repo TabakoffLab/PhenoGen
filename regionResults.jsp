@@ -285,12 +285,20 @@ var ucscgeneID="";
 <script src="javascript/GenomeDataBrowser.js" type="text/javascript"></script>
 <script type="text/javascript">
 	setupGenomeDataBrowser(".ucscImage",960);
-	d3.xml("tmpData/regionData/"+folderName+"/Region.xml",function (d){
-		data=d.documentElement.getElementsByTagName("Gene");
-		console.log(data);
-		drawGenes();
-	});
-
+	addTrack("coding","topLevel",3);
+	addTrack("noncoding","topLevel",3);
+	addTrack("smallnc","topLevel",3);
+	$( ".sortable" ).sortable({
+      revert: true,
+	  axis: "y"
+    });
+    $( ".draggable" ).draggable({
+      connectToSortable: ".sortable",
+      helper: "clone",
+      revert: "invalid",
+	  axis: "y"
+    });
+	$( "ul, li" ).disableSelection();
 </script>
             	<!--<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
             	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.coding.noncoding.smallnc.png"%>"/></a>-->
@@ -413,19 +421,9 @@ var ucscgeneID="";
 				}else{
 					removeTrack(type,"topLevel");
 				}
-				
-					/*updateTrackString();
-					updateUCSCImage();
-					if(type=="coding" || type=="noncoding" || type=="smallnc"){
-		
-						if($(this).is(":checked")){
-							$('tr.'+type).show();
-						}else{
-							$('tr.'+type).hide();
-						}
-						tblGenes.fnDraw();
-					}*/
-			
+	 		});
+			$("select[name='trackSelect']").change( function(){
+	 			redraw("topLevel");
 	 		});
 		</script>
         

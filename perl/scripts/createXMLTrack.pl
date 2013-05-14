@@ -98,76 +98,45 @@ sub createSmallNonCodingXML{
 		@geneList=();
 	};
 	
+	my %outGeneHOH;
+	my $outCount=0;
+	
 	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
-	print OFILE "track db=$trackDB name='Small RNA' ";
-	print OFILE 'description="Small RNA <200bp" ';
-	print OFILE "visibility=3 itemRgb=On \n";
 	if(@smncList>0){
 		my $cntSmnc=0;
 		foreach my $tmpSmnc (@smncList){
-			my $smncID=$smncHOH{smnc}[$cntSmnc]{ID};
-			my $smncStart=$smncHOH{smnc}[$cntSmnc]{start};
-			my $smncStop=$smncHOH{smnc}[$cntSmnc]{stop};
-			my $smncStrand=$smncHOH{smnc}[$cntSmnc]{strand};
-			my $strand=".";
-			if($smncStrand==1){
-				$strand="+";
-			}elsif($smncStrand==-1){
-				$strand="-";
-			}
-			print OFILE "chr$chr\t$smncStart\t$smncStop\tsmRNA_$smncID\t0\t$strand\t$smncStart\t$smncStop\t153,204,153\n";
+			$outGeneHOH{smnc}[$outCount]=$smncHOH{smnc}[$cntSmnc];
+			$outCount++;
 			$cntSmnc++;
 		}
 	}
 	if(@geneList>0){
 		my $cntGenes=0;
 		foreach my $tmpGene (@geneList){
-			my $biotype=$geneHOH{Gene}[$cntGenes]{biotype};
 			my $gLen=$geneHOH{Gene}[$cntGenes]{stop}-$geneHOH{Gene}[$cntGenes]{start};
 			$gLen=abs($gLen);
 			if($gLen<200){
-				my $geneID=$geneHOH{Gene}[$cntGenes]{ID};
-				my $transcriptArrayRef = $geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript};
-				my $strand=$geneHOH{Gene}[$cntGenes]{strand};
-				my @transcriptArray = @$transcriptArrayRef;
-				my @exonHOH;
-				my $cntHOHExons=0;
-				my $convStrand=".";
-				my $cntTranscripts = 0;
-				my $color="0,0,0";
-				if($geneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
-					$color="255,204,0";
-				}else{
-					$color="153,204,153";
-				}
-				foreach(@transcriptArray){
-					my $trstart=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{start};
-					my $trstop=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{stop};
-					my $trstrand=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{strand};
-					if($trstrand==1){
-						$convStrand="+";
-					}elsif($trstrand==-1){
-						$convStrand="-";
-					}
-					my $trname=$geneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{ID};
-					my $genePart=substr($geneID,0,index($geneID,"."));
-					my $fulltrname=$genePart;
-					if($geneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
-						$fulltrname=$trname;
-					}else{
-						my $trPart=substr($trname,index($trname,"_")+1);
-						$trPart =~ s/^\s+//g;
-						$trPart =~ s/^0*//;
-						$fulltrname=$fulltrname.".".$trPart;
-					}
-					print OFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\n";
-					$cntTranscripts++;
-				}
+				$outGeneHOH{smnc}[$outCount]=$geneHOH{Gene}[$cntGenes];
 			}
 			$cntGenes=$cntGenes+1;
 		}
 	}
 	
+	my $outListRef=$outGeneHOH{smnc};
+	my @outList=();
+	eval{
+		@outList=@$outListRef;
+	}or do{
+		@outList=();
+	};
+	
+	my @sortedlist = sort { $a->{start} <=> $b->{start} } @outList;
+	print "sorted List:".@sortedlist."\n";
+	$outGeneHOH{smnc}=\@sortedlist;
+	
+	my $xml = new XML::Simple (RootName=>'smallRNAList');
+	my $data = $xml->XMLout(\%outGeneHOH);
+	print OFILE $data;
 	close OFILE;
 	return 1;
 }

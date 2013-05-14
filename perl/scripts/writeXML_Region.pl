@@ -615,7 +615,7 @@ sub createXMLFile
 	createSNPXMLTrack(\%snpHOH,$outputDir."snp.xml",$trackDB);
 	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."coding.xml",$trackDB,1);
 	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."noncoding.xml",$trackDB,0);
-	createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.xml",$trackDB,$chr);
+	createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."smallnc.xml",$trackDB,$chr);
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 }
