@@ -301,7 +301,7 @@ function hoverRows( tableRows ) {
  *  this function sets up the events for the DELETE button
 /*/
 function setupDeleteButton(url) {
-	var modalOptions = {height: 450, width: 750, position: [250,150], title: "<center>Delete Item</center>"};
+	var modalOptions = {height: 450, width: 750, position: [250,150], title: "Delete Item"};
 	deleteModal = createDialog( ".deleteItem", modalOptions );
 
 	$("table[name='items']").find("td div.delete").click(function() {
@@ -356,7 +356,7 @@ function setupDownloadLink(formName) {
  *  this function sets up the events for the DOWNLOAD button on each row
 /*/
 function setupDownloadButton(url) {
-	var modalOptions = {height: 550, width: 750, position: [250,150], title: "<center>Download Item</center>"};
+	var modalOptions = {height: 550, width: 750, position: [250,150], title: "Download Item"};
 	downloadModal = createDialog( ".downloadItem", modalOptions );
 
 	$("table[name='items']").find("td div.download").click(function() {
@@ -387,7 +387,7 @@ function setupDownloadButton(url) {
  *  this function sets up the events if there is more than one DOWNLOAD button on each row
 /*/
 function setupDownloadButtonByType(url) {
-	var modalOptions = {height: 550, width: 750, position: [250,150], title: "<center>Download Resources</center>"};
+	var modalOptions = {height: 550, width: 750, position: [250,150], title: "Download Resources"};
 	downloadModal = createDialog( ".downloadItem", modalOptions );
 
 	$("table[name='items']").find("td div.download").click(function() {
@@ -461,7 +461,7 @@ function setupDownloadButtonByType(url) {
  *  this function sets up the events for the DOWNLOAD button for the form
 /*/
 function setupDownloadPage(url) {
-	var modalOptions = {height: 550, width: 750, position: [250,150], title: "<center>Download</center>"};
+	var modalOptions = {height: 550, width: 750, position: [250,150], title: "Download"};
 	downloadModal = createDialog( ".downloadPage", modalOptions );
 
 	$("div#download").click(function() {

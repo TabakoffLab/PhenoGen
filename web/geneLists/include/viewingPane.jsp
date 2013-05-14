@@ -30,7 +30,7 @@
 			// setup Details click
 			var detailsBox;
 			if (detailsBox == undefined) {
-				detailsBox = createDialog(".object_details", {width: 700, height: 800, title: "<center>Gene List Details</center>"});
+				detailsBox = createDialog(".object_details", {width: 700, height: 800, title: "Gene List Details"});
 			}
 
 			$("span.details").click(function(){

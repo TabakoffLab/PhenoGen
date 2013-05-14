@@ -15,11 +15,11 @@ function setupPage() {
 	var versionDetails; 
 	var geneListDetails; 
         if (itemDetails == undefined)
-		itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Dataset Details</center>"});
+		itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Dataset Details"});
         if (versionDetails == undefined)
-		versionDetails = createDialog(".versionDetails" , {width: 700, height: 800, title: "<center>Dataset Version Details</center>"});
+		versionDetails = createDialog(".versionDetails" , {width: 700, height: 800, title: "Dataset Version Details"});
         if (geneListDetails == undefined)
-		geneListDetails = createDialog(".geneListDetails" , {width: 700, height: 800, title: "<center>Gene List Details</center>"});
+		geneListDetails = createDialog(".geneListDetails" , {width: 700, height: 800, title: "Gene List Details"});
 
 	//---> set default sort column
 	$("table[id='datasets']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");

@@ -12,7 +12,7 @@ var downloadModal; // modal used for download dataset information/interaction bo
 var deleteModal; // modal used for delete dataset information/interaction box
 
 function setupPage() {
-	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "<center>Dataset Details</center>"});
+	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Dataset Details"});
 
 	//---> set default sort column
 	$("table[id='publicDatasets']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortUp");

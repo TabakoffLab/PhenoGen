@@ -31,7 +31,7 @@
 	// setup Details click
 	$(document).ready(function() {
 		var detailsBox = 
-			createDialog(".object_details", {width: 700, height: 800, title: "<center><%=title%></center>"});
+			createDialog(".object_details", {width: 700, height: 800, title: "<%=title%>"});
 		$("span.details").click(function(){
 			var datasetID = $(this).attr("datasetID");
 			var datasetVersion = $(this).attr("datasetVersion");

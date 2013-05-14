@@ -16,7 +16,7 @@
 					{autoOpen:true, 
 					width: <%=width%>,
 					height: <%=height%>,
-					title: "<center>Message<center>", 
+					title: "Message", 
 					position: [<%=position%>]}).dialog("open");
 				closeDialog(msgDialog);
 			});

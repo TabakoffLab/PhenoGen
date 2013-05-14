@@ -8,7 +8,7 @@
 /*/
 function setupFinalizeDataset() {
 	var datasetDetails = createDialog(".datasetDetails" , 
-			{width: 800, height: 600, title: "<center>Dataset Contents</center>", scrollbars: "yes"});
+			{width: 800, height: 600, title: "Dataset Contents", scrollbars: "yes"});
 	// setup view Dataset Details click
 	$("div#viewFinalizeDataset").click(function(){
 		var datasetID = $("input[name='dummyDatasetID']").val();

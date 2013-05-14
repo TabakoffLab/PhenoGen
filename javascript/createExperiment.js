@@ -9,7 +9,7 @@
 /*/
 
 function setupPage() {
-	var itemDetails = createDialog(".itemDetails" , {width: 400, height: 200, title: "<center>Description</center>"});
+	var itemDetails = createDialog(".itemDetails" , {width: 400, height: 200, title: "Description"});
 	clickCheckBoxForNamedTable($("table[id='factors']"));
 	clickCheckBoxForNamedTable($("table[id='designTypes']"));
 
