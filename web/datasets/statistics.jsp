@@ -221,15 +221,15 @@
 		String sampleFile=selectedDataset.getPath()+version+"_samples.txt";
 		String inputFile = "";
 		if(hdf5file){
-			if (phenotypeParameterGroupID == -99) {
+			//if (phenotypeParameterGroupID == -99) {
 				inputFile =  "'" + selectedDataset.getPath() + "Affy.NormVer.h5'";
 				if(selectedDataset.getCreator().equals("public")){
 					inputFile="'"+userLoggedIn.getUserDatasetDir() + selectedDataset.getNameNoSpaces() + "/"+"Affy.NormVer.h5'";
 				}
-			}else {
+			/*}else {
 				inputFile="'" +groupingUserPhenotypeDir+"Affy.NormVer.h5'";
 				sampleFile=groupingUserPhenotypeDir+version+"_samples.txt";
-			}
+			}*/
 		}else{
 			if (ranFilters) {
 				inputFile =  "'" + analysisPath + selectedDataset.getPlatform() + ".filter.genes.output.Rdata'";   

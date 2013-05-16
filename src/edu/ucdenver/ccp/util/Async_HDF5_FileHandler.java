@@ -242,7 +242,8 @@ public class Async_HDF5_FileHandler implements Runnable{
         String h5path="";
         PhenoGen_HDF5_File file = null;
         boolean error=false;
-        if (pds.getCreator().equals("public")&&phenoDataPath==null) {//need to create a copy in user directory
+        //if (pds.getCreator().equals("public")&&phenoDataPath==null) {//need to create a copy in user directory
+        if (pds.getCreator().equals("public")) {
             String publicH5Path = userFilesRoot + "public/Datasets/" + pds.getNameNoSpaces() + "_Master/Affy.NormVer.h5";
             String userCurDir = userFilesRoot + userLoggedIn.getUser_name() + "/Datasets/" + pds.getNameNoSpaces() + "/";
             String userH5Path = userCurDir + "Affy.NormVer.h5";
@@ -289,7 +290,7 @@ public class Async_HDF5_FileHandler implements Runnable{
             }
 
         } else {
-            if(phenoDataPath==null){
+            //if(phenoDataPath==null){
             try {
                 h5path=outputDir+h5file;
                 file = new PhenoGen_HDF5_File(outputDir + h5file);
@@ -302,7 +303,7 @@ public class Async_HDF5_FileHandler implements Runnable{
                 }
                 log.error("Error creating dataset HDF5 File", e);
             }
-            }else{
+            /*}else{
                 try {
                     h5path=phenoDataPath+h5file;
                     file = new PhenoGen_HDF5_File(phenoDataPath+h5file);
@@ -315,7 +316,7 @@ public class Async_HDF5_FileHandler implements Runnable{
                     }
                     log.error("Error creating dataset HDF5 File", e);
                 }
-            }
+            }*/
         }
         if(!error){
             try {
@@ -389,7 +390,8 @@ public class Async_HDF5_FileHandler implements Runnable{
         int v = Integer.parseInt(version.substring(1));
         PhenoGen_HDF5_File file = null;
         boolean error=false;
-        if (pds.getCreator().equals("public")&&phenoDataPath==null) {//need to create a copy in user directory
+        //if (pds.getCreator().equals("public")&&phenoDataPath==null) {//need to create a copy in user directory
+        if (pds.getCreator().equals("public")) {
             String publicH5Path = userFilesRoot + "public/Datasets/" + pds.getNameNoSpaces() + "_Master/Affy.NormVer.h5";
             String userCurDir = userFilesRoot + userLoggedIn.getUser_name() + "/Datasets/" + pds.getNameNoSpaces() + "/";
             String userH5Path = userCurDir + "Affy.NormVer.h5";
@@ -406,7 +408,7 @@ public class Async_HDF5_FileHandler implements Runnable{
             }
 
         } else {
-            if(phenoDataPath==null){
+            //if(phenoDataPath==null){
                 try {
                     file = new PhenoGen_HDF5_File(outputDir + h5file);
                 }catch (Exception e) {
@@ -418,7 +420,7 @@ public class Async_HDF5_FileHandler implements Runnable{
                     }
                     log.error("Error creating dataset HDF5 File", e);
                 }
-            }else{
+            /*}else{
                 try {
                     file = new PhenoGen_HDF5_File(phenoDataPath+h5file);
                 }catch (Exception e) {
@@ -430,7 +432,7 @@ public class Async_HDF5_FileHandler implements Runnable{
                     }
                     log.error("Error creating dataset HDF5 File", e);
                 }
-            }
+            }*/
         }
         if(!error){
             boolean success=false;

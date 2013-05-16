@@ -92,9 +92,12 @@
 					String thisPhenotypeName = myParameterValue.getPhenotypeName(phenotypeParameterGroupID, dbConn);
                 	String groupingUserPhenotypeDir = 
 						selectedDatasetVersion.getGroupingUserPhenotypeDir(userName, thisPhenotypeName);
-					statisticsRdataFileName=groupingUserPhenotypeDir +"Affy.NormVer.h5";
-					multipleTestRdataFileName=groupingUserPhenotypeDir +"Affy.NormVer.h5";
-					sampleFile=groupingUserPhenotypeDir+version+"_samples.txt";
+					//statisticsRdataFileName=groupingUserPhenotypeDir +"Affy.NormVer.h5";
+					//multipleTestRdataFileName=groupingUserPhenotypeDir +"Affy.NormVer.h5";
+					//sampleFile=groupingUserPhenotypeDir+version+"_samples.txt";
+					statisticsRdataFileName=userLoggedIn.getUserDatasetDir() + selectedDataset.getNameNoSpaces() + "/"+"Affy.NormVer.h5";
+					multipleTestRdataFileName=userLoggedIn.getUserDatasetDir() + selectedDataset.getNameNoSpaces() + "/"+"Affy.NormVer.h5";
+					sampleFile=userLoggedIn.getUserDatasetDir() + selectedDataset.getNameNoSpaces() + "/"+version+"_samples.txt";
 				}
 			}
 		}
