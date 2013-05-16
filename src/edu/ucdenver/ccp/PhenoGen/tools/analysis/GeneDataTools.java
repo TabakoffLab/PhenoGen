@@ -692,12 +692,12 @@ public class GeneDataTools {
         if(!createdXML){ 
             
         }else{
-            String[] url=this.createImage("default",organism,outputDir,chrom,minCoord,maxCoord);
-            if(url!=null){
+            //String[] url=this.createImage("default",organism,outputDir,chrom,minCoord,maxCoord);
+            //if(url!=null){
                 
                 completedSuccessfully=true;
-            }
-            getUCSCUrl(url[1].replaceFirst(".png",".url"));
+            //}
+            //getUCSCUrl(url[1].replaceFirst(".png",".url"));
             //if(!ucscComplete){
             //       completedSuccessfully=false;
             //}

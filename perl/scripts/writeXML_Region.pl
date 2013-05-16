@@ -292,6 +292,7 @@ sub createXMLFile
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
 	my $psTimeEnd=time();
+	createProbesetXMLTrack(\@probesetHOH,$outputDir."probe.xml");
 	print "Probeset Time=".($psTimeEnd-$psTimeStart)."sec\n";
 	#read SNPs/Indels
 	

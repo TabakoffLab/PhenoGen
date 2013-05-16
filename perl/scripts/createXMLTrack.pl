@@ -187,47 +187,33 @@ sub createFilteredProbesetTrackXML{
 }
 
 sub createProbesetXMLTrack{
-	my($nonMaskedProbesRef, $outputFile,$trackDB,$chr) = @_; 
+	my($nonMaskedProbesRef, $outputFile) = @_; 
 	my @nonMaskedProbes=@$nonMaskedProbesRef;
 	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
-	if($trackDB eq 'rn5'){
-		my $coreColor="255,0,0";
-		my $fullColor="0,100,0";
-		my $extendedColor="0,0,255";
-		my $ambiguousColor="0,0,0";
-		my $cntColor=0;
-		print OFILE 'track db='.$trackDB." name=\"All Probesets\" ";
-		print OFILE "description=\"Non-Masked Probe sets from Affymetrix Exon Array 1.0 ST: Red=Core Blue=Extended Green=Full Black=Ambiguous\" ";
-		print OFILE 'visibility=3 itemRgb=On'."\n"; #removed useScore=1
-		my $curInd=0;
-		foreach(@nonMaskedProbes){
-			my $strand=".";
-			if($nonMaskedProbes[$curInd]{strand}==-1){
-				$strand="-";
-			}elsif($nonMaskedProbes[$curInd]{strand}==1){
-				$strand="+";
-			}
-			my $color=$fullColor;
-			if($nonMaskedProbes[$curInd]{type} eq 'core'){
-				$color=$coreColor;
-			}elsif($nonMaskedProbes[$curInd]{type} eq 'extended'){
-				$color=$extendedColor;
-			}elsif($nonMaskedProbes[$curInd]{type} eq 'full'){
-				$color=$fullColor;
-			}else{
-				$color=$ambiguousColor;
-			}
-			if($nonMaskedProbes[$curInd]{start}>0&&$nonMaskedProbes[$curInd]{stop}>0){
-				print OFILE "chr$chr\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
-			}
-			$curInd++;
+	my %outGeneHOH;
+	my $outCount=0;
+	if(@nonMaskedProbes>0){
+		foreach my $tmpProbe (@nonMaskedProbes){
+			$outGeneHOH{probe}[$outCount]=$tmpProbe;
+			$outCount++;
 		}
-		$cntColor++;
-	}else{
-		print OFILE "track db=$trackDB type=bigBed  name='Affy Mouse Probesets' ";
-		print OFILE 'description="Probesets from Affymetrix Exon 1.0 ST Array: Red=Core Green=Full Blue=Extended" ';
-		print OFILE "visibility=3 itemRgb=On bigDataUrl=http://ucsc:JU7etr5t\@phenogen.ucdenver.edu/ucsc/mouseBigBed.bb\n";
+		my $outListRef=$outGeneHOH{probe};
+		my @outList=();
+		eval{
+			@outList=@$outListRef;
+		}or do{
+			@outList=();
+		};
+	
+		my @sortedlist = sort { $a->{start} <=> $b->{start} } @outList;
+		print "sorted List:".@sortedlist."\n";
+		$outGeneHOH{probe}=\@sortedlist;
+		
+		my $xml = new XML::Simple (RootName=>'probeList');
+		my $data = $xml->XMLout(\%outGeneHOH);
+		print OFILE $data;
 	}
+	
 	close OFILE;
 	
 }
