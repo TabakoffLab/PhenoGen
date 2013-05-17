@@ -738,21 +738,23 @@ public class GeneDataTools {
         String probeQuery="select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and substr(c.name,1,2) = '"+chr+"' "+
+                                "and c.name = '"+chr+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
                             "and s.psannotation <> 'transcript' " +
+                            "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = "+arrayTypeID;
         
         String probeTransQuery="select s.Probeset_ID,c.name,s.PSSTART,s.PSSTOP,s.PSLEVEL,s.Strand "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and substr(c.name,1,2) = '"+chr+"' "+
+                                "and c.name = '"+chr+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
                             "and s.psannotation like 'transcript' " +
+                            "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = " + arrayTypeID +
                             " and exists(select l.probe_id from location_specific_eqtl l where s.probeset_id = l.probe_id)";
         
