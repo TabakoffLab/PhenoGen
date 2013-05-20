@@ -145,118 +145,104 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		) {
 		myDisplayGene=myGene;
 		mySessionHandler.createSessionActivity(session.getId(), "Ran Transcription Details on "+myGene, dbConn);
-		myIDecoderClient.setNum_iterations(2);
-		iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
-		myIDecoderClient.setNum_iterations(1);
-		/*session.setAttribute("iDecoderAnswer", iDecoderAnswer);
-		session.setAttribute("genURL",null);
-		session.setAttribute("ucscURL",null);
-		session.setAttribute("geneSymbol",null);
-		session.setAttribute("ucscURLFiltered",null);
-		session.setAttribute("firstEnsemblID",null);
-		session.setAttribute("genURLArray",null);
-		session.setAttribute("ucscURLArray",null);
-		session.setAttribute("geneSymbolArray",null);
-		session.setAttribute("ucscURLFilteredArray",null);
-		session.setAttribute("firstEnsemblIDArray",null);*/
-        List myIdentifierList=null;
-        //ArrayList<String> myEnsemblIDs=new ArrayList<String>();
-        if(iDecoderAnswer!=null){
-                myIdentifierList = Arrays.asList(iDecoderAnswer.toArray((Identifier[]) new Identifier[iDecoderAnswer.size()]));
-				for(int i=0;i<myIdentifierList.size();i++){
-					log.debug("ID LIST["+i+"]:"+((Identifier)myIdentifierList.get(i)).getIdentifier());
-				}
-				if(myIdentifierList!=null&&myIdentifierList.size()>0){
-					Identifier thisIdentifier = (Identifier)myIdentifierList.get(0);
-					HashMap linksHash = thisIdentifier.getTargetHashMap();
-					Set homologSet = myIDecoderClient.getIdentifiersForTargetForOneID(linksHash, new String[] {"Ensembl ID"});
-					log.debug("linksHash size:"+linksHash.size());
-					List homologList = myObjectHandler.getAsList(homologSet);
+		List homologList=null;
+		
+
+		
+			if(myGene.startsWith("ENSRNOG") ||myGene.startsWith("ENSMUSG")){
+				myIDecoderClient.setNum_iterations(0);
+			}else{
+				myIDecoderClient.setNum_iterations(2);
+			}
+			iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
+			myIDecoderClient.setNum_iterations(1);
+
+			List myIdentifierList=null;
 	
-					/*for (int i=0; i< homologList.size(); i++) {
-						Identifier homologIdentifier = (Identifier) homologList.get(i);
-						if(homologIdentifier.getIdentifier().indexOf("T0")!=6){
-							myEnsemblIDs.add(homologIdentifier.getIdentifier());
-							if(ident.equals("")){
-								ident=homologIdentifier.getIdentifier();
-								firstEnsemblID=ident;
-							}else{
-								ident=ident+","+homologIdentifier.getIdentifier();
-							}
-							log.debug("IDENT:"+i+":"+ident);
+			if(iDecoderAnswer!=null){
+					myIdentifierList = Arrays.asList(iDecoderAnswer.toArray((Identifier[]) new Identifier[iDecoderAnswer.size()]));
+					for(int i=0;i<myIdentifierList.size();i++){
+						log.debug("ID LIST["+i+"]:"+((Identifier)myIdentifierList.get(i)).getIdentifier());
+					}
+					if(myIdentifierList!=null&&myIdentifierList.size()>0){
+						Identifier thisIdentifier = (Identifier)myIdentifierList.get(0);
+						HashMap linksHash = thisIdentifier.getTargetHashMap();
+						Set homologSet = myIDecoderClient.getIdentifiersForTargetForOneID(linksHash, new String[] {"Ensembl ID"});
+						log.debug("linksHash size:"+linksHash.size());
+						homologList = myObjectHandler.getAsList(homologSet);
+		
+					}else{
+						displayNoEnsembl=true;
+					}
+			}else{
+				displayNoEnsembl=true;
+			}
 	
-						}
-					}*/
-					if(homologList.size()>0){
-							int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,dbConn);
-							if(tmp!=null&&tmp.length==2){
-								rnaDatasetID=tmp[1];
-								arrayTypeID=tmp[0];
-							}
-							
-							for (int i=0; i< homologList.size(); i++) {
-								Identifier homologIdentifier = (Identifier) homologList.get(i);
-								if(homologIdentifier.getIdentifier().indexOf("ENSMUSG")>-1||homologIdentifier.getIdentifier().indexOf("ENSRNOG")>-1){
-									//myEnsemblIDs.add(homologIdentifier.getIdentifier());	
-									log.debug("RUNNING GDT for "+homologIdentifier.getIdentifier());
-									ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
-									if(i==0){
-										min=gdt.getMinCoord();
-										max=gdt.getMaxCoord();
-										chromosome=gdt.getChromosome();
-										fullGeneList=tmpGeneList;
-									}
-									String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
-									String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
-									String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
-									//String tmpUcscURLFiltered =gdt.getUCSCURLFiltered();//(String)session.getAttribute("ucscURLFiltered");
-									
-									if(tmpURL!=null){
-										genURL.add(tmpURL);
-										if(tmpGeneSymbol==null){
-											geneSymbol.add("");
-										}else{
-											geneSymbol.add(tmpGeneSymbol);
-										}
-										if(tmpUcscURL==null){
-											ucscURL.add("");
-										}else{
-											ucscURL.add(tmpUcscURL);
-										}
-										/*if(tmpUcscURLFiltered==null){
-											ucscURLFiltered.add("");
-										}else{
-											ucscURLFiltered.add(tmpUcscURLFiltered);
-										}*/
-										firstEnsemblID.add(homologIdentifier.getIdentifier());
-										if(tmpGeneSymbol!=null && tmpGeneSymbol.equals(myGene)){
-											selectedGene=i;
-											selectedEnsemblID=homologIdentifier.getIdentifier();
+						if(homologList!=null&&homologList.size()>0){
+								int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,dbConn);
+								if(tmp!=null&&tmp.length==2){
+									rnaDatasetID=tmp[1];
+									arrayTypeID=tmp[0];
+								}
+								
+								for (int i=0; i< homologList.size(); i++) {
+									Identifier homologIdentifier = (Identifier) homologList.get(i);
+									if(homologIdentifier.getIdentifier().indexOf("ENSMUSG")>-1||homologIdentifier.getIdentifier().indexOf("ENSRNOG")>-1){
+										//myEnsemblIDs.add(homologIdentifier.getIdentifier());	
+										log.debug("RUNNING GDT for "+homologIdentifier.getIdentifier());
+										ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
+										if(i==0){
 											min=gdt.getMinCoord();
 											max=gdt.getMaxCoord();
 											chromosome=gdt.getChromosome();
 											fullGeneList=tmpGeneList;
 										}
+										String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
+										String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
+										String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
+										//String tmpUcscURLFiltered =gdt.getUCSCURLFiltered();//(String)session.getAttribute("ucscURLFiltered");
+										
+										if(tmpURL!=null){
+											genURL.add(tmpURL);
+											if(tmpGeneSymbol==null){
+												geneSymbol.add("");
+											}else{
+												geneSymbol.add(tmpGeneSymbol);
+											}
+											if(tmpUcscURL==null){
+												ucscURL.add("");
+											}else{
+												ucscURL.add(tmpUcscURL);
+											}
+											/*if(tmpUcscURLFiltered==null){
+												ucscURLFiltered.add("");
+											}else{
+												ucscURLFiltered.add(tmpUcscURLFiltered);
+											}*/
+											firstEnsemblID.add(homologIdentifier.getIdentifier());
+											if(tmpGeneSymbol!=null && tmpGeneSymbol.equals(myGene)){
+												selectedGene=i;
+												selectedEnsemblID=homologIdentifier.getIdentifier();
+												min=gdt.getMinCoord();
+												max=gdt.getMaxCoord();
+												chromosome=gdt.getChromosome();
+												fullGeneList=tmpGeneList;
+											}
+										}
 									}
 								}
-							}
-							/*session.setAttribute("genURLArray",genURL);
-							session.setAttribute("ucscURLArray",geneSymbol);
-							session.setAttribute("geneSymbolArray",ucscURL);
-							session.setAttribute("ucscURLFilteredArray",ucscURLFiltered);
-							session.setAttribute("firstEnsemblIDArray",firstEnsemblID);*/
-					}else{
-							//gene="No Ensembl ID";
-							//heat="No Ensembl ID";
-							gdt.getGeneCentricData(myGene,"",panel,myOrganism,rnaDatasetID,arrayTypeID);
-							displayNoEnsembl=true;
-					}
-            	}else{
-					displayNoEnsembl=true;
-				}
-        }else{
-			displayNoEnsembl=true;
-		}
+								/*session.setAttribute("genURLArray",genURL);
+								session.setAttribute("ucscURLArray",geneSymbol);
+								session.setAttribute("geneSymbolArray",ucscURL);
+								session.setAttribute("ucscURLFilteredArray",ucscURLFiltered);
+								session.setAttribute("firstEnsemblIDArray",firstEnsemblID);*/
+						}else{
+								//gene="No Ensembl ID";
+								//heat="No Ensembl ID";
+								gdt.getGeneCentricData(myGene,"",panel,myOrganism,rnaDatasetID,arrayTypeID);
+								displayNoEnsembl=true;
+						}
+					
 	}/*else if ((action != null) && action.equals("Go")) {
 		//iDecoderAnswer=(Set)session.getAttribute("iDecoderAnswer");
 		//List myIdentifierList=null;
@@ -516,7 +502,7 @@ Or
 	}
 </script>
 
-<%if(!region&&genURL.size()>0){%>
+<%if(!region&&genURL.size()>0&&!genURL.get(selectedGene).startsWith("ERROR:")){%>
 	<div style="text-align:center;">
         <div id="javaError" style="display:none;">
             <BR /><BR /><br />
@@ -559,7 +545,7 @@ Or
     </script>
 	<%@ include file="geneResults.jsp" %>
 	<%@ include file="web/GeneCentric/resultsHelp.jsp" %>
-<%}else if(region && genURL.size()>0){%>
+<%}else if(region && genURL.size()>0&&!genURL.get(0).startsWith("ERROR:")){%>
 
 	<%@ include file="regionResults.jsp" %>
     <%@ include file="web/GeneCentric/resultsHelp.jsp" %>
@@ -569,7 +555,15 @@ Or
 	<%if(displayNoEnsembl){ %>
         <BR /><div class="error">ERROR:No Ensembl ID found for the ID entered.<BR /><BR />
         The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
-	<% } %>
+	<% }else if(genURL!=null&&genURL.size()>0&&(!region && !genURL.get(selectedGene).startsWith("ERROR:"))||(region&&!genURL.get(selectedGene).startsWith("ERROR:"))){ %>
+    	<div style="color:#FF0000;">
+        	<%if(!region){%>
+            	<%=genURL.get(selectedGene)%>
+            <%}else if(region){%>
+            	<%=genURL.get(0)%>
+            <%}%>
+        </div>
+    <%}%>
 
 	<div style="text-align:center;">
         <div id="javaError" style="display:none;">
