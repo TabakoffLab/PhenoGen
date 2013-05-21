@@ -38,10 +38,12 @@ var tisLen=<%=tissuesList1.length%>;
 	}
 	
 	String tmpURL=genURL.get(selectedGene);
+	log.debug("Selected URL:"+tmpURL+"\n\n\n");
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
 	DecimalFormat dfC = new DecimalFormat("#,###");
 	String gcPath=applicationRoot + contextRoot+"tmpData/geneData/" +firstEnsemblID.get(selectedGene) + "/";
+	log.debug("Folder/gc:"+folderName+"\n\n"+gcPath);
 if(displayNoEnsembl){ %>
 	<BR /><div> The Gene ID entered could not be translated to an Ensembl ID so that we can pull up gene information.  Please try an alternate Gene ID.  This gene ID has been reported so that we can improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> at this time if there is no annotation in Ensembl for a gene we will not currently be able to display information about it, however if you have found your gene of interest on Ensembl and cannot enter a different Gene ID above entering the Ensembl Gene ID should work.</div>
 <% } %>
@@ -75,8 +77,14 @@ if(displayNoEnsembl){ %>
                     <%for(int i=0;i<firstEnsemblID.size();i++){
                         %>
                         <option value="<%=firstEnsemblID.get(i)%>" <%if(i==selectedGene){%>selected<%}%>>
-						<%if(geneSymbol.get(i)!=null){%><%="chr"+geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) <%}else{%><%=firstEnsemblID.get(i)%> <%}%>
-						<%if(genURL.get(i)!=null && genURL.get(i).startsWith("ERROR:")){%>Error<%}%>
+						<%if(geneSymbol.get(i)!=null&&!geneSymbol.get(i).startsWith("ERROR")){%>
+							<%="chr"+geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
+						<%}else if(geneSymbol.get(i).startsWith("ERROR")){%>
+                        	<%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
+						<%}else{%>
+							<%=firstEnsemblID.get(i)%>
+						<%}%>
+						
                         </option>
                     <%}%>
                 </select>
@@ -84,7 +92,13 @@ if(displayNoEnsembl){ %>
             
             <input type="submit" name="action" id="selGeneBTN" value="Go" onClick="enterSelectedGene()">
             
-      <% }%>
+      <% }else{%>
+      
+<%if(genURL.get(selectedGene).startsWith("ERROR:")){%>
+	<div style="color:#FF0000;">
+		    	<%=genURL.get(selectedGene)%>
+    </div>
+<%}else{%>      
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;">
     		<span class="triggerImage less" name="collapsableImage" >UCSC Genome Browser Image</span>
     		<div class="inpageHelp" style="display:inline-block;"><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
@@ -394,7 +408,7 @@ if(displayNoEnsembl){ %>
 		  	String[] hTissues=new String[0];
 			String[] dTissues=new String[0];
 		  	if(fullGeneList.size()>0){
-				edu.ucdenver.ccp.PhenoGen.data.Bio.Gene tmpGene=fullGeneList.get(0);
+				/*edu.ucdenver.ccp.PhenoGen.data.Bio.Gene tmpGene=fullGeneList.get(selectedGene);
 				log.debug("check:tmpGene:"+tmpGene.getGeneID()+"::"+firstEnsemblID.get(selectedGene));
 					if(!tmpGene.getGeneID().equals(firstEnsemblID.get(selectedGene))){
 						boolean found=false;
@@ -405,7 +419,7 @@ if(displayNoEnsembl){ %>
 								found=true;
 							}
 						}
-					}
+					}*/
 				%>
 		 
           	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
@@ -604,7 +618,8 @@ if(displayNoEnsembl){ %>
 									}%>
                                 	<%=tmpList%>
                             </TD>
-                            <%if(myOrganism.equals("Rn")){%>
+                            <%if(myOrganism.equals("Rn")){
+							log.debug("*******CALLING TMPLIST2");%>
                                 <TD>
                                     <%	String tmpList2="";
                                             if(curGene.getGeneID().startsWith("ENS")){
@@ -627,10 +642,11 @@ if(displayNoEnsembl){ %>
                                                     }
                                                 
                                             }
+											log.debug(tmpList2);
                                         %>
                                         <%=tmpList2%>
                                 </TD>
-                            <%}%>
+                            <%}log.debug("***********END TMPLIST2");%>
                             <TD title="View detailed transcription information for gene in a new window.">
 							<%if(curGene.getGeneID().startsWith("ENS")){%>
                             	<a href="<%=lg.getGeneLink(curGene.getGeneID(),myOrganism,true,true,false)%>" target="_blank">
@@ -1328,10 +1344,14 @@ if(displayNoEnsembl){ %>
     <%}else{%>
     	<div class="error"><%=genURL.get(selectedGene)%><BR />The administrator has been notified of the problem and will investigate the error.  We apologize for any inconvenience.</div><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR />
     <%}%>
+<%}//end if genURL startsWith "ERROR"
+}//end of if multiple genes%>
 <%}else{%>
 	<BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR />
 <%}%>
 </div><!-- end affyExon-->
+
+
 <script type="text/javascript">
 	$('#affyTabID').click(function() {    
 			//$('div#changingTabs').show(10);

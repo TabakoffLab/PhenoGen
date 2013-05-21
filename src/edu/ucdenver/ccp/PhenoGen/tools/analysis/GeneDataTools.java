@@ -178,7 +178,7 @@ public class GeneDataTools {
         String rOutputPath = "";
         outputDir="";
         String result="";
-        
+        returnGenURL="";
         try{
             PreparedStatement ps=dbConn.prepareStatement(getNextID, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -241,13 +241,19 @@ public class GeneDataTools {
                             //getUCSCUrls(ensemblID1);
                             result="cache hit files not generated";
                         }else{
-                            error=true;
-                            this.setError(errors);
+                            if(myFH.deleteAllFilesPlusDirectory(geneDir)){
+                             error=generateFiles(organism,rOutputPath,ensemblIDList,folderName,ensemblID1,RNADatasetID,arrayTypeID,panel);
+                             result="old files, regenerated all files";
+                            }else{
+                                error=true;
+                            }
                         }
                     }
                 }else{
                     error=generateFiles(organism,rOutputPath,ensemblIDList,folderName,ensemblID1,RNADatasetID,arrayTypeID,panel);
-                    result="NewGene generated successfully";
+                    if(!error){
+                        result="NewGene generated successfully";
+                    }
                 }
                 
             } catch (Exception e) {
@@ -274,11 +280,18 @@ public class GeneDataTools {
             setError("No Ensembl IDs");
         }
         if(error){
-            result=(String)session.getAttribute("genURL");
+            log.debug("***********ERROR OCCURRED\n\n");
+            result=this.returnGenURL;
             if(!result.startsWith("ERROR:")){
-                setError("Unknown Problem generating gene data.  Please try again later.");
+                returnGenURL="ERROR: Unknown Problem generating gene data.  Please try again later.";
+            }
+            try{
+                myFH.writeFile(returnGenURL,outputDir+"errMsg.txt");
+            }catch(IOException e){
+                log.error("Error writing error file.",e);
             }
         }else{
+            log.debug("NO ERROR OCCURRED\n\n");
             this.setPublicVariables(error,ensemblID1);
             String[] loc=null;
             try{
@@ -454,7 +467,7 @@ public class GeneDataTools {
                 }
             }
         if(error){
-            result=(String)session.getAttribute("genURL");
+            result=this.returnGenURL;
         }
         this.setPublicVariables(error,folderName);
         ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
@@ -591,7 +604,7 @@ public class GeneDataTools {
                 }
             }
         if(error){
-            result=(String)session.getAttribute("genURL");
+            result=this.returnGenURL;
         }
         this.setPublicVariables(error,folderName);
     }
@@ -601,7 +614,7 @@ public class GeneDataTools {
         log.debug("generate files");
         AsyncGeneDataTools prevThread=null;
         //ArrayList<Gene> genes=null;
-        boolean completedSuccessfully = true;
+        boolean error = false;
         log.debug("outputDir:"+outputDir);
         File outDirF = new File(outputDir);
         //Mkdir if some are missing    
@@ -612,43 +625,46 @@ public class GeneDataTools {
         
         boolean createdXML=this.createXMLFiles(organism,ensemblIDList,arrayTypeID,ensemblID1,RNADatasetID);
         
+        log.debug(ensemblIDList+" CreatedXML::"+createdXML);
+        
         if(!createdXML){ 
-            completedSuccessfully=false;
+            error=true;
         }else{
             String[] loc=null;
             try{
                 loc=myFH.getFileContents(new File(outputDir+"location.txt"));
             }catch(IOException e){
+                error=true;
                 log.error("Couldn't load location for gene.",e);
             }
             if(loc!=null){
                 chrom=loc[0];
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
+                String[] url=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq",organism,outputDir,chrom,minCoord,maxCoord);
+                if(url!=null){
+                    generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);
+                }else{
+                    error=true;
+                }
+                getUCSCUrl(url[1].replaceFirst(".png",".url"));
+                outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
+
+
+
+                //boolean ucscComplete=getUCSCUrls(ensemblID1);
+                //if(!ucscComplete){
+                //       completedSuccessfully=false;
+                //}
+                prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
+                boolean expError=callPanelExpr(chrom,minCoord,maxCoord,arrayTypeID,RNADatasetID,prevThread);
+                if(expError){
+                       error=true;
+                }
             }
-            String[] url=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq",organism,outputDir,chrom,minCoord,maxCoord);
-            if(url!=null){
-                generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);
-            }else{
-                completedSuccessfully=false;
-            }
-            getUCSCUrl(url[1].replaceFirst(".png",".url"));
             
-            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
-            
-            
-            
-            //boolean ucscComplete=getUCSCUrls(ensemblID1);
-            //if(!ucscComplete){
-            //       completedSuccessfully=false;
-            //}
-            prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
-            boolean createdExpressionfile=callPanelExpr(chrom,minCoord,maxCoord,arrayTypeID,RNADatasetID,prevThread);
-            if(!createdExpressionfile){
-                   completedSuccessfully=false;
-            }
         }
-        return completedSuccessfully;
+        return error;
     }
     
     public boolean generateGeneRegionFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID) {
@@ -1005,13 +1021,19 @@ public class GeneDataTools {
                         missingDB=true;
                     }
                     if(errorList.contains("Ensembl API version =")){
-                        apiVer=errorList.substring(errorList.indexOf("Ensembl API version =")+20,3);
+                        int apiStart=errorList.indexOf("Ensembl API version =")+22;
+                        apiVer=errorList.substring(apiStart,apiStart+3);
                     }
                 
                 if(!missingDB){
                     setError("Running Perl Script to get Gene and Transcript details/images. Ensembl Assembly v"+apiVer);
                 }else{
-                    setError("Ensembl Database does not have an entry for this gene. Ensembl Assembly v"+apiVer);
+                    setError("The current Ensembl database does not have an entry for this gene ID."+
+                                " As Ensembl IDs are added/removed from new versions it is likely this ID has been removed."+
+                                " If you used a Gene Symbol and reached this the administrator will investigate. "+
+                                "If you entered this Ensembl ID please try to use a synonym or visit Ensembl to investigate the status of this ID. "+
+                                "Ensembl Assembly v"+apiVer);
+                                        
                 }
                 
                 Email myAdminEmail = new Email();
@@ -1624,6 +1646,9 @@ public class GeneDataTools {
                 urls=myFH.getFileContents(new File(urlFile));
                 this.geneSymbol=urls[0];
                 this.returnGeneSymbol=this.geneSymbol;
+                if(urls.length>2){
+                    this.returnGeneSymbol=urls[2];
+                }
                 
                 //session.setAttribute("geneSymbol", this.geneSymbol);
                 this.ucscURL=urls[1];
@@ -1709,9 +1734,12 @@ public class GeneDataTools {
     }
     
     private void setError(String errorMessage){
-        String tmp=(String)session.getAttribute("genURL");
+        String tmp=returnGenURL;
         if(tmp==null||tmp.equals("")||!tmp.startsWith("ERROR:")){
-            session.setAttribute("genURL","ERROR: "+errorMessage);
+            //session.setAttribute("genURL","ERROR: "+errorMessage);
+            returnGenURL="ERROR: "+errorMessage;
+        }else{
+            returnGenURL=returnGenURL+", "+errorMessage;
         }
     }
     

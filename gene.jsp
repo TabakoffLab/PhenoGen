@@ -191,21 +191,25 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 										//myEnsemblIDs.add(homologIdentifier.getIdentifier());	
 										log.debug("RUNNING GDT for "+homologIdentifier.getIdentifier());
 										ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
+										String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
+										String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
+										log.debug(tmpURL+"\n"+tmpGeneSymbol);
+										String tmpUcscURL =gdt.getUCSCURL();
 										if(i==0){
 											min=gdt.getMinCoord();
 											max=gdt.getMaxCoord();
 											chromosome=gdt.getChromosome();
 											fullGeneList=tmpGeneList;
 										}
-										String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
-										String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
-										String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
+										//(String)session.getAttribute("ucscURL");
 										//String tmpUcscURLFiltered =gdt.getUCSCURLFiltered();//(String)session.getAttribute("ucscURLFiltered");
 										
 										if(tmpURL!=null){
 											genURL.add(tmpURL);
-											if(tmpGeneSymbol==null){
+											if(tmpGeneSymbol==null && !tmpURL.startsWith("ERROR:")){
 												geneSymbol.add("");
+											}else if(tmpURL.startsWith("ERROR:")){
+												geneSymbol.add("ERROR GENERATING");
 											}else{
 												geneSymbol.add(tmpGeneSymbol);
 											}
@@ -502,7 +506,7 @@ Or
 	}
 </script>
 
-<%if(!region&&genURL.size()>0&&!genURL.get(selectedGene).startsWith("ERROR:")){%>
+<%if(!region&&genURL.size()>0){%>
 	<div style="text-align:center;">
         <div id="javaError" style="display:none;">
             <BR /><BR /><br />
@@ -555,15 +559,7 @@ Or
 	<%if(displayNoEnsembl){ %>
         <BR /><div class="error">ERROR:No Ensembl ID found for the ID entered.<BR /><BR />
         The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
-	<% }else if(genURL!=null&&genURL.size()>0&&(!region && !genURL.get(selectedGene).startsWith("ERROR:"))||(region&&!genURL.get(selectedGene).startsWith("ERROR:"))){ %>
-    	<div style="color:#FF0000;">
-        	<%if(!region){%>
-            	<%=genURL.get(selectedGene)%>
-            <%}else if(region){%>
-            	<%=genURL.get(0)%>
-            <%}%>
-        </div>
-    <%}%>
+	<% }%>
 
 	<div style="text-align:center;">
         <div id="javaError" style="display:none;">
