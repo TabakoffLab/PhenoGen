@@ -1,6 +1,6 @@
 
 function showDiv(jspPage){
-	d3.html(jspPage,function(error,html){
+	d3.html("web/overview/"+jspPage,function(error,html){
 							 if(error==null){
 								 $('div#indexDescContent').html(html);
 								 $('div#indexDesc').show();
@@ -114,7 +114,7 @@ d3.json("top.json", function(error, graph) {
 								 	showDiv(d.descPage);
 								 }
 							 }else if(d.level<2){
-								 hideDiv();
+								 //hideDiv();
 							 }
 					});
 	  
