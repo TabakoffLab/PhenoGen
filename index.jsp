@@ -2,6 +2,7 @@
 <%
 	//loggedIn = false;
 	extrasList.add("landing.js");
+	extrasList.add("d3.v3.min.js");
     request.setAttribute( "extras", extrasList);
 %>
 <%@ include file="/web/common/basicHeader.jsp" %>
@@ -63,9 +64,16 @@
     	        
 
     	<div id="primary-content">
-            	<%@ include file="/web/common/overview.jsp" %>
+            	<%@ include file="/web/common/indexGraph.jsp" %>
 
     	</div> <!-- // end primary-content -->
+        <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000; position:fixed; top:70px; left:800px; width:350px; min-height:75px; max-height:: 600px; overflow:auto;">
+        	<span><img src="web/images/icons/close.png"></span>
+            <div id="indexDescContent">
+            	
+            </div>
+        	
+        </div>
   	</div> <!-- end index -->
 	<div id="footer"> &nbsp; </div>
 	</div> <!-- // end site-wrap -->
