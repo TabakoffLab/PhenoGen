@@ -13,10 +13,10 @@ function hideDiv(){
 }
 
 
-var width = 980,
+var width = 960,
     height = 750,
-	radius = 60;
-var charWidth=8;
+	radius = 50;
+var charWidth=7.5;
 
 
 function wordWrap(d){
@@ -35,13 +35,13 @@ do {
    if(linesStr == "undefined"){
 				lines[length]=word;
 	}else{
-	if((linesStr.length+wordStr.length+1)*charWidth<width){
-				lines[length]=lines[length]+" "+word;
-			
-	}else{
-			lines[length+1]=word;
-			length++;
-	}
+		if((linesStr.length+wordStr.length+1)*charWidth<width){
+					lines[length]=lines[length]+" "+word;
+				
+		}else{
+				lines[length+1]=word;
+				length++;
+		}
 	}
  
   } while (words.length);
@@ -51,8 +51,8 @@ do {
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-1800)
-    .linkDistance(160)
+    .charge(-2800)
+    .linkDistance(90)
     .size([width, height]);
 
 var svg = d3.select("div#indexImage").append("svg")
@@ -96,11 +96,13 @@ d3.json("top.json", function(error, graph) {
 								  }
 								  return op;
 								  })
-	.attr("class", function(d){
+	.attr("class", function(d,i){
 								var classStr="mainFeature";
-							if(d.level>1){
+							if(i==0){
+								classStr="centerNode";
+							}else if(d.level>1){
 									  classStr=d.id+" detail";
-								  }
+							}
 							return classStr;
 							})
 	.on("mouseover",function(d){
@@ -120,7 +122,7 @@ d3.json("top.json", function(error, graph) {
 	  
 	  node.append("circle")
 	  //.attr("class", "node")
-      .attr("r", radius)
+      .attr("r",function(d,i) { var r=radius; if(i==0){r=r*1.3;} return r; })
       .style("fill", function(d) { return color(d.group); })
 	  .style("stroke",d3.rgb("#999999"))
 	  
@@ -129,27 +131,29 @@ d3.json("top.json", function(error, graph) {
 	  
 	  node.each( function(d,i){
 						  var txt=d3.select(this).append("text").style("fill",d3.rgb("#FFFFFF"))
-									.style("font-size", "16px")
+									.style("font-size", "14px")
 									.attr("x",function(d) { return (radius*-1)+3;})
 									.attr("y",0);
 						  	var lines2=wordWrap(d);
 							txt.append("tspan").text(lines2[0])
 									.attr("x",function(d) { var len=new String(lines2[0]).length;
 															var x=0;
-															x=x-len*charWidth/2;
+															x=x-(len*charWidth/2);
 															return x;})
 									.attr("y",function(d){
 													   var y=0;
-													   y=lines2.length*8/2*-1;
+													   
+													   	y=7-((lines2.length-1)*8);
+													   
 													   return y;
 													   });
 							for(var i=1;i<lines2.length;i++){
 								txt.append("tspan").text(lines2[i])
 									.attr("x",function(d) {var len=new String(lines2[i]).length;
 															var x=0;
-															x=x-len*charWidth/2;
+															x=x-(len*charWidth/2);
 															return x;})
-									.attr("dy",20);
+									.attr("dy",15);
 							}
 						  });
 
