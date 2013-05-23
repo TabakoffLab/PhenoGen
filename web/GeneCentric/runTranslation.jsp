@@ -64,7 +64,7 @@
 					stop=Long.parseLong(maxCoord);
 			}
 			if(start>stop){
-				int tmp=start;
+				long tmp=start;
 				start=stop;
 				stop=tmp;
 			}
@@ -86,9 +86,9 @@
 	}
 	if(request.getParameter("targetSpecies")!=null){
 		targetSpecies=request.getParameter("targetSpecies");
-		if(targetSpecies.subString(0,2).equals("Mm")){
+		if(targetSpecies.substring(0,2).equals("Mm")){
 			fullSpecies="Mouse";
-		}else if(targetSpecies.subString(0,2).equals("Rn")){
+		}else if(targetSpecies.substring(0,2).equals("Rn")){
 			fullSpecies="Rat";
 		}
 	}
@@ -203,13 +203,13 @@ Min Ratio: <%=minRatio%> Min Length:<%=minLenPerc*100%>% (<%=minLen%> bp)
 				double tmpStop=Double.parseDouble(col[2]);
 				
 				%>
-                <TR id="<%=col[0]+":"+col[1]+"-"+col[2]+":::"+targetSpecies.subString(0,2)%>">
+                <TR id="<%=col[0]+":"+col[1]+"-"+col[2]+":::"+targetSpecies.substring(0,2)%>">
                     <TD><%=col[0]%></TD>
                     <TD><%=df0.format(tmpStart)%></TD>
                     <TD><%=df0.format(tmpStop)%></TD>
                     <TD><%=df0.format(len)%></TD>
                     <TD><%=df1.format(perc)%></TD>
-                    <TD><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=col[0]+":"+df0.format(tmpStart)+"-"+df0.format(tmpStop)%>&speciesCB=<%=targetSpecies.subString(0,2)%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
+                    <TD><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=col[0]+":"+df0.format(tmpStart)+"-"+df0.format(tmpStop)%>&speciesCB=<%=targetSpecies.substring(0,2)%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
                 </TR>
             <%}%>
         <%}%>
