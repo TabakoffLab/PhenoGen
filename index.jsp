@@ -67,7 +67,7 @@
             	<%@ include file="/web/common/indexGraph.jsp" %>
 
     	</div> <!-- // end primary-content -->
-        <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000; position:fixed; top:70px; left:800px; width:350px; min-height:75px; max-height: 600px; overflow:auto;">
+        <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000; position:fixed; top:70px; left:800px; width:350px; min-height:75px; ">
         	<span id="closeBTN" style=" float:right;"><img src="web/images/icons/close.png"></span>
             <div id="indexDescContent">
             	

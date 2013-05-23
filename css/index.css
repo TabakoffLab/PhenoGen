@@ -349,3 +349,21 @@ a.button {
 	font-size:0px;
 	line-height:0px;
 }
+
+ul{ 
+		list-style: square outside;
+		margin-left: 20px; 
+		display: block;
+        color: #000000;
+		line-height:16px;
+}
+ol{ 
+		list-style: outside lower-alpha;
+		margin-left: 40px; 
+		display: block;
+        color: #24618e;
+		
+}
+li{ 
+		padding-top:5px;
+}
