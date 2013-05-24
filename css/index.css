@@ -47,7 +47,7 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #welcome{ 
 	margin-bottom: 15px; 
 	height: 575px;
-	border: #999 10px solid; 
+	border: #999 2px solid; 
 	color:#DADDDD;
 	background: #1F344F url("../web/images/bg/header5.jpg") no-repeat bottom right; 
 }
@@ -366,4 +366,15 @@ ol{
 }
 li{ 
 		padding-top:5px;
+}
+
+table.index{
+table-layout:fixed;
+}
+
+table.index td.wide{
+	width:66%;
+}
+table.index td.narrow{
+	width:34%;
 }

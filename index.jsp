@@ -63,8 +63,8 @@
 	<div id="index">
     	        
 
-    	<div id="primary-content">
-        <div id="welcome" style="height:1000px; width:980px;">
+    	<!--<div id="primary-content">-->
+        <div id="welcome" style="height:1000px; width:996px;">
 			<h2 class="homePage">Welcome to PhenoGen Informatics</h2>
             <div>
             	<%@ include file="/web/common/indexGraph.jsp" %>
@@ -79,7 +79,7 @@
                         ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and <a href="http://profiles.ucdenver.edu/ProfileDetails.aspx?From=SE&Person=568">John DeFries</a>(CU Boulder).</p>
            </div>
 		</div>
-    	</div> <!-- // end primary-content -->
+    	<!--</div>--> <!-- // end primary-content -->
         
 
   	</div> <!-- end index -->

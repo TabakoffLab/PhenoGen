@@ -13,7 +13,7 @@ function hideDiv(){
 }
 
 
-var width = 690,
+var width = 660,
     height = 750,
 	radius = 50;
 var charWidth=7.5;
@@ -52,7 +52,7 @@ var color = d3.scale.category20();
 
 var force = d3.layout.force()
     .charge(-2800)
-    .linkDistance(30)
+    .linkDistance(40)
     .size([width, height]);
 
 var svg = d3.select("div#indexImage").append("svg")
@@ -96,6 +96,7 @@ d3.json("top.json", function(error, graph) {
 								  }
 								  return op;
 								  })
+	.style("cursor","move")
 	.attr("class", function(d,i){
 								var classStr="mainFeature";
 							if(i==0){
