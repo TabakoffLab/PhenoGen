@@ -378,3 +378,10 @@ table.index td.wide{
 table.index td.narrow{
 	width:34%;
 }
+
+table.index td.full{
+	width:100%;
+}
+table.index td.none{
+	width:0%;
+}

@@ -43,7 +43,6 @@
                     
                     <script type="text/javascript">
 						$('#expandBTN').click( function () {
-							console.log($(this).attr("class"));
 							if($(this).attr("class")=="expandSect"){
 								$(this).removeClass("expandSect").addClass("minSect");
 								$('#indexImage svg').attr("width","335px");
@@ -51,6 +50,7 @@
 								$('#descColumn').removeClass("narrow").addClass("wide");
 								$('#expandBTN img').attr("src","web/images/icons/minimize_section.jpg");
 								width=335;
+								force.size([width, height]);
 								force.start();
 							}else{
 								$(this).removeClass("minSect").addClass("expandSect");
@@ -59,6 +59,7 @@
 								$('#indexImage svg').attr("width","660px");
 								$('#expandBTN img').attr("src","web/images/icons/expand_section.jpg");
 								width=660;
+								force.size([width, height]);
 								force.start();
 							}
 						});
