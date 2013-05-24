@@ -13,7 +13,7 @@ function hideDiv(){
 }
 
 
-var width = 960,
+var width = 690,
     height = 750,
 	radius = 50;
 var charWidth=7.5;
@@ -52,7 +52,7 @@ var color = d3.scale.category20();
 
 var force = d3.layout.force()
     .charge(-2800)
-    .linkDistance(90)
+    .linkDistance(30)
     .size([width, height]);
 
 var svg = d3.select("div#indexImage").append("svg")
@@ -115,18 +115,19 @@ d3.json("top.json", function(error, graph) {
 								 if(d3.select(this).style("opacity")==1){
 								 	showDiv(d.descPage);
 								 }
-							 }else if(d.level<2){
+							 }else if(d.level==1){
+								 
 								 //hideDiv();
 							 }
-					});
+					})
+	.call(force.drag);
 	  
 	  node.append("circle")
 	  //.attr("class", "node")
       .attr("r",function(d,i) { var r=radius; if(i==0){r=r*1.3;} return r; })
       .style("fill", function(d) { return color(d.group); })
-	  .style("stroke",d3.rgb("#999999"))
-	  
-	  .call(force.drag);
+	  .style("stroke",d3.rgb("#999999"));
+	  //.call(force.drag);
 	  
 	  
 	  node.each( function(d,i){

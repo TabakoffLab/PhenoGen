@@ -9,11 +9,10 @@
 --%>
 
     
-	<div id="overview-wrap">
+	<div style="width:100%;">
                 	<H2>Translate Regions</H2>
-                    <div style="max-height:560px; overflow:auto;">
                         <div style="text-align:center">
-                        <img src="web/overview/browseTranslate.jpg"  style="width:320px;"/>
+                        <img src="web/overview/browseTranslate.jpg"  style="width:100%;"/>
                         </div>
                         <ul>
                             <li>Easily translate regions</li>
@@ -24,14 +23,13 @@
                         <div class="demo" style="text-align:center;">
                             <BR /><BR /><BR />
                             Detailed Transcription Information Demonstration<BR />
-                            <video width="330" height="250" controls="controls">
+                            <video width="100%" controls="controls">
                                 <source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
                                 <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                              <object data="web/demo/detailed_transcript_fullv3.mp4" width="350" height="250">
+                              <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%" >
                               </object>
                             </video>
                         </div>
-                    </div>
     </div> <!-- // end overview-wrap -->
 						
 

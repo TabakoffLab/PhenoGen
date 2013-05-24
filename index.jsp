@@ -64,16 +64,24 @@
     	        
 
     	<div id="primary-content">
+        <div id="welcome" style="height:1000px; width:980px;">
+			<h2 class="homePage">Welcome to PhenoGen Informatics</h2>
+            <div>
             	<%@ include file="/web/common/indexGraph.jsp" %>
-
+           </div>
+             <div id="ack">
+                       <h3 style="margin:10px;">Acknowledgements</h3>
+                        <H4 style="margin:10px;">Funding</H4>
+                        <p>We would like to thank the National Institue on Alcohol Abuse and Alcoholism (<a href="http://www.niaaa.nih.gov/">NIAAA</a>) for continued funding to develop and support this site.  The Banbury Fund for supporting the development of this site.</p>
+                        <h4 style="margin:10px;">Recombinant Inbred Panels</h4>
+                        <p>We are grateful to the following investigators for providing the recombinant inbred panels found on the site.<BR />
+                        HXB/BXH Rat RI Panel was provided by <a href="http://pharmacology.ucsd.edu/faculty/printz.html">Morton Prinz</a>(UC San Diego).<BR />
+                        ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and <a href="http://profiles.ucdenver.edu/ProfileDetails.aspx?From=SE&Person=568">John DeFries</a>(CU Boulder).</p>
+           </div>
+		</div>
     	</div> <!-- // end primary-content -->
-        <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000; position:fixed; top:70px; left:800px; width:350px; min-height:75px; ">
-        	<span id="closeBTN" style=" float:right;"><img src="web/images/icons/close.png"></span>
-            <div id="indexDescContent">
-            	
-            </div>
-        	
-        </div>
+        
+
   	</div> <!-- end index -->
 	<div id="footer"> &nbsp; </div>
 	</div> <!-- // end site-wrap -->
