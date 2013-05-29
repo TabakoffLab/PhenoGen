@@ -22,7 +22,7 @@
 </style>
 
 					<table class="index">
-                    <tr><TD id="imageColumn" class="wide">
+                    <tr><TD id="imageColumn" class="full">
                     
                 	<div id="indexImage" >
                     	<script src="javascript/indexGraph.js">
@@ -30,7 +30,7 @@
                     </div>
                     
                     </TD>
-                    <TD  id="descColumn"  class="narrow">
+                    <TD  id="descColumn"  class="none">
                     <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000; height:750px; overflow:auto;">
                             <span id="expandBTN" class="expandSect" style=" float:left; position:relative; top:9px;"><img src="web/images/icons/expand_section.jpg"></span>
                             <div id="indexDescContent">

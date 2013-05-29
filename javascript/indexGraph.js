@@ -29,7 +29,7 @@ function hideDiv(){
 }
 
 
-var width = 660,
+var width = 980,
     height = 750,
 	radius = 50;
 var charWidth=7.5;
