@@ -26,7 +26,7 @@ function setupRegionList() {
     //var regionList = getRowsFromNamedTable($("table[name='regions']"));
     var regionList = getRows();
     stripeAndHoverTable( regionList );
-    $(".expandList").click(function(){ resetList() });
+    $(".expandList").click(function(){ resetList(); });
     regionList.each(function(){
         var rowCells = $(this).find("td:first");
         rowCells.filter("td:first").css({width: 200}).end();
@@ -82,7 +82,7 @@ function setupCreateNewRegion() {
     $("div[name='createNewRegion']").click(function(){
         if ( newRegion == undefined )
             newRegion = createDialog("div.createNewRegion", {width: 900, height: 550});
-        $.get(contextPath + "/web/qtls/defineQTL.jsp", function(data){
+        $.get(contextPath + "/web/qtls/defineQTL.jsp?fromDialog=Y", function(data){
             newRegion.dialog("open").html(data);
         });
     });
@@ -115,7 +115,7 @@ function setupAdvancedSettings() {
         $("div#advancedSettingsButton").click();
 	}
 
-    $("#advancedSettingsRegions").draggable({revert: true, handle: "div.dragHandle"});
+    //$("#advancedSettingsRegions").draggable({revert: true, handle: "div.dragHandle"});
 }
 
 /* * *

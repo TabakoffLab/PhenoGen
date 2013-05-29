@@ -16,7 +16,7 @@
 	log.info("in deleteRegion.jsp. user = " + user + ", itemID = "+itemID);
 
         	try {
-			new QTL().deleteQTLList(itemID, dbConn);
+			new QTL().deleteQtlList(itemID, dbConn);
 			mySessionHandler.createSessionActivity(session.getId(), "Deleted QTL list:" + itemID, dbConn);
         	} catch( Exception e ) {
             		throw e;

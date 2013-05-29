@@ -32,7 +32,7 @@
         padding: 2px 0 0 0;
     }
 
-    #advancedSettingsButton.button {
+    div#advancedSettingsButton {
         width: 185px;
         margin: 0 0 2px 3px;
     }
@@ -102,19 +102,19 @@
     }
 
     div#advancedSettingsRegions {
-        z-index: 99;
+        /*z-index: 99;*/
         padding: 0 0 5px 0;
         border: solid 1px #aaa;
-        width: 500px;
+        width: 449px;
         background: #eee;
         display: none;
         left: -20px;
         top: 6px;
         /* top: -2px; */
     }
-    div#advancedSettingsRegions .menuBar {
+    /*div#advancedSettingsRegions .menuBar {
         cursor: move;
-    }
+    }*/
 
     div.advancedSettings {
         padding: 0 8px 10px;
