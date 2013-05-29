@@ -825,7 +825,7 @@ div.smallSummary {
 	font-size:10px;
 	}
 	
-.button{
+span.button, a.button{
 	display: inline-block;
 	height: 20px;
 	width: 100px;
@@ -846,7 +846,7 @@ div.smallSummary {
 	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
-.button:hover{
+span.button:hover,a.button:hover{
 	display: inline-block;
 	height: 20px;
 	width: 100px;

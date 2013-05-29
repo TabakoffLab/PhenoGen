@@ -536,7 +536,7 @@ log.debug("after call");
             </div>
 
             <div id="advancedSettingsRegions">
-              <div class="menuBar dragHandle">
+              <div class="menuBar ">
                 <div class="title">User Defined Regions</div>
               </div>
 
@@ -561,7 +561,7 @@ log.debug("after call");
                 </div>
               </div>
 
-              <div class="list_container">
+              <div class="list_container" >
 		<%@ include file="/web/geneLists/include/regionList.jsp" %>
               </div>
 
@@ -575,9 +575,9 @@ log.debug("after call");
                         optionHash = new LinkedHashMap();
                         optionHash.put("none", "No restrictions<br/>");
                         optionHash.put("phys", "Physical location of gene within region<br/>");                         
-			optionHash.put("eQTL", "Transcription control (eQTL) within region<br/>");                         
-			optionHash.put("either", "Either physical location or transcription control (eQTL) within region<br/>");
-			optionHash.put("both", "Both physical location and transcription control (eQTL) within region<br/>");
+						optionHash.put("eQTL", "Transcription control (eQTL) within region<br/>");                         
+						optionHash.put("either", "Either physical location or transcription control (eQTL) within region<br/>");
+						optionHash.put("both", "Both physical location and transcription control (eQTL) within region<br/>");
                         %>
                         <%@ include file="/web/common/radio.jsp" %>
                 </div>

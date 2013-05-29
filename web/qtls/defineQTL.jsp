@@ -11,7 +11,17 @@
 
 <%
 	log.info("in defineQTL.jsp. user = " + user);
-	boolean fromMain = (request.getParameter("fromMain") != null ? true : false);
+	String fromMainStr="N",fromDialogStr="N";
+	boolean fromMain = false;
+	if(request.getParameter("fromMain") != null  && request.getParameter("fromDialog").equals("Y")){
+		fromMain=true;
+		fromMainStr="Y";
+	}
+	boolean fromDialog = false;
+	if(request.getParameter("fromDialog") != null && request.getParameter("fromDialog").equals("Y") ){
+		fromDialog=true;
+		fromDialogStr="Y";
+	}
 
 	extrasList.add("defineQTL.js");
 
@@ -21,7 +31,7 @@
                 response.sendRedirect(commonDir + "errorMsg.jsp");
         }
 
-        log.debug("action = "+action);
+        log.debug("action = "+action+"\nfromDialog:"+fromDialog+"\nfromMain:"+fromMain);
 
         String phenotype = "";
         String organism = "";
@@ -68,7 +78,15 @@
 
 		//Success - "QTL list saved"
 		//session.setAttribute("successMsg", "QTL-003");
-		response.sendRedirect(qtlsDir + "savedQTL.jsp?name="+phenotype);
+		if(!fromDialog){
+			response.sendRedirect(qtlsDir + "savedQTL.jsp?name="+phenotype);
+		}else{%>
+        	<script type="text/javascript">
+				alert("QTL List saved successfully.");
+			</script>
+            
+		<%
+		response.sendRedirect(geneListsDir+"locationEQTL.jsp?geneListID="+selectedGeneList.getGene_list_id());}
 	}	
 %>
 
@@ -167,7 +185,8 @@
 	<input type="reset" size=3 value="Reset" /><%=tenSpaces%>
 	<input type="submit" name="action" value="Save QTL List" />
 	</center>
-	<input type="hidden" name="fromMain" value="<%=fromMain%>">
+	<input type="hidden" name="fromMain" value="<%=fromMainStr%>">
+    <input type="hidden" name="fromDialog" value="<%=fromDialogStr%>">
 </form>
 	<% if (fromMain) { %>
 		<%@ include file="/web/common/footer.jsp" %>
