@@ -13,7 +13,7 @@
 	log.info("in defineQTL.jsp. user = " + user);
 	String fromMainStr="N",fromDialogStr="N";
 	boolean fromMain = false;
-	if(request.getParameter("fromMain") != null  && request.getParameter("fromDialog").equals("Y")){
+	if(request.getParameter("fromMain") != null  && request.getParameter("fromMain").equals("Y")){
 		fromMain=true;
 		fromMainStr="Y";
 	}
@@ -86,7 +86,8 @@
 			</script>
             
 		<%
-		response.sendRedirect(geneListsDir+"locationEQTL.jsp?geneListID="+selectedGeneList.getGene_list_id());}
+		response.sendRedirect(geneListsDir+"locationEQTL.jsp?geneListID="+selectedGeneList.getGene_list_id());
+		}
 	}	
 %>
 
