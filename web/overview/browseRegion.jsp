@@ -9,21 +9,54 @@
 --%>
 
     
-	<div style="width:100%;">
+	<div style="width:100%; height:100%;">
                 	<H2>Browse a Region</H2>
-                    
-                    
-                    <div class="demo" style="text-align:center;">
-						<BR /><BR /><BR />
-                        Detailed Transcription Information Demonstration<BR />
-						<video width="100%" controls="controls">
-                    		<source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
-                            <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                          <object data="web/demo/detailed_transcript_fullv3.mp4" width="350" height="250">
-                          </object>
-                        </video>
-					</div>
+                    <div id="accordion" style="height:100%;">
+                    	<H3>Feature List</H3>
+                        <div>
+                        <ul>
+                        	<li>View Rat Brain Isoforms from RNA-Seq transcriptome reconstruction</li>
+                            <li>View Rat SNPs/Short Indels for BN-Lx and SHR with more coming soon</li>
+                            <li>View Ensembl Isoforms</li>
+                            <li>View Affymetrix Exon 1.0 ST Microarray Probeset locations</li>
+                            <li>View bQTLs</li>
+                            <li>View eQTLs for the genes in the region</li>
+                            <li>View genes with an eQTL in the region</li>
+                            
+                            
+                        </ul>
+                        </div>
+                    	<h3>Sample Screen Shots</h3>
+                        <div style="text-align:center">
+                        	A UCSC Genome Browser image that includes the tracks selected below.
+                        	<img src="web/overview/browseRegion1.jpg"  style="width:100%;"/>
+                            <BR /><BR />
+                            The far left side of the table of features in the region.  This includes any annotation available from ensembl, and links to various databases for the given gene.  For rats this also includes any RNA-Seq reconstructed transcripts along with a description of how closely they match an Ensembl annotated transcript.
+                            <img src="web/overview/browseRegion2.jpg"  style="width:100%;"/>
+                            <BR /><BR />
+                            The second half of the table above, which shows information about the gene's location.  In rats it includes information about Exonic SNPs and Indels.  It also breifly summarizes expression data by providing the total # of probesets that cover both exons and introns, and then the number of probesets detected above background and the number with a more interesting level of heritability across the Recombinant Inbred Panel(BXH/HXB for rats or ILS/ISS for mice).
+                            <img src="web/overview/browseRegion3.jpg"  style="width:100%;"/>
+                            <BR /><BR />
+                            The default view for behavioral Quantitative Trait Loci(bQTL).  Showing information about the trait, linking to publications, and linking to candidate genes or the entire region for the bQTL.
+                            <img src="web/overview/browseRegion4.jpg"  style="width:100%;"/>
+                            <BR /><BR />
+                            A circos plot that shows the locations of the genes with an eQTL in the region.  Below this image a table sumarizes the data available for each gene.
+                            <img src="web/overview/browseRegion5.jpg"  style="width:100%;"/>
+                        </div>
+                        <H3>Demonstration Video</H3>
+                        <div class="demo" style="text-align:center;">
+                            <video id="demoVideo" width="260px" controls="controls">
+                                <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
+                                <source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
+                              <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%">
+                              </object>
+                            </video>
+                        </div>
+                   </div>
     </div> <!-- // end overview-wrap -->
-						
+
+<script type="text/javascript">
+		$('#accordion').accordion({ heightStyle: "fill" });
+	</script>
 
     

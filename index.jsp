@@ -3,6 +3,7 @@
 	//loggedIn = false;
 	extrasList.add("landing.js");
 	extrasList.add("d3.v3.min.js");
+	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
     request.setAttribute( "extras", extrasList);
 %>
 <%@ include file="/web/common/basicHeader.jsp" %>
