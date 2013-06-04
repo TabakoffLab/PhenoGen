@@ -77,6 +77,8 @@
                	value="<%=application.getInitParameter(\"adminEmail\") %>" />
 	<jsp:setProperty name="mySessionHandler" property="maxRThreadCount" 
                	value="<%=application.getInitParameter(\"maxRThreadCount\") %>" />
+    <jsp:setProperty name="mySessionHandler" property="dbExtFileDir" 
+               	value="<%=application.getInitParameter(\"dbExtFileDir\") %>" />
    
 </jsp:useBean>
 
@@ -89,6 +91,7 @@
 	String perlDir = mySessionHandler.getPerlDir(); 
 	String propertiesDir = mySessionHandler.getPropertiesDir();
 	String aptDir = mySessionHandler.getAptDir(); 
+	String dbExtFileDir=mySessionHandler.getDbExtFileDir();
 
 	//
 	// all others need only the context path specified
@@ -121,6 +124,7 @@
 	String perlEnvVar = mySessionHandler.getPerlEnvVar();
 	String adminEmail = mySessionHandler.getAdminEmail();
 	String maxRThreadCount= mySessionHandler.getMaxRThreadCount();
+	
 %>
 	
 

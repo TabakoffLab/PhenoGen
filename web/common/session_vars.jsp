@@ -92,6 +92,7 @@
 	String sessionID = (String) session.getAttribute("sessionID");
 	String applicationRoot = (String) session.getAttribute("applicationRoot");
 	String analysisPath = (String) session.getAttribute("analysisPath");
+	String dbExtFileDir = (String) session.getAttribute("dbExtFileDir");
 	String[][] qtlResult = (String[][]) session.getAttribute("qtlResult");
 	
 	String maxRThreadCount="1";

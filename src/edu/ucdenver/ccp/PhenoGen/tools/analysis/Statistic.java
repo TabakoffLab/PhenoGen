@@ -3004,7 +3004,8 @@ public class Statistic {
                     //Move oracle files to Phenogen
                     //and clean up APT files
                     String root=(String) session.getAttribute("userFilesRoot");
-                    Async_APT_Filecleanup afc=new Async_APT_Filecleanup(selectedDataset,newDatasetVersion,root,dbConn,thread3);
+                    String dbExtFilePath=(String) session.getAttribute("dbExtFileDir");
+                    Async_APT_Filecleanup afc=new Async_APT_Filecleanup(selectedDataset,newDatasetVersion,root,dbExtFilePath,dbConn,thread3);
                     thread6 = new Thread(afc);
                     log.debug("Starting thread to run Async_APT_FileCleanup  "+
                                     "It is named "+thread6.getName());
