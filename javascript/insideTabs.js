@@ -6,7 +6,9 @@
 
 function setupTabs( selectedTabId ) {
 	// set selected tab
-	$("div.action_tabs").find("div#" + selectedTabId).addClass("selected");
+	if(selectedTabId!=null && selectedTabId != ""){
+		$("div.action_tabs").find("div#" + selectedTabId).addClass("selected");
+	}
 
 	// set click action for tabs
 	$(".action_tabs").find("div:not('.selected')").click(function(){
