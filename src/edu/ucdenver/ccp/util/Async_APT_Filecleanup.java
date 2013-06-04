@@ -30,10 +30,11 @@ public class Async_APT_Filecleanup implements Runnable{
     private Dataset selectedDataset;
     private Dataset.DatasetVersion newDatasetVersion;
     private String userFileRoot="";
+    private String dbExtFilePath="";
     private Connection dbConn=null;
     
 
-    public Async_APT_Filecleanup(Dataset selectedDataset,Dataset.DatasetVersion dsVer,String userFileRoot,Connection dbConn, Thread waitThread) {
+    public Async_APT_Filecleanup(Dataset selectedDataset,Dataset.DatasetVersion dsVer,String userFileRoot,String dbExtFilePath,Connection dbConn, Thread waitThread) {
         log = Logger.getRootLogger();
         this.waitThread = waitThread;
         this.selectedDataset=selectedDataset;
@@ -41,6 +42,7 @@ public class Async_APT_Filecleanup implements Runnable{
         this.userFileRoot=userFileRoot;
         this.outputDir = selectedDataset.getPath()+"v"+dsVer.getVersion();
         this.dbConn=dbConn;
+        this.dbExtFilePath=dbExtFilePath;
         
     }
      
@@ -75,7 +77,7 @@ public class Async_APT_Filecleanup implements Runnable{
             
             
             String tmpOracleDir=selectedDataset.getPath()+"oracle/";
-            String tmpOracleDest=userFileRoot+"OracleExternalFiles/";
+            String tmpOracleDest=dbExtFilePath;
             ArrayList<File> fileList=new ArrayList<File>();
             char endChar='a';
             String oracleFileSufix=".a";

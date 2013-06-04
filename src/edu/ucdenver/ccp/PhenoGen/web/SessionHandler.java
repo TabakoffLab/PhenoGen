@@ -59,6 +59,7 @@ public class SessionHandler {
         private String perlEnvVar="";
         private String adminEmail="";
         private String maxRThreadCount="1";
+        private String dbExtFileDir="";
 	
         private Dataset selectedDataset = null;
         private Dataset.DatasetVersion selectedDatasetVersion = null;
@@ -364,6 +365,14 @@ public class SessionHandler {
 			this.getHost() + 
 			this.getContextRoot() + "index.jsp";
 	}
+        
+        public String getDbExtFileDir() {
+		return this.dbExtFileDir + "/";
+	}
+
+	public void setDbExtFileDir(String inString) {
+		this.dbExtFileDir = inString;
+	}
 
 /*
 	public void setMainURL(String inString) {
@@ -505,7 +514,7 @@ public class SessionHandler {
                 session.setAttribute("perlEnvVar", this.getPerlEnvVar());
                 session.setAttribute("adminEmail", this.getAdminEmail());
                 session.setAttribute("maxRThreadCount", this.getMaxRThreadCount());
-
+                session.setAttribute("dbExtFileDir", this.getDbExtFileDir());
 	}
 
   public void createSession(SessionHandler mySessionHandler, Connection conn) throws SQLException {
