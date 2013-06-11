@@ -10,6 +10,7 @@
 
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %> 
 <% 	
+	request.setAttribute( "selectedTabId", "pathway" );
 	int itemID = Integer.parseInt((String) request.getParameter("itemID"));
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");

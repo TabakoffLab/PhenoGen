@@ -202,9 +202,13 @@
 				<% } %>
 				</tr> 
 			<% } %>
+            
 			</tbody>
 		</table>
-        
+        <div style="text-align:center; padding-top:5px;">
+        Links to Reference Rat Genome(Strain BN) Rn5: <a href="ftp://ftp.ncbi.nlm.nih.gov/genomes/R_norvegicus/" target="_blank">FTP NCBI</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="ftp://ftp.ensembl.org/pub/release-71/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl</a>
+       	</div>
         
         <BR>
 		<BR>

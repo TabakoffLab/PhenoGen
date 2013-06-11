@@ -34,7 +34,7 @@
 	
 	log.debug("ChoosePrev Results\nAnalysis Path:"+analysisPath);
 	
-	if(dsfs.getFilterGroup().getFilterGroupID()<=0){
+	if(dsfs.getFilterGroup().getFilterGroupID()<=0&&dsfs.getStatsGroup().getStatsGroupID()<=0){
 		if (dsfs.getAnalysisTypeShort().equals("correlation")) {
 			response.sendRedirect("correlation.jsp?datasetID="+selectedDataset.getDataset_id()+"&datasetVersion="+selectedDatasetVersion.getVersion()+"&analysisType=correlation");
 		}else{
