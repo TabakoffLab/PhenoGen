@@ -521,11 +521,11 @@
 				log.debug("HDF5 file exists");
 				int tmpnumprobe=myStatistic.moveFilterToHDF5(selectedDataset,selectedDatasetVersion,abnormalPath);
 				log.debug("beginning of first time");
-						/*String verFDate=(String)session.getAttribute("verFilterDate");
+						String verFDate=(String)session.getAttribute("verFilterDate");
                 		String verFTime=(String)session.getAttribute("verFilterTime");
 						int fsID=selectedDatasetVersion.createFilterStats(verFDate,verFTime,analysisType,userLoggedIn.getUser_id(),dbConn);
 						DSFilterStat tmp=selectedDatasetVersion.getFilterStat(fsID,userLoggedIn.getUser_id(),dbConn);
-						tmp.addFilterStep("Filtering","Not recorded",tmpnumprobe,1,dbConn);*/
+						tmp.addFilterStep("Not Filtered","Not Filtered",tmpnumprobe,1,0,0,dbConn);
 			}
 			if (!analysisType.equals("cluster")) {
                 	response.sendRedirect(datasetsDir + "statistics.jsp" + 
