@@ -23,9 +23,11 @@
     {"name":"Promoter Analysis (oPPOSSUM, MEME)","group":6,"id":"genelist","level":2,"descPage":"glPromoter.jsp"},
     {"name":"Exon Expression Correlations","group":6,"id":"genelist","level":2,"descPage":"glCorr.jsp"},
     {"name":"Share, Compare Lists","group":6,"id":"genelist","level":2,"descPage":"glShare.jsp"},
-    {"name":"Analysis Statistics, Expression Values","group":6,"id":"genelist","level":2,"descPage":"glValues.jsp"},
+    {"name":"Statistics / Expression Values","group":6,"id":"genelist","level":2,"descPage":"glValues.jsp"},
     {"name":"Strain Specific Genomes","group":3,"id":"download","level":2,"descPage":"downloadGenome.jsp"},
-    {"name":"Genomic Marker Files","group":3,"id":"download","level":2,"descPage":"downloadMarker.jsp"}
+    {"name":"Genomic Marker Files","group":3,"id":"download","level":2,"descPage":"downloadMarker.jsp"},
+    {"name":"Homologs","group":6,"id":"genelist","level":2,"descPage":"glHomolog.jsp"},
+    {"name":"Pathway Analysis","group":6,"id":"genelist","level":2,"descPage":"glPathway.jsp"}
   ],
   "links":[
     {"source":1,"target":0,"value":3},
@@ -52,6 +54,8 @@
     {"source":22,"target":5,"value":3},
     {"source":23,"target":5,"value":3},
     {"source":24,"target":2,"value":3},
-    {"source":25,"target":2,"value":3}
+    {"source":25,"target":2,"value":3},
+    {"source":26,"target":5,"value":3},
+    {"source":27,"target":5,"value":3}
   ]
 }
