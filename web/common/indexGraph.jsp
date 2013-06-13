@@ -25,7 +25,7 @@
                     <tr><TD id="imageColumn" class="full">
                     
                 	<div id="indexImage" >
-                    	<script src="javascript/indexGraph.js">
+                    	<script src="javascript/indexGraph1.js">
 						</script>
                     </div>
                     
@@ -51,8 +51,9 @@
 								$('#expandBTN img').attr("src","web/images/icons/minimize_section.jpg");
 								$('#demoVideo').attr("width","580px");
 								width=335;
-								force.size([width, height]);
-								force.start();
+								setXSpacing(180);
+								redraw();
+								
 							}else{
 								$(this).removeClass("minSect").addClass("expandSect");
 								$('#descColumn').removeClass("wide").addClass("narrow");
@@ -61,8 +62,8 @@
 								$('#expandBTN img').attr("src","web/images/icons/expand_section.jpg");
 								$('#demoVideo').attr("width","260px");
 								width=660;
-								force.size([width, height]);
-								force.start();
+								setXSpacing(240);
+								redraw();
 							}
 						});
                     </script>
