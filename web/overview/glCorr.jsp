@@ -15,7 +15,13 @@
                     <div id="accordion" style="height:100%;">
                     	<H3>Feature List</H3>
                         <div>
-                        	
+                        	<ul>
+                            	<li>View a heatmap of Probeset to Probeset Expression Correlation aligned with Exons of specific transcripts.</li>
+                                <li>Side-by-side comparisons of different transcripts.</li>
+                                <li>View heatmaps for multiple tissues to compare correlations of exons or parts of exons in different tissues.</li>
+                                <li>Filter probesets by other data(Detection Above Background or Heritability)</li>
+                                
+                            </ul>
                         </div>
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
