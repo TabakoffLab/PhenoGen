@@ -91,7 +91,7 @@ function showDetailNodes(d){
 }
 
 
-var width = 980,
+var width = 660,
     height = 800,
 	radius = 50;
 var charWidth=7.5;

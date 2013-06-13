@@ -7,7 +7,7 @@
  *  Modification Log:
  *      
 --%>
-<!--<style>
+<style>
 
 .node circle {
   stroke: #fff;
@@ -19,32 +19,14 @@
   stroke-opacity: .6;
 }
 
-</style>-->
-<style>
-
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-.node {
-  font: 10px sans-serif;
-}
-
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
-}
-
 </style>
+
 
 					<table class="index">
                     <tr><TD id="imageColumn" class="wide">
                     
                 	<div id="indexImage" >
-                    	<script src="javascript/indexGraph2.js">
+                    	<script src="javascript/indexGraph1.js">
 						</script>
                     </div>
                     
@@ -73,10 +55,10 @@
 								$('#descColumn').removeClass("narrow").addClass("wide");
 								$('#expandBTN img').attr("src","web/images/icons/minimize_section.jpg");
 								$('#demoVideo').attr("width","580px");
-								shiftLeft();
-								/*width=335;
+								//shiftLeft();
+								width=335;
 								setXSpacing(180);
-								redraw();*/
+								redraw();
 								
 							}else{
 								$(this).removeClass("minSect").addClass("expandSect");
@@ -85,10 +67,10 @@
 								$('#indexImage svg').attr("width","660px");
 								$('#expandBTN img').attr("src","web/images/icons/expand_section.jpg");
 								$('#demoVideo').attr("width","260px");
-								shiftRight();
-								/*width=660;
+								//shiftRight();
+								width=660;
 								setXSpacing(240);
-								redraw();*/
+								redraw();
 							}
 						});
                     </script>
