@@ -9,12 +9,22 @@
 --%>
 
     
-	<div id="desc-wrap">
-                	<H2>Upload Microarray Data</H2>
-                    
-                    
-                   
-    </div> <!-- // end overview-wrap -->
-						
+	<H2>Upload Private Data</H2>
+                    <div id="accordion" style="height:100%;">
+                    	<H3>Feature List</H3>
+                        <div>
+                        <ul>
+                        	<li></li>
+                            
+                            
+                        </ul>
+                        </div>
+                    	<h3>Sample Screen Shots</h3>
+                        <div style="text-align:center">
+                        	
+                        </div>
+                        
+                   </div>
 
-    
+<script src="javascript/indexGraphAccordion.js">
+						</script>

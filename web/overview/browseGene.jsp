@@ -9,9 +9,9 @@
 --%>
 
     
-	<div style="width:100%; height:100%;">
+
                 	<H2>Browse Gene</H2>
-                    <div id="accordion" style="height:100%;">
+                    <div id="accordion">
                     	<H3>Feature List</H3>
                         <div>
                         <ul>
@@ -46,8 +46,8 @@
                               </object>
                             </video>
                         </div>
-             </div>
-    </div> <!-- // end overview-wrap -->
+             		</div>
+
 						
                     	<script src="javascript/indexGraphAccordion.js">
 						</script>

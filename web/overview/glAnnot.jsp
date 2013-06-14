@@ -9,8 +9,6 @@
  *      
 --%>
 
-    
-	<div style="width:100%; height:100%;">
                 	<H2>Annotations</H2>
                     <div id="accordion" style="height:100%;">
                     	<H3>Feature List</H3>
@@ -40,7 +38,6 @@
                         	<img src="web/overview/glAnnot_list.jpg"  style="width:100%;"/>
                         </div>
                     </div>
-    </div> <!-- // end overview-wrap -->
     
     <script src="javascript/indexGraphAccordion.js">
 						</script>

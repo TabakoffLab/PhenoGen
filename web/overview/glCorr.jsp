@@ -9,8 +9,6 @@
  *      
 --%>
 
-    
-	<div style="width:100%; height:100%;">
                 	<H2>Exon-Exon Correlation</H2>
                     <div id="accordion" style="height:100%;">
                     	<H3>Feature List</H3>
@@ -28,7 +26,6 @@
                    				
                         </div>
                     </div>
-    </div> <!-- // end overview-wrap -->
     
     <script src="javascript/indexGraphAccordion.js">
 						</script>

@@ -81,7 +81,6 @@ function showDetailNodes(d){
 		    
 			   	yPos[d.level]++;
 			    tmp=Math.floor(yPos[d.level]/2);
-			    console.log(tmp);
 			    tmp=tmp*ySpacing;
 			    if(yPos[d.level]%2==1){
 			    		tmp=tmp*-1;
@@ -95,7 +94,7 @@ function showDetailNodes(d){
 		    	return ret;
 		    });
 		d3.selectAll("line."+classStr).transition().duration(350).style("stroke-width",2.0)
-		 		.attr("x1", function(d) { console.log("line d:");console.log(d);return graphData.nodes[d.source].x; })
+		 		.attr("x1", function(d) { return graphData.nodes[d.source].x; })
 		        .attr("y1", function(d) { return graphData.nodes[d.source].y; })
 		        .attr("x2", function(d) { return graphData.nodes[d.target].x; })
 		        .attr("y2", function(d) { return graphData.nodes[d.target].y; });
@@ -139,7 +138,6 @@ var height = 2*radius-20;
 
 var word;
 do {
-	//console.log(length+":"+lines[length])
    word = words.shift();
    var wordStr=new String(word);
    var linesStr=new String(lines[length]);
@@ -183,7 +181,6 @@ d3.json("top.json", function(error, graph) {
     .enter().append("line")
       .attr("class", function(d){
 							  var classStr="link";
-							  //console.log(d.target);
 							  if(d.target>0){
 								  //classStr="secondLink";
 								  classStr=graph.nodes[d.target].groupName+" link detail";
@@ -212,7 +209,6 @@ d3.json("top.json", function(error, graph) {
     	if(d.level<2){
     		yPos[d.level]++;
 	    	tmp=Math.floor(yPos[d.level]/2);
-	    	console.log(tmp);
 	    	tmp=tmp*ySpacing;
 	    	if(yPos[d.level]%2==1){
 	    		tmp=tmp*-1;

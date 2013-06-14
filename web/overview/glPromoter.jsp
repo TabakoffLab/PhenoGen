@@ -8,9 +8,6 @@
  *  Modification Log:
  *      
 --%>
-
-    
-	<div style="width:100%; height:100%;">
                 	<H2>Promoter Analysis</H2>
                     <div id="accordion" style="height:100%;">
                     	<H3>Feature List</H3>
@@ -37,7 +34,6 @@
                         	<img src="web/overview/glPromoter_upstream.jpg"  style="width:100%;"/>
                         </div>
                     </div>
-    </div> <!-- // end overview-wrap -->
     
     <script src="javascript/indexGraphAccordion.js">
 						</script>

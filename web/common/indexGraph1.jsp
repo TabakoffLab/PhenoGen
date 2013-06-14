@@ -22,7 +22,7 @@
 </style>
 
 
-					<table class="index">
+					<table class="index" cellspacing="0" cellpadding="0">
                     <tr><TD id="imageColumn" class="wide">
                     <h3>Hover over or click on functions to view additional information.</h3>
                     <script type="text/javascript">
@@ -35,13 +35,9 @@
                     
                     </TD>
                     <TD  id="descColumn"  class="narrow">
-                    <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000; height:650px;">
+                    <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000;">
                             <span id="expandBTN" class="expandSect" style=" float:left; position:relative; top:9px; cursor:pointer;"><img src="web/images/icons/expand_section.jpg"></span>
-                            <div id="indexDescContent" style="height:100%;">
-                            		<div style="width:100%; height:100%;">
-                						<H2>Select a Feature to View Details</H2>
-                            			Hover or click on a function to view additional details, screen shots, demonstrations, etc.
-                                    </div>
+                            <div id="indexDescContent" style="height:650px;">
                             </div>
                             
         			</div>
