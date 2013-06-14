@@ -55,8 +55,6 @@
                    </div>
     </div> <!-- // end overview-wrap -->
 
-<script type="text/javascript">
-		$('#accordion').accordion({ heightStyle: "fill" });
-	</script>
-
+<script src="javascript/indexGraphAccordion.js">
+						</script>
     

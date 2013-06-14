@@ -14,7 +14,7 @@
   stroke-width: 1.5px;
 }
 
-.link {
+.link, .desclink {
   stroke: #999;
   stroke-opacity: .6;
 }
@@ -24,7 +24,10 @@
 
 					<table class="index">
                     <tr><TD id="imageColumn" class="wide">
-                    
+                    <h3>Hover over or click on functions to view additional information.</h3>
+                    <script type="text/javascript">
+						var selectedSection=0;
+                    </script>
                 	<div id="indexImage" >
                     	<script src="javascript/indexGraph1.js">
 						</script>
@@ -32,8 +35,8 @@
                     
                     </TD>
                     <TD  id="descColumn"  class="narrow">
-                    <div id="indexDesc" style="border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000; height:750px;">
-                            <span id="expandBTN" class="expandSect" style=" float:left; position:relative; top:9px;"><img src="web/images/icons/expand_section.jpg"></span>
+                    <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000; height:650px;">
+                            <span id="expandBTN" class="expandSect" style=" float:left; position:relative; top:9px; cursor:pointer;"><img src="web/images/icons/expand_section.jpg"></span>
                             <div id="indexDescContent" style="height:100%;">
                             		<div style="width:100%; height:100%;">
                 						<H2>Select a Feature to View Details</H2>
