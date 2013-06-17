@@ -52,7 +52,7 @@
 
 		edu.ucdenver.ccp.PhenoGen.data.Array[] myArrays = selectedDataset.getArrays();
                 myArrays = myArray.sortArrays(myArrays, "hybrid_name");
-		selectedDataset.setArrays(myArrays);
+		selectedDataset.setArrays(myArrays,null,"");
 
 		int grouping_id = Integer.parseInt((String) fieldValues.get("grouping_id"));
 		String normalize_method = (String) fieldValues.get("normalize_method");

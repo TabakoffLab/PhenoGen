@@ -481,7 +481,7 @@ public class Dataset {
                         hm.put(arrayName, "A");
                     }
                 }
-                if(duplicates){
+                if(duplicates && conn!=null){
                     User creator=new User();
                     try{
                    String path=this.getDatasetPath(creator.getUser(this.getCreator(),conn).getUserMainDir(userFilesRoot))+this.getNameNoSpaces()+".arrayFiles.txt";
