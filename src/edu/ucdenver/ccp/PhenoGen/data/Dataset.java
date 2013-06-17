@@ -1567,9 +1567,31 @@ public class Dataset {
                 if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(this.getArray_type())) {//add cel_files header
                     bufferedWriter.write("cel_files\n");
                 }
+                
+                HashMap<String,String> hm=new HashMap<String,String>();
+                for (int j=0; j<myArrays.length; j++) {
+                    String arrayName = myArrays[j].getHybrid_name().replaceAll("[\\s]", "_");
+                    if(hm.containsKey(arrayName)){
+                        if(hm.get(arrayName).equals("-")){
+                            hm.put(arrayName, "A");
+                        }
+                    }else{
+                        hm.put(arrayName, "-");
+                    }
+                }
+                
 		for (int j=0; j<myArrays.length; j++) {
 			String fileName = myArrays[j].getFile_name();
 			String arrayName = myArrays[j].getHybrid_name().replaceAll("[\\s]", "_");
+                        if(hm.containsKey(arrayName)&&!hm.get(arrayName).equals("-")){
+                            //need to add a letter to end of arrayname
+                            String letter=hm.get(arrayName);
+                            String oldName=arrayName;
+                            arrayName=arrayName+"_"+letter;
+                            char nextLetter=letter.charAt(0);
+                            nextLetter++;
+                            hm.put(oldName, Character.toString(nextLetter));
+                        }
                         String fullFileName = (withPath ? arrayDir + fileName : fileName);
 
 			if (this.getPlatform().equals(AFFYMETRIX_PLATFORM) ||
