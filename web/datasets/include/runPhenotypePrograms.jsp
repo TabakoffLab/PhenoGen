@@ -220,7 +220,7 @@
 											//myArrays = selectedDataset.getArrays();
 											myArrays = myArray.sortArrays(myArrays, "hybrid_name");
 		
-											selectedDataset.setArrays(myArrays);
+											selectedDataset.setArrays(myArrays,null,"");
 		
 											if (selectedDataset.getPlatform().equals(selectedDataset.AFFYMETRIX_PLATFORM) ||
 																	selectedDataset.getPlatform().equals(selectedDataset.CODELINK_PLATFORM)) {
