@@ -493,7 +493,7 @@ public class Dataset {
                        String[] tabs=contents[i].split("\t");
                        hm2.put(tabs[0], tabs[1]);
                    }
-                   for (int j=0; j<this.arrays.length&&!duplicates; j++) {
+                   for (int j=0; j<this.arrays.length; j++) {
                        this.arrays[j].setHybrid_name(hm2.get(this.arrays[j].getFile_name()));
                    }
                    }catch(IOException e){
