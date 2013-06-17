@@ -60,7 +60,7 @@
 					accessRequired = userLoggedIn.sendAccessRequest(hybridIDs, mainURL, dbConn);
 					log.debug("accessRequired = "+accessRequired);
                                 	Dataset thisDataset = 
-						myDataset.getDataset(dataset_id, userLoggedIn, dbConn);
+						myDataset.getDataset(dataset_id, userLoggedIn, dbConn,userFilesRoot);
 					String dirToCreate = thisDataset.getPath();
 					String imagesDirToCreate = thisDataset.getImagesDir();
 					log.debug("dirToCreate = "+dirToCreate);
@@ -70,7 +70,7 @@
 						dataset_name = dataset_name + " (Pending)";
 						myDataset.setName(dataset_name);
 						myDataset.updateDummyDataset(dataset_id, dbConn); 
-                                		thisDataset = myDataset.getDataset(dataset_id, userLoggedIn, dbConn);
+                                		thisDataset = myDataset.getDataset(dataset_id, userLoggedIn, dbConn,,userFilesRoot);
 					}
 
                                 	mySessionHandler.createDatasetActivity(session.getId(), 

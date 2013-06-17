@@ -10,6 +10,6 @@
 
 <%
 		log.debug("in setupDataset right before calling getDataset");
-		selectedDataset = new Dataset().getDataset(datasetID, userLoggedIn, dbConn);
+		selectedDataset = new Dataset().getDataset(datasetID, userLoggedIn, dbConn,userFilesRoot);
 %>
 

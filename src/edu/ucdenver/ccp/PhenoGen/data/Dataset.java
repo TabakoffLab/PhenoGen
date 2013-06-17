@@ -469,8 +469,40 @@ public class Dataset {
     		return dataset_users;
   	}
 
-  	public void setArrays(edu.ucdenver.ccp.PhenoGen.data.Array[] inArrays) {
+  	public void setArrays(edu.ucdenver.ccp.PhenoGen.data.Array[] inArrays,Connection conn,String userFilesRoot) {
     		this.arrays = inArrays;
+                boolean duplicates=false;
+                HashMap<String,String> hm=new HashMap<String,String>();
+                for (int j=0; j<this.arrays.length&&!duplicates; j++) {
+                    String arrayName = this.arrays[j].getHybrid_name().replaceAll("[\\s]", "_");
+                    if(hm.containsKey(arrayName)){
+                        duplicates=true;
+                    }else{
+                        hm.put(arrayName, "A");
+                    }
+                }
+                if(duplicates){
+                    User creator=new User();
+                    try{
+                   String path=this.getDatasetPath(creator.getUser(this.getCreator(),conn).getUserMainDir(userFilesRoot))+this.getNameNoSpaces()+".arrayFiles.txt";
+                   FileHandler myFH=new FileHandler();
+                   try{
+                   String[] contents=myFH.getFileContents(new File(path));
+                   HashMap<String,String> hm2=new HashMap<String,String>();
+                   for(int i=0;i<contents.length;i++){
+                       String[] tabs=contents[i].split("\t");
+                       hm2.put(tabs[0], tabs[1]);
+                   }
+                   for (int j=0; j<this.arrays.length&&!duplicates; j++) {
+                       this.arrays[j].setHybrid_name(hm2.get(this.arrays[j].getFile_name()));
+                   }
+                   }catch(IOException e){
+                       log.error("Error reading path:"+path+"\n"+e,e);
+                   }
+                    }catch(SQLException e){
+                        log.error("Error finding creator for dataset."+e,e);
+                    }
+                }
   	}
 
   	public edu.ucdenver.ccp.PhenoGen.data.Array[] getArrays() {
@@ -694,9 +726,9 @@ public class Dataset {
 	 * @throws            SQLException if a database error occurs
 	 * @return            A Dataset object with its values setup 
 	 */
-	public Dataset getDataset(int dataset_id, User userLoggedIn, Connection conn) throws SQLException {
+	public Dataset getDataset(int dataset_id, User userLoggedIn, Connection conn,String userFileRoot) throws SQLException {
         	log.debug("in getDataset with userLoggedIn. dataset_id = " +dataset_id);
-		Dataset thisDataset = getDataset(dataset_id, conn);
+		Dataset thisDataset = getDataset(dataset_id, conn,userFileRoot);
 		thisDataset.setPath(thisDataset.getDatasetPath(userLoggedIn.getUserMainDir()));
 
 		//log.debug("just set path to "+thisDataset.getPath());
@@ -722,7 +754,7 @@ public class Dataset {
 	 * @throws            SQLException if a database error occurs
 	 * @return            A Dataset object with its values setup 
 	 */
-	public Dataset getDataset(int dataset_id, Connection conn) throws SQLException {
+	public Dataset getDataset(int dataset_id, Connection conn,String userFilesRoot) throws SQLException {
 
         	log.debug("in getDataset as a Dataset object. dataset_id = " +dataset_id);
 
@@ -744,7 +776,7 @@ public class Dataset {
                             thisDataset.setArray_type(new edu.ucdenver.ccp.PhenoGen.data.Array().getDatasetArrayType(thisDataset.getHybridIDs(), conn));
                         }
                         log.debug("in getDataset right before settingArrays");
-                	thisDataset.setArrays(new edu.ucdenver.ccp.PhenoGen.data.Array().getArraysByHybridIDs(thisDataset.getHybridIDs(), conn));
+                	thisDataset.setArrays(new edu.ucdenver.ccp.PhenoGen.data.Array().getArraysByHybridIDs(thisDataset.getHybridIDs(), conn),conn,userFilesRoot);
 			log.debug("num arrays = "+thisDataset.getArrays().length);
 		}
 

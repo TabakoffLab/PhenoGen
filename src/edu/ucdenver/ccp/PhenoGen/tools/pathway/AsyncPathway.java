@@ -85,7 +85,7 @@ public class AsyncPathway implements Runnable{
 		try {
 		        Connection conn = new PropertiesConnection().getConnection(dbPropertiesFile);
 
-			Dataset thisDataset = new Dataset().getDataset(selectedGeneList.getDataset_id(), conn);
+			Dataset thisDataset = new Dataset().getDataset(selectedGeneList.getDataset_id(), conn,(String) session.getAttribute("userFilesRoot"));
 			String analysisLevel = new ParameterValue().getAnalysisLevelNormalizationParameter(selectedGeneList.getDataset_id(), selectedGeneList.getVersion(), conn);
 			log.debug("analysisLevel = "+analysisLevel);
 			String chipType = new edu.ucdenver.ccp.PhenoGen.data.Array().getManufactureArrayName(thisDataset.getArray_type(), conn);

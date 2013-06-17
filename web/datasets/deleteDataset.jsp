@@ -46,7 +46,7 @@
 				session.setAttribute("successMsg", "EXP-022");
 				//re-query so the screen is refreshed
 				log.debug("re-querying selected Dataset");
-				selectedDataset = myDataset.getDataset(selectedDataset.getDataset_id(), userLoggedIn, dbConn);
+				selectedDataset = myDataset.getDataset(selectedDataset.getDataset_id(), userLoggedIn, dbConn,userFilesRoot);
 				log.debug("now array type is " + selectedDataset.getArray_type());
 				session.setAttribute("selectedDataset", selectedDataset);
 				session.setAttribute("selectedDatasetVersion", null);
