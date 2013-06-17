@@ -155,7 +155,7 @@
 
                                     selectedDataset = myDataset.getDataset(
                                                                     myDataset.createDataset(dbConn),
-                                                                    userLoggedIn, dbConn);
+                                                                    userLoggedIn, dbConn,userFilesRoot);
 									selectedDataset.setArray_type(oldDataset.getArray_type());
                                     selectedDatasetVersion = selectedDataset.new DatasetVersion(1);
                                     //

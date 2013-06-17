@@ -1513,7 +1513,7 @@ public class User{
                 while (rs.next()) {
                         int dataset_id = rs.getInt(1);
 			log.debug("dataset_id uploaded by this user = "+dataset_id);
-			Dataset datasetToDelete = new Dataset().getDataset(dataset_id, userToDelete, conn);
+			Dataset datasetToDelete = new Dataset().getDataset(dataset_id, userToDelete, conn,this.getUserMainDir());
 			datasetToDelete.deleteDataset(userID,conn);
                 }
                 pstmt.close();

@@ -1595,7 +1595,7 @@ public class GeneDataTools {
                     String tissue=rs.getString("TISSUE");
                     String tissueNoSpaces=tissue.replaceAll(" ", "_");
                     edu.ucdenver.ccp.PhenoGen.data.Dataset sDataSet=new edu.ucdenver.ccp.PhenoGen.data.Dataset();
-                    edu.ucdenver.ccp.PhenoGen.data.Dataset curDS=sDataSet.getDataset(iDSID,dbConn);
+                    edu.ucdenver.ccp.PhenoGen.data.Dataset curDS=sDataSet.getDataset(iDSID,dbConn,"");
                     String affyFile="allPS";
                     String verStr="allPS";
                     if(arrayTypeID==21){

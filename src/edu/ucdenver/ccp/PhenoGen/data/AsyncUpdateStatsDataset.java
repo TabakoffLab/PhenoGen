@@ -46,7 +46,7 @@ public class AsyncUpdateStatsDataset implements Runnable{
                 dbConn=(Connection)session.getAttribute("dbConn");
                 this.dsID=dsID;
                 try{
-                    this.dataset=new Dataset().getDataset(dsID,dbConn);
+                    this.dataset=new Dataset().getDataset(dsID,dbConn,(String) session.getAttribute("userFilesRoot"));
                 }catch(SQLException e){
                     log.error("Error AsyncUpdateStatsDataset",e);
                 }
