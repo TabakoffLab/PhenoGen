@@ -15,16 +15,17 @@
                         <div>
                         	<ul>
                         		<li>Share Lists with any other registered user.</li>
-                            	<li>Compare lists with any of your accessible gene lists.</li>
+                            	<li>Compare lists with any other accessible gene lists.</li>
                                 <ul>
-                            		<li>Look for any of your lists that also contain a given gene</li>
-                                	<li>Find the Intersection, Union, Subtract one list from another </li>
+                            		<li>Look for any of your lists that also contain genes from a selected list</li>
+                                	<li>Find the Intersection, Union, or Subtract one list from another </li>
                                 </ul>
                             </ul>
                         </div>
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
-                   			
+                        	An example of how you can compare lists and save the comparison to a new list.
+                   			<img src="web/overview/glShare_compare.jpg"  style="width:100%;"/>
                         </div>
                     </div>
     

@@ -23,7 +23,15 @@
                         </div>
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
-                   				
+                        	Form to calculate exon-exon correlations for a tissue:
+                            <img src="web/overview/glCorr_form.jpg"  style="width:100%;"/>
+                   			Example default view of a gene:
+                        	<img src="web/overview/glCorr_gene.jpg"  style="width:100%;"/>
+                            Example of comparing two different transcripts side by side
+                        	<img src="web/overview/glCorr_sidebyside.jpg"  style="width:100%;"/>
+                            Example different corelations in different tissues Heart(left), Brown Adipose(right).  Possibly indicating different isoforms in each tissue.<BR />
+                        	<img src="web/overview/glCorr_gene.jpg"  style="width:49%;"/>
+                            <img src="web/overview/glCorr_bat.jpg"  style="width:49%;"/>
                         </div>
                     </div>
     
