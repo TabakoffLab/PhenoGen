@@ -15,7 +15,7 @@
                         <div>
                         	However your gene list was created, we link supported identifiers to other related identifiers and provide links to other sites with futher information about each gene.
                             <BR /><BR />
-                            The annotation page will link to the following sources for short lists(< ___) for larger lists you can export associated IDs.
+                            The annotation page will link to the following sources for short lists(< 200) for larger lists you can export associated IDs.
                             <BR /><BR />
                            	Links:
                             <ul>

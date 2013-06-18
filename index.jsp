@@ -66,7 +66,7 @@
 
     	<!--<div id="primary-content">-->
         <div id="welcome" style="height:1000px; width:996px;">
-			<h2 class="homePage">Welcome to PhenoGen Informatics &nbsp;&nbsp;&nbsp;&nbsp;Static Graph&nbsp;&nbsp;&nbsp;&nbsp;<a href="index2.jsp">Collapsible Tree</a></h2>
+			<h2 class="homePage">Welcome to PhenoGen Informatics</h2>
             <div>
             	<%@ include file="/web/common/indexGraph1.jsp" %>
            </div>
