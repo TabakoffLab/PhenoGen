@@ -20,7 +20,7 @@ sub convertBedToBigBed{
 	#		2. For Mice, the file mm9.chrom.sizes
 	#		3. For Rats, the file rn4.chrom.sizes
 	#		4. If we want to sort beforehand, we need the executable bedSort
-	my $rn4ChromSizeFile = $bedFileFolder.'rn4.chrom.sizes';
+	my $rn5ChromSizeFile = $bedFileFolder.'rn5.chrom.sizes';
 	my $mm9ChromSizeFile = $bedFileFolder.'mm9.chrom.sizes';
 	my $bedSortFile = $bedFileFolder.'bedSort';
 	my $bedToBigBedFile = $bedFileFolder.'bedToBigBed';
@@ -37,7 +37,7 @@ sub convertBedToBigBed{
     	or die "system @args\n failed: $?"
 	}
 	elsif($species eq 'Rat'){
-		@args = ($bedToBigBedFile,$bedOutputFileName, $rn4ChromSizeFile, $bigBedOutputFileName);
+		@args = ($bedToBigBedFile,$bedOutputFileName, $rn5ChromSizeFile, $bigBedOutputFileName);
 		system(@args) == 0
     	or die "system @args\n failed: $?"
 	}
