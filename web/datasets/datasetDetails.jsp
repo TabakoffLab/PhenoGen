@@ -70,7 +70,7 @@
 						dataset_name = dataset_name + " (Pending)";
 						myDataset.setName(dataset_name);
 						myDataset.updateDummyDataset(dataset_id, dbConn); 
-                                		thisDataset = myDataset.getDataset(dataset_id, userLoggedIn, dbConn,,userFilesRoot);
+                                		thisDataset = myDataset.getDataset(dataset_id, userLoggedIn, dbConn,userFilesRoot);
 					}
 
                                 	mySessionHandler.createDatasetActivity(session.getId(), 
