@@ -62,7 +62,23 @@
                         </div>
                     	<h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/" title=""><img src="web/overview/"  style="width:100%;" title="Click to view a larger image"/></a>
+                        	List of datasets available.  Start analysis of existing datasets by clicking on the dataset or you can create a new dataset from this page.
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/microAnalysis_list.jpg" title="List of datasets available.  Start analysis of existing datasets by clicking on the dataset or you can create a new dataset from this page."><img src="web/overview/microAnalysis_list.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
+                            
+                            For some array types analysis takes a little longer in those instances after you've selected a dataset and normalized version you can view previous analyses and resume them or start a new analysis.
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microAnalysis_type.jpg" title="For some array types analysis takes a little longer in those instances after you've selected a dataset and normalized version you can view previous analyses and resume them or start a new analysis."><img src="web/overview/microAnalysis_type.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
+                            
+                            For most analysis types filtering is the first step after you've chosen to start a new analysis.  You can sequentially apply as many filters as desired and can undo the last filter applied.
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microAnalysis_filter.jpg" title="For most analysis types filtering is the first step after you've chosen to start a new analysis.  You can sequentially apply as many filters as desired and can undo the last filter applied."><img src="web/overview/microAnalysis_filter.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
+                            
+                            Next you can perform statistics.  Based on the analysis type and number of groups you will be given the most relevant choices of statistical methods.
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microAnalysis_stats.jpg" title="Next you can perform statistics.  Based on the analysis type and number of groups you will be given the most relevant choices of statistical methods."><img src="web/overview/microAnalysis_stats.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
+                            
+                            After statistics are calculated you select the statistical test threshold to keep and also apply any multiple testing correction.  You can repeat this as many times as needed until you are happy with the results.
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microAnalysis_multtest.jpg" title="After statistics are calculated you select the statistical test threshold to keep and also apply any multiple testing correction.  You can repeat this as many times as needed until you are happy with the results."><img src="web/overview/microAnalysis_multtest.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
+                            
+                            The last step is saving the probes to a gene list which will allow you to perform the other gene list analyses on the probes(genes) found from your analysis.
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microAnalysis_save.jpg" title="The last step is saving the probes to a gene list which will allow you to perform the other gene list analyses on the probes(genes) found from your analysis."><img src="web/overview/microAnalysis_save.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                         
                    </div>

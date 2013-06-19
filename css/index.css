@@ -37,6 +37,9 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #header-nav a#site-help-btn { padding-right: 20px; background: url(../web/images/icons/help.png) right center no-repeat; }
 #header-nav span#messages-icon { padding-right: 20px; background: url(../web/images/icons/message.png) right center no-repeat; }
 
+#indexDescContent a { color: #749BC1; }
+#indexDescContent a:focus,a:hover { color: #84ABD1; }
+
 /* primary-content */
 
 #primary-content { float: left; width: 805px; margin: 0;}
