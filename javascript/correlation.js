@@ -101,19 +101,25 @@ function setupCreatePhenotypeData() {
 	var newData;
 	// setup create new phenotype button
 	$("div[id='createNewPhenotype']").click(function(){
-        	if ( newData == undefined ) {
-			var dialogSettings = {width: 800, height: 800, title: "Create Phenotype Data"};
-			/* browser.safari true means the browser is Safari */
-			//if ($.browser.safari) $.extend(dialogSettings, {modal:false});
-			newData = createDialog("div.createPhenotypeData", dialogSettings); 
-		}
-		var parameters = {datasetID: $("input[name='datasetID']").val(), 
-				datasetVersion: $("input[name='datasetVersion']").val(),
-				formName: $("input[name='formName']").val()};
-        	$.get(contextPath + "/web/datasets/createPhenotype.jsp", 
-				parameters,
-				function(data){
-				newData.dialog("open").html(data);
-        	});
+			var tmpID=$("input[name='datasetID']").val();
+			if(tmpID==-99){
+				alert("You must select the RI Panel to input phenotype data for, before clicking on Create New Phenotype. Select the Radio Button for the panel to use(BXD, HXB/BXH, or ILSXISS).");
+			}else{
+				if ( newData == undefined ) {
+						var dialogSettings = {width: 800, height: 800, title: "Create Phenotype Data"};
+						/* browser.safari true means the browser is Safari */
+						//if ($.browser.safari) $.extend(dialogSettings, {modal:false});
+						newData = createDialog("div.createPhenotypeData", dialogSettings); 
+					
+				}
+				var parameters = {datasetID: $("input[name='datasetID']").val(), 
+						datasetVersion: $("input[name='datasetVersion']").val(),
+						formName: $("input[name='formName']").val()};
+					$.get(contextPath + "/web/datasets/createPhenotype.jsp", 
+						parameters,
+						function(data){
+						newData.dialog("open").html(data);
+					});
+			}
 	});
 }
