@@ -25,13 +25,13 @@
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                    			Overview of promotor page
-                        	<img src="web/overview/glPromoter_ovrvw.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_ovrvw.jpg" title="Overview of promotor page"><img src="web/overview/glPromoter_ovrvw.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Example of oPOSSUM output
-                        	<img src="web/overview/glPromoter_opossum.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_opossum.jpg" title="Example of oPOSSUM output"><img src="web/overview/glPromoter_opossum.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Example of MEME output
-                        	<img src="web/overview/glPromoter_meme.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_meme.jpg" title="Example of MEME output"><img src="web/overview/glPromoter_meme.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Example of upstream extraction output
-                        	<img src="web/overview/glPromoter_upstream.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_upstream.jpg" title="Example of upstream extraction output"><img src="web/overview/glPromoter_upstream.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                     </div>
     

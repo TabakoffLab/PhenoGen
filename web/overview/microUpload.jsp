@@ -1,3 +1,4 @@
+<%@ include file="/web/common/headerOverview.jsp" %>
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2013
@@ -24,7 +25,7 @@
                     	<h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                         	Steps for uploading data
-                            <img src="web/overview/microUpload_steps.jpg" width="100%" />
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microUpload_steps.jpg" title="Steps for uploading data"><img src="web/overview/microUpload_steps.jpg" width="100%" title="Click to view a larger image" /></a>
                         </div>
                         
                    </div>

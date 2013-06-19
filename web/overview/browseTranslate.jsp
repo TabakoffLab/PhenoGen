@@ -1,3 +1,4 @@
+<%@ include file="/web/access/include/headerOverview.jsp" %>
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2013
@@ -23,7 +24,7 @@
                     	<h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                         The translation window showing several previous results.  Simply click a row to view the region or click the link to open in a new window allowing you to open multiple regions at once.
-                        <img src="web/overview/browseTranslate.jpg"  style="width:100%;"/>
+                        <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseTranslate.jpg" title="The translation window showing several previous results.  Simply click a row to view the region or click the link to open in a new window allowing you to open multiple regions at once."><img src="web/overview/browseTranslate.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                         <H3>Demonstration Video</H3>
                         <div  class="demo" style="text-align:center;">

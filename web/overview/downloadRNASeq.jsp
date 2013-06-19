@@ -1,4 +1,4 @@
-<%@ include file="/web/access/include/login_vars.jsp" %>
+<%@ include file="/web/common/headerOverview.jsp" %>
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2013

@@ -24,14 +24,14 @@
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                         	Form to calculate exon-exon correlations for a tissue:
-                            <img src="web/overview/glCorr_form.jpg"  style="width:100%;"/>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_form.jpg" title="Form to calculate exon-exon correlations for a tissue:"><img src="web/overview/glCorr_form.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                    			Example default view of a gene:
-                        	<img src="web/overview/glCorr_gene.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example default view of a gene:"><img src="web/overview/glCorr_gene.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Example of comparing two different transcripts side by side
-                        	<img src="web/overview/glCorr_sidebyside.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_sidebyside.jpg" title="Example of comparing two different transcripts side by side"><img src="web/overview/glCorr_sidebyside.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Example different corelations in different tissues Heart(left), Brown Adipose(right).  Possibly indicating different isoforms in each tissue.<BR />
-                        	<img src="web/overview/glCorr_gene.jpg"  style="width:49%;"/>
-                            <img src="web/overview/glCorr_bat.jpg"  style="width:49%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example different corelations in different tissues Heart"><img src="web/overview/glCorr_gene.jpg"  style="width:49%;" title="Click to view a larger image"/></a>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_bat.jpg" title="Example different corelations in different tissues Brown Adipose"><img src="web/overview/glCorr_bat.jpg"  style="width:49%;" title="Click to view a larger image"/></a>
                         </div>
                     </div>
     

@@ -1,4 +1,4 @@
-<%@ include file="/web/access/include/login_vars.jsp" %>
+<%@ include file="/web/common/headerOverview.jsp" %>
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2013
@@ -25,7 +25,7 @@
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                         	An example of how you can compare lists and save the comparison to a new list.
-                   			<img src="web/overview/glShare_compare.jpg"  style="width:100%;"/>
+                   			<a class="fancybox" rel="fancybox-thumb" href="web/overview/glShare_compare.jpg" title="An example of how you can compare lists and save the comparison to a new list."><img src="web/overview/glShare_compare.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                     </div>
     

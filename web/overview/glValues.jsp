@@ -25,11 +25,11 @@
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                    			Example output for analysis statistics from analysis that generated this list.
-                            <img src="web/overview/glValues_stats.jpg"  style="width:100%;"/>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_stats.jpg" title="Example output for analysis statistics from analysis that generated this list."><img src="web/overview/glValues_stats.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                    			Example of method to view expression values.   Unlike analysis statistics you may extract expression values from any dataset using the same arrays.
-                        	<img src="web/overview/glValues_dataset.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_dataset.jpg" title="Example of method to view expression values.   Unlike analysis statistics you may extract expression values from any dataset using the same arrays."><img src="web/overview/glValues_dataset.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Example output for expression value from the selected dataset.
-                        	<img src="web/overview/glValues_expression.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_expression.jpg" title="Example output for expression value from the selected dataset."><img src="web/overview/glValues_expression.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                     </div>
 

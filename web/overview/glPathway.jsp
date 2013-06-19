@@ -25,11 +25,11 @@
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                    			Example result list that allows you to load results or start a new analysis.
-                            <img src="web/overview/glPathway_list.jpg"  style="width:100%;"/>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_list.jpg" title="Example result list that allows you to load results or start a new analysis."><img src="web/overview/glPathway_list.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Table listing pathways found to be represented in  the gene list.
-                            <img src="web/overview/glPathway_table.jpg"  style="width:100%;"/>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_table.jpg" title="Table listing pathways found to be represented in  the gene list."><img src="web/overview/glPathway_table.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Image of pathway linked from the table above.
-                            <img src="web/overview/glPathway_pathway.jpg"  style="width:100%;"/>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_pathway.jpg" title="Image of pathway linked from the table above."><img src="web/overview/glPathway_pathway.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                     </div>
     

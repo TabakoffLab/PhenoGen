@@ -1,3 +1,4 @@
+<%@ include file="/web/access/include/headerOverview.jsp" %>
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2013
@@ -33,9 +34,9 @@
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                         Gene View showing the gene image, table of features in the region:
-                        <img src="web/overview/browseGene.jpg"  style="width:100%;"/>
+                        <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene.jpg" title="Gene View showing the gene image, table of features in the region:"><img src="web/overview/browseGene.jpg"  style="width:100%;"  title="Click to view a larger image"/></a>
                         eQTL view showing what regions are associated with expression in each available tissue:
-                        <img src="web/overview/qtlViz.jpg"  style="width:100%;"/>
+                        <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz.jpg" title="eQTL view showing what regions are associated with expression in each available tissue:"><img src="web/overview/qtlViz.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                         <H3>Demonstration Video</H3>
                         <div class="demo" style="text-align:center;">

@@ -1,3 +1,4 @@
+<%@ include file="/web/common/headerOverview.jsp" %>
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2013
@@ -61,7 +62,7 @@
                         </div>
                     	<h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
-                        	
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/" title=""><img src="web/overview/"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                         
                    </div>

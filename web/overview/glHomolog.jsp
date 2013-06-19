@@ -23,7 +23,7 @@
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                    			Example of available information on homologous genes in other species.
-                            <img src="web/overview/glHomolog.jpg"  style="width:100%;"/>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glHomolog.jpg" title="Example of available information on homologous genes in other species."><img src="web/overview/glHomolog.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                     </div>
     

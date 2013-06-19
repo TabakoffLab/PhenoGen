@@ -1,4 +1,4 @@
-<%@ include file="/web/access/include/login_vars.jsp" %>
+<%@ include file="/web/common/headerOverview.jsp" %>
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2013
@@ -31,11 +31,11 @@
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
                         	Annotation Table for a rat gene list
-                        	<img src="web/overview/glAnnot_rat.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_rat.jpg" title="Annotation Table for a rat gene list"><img src="web/overview/glAnnot_rat.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Annotation Table for a mouse gene list
-                        	<img src="web/overview/glAnnot_mouse.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_mouse.jpg" title="Annotation Table for a mouse gene list"><img src="web/overview/glAnnot_mouse.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             Annotation options for a longer gene list
-                        	<img src="web/overview/glAnnot_list.jpg"  style="width:100%;"/>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_list.jpg" title="Annotation options for a longer gene list"><img src="web/overview/glAnnot_list.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                     </div>
     
