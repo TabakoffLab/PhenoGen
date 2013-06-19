@@ -15,7 +15,7 @@
                     	<H3>Feature List</H3>
                         <div>
                         	General analysis flow chart
-                   			<img src="web/overview/microAnalysis_flowchart.jpg"  style="width:100%;"/>
+                   			<a class="fancybox" rel="fancybox-thumb2" href="web/overview/microAnalysis_flowchart.jpg" title="General analysis flow chart"><img src="web/overview/microAnalysis_flowchart.jpg"  style="width:100%;"  title="Click to view a larger image"/></a>
                         <ul>
                         	<li>Create Dataset</li>
                             	<ul>
