@@ -37,6 +37,8 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #header-nav a#site-help-btn { padding-right: 20px; background: url(../web/images/icons/help.png) right center no-repeat; }
 #header-nav span#messages-icon { padding-right: 20px; background: url(../web/images/icons/message.png) right center no-repeat; }
 
+
+
 /* primary-content */
 
 #primary-content { float: left; width: 805px; margin: 0;}
@@ -47,7 +49,7 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #welcome{ 
 	margin-bottom: 15px; 
 	height: 575px;
-	border: #999 10px solid; 
+	border: #999 2px solid; 
 	color:#DADDDD;
 	background: #1F344F url("../web/images/bg/header5.jpg") no-repeat bottom right; 
 }
@@ -100,11 +102,13 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #welcome overview-wrap { clear: both; border: #9c9c9c 1px solid; background: #ccc; }
 #welcome overview-content { margin: 8px; padding: 10px 0; border: #9c9c9c 1px solid; background: #fff; }
 #welcome.links a:hover {color: #fff; }
-#overview-content { width: 430px;}
-#overview-content-wide { width: 550px;}
-#overview-content li{ clear:left; list-style:  square outside; margin:0 40px; }
-#overview-content-wide li{ clear:left; list-style:  square outside; margin:0 40px; }
-#landing #primary-content li{ list-style:  square outside; margin:0 40px; }
+#overview-content {  width: 430px;}
+#overview-content-wide {  width: 550px;}
+#overview-content li{  color: #ffffff;clear:left; list-style:  square outside; margin:0 40px; }
+#overview-content-wide li{  color: #ffffff;clear:left; list-style:  square outside; margin:0 40px; }
+#landing #primary-content li{  color: #ffffff;list-style:  square outside; margin:0 40px; }
+
+
 
 div.welcome.tabContent{
 	/*background: transparent url("../web/images/bg/header5.jpg") no-repeat bottom right;*/
@@ -211,6 +215,7 @@ div.brClear {
 	margin-left:20px;
 	margin-bottom:10px;
 	float:left;
+	color:#FFFFFF;
 }
 
 SPAN.highlight {
@@ -316,6 +321,9 @@ a.button {
 	text-decoration: none;
 }
 
+#indexDescContent a,a:focus { color: #749BC1; }
+#indexDescContent a:hover { color: #94BBE1; }
+#indexDescContent ul { margin-left: 20px;  }
 .triangle_down {
 	position:absolute;
 	width:0px;
@@ -348,4 +356,39 @@ a.button {
 	/* bottom,add background color here */
 	font-size:0px;
 	line-height:0px;
+}
+
+ul{ 
+		list-style: square outside;
+		display: block;
+        color: #000000;
+		line-height:16px;
+}
+ol{ 
+		list-style: outside lower-alpha;
+		margin-left: 40px; 
+		display: block;
+        color: #24618e;
+		
+}
+li{ 
+		padding-top:5px;
+}
+
+table.index{
+table-layout:fixed;
+}
+
+table.index td.wide{
+	width:66%;
+}
+table.index td.narrow{
+	width:34%;
+}
+
+table.index td.full{
+	width:100%;
+}
+table.index td.none{
+	width:0%;
 }
