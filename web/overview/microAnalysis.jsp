@@ -33,7 +33,7 @@
                                 	<li>You need to create at least one normalized version.  This lets you choose the normalization method.</li>
                                     <li>You may always create additional normalized versions.  For analysis you will be able to choose from any normalized version.</li>
                                     <li>You will also need to decide how to group the arrays.  For example you might group a dataset made up of different strains by strain.  Although you may always create another grouping and normalized version.</li>
-                                    <li>For some arrays you may have to decide on the level of probes you want to include and/or what level of them to include.  For example the Affy Rat or Mouse Exon array can be analyzed at the Gene or Exon level and including probesets with varying levels of confidence in their annotation.</li>
+                                    <li>For some arrays you may have to decide on the level of probes you want to include and/or what level of them to include.  For example the Affy Rat or Mouse Exon array can be analyzed at the Gene or Exon level and including probe sets with varying levels of confidence in their annotation.</li>
                                 </ul> 
                             <li>Filter</li>
                             	<ul>

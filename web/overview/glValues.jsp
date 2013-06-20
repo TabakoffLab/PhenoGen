@@ -18,8 +18,8 @@
                         	Available only for gene lists created from analysis of arrays on PhenoGen.
                             <BR /><BR />
                             <ul>
-                            	<li>Retreive the analysis statistics for the analysis that created the list.</li>
-                            	<li>Retreive expression values for any dataset that uses the same arrays.  An example of this is a gene list created from the HXB/BXH panel in Brain will allow you to retreive expression values for the same probesets in the other tissues available.</li>
+                            	<li>Retrieve the analysis statistics for the analysis that created the list.</li>
+                            	<li>Retrieve expression values for any dataset that uses the same arrays.  An example of this is a gene list created from the HXB/BXH panel in Brain will allow you to retrieve expression values for the same probe sets in the other tissues available.</li>
                             </ul>
                         </div>
                         <h3>Sample Screen Shots</h3>

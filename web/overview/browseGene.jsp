@@ -19,14 +19,14 @@
                         	<li>View Rat Brain Isoforms from RNA-Seq transcriptome reconstruction</li>
                             <li>View Rat SNPs/Short Indels for BN-Lx and SHR with more coming soon</li>
                             <li>View Ensembl Isoforms</li>
-                            <li>View Affymetrix Microarray Probeset locations</li>
+                            <li>View Affymetrix Microarray Probe set locations</li>
                             <li>View bQTLs</li>
                             <li>View eQTLs for the gene</li>
                             <li>Access detailed Affy Exon 1.0 ST data</li>
                             	<ul>
-                                	<li>Parental Strian Differential Expression(BN-Lx/SHR or ILS/ISS)</li>
-                                    <li>Probeset Heritability/Detection Above Background across tissues</li>
-                                    <li>Probeset Expression accross strains and tissues</li>
+                                	<li>Parental Strain Differential Expression(BN-Lx/SHR or ILS/ISS)</li>
+                                    <li>Probe set Heritability/Detection Above Background across tissues</li>
+                                    <li>Probe set Expression across strains and tissues</li>
                                     <li>Exon Correlation</li>
                                 </ul>
                         </ul>

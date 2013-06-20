@@ -17,7 +17,7 @@
                         <ul>
                         	<li>Create a list of QTLs(either bQTLs or eQTLs).</li>
                             <li>Use the list to limit the location view of a gene list to only genes or eQTLs that fall within the regions in the list.</li>
-                            <li>Use the list for the filtering step of an analysis to remove probesets outside of the defined regions.</li>
+                            <li>Use the list for the filtering step of an analysis to remove probe sets outside of the defined regions.</li>
                             
                         </ul>
                         </div>

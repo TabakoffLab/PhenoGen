@@ -17,7 +17,7 @@
                         <ul>
                         	<li>View eQTLs associated with a gene in a Circos Plot(Detailed Genome/Transcriptome Information select eQTL Tab for a specific gene)</li>
                             <li>View genes with an eQTL in a region in a Circos Plot(Detailed Genome/Transcriptome Information select Genes Controlled from Region Tab while viewing a Region)</li>
-                            <li>View genes locations accross the genome with associated eQTLs.(View a Gene List and select the Location Tab)</li>
+                            <li>View genes locations across the genome with associated eQTLs.(View a Gene List and select the Location Tab)</li>
                         </ul>
                         </div>
                     	<h3>Sample Screen Shots</h3>
