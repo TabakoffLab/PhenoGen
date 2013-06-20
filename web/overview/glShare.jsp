@@ -14,11 +14,11 @@
                     	<H3>Feature List</H3>
                         <div>
                         	<ul>
-                        		<li>Share Lists with any other registered user.</li>
+                        		<li>Share lists with any other registered user.</li>
                             	<li>Compare lists with any other accessible gene lists.</li>
                                 <ul>
                             		<li>Look for any of your lists that also contain genes from a selected list</li>
-                                	<li>Find the Intersection, Union, or Subtract one list from another </li>
+                                	<li>Find the intersection, union, or subtract one list from another </li>
                                 </ul>
                             </ul>
                         </div>

@@ -37,8 +37,7 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #header-nav a#site-help-btn { padding-right: 20px; background: url(../web/images/icons/help.png) right center no-repeat; }
 #header-nav span#messages-icon { padding-right: 20px; background: url(../web/images/icons/message.png) right center no-repeat; }
 
-#indexDescContent a { color: #749BC1; }
-#indexDescContent a:focus,a:hover { color: #84ABD1; }
+
 
 /* primary-content */
 
@@ -103,11 +102,13 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #welcome overview-wrap { clear: both; border: #9c9c9c 1px solid; background: #ccc; }
 #welcome overview-content { margin: 8px; padding: 10px 0; border: #9c9c9c 1px solid; background: #fff; }
 #welcome.links a:hover {color: #fff; }
-#overview-content { width: 430px;}
-#overview-content-wide { width: 550px;}
-#overview-content li{ clear:left; list-style:  square outside; margin:0 40px; }
-#overview-content-wide li{ clear:left; list-style:  square outside; margin:0 40px; }
-#landing #primary-content li{ list-style:  square outside; margin:0 40px; }
+#overview-content {  width: 430px;}
+#overview-content-wide {  width: 550px;}
+#overview-content li{  color: #ffffff;clear:left; list-style:  square outside; margin:0 40px; }
+#overview-content-wide li{  color: #ffffff;clear:left; list-style:  square outside; margin:0 40px; }
+#landing #primary-content li{  color: #ffffff;list-style:  square outside; margin:0 40px; }
+
+
 
 div.welcome.tabContent{
 	/*background: transparent url("../web/images/bg/header5.jpg") no-repeat bottom right;*/
@@ -214,6 +215,7 @@ div.brClear {
 	margin-left:20px;
 	margin-bottom:10px;
 	float:left;
+	color:#FFFFFF;
 }
 
 SPAN.highlight {
@@ -319,6 +321,9 @@ a.button {
 	text-decoration: none;
 }
 
+#indexDescContent a,a:focus { color: #749BC1; }
+#indexDescContent a:hover { color: #94BBE1; }
+#indexDescContent ul { margin-left: 20px;  }
 .triangle_down {
 	position:absolute;
 	width:0px;
@@ -355,7 +360,6 @@ a.button {
 
 ul{ 
 		list-style: square outside;
-		margin-left: 20px; 
 		display: block;
         color: #000000;
 		line-height:16px;

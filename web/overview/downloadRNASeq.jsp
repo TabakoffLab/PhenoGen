@@ -19,7 +19,7 @@
                             <BR /><BR />
                             More strains will become available so keep checking back.
                             <BR /><BR />
-                            This data has been used to create a transcriptome reconstruction for rat brain.  The reconstructed transcripts are displayed alongside Ensembl transcripts with detailed Gene/Transcript information under <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Genome/Transcription Information</a>.
+                            This data has been used to create a transcriptome reconstruction for rat brain.  The reconstructed transcripts are displayed alongside Ensembl transcripts with detailed gene/transcript information under <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Genome/Transcription Information</a>.
                         </div>
                         <H3>Files Available</H3>
                         <div>

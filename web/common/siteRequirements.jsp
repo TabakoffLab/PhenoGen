@@ -26,10 +26,9 @@
                 	Firefox 10.0+<BR />
                     Safari 5.0+<BR />
                     Chrome 17+<BR />
-                    IE 9+ only* <BR />
-                    <span style="font-size:10px;">*It may be possible to use the site with IE 8 however some features will require a plugin for SVG graphics and future versions of the site will more heavily rely on SVG for interactive graphics. </span> 
+                    IE 9+ <BR />
 				</p>
-                
+                <BR /><BR />
 		<h2>Additional Software Required</h2>
         <BR />
         <ul>
@@ -42,7 +41,7 @@
 				$('#noJSsite').hide();
 			</script>
         
-            <li>Java Plugin JRE 1.6+ is required for the Detailed Transcription Information feature.<BR />
+            <li>Java Plugin JRE 1.6+ is required for part of the Gene View in the Detailed Genome/Transcription Information feature.<BR />
                 (<span id="minJava" style="color:#009900;display:none;" >Java plugin meets the minimum requirements. <BR /></span>
                 <span id="oldJava" style="color:#FF0000;display:none;">A new version may be available click the Install button for the latest version.</span>
                 <span id="noJava" style="color:#FF0000;display:none;"> A newer version is required click the Install button for the latest version.</span><span id="installJava" class="button">Install Java</span>)
@@ -78,9 +77,6 @@
 			
         </script>
         
-        
-        
-        <li>SVG plugin for IE8 (although only IE 9+ is recommended)</li><BR />
 		</ul>
         
         

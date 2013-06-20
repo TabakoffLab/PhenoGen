@@ -14,9 +14,9 @@
                     	<H3>Feature List</H3>
                         <div>
                         	<ul>
-                        		<li>Browse homologous genes in Mouse,Rat,Human,Drosophila.</li>
+                        		<li>Browse homologous genes in Mouse, Rat, Human, or Drosophila.</li>
                             	<li>Provides links to NCBI/Homologene.</li>
-                            	<li>Provides links to organism specific NCBI gene.</li>
+                            	<li>Provides links to the organism specific NCBI gene.</li>
                             	<li>Provides Gene Symbol and location for each organism.</li>
                             </ul>
                         </div>

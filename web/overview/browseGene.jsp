@@ -20,7 +20,6 @@
                             <li>View Rat SNPs/Short Indels for BN-Lx and SHR with more coming soon</li>
                             <li>View Ensembl Isoforms</li>
                             <li>View Affymetrix Microarray Probe set locations</li>
-                            <li>View bQTLs</li>
                             <li>View eQTLs for the gene</li>
                             <li>Access detailed Affy Exon 1.0 ST data</li>
                             	<ul>

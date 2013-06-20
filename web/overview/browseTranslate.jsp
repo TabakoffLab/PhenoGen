@@ -26,7 +26,7 @@
                         The translation window showing several previous results.  Simply click a row to view the region or click the link to open in a new window allowing you to open multiple regions at once.
                         <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseTranslate.jpg" title="The translation window showing several previous results.  Simply click a row to view the region or click the link to open in a new window allowing you to open multiple regions at once."><img src="web/overview/browseTranslate.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
-                        <H3>Demonstration Video</H3>
+                        <!--<H3>Demonstration Video</H3>
                         <div  class="demo" style="text-align:center;">
                             <video id="demoVideo" width="260px" controls="controls">
                             	<source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
@@ -34,7 +34,7 @@
                               <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%" >
                               </object>
                             </video>
-                        </div>
+                        </div>-->
                     </div>
 
     

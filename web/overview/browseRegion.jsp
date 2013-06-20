@@ -40,8 +40,8 @@
                             The default view for behavioral Quantitative Trait Loci(bQTL).  Showing information about the trait, linking to publications, and linking to candidate genes or the entire region for the bQTL.
                             <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion4.jpg" title="The default view for behavioral Quantitative Trait Loci(bQTL).  Showing information about the trait, linking to publications, and linking to candidate genes or the entire region for the bQTL."><img src="web/overview/browseRegion4.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             <BR /><BR />
-                            A circos plot that shows the locations of the genes with an eQTL in the region.  Below this image a table summarizes the data available for each gene.
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion5.jpg" title="A circos plot that shows the locations of the genes with an eQTL in the region.  Below this image a table sumarizes the data available for each gene."><img src="web/overview/browseRegion5.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
+                            A Circos plot that shows the locations of the genes with an eQTL in the region.  Below this image a table summarizes the data available for each gene.
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion5.jpg" title="A Circos plot that shows the locations of the genes with an eQTL in the region.  Below this image a table sumarizes the data available for each gene."><img src="web/overview/browseRegion5.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                         <H3>Demonstration Video</H3>
                         <div class="demo" style="text-align:center;">

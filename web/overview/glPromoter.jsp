@@ -12,12 +12,11 @@
                     <div id="accordion" style="height:100%;">
                     	<H3>Feature List</H3>
                         <div>
-                        	Analyze promoters for all the genes in a gene list.  Support for oPOSSUM v2 and MEME v4.9 patch2 or extract upstream sequence for your own analysis to a downloadable .fasta file.
-                            
+                        	Analyze promoters for all the genes in a gene list. PhenoGen supports the following 3 methods for promoter analysis.
                               <ul>
-                            	<li>oPOSSUM v2 (Mouse Only)</li>
-                                <li>MEME v4.9 patch 2</li>
-                                <li>upstream sequence extraction</li>
+                            	<li><a href="http://burgundy.cmmt.ubc.ca/oPOSSUM/" target="_blank">oPOSSUM v2</a> (Mouse Only)</li>
+                                <li><a href="http://meme.nbcr.net/meme/cgi-bin/meme.cgi" target="_blank">MEME v4.9 patch 2</a></li>
+                                <li>upstream sequence extraction to a downloadable .fasta file for your own analysis</li>
                            </ul>
                             
                              

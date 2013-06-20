@@ -13,7 +13,7 @@
                     <div id="accordion" style="height:100%;">
                     	<H3>Feature List</H3>
                         <div>
-                        	However your gene list was created, we link supported identifiers to other related identifiers and provide links to other sites with further information about each gene.
+                        	However your gene list was created, we link supported identifiers to other database identifiers and provide links to the other databases with further information about each gene.
                             <BR /><BR />
                             The annotation page will link to the following sources for short lists(< 200) for larger lists you can export associated IDs.
                             <BR /><BR />

@@ -15,7 +15,7 @@
                         <div>
                         	We have sequenced each of the HXB inbred panel parental strains(BN-Lx/CubPrin and SHR/OlaIpcvPrin).  Sequences were aligned to the reference BN(Rn5) genome.  SNPs and short Indels were identified.  The download currently only contains the alignment with SNPs.
                             <BR /><BR />
-                            All identified SNPs/Indels are displayed when you view a gene or region under <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Genome/Transcription Information</a>.
+                            All identified SNPs/Indels can be displayed when you view a gene or region under <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Genome/Transcription Information</a>.
                         </div>
                         <H3>Files Available</H3>
                         <div>
