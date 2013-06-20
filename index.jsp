@@ -2,6 +2,12 @@
 <%
 	//loggedIn = false;
 	extrasList.add("landing.js");
+	extrasList.add("d3.v3.min.js");
+	extrasList.add("fancyBox/jquery.fancybox.js");
+	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
+	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
+	extrasList.add("jquery.fancybox.css");
+	extrasList.add("jquery.fancybox-thumbs.css");
     request.setAttribute( "extras", extrasList);
 %>
 <%@ include file="/web/common/basicHeader.jsp" %>
@@ -62,15 +68,33 @@
 	<div id="index">
     	        
 
-    	<div id="primary-content">
-            	<%@ include file="/web/common/overview.jsp" %>
+    	<!--<div id="primary-content">-->
+        <div id="welcome" style="height:1000px; width:996px;">
+			<h2 class="homePage">Welcome to PhenoGen Informatics</h2>
+            <div>
+            	<%@ include file="/web/common/indexGraph.jsp" %>
+           </div>
+             <div id="ack">
+                       <h3 style="margin:10px;">Acknowledgements</h3>
+                        <H4 style="margin:10px;">Funding</H4>
+                        <p>We would like to thank the National Institue on Alcohol Abuse and Alcoholism (<a href="http://www.niaaa.nih.gov/">NIAAA</a>) for continued funding to develop and support this site.  The Banbury Fund for supporting the development of this site.</p>
+                        <h4 style="margin:10px;">Recombinant Inbred Panels</h4>
+                        <p>We are grateful to the following investigators for providing the recombinant inbred panels found on the site.<BR />
+                        HXB/BXH Rat RI Panel was provided by <a href="http://pharmacology.ucsd.edu/faculty/printz.html">Morton Printz</a>(UC San Diego).<BR />
+                        ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and <a href="http://profiles.ucdenver.edu/ProfileDetails.aspx?From=SE&Person=568">John DeFries</a>(CU Boulder).</p>
+           </div>
+		</div>
+    	<!--</div>--> <!-- // end primary-content -->
+        
 
-    	</div> <!-- // end primary-content -->
   	</div> <!-- end index -->
 	<div id="footer"> &nbsp; </div>
 	</div> <!-- // end site-wrap -->
 
     	<script type="text/javascript">
+			$("#closeBTN").on("click",function(){
+				$('div#indexDesc').hide();
+			});
         	$(document).ready(function(){	
             		$("div.clicker").click(function(){
                 		var thisHidden = $( "span#" + $(this).attr("name") ).is(":hidden");

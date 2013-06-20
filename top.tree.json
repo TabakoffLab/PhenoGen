@@ -1,0 +1,51 @@
+{
+ "name": "What Can You Do With PhenoGen?",
+ 		"group":1,
+ "children": [
+ 	{ "name":"Browse Genome / Transcriptome",
+ 		"group":2,
+ 		"children":[
+ 			{"name":"Browse from a Gene","group":2,"descPage":"browseGene.jsp"},
+ 			{"name":"Browse from a Region","group":2,"descPage":"browseRegion.jsp"},
+ 			{"name":"Translate regions to other organisms","group":2,"descPage":"browseTranslate.jsp"}
+ 		]},
+ 	{ "name":"Download Data",
+ 		"group":3,
+ 		"children":[
+ 			{"name":"Microarray Data","group":3,"descPage":"downloadMicroarray.jsp"},
+ 			{"name":"RNA-Seq Data","group":3,"descPage":"downloadRNASeq.jsp"},
+ 			{"name":"Human Whole Genome SNP Data","group":3,"descPage":"downloadHumanSNP.jsp"},
+ 			{"name":"Strain Specific Genomes","group":3,"descPage":"downloadGenome.jsp"},
+ 			{"name":"Genomic Marker Files","group":3,"descPage":"downloadMarker.jsp"}
+ 		]},
+ 	{ "name":"Microarray Analysis",
+ 		"group":4,
+ 		"children":[
+ 			{"name":"Upload private data","group":4,"descPage":"microUpload.jsp"},
+    		{"name":"Normalize -> Statistics -> GeneLists","group":4,"descPage":"microAnalysis.jsp"},
+    		{"name":"Share data","group":4,"descPage":"microShare.jsp"},
+    		{"name":"Access Public Data","group":4,"descPage":"microPublic.jsp"}
+ 		]
+ 		},
+ 	{ "name":"QTL Analysis",
+ 		"group":5,
+ 		"children":[
+ 			{"name":"Calculate bQTLs","group":5,"descPage":"qtlCalc.jsp"},
+    		{"name":"Create eQTL lists","group":5,"descPage":"qtlList.jsp"},
+    		{"name":"Visualize eQTLs","group":5,"descPage":"qtlViz.jsp"}
+ 		]
+ 		},
+ 	{ "name":"Gene List Analysis",
+ 		"group":6,
+ 		"children":[
+ 			{"name":"Annotations (links to many other databases)","group":6,"descPage":"glAnnot.jsp"},
+    		{"name":"Promoter Analysis (oPPOSSUM, MEME)","group":6,"descPage":"glPromoter.jsp"},
+    		{"name":"Exon Expression Correlations","group":6,"descPage":"glCorr.jsp"},
+    		{"name":"Share, Compare Lists","group":6,"descPage":"glShare.jsp"},
+    		{"name":"Statistics / Expression Values","group":6,"descPage":"glValues.jsp"},
+    		{"name":"Homologs","group":6,"descPage":"glHomolog.jsp"},
+    		{"name":"Pathway Analysis","group":6,"descPage":"glPathway.jsp"}
+ 		]
+ 		}
+ ]
+ }

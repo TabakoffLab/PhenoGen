@@ -37,6 +37,9 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #header-nav a#site-help-btn { padding-right: 20px; background: url(../web/images/icons/help.png) right center no-repeat; }
 #header-nav span#messages-icon { padding-right: 20px; background: url(../web/images/icons/message.png) right center no-repeat; }
 
+#indexDescContent a { color: #749BC1; }
+#indexDescContent a:focus,a:hover { color: #84ABD1; }
+
 /* primary-content */
 
 #primary-content { float: left; width: 805px; margin: 0;}
@@ -47,7 +50,7 @@ p { margin-bottom: 8px; padding: 0 10px; }
 #welcome{ 
 	margin-bottom: 15px; 
 	height: 575px;
-	border: #999 10px solid; 
+	border: #999 2px solid; 
 	color:#DADDDD;
 	background: #1F344F url("../web/images/bg/header5.jpg") no-repeat bottom right; 
 }
@@ -348,4 +351,40 @@ a.button {
 	/* bottom,add background color here */
 	font-size:0px;
 	line-height:0px;
+}
+
+ul{ 
+		list-style: square outside;
+		margin-left: 20px; 
+		display: block;
+        color: #000000;
+		line-height:16px;
+}
+ol{ 
+		list-style: outside lower-alpha;
+		margin-left: 40px; 
+		display: block;
+        color: #24618e;
+		
+}
+li{ 
+		padding-top:5px;
+}
+
+table.index{
+table-layout:fixed;
+}
+
+table.index td.wide{
+	width:66%;
+}
+table.index td.narrow{
+	width:34%;
+}
+
+table.index td.full{
+	width:100%;
+}
+table.index td.none{
+	width:0%;
 }
