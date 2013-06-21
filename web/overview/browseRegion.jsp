@@ -10,7 +10,7 @@
 --%>
 
     
-                	<H2>Browse a Region</H2>
+                	<H2>Browse Region</H2>
                     <div id="accordion" style="height:100%;">
                     	<H3>Feature List</H3>
                         <div>
