@@ -2,10 +2,13 @@
 function showDiv(jspPage){
 	selectedSection= $( "#accordion" ).accordion( "option", "active" );
 	$('#indexDesc').slideUp("250");
+	$('div#indexDescContent').html("<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
 	d3.html("web/overview/"+jspPage,function(error,html){
 							 if(error==null){
 								 $('div#indexDescContent').html(html);
-								 $('div#indexDesc').show();
+								 //$('div#indexDesc').show();
+							 }else{
+							 	 $('div#indexDescContent').html("<H2>ERROR</H2><BR><BR><span style=\"text-align:center;width:100%;color:#FF0000;\">An error has occured please view another node and try this node again.</span>");
 							 }
 							 });
 	$('#indexDesc').slideDown("250");
