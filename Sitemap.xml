@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" 
+  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  
+  
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/browseGene.jsp</loc>
+</url>
+
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/browseRegion.jsp</loc>
+</url>
+
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/browseTranslate.jsp</loc>
+</url>
+
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/downloadGenome.jsp</loc>
+</url>
+
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/downloadHumanSNP.jsp</loc>
+</url>
+
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/downloadMarker.jsp</loc>
+</url>
+
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/downloadMicroarray.jsp</loc>
+</url>
+
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/downloadRNASeq.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/glAnnot.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/glCorr.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/glHomolog.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/glPathway.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/glPromoter.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/glShare.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/glValues.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/microAnalysis.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/microPublic.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/microShare.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/qtlCalc.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/qtlList.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/overview/qtlViz.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/CurrentDataSets.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/access/createAnnonymousSession.jsp?url=PhenoGen/gene.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/ovrvw_whats_new.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/ovrvw_transcript_details.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/ovrvw_downloads.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/ovrvw_microarray_tools.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/ovrvw_genelist_tools.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/ovrvw_qtl_tools.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/access/createAnnonymousSession.jsp?url=PhenoGen/web/sysbio/resources.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/publications.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/siteVersion.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/citation.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/acknowledgements.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/usefulLinks.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/PhenoGen.pdf</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/siteRequirements.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/contact.jsp</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/helpdocs/PhenoGen_Overview_CSH.htm#Phenogen_Overview.htm#Overview</loc>
+</url>
+<url> 
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/web/access/registration.jsp</loc>
+</url>
+</urlset>
