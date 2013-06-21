@@ -9,7 +9,7 @@
  *      
 --%>
 
-                	<H2>Exon-Exon Correlation</H2>
+                	<H2>Exon Expression Correlation</H2>
                     <div id="accordion" style="height:100%;">
                     	<H3>Feature List</H3>
                         <div>

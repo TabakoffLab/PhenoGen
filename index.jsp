@@ -69,7 +69,7 @@
     	        
 
     	<!--<div id="primary-content">-->
-        <div id="welcome" style="height:1000px; width:996px;">
+        <div id="welcome" style="height:1050px; width:996px;">
 			<h2 class="homePage">Welcome to PhenoGen Informatics</h2>
             <div>
             	<%@ include file="/web/common/indexGraph.jsp" %>
