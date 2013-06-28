@@ -217,7 +217,6 @@ var ucscgeneID="";
     <script>
 		var tisLen=<%=tissuesList1.length%>;
 		var folderName="<%=folderName%>";
-		
 		/*$(".trigger").click(function(){
 			var baseName = $(this).attr("name");
 			$(this).toggleClass("less");
@@ -288,14 +287,12 @@ var ucscgeneID="";
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
             	<span class="settings" id="settingstopLevel" style="position:relative;top:14px;left:470px;"><img src="<%=imagesDir%>icons/gear.png"></span>
-<script src="javascript/test.js" type="text/javascript"></script>
+<script src="javascript/GenomeDataBrowser.js" type="text/javascript"></script>
 <script type="text/javascript">
-	var gs=new GenomeSVG(".ucscImage",960,minCoord,maxCoord,0);
-	svgList[0].addTrack("smallnc",3);
-	svgList[0].addTrack("noncoding",3);
-	svgList[0].addTrack("coding",3);
-	
-	
+	setupGenomeDataBrowser(".ucscImage",960);
+	addTrack("smallnc","topLevel",3);
+	addTrack("noncoding","topLevel",3);
+	addTrack("coding","topLevel",3);
 	
 	$( ".sortable" ).sortable({
       revert: true,
@@ -327,8 +324,8 @@ var ucscgeneID="";
             <%if(myOrganism.equals("Rn")){%>
             <TR>
             <TD>
-           	<input name="trackcbx" type="checkbox" id="snpCBX" value="Level0" /> SNPs/Indels:
-             <select name="trackSelect" id="snp0Select">
+           	<input name="trackcbx" type="checkbox" id="snpCBX" value="topLevel" /> SNPs/Indels:
+             <select name="trackSelect" id="snpSelect">
             	<option value="1" selected="selected">Dense</option>
                 <option value="3" >Pack</option>
             </select>
@@ -337,8 +334,8 @@ var ucscgeneID="";
             </TR>
             <TR>
             <TD>
-            <input name="trackcbx" type="checkbox" id="helicosCBX" value="Level0" /> Helicos Data:
-            <select name="trackSelect" id="helicos0Select">
+            <input name="trackcbx" type="checkbox" id="helicosCBX" value="topLevel" /> Helicos Data:
+            <select name="trackSelect" id="helicosSelect">
             	<option value="1" selected="selected">Dense</option>
                 <option value="2" >Full</option>
             </select>
@@ -348,13 +345,13 @@ var ucscgeneID="";
             <%}%>
             <TR>
             <TD>
-            <input name="trackcbx" type="checkbox" id="qtlCBX" value="Level0" /> bQTLs  
+            <input name="trackcbx" type="checkbox" id="qtlCBX" value="topLevel" /> bQTLs  
             <span class="Imagetooltip" title="This track will display the publicly available bQTLs from Rat Genome Database. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are available under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             </TR>
              <TR >
             <TD>
-            <input name="trackcbx" type="checkbox" id="refseqCBX" value="Level0" /> RefSeq Transcripts  
+            <input name="trackcbx" type="checkbox" id="refseqCBX" value="topLevel" /> RefSeq Transcripts  
             <span class="Imagetooltip" title="Transcripts from the rat RefSeq database are displayed in blue."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             </TR>
@@ -365,8 +362,8 @@ var ucscgeneID="";
             </TR>
             <TR>
             <TD >
-            <input name="trackcbx" type="checkbox" id="codingCBX" value="Level0" checked="checked" /> Protein Coding<%if (myOrganism.equals("Rn")){%>/PolyA+<%}%>
-            <select name="trackSelect" id="coding0Select">
+            <input name="trackcbx" type="checkbox" id="codingCBX" value="topLevel" checked="checked" /> Protein Coding<%if (myOrganism.equals("Rn")){%>/PolyA+<%}%>
+            <select name="trackSelect" id="codingSelect">
             	<option value="1" >Dense</option>
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
@@ -382,8 +379,8 @@ var ucscgeneID="";
             </TR>
             <TR>
             <TD >
-            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="Level0" checked="checked" />Long Non-Coding<%if (myOrganism.equals("Rn")){%>/NonPolyA+<%}%>
-            <select name="trackSelect" id="noncoding0Select">
+            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="topLevel" checked="checked" />Long Non-Coding<%if (myOrganism.equals("Rn")){%>/NonPolyA+<%}%>
+            <select name="trackSelect" id="noncodingSelect">
             	<option value="1" >Dense</option>
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
@@ -393,8 +390,8 @@ var ucscgeneID="";
             </TR>
             <TR>
             <TD>
-            <input name="trackcbx" type="checkbox" id="smallncCBX" value="Level0" checked="checked" /> Small RNA 
-            <select name="trackSelect" id="smallnc0Select">
+            <input name="trackcbx" type="checkbox" id="smallncCBX" value="topLevel" checked="checked" /> Small RNA 
+            <select name="trackSelect" id="smallncSelect">
             	<option value="1" >Dense</option>
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
@@ -406,7 +403,7 @@ var ucscgeneID="";
             </table>
             <table>
             	Track Area Height:
-                <select name="displaySelect" id="Level0">
+                <select name="displaySelect" id="topLevel">
                 	<option value="150">Small</option>
                 	<option value="350" selected>Normal</option>
                     <option value="700">Large</option>
@@ -575,31 +572,22 @@ var ucscgeneID="";
 				});
 			$("input[name='trackcbx']").change( function(){
 	 			var type=$(this).val();
-				var typeStr=new String(type);
 				var idStr=new String($(this).attr("id"));
 				var prefix=idStr.substr(0,idStr.length-3);
-				var level=typeStr.substr(typeStr.length-1);
 				if($(this).is(":checked")){
-					svgList[level].addTrack(prefix,$("#"+prefix+level+"Select").val());
-					//addTrack(prefix, type,$("#"+prefix+"Select").val());
+					addTrack(prefix, type,$("#"+prefix+"Select").val());
 				}else{
-					removeTrack();
+					removeTrack(prefix,type);
 				}
 	 		});
 			$("select[name='trackSelect']").change( function(){
-				//var tmp=$(this).parents('[class^="settings"]');
+				var tmp=$(this).parents('[class^="settings"]');
 				//console.log(tmp);
-				//var level=new String (tmp.attr("class"));
+				var level=new String (tmp.attr("class"));
 				//console.log(level);
-				//level=level.substr(8);
+				level=level.substr(8);
 				//console.log(level);
-	 			//redraw(level);
-				var idStr=new String($(this).attr("id"));
-				var level=idStr.substr(idStr.length-7,1);
-				console.log(idStr);
-				console.log(level);
-				console.log(svgList[level]);
-				svgList[level].redraw();
+	 			redraw(level);
 	 		});
 			$("select[name='displaySelect']").change( function(){
 	 			changeTrackHeight($(this).attr("id"),$(this).val());
