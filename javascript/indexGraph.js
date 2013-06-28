@@ -1,3 +1,21 @@
+//Fix for IE9  which is missing this function used by D3
+if (/MSIE[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){
+	if (typeof Range.prototype.createContextualFragment == "undefined") {
+	    Range.prototype.createContextualFragment = function(html) {
+	        var startNode = this.startContainer;
+	        var doc = startNode.nodeType == 9 ? startNode : startNode.ownerDocument;
+	        var container = doc.createElement("div");
+	        container.innerHTML = html;
+	        var frag = doc.createDocumentFragment(), n;
+	        while ( (n = container.firstChild) ) {
+	            frag.appendChild(n);
+	        }
+	        return frag;
+	    };
+	}
+}
+
+
 
 function showDiv(jspPage){
 	selectedSection= $( "#accordion" ).accordion( "option", "active" );
@@ -8,7 +26,7 @@ function showDiv(jspPage){
 								 $('div#indexDescContent').html(html);
 								 //$('div#indexDesc').show();
 							 }else{
-							 	 $('div#indexDescContent').html("<H2>ERROR</H2><BR><BR><span style=\"text-align:center;width:100%;color:#FF0000;\">An error has occured please view another node and try this node again.</span>");
+							 	 $('div#indexDescContent').html("<H2>ERROR</H2><BR><BR><span style=\"text-align:center;width:100%;color:#FF0000;\">An error has occured please view another node and try this node again.</span>"+error);
 							 }
 							 });
 	$('#indexDesc').slideDown("250");
