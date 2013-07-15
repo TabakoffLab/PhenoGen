@@ -245,7 +245,7 @@ var ucscgeneID="";
 		setupExpandCollapse();
     </script>
 <div id="page" style="min-height:1050px;text-align:center;">
-
+	<div id="imageMenu"></div>
         <!--<div class="geneRegionControl">
       		Zoom In:
           <form id="zoomIn" name="zoomIn" method="post" action="" style="display:inline-block;">
@@ -287,13 +287,13 @@ var ucscgeneID="";
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
-            	<span class="settings" id="settingstopLevel" style="position:relative;top:14px;left:470px;"><img src="<%=imagesDir%>icons/gear.png"></span>
+            	<!--<span class="settings" id="settingstopLevel" style="position:relative;top:14px;left:470px;"><img src="<%=imagesDir%>icons/gear.png"></span>-->
 <script src="javascript/test.js" type="text/javascript"></script>
 <script type="text/javascript">
-	var gs=new GenomeSVG(".ucscImage",960,minCoord,maxCoord,0);
-	svgList[0].addTrack("smallnc",3);
-	svgList[0].addTrack("noncoding",3);
+	var gs=new GenomeSVG(".ucscImage",960,minCoord,maxCoord,0,chr,"gene");
 	svgList[0].addTrack("coding",3);
+	svgList[0].addTrack("noncoding",3);
+	svgList[0].addTrack("smallnc",3);
 	
 	
 	
@@ -313,299 +313,6 @@ var ucscgeneID="";
             	<img src="<%= contextRoot+"tmpData/regionData/"+folderName+"/ucsc.coding.noncoding.smallnc.png"%>"/></a>-->
             </div>
         </div><!-- end geneimage div -->
-        
-        <div class="settingstopLevel"  style="display:none;width:300px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:relative; top:-346px; left:678px;">
-        	<span style="color:#000000;">Settings:</span>
-        	<span class="closeBtn" id="close_settingstopLevel" style="position:relative;top:3px;left:110px;"><img src="<%=imagesDir%>/icons/close.png"></span>
-
-            <table class="list_base" style="text-align:left; width:100%;" cellspacing="0">
-            <TR >
-            <TD >
-            <span style=" font-weight:bold;">Image Tracks</span>
-            </TD>
-            </TR>
-            <%if(myOrganism.equals("Rn")){%>
-            <TR>
-            <TD>
-           	<input name="trackcbx" type="checkbox" id="snpCBX" value="Level0" /> SNPs/Indels:
-             <select name="trackSelect" id="snp0Select">
-            	<option value="1" selected="selected">Dense</option>
-                <option value="3" >Pack</option>
-            </select>
-             <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="helicosCBX" value="Level0" /> Helicos Data:
-            <select name="trackSelect" id="helicos0Select">
-            	<option value="1" selected="selected">Dense</option>
-                <option value="2" >Full</option>
-            </select>
-             <span class="Imagetooltip" title="Helicos Single Molecule RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <%}%>
-            <TR>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="qtlCBX" value="Level0" /> bQTLs  
-            <span class="Imagetooltip" title="This track will display the publicly available bQTLs from Rat Genome Database. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are available under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-             <TR >
-            <TD>
-            <input name="trackcbx" type="checkbox" id="refseqCBX" value="Level0" /> RefSeq Transcripts  
-            <span class="Imagetooltip" title="Transcripts from the rat RefSeq database are displayed in blue."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD class="topLine">
-            <span style=" font-weight:bold;">Image Tracks and Table Filters</span><span class="Imagetooltip" title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD >
-            <input name="trackcbx" type="checkbox" id="codingCBX" value="Level0" checked="checked" /> Protein Coding<%if (myOrganism.equals("Rn")){%>/PolyA+<%}%>
-            <select name="trackSelect" id="coding0Select">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >Full</option>
-            </select>
-             <span class="Imagetooltip" title=
-             <%if(myOrganism.equals("Rn")){%>
-             	"This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."
-             <%}else{%>
-             	""
-             <%}%>
-             ><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD >
-            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="Level0" checked="checked" />Long Non-Coding<%if (myOrganism.equals("Rn")){%>/NonPolyA+<%}%>
-            <select name="trackSelect" id="noncoding0Select">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >Full</option>
-            </select>
-             <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="smallncCBX" value="Level0" checked="checked" /> Small RNA 
-            <select name="trackSelect" id="smallnc0Select">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >Full</option>
-            </select>
-             <span class="Imagetooltip" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-           	
-            </table>
-            <table>
-            	Track Area Height:
-                <select name="displaySelect" id="Level0">
-                	<option value="150">Small</option>
-                	<option value="350" selected>Normal</option>
-                    <option value="700">Large</option>
-                	<option value="0">No Scrolling</option>
-                </select>
-            </table>
-          </div>
-          
-          <div class="settingstxLevel"  style="display:none;width:300px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:relative; top:-346px; left:678px;">
-        	<span style="color:#000000;">Settings:</span>
-        	<span class="closeBtn" id="close_settingstxLevel" style="position:relative;top:3px;left:110px;"><img src="<%=imagesDir%>/icons/close.png"></span>
-
-            <table class="list_base" style="text-align:left; width:100%;" cellspacing="0">
-            <TR >
-            <TD >
-            <span style=" font-weight:bold;">Image Tracks</span>
-            </TD>
-            </TR>
-            <TR><TD>
-                <input name="trackcbx" type="checkbox" id="probeCBX" value="txLevel"  /> 
-                Affymetrix Exon Array Probe Sets:
-                <select name="trackSelect" id="probeSelect">
-                    <option value="1" >Dense</option>
-                    <option value="3" selected="selected">Pack</option>
-                    <option value="2" >Full</option>
-                </select>
-            </TD></TR>
-            <TR><TD style=" padding-left:15px;">
-                color by:
-                <select name="colorSelect" id="probeSelectColor">
-                    <option value="annot" selected="selected">Annotation</option>
-                    <option value="dabg" >Detection Above Background</option>
-                    <option value="herit" >Heritability</option>
-                </select>
-                <span class="Imagetooltip" title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
-                </TD></TR>
-            <TR><TD>
-                <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="txLevel" />
-                Affy Exon Probe Sets:
-                <select name="trackSelect" id="filterprobeSelect">
-                    <option value="1" >Dense</option>
-                    <option value="3" selected="selected">Pack</option>
-                    <option value="2" >Full</option>
-                </select>
-                </TD></TR>
-            <TR><TD style=" padding-left:15px;">
-                filtered by:
-                 <select name="filterSelect" id="filterprobeSelectFilter">
-                    <option value="annot" selected="selected">Annotation</option>
-                    <option value="dabg" >Detection Above Background</option>
-                    <option value="herit" >Heritability</option>
-                </select>
-                </TD></TR>
-            <TR><TD style=" padding-left:15px;">
-                color by:
-                <select name="colorSelect" id="probeSelectColor">
-                    <option value="annot" selected="selected">Annotation</option>
-                    <option value="dabg" >Detection Above Background</option>
-                    <option value="herit" >Heritability</option>
-                </select>
-                <span class="Imagetooltip" title="The non-masked Affymetrix Exon 1.0 ST probsets detected above background in >1% of samples in each tissue available."><img src="<%=imagesDir%>icons/info.gif"></span>
-                </TD></TR>
-            <%if(myOrganism.equals("Rn")){%>
-            <TR>
-            <TD>
-           	<input name="trackcbx" type="checkbox" id="snpCBX" value="txLevel" /> SNPs/Indels:
-             <select name="trackSelect" id="snpSelect">
-            	<option value="1" selected="selected">Dense</option>
-                <option value="3" >Pack</option>
-            </select>
-             <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="helicosCBX" value="txLevel" /> Helicos Data:
-            <select name="trackSelect" id="helicosSelect">
-            	<option value="1" selected="selected">Dense</option>
-                <option value="2" >Full</option>
-            </select>
-             <span class="Imagetooltip" title="Helicos Single Molecule RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <%}%>
-
-             <TR >
-            <TD>
-            <input name="trackcbx" type="checkbox" id="refseqCBX" value="txLevel" /> RefSeq Transcripts  
-            <span class="Imagetooltip" title="Transcripts from the rat RefSeq database are displayed in blue."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <!--<TR>
-            <TD class="topLine">
-            <span style=" font-weight:bold;">Image Tracks and Table Filters</span><span class="Imagetooltip" title="Checking or Unchecking any of these tracks to the right will include or exclude their features from the table below as well as the image above."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD >
-            <input name="trackcbx" type="checkbox" id="codingCBX" value="txLevel" checked="checked" /> Protein Coding<%if (myOrganism.equals("Rn")){%>/PolyA+<%}%>
-            <select name="trackSelect" id="codingSelect">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >Full</option>
-            </select>
-             <span class="Imagetooltip" title=
-             <%if(myOrganism.equals("Rn")){%>
-             	"This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding.  Including/Excluding this track also filters these rows from the table below."
-             <%}else{%>
-             	""
-             <%}%>
-             ><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD >
-            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="txLevel" checked="checked" />Long Non-Coding<%if (myOrganism.equals("Rn")){%>/NonPolyA+<%}%>
-            <select name="trackSelect" id="noncodingSelect">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >Full</option>
-            </select>
-             <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>
-            <TR>
-            <TD>
-            <input name="trackcbx" type="checkbox" id="smallncCBX" value="txLevel" checked="checked" /> Small RNA 
-            <select name="trackSelect" id="smallncSelect">
-            	<option value="1" >Dense</option>
-                <option value="3" selected="selected">Pack</option>
-                <option value="2" >Full</option>
-            </select>
-             <span class="Imagetooltip" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            </TR>-->
-           	
-            </table>
-            <table>
-            	Track Area Height:
-                <select name="displaySelect" id="txLevel">
-                	<option value="150">Small</option>
-                	<option value="350" selected>Normal</option>
-                    <option value="700">Large</option>
-                	<option value="0">No Scrolling</option>
-                </select>
-            </table>
-          </div>
-        
-        <script type="text/javascript">
-			$(document).on("click",".settings",function(){
-					var setting=$(this).attr("id");
-					if(!$("."+setting).is(":visible")){
-						$("."+setting).fadeIn("fast");
-					}else{
-						$("."+setting).fadeOut("fast");
-					}
-					return false;
-				});
-			$(document).on("click",".closeBtn",function(){
-					var setting=new String($(this).attr("id"));
-					setting=setting.substr(6);
-					if($("."+setting).is(":visible")){
-						$("."+setting).fadeOut("fast");
-					}
-					return false;
-				});
-			$("input[name='trackcbx']").change( function(){
-	 			var type=$(this).val();
-				var typeStr=new String(type);
-				var idStr=new String($(this).attr("id"));
-				var prefix=idStr.substr(0,idStr.length-3);
-				var level=typeStr.substr(typeStr.length-1);
-				if($(this).is(":checked")){
-					svgList[level].addTrack(prefix,$("#"+prefix+level+"Select").val());
-					//addTrack(prefix, type,$("#"+prefix+"Select").val());
-				}else{
-					removeTrack();
-				}
-	 		});
-			$("select[name='trackSelect']").change( function(){
-				//var tmp=$(this).parents('[class^="settings"]');
-				//console.log(tmp);
-				//var level=new String (tmp.attr("class"));
-				//console.log(level);
-				//level=level.substr(8);
-				//console.log(level);
-	 			//redraw(level);
-				var idStr=new String($(this).attr("id"));
-				var level=idStr.substr(idStr.length-7,1);
-				console.log(idStr);
-				console.log(level);
-				console.log(svgList[level]);
-				svgList[level].redraw();
-	 		});
-			$("select[name='displaySelect']").change( function(){
-	 			changeTrackHeight($(this).attr("id"),$(this).val());
-	 		});
-		</script>
-        
         
     	<!--<div class="geneimageControl">
       		
@@ -2661,6 +2368,8 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
      <%}%>
 </div><!-- end eQTL List-->
 </div><!--end MainTab-->
+
+
 </div><!-- ends page div -->
 
 
