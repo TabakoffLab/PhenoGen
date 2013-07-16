@@ -33,8 +33,8 @@ function showDiv(jspPage){
 }
 
 function hideDiv(){
-	$('#indexImage svg').attr("width","980px");
-	width=980;
+	$('#indexImage svg').attr("width","660px");
+	width=660;
 	$('div#indexDesc').hide();
 }
 
@@ -248,6 +248,8 @@ function hoverClickNode(d){
 								 }
 							 }else if(d.level==0 && curTime-mouseEnter>80){
 								 hideDiv();
+								 boxLineTop.transition().duration(5).style("stroke-width",0);
+								 boxLineBottom.transition().duration(5).style("stroke-width",0);
 							 }
 }
 
