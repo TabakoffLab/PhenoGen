@@ -423,7 +423,7 @@ var ucscgeneID="";
     </div>
 <script type="text/javascript">
 	//Setup Fancy box for UCSC link
-	$('.fancybox').fancybox({
+	/*$('.fancybox').fancybox({
 		width:$(document).width(),
 		height:$(document).height(),
 		scrollOutside:false,
@@ -431,7 +431,7 @@ var ucscgeneID="";
 			$('body.noPrint').css("margin","5px auto 60px");
 			return;
 		}
-  });
+  });*/
   $('#legendDialog').dialog({
 		autoOpen: false,
 		dialogClass: "legendDialog",
@@ -439,7 +439,7 @@ var ucscgeneID="";
 		height: 380,
 		zIndex: 999
 	});
-  	$('#imageSizeCbx').change( function(){
+  	/*$('#imageSizeCbx').change( function(){
 		if($(this).is(":checked")){
 			var size=$('#imageSizeSelect').val()+"px";
 			$('#geneImage').css({"height":size,"overflow":"auto"});
@@ -456,14 +456,14 @@ var ucscgeneID="";
 			var size=$(this).val()+"px";
 			$('#geneImage').css({"height":size,"overflow":"auto"});
 		}
-	});
+	});*/
 	
 	/*$('.legendBtn').click( function(){
 		$('#legendDialog').dialog( "option", "position",{ my: "left top", at: "left bottom", of: $(this) });
 		$('#legendDialog').dialog("open");
 	});*/
 	
-	$('.Imagetooltip').tooltipster({
+	/*$('.Imagetooltip').tooltipster({
 		position: 'top-right',
 		maxWidth: 250,
 		offsetX: 24,
@@ -471,7 +471,7 @@ var ucscgeneID="";
 		//arrow: false,
 		interactive: true,
    		interactiveTolerance: 350
-	});
+	});*/
 	
 	
 	/*$('.helpImage').click( function(event){

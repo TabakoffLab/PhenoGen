@@ -346,5 +346,72 @@ sub readRNAIsoformDataFromDB{
 	#print "gene name".$geneHOH{Gene}[0]{ID}."\n";
 	return (\%geneHOH);
 }
+
+
+
+
+sub readRNACountsDataFromDB{
+	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;
+	my %countHOH;
+	
+	
+	my $org="Mm";
+	if($organism eq "Rat"){
+		$org="Rn";
+	}
+	# PERL DBI CONNECT
+	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
+	
+	$query ="Select rc.* from rna_counts rc, rna_dataset rd
+			where 
+			rd.organism = '".$org."' "."
+			and rd.user_id= $publicUserID  
+			and rd.visible=0 
+			and rd.strain_panel like '".$panel."' "."
+			and rc.rna_dataset_id= rd.rna_dataset_id
+			and rc.chromosome = '".$geneChrom."'
+			and (rc.chr_start>=$geneStart and rc.chr_start<=$geneStop)";
+			$query=$query." order by rc.chr_start";
+	
+	
+	print $query."\n";		
+	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
+
+# EXECUTE THE QUERY
+	$query_handle->execute() or die ( "RNA Isoform query execute failed \n");
+
+# BIND TABLE COLUMNS TO VARIABLES
+
+	$query_handle->bind_columns(\$dsid ,\$chromosome,\$start,\$end,\$count,\$trCount);
+	my $listCount=0;
+	while($query_handle->fetch()) {
+		if($listCount>0 and $start>$countHOH{Count}[$listCount-2]{start}){
+			$countHOH{Count}[$listCount]{start}=$start-1;
+			$countHOH{Count}[$listCount]{count}=0;
+			$countHOH{Count}[$listCount]{logcount}=0;
+			$listCount++;
+		}elsif($listCount>0 and $start==$countHOH{Count}[$listCount-2]{start}){
+			$listCount--;
+		}
+		$countHOH{Count}[$listCount]{start}=$start;
+		#$countHOH{Count}[$listCount]{end}=$end;
+		$countHOH{Count}[$listCount]{count}=$count;
+		$countHOH{Count}[$listCount]{logcount}=$trCount;
+		$listCount++;
+		
+		$countHOH{Count}[$listCount]{start}=$end;
+		#$countHOH{Count}[$listCount]{end}=$end;
+		$countHOH{Count}[$listCount]{count}=$count;
+		$countHOH{Count}[$listCount]{logcount}=$trCount;
+		$listCount++;
+		
+		$countHOH{Count}[$listCount]{start}=$end+1;
+		$countHOH{Count}[$listCount]{count}=0;
+		$countHOH{Count}[$listCount]{logcount}=0;
+		$listCount++;
+		
+	}
+	return (\%countHOH);
+}
 1;
 

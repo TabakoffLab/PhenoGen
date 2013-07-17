@@ -34,7 +34,7 @@
             	 <TR><TD>
                     <input name="trackcbx" type="checkbox" id="probeCBX" value="Level<%=level%>"  /> 
                     Affymetrix Exon Array Probe Sets:
-                    <select name="trackSelect" id="probeSelect">
+                    <select name="trackSelect" id="probe<%=level%>Select">
                         <option value="1" >Dense</option>
                         <option value="3" selected="selected">Pack</option>
                         <option value="2" >Full</option>
@@ -42,7 +42,7 @@
             	</TD></TR>
                 <TR><TD style=" padding-left:15px;">
                     color by:
-                    <select name="colorSelect" id="probeSelectColor">
+                    <select name="colorSelect" id="probe<%=level%>SelectColor">
                         <option value="annot" selected="selected">Annotation</option>
                         <option value="dabg" >Detection Above Background</option>
                         <option value="herit" >Heritability</option>
@@ -52,7 +52,7 @@
                 <TR><TD>
                     <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="Level<%=level%>" />
                     Affy Exon Probe Sets:
-                    <select name="trackSelect" id="filterprobeSelect">
+                    <select name="trackSelect" id="filterprobe<%=level%>Select">
                         <option value="1" >Dense</option>
                         <option value="3" selected="selected">Pack</option>
                         <option value="2" >Full</option>
@@ -60,7 +60,7 @@
                </TD></TR>
             	<TR><TD style=" padding-left:15px;">
                     filtered by:
-                     <select name="filterSelect" id="filterprobeSelectFilter">
+                     <select name="filterSelect" id="filterprobefilter<%=level%>Select">
                         <option value="annot" selected="selected">Annotation</option>
                         <option value="dabg" >Detection Above Background</option>
                         <option value="herit" >Heritability</option>
@@ -68,7 +68,7 @@
                 </TD></TR>
                 <TR><TD style=" padding-left:15px;">
                     color by:
-                    <select name="colorSelect" id="probeSelectColor">
+                    <select name="colorSelect" id="probecolor<%=level%>Select">
                         <option value="annot" selected="selected">Annotation</option>
                         <option value="dabg" >Detection Above Background</option>
                         <option value="herit" >Heritability</option>
@@ -118,7 +118,7 @@
             <TR>
             <TD >
             <input name="trackcbx" type="checkbox" id="codingCBX" value="Level<%=level%>" checked="checked" /> Protein Coding<%if (myOrganism.equals("Rn")){%>/PolyA+<%}%>
-            <select name="trackSelect" id="coding0Select">
+            <select name="trackSelect" id="coding<%=level%>Select">
             	<option value="1" >Dense</option>
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
@@ -134,8 +134,8 @@
             </TR>
             <TR>
             <TD >
-            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="Level0" checked="checked" />Long Non-Coding<%if (myOrganism.equals("Rn")){%>/NonPolyA+<%}%>
-            <select name="trackSelect" id="noncoding0Select">
+            <input name="trackcbx" type="checkbox" id="noncodingCBX" value="Level<%=level%>" checked="checked" />Long Non-Coding<%if (myOrganism.equals("Rn")){%>/NonPolyA+<%}%>
+            <select name="trackSelect" id="noncoding<%=level%>Select">
             	<option value="1" >Dense</option>
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
@@ -145,8 +145,8 @@
             </TR>
             <TR>
             <TD>
-            <input name="trackcbx" type="checkbox" id="smallncCBX" value="Level0" checked="checked" /> Small RNA 
-            <select name="trackSelect" id="smallnc0Select">
+            <input name="trackcbx" type="checkbox" id="smallncCBX" value="Level<%=level%>" checked="checked" /> Small RNA 
+            <select name="trackSelect" id="smallnc<%=level%>Select">
             	<option value="1" >Dense</option>
                 <option value="3" selected="selected">Pack</option>
                 <option value="2" >Full</option>
@@ -158,7 +158,7 @@
             </table>
             <table>
             	Track Area Height:
-                <select name="displaySelect" id="Level0">
+                <select name="displaySelect" id="Level<%=level%>">
                 	<option value="150">Small</option>
                 	<option value="350" selected>Normal</option>
                     <option value="700">Large</option>
