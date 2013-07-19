@@ -2087,8 +2087,8 @@ public class GeneDataTools {
         }
         if(run){
             log.debug("\ngenerating new-controlled from\n");
-            String qtlQuery="select aep.transcript_cluster_id,c1.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c2.name,s.snp_start,s.snp_end,eq.LOD_SCORE "+
-                                "from affy_exon_probeset aep, location_specific_eqtl lse, snps s, chromosomes c1,chromosomes c2, expression_QTLS eq "+
+            String qtlQuery="select aep.transcript_cluster_id,c1.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c2.name,s.snp_start,s.snp_end "+
+                                "from affy_exon_probeset aep, location_specific_eqtl lse, snps s, chromosomes c1,chromosomes c2 "+
                                 "where c1.name='"+chr+"' "+
                                 "and ((aep.psstart >="+min+" and aep.psstart <="+max+") or (aep.psstop>="+min+" and aep.psstop <="+max+")or (aep.psstop<="+min+" and aep.psstop >="+max+")) "+
                                 "and aep.psannotation = 'transcript' ";
@@ -2104,8 +2104,8 @@ public class GeneDataTools {
                                 "and lse.pvalue >= "+(-Math.log10(pvalue))+" "+
                                 "and aep.chromosome_id=c1.chromosome_id "+
                                 "and s.chromosome_id=c2.chromosome_id "+
-                                "and TO_CHAR(aep.probeset_id)=eq.identifier (+) "+
-                                "and (s.tissue=eq.tissue or eq.tissue is null) "+
+                                //"and TO_CHAR(aep.probeset_id)=eq.identifier (+) "+
+                                //"and (s.tissue=eq.tissue or eq.tissue is null) "+
                                 "order by aep.probeset_id,s.tissue,s.chromosome_id,s.snp_start";
 
             try{
@@ -2135,8 +2135,8 @@ public class GeneDataTools {
                     String marker_chr=rs.getString(10);
                     long marker_start=rs.getLong(11);
                     long marker_end=rs.getLong(12);
-                    double tcLODScore=rs.getDouble(13);
-                    curTC.addEQTL(tissue,pval,marker_name,marker_chr,marker_start,marker_end,tcLODScore);
+                    //double tcLODScore=rs.getDouble(13);
+                    curTC.addEQTL(tissue,pval,marker_name,marker_chr,marker_start,marker_end,0);
                 }
                 if(curTC!=null){
                     transcriptClusters.add(curTC);
