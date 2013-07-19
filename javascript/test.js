@@ -353,9 +353,19 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
       .attr("shape-rendering","crispEdges")
       .call(this.xAxis);
 	
-	d3.select("#Level"+this.levelNumber).select(".x.axis").append("text").text(title).attr("x", ((this.width-(this.margin*2))/2)).attr("y",-40).attr("class","axisLbl");
+	d3.select("#Level"+this.levelNumber).select(".x.axis")
+					.append("text")
+					.text(title)
+					.attr("x", ((this.width-(this.margin*2))/2))
+					.attr("y",-40)
+					.attr("class","axisLbl");
 	
-	this.topLevel=this.topDiv.append("div").attr("id","ScrollLevel"+levelNumber).style("max-height","350px").style("overflow","auto").append("ul").attr("class","sortable");
+	this.topLevel=this.topDiv.append("div")
+					.attr("id","ScrollLevel"+levelNumber)
+					.style("max-height","350px")
+					.style("overflow","auto")
+					.append("ul")
+					.attr("class","sortable"+levelNumber);
 	
 	
 	this.tt=d3.select("body").append("div")   
@@ -364,7 +374,17 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     getAddMenuDiv(levelNumber,this.type);
 	svgList.push(this);
 	
-	  
+	 $( ".sortable"+levelNumber ).sortable({
+      revert: true,
+	  axis: "y"
+    });
+    $( ".draggable"+levelNumber ).draggable({
+      connectToSortable: ".sortable"+levelNumber,
+      scroll: true,
+      helper: "clone",
+      revert: "invalid",
+	  axis: "y"
+    });
 }
 
 
@@ -431,7 +451,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			this.svg = dragDiv.append("svg:svg")
 			.attr("width", this.gsvg.get('width'))
 			.attr("height", 800)
-			.attr("class", "track draggable")
+			.attr("class", "track draggable"+this.gsvg.levelNumber)
 			.attr("id","Level"+this.gsvg.levelNumber+this.trackClass)
 			.attr("pointer-events", "all")
 			.style("cursor", "move")

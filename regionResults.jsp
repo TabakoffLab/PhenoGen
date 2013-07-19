@@ -297,7 +297,7 @@ var ucscgeneID="";
 	
 	
 	
-	$( ".sortable" ).sortable({
+	/*$( ".sortable" ).sortable({
       revert: true,
 	  axis: "y"
     });
@@ -306,7 +306,7 @@ var ucscgeneID="";
       helper: "clone",
       revert: "invalid",
 	  axis: "y"
-    });
+    });*/
 	$( "ul, li" ).disableSelection();
 </script>
             	<!--<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
