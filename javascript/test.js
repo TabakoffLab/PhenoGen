@@ -223,7 +223,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}else if(track=="probe"){
 			d3.xml("tmpData/regionData/"+folderName+"/probe.xml",function (d){
 				var probe=d.documentElement.getElementsByTagName("probe");
-				var newTrack=new ProbeTrack(par,probe,track,"Affy Exon 1.0 ST Probes",density);
+				var newTrack=new ProbeTrack(par,probe,track,"Affy Exon 1.0 ST Probe Sets",density);
 				par.addTrackList(newTrack);
 			});
 		}else if(track=="helicos"){
@@ -432,6 +432,25 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		return tmpY;
 	}.bind(this);
 
+	this.drawLegend = function (legendList){
+		var lblStr=new String(this.label);
+		var x=this.gsvg.width/2+(lblStr.length/2)*7.5+16;
+		for(var i=0;i<legendList.length;i++){
+			this.svg.append("rect")
+				.attr("x",x)
+				.attr("y",0)
+				.attr("rx",3)
+				.attr("ry",3)
+		    	.attr("height",12)
+				.attr("width",16)
+				.attr("fill",legendList[i].color)
+				.attr("stroke",legendList[i].color);
+			lblStr=new String(legendList[i].label);
+			this.svg.append("text").text(lblStr).attr("x",x+18).attr("y",12);
+			x=x+25+lblStr.length*8;
+		}
+	}.bind(this);
+
 
 	this.gsvg=gsvgP;
 	this.data=dataP;
@@ -456,7 +475,9 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			.attr("pointer-events", "all")
 			.style("cursor", "move")
 			.on("mousedown", this.panDown);
-			this.svg.append("text").text(this.label).attr("x",this.gsvg.width/2-20).attr("y",12);
+			//this.svg.append("text").text(this.label).attr("x",this.gsvg.width/2-20).attr("y",12);
+			var lblStr=new String(this.label);
+			this.svg.append("text").text(lblStr).attr("x",this.gsvg.width/2-(lblStr.length/2)*7.5).attr("y",12);
 	}else{
 		this.svg=this.vis[0][0];
 	}
@@ -468,7 +489,7 @@ function GeneTrack(gsvg,data,trackClass,label){
 
 	that.color =function(d){
 		var color=d3.rgb("#000000");
-		if(d.getAttribute("biotype")=="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
+		if(that.trackClass=="coding"){
 			if((new String(d.getAttribute("ID"))).indexOf("ENS")>-1){
 				color=d3.rgb("#DFC184");
 			}else{
@@ -628,6 +649,16 @@ function GeneTrack(gsvg,data,trackClass,label){
 			
 	}.bind(that);
 
+	var legend=[];
+	if(trackClass == "coding"){
+		legend=[{color:"#DFC184",label:"Ensembl"},{color:"#7EB5D6",label:"RNA-Seq"}];
+	}else if(trackClass == "noncoding"){
+		legend=[{color:"#B58AA5",label:"Ensembl"},{color:"#CECFCE",label:"RNA-Seq"}];
+	}else if(trackClass == "smallnc"){
+		legend=[{color:"#FFCC00",label:"Ensembl"},{color:"#99CC99",label:"RNA-Seq"}];
+	}
+	that.drawLegend(legend);
+
 	var gene=that.svg.selectAll(".gene")
 	   			.data(data,key)
 				.attr("transform",function(d){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"))+")";});
@@ -694,7 +725,16 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		return color;
 	}.bind(that);
 	that.createToolTip=function(d){
-		return d.id;
+		var strand=".";
+		if(d.getAttribute("strand") == 1){
+			strand="+";
+		}else if(d.getAttribute("strand")==-1){
+			strand="-";
+		}
+		var len=d.getAttribute("stop")-d.getAttribute("start");
+		var tooltiptext="Affy Probe Set ID: "+d.getAttribute("ID")+"<BR>Strand: "+strand+"<BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+" ("+len+"bp)<BR>";
+		tooltiptext=tooltiptext+"Type: "+d.getAttribute("type");
+		return tooltiptext;
 	}.bind(that);
 
 	that.redraw=function(){
@@ -770,20 +810,14 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		return tmpY;
 	}.bind(that);
 
+	that.update=function (d){
+		that.redraw();
+	}.bind(that);
 
-	/*var probeSvg = levelDiv.append("svg:svg")
-			.attr("width", width)
-			.attr("height", 100)
-			.attr("id",level+"probe")
-			.attr("class","track draggable")
-			.attr("pointer-events", "all")
-			.on("mousedown", that.Pandown)
-			.style("cursor", "move");
-	probeSvg.append("text").text("Affymetrix Exon 1.0 ST Probesets (All Non-masked)").attr("x",width/2-20).attr("y",12);
-	var tmpYArr=new Array();
-	for(var j=0;j<100;j++){
-		tmpYArr[j]=-299999999;
-	}*/
+
+	var legend=[{color:"#FF0000",label:"Core"},{color:"#0000FF",label:"Extended"},{color:"#006400",label:"Full"},{color:"#000000",label:"Ambiguous"}];
+	that.drawLegend(legend);
+
 	//update
 	var probes=that.svg.selectAll(".probe")
    			.data(data,key)
@@ -947,6 +981,10 @@ function SNPTrack(gsvg,data,trackClass,density){
 		tooltip="Type: "+d.getAttribute("type")+"<BR>Strain: "+d.getAttribute("strain")+"<BR>Sequence: "+d.getAttribute("refSeq")+"->"+d.getAttribute("strainSeq")+"<BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop");
 		return tooltip;
 	}.bind(that);
+
+	that.update=function (d){
+		that.redraw();
+	}.bind(that);
 	
 	that.density=density;
 	//update
@@ -954,8 +992,8 @@ function SNPTrack(gsvg,data,trackClass,density){
    			.data(data,key)
 			.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i,2)+")";});
 			
-  	
-			
+  	var legend=[{color:"#0000FF",label:"SNP BN-Lx"},{color:"#FF0000",label:"SNP SHR"},{color:"#000096",label:"Indel BN-Lx"},{color:"#960000",label:"Indel SHR"}];
+	that.drawLegend(legend);		
 	//add new
 	snps.enter().append("g")
 			.attr("class","snp")
@@ -1106,7 +1144,13 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 
 	that.createToolTip= function(d){
 		var tooltip="";
-		tooltip="ID: "+d.getAttribute("ID")+"<BR>Location:"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Strand:"+d.getAttribute("strand");
+		var strand=".";
+		if(d.getAttribute("strand") == 1){
+			strand="+";
+		}else if(d.getAttribute("strand")==-1){
+			strand="-";
+		}
+		tooltip="ID: "+d.getAttribute("ID")+"<BR>Location:"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Strand: "+strand;
 		if(new String(d.getAttribute("ID")).indexOf("ENS")==-1){
 				var annot=getFirstChildByName(getFirstChildByName(d,"annotationList"),"annotation");
 				if(annot!=null){
@@ -1238,6 +1282,8 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 		return (i+1)*15;
 	}
 
+	
+
 	that.txMin=that.gsvg.selectedData.getAttribute("extStart");
 	that.txMax=that.gsvg.selectedData.getAttribute("extStop");
 	that.svg.attr("height", (1+data.length)*15);
@@ -1275,6 +1321,15 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 	
 	
 	 tx.exit().remove();
+	 var legend=[];
+	if(that.gsvg.txType=="protein"){
+		legend=[{color:"#DFC184",label:"Ensembl"},{color:"#7EB5D6",label:"RNA-Seq"}];
+	}else if(that.gsvg.txType=="long"){
+		legend=[{color:"#B58AA5",label:"Ensembl"},{color:"#CECFCE",label:"RNA-Seq"}];
+	}else if(that.gsvg.txType=="small"){
+		legend=[{color:"#FFCC00",label:"Ensembl"},{color:"#99CC99",label:"RNA-Seq"}];
+	}
+	that.drawLegend(legend);
 	 that.scaleSVG.transition()        
 				.duration(300)      
 				.style("opacity", 1);
@@ -1307,6 +1362,10 @@ function HelicosTrack(gsvg,data,trackClass,density){
 		var tooltip="";
 		tooltip="Name: "+d.getAttribute("name")+"<BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Trait:<BR>"+d.getAttribute("trait")+"<BR><BR>Phenotype:<BR>"+d.getAttribute("phenotype")+"<BR><BR>Candidate Genes:<BR>"+d.getAttribute("candidate");
 		return tooltip;
+	}.bind(that);
+
+	that.update=function (d){
+		that.redraw();
 	}.bind(that);
 
 	that.y = d3.scale.linear()

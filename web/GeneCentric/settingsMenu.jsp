@@ -41,15 +41,24 @@
                     </select>
             	</TD></TR>
                 <TR><TD style=" padding-left:15px;">
+                    filtered by:
+                     <select name="filterSelect" id="probe<%=level%>filterSelect">
+                     	<option value="none" selected="selected">None</option>
+                        <option value="annot" >Annotation</option>
+                        <option value="dabg" >Detection Above Background</option>
+                        <option value="herit" >Heritability</option>
+                    </select>
+                </TD></TR>
+                <TR><TD style=" padding-left:15px;">
                     color by:
-                    <select name="colorSelect" id="probe<%=level%>SelectColor">
+                    <select name="colorSelect" id="probe<%=level%>colorSelect">
                         <option value="annot" selected="selected">Annotation</option>
                         <option value="dabg" >Detection Above Background</option>
                         <option value="herit" >Heritability</option>
                     </select>
                     <span class="Imagetooltip" title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
                </TD></TR>
-                <TR><TD>
+                <!--<TR><TD>
                     <input name="trackcbx" type="checkbox" id="filterprobeCBX" value="Level<%=level%>" />
                     Affy Exon Probe Sets:
                     <select name="trackSelect" id="filterprobe<%=level%>Select">
@@ -74,7 +83,7 @@
                         <option value="herit" >Heritability</option>
                     </select>
                     <span class="Imagetooltip" title="The non-masked Affymetrix Exon 1.0 ST probsets detected above background in >1% of samples in each tissue available."><img src="<%=imagesDir%>icons/info.gif"></span>
-                </TD></TR>
+                </TD></TR>-->
             <%}%>
             <%if(myOrganism.equals("Rn")){%>
             <TR>
