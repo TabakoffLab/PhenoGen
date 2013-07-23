@@ -84,6 +84,7 @@ public class GeneDataTools {
     private int usageID=-1;
     private int maxThreadRunning=1;
     String outputDir="";
+    private boolean pathReady=false;
     
     private String  returnGenURL="";
     private String  returnUCSCURL= "";
@@ -112,6 +113,14 @@ public class GeneDataTools {
     public GeneDataTools() {
         log = Logger.getRootLogger();
 
+    }
+    
+    public boolean isPathReady(){
+        return this.pathReady;
+    }
+    
+    public void resetPathReady(){
+        this.pathReady=false;
     }
     
     public int[] getOrganismSpecificIdentifiers(String organism,Connection dbConn){
@@ -328,6 +337,7 @@ public class GeneDataTools {
             String panel,
             String organism,int RNADatasetID,int arrayTypeID,double pValue) {
         
+        
         chromosome=chromosome.toLowerCase();
         
         //Setup a String in the format YYYYMMDDHHMM to append to the folder
@@ -398,6 +408,7 @@ public class GeneDataTools {
                             String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
                             getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
+                            
                         }else{
                             result="Previous Result had errors. Trying again.";
                             generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
@@ -453,6 +464,7 @@ public class GeneDataTools {
             result=(String)session.getAttribute("genURL");
         }
         this.setPublicVariables(error,folderName);
+        this.pathReady=true;
         ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
         //ret=this.mergeOverlapping(ret);
         //ret=this.mergeAnnotatedOverlapping(ret);

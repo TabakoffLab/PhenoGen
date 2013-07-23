@@ -126,9 +126,9 @@ sub mergeByAnnotation{
     $rnaCount=0;
     foreach(@rnaList){
 	my $ens=findEnsembl(\%rnaGenes,$rnaCount);
-	print "aka match".$rnaGenes{Gene}[$rnaCount]{ID}."\t".$ens."\n";
+	#print "aka match".$rnaGenes{Gene}[$rnaCount]{ID}."\t".$ens."\n";
 	if(defined $hm{$ens}){
-	    print "defined\n";
+	    #print "defined\n";
 	    my $tmpGeneIndex=$hm{$ens};
 	    my $tmpGeneArrRef=$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript};
 	    my @tmpGeneTxArr=@$tmpGeneArrRef;
@@ -141,11 +141,11 @@ sub mergeByAnnotation{
 		@trxList=();
 	    };
 	    my $trxCount=0;
-	    print "before mainLen:".$tmpCount." txAdd:".@trxList."\n";
+	    #print "before mainLen:".$tmpCount." txAdd:".@trxList."\n";
 	    my $extStart=$mainGenes{Gene}[$tmpGeneIndex]{start};
 	    my $extStop=$mainGenes{Gene}[$tmpGeneIndex]{stop};
 	    foreach(@trxList){
-		print "loop:$trxCount\n";
+		#print "loop:$trxCount\n";
 		$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript}[$tmpCount]=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount];
 		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start}<$extStart){
 		    $extStart=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start};
