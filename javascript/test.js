@@ -122,7 +122,6 @@ function mmove(){
 }
 
 function updatePage(topSVG){
-	
 	var min=topSVG.xScale.domain()[0];
 	var max=topSVG.xScale.domain()[1];
 	console.log("new:"+min+"-"+max);
@@ -139,7 +138,7 @@ function updatePage(topSVG){
 		$.ajax({
 				url: "web/GeneCentric/updateRegion.jsp",
    				type: 'GET',
-				data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
+				data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,fullminCoord:min,fullmaxCoord:max,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
 				dataType: 'json',
     			success: function(data2){ 
         			console.log(data2);
@@ -236,7 +235,45 @@ function keyName(d) {return d.getAttribute("name");};
 //SVG functions
 function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	this.get=function(attr){return this[attr];}.bind(this);
+	/*this.addTrack=function(track,density){
+		$.ajax({
+				url: "web/GeneCentric/getFullPath.jsp",
+   				type: 'GET',
+   				async: false,
+				data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
+				dataType: 'json',
+    			success: function(data2){ 
+        			console.log(data2);
+        			folderName=data2.folderName;
+        			console.log("foldername:"+folderName);
+        			this.addTrackPart2(track,density);
+    			}.bind(this),
+    			error: function(xhr, status, error) {
+        			console.log(error);
+    			}
+			});
+	}.bind(this);*/
 	this.addTrack=function (track,density){
+		var folderStr=new String(folderName);
+		if(folderStr.indexOf("_"+this.xScale.domain()[0]+"_")<0 || folderStr.indexOf("_"+this.xScale.domain()[1]+"_")<0){
+			//update folderName because it doesn't match the current range.  This folder should exist, but getFullPath.jsp will call methods to generate if needed
+			$.ajax({
+					url: "web/GeneCentric/getFullPath.jsp",
+	   				type: 'GET',
+	   				async: false,
+					data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
+					dataType: 'json',
+	    			success: function(data2){ 
+	        			//console.log(data2);
+	        			folderName=data2.folderName;
+	        			//console.log("foldername:"+folderName);
+	        			//this.addTrackPart2(track,density);
+	    			}.bind(this),
+	    			error: function(xhr, status, error) {
+	        			console.log(error);
+	    			}
+				});
+		}
 		var newTrack=null;
 		var par=this;
 		if(track=="coding"){
@@ -293,6 +330,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		if(newTrack!=null){
 				this.trackList[this.trackCount]=newTrack;
 				this.trackCount++;
+				regionReport();
 		}
 	}.bind(this);
 	this.changeTrackHeight = function (level,val){
@@ -332,6 +370,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			if(this.trackList[i].updateData!=undefined){
 				//console.log("not undef");
 				this.trackList[i].updateData();
+				regionReport();
 			}
 		}
 	}.bind(this);
@@ -430,6 +469,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     .attr("class", "scale")
 	.attr("pointer-events", "all")
 	.on("mousedown", this.mdown)
+	.on("mouseup",mup)
 	.style("cursor", "ew-resize");
 	
 	this.scaleSVG.append("g")
@@ -808,6 +848,10 @@ function GeneTrack(gsvg,data,trackClass,label){
 			
 	}.bind(that);
 
+	that.getData= function (){
+		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene");
+		return dataElem;
+	}.bind(that);
 
 	that.updateData=function(){
 		var tag="Gene";
@@ -820,8 +864,8 @@ function GeneTrack(gsvg,data,trackClass,label){
 		}
 		d3.xml(path,function (d){
 				var data=d.documentElement.getElementsByTagName(tag);
-				that.hideLoading();
 				that.draw(data);
+				that.hideLoading();
 				
 			});
 	}.bind(that);
@@ -1202,6 +1246,11 @@ function SNPTrack(gsvg,data,trackClass,density){
 			});
 	}.bind(that);
 
+	that.getData= function (){
+		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".snp");
+		return dataElem;
+	}.bind(that);
+
 	that.draw= function (data){
 		for(var j=0;j<that.yArr.length;j++){
 				that.yArr[j]=-299999999;
@@ -1303,6 +1352,11 @@ function QTLTrack(gsvg,data,trackClass,density){
 		var tooltip="";
 		tooltip="Name: "+d.getAttribute("name")+"<BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Trait:<BR>"+d.getAttribute("trait")+"<BR><BR>Phenotype:<BR>"+d.getAttribute("phenotype")+"<BR><BR>Candidate Genes:<BR>"+d.getAttribute("candidate");
 		return tooltip;
+	}.bind(that);
+
+	that.getData= function (){
+		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".qtl");
+		return dataElem;
 	}.bind(that);
 
 	//update

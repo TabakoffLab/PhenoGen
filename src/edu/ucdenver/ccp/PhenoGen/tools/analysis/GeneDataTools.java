@@ -465,6 +465,7 @@ public class GeneDataTools {
         }
         this.setPublicVariables(error,folderName);
         this.pathReady=true;
+        
         ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
         //ret=this.mergeOverlapping(ret);
         //ret=this.mergeAnnotatedOverlapping(ret);
@@ -502,6 +503,116 @@ public class GeneDataTools {
             log.error("Error saving Transcription Detail Usage",e);
         }
         return ret;
+    }
+    
+    public String getImageRegionData(String chromosome,int minCoord,int maxCoord,
+            String panel,String organism,int RNADatasetID,int arrayTypeID,double pValue,boolean img) {
+        
+        
+        chromosome=chromosome.toLowerCase();
+        
+        //Setup a String in the format YYYYMMDDHHMM to append to the folder
+        Date start = new Date();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(start);
+        String datePart=Integer.toString(gc.get(gc.MONTH)+1)+
+                Integer.toString(gc.get(gc.DAY_OF_MONTH))+
+                Integer.toString(gc.get(gc.YEAR))+"_"+
+                Integer.toString(gc.get(gc.HOUR_OF_DAY))+
+                Integer.toString(gc.get(gc.MINUTE))+
+                Integer.toString(gc.get(gc.SECOND));
+        String rOutputPath = "";
+        outputDir="";
+        String result="";
+        this.minCoord=minCoord;
+        this.maxCoord=maxCoord;
+        this.chrom=chromosome;
+        String inputID=organism+":"+chromosome+":"+minCoord+"-"+maxCoord;
+        String imgStr="img";
+        if(!img){
+            imgStr="";
+        }
+        
+        //EnsemblIDList can be a comma separated list break up the list
+        boolean error=false;
+
+            //Define output directory
+            outputDir = fullPath + "tmpData/regionData/"+imgStr +organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart + "/";
+            //session.setAttribute("geneCentricPath", outputDir);
+            log.debug("checking for path:"+outputDir);
+            String folderName = organism+chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart;
+            //String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
+            //publicPath = publicPath.substring(0, publicPath.indexOf("/Affy.NormVer.h5"));
+            RegionDirFilter rdf=new RegionDirFilter(imgStr+organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_");
+            File mainDir=new File(fullPath + "tmpData/regionData");
+            File[] list=mainDir.listFiles(rdf);
+            try {
+                File geneDir=new File(outputDir);
+                File errorFile=new File(outputDir+"errMsg.txt");
+                if(geneDir.exists()){
+                        //do nothing just need to set session var
+                        String errors;
+                        errors = loadErrorMessage();
+                        if(errors.equals("")){
+                            //String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            //getUCSCUrl(results[1].replaceFirst(".png", ".url"));
+                            result="cache hit files not generated";
+                            
+                        }else{
+                            result="Previous Result had errors. Trying again.";
+                            generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                            
+                            //error=true;
+                            //this.setError(errors);
+                        }
+                }else{
+                    if(list.length>0){
+                        outputDir=list[0].getAbsolutePath()+"/";
+                        int second=outputDir.lastIndexOf("/",outputDir.length()-2);
+                        folderName=outputDir.substring(second+1,outputDir.length()-1);
+                        String errors;
+                        errors = loadErrorMessage();
+                        if(errors.equals("")){
+                            //String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            //getUCSCUrl(results[1].replaceFirst(".png", ".url"));
+                            //result="cache hit files not generated";
+                        }else{
+                            result="Previous Result had errors. Trying again.";
+                            generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                            
+                            //error=true;
+                            //this.setError(errors);
+                        }
+                    }else{
+                        generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                        result="New Region generated successfully";
+                    }
+                }
+                
+                
+            } catch (Exception e) {
+                error=true;
+                
+                log.error("In Exception getting Gene Centric Results", e);
+                Email myAdminEmail = new Email();
+                String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+                myAdminEmail.setSubject("Exception thrown getting Gene Centric Results");
+                myAdminEmail.setContent("There was an error while getting gene centric results.\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+            }
+        if(error){
+            result=(String)session.getAttribute("genURL");
+        }
+        return outputDir;
     }
 
     public void getRegionGeneView(String chromosome,int minCoord,int maxCoord,
@@ -701,7 +812,7 @@ public class GeneDataTools {
         boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,arrayTypeID,RNADatasetID);
         
         
-        if(!createdXML){ 
+        /*if(!createdXML){ 
             
         }else{
             //String[] url=this.createImage("default",organism,outputDir,chrom,minCoord,maxCoord);
@@ -713,8 +824,8 @@ public class GeneDataTools {
             //if(!ucscComplete){
             //       completedSuccessfully=false;
             //}
-        }
-        return completedSuccessfully;
+        }*/
+        return createdXML;
     }
     
     public boolean generateRegionViewFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID,String defaultTrack) {

@@ -12,9 +12,7 @@
 --%>
 
 <%@ page language="java"
-        import="java.util.GregorianCalendar"
-		import="java.util.Date"
-		import="org.json.*" %>
+import="org.json.*" %>
 
 <%@ include file="/web/common/session_vars.jsp"  %>
 
@@ -23,7 +21,7 @@
 
 <%
 String chromosome="",panel="",myOrganism="Rn";
-int min=0,max=0,rnaDatasetID=0,arrayTypeID=0,fullMin=0,fullMax=0;
+int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 double forwardPValueCutoff=0;
 if(request.getParameter("chromosome")!=null){
 		chromosome=request.getParameter("chromosome").trim();
@@ -38,20 +36,6 @@ if(request.getParameter("minCoord")!=null){
 if(request.getParameter("maxCoord")!=null){
 	try{
 		max=Integer.parseInt(request.getParameter("maxCoord").trim());
-	}catch(NumberFormatException e){
-		log.error("Number format exception:Max\n",e);
-	}
-}
-if(request.getParameter("fullminCoord")!=null){
-	try{
-		fullMin=Integer.parseInt(request.getParameter("fullminCoord").trim());
-	}catch(NumberFormatException e){
-		log.error("Number format exception:Min\n",e);
-	}
-}
-if(request.getParameter("fullmaxCoord")!=null){
-	try{
-		fullMax=Integer.parseInt(request.getParameter("fullmaxCoord").trim());
 	}catch(NumberFormatException e){
 		log.error("Number format exception:Max\n",e);
 	}
@@ -87,30 +71,14 @@ if(request.getParameter("forwardPValueCutoff")!=null){
 
 
 <% 
-	AsyncGeneDataThread agdt=new AsyncGeneDataThread(session,gdt,chromosome,min,max,fullMin,fullMax,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff);
-	agdt.start();
-	Date start=new Date();
-	Date cur=new Date();
-	long elapsed=0;
-	while(!agdt.isPathReady()&&elapsed<300000){
-		try{
-			agdt.join(1000);
-		}catch(InterruptedException e){
-		}
-		cur=new Date();
-		elapsed=cur.getTime()-start.getTime();
-	}
-	String tmpOutput=agdt.getPath();
+	String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);
 	int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
-	String foldername=tmpOutput.substring(startInd,tmpOutput.length()-1);
-	
-	
+	String foldername=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
 	JSONObject genejson;
 	genejson = new JSONObject();
     genejson.put("folderName" , foldername);
 	response.setContentType("application/json");
 	response.getWriter().write(genejson.toString());
-
 %>
 
 
