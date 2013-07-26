@@ -159,6 +159,7 @@ public class DSFilterStat {
             ResultSet rs = ps.executeQuery();
             
             while(rs.next()){
+                
                 DSFilterStat tmps=new DSFilterStat();
                 tmps.setAnalysisType(rs.getString("ANALYSIS_TYPE"));
                 tmps.setDSFilterStatID(rs.getInt("DS_FILTER_STATS_ID"));
@@ -197,8 +198,9 @@ public class DSFilterStat {
             ps.setString(5, filterTime);
             
             ResultSet rs = ps.executeQuery();
-            
+            //log.debug("Get DSFS by date and time:"+filterDate+"_"+filterTime);
             if(rs.next()){
+                //log.debug("ID:"+rs.getInt("DS_FILTER_STATS_ID"));
                 DSFilterStat tmps=new DSFilterStat();
                 tmps.setAnalysisType(rs.getString("ANALYSIS_TYPE"));
                 tmps.setDSFilterStatID(rs.getInt("DS_FILTER_STATS_ID"));
