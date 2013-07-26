@@ -18,17 +18,28 @@ function setupPage() {
 	//$("table[id='privateDatasets']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortUp");
 
 	var tableRows = getRows();
-	stripeAndHoverTable( tableRows );
+	//stripeAndHoverTable( tableRows );
+	stripeTable( tableRows );
 	//clickRadioButton();
 
+	$('span.specific').click(function(){
+		var listItemId = $(this).parent("td").parent("tr").attr("id");
+        $("input[name='dsFilterStatID']").val( listItemId );
+
+		var step=$(this).attr("id");
+		$("input[name='specificStep']").val( step );
+		
+		document.tableList.submit();
+	});
+
 	// setup click for Dataset row item
-	tableRows.each(function(){
+	/*tableRows.each(function(){
         	//---> click functionality
         	$(this).find("td").slice(0,6).click( function() {
             		var listItemId = $(this).parent("tr").attr("id");
             		$("input[name='dsFilterStatID']").val( listItemId );
             		document.tableList.submit();
-        	});
+        	});*/
 
         	/*$(this).find("td.details").click( function() {
             		var datasetID = $(this).parent("tr").attr("id");
@@ -39,11 +50,11 @@ function setupPage() {
                     			itemDetails.dialog("open").html(data);
 					closeDialog(itemDetails);
                 		});
-        	});*/
+        	});
 
         	//---> center text 
         	$(this).find("td").slice(1,9).css({"text-align" : "center"});
-	});
+	});*/
 
 	setupDeleteButton(contextPath + "/web/datasets/deleteFilterStat.jsp"); 
 	setupExtendButton(contextPath + "/web/datasets/extendFilterStat.jsp");

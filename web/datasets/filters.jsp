@@ -523,9 +523,13 @@
 				log.debug("beginning of first time");
 						String verFDate=(String)session.getAttribute("verFilterDate");
                 		String verFTime=(String)session.getAttribute("verFilterTime");
-						int fsID=selectedDatasetVersion.createFilterStats(verFDate,verFTime,analysisType,userLoggedIn.getUser_id(),dbConn);
-						DSFilterStat tmp=selectedDatasetVersion.getFilterStat(fsID,userLoggedIn.getUser_id(),dbConn);
-						tmp.addFilterStep("Not Filtered","Not Filtered",tmpnumprobe,1,0,0,dbConn);
+						DSFilterStat tmpDS=new DSFilterStat();
+						DSFilterStat dsfs = tmpDS.getFilterStatFromDB(selectedDataset.getDataset_id(), selectedDatasetVersion.getVersion(), userLoggedIn.getUser_id(), verFDate, verFTime, dbConn);
+						if(dsfs.getDSFilterStatID()==0){
+							int fsID=selectedDatasetVersion.createFilterStats(verFDate,verFTime,analysisType,userLoggedIn.getUser_id(),dbConn);
+							DSFilterStat tmp=selectedDatasetVersion.getFilterStat(fsID,userLoggedIn.getUser_id(),dbConn);
+							tmp.addFilterStep("Not Filtered","Not Filtered",tmpnumprobe,1,0,0,dbConn);
+						}
 			}
 			if (!analysisType.equals("cluster")) {
                 	response.sendRedirect(datasetsDir + "statistics.jsp" + 

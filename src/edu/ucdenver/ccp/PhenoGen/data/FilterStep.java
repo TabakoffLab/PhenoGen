@@ -67,7 +67,7 @@ public class FilterStep {
             while(rs.next()){
                 FilterStep tmps=new FilterStep();
                 tmps.setFilterName(rs.getString("FILTER_NAME"));
-                tmps.setFilterParameter("FILTER_PARAMETERS");
+                tmps.setFilterParameter(rs.getString("FILTER_PARAMETERS"));
                 tmps.setStepNumber(rs.getInt("STEP_NUMBER"));
                 tmps.setStepCount(rs.getInt("STEP_COUNT"));
                 steps.add(tmps);

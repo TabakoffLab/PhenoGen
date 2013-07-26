@@ -222,11 +222,28 @@ public class Statistic {
                         if(value.contains(",")){
                             String[] values=value.split(",");
                             query=query+values[0]+", "+values[1]+", -1";
-                            Parameter=Parameter+"Group1="+values[0]+"  Group2="+values[1];
+                            int v1=Integer.parseInt(values[0]);
+                            int v2=Integer.parseInt(values[1]);
+                            String pa1="present";
+                            String pa2="present";
+                            if(v1<0){
+                                pa1="absent";
+                                v1=Math.abs(v1);
+                            }
+                            if(v2<0){
+                                pa2="absent";
+                                v2=Math.abs(v2);
+                            }
+                            Parameter=Parameter+"Group1 "+pa1+" >= "+v1+"  Group2 "+pa2+" >= "+v2;
                         }else{
                             double tmp=Double.parseDouble(value);
                             query=query+"-1, -1, "+tmp*100;
-                            Parameter=Parameter+" >"+tmp*100+"%";
+                            String pa="present";
+                            double tmp2=Math.abs(tmp);
+                            if(tmp<0){
+                                pa="absent";
+                            }
+                            Parameter=Parameter+" "+pa+" >="+tmp2*100+"%";
                         }
                         query=query+") }";
                         log.debug("DABG filter call:"+query);
@@ -240,6 +257,7 @@ public class Statistic {
                     try {
                         String query = "{call filter.heritability(" + dsID + "," + v + "," + userID +","+parameter2+",'"+parameter1+"') }";
                         log.debug("herit call: "+query);
+                        Parameter=Parameter+parameter1+" >="+parameter2;
                         CallableStatement cs = dbConn.prepareCall(query);
                         cs.execute();
                         cs.close();
@@ -818,10 +836,11 @@ public class Statistic {
             long cutOff=5000000;
             boolean async=false;
             log.debug("in callCorrelationStatistics");
-                int v=Integer.parseInt(version.substring(1));
-                String verFDate=(String)session.getAttribute("verFilterDate");
-                String verFTime=(String)session.getAttribute("verFilterTime");
-                version=version+"/"+verFDate+"/"+verFTime;
+            int v=Integer.parseInt(version.substring(1));
+            String verFDate=(String)session.getAttribute("verFilterDate");
+            String verFTime=(String)session.getAttribute("verFilterTime");
+            version=version+"/"+verFDate+"/"+verFTime;
+            //log.debug("Correlation Version:"+version);
 
                 if (platform.equals(new Dataset().AFFYMETRIX_PLATFORM) ||
                         platform.equals(new Dataset().CODELINK_PLATFORM))  {
@@ -875,7 +894,7 @@ public class Statistic {
                     DSFilterStat tmp = new DSFilterStat();
                     User userLoggedIn = (User) session.getAttribute("userLoggedIn");
                     dsfs = tmp.getFilterStatFromDB(myDataset.getDataset_id(), v, userLoggedIn.getUser_id(), verFDate, verFTime, dbConn);
-                    System.out.println("final ID:" + dsfs.getDSFilterStatID());
+                    log.debug("final ID:" + dsfs.getDSFilterStatID());
                     dsfs.addStatsStep("Statistics: Correlation", params, -1, 1, 0, dbConn);
                 }
 		log.debug("functionArgs = "); myDebugger.print(functionArgs);
@@ -1152,6 +1171,7 @@ public class Statistic {
                         param = param + ",";
                     }
                 }
+                //log.debug("Before .h5 specific");
                 if(inputFileName.endsWith(".h5")){
                             rFunction="multipleTest.HDF5";
                             functionArgs[6] = "VersionPath = '" + version + "'";
@@ -1162,6 +1182,7 @@ public class Statistic {
                             
                             dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,-1,2,0,dbConn);
                 }
+                //log.debug("after .h5 specific");
 		log.debug("functionArgs = "); myDebugger.print(functionArgs);
 		try {
 			rErrorMsg = myR_session.callR(this.getRFunctionDir(), rFunction, functionArgs, analysisPath, -99);
