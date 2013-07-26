@@ -25,7 +25,7 @@
     			(selectedGeneList.getDatasetVersion().getNumber_of_groups() == 2 &&
 			(selectedGeneList.getStatisticalMethod().equals("parametric") ||
 			selectedGeneList.getStatisticalMethod().equals("nonparametric")))) &&
-    			selectedGeneList.getNumber_of_genes() < 1000 
+    			selectedGeneList.getNumber_of_genes() < 5000 
 
 		) { %> 
         		<div id="pathway" class="single" data-landingPage="pathwayTab"><span>Pathway</span></div>

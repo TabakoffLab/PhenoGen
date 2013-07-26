@@ -105,8 +105,9 @@
                 <input type="hidden" name="datasetID" value="<%=selectedDataset.getDataset_id()%>" />
                 <input type="hidden" name="itemIDString" value=""/>
                 <input type="hidden" name="dsFilterStatID" value=""/>
+                <input type="hidden" name="specificStep" value=""/>
                 <h3>Go To Previous Analysis:</h3><BR />
-                <table name="items" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="95%">
+                <table name="items" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="95%" style="text-align:center;">
                 <thead>
                 <tr>
                 <th colspan="1" class="topLine noSort noBox">&nbsp;</th>
@@ -143,41 +144,76 @@
 							if(tmpSG!=null){
                             	tmpSSteps=tmpSG.getStatsSteps();
 							}
-                        %>
-                        <tr id=<%= dsfs[j].getDSFilterStatID()%>>
-                            <td><%= dsfs[j].getCreateDate()%></td>
-                            <td>
-                            <% if(tmpFSteps!=null&&tmpFSteps.length>0){ 
-								for(int i=0;i<tmpFSteps.length;i++){%>
-                                 	Step <%= tmpFSteps[i].getStepNumber()%>: <%= tmpFSteps[i].getFilterName()%><BR />
-                            	<%}
-							}else{%>
-                            	Not Yet Performed
-                            <%}%>
-                            </td>
-                            <td><%if(tmpFG!=null){%>
-							<%=tmpFG.getLastCount() %>
-                            <%}%>
-                            </td>
-                            <td>
-                            <% if(tmpSSteps!=null&&tmpSSteps.length>0){
-								for(int i=0;i<tmpSSteps.length;i++){%>
-                                 Step <%= tmpSSteps[i].getStepNumber()%>: <%= tmpSSteps[i].getStatsName()%> (<%= tmpSSteps[i].getShortParam()%>)<BR />
-                            	<%}
-							}else{%>
-                            	Not Yet Performed
-							<%}%>
-                            
-                            </td>
-                            <td><%=dsfs[j].getStatsGroup().getStatusString() %></td>
-                            <td><%=(dsfs[j].getStatsGroup().getLastCount()==-1) ? (dsfs[j].getAnalysisTypeShort().equals("cluster"))? "N/A": "" :dsfs[j].getStatsGroup().getLastCount()  %></td>
-                            <td><%=dsfs[j].getAnalysisType() %></td>
-                            <td><div class="expiration"><%=dsfs[j].getExpirationDate().toString() %> <img src="<%=imagesDir%>icons/add.png"></div></td>
-                            <td class="actionIcons">
-                            <div class="linkedImg delete"></div>
-                        </td>
-                        </tr>
-                    <%}	
+                        	if((tmpFSteps==null||(tmpFSteps!=null&&tmpFSteps.length==0)||(tmpFSteps.length==1&&tmpFSteps[0].getFilterName().equals("Not Filtered")))&&(tmpSSteps==null || (tmpSSteps!=null && tmpSSteps.length==0))){%>
+                            <%}else{%>
+                                <tr id=<%= dsfs[j].getDSFilterStatID()%>>
+                                    <td><%= dsfs[j].getCreateDate()%></td>
+                                    <td>
+                                    <% if(tmpFSteps!=null&&tmpFSteps.length>0){ 
+                                        for(int i=0;i<tmpFSteps.length;i++){
+											if(i>0){%>
+                                            <BR /><BR />
+                                            <%}%>
+                                            Step <%= tmpFSteps[i].getStepNumber()%>: <%= tmpFSteps[i].getFilterName()%>
+                                            <%if(tmpFSteps[i].getFilterParameter()!=null && !tmpFSteps[i].getFilterParameter().equals("")){%>
+                                            	<BR /><%=tmpFSteps[i].getFilterParameter()%>
+                                            <%}%>
+                                        <%}
+                                    }else{%>
+                                        Not Yet Performed
+                                    <%}%>
+                                    </td>
+                                    <td><%if(tmpFG!=null){%>
+                                    <%=tmpFG.getLastCount() %>
+                                    <%}%>
+                                    </td>
+                                    <td>
+                                    <% if(tmpSSteps!=null&&tmpSSteps.length>0){
+                                        for(int i=0;i<tmpSSteps.length;i++){%>
+                                         Step <%= tmpSSteps[i].getStepNumber()%>: <%= tmpSSteps[i].getStatsName()%> (<%= tmpSSteps[i].getShortParam()%>)<BR /><BR />
+                                        <%}
+                                        if((dsfs[j].getAnalysisType().equals("Differential Expression")||dsfs[j].getAnalysisType().equals("Correlation"))
+                                        && tmpSSteps!=null &&tmpSSteps.length==1){
+                                        	if(dsfs[j].getStatsGroup().getStatusString().equals("Done")){%>
+                                            	Step 2: <span id="multtest" class="specific"><a href="#">Run Multiple Testing Correction</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Continue analysis with multiple testing correction.">
+                                            <%}%>
+                                        <%}else if(dsfs[j].getAnalysisType().equals("Clustering") && tmpSSteps!=null &&tmpSSteps.length==1){
+											if(dsfs[j].getStatsGroup().getStatusString().equals("Done")){%>
+                                        	<span id="cluster" class="specific"><a href="#">Save Results or Rerun Clustering</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Click to rerun and save clusters."><BR /><BR />
+                                            <span id="clusterResults" class="specific"><a href="#">Review Cluster Results</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Click to Review Cluster Results.">
+                                            <%}
+                                        }
+                                    }else{
+                                        if((dsfs[j].getAnalysisType().equals("Differential Expression")||dsfs[j].getAnalysisType().equals("Correlation"))
+                                        && (tmpSSteps==null || tmpSSteps.length==0) && tmpFSteps!=null &&tmpFSteps.length>0 ){
+											if(dsfs[j].getAnalysisType().equals("Differential Expression")){%>
+                                            Step 1: <span id="stats" class="specific"><a href="#">Run Statistics</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Continue analysis with statistics.">
+                                            <%}else if(dsfs[j].getAnalysisType().equals("Correlation")){%>
+                                            Step 1: <span id="statscorr" class="specific"><a href="#">Run Statistics</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Continue analysis with statistics.">
+                                            <%}%>
+                                        <%}else if(dsfs[j].getAnalysisType().equals("Clustering") && (tmpSSteps==null || tmpSSteps.length==0) && tmpFSteps!=null &&tmpFSteps.length>0 ){%>
+                                        	Step 1: <span id="cluster" class="specific"><a href="#">Run Clustering</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Continue analysis with clustering.">
+										<%}else{%>
+                                            Not Yet Performed
+                                        <%}%>
+                                    <%}%>
+                                    <%if((dsfs[j].getAnalysisType().equals("Differential Expression")||dsfs[j].getAnalysisType().equals("Correlation"))
+                                        && tmpSSteps!=null &&tmpSSteps.length==2){%>
+                                        <span id="genelist" class="specific"><a href="#">Save Gene List as ...</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Allows you to return and save a gene list in case you couldn't after multiple testing or if you just want to save it again."><BR /><BR />
+                                        <span id="multtest" class="specific"><a href="#">Rerun Multiple Testing Correction</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Allows you to rerun Multiple Testing Correction with a new P-value Cut-off and then save a new Gene List.">
+                                    <%}%>
+                                    
+                                    </td>
+                                    <td><%=dsfs[j].getStatsGroup().getStatusString() %></td>
+                                    <td><%=(dsfs[j].getStatsGroup().getLastCount()==-1) ? (dsfs[j].getAnalysisTypeShort().equals("cluster"))? "N/A": "" :dsfs[j].getStatsGroup().getLastCount()  %></td>
+                                    <td><%=dsfs[j].getAnalysisType() %></td>
+                                    <td><div class="expiration"><%=dsfs[j].getExpirationDate().toString() %> <img src="<%=imagesDir%>icons/add.png"></div></td>
+                                    <td class="actionIcons">
+                                    <div class="linkedImg delete"></div>
+                                </td>
+                                </tr>
+                    	<%}
+						}	
                     } else { 
                     %> <tr><td colspan="9" class="center"><h2>There are no Filter/Statistics results for this dataset</h2></td></tr>
                     <% } %>

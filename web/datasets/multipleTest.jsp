@@ -49,10 +49,11 @@
 	fieldNames.add("testTypeDiv_parameter2");
 	fieldNames.add("testTypeDiv_parameter3");
 	fieldNames.add("storey_parameter2");
+	fieldNames.add("stat_method");
 
 	%><%@ include file="/web/common/getFieldValues.jsp" %><%
 
-	fieldValues.put("stat_method", (String) session.getAttribute("stat_method"));
+	//fieldValues.put("stat_method", (String) session.getAttribute("stat_method"));
 	// Put the field values into variables for those that are referenced more than once
 	String mt_method = (String) fieldValues.get("mt_method");
 	String stat_method = (String) fieldValues.get("stat_method");
@@ -102,7 +103,7 @@
 			}
 		}
 		
-
+		log.debug("before param creation");
 		if (!stat_method.equals("Noise distribution t-test")) {
 			log.debug("after call to Statistics."); 
                 	Hashtable mtParameters = myStatistic.setMTParameters(fieldValues);
