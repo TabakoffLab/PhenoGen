@@ -16,6 +16,11 @@ var ucsctype="region";
 var ucscgeneID="";
 </script>
 
+<style>
+	div#collaspableReport a{
+	text-decoration:underline;
+	}
+</style>
 
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
 
@@ -325,6 +330,13 @@ var ucscgeneID="";
             
     </div>
     <div id="collaspableReport">
+    	<div id="list" style=" text-align:left; border:thin;">
+        <span style="color:#000000; font-weight:bold;">Track Information:</span>
+    	<UL id="collaspableReportList">
+        </UL>
+        </div>
+        <div id="content">
+        </div>
     </div>
 	
 

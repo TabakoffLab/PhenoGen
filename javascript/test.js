@@ -330,7 +330,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		if(newTrack!=null){
 				this.trackList[this.trackCount]=newTrack;
 				this.trackCount++;
-				regionReport();
+				DisplayRegionReport();
 		}
 	}.bind(this);
 	this.changeTrackHeight = function (level,val){
@@ -362,6 +362,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				this.trackList[i].update();
 			}
 		}
+		DisplayRegionReport();
 	}.bind(this);
 
 	this.updateData=function (){
@@ -370,9 +371,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			if(this.trackList[i].updateData!=undefined){
 				//console.log("not undef");
 				this.trackList[i].updateData();
-				regionReport();
 			}
 		}
+		DisplayRegionReport();
 	}.bind(this);
 
 	this.setLoading=function (){
@@ -923,6 +924,46 @@ function GeneTrack(gsvg,data,trackClass,label){
 				tmpYMax=j;
 			}
 		}*/
+	}.bind(that);
+
+	that.displayBreakDown=function(divSelector){
+		var counts=[{value:0,name:"Ensembl"},{value:0,name:"RNA-Seq"}];
+		//counts.value=[0,0];
+		//counts.name=["Ensembl","RNA-Seq"];
+		console.log(counts);
+		for(var l=0;l<that.data.length;l++){
+			if((new String(data[l].getAttribute("ID"))).indexOf("ENS")>-1){
+				counts[0].value++;
+			}else{
+				counts[1].value++;
+			}
+		}
+		//counts[1].value=counts[1].value+counts[0].value;
+		var tmpW= 300,tmpH = 300,radius = Math.min(tmpW, tmpH) / 2;
+
+		var arc = d3.svg.arc()
+    		.outerRadius(radius - 10)
+    		.innerRadius(0);
+
+		var pie = d3.layout.pie()
+    		.sort(null)
+    		.value(function(d) { return d.value; });
+
+    	var svg = d3.select(divSelector).append("svg")
+		//var svg = d3.select("div#collaspableReport").select("div#content").append("svg")
+    		.attr("width", tmpW)
+    		.attr("height", tmpH)
+  			.append("g")
+    		.attr("transform", "translate(" + tmpW / 2 + "," + tmpH / 2 + ")");
+
+    	var g = svg.selectAll(".arc")
+      		.data(pie(counts))
+    		.enter().append("g")
+      		.attr("class", "arc");
+      	g.append("path")
+      		.attr("d", arc)
+      		.style("fill", function(d,i) { var color="#DFC184"; if(i==1){ color="#7EB5D6"} return color; });
+		
 	}.bind(that);
 
 	var legend=[];

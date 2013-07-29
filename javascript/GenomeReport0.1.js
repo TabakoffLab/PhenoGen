@@ -1,13 +1,24 @@
-function regionReport(){
-	d3.select('#collaspableReport').selectAll('div').remove();
+
+function DisplayRegionReport(){
+	d3.select('#collaspableReportList').selectAll('li').remove();
 	var tmptrackList=svgList[0].trackList;
-	console.log("region Report");
-	console.log(svgList[0]);
-	console.log(svgList[0].trackCount);
-	console.log(svgList[0].trackList);
 	for(var l=0;l<tmptrackList.length;l++){
-		data=tmptrackList[l].getData();
-		console.log(data);
-		d3.select('#collaspableReport').append("div").html(tmptrackList[l].label+":"+data[0].length+"<BR>");
+		displayTrackReport(tmptrackList[l]);
+	}
+	//displayBQTLReport(loadBQTLs());
+	//displayGeneEQTLReport(loadGeneEQTLs());
+}
+
+
+function displayTrackReport(track){
+	var data=track.getData();
+	console.log(data);
+	d3.select('#collaspableReportList').append("li").html(track.label+": "+data[0].length).on("click",displayDetailedView(track));
+}
+
+
+function displayDetailedView(track){
+	if(track.trackClass=="coding"||track.trackClass=="noncoding"){
+		track.displayBreakDown("div#collaspableReport div#content");
 	}
 }
