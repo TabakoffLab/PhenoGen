@@ -222,8 +222,8 @@ public class Statistic {
                         if(value.contains(",")){
                             String[] values=value.split(",");
                             query=query+values[0]+", "+values[1]+", -1";
-                            int v1=Integer.parseInt(values[0]);
-                            int v2=Integer.parseInt(values[1]);
+                            int v1=Integer.parseInt(values[0].trim());
+                            int v2=Integer.parseInt(values[1].trim());
                             String pa1="present";
                             String pa2="present";
                             if(v1<0){
@@ -236,7 +236,7 @@ public class Statistic {
                             }
                             Parameter=Parameter+"Group1 "+pa1+" >= "+v1+"  Group2 "+pa2+" >= "+v2;
                         }else{
-                            double tmp=Double.parseDouble(value);
+                            double tmp=Double.parseDouble(value.trim());
                             query=query+"-1, -1, "+tmp*100;
                             String pa="present";
                             double tmp2=Math.abs(tmp);
