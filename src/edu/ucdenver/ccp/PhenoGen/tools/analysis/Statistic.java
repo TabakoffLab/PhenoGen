@@ -282,8 +282,8 @@ public class Statistic {
                         String query = "{call filter.genelist(" + dsID + "," + v + "," + userID +",?,?,?) }";
                         CallableStatement cs = dbConn.prepareCall(query);
                         parameter1=parameter1.replaceAll("'", "");
-                        int geneListID=Integer.parseInt(parameter1);
-                        int keep=Integer.parseInt(parameter2);
+                        int geneListID=Integer.parseInt(parameter1.trim());
+                        int keep=Integer.parseInt(parameter2.trim());
                         int translate =0;
                         if(parameter3.equals("Y")){
                             translate=1;
