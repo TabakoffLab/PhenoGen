@@ -1,4 +1,4 @@
-	<div id="advancedSettingsButton" class="button menu">
+	<div id="advancedSettingsButton" class="inlineButton menu">
 		<b> <b> <b>Customize This View
 			 <span class="info" title="Click to open window to customize the data that is displayed.  Click again to close window.">
 			<img src="<%=imagesDir%>icons/info.gif" alt="Help">
