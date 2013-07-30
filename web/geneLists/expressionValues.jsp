@@ -16,6 +16,9 @@
         log.info("in expressionValues.jsp. user =  "+ user);
 
         extrasList.add("expressionValues.js");
+		extrasList.add("jquery.dataTables.js");
+		extrasList.add("jquery.tooltipster.js");
+		extrasList.add("tooltipster.css");
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
         if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) {
@@ -25,6 +28,25 @@
 	request.setAttribute( "selectedTabId", "expressionValues" );
 
         mySessionHandler.createGeneListActivity("Looked at expression values for gene list", dbConn);
+		
+	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
+	HashMap<String,String> geneSymbolsHM=new HashMap<String,String>();
+	for (int i=0; i<myGeneArray.length; i++) {
+					String geneSymbolList="";
+					Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 			
+					if (thisIdentifier != null) {
+						myIDecoderClient.setNum_iterations(3);
+						Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
+												new String[] {"Gene Symbol"});
+						if (geneSymbols.size() > 0) { 						
+							for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 
+								Identifier symbol = (Identifier) symbolItr.next();                					
+								geneSymbolList=geneSymbolList+symbol.getIdentifier() + "<BR>";
+							}
+						}
+					}
+					geneSymbolsHM.put(myGeneArray[i].getGene_id(),geneSymbolList);            
+	}
 %>
 
 	<%@ include file="/web/common/expressionValuesLogic.jsp"%>
@@ -194,19 +216,30 @@
 			<div class="scrollable">
 				<div id="displayGroupMeans">
 					<div class="title">Group Mean Values<BR><span style="font-size:small"><i>Note: The values are log2 transformed gene expression values</i></span></div>
-                			<table name="items" id="groupMeans" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="95%">
+                	<table name="items" id="groupMeans" class="list_base" cellpadding="0" cellspacing="3" width="95%">
 					<thead>
 					<tr class="col_title">
+                    	<TH>Gene Symbol</TH>
 					<%
 					String[] fileContents = myFileHandler.getFileContents(new File(groupValuesFileName));
 					String[] headers = fileContents[0].split("\t");
 					for (int j=0; j<headers.length; j++) {
-						%><th><%=headers[j].replaceAll("\"", "")%></th><%
+						%><th><%=headers[j].replaceAll("\"", "")%>
+                        <%if(j==0){%>
+                        	<span class="toolTip" title="This is the Gene Identifier from the current gene list.  The identifier was used to find a gene.  From the gene all the probesets in the current dataset/version annotated as that gene were found.  These are the probesets in the next column. <BR><BR><b>NOTE: This list has most likely expanded from your original list.  If you started with probeset IDs from the current dataset, then the IDs from your original list have the same ID in this column and the next column.</b>"><img src="<%=imagesDir%>icons/info.gif"></span>
+						<%}else if(j==1){%>
+                        	<span class="toolTip" title="These are all of the probesets in the current dataset/version associated with the gene symbol/gene id in the previous 2 columns.  <BR><BR><b>NOTE: This list has most likely expanded from your original list.  If you started with probeset IDs from the current dataset, then the IDs from your original list have the same ID in this column and the previous column.</b>"><img src="<%=imagesDir%>icons/info.gif"></span>
+						<%}%>
+                        </th><%
 					}
 					%></tr></thead><tbody><%
 					for (int i=1; i<fileContents.length; i++) {
 						String[] columns = fileContents[i].split("\t");
-						%><tr><%
+						%><tr>
+                        <TD>
+                        	<%=geneSymbolsHM.get(columns[0])%>
+                        </TD>
+						<%
 						for (int j=0; j<columns.length; j++) {
 							%><td><%=columns[j].replaceAll("\"", "")%></td><%
 						}
@@ -216,19 +249,30 @@
 				</div> <!-- displayGroupMeans -->
 				<div id="displayArrayValues" style="display:none">
 					<div class="title">Individual Array Values</div>
-                			<table name="items" id="arrayValues" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="95%">
+                			<table name="items" id="arrayValues" class="list_base" cellpadding="0" cellspacing="3" width="95%">
 					<thead>
 					<tr class="col_title">
+                    	<TH>Gene Symbol</TH>
 					<%
 					fileContents = myFileHandler.getFileContents(new File(individualValuesFileName));
 					headers = fileContents[0].split("\t");
 					for (int j=0; j<headers.length; j++) {
-						%><th><%=headers[j].replaceAll("\"", "")%></th><%
+						%><th><%=headers[j].replaceAll("\"", "")%>
+                        <%if(j==0){%>
+                        	<span class="toolTip" title="This is the Gene Identifier from the current gene list.  The identifier was used to find a gene.  From the gene all the probesets in the current dataset/version annotated as that gene were found.  These are the probesets in the next column. <BR><BR><b>NOTE: This list has most likely expanded from your original list.  If you started with probeset IDs from the current dataset, then the IDs from your original list have the same ID in this column and the next column.</b>"><img src="<%=imagesDir%>icons/info.gif"></span>
+						<%}else if(j==1){%>
+                        	<span class="toolTip" title="These are all of the probesets in the current dataset/version associated with the gene symbol/gene id in the previous 2 columns.  <BR><BR><b>NOTE: This list has most likely expanded from your original list.  If you started with probeset IDs from the current dataset, then the IDs from your original list have the same ID in this column and the previous column.</b>"><img src="<%=imagesDir%>icons/info.gif"></span>
+						<%}%>
+                        </th><%
 					}
 					%></tr></thead><tbody><%
 					for (int i=1; i<fileContents.length; i++) {
 						String[] columns = fileContents[i].split("\t");
-						%><tr><%
+						%><tr>
+						<TD>
+                        	<%=geneSymbolsHM.get(columns[0])%>
+                        </TD>
+						<%
 						for (int j=0; j<columns.length; j++) {
 							%><td><%=columns[j].replaceAll("\"", "")%></td><%
 						}
@@ -257,9 +301,58 @@
   <div class="load">Loading...</div>
 
   <script type="text/javascript">
+ 	 var arrayVAdjust=0;
+	 var arrayV;
     $(document).ready(function() {
+		
+		
         setupPage();
-	setTimeout("setupMain()", 100); 
+		setTimeout("setupMain()", 100);
+		
+			$("table[id='groupMeans']").dataTable({
+					"bPaginate": false,
+					"bProcessing": true,
+					"bStateSave": false,
+					"bAutoWidth": true,
+					"sScrollX": "950px",
+					"sScrollY": "550px",
+					"aaSorting": [[ 1, "asc" ]],
+					/*"aoColumnDefs": [
+					  { "bVisible": false, "aTargets": geneTargets }
+					],*/
+					"sDom": '<"leftSearch"fr><t>'
+					/*"oTableTools": {
+							"sSwfPath": "/css/swf/copy_csv_xls_pdf.swf"
+						}*/
+	
+			});
+			arrayV=$("table[id='arrayValues']").dataTable({
+					"bPaginate": false,
+					"bProcessing": true,
+					"bStateSave": false,
+					"bAutoWidth": true,
+					"sScrollX": "950px",
+					"sScrollY": "550px",
+					"aaSorting": [[ 1, "asc" ]],
+					/*"aoColumnDefs": [
+					  { "bVisible": false, "aTargets": geneTargets }
+					],*/
+					"sDom": '<"leftSearch"fr><t>'
+					/*"oTableTools": {
+							"sSwfPath": "/css/swf/copy_csv_xls_pdf.swf"
+						}*/
+	
+			});
+			
+			$('.toolTip').tooltipster({
+							position: 'top-right',
+							maxWidth: 350,
+							offsetX: 24,
+							offsetY: 5,
+							//arrow: false,
+							interactive: true,
+							interactiveTolerance: 350
+						});
     });
   </script>
 
