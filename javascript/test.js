@@ -343,6 +343,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	this.removeTrack=function (track){
 			d3.select("#Level"+this.levelNumber+track).remove();
+			for(var l=0;l<this.trackList.length;l++){
+				if(this.trackList[l].trackClass==track){
+					this.trackList.splice(l,1);
+				}
+			}
+			DisplayRegionReport();
 	}.bind(this);
 
 	this.redraw=function (){
@@ -702,6 +708,30 @@ function GeneTrack(gsvg,data,trackClass,label){
 		return color;
 	}.bind(that);
 
+	that.pieColor =function(d,i){
+		var color=d3.rgb("#000000");
+		if(that.trackClass=="coding"){
+			if(i==0){
+				color=d3.rgb("#DFC184");
+			}else{
+				color=d3.rgb("#7EB5D6");
+			}
+		}else if(that.trackClass=="noncoding"){
+			if(i==0){
+				color=d3.rgb("#B58AA5");
+			}else{
+				color=d3.rgb("#CECFCE");
+			}
+		}else if(that.trackClass=="smallnc"){
+			if(i==0){
+				color=d3.rgb("#FFCC00");
+			}else{
+				color=d3.rgb("#99CC99");
+			}
+		}
+		return color;
+	}.bind(that);
+
 	that.createToolTip=function(d){
 		var tooltip="";
 		var txListStr="";
@@ -927,12 +957,10 @@ function GeneTrack(gsvg,data,trackClass,label){
 	}.bind(that);
 
 	that.displayBreakDown=function(divSelector){
-		var counts=[{value:0,name:"Ensembl"},{value:0,name:"RNA-Seq"}];
-		//counts.value=[0,0];
-		//counts.name=["Ensembl","RNA-Seq"];
-		console.log(counts);
-		for(var l=0;l<that.data.length;l++){
-			if((new String(data[l].getAttribute("ID"))).indexOf("ENS")>-1){
+		var counts=[{value:0,names:"Ensembl"},{value:0,names:"RNA-Seq"}];
+		var tmpDat=that.getData()[0];
+		for(var l=0;l<tmpDat.length;l++){
+			if((new String(tmpDat[l].childNodes[0].id)).indexOf("ENS")>-1){
 				counts[0].value++;
 			}else{
 				counts[1].value++;
@@ -962,7 +990,16 @@ function GeneTrack(gsvg,data,trackClass,label){
       		.attr("class", "arc");
       	g.append("path")
       		.attr("d", arc)
-      		.style("fill", function(d,i) { var color="#DFC184"; if(i==1){ color="#7EB5D6"} return color; });
+      		.style("fill", that.pieColor);
+      	g.append("text")
+      		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+      		.attr("dy", ".35em")
+      		.style("text-anchor", "middle")
+      		.text(function(d) { 
+      				//console.log(d);
+      				//return d.data.names+": "+d.value; 
+      				return d.value;
+      	});
 		
 	}.bind(that);
 

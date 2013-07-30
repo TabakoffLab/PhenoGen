@@ -17,8 +17,12 @@ var ucscgeneID="";
 </script>
 
 <style>
-	div#collaspableReport a{
-	text-decoration:underline;
+	div#collaspableReport li{
+	color:#000000;
+	cursor:pointer;
+	}
+	div#collaspableReport li.selected{
+		background-color:#CCCCCC;
 	}
 </style>
 
@@ -251,7 +255,7 @@ var ucscgeneID="";
 			$('#legendDialog').dialog("open");
 		});
 		
-		setupExpandCollapse();
+		
     </script>
 <div id="page" style="min-height:1050px;text-align:center;">
 	<div id="imageMenu"></div>
@@ -343,7 +347,7 @@ var ucscgeneID="";
 </div><!-- ends page div -->
 
 <script type="text/javascript">
-	
+	setupExpandCollapse();
 </script>
 
 
