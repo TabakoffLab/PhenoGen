@@ -22,14 +22,14 @@ function setupPage() {
 	//---> set default sort column
 	$("table[id='datasets']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");
 	$("table[id='versions']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
-	$("table[id='groupMeans']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");
-	$("table[id='arrayValues']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");
+	//$("table[id='groupMeans']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");
+	//$("table[id='arrayValues']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");
 
-	var tableRows = getRowsFromNamedTable($("table[id='groupMeans']"));
-	stripeTable( tableRows );
-	tableRows = getRowsFromNamedTable($("table[id='arrayValues']"));
-	stripeTable( tableRows );
-	tableRows = getRowsFromNamedTable($("table[id='datasets']"));
+	//var tableRows = getRowsFromNamedTable($("table[id='groupMeans']"));
+	//stripeTable( tableRows );
+	//tableRows = getRowsFromNamedTable($("table[id='arrayValues']"));
+	//stripeTable( tableRows );
+	var tableRows = getRowsFromNamedTable($("table[id='datasets']"));
 	stripeAndHoverTable( tableRows );
 	clickRadioButton();
 
@@ -100,6 +100,10 @@ function setupPage() {
 	$("div#arrayValues").click(function(){
 		$("div#displayGroupMeans").hide();
 		$("div#displayArrayValues").show();
+		if(arrayVAdjust==0){
+			arrayV.fnAdjustColumnSizing();
+			arrayVAdjust=1;
+		}
 	});
 
     	setupDownloadLink('expressionValuesDownload');

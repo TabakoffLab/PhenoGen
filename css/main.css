@@ -349,7 +349,7 @@ TABLE.progressBar {
         outline: none;
     }
 
-    div.button b {
+    div.button b{
         background: #DDDDDD url("../web/images/bg/button.gif") repeat-x scroll 0 0;
         border: solid #AAAAAA;
         border-width: 1px 0;
@@ -361,29 +361,26 @@ TABLE.progressBar {
     div.button:hover b, div.button.current b {
         border-color:#888888;
     }
-    div.button.current b {
+    div.button.current b{
         z-index: 2;
         border-bottom-color: #fff;
         background-position: bottom left;
     }
-    div.button b b {
+    div.button b b{
         background: transparent none repeat scroll 0 0;
         border-width: 0 1px;
         margin: 0 -1px;
         padding: 0 5px;
     }
-    div.button b b b {
+    div.button b b b,div.inlineButton b b b {
         border-width: 0;
         cursor: pointer;
         font-weight: bold;
         margin: 0;
         padding: 0.1em 0.2em;
     }
-    div.button.menu b b b {
-        background: transparent url("../web/images/icons/button_arrow_down.gif") no-repeat scroll right center;
-        padding-right: 15px;
-    }
-    div.button.current b b b {
+    
+    div.button.current b b b,div.inlineButton.current b b b {
         background: transparent url("../web/images/icons/button_arrow_up.gif") no-repeat scroll right center;
     }
 
@@ -409,8 +406,8 @@ TABLE.progressBar {
         font-size: 12px;
     }
     div.inlineButton {
-	display:inline;
         background: #DDDDDD url("../web/images/bg/button.gif") repeat-x scroll 0 0; 
+		display:inline;
         border: 1px solid #AAAAAA;
         margin: 0px -90px 0px 10px;
         padding: 0 10px;
@@ -421,6 +418,7 @@ TABLE.progressBar {
         font-size: 14px;
         color: #658CB2;
     }
+	
 /*
  *          END SECTION DEFINITIONS
  *****************************************************************************************/
