@@ -327,19 +327,19 @@ public class ObjectHandler {
   }
 
   public String getAsSeparatedString(String inStuff, int substringLength, String separator) {
-	String returnString = "";
+	StringBuilder sb=new StringBuilder();
 	String newString = inStuff;
 	if (inStuff != null && inStuff.length() > substringLength) {
 		while (newString.length() > substringLength) {
-			returnString = returnString + separator + newString.substring(0, substringLength);	
+			sb.append( separator + newString.substring(0, substringLength));	
 			newString = newString.substring(substringLength, newString.length());	
 		}
 	} 
 	if (newString.length() > 0) {
-		returnString = returnString + separator + newString;
+		sb.append( separator + newString);
 	}
-	returnString = returnString + separator;
-	return returnString;
+	sb.append(separator);
+	return sb.toString();
   }
 
 	/**
@@ -350,14 +350,14 @@ public class ObjectHandler {
 	 */
 	public String getAsSeparatedString(int[] inStuff, String separator) {
 		//log.debug("inStuff = "); new Debugger().print(inStuff); 
-		String returnString = "";
+		StringBuilder sb=new StringBuilder();
 		if (inStuff != null && inStuff.length > 0) {
-			returnString = Integer.toString(inStuff[0]);
+			sb.append( Integer.toString(inStuff[0]));
 			for (int i=1; i<inStuff.length; i++) {
-				returnString = returnString + separator + Integer.toString(inStuff[i]);	
+				sb.append( separator + Integer.toString(inStuff[i]));	
 			}
 		} 
-		return returnString;
+		return sb.toString();
 	}
 
 	/**
@@ -369,14 +369,14 @@ public class ObjectHandler {
 	 * @return		a String object separated by separator
 	 */
 	public String getAsSeparatedString(String[] inStuff, String separator) {
-		String returnString = "";
+		StringBuilder sb=new StringBuilder();
 		if (inStuff != null && inStuff.length > 0) {
-			returnString = (String) inStuff[0];
+			sb.append((String) inStuff[0]);
 			for (int i=1; i<inStuff.length; i++) {
-				returnString = returnString + separator + (String) inStuff[i];	
+				sb.append( separator + (String) inStuff[i]);	
 			}
 		} 
-		return returnString;
+		return sb.toString();
 	}
 
 	/**
@@ -386,20 +386,20 @@ public class ObjectHandler {
 	 * @return		a String object separated by separator
 	 */
 	public String getAsSeparatedString(Collection inStuff, String separator) {
-		String returnString = "";
+		StringBuilder sb=new StringBuilder();
 		int objectNum = 0;
 		if (inStuff != null && inStuff.size() > 0) {
 			Iterator itr = inStuff.iterator();
 			while (itr.hasNext()) {
 				if (objectNum == 0) {
-					returnString = (String) itr.next();
+					sb.append( (String) itr.next());
 				} else {
-					returnString = returnString + separator + (String) itr.next();	
+					sb.append( separator + (String) itr.next());	
 				}
 				objectNum++;
 			}
 		} 
-		return returnString;
+		return sb.toString();
 	}
 
 	/**
@@ -409,20 +409,20 @@ public class ObjectHandler {
 	 * @return		a String object separated by separator
 	 */
 	public String getAsSeparatedString(Set inStuff, String separator) {
-		String returnString = "";
+		StringBuilder sb=new StringBuilder();
 		int objectNum = 0;
 		if (inStuff != null && inStuff.size() > 0) {
 			Iterator itr = inStuff.iterator();
 			while (itr.hasNext()) {
 				if (objectNum == 0) {
-					returnString = (String) itr.next();
+					sb.append( (String) itr.next());
 				} else {
-					returnString = returnString + separator + (String) itr.next();	
+					sb.append( separator + (String) itr.next());	
 				}
 				objectNum++;
 			}
 		} 
-		return returnString;
+		return sb.toString();
 	}
         
         /**
@@ -432,15 +432,15 @@ public class ObjectHandler {
 	 * @return		a String object separated by separator
 	 */
 	public String getAsSeparatedString(ArrayList<String> inStuff, String separator) {
-		String returnString = "";
+		StringBuilder sb=new StringBuilder();
 		for(int i=0;i<inStuff.size();i++){
                     if(i==0){
-                        returnString=inStuff.get(i);
+                        sb.append(inStuff.get(i));
                     }else{
-                        returnString=returnString+separator+inStuff.get(i);
+                        sb.append(separator+inStuff.get(i));
                     }
                 }
-		return returnString;
+		return sb.toString();
 	}
         
 
@@ -454,20 +454,20 @@ public class ObjectHandler {
 	 * @return		a String object separated by separator
 	*/
 	public String getAsSeparatedString(Set inStuff, String separator, String encloser, int limit) {
-		String returnString = "";
+                StringBuilder sb=new StringBuilder();
 		int objectNum = 0;
 		if (inStuff != null && inStuff.size() > 0) {
 			Iterator itr = inStuff.iterator();
 			while (itr.hasNext() && objectNum < limit) {
 				if (objectNum == 0) {
-					returnString = encloser + (String) itr.next() + encloser;
+					sb.append(encloser + (String) itr.next() + encloser );
 				} else {
-					returnString = returnString + separator + encloser + (String) itr.next() + encloser;
+					sb.append( separator + encloser + (String) itr.next() + encloser );
 				}
 				objectNum++;
 			}
 		} 
-		return returnString;
+		return sb.toString();
 	}
 
 	/**
@@ -502,20 +502,20 @@ public class ObjectHandler {
 	}
 
   public String getAsSeparatedString(Set inStuff, String separator, String encloser) {
-	String returnString = "";
+	StringBuilder sb=new StringBuilder();
 	int objectNum = 0;
 	if (inStuff != null && inStuff.size() > 0) {
 		Iterator itr = inStuff.iterator();
 		while (itr.hasNext()) {
 			if (objectNum == 0) {
-				returnString = encloser + (String) itr.next() + encloser;
+				sb.append(encloser + (String) itr.next() + encloser);
 			} else {
-				returnString = returnString + separator + encloser + (String) itr.next() + encloser;
+				sb.append( separator + encloser + (String) itr.next() + encloser);
 			}
 			objectNum++;
 		}
 	} 
-	return returnString;
+	return sb.toString();
   }
 
   /**
@@ -525,43 +525,43 @@ public class ObjectHandler {
    * @return		a String object separated by separator
    */
   public String getAsSeparatedString(List inStuff, String separator) {
-	String returnString = "";
+	StringBuilder sb=new StringBuilder();
 	if (inStuff != null && inStuff.size() > 0) {
-		returnString = (String) inStuff.get(0);
+		sb.append( (String)inStuff.get(0));
 		for (int i=1; i<inStuff.size(); i++) {
-			returnString = returnString + separator + (String) inStuff.get(i);	
+			sb.append( separator + (String) inStuff.get(i));	
 		}
 	} 
-	return returnString;
+	return sb.toString();
   }
 
   public String getAsSeparatedString(String[] inStuff, String separator, String encloser) {
-	String returnString = "";
+	StringBuilder sb=new StringBuilder();
 	if (inStuff != null && inStuff.length > 0) {
-		returnString = encloser + (String) inStuff[0] + encloser;
+		sb.append( encloser + (String) inStuff[0] + encloser);
 		for (int i=1; i<inStuff.length; i++) {
-			returnString = returnString + separator + 
+			sb.append( separator + 
 					encloser + 
 					(String) inStuff[i] + 
-					encloser;	
+					encloser);	
 		}
 	} 
-	return returnString;
+	return sb.toString();
   }
 
   public String getAsSeparatedString(List inStuff, String separator, String encloser) {
-	String returnString = "";
+	StringBuilder sb=new StringBuilder();
 
 	if (inStuff != null && inStuff.size() > 0) {
-		returnString = encloser + (String) inStuff.get(0) + encloser;
+		sb.append( encloser + (String) inStuff.get(0) + encloser);
 		for (int i=1; i<inStuff.size(); i++) {
-			returnString = returnString + separator + 
+			sb.append( separator + 
 					encloser + 
 					(String) inStuff.get(i) + 
-					encloser;	
+					encloser);	
 		}
 	} 
-	return returnString;
+	return sb.toString();
   }
 
 
@@ -793,26 +793,24 @@ public class ObjectHandler {
    */
   public String getResultsAsSeparatedString(Results inStuff, String separator, String encloser, int whichField) {
 
-        String returnString = "";
+        StringBuilder sb=new StringBuilder();
 	String [] dataRow;
         int numRows = inStuff.getNumRows();
 
         int rowNum = 0;
         if (numRows > 0) {
                 while ((dataRow = inStuff.getNextRow()) != null) {
-                        returnString = returnString + 
-					encloser + 
-					dataRow[whichField] + 
-					encloser; 
+                        sb.append( encloser + dataRow[whichField] + 
+					encloser); 
                         rowNum++;
                         if (rowNum < numRows) {
-                                returnString = returnString + separator;
+                                sb.append( separator);
                         }
                 }
 	} else {
 		log.debug("in getResultsAsSeparatedString.  inStuff is null");
 	}
-	return returnString;
+	return sb.toString();
   }
 
 	/** 
