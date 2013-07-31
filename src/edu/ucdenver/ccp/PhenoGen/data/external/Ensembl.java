@@ -45,7 +45,7 @@ public class Ensembl{
                 	//
                 	String allEnsemblString = "(" + myObjectHandler.getAsSeparatedString(allEnsemblSet, ", ", "'", 999) + ")";
 
-			query = 
+			/*query = 
 			"select gs.stable_id, ts.stable_id "+
 			"from transcript t, gene g, transcript_stable_id ts, gene_stable_id gs "+
 			"where t.transcript_id = ts.transcript_id "+
@@ -54,7 +54,17 @@ public class Ensembl{
 			"and gs.stable_id in "+
 			allEnsemblString +
 			" "+
-			"order by gs.stable_id";
+			"order by gs.stable_id";*/
+                        
+                        query = 
+			"select g.stable_id, t.stable_id "+
+			"from transcript t, gene g "+
+			"where "+
+			"t.gene_id = g.gene_id "+
+			"and g.stable_id in "+
+			allEnsemblString +
+			" "+
+			"order by g.stable_id";
  
 			log.debug("in getTranscripts");
 			//log.debug("query =" + query);
@@ -64,7 +74,7 @@ public class Ensembl{
 			Results myResults = new Results();
 			myResults.setQuery(query);
 			myResults.setConnection(conn);
-			myResults.setTimeout(5);
+			//myResults.setTimeout(5);
 			myResults.execute();
                 	ensemblHash = myObjectHandler.getResultsAsHashtablePlusList(myResults);
 
