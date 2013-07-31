@@ -363,7 +363,7 @@
 			%>&nbsp<%
 		}
 
-		log.debug("here QTLSring = "+thisIdentifier.getEQTLString());
+		//log.debug("here QTLSring = "+thisIdentifier.getEQTLString());
 		if (thisIdentifier.getEQTLString() != null && 
 			!thisIdentifier.getEQTLString().equals("") && 
 			!thisIdentifier.getEQTLString().equals("()")//&&
