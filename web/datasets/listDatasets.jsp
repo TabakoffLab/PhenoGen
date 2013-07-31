@@ -36,6 +36,8 @@
 
     <div class="page-intro">
 	<p>Click on a dataset to select it for analysis.</p>
+    <BR />
+    <p style="font-size:12px;">This page will automatically refresh.  If you are waiting on QC or Normalization of a dataset the status will change once it completes.  You will still recieve an email notification if you do not wait.</p>
     </div> <!-- // end page-intro -->
 
     <form name="tableList" action="chooseDataset.jsp" method="get">
@@ -78,8 +80,13 @@
   <script type="text/javascript">
     $(document).ready(function() {
         setupPage();
-	setTimeout("setupMain()", 100); 
+		setTimeout("setupMain()", 100);
+		window.setInterval(function(){
+  			location.reload(true);
+		}, 30000); 
     });
+	
+	
   </script>
 
 <%@ include file="/web/common/footer.jsp"%>

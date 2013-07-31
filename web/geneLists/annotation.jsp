@@ -160,7 +160,7 @@
 						};
 */
 			String[] gene_chip_name = myObjectHandler.getAsArray(myArray.EQTL_ARRAY_TYPES, String.class);
-			log.debug("gene_chip_name = "); myDebugger.print(gene_chip_name);
+			//log.debug("gene_chip_name = "); myDebugger.print(gene_chip_name);
 
                 	Set allEQTLChipIDs =thisIDecoderClient.getValues(
 						thisIDecoderClient.getIdentifiersByGeneChip(
@@ -172,7 +172,7 @@
 
 			List allIdentifiers = new ArrayList();
 			List allGenesStrings = myObjectHandler.getAsSeparatedStrings(selectedGeneList.getGenesAsSet("Original", dbConn), ", ", "'", 999);
-			log.debug("allGenesStrings = " +allGenesStrings);
+			//log.debug("allGenesStrings = " +allGenesStrings);
 			allIdentifiers.addAll(allGenesStrings);
 			if (allEQTLGeneSymbols.size() > 0 && allEQTLChipIDs.size() > 0) {
 	
@@ -188,7 +188,7 @@
 
 			}
 			eQTLList = myEQTL.getExpressionQTLInfo(allIdentifiers, "Both", selectedGeneList.getOrganism(), "All", dbConn);
-			log.debug("eQTLList = "); myDebugger.print(eQTLList);
+			//log.debug("eQTLList = "); myDebugger.print(eQTLList);
 			//
 			// Get a list of all the ensembl IDs returned 
 			// in the first iDecoder call, and pass them to a query at Ensembl to get
