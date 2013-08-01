@@ -1,51 +1,150 @@
+var reportSelectedTrack=null;
+var loadedTrackTable=null;
+
+$(document).on('click','span.triggerLoad', function (event){
+		var baseName = $(this).attr("name");
+        var thisHidden = $("div#" + baseName).is(":hidden");
+        //$(this).toggleClass("less");
+		//console.log(baseName+":"+thisHidden);
+        if (thisHidden) {
+			$("div#" + baseName).show();
+			$(this).addClass("less");
+			if(baseName=="regionTable" && reportSelectedTrack!=null){
+				loadTrackTable();
+			}else if(baseName=""){
+				loadEQTLTable();
+			}
+        } else {
+			$("div#" + baseName).hide();
+			$(this).removeClass("less");
+        }
+	});
+
+function loadTrackTable(){
+	var jspPage="";
+	var params={
+			species: organism,
+			minCoord: minCoord,
+			maxCoord: maxCoord,
+			chromosome: chr,
+			rnaDatasetID: rnaDatasetID,
+			arrayTypeID: arrayTypeID,
+			forwardPvalueCutoff:forwardPValueCutoff,
+			folderName: folderName
+		};
+	if(reportSelectedTrack.trackClass=="coding"){
+		jspPage="web/GeneCentric/geneTable.jsp";
+		params.type="coding";
+	}else if(reportSelectedTrack.trackClass=="noncoding"){
+		params.type="noncoding";
+		jspPage="web/GeneCentric/geneTable.jsp";
+	}else if(reportSelectedTrack.trackClass=="smallnc"){
+		jspPage="web/GeneCentric/smallGeneTable.jsp";
+	}else if(reportSelectedTrack.trackClass=="snp"){
+		jspPage="web/GeneCentric/snpTable.jsp";
+	}else if(reportSelectedTrack.trackClass=="qtl"){
+		jspPage="web/GeneCentric/bqtlTable.jsp";
+	}else if(reportSelectedTrack.trackClass=="transcript"){
+		jspPage="web/GeneCentric/transcriptTable.jsp";
+	}
+	loadDivWithPage("div#regionTable",jspPage,params,
+		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
+}
+
+function loadEQTLTable(){
+
+}
+
+function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
+	$(divSelector).html(loadingHTML);
+	$.ajax({
+				url: jspPage,
+   				type: 'GET',
+				data: params,
+				dataType: 'html',
+    			success: function(data2){ 
+        			$(divSelector).html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$(divSelector).html("<span style=\"color:#FF0000;\">An error occurred generating this page.  Please try back later.</span>");
+    			}
+			});
+}
 
 function trKey(d){
 	var key="";
 	if(d!=undefined){
 		key=d.trackClass;
 	}
-	return d.trackClass;
+	return key;
 }
 
 function DisplayRegionReport(){
-	//d3.select('#collaspableReportList').selectAll('li').remove();
-	var tmptrackList=svgList[0].trackList;
-	var list=d3.select('#collaspableReportList').selectAll('li.report').data(tmptrackList,trKey).html(function(d){
-			var data=d.getData();
-			return d.label+": "+data[0].length;
-	});
+	if(!$('div#collapsableReport').is(":hidden")){
+		//d3.select('#collaspableReportList').selectAll('li').remove();
+		var tmptrackList=svgList[0].trackList;
+		if(reportSelectedTrack==null){
+			reportSelectedTrack=tmptrackList[0];
+		}
+		var list=d3.select('#collapsableReportList').selectAll('li.report').data(tmptrackList,trKey).html(function(d){
+				var label="";
+				if(d.getDisplayedData!=undefined){
+					var data=d.getDisplayedData();
+					label=d.label+": "+data.length;
+				}
+				return label;
+		});
 
-	list.enter().append("li")
-		.attr("class",function (d){return "report "+d.trackClass;})
-		.html(function(d){
-			var data=d.getData();
-			return d.label+": "+data[0].length;
-	})
-		.on("click",displayDetailedView);
+		list.enter().append("li")
+			.attr("class",function (d){return "report "+d.trackClass;})
+			.html(function(d){
+					var label="";
+					if(d.getDisplayedData!=undefined){
+						var data=d.getDisplayedData();
+						label=d.label+": "+data.length;
+					}
+					return label;
+				})
+			.on("click",displayDetailedView);
 
-	list.exit().remove();
+		list.exit().remove();
 
-	d3.select('#collaspableReportList').selectAll('li.report.selected').forEach(function (d){displayDetailedView(d);});
-	//for(var l=0;l<tmptrackList.length;l++){
-	//	displayTrackReport(tmptrackList[l]);
-	//}
-	//displayBQTLReport(loadBQTLs());
-	//displayGeneEQTLReport(loadGeneEQTLs());
+		if(reportSelectedTrack!=null){
+			displayDetailedView(reportSelectedTrack);
+			if(d3.select('#collapsableReportList').selectAll('li.report.selected').length==0){
+				$("li."+reportSelectedTrack.trackClass).addClass("selected");
+			}
+			if(!$('div#regionTable').is(":hidden")){
+				loadTrackTable();
+			}
+		}
+
+		//d3.select('#collaspableReportList').selectAll('li.report.selected').forEach(function (d){displayDetailedView(d);});
+		//for(var l=0;l<tmptrackList.length;l++){
+		//	displayTrackReport(tmptrackList[l]);
+		//}
+		//displayBQTLReport(loadBQTLs());
+		//displayGeneEQTLReport(loadGeneEQTLs());
+	}
 }
 
 
-function displayTrackReport(track){
+/*function displayTrackReport(track){
 	var data=track.getData();
 	console.log(data);
 	d3.select('#collaspableReportList').append("li").html(track.label+": "+data[0].length).on("click",displayDetailedView);
-}
+}*/
 
 
 function displayDetailedView(track){
+	reportSelectedTrack=track;
 	$('li.report').removeClass("selected");
 	$("li."+track.trackClass).addClass("selected");
-	if(track.trackClass=="coding"||track.trackClass=="noncoding"||track.trackClass=="smallnc"){
-		$('div#content').html("");
-		track.displayBreakDown("div#collaspableReport div#content");
+	if(track.displayBreakDown!=undefined){
+		$('div#trackGraph').html("");
+		track.displayBreakDown("div#collapsableReport div#trackGraph");
+	}
+	if(!$('div#regionTable').is(":hidden")){
+			loadTrackTable();
 	}
 }

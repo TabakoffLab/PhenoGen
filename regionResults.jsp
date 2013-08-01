@@ -17,12 +17,15 @@ var ucscgeneID="";
 </script>
 
 <style>
-	div#collaspableReport li{
+	div#collapsableReport li{
 	color:#000000;
 	cursor:pointer;
 	}
-	div#collaspableReport li.selected{
+	div#collapsableReport li.selected{
 		background-color:#CCCCCC;
+	}
+	div#collapsableReport td.layout {
+		border:1px solid #CECECE;
 	}
 </style>
 
@@ -322,7 +325,8 @@ var ucscgeneID="";
 		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
 		$('#'+id+'Content').dialog("open").css({'font-size':12});
 	});*/
-</script>          
+</script>    
+     
 
 <div id="legendDialog"  title="UCSC Image/Table Rows Color Code Key" class="legendDialog" style="display:none">
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
@@ -330,24 +334,65 @@ var ucscgeneID="";
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
     		<span class="trigger less" name="collapsableReport" >Region Summary</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
-            
-            
     </div>
-    <div id="collaspableReport">
-    	<div id="list" style=" text-align:left; border:thin;">
-        <span style="color:#000000; font-weight:bold;">Track Information:</span>
-    	<UL id="collaspableReportList">
+    <div id="collapsableReport">
+    	<table  style="width:100%;" cellspacing="0">
+        <TR>
+        	<TD colspan="2" style=" text-align:center; font-size:16px;" class="layout">
+            	Track Summary
+            </TD>
+        </TR>
+        <TR><TD style="vertical-align:top;   " class="layout">
+    	<div id="list" style="text-align:left; overflow:auto;">
+        <span style="color:#000000; font-weight:bold;">Track List:</span>
+    	<UL id="collapsableReportList" style="list-style:none; margin:10px;">
         </UL>
         </div>
-        <div id="content">
+        </TD>
+        <TD style="text-align:center;" class="layout">
+        <div id="trackContent">
+        	<span>Break down of track count</span><BR /><BR />
+            <div id="trackGraph">
+            </div>
         </div>
+        </TD>
+        </TR>
+        <TR><TD colspan="2">
+        	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
+    		<span class="triggerLoad" name="regionTable"  style="margin-left:30px;">Region Track Feature Tables</span>
+    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+    		</div>
+    		<div id="regionTable" style="display:none;"></div>
+            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
+    		<span class="triggerLoad" name="regionEQTLTable" style="margin-left:30px;">Genes with an EQTL in region</span>
+    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+    		</div>
+    		<div id="regionEQTLTable" style="display:none;"></div>
+        </TD>
+        </TR>
+        </table>
     </div>
 	
 
 </div><!-- ends page div -->
 
 <script type="text/javascript">
-	setupExpandCollapse();
+	$(document).on('click','span.trigger', function (event){
+		var baseName = $(this).attr("name");
+        var thisHidden = $("div#" + baseName).is(":hidden");
+        //$(this).toggleClass("less");
+		console.log(baseName+":"+thisHidden);
+        if (thisHidden) {
+			$("div#" + baseName).show();
+			$(this).addClass("less");
+        } else {
+			$("div#" + baseName).hide();
+			$(this).removeClass("less");
+        }
+		if(baseName=="collapsableReport"){
+			DisplayRegionReport();
+		}
+	});
 </script>
 
 
