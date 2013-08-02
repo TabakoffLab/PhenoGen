@@ -372,7 +372,18 @@ var ucscgeneID="";
         </TR>
         </table>
     </div>
-	
+    <BR />
+	<div id="selectedDetailHeader" style=" display:none; font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
+    		<span class="trigger less" name="selectedDetail" >Selected Feature Detail</span>
+    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+            <span class="closeDetail" style="float:right;"><img src="../web/images/icons/close.png" /></span>
+    </div>
+    <div id="selectedDetail" style="display:none;">
+    	<div id="selectedImage" style="text-align:center;">
+        </div>
+        <div id="selectedReport">
+        </div>
+    </div>
 
 </div><!-- ends page div -->
 
@@ -393,6 +404,11 @@ var ucscgeneID="";
 			DisplayRegionReport();
 		}
 	});
+	
+	$(document).on('click','span.closeDetail', function(){
+			$('div#selectedDetail').hide();
+			$('div#selectedDetailHeader').hide();
+		});
 </script>
 
 

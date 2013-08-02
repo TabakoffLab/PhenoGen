@@ -674,15 +674,21 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	      		d3.select('.testToolTip').transition()        
 		                .duration(200)      
 		                .style("opacity", .95);      
-		         d3.select('.testToolTip').html("Name: "+d.data.names+"<BR>Count: "+d.data.value)  
+		        d3.select('.testToolTip').html("Name: "+d.data.names+"<BR>Count: "+d.data.value)  
 		                .style("left", (d3.event.pageX-winWidth) + "px" )  
 		                .style("top", (d3.event.pageY + 20) + "px");
+		        var e = jQuery.Event("keyup");
+				e.which = 32; // # Some key code value
+				$('#tblBQTL_filter input').val(d.data.names).trigger(e);
 	      		})
 	      	.on("mouseout", function(d){
 	      		d3.select('.testToolTip').transition()
 					 .delay(500)       
 	                .duration(200)      
 	                .style("opacity", 0);
+	            var e = jQuery.Event("keyup");
+				e.which = 32; // # Some key code value
+	            $('#tblBQTL_filter input').val("").trigger(e);
 	      	});
       	g.append("text")
       		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
@@ -838,8 +844,18 @@ function GeneTrack(gsvg,data,trackClass,label){
 			var newLevel=this.gsvg.levelNumber+1;
 			//console.log("newLevel:"+newLevel);
 			//filter table
-			$('#tblGenes_filter input').val(d.getAttribute("ID")).trigger(e);
+			//$('#tblGenes_filter input').val(d.getAttribute("ID")).trigger(e);
+			if(!$('div#collapsableReport').is(':hidden')){
+				$('div#collapsableReport').hide();
+				$("span[name='collapsableReport']").removeClass("less");
+			}
+			if($('div#selectedDetailHeader').is(':hidden')){
+				$('div#selectedDetailHeader').show();
+			}
+			if($('div#selectedDetail').is(':hidden')){
+				$('div#selectedDetail').show();
 
+			}
 			var localTxType="none";
 			if(d.getAttribute("biotype")=="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
 				localTxType="protein";
@@ -849,11 +865,11 @@ function GeneTrack(gsvg,data,trackClass,label){
 				localTxType="small";
 			}
 			if(svgList[newLevel]==null){
-				var newSvg=new GenomeSVG(this.gsvg.div,this.gsvg.width,d.getAttribute("extStart"),d.getAttribute("extStop"),this.gsvg.levelNumber+1,d.getAttribute("ID"),"transcript");
+				var newSvg=new GenomeSVG("div#selectedImage",this.gsvg.width,d.getAttribute("extStart"),d.getAttribute("extStop"),this.gsvg.levelNumber+1,d.getAttribute("ID"),"transcript");
 				newSvg.xMin=d.getAttribute("extStart")-(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
 				newSvg.xMax=d.getAttribute("extStop")+(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
 				svgList[newLevel]=newSvg;
-				var closeBtn=newSvg.scaleSVG.append("g")
+				/*var closeBtn=newSvg.scaleSVG.append("g")
 					.attr("class","close")
 					.attr("transform", "translate(944,0)")
 					.attr("cursor","default")
@@ -891,7 +907,7 @@ function GeneTrack(gsvg,data,trackClass,label){
 							.attr("y1",3)
 							.attr("y2",13)
 							.attr("stroke","white")
-							.attr("stroke-width",2);
+							.attr("stroke-width",2);*/
 				//d3.select("Level"+newSvg.levelNumber).select(".x.axis").append("g").attr("class","axisLbl").append("text").text(d.getAttribute("ID")).attr("x", ((newSvg.width-(newSvg.margin*2))/2)).attr("y",-40);
 				//d3.select("Level"+newSvg.levelNumber).select(".scale").append("text").text(d.getAttribute("ID")).attr("class","axisLbl").attr("x", ((newSvg.width-(newSvg.margin*2))/2)).attr("y",-40);
 				svgList[newLevel].txType=localTxType;

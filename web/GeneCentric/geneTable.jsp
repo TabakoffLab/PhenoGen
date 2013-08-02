@@ -819,10 +819,7 @@
 			var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
 			var tbhtml = $('#tblGenes').html();
 			$('#tblGenes').html(tbhtml.replace(expr, '><'));
-			tbhtml = $('#tblBQTL').html();
-			$('#tblBQTL').html(tbhtml.replace(expr, '><'));
-			tbhtml = $('#tblFrom').html();
-			$('#tblFrom').html(tbhtml.replace(expr, '><'));
+			
 		}	
 	}
 	

@@ -5,6 +5,8 @@
 	
     gdt.setSession(session);
 	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> fullGeneList=new ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene>();
+	HashMap skipSMRNA=new HashMap();
+	
 	DecimalFormat dfC = new DecimalFormat("#,###");
 	String myOrganism="";
 	String fullOrg="";
@@ -63,36 +65,38 @@
 	if(request.getParameter("maxCoord")!=null){
 		max=Integer.parseInt(request.getParameter("maxCoord"));
 	}
-	
+	ArrayList<SmallNonCodingRNA> smncRNA=gdt.getSmallNonCodingRNA(min,max,chromosome,rnaDatasetID,myOrganism);
 	if(min<max){
 			if(min<1){
 				min=1;
 			}
-			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff);					
+			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff);
+			
+
+			//Match smncRNA to ensembl based on annotations
+		
+			for(int m=0;m<smncRNA.size();m++){
+				SmallNonCodingRNA tmpRNA=smncRNA.get(m);
+				ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> tmpAnnot=tmpRNA.getAnnotationBySource("Ensembl");
+				if(tmpAnnot!=null&&tmpAnnot.size()>0){
+					boolean found=false;
+					String smncEnsID=tmpAnnot.get(0).getEnsemblGeneID();
+					for(int n=0;n<fullGeneList.size()&&!found;n++){
+						if(fullGeneList.get(n).getGeneID().equals(smncEnsID)){
+							fullGeneList.get(n).addTranscript(tmpRNA);
+							//smncRNA.remove(m);
+							skipSMRNA.put(tmpRNA.getID(),1);
+							found=true;
+							//m--;
+						}
+					}
+				}
+			}			
+					
 			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 			folderName=tmpURL.substring(second+1,tmpURL.length()-1);
-					//String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
-					//String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
-					//String tmpUcscURLFiltered =gdt.getUCSCURLFiltered();//(String)session.getAttribute("ucscURLFiltered");
-					/*if(tmpURL!=null){
-						genURL.add(tmpURL);
-						if(tmpGeneSymbol==null){
-							geneSymbol.add("");
-						}else{
-							geneSymbol.add(tmpGeneSymbol);
-						}
-						if(tmpUcscURL==null){
-							ucscURL.add("");
-						}else{
-							ucscURL.add(tmpUcscURL);
-						}*/
-						/*if(tmpUcscURLFiltered==null){
-							ucscURLFiltered.add("");
-						}else{
-							ucscURLFiltered.add(tmpUcscURLFiltered);
-						}*/
-					//}
+					
 	}
 			
 	
@@ -101,7 +105,7 @@
 
 
 
-<div id="geneList" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:1000px;">
+<div id="geneList" class="modalTabContent" style="position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:1000px;">
 
                 <table class="geneFilter">
                 	<thead>
@@ -207,9 +211,9 @@
                     <tr>
                         <th 
                         <%if(myOrganism.equals("Rn")){%>
-                        colspan="12"
+                        colspan="9"
                         <%}else{%>
-                        colspan="10"
+                        colspan="7"
                         <%}%> 
                         class="topLine noSort noBox" style="text-align:left;"><span class="legendBtn"><img src="../web/images/icons/legend_7.png"><span style="position:relative;top:-7px;">Color Code Key</span></span></th>
                         <th 
@@ -230,9 +234,9 @@
                     <tr style="text-align:center;">
                         <th 
                         <%if(myOrganism.equals("Rn")){%>
-                        colspan="12"
+                        colspan="9"
                         <%}else{%>
-                        colspan="10"
+                        colspan="7"
                         <%}%>   
                         class="topLine noSort noBox"></th>
                         <th colspan="1"  class="leftBorder rightBorder noSort"></th>
@@ -255,7 +259,7 @@
                         colspan="5"
                         <%}%>  
                         class="topLine noSort noBox"></th>
-                        <th colspan="3"  class="topLine leftBorder rightBorder noSort" >Image Tracks Represented in Table</th>
+                        
                         <th 
                         <%if(myOrganism.equals("Rn")){%>
                         colspan="3"
@@ -293,22 +297,6 @@
                     <TH>Gene ID</TH>
                     <TH width="10%">Gene Description <span class="geneListToolTip" title="The description from Ensembl or annotations from various sources if the feature is not found in Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>BioType <span class="geneListToolTip" title="The Ensembl biotype or RNA-Seq fraction and size."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Protein Coding 
-                    <%if(myOrganism.equals("Rn")){%>
-                    	/ PolyA+ 
-                    	<span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the Protein Coding track in the image above that consists of protein-coding transcripts from Ensembl and transcripts from the transcriptome reconstruction that were identified in the polyA+ fraction of RNA.">
-                    <%}else{%>
-                    	<span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the Protein Coding track in the image above that consists of protein-coding transcripts from Ensembl and transcripts.">
-                    <%}%>
-                    <img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Long Non-Coding
-                    <%if(myOrganism.equals("Rn")){%>
-                     / Non PolyA+ <span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and transcripts from the transcriptome reconstruction that were identified in only in the total RNA fraction.">
-                     <%}else{%>
-                     	<span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are not protein coding and greater than or equal to 350 base pairs in length.">
-                     <%}%>
-                     <img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    <TH>Small RNA <span class="geneListToolTip" title="An ‘X’ in this column indicates that this feature is from the track in the image above that consists of transcripts from Ensembl that are less than 350 bp and transcribed features from the small RNA fraction (<200 bp).  This track may include protein-coding and non-protein-coding features.  See legend for details on color coding."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH>Location</TH>
                     <TH>Strand</TH>
                     <%if(myOrganism.equals("Rn")){%>
@@ -358,24 +346,12 @@
 						if(!chr.startsWith("chr")){
 							chr="chr"+chr;
 						}
+						if(curGene.getLength()<200){
                         %>
                         <TR class="
 						<% String geneID="";
-						if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>
-                        	singleExon
-						<%}
-						if(tc!=null){%>
-                        	eqtl
-                        <%}
-						if(curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200){%>
-                        	coding
-						<%}else if(!curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200){
-								viewClass="longRNA";%>
-                        		noncoding
-                         <%}else if(curGene.getLength()<200){
 								viewClass="smallRNA";%>
                             	smallnc
-                        <%}%>
                         <%if(curGene.getGeneID().startsWith("ENS")){%>
                         	ensembl
                         <%}%>
@@ -543,21 +519,7 @@
 									<%=bioType%>
                             	<%}%>
                             </TD>
-                            <%if(bioType.equals("protein_coding")&& curGene.getLength()>=200){%>
-                                <TD class="leftBorder">X</TD>
-                                <TD class="leftBorder"></TD>
-                                <TD class="leftBorder rightBorder"></TD>
-                            <%}else{
-								if(curGene.getLength()>=200){%>
-                                    <TD class="leftBorder"></TD>
-                                    <TD class="leftBorder">X</TD>
-                                    <TD class="leftBorder rightBorder"></TD>
-                                <%}else{%>
-                                	<TD class="leftBorder"></TD>
-                                    <TD class="leftBorder"></TD>
-                                    <TD class="leftBorder rightBorder">X</TD>
-                                <%}%>
-                            <%}%>
+                    
                             
                             <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
                             <TD><%=curGene.getStrand()%></TD>
@@ -688,7 +650,8 @@
                                 <%}%>
                              <%}%>
                         </TR>
-                    <%}%>
+                    	<%}
+					}%>
 					<%if(smncRNA!=null){
 						for(int i=0;i<smncRNA.size();i++){
 							SmallNonCodingRNA rna=smncRNA.get(i);
@@ -764,9 +727,7 @@
                                     <%}%>
                                 </TD>
                                 <TD><span title="<200bp includes Coding and Non-Coding RNA">Small RNA</span></TD>
-                                <TD class="leftBorder"></TD>
-                                <TD class="leftBorder"></TD>
-                                <TD class="leftBorder rightBorder">X</TD>
+                             
                                 <TD>chr<%=rna.getChromosome()+":"+dfC.format(rna.getStart())+"-"+dfC.format(rna.getStop())%></TD>
                                 <TD><%=rna.getStrand()%></TD>
                                 <%if(myOrganism.equals("Rn")){%>
@@ -1068,10 +1029,6 @@
 			var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
 			var tbhtml = $('#tblGenes').html();
 			$('#tblGenes').html(tbhtml.replace(expr, '><'));
-			tbhtml = $('#tblBQTL').html();
-			$('#tblBQTL').html(tbhtml.replace(expr, '><'));
-			tbhtml = $('#tblFrom').html();
-			$('#tblFrom').html(tbhtml.replace(expr, '><'));
 		}	
 	}
 </script>
