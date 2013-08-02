@@ -868,7 +868,7 @@
 	
 	
 	
-	$('#tblGenes').dataTable().fnAdjustColumnSizing();
+	//$('#tblGenes').dataTable().fnAdjustColumnSizing();
 	//tblGenesFixed=new FixedColumns( tblGenes, {
  	//	"iLeftColumns": 1,
 	//	"iLeftWidth": 100
@@ -1031,5 +1031,7 @@
 			$('#tblGenes').html(tbhtml.replace(expr, '><'));
 		}	
 	}
+	
+	$('#tblGenes').dataTable().fnAdjustColumnSizing();
 </script>
 

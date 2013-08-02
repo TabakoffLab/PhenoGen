@@ -1,4 +1,273 @@
-<div id="eQTLListFromRegion" class="modalTabContent" style=" display:none; position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:100%;">
+<%@ include file="/web/common/session_vars.jsp" %>
+
+<jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
+<%
+	
+    gdt.setSession(session);
+	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> fullGeneList=new ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene>();
+	DecimalFormat dfC = new DecimalFormat("#,###");
+	String myOrganism="";
+	String fullOrg="";
+	String panel="";
+	String chromosome="";
+	String folderName="";
+	String type="";
+	LinkGenerator lg=new LinkGenerator(session);
+	double pValueCutoff=0.01;
+	int rnaDatasetID=0;
+	int arrayTypeID=0;
+	int min=0;
+	int max=0;
+	if(request.getParameter("species")!=null){
+		myOrganism=request.getParameter("species").trim();
+		if(myOrganism.equals("Rn")){
+			panel="BNLX/SHRH";
+			fullOrg="Rattus_norvegicus";
+		}else{
+			panel="ILS/ISS";
+			fullOrg="Mus_musculus";
+		}
+	}
+	String[] tissuesList1=new String[1];
+	String[] tissuesList2=new String[1];
+	if(myOrganism.equals("Rn")){
+		tissuesList1=new String[4];
+		tissuesList2=new String[4];
+		tissuesList1[0]="Brain";
+		tissuesList2[0]="Whole Brain";
+		tissuesList1[1]="Heart";
+		tissuesList2[1]="Heart";
+		tissuesList1[2]="Liver";
+		tissuesList2[2]="Liver";
+		tissuesList1[3]="Brown Adipose";
+		tissuesList2[3]="Brown Adipose";
+	}else{
+		tissuesList1[0]="Brain";
+		tissuesList2[0]="Whole Brain";
+	}
+	if(request.getParameter("pValueCutoff")!=null){
+		pValueCutoff=Double.parseDouble(request.getParameter("pValueCutoff"));
+	}
+	if(request.getParameter("rnaDatasetID")!=null){
+		rnaDatasetID=Integer.parseInt(request.getParameter("rnaDatasetID"));
+	}
+	if(request.getParameter("arrayTypeID")!=null){
+		arrayTypeID=Integer.parseInt(request.getParameter("arrayTypeID"));
+	}
+	if(request.getParameter("chromosome")!=null){
+		chromosome=request.getParameter("chromosome");
+	}
+	
+	if(request.getParameter("minCoord")!=null){
+		min=Integer.parseInt(request.getParameter("minCoord"));
+	}
+	if(request.getParameter("maxCoord")!=null){
+		max=Integer.parseInt(request.getParameter("maxCoord"));
+	}
+	if(request.getParameter("type")!=null){
+		type=request.getParameter("type");
+	}
+	
+	String[] selectedChromosomes = null;
+	String[] selectedTissues = null;
+	String[] selectedLevels=null;
+	String chromosomeString = null;
+	String tissueString = null;
+	Boolean selectedChromosomeError = null;
+	Boolean selectedTissueError = null;
+	String levelString="core;extended;full";
+	
+	
+	
+	if(request.getParameter("levels")!=null && !request.getParameter("levels").equals("")){			
+				String tmpSelectedLevels = request.getParameter("levels");
+				selectedLevels=tmpSelectedLevels.split(";");
+				log.debug("Getting selected levels:"+tmpSelectedLevels);
+				levelString = "";
+				//selectedLevelError = true;
+				for(int i=0; i< selectedLevels.length; i++){
+					//selectedLevelsError = false;
+					levelString = levelString + selectedLevels[i] + ";";
+				}
+	}else{
+		log.debug("Getting selected levels: NULL Using defaults.");
+		selectedLevels=levelString.split(";");
+	}
+	
+	
+	//
+	// Create chromosomeNameArray and chromosomeSelectedArray 
+	// These depend on the species
+	//
+	
+	int numberOfChromosomes;
+	String[] chromosomeNameArray = new String[25];
+
+	String[] chromosomeDisplayArray = new String[25];
+	String doubleQuote = "\"";
+	String isSelectedText = " selected="+doubleQuote+"true"+doubleQuote;
+	String isNotSelectedText = " ";
+	String chromosomeSelected = isNotSelectedText;
+	String speciesGeneChromosome= myOrganism.toLowerCase()+chromosome.replace("chr","");
+
+	if(myOrganism.equals("Mm")){
+		numberOfChromosomes = 20;
+		for(int i=0;i<numberOfChromosomes-1;i++){
+			chromosomeNameArray[i]="mm"+Integer.toString(i+1);
+			chromosomeDisplayArray[i]="Chr "+Integer.toString(i+1);
+		}
+		chromosomeNameArray[numberOfChromosomes-1] = "mmX";
+		chromosomeDisplayArray[numberOfChromosomes-1]="Chr X";
+	}else{
+		numberOfChromosomes = 21;
+		// assume if not mouse that it's rat
+		for(int i=0;i<numberOfChromosomes-1;i++){
+			chromosomeNameArray[i]="rn"+Integer.toString(i+1);
+			chromosomeDisplayArray[i]="Chr "+Integer.toString(i+1);
+		}
+		chromosomeNameArray[numberOfChromosomes-1] = "rnX";
+		chromosomeDisplayArray[numberOfChromosomes-1]="Chr X";
+	}
+	//
+	// Create tissueNameArray and tissueSelectedArray
+	// These are only defined for Rat
+	//
+	int numberOfTissues;
+	String[] tissueNameArray = new String[4];
+	String tissueSelected = isNotSelectedText;
+	if(myOrganism.equals("Mm")){
+		numberOfTissues = 1;
+		tissueNameArray[0]="Brain";
+	}
+	else{
+		numberOfTissues = 4;
+		// assume if not mouse that it's rat
+		tissueNameArray[0]="Brain";
+		tissueNameArray[1]="Heart";
+		tissueNameArray[2]="Liver";
+		tissueNameArray[3]="BAT";
+	}
+	
+	// Get information about which tissues to view -- easier for mouse
+		
+		if(myOrganism.equals("Mm")){
+			tissueString = "Brain;";
+			selectedTissues=new String[1];
+			selectedTissues[0]="Brain";
+		}
+		else{
+			// we assume if not mouse that it's rat
+			if(request.getParameter("tissues")!=null && !request.getParameter("tissues").equals("")){			
+				String tmpSelectedTissues = request.getParameter("tissues");
+				selectedTissues=tmpSelectedTissues.split(";");
+				log.debug("Getting selected tissues:"+selectedTissues);
+				tissueString = "";
+				selectedTissueError = true;
+				for(int i=0; i< selectedTissues.length; i++){
+					selectedTissueError = false;
+					tissueString = tissueString + selectedTissues[i] + ";";
+				}
+				log.debug(" Selected Tissues: " + tissueString);
+				//log.debug(" selectedTissueError: " + selectedTissueError);
+				// We insist that the tissue string be at least one long
+			}
+			/*else if(request.getParameter("chromosomeSelectionAllowed")!=null){
+				// We previously allowed chromosome/tissue selection, but now we got no tissues back
+				// Therefore we did not include any tissues
+				selectedTissueError=true;
+			}*/
+			else{
+				//log.debug("could not get selected tissues");
+				//log.debug("and we did not previously allow chromosome selection");
+				//log.debug("therefore include all tissues");
+				// we are not allowing chromosome/tissue selection.  Include all tissues.
+				selectedTissues = new String[numberOfTissues];
+				selectedTissueError=false;
+				tissueString = "";
+				for(int i=0; i< numberOfTissues; i++){
+					tissueString = tissueString + tissueNameArray[i] + ";";
+					selectedTissues[i]=tissueNameArray[i];
+				}
+			}
+		}
+		
+		
+		// Get information about which chromosomes to view
+
+		if(request.getParameter("chromosomes")!=null && !request.getParameter("chromosomes").equals("")){			
+			String tmpSelectedChromosomes = request.getParameter("chromosomes");
+			selectedChromosomes=tmpSelectedChromosomes.split(";");
+			//log.debug("selected chr count:"+selectedChromosomes.length+":"+selectedChromosomes[0].toString());
+			chromosomeString = "";
+			selectedChromosomeError = true;
+			for(int i=0; i< selectedChromosomes.length; i++){
+				chromosomeString = chromosomeString + selectedChromosomes[i] + ";";
+				if(selectedChromosomes[i].equals(speciesGeneChromosome)){
+					selectedChromosomeError=false;
+				}
+			}
+			log.debug(" Selected Chromosomes: " + chromosomeString);
+			//log.debug(" selectedChromosomeError: " + selectedChromosomeError);
+			// We insist that the chromosome string include speciesGeneChromosome 
+		}
+		else if(request.getParameter("chromosomeSelectionAllowed")!=null){
+			// We previously allowed chromosome selection, but now we got no chromosomes back
+			// Therefore we did not include the desired chromosome
+			selectedChromosomeError=true;
+		}
+		else{
+			//log.debug("could not get selected chromosomes");
+			//log.debug("and we did not previously allow chromosome selection");
+			//log.debug("therefore include all chromosomes");
+			// we are not allowing chromosome selection.  Include all chromosomes.
+			selectedChromosomes = new String[numberOfChromosomes];
+			selectedChromosomeError=false;
+			chromosomeString = "";
+			for(int i=0; i< numberOfChromosomes; i++){
+				chromosomeString = chromosomeString + chromosomeNameArray[i] + ";";
+				selectedChromosomes[i]=chromosomeNameArray[i];
+			}
+		}
+		
+		String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,0.01,false);
+		int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
+		folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
+	
+	/*if(min<max){
+			if(min<1){
+				min=1;
+			}
+			/fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff);					
+			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
+			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
+			folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+					//String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
+					//String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
+					//String tmpUcscURLFiltered =gdt.getUCSCURLFiltered();//(String)session.getAttribute("ucscURLFiltered");
+					/*if(tmpURL!=null){
+						genURL.add(tmpURL);
+						if(tmpGeneSymbol==null){
+							geneSymbol.add("");
+						}else{
+							geneSymbol.add(tmpGeneSymbol);
+						}
+						if(tmpUcscURL==null){
+							ucscURL.add("");
+						}else{
+							ucscURL.add(tmpUcscURL);
+						}*/
+						/*if(tmpUcscURLFiltered==null){
+							ucscURLFiltered.add("");
+						}else{
+							ucscURLFiltered.add(tmpUcscURLFiltered);
+						}*/
+					//}
+	//}
+			
+	
+%>
+
+<div id="eQTLListFromRegion" class="modalTabContent" style="position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:998px;">
 		
         
 		<table class="geneFilter">
@@ -206,11 +475,11 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 	ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
   if(session.getAttribute("getTransControllingEQTL")==null){
   	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
-            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-71px">
+            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-56px">
             	<span class="trigger less" name="eQTLRegionNote" >EQTL Region</span>
                 <span class="eQTLListToolTip" title="This section lists the regions being reported as begin associated with control of the genes following.  It is important to note that the region entered may only be close to or overlap with a defined SNP or Region between SNPs and may larger than the region selected or may only include part of the region selected."><img src="<%=imagesDir%>icons/info.gif"></span>
             </div>
-            <div id="eQTLRegionNote" style="width:100%; position:relative; top:-71px">
+            <div id="eQTLRegionNote" style="width:100%; position:relative; top:-56px">
             Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the following region(s):<BR />
             <%for(int i=0;i<eQTLRegions.size();i++){%>
                 <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=eQTLRegions.get(i)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank"><%=eQTLRegions.get(i)%></a><BR />
@@ -253,7 +522,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 		String svgPdfFile= shortRegionCentricPath + "/circos"+cutoffTimesTen+"/svg/circos_new.pdf";
 	%>
                   
-   	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;top:-62px; position:relative;">
+   	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;top:-56px; position:relative;">
     	<span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span>
     	<div class="inpageHelp" style="display:inline-block;"><img id="HelpRevCircos" class="helpImage" src="../web/images/icons/help.png" /></div>
         <span style="font-size:12px; font-weight:normal;">
@@ -268,7 +537,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
         <span class="eQTLListToolTip" title="To control the viewable area of the Circos Plot below simply select your prefered size."><img src="<%=imagesDir%>icons/info.gif"></span>
     </div> 
     <%if(session.getAttribute("getTransControllingEQTLCircos")==null){%>
-    <div id="circosPlot" style="text-align:center; top:-62px; position:relative;">
+    <div id="circosPlot" style="text-align:center; top:-45px; position:relative;">
 		<div style="display:inline-block;text-align:center; width:100%;">
         	<!--<span id="circosMinMax" style="cursor:pointer;"><img src="web/images/icons/circos_min.jpg"></span>-->
 			<a href="<%=svgPdfFile%>" target="_blank">
@@ -526,6 +795,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 					"bDeferRender": true,
 					"sDom": '<"leftSearch"fr><t>'
 					});
+					
 	
 					$('#geneIDFCBX').click( function(){
 							displayColumns(tblFrom,1,1,$('#geneIDFCBX').is(":checked"));
@@ -581,15 +851,9 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 						});
 			  </script>
       	<%}else{%>
-        	<script type="text/javascript">
-				tblFromAdjust=true;
-			</script>
       		No genes to display.  Try changing the filtering parameters.
 		<%}%>
      <%}else{%>
-    	 <script type="text/javascript">
-			 tblFromAdjust=true;
-			</script>
      	<strong><%=session.getAttribute("getTransControllingEQTL")%></strong>
      <%}%>
 </div><!-- end eQTL List-->
@@ -601,20 +865,16 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 
 
 <script type="text/javascript">
-	
 	//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
 	//simply remove all whitespace from html in a table and put it back.
 	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
  		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
 		if (ieversion<10){
 			var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
-			var tbhtml = $('#tblGenes').html();
-			$('#tblGenes').html(tbhtml.replace(expr, '><'));
-			tbhtml = $('#tblBQTL').html();
-			$('#tblBQTL').html(tbhtml.replace(expr, '><'));
-			tbhtml = $('#tblFrom').html();
+			var tbhtml = $('#tblFrom').html();
 			$('#tblFrom').html(tbhtml.replace(expr, '><'));
 		}	
 	}
+	$('#tblFrom').dataTable().fnAdjustColumnSizing();
 </script>
 

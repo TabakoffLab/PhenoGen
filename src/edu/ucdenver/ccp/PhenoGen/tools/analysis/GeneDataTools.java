@@ -3081,7 +3081,74 @@ public class GeneDataTools {
         
         return bqtl;
     }
-    
+    public BQTL getBQTL(String id){
+        
+        BQTL bqtl=null;
+        session.removeAttribute("getBQTLsERROR");
+        boolean run=true;
+        
+            String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
+                            "where pq.rgd_id="+id+
+                            "and pq.chromosome=c.chromosome_id";
+            try{ 
+            try{
+                log.debug("SQL bQTL FROM QUERY\n"+query);
+                PreparedStatement ps = dbConn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    String mgiID=rs.getString(2);
+                    String rgdID=rs.getString(3);
+                    String symbol=rs.getString(5);
+                    String name=rs.getString(6);
+                    double lod=rs.getDouble(8);
+                    double pvalue=rs.getDouble(9);
+                    String trait=rs.getString(10);
+                    String subTrait=rs.getString(11);
+                    String traitMethod=rs.getString(12);
+                    String phenotype=rs.getString(13);
+                    String diseases=rs.getString(14);
+                    String rgdRef=rs.getString(15);
+                    String pubmedRef=rs.getString(16);
+                    String relQTLs=rs.getString(18);
+                    String candidGene=rs.getString(17);
+                    long start=rs.getLong(19);
+                    long stop=rs.getLong(20);
+                    String mapMethod=rs.getString(21);
+                    String chromosome=rs.getString(22);
+                    bqtl=new BQTL(id,mgiID,rgdID,symbol,name,trait,subTrait,traitMethod,phenotype,diseases,rgdRef,pubmedRef,mapMethod,relQTLs,candidGene,lod,pvalue,start,stop,chromosome);
+                }
+                ps.close();
+
+
+            }catch(SQLException e){
+                log.error("Error retreiving bQTLs.",e);
+                e.printStackTrace(System.err);
+                session.setAttribute("getBQTLsERROR","Error retreiving region bQTLs.  Please try again later.  The administrator has been notified of the problem.");
+                 Email myAdminEmail = new Email();
+                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.getBQTLs");
+                 myAdminEmail.setContent("There was an error while running getBQTLs.",e);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                }
+            }
+            }catch(Exception er){
+                er.printStackTrace(System.err);
+                session.setAttribute("getBQTLsERROR","Error retreiving region bQTLs.  Please try again later.  The administrator has been notified of the problem.");
+                 Email myAdminEmail = new Email();
+                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.getBQTLs");
+                 myAdminEmail.setContent("There was an error while running getBQTLs.",er);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                }
+            }
+        
+        
+        return bqtl;
+    }
     
     public String getBQTLRegionFromSymbol(String qtlSymbol,String organism,Connection dbConn){
         if(qtlSymbol.startsWith("bQTL:")){

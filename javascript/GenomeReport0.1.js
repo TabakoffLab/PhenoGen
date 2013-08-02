@@ -11,7 +11,7 @@ $(document).on('click','span.triggerLoad', function (event){
 			$(this).addClass("less");
 			if(baseName=="regionTable" && reportSelectedTrack!=null){
 				loadTrackTable();
-			}else if(baseName=""){
+			}else if(baseName="regionEQTLTable"){
 				loadEQTLTable();
 			}
         } else {
@@ -52,7 +52,19 @@ function loadTrackTable(){
 }
 
 function loadEQTLTable(){
-
+	var jspPage="web/GeneCentric/regionEQTLTable.jsp";
+	var params={
+			species: organism,
+			minCoord: minCoord,
+			maxCoord: maxCoord,
+			chromosome: chr,
+			rnaDatasetID: rnaDatasetID,
+			arrayTypeID: arrayTypeID,
+			pValueCutoff:pValueCutoff,
+			folderName: folderName
+		};
+	loadDivWithPage("div#regionEQTLTable",jspPage,params,
+		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
 }
 
 function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
@@ -147,4 +159,10 @@ function displayDetailedView(track){
 	if(!$('div#regionTable').is(":hidden")){
 			loadTrackTable();
 	}
+}
+
+
+function DisplaySelectedDetailReport(jspPage,params){
+	loadDivWithPage("div#selectedReport",jspPage,params,
+		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
 }

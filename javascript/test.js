@@ -607,6 +607,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		var x=this.gsvg.width/2+(lblStr.length/2)*7.5+16;
 		for(var i=0;i<legendList.length;i++){
 			this.svg.append("rect")
+				.attr("class","legend")
 				.attr("x",x)
 				.attr("y",0)
 				.attr("rx",3)
@@ -616,7 +617,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				.attr("fill",legendList[i].color)
 				.attr("stroke",legendList[i].color);
 			lblStr=new String(legendList[i].label);
-			this.svg.append("text").text(lblStr).attr("x",x+18).attr("y",12);
+			this.svg.append("text").text(lblStr).attr("class","legend").attr("x",x+18).attr("y",12);
 			x=x+25+lblStr.length*8;
 		}
 	}.bind(this);
@@ -842,9 +843,6 @@ function GeneTrack(gsvg,data,trackClass,label){
 			var e = jQuery.Event("keyup");
 			e.which = 32; // # Some key code value
 			var newLevel=this.gsvg.levelNumber+1;
-			//console.log("newLevel:"+newLevel);
-			//filter table
-			//$('#tblGenes_filter input').val(d.getAttribute("ID")).trigger(e);
 			if(!$('div#collapsableReport').is(':hidden')){
 				$('div#collapsableReport').hide();
 				$("span[name='collapsableReport']").removeClass("less");
@@ -854,7 +852,6 @@ function GeneTrack(gsvg,data,trackClass,label){
 			}
 			if($('div#selectedDetail').is(':hidden')){
 				$('div#selectedDetail').show();
-
 			}
 			var localTxType="none";
 			if(d.getAttribute("biotype")=="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
@@ -864,71 +861,36 @@ function GeneTrack(gsvg,data,trackClass,label){
 			}else if((d.getAttribute("stop")-d.getAttribute("start"))<200){
 				localTxType="small";
 			}
-			if(svgList[newLevel]==null){
-				var newSvg=new GenomeSVG("div#selectedImage",this.gsvg.width,d.getAttribute("extStart"),d.getAttribute("extStop"),this.gsvg.levelNumber+1,d.getAttribute("ID"),"transcript");
-				newSvg.xMin=d.getAttribute("extStart")-(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
-				newSvg.xMax=d.getAttribute("extStop")+(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
-				svgList[newLevel]=newSvg;
-				/*var closeBtn=newSvg.scaleSVG.append("g")
-					.attr("class","close")
-					.attr("transform", "translate(944,0)")
-					.attr("cursor","default")
-					.on("mouseover", function(d) { 
-						newSvg.scaleSVG.select("rect").style("fill","#789abd");
-		            })
-					.on("mouseout", function(d) {  
-					  	newSvg.scaleSVG.select("rect").style("fill","#98badd");
-		        	})
-					.on("mousedown", function(d) {
-						d3.select("#settingsLevel"+newSvg.levelNumber).remove();
-						d3.select("#Level"+newSvg.levelNumber).remove();
-						$('#tblGenes_filter input').val("").trigger(e);
-						svgList[newSvg.levelNumber]=null;
-					});
-				closeBtn.append("rect")
-						.attr("rx",3)
-						.attr("ry",3)
-		    			.attr("height",16)
-						.attr("width",16)
-						.attr("fill","#98badd")
-						.attr("stroke","#789abd")
-						.attr("stroke-width",1);
-						//.attr("fill",function(d){return d3.rgb("#98badd");});
-				closeBtn.append("line")
-							.attr("x1",3)
-							.attr("x2",13)
-							.attr("y1",3)
-							.attr("y2",13)
-							.attr("stroke","white")
-							.attr("stroke-width",2);
-				closeBtn.append("line")
-							.attr("x1",13)
-							.attr("x2",3)
-							.attr("y1",3)
-							.attr("y2",13)
-							.attr("stroke","white")
-							.attr("stroke-width",2);*/
-				//d3.select("Level"+newSvg.levelNumber).select(".x.axis").append("g").attr("class","axisLbl").append("text").text(d.getAttribute("ID")).attr("x", ((newSvg.width-(newSvg.margin*2))/2)).attr("y",-40);
-				//d3.select("Level"+newSvg.levelNumber).select(".scale").append("text").text(d.getAttribute("ID")).attr("class","axisLbl").attr("x", ((newSvg.width-(newSvg.margin*2))/2)).attr("y",-40);
-				svgList[newLevel].txType=localTxType;
-				svgList[newLevel].selectedData=d;
-				svgList[newLevel].addTrack("trx",2);
-			}else{
-				/*svgList[newLevel].scaleSVG.transition()        
-					.duration(300)      
-					.style("opacity", 0);
-				svgList[newLevel].svg.transition()        
-					.duration(300)      
-					.style("opacity", 0);*/
-				svgList[newLevel].xScale.domain([d.getAttribute("extStart"),d.getAttribute("extStop")]);
-				svgList[newLevel].xMin=d.getAttribute("extStart")-(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
-				svgList[newLevel].xMax=d.getAttribute("extStop")+(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
-				svgList[newLevel].scaleSVG.select(".x.axis").call(svgList[newLevel].xAxis);
-				d3.select("#Level"+newLevel).select(".axisLbl").text(d.getAttribute("ID")).attr("x", ((this.gsvg.width-(this.gsvg.margin*2))/2)).attr("y",-40);
-				svgList[newLevel].txType=localTxType;
-				svgList[newLevel].selectedData=d;
+			if(localTxType=="protein"||localTxType=="long"){
+				if(svgList[newLevel]==null){
+					var newSvg=new GenomeSVG("div#selectedImage",this.gsvg.width,d.getAttribute("extStart"),d.getAttribute("extStop"),this.gsvg.levelNumber+1,d.getAttribute("ID"),"transcript");
+					newSvg.xMin=d.getAttribute("extStart")-(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
+					newSvg.xMax=d.getAttribute("extStop")+(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
+					svgList[newLevel]=newSvg;
+					svgList[newLevel].txType=localTxType;
+					svgList[newLevel].selectedData=d;
+					svgList[newLevel].addTrack("trx",2);
+				}else{
+					svgList[newLevel].xScale.domain([d.getAttribute("extStart"),d.getAttribute("extStop")]);
+					svgList[newLevel].xMin=d.getAttribute("extStart")-(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
+					svgList[newLevel].xMax=d.getAttribute("extStop")+(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
+					svgList[newLevel].scaleSVG.select(".x.axis").call(svgList[newLevel].xAxis);
+					d3.select("#Level"+newLevel).select(".axisLbl").text(d.getAttribute("ID")).attr("x", ((this.gsvg.width-(this.gsvg.margin*2))/2)).attr("y",-40);
+					svgList[newLevel].txType=localTxType;
+					svgList[newLevel].selectedData=d;
 
-				svgList[newLevel].update();
+					svgList[newLevel].update();
+				}
+				$('div#selectedReport').hide();
+				$('div#selectedImage').show();
+			}else if(localTxType=="small"){
+				$('div#selectedImage').hide();
+				$('div#selectedReport').show();
+				//Add SVG graphic later
+				//For now processing.js graphic is in jsp page of the detail report
+				var jspPage="web/GeneCentric/viewSmallNonCoding.jsp";
+				var params={id: d.getAttribute("ID"),name: "smRNA_"+d.getAttribute("ID")};
+				DisplaySelectedDetailReport(jspPage,params);
 			}
 			
 	}.bind(that);
@@ -1600,6 +1562,27 @@ function QTLTrack(gsvg,data,trackClass,density){
 		return dispData;
 	}.bind(that);
 
+	that.setupDetailedView=function(d){
+			if(!$('div#collapsableReport').is(':hidden')){
+				$('div#collapsableReport').hide();
+				$("span[name='collapsableReport']").removeClass("less");
+			}
+			if($('div#selectedDetailHeader').is(':hidden')){
+				$('div#selectedDetailHeader').show();
+			}
+			if($('div#selectedDetail').is(':hidden')){
+				$('div#selectedDetail').show();
+			}
+			
+			//No SVG to add so Hide Image and Show report
+			$('div#selectedImage').hide();
+			$('div#selectedReport').show();
+				var jspPage="web/GeneCentric/bQTLReport.jsp";
+				var params={id: d.getAttribute("ID"),species: organism};
+				DisplaySelectedDetailReport(jspPage,params);
+			
+	}.bind(that);
+
 	//update
 	var qtls=that.svg.selectAll(".qtl")
    			.data(data,key)
@@ -1625,7 +1608,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 		.style("cursor", "pointer")
 		//.on("mouseover", that.onMouseOver)
 		//.on("mouseout", that.onMouseOut);
-		//.on("mousedown", setupTranscripts)
+		.on("click", that.setupDetailedView)
 		.on("mouseover", function(d) { 
 			d3.select(this).style("fill","green");
             that.gsvg.get('tt').transition()        
@@ -1786,12 +1769,16 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 		
 		
 		 tx.exit().remove();
-		 /*that.scaleSVG.transition()        
-				.duration(300)      
-				.style("opacity", 1);
-	 	that.svg.transition()        
-				.duration(300)      
-				.style("opacity", 1);*/
+		 that.svg.selectAll(".legend").remove();
+		 var legend=[];
+		if(that.gsvg.txType=="protein"){
+			legend=[{color:"#DFC184",label:"Ensembl"},{color:"#7EB5D6",label:"RNA-Seq"}];
+		}else if(that.gsvg.txType=="long"){
+			legend=[{color:"#B58AA5",label:"Ensembl"},{color:"#CECFCE",label:"RNA-Seq"}];
+		}else if(that.gsvg.txType=="small"){
+			legend=[{color:"#FFCC00",label:"Ensembl"},{color:"#99CC99",label:"RNA-Seq"}];
+		}
+		that.drawLegend(legend);
 	}.bind(that);
 
 	that.calcY=function(d,i){

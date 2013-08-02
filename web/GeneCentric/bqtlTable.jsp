@@ -448,5 +448,7 @@
 			
 		}	
 	}
+	
+	$('#tblBQTL').dataTable().fnAdjustColumnSizing();
 </script>
 

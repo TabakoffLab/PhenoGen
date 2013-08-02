@@ -7,6 +7,7 @@ var rnaDatasetID=<%=rnaDatasetID%>;
 var arrayTypeID=<%=arrayTypeID%>;
 var panel="<%=panel%>";
 var forwardPValueCutoff=<%=forwardPValueCutoff%>;
+var pValueCutoff=<%=pValueCutoff%>;
 var filterExpanded=0;
 var tblBQTLAdjust=false;
 var tblFromAdjust=false;
@@ -24,9 +25,9 @@ var ucscgeneID="";
 	div#collapsableReport li.selected{
 		background-color:#CCCCCC;
 	}
-	div#collapsableReport td.layout {
+	/*div#collapsableReport td.layout {
 		border:1px solid #CECECE;
-	}
+	}*/
 </style>
 
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
@@ -228,6 +229,8 @@ var ucscgeneID="";
 				selectedChromosomes[i]=chromosomeNameArray[i];
 			}
 		}
+		
+		
 %>
     
     <script>
@@ -335,7 +338,7 @@ var ucscgeneID="";
     		<span class="trigger less" name="collapsableReport" >Region Summary</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
     </div>
-    <div id="collapsableReport">
+    <div id="collapsableReport" style="width:100%">
     	<table  style="width:100%;" cellspacing="0">
         <TR>
         	<TD colspan="2" style=" text-align:center; font-size:16px;" class="layout">
@@ -363,6 +366,7 @@ var ucscgeneID="";
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
     		</div>
     		<div id="regionTable" style="display:none;"></div>
+            <BR /><BR /><BR /><BR />
             <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
     		<span class="triggerLoad" name="regionEQTLTable" style="margin-left:30px;">Genes with an EQTL in region</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>

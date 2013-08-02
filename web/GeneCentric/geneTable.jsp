@@ -681,8 +681,8 @@
 	"bProcessing": true,
 	"bStateSave": false,
 	"bAutoWidth": true,
-	"sScrollX": "950px",
-	"sScrollY": "650px",
+	"sScrollX": "850px",
+	"sScrollY": "550px",
 	"aaSorting": [[ sortCol, "desc" ]],
 	/*"aoColumnDefs": [
       { "bVisible": false, "aTargets": geneTargets }
