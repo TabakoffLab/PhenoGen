@@ -560,7 +560,7 @@ div.closeWindow {
 }
 
 /* Used for expanding/contracting */
-.trigger,.tblTrigger,.triggerImage,.triggerLoad{
+.trigger,.tblTrigger,.triggerImage,.triggerLoad,.triggerNoAction{
         cursor: pointer;
         /* needed for IE?  Don't think so */
 	/* cursor: hand; */

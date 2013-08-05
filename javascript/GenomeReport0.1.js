@@ -67,6 +67,8 @@ function loadEQTLTable(){
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
 }
 
+
+
 function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
 	$(divSelector).html(loadingHTML);
 	$.ajax({

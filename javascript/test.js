@@ -51,6 +51,8 @@ $(document).on("change","select[name='displaySelect']", function(){
 var svgList=new Array();
 var processAjax=0;
 var ajaxList=new Array();
+var selectedGeneSymbol="";
+var selectedID="";
 
 //Setup some global functions
 d3.select('html')
@@ -885,8 +887,13 @@ function GeneTrack(gsvg,data,trackClass,label){
 
 					svgList[newLevel].update();
 				}
-				$('div#selectedReport').hide();
+				selectedGeneSymbol=d.getAttribute("geneSymbol");
+				selectedID=d.getAttribute("ID");
+				$('div#selectedReport').show();
 				$('div#selectedImage').show();
+				var jspPage="web/GeneCentric/geneReport.jsp";
+				var params={};
+				DisplaySelectedDetailReport(jspPage,params)
 			}else if(localTxType=="small"){
 				$('div#selectedImage').hide();
 				$('div#selectedReport').show();
