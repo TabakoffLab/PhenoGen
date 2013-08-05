@@ -2759,8 +2759,8 @@ public class GeneDataTools {
             /*for (int i = 0; i < perlArgs.length; i++) {
                 log.debug(i + " perlArgs::" + perlArgs[i]);
             }*/
-            /*String[] envVar=perlEnvVar.split(",");
-            for (int i = 0; i < envVar.length; i++) {
+            String[] envVar=perlEnvVar.split(",");
+            /*for (int i = 0; i < envVar.length; i++) {
                 log.debug(i + " EnvVar::" + envVar[i]);
             }*/
 
