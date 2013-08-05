@@ -2,7 +2,8 @@
 
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 <%
-	
+	java.util.Date startDate=new java.util.Date();
+	log.debug("Starting eQTL from region.");
     gdt.setSession(session);
 	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> fullGeneList=new ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene>();
 	DecimalFormat dfC = new DecimalFormat("#,###");
@@ -228,7 +229,8 @@
 				selectedChromosomes[i]=chromosomeNameArray[i];
 			}
 		}
-		
+		java.util.Date time=new java.util.Date();
+		log.debug("Setup before finging Path:"+(time.getTime()-startDate.getTime()));
 		String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,0.01,false);
 		int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
 		folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
@@ -264,7 +266,8 @@
 					//}
 	//}
 			
-	
+	time=new java.util.Date();
+	log.debug("Setup after finging Path:"+(time.getTime()-startDate.getTime()));
 %>
 
 <div id="eQTLListFromRegion" class="modalTabContent" style="position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:998px;">
@@ -472,7 +475,11 @@
                   </table>
 <% log.debug("before eQTL table constr");
 ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
+	time=new java.util.Date();
+	log.debug("Setup after getcontrolling eqtls:"+(time.getTime()-startDate.getTime()));
 	ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
+	time=new java.util.Date();
+	log.debug("Setup after get eqtls regions:"+(time.getTime()-startDate.getTime()));
   if(session.getAttribute("getTransControllingEQTL")==null){
   	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
             <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-56px">
@@ -608,7 +615,10 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
         	<%}else{%>
             	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own <a href="http://david.abcc.ncifcrf.gov/" target="_blank">here</a>.<span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div></div>
             <%}
-			log.debug("end DAVID setup");%>	
+			log.debug("end DAVID setup");
+			time=new java.util.Date();
+			log.debug("before setting up tables:"+(time.getTime()-startDate.getTime()));
+			%>	
 		<BR />	
 	
 	<TABLE name="items" id="tblFrom" class="list_base" cellpadding="0" cellspacing="0">
@@ -780,7 +790,10 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
                             
                         </TR>
                     <%} //end if
-					}//end for tcOutQTLs%>
+					}//end for tcOutQTLs
+					time=new java.util.Date();
+					log.debug("Total time:"+(time.getTime()-startDate.getTime()));
+					%>
                    	 
 				 </tbody>
               </table>

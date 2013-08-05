@@ -184,27 +184,31 @@ registerKeyboardHandler = function(callback) {
 //Helper functions
 
 function getAllChildrenByName(parentNode,name){
-	var listInit=parentNode.childNodes;
 	var list=[];
 	var listCount=0;
-	for(var k=0;k<listInit.length;k++){
-		//console.log(txListInit.item(k).nodeName);
-		if(listInit.item(k).nodeName==name){
-			list[listCount]=listInit.item(k);
-			listCount++;
+	if(parentNode!=undefined && parentNode.childNodes!=undefined){
+		var listInit=parentNode.childNodes;
+		for(var k=0;k<listInit.length;k++){
+			//console.log(txListInit.item(k).nodeName);
+			if(listInit.item(k).nodeName==name){
+				list[listCount]=listInit.item(k);
+				listCount++;
+			}
 		}
 	}
 	return list;
 }
 
 function getFirstChildByName(parentNode,name){
-	var listInit=parentNode.childNodes;
 	var node=null;
-	var found=false;
-	for(var k=0;k<listInit.length&&!found;k++){
-		if(listInit.item(k).nodeName==name){
-			node=listInit.item(k);
-			found=true;
+	if(parentNode!=undefined && parentNode.childNodes!=undefined){
+		var listInit=parentNode.childNodes;
+		var found=false;
+		for(var k=0;k<listInit.length&&!found;k++){
+			if(listInit.item(k).nodeName==name){
+				node=listInit.item(k);
+				found=true;
+			}
 		}
 	}
 	return node;

@@ -2380,7 +2380,7 @@ public class GeneDataTools {
                 TranscriptCluster curTC=null;
                 while(rs.next()){
                     String tcID=rs.getString(1);
-                    log.debug("process:"+tcID);
+                    //log.debug("process:"+tcID);
                     String tcChr=rs.getString(2);
                     int tcStrand=rs.getInt(3);
                     long tcStart=rs.getLong(4);
@@ -2393,10 +2393,10 @@ public class GeneDataTools {
                             //transcriptClusters.add(curTC);
                         }
                         curTC=new TranscriptCluster(tcID,tcChr,Integer.toString(tcStrand),tcStart,tcStop,tcLevel);
-                        log.debug("create transcript cluster:"+tcID);
+                        //log.debug("create transcript cluster:"+tcID);
                     }
                     String tissue=rs.getString(7);
-                    log.debug("tissue:"+tissue+":");
+                    //log.debug("tissue:"+tissue+":");
                     double pval=Math.pow(10, (-1*rs.getDouble(8)));
                     String marker_name=rs.getString(9);
                     String marker_chr=rs.getString(10);
@@ -2759,10 +2759,10 @@ public class GeneDataTools {
             /*for (int i = 0; i < perlArgs.length; i++) {
                 log.debug(i + " perlArgs::" + perlArgs[i]);
             }*/
-            String[] envVar=perlEnvVar.split(",");
+            /*String[] envVar=perlEnvVar.split(",");
             for (int i = 0; i < envVar.length; i++) {
                 log.debug(i + " EnvVar::" + envVar[i]);
-            }
+            }*/
 
 
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
