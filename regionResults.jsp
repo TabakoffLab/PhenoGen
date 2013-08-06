@@ -215,6 +215,7 @@ var ucscgeneID="";
 %>
     
     <script>
+		hideWorking();
 		var tisLen=<%=tissuesList1.length%>;
 		/*$(".trigger").click(function(){
 			var baseName = $(this).attr("name");
