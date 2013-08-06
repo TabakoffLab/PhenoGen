@@ -44,7 +44,7 @@
 
 	
 	<div class="dataContainer" >
-    <B>Unfortunately a hardware failure is currently preventing us from displaying results or performing new searches.  We are trying to find a solution. This feature will be available as soon as possible.  We are very sorry for any inconvenience this may cause.</B>
+    <B>Unfortunately a hardware failure has made it difficult to continue to provide the Literature Search Option.  Any previous results will still be available, but we will no longer support new searches.  We are very sorry for any inconvenience this may cause.</B>
 <%
         	String header = "";
         	String columnHeader = "";
