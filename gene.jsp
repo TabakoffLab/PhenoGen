@@ -545,31 +545,8 @@ Or
 	}
 </script>
 
-<%if(!region&&genURL.size()>0){%>
-	<div style="text-align:center;">
-        <div id="javaError" style="display:none;">
-            <BR /><BR /><br />
-            <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for this page.  Please correct the error listed below.  <BR />
-            <BR />
-        </div>
-        
-        <span id="disabledJava" style="display:none;margin-left:40px;">
-        <span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
-                    To enable Java in your browser or operating system, see:<BR><BR> 
-                    Firefox: <a href="http://support.mozilla.org/en-US/kb/unblocking-java-plugin" target="_blank">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
-                    Internet Explorer: <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
-                    Safari: <a href="http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html" target="_blank">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
-                    Chrome: <a href="http://java.com/en/download/faq/chrome.xml" target="_blank">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
-        
-        <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
-        <span id="installJava" style="display:none;" class="button">Install Java</span>
-    </div>
-    
-
-	<%@ include file="geneResults.jsp" %>
-	<%@ include file="web/GeneCentric/resultsHelp.jsp" %>
-<%}else if(region && genURL.size()>0){%>
-
+<%if(genURL.size()>0){%>
+	
 	<%@ include file="regionResults.jsp" %>
     <%@ include file="web/GeneCentric/resultsHelp.jsp" %>
 
