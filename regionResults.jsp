@@ -1,3 +1,4 @@
+
 <script type="text/javascript">
 var trackString="coding,noncoding,snp,smallnc";
 var minCoord=<%=min%>;

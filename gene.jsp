@@ -522,7 +522,7 @@ Or
 		//document.tooltip();
 </script>
 
-
+<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
 
 
 
@@ -565,27 +565,7 @@ Or
         <span id="installJava" style="display:none;" class="button">Install Java</span>
     </div>
     
-    <script src="http://www.java.com/js/deployJava.js"></script>
-            <script>
-                // check if current JRE version is greater than 1.5.0 
-                 if(!navigator.javaEnabled()){
-                        $('#javaError').css("display","inline-block");
-                        $('#disabledJava').css("display","inline-block");
-						//alert("Java not enabled");
-                 }else if (deployJava.versionCheck('1.6.0+') == false) {
-                     $('#javaError').css("display","inline-block");
-                    $('#noJava').css("display","inline-block");                  
-                    $('#installJava').css("display","inline-block");
-                }
-                $('#installJava').click(function (){
-                    // Set deployJava.returnPage to make sure user comes back to 
-                    // your web site after installing the JRE
-                    deployJava.returnPage = location.href;
-                            
-                    // Install latest JRE or redirect user to another page to get JRE
-                    deployJava.installLatestJRE(); 
-                });	
-    </script>
+
 	<%@ include file="geneResults.jsp" %>
 	<%@ include file="web/GeneCentric/resultsHelp.jsp" %>
 <%}else if(region && genURL.size()>0){%>
@@ -618,8 +598,8 @@ Or
         <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
         <span id="installJava" style="display:none;" class="button">Install Java</span>
     </div>
-    
-    <script src="http://www.java.com/js/deployJava.js"></script>
+
+	
             <script>
                 // check if current JRE version is greater than 1.5.0 
                 if(!navigator.javaEnabled()){
