@@ -316,14 +316,45 @@ var ucscgeneID="";
              <span class="Imagetooltip" title="Helicos Single Molecule RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
             </TD>
             <%}%>
+            
+            
+            </TR>
+            
+             <%if(myOrganism.equals("Rn")){%>
+            <TR>
+            	<TD class="rightBorder"></TD>
+            	<TD>
+                <input name="trackcbx" type="checkbox" id="illuminaTotalCBX" value="illuminaTotal" /> Illumina rRNA-depleted Total-RNA:
+                 <select name="trackSelect" id="illuminaTotalSelect">
+                    <option value="1" selected="selected">Dense</option>
+                    <option value="2" >Full</option>
+                </select>
+                <span class="Imagetooltip" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                </TD>
+                <TD>
+                <input name="trackcbx" type="checkbox" id="illuminaPolyACBX" value="illuminaPolyA" />Illumina PolyA+ RNA:
+                <select name="trackSelect" id="illuminaPolyASelect">
+                    <option value="1" selected="selected">Dense</option>
+                    <option value="2" >Full</option>
+                </select>
+                <span class="Imagetooltip" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on PolyA+ RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                </TD>
+            	<TD>
+                <input name="trackcbx" type="checkbox" id="illuminaSmallCBX" value="illuminaSmall" /> Illumina small RNA:
+                 <select name="trackSelect" id="illuminaSmallSelect">
+                    <option value="1" selected="selected">Dense</option>
+                    <option value="2" >Full</option>
+                </select>
+                <span class="Imagetooltip" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on small RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                </TD>
+              </TR>
+             <%}%>
+              <TR >
+            <TD class="rightBorder">
+            </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="bqtlCBX" value="qtl" /> bQTLs  
             <span class="Imagetooltip" title="This track will display the publicly available bQTLs from Rat Genome Database. Any bQTLs that overlap the region are represented by a solid black bar.  More details on each bQTL are available under the bQTL Tab."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </TD>
-            
-            </TR>
-             <TR >
-            <TD class="rightBorder">
             </TD>
             <TD>
             <input name="trackcbx" type="checkbox" id="refseqCBX" value="refseq" /> RefSeq Transcripts  

@@ -1347,8 +1347,27 @@ public class GeneDataTools {
                             if(!changeTrack.equals("")){
                                 vis=changeTrack;
                             }
-                            out.write("track db=rn5 type=bigWig name=\"Helicos\" description=\"Helicos RNA-Seq Reads\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/Helicos_All_Samples_ge2.bw\n");
                             
+                            //out.write("track db=rn5 type=bigWig name=\"Helicos\" description=\"Helicos RNA-Seq Reads\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/Helicos_All_Samples_ge2.bw\n");
+                            out.write("track db=rn5 type=bigWig name=\"Helicos\" description=\"Helicos RNA-Seq Read Counts\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/Helicos_All_Samples.bw\n");
+                        }else if(filePart.equals("illuminaTotal")){
+                            String vis="1";
+                            if(!changeTrack.equals("")){
+                                vis=changeTrack;
+                            }
+                            out.write("track db=rn5 type=bigWig name=\"Illumina Total\" description=\"Illumina rRNA-depleted Total-RNA Read Counts\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/totalRNA.uniqueHits.bw\n");
+                        }else if(filePart.equals("illuminaPolyA")){
+                            String vis="1";
+                            if(!changeTrack.equals("")){
+                                vis=changeTrack;
+                            }
+                            out.write("track db=rn5 type=bigWig name=\"Illumina PolyA+\" description=\"Illumina PolyA+ RNA Read Counts\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/polyARNA.uniqueHits.bw\n");
+                        }else if(filePart.equals("illuminaSmall")){
+                            String vis="1";
+                            if(!changeTrack.equals("")){
+                                vis=changeTrack;
+                            }
+                            out.write("track db=rn5 type=bigWig name=\"Illumina Small RNA\" description=\"Illumina Small RNA Read Counts\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/smallRNA.uniqueHits.bw\n");
                         }
                     }
                 }
