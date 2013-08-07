@@ -892,7 +892,7 @@ function GeneTrack(gsvg,data,trackClass,label){
 				$('div#selectedReport').show();
 				$('div#selectedImage').show();
 				var jspPage="web/GeneCentric/geneReport.jsp";
-				var params={selectedID:selectedID};
+				var params={id:selectedID,geneSymbol:selectedGeneSymbol,chromosome:chr};
 				DisplaySelectedDetailReport(jspPage,params)
 			}else if(localTxType=="small"){
 				$('div#selectedImage').hide();

@@ -92,7 +92,7 @@
 <%@ include file="/web/GeneCentric/geneEQTLPart.jsp" %>
 
 <script type="text/javascript">
-	$('#geneReportEQTL table').css("top","0px");
+	$('#geneEQTL table#circosOptTbl').css("top","0px");
 	$("span[name='circosOption']").css("margin-left","60px");
 	runCircos();
 </script>

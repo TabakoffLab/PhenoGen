@@ -557,51 +557,7 @@ Or
         The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
 	<% } %>
 
-	<div style="text-align:center;">
-        <div id="javaError" style="display:none;">
-            <BR /><BR />
-            <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for a specific gene.  Please correct the error listed below before proceeding with a specific gene.  You may view regions, but specific genes will not work until Java is installed or updated.<BR /><BR />
-            <BR />
-        </div>
-        
-        <span id="disabledJava" style="display:none;margin-left:40px;"><span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
-                    To enable Java in your browser or operating system, see:<BR><BR> 
-                    Firefox: <a href=\"http://support.mozilla.org/en-US/kb/unblocking-java-plugin\">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
-                    Internet Explorer: <a href=\"http://java.com/en/download/help/enable_browser.xml\">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
-                    Safari: <a href=\"http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html\">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
-                    Chrome: <a href=\"http://java.com/en/download/faq/chrome.xml\">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
-        
-        <span id="oldJava" style="color:#00AA00;display:none;">A newer Java version may be available click the Install button for the latest version.(You may still use all functions even if you see this message.)<BR /></span>
-        <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
-        <span id="installJava" style="display:none;" class="button">Install Java</span>
-    </div>
-
 	
-            <script>
-                // check if current JRE version is greater than 1.5.0 
-                if(!navigator.javaEnabled()){
-                        $('#javaError').css("display","inline-block");
-                        $('#disabledJava').css("display","inline-block");
-                }else if (deployJava.versionCheck('1.5.0+') == false) {
-                     $('#javaError').css("display","inline-block");
-                    $('#noJava').css("display","inline-block");                  
-                    $('#installJava').css("display","inline-block");
-                }else{
-                    if (deployJava.versionCheck('1.7.0+') == false) {                   
-                        $('#oldJava').css("display","inline-block");
-                        $('#installJava').html("Update Java");
-                        $('#installJava').css("display","inline-block");
-                    }
-                }
-                $('#installJava').click(function (){
-                    // Set deployJava.returnPage to make sure user comes back to 
-                    // your web site after installing the JRE
-                    deployJava.returnPage = location.href;
-                            
-                    // Install latest JRE or redirect user to another page to get JRE
-                    deployJava.installLatestJRE(); 
-                });	
-    </script>
 	<div class="demo" style="text-align:center;">
 						<BR /><BR /><BR />
                         Detailed Transcription Information Demonstration<BR />
