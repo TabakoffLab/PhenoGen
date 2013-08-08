@@ -79,14 +79,12 @@ var ucscgeneID="";
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
     		<span class="trigger less" name="collapsableImage" >Genome Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
-            
-    		<!--<span style="font-size:12px; font-weight:normal; float:left;"><span class="legendBtn"><img title="Click to view the color key." src="../web/images/icons/legend_7.png"> <span style="position:relative;top:-7px;">Color Code Key</span> </span></span>-->
-            <span style="font-size:12px; font-weight:normal; float:right;">
+            <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">
                 		<option value="0" >------Login to use saved views------</option>
                 </select>
-            </span>
+            </span>-->
     </div>
     
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">    

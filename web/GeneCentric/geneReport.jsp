@@ -16,6 +16,7 @@
 	String gcPath="";
 	int selectedGene=0;
 	ArrayList<String>geneSymbol=new ArrayList<String>();
+	LinkGenerator lg=new LinkGenerator(session);
 	
 	
 	
@@ -91,6 +92,13 @@
     }
 	genURL=urlPrefix+ "tmpData/geneData/" +id+"/";
 	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID);
+	edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=null;
+	for(int i=0;i<tmpGeneList.size();i++){
+		log.debug("check:"+tmpGeneList.get(i).getGeneID()+":"+id);
+		if(tmpGeneList.get(i).getGeneID().equals(id)){
+			curGene=tmpGeneList.get(i);
+		}
+	}
 %>
 
 <style>
@@ -157,7 +165,19 @@ Add report here.
     <span class="detailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
 </div>
 <div id="geneDiv" style="display:inline-block;">
-	<div style="display:inline-block;" id="geneDetail">Add Report Here.</div>
+	<div style="display:inline-block;" id="geneDetail">
+     <table class="report" style="width:100%;">
+        <TR><TD colspan="3"  style="text-align:center;">
+            <H3><%=curGene.getGeneID()%>
+            	<%if(!curGene.getGeneSymbol().equals("")){%>
+                	(<%=curGene.getGeneSymbol()%>)
+                <%}%>
+            </H3> 
+        </TD>
+    	
+    </TR>
+    </table>
+    </div>
     <div style="display:none;" id="geneEQTL">
     </div>
     <div style="display:none;" id="geneApp">
