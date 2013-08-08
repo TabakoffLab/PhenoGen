@@ -687,27 +687,51 @@ public class Resource {
 		List<Resource> resourceList = new ArrayList<Resource>();
                 
                 SAMDataFile[] bnlxFileList = new SAMDataFile[3];
-                bnlxFileList[0]=new SAMDataFile("BNLX Sample #1 RAW SAM File",seqFilePath+"BNLX/BNLX1.Illumina.PolyA.sam.zip");
-                bnlxFileList[1]=new SAMDataFile("BNLX Sample #2 RAW SAM File",seqFilePath+"BNLX/BNLX2.Illumina.PolyA.sam.zip");
-                bnlxFileList[2]=new SAMDataFile("BNLX Sample #3 RAW SAM File",seqFilePath+"BNLX/BNLX3.Illumina.PolyA.sam.zip");
+                bnlxFileList[0]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx1.polyA.bam");
+                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx2.polyA.bam");
+                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx3.polyA.bam");
                 resourceList.add(new Resource(50, "Rat", "BN-Lx/CubPrin","polyA+ (>200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", bnlxFileList ));
         	
                 SAMDataFile[] shrhFileList = new SAMDataFile[3];
-                shrhFileList[0]=new SAMDataFile("SHRH Sample #1 RAW SAM File",seqFilePath+"SHRH/SHRH1.Illumina.PolyA.sam.zip");
-                shrhFileList[1]=new SAMDataFile("SHRH Sample #2 RAW SAM File",seqFilePath+"SHRH/SHRH2.Illumina.PolyA.sam.zip");
-                shrhFileList[2]=new SAMDataFile("SHRH Sample #3 RAW SAM File",seqFilePath+"SHRH/SHRH3.Illumina.PolyA.sam.zip");
+                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR1.polyA.bam");
+                shrhFileList[1]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR2.polyA.bam");
+                shrhFileList[2]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR3.polyA.bam");
                 resourceList.add(new Resource(51, "Rat", "SHR/OlaIpcvPrin","polyA+ (>200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", shrhFileList ));
                 
+                bnlxFileList = new SAMDataFile[3];
+                bnlxFileList[0]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx1.totalRNA.bam");
+                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx2.totalRNA.bam");
+                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx3.totalRNA.bam");
+                resourceList.add(new Resource(54, "Rat", "BN-Lx/CubPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Illumina HiSeq2000","100 bp paired-end", bnlxFileList ));
+        	
+                shrhFileList = new SAMDataFile[3];
+                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Total/SHR1.totalRNA.bam");
+                shrhFileList[1]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/Total/SHR2.totalRNA.bam");
+                shrhFileList[2]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/Total/SHR3.totalRNA.bam");
+                resourceList.add(new Resource(55, "Rat", "SHR/OlaIpcvPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Illumina HiSeq2000","100 bp paired-end", shrhFileList ));
+                
+                bnlxFileList = new SAMDataFile[3];
+                bnlxFileList[0]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx1.smRNA.bam");
+                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx2.smRNA.bam");
+                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx3.smRNA.bam");
+                resourceList.add(new Resource(56, "Rat", "BN-Lx/CubPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", bnlxFileList ));
+        	
+                shrhFileList = new SAMDataFile[3];
+                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Small/SHR1.smRNA.bam");
+                shrhFileList[1]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/Small/SHR2.smRNA.bam");
+                shrhFileList[2]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/Small/SHR3.smRNA.bam");
+                resourceList.add(new Resource(57, "Rat", "SHR/OlaIpcvPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", shrhFileList ));
+                
                 SAMDataFile[] helicosBNLXFileList = new SAMDataFile[3];
-                helicosBNLXFileList[0]=new SAMDataFile("BNLX Sample #1 BED File",seqFilePath+"BNLX/BNLX1.Helicos.bed.zip");
-                helicosBNLXFileList[1]=new SAMDataFile("BNLX Sample #2 BED File",seqFilePath+"BNLX/BNLX2.Helicos.bed.zip");
-                helicosBNLXFileList[2]=new SAMDataFile("BNLX Sample #3 BED File",seqFilePath+"BNLX/BNLX3.Helicos.bed.zip");
+                helicosBNLXFileList[0]=new SAMDataFile("BN-Lx Sample #1 BED File",seqFilePath+"Aligned/Helicos/BNLX1.Helicos.bed.zip");
+                helicosBNLXFileList[1]=new SAMDataFile("BN-Lx Sample #2 BED File",seqFilePath+"Aligned/Helicos/BNLX2.Helicos.bed.zip");
+                helicosBNLXFileList[2]=new SAMDataFile("BN-Lx Sample #3 BED File",seqFilePath+"Aligned/Helicos/BNLX3.Helicos.bed.zip");
                 resourceList.add(new Resource(52, "Rat", "BN-Lx/CubPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Helicos","~33 bp single-end", helicosBNLXFileList ));
         	
                 SAMDataFile[] helicosSHRHFileList = new SAMDataFile[3];
-                helicosSHRHFileList[0]=new SAMDataFile("SHRH Sample #1 BED File",seqFilePath+"SHRH/SHRH1.Helicos.bed.zip");
-                helicosSHRHFileList[1]=new SAMDataFile("SHRH Sample #2 BED File",seqFilePath+"SHRH/SHRH2.Helicos.bed.zip");
-                helicosSHRHFileList[2]=new SAMDataFile("SHRH Sample #3 BED File",seqFilePath+"SHRH/SHRH3.Helicos.bed.zip");
+                helicosSHRHFileList[0]=new SAMDataFile("SHR Sample #1 BED File",seqFilePath+"Aligned/Helicos/SHRH1.Helicos.bed.zip");
+                helicosSHRHFileList[1]=new SAMDataFile("SHR Sample #2 BED File",seqFilePath+"Aligned/Helicos/SHRH2.Helicos.bed.zip");
+                helicosSHRHFileList[2]=new SAMDataFile("SHR Sample #3 BED File",seqFilePath+"Aligned/Helicos/SHRH3.Helicos.bed.zip");
                 resourceList.add(new Resource(53, "Rat", "SHR/OlaIpcvPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Helicos","~33 bp single-end", helicosSHRHFileList ));
                 
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);

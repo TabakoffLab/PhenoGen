@@ -140,7 +140,7 @@
         
         <BR>
 		<BR>
-		<div class="title"> RNA Sequencing BED/SAM Data Files</div>
+		<div class="title"> RNA Sequencing BED/BAM Data Files</div>
 		      <table id="rnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
             		<thead>
                                <tr class="col_title">
@@ -150,7 +150,7 @@
                     <th>Seq. Tech.</th>
                     <th>RNA Type</th>
                     <th>Read Type</th>
-					<th>.BED/.SAM Files</th>
+					<th>.BED/.BAM Files</th>
 				</tr>
 			</thead>
 			<tbody>
