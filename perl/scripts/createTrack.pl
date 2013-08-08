@@ -51,6 +51,7 @@ sub createTrackFile{
 		$chr=substr($chr,3);
 	}
 	
+	
 	my $strand=$GeneHOH{Gene}[$cntGenes]{strand};
 	
 	my @transcriptArray = @$transcriptArrayRef;
@@ -74,7 +75,7 @@ sub createTrackFile{
 		}
 		my $trname=$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{ID};
 		$trname  =~ s/ /_/g;
-		print TWOFILE "chr$chr\t$trstart\t$trstop\t$trname\t0\t$convStrand\t$trstart\t$trstop\t0,0,0\t";
+		print TWOFILE "chr".uc($chr)."\t$trstart\t$trstop\t$trname\t0\t$convStrand\t$trstart\t$trstop\t0,0,0\t";
 		my $tmpLens="";
 		my $tmpStarts="";
 		foreach(@exonArray){
@@ -135,7 +136,7 @@ sub createTrackFile{
 				my $start=$sortedExonHOH[$curIndex]{start};
 				my $stop=$sortedExonHOH[$curIndex]{stop};
 				my $name=$sortedExonHOH[$curIndex]{alternateID2};
-				print TWOFILE "chr$chr\t$start\t$stop\t$name\t0\t$convStrand\n";	
+				print TWOFILE "chr".uc($chr)."\t$start\t$stop\t$name\t0\t$convStrand\n";	
 				$curIndex++;
 			}
 	}	
@@ -244,7 +245,7 @@ sub createTrackFileRegion{
 					if($GeneHOH{Gene}[$cntGenes]{source} eq "Ensembl"){
 						$fulltrname=$trname;
 					}
-					print TWOFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
+					print TWOFILE "chr".uc($chr)."\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
 					my $tmpLens="";
 					my $tmpStarts="";
 					foreach(@exonArray){
@@ -285,7 +286,7 @@ sub createTrackFileRegion{
 				my $qtlStart=$qtlHOH{QTL}[$cntQTL]{start};
 				my $qtlStop=$qtlHOH{QTL}[$cntQTL]{stop};
 				$qtlName =~ s/ /_/g;
-				print TWOFILE "chr$chr\t$qtlStart\t$qtlStop\t$qtlName\t0\t.\n";
+				print TWOFILE "chr".uc($chr)."\t$qtlStart\t$qtlStop\t$qtlName\t0\t.\n";
 				$cntQTL++;
 			}
 		}
@@ -356,7 +357,7 @@ sub createTrackFileRegionView{
 	# Write out file with tracks
 	my $newTwoTrackOutputFileName = '>'.$twoTrackOutputFileName;
 	open TWOFILE, $newTwoTrackOutputFileName or die " Could not open two track file $newTwoTrackOutputFileName for writing $!\n\n";
-	print TWOFILE 'browser position chr'.$chr.':'.$minCoord.'-'.$maxCoord."\n";
+	print TWOFILE 'browser position chr'.uc($chr).':'.$minCoord.'-'.$maxCoord."\n";
 	print TWOFILE "browser hide all\n";
 	print TWOFILE "browser pack refGene\n";
 	if($includeProbes==1){
@@ -383,7 +384,7 @@ sub createTrackFileRegionView{
 					}elsif($nonMaskedProbes[$curInd]{type} eq 'extended'){
 						$color=$extendedColor;
 					}
-					print TWOFILE "chr$chr\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
+					print TWOFILE "chr".uc($chr)."\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
 					$curInd++;
 				}
 				$cntColor++;
@@ -420,7 +421,7 @@ sub createTrackFileRegionView{
 					}elsif($tissueProbes{$key}{pslist}[$curInd]{level} eq 'extended'){
 						$color=$extendedColor;
 					}
-					print TWOFILE "chr$chr\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$tissueProbes{$key}{pslist}[$curInd]{ID}."\t$score\t$strand\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$color."\n";
+					print TWOFILE "chr".uc($chr)."\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$tissueProbes{$key}{pslist}[$curInd]{ID}."\t$score\t$strand\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$color."\n";
 					$curInd++;
 				}
 				$cntColor++;
@@ -524,7 +525,7 @@ sub createTrackFileRegionView{
 						}
 						$cntExons++;
 					}
-					print TWOFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
+					print TWOFILE "chr".uc($chr)."\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
 					print TWOFILE "$cntExons\t$tmpLens\t$tmpStarts\n";
 					$cntTranscripts++;
 				}
@@ -568,7 +569,7 @@ sub createTrackFileRegionView{
 					}
 				}
 				if($strain ne ""){
-					print TWOFILE "chr$chr\t$start\t$stop\t$name\t0\t.\t$start\t$stop\t$color\n";
+					print TWOFILE "chr".uc($chr)."\t$start\t$stop\t$name\t0\t.\t$start\t$stop\t$color\n";
 				}
 				$cntSnp++;
 			}

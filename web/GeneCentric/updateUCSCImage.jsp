@@ -39,6 +39,7 @@ if(request.getParameter("geneID")!=null){
 	geneID=request.getParameter("geneID");
 	log.debug("updateUCSC:"+geneID);
 }
+log.debug("Setup params");
 	String html="";
 	String[] result=null;
 if(type.equals("region")){
@@ -48,12 +49,13 @@ if(type.equals("region")){
 }else if(type.equals("Gene")){
 	result=gdt.getUCSCGeneImage(myTrackList,myOrganism,chromosome,min,max,geneID);
 }
-
-if(result==null || result.length<2 || result[1].equals("error")){
+log.debug("done calling getUCSCImage");
+if(result==null || result.length<2 ||result[0]==null || result[1]==null || result[1].equals("error")){
 		html="<H2>ERROR: An error occurred generating this image.  Please try again later.</H2>";
 }else{
 		html="<a class=\"fancybox fancybox.iframe\" href=\""+result[1]+"\" title=\"UCSC Genome Browser\"><img src=\""+result[0]+"\"/></a>";
 }
+log.debug("done setting html");
 log.debug("Update UCSC IMAGE returned html\n"+html);
 
 %>

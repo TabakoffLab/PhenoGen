@@ -61,7 +61,7 @@ sub readSNPDataFromDB{
 			from DNA_VARIANT snp, chromosomes c 
 			where 
 			c.chromosome_id=snp.chromosome_id 
-			and c.name =  '".$geneChrom."' "."
+			and c.name =  '".uc($geneChrom)."' "."
 			and snp.organism = '".$organism."' "."
 			and ((snp.Var_Start>=$geneStart and snp.Var_Start<=$geneStop) OR (snp.Var_Stop>=$geneStart and snp.Var_Stop<=$geneStop) OR (snp.Var_Start<=$geneStart and snp.Var_Stop>=$geneStop))
 			order by snp.Var_Start";

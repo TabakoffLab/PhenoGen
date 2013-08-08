@@ -759,7 +759,7 @@ public class GeneDataTools {
         String probeQuery="select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and c.name = '"+chr+"' "+
+                                "and c.name = '"+chr.toUpperCase()+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -770,7 +770,7 @@ public class GeneDataTools {
         String probeTransQuery="select s.Probeset_ID,c.name,s.PSSTART,s.PSSTOP,s.PSLEVEL,s.Strand "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and c.name = '"+chr+"' "+
+                                "and c.name = '"+chr.toUpperCase()+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -1215,15 +1215,21 @@ public class GeneDataTools {
     }
     
     public String[] getUCSCRegionImage(String csvTrackList,String organism,String chr,int min, int max){
-        RegionDirFilter rdf=new RegionDirFilter(organism+ chr+"_"+min+"_"+max+"_");
+        RegionDirFilter rdf=new RegionDirFilter(organism+ chr.toLowerCase()+"_"+min+"_"+max+"_");
         File mainDir=new File(fullPath + "tmpData/regionData");
         File[] list=mainDir.listFiles(rdf);
         String[] ret=new String[2];
+        log.debug("running getUCSCRegionImage");
+        log.debug(organism+ chr+"_"+min+"_"+max+"_");
+        for(int i=0;i<list.length;i++){
+            log.debug(list[i]);
+        }
         if(list.length>0){
             String tmpoutputDir=list[0].getAbsolutePath()+"/";
             int second=tmpoutputDir.lastIndexOf("/",tmpoutputDir.length()-2);
             //String folderName=tmpoutputDir.substring(second+1,tmpoutputDir.length()-1);
             String[] tmp=this.createImage(csvTrackList, organism, tmpoutputDir, chr, min, max);
+            log.debug(tmp[0]+"\n"+tmp[1]);
             ret[0]=tmp[1].substring(tmp[1].indexOf("tmpData/regionData"));
             ret[1]=tmp[2];       
         }
@@ -1231,15 +1237,17 @@ public class GeneDataTools {
     }
     public String[] getUCSCRegionViewImage(String csvTrackList,String organism,String chr,int min, int max){
         log.debug("RegionView Track List:\n"+csvTrackList+"\n");
-        RegionDirFilter rdf=new RegionDirFilter("trx"+organism+ chr+"_"+min+"_"+max+"_");
+        RegionDirFilter rdf=new RegionDirFilter("trx"+organism+ chr.toLowerCase()+"_"+min+"_"+max+"_");
         File mainDir=new File(fullPath + "tmpData/regionData");
         File[] list=mainDir.listFiles(rdf);
         String[] ret=new String[2];
+        log.debug("running getUCSCRegionViewImage");
         if(list.length>0){
             String tmpoutputDir=list[0].getAbsolutePath()+"/";
             int second=tmpoutputDir.lastIndexOf("/",tmpoutputDir.length()-2);
             //String folderName=tmpoutputDir.substring(second+1,tmpoutputDir.length()-1);
             String[] tmp=this.createImage(csvTrackList, organism, tmpoutputDir, chr, min, max);
+            log.debug(tmp[0]+"\n"+tmp[1]);
             ret[0]=tmp[1].substring(tmp[1].indexOf("tmpData/regionData"));
             ret[1]=tmp[2];       
         }
@@ -1310,7 +1318,7 @@ public class GeneDataTools {
             BufferedReader in;
             try{
                 out = new BufferedWriter(new FileWriter(trackFile));
-                out.write("browser position chr"+chrom+":"+minCoord+"-"+maxCoord+"\n");
+                out.write("browser position chr"+chrom.toUpperCase()+":"+minCoord+"-"+maxCoord+"\n");
                 out.write("browser hide all\n");
                 for(int i=0;i<list.length;i++){
                     String filePart=list[i];
@@ -1956,7 +1964,7 @@ public class GeneDataTools {
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 //"and substr(c.name,1,2) = '"+chr+"' "+
-                                "and c.name = '"+chr+"' "+
+                                "and c.name = '"+chr.toUpperCase()+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -2049,7 +2057,7 @@ public class GeneDataTools {
                           "left outer join expression_qtls eq on eq.identifier = TO_CHAR (s.probeset_id) "+
                           "where s.chromosome_id = c.chromosome_id "+
                           //"and substr(c.name,1,2) = '"+chr+"'"+
-                          "and c.name = '"+chr+"'"+
+                          "and c.name = '"+chr.toUpperCase()+"'"+
                           "and ((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                           "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
                           "and s.psannotation <> 'transcript' " +
@@ -2108,7 +2116,7 @@ public class GeneDataTools {
             log.debug("\ngenerating new-controlled from\n");
             String qtlQuery="select aep.transcript_cluster_id,c1.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c2.name,s.snp_start,s.snp_end "+
                                 "from affy_exon_probeset aep, location_specific_eqtl lse, snps s, chromosomes c1,chromosomes c2 "+
-                                "where c1.name='"+chr+"' "+
+                                "where c1.name='"+chr.toUpperCase()+"' "+
                                 "and ((aep.psstart >="+min+" and aep.psstart <="+max+") or (aep.psstop>="+min+" and aep.psstop <="+max+")or (aep.psstop<="+min+" and aep.psstop >="+max+")) "+
                                 "and aep.psannotation = 'transcript' ";
             if(level.equals("All")){
@@ -2269,7 +2277,7 @@ public class GeneDataTools {
                                     " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
                                     "and s.chromosome_id=c1.chromosome_id "+
                                     "and s.organism ='"+organism+"' "+
-                                    "and c1.name='"+chr+"' "+
+                                    "and c1.name='"+chr.toUpperCase()+"' "+
                                     "and aep.updatedlocation='Y' "+
                                     "and lse.probe_id=aep.probeset_id ";
                                 if(!level.equals("All")){
@@ -2295,7 +2303,7 @@ public class GeneDataTools {
                                 "where s.snp_id=lse.snp_id "+
                                 "and lse.pvalue< "+(-Math.log10(pvalue))+" "+
                                 //"and substr(c.name,1,2)='"+chr+"' "+
-                                "and c.name='"+chr+"' "+
+                                "and c.name='"+chr.toUpperCase()+"' "+
                                 "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
                                 " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
                                 "and s.organism ='"+organism+"' "+
@@ -2375,7 +2383,7 @@ public class GeneDataTools {
                             "and s.chromosome_id=c.chromosome_id "+
                             "and s.organism ='"+organism+"' "+
                             //"and substr(c.name,1,2)='"+chr+"' ";
-                            "and c.name='"+chr+"' ";
+                            "and c.name='"+chr.toUpperCase()+"' ";
                     ps = dbConn.prepareStatement(snpQ);
                     rs = ps.executeQuery();
                     int snpcount=0;
@@ -2777,7 +2785,7 @@ public class GeneDataTools {
             String smncQuery="Select rsn.rna_smnc_id,rsn.feature_start,rsn.feature_stop,rsn.sample_count,rsn.total_reads,rsn.strand,rsn.reference_seq,c.name "+
                              "from rna_sm_noncoding rsn, chromosomes c "+ 
                              "where c.chromosome_id=rsn.chromosome_id "+
-                             "and c.name = '"+chr+"' "+
+                             "and c.name = '"+chr.toUpperCase()+"' "+
                              "and rsn.rna_dataset_id="+rnaDatasetID+" "+
                              "and ((rsn.feature_start>="+min+" and rsn.feature_start<="+max+") OR (rsn.feature_stop>="+min+" and rsn.feature_stop<="+max+") OR (rsn.feature_start<="+min+" and rsn.feature_stop>="+max+")) ";
 
@@ -2786,7 +2794,7 @@ public class GeneDataTools {
                                 "select rsn.rna_smnc_id "+
                                 "from rna_sm_noncoding rsn, chromosomes c "+ 
                                 "where c.chromosome_id=rsn.chromosome_id "+
-                                "and  c.name =  '"+chr+"' "+
+                                "and  c.name =  '"+chr.toUpperCase()+"' "+
                                 "and rsn.rna_dataset_id="+rnaDatasetID+" "+
                                 "and ((rsn.feature_start>="+min+" and rsn.feature_start<="+max+") OR (rsn.feature_stop>="+min+" and rsn.feature_stop<="+max+") OR (rsn.feature_start<="+min+" and rsn.feature_stop>="+max+")) "+
                                 ")";
@@ -2797,7 +2805,7 @@ public class GeneDataTools {
                                 "select rsn.rna_smnc_id "+
                                 "from rna_sm_noncoding rsn, chromosomes c "+ 
                                 "where c.chromosome_id=rsn.chromosome_id "+
-                                "and  c.name =  '"+chr+"' "+
+                                "and  c.name =  '"+chr.toUpperCase()+"' "+
                                 "and rsn.rna_dataset_id="+rnaDatasetID+" "+
                                 "and ((rsn.feature_start>="+min+" and rsn.feature_start<="+max+") OR (rsn.feature_stop>="+min+" and rsn.feature_stop<="+max+") OR (rsn.feature_start<="+min+" and rsn.feature_stop>="+max+")) "+
                                 ")";
@@ -2807,7 +2815,7 @@ public class GeneDataTools {
                                 "select rsn.rna_smnc_id "+
                                 "from rna_sm_noncoding rsn, chromosomes c "+ 
                                 "where c.chromosome_id=rsn.chromosome_id "+
-                                "and  c.name =  '"+chr+"' "+
+                                "and  c.name =  '"+chr.toUpperCase()+"' "+
                                 "and rsn.rna_dataset_id="+rnaDatasetID+" "+
                                 "and ((rsn.feature_start>="+min+" and rsn.feature_start<="+max+") OR (rsn.feature_stop>="+min+" and rsn.feature_stop<="+max+") OR (rsn.feature_start<="+min+" and rsn.feature_stop>="+max+")) "+
                                 ")";
@@ -2956,7 +2964,7 @@ public class GeneDataTools {
                             "where pq.organism='"+organism+"' "+
                             "and ((pq.qtl_start>="+min+" and pq.qtl_start<="+max+") or (pq.qtl_end>="+min+" and pq.qtl_end<="+max+") or (pq.qtl_start<="+min+" and pq.qtl_end>="+max+")) "+
                             //"and substr(c.name,1,2)='"+chr+"' "+
-                            "and c.name='"+chr+"' "+ 
+                            "and c.name='"+chr.toUpperCase()+"' "+ 
                             "and c.chromosome_id=pq.chromosome";
             try{ 
             try{

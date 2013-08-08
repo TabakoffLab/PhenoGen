@@ -77,7 +77,7 @@ sub readAffyProbesetDataFromDB{
 		left outer join $heritTablename h on s.probeset_id = h.probeset_id
 		left outer join $probeTablename p on p.probeset_id = s.probeset_id
 		where s.chromosome_id = c.chromosome_id
-		and c.name =  "."'".$geneChromNumber."'"."
+		and c.name =  "."'".uc($geneChromNumber)."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -250,7 +250,7 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		from $chromosomeTablename c, $probesetTablename s
 		left outer join $probeTablename p on p.probeset_id = s.probeset_id
 		where s.chromosome_id = c.chromosome_id
-		and c.name =  "."'".$geneChromNumber."'"."
+		and c.name =  "."'".uc($geneChromNumber)."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -408,7 +408,7 @@ sub readTissueAffyProbesetDataFromDB{
 		left outer join $heritTablename h on s.probeset_id = h.probeset_id
                 left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
 		where s.chromosome_id = c.chromosome_id
-		and c.name =  "."'".$geneChrom."'"."
+		and c.name =  "."'".uc($geneChrom)."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -510,7 +510,7 @@ sub readAffyProbesetDataFromDBwoProbes{
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation
 		from $chromosomeTablename c, $probesetTablename s
 		where s.chromosome_id = c.chromosome_id
-		and c.name =  "."'".$geneChromNumber."'"."
+		and c.name =  "."'".uc($geneChromNumber)."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -621,7 +621,7 @@ sub readTissueEQTLProbesetDataFromDB{
 		left outer join $heritTablename h on s.probeset_id = h.probeset_id
                 left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
 		where s.chromosome_id = c.chromosome_id
-		and c.name =  "."'".$geneChrom."'"."
+		and c.name =  "."'".uc($geneChrom)."'"."
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))

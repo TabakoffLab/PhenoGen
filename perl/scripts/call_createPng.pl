@@ -15,7 +15,7 @@ sub getImage{
     my $resultCode="";
     while($newresultCode!=200 and $tryCount<3){
 	eval{
-	    $resultCode=createPngRNA($species, "chr$chr:$minCoord-$maxCoord", "chr".$chr, $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount),950,$lblWidth,8);
+	    $resultCode=createPngRNA($species, "chr".uc($chr).":$minCoord-$maxCoord", "chr".uc($chr), $minCoord, $maxCoord, $outputFileName,$trackFileName,(30+30*$tryCount),950,$lblWidth,8);
 	    print "RESULT CODE2:$resultCode\n";
 	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
 	    1;

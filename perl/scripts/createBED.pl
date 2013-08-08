@@ -27,7 +27,7 @@ sub createQTLTrack{
 			my $qtlStart=$qtlHOH{QTL}[$cntQTL]{start};
 			my $qtlStop=$qtlHOH{QTL}[$cntQTL]{stop};
 			$qtlName =~ s/ /_/g;
-			print OFILE "chr$chr\t$qtlStart\t$qtlStop\t$qtlName\t0\t.\n";
+			print OFILE "chr".uc($chr)."\t$qtlStart\t$qtlStop\t$qtlName\t0\t.\n";
 			$cntQTL++;
 		}
 	}
@@ -82,7 +82,7 @@ sub createSNPTrack{
 					$color="100,100,100";
 				}
 			}
-			print OFILE "chr$chr\t$start\t$stop\t$name\t0\t.\t$start\t$stop\t$color\n";
+			print OFILE "chr".uc($chr)."\t$start\t$stop\t$name\t0\t.\t$start\t$stop\t$color\n";
 			$cntSnp++;
 		}
 	}
@@ -208,7 +208,7 @@ sub createProteinCodingTrack{
 							
 							$cntExons++;
 						}
-						print OFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
+						print OFILE "chr".uc($chr)."\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
 						print OFILE "$cntExons\t$tmpLens\t$tmpStarts\n";
 						$cntTranscripts++;
 					}
@@ -259,7 +259,7 @@ sub createSmallNonCoding{
 			}elsif($smncStrand==-1){
 				$strand="-";
 			}
-			print OFILE "chr$chr\t$smncStart\t$smncStop\tsmRNA_$smncID\t0\t$strand\t$smncStart\t$smncStop\t153,204,153\n";
+			print OFILE "chr".uc($chr)."\t$smncStart\t$smncStop\tsmRNA_$smncID\t0\t$strand\t$smncStart\t$smncStop\t153,204,153\n";
 			$cntSmnc++;
 		}
 	}
@@ -304,7 +304,7 @@ sub createSmallNonCoding{
 						$trPart =~ s/^0*//;
 						$fulltrname=$fulltrname.".".$trPart;
 					}
-					print OFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\n";
+					print OFILE "chr".uc($chr)."\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\n";
 					$cntTranscripts++;
 				}
 			}
@@ -352,7 +352,7 @@ sub createFilteredProbesetTrack{
 			}else{
 				$color=$ambiguousColor;
 			}
-			print OFILE "chr$chr\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$tissueProbes{$key}{pslist}[$curInd]{ID}."\t$score\t$strand\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$color."\n";
+			print OFILE "chr".uc($chr)."\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$tissueProbes{$key}{pslist}[$curInd]{ID}."\t$score\t$strand\t".$tissueProbes{$key}{pslist}[$curInd]{start}."\t".$tissueProbes{$key}{pslist}[$curInd]{stop}."\t".$color."\n";
 			$curInd++;
 		}
 		$cntColor++;
@@ -393,7 +393,7 @@ sub createProbesetTrack{
 				$color=$ambiguousColor;
 			}
 			if($nonMaskedProbes[$curInd]{start}>0&&$nonMaskedProbes[$curInd]{stop}>0){
-				print OFILE "chr$chr\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
+				print OFILE "chr".uc($chr)."\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$nonMaskedProbes[$curInd]{ID}."\t0\t$strand\t".$nonMaskedProbes[$curInd]{start}."\t".$nonMaskedProbes[$curInd]{stop}."\t".$color."\n";
 			}
 			$curInd++;
 		}
@@ -430,7 +430,7 @@ sub createNumberedExonTrack{
 		my $stop=$sortedExon[$curIndex]{stop};
 		my $strand=$sortedExon[$curIndex]{strand};
 		my $name=$sortedExon[$curIndex]{alternateID2};
-		print OFILE "chr$chr\t$start\t$stop\t$name\t0\t$shortStrand\n";
+		print OFILE "chr".uc($chr)."\t$start\t$stop\t$name\t0\t$shortStrand\n";
 		$curIndex++;
 	}
 	close OFILE;
@@ -567,7 +567,7 @@ sub createStrandedCodingTrack{
 						}
 						$cntExons++;
 					}
-					print OFILE "chr$chr\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
+					print OFILE "chr".uc($chr)."\t$trstart\t$trstop\t$fulltrname\t0\t$convStrand\t$trstart\t$trstop\t$color\t";
 					print OFILE "$cntExons\t$tmpLens\t$tmpStarts\n";
 					$cntTranscripts++;
 				}
