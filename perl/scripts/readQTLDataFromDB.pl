@@ -65,7 +65,7 @@ sub readQTLDataFromDB{
 			from public_qtls pq,chromosomes c 
 			where 
 			c.chromosome_id=pq.chromosome 
-			and c.name =  '".$geneChrom."' "."
+			and c.name =  '".uc($geneChrom)."' "."
 			and pq.organism = '".$organism."' "."
 			and ((pq.QTL_START>=$geneStart and pq.QTL_START<=$geneStop) OR (pq.QTL_END>=$geneStart and pq.QTL_END<=$geneStop) OR (pq.QTL_START<=$geneStart and pq.QTL_END>=$geneStop))
 			order by pq.QTL_NAME";

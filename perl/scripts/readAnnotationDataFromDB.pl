@@ -70,7 +70,7 @@ sub readTranscriptAnnotationDataFromDB{
 			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
 			where 
 			c.chromosome_id=rt.chromosome_id 
-			and c.name =  '".$geneChrom."' "."
+			and c.name =  '".uc($geneChrom)."' "."
 			and re.rna_transcript_id=rt.rna_transcript_id 
 			and rt.rna_dataset_id=rd.rna_dataset_id 
 			and rd.organism = '".$organism."' "."
@@ -185,7 +185,7 @@ sub readSmallNCAnnotationDataFromDB{
 			from rna_dataset rd, rna_sm_noncoding rs, chromosomes c 
 			where 
 			c.chromosome_id=rs.chromosome_id 
-			and c.name =  '".$geneChrom."' "."
+			and c.name =  '".uc($geneChrom)."' "."
 			and rs.rna_dataset_id=rd.rna_dataset_id 
 			and rd.organism = '".$organism."' "."
 			and rd.user_id= $publicUserID  
