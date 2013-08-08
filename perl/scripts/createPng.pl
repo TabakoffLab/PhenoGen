@@ -151,7 +151,7 @@ sub createPngRNA{
 	else{
 		$urldb = '?db=mm9';
 	}
-	my $urlchrom = '&position='.$geneChrom.':';
+	my $urlchrom = '&position='.uc($geneChrom).':';
 	my $urlstart = $geneStart.'-';
 	my $urlstop = $geneStop;
 	my $urlcustomtext = '&hgt.customText=';

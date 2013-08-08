@@ -65,7 +65,7 @@ sub readSmallNoncodingDataFromDB{
 			from rna_sm_noncoding rsn, rna_dataset rd, chromosomes c 
 			where 
 			c.chromosome_id=rsn.chromosome_id 
-			and c.name =  '".$geneChrom."' "."
+			and c.name =  '".uc($geneChrom)."' "."
 			and rd.organism = '".$organism."' "."
 			and rd.user_id= $publicUserID  
 			and rd.visible=1 
