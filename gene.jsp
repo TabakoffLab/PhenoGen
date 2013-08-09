@@ -324,6 +324,34 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 			}else{
 				regionError="You have entered an invalid region.  Please see the examples in the instructions.";
 			}
+			String chrName="";
+			if(chromosome.toLowerCase().startsWith("chr")){
+				if(chromosome.length()>3){
+					chrName=chromosome.substring(3);
+				}
+			}else if(chromosome.toLowerCase().startsWith("ch")){
+				if(chromosome.length()>2){
+					chrName=chromosome.substring(2);
+				}
+			}
+			chrName=chrName.trim();
+			chromosome="chr"+chrName;
+			
+			if(chrName.equals("")){
+				regionError="You are missing the name of the chromosome you wish to view.  Example: chr1:50000-1000000";
+			}else{
+				int part=0;
+				try{
+					part=Integer.parseInt(chrName);
+				}catch(NumberFormatException e){
+				}
+				if(chrName.toLowerCase().equals("x")||(part>0 && part<22)){
+					
+				}else{
+					regionError="You have entered an invalid chromosome name.  For the supported species the chromosome should be 1-20 or 21 or X.  Example: chr1:50000-1000000";
+				}
+			}
+			
 			//log.debug("min:"+min+"\nmax:"+max);
 			if(regionError.equals("")){
 				if(min<max){
