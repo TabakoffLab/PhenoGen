@@ -238,6 +238,7 @@ function getAddMenuDiv(level,type){
 //D3 helper functions
 function key(d) {return d.getAttribute("ID");};
 function keyName(d) {return d.getAttribute("name");};
+function keyStart(d) {return d.getAttribute("start");};
 
 //SVG functions
 function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
@@ -328,7 +329,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}else if(track=="helicos"){
 			d3.xml("tmpData/regionData/"+folderName+"/helicos.xml",function (d){
 				var data=d.documentElement.getElementsByTagName("Count");
-				var newTrack=new HelicosTrack(par,data,track,"Helicos Sequence Reads");
+				var newTrack=new HelicosTrack(par,data,track,1);
 				par.addTrackList(newTrack);
 			});
 		}
@@ -1856,25 +1857,64 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 
 
 function HelicosTrack(gsvg,data,trackClass,density){
-	var that=new Track(gsvg,data,trackClass,"Helicos");
-	
-	that.color= function (){
-		return "blue";
+	var that=new Track(gsvg,data,trackClass,"Helicos Read Counts");
+	that.density=density;
+	that.data=data;
+	that.prevDensity=density;
+	that.color= function (d){		
+		return d3.rgb(that.colorScale(d.getAttribute("logcount")));
+
 	}.bind(that);
 
 	that.redraw= function (){
-		that.area = d3.svg.area()
+		that.density=$("#helicos"+that.gsvg.levelNumber+"Select").val();
+		if(that.density==1){
+			if(that.density!=that.prevDensity){
+				that.prevDensity=that.density;
+			}
+			that.svg.selectAll(".helicos").attr("x",function(d){return that.xScale(d.getAttribute("start"));})
+				.attr("width",function(d) {
+								   var wX=1;
+								   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
+									   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
+								   }
+								   return wX;
+								   });
+			that.svg.attr("height", 30);
+		}else{
+			if(that.density!=that.prevDensity){
+				that.prevDensity=that.density;
+				that.svg.selectAll(".helicos").remove();
+				that.svg.append("path")
+			      	.datum(data)
+			      	.attr("class", "area")
+			      	.attr("fill","steelblue")
+			      	.attr("d", that.area);
+
+			    that.svg.append("g")
+			      .attr("class", "y axis")
+			      .call(that.yAxis)
+			      .append("text")
+			      .attr("transform", "rotate(-90)")
+			      .attr("y", 6)
+			      .attr("dy", ".5em")
+			      .style("text-anchor", "end")
+			      .text("log10(reads)");
+			}
+			
+			that.area = d3.svg.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
 				    .y0(100)
 				    .y1(function(d) { return that.y(d.getAttribute("logcount")); });
-		that.y.domain([0, d3.max(data, function(d) { return d.getAttribute("logcount"); })]);
-		that.svg.select('path').datum(data).attr("d",that.area);
-		
+			that.y.domain([0, d3.max(data, function(d) { return d.getAttribute("logcount"); })]);
+			that.svg.select('path').datum(data).attr("d",that.area);
+			that.svg.attr("height", 100);
+		}
 	}.bind(that);
 
 	that.createToolTip=function (d){
 		var tooltip="";
-		tooltip="Name: "+d.getAttribute("name")+"<BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Trait:<BR>"+d.getAttribute("trait")+"<BR><BR>Phenotype:<BR>"+d.getAttribute("phenotype")+"<BR><BR>Candidate Genes:<BR>"+d.getAttribute("candidate");
+		//tooltip="";
 		return tooltip;
 	}.bind(that);
 
@@ -1882,13 +1922,26 @@ function HelicosTrack(gsvg,data,trackClass,density){
 		that.redraw();
 	}.bind(that);
 
+	that.updateData = function(){
+		var tag="Count";
+		var path="tmpData/regionData/"+folderName+"/Count.xml";
+		d3.xml(path,function (d){
+				var data=d.documentElement.getElementsByTagName(tag);
+				that.draw(data);
+				that.hideLoading();
+			});
+	}.bind(that);
+
 	that.y = d3.scale.linear()
     	.range([100, 0])
     	.nice(4);
 
+   	that.colorScale= d3.scale.threshold()
+   						.domain([0.5,1,1.5,2,2.5,3,3.5,4])
+   						.range(["#FFFFFF","#CCCCCC","#AAAAAA","#888888","#666666","#444444","#222222","#000000"]);
+
     that.yAxis = d3.svg.axis()
     				.scale(that.y)
-
     				.orient("left");
 
     that.area = d3.svg.area()
@@ -1898,23 +1951,43 @@ function HelicosTrack(gsvg,data,trackClass,density){
 
     that.y.domain([0, d3.max(data, function(d) { return d.getAttribute("logcount"); })]);
 
-    that.svg.append("path")
-      	.datum(data)
-      	.attr("class", "area")
-      	.attr("fill","steelblue")
-      	.attr("d", that.area);
+    if(density==1){
+    	var points=that.svg.selectAll(".helicos")
+   			.data(data,keyStart)
+    	points.enter()
+				.append("rect")
+				.attr("x",function(d){return that.xScale(d.getAttribute("start"));})
+				.attr("y",15)
+				.attr("class", "helicos")
+	    		.attr("height",10)
+				.attr("width",function(d) {
+								   var wX=1;
+								   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
+									   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
+								   }
+								   return wX;
+								   })
+				.attr("fill",that.color);
+		that.svg.attr("height", 30);
+    }else{
+	    that.svg.append("path")
+	      	.datum(data)
+	      	.attr("class", "area")
+	      	.attr("fill","steelblue")
+	      	.attr("d", that.area);
 
-    that.svg.append("g")
-      .attr("class", "y axis")
-      .call(that.yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".5em")
-      .style("text-anchor", "end")
-      .text("log10(reads)");
+	    that.svg.append("g")
+	      .attr("class", "y axis")
+	      .call(that.yAxis)
+	    .append("text")
+	      .attr("transform", "rotate(-90)")
+	      .attr("y", 6)
+	      .attr("dy", ".5em")
+	      .style("text-anchor", "end")
+	      .text("log10(reads)");
 
-	that.svg.attr("height", 100);
+		that.svg.attr("height", 100);
+	}
 	return that;
 }
 

@@ -29,6 +29,21 @@ var ucscgeneID="";
 	/*div#collapsableReport td.layout {
 		border:1px solid #CECECE;
 	}*/
+	span.detailMenu{
+		padding-top:2px;
+		padding-bottom:2px;
+		padding-left:15px;
+		padding-right:10px;
+		cursor:pointer;
+	}
+	span.detailMenu.selected{
+		background:#577097;
+		color:#FFFFFF;
+	}
+	span.detailMenu:hover{
+		background:#476087;
+		color:#FFFFFF;
+	}
 </style>
 
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
@@ -171,6 +186,19 @@ var ucscgeneID="";
         </TR>
         <TR><TD colspan="2">
         	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
+    			<span class="trigger" name="regionDiv"  style="margin-left:30px;"></span>
+    			<span class="detailMenu selected" name="regionTable">Region Track Feature Table<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    			<span class="detailMenu" name="regionEQTLTable">Genes with an EQTL in region<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+			</div>
+            <div id="geneDiv" style="display:none;">
+				<div style="display:inline-block;" id="regionTable">
+     
+    			</div>
+                <div style="display:none;" id="regionEQTLTable">
+     
+    			</div>
+            </div>
+        	<!--<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
     		<span class="triggerLoad" name="regionTable"  style="margin-left:30px;">Region Track Feature Tables</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
     		</div>
@@ -180,7 +208,7 @@ var ucscgeneID="";
     		<span class="triggerLoad" name="regionEQTLTable" style="margin-left:30px;">Genes with an EQTL in region</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
     		</div>
-    		<div id="regionEQTLTable" style="display:none;"></div>
+    		<div id="regionEQTLTable" style="display:none;"></div>-->
         </TD>
         </TR>
         </table>
@@ -222,6 +250,27 @@ var ucscgeneID="";
 			$('div#selectedDetail').hide();
 			$('div#selectedDetailHeader').hide();
 		});
+		
+	$('.regionDetailMenu').click(function (){
+		var oldID=$('.regionDetailMenu.selected').attr("name");
+		$("#"+oldID).hide();
+		$('.regionDetailMenu.selected').removeClass("selected");
+		$(this).addClass("selected");
+		var id=$(this).attr("name");
+		$("#"+id).show();
+		if(id=="geneEQTL"){
+			var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
+			var params={
+				species: organism,
+				geneSymbol: selectedGeneSymbol,
+				chromosome: chr,
+				id:selectedID
+			};
+			loadDivWithPage("div#geneEQTL",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
+		}
+		
+	});
 </script>
 
 

@@ -101,23 +101,7 @@
 	}
 %>
 
-<style>
-	span.detailMenu{
-		padding-top:2px;
-		padding-bottom:2px;
-		padding-left:15px;
-		padding-right:10px;
-		cursor:pointer;
-	}
-	span.detailMenu.selected{
-		background:#577097;
-		color:#FFFFFF;
-	}
-	span.detailMenu:hover{
-		background:#476087;
-		color:#FFFFFF;
-	}
-</style>
+
 <!--<a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>" target="_blank">View Affy Probe Set Details</a>
 <BR /><BR />
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
@@ -166,17 +150,7 @@ Add report here.
 </div>
 <div id="geneDiv" style="display:inline-block;">
 	<div style="display:inline-block;" id="geneDetail">
-     <table class="report" style="width:100%;">
-        <TR><TD colspan="3"  style="text-align:center;">
-            <H3><%=curGene.getGeneID()%>
-            	<%if(!curGene.getGeneSymbol().equals("")){%>
-                	(<%=curGene.getGeneSymbol()%>)
-                <%}%>
-            </H3> 
-        </TD>
-    	
-    </TR>
-    </table>
+     
     </div>
     <div style="display:none;" id="geneEQTL">
     </div>
