@@ -1,0 +1,170 @@
+{
+ "name": "rat genome", "color": "#FFFFB2",
+ "children": [
+  {
+   "name": "small", "color": "#FDD0A2","coverBp":"17,139,133","coverBpPerc":"1",
+   "children": [
+    {
+     "name": "multi", "color": "#BCBDDC","coverBp":"15,781,297","coverBpPerc":"92",
+     "children": [
+      {
+       "name": "≤5x coverage", "color": "#A1D99B","coverBp":"15,149,045","coverBpPerc":"96",
+       "children": [
+         {"name": "intergenic", "size": 143, "color": "#DEEBF7","coverBp":"14,385,721","coverBpPerc":"95"},
+         {"name": "smallRNA", "size": 2, "color": "#C6DBEF","coverBp":"201,786","coverBpPerc":"1"},
+         {"name": "extended UTR", "size": 1, "color": "#9ECAE1","coverBp":"171,814","coverBpPerc":"1"},
+         {"name": "intronic", "size": 3, "color": "#6BAED6","coverBp":"385,737","coverBpPerc":"3"},
+         {"name": "transcript", "size": 1, "color": "#4292C6","coverBp":"3,987","coverBpPerc":"0"}
+       ]
+      },
+      {
+       "name": ">5x coverage", "color": "#74C476","coverBp":"632,252","coverBpPerc":"4",
+       "children": [
+         {"name": "intergenic", "size": 4, "color": "#DEEBF7","coverBp":"491,039","coverBpPerc":"78"},
+         {"name": "smallRNA", "size": 1, "color": "#C6DBEF","coverBp":"121,795","coverBpPerc":"19"},
+         {"name": "extended UTR", "size": 1, "color": "#9ECAE1","coverBp":"6,501","coverBpPerc":"1"},
+         {"name": "intronic", "size": 1, "color": "#6BAED6","coverBp":"12,792","coverBpPerc":"2"},
+         {"name": "transcript", "size": 1, "color": "#4292C6","coverBp":"125","coverBpPerc":"0"}
+       ]
+      }
+     ]
+    },
+    {
+     "name": "unique alignment", "color": "#9E9AC8","coverBp":"1,357,836","coverBpPerc":"8",
+     "children": [
+      {
+       "name": "≤5x coverage", "color": "#A1D99B","coverBp":"1,276,696","coverBpPerc":"94",
+       "children": [
+         {"name": "intergenic", "size": 11, "color": "#DEEBF7","coverBp":"1,152,573","coverBpPerc":"90"},
+         {"name": "smallRNA", "size": 1, "color": "#C6DBEF","coverBp":"12,206","coverBpPerc":"1"},
+         {"name": "extended UTR", "size": 1, "color": "#9ECAE1","coverBp":"53,056","coverBpPerc":"4"},
+         {"name": "intronic", "size": 1, "color": "#6BAED6","coverBp":"56,729","coverBpPerc":"4"},
+         {"name": "transcript", "size": 1, "color": "#4292C6","coverBp":"2,132","coverBpPerc":"0"}
+       ]
+      },
+      {
+       "name": ">5x coverage", "color": "#74C476","coverBp":"81,140","coverBpPerc":"6",
+       "children": [
+         {"name": "intergenic", "size": 1, "color": "#DEEBF7","coverBp":"63,449","coverBpPerc":"78"},
+         {"name": "smallRNA", "size": 1, "color": "#C6DBEF","coverBp":"14,452","coverBpPerc":"18"},
+         {"name": "extended UTR", "size": 1, "color": "#9ECAE1","coverBp":"1,579","coverBpPerc":"2"},
+         {"name": "intronic", "size": 1, "color": "#6BAED6","coverBp":"1,569","coverBpPerc":"2"},
+         {"name": "transcript", "size": 1, "color": "#4292C6","coverBp":"91","coverBpPerc":"0"}
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "not PolyA+", "color": "#FDAE6B","coverBp":"818,768,869","coverBpPerc":"57",
+   "children": [
+    {
+     "name": "multi", "color": "#BCBDDC","coverBp":"82,128,942","coverBpPerc":"10",
+     "children": [
+      {
+       "name": "≤5x coverage", "color": "#A1D99B","coverBp":"45,828,551","coverBpPerc":"56",
+       "children": [
+         {"name": "intergenic", "size": 410, "color": "#DEEBF7","coverBp":"41,067,946","coverBpPerc":"90"},
+         {"name": "smallRNA", "size": 2, "color": "#C6DBEF","coverBp":"262,476","coverBpPerc":"1"},
+         {"name": "extended UTR", "size": 5, "color": "#9ECAE1","coverBp":"522,948","coverBpPerc":"1"},
+         {"name": "intronic", "size": 38, "color": "#6BAED6","coverBp":"3,895,923","coverBpPerc":"9"},
+         {"name": "transcript", "size": 1, "color": "#4292C6","coverBp":"79,258","coverBpPerc":"0"}
+       ]
+      },
+      {
+       "name": ">5x coverage", "color": "#74C476","coverBp":"36,300,391","coverBpPerc":"44",
+       "children": [
+         {"name": "intergenic", "size": 255, "color": "#DEEBF7","coverBp":"25,582,613","coverBpPerc":"70"},
+         {"name": "smallRNA", "size": 2, "color": "#C6DBEF","coverBp":"211,723","coverBpPerc":"1"},
+         {"name": "extended UTR", "size": 4, "color": "#9ECAE1","coverBp":"422,099","coverBpPerc":"1"},
+         {"name": "intronic", "size": 94, "color": "#6BAED6","coverBp":"9,478,572","coverBpPerc":"26"},
+         {"name": "transcript", "size": 6, "color": "#4292C6","coverBp":"605,384","coverBpPerc":"2"}
+       ]
+      }
+     ]
+    },
+    {
+     "name": "unique alignment", "color": "#9E9AC8","coverBp":"736,639,927","coverBpPerc":"90",
+     "children": [
+      {
+       "name": "≤5x coverage", "color": "#A1D99B","coverBp":"284,024,039","coverBpPerc":"39",
+       "children": [
+         {"name": "intergenic", "size": 2214, "color": "#DEEBF7","coverBp":"221,498,927","coverBpPerc":"78"},
+         {"name": "smallRNA", "size": 4, "color": "#C6DBEF","coverBp":"430,947","coverBpPerc":"0"},
+         {"name": "extended UTR", "size": 78, "color": "#9ECAE1","coverBp":"7,805,624","coverBpPerc":"3"},
+         {"name": "intronic", "size": 520, "color": "#6BAED6","coverBp":"52,080,937","coverBpPerc":"18"},
+         {"name": "transcript", "size": 22, "color": "#4292C6","coverBp":"2,207,604","coverBpPerc":"1"}
+       ]
+      },
+      {
+       "name": ">5x coverage", "color": "#74C476","coverBp":"452,615,888","coverBpPerc":"61",
+       "children": [
+         {"name": "intergenic", "size": 1112, "color": "#DEEBF7","coverBp":"111,233,811","coverBpPerc":"25"},
+         {"name": "smallRNA", "size": 3, "color": "#C6DBEF","coverBp":"323,509","coverBpPerc":"0"},
+         {"name": "extended UTR", "size": 78, "color": "#9ECAE1","coverBp":"7,894,683","coverBpPerc":"2"},
+         {"name": "intronic", "size": 2721, "color": "#6BAED6","coverBp":"272,121,864","coverBpPerc":"60"},
+         {"name": "transcript", "size": 610, "color": "#4292C6","coverBp":"61,042,021","coverBpPerc":"13"}
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "polyA+", "color": "#FD8D3C","coverBp":"590,519,533","coverBpPerc":"41",
+   "children": [
+    {
+     "name": "multi", "color": "#BCBDDC","coverBp":"127,093,966","coverBpPerc":"22",
+     "children": [
+      {
+       "name": "≤5x coverage", "color": "#A1D99B","coverBp":"8,699,312","coverBpPerc":"7",
+       "children": [
+         {"name": "intergenic", "size": 76, "color": "#DEEBF7","coverBp":"7,634,696","coverBpPerc":"88"},
+         {"name": "smallRNA", "size": 1, "color": "#C6DBEF","coverBp":"44,491","coverBpPerc":"1"},
+         {"name": "extended UTR", "size": 1, "color": "#9ECAE1","coverBp":"170,049","coverBpPerc":"2"},
+         {"name": "intronic", "size": 8, "color": "#6BAED6","coverBp":"821,529","coverBpPerc":"9"},
+         {"name": "transcript", "size": 1, "color": "#4292C6","coverBp":"28,547","coverBpPerc":"0"}
+       ]
+      },
+      {
+       "name": ">5x coverage", "color": "#74C476","coverBp":"118,394,654","coverBpPerc":"93",
+       "children": [
+         {"name": "intergenic", "size": 867, "color": "#DEEBF7","coverBp":"86,759,046","coverBpPerc":"73"},
+         {"name": "smallRNA", "size": 7, "color": "#C6DBEF","coverBp":"717,519","coverBpPerc":"1"},
+         {"name": "extended UTR", "size": 17, "color": "#9ECAE1","coverBp":"1,767,346","coverBpPerc":"1"},
+         {"name": "intronic", "size": 246, "color": "#6BAED6","coverBp":"24,676,895","coverBpPerc":"21"},
+         {"name": "transcript", "size": 44, "color": "#4292C6","coverBp":"4,473,848","coverBpPerc":"4"}
+       ]
+      }
+     ]
+    },
+    {
+     "name": "unique alignment", "color": "#9E9AC8","coverBp":"463,425,567","coverBpPerc":"78",
+     "children": [
+      {
+       "name": "≤5x coverage", "color": "#A1D99B","coverBp":"61,702,387","coverBpPerc":"13",
+       "children": [
+         {"name": "intergenic", "size": 489, "color": "#DEEBF7","coverBp":"48,967,338","coverBpPerc":"79"},
+         {"name": "smallRNA", "size": 1, "color": "#C6DBEF","coverBp":"108,952","coverBpPerc":"0"},
+         {"name": "extended UTR", "size": 28, "color": "#9ECAE1","coverBp":"2,891,458","coverBpPerc":"5"},
+         {"name": "intronic", "size": 87, "color": "#6BAED6","coverBp":"8,787,066","coverBpPerc":"14"},
+         {"name": "transcript", "size": 9, "color": "#4292C6","coverBp":"947,573","coverBpPerc":"2"}
+       ]
+      },
+      {
+       "name": ">5x coverage", "color": "#74C476","coverBp":"401,723,180","coverBpPerc":"87",
+       "children": [
+         {"name": "intergenic", "size": 708, "color": "#DEEBF7","coverBp":"70,830,191","coverBpPerc":"18"},
+         {"name": "smallRNA", "size": 3, "color": "#C6DBEF","coverBp":"303,306","coverBpPerc":"0"},
+         {"name": "extended UTR", "size": 117, "color": "#9ECAE1","coverBp":"11,751,698","coverBpPerc":"3"},
+         {"name": "intronic", "size": 1836, "color": "#6BAED6","coverBp":"183,605,826","coverBpPerc":"46"},
+         {"name": "transcript", "size": 1352, "color": "#4292C6","coverBp":"135,232,159","coverBpPerc":"34"}
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

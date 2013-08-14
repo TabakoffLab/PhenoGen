@@ -18,6 +18,8 @@ if (/MSIE[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){
 
 
 function showDiv(jspPage){
+	$('#announcement').hide();
+	$('#announcementSmall').show();
 	selectedSection= $( "#accordion" ).accordion( "option", "active" );
 	$('#indexDesc').slideUp("250");
 	$('div#indexDescContent').html("<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
