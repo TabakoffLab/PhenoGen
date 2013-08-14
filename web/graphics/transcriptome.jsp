@@ -21,7 +21,8 @@ body {
 div.testToolTip {   
   position: absolute;           
   text-align: center;
-  max-width: 400px;
+  min-width: 250px;
+  max-width: 500px;
   min-height:50px;                             
   padding: 2px;             
   font: 12px sans-serif;        
@@ -41,6 +42,7 @@ h1 {
 	<H1>Characteristics of Reconstructed Long RNA Genes</H1>
     <a href="genome.jsp">View Genome Coverage</a>
   <div id="graphic" style="text-align:center;"></div>
+</div>
   <div style=" max-height:400px; overflow:auto;width:100%;">
     <table id="data" style="width:100%;">
       <thead>
@@ -54,13 +56,17 @@ h1 {
       </tbody>
       </table>
   </div>
-</div>
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 	$('#wait1').hide();
 var selectedDepth=0;
 var selectedNode;
+var halfExtraWinWidth=0;
+	if($(window).width()>1000){
+		halfExtraWinWidth=($(window).width()-1000)/2;
+	}
 var width = 840,
     height = width,
     padding = 5,
@@ -272,7 +278,7 @@ function hover(d){
     tooltip=tooltip+"<BR><B>"+d.trxPerc+"%</b>  of "+parentPath(d.parent)+"<BR> # Transcripts: <B>"+d.trx+"</B>";
 
     tt.html(tooltip)  
-      .style("left", (d3.event.pageX + "px") )  
+      .style("left", (d3.event.pageX - halfExtraWinWidth + "px") )  
       .style("top", (d3.event.pageY + 20) + "px");
     tt.transition()        
       .duration(200)      
