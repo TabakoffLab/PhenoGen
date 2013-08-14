@@ -29,14 +29,24 @@ div.svgAlternate ul.sub li {
 	text-decoration:underline;
 }
 
+div#announcement a:hover, div#announcementSmall a:hover {
+	color:#547BA1;
+}
+
 </style>
 
 					<div id="svgAlternate1" class="svgAlternate" style="display:none;color:#FF0000; background-color:#FFFFFF;"><BR />Your browser does not seem to support SVG(Scalable Vector Graphics).  The list below will appear in a graphic when viewed with a browser supporting SVG, as all major current browsers support SVG (PhenoGen supports Chrome 25+, FireFox 20+,  IE 9+, Safari 5+) please install a different browser or update this browser to be able to use PhenoGen.  Some features will not work without SVG and more graphics will be migrating to SVG in the future.  While it is unlikely, please let us know if you receive this message and have a browser that meets the minimum supported version or higher. <BR /><BR /></div>
+                    <div id="announcementSmall" style="display:none;background-color:#FFFFFF; width:100%;min-height:20px; max-height:150px; position:relative;color:#000000; font-weight:bold;">
+                    	NEW! RNA-Seq data summary graphics available. Click one 
+                        <a href="web/graphics/genome.jsp">Genome</a>
+                        <a href="web/graphics/transcriptome.jsp">Transcriptome</a>
+    				</div>
 					<table class="index" cellspacing="0" cellpadding="0">
                     <tr><TD id="imageColumn" class="wide">
                     <div id="svgInst">
                     	<h3>Hover over or click on functions to view additional information.</h3>
                     </div>
+                    
                     <div id="svgAlternate2" class="svgAlternate" style="display:none;">
                     	<BR /><BR />
                         <h3>Click on a function in the list below to view additional information.</h3>
@@ -121,6 +131,14 @@ div.svgAlternate ul.sub li {
                     
                     </TD>
                     <TD  id="descColumn"  class="narrow">
+                    
+                    <div id="announcement" style="background-color:#FFFFFF; width:100%;min-height:300px; max-height:650px; position:relative;color:#000000; ">
+                    	<H2>NEW! RNA-Seq Data Summary Graphics</H2>
+                    	Rat Brain RNA-Seq data summary graphics are now available. Click below to browse the RNA-Seq data summary:<BR />
+                        <a href="web/graphics/genome.jsp">View Genome Coverage<BR /><img src="<%=imagesDir%>rnaseq_genome.gif" width="200px"/></a><BR />
+                        <a href="web/graphics/transcriptome.jsp">View Reconstructed Long RNA Genes(Rat Brain Transcriptome)<BR /><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="200px"/></a><BR />
+                        Reconstructed transcripts from this RNA-Seq data are still combined with PhenoGen array data in <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Genome/Transcription Information</a>.
+    				</div>
                     <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000;">
                             <span id="expandBTN" class="expandSect" style=" float:left; position:relative; top:9px; cursor:pointer;"><img src="web/images/icons/expand_section.jpg"></span>
                             <div id="indexDescContent" style="height:650px;">
