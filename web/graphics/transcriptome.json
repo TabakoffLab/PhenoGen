@@ -1,0 +1,414 @@
+{
+ "name": "brain transcriptome", "color": "#FFFFB2",
+ "children": [
+  {
+   "name": "not PolyA+", "color": "#FDD0A2","trx":"20,149","trxPerc":"57",
+   "children": [
+    {
+     "name": "annotated", "color": "#FCBBA1","trx":"118","trxPerc":"12",
+     "children": [
+      {
+       "name": "close match", "color": "#BCBDDC","trx":"296","trxPerc":"31",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"230","trxPerc":"78",
+         "children": [
+           {"name": "1 exon", "size": 18, "color": "#DEEBF7","trx":"18","trxPerc":"8"},
+           {"name": "2 exons", "size": 43, "color": "#C6DBEF","trx":"43","trxPerc":"19"},
+           {"name": "3 exons", "size": 25, "color": "#9ECAE1","trx":"25","trxPerc":"11"},
+           {"name": "4 exons", "size": 26, "color": "#6BAED6","trx":"26","trxPerc":"11"},
+           {"name": "5+ exons", "size": 118, "color": "#4292C6","trx":"118","trxPerc":"51"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"51","trxPerc":"17",
+         "children": [
+           {"name": "2 exons", "size": 4, "color": "#C6DBEF","trx":"4","trxPerc":"8"},
+           {"name": "3 exons", "size": 5, "color": "#9ECAE1","trx":"5","trxPerc":"10"},
+           {"name": "4 exons", "size": 13, "color": "#6BAED6","trx":"13","trxPerc":"25"},
+           {"name": "5+ exons", "size": 29, "color": "#4292C6","trx":"29","trxPerc":"57"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"15","trxPerc":"5",
+         "children": [
+           {"name": "4 exons", "size": 2, "color": "#6BAED6","trx":"2","trxPerc":"13"},
+           {"name": "5+ exons", "size": 13, "color": "#4292C6","trx":"13","trxPerc":"87"}
+         ]
+        }
+       ]
+      },
+      {
+       "name": "generic overlap", "color": "#9E9AC8","trx":"552","trxPerc":"57",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"546","trxPerc":"99",
+         "children": [
+           {"name": "1 exon", "size": 473, "color": "#DEEBF7","trx":"473","trxPerc":"87"},
+           {"name": "2 exons", "size": 59, "color": "#C6DBEF","trx":"59","trxPerc":"11"},
+           {"name": "3 exons", "size": 9, "color": "#9ECAE1","trx":"9","trxPerc":"2"},
+           {"name": "4 exons", "size": 4, "color": "#6BAED6","trx":"4","trxPerc":"1"},
+           {"name": "5+ exons", "size": 1, "color": "#4292C6","trx":"1","trxPerc":"0"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"5","trxPerc":"1",
+         "children": [
+           {"name": "2 exons", "size": 4, "color": "#C6DBEF","trx":"4","trxPerc":"80"},
+           {"name": "3 exons", "size": 1, "color": "#9ECAE1","trx":"1","trxPerc":"20"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"1","trxPerc":"0",
+         "children": [
+           {"name": "2 exons", "size": 1, "color": "#C6DBEF","trx":"1","trxPerc":"100"}
+         ]
+        }
+       ]
+      },
+      {
+       "name": "perfect match", "color": "#807DBA","trx":"118","trxPerc":"12",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"102","trxPerc":"86",
+         "children": [
+           {"name": "1 exon", "size": 11, "color": "#DEEBF7","trx":"11","trxPerc":"11"},
+           {"name": "2 exons", "size": 29, "color": "#C6DBEF","trx":"29","trxPerc":"28"},
+           {"name": "3 exons", "size": 6, "color": "#9ECAE1","trx":"6","trxPerc":"6"},
+           {"name": "4 exons", "size": 11, "color": "#6BAED6","trx":"11","trxPerc":"11"},
+           {"name": "5+ exons", "size": 45, "color": "#4292C6","trx":"45","trxPerc":"44"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"14","trxPerc":"12",
+         "children": [
+           {"name": "2 exons", "size": 1, "color": "#C6DBEF","trx":"1","trxPerc":"7"},
+           {"name": "3 exons", "size": 2, "color": "#9ECAE1","trx":"2","trxPerc":"14"},
+           {"name": "4 exons", "size": 4, "color": "#6BAED6","trx":"4","trxPerc":"29"},
+           {"name": "5+ exons", "size": 7, "color": "#4292C6","trx":"7","trxPerc":"50"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"2","trxPerc":"2",
+         "children": [
+           {"name": "5+ exons", "size": 2, "color": "#4292C6","trx":"2","trxPerc":"100"}
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "un- annotated", "color": "#FC9272","trx":"19,183","trxPerc":"95",
+     "children": [
+      {
+       "name": "artifact", "color": "#6A51A3","trx":"203","trxPerc":"1",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"181","trxPerc":"89",
+         "children": [
+           {"name": "1 exon", "size": 64, "color": "#DEEBF7","trx":"64","trxPerc":"35"},
+           {"name": "2 exons", "size": 95, "color": "#C6DBEF","trx":"95","trxPerc":"52"},
+           {"name": "3 exons", "size": 15, "color": "#9ECAE1","trx":"15","trxPerc":"8"},
+           {"name": "4 exons", "size": 4, "color": "#6BAED6","trx":"4","trxPerc":"2"},
+           {"name": "5+ exons", "size": 3, "color": "#4292C6","trx":"3","trxPerc":"2"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"21","trxPerc":"10",
+         "children": [
+           {"name": "2 exons", "size": 6, "color": "#C6DBEF","trx":"6","trxPerc":"29"},
+           {"name": "3 exons", "size": 8, "color": "#9ECAE1","trx":"8","trxPerc":"38"},
+           {"name": "4 exons", "size": 4, "color": "#6BAED6","trx":"4","trxPerc":"19"},
+           {"name": "5+ exons", "size": 3, "color": "#4292C6","trx":"3","trxPerc":"14"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"1","trxPerc":"0",
+         "children": [
+           {"name": "5+ exons", "size": 1, "color": "#4292C6","trx":"1","trxPerc":"100"}
+         ]
+        }
+       ]
+      },
+      {
+       "name": "intergenic", "color": "#54278F","trx":"4,021","trxPerc":"21",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"3,983","trxPerc":"99",
+         "children": [
+           {"name": "1 exon", "size": 3870, "color": "#DEEBF7","trx":"3,870","trxPerc":"97"},
+           {"name": "2 exons", "size": 81, "color": "#C6DBEF","trx":"81","trxPerc":"2"},
+           {"name": "3 exons", "size": 18, "color": "#9ECAE1","trx":"18","trxPerc":"0"},
+           {"name": "4 exons", "size": 3, "color": "#6BAED6","trx":"3","trxPerc":"0"},
+           {"name": "5+ exons", "size": 11, "color": "#4292C6","trx":"11","trxPerc":"0"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"32","trxPerc":"1",
+         "children": [
+           {"name": "1 exon", "size": 8, "color": "#DEEBF7","trx":"8","trxPerc":"25"},
+           {"name": "2 exons", "size": 15, "color": "#C6DBEF","trx":"15","trxPerc":"47"},
+           {"name": "3 exons", "size": 7, "color": "#9ECAE1","trx":"7","trxPerc":"22"},
+           {"name": "4 exons", "size": 2, "color": "#6BAED6","trx":"2","trxPerc":"6"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"6","trxPerc":"0",
+         "children": [
+           {"name": "1 exon", "size": 1, "color": "#DEEBF7","trx":"1","trxPerc":"17"},
+           {"name": "3 exons", "size": 2, "color": "#9ECAE1","trx":"2","trxPerc":"33"},
+           {"name": "4 exons", "size": 1, "color": "#6BAED6","trx":"1","trxPerc":"17"},
+           {"name": "5+ exons", "size": 2, "color": "#4292C6","trx":"2","trxPerc":"33"}
+         ]
+        }
+       ]
+      },
+      {
+       "name": "intronic", "color": "#DADAEB","trx":"14,959","trxPerc":"78",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"14,917","trxPerc":"100",
+         "children": [
+           {"name": "1 exon", "size": 14877, "color": "#DEEBF7","trx":"14,877","trxPerc":"100"},
+           {"name": "2 exons", "size": 35, "color": "#C6DBEF","trx":"35","trxPerc":"0"},
+           {"name": "3 exons", "size": 4, "color": "#9ECAE1","trx":"4","trxPerc":"0"},
+           {"name": "4 exons", "size": 1, "color": "#6BAED6","trx":"1","trxPerc":"0"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"35","trxPerc":"0",
+         "children": [
+           {"name": "1 exon", "size": 23, "color": "#DEEBF7","trx":"23","trxPerc":"66"},
+           {"name": "2 exons", "size": 7, "color": "#C6DBEF","trx":"7","trxPerc":"20"},
+           {"name": "3 exons", "size": 5, "color": "#9ECAE1","trx":"5","trxPerc":"14"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"7","trxPerc":"0",
+         "children": [
+           {"name": "1 exon", "size": 5, "color": "#DEEBF7","trx":"5","trxPerc":"71"},
+           {"name": "2 exons", "size": 1, "color": "#C6DBEF","trx":"1","trxPerc":"14"},
+           {"name": "3 exons", "size": 1, "color": "#9ECAE1","trx":"1","trxPerc":"14"}
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "polyA+", "color": "#FDAE6B","trx":"15,362","trxPerc":"43",
+   "children": [
+    {
+     "name": "annotated", "color": "#FCBBA1","trx":"12,632","trxPerc":"82",
+     "children": [
+      {
+       "name": "close match", "color": "#BCBDDC","trx":"5,739","trxPerc":"45",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"1,603","trxPerc":"28",
+         "children": [
+           {"name": "1 exon", "size": 74, "color": "#DEEBF7","trx":"74","trxPerc":"5"},
+           {"name": "2 exons", "size": 167, "color": "#C6DBEF","trx":"167","trxPerc":"10"},
+           {"name": "3 exons", "size": 199, "color": "#9ECAE1","trx":"199","trxPerc":"12"},
+           {"name": "4 exons", "size": 174, "color": "#6BAED6","trx":"174","trxPerc":"11"},
+           {"name": "5+ exons", "size": 989, "color": "#4292C6","trx":"989","trxPerc":"62"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"1,202","trxPerc":"21",
+         "children": [
+           {"name": "2 exons", "size": 35, "color": "#C6DBEF","trx":"35","trxPerc":"3"},
+           {"name": "3 exons", "size": 83, "color": "#9ECAE1","trx":"83","trxPerc":"7"},
+           {"name": "4 exons", "size": 91, "color": "#6BAED6","trx":"91","trxPerc":"8"},
+           {"name": "5+ exons", "size": 993, "color": "#4292C6","trx":"993","trxPerc":"83"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"2,934","trxPerc":"51",
+         "children": [
+           {"name": "2 exons", "size": 17, "color": "#C6DBEF","trx":"17","trxPerc":"1"},
+           {"name": "3 exons", "size": 57, "color": "#9ECAE1","trx":"57","trxPerc":"2"},
+           {"name": "4 exons", "size": 94, "color": "#6BAED6","trx":"94","trxPerc":"3"},
+           {"name": "5+ exons", "size": 2766, "color": "#4292C6","trx":"2766","trxPerc":"94"}
+         ]
+        }
+       ]
+      },
+      {
+       "name": "generic overlap", "color": "#9E9AC8","trx":"1,486","trxPerc":"12",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"1,333","trxPerc":"90",
+         "children": [
+           {"name": "1 exon", "size": 1214, "color": "#DEEBF7","trx":"1214","trxPerc":"91"},
+           {"name": "2 exons", "size": 90, "color": "#C6DBEF","trx":"90","trxPerc":"7"},
+           {"name": "3 exons", "size": 15, "color": "#9ECAE1","trx":"15","trxPerc":"1"},
+           {"name": "4 exons", "size": 8, "color": "#6BAED6","trx":"8","trxPerc":"1"},
+           {"name": "5+ exons", "size": 6, "color": "#4292C6","trx":"6","trxPerc":"0"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"73","trxPerc":"5",
+         "children": [
+           {"name": "2 exons", "size": 45, "color": "#C6DBEF","trx":"45","trxPerc":"62"},
+           {"name": "3 exons", "size": 15, "color": "#9ECAE1","trx":"15","trxPerc":"21"},
+           {"name": "4 exons", "size": 7, "color": "#6BAED6","trx":"7","trxPerc":"10"},
+           {"name": "5+ exons", "size": 6, "color": "#4292C6","trx":"6","trxPerc":"8"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"80","trxPerc":"5",
+         "children": [
+           {"name": "2 exons", "size": 19, "color": "#C6DBEF","trx":"19","trxPerc":"24"},
+           {"name": "3 exons", "size": 22, "color": "#9ECAE1","trx":"22","trxPerc":"28"},
+           {"name": "4 exons", "size": 17, "color": "#6BAED6","trx":"17","trxPerc":"21"},
+           {"name": "5+ exons", "size": 22, "color": "#4292C6","trx":"22","trxPerc":"28"}
+         ]
+        }
+       ]
+      },
+      {
+       "name": "perfect match", "color": "#807DBA","trx":"5,407","trxPerc":"43",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"1,778","trxPerc":"33",
+         "children": [
+           {"name": "1 exon", "size": 119, "color": "#DEEBF7","trx":"119","trxPerc":"7"},
+           {"name": "2 exons", "size": 185, "color": "#C6DBEF","trx":"185","trxPerc":"10"},
+           {"name": "3 exons", "size": 192, "color": "#9ECAE1","trx":"192","trxPerc":"11"},
+           {"name": "4 exons", "size": 186, "color": "#6BAED6","trx":"186","trxPerc":"10"},
+           {"name": "5+ exons", "size": 1096, "color": "#4292C6","trx":"1096","trxPerc":"62"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"1,372","trxPerc":"25",
+         "children": [
+           {"name": "2 exons", "size": 87, "color": "#C6DBEF","trx":"87","trxPerc":"6"},
+           {"name": "3 exons", "size": 114, "color": "#9ECAE1","trx":"114","trxPerc":"8"},
+           {"name": "4 exons", "size": 134, "color": "#6BAED6","trx":"134","trxPerc":"10"},
+           {"name": "5+ exons", "size": 1037, "color": "#4292C6","trx":"1037","trxPerc":"76"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"2,257","trxPerc":"42",
+         "children": [
+           {"name": "2 exons", "size": 33, "color": "#C6DBEF","trx":"33","trxPerc":"1"},
+           {"name": "3 exons", "size": 55, "color": "#9ECAE1","trx":"55","trxPerc":"2"},
+           {"name": "4 exons", "size": 107, "color": "#6BAED6","trx":"107","trxPerc":"5"},
+           {"name": "5+ exons", "size": 2062, "color": "#4292C6","trx":"2062","trxPerc":"91"}
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "un- annotated", "color": "#FC9272","trx":"2,730","trxPerc":"18",
+     "children": [
+      {
+       "name": "artifact", "color": "#6A51A3","trx":"579","trxPerc":"21",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"467","trxPerc":"81",
+         "children": [
+           {"name": "1 exon", "size": 143, "color": "#DEEBF7","trx":"143","trxPerc":"31"},
+           {"name": "2 exons", "size": 278, "color": "#C6DBEF","trx":"278","trxPerc":"60"},
+           {"name": "3 exons", "size": 30, "color": "#9ECAE1","trx":"30","trxPerc":"6"},
+           {"name": "4 exons", "size": 5, "color": "#6BAED6","trx":"5","trxPerc":"1"},
+           {"name": "5+ exons", "size": 11, "color": "#4292C6","trx":"11","trxPerc":"2"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"73","trxPerc":"13",
+         "children": [
+           {"name": "2 exons", "size": 48, "color": "#C6DBEF","trx":"48","trxPerc":"66"},
+           {"name": "3 exons", "size": 18, "color": "#9ECAE1","trx":"18","trxPerc":"25"},
+           {"name": "4 exons", "size": 4, "color": "#6BAED6","trx":"4","trxPerc":"5"},
+           {"name": "5+ exons", "size": 3, "color": "#4292C6","trx":"3","trxPerc":"4"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"39","trxPerc":"7",
+         "children": [
+           {"name": "2 exons", "size": 12, "color": "#C6DBEF","trx":"12","trxPerc":"31"},
+           {"name": "3 exons", "size": 9, "color": "#9ECAE1","trx":"9","trxPerc":"23"},
+           {"name": "4 exons", "size": 4, "color": "#6BAED6","trx":"4","trxPerc":"10"},
+           {"name": "5+ exons", "size": 14, "color": "#4292C6","trx":"14","trxPerc":"36"}
+         ]
+        }
+       ]
+      },
+      {
+       "name": "intergenic", "color": "#54278F","trx":"1,445","trxPerc":"53",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"1,288","trxPerc":"89",
+         "children": [
+           {"name": "1 exon", "size": 1033, "color": "#DEEBF7","trx":"1033","trxPerc":"80"},
+           {"name": "2 exons", "size": 167, "color": "#C6DBEF","trx":"167","trxPerc":"13"},
+           {"name": "3 exons", "size": 52, "color": "#9ECAE1","trx":"52","trxPerc":"4"},
+           {"name": "4 exons", "size": 16, "color": "#6BAED6","trx":"16","trxPerc":"1"},
+           {"name": "5+ exons", "size": 20, "color": "#4292C6","trx":"20","trxPerc":"2"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"102","trxPerc":"7",
+         "children": [
+           {"name": "2 exons", "size": 45, "color": "#C6DBEF","trx":"45","trxPerc":"44"},
+           {"name": "3 exons", "size": 24, "color": "#9ECAE1","trx":"24","trxPerc":"24"},
+           {"name": "4 exons", "size": 13, "color": "#6BAED6","trx":"13","trxPerc":"13"},
+           {"name": "5+ exons", "size": 20, "color": "#4292C6","trx":"20","trxPerc":"20"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"55","trxPerc":"4",
+         "children": [
+           {"name": "2 exons", "size": 10, "color": "#C6DBEF","trx":"10","trxPerc":"18"},
+           {"name": "3 exons", "size": 14, "color": "#9ECAE1","trx":"14","trxPerc":"25"},
+           {"name": "4 exons", "size": 6, "color": "#6BAED6","trx":"6","trxPerc":"11"},
+           {"name": "5+ exons", "size": 25, "color": "#4292C6","trx":"25","trxPerc":"45"}
+         ]
+        }
+       ]
+      },
+      {
+       "name": "intronic", "color": "#DADAEB","trx":"706","trxPerc":"26",
+       "children": [
+        {
+         "name": "1 isoform", "color": "#A1D99B","trx":"691","trxPerc":"98",
+         "children": [
+           {"name": "1 exon", "size": 662, "color": "#DEEBF7","trx":"662","trxPerc":"96"},
+           {"name": "2 exons", "size": 19, "color": "#C6DBEF","trx":"19","trxPerc":"3"},
+           {"name": "3 exons", "size": 8, "color": "#9ECAE1","trx":"8","trxPerc":"1"},
+           {"name": "5+ exons", "size": 2, "color": "#4292C6","trx":"2","trxPerc":"0"}
+         ]
+        },
+        {
+         "name": "2 isoforms", "color": "#74C476","trx":"12","trxPerc":"2",
+         "children": [
+           {"name": "1 exon", "size": 2, "color": "#DEEBF7","trx":"2","trxPerc":"17"},
+           {"name": "2 exons", "size": 4, "color": "#C6DBEF","trx":"4","trxPerc":"33"},
+           {"name": "3 exons", "size": 3, "color": "#9ECAE1","trx":"3","trxPerc":"25"},
+           {"name": "4 exons", "size": 1, "color": "#6BAED6","trx":"1","trxPerc":"8"},
+           {"name": "5+ exons", "size": 2, "color": "#4292C6","trx":"2","trxPerc":"17"}
+         ]
+        },
+        {
+         "name": "3+ isoforms", "color": "#41AB5D","trx":"3","trxPerc":"0",
+         "children": [
+           {"name": "3 exons", "size": 1, "color": "#9ECAE1","trx":"1","trxPerc":"33"},
+           {"name": "4 exons", "size": 1, "color": "#6BAED6","trx":"1","trxPerc":"33"},
+           {"name": "5+ exons", "size": 1, "color": "#4292C6","trx":"1","trxPerc":"33"}
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
