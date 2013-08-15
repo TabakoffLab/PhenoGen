@@ -40,6 +40,8 @@ import edu.ucdenver.ccp.util.HDF5.PhenoGen_HDF5_File;
 import java.sql.*;
 import java.util.Date;
 import java.util.logging.Level;
+import javax.sql.DataSource;
+import javax.naming.*;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -63,6 +65,7 @@ public class Statistic {
 	//private String dbPropertiesFile;
 	//private String mainURL;
 	private Connection dbConn;
+        DataSource pool;
 
 	private Logger log = null;
 	private Debugger myDebugger = new Debugger();
@@ -71,6 +74,18 @@ public class Statistic {
 
         public Statistic() {
                 log = Logger.getRootLogger();
+                try {
+                    // Create a JNDI Initial context to be able to lookup the DataSource
+                    InitialContext ctx = new InitialContext();
+                    // Lookup the DataSource, which will be backed by a pool
+                    //   that the application server provides.
+                    pool = (DataSource)ctx.lookup("java:comp/env/jdbc/DevDB");
+                    if (pool == null){
+                       log.error("Unknown DataSource 'jdbc/DevDB'",new Exception("Unknown DataSource 'jdbc/DevDB'"));
+                    }
+                } catch (NamingException ex) {
+                   ex.printStackTrace();
+                }
         }
 
 	public void setRFunctionDir(String inString) {
@@ -123,7 +138,7 @@ public class Statistic {
 	        this.userFilesRoot = (String) session.getAttribute("userFilesRoot");
 		// This is here in case a Thread loses the database connection, it can re-connect
 	        //this.dbPropertiesFile = (String) session.getAttribute("dbPropertiesFile");
-        	this.dbConn = (Connection) session.getAttribute("dbConn");
+        	//this.dbConn = (Connection) session.getAttribute("dbConn");
         	//this.mainURL = (String) session.getAttribute("mainURL");
 	}
 
@@ -161,6 +176,12 @@ public class Statistic {
             int phenotypeParamGroupID,
             int paramGroupID,
             File firstInputFile) throws RException {
+             try{
+                 dbConn= pool.getConnection();
+             }catch(SQLException e){
+                 
+             }
+            
             log.debug("filtermethod:" + filterMethodName + "\np1:" + parameter1 + "\np2:" + parameter2 + "\np3:" + parameter3);
             if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(ds.getArray_type())) {
                 Date startTimer=new Date();
@@ -432,14 +453,24 @@ public class Statistic {
                     throw new RException(errorMsg);
                 }
             }
+            if(dbConn!=null){
+                try{
+                    dbConn.close();
+                }catch(SQLException e){
+                    log.error("SQLException ",e);
+                }
+            }
+            
         }
          
         public int callPreviousFilter(Dataset dataset,Dataset.DatasetVersion version,int userID,String abnormalFilePath){
+            
             log.debug("Previous Filter");
             String resetQ = "{call filter.reset(" + dataset.getDataset_id() + "," + version.getVersion() + "," + userID + ",?)}";
             String countQ = "Select count(*) from EXON_USER_FILTER_TEMP where dataset_id="+dataset.getDataset_id()+" and dataset_version="+version.getVersion()+" and user_id="+userID+" and cumulative_filter=1";
             int count=-99;
             try {
+                dbConn= pool.getConnection();
                 CallableStatement cs = dbConn.prepareCall(resetQ);
                 cs.setInt(1, 9);
                 cs.executeUpdate();
@@ -452,7 +483,6 @@ public class Statistic {
                 Thread thread;
                 Async_HDF5_FileHandler ahf = new Async_HDF5_FileHandler(dataset,"v"+version.getVersion(),dataset.getPath(), "Affy.NormVer.h5", "fillFilterProbes", null, session);
                 ahf.setFillHDFFilterParameters(userID, dbConn,abnormalFilePath);
-
                 thread = new Thread(ahf);
                 log.debug("Starting thread to run Async_HDF5_FileHandler  "
                         + "It is named " + thread.getName());
@@ -463,6 +493,8 @@ public class Statistic {
                 } catch (InterruptedException ex) {
                     log.error("Error generating filtered dataset",ex);
                 }
+                dbConn.close();
+                
             } catch (SQLException e) {
                 log.error("Filter SQL Exception:", e);
             }
@@ -472,22 +504,29 @@ public class Statistic {
         }
         
         public int moveFilterToHDF5(Dataset ds, Dataset.DatasetVersion dsv,String abnormalFilePath) {
+            
             int num=-1;
-            log.debug("in moveFilterToHDF5");
-            Thread thread;
-            Async_HDF5_FileHandler ahf = new Async_HDF5_FileHandler(ds,"v"+dsv.getVersion(),ds.getPath(), "Affy.NormVer.h5", "fillHDF5Filter", null, session);
-            ahf.setFillHDFFilterParameters(this.userLoggedIn.getUser_id(), dbConn,abnormalFilePath);
+            try{
+                dbConn= pool.getConnection();
+                log.debug("in moveFilterToHDF5");
+                Thread thread;
+                Async_HDF5_FileHandler ahf = new Async_HDF5_FileHandler(ds,"v"+dsv.getVersion(),ds.getPath(), "Affy.NormVer.h5", "fillHDF5Filter", null, session);
+                ahf.setFillHDFFilterParameters(this.userLoggedIn.getUser_id(), dbConn,abnormalFilePath);
 
-            thread = new Thread(ahf);
-            log.debug("Starting thread to run Async_HDF5_FileHandler  "
-                    + "It is named " + thread.getName());
-            thread.start();
-            log.debug("Thread Started");
-            try {
-                thread.join();
-                num=ahf.getNumberOfProbes();
-            } catch (InterruptedException ex) {
-                log.error("Error generating filtered dataset",ex);
+                thread = new Thread(ahf);
+                log.debug("Starting thread to run Async_HDF5_FileHandler  "
+                        + "It is named " + thread.getName());
+                thread.start();
+                log.debug("Thread Started");
+                try {
+                    thread.join();
+                    num=ahf.getNumberOfProbes();
+                } catch (InterruptedException ex) {
+                    log.error("Error generating filtered dataset",ex);
+                }
+                dbConn.close();
+            }catch(SQLException e){
+                log.error("SQLException",e);
             }
             return num;
         }
@@ -577,6 +616,11 @@ public class Statistic {
                 DSFilterStat dsfs=null;
                 String params=functionArgs[1];
 		rFunction = "statistics.TwoWay.ANOVA";
+                try{
+                    dbConn= pool.getConnection();
+                }catch(SQLException e){
+                    log.error("SQLException",e);
+                }
                 if(inputFile.endsWith(".h5'")){
                     rFunction=rFunction+".HDF5";
                     functionArgs[0]=functionArgs[0]+ ", VersionPath= '"+version+"', SampleFile= "+sampleFile;
@@ -650,6 +694,14 @@ public class Statistic {
                             }
                             dsfs.addStatsStep("Statistics: 2Way ANOVA",params,tmpcount,1,1,dbConn);
                         }
+                    }
+                }
+                
+                if(dbConn!=null){
+                    try{
+                    dbConn.close();
+                    }catch(SQLException e){
+                        log.error("SQLException",e);
                     }
                 }
                 return async;
