@@ -51,6 +51,10 @@ h1 {
 }
 
 
+tr.intergenic td,tr.artifact td  {
+  color:#FFFFFF;
+}
+
 #graphic{
     display: inline-block;
     text-align: center;
