@@ -1,19 +1,25 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - -
  *          HEADER IMAGE & HEADER TEXT & LINK CONTAINER
  * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-    #page_header {
-        background: transparent url("../web/images/bg/header.jpg") no-repeat 5px 0;
-        height: 75px;
+    #page_header, #page_header_wide {
+		background-image: url("../web/images/bg/header.jpg");
+		background-repeat:no-repeat;
+		
+        
     }
+	
+	#page_header{ background-position: 5px 0; height: 75px;}
+	
+	#page_header_wide{height: 70px;background-color: #1e354f;}
 
     #page_header #header_link_container {
         float: right;
         margin: 15px 20px 0 0;
-	width: 550px;
+		width: 550px;
         border: solid 0px #ccc;
     }
 
-    #page_header #header_title {
+    #page_header #header_title ,#page_header_wide #header_title {
         float: left;
         font-size: 26px;
         color: #fff;
@@ -21,7 +27,7 @@
         border: solid 0px #ccc;
     }
 
-    #page_header #header_title a
+    #page_header #header_title a,#page_header_wide #header_title a
     {
         color: #fff;
         text-decoration: none;
@@ -46,7 +52,9 @@
  *          SMALL HEADER NAVIGATION LINKS
  * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
     #page_header .header_nav,
-    #page_header .header_messages {
+    #page_header .header_messages,
+	#page_header_wide .header_nav,
+    #page_header_wide .header_messages {
         color: #99b4df;
         float: right;
         clear: right;
