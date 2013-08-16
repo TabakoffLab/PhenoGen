@@ -51,6 +51,10 @@ h1 {
 .less{
   background: url(<%=imagesDir%>icons/min.png) center left no-repeat; 
 }
+td.coverage{
+  width: 105px;
+}
+
   #graphic{
     display: inline-block;
     text-align: center;
@@ -252,6 +256,7 @@ var text = svg.selectAll("text").data(nodes);
                 return {column: column, value: row[column]};
             });
         }).enter().append("td")
+        .attr("class",function(d){var cl=""; if(d.column=="coverBp"){cl="coverage";} return cl;})
         .style("padding-left",function(d){
               var pad=0;
       			  if(d.column=="name"){              
