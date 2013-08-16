@@ -51,7 +51,8 @@ h1 {
 }
 
 
-tr.intergenic td,tr.artifact td  {
+tr.intergenic.d3 td,
+tr.artifact.d3 td  {
   color:#FFFFFF;
 }
 
