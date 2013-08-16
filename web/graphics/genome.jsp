@@ -1,6 +1,13 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
-<%@ include file="/web/common/header_noBorder_noMenu.jsp" %>
+<%
+  extrasList.add("d3.v3.min.js");
+%>
+
+
+<%@ include file="/web/common/header_adaptive.jsp" %>
+
+
 
 <style>
 path {
@@ -14,10 +21,7 @@ text {
   cursor: pointer;
 }
 
-body {
-  width: 880px;
-  margin: 0 auto;
-}
+
 div.testToolTip {   
   position: absolute;           
   text-align: center;
@@ -36,13 +40,47 @@ div.testToolTip {
 h1 {
 	font-weight:bold; background-color:#DEDEDE; color:#000000; width:100%;
 }
+  #graphic{
+    display: inline-block;
+    text-align: center;
+    width: 74%;
+  }
+  #table{
+    display: inline-block;
+    width: 25%;
+    height: 850px;
+    overflow:auto;
+  }
+  
+  @media screen and (max-width:1140px){
+    #graphic{
+      width:100%;
+    }
+    #table{
+      width: 100%;
+      max-height: 400px;
+    }
+  }
+  @media screen and (max-width:840px){
+    #graphic{
+      width: 840px;
+      overflow: auto;
+    }
+    #table{
+      width: 100%;
+      max-height: 400px;
+    }
+  }
+
 </style>
-<div style="text-align:center;">
+<div>
+    <div style="text-align:center;">
     <H1>Characteristics of Genome Coverage</H1>
     <a href="transcriptome.jsp">View Reconstructed Long RNA Genes(Rat Brain Transcriptome)</a>
-            <div id="graphic"></div>
-</div>
-<div style=" max-height:400px; overflow:auto;width:100%;">
+    </div>
+    <div id="graphic"></div>
+
+    <div id="table" >
             <table id="data" style="width:100%;">
               <thead>
                 <TR>
@@ -54,11 +92,11 @@ h1 {
               <tbody>
               </tbody>
               </table>
+    </div>
 </div>
 
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="http://d3js.org/d3.v3.min.js"></script>
+
 <script>
 	$('#wait1').hide();
 	var halfExtraWinWidth=0;
