@@ -40,6 +40,17 @@ div.testToolTip {
 h1 {
 	font-weight:bold; background-color:#DEDEDE; color:#000000; width:100%;
 }
+.trigger{
+        cursor: pointer;
+        /* needed for IE?  Don't think so */
+  /* cursor: hand; */
+  background: url(<%=imagesDir%>icons/add.png) center left no-repeat; 
+  padding: 0 10px 0 20px;
+}
+
+.less{
+  background: url(<%=imagesDir%>icons/min.png) center left no-repeat; 
+}
   #graphic{
     display: inline-block;
     text-align: center;
@@ -63,7 +74,7 @@ h1 {
   }
   @media screen and (max-width:840px){
     #graphic{
-      width: 840px;
+      width: 100%;
       overflow: auto;
     }
     #table{
@@ -105,6 +116,7 @@ h1 {
 	}
 var selectedDepth=0;
 var selectedNode;
+var displayedLevel="d1";
 var width = 840,
     height = width,
     padding = 5,
@@ -175,12 +187,11 @@ var text = svg.selectAll("text").data(nodes);
 
   function click(d) {
     //console.log("click d:"+d);
-    //console.log("d:"+d.depth);
+    console.log("d:"+d.depth);
     selectedDepth=d.depth;
     selectedNode=d;
-     $("table#data tbody tr").hide();
-     console.log("show :"+"table#data tbody tr"+tableSelector(d))
-     $("table#data tbody tr"+tableSelector(d)).show();
+     
+    filterRows(tableSelector(d),selectedDepth);
 
     path.transition()
       .duration(750)
@@ -234,7 +245,7 @@ var text = svg.selectAll("text").data(nodes);
         .style("background-color",function(d){
               return d.color;
             })
-        .attr("class",tableClass);
+        .attr("class",function(d){return tableClass(d)+" d"+d.depth;});
     var cells = rows.selectAll("td")
         .data(function(row) {
             return columns.map(function(column) {
@@ -243,35 +254,56 @@ var text = svg.selectAll("text").data(nodes);
         }).enter().append("td")
         .style("padding-left",function(d){
               var pad=0;
-			  if(d.column=="name"){              
-                if(d.value=="small" || d.value=="polyA+" || d.value=="not PolyA+"){
-                  pad=0;
-                }else if(d.value=="multi"||d.value=="unique alignment"){
-                  pad=20;
-                }else if(d.value==">5x coverage"||d.value=="≤5x coverage"){
-                  pad=40;
-                }else{
-                  pad=60;
-                }
-				}else{
-					pad=10;
-				}
+      			  if(d.column=="name"){              
+                      if(d.value=="small" || d.value=="polyA+" || d.value=="not PolyA+"){
+                        pad=0;
+                      }else if(d.value=="multi"||d.value=="unique alignment"){
+                        pad=20;
+                      }else if(d.value==">5x coverage"||d.value=="≤5x coverage"){
+                        pad=40;
+                      }else{
+                        pad=60;
+                      }
+      				}else{
+      					pad=10;
+      				}
              
               return pad+"px";
           })
-        .text(function(d) { 
+        .html(function(d,i) { 
           var val=d.value;
           if(d.column=="coverBp"){
             val=val+" bp";
           }else if(d.column=="coverBpPerc"){
             val=val+"%";
+          }else if(d.column=="name"){
+            var tmpDepth=4;
+            if(d.value=="small" || d.value=="polyA+" || d.value=="not PolyA+"){
+              tmpDepth=1;
+            }else if(d.value=="multi"||d.value=="unique alignment"){
+              tmpDepth=2;
+            }else if(d.value==">5x coverage"||d.value=="≤5x coverage"){
+              tmpDepth=3;
+            }
+            if(tmpDepth<4){
+              val="<span class=\"trigger\" name=\"d"+(tmpDepth+1)+"\">"+val+"</span>";
+            }
           }
           return val; 
         });
     d3.select("tr.rat").remove();
+    $(".d4").hide();
+    $(".d3").hide();
+    $(".d2").hide();
 });
 
 d3.select(self.frameElement).style("height", height + "px");
+
+$(document).on("click",".trigger",function(){
+    var level=this.getAttribute("name");
+    console.log("expandLevel"+level);
+    changeDisplayedLevel(level);
+});
 
 function isParentOf(p, c) {
   if (p === c) return true;
@@ -336,6 +368,93 @@ function parentPath(node){
   }
 }
 
+function filterRows(selector,selDepth){
+  $("table#data tbody tr").hide();
+  console.log("filter"+selDepth+"::"+displayedLevel);
+  if(selDepth==0){
+
+  }else if(selDepth==1){
+      if(displayedLevel!="d2" && displayedLevel!="d3" && displayedLevel!="d4"){
+        changeDisplayedLevel("d2");
+      }
+  }else if(selDepth==2){
+      if(displayedLevel!="d3" && displayedLevel!="d4"){
+        changeDisplayedLevel("d3");
+      }
+  }else if(selDepth==3){
+      if(displayedLevel!="d4"){
+        changeDisplayedLevel("d4");
+      }
+  }else{
+     if(displayedLevel!="d4"){
+        changeDisplayedLevel("d4");
+     }
+  }
+  console.log("later:"+selDepth+"::"+displayedLevel);
+  /*if(selDepth==0){
+      $("table#data tbody tr.d1").show();
+  }else*/ 
+  if(displayedLevel=="d1"){
+      $("table#data tbody tr"+selector+".d1").show();
+  }else if(displayedLevel=="d2"){
+      $("table#data tbody tr"+selector+".d1").show();
+      $("table#data tbody tr"+selector+".d2").show();
+  }else if(displayedLevel=="d3"){
+      $("table#data tbody tr"+selector+".d1").show();
+      $("table#data tbody tr"+selector+".d2").show();
+      $("table#data tbody tr"+selector+".d3").show();
+  }else if(displayedLevel=="d4"){
+      $("table#data tbody tr"+selector+".d1").show();
+      $("table#data tbody tr"+selector+".d2").show();
+      $("table#data tbody tr"+selector+".d3").show();
+      $("table#data tbody tr"+selector+".d4").show();
+  }
+}
+
+function changeDisplayedLevel(level){
+  displayedLevel=level;
+    var tblClass=tableSelector(selectedNode);
+    if($(tblClass+"."+level).is(":hidden")){
+        $(tblClass+"."+level).show();
+        if(level=="d1"){
+          $("span[name='d1']").addClass("less");
+        }else if(level=="d2"){
+          $("span[name='d1']").addClass("less");
+          $("span[name='d2']").addClass("less");
+        }else if(level=="d3"){
+          $("span[name='d1']").addClass("less");
+          $("span[name='d2']").addClass("less");
+          $("span[name='d3']").addClass("less");
+        }else if(level=="d4"){
+          $("span[name='d1']").addClass("less");
+          $("span[name='d2']").addClass("less");
+          $("span[name='d3']").addClass("less");
+          $("span[name='d4']").addClass("less");
+        }
+    }else{
+        $(tblClass+"."+level).hide();
+        $("span[name='"+level+"']").removeClass("less");
+        if(level=="d1"){
+          $(tblClass+".d2").hide();
+          $("span[name='d2']").removeClass("less");
+          $(tblClass+".d3").hide();
+          $("span[name='d3']").removeClass("less");
+          $(tblClass+".d4").hide();
+          $("span[name='d4']").removeClass("less");
+        }
+        if(level=="d2"){
+          $(tblClass+".d3").hide();
+          $("span[name='d3']").removeClass("less");
+          $(tblClass+".d4").hide();
+          $("span[name='d4']").removeClass("less");
+        }
+        if(level=="d3"){
+          $(tblClass+".d4").hide();
+          $("span[name='d4']").removeClass("less");
+        }
+    }
+}
+
 function tableClass(node){
   var classStr="";
   if(node.name==">5x coverage"){
@@ -360,29 +479,31 @@ function tableClass(node){
 }
 function tableSelector(node){
   var classStr="";
-  if(node.name!="rat genome"){
-    if(node.name==">5x coverage"){
-      classStr="gt5";
-    }else if(node.name=="≤5x coverage"){
-      classStr="lte5";
-    }else if(node.name=="extended UTR"){
-      classStr="eUTR";
-    }else if(node.name=="unique alignment"){
-      classStr="unique";
-    }else if(node.name=="not PolyA+"){
-      classStr="nonPolyA";
-    }else if(node.name=="polyA+"){
-      classStr="polyA";
+  if(node!=undefined){
+    if(node.name!="rat genome"){
+      if(node.name==">5x coverage"){
+        classStr="gt5";
+      }else if(node.name=="≤5x coverage"){
+        classStr="lte5";
+      }else if(node.name=="extended UTR"){
+        classStr="eUTR";
+      }else if(node.name=="unique alignment"){
+        classStr="unique";
+      }else if(node.name=="not PolyA+"){
+        classStr="nonPolyA";
+      }else if(node.name=="polyA+"){
+        classStr="polyA";
+      }else{
+        classStr=node.name;
+      }
+      if(node.parent!=undefined && node.parent.name!="rat genome"){
+        classStr="."+classStr+tableSelector(node.parent);
+      }else{
+        classStr="."+classStr;
+      }
     }else{
-      classStr=node.name;
+      classStr="";
     }
-    if(node.parent!=undefined && node.parent.name!="rat genome"){
-      classStr="."+classStr+tableSelector(node.parent);
-    }else{
-      classStr="."+classStr;
-    }
-  }else{
-    classStr="";
   }
   return classStr;
 }
