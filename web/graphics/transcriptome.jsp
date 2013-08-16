@@ -37,6 +37,20 @@ div.testToolTip {
 h1 {
 	font-weight:bold; background-color:#DEDEDE; color:#000000; width:100%;
 }
+
+.trigger{
+        cursor: pointer;
+        /* needed for IE?  Don't think so */
+  /* cursor: hand; */
+  background: url(<%=imagesDir%>icons/add.png) center left no-repeat; 
+  padding: 0 10px 0 20px;
+}
+
+.less{
+  background: url(<%=imagesDir%>icons/min.png) center left no-repeat; 
+}
+
+
 #graphic{
     display: inline-block;
     text-align: center;
@@ -60,7 +74,7 @@ h1 {
   }
   @media screen and (max-width:840px){
     #graphic{
-      width: 840px;
+      width: 100%;
       overflow: auto;
     }
     #table{
@@ -79,9 +93,9 @@ h1 {
     <table id="data" style="width:100%;">
       <thead>
         <TR>
-          <TH style="width:75%;">Name</TH>
-          <TH style="width:15%;">Transcripts</TH>
-          <TH style="width:9%;">Percent</TH>
+          <TH class="name">Name</TH>
+          <TH >Transcripts</TH>
+          <TH >Percent</TH>
         </TR>
       </thead>
       <tbody>
@@ -94,6 +108,7 @@ h1 {
 	$('#wait1').hide();
 var selectedDepth=0;
 var selectedNode;
+var displayedLevel="d1";
 var halfExtraWinWidth=0;
 	if($(window).width()>1000){
 		halfExtraWinWidth=($(window).width()-1000)/2;
@@ -169,57 +184,56 @@ var text = svg.selectAll("text").data(nodes);
       //.text(function(d) { return x(d.dx) > 0.075 || (d.depth>3 && x(d.dx) > 0.025) || (d.depth>4 && x(d.dx) > 0.0125) ? (d.depth<4 ? d.name.split(" ")[1] || "" : "") : ""; });
 
   function click(d) {
-    //console.log("click d:"+d);
-    console.log("d:"+d.depth);
-    selectedDepth=d.depth;
-    selectedNode=d;
-     $("table#data tbody tr").hide();
-     //console.log("show :"+"table#data tbody tr"+tableSelector(d))
-     $("table#data tbody tr"+tableSelector(d)).show();
+    console.log(d);
+    if(selectedNode==undefined || isParentOf(selectedNode,d)|| d===selectedNode.parent){
+      selectedDepth=d.depth;
+      selectedNode=d;
 
-    path.transition()
-      .duration(750)
-      .attrTween("d", arcTween(d));
+      filterRows(tableSelector(d),selectedDepth);
 
-    // Somewhat of a hack as we rely on arcTween updating the scales.
-    text.transition()
-        .duration(duration)
-        .attrTween("text-anchor", function(d) {
-          return function() {
-            return x(d.x + d.dx / 2) > Math.PI ? "end" : "start";
-          };
-        })
-        .attrTween("transform", function(d) {
-          var multiline = (d.name || "").split(" ").length > 1;
-          return function() {
-            var angle = x(d.x + d.dx / 2) * 180 / Math.PI - 90,
-                rotate = angle + (multiline ? -.5 : 0),
-                translate=(y(d.y) + padding),
-                rotate2=(angle > 90 ? -180 : 0);
-                if(d.depth==0){rotate=0;rotate2=0;}
-                if(d.depth==0){translate=(y(d.y) + padding) - 35;}
-            return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + rotate2 + ")";
-          };
-        })
-          .style("opacity",function(e){
-              var op=0;
-              //console.log(e.name+":"+d.dx+":"+e.dx+"::"+e.dx/d.dx);
-              if(selectedDepth==0 && e.dx/d.dx > 0.01){
-                op=1;
-              }else if(selectedDepth==1 && isParentOf(d, e) && e.dx/d.dx > 0.01 ){
-                op=1;
-              }
-              else if(selectedDepth==2 && isParentOf(d, e) && e.dx/d.dx > 0.005 ){
-                op=1;
-              }
-              else if(selectedDepth>=3 && isParentOf(d, e) && e.dx/d.dx > 0.005 ){
-                op=1;
-              }else if(selectedDepth>=4 && isParentOf(d, e) && e.dx/d.dx > 0.005){
-                op=1;
-              }
-              return op;
-          });
+      path.transition()
+        .duration(750)
+        .attrTween("d", arcTween(d));
 
+      // Somewhat of a hack as we rely on arcTween updating the scales.
+      text.transition()
+          .duration(duration)
+          .attrTween("text-anchor", function(d) {
+            return function() {
+              return x(d.x + d.dx / 2) > Math.PI ? "end" : "start";
+            };
+          })
+          .attrTween("transform", function(d) {
+            var multiline = (d.name || "").split(" ").length > 1;
+            return function() {
+              var angle = x(d.x + d.dx / 2) * 180 / Math.PI - 90,
+                  rotate = angle + (multiline ? -.5 : 0),
+                  translate=(y(d.y) + padding),
+                  rotate2=(angle > 90 ? -180 : 0);
+                  if(d.depth==0){rotate=0;rotate2=0;}
+                  if(d.depth==0){translate=(y(d.y) + padding) - 35;}
+              return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + rotate2 + ")";
+            };
+          })
+            .style("opacity",function(e){
+                var op=0;
+                //console.log(e.name+":"+d.dx+":"+e.dx+"::"+e.dx/d.dx);
+                if(selectedDepth==0 && e.dx/d.dx > 0.01){
+                  op=1;
+                }else if(selectedDepth==1 && isParentOf(d, e) && e.dx/d.dx > 0.01 ){
+                  op=1;
+                }
+                else if(selectedDepth==2 && isParentOf(d, e) && e.dx/d.dx > 0.005 ){
+                  op=1;
+                }
+                else if(selectedDepth>=3 && isParentOf(d, e) && e.dx/d.dx > 0.005 ){
+                  op=1;
+                }else if(selectedDepth>=4 && isParentOf(d, e) && e.dx/d.dx > 0.005){
+                  op=1;
+                }
+                return op;
+            });
+    }
   }
 
     //Add Table
@@ -231,15 +245,17 @@ var text = svg.selectAll("text").data(nodes);
         .style("background-color",function(d){
               return d.color;
             })
-        .attr("class",tableClass);
+        .attr("class",function (d){return tableClass(d)+" d"+d.depth;});
     var cells = rows.selectAll("td")
         .data(function(row) {
             return columns.map(function(column) {
                 return {column: column, value: row[column]};
             });
         }).enter().append("td")
+        
         .style("padding-left",function(d){
-              var pad=0;              
+              var pad=0; 
+              if(d.column=="name"){             
                 if(d.value=="polyA+" || d.value=="not PolyA+"){
                   pad=0;
                 }else if(d.value=="annotated"||d.value=="un- annotated"){
@@ -251,20 +267,45 @@ var text = svg.selectAll("text").data(nodes);
                 }else{
                   pad=80;
                 }
+              }
              
               return pad+"px";
           })
-        .text(function(d) { 
+        .html(function(d) { 
           var val=d.value;
           if(d.column=="trxPerc"){
             val=val+"%";
+          }else if(d.column=="name"){
+            var tmpDepth=5;
+            if(d.value=="polyA+" || d.value=="not PolyA+"){
+              tmpDepth=1;
+            }else if(d.value=="annotated"||d.value=="un- annotated"){
+              tmpDepth=2;
+            }else if(d.value=="close match"||d.value=="generic overlap"||d.value=="perfect match"||d.value=="artifact"||d.value=="intergenic"||d.value=="intronic"){
+              tmpDepth=3;
+            }else if(d.value=="1 isoform"||d.value=="2 isoforms"||d.value=="3+ isoforms"){
+              tmpDepth=4;
+            }
+            if(tmpDepth<5){
+              val="<span class=\"trigger\" name=\"d"+(tmpDepth+1)+"\">"+val+"</span>";
+            }
           }
           return val; 
         });
     d3.select("tr.brain").remove();
+    $(".d5").hide();
+    $(".d4").hide();
+    $(".d3").hide();
+    $(".d2").hide();
 });
 
 d3.select(self.frameElement).style("height", height + "px");
+
+$(document).on("click",".trigger",function(){
+    var level=this.getAttribute("name");
+    console.log("expandLevel"+level);
+    changeDisplayedLevel(level);
+});
 
 function isParentOf(p, c) {
   if (p === c) return true;
@@ -291,7 +332,7 @@ function arcTween(d) {
 
 function hover(d){
   //console.log(d);
-  if((selectedNode==undefined || isParentOf(selectedNode,d))&&d.name!="rat genome"){
+  if((selectedNode==undefined || isParentOf(selectedNode,d))&&d.name!="brain transcriptome"){
     var tooltip="";
     if(d.name=="polyA+"||d.name=="not PolyA+"){
       tooltip="Origin of Gene: <B>"+d.name+"</b>";
@@ -331,6 +372,119 @@ function parentPath(node){
   }else{
     return " brain transcriptome";
   }
+}
+
+function filterRows(selector,selDepth){
+  $("table#data tbody tr").hide();
+  console.log("filter"+selDepth+"::"+displayedLevel);
+  if(selDepth==0){
+
+  }else if(selDepth==1){
+      if(displayedLevel!="d2" && displayedLevel!="d3" && displayedLevel!="d4"&& displayedLevel!="d5"){
+        changeDisplayedLevel("d2");
+      }
+  }else if(selDepth==2){
+      if(displayedLevel!="d3" && displayedLevel!="d4"&& displayedLevel!="d5"){
+        changeDisplayedLevel("d3");
+      }
+  }else if(selDepth==3){
+      if(displayedLevel!="d4"&& displayedLevel!="d5"){
+        changeDisplayedLevel("d4");
+      }
+  }else if(selDepth==4){
+      if(displayedLevel!="d5"){
+        changeDisplayedLevel("d5");
+      }
+  }else{
+     if(displayedLevel!="d5"){
+        changeDisplayedLevel("d5");
+     }
+  }
+  console.log("later:"+selDepth+"::"+displayedLevel);
+  /*if(selDepth==0){
+      $("table#data tbody tr.d1").show();
+  }else*/ 
+  if(displayedLevel=="d1"){
+      $("table#data tbody tr"+selector+".d1").show();
+  }else if(displayedLevel=="d2"){
+      $("table#data tbody tr"+selector+".d1").show();
+      $("table#data tbody tr"+selector+".d2").show();
+  }else if(displayedLevel=="d3"){
+      $("table#data tbody tr"+selector+".d1").show();
+      $("table#data tbody tr"+selector+".d2").show();
+      $("table#data tbody tr"+selector+".d3").show();
+  }else if(displayedLevel=="d4"){
+      $("table#data tbody tr"+selector+".d1").show();
+      $("table#data tbody tr"+selector+".d2").show();
+      $("table#data tbody tr"+selector+".d3").show();
+      $("table#data tbody tr"+selector+".d4").show();
+  }else if(displayedLevel=="d5"){
+      $("table#data tbody tr"+selector+".d1").show();
+      $("table#data tbody tr"+selector+".d2").show();
+      $("table#data tbody tr"+selector+".d3").show();
+      $("table#data tbody tr"+selector+".d4").show();
+      $("table#data tbody tr"+selector+".d5").show();
+  }
+}
+
+function changeDisplayedLevel(level){
+  displayedLevel=level;
+    var tblClass=tableSelector(selectedNode);
+    if($(tblClass+"."+level).is(":hidden")){
+        $(tblClass+"."+level).show();
+        if(level=="d1"){
+          $("span[name='d1']").addClass("less");
+        }else if(level=="d2"){
+          $("span[name='d1']").addClass("less");
+          $("span[name='d2']").addClass("less");
+        }else if(level=="d3"){
+          $("span[name='d1']").addClass("less");
+          $("span[name='d2']").addClass("less");
+          $("span[name='d3']").addClass("less");
+        }else if(level=="d4"){
+          $("span[name='d1']").addClass("less");
+          $("span[name='d2']").addClass("less");
+          $("span[name='d3']").addClass("less");
+          $("span[name='d4']").addClass("less");
+        }else if(level=="d5"){
+          $("span[name='d1']").addClass("less");
+          $("span[name='d2']").addClass("less");
+          $("span[name='d3']").addClass("less");
+          $("span[name='d4']").addClass("less");
+          $("span[name='d5']").addClass("less");
+        }
+    }else{
+        $(tblClass+"."+level).hide();
+        $("span[name='"+level+"']").removeClass("less");
+        if(level=="d1"){
+          $(tblClass+".d2").hide();
+          $("span[name='d2']").removeClass("less");
+          $(tblClass+".d3").hide();
+          $("span[name='d3']").removeClass("less");
+          $(tblClass+".d4").hide();
+          $("span[name='d4']").removeClass("less");
+          $(tblClass+".d5").hide();
+          $("span[name='d5']").removeClass("less");
+        }
+        if(level=="d2"){
+          $(tblClass+".d3").hide();
+          $("span[name='d3']").removeClass("less");
+          $(tblClass+".d4").hide();
+          $("span[name='d4']").removeClass("less");
+          $(tblClass+".d5").hide();
+          $("span[name='d5']").removeClass("less");
+        }
+        if(level=="d3"){
+          $(tblClass+".d4").hide();
+          $("span[name='d4']").removeClass("less");
+          $(tblClass+".d5").hide();
+          $("span[name='d5']").removeClass("less");
+        }
+        if(level=="d4"){
+          $(tblClass+".d5").hide();
+          $("span[name='d5']").removeClass("less");
+        }
+    }
 }
 
 function tableClass(node){
@@ -374,45 +528,47 @@ function tableClass(node){
 }
 function tableSelector(node){
   var classStr="";
-  if(node.name!="brain transcriptome"){
-    if(node.name=="polyA+"){
-    classStr="polyA";
-  }else if(node.name=="not PolyA+"){
-    classStr="nonPolyA";
-  }else if(node.name=="un- annotated"){
-    classStr="unannotated";
-  }else if(node.name=="close match"){
-    classStr="close";
-  }else if(node.name=="generic overlap"){
-    classStr="overlap";
-  }else if(node.name=="perfect match"){
-    classStr="perfect";
-  }else if(node.name=="1 isoform"){
-    classStr="iso1";
-  }else if(node.name=="2 isoforms"){
-    classStr="iso2";
-  }else if(node.name=="3+ isoforms"){
-    classStr="iso3";
-  }else if(node.name=="1 exon"){
-    classStr="exon1";
-  }else if(node.name=="2 exons"){
-    classStr="exon2";
-  }else if(node.name=="3 exons"){
-    classStr="exon3";
-  }else if(node.name=="4 exons"){
-    classStr="exon4";
-  }else if(node.name=="5+ exons"){
-    classStr="exon5";
-  }else{
-      classStr=node.name;
-    }
-    if(node.parent!=undefined && node.parent.name!="brain transcriptome"){
-      classStr="."+classStr+tableSelector(node.parent);
+  if(node!=undefined){
+    if(node.name!="brain transcriptome"){
+      if(node.name=="polyA+"){
+      classStr="polyA";
+    }else if(node.name=="not PolyA+"){
+      classStr="nonPolyA";
+    }else if(node.name=="un- annotated"){
+      classStr="unannotated";
+    }else if(node.name=="close match"){
+      classStr="close";
+    }else if(node.name=="generic overlap"){
+      classStr="overlap";
+    }else if(node.name=="perfect match"){
+      classStr="perfect";
+    }else if(node.name=="1 isoform"){
+      classStr="iso1";
+    }else if(node.name=="2 isoforms"){
+      classStr="iso2";
+    }else if(node.name=="3+ isoforms"){
+      classStr="iso3";
+    }else if(node.name=="1 exon"){
+      classStr="exon1";
+    }else if(node.name=="2 exons"){
+      classStr="exon2";
+    }else if(node.name=="3 exons"){
+      classStr="exon3";
+    }else if(node.name=="4 exons"){
+      classStr="exon4";
+    }else if(node.name=="5+ exons"){
+      classStr="exon5";
     }else{
-      classStr="."+classStr;
+        classStr=node.name;
+      }
+      if(node.parent!=undefined && node.parent.name!="brain transcriptome"){
+        classStr="."+classStr+tableSelector(node.parent);
+      }else{
+        classStr="."+classStr;
+      }
+    }else{
+      classStr="";
     }
-  }else{
-    classStr="";
   }
   return classStr;
 }
