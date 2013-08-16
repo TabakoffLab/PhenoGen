@@ -1,6 +1,10 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
-<%@ include file="/web/common/header_noBorder_noMenu.jsp" %>
+<%
+  extrasList.add("d3.v3.min.js");
+%>
+
+<%@ include file="/web/common/header_adaptive.jsp" %>
 
 <style>
 path {
@@ -14,10 +18,7 @@ text {
   cursor: pointer;
 }
 
-body {
-  width: 880px;
-  margin: 0 auto;
-}
+
 div.testToolTip {   
   position: absolute;           
   text-align: center;
@@ -36,29 +37,59 @@ div.testToolTip {
 h1 {
 	font-weight:bold; background-color:#DEDEDE; color:#000000; width:100%;
 }
-
+#graphic{
+    display: inline-block;
+    text-align: center;
+    width: 72%;
+  }
+  #table{
+    display: inline-block;
+    width: 27%;
+    height: 850px;
+    overflow:auto;
+  }
+  
+  @media screen and (max-width:1175px){
+    #graphic{
+      width:100%;
+    }
+    #table{
+      width: 100%;
+      max-height: 400px;
+    }
+  }
+  @media screen and (max-width:840px){
+    #graphic{
+      width: 840px;
+      overflow: auto;
+    }
+    #table{
+      width: 100%;
+      max-height: 400px;
+    }
+  }
 </style>
+<div>
 <div style="text-align:center;">
 	<H1>Characteristics of Reconstructed Long RNA Genes</H1>
     <a href="genome.jsp">View Genome Coverage</a>
-  <div id="graphic" style="text-align:center;"></div>
 </div>
-  <div style=" max-height:400px; overflow:auto;width:100%;">
+  <div id="graphic"></div>
+  <div id="table">
     <table id="data" style="width:100%;">
       <thead>
         <TR>
-          <TH style="width:50%;">Name</TH>
-          <TH>Transcripts</TH>
-          <TH>Percent</TH>
+          <TH style="width:75%;">Name</TH>
+          <TH style="width:15%;">Transcripts</TH>
+          <TH style="width:9%;">Percent</TH>
         </TR>
       </thead>
       <tbody>
       </tbody>
       </table>
   </div>
+</div>
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 	$('#wait1').hide();
 var selectedDepth=0;
