@@ -1230,7 +1230,59 @@ log.debug("6");
 		}
 	}
 
+        public void downloadFileNoDelete(HttpServletRequest req, 
+			HttpServletResponse res) throws IOException {
 
+		if (req == null) {
+		      throw new IllegalArgumentException("request cannot be null");
+		}
+
+		res.setContentType("application/octet-stream");
+
+		FileInputStream fis = null;
+		ServletOutputStream fos = res.getOutputStream();
+
+		String fullFileName = (String) req.getAttribute("fullFileName");
+		File file = new File(fullFileName);
+		String filename = file.getName(); 
+
+		res.setHeader ("Content-Disposition", 
+			"attachment; filename=\"" + filename + "\"");
+		log.debug("In Download.java.  fullFileName = "+fullFileName);
+		log.debug("filename = "+filename);
+
+		// No file, nothing to download
+		if (filename == null) {
+			log.error("No file to download");
+			return;
+		}
+
+		// Return the file
+		try {
+			fis = new FileInputStream(fullFileName);
+			byte[] buf = new byte[4 * 1024]; // 4K buffer
+			int bytesRead;
+			while ((bytesRead = fis.read(buf)) != -1) {
+				fos.write(buf, 0, bytesRead);
+			}	
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch(Exception e) {
+					log.error("In exception of downloadFile where fis is not null", e);
+				}
+			}
+			if (fos != null) {
+				try {
+					fos.flush();
+					fos.close();
+				} catch(Exception e) {
+					log.error("In exception of downloadFile where fos is not null", e);
+				}
+			}
+		}
+	}
 
 
 

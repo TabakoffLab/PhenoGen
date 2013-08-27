@@ -99,7 +99,7 @@ $(document).ready(function(){
 	});
 		
 	$("#termscheckbox").click(function(){
-		if ($('#termscheckbox').attr('checked')){		   
+		if ($('#termscheckbox').is(':checked')){		   
 			$("#registerSubmitBtn").removeAttr("disabled");
 		} else {
 			$("#registerSubmitBtn").attr("disabled", "disabled"); 
