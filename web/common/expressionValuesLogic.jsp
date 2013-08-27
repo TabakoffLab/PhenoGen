@@ -17,6 +17,7 @@
 
         String datasetArrayType = "";
         log.debug("action = "+action + ", dataset_id= " + selectedDataset.getDataset_id() +" version = "+selectedDatasetVersion.getVersion());
+		log.debug("geneSymbolsHM.size()="+geneSymbolsHM.size());
         Dataset.Group[] groups = null;
         String previousGeneNames = "";
         Set setOfIdentifiers = null;
@@ -151,7 +152,8 @@
                                 	dbConn);
 
 				String [] fileContents = myFileHandler.getFileContents(new File(groupValuesStartFileName));
-				String outFileContents = "";
+				//String outFileContents = "";
+				StringBuilder sb=new StringBuilder();
 				//
 				// For all rows after the header row, look through the Set of Identifiers returned by IDecoder
 				// and create a new column with the originating Identifier that matches with the one returned by IDecoder
@@ -160,7 +162,7 @@
 				for (int i=0; i<fileContents.length; i++) {
 					String[] columns = fileContents[i].split("\t");
 					if (i == 0) {
-						outFileContents = "Gene Identifier" + "\t"; 
+						sb.append( "Gene Identifier" + "\t"); 
 						for (int j=0; j<columns.length; j++) {
 							if (columns[j].startsWith("Group")) {
 								//log.debug("column start with Group " + columns[j]);
@@ -177,26 +179,26 @@
 									columns[j] = 
 										myGroup.getGroupFromMyGroups(groups, groupNumber).getGroup_name();
 								}
-								outFileContents = outFileContents + columns[j] + " " +columnHeadingPieces[2];
+								sb.append( columns[j] + " " +columnHeadingPieces[2]);
 								if (j < columns.length) {
-									outFileContents = outFileContents + "\t";
+									sb.append( "\t");
 								}
 							} else {
-								outFileContents = outFileContents + columns[j] + "\t";
+								sb.append( columns[j] + "\t");
 							}
 						}
 					} else {
 						for (Iterator itr = thisIDecoderSet.iterator(); itr.hasNext();) {
 							Identifier thisIdentifier = (Identifier) itr.next();
 							if ((thisIdentifier.getIdentifier()).equals(columns[0].replaceAll("\"", ""))) {
-								outFileContents = outFileContents + (thisIdentifier.getOriginatingIdentifier()).getIdentifier() + "\t" + 
-											fileContents[i];
+								sb.append((thisIdentifier.getOriginatingIdentifier()).getIdentifier() + "\t" + 
+											fileContents[i]);
 							}
 						}
 					}
-					outFileContents = outFileContents + "\n";
+					sb.append("\n");
 				}
-				myFileHandler.writeFile(outFileContents, groupValuesFileName);
+				myFileHandler.writeFile(sb.toString(), groupValuesFileName);
 
 				if(!hdf5file){
                 		try {
@@ -218,7 +220,7 @@
 				}
 
 				fileContents = myFileHandler.getFileContents(new File(individualValuesStartFileName));
-				outFileContents = "";
+				sb=new StringBuilder();
 				//
 				// For all rows after the header row, look through the Set of Identifiers returned by IDecoder
 				// and create a new column with the originating Identifier that matches with the one returned by IDecoder
@@ -226,22 +228,23 @@
 				for (int i=0; i<fileContents.length; i++) {
 					String[] columns = fileContents[i].split("\t");
 					if (i == 0) {
-						outFileContents = "Gene.Identifier" + "\t" + fileContents[i];	
+						sb.append("Gene Identifier" + "\t" + fileContents[i]);	
 					} else {
 						for (Iterator itr = thisIDecoderSet.iterator(); itr.hasNext();) {
 							Identifier thisIdentifier = (Identifier) itr.next();
 							if ((thisIdentifier.getIdentifier()).equals(columns[0].replaceAll("\"", ""))) {
-								outFileContents = outFileContents + 
+								sb.append( 
 											(thisIdentifier.getOriginatingIdentifier()).getIdentifier() + "\t" + 
-											fileContents[i];
+											fileContents[i]);
 							}
 						}
 					}
-					outFileContents = outFileContents + "\n";
+					sb.append("\n");
 				}
-				myFileHandler.writeFile(outFileContents, individualValuesFileName);
+				myFileHandler.writeFile(sb.toString(), individualValuesFileName);
 		
-		
+				session.setAttribute("exprGroupFile", groupValuesFileName);
+				session.setAttribute("exprArrayFile", individualValuesFileName);
 			} else {
                         	//Error - "Can't find a probeset id for the identifiers
                         	mySessionHandler.createActivity("Used the following geneList: "+ selectedGeneList.getGene_list_name(), 
@@ -253,16 +256,94 @@
         	} else if ((action != null) && action.equals("Download")) {
 				log.debug("Downloading individual and group values");
 				thisIDecoderSet = (Set) session.getAttribute("thisIDecoderSet");
-	
-				String [] files = new String[2];
-				files[0] = groupValuesFileName; 
-				files[1] = individualValuesFileName; 
-	
+				String view="group";
+				if(request.getParameter("view")!=null){
+					view=(String)request.getParameter("view");
+				}
+				boolean incGS=false;
+				if(request.getParameter("incGS")!=null){
+					String tmp=(String)request.getParameter("incGS");
+					if(tmp.equals("true")){
+						incGS=true;
+					}
+				}
+				String exp="expanded";
+				if(request.getParameter("exp")!=null){
+					exp=(String)request.getParameter("exp");
+				}
 				
-				log.debug("zipFileName = "+zipFileName);
-						myFileHandler.createZipFile(files, zipFileName);
+				String file="";
+				if(view.equals("group")){
+					file = (String)session.getAttribute("exprGroupFile"); 
+				}else{
+					file = (String)session.getAttribute("exprArrayFile"); 
+				}
+				
+				if(exp.equals("original") || incGS){
+					String extra="_";
+					if(exp.equals("original")){
+						extra=extra+"orig";
+					}
+					if(incGS){
+						extra=extra+"GS";
+					}
+					String outfile=file.substring(0,file.length()-4)+extra+".txt";
+					File outFile=new File(outfile);
+					if(!outFile.exists()){
+						String[] fileContents = myFileHandler.getFileContents(new File(file));
+						StringBuilder sb=new StringBuilder();
+						//
+						// For all rows after the header row, look through the Set of Identifiers returned by IDecoder
+						// and create a new column with the originating Identifier that matches with the one returned by IDecoder
+						//
+						for (int i=0; i<fileContents.length; i++) {
+							String[] columns = fileContents[i].split("\t");
+							if (i == 0) {
+								if(incGS){
+									sb.append("Gene Symbol\t"+ fileContents[i]);
+								}else{
+									sb.append(fileContents[i]);	
+								}
+								sb.append("\n");
+							} else {
+								if(incGS && exp.equals("expanded")){
+									String symbol=geneSymbolsHM.get(columns[0]).replaceAll("<BR>",",");
+									if(symbol.endsWith(",")){
+										symbol=symbol.substring(0,symbol.length()-1);
+									}
+									sb.append(symbol+"\t"+fileContents[i]);
+									sb.append("\n");
+								}else if(exp.equals("original")){
+									if(columns[0].equals(columns[1])){
+										if(incGS){
+											String symbol=geneSymbolsHM.get(columns[0]).replaceAll("<BR>",",");
+											if(symbol.endsWith(",")){
+												symbol=symbol.substring(0,symbol.length()-1);
+											}
+											sb.append(symbol+"\t"+fileContents[i]);
+										}else{
+											sb.append(fileContents[i]);
+										}
+										sb.append("\n");
+									}
+								}
+							}
+							
+						}
+						
+						myFileHandler.writeFile(sb.toString(), outfile);
+						file=outfile;
+					}else{
+						file=outfile;
+					}
+				}
+				//log.debug("zipFileName = "+zipFileName);
+				/*		myFileHandler.createZipFile(files, zipFileName);
 						request.setAttribute("fullFileName", zipFileName);
-						myFileHandler.downloadFile(request, response);
+						*/
+				
+				request.setAttribute("fullFileName",file );
+				myFileHandler.downloadFileNoDelete(request, response);
 				// This is required to avoid the getOutputStream() has already been called for this response error
 				out.clear();
 				out = pageContext.pushBody(); 

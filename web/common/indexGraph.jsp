@@ -134,10 +134,14 @@ div#announcement a:hover, div#announcementSmall a:hover {
                     
                     <div id="announcement" style="background-color:#FFFFFF; width:100%;min-height:300px; max-height:650px; position:relative;color:#000000; ">
                     	<H2>NEW! RNA-Seq Data Summary Graphics</H2>
+                        <div style=" margin-left:5px;">
                     	Rat Brain RNA-Seq data summary graphics are now available. Click below to browse the RNA-Seq data summary:<BR />
+                        <div style="text-align:center;">
                         <a href="web/graphics/genome.jsp">View Genome Coverage<BR /><img src="<%=imagesDir%>rnaseq_genome.gif" width="200px"/></a><BR />
-                        <a href="web/graphics/transcriptome.jsp">View Reconstructed Long RNA Genes(Rat Brain Transcriptome)<BR /><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="200px"/></a><BR />
+                        <a href="web/graphics/transcriptome.jsp">View Reconstructed Long RNA Genes(Rat Brain Transcriptome)<BR /><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="200px"/></a>
+                        </div><BR />
                         Reconstructed transcripts from this RNA-Seq data are still combined with PhenoGen array data in <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Genome/Transcription Information</a>.
+                        </div>
     				</div>
                     <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000;">
                             <span id="expandBTN" class="expandSect" style=" float:left; position:relative; top:9px; cursor:pointer;"><img src="web/images/icons/expand_section.jpg"></span>

@@ -96,10 +96,12 @@ function setupPage() {
 	$("div#groupValues").click(function(){
 		$("div#displayGroupMeans").show();
 		$("div#displayArrayValues").hide();
+		$("input[name='view']").val("group");
 	});
 	$("div#arrayValues").click(function(){
 		$("div#displayGroupMeans").hide();
 		$("div#displayArrayValues").show();
+		$("input[name='view']").val("array");
 		if(arrayVAdjust==0){
 			arrayV.fnAdjustColumnSizing();
 			arrayVAdjust=1;

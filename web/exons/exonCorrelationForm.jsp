@@ -68,6 +68,7 @@ if(myGeneArray!=null){
             }   	
     }
 }
+Collections.sort(myCBGeneList);
 %>
 
 
