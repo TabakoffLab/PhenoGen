@@ -16,18 +16,20 @@
         log.info("in expressionValues.jsp. user =  "+ user);
 
         extrasList.add("expressionValues.js");
-		extrasList.add("jquery.dataTables.js");
+		extrasList.add("jquery.dataTables.min.js");
 		extrasList.add("jquery.tooltipster.js");
 		extrasList.add("tooltipster.css");
+		extrasList.add("TableTools.min.js");
+		extrasList.add("TableTools.css");
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
-        if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) {
-		optionsList.add("download");
-	}
+    
 
 	request.setAttribute( "selectedTabId", "expressionValues" );
 
         mySessionHandler.createGeneListActivity("Looked at expression values for gene list", dbConn);
+		
+	boolean isExpandedFilterable=false;
 		
 	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
 	HashMap<String,String> geneSymbolsHM=new HashMap<String,String>();
@@ -50,6 +52,10 @@
 %>
 
 	<%@ include file="/web/common/expressionValuesLogic.jsp"%>
+
+<%if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) {
+		optionsList.add("download");
+	}%>
 
 
 <%@ include file="/web/common/header.jsp" %>
@@ -189,7 +195,6 @@
         	<input type="hidden" name="geneListID" value="<%=selectedGeneList.getGene_list_id()%>"/>
 	</form>
         <% } else if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) {
-		optionsList.add("download");
 	 %>
         	<div class="dataContainer">
 		<div id="related_links">
@@ -209,16 +214,24 @@
         		<div id="tabMenu">
                         	<div id="arrayValues" class="left inlineButton"><a href="#">Array Values</a></div><span>|</span>
                         	<div id="groupValues" class="left inlineButton"><a href="#">Group Means</a></div>
-			</div> <!-- tabMenu -->
+                            <div id="expandedMenu" class="left" style="display:none; color:#000000;">
+                				<span>|</span> Select View:
+                                <input type="radio" name="expandedGroup" value="original" id="noexpandRB" /> Original List Only
+                				<input type="radio" name="expandedGroup" value="expanded" id="expandRB" checked /> View Expanded List
+                			</div>
+				</div> <!-- tabMenu -->
+                
 		</div> <!-- menuBar -->
 		<div class="brClear"></div>
-		<% if (action != null && action.equals("View") && setOfIdentifiers.size() > 0) { %>
+		<% if (action != null && action.equals("View") && setOfIdentifiers.size() > 0) { 
+			%>
 			<div class="scrollable">
 				<div id="displayGroupMeans">
 					<div class="title">Group Mean Values<BR><span style="font-size:small"><i>Note: The values are log2 transformed gene expression values</i></span></div>
                 	<table name="items" id="groupMeans" class="list_base" cellpadding="0" cellspacing="3" width="95%">
 					<thead>
 					<tr class="col_title">
+                    	<TH>Gene List Status<span class="toolTip" title="By default the list is expanded to include all probesets related to genes in the list.  This column idicates if the current row is from the original list or expanded results.  <B>You may view only the original list results by selecting the button above Original List Only.</b>"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     	<TH>Gene Symbol</TH>
 					<%
 					String[] fileContents = myFileHandler.getFileContents(new File(groupValuesFileName));
@@ -235,7 +248,15 @@
 					%></tr></thead><tbody><%
 					for (int i=1; i<fileContents.length; i++) {
 						String[] columns = fileContents[i].split("\t");
-						%><tr>
+							if(columns[0].equals(columns[1])){
+								isExpandedFilterable=true;
+						%>
+                        	<TR class="noExpansion">
+                            <TD>Original</TD>
+                        <%}else{%>
+                        	<tr class="expanded">
+                            <TD>Expanded</TD>
+                        <%}%>
                         <TD>
                         	<%=geneSymbolsHM.get(columns[0])%>
                         </TD>
@@ -252,6 +273,7 @@
                 			<table name="items" id="arrayValues" class="list_base" cellpadding="0" cellspacing="3" width="95%">
 					<thead>
 					<tr class="col_title">
+                    	<TH>Gene List Status<span class="toolTip" title="By default the list is expanded to include all probesets related to genes in the list.  This column idicates if the current row is from the original list or expanded results.  <B>You may view only the original list results by selecting the button above Original List Only.</b>"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     	<TH>Gene Symbol</TH>
 					<%
 					fileContents = myFileHandler.getFileContents(new File(individualValuesFileName));
@@ -268,7 +290,15 @@
 					%></tr></thead><tbody><%
 					for (int i=1; i<fileContents.length; i++) {
 						String[] columns = fileContents[i].split("\t");
-						%><tr>
+						if(columns[0].equals(columns[1])){
+								isExpandedFilterable=true;
+						%>
+                        	<TR class="noExpansion">
+                            <TD>Original</TD>
+                        <%}else{%>
+                        	<tr class="expanded">
+                            <TD>Expanded</TD>
+                        <%}%>
 						<TD>
                         	<%=geneSymbolsHM.get(columns[0])%>
                         </TD>
@@ -287,7 +317,10 @@
                         		name="expressionValuesDownload">
 				<center>        
 				<input type="hidden" name="itemIDString" value="<%=itemIDString%>">
-        			<input type="hidden" name="geneListID" value="<%=selectedGeneList.getGene_list_id()%>"/>
+        		<input type="hidden" name="geneListID" value="<%=selectedGeneList.getGene_list_id()%>"/>
+                <input type="hidden" name="exp" value="expanded">
+                <input type="hidden" name="incGS" value="false">
+                <input type="hidden" name="view" value="group">
 				<input type="hidden" name="action" value="" />
 				</center>
 				</form>
@@ -303,13 +336,34 @@
   <script type="text/javascript">
  	 var arrayVAdjust=0;
 	 var arrayV;
+	 var groupM;
+	 var hideFirst=[0];
+	 var showExpandOption="<%=isExpandedFilterable%>";
+	 if(showExpandOption=="true"){
+	 	$('#expandedMenu').show();
+		$("input[name='incGS']").val("true");
+		hideFirst=[];
+	 }
+	 $("input[name='expandedGroup']").on("change", function () {
+	 		if(groupM!=undefined && arrayV!=undefined && $('#expandRB').is(':checked')){
+				groupM.fnFilter("",0);
+				arrayV.fnFilter("",0);
+				$("input[name='exp']").val("expanded");
+				//$('tr.expanded').show();
+			}else if(groupM!=undefined && arrayV!=undefined){
+				groupM.fnFilter("Original",0);
+				arrayV.fnFilter("Original",0);
+				$("input[name='exp']").val("original");
+   				//$('tr.expanded').hide();
+			}
+		});
+	 	
+	 
     $(document).ready(function() {
-		
-		
         setupPage();
 		setTimeout("setupMain()", 100);
 		
-			$("table[id='groupMeans']").dataTable({
+			groupM=$("table[id='groupMeans']").dataTable({
 					"bPaginate": false,
 					"bProcessing": true,
 					"bStateSave": false,
@@ -317,13 +371,14 @@
 					"sScrollX": "950px",
 					"sScrollY": "550px",
 					"aaSorting": [[ 1, "asc" ]],
-					/*"aoColumnDefs": [
-					  { "bVisible": false, "aTargets": geneTargets }
-					],*/
-					"sDom": '<"leftSearch"fr><t>'
-					/*"oTableTools": {
-							"sSwfPath": "/css/swf/copy_csv_xls_pdf.swf"
-						}*/
+					"aoColumnDefs": [
+      						{ "bVisible": false, "aTargets": hideFirst }
+    					],
+					"sDom": '<"leftSearch"Tfr><t>',
+					"oTableTools": {
+							"sSwfPath": "/css/swf/copy_csv_xls.swf",
+							"aButtons": [ "csv", "xls","copy"]
+							}
 	
 			});
 			arrayV=$("table[id='arrayValues']").dataTable({
@@ -334,13 +389,14 @@
 					"sScrollX": "950px",
 					"sScrollY": "550px",
 					"aaSorting": [[ 1, "asc" ]],
-					/*"aoColumnDefs": [
-					  { "bVisible": false, "aTargets": geneTargets }
-					],*/
-					"sDom": '<"leftSearch"fr><t>'
-					/*"oTableTools": {
-							"sSwfPath": "/css/swf/copy_csv_xls_pdf.swf"
-						}*/
+					"aoColumnDefs": [
+      						{ "bVisible": false, "aTargets": hideFirst }
+    					],
+					"sDom": '<"leftSearch"Tfr><t>',
+					"oTableTools": {
+							"sSwfPath": "/css/swf/copy_csv_xls.swf",
+							"aButtons": [ "csv", "xls","copy"]
+						}
 	
 			});
 			
