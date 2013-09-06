@@ -187,16 +187,16 @@ function setupDrawGraph() {
             $("form#graphicSettingsForm").submit();
         }
 
-    if ( $.browser.msie ) {
+    /*if ( $.browser.msie ) {
         $("div.graphicOptions input:radio, div.graphicSettingsWindow input:checkbox")
             .click( doEvent );
 
         $("div.graphicSettingsWindow select" )
             .change( doEvent );
-    } else {
+    } else {*/
         $("div.graphicOptions input:radio, div.graphicSettingsWindow input:checkbox, div.graphicSettingsWindow select" )
             .change( doEvent );
-    }
+    //}
 }
 /* * *
  *  show/hide advanced settings form
