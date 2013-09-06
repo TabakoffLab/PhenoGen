@@ -720,8 +720,8 @@
                     function (e) {
                         var totalRows = ($this[0].tBodies[0] && $this[0].tBodies[0].rows.length) || 0;
 						
-						/*NON STANDARD CHANGED IF STATEMENT BELOW*/
-                        if (!this.sortDisabled && totalRows > 0 && e.target.is("th")) {
+						
+                        if (!this.sortDisabled && totalRows > 0 ) {
                             // Only call sortStart if sorting is
                             // enabled.
                             $this.trigger("sortStart");
