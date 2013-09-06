@@ -14,7 +14,7 @@ function setupPage() {
 	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 400, title: "Phenotype Details", position:[200,100]});
 
 	//---> set default sort column to phenotype name ascending
-        $("table[name='items']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
+    $("table[name='items']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
 
 	var tableRows = getRows();
 
@@ -74,18 +74,18 @@ function setupPage() {
 	var changeDataset = function() {
 		// have to attach the datasetID to the form's action in case errorMsg is called
 		// But this gives an error in jquery on IE, so commented it out
-            	var chosenDatasetID = $("input[name='chosenDatasetID']:checked").val(); 
-            	$("input[name='datasetID']").val(chosenDatasetID);
-            	$("input[name='action']").val("");
+        var chosenDatasetID = $("input[name='chosenDatasetID']:checked").val(); 
+        $("input[name='datasetID']").val(chosenDatasetID);
+        $("input[name='action']").val("");
 		$("input[name='phenotypeParameterGroupID']").val("");
 		showLoadingBox();
 		$("form[name='listPhenotypes']").submit();
-        }
-	if ( $.browser.msie ) {
+    }
+	/*if ( $.browser.msie ) {
 		$("input:radio").click(changeDataset);
-	} else {
+	} else {*/
 		$("input:radio").change(changeDataset);
-	}
+	//}
 
 	setupDownloadButton(contextPath + "/web/common/downloadPhenotype.jsp");
 	setupDeleteButton(contextPath + "/web/datasets/deletePhenotypeData.jsp"); 
