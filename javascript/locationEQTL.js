@@ -111,7 +111,8 @@ function setupAdvancedSettings() {
         toggleAdvancedSettings();
     });
 
-    if ( $("input[name='advSettings']").attr("value") ==  "open" ) {
+    if ( $("input[name='advSettings']").val() ==  "open" ) {
+    //if ( $("input[name='advSettings']").attr("value") ==  "open" ) {
         $("div#advancedSettingsButton").click();
 	}
 
@@ -184,6 +185,7 @@ function setupDeleteButton() {
 /*/
 function setupDrawGraph() {
     var doEvent = function() {
+            $("#wait").show();
             $("form#graphicSettingsForm").submit();
         }
 
