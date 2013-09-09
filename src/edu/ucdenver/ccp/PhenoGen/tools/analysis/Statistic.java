@@ -1186,15 +1186,23 @@ public class Statistic {
 		log.debug("functionArgs = "); myDebugger.print(functionArgs);
 		try {
 			rErrorMsg = myR_session.callR(this.getRFunctionDir(), rFunction, functionArgs, analysisPath, -99);
-                        if(dsfs!=null){
-                            //save stats done
-                            int tmpcount=-1;
-                            try{
-                                tmpcount=Integer.parseInt(myFileHandler.getFileContents(new File(geneCountAfterMultipleTestFileName), "noSpaces")[0]);
-                            }catch(IOException e){
-                                log.error("Exception Opening Stats Count file:"+e,e);
+                        if (warningFile.exists()) {
+                        	String[] message = myFileHandler.getFileContents(warningFile, "withSpaces");
+				log.debug("message = "+message[0]);
+				String warningMsg = new ObjectHandler().getAsSeparatedString(message, "<BR>");
+                                warningFile.delete();
+				throw new RException(warningMsg);
+			}else{
+                            if(dsfs!=null){
+                                //save stats done
+                                int tmpcount=-1;
+                                try{
+                                    tmpcount=Integer.parseInt(myFileHandler.getFileContents(new File(geneCountAfterMultipleTestFileName), "noSpaces")[0]);
+                                }catch(IOException e){
+                                    log.error("Exception Opening Stats Count file:"+e,e);
+                                }
+                                dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,dbConn);
                             }
-                            dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,dbConn);
                         }
 		} catch (Exception e) {
                         dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,-1,2,-1,dbConn);

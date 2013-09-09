@@ -414,7 +414,12 @@ log.debug("after call");
                         </span>
                        	</div> 
         </div> <!-- tabMenu -->
+        <div id="wait" style="text-align:center;"><img src="<%=imagesDir%>/wait.gif"/> Loading...
+        </div>
     </div> <!-- menuBar -->
+    <script type="text/javascript">
+		$("#wait").hide();
+    </script>
 		<div class="brClear"></div>
 
 	    <div id="displayLocEQTL">
