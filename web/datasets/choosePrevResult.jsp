@@ -11,11 +11,13 @@
 <%@ include file="/web/datasets/include/datasetHeader.jsp"  %>
 <%@ include file="/web/datasets/include/selectDataset.jsp"  %>
 <%
+	DataSource pool=(DataSource)session.getAttribute("dbPool");
+
 	String dsfsID = (request.getParameter("dsFilterStatID") != null ?
 				(String) request.getParameter("dsFilterStatID") : "");
 	
 				log.debug("Choosing Previous Results ID:"+dsfsID);
-	DSFilterStat dsfs=selectedDatasetVersion.getFilterStat(Integer.parseInt(dsfsID),userLoggedIn.getUser_id(),dbConn);
+	DSFilterStat dsfs=selectedDatasetVersion.getFilterStat(Integer.parseInt(dsfsID),userLoggedIn.getUser_id(),pool);
 	String analysisPathPartial = userLoggedIn.getUserGeneListsDir() + 
                        selectedDataset.getNameNoSpaces() + 
                        "_v" +

@@ -15,6 +15,9 @@ import edu.ucdenver.ccp.PhenoGen.data.GeneList;
 import edu.ucdenver.ccp.PhenoGen.data.User;
 import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 import edu.ucdenver.ccp.util.sql.Results;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -65,6 +68,7 @@ public class SessionHandler {
         private Dataset.DatasetVersion selectedDatasetVersion = null;
         private Experiment selectedExperiment = null;
         private GeneList selectedGeneList = null;
+        private DataSource pool=null;
 
 	// 
 	// data for sessions table
@@ -87,13 +91,38 @@ public class SessionHandler {
 
         public SessionHandler() {
                 log = Logger.getRootLogger();
+                DataSource pool=null;
+                try {
+                                // Create a JNDI Initial context to be able to lookup the DataSource
+                                InitialContext ctx = new InitialContext();
+                                // Lookup the DataSource, which will be backed by a pool
+                                //   that the application server provides.
+                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/DevDB");
+                                if (pool == null){
+                                   log.error("Unknown DataSource 'jdbc/DevDB'",new Exception("Unknown DataSource 'jdbc/DevDB'"));
+                                }
+                } catch (NamingException ex) {
+                               ex.printStackTrace();
+                }
 		//log.debug("instantiated SessionHandler with no session");
 	}
 
 	
         public SessionHandler(HttpSession session) {
                 log = Logger.getRootLogger();
-		setSession(session); 
+		setSession(session);
+                try {
+                                // Create a JNDI Initial context to be able to lookup the DataSource
+                                InitialContext ctx = new InitialContext();
+                                // Lookup the DataSource, which will be backed by a pool
+                                //   that the application server provides.
+                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/DevDB");
+                                if (pool == null){
+                                   log.error("Unknown DataSource 'jdbc/DevDB'",new Exception("Unknown DataSource 'jdbc/DevDB'"));
+                                }
+                } catch (NamingException ex) {
+                               ex.printStackTrace();
+                }
 	//	this.session = session;
 		//log.debug("instantiated SessionHandler setting session variable");
 	}
@@ -515,6 +544,7 @@ public class SessionHandler {
                 session.setAttribute("adminEmail", this.getAdminEmail());
                 session.setAttribute("maxRThreadCount", this.getMaxRThreadCount());
                 session.setAttribute("dbExtFileDir", this.getDbExtFileDir());
+                session.setAttribute("dbPool",this.pool);
 	}
 
   public void createSession(SessionHandler mySessionHandler, Connection conn) throws SQLException {
@@ -667,6 +697,61 @@ public class SessionHandler {
 		}
 
 	}
+        
+        /**
+	 * Creates a record in the session_activities table.  Assumes the variables have been set explicitly.
+	 * @param mySessionHandler	the SessionHandler object containing the previously set values.
+	 * @param conn	the database connection
+         * @throws            SQLException if a database error occurs
+	 */
+	public void createSessionActivity(SessionHandler mySessionHandler, DataSource pool) throws SQLException {
+                Connection conn=null;
+		// Added this here to handle cases when user session is inactive 
+                try{
+                    conn=pool.getConnection();
+			session_activity_id = myDbUtils.getUniqueID("session_activities_seq", conn);
+			//log.debug("session_activity_id = " + session_activity_id);
+
+        		String query =
+                		"insert into session_activities "+
+                		"(activity_id, session_id, "+
+				"exp_id, dataset_id, version, gene_list_id, "+
+				"activity_name, activity_time) "+
+                		"values "+
+                		"(?, ?, "+
+				"?, ?, ?, ?, "+
+				"?, ?)";
+
+			//log.debug("in createSessionActivity.  SessionID = "+mySessionHandler.getSession_id());
+
+        		PreparedStatement pstmt = conn.prepareStatement(query, 
+							ResultSet.TYPE_SCROLL_INSENSITIVE,
+							ResultSet.CONCUR_UPDATABLE);
+
+                	java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+                	pstmt.setInt(1, session_activity_id);
+                	pstmt.setString(2, mySessionHandler.getSession_id());
+			myDbUtils.setToNullIfZero(pstmt, 3, mySessionHandler.getExp_id()); 
+			myDbUtils.setToNullIfZero(pstmt, 4, mySessionHandler.getDataset_id()); 
+			myDbUtils.setToNullIfZero(pstmt, 5, mySessionHandler.getVersion());
+			myDbUtils.setToNullIfZero(pstmt, 6, mySessionHandler.getGene_list_id());
+                	pstmt.setString(7, mySessionHandler.getActivity_name().substring(0,Math.min(mySessionHandler.getActivity_name().length(),1980)));
+                	pstmt.setTimestamp(8, now);
+		
+			pstmt.executeUpdate();
+			pstmt.close();
+                        conn.close();
+                        conn=null;       
+                }catch(SQLException e){
+                    log.error("SQLException:",e);
+                }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
+	}
+        
   
 	/**
 	 * Creates a record in the session_activities table. 

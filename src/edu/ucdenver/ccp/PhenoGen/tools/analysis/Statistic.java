@@ -176,11 +176,7 @@ public class Statistic {
             int phenotypeParamGroupID,
             int paramGroupID,
             File firstInputFile) throws RException {
-             try{
-                 dbConn= pool.getConnection();
-             }catch(SQLException e){
-                 
-             }
+             
             
             log.debug("filtermethod:" + filterMethodName + "\np1:" + parameter1 + "\np2:" + parameter2 + "\np3:" + parameter3);
             if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(ds.getArray_type())) {
@@ -192,7 +188,7 @@ public class Statistic {
                 String verFDate=(String)session.getAttribute("verFilterDate");
                 String verFTime=(String)session.getAttribute("verFilterTime");
                 Dataset.DatasetVersion dsVer=ds.getDatasetVersion(v);
-                DSFilterStat dsfs=dsVer.getFilterStat(verFDate,verFTime,userID,dbConn);
+                DSFilterStat dsfs=dsVer.getFilterStat(verFDate,verFTime,userID,pool);
                 String Parameter="";
                 String resetQ = "{call filter.reset(" + dsID + "," + v + "," + userID + ",?)}";
                 String countQ = "Select count(*) from EXON_USER_FILTER_TEMP where dataset_id="+dsID+" and dataset_version="+v+" and user_id="+userID+" and cumulative_filter=1";
@@ -208,25 +204,41 @@ public class Statistic {
                     }
                 }*/
                 try {
+                        dbConn= pool.getConnection();
                         CallableStatement cs = dbConn.prepareCall(resetQ);
                         cs.setInt(1, 4);
                         //log.debug("PS:"+ps.toString());
                         cs.execute();
                         cs.close();
+                        dbConn.close();
+                        dbConn=null;
                 } catch (SQLException e) {
                         log.error("Filter SQL Exception:filter.reset(4):", e);
+                } finally{
+                   if (dbConn != null) {
+                        try { dbConn.close(); } catch (SQLException e) { ; }
+                        dbConn = null;
+                   }
                 }
                 log.debug("exon array:"+filterMethodName+"::");
                 if (filterMethodName.equals("'affy.control.genes'")) {
                     try {
                         String query = "{call filter.affycontrol(" + dsID + "," + v + "," + userID + ") }";
                         log.debug("Affy Control filter call:"+query);
+                        dbConn= pool.getConnection();
                         CallableStatement cs = dbConn.prepareCall(query);
                         cs.execute();
                         cs.close();
+                        dbConn.close();
+                        dbConn=null;
                     } catch (SQLException e) {
                         log.error("Filter SQL Exception:", e);
-                    }
+                    }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
                 } else if (filterMethodName.equals("'absolute.call.filter'")) {
                     try {
                         //absolutecall(dsID,version,userID,# samples group1, #samples group2, % of samples )
@@ -268,39 +280,64 @@ public class Statistic {
                         }
                         query=query+") }";
                         log.debug("DABG filter call:"+query);
+                        dbConn= pool.getConnection();
                         CallableStatement cs = dbConn.prepareCall(query);
                         cs.execute();
                         cs.close();
+                        dbConn.close();
+                        dbConn=null;
                     } catch (SQLException e) {
                         log.error("Filter SQL Exception:", e);
-                    }
+                    }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
                 }else if (filterMethodName.equals("'heritability'")) {
                     try {
                         String query = "{call filter.heritability(" + dsID + "," + v + "," + userID +","+parameter2+",'"+parameter1+"') }";
                         log.debug("herit call: "+query);
                         Parameter=Parameter+parameter1+" >="+parameter2;
+                        dbConn= pool.getConnection();
                         CallableStatement cs = dbConn.prepareCall(query);
                         cs.execute();
                         cs.close();
+                        dbConn.close();
+                        dbConn=null;
                     } catch (SQLException e) {
                         log.error("Filter SQL Exception:", e);
-                    }
+                    }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
                 } else if (filterMethodName.equals("'eQTL'")) {
                     try {
                         String seQTL=parameter1.substring(1,parameter1.length()-1);
                         int eQTLID=Integer.parseInt(seQTL);
                         String tissue=parameter3;
                         String query = "{call filter.eqtl(" + dsID + "," + v + "," + userID + "," + eQTLID + "," + tissue+") }";
+                        dbConn= pool.getConnection();
                         CallableStatement cs = dbConn.prepareCall(query);
                         cs.execute();
                         cs.close();
+                        dbConn.close();
+                        dbConn=null;
                     } catch (SQLException e) {
                         log.error("Filter SQL Exception:", e);
-                    }
+                    }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
                     
                 } else if (filterMethodName.equals("'gene.list'")) {
                     try {
                         String query = "{call filter.genelist(" + dsID + "," + v + "," + userID +",?,?,?) }";
+                        dbConn= pool.getConnection();
                         CallableStatement cs = dbConn.prepareCall(query);
                         parameter1=parameter1.replaceAll("'", "");
                         int geneListID=Integer.parseInt(parameter1.trim());
@@ -314,10 +351,16 @@ public class Statistic {
                         cs.setInt(3, translate);
                         cs.execute();
                         cs.close();
-                        
+                        dbConn.close();
+                        dbConn=null;
                     } catch (SQLException e) {
                         log.error("Filter SQL Exception:", e);
-                    }
+                    }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
                     
                 } else if (filterMethodName.equals("'variation'")) {
                     
@@ -330,12 +373,20 @@ public class Statistic {
                             query=query+" -1, "+parameter1;
                         }
                         query=query+") }";
+                        dbConn= pool.getConnection();
                         CallableStatement cs = dbConn.prepareCall(query);
                         cs.execute();
                         cs.close();
+                        dbConn.close();
+                        dbConn=null;
                     } catch (SQLException e) {
                         log.error("Filter SQL Exception:", e);
-                    }
+                    }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
                 } else if (filterMethodName.equals("'fold.change'")) {
                     try {
                         String query = "{call filter.FOLDCHANGE(" + dsID + "," + v + "," + userID +", ";
@@ -346,13 +397,20 @@ public class Statistic {
                             query=query+" -1, "+parameter1;
                         }
                         query=query+") }";
+                        dbConn= pool.getConnection();
                         CallableStatement cs = dbConn.prepareCall(query);
                         cs.execute();
                         cs.close();
-                        
+                        dbConn.close();
+                        dbConn=null;
                     } catch (SQLException e) {
                         log.error("Filter SQL Exception:", e);
-                    }
+                    }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
                 }
                 
                 //update cumulative filter reset(...,5)
@@ -362,6 +420,7 @@ public class Statistic {
                 log.debug("DONE FILTERING\nProcessing cleanup and Counting");
                 int count=-99;
                 try {
+                    dbConn= pool.getConnection();
                     CallableStatement cs = dbConn.prepareCall(resetQ);
                     cs.setInt(1, 5);
                     cs.executeUpdate();
@@ -376,15 +435,22 @@ public class Statistic {
                     count=rs.getInt(1);
                     ps.close();
                     log.debug("Count before HDF5::"+count);
+                    dbConn.close();
+                    dbConn=null;
                 } catch (SQLException e) {
                     log.error("Filter SQL Exception:", e);
-                }
+                }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
                 Date moveFilterTimer=new Date();
                 try{
                     if(count>0){
                         Thread thread;
                         Async_HDF5_FileHandler ahf = new Async_HDF5_FileHandler(ds,"v"+dsVer.getVersion(),ds.getPath(), "Affy.NormVer.h5", "fillFilterProbes", null, session);
-                        ahf.setFillHDFFilterParameters(userID, dbConn,abnormalHDF5File);
+                        ahf.setFillHDFFilterParameters(userID, abnormalHDF5File);
 
                         thread = new Thread(ahf);
                         log.debug("Starting thread to run Async_HDF5_FileHandler  "
@@ -403,7 +469,7 @@ public class Statistic {
                 }
                 Date moveToHDF5File=new Date();
                 log.debug("DONE PROCESSING. Count="+count);
-                dsfs.addFilterStep(filterMethodName,Parameter,count,-1,phenotypeParamGroupID,paramGroupID,dbConn);
+                dsfs.addFilterStep(filterMethodName,Parameter,count,-1,phenotypeParamGroupID,paramGroupID,pool);
                 log.debug("DONE FILTER STATS ENTRY");
                 double totalTime=(moveToHDF5File.getTime()-startTimer.getTime())/60000.0;
                 double filterTime=(doneFilterTimer.getTime()-startTimer.getTime())/60000.0;
@@ -453,13 +519,7 @@ public class Statistic {
                     throw new RException(errorMsg);
                 }
             }
-            if(dbConn!=null){
-                try{
-                    dbConn.close();
-                }catch(SQLException e){
-                    log.error("SQLException ",e);
-                }
-            }
+            
             
         }
          
@@ -482,7 +542,7 @@ public class Statistic {
                 ps.close();
                 Thread thread;
                 Async_HDF5_FileHandler ahf = new Async_HDF5_FileHandler(dataset,"v"+version.getVersion(),dataset.getPath(), "Affy.NormVer.h5", "fillFilterProbes", null, session);
-                ahf.setFillHDFFilterParameters(userID, dbConn,abnormalFilePath);
+                ahf.setFillHDFFilterParameters(userID, abnormalFilePath);
                 thread = new Thread(ahf);
                 log.debug("Starting thread to run Async_HDF5_FileHandler  "
                         + "It is named " + thread.getName());
@@ -511,7 +571,7 @@ public class Statistic {
                 log.debug("in moveFilterToHDF5");
                 Thread thread;
                 Async_HDF5_FileHandler ahf = new Async_HDF5_FileHandler(ds,"v"+dsv.getVersion(),ds.getPath(), "Affy.NormVer.h5", "fillHDF5Filter", null, session);
-                ahf.setFillHDFFilterParameters(this.userLoggedIn.getUser_id(), dbConn,abnormalFilePath);
+                ahf.setFillHDFFilterParameters(this.userLoggedIn.getUser_id(), abnormalFilePath);
 
                 thread = new Thread(ahf);
                 log.debug("Starting thread to run Async_HDF5_FileHandler  "
@@ -616,11 +676,7 @@ public class Statistic {
                 DSFilterStat dsfs=null;
                 String params=functionArgs[1];
 		rFunction = "statistics.TwoWay.ANOVA";
-                try{
-                    dbConn= pool.getConnection();
-                }catch(SQLException e){
-                    log.error("SQLException",e);
-                }
+                
                 if(inputFile.endsWith(".h5'")){
                     rFunction=rFunction+".HDF5";
                     functionArgs[0]=functionArgs[0]+ ", VersionPath= '"+version+"', SampleFile= "+sampleFile;
@@ -656,9 +712,9 @@ public class Statistic {
                     
                     DSFilterStat tmp=new DSFilterStat();
                     User userLoggedIn=(User)session.getAttribute("userLoggedIn");
-                    dsfs=tmp.getFilterStatFromDB(myDataset.getDataset_id(),v,userLoggedIn.getUser_id(),verFDate,verFTime,dbConn);
+                    dsfs=tmp.getFilterStatFromDB(myDataset.getDataset_id(),v,userLoggedIn.getUser_id(),verFDate,verFTime,pool);
                     System.out.println("final ID:"+dsfs.getDSFilterStatID());
-                    dsfs.addStatsStep("Statistics: 2Way ANOVA",params,-1,1,0,dbConn);
+                    dsfs.addStatsStep("Statistics: 2Way ANOVA",params,-1,1,0,pool);
                 }
                 log.debug("functionArgs = "); myDebugger.print(functionArgs);
                 if(async){
@@ -681,7 +737,7 @@ public class Statistic {
                             String errorMsg = new ObjectHandler().getAsSeparatedString(rErrorMsg, "<BR>");
                             log.debug("after R call for 2-Way ANOVA statistics, got errorMsg. It is "+errorMsg);
                             if(dsfs!=null){
-                                dsfs.addStatsStep("Statistics: 2Way ANOVA",params,-1,1,-1,dbConn);
+                                dsfs.addStatsStep("Statistics: 2Way ANOVA",params,-1,1,-1,pool);
                             }
                             throw new RException(errorMsg);
                     }else{
@@ -692,18 +748,11 @@ public class Statistic {
                             }catch(IOException e){
                                 log.error("Exception Opening Stats Count file:"+e,e);
                             }
-                            dsfs.addStatsStep("Statistics: 2Way ANOVA",params,tmpcount,1,1,dbConn);
+                            dsfs.addStatsStep("Statistics: 2Way ANOVA",params,tmpcount,1,1,pool);
                         }
                     }
                 }
                 
-                if(dbConn!=null){
-                    try{
-                    dbConn.close();
-                    }catch(SQLException e){
-                        log.error("SQLException",e);
-                    }
-                }
                 return async;
 	}
 
@@ -812,9 +861,9 @@ public class Statistic {
                     
                     DSFilterStat tmp=new DSFilterStat();
                     User userLoggedIn=(User)session.getAttribute("userLoggedIn");
-                    dsfs=tmp.getFilterStatFromDB(myDataset.getDataset_id(),v,userLoggedIn.getUser_id(),verFDate,verFTime,dbConn);
+                    dsfs=tmp.getFilterStatFromDB(myDataset.getDataset_id(),v,userLoggedIn.getUser_id(),verFDate,verFTime,pool);
                     System.out.println("final ID:"+dsfs.getDSFilterStatID());
-                    dsfs.addStatsStep("Statistics: "+cluster_method+" Clustering",params,-1,1,0,dbConn);
+                    dsfs.addStatsStep("Statistics: "+cluster_method+" Clustering",params,-1,1,0,pool);
                 }
 
 		log.debug("functionArgs = "); myDebugger.print(functionArgs);
@@ -854,9 +903,9 @@ public class Statistic {
                     }
 
                     if(errors&&dsfs!=null){
-                        dsfs.addStatsStep("Statistics: "+cluster_method+" Clustering",params,-1,1,-1,dbConn);
+                        dsfs.addStatsStep("Statistics: "+cluster_method+" Clustering",params,-1,1,-1,pool);
                     }else if (dsfs!=null){
-                        dsfs.addStatsStep("Statistics: "+cluster_method+" Clustering",params,-1,1,1,dbConn);
+                        dsfs.addStatsStep("Statistics: "+cluster_method+" Clustering",params,-1,1,1,pool);
                     }
                 }
                 return async;
@@ -945,9 +994,9 @@ public class Statistic {
                     
                     DSFilterStat tmp = new DSFilterStat();
                     User userLoggedIn = (User) session.getAttribute("userLoggedIn");
-                    dsfs = tmp.getFilterStatFromDB(myDataset.getDataset_id(), v, userLoggedIn.getUser_id(), verFDate, verFTime, dbConn);
+                    dsfs = tmp.getFilterStatFromDB(myDataset.getDataset_id(), v, userLoggedIn.getUser_id(), verFDate, verFTime, pool);
                     log.debug("final ID:" + dsfs.getDSFilterStatID());
-                    dsfs.addStatsStep("Statistics: Correlation", params, -1, 1, 0, dbConn);
+                    dsfs.addStatsStep("Statistics: Correlation", params, -1, 1, 0, pool);
                 }
 		log.debug("functionArgs = "); myDebugger.print(functionArgs);
                 if(async){
@@ -970,7 +1019,7 @@ public class Statistic {
                             String errorMsg = new ObjectHandler().getAsSeparatedString(rErrorMsg, "<BR>");
                             log.debug("after R call for correlation statistics, got errorMsg. It is "+errorMsg);
                             if(dsfs!=null){
-                                dsfs.addStatsStep("Statistics: Correlation",params,-1,1,-1,dbConn);
+                                dsfs.addStatsStep("Statistics: Correlation",params,-1,1,-1,pool);
                             }
                             throw new RException(errorMsg);
                     }else{
@@ -981,7 +1030,7 @@ public class Statistic {
                                 }catch(IOException e){
                                     log.error("Exception Opening Stats Count file:"+e,e);
                                 }
-                            dsfs.addStatsStep("Statistics: Correlation",params,tmpcount,1,1,dbConn);
+                            dsfs.addStatsStep("Statistics: Correlation",params,tmpcount,1,1,pool);
                         }
                     }
                 }
@@ -1095,9 +1144,9 @@ public class Statistic {
                     //create Stats entry running
                     DSFilterStat tmp=new DSFilterStat();
                     User userLoggedIn=(User)session.getAttribute("userLoggedIn");
-                    dsfs=tmp.getFilterStatFromDB(datasetID,v,userLoggedIn.getUser_id(),verFDate,verFTime,dbConn);
+                    dsfs=tmp.getFilterStatFromDB(datasetID,v,userLoggedIn.getUser_id(),verFDate,verFTime,pool);
                     System.out.println("final ID:"+dsfs.getDSFilterStatID());
-                    dsfs.addStatsStep(methodName,params,-1,1,0,dbConn);
+                    dsfs.addStatsStep(methodName,params,-1,1,0,pool);
                 }
                 
                 if(Async){
@@ -1132,7 +1181,7 @@ public class Statistic {
                             }catch(IOException e){
                                 log.error("Exception Opening Stats Count file:"+e,e);
                             }
-                            dsfs.addStatsStep(methodName,params,tmpcount,1,1,dbConn);
+                            dsfs.addStatsStep(methodName,params,tmpcount,1,1,pool);
                         }
                     }
                 }
@@ -1229,10 +1278,10 @@ public class Statistic {
                             functionArgs[6] = "VersionPath = '" + version + "'";
                             DSFilterStat tmp=new DSFilterStat();
                             User userLoggedIn=(User)session.getAttribute("userLoggedIn");
-                            dsfs=tmp.getFilterStatFromDB(datasetID,v,userLoggedIn.getUser_id(),verFDate,verFTime,dbConn);
+                            dsfs=tmp.getFilterStatFromDB(datasetID,v,userLoggedIn.getUser_id(),verFDate,verFTime,pool);
                             //System.out.println("final ID:"+dsfs.getDSFilterStatID());
                             
-                            dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,-1,2,0,dbConn);
+                            dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,-1,2,0,pool);
                 }
                 //log.debug("after .h5 specific");
 		log.debug("functionArgs = "); myDebugger.print(functionArgs);
@@ -1246,10 +1295,10 @@ public class Statistic {
                             }catch(IOException e){
                                 log.error("Exception Opening Stats Count file:"+e,e);
                             }
-                            dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,dbConn);
+                            dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,pool);
                         }
 		} catch (Exception e) {
-                        dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,-1,2,-1,dbConn);
+                        dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,-1,2,-1,pool);
 			if (warningFile.exists()) {
                         	String[] message = myFileHandler.getFileContents(warningFile, "withSpaces");
 				log.debug("message = "+message[0]);
@@ -2180,7 +2229,8 @@ public class Statistic {
             String verFTime = (String) session.getAttribute("verFilterTime");
             String resetQ = "{call filter.reset(" + ds.getDataset_id() + "," + dsVer.getVersion() + "," + userID + ",?)}";
             try {
-                dsVer.createFilterStats(verFDate, verFTime, analysisType, userID, dbConn);
+                dsVer.createFilterStats(verFDate, verFTime, analysisType, userID, pool);
+                dbConn=pool.getConnection();
                 CallableStatement cs = dbConn.prepareCall(resetQ);
                 cs.setInt(1, 3);
                 cs.executeUpdate();
@@ -2189,9 +2239,16 @@ public class Statistic {
                 cs.setInt(1, 1);
                 cs.executeUpdate();
                 cs.close();
+                dbConn.close();
+                dbConn=null;
             } catch (SQLException e) {
                 log.error("Filter SQL Exception:", e);
-            }
+            }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
         }
         
         /**
@@ -2806,9 +2863,9 @@ public class Statistic {
 					String annotation_level,
                                         boolean outputHDF5) 
 					throws SQLException, ErrorException {
-
+                
 		log.debug("in doNormalization");
-
+                Connection tmpdbConn=(Connection) session.getAttribute("dbConn");
                 int nextVersionNumber = 0;
                 Thread thread2 = null;
                 Thread thread3 = null;
@@ -2830,14 +2887,14 @@ public class Statistic {
 					analysis_level,
 					annotation_level,
                                         codeLink_parameter1,
-                                        dbConn);
+                                        tmpdbConn);
 
                 if (!alreadyExists.equals("")) {
                 	log.debug("alreadyExists is true");
                         //Error -- "Normalization already exists"
 			throw new ErrorException("EXP-004",  "See version '" + alreadyExists + "'.");
 		} else {
-                	nextVersionNumber = selectedDataset.getNextVersion(dbConn);
+                	nextVersionNumber = selectedDataset.getNextVersion(tmpdbConn);
                 }
                 if (nextVersionNumber == 0) {
                 	nextVersionNumber = 1;
@@ -2850,7 +2907,7 @@ public class Statistic {
 		} else {
                 	log.debug("no problems creating dataset directory in doNormalization");
                 }
-		Dataset.Group[] myGroups = selectedDataset.getGroupsInGrouping(grouping_id, dbConn);
+		Dataset.Group[] myGroups = selectedDataset.getGroupsInGrouping(grouping_id, tmpdbConn);
 
 		//log.debug("myGroups = "); myDebugger.print(myGroups);
 		//
@@ -2867,14 +2924,14 @@ public class Statistic {
                 newDatasetVersion.setVisible(0);
                 newDatasetVersion.setGrouping_id(grouping_id);
                 newDatasetVersion.setVersion_type(versionType);
-                newDatasetVersion.createDatasetVersion(dbConn);
+                newDatasetVersion.createDatasetVersion(tmpdbConn);
 
                 //
                 // Create a master parameter group 
                 //
 
                 int parameterGroupID = myParameterValue.createParameterGroup(
-                                                selectedDataset.getDataset_id(), nextVersionNumber, 1, dbConn);
+                                                selectedDataset.getDataset_id(), nextVersionNumber, 1, tmpdbConn);
 
 		log.debug("parameterGroupID = "+parameterGroupID);
                 log.debug("NORM ARRAY TYPE:"+selectedDataset.getArray_type());
@@ -2885,20 +2942,20 @@ public class Statistic {
                         myParameterValue.setCategory("Data Normalization");
                         myParameterValue.setParameter("Normalization Method");
                         myParameterValue.setValue(normalize_method);
-                        myParameterValue.createParameterValue(dbConn);
+                        myParameterValue.createParameterValue(tmpdbConn);
 			log.debug("just created normalization method parameter = ");
 
                         myParameterValue.setParameter("Probe Mask Applied");
                         myParameterValue.setValue(probeMask);
-                        myParameterValue.createParameterValue(dbConn);
+                        myParameterValue.createParameterValue(tmpdbConn);
 			log.debug("just created probemask parameter = ");
                 	if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(selectedDataset.getArray_type())) {
                         	myParameterValue.setParameter("Analysis Level");
                         	myParameterValue.setValue(analysis_level);
-                        	myParameterValue.createParameterValue(dbConn);
+                        	myParameterValue.createParameterValue(tmpdbConn);
                         	myParameterValue.setParameter("Annotation Level");
                         	myParameterValue.setValue(annotation_level);
-                        	myParameterValue.createParameterValue(dbConn);
+                        	myParameterValue.createParameterValue(tmpdbConn);
 			}else{
                             outputHDF5=false;
                         }
@@ -2907,14 +2964,14 @@ public class Statistic {
                         myParameterValue.setCategory("Data Normalization");
                         myParameterValue.setParameter("cDNA Normalization Method");
                         myParameterValue.setValue(normalize_method);
-                        myParameterValue.createParameterValue(dbConn);
+                        myParameterValue.createParameterValue(tmpdbConn);
                         outputHDF5=false;
 		} else if (selectedDataset.getPlatform().equals(selectedDataset.CODELINK_PLATFORM)) {
 			myParameterValue.setParameter_group_id(parameterGroupID);
                         myParameterValue.setCategory("Data Normalization");
                         myParameterValue.setParameter("CodeLink Normalization Method");
                         myParameterValue.setValue(normalize_method);
-                        myParameterValue.createParameterValue(dbConn);
+                        myParameterValue.createParameterValue(tmpdbConn);
 
 			myParameterValue.setParameter_group_id(parameterGroupID);
                         myParameterValue.setCategory("Data Normalization");
@@ -2924,13 +2981,13 @@ public class Statistic {
                         } else {
 					myParameterValue.setValue("Null");
                         }
-                        myParameterValue.createParameterValue(dbConn);
+                        myParameterValue.createParameterValue(tmpdbConn);
                         outputHDF5=false;
 		}
                 
                 
                 
-                User.UserChip[] myChipAssignments = selectedDataset.new Group().getChipAssignments(grouping_id, dbConn);
+                User.UserChip[] myChipAssignments = selectedDataset.new Group().getChipAssignments(grouping_id, tmpdbConn);
 		edu.ucdenver.ccp.PhenoGen.data.Array[] myArrays = selectedDataset.getArrays();
 		//log.debug("myArrays = "); myDebugger.print(myArrays);
 		int[] groupValues = new int[myArrays.length];
@@ -3078,7 +3135,7 @@ public class Statistic {
                     //and clean up APT files
                     String root=(String) session.getAttribute("userFilesRoot");
                     String dbExtFilePath=(String) session.getAttribute("dbExtFileDir");
-                    Async_APT_Filecleanup afc=new Async_APT_Filecleanup(selectedDataset,newDatasetVersion,root,dbExtFilePath,dbConn,thread3);
+                    Async_APT_Filecleanup afc=new Async_APT_Filecleanup(selectedDataset,newDatasetVersion,root,dbExtFilePath,pool,thread3);
                     thread6 = new Thread(afc);
                     log.debug("Starting thread to run Async_APT_FileCleanup  "+
                                     "It is named "+thread6.getName());
@@ -3106,6 +3163,8 @@ public class Statistic {
 
                 thread4.start();
                 log.debug("back in normalize after thread4.start");
+                
+                tmpdbConn=null;
 
 		return nextVersionNumber;
 	}
