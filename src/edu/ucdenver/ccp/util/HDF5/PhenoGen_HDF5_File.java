@@ -677,9 +677,20 @@ public class PhenoGen_HDF5_File{
             }
         }
         
+        long[] sortedIncludeList=new long[includeProbeList.length];
+        Hashtable inProbesHT=new Hashtable();
+        for(int i=0;i<includeProbeList.length;i++){
+            inProbesHT.put(includeProbeList[i], i);
+        }
+        
         Hashtable probesHT=new Hashtable();
+        int sortedInd=0;
         for(int i=0;i<inProbe.length;i++){
             probesHT.put(inProbe[i], i);
+            if(inProbesHT.containsKey(inProbe[i])){
+                sortedIncludeList[sortedInd]=inProbe[i];
+                sortedInd++;
+            }
         }
         
         double[][] outData=new double[processLength][sampleSize];
@@ -697,20 +708,30 @@ public class PhenoGen_HDF5_File{
         System.out.println("data read");
         int outstart=0;
         int outLoc=0;
-        if(includeProbeList.length<processLength){
-            outData=new double[includeProbeList.length][sampleSize];
+        if(sortedIncludeList.length<processLength){
+            outData=new double[sortedIncludeList.length][sampleSize];
         }
+        
+        
+        //rewrite sorted probeset list since data will be in this order.
+        if(this.datasetExists(this.DATASET_FILTER_PROBESET, cur)){
+                this.deleteDataset(this.DATASET_FILTER_PROBESET,cur);
+        }
+        long[] dim={sortedIncludeList.length};
+        h5FFile.createLongDataSet(dim,this.DATASET_FILTER_PROBESET,cur,sortedIncludeList,true);
+        
+        //this.writeFilteredProbeList(sortedIncludeList, curDate, curTime);
         int cacheMiss=0;
-        for(int i=0;i<includeProbeList.length;i++){
+        for(int i=0;i<sortedIncludeList.length;i++){
             //System.out.println("for"+i);
             if(i>0&&(i%processLength)==0){
                 //write outData
                 this.writeFilterAvgDataPart(outData, outstart, outData.length, curDate,curTime);
                 //reset outVars
                 outLoc=0;
-                if((outstart+(2*processLength))>includeProbeList.length){
+                if((outstart+(2*processLength))>sortedIncludeList.length){
                     outstart=outstart+processLength;
-                    int tmpLen=includeProbeList.length-outstart;
+                    int tmpLen=sortedIncludeList.length-outstart;
                     System.out.println("output dim:"+tmpLen+":"+outstart);
                     outData=new double[tmpLen][sampleSize];
                 }else{
@@ -718,7 +739,7 @@ public class PhenoGen_HDF5_File{
                     outstart=outstart+processLength;
                 }
             }
-            int ind=Integer.parseInt(probesHT.get(includeProbeList[i]).toString());
+            int ind=Integer.parseInt(probesHT.get(sortedIncludeList[i]).toString());
             if(ind>=instart&&ind<=inEnd){
                 outData[outLoc]=inData[ind-instart];
                 cacheMiss=0;
