@@ -78,12 +78,14 @@
   <div class="downloadItem"></div>
 
   <script type="text/javascript">
+  	var intervalTime=60000;
+	var interval;
     $(document).ready(function() {
         setupPage();
 		setTimeout("setupMain()", 100);
-		window.setInterval(function(){
+		interval=window.setInterval(function(){
   			location.reload(true);
-		}, 30000); 
+		}, intervalTime); 
     });
 	
 	
