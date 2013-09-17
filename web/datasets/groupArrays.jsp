@@ -16,6 +16,8 @@
 	request.setAttribute( "selectedStep", "1" );
 	extrasList.add("arrayTabs.js");
 	extrasList.add("groupArrays.js");
+	extrasList.add("jquery.tooltip.js");
+	extrasList.add("jquery.tooltip.css");
 	optionsList.add("datasetDetails");
 
 	log.info("in groupArrays.jsp. user = " + user);

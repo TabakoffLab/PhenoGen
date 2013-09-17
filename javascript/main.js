@@ -89,7 +89,19 @@ function createDialog(selector, options) {
     var settings = { draggable: true,
                      modal: true,
                      autoOpen: false,
-                     overlay: { opacity: .4, background: "#ccc" }
+                     overlay: { opacity: .4, background: "#ccc" },
+					 open: function( event, ui ) {
+						 if(typeof interval != 'undefined' && interval!=null){
+								window.clearInterval(interval);
+						 }
+					 },
+					 close: function( event, ui ) {
+						 if(typeof intervalTime != 'undefined' && intervalTime!=null){
+							interval=window.setInterval(function(){
+								location.reload(true);
+								}, intervalTime);
+						}
+					}
                     };
     $.extend(settings, options);
     var element = $(selector);

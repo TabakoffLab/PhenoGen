@@ -90,7 +90,8 @@ function addTipsToRadioButtons() {
                             bodyHandler: tooltipBody
                           };
 
-    $("table.list_base td").find("input").not("hidden").tooltip(grouptipSettings)
+    $("table.list_base td").find("input").not("hidden").tooltip(grouptipSettings);
+	
 }
 
 function IsGroupArraysFormComplete() {
