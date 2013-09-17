@@ -3,6 +3,9 @@
 	request.setAttribute( "selectedStep", "2" );
 	extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("typeOfAnalysis.js");
+	extrasList.add("jquery.tooltipster.js");
+	extrasList.add("tooltipster.css");
+	
 	optionsList.add("datasetVersionDetails");
 
 	String analysisAction = (request.getParameter("analysisAction") != null ? (String) request.getParameter("analysisAction") : "0");
@@ -82,7 +85,7 @@
         	optionHash.put("cluster", "Clustering");
 
 		%><%@ include file="/web/common/selectBox.jsp" %>
-			<span class="info" title="<i>Differential Expression</i> will find genes whose expression values differ between groups of samples.<BR><BR>
+			<span class="infoSpan" title="<i>Differential Expression</i> will find genes whose expression values differ between groups of samples.<BR><BR>
 						<i>Correlation</i> will find genes whose expression values follow a pattern similar to a pattern in phenotypic data.<BR><BR>
 						<i>Clustering</i> will find genes and/or samples whose expression values show similar trends.">
                     		<img src="<%=imagesDir%>icons/info.gif" alt="Help">
@@ -176,32 +179,32 @@
                                         if((dsfs[j].getAnalysisType().equals("Differential Expression")||dsfs[j].getAnalysisType().equals("Correlation"))
                                         && tmpSSteps!=null &&tmpSSteps.length==1){
                                         	if(dsfs[j].getStatsGroup().getStatusString().equals("Done")){%>
-                                            	Step 2: <span id="multtest" class="specific"><a href="#">Run Multiple Testing Correction</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Continue analysis with multiple testing correction.">
+                                            	Step 2: <span id="multtest" class="specific"><a href="#">Run Multiple Testing Correction</a></span> <span class="infoSpan" title="Continue analysis with multiple testing correction."><img src="/PhenoGen/web/images/icons/info.gif" alt="Help" ></span>
                                             <%}%>
                                         <%}else if(dsfs[j].getAnalysisType().equals("Clustering") && tmpSSteps!=null &&tmpSSteps.length==1){
 											if(dsfs[j].getStatsGroup().getStatusString().equals("Done")){%>
-                                        	<span id="cluster" class="specific"><a href="#">Save Results or Rerun Clustering</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Click to rerun and save clusters."><BR /><BR />
-                                            <span id="clusterResults" class="specific"><a href="#">Review Cluster Results</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Click to Review Cluster Results.">
+                                        	<span id="cluster" class="specific"><a href="#">Save Results or Rerun Clustering</a></span> <span class="infoSpan" title="Click to rerun and save clusters."><img src="/PhenoGen/web/images/icons/info.gif" alt="Help" ></span></<BR /><BR />
+                                            <span id="clusterResults" class="specific"><a href="#">Review Cluster Results</a></span> <span class="infoSpan" title="Click to Review Cluster Results."><img src="/PhenoGen/web/images/icons/info.gif" alt="Help" ></span>
                                             <%}
                                         }
                                     }else{
                                         if((dsfs[j].getAnalysisType().equals("Differential Expression")||dsfs[j].getAnalysisType().equals("Correlation"))
                                         && (tmpSSteps==null || tmpSSteps.length==0) && tmpFSteps!=null &&tmpFSteps.length>0 ){
 											if(dsfs[j].getAnalysisType().equals("Differential Expression")){%>
-                                            Step 1: <span id="stats" class="specific"><a href="#">Run Statistics</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Continue analysis with statistics.">
+                                            Step 1: <span id="stats" class="specific"><a href="#">Run Statistics</a></span> <span class="infoSpan" title="Continue analysis with statistics."><img src="/PhenoGen/web/images/icons/info.gif" alt="Help" ></span>
                                             <%}else if(dsfs[j].getAnalysisType().equals("Correlation")){%>
-                                            Step 1: <span id="statscorr" class="specific"><a href="#">Run Statistics</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Continue analysis with statistics.">
+                                            Step 1: <span id="statscorr" class="specific"><a href="#">Run Statistics</a></span> <span class="infoSpan" title="Continue analysis with statistics."><img src="/PhenoGen/web/images/icons/info.gif" alt="Help" ></span>
                                             <%}%>
                                         <%}else if(dsfs[j].getAnalysisType().equals("Clustering") && (tmpSSteps==null || tmpSSteps.length==0) && tmpFSteps!=null &&tmpFSteps.length>0 ){%>
-                                        	Step 1: <span id="cluster" class="specific"><a href="#">Run Clustering</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Continue analysis with clustering.">
+                                        	Step 1: <span id="cluster" class="specific"><a href="#">Run Clustering</a></span> <span class="infoSpan" title="Continue analysis with clustering."><img src="/PhenoGen/web/images/icons/info.gif" alt="Help" ></span>
 										<%}else{%>
                                             Not Yet Performed
                                         <%}%>
                                     <%}%>
                                     <%if((dsfs[j].getAnalysisType().equals("Differential Expression")||dsfs[j].getAnalysisType().equals("Correlation"))
                                         && tmpSSteps!=null &&tmpSSteps.length==2){%>
-                                        <span id="genelist" class="specific"><a href="#">Save Gene List as ...</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Allows you to return and save a gene list in case you couldn't after multiple testing or if you just want to save it again."><BR /><BR />
-                                        <span id="multtest" class="specific"><a href="#">Rerun Multiple Testing Correction</a></span> <img src="/PhenoGen/web/images/icons/info.gif" alt="Help" title="Allows you to rerun Multiple Testing Correction with a new P-value Cut-off and then save a new Gene List.">
+                                        <span id="genelist" class="specific"><a href="#">Save Gene List as ...</a></span> <span class="infoSpan" title="Allows you to return and save a gene list in case you couldn't after multiple testing or if you just want to save it again."><img src="/PhenoGen/web/images/icons/info.gif" alt="Help" ></span><BR /><BR />
+                                        <span id="multtest" class="specific"><a href="#">Rerun Multiple Testing Correction</a></span> <span class="infoSpan" title="Allows you to rerun Multiple Testing Correction with a new P-value Cut-off and then save a new Gene List."><img src="/PhenoGen/web/images/icons/info.gif" alt="Help" ></span>
                                     <%}%>
                                     
                                     </td>
@@ -224,16 +227,23 @@
         </form>
         </div>
   <% }%>
-	<BR><BR>
-	<BR><BR>
-	<BR><BR>
-	<BR><BR>
+	
+
     <div class="deleteItem"></div>
 
 
 <%@ include file="/web/common/footer.jsp" %>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$('.infoSpan').tooltipster({
+			position: 'top-right',
+			maxWidth: 250,
+			offsetX: 24,
+			offsetY: 5,
+			interactive: true,
+			interactiveTolerance: 350
+		});
+	
 		setupPage();
 		setTimeout("setupMain()", 100);
 		
@@ -242,9 +252,9 @@
 					"bProcessing": true,
 					"bStateSave": false,
 					"bAutoWidth": true,
-					"sScrollX": "950px",
-					"sScrollY": "550px",
-					"aaSorting": [[ 4, "desc" ],[ 0, "desc" ]],
+					/*"sScrollX": "950px",*/
+					"sScrollY": "650px",
+					"aaSorting": [[ 0, "desc" ]],
 					/*"aoColumnDefs": [
       						{ "bVisible": false, "aTargets": hideFirst }
     					],*/
