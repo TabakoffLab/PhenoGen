@@ -110,7 +110,10 @@
                 <input type="hidden" name="itemIDString" value=""/>
                 <input type="hidden" name="dsFilterStatID" value=""/>
                 <input type="hidden" name="specificStep" value=""/>
-                <h3>Go To Previous Analysis:</h3><BR />
+                <h3>Go To Previous Analysis:<span class="infoSpan" title="A list of previous analyses that have been performed on this Dataset/Version.  In most cases you may resume, using a link in the Statistics column, although it is not currently possible to resume filtering.<BR><BR>This list will automatically refresh if you are waiting on statistics the status will update when they complete.<BR><BR>Note: Some analyses that have errors may still say they are running.  It is best to delete them and start over if you have been waiting for more than 3 hours they are no longer running and in most cases you should have received an email stating there was an error.">
+                    		<img src="<%=imagesDir%>icons/info.gif" alt="Help">
+			</span></h3><BR />
+                
                 <table id="prevList" class="list_base" cellpadding="0" cellspacing="3" width="95%" style="text-align:center;">
                 <thead>
                 <tr>
@@ -234,6 +237,8 @@
 
 <%@ include file="/web/common/footer.jsp" %>
 <script type="text/javascript">
+	var intervalTime=60000;
+	var interval;
 	$(document).ready(function() {
 		$('.infoSpan').tooltipster({
 			position: 'top-right',
@@ -266,7 +271,7 @@
 	
 			});
 		
-		window.setInterval(function(){
+		interval=window.setInterval(function(){
   			location.reload(true);
 		}, 60000);
 	});

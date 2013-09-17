@@ -103,7 +103,10 @@
         extrasList.add("jquery.PrintArea.js");
         extrasList.add("qtlForms.js");
         extrasList.add("locationEQTL.js");
+		extrasList.add("jquery.tooltip.js");
+		extrasList.add("jquery.tooltip.css");
         extrasList.add("eQTLGraphicControl.js");
+		
 	extrasList.add("defineQTL.js");
 
 	String advancedSettings = (request.getParameter( "advSettings" ) != null && 
