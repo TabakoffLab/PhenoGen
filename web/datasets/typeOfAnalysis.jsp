@@ -1,6 +1,7 @@
 <%@ include file="/web/datasets/include/analysisHeader.jsp"  %>
 <%
 	request.setAttribute( "selectedStep", "2" );
+	extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("typeOfAnalysis.js");
 	optionsList.add("datasetVersionDetails");
 
@@ -107,7 +108,7 @@
                 <input type="hidden" name="dsFilterStatID" value=""/>
                 <input type="hidden" name="specificStep" value=""/>
                 <h3>Go To Previous Analysis:</h3><BR />
-                <table name="items" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="95%" style="text-align:center;">
+                <table id="prevList" class="list_base" cellpadding="0" cellspacing="3" width="95%" style="text-align:center;">
                 <thead>
                 <tr>
                 <th colspan="1" class="topLine noSort noBox">&nbsp;</th>
@@ -235,6 +236,29 @@
 	$(document).ready(function() {
 		setupPage();
 		setTimeout("setupMain()", 100);
+		
+		$("table[id='prevList']").dataTable({
+					"bPaginate": false,
+					"bProcessing": true,
+					"bStateSave": false,
+					"bAutoWidth": true,
+					"sScrollX": "950px",
+					"sScrollY": "550px",
+					"aaSorting": [[ 4, "desc" ],[ 0, "desc" ]],
+					/*"aoColumnDefs": [
+      						{ "bVisible": false, "aTargets": hideFirst }
+    					],*/
+					"sDom": '<"leftSearch"fr><t>'
+					/*"oTableTools": {
+							"sSwfPath": "/css/swf/copy_csv_xls.swf",
+							"aButtons": [ "csv", "xls","copy"]
+							}*/
+	
+			});
+		
+		window.setInterval(function(){
+  			location.reload(true);
+		}, 60000);
 	});
 </script>
 
