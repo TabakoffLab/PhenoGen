@@ -269,7 +269,8 @@ public class Statistic {
                         String seQTL=parameter1.substring(1,parameter1.length()-1);
                         int eQTLID=Integer.parseInt(seQTL);
                         String tissue=parameter3;
-                        String query = "{call filter.eqtl(" + dsID + "," + v + "," + userID + "," + eQTLID + "," + tissue+") }";
+                        String query = "{call filter.eqtl(" + dsID + "," + v + "," + userID + "," + eQTLID + ",'" + tissue+"' ) }";
+                        log.debug("eQTL filter:"+query);
                         CallableStatement cs = dbConn.prepareCall(query);
                         cs.execute();
                         cs.close();

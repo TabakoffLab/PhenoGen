@@ -141,6 +141,9 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	
 	log.debug("ACTION="+action+"  region="+region+"   gene="+myGene+"   rev. pvalue="+pValueCutoff+"  for Pval="+forwardPValueCutoff);
 	
+	/*if((action != null) && action.equals("Go")){
+		response.redirect(lg.getGeneLink(curGene.getGeneID(),myOrganism,true,true,false));
+	}else */
 	if (    (((action != null) && action.equals("Get Transcription Details")) && (!region))  || (auto && (!region))
 		) {
 		myDisplayGene=myGene;
