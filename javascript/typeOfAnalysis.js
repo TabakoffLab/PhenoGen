@@ -56,14 +56,41 @@ function setupPage() {
         	$(this).find("td").slice(1,9).css({"text-align" : "center"});
 	});*/
 
-	setupDeleteButton(contextPath + "/web/datasets/deleteFilterStat.jsp"); 
+	setupLocalDeleteButton(contextPath + "/web/datasets/deleteFilterStat.jsp"); 
 	setupExtendButton(contextPath + "/web/datasets/extendFilterStat.jsp");
 	//setupDownloadButton(contextPath + "/web/datasets/downloadDataset.jsp");
 }
 
+function setupLocalDeleteButton(url) {
+	var modalOptions = {height: 450, width: 750, position: [250,150], title: "Delete Item"};
+	deleteModal = createDialog( ".deleteItem", modalOptions );
+
+	$("table#prevList").find("td div.delete").click(function() {
+		var theRow = $(this).parents("tr");
+                var dataParams = {itemID: theRow.attr("id") };
+		if (dataParams.itemID.indexOf('|||') > -1) {
+			dataParams = { itemIDString: theRow.attr("id") };
+		}
+
+		// send to .jsp to handle delete
+		$.ajax({
+			type: "POST",
+                	url: url,
+                	dataType: "html",
+                	data: dataParams,
+                	async: false,
+                	success: function( html ){
+                    		deleteModal.html( html ).dialog("open");
+                	},
+                	error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    		alert( "there was an error processing this request: " + textStatus + " " + errorThrown );
+                	}
+		});
+	});
+}
+
 function setupExtendButton(url) {
-	
-	$("table[name='items']").find("td div.expiration").click(function() {
+	$("table#prevList").find("td div.expiration").click(function() {
 		var theRow = $(this).parents("tr");
                 var dataParams = {itemID: theRow.attr("id") };
 		if (dataParams.itemID.indexOf('|||') > -1) {
