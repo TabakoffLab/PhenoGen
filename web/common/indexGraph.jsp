@@ -44,7 +44,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
 					<table class="index" cellspacing="0" cellpadding="0">
                     <tr><TD id="imageColumn" class="wide">
                     <div id="svgInst">
-                    	<h3>Hover over or click on functions to view additional information.</h3>
+                    	<h3 title="If you do not see a graph below please go to Help->Browser Support.">Hover over or click on nodes in the graph below to see the tools/data available on the site.</h3>
                     </div>
                     
                     <div id="svgAlternate2" class="svgAlternate" style="display:none;">
