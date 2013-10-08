@@ -88,10 +88,10 @@
 	<div class="dataContainer">
 		<div class="title">  Gene List Contents </div>
 
-		<table name="items" id="list" class="list_base" cellpadding="0" cellspacing="3">			 
+		<table name="items" id="list" class="list_base" cellpadding="0" cellspacing="3" width="100%">			 
 			<thead>
 			<tr class="col_title">
-				<th > Accession ID </th>
+				<th > ID in Gene List </th>
 				<th> GeneSymbol</th>
 			</tr>
 			</thead>
@@ -146,7 +146,7 @@
 					"iDisplayLength": 100,
 					"sPaginationType": "full_numbers",
 					//"sScrollX": "950px",
-					"sScrollY": "550px",
+					//"sScrollY": "550px",
 					"aaSorting": [[ 0, "asc" ]],
 					/*"aoColumnDefs": [
       						{ "bVisible": false, "aTargets": hideFirst }
