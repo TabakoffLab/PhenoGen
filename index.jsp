@@ -12,7 +12,9 @@
 %>
 <%@ include file="/web/common/basicHeader.jsp" %>
 
-
+<style>
+	div.header_status{display:none;}
+</style>
 
 <%
         String msg = "";
@@ -70,7 +72,7 @@
 
     	<!--<div id="primary-content">-->
         <div id="welcome" style="height:1050px; width:996px;">
-			<h2 class="homePage">Welcome to PhenoGen Informatics</h2>
+			<h2 class="homePage">Welcome to PhenoGen Informatics - The site for quantitative genetics of the transcriptome.</h2>
             <div>
             	<%@ include file="/web/common/indexGraph.jsp" %>
            </div>

@@ -19,7 +19,9 @@
 %>
 
 <div id="page_header">
-    <div id="header_title"><a href="<%=request.getContextPath()%>">PhenoGen Informatics</a></div>
+    <div id="header_title"><a href="<%=request.getContextPath()%>">PhenoGen Informatics</a>
+    <div style=" font-size:12px;">The site for quantitative genetics of the transcriptome.</div>
+    </div>
     <div class="header_status">
     	<%if(!mainFunction.equals("")){%>
         	<%=mainFunction%><BR />

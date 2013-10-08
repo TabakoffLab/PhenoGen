@@ -2,7 +2,10 @@
     
 	<body>
 		<div id="page_header_wide">
-    		<div id="header_title"><a href="<%=request.getContextPath()%>">PhenoGen Informatics</a></div>
+    		<div id="header_title">
+            	<a href="<%=request.getContextPath()%>">PhenoGen Informatics</a>
+            	<div style=" font-size:12px;">The site for quantitative genetics of the transcriptome.</div>
+            </div>
 	  	</div> <!-- page_header -->
 		
 		<div id="body_wrapper_plain">
