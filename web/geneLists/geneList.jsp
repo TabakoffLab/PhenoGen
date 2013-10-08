@@ -3,6 +3,8 @@
 <%
 	request.setAttribute( "selectedTabId", "list" );
 	extrasList.add("geneList.js");
+	extrasList.add("jquery.dataTables.js");
+	extrasList.add("dataTables.paging.css");
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsListModal.add("download");
@@ -65,7 +67,12 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-
+<style>
+	.rightControl{
+		float:right;
+		top:-5px;
+	}
+</style>
 
 <%@ include file="/web/geneLists/include/viewingPane.jsp" %>
         <div class="page-intro">
@@ -81,7 +88,7 @@
 	<div class="dataContainer">
 		<div class="title">  Gene List Contents </div>
 
-		<table name="items" id="items" class="list_base tablesorter" cellpadding="0" cellspacing="3">			 
+		<table name="items" id="list" class="list_base" cellpadding="0" cellspacing="3">			 
 			<thead>
 			<tr class="col_title">
 				<th > Accession ID </th>
@@ -90,31 +97,32 @@
 			</thead>
 			<tbody>
 			<%
-					myIDecoderClient.setNum_iterations(1);
+					myIDecoderClient.setNum_iterations(0);
 	                session.setAttribute("myGeneArray", myGeneArray);
                 	for (int i=0; i<myGeneArray.length; i++) {
 				%>
                         	<tr><td><%=myGeneArray[i].getGene_id()%></td><%
-				Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 
-				if (thisIdentifier != null) {
-					Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
-										new String[] {"Gene Symbol"});
-					if (geneSymbols != null && geneSymbols.size() > 0) { 
-						%><td><%
-                				for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 
-                                    Identifier symbol = (Identifier) symbolItr.next();
-                					%><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=symbol.getIdentifier()%>&speciesCB=<%=selectedGeneList.getOrganism()%>&auto=Y&newWindow=Y" target="_blank"><%=symbol.getIdentifier()%></a><BR><%
-						}
-						%></td><% 
-					} else { 
-						//log.debug("no gene symbols");	
-						%><td>&nbsp; </td><% 
-					} 
-				} else {
-					%><td>&nbsp; </td><%
-				} 
+							Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 
+							if (thisIdentifier != null) {
+								Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
+													new String[] {"Gene Symbol"});
+								if (geneSymbols != null && geneSymbols.size() > 0) { 
+									%><td><%
+											for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 
+												Identifier symbol = (Identifier) symbolItr.next();
+												%><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=symbol.getIdentifier()%>&speciesCB=<%=selectedGeneList.getOrganism()%>&auto=Y&newWindow=Y" target="_blank"><%=symbol.getIdentifier()%></a><BR><%
+									}
+									%></td><% 
+								} else { 
+									//log.debug("no gene symbols");	
+									%><td>&nbsp; </td><% 
+								} 
+							} else {
+								%><td>&nbsp; </td><%
+							} 
                        	%></tr><%
                 	}
+					myIDecoderClient.setNum_iterations(1);
 			%> 
 			</tbody>
 		</table> 
@@ -125,9 +133,32 @@
 	<div class="brClear"> </div>
 
 	<script type="text/javascript">
+		var geneListdt;
 		$(document).ready(function() {
 			setupPage();
 			setTimeout("setupMain()", 100); 
+			
+			geneListdt=$("table#list").dataTable({
+					"bPaginate": true,
+					"bProcessing": true,
+					"bStateSave": false,
+					"bAutoWidth": true,
+					"iDisplayLength": 100,
+					"sPaginationType": "full_numbers",
+					//"sScrollX": "950px",
+					"sScrollY": "550px",
+					"aaSorting": [[ 0, "asc" ]],
+					/*"aoColumnDefs": [
+      						{ "bVisible": false, "aTargets": hideFirst }
+    					],*/
+					"sDom": '<"leftSearch"Tfri><l><"rightControl"p><t>'/*,
+					"oTableTools": {
+							"sSwfPath": "/css/swf/copy_csv_xls.swf",
+							"aButtons": [ "csv", "xls","copy"]
+							}*/
+	
+			});
+			
 		});
 	</script>
 
