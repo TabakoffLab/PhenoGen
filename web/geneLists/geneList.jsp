@@ -5,6 +5,8 @@
 	extrasList.add("geneList.js");
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("dataTables.paging.css");
+	
+
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsListModal.add("download");
@@ -69,8 +71,14 @@
 
 <style>
 	.rightControl{
+		position:relative;
 		float:right;
-		top:-5px;
+		top:5px;
+	}
+	.rightControlb{
+		float:right;
+		position:relative;
+		top:15px;
 	}
 </style>
 
@@ -133,17 +141,46 @@
 	<div class="brClear"> </div>
 
 	<script type="text/javascript">
+		var geneListLen=<%=myGeneArray.length%>;
+		var defaultLen=100;
 		var geneListdt;
+		var optionArr=[[10,25,50,100,250,500,-1],[10,25,50,100,250,500,"All"]];
+		var format='<"leftSearch"Tfri><l><"rightControl"p><t><i><"rightControlb"p>';
 		$(document).ready(function() {
 			setupPage();
 			setTimeout("setupMain()", 100); 
+			
+			if(geneListLen<=10){
+				format='<"leftSearch"Tfri><t>';
+			}else if(geneListLen<=100){
+				format='<"leftSearch"Tfri><l><"rightControl"p><t>';
+			}
+			
+			if(geneListLen<=10){
+				defaultLen=-1;
+				optionArr=[[-1],["All"]];
+			}else if (geneListLen<=25){
+				defaultLen=-1;
+				optionArr=[[10,-1],[10,"All"]];
+			}else if (geneListLen<=50){
+				defaultLen=-1;
+				optionArr=[[10,25,-1],[10,25,"All"]];
+			}else if (geneListLen<=100){
+				defaultLen=-1;
+				optionArr=[[10,25,50,-1],[10,25,50,"All"]];
+			}else if (geneListLen<=250){
+				optionArr=[[10,25,50,100,-1],[10,25,50,100,"All"]];
+			}else if (geneListLen<=500){
+				optionArr=[[10,25,50,100,250,-1],[10,25,50,100,250,"All"]];
+			}
 			
 			geneListdt=$("table#list").dataTable({
 					"bPaginate": true,
 					"bProcessing": true,
 					"bStateSave": false,
 					"bAutoWidth": true,
-					"iDisplayLength": 100,
+					"aLengthMenu": optionArr,
+					"iDisplayLength": defaultLen,
 					"sPaginationType": "full_numbers",
 					//"sScrollX": "950px",
 					//"sScrollY": "550px",
@@ -151,7 +188,7 @@
 					/*"aoColumnDefs": [
       						{ "bVisible": false, "aTargets": hideFirst }
     					],*/
-					"sDom": '<"leftSearch"Tfri><l><"rightControl"p><t>'/*,
+					"sDom": format/*,
 					"oTableTools": {
 							"sSwfPath": "/css/swf/copy_csv_xls.swf",
 							"aButtons": [ "csv", "xls","copy"]
