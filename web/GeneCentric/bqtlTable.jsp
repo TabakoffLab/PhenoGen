@@ -156,7 +156,7 @@
 		//log.debug("BQTLS >0 ");
 	%>
     
-	<TABLE name="items" id="tblBQTL" class="list_base" cellpadding="0" cellspacing="0" width="100%">
+	<TABLE name="items" id="tblBQTL" class="list_base" cellpadding="0" cellspacing="0" >
                 <THEAD>
                 	<TR class="col_title">
                     	<%if(myOrganism.equals("Mm")){%>
@@ -449,6 +449,6 @@
 		}	
 	}
 	
-	$('#tblBQTL').dataTable().fnAdjustColumnSizing();
+	//$('#tblBQTL').dataTable().fnAdjustColumnSizing();
 </script>
 
