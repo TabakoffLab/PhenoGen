@@ -107,8 +107,8 @@
 	
 	<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:50%"><span class="trigger" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left;">Filter List</span><span class="bQTLListToolTip" title="Click the + icon to view fitlering options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH style="width:50%"><span class="trigger" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left;">View Columns</span><span class="bQTLListToolTip" title="Click the + icon to view options to show or hide additional columns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH style="width:50%"><span class="trigger triggerEC" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left;">Filter List</span><span class="bQTLListToolTip" title="Click the + icon to view fitlering options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH style="width:50%"><span class="trigger triggerEC" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left;">View Columns</span><span class="bQTLListToolTip" title="Click the + icon to view options to show or hide additional columns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
                     	<TR>
@@ -156,7 +156,7 @@
 		//log.debug("BQTLS >0 ");
 	%>
     
-	<TABLE name="items" id="tblBQTL" class="list_base" cellpadding="0" cellspacing="0">
+	<TABLE name="items" id="tblBQTL" class="list_base" cellpadding="0" cellspacing="0" width="100%">
                 <THEAD>
                 	<TR class="col_title">
                     	<%if(myOrganism.equals("Mm")){%>

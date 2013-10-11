@@ -29,7 +29,7 @@ var ucscgeneID="";
 	/*div#collapsableReport td.layout {
 		border:1px solid #CECECE;
 	}*/
-	span.detailMenu{
+	span.detailMenu,span.selectdetailMenu{
 		padding-top:2px;
 		padding-bottom:2px;
 		padding-left:15px;
@@ -44,6 +44,16 @@ var ucscgeneID="";
 		background:#86C3E2;
 		color:#FFFFFF;
 	}
+	
+	span.selectdetailMenu.selected{
+		background:#67e667;
+		color:#FFFFFF;
+	}
+	span.selectdetailMenu:hover{
+		background:#67e667;
+		color:#FFFFFF;
+	}
+	
 	.regionSubHeader{
 		background:#86C3E2;
 		color:#FFFFFF;
@@ -167,6 +177,7 @@ var ucscgeneID="";
 <div id="legendDialog"  title="UCSC Image/Table Rows Color Code Key" class="legendDialog" style="display:none">
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
     </div>
+    
     <div style="font-size:18px; font-weight:bold; background-color:#0b61A4; color:#FFFFFF; text-align:left; width:100%;">
     		<span class="trigger less triggerEC" name="collapsableReport" >Region Summary</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
@@ -214,7 +225,7 @@ var ucscgeneID="";
           </div>
     </div><!--collapsableReport end-->
     <BR />
-	<div id="selectedDetailHeader" style=" display:none; font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
+	<div id="selectedDetailHeader" style=" display:none; font-size:18px; font-weight:bold; background-color:#00992D; color:#FFFFFF; text-align:left; width:100%;">
     		<span class="trigger less tiggerEC" name="selectedDetail" >Selected Feature Detail</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
             <span class="closeDetail" style="float:right;"><img src="../web/images/icons/close.png" /></span>

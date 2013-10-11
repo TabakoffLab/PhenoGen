@@ -270,7 +270,7 @@
 	log.debug("Setup after finging Path:"+(time.getTime()-startDate.getTime()));
 %>
 
-<div id="eQTLListFromRegion" class="modalTabContent" style="position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:998px;">
+<div id="eQTLListFromRegion"  style="position:relative;top:56px;width:998px;">
 		
         
 		<table class="geneFilter">

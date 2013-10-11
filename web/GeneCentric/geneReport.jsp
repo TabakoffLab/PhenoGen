@@ -142,15 +142,14 @@ Add report here.
 		});
 </script>-->
 
-<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
+<div style="font-size:18px; font-weight:bold; background-color:#00992D; color:#FFFFFF; text-align:left; width:100%; ">
     <span class="trigger less" name="geneDiv"  style="margin-left:30px;"></span>
-    <span class="detailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    <span class="detailMenu" name="geneEQTL">Gene EQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    <span class="detailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    <span class="selectdetailMenu" name="geneEQTL">Gene EQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    <span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
 </div>
 <div id="geneDiv" style="display:inline-block;">
 	<div style="display:inline-block;" id="geneDetail">
-     
     </div>
     <div style="display:none;" id="geneEQTL">
     </div>
@@ -254,12 +253,10 @@ Add report here.
 
 
 <script type="text/javascript">
-	
-	
-	$('.detailMenu').click(function (){
-		var oldID=$('.detailMenu.selected').attr("name");
+	$('.selectdetailMenu').click(function (){
+		var oldID=$('.selectdetailMenu.selected').attr("name");
 		$("#"+oldID).hide();
-		$('.detailMenu.selected').removeClass("selected");
+		$('.selectdetailMenu.selected').removeClass("selected");
 		$(this).addClass("selected");
 		var id=$(this).attr("name");
 		$("#"+id).show();

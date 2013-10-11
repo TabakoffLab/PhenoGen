@@ -51,6 +51,31 @@ $(document).on('click','span.detailMenu', function (event){
 	}
 });
 
+$(document).on('click','span.detailMenu', function (event){
+	var baseName = $(this).attr("name");
+    var selectedTab=$('span.detailMenu.selected').attr("name");
+    $("div#"+selectedTab).hide();
+    $('span.detailMenu.selected').removeClass("selected");
+    $("span[name='"+baseName+"']").addClass("selected");
+    $("div#"+baseName).show();
+    //check if loaded load if not
+    var curRptRegion=chr+":"+minCoord+"-"+maxCoord;
+    if(baseName=="regionTable"){
+		curRptRegion=curRptRegion+":"+reportSelectedTrack;
+	}
+
+	if(regionDetailLoaded[baseName] && regionDetailLoaded[baseName]==curRptRegion){
+				//don't have to load might reset?
+	}else{
+		if(baseName=="regionTable" && reportSelectedTrack!=null){
+					loadTrackTable();
+		}else if(baseName="regionEQTLTable"){
+					loadEQTLTable();
+		}
+		regionDetailLoaded[baseName]=curRptRegion;
+	}
+});
+
 function loadTrackTable(){
 	var jspPage="";
 	var params={
