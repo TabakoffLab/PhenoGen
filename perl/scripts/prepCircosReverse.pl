@@ -30,7 +30,7 @@ sub prepCircosReverse
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
 		$karyotypeLocation = '/usr/local/circos-0.62-1/data/karyotype/';
 	}
-	elsif($hostname eq 'stan.ucdenver.pvt'){
+	elsif($hostname eq 'stan.ucdenver.pvt.ucdenver.pvt'){
 		$genericConfLocation = '/usr/local/circos-0.62-1/etc/';
 		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
 		$karyotypeLocation = '/usr/local/circos-0.62-1/data/karyotype/';

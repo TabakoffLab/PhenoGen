@@ -275,8 +275,8 @@
         
 		<table class="geneFilter">
                 	<thead>
-                    	<TH style="width:65%;"><span class="trigger" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left;">Filter List and Circos Plot</span><span class="eQTLListToolTip" title="Click the + icon to view filter options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH><span class="trigger" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left;">View Columns</span><span class="eQTLListToolTip" title="Click the + icon to view columns available to show/hide."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<TH style="width:65%;"><span class="trigger triggerEC regionSubHeader" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left;">Filter List and Circos Plot</span><span class="eQTLListToolTip" title="Click the + icon to view filter options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                        <TH><span class="trigger triggerEC regionSubHeader" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left;">View Columns</span><span class="eQTLListToolTip" title="Click the + icon to view columns available to show/hide."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     </thead>
                 	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
@@ -482,8 +482,8 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 	log.debug("Setup after get eqtls regions:"+(time.getTime()-startDate.getTime()));
   if(session.getAttribute("getTransControllingEQTL")==null){
   	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
-            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%; position:relative; top:-56px">
-            	<span class="trigger less" name="eQTLRegionNote" >EQTL Region</span>
+            <div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:center; width:100%; position:relative; top:-56px">
+            	<span class="trigger less triggerEC" name="eQTLRegionNote" >EQTL Region</span>
                 <span class="eQTLListToolTip" title="This section lists the regions being reported as begin associated with control of the genes following.  It is important to note that the region entered may only be close to or overlap with a defined SNP or Region between SNPs and may larger than the region selected or may only include part of the region selected."><img src="<%=imagesDir%>icons/info.gif"></span>
             </div>
             <div id="eQTLRegionNote" style="width:100%; position:relative; top:-56px">
@@ -529,8 +529,8 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 		String svgPdfFile= shortRegionCentricPath + "/circos"+cutoffTimesTen+"/svg/circos_new.pdf";
 	%>
                   
-   	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;text-align:center; width:100%;top:-56px; position:relative;">
-    	<span class="trigger less" name="circosPlot" >Gene Location Circos Plot</span>
+   	<div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:center; width:100%;top:-56px; position:relative;">
+    	<span class="trigger less triggerEC" name="circosPlot" >Gene Location Circos Plot</span>
     	<div class="inpageHelp" style="display:inline-block;"><img id="HelpRevCircos" class="helpImage" src="../web/images/icons/help.png" /></div>
         <span style="font-size:12px; font-weight:normal;">
         Adjust Vertical Viewable Size:
@@ -800,16 +800,16 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
               <BR /><BR /><BR />
               
               <script type="text/javascript">
-			  	var tblFrom=$('#tblFrom').dataTable({
+			  	
+					
+					var tblFrom=$('#tblFrom').dataTable({
 					"bPaginate": false,
 					"bProcessing": true,
 					"sScrollX": "950px",
 					"sScrollY": "650px",
-					"bDeferRender": true,
+					"bDeferRender": false,
 					"sDom": '<"leftSearch"fr><t>'
 					});
-					
-	
 					$('#geneIDFCBX').click( function(){
 							displayColumns(tblFrom,1,1,$('#geneIDFCBX').is(":checked"));
 					  });
@@ -878,16 +878,18 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 
 
 <script type="text/javascript">
-	//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
-	//simply remove all whitespace from html in a table and put it back.
-	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
- 		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
-		if (ieversion<10){
-			var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
-			var tbhtml = $('#tblFrom').html();
-			$('#tblFrom').html(tbhtml.replace(expr, '><'));
-		}	
+	$(document).ready(function() {
+		//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
+		//simply remove all whitespace from html in a table and put it back.
+		if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
+			var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+			if (ieversion<10){
+				var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
+				var tbhtml = $('#tblFrom').html();
+				$('#tblFrom').html(tbhtml.replace(expr, '><'));
+			}	
+		}
+		
 	}
-	$('#tblFrom').dataTable().fnAdjustColumnSizing();
 </script>
 

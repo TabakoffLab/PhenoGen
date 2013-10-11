@@ -405,8 +405,8 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
-                            getUCSCUrl(results[1].replaceFirst(".png", ".url"));
+                            //String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            //getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                             
                         }else{
@@ -424,8 +424,8 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
-                            getUCSCUrl(results[1].replaceFirst(".png", ".url"));
+                            //String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
+                            //getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";

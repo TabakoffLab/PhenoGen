@@ -896,13 +896,15 @@ function GeneTrack(gsvg,data,trackClass,label){
 				var params={id:selectedID,geneSymbol:selectedGeneSymbol,chromosome:chr};
 				DisplaySelectedDetailReport(jspPage,params)
 			}else if(localTxType=="small"){
-				$('div#selectedImage').hide();
-				$('div#selectedReport').show();
-				//Add SVG graphic later
-				//For now processing.js graphic is in jsp page of the detail report
-				var jspPage="web/GeneCentric/viewSmallNonCoding.jsp";
-				var params={id: d.getAttribute("ID"),name: "smRNA_"+d.getAttribute("ID")};
-				DisplaySelectedDetailReport(jspPage,params);
+				if(new String(d.getAttribute("ID")).indexOf("ENS")==-1){
+					$('div#selectedImage').hide();
+					$('div#selectedReport').show();
+					//Add SVG graphic later
+					//For now processing.js graphic is in jsp page of the detail report
+					var jspPage="web/GeneCentric/viewSmallNonCoding.jsp";
+					var params={id: d.getAttribute("ID"),name: "smRNA_"+d.getAttribute("ID")};
+					DisplaySelectedDetailReport(jspPage,params);
+				}
 			}
 			
 	}.bind(that);
@@ -1924,12 +1926,52 @@ function HelicosTrack(gsvg,data,trackClass,density){
 
 	that.updateData = function(){
 		var tag="Count";
-		var path="tmpData/regionData/"+folderName+"/Count.xml";
+		var path="tmpData/regionData/"+folderName+"/helicos.xml";
 		d3.xml(path,function (d){
 				var data=d.documentElement.getElementsByTagName(tag);
 				that.draw(data);
 				that.hideLoading();
 			});
+	}.bind(that);
+
+	that.draw=function(data){
+		if(density==1){
+	    	var points=that.svg.selectAll(".helicos")
+	   			.data(data,keyStart)
+	    	points.enter()
+					.append("rect")
+					.attr("x",function(d){return that.xScale(d.getAttribute("start"));})
+					.attr("y",15)
+					.attr("class", "helicos")
+		    		.attr("height",10)
+					.attr("width",function(d) {
+									   var wX=1;
+									   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
+										   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
+									   }
+									   return wX;
+									   })
+					.attr("fill",that.color);
+			that.svg.attr("height", 30);
+	    }else{
+		    that.svg.append("path")
+		      	.datum(data)
+		      	.attr("class", "area")
+		      	.attr("fill","steelblue")
+		      	.attr("d", that.area);
+
+		    that.svg.append("g")
+		      .attr("class", "y axis")
+		      .call(that.yAxis)
+		    .append("text")
+		      .attr("transform", "rotate(-90)")
+		      .attr("y", 6)
+		      .attr("dy", ".5em")
+		      .style("text-anchor", "end")
+		      .text("log10(reads)");
+
+			that.svg.attr("height", 100);
+		}
 	}.bind(that);
 
 	that.y = d3.scale.linear()
@@ -1951,43 +1993,7 @@ function HelicosTrack(gsvg,data,trackClass,density){
 
     that.y.domain([0, d3.max(data, function(d) { return d.getAttribute("logcount"); })]);
 
-    if(density==1){
-    	var points=that.svg.selectAll(".helicos")
-   			.data(data,keyStart)
-    	points.enter()
-				.append("rect")
-				.attr("x",function(d){return that.xScale(d.getAttribute("start"));})
-				.attr("y",15)
-				.attr("class", "helicos")
-	    		.attr("height",10)
-				.attr("width",function(d) {
-								   var wX=1;
-								   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
-									   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
-								   }
-								   return wX;
-								   })
-				.attr("fill",that.color);
-		that.svg.attr("height", 30);
-    }else{
-	    that.svg.append("path")
-	      	.datum(data)
-	      	.attr("class", "area")
-	      	.attr("fill","steelblue")
-	      	.attr("d", that.area);
-
-	    that.svg.append("g")
-	      .attr("class", "y axis")
-	      .call(that.yAxis)
-	    .append("text")
-	      .attr("transform", "rotate(-90)")
-	      .attr("y", 6)
-	      .attr("dy", ".5em")
-	      .style("text-anchor", "end")
-	      .text("log10(reads)");
-
-		that.svg.attr("height", 100);
-	}
+    that.draw(data);
 	return that;
 }
 

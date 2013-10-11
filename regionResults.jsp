@@ -37,11 +37,19 @@ var ucscgeneID="";
 		cursor:pointer;
 	}
 	span.detailMenu.selected{
-		background:#577097;
+		background:#86C3E2;
 		color:#FFFFFF;
 	}
 	span.detailMenu:hover{
-		background:#476087;
+		background:#86C3E2;
+		color:#FFFFFF;
+	}
+	.regionSubHeader{
+		background:#86C3E2;
+		color:#FFFFFF;
+	}
+	table.geneFilter TH {
+		background:#86C3E2;
 		color:#FFFFFF;
 	}
 </style>
@@ -66,13 +74,16 @@ var ucscgeneID="";
     <script>
 		var tisLen=<%=tissuesList1.length%>;
 		var folderName="<%=folderName%>";
-		
-
 		$('#inst').hide();
-		$(document).on('click','.trigger',function(event){
+		$(document).on('click','.triggerEC',function(event){
 			var baseName = $(this).attr("name");
 			$(this).toggleClass("less");
-			expandCollapse(baseName);
+			if($("#"+baseName).is(":hidden")){
+				$("#"+baseName).show();
+			}else{
+				$("#"+baseName).hide();
+			}	
+			
 		});
 		
 		$(document).on('click','.helpImage', function(event){
@@ -86,8 +97,6 @@ var ucscgeneID="";
 			$('#legendDialog').dialog( "option", "position",{ my: "left top", at: "left bottom", of: $(this) });
 			$('#legendDialog').dialog("open");
 		});
-		
-		
     </script>
 <div id="page" style="min-height:1050px;text-align:center;">
 	<div id="imageMenu"></div>
@@ -158,64 +167,55 @@ var ucscgeneID="";
 <div id="legendDialog"  title="UCSC Image/Table Rows Color Code Key" class="legendDialog" style="display:none">
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
     </div>
-    <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
-    		<span class="trigger less" name="collapsableReport" >Region Summary</span>
+    <div style="font-size:18px; font-weight:bold; background-color:#0b61A4; color:#FFFFFF; text-align:left; width:100%;">
+    		<span class="trigger less triggerEC" name="collapsableReport" >Region Summary</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
     </div>
-    <div id="collapsableReport" style="width:100%">
-    	<table  style="width:100%;" cellspacing="0">
-        <TR>
-        	<TD colspan="2" style=" text-align:center; font-size:16px;" class="layout">
-            	Track Summary
+    <div id="collapsableReport" style="width:100%;">
+    		<div style="width:100%;">
+            	<div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:center; width:100%; ">
+                    <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an EQTL in region<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+				</div>
+           </div>
+
+        <div style="display:inline-block;width:100%;" id="regionSummary">
+            <table style="width:100%;" cellspacing="0">
+            <TR><TD style="vertical-align:top;   " class="layout">
+            <div id="list" style="text-align:left; overflow:auto;">
+            <span style="color:#000000; font-weight:bold;">Track List:</span>
+            <UL id="collapsableReportList" style="list-style:none; margin:10px;">
+            </UL>
+            </div>
             </TD>
-        </TR>
-        <TR><TD style="vertical-align:top;   " class="layout">
-    	<div id="list" style="text-align:left; overflow:auto;">
-        <span style="color:#000000; font-weight:bold;">Track List:</span>
-    	<UL id="collapsableReportList" style="list-style:none; margin:10px;">
-        </UL>
-        </div>
-        </TD>
-        <TD style="text-align:center;" class="layout">
-        <div id="trackContent">
-        	<span>Break down of track count</span><BR /><BR />
-            <div id="trackGraph">
+            <TD style="text-align:center;" class="layout">
+            <div id="trackContent">
+                <span>Break down of track count</span><BR /><BR />
+                <div id="trackGraph">
+                </div>
             </div>
-        </div>
-        </TD>
-        </TR>
-        <TR><TD colspan="2">
-        	<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
-    			<span class="trigger" name="regionDiv"  style="margin-left:30px;"></span>
-    			<span class="detailMenu selected" name="regionTable">Region Track Feature Table<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    			<span class="detailMenu" name="regionEQTLTable">Genes with an EQTL in region<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-			</div>
-            <div id="geneDiv" style="display:none;">
-				<div style="display:inline-block;" id="regionTable">
-     
-    			</div>
-                <div style="display:none;" id="regionEQTLTable">
-     
-    			</div>
-            </div>
-        	<!--<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
-    		<span class="triggerLoad" name="regionTable"  style="margin-left:30px;">Region Track Feature Tables</span>
-    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
-    		</div>
-    		<div id="regionTable" style="display:none;"></div>
-            <BR /><BR /><BR /><BR />
-            <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
-    		<span class="triggerLoad" name="regionEQTLTable" style="margin-left:30px;">Genes with an EQTL in region</span>
-    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
-    		</div>
-    		<div id="regionEQTLTable" style="display:none;"></div>-->
-        </TD>
-        </TR>
-        </table>
-    </div>
+            </TD>
+            </TR>
+            <TR><TD colspan="2">
+                <div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:left; width:100%; ">
+                    <span class=" trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>
+                    <span>Track Feature Table<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                </div>
+                <div id="regionTable" style="display:none;">
+                    
+                    
+                </div>
+            </TD>
+            </TR>
+            </table>
+          </div>
+          <div style="display:none;" id="regionEQTLTable">
+         
+          </div>
+    </div><!--collapsableReport end-->
     <BR />
 	<div id="selectedDetailHeader" style=" display:none; font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
-    		<span class="trigger less" name="selectedDetail" >Selected Feature Detail</span>
+    		<span class="trigger less tiggerEC" name="selectedDetail" >Selected Feature Detail</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
             <span class="closeDetail" style="float:right;"><img src="../web/images/icons/close.png" /></span>
     </div>
@@ -229,7 +229,7 @@ var ucscgeneID="";
 </div><!-- ends page div -->
 
 <script type="text/javascript">
-	$(document).on('click','span.trigger', function (event){
+	/*$(document).on('click','span.trigger', function (event){
 		var baseName = $(this).attr("name");
         var thisHidden = $("div#" + baseName).is(":hidden");
         //$(this).toggleClass("less");
@@ -244,7 +244,7 @@ var ucscgeneID="";
 		if(baseName=="collapsableReport"){
 			DisplayRegionReport();
 		}
-	});
+	});*/
 	
 	$(document).on('click','span.closeDetail', function(){
 			$('div#selectedDetail').hide();
