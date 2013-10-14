@@ -91,6 +91,9 @@ sub readSNPDataFromDB{
 # Loop through results, adding to array of hashes.
 	
 	my $cntSnp=0;
+	my %countHash;
+	my %strainHOH;
+	
 	while($query_handle->fetch()) {
 		#print "SETUP\t$id\t$strain\t$start\t$ref_seq\n";
 		$snpHOH{Snp}[$cntSnp] = {
@@ -103,11 +106,22 @@ sub readSNPDataFromDB{
 					type => $type,
 					chromosome => $chr
 		};
+		
+		if(defined $strainHOH{$strain}){
+			print "defined $strain : ".$countHash{$strain}."\n";
+			my $tmpCount=$countHash{$strain};
+			$strainHOH{$strain}{Snp}[$tmpCount]=$snpHOH{Snp}[$cntSnp];
+			$countHash{$strain}=$tmpCount+1;
+		}else{
+			print "NOT DEFINED:$strain\n";
+			$strainHOH{$strain}{Snp}[0]=$snpHOH{Snp}[$cntSnp];
+			$countHash{$strain}=1;
+		}
 		$cntSnp++;
 	}
 	$query_handle->finish();
 	$connect->disconnect();
-	return (\%snpHOH);
+	return (\%strainHOH);
 }
 1;
 

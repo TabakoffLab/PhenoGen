@@ -619,7 +619,9 @@ sub createXMLFile
 	
 	#create bed files in region folder
 	createQTLXMLTrack(\%qtlHOH,$outputDir."qtl.xml",$trackDB,$chr);
-	createSNPXMLTrack(\%snpHOH,$outputDir."snp.xml",$trackDB);
+	
+	
+	createSNPXMLTrack(\%snpHOH,$outputDir,$trackDB);
 	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."coding.xml",$trackDB,1);
 	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."noncoding.xml",$trackDB,0);
 	createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."smallnc.xml",$trackDB,$chr);

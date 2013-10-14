@@ -18,51 +18,7 @@ var ucsctype="region";
 var ucscgeneID="";
 </script>
 
-<style>
-	div#collapsableReport li{
-	color:#000000;
-	cursor:pointer;
-	}
-	div#collapsableReport li.selected{
-		background-color:#CCCCCC;
-	}
-	/*div#collapsableReport td.layout {
-		border:1px solid #CECECE;
-	}*/
-	span.detailMenu,span.selectdetailMenu{
-		padding-top:2px;
-		padding-bottom:2px;
-		padding-left:15px;
-		padding-right:10px;
-		cursor:pointer;
-	}
-	span.detailMenu.selected{
-		background:#86C3E2;
-		color:#FFFFFF;
-	}
-	span.detailMenu:hover{
-		background:#86C3E2;
-		color:#FFFFFF;
-	}
-	
-	span.selectdetailMenu.selected{
-		background:#67e667;
-		color:#FFFFFF;
-	}
-	span.selectdetailMenu:hover{
-		background:#67e667;
-		color:#FFFFFF;
-	}
-	
-	.regionSubHeader{
-		background:#86C3E2;
-		color:#FFFFFF;
-	}
-	table.geneFilter TH {
-		background:#86C3E2;
-		color:#FFFFFF;
-	}
-</style>
+
 
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
 
@@ -109,10 +65,23 @@ var ucscgeneID="";
 		});
     </script>
 <div id="page" style="min-height:1050px;text-align:center;">
+
 	<div id="imageMenu"></div>
+    <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:center; width:100%; padding-top:3px;">
+    		View:
+    		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    		<span class="viewMenu" name="viewGenome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+            <!--<span style="font-size:12px; font-weight:normal; float:right;">
+            	Saved Views:
+                <select name="viewSelect" id="viewSelect">
+                		<option value="0" >------Login to use saved views------</option>
+                </select>
+            </span>-->
+    </div>
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
     		<span class="trigger less" name="collapsableImage" >Genome Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+            <div id="imageHeader" style=" font-size:12px; float:right;"></div>
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">
@@ -129,10 +98,7 @@ var ucscgeneID="";
 				<script src="javascript/test.js" type="text/javascript"></script>
                 <script type="text/javascript">
                     var gs=new GenomeSVG(".ucscImage",960,minCoord,maxCoord,0,chr,"gene");
-                    svgList[0].addTrack("coding",3);
-                    svgList[0].addTrack("noncoding",3);
-                    svgList[0].addTrack("smallnc",3);
-					
+					loadSavedConfigTracks(0);
                     $( "ul, li" ).disableSelection();
                 </script>
            </div>
@@ -184,7 +150,7 @@ var ucscgeneID="";
     </div>
     <div id="collapsableReport" style="width:100%;">
     		<div style="width:100%;">
-            	<div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:center; width:100%; ">
+            	<div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
                     <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                     <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an EQTL in region<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
 				</div>
@@ -278,7 +244,7 @@ var ucscgeneID="";
 				id:selectedID
 			};
 			loadDivWithPage("div#geneEQTL",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		}
 		
 	});

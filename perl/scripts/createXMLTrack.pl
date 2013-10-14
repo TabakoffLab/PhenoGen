@@ -17,24 +17,33 @@ sub createQTLXMLTrack{
 	return 1;
 } # End of 
 
+
 sub createSNPXMLTrack{
-	my($snpHOHRef, $outputFile, $trackDB) = @_; 
+	my($snpHOHRef, $outputDir, $trackDB) = @_; 
 	# Dereference the hash and array
 	my %snpHOH = %$snpHOHRef;
-	my $snpListRef=$snpHOH{Snp};
-	my @snpList=();
-	eval{
-		@snpList=@$snpListRef;
-	}or do{
-		@snpList=();
-	};
 	
+	my @snpStrainList=keys %snpHOH;
+	#my @snpList=();
+	#eval{
+	#	@snpList=@$snpStrainListRef;
+	#	print "SNP LIST LEN".@snpList."\n";
+	#}or do{
+	#	@snpList=();
+	#	print "EMPTY SNP LIST\n";
+	#};
 	
-	open OFILE, ">".$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
-	my $xml = new XML::Simple (RootName=>'SNPList');
-	my $data = $xml->XMLout(\%snpHOH);
-	print OFILE $data;
-	close OFILE;
+	foreach my $strain(@snpStrainList){
+		print "Strain SNPS:$strain\n";
+		my %tmp;
+		my $ref=$snpHOH{$strain};
+		%tmp=%$ref;
+		open OFILE, ">".$outputDir."snp".$strain.".xml" or die " Could not open two track file $outputDir for writing $!\n\n";
+		my $xml = new XML::Simple (RootName=>'SNPList');
+		my $data = $xml->XMLout(\%tmp);
+		print OFILE $data;
+		close OFILE;
+	}
 } # End of
 
 

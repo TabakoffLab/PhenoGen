@@ -1,3 +1,15 @@
+//global varaiable to store a list of GenomeSVG images representing each level.
+var svgList=new Array();
+var processAjax=0;
+var ajaxList=new Array();
+var selectedGeneSymbol="";
+var selectedID="";
+var viewName="genome";
+
+var mmVer="mm9 Strain:";
+var rnVer="rn5 Strain:BN";
+var siteVer="PhenoGen v2.10:12/1/2013";
+
 //setup event handlers
 
 $(document).on("click",".closeBtn",function(){
@@ -13,7 +25,7 @@ $(document).on("click",".settings",function(){
 					var setting=$(this).attr("id");
 					if(!$("."+setting).is(":visible")){
 						var p=$(this).position();
-						$("."+setting).css("top",p.top-3).css("left",p.left-275);
+						$("."+setting).css("top",p.top-3).css("left",p.left-277);
 						$("."+setting).fadeIn("fast");
 						//console.log("after fade in");
 					}else{
@@ -47,12 +59,7 @@ $(document).on("change","select[name='displaySelect']", function(){
 	 			changeTrackHeight($(this).attr("id"),$(this).val());
 	 		});
 
-//global varaiable to store a list of GenomeSVG images representing each level.
-var svgList=new Array();
-var processAjax=0;
-var ajaxList=new Array();
-var selectedGeneSymbol="";
-var selectedID="";
+
 
 //Setup some global functions
 d3.select('html')
@@ -235,6 +242,27 @@ function getAddMenuDiv(level,type){
 			});
 }
 
+function loadSavedConfigTracks(levelInd){
+	if($.cookie("state"+viewName)!=null){
+		svgList[levelInd].addTrack("coding",3);
+    	svgList[levelInd].addTrack("noncoding",3);
+    	svgList[levelInd].addTrack("smallnc",3);
+	}else{
+		svgList[levelInd].addTrack("coding",3);
+    	svgList[levelInd].addTrack("noncoding",3);
+    	svgList[levelInd].addTrack("smallnc",3);
+    	$.cookie("state"+viewName,
+    	{
+    		trackList:"coding;noncoding;smallnc;"
+    	},
+    	{ expires: 7 }
+    	);
+	}
+}
+
+
+
+
 //D3 helper functions
 function key(d) {return d.getAttribute("ID");};
 function keyName(d) {return d.getAttribute("name");};
@@ -284,6 +312,21 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}
 		var newTrack=null;
 		var par=this;
+		var tmpvis=d3.select("#Level"+this.levelNumber+track);
+		if(tmpvis[0][0]==null){
+				var dragDiv=this.topLevel.append("li");
+				var svg = dragDiv.append("svg:svg")
+				.attr("width", this.get('width'))
+				.attr("height", 800)
+				.attr("class", "track draggable"+this.levelNumber)
+				.attr("id","Level"+this.levelNumber+track)
+				.attr("pointer-events", "all")
+				.style("cursor", "move")
+				.on("mousedown", this.panDown);
+				//this.svg.append("text").text(this.label).attr("x",this.gsvg.width/2-20).attr("y",12);
+				var lblStr=new String("Loading...");
+				svg.append("text").text(lblStr).attr("x",this.width/2-(lblStr.length/2)*7.5).attr("y",12).attr("id","trkLbl");
+		}
 		if(track=="coding"){
 			d3.xml("tmpData/regionData/"+folderName+"/coding.xml",function (d){
 				var data=d.documentElement.getElementsByTagName("Gene");
@@ -302,8 +345,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				var newTrack=new GeneTrack(par,data,track,"Small RNA (<200 bp)");
 				par.addTrackList(newTrack);
 			});
-		}else if(track=="snp"){
-			d3.xml("tmpData/regionData/"+folderName+"/snp.xml",function (d){
+		}else if(track.indexOf("snp")==0){
+			d3.xml("tmpData/regionData/"+folderName+"/"+track+".xml",function (d){
 				var snp=d.documentElement.getElementsByTagName("Snp");
 				var newTrack=new SNPTrack(par,snp,track,density);
 				par.addTrackList(newTrack);
@@ -456,7 +499,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		this.halfWindowWidth=($(window).width()-1000)/2;
 	}
 	this.vis=d3.select(div);
-	this.vis.append("span").attr("class","settings").attr("id","settingsLevel"+this.levelNumber).style("position","relative").style("top","15px").style("left","486px").append("img").attr("src","web/images/icons/gear.png");
+	//this.vis.append("span").attr("class","settings").attr("id","settingsLevel"+this.levelNumber).style("position","relative").style("top","15px").style("left","486px").append("img").attr("src","web/images/icons/gear.png");
+	this.vis.append("span").attr("class","settings button").attr("id","settingsLevel"+this.levelNumber).style("position","relative").style("top","15px").style("left","436px").style("width","118px").text("Settings/Tracks");
 	this.topDiv=this.vis.append("div").attr("id","Level"+levelNumber).style("text-align","left");
 	
 	
@@ -519,6 +563,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
       revert: "invalid",
 	  axis: "y"
     });
+
+    var orgVer=mmVer;
+    if(organism=="Rn"){
+    	orgVer=rnVer;
+    }
+    var header=d3.select("div#imageHeader").html("Organism: "+orgVer+"&nbsp&nbsp&nbsp&nbsp"+siteVer);
 }
 
 
@@ -724,7 +774,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	for(var j=0;j<this.gsvg.width;j++){
 				this.yArr[j]=0;
 	}
-	this.vis=d3.select("#Level"+this.gsvg.levelNumber+this.trackClass);
+	/*this.vis=d3.select("#Level"+this.gsvg.levelNumber+this.trackClass);
 	if(this.vis[0][0]==null){
 			var dragDiv=this.topLevel.append("li");
 			this.svg = dragDiv.append("svg:svg")
@@ -740,7 +790,15 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			this.svg.append("text").text(lblStr).attr("x",this.gsvg.width/2-(lblStr.length/2)*7.5).attr("y",12);
 	}else{
 		this.svg=this.vis[0][0];
-	}
+	}*/
+	this.vis=d3.select("#Level"+this.gsvg.levelNumber+this.trackClass);
+	console.log(this.vis);
+	//this.svg=this.vis[0][0];
+	this.svg=d3.select("svg#Level"+this.gsvg.levelNumber+this.trackClass);
+	console.log(this.svg);
+
+	var lblStr=new String(this.label);
+	d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select("#trkLbl").attr("x",this.gsvg.width/2-(lblStr.length/2)*7.5).text(lblStr);
 }
 
 
@@ -1246,7 +1304,8 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 }
 
 function SNPTrack(gsvg,data,trackClass,density){
-	var that=new Track(gsvg,data,trackClass,"SNPs/Indels");
+	var lbl=(new String(trackClass)).substr(3);
+	var that=new Track(gsvg,data,trackClass,lbl+" SNPs/Indels");
 	that.counts=[{value:0,perc:0,names:"SNP BN-Lx"},{value:0,perc:0,names:"Insertion BN-Lx"},{value:0,perc:0,names:"Deletion BN-Lx"},{value:0,perc:0,names:"SNP SHR"},{value:0,perc:0,names:"Insertion SHR"},{value:0,perc:0,names:"Deletion SHR"}];
 	that.redraw=function (){
 		that.density=$("#snp"+that.gsvg.levelNumber+"Select").val();

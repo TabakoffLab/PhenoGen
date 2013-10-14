@@ -4,6 +4,8 @@
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("jquery.dataTables.js");
+	extrasList.add("jquery.cookie.js");
+	
 	//extrasList.add("TableTools.min.js");
 	//extrasList.add("ZeroClipboard.js");
 	//extrasList.add("ColReorder.min.js");
@@ -11,7 +13,7 @@
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("jquery.tooltipster.js");
 	extrasList.add("d3.js");
-	
+	extrasList.add("smoothness/jquery-ui-1.9.1.custom.min.css");
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
@@ -46,6 +48,53 @@ div.testToolTip {
 	fill:none;
 	stroke: black;
 }
+	div#collapsableReport li{
+	color:#000000;
+	cursor:pointer;
+	}
+	div#collapsableReport li.selected{
+		background-color:#CCCCCC;
+	}
+	/*div#collapsableReport td.layout {
+		border:1px solid #CECECE;
+	}*/
+	span.detailMenu,span.selectdetailMenu,span.viewMenu{
+		border-color:#CCCCCC;
+		border:solid;
+		border-width: 1px 1px 0px 1px;
+		border-radius:5px 5px 0px 0px;
+		padding-top:2px;
+		padding-bottom:2px;
+		padding-left:15px;
+		padding-right:15px;
+		cursor:pointer;
+	}
+	span.detailMenu.selected{
+		background:#86C3E2;
+		color:#FFFFFF;
+	}
+	span.detailMenu:hover{
+		background:#86C3E2;
+		color:#FFFFFF;
+	}
+	
+	span.selectdetailMenu.selected{
+		background:#67e667;
+		color:#FFFFFF;
+	}
+	span.selectdetailMenu:hover{
+		background:#67e667;
+		color:#FFFFFF;
+	}
+	
+	.regionSubHeader{
+		background:#86C3E2;
+		color:#FFFFFF;
+	}
+	table.geneFilter TH {
+		background:#86C3E2;
+		color:#FFFFFF;
+	}
 </style>
 
 <%
@@ -472,7 +521,8 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
   </label>
- <span style="padding-left:40px;"> <input type="submit" name="refreshBTN" id="getTrxBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
+ <span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="Get Genome Details" onClick="return displayWorking()"></span>
+ <span style="padding-left:40px;"> <input type="submit" name="transcriptomeBTN" id="getTrxBTN" value="Get Transcriptome Details" onClick="return displayWorking()"></span>
  
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
     <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
