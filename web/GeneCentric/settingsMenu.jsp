@@ -31,7 +31,7 @@
                         <div>
                         	<input name="trackcbx" type="checkbox" id="codingCBX" value="Level<%=level%>" checked="checked" /> Protein Coding 
                             <span class="Imagetooltip" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
-                            <select name="trackSelect" id="coding<%=level%>Select">
+                            <select name="trackSelect" id="codingDense<%=level%>Select">
                                 <option value="1" >Dense</option>
                                 <option value="3" selected="selected">Pack</option>
                                 <option value="2" >Full</option>
@@ -39,7 +39,7 @@
              				<BR />
                             <input name="trackcbx" type="checkbox" id="noncodingCBX" value="Level<%=level%>" checked="checked" />Long Non-Coding 
                             <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" id="noncoding<%=level%>Select">
+                                <select name="trackSelect" id="noncodingDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
@@ -48,7 +48,7 @@
                             <BR />
                         	<input name="trackcbx" type="checkbox" id="smallncCBX" value="Level<%=level%>" checked="checked" /> Small RNA 
                             <span class="Imagetooltip" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" id="smallnc<%=level%>Select">
+                                <select name="trackSelect" id="smallncDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
@@ -63,8 +63,7 @@
                                 <option value="1" selected="selected">SNPs only</option>
                                 <option value="2" >Insertions only</option>
                                 <option value="3" >Deletions only</option>
-                                <option value="4" >Insertions and Deletions</option>
-                                <option value="5" >All</option>
+                                <option value="4" >All</option>
                             </select>
                              <select name="trackSelect" id="snpSHRHDense<%=level%>Select">
                                 <option value="1" selected="selected">Dense</option>
@@ -77,8 +76,7 @@
                                 <option value="1" selected="selected">SNPs only</option>
                                 <option value="2" >Insertions only</option>
                                 <option value="3" >Deletions only</option>
-                                <option value="4" >Insertions and Deletions</option>
-                                <option value="5" >All</option>
+                                <option value="4" >All</option>
                             </select>
                              <select name="trackSelect" id="snpBNLXDense<%=level%>Select">
                                 <option value="1" selected="selected">Dense</option>
@@ -90,8 +88,7 @@
                                 <option value="1" selected="selected">SNPs only</option>
                                 <option value="2" >Insertions only</option>
                                 <option value="3" >Deletions only</option>
-                                <option value="4" >Insertions and Deletions</option>
-                                <option value="5" >All</option>
+                                <option value="4" >All</option>
                             </select>
                              <select name="trackSelect" id="snpF344Dense<%=level%>Select" >
                                 <option value="1" selected="selected">Dense</option>
@@ -103,8 +100,7 @@
                                 <option value="1" selected="selected">SNPs only</option>
                                 <option value="2" >Insertions only</option>
                                 <option value="3" >Deletions only</option>
-                                <option value="4" >Insertions and Deletions</option>
-                                <option value="5" >All</option>
+                                <option value="4" >All</option>
                             </select>
                              <select name="trackSelect" id="snpSHRJDense<%=level%>Select">
                                 <option value="1" selected="selected">Dense</option>
@@ -125,7 +121,7 @@
                         <div>
                     	<input name="trackcbx" type="checkbox" id="probeCBX" value="Level<%=level%>"  /> 
                         Affymetrix Exon Array Probe Sets <span class="Imagetooltip" title="All the non-masked Affymetrix Exon 1.0 ST probesets."><img src="<%=imagesDir%>icons/info.gif"></span>
-                        <select name="trackSelect" id="probe<%=level%>Select">
+                        <select name="trackSelect" id="probeDense<%=level%>Select">
                             <option value="1" >Dense</option>
                             <option value="3" selected="selected">Pack</option>
                             <option value="2" >Full</option>
@@ -151,14 +147,14 @@
                             <H3>Brain Tissue RNA-Seq Count Data</H3>
                             <div>
                                 <input name="trackcbx" type="checkbox" id="illuminaTotalCBX" value="Level<%=level%>" /> Illumina rRNA-depleted Total-RNA <span class="Imagetooltip" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" id="illuminaTotal<%=level%>Select">
+                                <select name="trackSelect" id="illuminaTotalDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
                                 </select>
                                 <BR />
                                  
                                  <input name="trackcbx" type="checkbox" id="illuminaPolyACBX" value="Level<%=level%>" /> Illumina PolyA+ RNA <span class="Imagetooltip" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on PolyA+ RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" id="illuminaPolyA<%=level%>Select">
+                                <select name="trackSelect" id="illuminaPolyADense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
                                 </select>
@@ -166,7 +162,7 @@
                                  <BR />
                                  
                                  <input name="trackcbx" type="checkbox" id="illuminaSmallCBX" value="Level<%=level%>" /> Illumina small RNA <span class="Imagetooltip" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on small RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" id="illuminaSmall<%=level%>Select">
+                                <select name="trackSelect" id="illuminaSmallDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
                                 </select>
@@ -174,7 +170,7 @@
                                  <BR />
                                  
                                  <input name="trackcbx" type="checkbox" id="helicosCBX" value="Level<%=level%>" /> Helicos Data <span class="Imagetooltip" title="Helicos Single Molecule RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" id="helicos<%=level%>Select">
+                                <select name="trackSelect" id="helicosDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
                                 </select>
@@ -188,7 +184,7 @@
                                 <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                             </select>
-                            <select name="trackSelect" id="coding<%=level%>Select">
+                            <select name="trackSelect" id="codingDense<%=level%>Select">
                                 <option value="1" >Dense</option>
                                 <option value="3" selected="selected">Pack</option>
                                 <option value="2" >Full</option>
@@ -200,7 +196,7 @@
                                     <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                                 </select>
-                                <select name="trackSelect" id="noncoding<%=level%>Select">
+                                <select name="trackSelect" id="noncodingDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
@@ -213,7 +209,7 @@
                                     <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                                 </select>
-                                <select name="trackSelect" id="smallnc<%=level%>Select">
+                                <select name="trackSelect" id="smallncDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>

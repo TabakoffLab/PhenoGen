@@ -16,6 +16,7 @@ var tblFromAdjust=false;
 var organism="<%=myOrganism%>";
 var ucsctype="region";
 var ucscgeneID="";
+var defaultView="<%=defView%>";
 </script>
 
 
@@ -67,10 +68,10 @@ var ucscgeneID="";
 <div id="page" style="min-height:1050px;text-align:center;">
 
 	<div id="imageMenu"></div>
-    <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:center; width:100%; padding-top:3px;">
+    <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:
     		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    		<span class="viewMenu" name="viewGenome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">
@@ -206,6 +207,7 @@ var ucscgeneID="";
 </div><!-- ends page div -->
 
 <script type="text/javascript">
+	$("span[name='"+defaultView+"']").addClass("selected");
 	/*$(document).on('click','span.trigger', function (event){
 		var baseName = $(this).attr("name");
         var thisHidden = $("div#" + baseName).is(":hidden");

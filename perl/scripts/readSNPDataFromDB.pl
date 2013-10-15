@@ -108,12 +108,12 @@ sub readSNPDataFromDB{
 		};
 		
 		if(defined $strainHOH{$strain}){
-			print "defined $strain : ".$countHash{$strain}."\n";
+			#print "defined $strain : ".$countHash{$strain}."\n";
 			my $tmpCount=$countHash{$strain};
 			$strainHOH{$strain}{Snp}[$tmpCount]=$snpHOH{Snp}[$cntSnp];
 			$countHash{$strain}=$tmpCount+1;
 		}else{
-			print "NOT DEFINED:$strain\n";
+			#print "NOT DEFINED:$strain\n";
 			$strainHOH{$strain}{Snp}[0]=$snpHOH{Snp}[$cntSnp];
 			$countHash{$strain}=1;
 		}

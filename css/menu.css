@@ -8,7 +8,7 @@
 {width:11.2%; }
 
 #cssmenu > ul > li > a,#cssmenu > ul > li > span.noLink
-{ outline:none; display:block; position:relative; padding:12px 20px; font:bold 13px/100% Arial, Helvetica, sans-serif; text-align:center; vertical-align:middle; text-decoration:none; text-shadow:1px 1px 0 rgba(0,0,0, 0.4); height:39px;}
+{ outline:none; display:block; position:relative; padding:12px 10px; font:bold 13px/100% Arial, Helvetica, sans-serif; text-align:center; vertical-align:middle; text-decoration:none; text-shadow:1px 1px 0 rgba(0,0,0, 0.4); height:39px;}
 #cssmenu > ul > li:first-child > a
 {border-radius:5px 0 0 5px;} 
 #cssmenu > ul > li:last-child > a

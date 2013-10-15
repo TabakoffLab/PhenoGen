@@ -41,7 +41,7 @@ $(document).on("change","input[name='trackcbx']",function(){
 				var prefix=idStr.substr(0,idStr.length-3);
 				var level=typeStr.substr(typeStr.length-1);
 				if($(this).is(":checked")){
-					svgList[level].addTrack(prefix,$("#"+prefix+level+"Select").val());
+					svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val());
 					//addTrack(prefix, type,$("#"+prefix+"Select").val());
 				}else{
 					removeTrack(level,prefix);
@@ -50,11 +50,14 @@ $(document).on("change","input[name='trackcbx']",function(){
 $(document).on("change","select[name='trackSelect']",function(){
 				var idStr=new String($(this).attr("id"));
 				var level=idStr.substr(idStr.length-7,1);
-				//console.log(idStr);
-				//console.log(level);
-				//console.log(svgList[level]);
-				svgList[level].redraw();
+				if(idStr.indexOf("Dense")>0){
+					svgList[level].redraw();
+				}else if(idStr.indexOf("snp")==0){
+					svgList[level].updateData();
+				}
+				
 	 		});
+
 $(document).on("change","select[name='displaySelect']", function(){
 	 			changeTrackHeight($(this).attr("id"),$(this).val());
 	 		});
@@ -82,19 +85,13 @@ function mup() {
 	}
 }
 function mmove(){
-	//console.log("list"+svgList);
 	for (var i=0; i<svgList.length; i++){
 		if(svgList[i]!=null){
-			//console.log(i+": downx:"+svgList[i].downx);
-			//console.log(i+": downPanx:"+svgList[i].downPanx);
 			if (!isNaN(svgList[i].downx)) {
 	          var p = d3.mouse(svgList[i].vis[0][0]), rupx = p[0];
-	          //console.log(p);
-	          //console.log(rupx);
 	          if (rupx != 0) {
 			  		var minx=Math.round(svgList[i].downscalex.domain()[0]);
 			  		var maxx=Math.round(svgList[i].mw * (svgList[i].downx - svgList[i].downscalex.domain()[0]) / rupx + svgList[i].downscalex.domain()[0]);
-					//console.log(minx+"::"+maxx);
 
 					if(maxx<=svgList[i].xMax && minx>=svgList[i].xMin){
 						if(i==0){
@@ -346,9 +343,10 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				par.addTrackList(newTrack);
 			});
 		}else if(track.indexOf("snp")==0){
+			var include=$("#"+track+this.levelNumber+"Select").val();
 			d3.xml("tmpData/regionData/"+folderName+"/"+track+".xml",function (d){
 				var snp=d.documentElement.getElementsByTagName("Snp");
-				var newTrack=new SNPTrack(par,snp,track,density);
+				var newTrack=new SNPTrack(par,snp,track,density,include);
 				par.addTrackList(newTrack);
 			});
 			//setupSNP(level,density);
@@ -404,7 +402,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	this.redraw=function (){
 		for(var l=0;l<this.trackList.length;l++){
-			this.trackList[l].redraw();
+			if(this.trackList[l]!=undefined && this.trackList[l].redraw!=undefined){
+				this.trackList[l].redraw();
+			}
 		}
 		//DisplayRegionReport();
 	}.bind(this);
@@ -420,7 +420,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	this.updateData=function (){
 		for(var i=0;i<this.trackList.length;i++){
-			if(this.trackList[i].updateData!=undefined){
+			if(this.trackList[i]!=undefined && this.trackList[i].updateData!=undefined){
 				this.trackList[i].updateData();
 			}
 		}
@@ -662,6 +662,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	this.drawLegend = function (legendList){
 		var lblStr=new String(this.label);
 		var x=this.gsvg.width/2+(lblStr.length/2)*7.5+16;
+		d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).selectAll(".legend").remove();
 		for(var i=0;i<legendList.length;i++){
 			this.svg.append("rect")
 				.attr("class","legend")
@@ -700,7 +701,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	}.bind(this);
 
 	this.displayBreakDown=function(divSelector){
-		console.log("displayBreakDown");
+		//console.log("displayBreakDown");
 		var tmpW= 300,tmpH = 300,radius = Math.min(tmpW, tmpH) / 2;
 		var winWidth=$(window).width()/2;
 		if($(window).width()>1000){
@@ -760,6 +761,11 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		
 	}.bind(this);
 
+	this.updateLabel= function (label){
+		this.label=label;
+		var lblStr=new String(this.label);
+		d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select("#trkLbl").attr("x",this.gsvg.width/2-(lblStr.length/2)*7.5).text(lblStr);
+	}.bind(this);
 	this.gsvg=gsvgP;
 	this.data=dataP;
 	this.label=labelP;
@@ -792,13 +798,13 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		this.svg=this.vis[0][0];
 	}*/
 	this.vis=d3.select("#Level"+this.gsvg.levelNumber+this.trackClass);
-	console.log(this.vis);
+	//console.log(this.vis);
 	//this.svg=this.vis[0][0];
 	this.svg=d3.select("svg#Level"+this.gsvg.levelNumber+this.trackClass);
-	console.log(this.svg);
-
-	var lblStr=new String(this.label);
-	d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select("#trkLbl").attr("x",this.gsvg.width/2-(lblStr.length/2)*7.5).text(lblStr);
+	//console.log(this.svg);
+	this.updateLabel(this.label);
+	//var lblStr=new String(this.label);
+	//d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select("#trkLbl").attr("x",this.gsvg.width/2-(lblStr.length/2)*7.5).text(lblStr);
 }
 
 
@@ -1303,12 +1309,30 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 	return that;
 }
 
-function SNPTrack(gsvg,data,trackClass,density){
-	var lbl=(new String(trackClass)).substr(3);
-	var that=new Track(gsvg,data,trackClass,lbl+" SNPs/Indels");
-	that.counts=[{value:0,perc:0,names:"SNP BN-Lx"},{value:0,perc:0,names:"Insertion BN-Lx"},{value:0,perc:0,names:"Deletion BN-Lx"},{value:0,perc:0,names:"SNP SHR"},{value:0,perc:0,names:"Insertion SHR"},{value:0,perc:0,names:"Deletion SHR"}];
+function SNPTrack(gsvg,data,trackClass,density,include){
+	var that=new Track(gsvg,data,trackClass,lbl);
+	var strain=(new String(trackClass)).substr(3);
+	var lbl=strain;
+	if(lbl=="SHRH"){
+		lbl="SHR";
+	}else if(lbl=="BNLX"){
+		lbl="BN-Lx";
+	}
+	that.displayStrain=lbl;
+	if(include==1){
+		lbl=lbl+" SNPs";
+	}else if(include==2){
+		lbl=lbl+" Insertions";
+	}else if(include==3){
+		lbl=lbl+" Deletions";
+	}else if(include==4){
+		lbl=lbl+" SNPs/Indels";
+	}
+	that.counts=[{value:0,perc:0,names:"SNP "+that.displayStrain},{value:0,perc:0,names:"Insertion "+that.displayStrain},{value:0,perc:0,names:"Deletion "+that.displayStrain}];
+	that.strain=strain;
 	that.redraw=function (){
-		that.density=$("#snp"+that.gsvg.levelNumber+"Select").val();
+		that.density=$("#snp"+strain+"Dense"+that.gsvg.levelNumber+"Select").val();
+		that.include=$("#snp"+strain+that.gsvg.levelNumber+"Select").val();
 		if(that.density==null || that.density==undefined){
 			that.density=1;
 		}
@@ -1387,6 +1411,10 @@ function SNPTrack(gsvg,data,trackClass,density){
 				color=d3.rgb(0,0,255);
 			}else if(d.getAttribute("strain")=="SHRH"){
 				color=d3.rgb(255,0,0);
+			}else if(d.getAttribute("strain")=="SHRJ"){
+				color=d3.rgb("#00FF00");
+			}else if(d.getAttribute("strain")=="F344"){
+				color=d3.rgb("#00FFFF");
 			}else{
 				color=d3.rgb(100,100,100);
 			}
@@ -1395,6 +1423,10 @@ function SNPTrack(gsvg,data,trackClass,density){
 				color=d3.rgb(0,0,150);
 			}else if(d.getAttribute("strain")=="SHRH"){
 				color=d3.rgb(150,0,0);
+			}else if(d.getAttribute("strain")=="SHRJ"){
+				color=d3.rgb("#009600");
+			}else if(d.getAttribute("strain")=="F344"){
+				color=d3.rgb("#009696");
 			}else{
 				color=d3.rgb(50,50,50);
 			}
@@ -1414,7 +1446,9 @@ function SNPTrack(gsvg,data,trackClass,density){
 	
 	that.updateData = function(){
 		var tag="Snp";
-		var path="tmpData/regionData/"+folderName+"/snp.xml";
+		var path="tmpData/regionData/"+folderName+"/snp"+that.strain+".xml";
+		that.include=$("#"+that.trackClass+that.gsvg.levelNumber+"Select").val();
+		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		d3.xml(path,function (d){
 				var data=d.documentElement.getElementsByTagName(tag);
 				that.draw(data);
@@ -1425,7 +1459,7 @@ function SNPTrack(gsvg,data,trackClass,density){
 	that.getDisplayedData= function (){
 		//console.log("getDisplayedData");
 		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".snp");
-		that.counts=[{value:0,perc:0,names:"SNP BN-Lx"},{value:0,perc:0,names:"Insertion BN-Lx"},{value:0,perc:0,names:"Deletion BN-Lx"},{value:0,perc:0,names:"SNP SHR"},{value:0,perc:0,names:"Insertion SHR"},{value:0,perc:0,names:"Deletion SHR"}];
+		that.counts=[{value:0,perc:0,names:"SNP "+that.displayStrain},{value:0,perc:0,names:"Insertion "+that.displayStrain},{value:0,perc:0,names:"Deletion "+that.displayStrain}];
 		var tmpDat=dataElem[0];
 		var dispData=new Array();
 		var dispDataCount=0;
@@ -1435,9 +1469,6 @@ function SNPTrack(gsvg,data,trackClass,density){
 			var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
 			if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
 				var ind=0;
-				if(tmpDat[l].__data__.getAttribute("strain")=="SHRH"){
-					ind=3;
-				}
 				if(tmpDat[l].__data__.getAttribute("type")=="Insertion"){
 					ind++;
 				}else if(tmpDat[l].__data__.getAttribute("type")=="Deletion"){
@@ -1460,6 +1491,44 @@ function SNPTrack(gsvg,data,trackClass,density){
 		for(var j=0;j<that.yArr.length;j++){
 				that.yArr[j]=-299999999;
 		}
+
+		var lbl=that.strain;
+		if(lbl=="SHRH"){
+			lbl="SHR";
+		}else if(lbl=="BNLX"){
+			lbl="BN-Lx";
+		}
+		if(that.include==1){
+			lbl=lbl+" SNPs";
+		}else if(that.include==2){
+			lbl=lbl+" Insertions";
+		}else if(that.include==3){
+			lbl=lbl+" Deletions";
+		}else if(that.include==4){
+			lbl=lbl+" SNPs/Indels";
+		}
+		that.updateLabel(lbl);
+		that.redrawLegend();
+		if(that.include<4){
+			var newData=[];
+			var newCount=0;
+			for(var l=0;l<data.length;l++){
+				if(data[l]!=undefined ){
+					if(that.include==1 && data[l].getAttribute("type")=="SNP"){
+						newData[newCount]=data[l];
+						newCount++;
+					}else if(that.include==2 && data[l].getAttribute("type")=="Insertion"){
+						newData[newCount]=data[l];
+						newCount++;
+					}else if(that.include==3 && data[l].getAttribute("type")=="Deletion"){
+						newData[newCount]=data[l];
+						newCount++;
+					}
+				}
+			}
+			data=newData;
+		}
+		that.svg.selectAll(".snp").remove();
 		//update
 		var snps=that.svg.selectAll(".snp")
    			.data(data,key)
@@ -1508,11 +1577,12 @@ function SNPTrack(gsvg,data,trackClass,density){
 				var tmpYMax=-1;
 				for(var j=0;j<that.yArr.length&&tmpYMax==-1;j++){
 					if(that.yArr[j]==-299999999){
-						svg.attr("height", (j+1)*15);
+						that.svg.attr("height", (j+1)*15);
 						tmpYMax=j;
 					}
 				}
-			}
+			};
+		snps.exit().remove();
 	}.bind(that);
 
 	that.pieColor =function(d,i){
@@ -1528,6 +1598,22 @@ function SNPTrack(gsvg,data,trackClass,density){
 			}else{
 				color=d3.rgb(0,0,125);
 			}
+		}else if(tmpName.indexOf("SHRJ")>-1){
+			if(tmpName.indexOf("SNP")>-1){
+				color=d3.rgb(0,255,0);
+			}else if(tmpName.indexOf("Insertion")>-1){
+				color=d3.rgb(0,175,00);
+			}else{
+				color=d3.rgb(0,125,00);
+			}
+		}else if(tmpName.indexOf("F344")>-1){
+			if(tmpName.indexOf("SNP")>-1){
+				color=d3.rgb(0,255,255);
+			}else if(tmpName.indexOf("Insertion")>-1){
+				color=d3.rgb(0,175,175);
+			}else{
+				color=d3.rgb(0,125,125);
+			}
 		}else if(tmpName.indexOf("SHR")>-1){
 			if(tmpName.indexOf("SNP")>-1){
 				color=d3.rgb(255,0,0);
@@ -1541,9 +1627,93 @@ function SNPTrack(gsvg,data,trackClass,density){
 		return color;
 	}.bind(that);
 
+
+	that.redrawLegend=function (){
+		var legend=[];
+		if(that.include==4){
+			if(that.strain=="BNLX"){
+				legend=[{color:"#0000FF",label:"SNP BN-Lx"},{color:"#000096",label:"Indel BN-Lx"}];
+			}else if(that.strain=="SHRH"){
+				legend=[{color:"#FF0000",label:"SNP SHR"},{color:"#960000",label:"Indel SHR"}];
+			}else if(that.strain=="SHRJ"){
+				legend=[{color:"#00FF00",label:"SNP SHRJ"},{color:"#009600",label:"Indel SHRJ"}];
+			}else if(that.strain=="F344"){
+				legend=[{color:"#00FFFF",label:"SNP F344"},{color:"#009696",label:"Indel F344"}];
+			}else{
+				legend=[{color:"#DEDEDE",label:"SNP"},{color:"#969696",label:"Indel"}];
+			}
+		}else if(that.include==3 || that.include==2){
+			if(that.strain=="BNLX"){
+				legend=[{color:"#000096",label:"Indel BN-Lx"}];
+			}else if(that.strain=="SHRH"){
+				legend=[{color:"#960000",label:"Indel SHR"}];
+			}else if(that.strain=="SHRJ"){
+				legend=[{color:"#009600",label:"Indel SHRJ"}];
+			}else if(that.strain=="F344"){
+				legend=[{color:"#009696",label:"Indel F344"}];
+			}else{
+				legend=[{color:"#969696",label:"Indel"}];
+			}
+		}else if(that.include==1){
+			if(that.strain=="BNLX"){
+				legend=[{color:"#0000FF",label:"SNP BN-Lx"}];
+			}else if(that.strain=="SHRH"){
+				legend=[{color:"#FF0000",label:"SNP SHR"}];
+			}else if(that.strain=="SHRJ"){
+				legend=[{color:"#00FF00",label:"SNP SHRJ"}];
+			}else if(that.strain=="F344"){
+				legend=[{color:"#00FFFF",label:"SNP F344"}];
+			}else{
+				legend=[{color:"#DEDEDE",label:"SNP"}];
+			}
+		}
+		that.drawLegend(legend);
+	}.bind(that);
+
+	that.strain=strain;
+	that.include=include;
 	that.density=density;
-  	var legend=[{color:"#0000FF",label:"SNP BN-Lx"},{color:"#FF0000",label:"SNP SHR"},{color:"#000096",label:"Indel BN-Lx"},{color:"#960000",label:"Indel SHR"}];
-	that.drawLegend(legend);
+	/*var legend=[];
+	if(include==4){
+		if(strain=="BNLX"){
+			legend=[{color:"#0000FF",label:"SNP BN-Lx"},{color:"#000096",label:"Indel BN-Lx"}];
+		}else if(strain=="SHRH"){
+			legend=[{color:"#FF0000",label:"SNP SHR"},{color:"#960000",label:"Indel SHR"}];
+		}else if(strain=="SHRJ"){
+			legend=[{color:"#00FF00",label:"SNP SHRJ"},{color:"#009600",label:"Indel SHRJ"}];
+		}else if(strain=="F344"){
+			legend=[{color:"#00FFFF",label:"SNP F344"},{color:"#009696",label:"Indel F344"}];
+		}else{
+			legend=[{color:"#DEDEDE",label:"SNP"},{color:"#969696",label:"Indel"}];
+		}
+	}else if(include==3 || include==2){
+		if(strain=="BNLX"){
+			legend=[{color:"#000096",label:"Indel BN-Lx"}];
+		}else if(strain=="SHRH"){
+			legend=[{color:"#960000",label:"Indel SHR"}];
+		}else if(strain=="SHRJ"){
+			legend=[{color:"#009600",label:"Indel SHRJ"}];
+		}else if(strain=="F344"){
+			legend=[{color:"#009696",label:"Indel F344"}];
+		}else{
+			legend=[{color:"#969696",label:"Indel"}];
+		}
+	}else if(include==1){
+		if(strain=="BNLX"){
+			legend=[{color:"#0000FF",label:"SNP BN-Lx"}];
+		}else if(strain=="SHRH"){
+			legend=[{color:"#FF0000",label:"SNP SHR"}];
+		}else if(strain=="SHRJ"){
+			legend=[{color:"#00FF00",label:"SNP SHRJ"}];
+		}else if(strain=="F344"){
+			legend=[{color:"#00FFFF",label:"SNP F344"}];
+		}else{
+			legend=[{color:"#DEDEDE",label:"SNP"}];
+		}
+	}
+  	//var legend=[{color:"#0000FF",label:"SNP BN-Lx"},{color:"#FF0000",label:"SNP SHR"},{color:"#000096",label:"Indel BN-Lx"},{color:"#960000",label:"Indel SHR"}];
+	that.drawLegend(legend);*/
+	that.redrawLegend();
 	that.draw(data);	
 	
 	return that;

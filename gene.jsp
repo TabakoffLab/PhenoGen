@@ -69,6 +69,9 @@ div.testToolTip {
 		padding-right:15px;
 		cursor:pointer;
 	}
+	span.viewMenu{
+		border-color:#000000;
+	}
 	span.detailMenu.selected{
 		background:#86C3E2;
 		color:#FFFFFF;
@@ -87,6 +90,19 @@ div.testToolTip {
 		color:#FFFFFF;
 	}
 	
+	span.viewMenu{
+		background:#AEAEAE;
+		color:#000000;
+	}
+	span.viewMenu.selected{
+		background:#DEDEDE;
+		color:#000000;
+	}
+	span.viewMenu:hover{
+		background:#DEDEDE;
+		color:#000000;
+	}
+	
 	.regionSubHeader{
 		background:#86C3E2;
 		color:#FFFFFF;
@@ -100,6 +116,7 @@ div.testToolTip {
 <%
 String myGene="";
 String myDisplayGene="";
+String defView="viewGenome";
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
 		myGene=request.getParameter("geneTxt").trim();
@@ -107,6 +124,10 @@ if(request.getParameter("geneTxt")!=null){
 }
 if(request.getParameter("newWindow")!=null&&request.getParameter("newWindow").equals("Y")){
 	popup=true;
+}
+
+if(request.getParameter("defaultView")!=null){
+	defView=request.getParameter("defaultView");
 }
 pageTitle="Detailed Transcription Information "+myGene;%>
 
@@ -521,8 +542,8 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
   </label>
- <span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="Get Genome Details" onClick="return displayWorking()"></span>
- <span style="padding-left:40px;"> <input type="submit" name="transcriptomeBTN" id="getTrxBTN" value="Get Transcriptome Details" onClick="return displayWorking()"></span>
+ <span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
+ <span style="padding-left:40px;"> <input type="submit" name="transcriptomeBTN" id="getTrxBTN" value="View Transcriptome Features" onClick="return displayWorking('viewTrxome')"></span>
  
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
     <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
@@ -530,13 +551,12 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <input type="hidden" name="chromosomes" id="chromosomes" value="" />
     <input type="hidden" name="levels" id="levels" value="" />
     <input type="hidden" name="action" id="action" value="Get Transcription Details" />
-    
   	<input type="hidden" name="genURLArray" id="genURLArray" value="<%=genURLString%>" />
     <input type="hidden" name="geneSymArray" id="geneSymArray" value="<%=geneSymString%>" />
     <input type="hidden" name="ucscURLArray" id="ucscURLArray" value="<%=ucscURLString%>" />
-
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
     <input type="hidden" name="geneSelect" id="geneSelect" value="<%=selectedGene%>" />
+    <input type="hidden" name="defaultView" id="defaultView" value="" />
 </form>
 Or
 <input type="submit" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 

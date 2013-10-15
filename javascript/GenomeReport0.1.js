@@ -51,7 +51,7 @@ $(document).on('click','span.detailMenu', function (event){
 	}
 });
 
-$(document).on('click','span.detailMenu', function (event){
+/*$(document).on('click','span.detailMenu', function (event){
 	var baseName = $(this).attr("name");
     var selectedTab=$('span.detailMenu.selected').attr("name");
     $("div#"+selectedTab).hide();
@@ -74,7 +74,7 @@ $(document).on('click','span.detailMenu', function (event){
 		}
 		regionDetailLoaded[baseName]=curRptRegion;
 	}
-});
+});*/
 
 function loadTrackTable(){
 	var jspPage="";
@@ -158,20 +158,24 @@ function DisplayRegionReport(){
 		}
 		var list=d3.select('#collapsableReportList').selectAll('li.report').data(tmptrackList,trKey).html(function(d){
 				var label="";
-				if(d.getDisplayedData!=undefined){
-					var data=d.getDisplayedData();
-					label=d.label+": "+data.length;
+				if(d!=undefined){
+					if(d.getDisplayedData!=undefined){
+						var data=d.getDisplayedData();
+						label=d.label+": "+data.length;
+					}
 				}
 				return label;
 		});
 
 		list.enter().append("li")
-			.attr("class",function (d){return "report "+d.trackClass;})
+			.attr("class",function (d){if(d!=undefined){return "report "+d.trackClass;}else{return "report";}})
 			.html(function(d){
 					var label="";
-					if(d.getDisplayedData!=undefined){
-						var data=d.getDisplayedData();
-						label=d.label+": "+data.length;
+					if(d!=undefined){
+						if(d.getDisplayedData!=undefined){
+							var data=d.getDisplayedData();
+							label=d.label+": "+data.length;
+						}
 					}
 					return label;
 				})
