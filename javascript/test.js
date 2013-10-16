@@ -4,7 +4,7 @@ var processAjax=0;
 var ajaxList=new Array();
 var selectedGeneSymbol="";
 var selectedID="";
-var viewName="genome";
+
 
 var mmVer="mm9 Strain:";
 var rnVer="rn5 Strain:BN";
@@ -43,8 +43,26 @@ $(document).on("change","input[name='trackcbx']",function(){
 				if($(this).is(":checked")){
 					svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val());
 					//addTrack(prefix, type,$("#"+prefix+"Select").val());
+					if($.cookie("state"+defaultView+level+"trackList")!=null){
+						var tmp=$.cookie("state"+defaultView+level+"trackList");
+						tmp=tmp+prefix+","+$("#"+prefix+"Dense"+level+"Select").val()+";";
+						$.cookie("state"+defaultView+level+"trackList",tmp);
+					}
 				}else{
 					removeTrack(level,prefix);
+					if($.cookie("state"+defaultView+level+"trackList")!=null){
+						var tmp=$.cookie("state"+defaultView+level+"trackList");
+						var tmpList=tmp.split(";");
+						var newtmp="";
+						for(var m=0;m<tmpList.length;m++){
+							if(tmpList[m].indexOf(prefix)>-1){
+								
+							}else{
+								newtmp=newtmp+tmpList[m]+";";
+							}
+						}
+						$.cookie("state"+defaultView+level+"trackList",newtmp);
+					}
 				}
 	 		});
 $(document).on("change","select[name='trackSelect']",function(){
@@ -240,19 +258,25 @@ function getAddMenuDiv(level,type){
 }
 
 function loadSavedConfigTracks(levelInd){
-	if($.cookie("state"+viewName)!=null){
-		svgList[levelInd].addTrack("coding",3);
+	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
+		console.log("SAVED COOKIE");
+		/*svgList[levelInd].addTrack("coding",3);
     	svgList[levelInd].addTrack("noncoding",3);
-    	svgList[levelInd].addTrack("smallnc",3);
+    	svgList[levelInd].addTrack("smallnc",3);*/
+    	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
+    	var trackArray=trackListObj.split(";");
+    	for(var m=0;m<trackArray.length;m++){
+    		var trackVars=trackArray[m].split(",");
+    		svgList[levelInd].addTrack(trackVars[0],trackVars[1]);
+    	}
 	}else{
+		console.log("NO COOKIE");
 		svgList[levelInd].addTrack("coding",3);
     	svgList[levelInd].addTrack("noncoding",3);
     	svgList[levelInd].addTrack("smallnc",3);
-    	$.cookie("state"+viewName,
-    	{
-    		trackList:"coding;noncoding;smallnc;"
-    	},
-    	{ expires: 7 }
+    	$.cookie("state"+defaultView+levelInd+"trackList",
+    		"coding,3;noncoding,3;smallnc,3;",
+    		{ expires: 7 }
     	);
 	}
 }
@@ -554,7 +578,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	
 	 $( ".sortable"+levelNumber ).sortable({
       revert: true,
-	  axis: "y"
+	  axis: "y",
+	  change: function( event, ui ) {
+	  	console.log(event);
+	  	console.log(ui);
+	  }
     });
     $( ".draggable"+levelNumber ).draggable({
       connectToSortable: ".sortable"+levelNumber,
