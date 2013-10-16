@@ -542,8 +542,17 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
   </label>
- <span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
- <span style="padding-left:40px;"> <input type="submit" name="transcriptomeBTN" id="getTrxBTN" value="View Transcriptome Features" onClick="return displayWorking('viewTrxome')"></span>
+  
+  <label>Initial View:
+  <select name="defaultView" id="defaultView">
+  	<option value="viewGenome" <%if(defView.equals("viewGenome")){%>selected<%}%>>Genome</option>
+    <option value="viewTrxome" <%if(defView.equals("viewTrxome")){%>selected<%}%>>Transcriptome</option>
+    <option value="viewAll" <%if(defView.equals("viewAll")){%>selected<%}%>>Both</option>
+  </select>
+  </label>
+  <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" onClick="return displayWorking()">
+ <!--<span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
+ <span style="padding-left:40px;"> <input type="submit" name="transcriptomeBTN" id="getTrxBTN" value="View Transcriptome Features" onClick="return displayWorking('viewTrxome')"></span>-->
  
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
     <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
@@ -556,8 +565,9 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <input type="hidden" name="ucscURLArray" id="ucscURLArray" value="<%=ucscURLString%>" />
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
     <input type="hidden" name="geneSelect" id="geneSelect" value="<%=selectedGene%>" />
-    <input type="hidden" name="defaultView" id="defaultView" value="" />
+    <!--<input type="hidden" name="defaultView" id="defaultView" value="<%=defView%>" />-->
 </form>
+<BR />
 Or
 <input type="submit" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
 </div>

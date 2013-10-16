@@ -27,7 +27,8 @@ $(document).on("click",".settings",function(){
 						var p=$(this).position();
 						$("."+setting).css("top",p.top-3).css("left",p.left-277);
 						$("."+setting).fadeIn("fast");
-						//console.log("after fade in");
+						var tmpStr=new String(setting);
+						setupSettingUI(tmpStr.substr(tmpStr.length-1));
 					}else{
 						$("."+setting).fadeOut("fast");
 					}
@@ -35,18 +36,20 @@ $(document).on("click",".settings",function(){
 				});
 			
 $(document).on("change","input[name='trackcbx']",function(){
-	 			var type=$(this).val();
-				var typeStr=new String(type);
+	 			//var type=$(this).val();
+				//var typeStr=new String(type);
 				var idStr=new String($(this).attr("id"));
-				var prefix=idStr.substr(0,idStr.length-3);
-				var level=typeStr.substr(typeStr.length-1);
+				var prefix=idStr.substr(0,idStr.length-4);
+				var level=idStr.substr(idStr.length-1);
 				if($(this).is(":checked")){
 					svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val());
 					//addTrack(prefix, type,$("#"+prefix+"Select").val());
 					if($.cookie("state"+defaultView+level+"trackList")!=null){
-						var tmp=$.cookie("state"+defaultView+level+"trackList");
-						tmp=tmp+prefix+","+$("#"+prefix+"Dense"+level+"Select").val()+";";
-						$.cookie("state"+defaultView+level+"trackList",tmp);
+						var tmp=new String($.cookie("state"+defaultView+level+"trackList"));
+						if(tmp.indexOf(prefix+",")==-1){
+							tmp=tmp+prefix+","+$("#"+prefix+"Dense"+level+"Select").val()+";";
+							$.cookie("state"+defaultView+level+"trackList",tmp);
+						}
 					}
 				}else{
 					removeTrack(level,prefix);
@@ -57,7 +60,7 @@ $(document).on("change","input[name='trackcbx']",function(){
 						for(var m=0;m<tmpList.length;m++){
 							if(tmpList[m].indexOf(prefix)>-1){
 								
-							}else{
+							}else if(tmpList[m]!=""){
 								newtmp=newtmp+tmpList[m]+";";
 							}
 						}
@@ -76,9 +79,15 @@ $(document).on("change","select[name='trackSelect']",function(){
 				
 	 		});
 
-$(document).on("change","select[name='displaySelect']", function(){
-	 			changeTrackHeight($(this).attr("id"),$(this).val());
+$(document).on("change","select[name='imgSelect']", function(){
+				var id=new String($(this).attr("id"));
+				var len=id.length-1;
+				var curlvl=id.substr(len);
+				console.log("height:"+curlvl);
+	 			changeTrackHeight("Level"+curlvl,$(this).val());
+	 			$.cookie("imgstate"+defaultView+curlvl,"displaySelect"+curlvl+"="+$(this).val()+";",{ expires: 7 });
 	 		});
+
 
 
 
@@ -257,31 +266,107 @@ function getAddMenuDiv(level,type){
 			});
 }
 
+function loadState(levelInd){
+	loadSavedConfigTracks(levelInd);
+	loadImageState(levelInd);
+}
+
+function setupSettingUI(levelInd){
+	setupTrackSettingUI(levelInd);
+	setupImageSettingUI(levelInd);
+}
+
 function loadSavedConfigTracks(levelInd){
 	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
-		console.log("SAVED COOKIE");
-		/*svgList[levelInd].addTrack("coding",3);
-    	svgList[levelInd].addTrack("noncoding",3);
-    	svgList[levelInd].addTrack("smallnc",3);*/
     	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
     	var trackArray=trackListObj.split(";");
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
-    		svgList[levelInd].addTrack(trackVars[0],trackVars[1]);
+    		if(trackVars[0]!=""){
+    			svgList[levelInd].addTrack(trackVars[0],trackVars[1]);
+    		}
     	}
 	}else{
-		console.log("NO COOKIE");
-		svgList[levelInd].addTrack("coding",3);
-    	svgList[levelInd].addTrack("noncoding",3);
-    	svgList[levelInd].addTrack("smallnc",3);
-    	$.cookie("state"+defaultView+levelInd+"trackList",
-    		"coding,3;noncoding,3;smallnc,3;",
-    		{ expires: 7 }
-    	);
+		var tmpTrkList="";
+		if(defaultView=="viewGenome"){
+			svgList[levelInd].addTrack("snpBNLX",1);
+	    	svgList[levelInd].addTrack("snpSHRH",1);
+			svgList[levelInd].addTrack("qtl",3);
+	    	tmpTrkList="snpBNLX,1;snpSHRH,1;qtl,3;";
+    	}else if(defaultView=="viewTrxome"){
+			svgList[levelInd].addTrack("coding",3);
+	    	svgList[levelInd].addTrack("noncoding",3);
+	    	svgList[levelInd].addTrack("smallnc",3);
+	    	tmpTrkList="coding,3;noncoding,3;smallnc,3;";
+    	}
+    	$.cookie("state"+defaultView+levelInd+"trackList",tmpTrkList,{ expires: 7 });
 	}
 }
 
+function loadImageState(levelInd){
+	if($.cookie("imgstate"+defaultView+levelInd)!=null){
+    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
+    	console.log("img state:"+trackListObj);
+    	var trackArray=trackListObj.split(";");
+    	for(var m=0;m<trackArray.length;m++){
+    		var trackVars=trackArray[m].split("=");
+    		var tmp=new String(trackVars[0]);
+    		if(tmp.indexOf("displaySelect")==0){
+    			changeTrackHeight("Level"+levelInd,trackVars[1]);
+    		}
+    	}
 
+	}	
+}
+
+function setupTrackSettingUI(levelInd){
+	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
+    	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
+    	var trackArray=trackListObj.split(";");
+    	$("input[name='trackcbx']").each(function(){
+    		if($(this).is(":checked")){
+    			console.log("unchecking"+$(this).attr("id"));
+    			$(this).attr('checked', false);
+    		}
+    	});
+    	for(var m=0;m<trackArray.length;m++){
+    		var trackVars=trackArray[m].split(",");
+    		if(trackVars[0]!=""){
+    			$("div.settingsLevel0 #"+trackVars[0]+"CBX"+levelInd).attr('checked',true);
+    		}
+    	}
+	}
+}
+
+function setupImageSettingUI(levelInd){
+	if($.cookie("imgstate"+defaultView+levelInd)!=null){
+    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
+    	console.log("img state:"+trackListObj);
+    	var trackArray=trackListObj.split(";");
+    	for(var m=0;m<trackArray.length;m++){
+    		var trackVars=trackArray[m].split("=");
+    		$("#"+trackVars[0]).val(trackVars[1]);
+    		/*var tmp=new String(trackVars[0]);
+    		if(tmp.indexOf("displaySelect")==0){
+    			changeTrackHeight("Level"+levelInd,trackVars[1]);
+    		}*/
+    	}
+
+	}
+}
+
+function saveToCookie(curLevel){
+	var cookieStr="";
+	$( ".sortable"+curLevel+" li svg").each(function() {
+          var id = (new String ($(this).attr("id"))).substr(6);
+          cookieStr=cookieStr+id;
+          if($("#"+id+"Dense"+curLevel+"Select").length > 0){
+          	cookieStr=cookieStr+","+$("#"+id+"Dense"+curLevel+"Select").val();
+          }
+          cookieStr=cookieStr+";";
+        });
+	$.cookie("state"+defaultView+curLevel+"trackList",cookieStr);
+}
 
 
 //D3 helper functions
@@ -579,10 +664,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	 $( ".sortable"+levelNumber ).sortable({
       revert: true,
 	  axis: "y",
-	  change: function( event, ui ) {
-	  	console.log(event);
-	  	console.log(ui);
-	  }
+	  stop: function() {
+        saveToCookie(levelNumber);
+      }
     });
     $( ".draggable"+levelNumber ).draggable({
       connectToSortable: ".sortable"+levelNumber,
