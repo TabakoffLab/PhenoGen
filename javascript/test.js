@@ -1,10 +1,12 @@
+$.cookie.defaults.expires=365;
+
 //global varaiable to store a list of GenomeSVG images representing each level.
 var svgList=new Array();
 var processAjax=0;
 var ajaxList=new Array();
 var selectedGeneSymbol="";
 var selectedID="";
-
+var trackSettings=new Array();
 
 var mmVer="mm9 Strain:";
 var rnVer="rn5 Strain:BN";
@@ -37,8 +39,8 @@ $(document).on("click",".settings",function(){
 						var p=$(this).position();
 						$("."+setting).css("top",p.top-3).css("left",p.left-277);
 						$("."+setting).fadeIn("fast");
-						var tmpStr=new String(setting);
-						setupSettingUI(tmpStr.substr(tmpStr.length-1));
+						//var tmpStr=new String(setting);
+						//setupSettingUI(tmpStr.substr(tmpStr.length-1));
 					}else{
 						$("."+setting).fadeOut("fast");
 					}
@@ -53,17 +55,16 @@ $(document).on("change","input[name='trackcbx']",function(){
 				var level=idStr.substr(idStr.length-1);
 				if($(this).is(":checked")){
 					svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val());
-					//addTrack(prefix, type,$("#"+prefix+"Select").val());
-					if($.cookie("state"+defaultView+level+"trackList")!=null){
+					/*if($.cookie("state"+defaultView+level+"trackList")!=null){
 						var tmp=new String($.cookie("state"+defaultView+level+"trackList"));
 						if(tmp.indexOf(prefix+",")==-1){
 							tmp=tmp+prefix+","+$("#"+prefix+"Dense"+level+"Select").val()+";";
 							$.cookie("state"+defaultView+level+"trackList",tmp);
 						}
-					}
+					}*/
 				}else{
 					removeTrack(level,prefix);
-					if($.cookie("state"+defaultView+level+"trackList")!=null){
+					/*if($.cookie("state"+defaultView+level+"trackList")!=null){
 						var tmp=$.cookie("state"+defaultView+level+"trackList");
 						var tmpList=tmp.split(";");
 						var newtmp="";
@@ -75,8 +76,9 @@ $(document).on("change","input[name='trackcbx']",function(){
 							}
 						}
 						$.cookie("state"+defaultView+level+"trackList",newtmp);
-					}
+					}*/
 				}
+				saveToCookie(level);
 	 		});
 $(document).on("change","select[name='trackSelect']",function(){
 				var idStr=new String($(this).attr("id"));
@@ -86,7 +88,7 @@ $(document).on("change","select[name='trackSelect']",function(){
 				}else if(idStr.indexOf("snp")==0){
 					svgList[level].updateData();
 				}
-				
+				saveToCookie(level);
 	 		});
 
 $(document).on("change","select[name='imgSelect']", function(){
@@ -95,7 +97,7 @@ $(document).on("change","select[name='imgSelect']", function(){
 				var curlvl=id.substr(len);
 				console.log("height:"+curlvl);
 	 			changeTrackHeight("Level"+curlvl,$(this).val());
-	 			$.cookie("imgstate"+defaultView+curlvl,"displaySelect"+curlvl+"="+$(this).val()+";",{ expires: 7 });
+	 			$.cookie("imgstate"+defaultView+curlvl,"displaySelect"+curlvl+"="+$(this).val()+";");
 	 		});
 
 
@@ -206,6 +208,7 @@ function updatePage(topSVG){
 }
 
 function removeTrack(level,track){
+
 	svgList[level].removeTrack(track);
 }
 
@@ -272,11 +275,13 @@ function getAddMenuDiv(level,type){
     			},
     			error: function(xhr, status, error) {
         			$('#imageMenu').append("<div class=\"settingsLevel"+level+"\">An error occurred generating this menu.  Please try back later.</div>");
-    			}
+    			},
+    			async:   false
 			});
 }
 
 function loadState(levelInd){
+	setupSettingUI(levelInd);
 	loadSavedConfigTracks(levelInd);
 	loadImageState(levelInd);
 }
@@ -289,27 +294,23 @@ function setupSettingUI(levelInd){
 function loadSavedConfigTracks(levelInd){
 	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
     	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
+    	console.log("LOADING:"+trackListObj);
     	var trackArray=trackListObj.split(";");
+    	var addedCount=0;
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
     		if(trackVars[0]!=""){
+    			addedCount++;
     			svgList[levelInd].addTrack(trackVars[0],trackVars[1]);
     		}
     	}
-	}else{
-		var tmpTrkList="";
-		if(defaultView=="viewGenome"){
-			svgList[levelInd].addTrack("snpBNLX",1);
-	    	svgList[levelInd].addTrack("snpSHRH",1);
-			svgList[levelInd].addTrack("qtl",3);
-	    	tmpTrkList="snpBNLX,1;snpSHRH,1;qtl,3;";
-    	}else if(defaultView=="viewTrxome"){
-			svgList[levelInd].addTrack("coding",3);
-	    	svgList[levelInd].addTrack("noncoding",3);
-	    	svgList[levelInd].addTrack("smallnc",3);
-	    	tmpTrkList="coding,3;noncoding,3;smallnc,3;";
+    	if(addedCount==0){
+    		setupDefaultView(levelInd);
+    		saveToCookie(levelInd);
     	}
-    	$.cookie("state"+defaultView+levelInd+"trackList",tmpTrkList,{ expires: 7 });
+	}else{
+		setupDefaultView(levelInd);
+    	saveToCookie(levelInd);
 	}
 }
 
@@ -342,8 +343,15 @@ function setupTrackSettingUI(levelInd){
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
     		if(trackVars[0]!=""){
-    			$("div.settingsLevel0 #"+trackVars[0]+"CBX"+levelInd).attr('checked',true);
+    			$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBX"+levelInd).attr('checked',true);
+    			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").length>0  && trackVars[1]!=undefined){
+    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
+    			}
+    			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+levelInd+"Select").length>0  && trackVars[2]!=undefined){
+    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+levelInd+"Select").val(trackVars[2]);
+    			}
     		}
+
     	}
 	}
 }
@@ -365,6 +373,18 @@ function setupImageSettingUI(levelInd){
 	}
 }
 
+function setupDefaultView(levelInd){
+	if(defaultView=="viewGenome"){
+		svgList[levelInd].addTrack("snpBNLX",1);
+    	svgList[levelInd].addTrack("snpSHRH",1);
+		svgList[levelInd].addTrack("qtl",3);
+	}else if(defaultView=="viewTrxome"){
+		svgList[levelInd].addTrack("coding",3);
+    	svgList[levelInd].addTrack("noncoding",3);
+    	svgList[levelInd].addTrack("smallnc",3);
+	}
+}
+
 function saveToCookie(curLevel){
 	var cookieStr="";
 	$( ".sortable"+curLevel+" li svg").each(function() {
@@ -372,6 +392,9 @@ function saveToCookie(curLevel){
           cookieStr=cookieStr+id;
           if($("#"+id+"Dense"+curLevel+"Select").length > 0){
           	cookieStr=cookieStr+","+$("#"+id+"Dense"+curLevel+"Select").val();
+          }
+          if($("#"+id+curLevel+"Select").length > 0){
+          	cookieStr=cookieStr+","+$("#"+id+curLevel+"Select").val();
           }
           cookieStr=cookieStr+";";
         });

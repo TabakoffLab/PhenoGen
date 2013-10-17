@@ -95,8 +95,9 @@ var defaultView="<%=defView%>";
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
+            <script src="javascript/test.js" type="text/javascript"></script>
             	<script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
-				<script src="javascript/test.js" type="text/javascript"></script>
+				
                 <script type="text/javascript">
                     var gs=new GenomeSVG(".ucscImage",960,minCoord,maxCoord,0,chr,"gene");
 					loadState(0);
@@ -209,22 +210,6 @@ var defaultView="<%=defView%>";
 
 <script type="text/javascript">
 	$("span[name='"+defaultView+"']").addClass("selected");
-	/*$(document).on('click','span.trigger', function (event){
-		var baseName = $(this).attr("name");
-        var thisHidden = $("div#" + baseName).is(":hidden");
-        //$(this).toggleClass("less");
-		console.log(baseName+":"+thisHidden);
-        if (thisHidden) {
-			$("div#" + baseName).show();
-			$(this).addClass("less");
-        } else {
-			$("div#" + baseName).hide();
-			$(this).removeClass("less");
-        }
-		if(baseName=="collapsableReport"){
-			DisplayRegionReport();
-		}
-	});*/
 	
 	$(document).on('click','span.closeDetail', function(){
 			$('div#selectedDetail').hide();
