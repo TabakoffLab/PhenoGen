@@ -12,6 +12,16 @@ var siteVer="PhenoGen v2.10:12/1/2013";
 
 //setup event handlers
 
+$(document).on('click','span.viewMenu', function (event){
+	var baseName = $(this).attr("name");
+    $('span.viewMenu.selected').removeClass("selected");
+    $("span[name='"+baseName+"']").addClass("selected");
+    //load default view
+    defaultView=baseName;
+    svgList[0].removeAllTracks();
+    loadState(0);
+});
+
 $(document).on("click",".closeBtn",function(){
 					var setting=new String($(this).attr("id"));
 					setting=setting.substr(6);
@@ -498,6 +508,16 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				d3.select("#"+level+"Scroll").style("max-height","none");
 			}
 		}.bind(this);
+
+	this.removeAllTracks=function(){
+			for(var l=0;l<this.trackList.length;l++){
+				if(this.trackList[l]!=undefined){
+					d3.select("#Level"+this.levelNumber+this.trackList[l].trackClass).remove();
+				}
+			}
+			this.trackList=[];
+			DisplayRegionReport();
+	}.bind(this);
 
 	this.removeTrack=function (track){
 			d3.select("#Level"+this.levelNumber+track).remove();

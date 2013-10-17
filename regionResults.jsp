@@ -71,6 +71,7 @@ var defaultView="<%=defView%>";
     		View:
     		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
     		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+            <span class="viewMenu" name="viewAll" >Both<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">
@@ -144,17 +145,18 @@ var defaultView="<%=defView%>";
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
     </div>
     
-    <div style="font-size:18px; font-weight:bold; background-color:#0b61A4; color:#FFFFFF; text-align:left; width:100%;">
+    <div style="width:100%;">
+            	<div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
+                    <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an EQTL in region<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+				</div>
+    </div>
+    <div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:left; width:100%;">
     		<span class="trigger less triggerEC" name="collapsableReport" >Region Summary</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
     </div>
     <div id="collapsableReport" style="width:100%;">
-    		<div style="width:100%;">
-            	<div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
-                    <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-                    <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an EQTL in region<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-				</div>
-           </div>
+    		
 
         <div style="display:inline-block;width:100%;" id="regionSummary">
             <table style="width:100%;" cellspacing="0">

@@ -51,6 +51,8 @@ $(document).on('click','span.detailMenu', function (event){
 	}
 });
 
+
+
 /*$(document).on('click','span.detailMenu', function (event){
 	var baseName = $(this).attr("name");
     var selectedTab=$('span.detailMenu.selected').attr("name");
