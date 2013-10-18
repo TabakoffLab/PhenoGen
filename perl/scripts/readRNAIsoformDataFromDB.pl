@@ -7,6 +7,7 @@
 use Bio::SeqIO;
 use Data::Dumper qw(Dumper);
 
+
 use Text::CSV;
 
 require 'readAnnotationDataFromDB.pl';
@@ -351,9 +352,8 @@ sub readRNAIsoformDataFromDB{
 
 
 sub readRNACountsDataFromDB{
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;
+	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;
 	my %countHOH;
-	
 	
 	my $org="Mm";
 	if($organism eq "Rat"){
@@ -367,6 +367,7 @@ sub readRNACountsDataFromDB{
 			rd.organism = '".$org."' "."
 			and rd.user_id= $publicUserID  
 			and rd.visible=0 
+			and rd.description = '".$type."'
 			and rd.strain_panel like '".$panel."' "."
 			and rc.rna_dataset_id= rd.rna_dataset_id
 			and rc.chromosome = '".$geneChrom."'

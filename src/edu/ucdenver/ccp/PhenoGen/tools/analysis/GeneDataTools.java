@@ -1159,7 +1159,105 @@ public class GeneDataTools {
         }
         return completedSuccessfully;
     }
-    
+    public String generateXMLTrack(String chromosome,int min,int max,String panel,String track,String organism,int rnaDatasetID,int arrayTypeID,String folderName){
+        String status="";
+        try{
+            int publicUserID=new User().getUser_id("public",dbConn);
+            String tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
+            Properties myProperties = new Properties();
+            File myPropertiesFile = new File(dbPropertiesFile);
+            myProperties.load(new FileInputStream(myPropertiesFile));
+
+            String dsn="dbi:"+myProperties.getProperty("PLATFORM") +":"+myProperties.getProperty("DATABASE");
+            String dbUser=myProperties.getProperty("USER");
+            String dbPassword=myProperties.getProperty("PASSWORD");
+            //construct perl Args
+            String[] perlArgs = new String[12];
+            perlArgs[0] = "perl";
+            perlArgs[1] = perlDir + "writeXML_Track.pl";
+            perlArgs[2] = tmpOutputDir;
+            if (organism.equals("Rn")) {
+                perlArgs[3] = "Rat";
+            } else if (organism.equals("Mm")) {
+                perlArgs[3] = "Mouse";
+            }
+            perlArgs[4] = track;
+            perlArgs[5]=chromosome;
+             perlArgs[6] = Integer.toString(min);
+            perlArgs[7] = Integer.toString(max);
+            perlArgs[8] = Integer.toString(publicUserID);
+            perlArgs[9] = dsn;
+            perlArgs[10] = dbUser;
+            perlArgs[11] = dbPassword;
+
+
+            //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+            String[] envVar=perlEnvVar.split(",");
+
+            for (int i = 0; i < envVar.length; i++) {
+                log.debug(i + " EnvVar::" + envVar[i]);
+                if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }
+            }
+            //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/regionData/"+folderName+"/");
+            try {
+                myExec_session.runExec();
+                status="successful";
+            } catch (ExecException e) {
+                status="Error generating track";
+                log.error("In Exception of run writeXML_Track.pl Exec_session", e);
+                setError("Running Perl Script to get Gene and Transcript details/images.");
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                myAdminEmail.setContent("There was an error while running "
+                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+
+                        ")\n\n"+myExec_session.getErrors());
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+            }
+
+            if(myExec_session.getExitValue()!=0){
+                status="Error generating track";
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                myAdminEmail.setContent("There was an error while running "
+                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
+                        ")\n\n"+myExec_session.getErrors());
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+            }else{
+                
+            }
+        }catch(Exception e){
+            status="Error generating track";
+            log.error("Error getting DB properties or Public User ID.",e);
+            String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+            Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
+                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+        }
+        return status;
+    }
     public boolean createRegionImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
         boolean completedSuccessfully=false;
         try{

@@ -606,11 +606,11 @@ sub createXMLFile
 	my $smEnd=time();
 	print "Small RNA completed in ".($smEnd-$smStart)." sec.\n";
 	
-	my $rnaCountStart=time();
-	my $rnaCountRef=readRNACountsDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
-	my %rnaCountHOH=%$rnaCountRef;
-	my $rnaCountEnd=time();
-	print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
+	#my $rnaCountStart=time();
+	#my $rnaCountRef=readRNACountsDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	#my %rnaCountHOH=%$rnaCountRef;
+	#my $rnaCountEnd=time();
+	#print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
 	
 	my $trackDB="mm9";
 	if($species eq 'Rat'){
@@ -625,7 +625,7 @@ sub createXMLFile
 	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."coding.xml",$trackDB,1);
 	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."noncoding.xml",$trackDB,0);
 	createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."smallnc.xml",$trackDB,$chr);
-	createRNACountXMLTrack(\%rnaCountHOH,$outputDir."helicos.xml");
+	#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."helicos.xml");
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 }
