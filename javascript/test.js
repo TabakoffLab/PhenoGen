@@ -537,7 +537,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}else if(track=="helicos"||track=="illuminaTotal"||track=="illuminaSmall"||track=="illuminaPolyA"){
 				var tmpMin=this.xScale.domain()[0];
 				var tmpMax=this.xScale.domain()[1];
-				d3.xml("tmpData/regionData/"+folderName+"/count"+track+".xml",function (error,d){
+				var len=tmpMax-tmpMin;
+				var file="tmpData/regionData/"+folderName+"/count"+track+".xml";
+				if(len>100000){
+					file="tmpData/regionData/"+folderName+"/bincount"+track+".xml";
+				}
+				d3.xml(file,function (error,d){
 					if(error){
 						console.log(error);
 						if(retry==0){
@@ -2491,7 +2496,26 @@ function CountTrack(gsvg,data,trackClass,density){
 
 function HelicosTrack(gsvg,data,trackClass,density){
 	var that=new CountTrack(gsvg,data,trackClass,density);
-	var lbl="Helicos Read Counts";
+	var lbl="Helicos RNA Read Counts";
+	that.updateLabel(lbl);
+	return that;
+}
+
+function IlluminaSmallTrack(gsvg,data,trackClass,density){
+	var that=new CountTrack(gsvg,data,trackClass,density);
+	var lbl="Illumina Small RNA Read Counts";
+	that.updateLabel(lbl);
+	return that;
+}
+function IlluminaTotalTrack(gsvg,data,trackClass,density){
+	var that=new CountTrack(gsvg,data,trackClass,density);
+	var lbl="Illumina Total RNA(rRNA depleted) Read Counts";
+	that.updateLabel(lbl);
+	return that;
+}
+function IlluminaPolyATrack(gsvg,data,trackClass,density){
+	var that=new CountTrack(gsvg,data,trackClass,density);
+	var lbl="Illumina PolyA+ RNA Read Counts";
 	that.updateLabel(lbl);
 	return that;
 }

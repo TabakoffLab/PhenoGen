@@ -386,31 +386,23 @@ sub readRNACountsDataFromDB{
 	$query_handle->bind_columns(\$dsid ,\$chromosome,\$start,\$end,\$count,\$trCount);
 	my $listCount=0;
 	while($query_handle->fetch()) {
-		if($listCount>0 and $start>$countHOH{Count}[$listCount-2]{start}){
-			$countHOH{Count}[$listCount]{start}=$start-1;
+		if($listCount>0 and $countHOH{Count}[$listCount-1]{stop}=($start-1)){
+			$countHOH{Count}[$listCount]{start}=$start;
+			$countHOH{Count}[$listCount]{stop}=$end;
+			$countHOH{Count}[$listCount]{count}=$count;
+			$countHOH{Count}[$listCount]{logcount}=$trCount;
+		}else{
+			$countHOH{Count}[$listCount]{start}=$countHOH{Count}[$listCount-1]{stop}+1;
+			$countHOH{Count}[$listCount]{stop}=$start-1;
 			$countHOH{Count}[$listCount]{count}=0;
 			$countHOH{Count}[$listCount]{logcount}=0;
 			$listCount++;
-		}elsif($listCount>0 and $start==$countHOH{Count}[$listCount-2]{start}){
-			$listCount--;
+			$countHOH{Count}[$listCount]{start}=$start;
+			$countHOH{Count}[$listCount]{stop}=$end;
+			$countHOH{Count}[$listCount]{count}=$count;
+			$countHOH{Count}[$listCount]{logcount}=$trCount;
 		}
-		$countHOH{Count}[$listCount]{start}=$start;
-		#$countHOH{Count}[$listCount]{end}=$end;
-		$countHOH{Count}[$listCount]{count}=$count;
-		$countHOH{Count}[$listCount]{logcount}=$trCount;
 		$listCount++;
-		
-		$countHOH{Count}[$listCount]{start}=$end;
-		#$countHOH{Count}[$listCount]{end}=$end;
-		$countHOH{Count}[$listCount]{count}=$count;
-		$countHOH{Count}[$listCount]{logcount}=$trCount;
-		$listCount++;
-		
-		$countHOH{Count}[$listCount]{start}=$end+1;
-		$countHOH{Count}[$listCount]{count}=0;
-		$countHOH{Count}[$listCount]{logcount}=0;
-		$listCount++;
-		
 	}
 	return (\%countHOH);
 }

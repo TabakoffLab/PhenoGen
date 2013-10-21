@@ -1,7 +1,5 @@
 #!/usr/bin/perl
 
-#use lib "/opt/ensembl_ucsc/bioperl-live";
-#use lib "/opt/ensembl_ucsc/ensembl/modules";
 
 use Bio::EnsEMBL::Registry;
 use XML::LibXML;
