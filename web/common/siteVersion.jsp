@@ -49,7 +49,7 @@
 		<p><a href="http://www.r-project.org/" target="R Master">R</a>:&nbsp;&nbsp;version 2.11.1</p>
 		<p><a href="http://www.bioconductor.org/" target="R Master">BioConductor</a>:&nbsp;&nbsp;version 2.6</p>
 		<!-- <p><a href="http://www.atlassian.com/" target="JIRA">JIRA</a>: &nbsp;&nbsp;version 3.1.1-#81 Professional Edition</p> -->
-		<p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on Mar 8th, 2013 with annotation data from the following sources:</p>
+		<p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on Oct 25th, 2013 with annotation data from the following sources:</p>
 		</p>
 		<ul>
 			<li>Annotation file for Affymetrix Genechip Drosophila Genome [DrosGenome1] na32
@@ -71,16 +71,16 @@
 			<li>Annotation file for Amersham Codelink UniSet Mouse I 
 			<li>Annotation file for Codelink Rat Whole Genome 
 			<li>Annotation file for Codelink Mouse Whole Genome 
-			<li>Location data from Ensembl for Mouse, Human, and Rat from Ensembl Genes 69 
-			<li>FlyBase gene_map_table_fb_2012_06.tsv file and fbgn_NAseq_Uniprot_fb_2012_06.tsv 
-			<li>MGI database links file generated from the ACC_Accession table on 12/13/2012
-			<li>MGI_Coordinate.rpt links file, downloaded 12/13/2012 
-			<li>NCBI gene2accession file, downloaded 12/13/2012
-			<li>NCBI gene2unigene file, downloaded 12/13/2012
-			<li>NCBI gene_info file, downloaded 12/13/2012
-			<li>NCBI homologene.data file, build 66 
-			<li>RGD GENES file, last updated on 12/7/2011
-			<li>SwissProt uniprot_sprot.dat file, last updated on 11/28/2012
+			<li>Location data from Ensembl for Mouse, Human, and Rat from Ensembl Genes v73 
+			<li>FlyBase gene_map_table_fb_2013_05.tsv file and fbgn_NAseq_Uniprot_fb_2013_05.tsv 
+			<li>MGI database links file generated from the ACC_Accession table on 10/8/2013
+			<li>MGI_Coordinate.rpt links file, downloaded 10/8/2013 
+			<li>NCBI gene2accession file, downloaded 10/8/2013
+			<li>NCBI gene2unigene file, downloaded 10/8/2013
+			<li>NCBI gene_info file, downloaded 10/8/2013
+			<li>NCBI homologene.data file, build 198 
+			<li>RGD GENES file, last updated on 10/8/2013
+			<li>SwissProt uniprot_sprot.dat file, last updated on 10/8/2013
 		</ul>
 
 

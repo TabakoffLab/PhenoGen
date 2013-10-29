@@ -12,6 +12,8 @@ var mmVer="mm9 Strain:";
 var rnVer="rn5 Strain:BN";
 var siteVer="PhenoGen v2.10:12/1/2013";
 
+var trackBinCutoff=10000;
+
 //setup event handlers
 
 $(document).on('click','span.viewMenu', function (event){
@@ -126,13 +128,13 @@ function mup() {
 			if(!isNaN(svgList[i].downx)|| !isNaN(svgList[i].downPanx)){
 				if(i==0){
 					updatePage(svgList[i]);
-					DisplayRegionReport();
 				}
         		svgList[i].downx = Math.NaN;
 				svgList[i].downPanx = Math.NaN;
 			}
 		}
 	}
+	DisplayRegionReport();
 }
 function mmove(){
 	for (var i=0; i<svgList.length; i++){
@@ -312,7 +314,17 @@ function loadSavedConfigTracks(levelInd){
     		var trackVars=trackArray[m].split(",");
     		if(trackVars[0]!=""){
     			addedCount++;
-    			svgList[levelInd].addTrack(trackVars[0],trackVars[1],"",0);
+    			var ext="";
+    			if(trackVars.length>2){
+    				for(var n=2;n<trackVars.length;n++){
+    					if(n==2){
+    						ext=trackVars[n];
+    					}else{
+    						ext=ext+","+trackVars[n];
+    					}
+    				}
+    			}
+    			svgList[levelInd].addTrack(trackVars[0],trackVars[1],ext,0);
     		}
     	}
     	if(addedCount==0){
@@ -407,6 +419,9 @@ function saveToCookie(curLevel){
           if($("#"+id+curLevel+"Select").length > 0){
           	cookieStr=cookieStr+","+$("#"+id+curLevel+"Select").val();
           }
+          if(id.indexOf("CBXt")>-1){
+          	cookieStr=cookieStr+",annotOnly";
+          }
           cookieStr=cookieStr+";";
         });
 	$.cookie("state"+defaultView+curLevel+"trackList",cookieStr);
@@ -449,12 +464,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				var dragDiv=this.topLevel.append("li");
 				var svg = dragDiv.append("svg:svg")
 				.attr("width", this.get('width'))
-				.attr("height", 800)
+				.attr("height", 30)
 				.attr("class", "track draggable"+this.levelNumber)
 				.attr("id","Level"+this.levelNumber+track)
 				.attr("pointer-events", "all")
-				.style("cursor", "move")
-				.on("mousedown", this.panDown);
+				.style("cursor", "move");
+				//.on("mousedown", this.panDown);
 				//this.svg.append("text").text(this.label).attr("x",this.gsvg.width/2-20).attr("y",12);
 				var lblStr=new String("Loading...");
 				svg.append("text").text(lblStr).attr("x",this.width/2-(lblStr.length/2)*7.5).attr("y",12).attr("id","trkLbl");
@@ -464,7 +479,18 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			if(track=="coding"){
 				d3.xml("tmpData/regionData/"+folderName+"/coding.xml",function (error,d){
 					if(error){
-
+						if(success!=1 && retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=20000;
+							}
+							setTimeout(function (){
+								this.addTrack(track,density,additionalOptions,retry+1);
+							}.bind(this),time);
+						}else if(success!=1){
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
 					}else{
 						var data=d.documentElement.getElementsByTagName("Gene");
 						var newTrack=new GeneTrack(par,data,track,"Protein Coding / PolyA+",additionalOptions);
@@ -475,7 +501,18 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}else if(track=="noncoding"){
 				d3.xml("tmpData/regionData/"+folderName+"/noncoding.xml",function (error,d){
 					if(error){
-
+						if(success!=1 && retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=20000;
+							}
+							setTimeout(function (){
+								this.addTrack(track,density,additionalOptions,retry+1);
+							}.bind(this),time);
+						}else if(success!=1){
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
 					}else{
 						var data=d.documentElement.getElementsByTagName("Gene");
 						var newTrack=new GeneTrack(par,data,track,"Long Non-Coding / Non-PolyA+",additionalOptions);
@@ -486,7 +523,18 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}else if(track=="smallnc"){
 				d3.xml("tmpData/regionData/"+folderName+"/smallnc.xml",function (error,d){
 					if(error){
-
+						if(success!=1 && retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=20000;
+							}
+							setTimeout(function (){
+								this.addTrack(track,density,additionalOptions,retry+1);
+							}.bind(this),time);
+						}else if(success!=1){
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
 					}else{
 						var data=d.documentElement.getElementsByTagName("smnc");
 						var newTrack=new GeneTrack(par,data,track,"Small RNA (<200 bp)",additionalOptions);
@@ -496,9 +544,38 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				});
 			}else if(track.indexOf("snp")==0){
 				var include=$("#"+track+this.levelNumber+"Select").val();
-				d3.xml("tmpData/regionData/"+folderName+"/"+track+".xml",function (error,d){
+				var tmpMin=this.xScale.domain()[0];
+				var tmpMax=this.xScale.domain()[1];
+				var file="tmpData/regionData/"+folderName+"/"+track+".xml";
+				d3.xml(file,function (error,d){
 					if(error){
-
+						console.log(error);
+						if(retry==0){
+							$.ajax({
+								url: contextPath + "/web/GeneCentric/generateTrackXML.jsp",
+				   				type: 'GET',
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: track, folder: folderName},
+								dataType: 'json',
+				    			success: function(data2){
+				    				
+				    			},
+				    			error: function(xhr, status, error) {
+				        			
+				    			}
+							});
+						}
+						if(success!=1 && retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=20000;
+							}
+							setTimeout(function (){
+								this.addTrack(track,density,additionalOptions,retry+1);
+							}.bind(this),time);
+						}else if(success!=1){
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
 					}else{
 						var snp=d.documentElement.getElementsByTagName("Snp");
 						var newTrack=new SNPTrack(par,snp,track,density,include);
@@ -506,11 +583,21 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						success=1;
 					}
 				});
-				//setupSNP(level,density);
 			}else if(track=="qtl"){
 				d3.xml("tmpData/regionData/"+folderName+"/qtl.xml",function (error,d){
 					if(error){
-
+						if(success!=1 && retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=20000;
+							}
+							setTimeout(function (){
+								this.addTrack(track,density,additionalOptions,retry+1);
+							}.bind(this),time);
+						}else if(success!=1){
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
 					}else{
 						var qtl=d.documentElement.getElementsByTagName("QTL");
 						var newTrack=new QTLTrack(par,qtl,track,density);
@@ -526,7 +613,18 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}else if(track=="probe"){
 				d3.xml("tmpData/regionData/"+folderName+"/probe.xml",function (error,d){
 					if(error){
-
+						if(success!=1 && retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=20000;
+							}
+							setTimeout(function (){
+								this.addTrack(track,density,additionalOptions,retry+1);
+							}.bind(this),time);
+						}else if(success!=1){
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
 					}else{
 						var probe=d.documentElement.getElementsByTagName("probe");
 						var newTrack=new ProbeTrack(par,probe,track,"Affy Exon 1.0 ST Probe Sets",density);
@@ -539,7 +637,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				var tmpMax=this.xScale.domain()[1];
 				var len=tmpMax-tmpMin;
 				var file="tmpData/regionData/"+folderName+"/count"+track+".xml";
-				if(len>100000){
+				if(len>trackBinCutoff){
 					file="tmpData/regionData/"+folderName+"/bincount"+track+".xml";
 				}
 				d3.xml(file,function (error,d){
@@ -559,6 +657,18 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				    			}
 							});
 						}
+						if(success!=1 && retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=20000;
+							}
+							setTimeout(function (){
+								this.addTrack(track,density,additionalOptions,retry+1);
+							}.bind(this),time);
+						}else if(success!=1){
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
 					}else{
 						var data=d.documentElement.getElementsByTagName("Count");
 						var newTrack;
@@ -576,18 +686,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					}
 				});
 			}
-			if(success!=1 && retry<3){//wait before trying again
-				var time=10000;
-				if(retry==1){
-					time=20000;
-				}
-				setTimeout(function (){
-					this.addTrack(track,density,additionalOptions,retry+1);
-				}.bind(this),time);
-			}else if(success!=1){
-				d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
-				d3.select("#Level"+this.levelNumber+track).attr("height", 15);
-			}
+			
 	}.bind(this);
 	this.addTrackList= function (newTrack){
 		if(newTrack!=null){
@@ -724,7 +823,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	}
 	this.vis=d3.select(div);
 	//this.vis.append("span").attr("class","settings").attr("id","settingsLevel"+this.levelNumber).style("position","relative").style("top","15px").style("left","486px").append("img").attr("src","web/images/icons/gear.png");
-	this.vis.append("span").attr("class","settings button").attr("id","settingsLevel"+this.levelNumber).style("position","relative").style("top","15px").style("left","436px").style("width","118px").text("Settings/Tracks");
+	this.vis.append("span").attr("class","settings button").attr("id","settingsLevel"+this.levelNumber).style("float","right").style("width","118px").text("Settings/Tracks");
+	//this.vis.append("span").attr("class","reset button").attr("id","resetLevel"+this.levelNumber).style("float","left").style("width","118px").text("Reset Image");
+	//this.vis.append("span").attr("class","undo button").attr("id","undoLevel"+this.levelNumber).style("float","left").style("width","220px").text("Undo last Zoom/Move");
 	this.topDiv=this.vis.append("div").attr("id","Level"+levelNumber).style("text-align","left");
 	
 	
@@ -1028,6 +1129,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	//console.log(this.vis);
 	//this.svg=this.vis[0][0];
 	this.svg=d3.select("svg#Level"+this.gsvg.levelNumber+this.trackClass);
+	this.svg.on("mousedown", this.panDown);
 	//console.log(this.svg);
 	this.updateLabel(this.label);
 	//var lblStr=new String(this.label);
@@ -2360,32 +2462,50 @@ function CountTrack(gsvg,data,trackClass,density){
 	that.density=density;
 	that.data=data;
 	that.prevDensity=density;
-
+	that.displayBreakDown=null;
 	that.color= function (d){		
 		return d3.rgb(that.colorScale(d.getAttribute("logcount")));
 	}.bind(that);
 
 	that.redraw= function (){
-		that.density=$("#"+that.trackClass+that.gsvg.levelNumber+"Select").val();
+		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		if(that.density==1){
 			if(that.density!=that.prevDensity){
 				that.prevDensity=that.density;
+				that.svg.selectAll(".area").remove();
+				that.svg.selectAll("g.y").remove();
+				var points=that.svg.selectAll("."+that.trackClass).data(that.data,keyStart)
+		    	points.enter()
+						.append("rect")
+						.attr("x",function(d){return that.xScale(d.getAttribute("start"));})
+						.attr("y",15)
+						.attr("class", that.trackClass)
+			    		.attr("height",10)
+						.attr("width",function(d) {
+										   var wX=1;
+										   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
+											   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
+										   }
+										   return wX;
+										   })
+						.attr("fill",that.color);
+			}else{
+				that.svg.selectAll("."+that.trackClass).attr("x",function(d){return that.xScale(d.getAttribute("start"));})
+					.attr("width",function(d) {
+									   var wX=1;
+									   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
+										   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
+									   }
+									   return wX;
+									   });
 			}
-			that.svg.selectAll("."+that.trackClass).attr("x",function(d){return that.xScale(d.getAttribute("start"));})
-				.attr("width",function(d) {
-								   var wX=1;
-								   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
-									   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
-								   }
-								   return wX;
-								   });
 			that.svg.attr("height", 30);
 		}else{
 			if(that.density!=that.prevDensity){
 				that.prevDensity=that.density;
 				that.svg.selectAll("."+trackClass).remove();
 				that.svg.append("path")
-			      	.datum(data)
+			      	.datum(that.data)
 			      	.attr("class", "area")
 			      	.attr("fill","steelblue")
 			      	.attr("d", that.area);
@@ -2403,11 +2523,11 @@ function CountTrack(gsvg,data,trackClass,density){
 			
 			that.area = d3.svg.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
-				    .y0(100)
+				    .y0(120)
 				    .y1(function(d) { return that.y(d.getAttribute("logcount")); });
-			that.y.domain([0, d3.max(data, function(d) { return d.getAttribute("logcount"); })]);
-			that.svg.select('path').datum(data).attr("d",that.area);
-			that.svg.attr("height", 100);
+			that.y.domain([0, d3.max(that.data, function(d) { return d.getAttribute("logcount"); })]);
+			that.svg.select('path').datum(that.data).attr("d",that.area);
+			that.svg.attr("height", 120);
 		}
 	}.bind(that);
 
@@ -2423,15 +2543,21 @@ function CountTrack(gsvg,data,trackClass,density){
 
 	that.updateData = function(){
 		var tag="Count";
-		var path="tmpData/regionData/"+folderName+"/count"+that.trackClass+".xml";
-		d3.xml(path,function (d){
+		var file="tmpData/regionData/"+folderName+"/count"+that.trackClass+".xml";
+		if(len>trackBinCutoff){
+			file="tmpData/regionData/"+folderName+"/bincount"+that.trackClass+".xml";
+		}
+		//var path="tmpData/regionData/"+folderName+"/count"+that.trackClass+".xml";
+		d3.xml(file,function (d){
 				var data=d.documentElement.getElementsByTagName(tag);
+				that.data=data;
 				that.draw(data);
 				that.hideLoading();
 			});
 	}.bind(that);
 
 	that.draw=function(data){
+		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		if(density==1){
 	    	var points=that.svg.selectAll("."+that.trackClass)
 	   			.data(data,keyStart)
@@ -2467,17 +2593,17 @@ function CountTrack(gsvg,data,trackClass,density){
 		      .style("text-anchor", "end")
 		      .text("log10(reads)");
 
-			that.svg.attr("height", 100);
+			that.svg.attr("height", 120);
 		}
 	}.bind(that);
 
 	that.y = d3.scale.linear()
-    	.range([100, 0])
+    	.range([120, 20])
     	.nice(4);
 
    	that.colorScale= d3.scale.threshold()
-   						.domain([0.5,1,1.5,2,2.5,3,3.5,4])
-   						.range(["#FFFFFF","#CCCCCC","#AAAAAA","#888888","#666666","#444444","#222222","#000000"]);
+   						.domain([0,0.001,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
+   						.range(["#FFFFFF","#EEEEEE","#DDDDDD","#CCCCC","#BBBBBB","#AAAAAA","#999999","#888888","#777777","#666666","#555555","#444444","#333333","#222222","#111111","#000000"]);
 
     that.yAxis = d3.svg.axis()
     				.scale(that.y)
@@ -2485,7 +2611,7 @@ function CountTrack(gsvg,data,trackClass,density){
 
     that.area = d3.svg.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
-				    .y0(100)
+				    .y0(120)
 				    .y1(function(d) { return that.y(d.getAttribute("logcount")); });
 
     that.y.domain([0, d3.max(data, function(d) { return d.getAttribute("logcount"); })]);

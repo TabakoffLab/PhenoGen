@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+
 import org.apache.log4j.Logger;
 
 
@@ -311,11 +312,13 @@ public class AsyncGeneDataExpr extends Thread {
             
             
             
+            int loopcount=0;
             
-            while (!DSPathList.isEmpty()) {
+            while (!DSPathList.isEmpty()  && loopcount<6) {
                 String psListFile=outputDir + "tmp_psList.txt";
                 File psFile=new File(psListFile);
                 if(psFile.length()>0){
+                    loopcount=0;
                     String sampleFile=sampleFileList.remove(0);
                     String DSPath=DSPathList.remove(0);
                     String outIndivFile=outIndivFileList.remove(0);
@@ -360,8 +363,14 @@ public class AsyncGeneDataExpr extends Thread {
                     }
                 }else{
                     log.debug("NO PROBESETS");
+                    try {
+                        thisThread.wait(20000);
+                    } catch (InterruptedException ex) {
+                        log.error("Error NO PROBESETS",ex);
+                        //Logger.getLogger(AsyncGeneDataExpr.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                
+                loopcount++;
             }
             
             

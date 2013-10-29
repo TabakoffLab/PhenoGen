@@ -80,7 +80,7 @@ var defaultView="<%=defView%>";
             </span>-->
     </div>
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
-    		<span class="trigger less" name="collapsableImage" >Genome Image</span>
+    		<span class="trigger less" name="collapsableImage" >Region Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
             <div id="imageHeader" style=" font-size:12px; float:right;"></div>
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
