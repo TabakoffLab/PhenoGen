@@ -26,6 +26,7 @@
 div.testToolTip {   
   position: absolute;           
   text-align: center;
+  min-width: 100px;
   max-width: 400px;
   min-height:50px;                  
   /*height: 300px;   */              
@@ -48,6 +49,14 @@ div.testToolTip {
 	fill:none;
 	stroke: black;
 }
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+/*.grid path {
+      stroke-width: 0;
+}*/
 	div#collapsableReport li{
 	color:#000000;
 	cursor:pointer;
@@ -117,6 +126,9 @@ div.testToolTip {
 	table.geneFilter TH {
 		background:#86C3E2;
 		color:#FFFFFF;
+	}
+	rect.selected{
+		fill:#00FF00;
 	}
 </style>
 
