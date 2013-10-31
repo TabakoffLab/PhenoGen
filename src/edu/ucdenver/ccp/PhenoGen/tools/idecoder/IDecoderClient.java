@@ -150,10 +150,10 @@ public class IDecoderClient {
 		pstmt.executeQuery();
 		pstmt.close();
 
-		Results myResults = new Results(countQuery2, conn);
-		log.debug("count of geneListGraph at point 1 = "+ myResults.getIntValueFromFirstRow());
+		//Results myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 1 = "+ myResults.getIntValueFromFirstRow());
 		
-                myResults.close();
+                //myResults.close();
             
             return doSearch(organism,conn);
         }
@@ -215,10 +215,10 @@ public class IDecoderClient {
 		pstmt.executeQuery();
 		pstmt.close();
 
-		Results myResults = new Results(countQuery2, conn);
-		log.debug("count of geneListGraph at point 1 = "+ myResults.getIntValueFromFirstRow());
+		//Results myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 1 = "+ myResults.getIntValueFromFirstRow());
 		
-                myResults.close();
+                //myResults.close();
             return doSearchAll(organism, conn);
         }
         
@@ -334,8 +334,9 @@ public class IDecoderClient {
 		pstmt.executeQuery();
 		pstmt.close();
 
-		Results myResults = new Results(countQuery2, conn);
-		log.debug("count of geneListGraph at point 2 = "+ myResults.getIntValueFromFirstRow());
+		//Results myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 2 = "+ myResults.getIntValueFromFirstRow());
+                //myResults.close();
 
 		//myGLGResults = new Results(glgContents, conn);
 		//myGLGResults.print();
@@ -431,9 +432,9 @@ public class IDecoderClient {
 		pstmt.executeQuery();
 		pstmt.close();
 
-		myResults = new Results(countQuery2, conn);
-		log.debug("count of geneListGraph at point 3 = "+ myResults.getIntValueFromFirstRow());
-
+		//myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 3 = "+ myResults.getIntValueFromFirstRow());
+                //myResults.close();
 		//myGLGResults = new Results(glgContents, conn);
 		//myGLGResults.print();
 
@@ -553,8 +554,8 @@ public class IDecoderClient {
 			//pstmt.setString(2, organism);
 			pstmt.executeQuery();
 
-			myResults = new Results(countQuery2, conn);
-			log.debug("count of geneListGraph in iteration [" + i + "] = " + myResults.getIntValueFromFirstRow());
+			//myResults = new Results(countQuery2, conn);
+			//log.debug("count of geneListGraph in iteration [" + i + "] = " + myResults.getIntValueFromFirstRow());
 
 			//myGLGResults = new Results(glgContents, conn);
 			//myGLGResults.print();
@@ -562,10 +563,9 @@ public class IDecoderClient {
 			pstmt.close();
 		}
 
-		myResults = new Results(countQuery2, conn);
-		log.debug("count of geneListGraph at point 4 = " + myResults.getIntValueFromFirstRow());
-
-		myResults.close();
+		//myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 4 = " + myResults.getIntValueFromFirstRow());
+		//myResults.close();
 
        		query =  
                 	"select ident_type_id, "+
@@ -676,7 +676,7 @@ public class IDecoderClient {
 			//linkGraph.put(foundID, new LinkedHashSet<IdentifierLink>());
 		}
 		//log.debug("linkGraph contains "+linkGraph.size() + " entries");
-                //pstmt.close();
+                pstmt.close();
 		pstmt = conn.prepareStatement(query2);
 		rs = pstmt.executeQuery();
         	while (rs.next()){
@@ -858,8 +858,8 @@ public class IDecoderClient {
 		pstmt.executeQuery();
 		pstmt.close();
 
-		Results myResults = new Results(countQuery2, conn);
-		log.debug("count of geneListGraph at point 2 = "+ myResults.getIntValueFromFirstRow());
+		//Results myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 2 = "+ myResults.getIntValueFromFirstRow());
 
 		//myGLGResults = new Results(glgContents, conn);
 		//myGLGResults.print();
@@ -955,8 +955,8 @@ public class IDecoderClient {
 		pstmt.executeQuery();
 		pstmt.close();
 
-		myResults = new Results(countQuery2, conn);
-		log.debug("count of geneListGraph at point 3 = "+ myResults.getIntValueFromFirstRow());
+		//myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 3 = "+ myResults.getIntValueFromFirstRow());
 
 		//myGLGResults = new Results(glgContents, conn);
 		//myGLGResults.print();
@@ -1077,8 +1077,8 @@ public class IDecoderClient {
 			//pstmt.setString(2, organism);
 			pstmt.executeQuery();
 
-			myResults = new Results(countQuery2, conn);
-			log.debug("count of geneListGraph in iteration [" + i + "] = " + myResults.getIntValueFromFirstRow());
+			//myResults = new Results(countQuery2, conn);
+			//log.debug("count of geneListGraph in iteration [" + i + "] = " + myResults.getIntValueFromFirstRow());
 
 			//myGLGResults = new Results(glgContents, conn);
 			//myGLGResults.print();
@@ -1086,10 +1086,10 @@ public class IDecoderClient {
 			pstmt.close();
 		}
 
-		myResults = new Results(countQuery2, conn);
-		log.debug("count of geneListGraph at point 4 = " + myResults.getIntValueFromFirstRow());
+		//myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 4 = " + myResults.getIntValueFromFirstRow());
 
-		myResults.close();
+		//myResults.close();
 
        		query =  
                 	"select ident_type_id, "+
