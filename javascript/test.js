@@ -475,8 +475,13 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				svg.append("text").text(lblStr).attr("x",this.width/2-(lblStr.length/2)*7.5).attr("y",12).attr("id","trkLbl");
 		}
 
+
+
+
+
 		var success=0;
-			if(track=="coding"){
+		if(track=="coding"){
+
 				d3.xml("tmpData/regionData/"+folderName+"/coding.xml",function (error,d){
 					if(error){
 						if(success!=1 && retry<3){//wait before trying again
@@ -504,7 +509,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						if(success!=1 && retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
-								time=20000;
+								time=15000;
 							}
 							setTimeout(function (){
 								this.addTrack(track,density,additionalOptions,retry+1);
@@ -526,7 +531,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						if(success!=1 && retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
-								time=20000;
+								time=15000;
 							}
 							setTimeout(function (){
 								this.addTrack(track,density,additionalOptions,retry+1);
@@ -567,7 +572,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						if(success!=1 && retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
-								time=20000;
+								time=15000;
 							}
 							setTimeout(function (){
 								this.addTrack(track,density,additionalOptions,retry+1);
@@ -589,7 +594,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						if(success!=1 && retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
-								time=20000;
+								time=15000;
 							}
 							setTimeout(function (){
 								this.addTrack(track,density,additionalOptions,retry+1);
@@ -616,7 +621,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						if(success!=1 && retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
-								time=20000;
+								time=15000;
 							}
 							setTimeout(function (){
 								this.addTrack(track,density,additionalOptions,retry+1);
@@ -660,7 +665,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						if(success!=1 && retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
-								time=20000;
+								time=15000;
 							}
 							setTimeout(function (){
 								this.addTrack(track,density,additionalOptions,retry+1);
@@ -720,6 +725,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			for(var l=0;l<this.trackList.length;l++){
 				if(this.trackList[l].trackClass==track){
 					this.trackList.splice(l,1);
+					this.trackCount--;
 				}
 			}
 			DisplayRegionReport();
@@ -746,7 +752,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	this.updateData=function (){
 		for(var i=0;i<this.trackList.length;i++){
 			if(this.trackList[i]!=undefined && this.trackList[i].updateData!=undefined){
-				this.trackList[i].updateData();
+				this.trackList[i].updateData(0);
 			}
 		}
 		DisplayRegionReport();
@@ -1345,7 +1351,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		return dispData;
 	}.bind(that);
 
-	that.updateData=function(){
+	that.updateData=function(retry){
 		var tag="Gene";
 		var path="tmpData/regionData/"+folderName+"/coding.xml";
 		if(this.trackClass=="noncoding"){
@@ -1354,7 +1360,21 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			path="tmpData/regionData/"+folderName+"/smallnc.xml";
 			tag="smnc";
 		}
-		d3.xml(path,function (d){
+		d3.xml(path,function (error,d){
+			if(error){
+				if(retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=15000;
+							}
+							setTimeout(function (){
+								this.updateData(retry+1);
+							}.bind(this),time);
+				}else{
+							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
+				}
+			}else{
 				var data=d.documentElement.getElementsByTagName(tag);
 				var mergeddata=new Array();
 				var checkName=new Array();
@@ -1383,7 +1403,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.draw(mergeddata);
 				that.hideLoading();
 				DisplayRegionReport();
-			});
+			}
+		});
 	}.bind(that);
 
 	that.draw=function (data){
@@ -2615,7 +2636,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		var tooltip="";
 		tooltip="log2(read count)="+d.getAttribute("logcount");
 		if(that.bin>0){
-			var tmpEnd=d.getAttribute("start")+that.bin;
+			var tmpEnd=(d.getAttribute("start")*1)+(that.bin*1);
 			tooltip=tooltip+"*<BR><BR>*Data compressed for display. Using 90th percentile of<BR>region:"+d.getAttribute("start")+"-"+tmpEnd+"<BR><BR>Zoom in to a region smaller than "+trackBinCutoff+"bp to see raw data.";
 		}else{
 			tooltip=tooltip+"<BR>Read Count:"+d.getAttribute("logcount");

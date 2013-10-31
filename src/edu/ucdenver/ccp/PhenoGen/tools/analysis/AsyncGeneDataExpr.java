@@ -362,7 +362,8 @@ public class AsyncGeneDataExpr extends Thread {
                             }
                     }
                 }else{
-                    log.debug("NO PROBESETS");
+                    
+                    log.debug("NO PROBESETS:"+psListFile);
                     try {
                         thisThread.wait(20000);
                     } catch (InterruptedException ex) {

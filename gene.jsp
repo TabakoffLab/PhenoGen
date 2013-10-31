@@ -97,13 +97,16 @@ div.testToolTip {
 		color:#FFFFFF;
 	}
 	
-	span.selectdetailMenu.selected{
-		background:#67e667;
+	span.selectdetailMenu{
+		background-color:#00992D;
+		border-color:#000000;
 		color:#FFFFFF;
 	}
+	span.selectdetailMenu.selected{
+		background:#47c647;
+	}
 	span.selectdetailMenu:hover{
-		background:#67e667;
-		color:#FFFFFF;
+		background:#47c647;
 	}
 	
 	span.viewMenu{

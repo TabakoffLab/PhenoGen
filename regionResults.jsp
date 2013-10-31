@@ -195,7 +195,7 @@ var defaultView="<%=defView%>";
     </div><!--collapsableReport end-->
     <BR />
 	<div id="selectedDetailHeader" style=" display:none; font-size:18px; font-weight:bold; background-color:#00992D; color:#FFFFFF; text-align:left; width:100%;">
-    		<span class="trigger less triggerEC" name="selectedDetail" >Selected Feature Detail</span>
+    		<span class="trigger less triggerEC" name="selectedDetail" >Selected Feature Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
             <span class="closeDetail" style="float:right;"><img src="../web/images/icons/close.png" /></span>
     </div>

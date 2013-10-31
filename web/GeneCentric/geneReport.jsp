@@ -142,14 +142,68 @@ Add report here.
 		});
 </script>-->
 
-<div style="font-size:18px; font-weight:bold; background-color:#00992D; color:#FFFFFF; text-align:left; width:100%; ">
-    <span class="trigger less" name="geneDiv"  style="margin-left:30px;"></span>
-    <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    <span class="selectdetailMenu" name="geneEQTL">Gene EQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    <span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+<div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
+            <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    		<span class="selectdetailMenu" name="geneEQTL">Gene EQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    		<span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
 </div>
+
+<div style="font-size:18px; font-weight:bold; background-color:#47c647; color:#FFFFFF; text-align:left; width:100%; ">
+    <span class="trigger triggerEC less" name="geneDiv"  style="margin-left:30px;">Selected Feature Summary</span>    
+</div>
+
 <div id="geneDiv" style="display:inline-block;">
 	<div style="display:inline-block;" id="geneDetail">
+    	<% 	DecimalFormat df2 = new DecimalFormat("#.##");
+			DecimalFormat df0 = new DecimalFormat("###");
+			DecimalFormat df4 = new DecimalFormat("#.####");
+			DecimalFormat dfC = new DecimalFormat("#,###");
+
+			/*TranscriptCluster tc=curGene.getTranscriptCluster();
+            
+			HashMap hCount=curGene.getHeritCounts();
+            HashMap dCount=curGene.getDabgCounts();
+			HashMap hSum=curGene.getHeritAvg();
+            HashMap dSum=curGene.getDabgAvg();
+			String chr=curGene.getChromosome();
+			ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript> tmpTrx=curGene.getTranscripts();
+			if(!chr.startsWith("chr")){
+				chr="chr"+chr;
+			}*/
+            %>
+            
+             Gene Symbol: 
+            <%if(curGene.getGeneSymbol()!=null && !curGene.getGeneSymbol().equals("")){%>
+                                        <%=curGene.getGeneSymbol()%>
+            <%}else{%>
+                                        No Gene Symbol Found
+           	<%}%>
+            <BR />
+            <BR />
+            
+            
+  			Location:  <%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%> &nbsp;&nbsp&nbsp Strand: <%=curGene.getStrand()%>
+                
+            <BR /><BR />
+   			<%	String tmpList="";                        
+                for(int l=0;l<tmpTrx.size();l++){
+					tmpList=tmpList+"<B>"+tmpTrx.get(l).getIDwToolTip()+"</B>";
+					if(myOrganism.equals("Rn") && curGene.getGeneID().startsWith("ENS")){
+						if(!tmpTrx.get(l).getID().startsWith("ENS")){
+							tmpList=tmpList+" - "+tmpTrx.get(l).getMatchReason();
+						}
+					}
+					tmpList=tmpList+"<BR>";
+					
+               	}%>
+			Transcripts:<BR />      
+            <%=tmpList%>
+        
+            
+                
+            
+                                
+                                
     </div>
     <div style="display:none;" id="geneEQTL">
     </div>

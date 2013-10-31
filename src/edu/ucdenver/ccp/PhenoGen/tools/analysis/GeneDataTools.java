@@ -749,7 +749,9 @@ public class GeneDataTools {
             //}
             //getUCSCUrl(url[1].replaceFirst(".png",".url"));
             
-            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
+            
+            //Moved back to AsyncGeneDataTools
+            //outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
             
             
             
