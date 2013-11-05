@@ -133,6 +133,13 @@ div.testToolTip {
 	rect.selected{
 		fill:#00FF00;
 	}
+	.geneReport TD{
+		vertical-align:top;
+		margin-top: 10px;
+	}
+	.geneReport TD.header{
+		background-color:#67E667;
+	}
 </style>
 
 <%

@@ -1311,7 +1311,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				$('div#selectedReport').show();
 				$('div#selectedImage').show();
 				var jspPage="web/GeneCentric/geneReport.jsp";
-				var params={id:selectedID,geneSymbol:selectedGeneSymbol,chromosome:chr};
+				var params={id:selectedID,geneSymbol:selectedGeneSymbol,chromosome:chr,species:organism};
 				DisplaySelectedDetailReport(jspPage,params)
 			}else if(localTxType=="small"){
 				if(new String(d.getAttribute("ID")).indexOf("ENS")==-1){

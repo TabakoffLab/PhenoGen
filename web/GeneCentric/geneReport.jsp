@@ -96,6 +96,7 @@
 	for(int i=0;i<tmpGeneList.size();i++){
 		log.debug("check:"+tmpGeneList.get(i).getGeneID()+":"+id);
 		if(tmpGeneList.get(i).getGeneID().equals(id)){
+			log.debug("found:"+tmpGeneList.get(i).getGeneID());
 			curGene=tmpGeneList.get(i);
 		}
 	}
@@ -152,57 +153,375 @@ Add report here.
     <span class="trigger triggerEC less" name="geneDiv"  style="margin-left:30px;">Selected Feature Summary</span>    
 </div>
 
-<div id="geneDiv" style="display:inline-block;">
-	<div style="display:inline-block;" id="geneDetail">
-    	<% 	DecimalFormat df2 = new DecimalFormat("#.##");
+<div id="geneDiv" style="display:inline-block;text-align:left; width:100%;">
+	<div style="display:inline-block; text-align:left;width:100%;" id="geneDetail">
+    	
+        <% 	DecimalFormat df2 = new DecimalFormat("#.##");
 			DecimalFormat df0 = new DecimalFormat("###");
 			DecimalFormat df4 = new DecimalFormat("#.####");
 			DecimalFormat dfC = new DecimalFormat("#,###");
 
-			/*TranscriptCluster tc=curGene.getTranscriptCluster();
+			TranscriptCluster tc=curGene.getTranscriptCluster();
             
 			HashMap hCount=curGene.getHeritCounts();
             HashMap dCount=curGene.getDabgCounts();
 			HashMap hSum=curGene.getHeritAvg();
-            HashMap dSum=curGene.getDabgAvg();
+            HashMap hMin=curGene.getHeritMin();
+			HashMap hMax=curGene.getHeritMax();
+			HashMap dSum=curGene.getDabgAvg();
+			HashMap dMin=curGene.getDabgMin();
+			HashMap dMax=curGene.getDabgMax();
+			
 			String chr=curGene.getChromosome();
 			ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript> tmpTrx=curGene.getTranscripts();
 			if(!chr.startsWith("chr")){
 				chr="chr"+chr;
-			}*/
+			}
             %>
-            
+            <table class="geneReport" style="width:100%;">
+            <TR>
+            <TD style="min-width:150px;">
              Gene Symbol: 
+             </TD>
+             <TD>
             <%if(curGene.getGeneSymbol()!=null && !curGene.getGeneSymbol().equals("")){%>
                                         <%=curGene.getGeneSymbol()%>
             <%}else{%>
                                         No Gene Symbol Found
            	<%}%>
-            <BR />
-            <BR />
-            
-            
-  			Location:  <%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%> &nbsp;&nbsp&nbsp Strand: <%=curGene.getStrand()%>
+            </TD>
+            </TR>
+            <TR>
+            	<TD>
+            		Location:  
+					</TD>
+				<TD>
+					<%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%>
+                    </TD>
+            </TR>
+            <TR>
+                <TD>
+                	Strand:
+                </TD> 
+				<TD>
+					<%=curGene.getStrand()%>
+                    </TD>
+             </TR>
                 
-            <BR /><BR />
-   			<%	String tmpList="";                        
-                for(int l=0;l<tmpTrx.size();l++){
-					tmpList=tmpList+"<B>"+tmpTrx.get(l).getIDwToolTip()+"</B>";
-					if(myOrganism.equals("Rn") && curGene.getGeneID().startsWith("ENS")){
-						if(!tmpTrx.get(l).getID().startsWith("ENS")){
-							tmpList=tmpList+" - "+tmpTrx.get(l).getMatchReason();
-						}
-					}
-					tmpList=tmpList+"<BR>";
-					
-               	}%>
-			Transcripts:<BR />      
-            <%=tmpList%>
-        
+            <TR>
+            	<TD > Description:</TD>
+                <TD >
+                	
+					<%String description=curGene.getDescription();
+                                        String shortDesc=description;
+                                        String remain="";
+                                        if(description.indexOf("[")>0){
+                                            shortDesc=description.substring(0,description.indexOf("["));
+                                            remain=description.substring(description.indexOf("[")+1,description.indexOf("]"));
+                                        }
+                                %>
+                                <span title="Description <%=remain%>">
+                                	<%String bioType=curGene.getBioType();%>
+                                    <%=shortDesc%>
+                                    <% HashMap displayed=new HashMap();
+                                    HashMap bySource=new HashMap();
+                                    for(int k=0;k<tmpTrx.size();k++){
+                                        ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> annot=tmpTrx.get(k).getAnnotation();
+                                        if(annot!=null&&annot.size()>0){
+                                            for(int j=0;j<annot.size();j++){
+                                                if(!annot.get(j).getSource().equals("AKA")&&!annot.get(j).getSource().equals("AlignedSequences")){
+                                                    String tmpHTML=annot.get(j).getDisplayHTMLString(true);
+                                                    if(!displayed.containsKey(tmpHTML)){
+                                                        displayed.put(tmpHTML,1);
+                                                        if(bySource.containsKey(annot.get(j).getSource())){
+                                                            String list=bySource.get(annot.get(j).getSource()).toString();
+                                                            list=list+", "+tmpHTML;
+                                                            bySource.put(annot.get(j).getSource(),list);
+                                                        }else{
+                                                            bySource.put(annot.get(j).getSource(),tmpHTML);
+                                                        }
+                                                        
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Set keys=bySource.keySet();
+                                    Iterator itr=keys.iterator();
+                                    while(itr.hasNext()){
+                                        String source=itr.next().toString();
+                                        String values=bySource.get(source).toString();
+                                    %>
+                                        <%="<BR>"+source+":"+values%>
+                                    <%}%>
+                                    </span>
+                                    
+                                </TD>
+            </TR>
+            <TR></TR>
+            <TR>
+            	<TD> Links:</TD>
+                <TD>
+                	
+                     <%if(curGene.getGeneID().startsWith("ENS")){%>
+                                    <a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(curGene.getGeneID(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=curGene.getGeneID()%></a><BR />	
+                                    <span style="font-size:10px;">
+                                    <%
+                                                                    
+                                        String tmpGS=curGene.getGeneID();
+                                        String shortOrg="Mouse";
+                                        String allenID="";
+                                        if(myOrganism.equals("Rn")){
+                                            shortOrg="Rat";
+                                        }
+                                        if(curGene.getGeneSymbol()!=null&&!curGene.getGeneSymbol().equals("")){
+                                            tmpGS=curGene.getGeneSymbol();
+                                            allenID=curGene.getGeneSymbol();
+                                        }
+                                        if(allenID.equals("")&&!shortDesc.equals("")){
+                                            allenID=shortDesc;
+                                        }%>
+                                        All Organisms:<a href="<%=LinkGenerator.getNCBILink(tmpGS)%>" target="_blank">NCBI</a> |
+                                        <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS)%>" target="_blank">UniProt</a> <BR />
+                                       <%=shortOrg%>: <a href="<%=LinkGenerator.getNCBILink(tmpGS,myOrganism)%>" target="_blank">NCBI</a> | <a href="<%=LinkGenerator.getUniProtLinkGene(tmpGS,myOrganism)%>" target="_blank">UniProt</a> | 
+                                        <%if(myOrganism.equals("Mm")){%>
+                                            <a href="<%=LinkGenerator.getMGILink(tmpGS)%>" target="_blank">MGI</a> 
+                                            <%if(!allenID.equals("")){%>
+                                                | <a href="<%=LinkGenerator.getBrainAtlasLink(allenID)%>" target="_blank">Allen Brain Atlas</a>
+                                            <%}%>
+                                        <%}else{%>
+                                            <a href="<%=LinkGenerator.getRGDLink(tmpGS,myOrganism)%>" target="_blank">RGD</a>
+                                        <%}%>
+                                     </span>
+                                <%}else{%>
+                                    <%=curGene.getGeneID()%>
+                                <%}%>
+                </TD>
+                 
+            </TR>
+            <TR>
+            	<TD></TD>
+                <TD></TD>
+            </TR>
             
-                
             
+                               
+                                 
                                 
+                               
+            <%if(myOrganism.equals("Rn")){%>
+   			<TR>
+            	<TD>Exonic SNPs:</TD>
+                
+                                <TD>
+                                    <%if(curGene.getSnpCount("common","SNP")>0 || curGene.getSnpCount("common","Indel")>0 ){%>
+                                        Common:<BR /><%=curGene.getSnpCount("common","SNP")%> / <%=curGene.getSnpCount("common","Indel")%><BR />
+                                    <%}%>
+                                    <%if(curGene.getSnpCount("BNLX","SNP")>0 || curGene.getSnpCount("BNLX","Indel")>0 ){%>
+                                        BN-Lx:<BR /><%=curGene.getSnpCount("BNLX","SNP")%> / <%=curGene.getSnpCount("BNLX","Indel")%><BR />
+                                    <%}%>
+                                    <%if(curGene.getSnpCount("SHRH","SNP")>0 || curGene.getSnpCount("SHRH","Indel")>0){%>
+                                        SHR:<BR /><%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%>
+                                    <%}%>
+                                </TD>
+                                
+            </TR>
+            <%}%>
+            <TR>
+            <TD>
+			Transcripts:
+            </TD>
+            <TD>
+                <%	                       
+                for(int l=0;l<tmpTrx.size();l++){%>
+					<B><%=tmpTrx.get(l).getIDwToolTip()%></B>
+					<%if(myOrganism.equals("Rn") && curGene.getGeneID().startsWith("ENS")){
+						if(!tmpTrx.get(l).getID().startsWith("ENS")){%>
+							 - <%=tmpTrx.get(l).getMatchReason()%>
+						<%}
+					}%>
+					<BR>
+					
+               	<%}%>
+            </TD>
+            </TR>
+            <TR>
+            	<TD class="header">Affy Probe Set Data</TD>
+                <TD class="header">Overlapping Probe Set Count:<%=curGene.getProbeCount()%></TD>
+            </TR>
+            
+            <TR>
+            	<TD colspan="2"><B>Probe Set Detection Above Background(DABG) >1% of all samples:</B></TD>
+            </TR>
+            <TR>
+            	<TD colspan="2">
+                	<table  name="items" class="list_base" style="width:100%; text-align:center;">
+                                        <thead>
+                                        <tr class="col_title">
+                                        	<TH>Tissue</TH>
+                                            <TH>Total Probe Sets (out of <%=curGene.getProbeCount()%>)</TH>
+                                            <TH>Avg % of samples DABG</TH>
+                                            <TH>Range</TH>
+                                            
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+										<%for(int j=0;j<tissuesList1.length;j++){
+                                                        Object tmpD=dCount.get(tissuesList1[j]);
+                                                        Object tmpDa=dSum.get(tissuesList1[j]);
+														Object tmpDl=dMin.get(tissuesList1[j]);
+														Object tmpDh=dMax.get(tissuesList1[j]);
+														%>
+                                                        <TR>
+														<%if(tmpD!=null){
+                                                            int count=Integer.parseInt(tmpD.toString());
+                                                            double sum=Double.parseDouble(tmpDa.toString());
+															double min=Double.parseDouble(tmpDl.toString());
+															double max=Double.parseDouble(tmpDh.toString());
+                                                        %>
+                                                            <TD><%=tissuesList1[j]%></TD>
+															<TD><%=count%></TD> 
+															<%if(count>0){%>
+																<TD><%=df0.format(sum/count)%> %</TD>
+                                                                <TD><%=df2.format(min)%> - <%=df2.format(max)%> %</TD>
+															<%}else{%>
+                                                            	<TD>0</TD>
+                                                                <TD></TD>
+                                                                <TD></TD>
+                                                            <%}%>
+                                                           
+                                                        <%}else{%>
+                                                            <TD><%=tissuesList1[j]%></TD><TD></TD><TD></TD><TD></TD><TD></TD>
+                                                        <%}%>
+                                                        </TR>
+                                       <%}%>
+                                       </tbody>
+                      </table>
+                </TD>
+            </TR>
+             <TR>
+            	<TD colspan="2"><B>Probe Set Heritability >0.33</B></TD>
+                
+            </TR>
+            <TR>
+            	<TD colspan="2">
+                	<table  name="items" class="list_base" style="width:100%; text-align:center;">
+                                        <thead>
+                                        
+                                        <tr class="col_title">
+                                        	<TH>Tissue</TH>
+                                            <TH>Total Probe Sets(out of <%=curGene.getProbeCount()%>) </TH>
+                                            <TH>Avg Herit</TH>
+                                            <TH>Range</TH>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+										<%for(int j=0;j<tissuesList1.length;j++){
+                                                        Object tmpH=hCount.get(tissuesList1[j]);
+                                                        Object tmpHa=hSum.get(tissuesList1[j]);
+														Object tmpHl=hMin.get(tissuesList1[j]);
+														Object tmpHh=hMax.get(tissuesList1[j]);%>
+                                                        <TR>
+                                                        <%if(tmpH!=null){
+                                                            int count=Integer.parseInt(tmpH.toString());
+                                                            double sum=Double.parseDouble(tmpHa.toString());
+															double min=Double.parseDouble(tmpHl.toString());
+															double max=Double.parseDouble(tmpHh.toString());
+                                                        %>
+                                                        
+                                                            <TD><%=tissuesList1[j]%></TD>
+															<TD><%=count%></TD>
+															<%if(count>0){%>
+                                                            	<TD><%=df2.format(sum/count)%></TD>
+                                                                <TD><%=df2.format(min)%> - <%=df2.format(max)%></TD>
+															<%}else{%>
+                                                            	<TD>0</TD>
+                                                                <TD></TD>
+                                                                
+                                                             <%}%>
+                                                        <%}else{%>
+                                                            <TD><%=tissuesList1[j]%></TD><TD></TD><TD></TD><TD></TD>
+                                                        <%}%>
+                                                        </TR>
+                                       <%}%>
+                                       </tbody>
+                	</table>
+                </TD>
+            </TR>
+            
+            <%	if(tc!=null){	
+                                    //String[] curTissues=tc.getTissueList();%>
+                                    <TR>
+                                         <TD class="header">EQTLs</TD>
+                                         <TD class="header">Affymetrix Transcript Cluster(Confidence Level): <%=tc.getTranscriptClusterID()%> (<%=tc.getLevel()%>)</TD>
+                                     </TR>
+                                     
+                                    <TR>
+                                    <TD colspan="2">
+                                    	<table  name="items" class="list_base" style="width:100%; text-align:center;">
+                                        <thead>
+                                        <tr class="col_title">
+                                        	<TH colspan="2"></TH>
+                                            <TH colspan="2">Minimum P-value EQTL</TH>
+                                        </tr>
+                                        <tr class="col_title">
+                                        	<TH>Tissue</TH>
+                                            <TH># of eQTLs</TH>
+                                            <TH>P-value</TH>
+                                            <TH>Location</TH>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+										<%for(int j=0;j<tissuesList2.length;j++){
+                                            //log.debug("TABLE1:"+tissuesList2[j]);
+                                            ArrayList<EQTL> qtlList=tc.getTissueEQTL(tissuesList2[j]);
+                                            if(qtlList!=null){
+                                                EQTL maxEQTL=qtlList.get(0);
+                                            %>
+                                                <TR>
+                                                    <TD><%=tissuesList2[j]%></TD>
+                                                <TD><%=qtlList.size()%></TD>
+    
+                                                    <TD>
+                                                        <%if(maxEQTL.getPVal()<0.0001){%>
+                                                            < 0.0001
+                                                        <%}else{%>
+                                                            <%=df4.format(maxEQTL.getPVal())%>
+                                                        <%}%>
+                                                    </TD>
+                                                    <TD>
+                                                        <%if(maxEQTL.getMarker_start()!=maxEQTL.getMarker_end()){%>
+                                                            <a href="<%=lg.getRegionLink(maxEQTL.getMarkerChr(),maxEQTL.getMarker_start(),maxEQTL.getMarker_end(),myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for this region.">
+                                                                chr<%=maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())+"-"+dfC.format(maxEQTL.getMarker_end())%>
+                                                            </a>
+                                                        <%}else{
+                                                            long start=maxEQTL.getMarker_start()-500000;
+                                                            long stop=maxEQTL.getMarker_start()+500000;
+                                                            if(start<1){
+                                                                start=1;
+                                                            }%>
+                                                            <a href="<%=lg.getRegionLink(maxEQTL.getMarkerChr(),start,stop,myOrganism,true,true,false)%>" target="_blank" title="View Detailed Transcription Information for a region +- 500,000bp around the SNP location.">
+                                                                chr<%=maxEQTL.getMarkerChr()+":"+dfC.format(maxEQTL.getMarker_start())%>
+                                                             </a>
+                                                        <%}%>
+                                                    </TD>
+                                                </TR>
+                                            <%}else{%>
+                                               <TR>
+                                                    <TD><%=tissuesList2[j]%></TD>
+                                                    <TD></TD>
+                                                    <TD></TD>
+                                                    <TD></TD>
+                                               </TR>
+                                            <%}%>
+                                        <%}%>
+                                        </tbody>
+                                        </table>
+                                    </TD>
+                                    </TR>
+             <%}%>
+                                    
+          </table>              
                                 
     </div>
     <div style="display:none;" id="geneEQTL">

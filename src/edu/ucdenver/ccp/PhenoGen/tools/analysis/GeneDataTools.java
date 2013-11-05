@@ -1046,6 +1046,7 @@ public class GeneDataTools {
         boolean completedSuccessfully=false;
         try{
             int publicUserID=new User().getUser_id("public",dbConn);
+            log.debug("createXML outputDir:"+outputDir);
             File outDir=new File(outputDir);
             if(outDir.exists()){
                 outDir.mkdirs();
@@ -1070,6 +1071,7 @@ public class GeneDataTools {
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "findGeneRegion.pl";
             perlArgs[2] = outputDir;
+            log.debug("perl org:"+organism);
             if (organism.equals("Rn")) {
                 perlArgs[3] = "Rat";
             } else if (organism.equals("Mm")) {
@@ -1085,8 +1087,16 @@ public class GeneDataTools {
             perlArgs[11] = ensPort;
             perlArgs[12] = ensUser;
             perlArgs[13] = ensPassword;
-
-
+            
+            
+            for (int i = 0; i < perlArgs.length; i++) {
+                log.debug(i + " PerlArgs::" + perlArgs[i]);
+                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }*/
+            }
+            
+            log.debug("setup params");
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
             String[] envVar=perlEnvVar.split(",");
 
@@ -1097,7 +1107,7 @@ public class GeneDataTools {
                 }*/
             }
 
-
+            log.debug("setup envVar");
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
             myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/geneData/"+ensemblID1+"/");
 
