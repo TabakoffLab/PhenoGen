@@ -49,6 +49,11 @@ $(document).on('click','span.detailMenu', function (event){
 		}
 		regionDetailLoaded[baseName]=curRptRegion;
 	}
+	if(baseName="regionEQTLTable"){
+		if(typeof tblFrom != 'undefined'){
+			tblFrom.fnAdjustColumnSizing();
+		}
+	}
 });
 
 

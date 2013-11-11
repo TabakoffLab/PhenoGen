@@ -8,7 +8,7 @@ var selectedGeneSymbol="";
 var selectedID="";
 var trackSettings=new Array();
 
-var mmVer="mm9 Strain:";
+var mmVer="mm10 Strain:";
 var rnVer="rn5 Strain:BN";
 var siteVer="PhenoGen v2.10:12/1/2013";
 
@@ -29,9 +29,12 @@ $(document).on('click','span.viewMenu', function (event){
 $(document).on("click",".closeBtn",function(){
 					var setting=new String($(this).attr("id"));
 					setting=setting.substr(6);
-					if($("."+setting).is(":visible")){
+					//if($("."+setting).is(":visible")){
+						//alert("visible fading out");
+					console.log(setting);
+					console.log($("."+setting));
 						$("."+setting).fadeOut("fast");
-					}
+					//}
 					return false;
 				});
 
@@ -63,33 +66,23 @@ $(document).on("change","input[name='trackcbx']",function(){
 						if(tmpType=="g"){
 							addtlOpt="annotOnly;";
 						}else if(tmpType=="t"){
-
+							addtlOpt="trxOnly;";
 						}
 						
 					}
 					svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val(),addtlOpt,0);
-					/*if($.cookie("state"+defaultView+level+"trackList")!=null){
-						var tmp=new String($.cookie("state"+defaultView+level+"trackList"));
-						if(tmp.indexOf(prefix+",")==-1){
-							tmp=tmp+prefix+","+$("#"+prefix+"Dense"+level+"Select").val()+";";
-							$.cookie("state"+defaultView+level+"trackList",tmp);
-						}
-					}*/
 				}else{
-					removeTrack(level,prefix);
-					/*if($.cookie("state"+defaultView+level+"trackList")!=null){
-						var tmp=$.cookie("state"+defaultView+level+"trackList");
-						var tmpList=tmp.split(";");
-						var newtmp="";
-						for(var m=0;m<tmpList.length;m++){
-							if(tmpList[m].indexOf(prefix)>-1){
-								
-							}else if(tmpList[m]!=""){
-								newtmp=newtmp+tmpList[m]+";";
-							}
+					var isSelected=0;
+					$("[id^="+prefix+"CBX]").each(function (){
+						if($(this).is(":checked")){
+							isSelected=1;
 						}
-						$.cookie("state"+defaultView+level+"trackList",newtmp);
-					}*/
+					});
+					if(isSelected==0){
+						removeTrack(level,prefix);
+					}else{
+						redrawTrack(level,prefix);
+					}
 				}
 				saveToCookie(level);
 	 		});
@@ -223,6 +216,11 @@ function updatePage(topSVG){
 function removeTrack(level,track){
 
 	svgList[level].removeTrack(track);
+}
+
+function redrawTrack(level,track){
+
+	svgList[level].redrawTrack(track);
 }
 
 function changeTrackHeight(id,val){
@@ -731,6 +729,15 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			DisplayRegionReport();
 	}.bind(this);
 
+	this.redrawTrack=function (track){
+			for(var l=0;l<this.trackList.length;l++){
+				if(this.trackList[l].trackClass==track){
+					this.trackList[l].redraw();
+				}
+			}
+			DisplayRegionReport();
+	}.bind(this);
+
 	this.redraw=function (){
 		for(var l=0;l<this.trackList.length;l++){
 			if(this.trackList[l]!=undefined && this.trackList[l].redraw!=undefined){
@@ -907,8 +914,6 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     var header=d3.select("div#imageHeader").html("Organism: "+orgVer+"&nbsp&nbsp&nbsp&nbsp"+siteVer);
 }
 
-
-
 //Track Functions
 function Track(gsvgP,dataP,trackClassP,labelP){
 	this.panDown=function(){
@@ -1044,56 +1049,58 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			winWidth=($(window).width()-1000)/2;
 		}
 
-		var arc = d3.svg.arc()
-    		.outerRadius(radius - 10)
-    		.innerRadius(0);
+		if(!(typeof this.counts==="undefined") && this.counts.length>0){
+			var arc = d3.svg.arc()
+	    		.outerRadius(radius - 10)
+	    		.innerRadius(0);
 
-		var pie = d3.layout.pie()
-    		//.sort(null)
-    		.value(function(d) { return d.value; });
+			var pie = d3.layout.pie()
+	    		//.sort(null)
+	    		.value(function(d) { return d.value; });
 
-    	var svg = d3.select(divSelector).append("svg")
-    		.attr("width", tmpW)
-    		.attr("height", tmpH)
-  			.append("g")
-    		.attr("transform", "translate(" + tmpW / 2 + "," + tmpH / 2 + ")");
+	    	var svg = d3.select(divSelector).append("svg")
+	    		.attr("width", tmpW)
+	    		.attr("height", tmpH)
+	  			.append("g")
+	    		.attr("transform", "translate(" + tmpW / 2 + "," + tmpH / 2 + ")");
 
-    	var g = svg.selectAll(".arc")
-      		.data(pie(this.counts))
-    		.enter().append("g")
-      		.attr("class", "arc");
-      	g.append("path")
-      		.attr("d", arc)
-      		.attr("fill", this.pieColor)
-	      	.on("mouseover",function (d){
-	      		d3.select('.testToolTip').transition()        
+	    	var g = svg.selectAll(".arc")
+	      		.data(pie(this.counts))
+	    		.enter().append("g")
+	      		.attr("class", "arc");
+	      	g.append("path")
+	      		.attr("d", arc)
+	      		.attr("fill", this.pieColor)
+		      	.on("mouseover",function (d){
+		      		d3.select('.testToolTip').transition()        
+			                .duration(200)      
+			                .style("opacity", .95);      
+			        d3.select('.testToolTip').html("Name: "+d.data.names+"<BR>Count: "+d.data.value)  
+			                .style("left", (d3.event.pageX-winWidth) + "px" )  
+			                .style("top", (d3.event.pageY + 20) + "px");
+			        var e = jQuery.Event("keyup");
+					e.which = 32; // # Some key code value
+					$('#tblBQTL_filter input').val(d.data.names).trigger(e);
+		      		})
+		      	.on("mouseout", function(d){
+		      		d3.select('.testToolTip').transition()
+						 .delay(500)       
 		                .duration(200)      
-		                .style("opacity", .95);      
-		        d3.select('.testToolTip').html("Name: "+d.data.names+"<BR>Count: "+d.data.value)  
-		                .style("left", (d3.event.pageX-winWidth) + "px" )  
-		                .style("top", (d3.event.pageY + 20) + "px");
-		        var e = jQuery.Event("keyup");
-				e.which = 32; // # Some key code value
-				$('#tblBQTL_filter input').val(d.data.names).trigger(e);
-	      		})
-	      	.on("mouseout", function(d){
-	      		d3.select('.testToolTip').transition()
-					 .delay(500)       
-	                .duration(200)      
-	                .style("opacity", 0);
-	            var e = jQuery.Event("keyup");
-				e.which = 32; // # Some key code value
-	            $('#tblBQTL_filter input').val("").trigger(e);
+		                .style("opacity", 0);
+		            var e = jQuery.Event("keyup");
+					e.which = 32; // # Some key code value
+		            $('#tblBQTL_filter input').val("").trigger(e);
+		      	});
+	      	g.append("text")
+	      		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+	      		.attr("dy", ".35em")
+	      		.style("text-anchor", "middle")
+	      		.text(function(d) { 
+	      				//console.log(d);
+	      				//return d.data.names+": "+d.value; 
+	      				return d.value;
 	      	});
-      	g.append("text")
-      		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-      		.attr("dy", ".35em")
-      		.style("text-anchor", "middle")
-      		.text(function(d) { 
-      				//console.log(d);
-      				//return d.data.names+": "+d.value; 
-      				return d.value;
-      	});
+      	}
 		
 	}.bind(this);
 
@@ -1159,19 +1166,19 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.color =function(d){
 		var color=d3.rgb("#000000");
 		if(that.trackClass=="coding"){
-			if((new String(d.getAttribute("ID"))).indexOf("ENS")>-1){
+			if((new String(d.getAttribute("ID"))).indexOf("ENS")>-1 && !(that.annotType=="trxOnly")){
 				color=d3.rgb("#DFC184");
 			}else{
 				color=d3.rgb("#7EB5D6");
 			}
 		}else if(d.getAttribute("biotype")!="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
-			if((new String(d.getAttribute("ID"))).indexOf("ENS")>-1){
+			if((new String(d.getAttribute("ID"))).indexOf("ENS")>-1 && !(that.annotType=="trxOnly")){
 				color=d3.rgb("#B58AA5");
 			}else{
 				color=d3.rgb("#CECFCE");
 			}
 		}else if((d.getAttribute("stop")-d.getAttribute("start"))<200){
-			if((new String(d.getAttribute("ID"))).indexOf("ENS")>-1){
+			if((new String(d.getAttribute("ID"))).indexOf("ENS")>-1 && !(that.annotType=="trxOnly")){
 				color=d3.rgb("#FFCC00");
 			}else{
 				color=d3.rgb("#99CC99");
@@ -1243,24 +1250,39 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}.bind(that);
 
 	that.redraw=function(){
-		if(that.svg[0][0]!=null){
-			for(var j=0;j<that.gsvg.width;j++){
-				that.yArr[j]=0;
+		//set annotType
+		var curAnnot="";
+		if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")
+			&&
+			$("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked")){
+			curAnnot="all";
+		}else if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")){
+			curAnnot="annotOnly";
+		}else if($("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked")){
+			curAnnot="trxOnly";
+		}
+		if(curAnnot==that.annotType){
+			if(that.svg[0][0]!=null){
+				for(var j=0;j<that.gsvg.width;j++){
+					that.yArr[j]=0;
+				}
+				this.trackYMax=0;
+				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").attr("transform",function (d){
+							var st=that.xScale(d.getAttribute("start"));
+							return "translate("+st+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"))+")";
+					});
+				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene rect").attr("width",function(d) {
+							var wX=1;
+							if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
+								wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
+							}
+							return wX;
+					})
+					.attr("stroke",that.colorStroke);
+				that.svg.attr("height", (this.trackYMax+1)*15);
 			}
-			this.trackYMax=0;
-			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").attr("transform",function (d){
-						var st=that.xScale(d.getAttribute("start"));
-						return "translate("+st+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"))+")";
-				});
-			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene rect").attr("width",function(d) {
-						var wX=1;
-						if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
-							wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
-						}
-						return wX;
-				})
-				.attr("stroke",that.colorStroke);
-			that.svg.attr("height", (this.trackYMax+1)*15);
+		}else{
+			that.draw(that.data);
 		}
 	}.bind(that);
 
@@ -1334,19 +1356,23 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		//console.log(dataElem);
 		var dispData=new Array();
 		var dispDataCount=0;
-		for(var l=0;l<tmpDat.length;l++){
-			var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
-			var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
-			//console.log("start:"+start+":"+stop);
-			if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
-				if((new String(tmpDat[l].childNodes[0].id)).indexOf("ENS")>-1){
-					this.counts[0].value++;
-				}else{
-					this.counts[1].value++;
+		if (!(typeof variable === 'undefined')) {
+			for(var l=0;l<tmpDat.length;l++){
+				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+				var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+				//console.log("start:"+start+":"+stop);
+				if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
+					if((new String(tmpDat[l].childNodes[0].id)).indexOf("ENS")>-1){
+						this.counts[0].value++;
+					}else{
+						this.counts[1].value++;
+					}
+					dispData[dispDataCount]=tmpDat[l].__data__;
+					dispDataCount++;
 				}
-				dispData[dispDataCount]=tmpDat[l].__data__;
-				dispDataCount++;
 			}
+		}else{
+			that.counts=[];
 		}
 		return dispData;
 	}.bind(that);
@@ -1408,6 +1434,17 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}.bind(that);
 
 	that.draw=function (data){
+		//set annotType
+		if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")
+			&&
+			$("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked")){
+			that.annotType="all";
+		}else if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")){
+			that.annotType="annotOnly";
+		}else if($("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked")){
+			that.annotType="trxOnly";
+		}
+		//console.log("annotType:"+that.annotType);
 		for(var j=0;j<that.gsvg.width;j++){
 				that.yArr[j]=0;
 		}
@@ -1439,9 +1476,23 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					if(that.annotType=="annotOnly" && (new String(data[l].getAttribute("ID"))).indexOf("ENS")>-1){
 						newData[newCount]=data[l];
 						newCount++;
-					}else if(that.annotType=="trxOnly" && (new String(data[l].getAttribute("ID"))).indexOf("ENS")==-1){//still need to correct for transcripts grouped under a gene.
-						newData[newCount]=data[l];
-						newCount++;
+					}else if(that.annotType=="trxOnly" ){//still need to correct for transcripts grouped under a gene.
+						if((new String(data[l].getAttribute("ID"))).indexOf("ENS")==-1){
+							newData[newCount]=data[l];
+							newCount++;
+						}else{
+							var txList=getAllChildrenByName(getFirstChildByName(data[l],"TranscriptList"),"Transcript");
+							var found=0;
+							for(var m=0;m<txList.length&&found==0;m++){
+								if((new String(txList[m].getAttribute("ID"))).indexOf("ENS")==-1){
+									found=1;
+								}
+							}
+							if(found==1){
+								newData[newCount]=data[l];
+								newCount++;
+							}
+						}
 					}
 				}
 			}
@@ -1496,7 +1547,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	                .style("opacity", 0);  
 	        });
 		
-		//gene.exit().remove();
+		gene.exit().remove();
 		
 
 		that.svg.attr("height", (this.trackYMax+1)*15);
@@ -1681,10 +1732,12 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		.style("cursor", "pointer")
 		.style("opacity", function(d){
 					var op=1;
-					if(d.getAttribute("strand")==that.gsvg.selectedData.getAttribute("strand")){
+					if(!(typeof that.gsvg.selectedData ==="undefined")){
+						if(d.getAttribute("strand")==that.gsvg.selectedData.getAttribute("strand")){
 
-					}else{
-						op=0;
+						}else{
+							op=0;
+						}
 					}
 					return op;
 			})
