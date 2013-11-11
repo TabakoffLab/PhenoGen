@@ -273,7 +273,7 @@
 <div id="eQTLListFromRegion"  style="position:relative;top:56px;width:998px;">
 		
         
-		<table class="geneFilter">
+		<!--<table class="geneFilter">
                 	<thead>
                     	<TH style="width:65%;"><span class="trigger triggerEC regionSubHeader" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left;">Filter List and Circos Plot</span><span class="eQTLListToolTip" title="Click the + icon to view filter options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                         <TH><span class="trigger triggerEC regionSubHeader" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left;">View Columns</span><span class="eQTLListToolTip" title="Click the + icon to view columns available to show/hide."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
@@ -281,198 +281,17 @@
                 	<tbody id="fromListFilter" style="display:none;">
                     	<TR>
                         	<td>
-                            	<table style="width:100%;">
-                                	<tbody>
-                                    	<TR>
-                                        <TD colspan="2" style="text-align:center;">
-                                        	<%log.debug("Pvalue cutoff:"+Double.toString(pValueCutoff));%>
-                                            eQTL P-Value Cut-off:
-                                            <select name="pvalueCutoffSelect2" id="pvalueCutoffSelect2">
-                                            		<!--<option value="0.1" <%if(Double.toString(pValueCutoff).equals("0.10")){%>selected<%}%>>0.1</option>-->
-                                                    <!--<option value="0.01" <%if(pValueCutoff==0.01){%>selected<%}%>>0.01</option>-->
-                                                    <option value="0.001" <%if(pValueCutoff==0.001){%>selected<%}%>>0.001</option>
-                                                    <option value="0.0005" <%if(pValueCutoff==0.0005){%>selected<%}%>>0.0005</option>
-                                                    <option value="0.0001" <%if(pValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
-                                                    <option value="0.00005" <%if(pValueCutoff==0.00005){%>selected<%}%>>0.00005</option>
-                                                    <option value="0.00001" <%if(pValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
-                                            </select>
-                                            <span class="eQTLListToolTip" title="Remove Genes from both the image(Circos Plot) and table which don't have P-value less than the selected cut-off in one of the included tissues."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                         </TD>
-                                		</TR>
-                                    	<TR>
-                                       <%if(myOrganism.equals("Rn")){%>
-                                            <TD style="text-align:left; width:50%;">
-                                                <table style="width:100%;">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td style="text-align:center;">
-                                                                <strong>Tissues: Include at least one tissue.</strong>
-                                                                <span class="eQTLListToolTip" title="Removes excluded tissues from the image(Circos Plot), does not remove the column for the tissue in the table(see View Columns for that option), but will remove rows where only the excluded tissue met the p-value cut-off."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                                            </td>
-                                                        </tr>
-                                                        <TR>
-                                                            <td style="text-align:center;">
-                                                                <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
-                                                            </td>
-                                                        </TR>
-                                                        <tr>
-                                                            <td>
-                                                                
-                                                                <select name="tissuesMS" id="tissuesMS" class="multiselect" size="6" multiple="true">
-                                                                
-                                                                    <% 
-                                                                    
-                                                                    for(int i = 0; i < tissueNameArray.length; i ++){
-                                                                        tissueSelected=isNotSelectedText;
-                                                                        if(selectedTissues != null){
-                                                                            for(int j=0; j< selectedTissues.length ;j++){
-                                                                                if(selectedTissues[j].equals(tissueNameArray[i])){
-                                                                                    tissueSelected=isSelectedText;
-                                                                                }
-                                                                            }
-                                                                        }
-                                                
-                                                
-                                                                    %>
-                                                                    
-                                                                        <option value="<%=tissueNameArray[i]%>"<%=tissueSelected%>><%=tissuesList1[i]%></option>
-                                                                    
-                                                                    <%} // end of for loop
-                                                                    %>
-                                                
-                                                                </select>
-                                                
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                             </TD>
-                                        <%} // end of checking species is Rn %>
-                                        <TD style="text-align:left; width:50%;">
-                                            <table style="width:100%;">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="text-align:center;">
-                                                            <strong>Chromosomes: (<%=chromosome%> must be included)</strong>
-                                                           <span class="eQTLListToolTip" title="Remove/Adds Chromosomes to the image(Circos Plot) and will remove or add Genes in the table so only genes located on included chromosomes are displayed."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="text-align:center;">
-                                                            <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            
-                                                            <select name="chromosomesMS" id="chromosomesMS" class="multiselect" size="6" multiple="true">
-                                                            
-                                                                <% 
-                                                                
-                                                                for(int i = 0; i < numberOfChromosomes; i ++){
-                                                                    chromosomeSelected=isNotSelectedText;
-                                                                    if(chromosomeDisplayArray[i].substring(4).equals(chromosome.substring(3))){
-                                                                        chromosomeSelected=isSelectedText;
-                                                                    }
-                                                                    else {
-                                                                        if(selectedChromosomes != null){
-                                                                            for(int j=0; j< selectedChromosomes.length ;j++){
-                                                                                //log.debug(" selectedChromosomes element "+selectedChromosomes[j]+" "+chromosomeNameArray[i]);
-                                                                                if(selectedChromosomes[j].equals(chromosomeNameArray[i])){
-                                                                                    chromosomeSelected=isSelectedText;
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                            
-                                            
-                                                                %>
-                                                                
-                                                                    <option value="<%=chromosomeNameArray[i]%>"<%=chromosomeSelected%>><%=chromosomeDisplayArray[i]%></option>
-                                                                
-                                                                <%} // end of for loop
-                                                                %>
-                                            
-                                                            </select>
-                                            
-                                                        </td>
-                                                    </tr>	
-                                                  </tbody>
-                                              </table>		
-                                         </TD>
-                                      </TR>
-                                      <TR>
-                                      	<TD colspan="2" style="text-align:left;">
-                                                <table style="width:100%;">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td style="text-align:center;">
-                                                                <strong>Transcript Annotation Level</strong>
-                                                                <span class="eQTLListToolTip" title="Filters the genes displayed in both the image(Circos Plot) and table to only those annotated with the included annotations.  Annotations are related to confidence in the Affymetrix annotation and range from High to Low in the following order: <BR> <ul><li>-Core</li><li>-Extended</li><li>-Full</li><li>-Ambiguous</li></ul>"><img src="<%=imagesDir%>icons/info.gif"></span>
-                                                            </td>
-                                                        </tr>
-                                                        <TR>
-                                                            <td style="text-align:center;">
-                                                                <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
-                                                            </td>
-                                                        </TR>
-                                                        <tr>
-                                                            <td>
-                                                                
-                                                                <select name="trxAnnotMS" id="trxAnnotMS" class="multiselect" size="4" multiple="true">
-                                                                  	<option value="core" <%if(levelString.contains("core")){%>selected<%}%>>Core</option>
-																	<option value="extended" <%if(levelString.contains("extended")){%>selected<%}%>>Extended</option>
-                                                					<option value="full" <%if(levelString.contains("full")){%>selected<%}%>>Full</option>
-																	<option value="ambiguous" <%if(levelString.contains("ambiguous")){%>selected<%}%>>Ambiguous</option>
-                                                                </select>
-                                                
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                             </TD>
-                                      </TR>
-                                      <TR>
-                                        <TD colspan="2" style="text-align:center;">
-                                          <input type="submit" name="filterBTN" id="filterBTN" value="Run Filter" onClick="return runFilter()">
-                                        </TD>
-                                	</TR>
-                                   </tbody>
-                                </table>
+                            	
                             
                             </td>
                             	
                             <TD>
-                            	<div class="columnLeft" style="width:60%;">
-                                	
-                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /> Gene ID <span class="eQTLListToolTip" title="Shows/Hides the Gene ID and links"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                    
-                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /> Description <span class="eQTLListToolTip" title="Shows/Hides the gene description from Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                    
-                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /> Transcript ID and Annot. <span class="eQTLListToolTip" title="Shows/Hides the Affymetrix transcript cluster id and annotation level."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                     
-                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /> All Tissues P-values <span class="eQTLListToolTip" title="Shows/Hides the P-value from the region for each tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                    
-                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/> All Tissues # Locations <span class="eQTLListToolTip" title="Shows/Hides the count of the other eQTLs for the gene with a P-value below the cutoff."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                </div>
-                                <div class="columnRight" style="width:39%;">
-                                   <h3>Specific Tissues:</h3>
-                                    
-                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /> Whole Brain <span class="eQTLListToolTip" title="Shows/Hides columns associated with brain tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                    <%if(myOrganism.equals("Rn")){%>
-                                       
-                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" />  Heart <span class="eQTLListToolTip" title="Shows/Hides columns associated with heart tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                        
-                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /> Liver <span class="eQTLListToolTip" title="Shows/Hides columns associated with liver tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                        
-                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/> Brown Adipose <span class="eQTLListToolTip" title="Shows/Hides columns associated with brown adipose tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
-                                    <%}%>
-                                </div>
+                            	
                             </TD>
                         
                         </TR>
                         </tbody>
-                  </table>
+                  </table>-->
 <% log.debug("before eQTL table constr");
 ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
 	time=new java.util.Date();
@@ -542,6 +361,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
             </select>
         </span>
         <span class="eQTLListToolTip" title="To control the viewable area of the Circos Plot below simply select your prefered size."><img src="<%=imagesDir%>icons/info.gif"></span>
+        
     </div> 
     <%if(session.getAttribute("getTransControllingEQTLCircos")==null){%>
     <div id="circosPlot" style="text-align:center; top:-45px; position:relative;">
@@ -551,7 +371,10 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 			<img src="web/images/icons/download_g.png" title:"Download Circos Image">
 			</a>
             Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
+            <span id="filterBtn1" class="filter button" style="float:right;">Filter eQTLs</span>
      	</div>
+
+		
 
           <div id="iframe_parent" align="center">
                <iframe id="circosIFrame" src=<%=iframeURL%> height=950 width=950  position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
@@ -609,18 +432,23 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 					idListCount++;
 				}
 			}
-			log.debug("after outer for loop");
-			if(idListCount<=300){%>
-       			<div style=" float:right; position:relative; top:10px;"><a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+			log.debug("after outer for loop");%>
+			<div style=" float:right; ">
+			<%if(idListCount<=300){%>
+       			<a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div>
         	<%}else{%>
-            	<div style=" float:right; position:relative; top:10px;">Too many genes to submit to DAVID automatically. Filter or copy and submit on your own <a href="http://david.abcc.ncifcrf.gov/" target="_blank">here</a>.<span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div></div>
+            	Too many genes to submit to DAVID automatically. Filter or copy and submit on your own <a href="http://david.abcc.ncifcrf.gov/" target="_blank">here</a>.<span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div>
             <%}
 			log.debug("end DAVID setup");
 			time=new java.util.Date();
 			log.debug("before setting up tables:"+(time.getTime()-startDate.getTime()));
 			%>	
+            <BR />
+            <span id="viewBtn1" class="view button">Edit Columns</span>
+            <span id="filterBtn2" class="filter button">Filter Rows</span>
+            </div>
 		<BR />	
-	
+
 	<TABLE name="items" id="tblFrom" class="list_base" cellpadding="0" cellspacing="0">
                 <THEAD>
                 	<tr>
@@ -800,8 +628,6 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
               <BR /><BR /><BR />
               
               <script type="text/javascript">
-			  	
-					
 					var tblFrom=$('#tblFrom').dataTable({
 					"bPaginate": false,
 					"bProcessing": true,
@@ -862,6 +688,8 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 							interactive: true,
 							interactiveTolerance: 350
 						});
+						
+					tblFrom.fnAdjustColumnSizing();
 			  </script>
       	<%}else{%>
       		No genes to display.  Try changing the filtering parameters.
@@ -872,13 +700,239 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 </div><!-- end eQTL List-->
 
 
+<div id="filterdivEQTL" class="filterdivEQTL" style=" background-color:F8F8F8;display:none;position:absolute;z-index:999; top:660px; left:451px; border:solid;border-color:#000000;border-width:1px;">
+	<span style="color:#000000;">Filter Settings</span>
+   	<span class="closeBtn" id="close_filterdivEQTL" style="position:relative;top:1px;left:215px;"><img src="<%=imagesDir%>icons/close.png"></span>
+	<table style="width:100%;">
+                                	<tbody>
+                                    	<TR>
+                                        <TD colspan="2" style="text-align:center;">
+                                        	<%log.debug("Pvalue cutoff:"+Double.toString(pValueCutoff));%>
+                                            eQTL P-Value Cut-off:
+                                            <select name="pvalueCutoffSelect2" id="pvalueCutoffSelect2">
+                                            		<!--<option value="0.1" <%if(Double.toString(pValueCutoff).equals("0.10")){%>selected<%}%>>0.1</option>-->
+                                                    <!--<option value="0.01" <%if(pValueCutoff==0.01){%>selected<%}%>>0.01</option>-->
+                                                    <option value="0.001" <%if(pValueCutoff==0.001){%>selected<%}%>>0.001</option>
+                                                    <option value="0.0005" <%if(pValueCutoff==0.0005){%>selected<%}%>>0.0005</option>
+                                                    <option value="0.0001" <%if(pValueCutoff==0.0001){%>selected<%}%>>0.0001</option>
+                                                    <option value="0.00005" <%if(pValueCutoff==0.00005){%>selected<%}%>>0.00005</option>
+                                                    <option value="0.00001" <%if(pValueCutoff==0.00001){%>selected<%}%>>0.00001</option>
+                                            </select>
+                                            <span class="eQTLListToolTip" title="Remove Genes from both the image(Circos Plot) and table which don't have P-value less than the selected cut-off in one of the included tissues."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                         </TD>
+                                		</TR>
+                                    	<TR>
+                                       <%if(myOrganism.equals("Rn")){%>
+                                            <TD style="text-align:left; width:50%;">
+                                                <table style="width:100%;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="text-align:center;">
+                                                                <strong>Tissues: Include at least one tissue.</strong>
+                                                                <span class="eQTLListToolTip" title="Removes excluded tissues from the image(Circos Plot), does not remove the column for the tissue in the table(see View Columns for that option), but will remove rows where only the excluded tissue met the p-value cut-off."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                            </td>
+                                                        </tr>
+                                                        <TR>
+                                                            <td style="text-align:center;">
+                                                                <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
+                                                            </td>
+                                                        </TR>
+                                                        <tr>
+                                                            <td>
+                                                                
+                                                                <select name="tissuesMS" id="tissuesMS" class="multiselect" size="6" multiple="true">
+                                                                
+                                                                    <% 
+                                                                    
+                                                                    for(int i = 0; i < tissueNameArray.length; i ++){
+                                                                        tissueSelected=isNotSelectedText;
+                                                                        if(selectedTissues != null){
+                                                                            for(int j=0; j< selectedTissues.length ;j++){
+                                                                                if(selectedTissues[j].equals(tissueNameArray[i])){
+                                                                                    tissueSelected=isSelectedText;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                
+                                                
+                                                                    %>
+                                                                    
+                                                                        <option value="<%=tissueNameArray[i]%>"<%=tissueSelected%>><%=tissuesList1[i]%></option>
+                                                                    
+                                                                    <%} // end of for loop
+                                                                    %>
+                                                
+                                                                </select>
+                                                
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                             </TD>
+                                        <%} // end of checking species is Rn %>
+                                        <TD style="text-align:left; width:50%;">
+                                            <table style="width:100%;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="text-align:center;">
+                                                            <strong>Chromosomes: (<%=chromosome%> must be included)</strong>
+                                                           <span class="eQTLListToolTip" title="Remove/Adds Chromosomes to the image(Circos Plot) and will remove or add Genes in the table so only genes located on included chromosomes are displayed."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="text-align:center;">
+                                                            <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            
+                                                            <select name="chromosomesMS" id="chromosomesMS" class="multiselect" size="6" multiple="true">
+                                                            
+                                                                <% 
+                                                                
+                                                                for(int i = 0; i < numberOfChromosomes; i ++){
+                                                                    chromosomeSelected=isNotSelectedText;
+                                                                    if(chromosomeDisplayArray[i].substring(4).equals(chromosome.substring(3))){
+                                                                        chromosomeSelected=isSelectedText;
+                                                                    }
+                                                                    else {
+                                                                        if(selectedChromosomes != null){
+                                                                            for(int j=0; j< selectedChromosomes.length ;j++){
+                                                                                //log.debug(" selectedChromosomes element "+selectedChromosomes[j]+" "+chromosomeNameArray[i]);
+                                                                                if(selectedChromosomes[j].equals(chromosomeNameArray[i])){
+                                                                                    chromosomeSelected=isSelectedText;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                            
+                                            
+                                                                %>
+                                                                
+                                                                    <option value="<%=chromosomeNameArray[i]%>"<%=chromosomeSelected%>><%=chromosomeDisplayArray[i]%></option>
+                                                                
+                                                                <%} // end of for loop
+                                                                %>
+                                            
+                                                            </select>
+                                            
+                                                        </td>
+                                                    </tr>	
+                                                  </tbody>
+                                              </table>		
+                                         </TD>
+                                      </TR>
+                                      <TR>
+                                      	<TD colspan="2" style="text-align:left;">
+                                                <table style="width:100%;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="text-align:center;">
+                                                                <strong>Transcript Annotation Level</strong>
+                                                                <span class="eQTLListToolTip" title="Filters the genes displayed in both the image(Circos Plot) and table to only those annotated with the included annotations.  Annotations are related to confidence in the Affymetrix annotation and range from High to Low in the following order: <BR> <ul><li>-Core</li><li>-Extended</li><li>-Full</li><li>-Ambiguous</li></ul>"><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                            </td>
+                                                        </tr>
+                                                        <TR>
+                                                            <td style="text-align:center;">
+                                                                <strong>Excluded</strong><%=tenSpaces%><%=twentyFiveSpaces%><%=twentySpaces%><strong>Included</strong>
+                                                            </td>
+                                                        </TR>
+                                                        <tr>
+                                                            <td>
+                                                                
+                                                                <select name="trxAnnotMS" id="trxAnnotMS" class="multiselect" size="4" multiple="true">
+                                                                  	<option value="core" <%if(levelString.contains("core")){%>selected<%}%>>Core</option>
+																	<option value="extended" <%if(levelString.contains("extended")){%>selected<%}%>>Extended</option>
+                                                					<option value="full" <%if(levelString.contains("full")){%>selected<%}%>>Full</option>
+																	<option value="ambiguous" <%if(levelString.contains("ambiguous")){%>selected<%}%>>Ambiguous</option>
+                                                                </select>
+                                                
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                             </TD>
+                                      </TR>
+                                      <TR>
+                                        <TD colspan="2" style="text-align:center;">
+                                          <input type="submit" name="filterBTN" id="filterBTN" value="Run Filter" onClick="return runFilter()">
+                                        </TD>
+                                	</TR>
+                                   </tbody>
+                                </table>
+</div>
 
-
+<div id="viewEQTL" class="viewEQTL" style="background-color:#FFFFFF;display:none;position:absolute;z-index:999; top:660px; left:451px; border:solid;border-color:#000000;border-width:1px; width:450px;">
+	<div style=" text-align:center; background-color:#F8F8F8;">
+		<span style="color:#000000;">Show/Hide Columns</span>
+   		<span class="closeBtn" id="close_viewEQTL" style="position:relative;top:1px;left:150px;"><img src="<%=imagesDir%>icons/close.png"></span>
+    </div>
+    <div style="width:100%;">
+    	<div class="columnLeft" style="width:60%;">
+                                	
+                                    <input name="chkbox" type="checkbox" id="geneIDFCBX" value="geneIDFCBX"checked="checked" /> Gene ID <span class="eQTLListToolTip" title="Shows/Hides the Gene ID and links"><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="geneDescFCBX" value="geneDescFCBX" checked="checked" /> Description <span class="eQTLListToolTip" title="Shows/Hides the gene description from Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="transAnnotCBX" value="transAnnotCBX" checked="checked" /> Transcript ID and Annot. <span class="eQTLListToolTip" title="Shows/Hides the Affymetrix transcript cluster id and annotation level."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                     
+                                    <input name="chkbox" type="checkbox" id="allPvalCBX" value="allPvalCBX" checked="checked" /> All Tissues P-values <span class="eQTLListToolTip" title="Shows/Hides the P-value from the region for each tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    
+                                    <input name="chkbox" type="checkbox" id="allLocCBX" value="allLocCBX"  checked="checked"/> All Tissues # Locations <span class="eQTLListToolTip" title="Shows/Hides the count of the other eQTLs for the gene with a P-value below the cutoff."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+        </div>
+        <div class="columnRight" style="width:39%;">
+                                   <h3>Specific Tissues:</h3>
+                                    
+                                    <input name="chkbox" type="checkbox" id="fromBrainCBX" value="fromBrainCBX" checked="checked" /> Whole Brain <span class="eQTLListToolTip" title="Shows/Hides columns associated with brain tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <%if(myOrganism.equals("Rn")){%>
+                                       
+                                        <input name="chkbox" type="checkbox" id="fromHeartCBX" value="fromHeartCBX" checked="checked" />  Heart <span class="eQTLListToolTip" title="Shows/Hides columns associated with heart tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        
+                                        <input name="chkbox" type="checkbox" id="fromLiverCBX" value="fromLiverCBX" checked="checked" /> Liver <span class="eQTLListToolTip" title="Shows/Hides columns associated with liver tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                        
+                                        <input name="chkbox" type="checkbox" id="fromBATCBX" value="fromBATCBX"  checked="checked"/> Brown Adipose <span class="eQTLListToolTip" title="Shows/Hides columns associated with brown adipose tissue."><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                    <%}%>
+    </div>
+   </div>
+</div>
 
 
 
 <script type="text/javascript">
-	$(document).ready(function() {
+	//$(document).ready(function() {
+		$(".multiselect").twosidedmultiselect();
+		
+		
+		$(document).on("click","span.filter",function(){
+				var id=new String($(this).attr("id"));
+				if(!$("div#filterdivEQTL").is(":visible")){
+						var p=$("span#"+id).position();
+						var top=578;
+						var left=443;
+						if(id.indexOf("2")>0){
+							top=516;
+							left=430;
+						}
+						$("#filterdivEQTL").css("top",p.top+top).css("left",p.left-left);
+						$("#filterdivEQTL").fadeIn("fast");
+				}else{
+						$("#filterdivEQTL").fadeOut("fast");
+				}
+				return false;
+			});
+			
+		$(document).on("click","span.view",function(){
+				var id=new String($(this).attr("id"));
+				if(!$("div#viewEQTL").is(":visible")){
+						var p=$(this).position();
+						$("#viewEQTL").css("top",p.top+516).css("left",p.left-226);
+						$("#viewEQTL").fadeIn("fast");
+				}else{
+						$("#viewEQTL").fadeOut("fast");
+				}
+				return false;
+			});
 		//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
 		//simply remove all whitespace from html in a table and put it back.
 		if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
@@ -890,6 +944,6 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 			}	
 		}
 		
-	}
+	//}
 </script>
 
