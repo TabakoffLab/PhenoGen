@@ -2,6 +2,10 @@
 var trackString="coding,noncoding,snp,smallnc";
 var minCoord=<%=min%>;
 var maxCoord=<%=max%>;
+
+var initMin=<%=min%>;
+var initMax=<%=max%>;
+
 var chr="<%=chromosome%>";
 var rnaDatasetID=<%=rnaDatasetID%>;
 var arrayTypeID=<%=arrayTypeID%>;

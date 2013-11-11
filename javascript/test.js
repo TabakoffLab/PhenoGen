@@ -59,19 +59,26 @@ $(document).on("change","input[name='trackcbx']",function(){
 				var cbxInd=idStr.indexOf("CBX");
 				var prefix=new String(idStr.substr(0,cbxInd));
 				var level=idStr.substr(idStr.length-1);
+				console.log("change");
 				if($(this).is(":checked")){
+					console.log("checked");
 					var addtlOpt="";
-					if(prefix.indexOf("coding") || prefix.indexOf("noncoding")||prefix.indexOf("smallnc")){
+					/*if(prefix.indexOf("coding") || prefix.indexOf("noncoding")||prefix.indexOf("smallnc")){
 						var tmpType=idStr.substr(idStr.length-2,1);
 						if(tmpType=="g"){
 							addtlOpt="annotOnly;";
 						}else if(tmpType=="t"){
 							addtlOpt="trxOnly;";
 						}
-						
+					}*/
+					if(d3.select("#Level"+level+prefix).size()>0){
+						//console.log("checked redraw");
+						redrawTrack(level,prefix);
+					}else{
+						svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val(),addtlOpt,0);
 					}
-					svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val(),addtlOpt,0);
 				}else{
+					//console.log("unchecked");
 					var isSelected=0;
 					$("[id^="+prefix+"CBX]").each(function (){
 						if($(this).is(":checked")){
@@ -79,8 +86,10 @@ $(document).on("change","input[name='trackcbx']",function(){
 						}
 					});
 					if(isSelected==0){
+						//console.log("remove");
 						removeTrack(level,prefix);
 					}else{
+						//console.log("redraw");
 						redrawTrack(level,prefix);
 					}
 				}
@@ -106,7 +115,22 @@ $(document).on("change","select[name='imgSelect']", function(){
 	 			$.cookie("imgstate"+defaultView+curlvl,"displaySelect"+curlvl+"="+$(this).val()+";");
 	 		});
 
+$(document).on("click",".reset",function(){
+	var id=new String($(this).attr("id"));
+	var level=id.substr(id.length-1);
+	if(id.indexOf("resetImage")==0){
+		if(level==0){
+			$('#geneTxt').val(chr+":"+initMin+"-"+initMax);
+	        svgList[0].xScale.domain([initMin,initMax]);
+			svgList[0].scaleSVG.select(".x.axis").call(svgList[0].xAxis);
+			svgList[0].redraw();
+		}
+	}else if(id.indexOf("resetTracks")==0){
+		if(level==0){
 
+		}
+	}
+});
 
 
 //Setup some global functions
@@ -364,7 +388,23 @@ function setupTrackSettingUI(levelInd){
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
     		if(trackVars[0]!=""){
-    			$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBX"+levelInd).attr('checked',true);
+    			if(trackVars[0]=="noncoding"||trackVars[0]=="coding"||trackVars[0]=="smallnc"){
+    				if(trackVars[2]!=undefined){
+    					if(trackVars[2]=="annotOnly"){
+    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).attr('checked',true);
+    					}else if(trackVars[2]=="trxOnly"){
+    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).attr('checked',true);
+    					}else{
+    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).attr('checked',true);
+							$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).attr('checked',true);
+    					}
+					}else{
+						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).attr('checked',true);
+						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).attr('checked',true);
+					}
+    			}else{
+    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBX"+levelInd).attr('checked',true);
+    			}
     			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").length>0  && trackVars[1]!=undefined){
     				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
     			}
@@ -395,31 +435,75 @@ function setupImageSettingUI(levelInd){
 }
 
 function setupDefaultView(levelInd){
+	$("input[name='trackcbx']").each(function(){
+    		if($(this).is(":checked")){
+    			console.log("unchecking"+$(this).attr("id"));
+    			$(this).attr('checked', false);
+    		}
+    	});
 	if(defaultView=="viewGenome"){
+		svgList[levelInd].addTrack("coding",3,"annotOnly",0);
+    	svgList[levelInd].addTrack("noncoding",3,"annotOnly",0);
+    	svgList[levelInd].addTrack("smallnc",3,"annotOnly",0);
 		svgList[levelInd].addTrack("snpBNLX",1,"",0);
     	svgList[levelInd].addTrack("snpSHRH",1,"",0);
 		svgList[levelInd].addTrack("qtl",3,"",0);
+		$("div.settingsLevel0 #codingCBXg0").attr('checked',true);
+		$("div.settingsLevel0 #noncodingCBXg0").attr('checked',true);
+		$("div.settingsLevel0 #smallncCBXg0").attr('checked',true);
+		$("div.settingsLevel0 #snpSHRHCBX0").attr('checked',true);
+		$("div.settingsLevel0 #snpBNLXCBX0").attr('checked',true);
+		$("div.settingsLevel0 #qtlCBX0").attr('checked',true);
 	}else if(defaultView=="viewTrxome"){
-		svgList[levelInd].addTrack("coding",3,"",0);
-    	svgList[levelInd].addTrack("noncoding",3,"",0);
-    	svgList[levelInd].addTrack("smallnc",3,"",0);
+		svgList[levelInd].addTrack("coding",3,"trxOnly,",0);
+    	svgList[levelInd].addTrack("noncoding",3,"trxOnly,",0);
+    	svgList[levelInd].addTrack("smallnc",3,"trxOnly,",0)
+		$("div.settingsLevel0 #codingCBXt0").attr('checked',true);
+		$("div.settingsLevel0 #noncodingCBXt0").attr('checked',true);
+		$("div.settingsLevel0 #smallncCBXt0").attr('checked',true);
+	}else if(defaultView=="viewAll"){
+		svgList[levelInd].addTrack("coding",3,"all",0);
+    	svgList[levelInd].addTrack("noncoding",3,"all",0);
+    	svgList[levelInd].addTrack("smallnc",3,"all",0);
+    	svgList[levelInd].addTrack("snpBNLX",1,"",0);
+    	svgList[levelInd].addTrack("snpSHRH",1,"",0);
+    	svgList[levelInd].addTrack("qtl",3,"",0);
+    	$("div.settingsLevel0 #codingCBXg0").attr('checked',true);
+		$("div.settingsLevel0 #codingCBXt0").attr('checked',true);
+		$("div.settingsLevel0 #noncodingCBXg0").attr('checked',true);
+		$("div.settingsLevel0 #noncodingCBXt0").attr('checked',true);
+		$("div.settingsLevel0 #smallncCBXg0").attr('checked',true);
+		$("div.settingsLevel0 #smallncCBXt0").attr('checked',true);
+		$("div.settingsLevel0 #snpSHRHCBX0").attr('checked',true);
+		$("div.settingsLevel0 #snpBNLXCBX0").attr('checked',true);
+		$("div.settingsLevel0 #qtlCBX0").attr('checked',true);
 	}
 }
 
 function saveToCookie(curLevel){
 	var cookieStr="";
 	$( ".sortable"+curLevel+" li svg").each(function() {
-          var id = (new String ($(this).attr("id"))).substr(6);
-          cookieStr=cookieStr+id;
-          if($("#"+id+"Dense"+curLevel+"Select").length > 0){
-          	cookieStr=cookieStr+","+$("#"+id+"Dense"+curLevel+"Select").val();
-          }
-          if($("#"+id+curLevel+"Select").length > 0){
-          	cookieStr=cookieStr+","+$("#"+id+curLevel+"Select").val();
-          }
-          if(id.indexOf("CBXt")>-1){
-          	cookieStr=cookieStr+",annotOnly";
-          }
+	        var id = (new String ($(this).attr("id"))).substr(6);
+	        cookieStr=cookieStr+id;
+	        if($("#"+id+"Dense"+curLevel+"Select").length > 0){
+	          	cookieStr=cookieStr+","+$("#"+id+"Dense"+curLevel+"Select").val();
+	        }
+	        if($("#"+id+curLevel+"Select").length > 0){
+	          	cookieStr=cookieStr+","+$("#"+id+curLevel+"Select").val();
+	        }
+	        if($("#"+id+"CBXg"+curLevel).size()>0){
+	        		var curAnnot="";
+		          	if($("#"+id+"CBXg"+curLevel).is(":checked")
+						&&
+						$("#"+id+"CBXt"+curLevel).is(":checked")){
+						curAnnot="all";
+					}else if($("#"+id+"CBXg"+curLevel).is(":checked")){
+						curAnnot="annotOnly";
+					}else if($("#"+id+"CBXt"+curLevel).is(":checked")){
+						curAnnot="trxOnly";
+					}
+					cookieStr=cookieStr+","+curAnnot;
+	        }
           cookieStr=cookieStr+";";
         });
 	$.cookie("state"+defaultView+curLevel+"trackList",cookieStr);
@@ -1250,6 +1334,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}.bind(that);
 
 	that.redraw=function(){
+		//console.log("in redraw:"+that.annotType);
 		//set annotType
 		var curAnnot="";
 		if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")
@@ -1261,7 +1346,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else if($("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked")){
 			curAnnot="trxOnly";
 		}
+		//console.log("annot:"+curAnnot);
+		//console.log("prev:"+that.annotType);
 		if(curAnnot==that.annotType){
+			//console.log("run redraw");
 			if(that.svg[0][0]!=null){
 				for(var j=0;j<that.gsvg.width;j++){
 					that.yArr[j]=0;
@@ -1282,6 +1370,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.svg.attr("height", (this.trackYMax+1)*15);
 			}
 		}else{
+			//console.log("run draw");
 			that.draw(that.data);
 		}
 	}.bind(that);
@@ -1434,6 +1523,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}.bind(that);
 
 	that.draw=function (data){
+		that.data=data;
+		that.svg.selectAll(".gene").remove();
+		console.log("in draw"+that.annotType);
 		//set annotType
 		if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")
 			&&
@@ -1444,7 +1536,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else if($("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked")){
 			that.annotType="trxOnly";
 		}
-		//console.log("annotType:"+that.annotType);
+		console.log("set annotType:"+that.annotType);
 		for(var j=0;j<that.gsvg.width;j++){
 				that.yArr[j]=0;
 		}
@@ -1466,19 +1558,20 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}
 		that.updateLabel(lbl);
 		that.redrawLegend();
-		that.data=data;
+		
 		//*************************  NOT DONE SEE NOTE BELOW.
+		var filterData=data;
 		if(that.annotType!="all"){
-			var newData=[];
+			var filterData=[];
 			var newCount=0;
 			for(var l=0;l<data.length;l++){
 				if(data[l]!=undefined ){
 					if(that.annotType=="annotOnly" && (new String(data[l].getAttribute("ID"))).indexOf("ENS")>-1){
-						newData[newCount]=data[l];
+						filterData[newCount]=data[l];
 						newCount++;
 					}else if(that.annotType=="trxOnly" ){//still need to correct for transcripts grouped under a gene.
 						if((new String(data[l].getAttribute("ID"))).indexOf("ENS")==-1){
-							newData[newCount]=data[l];
+							filterData[newCount]=data[l];
 							newCount++;
 						}else{
 							var txList=getAllChildrenByName(getFirstChildByName(data[l],"TranscriptList"),"Transcript");
@@ -1489,21 +1582,18 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 								}
 							}
 							if(found==1){
-								newData[newCount]=data[l];
+								filterData[newCount]=data[l];
 								newCount++;
 							}
 						}
 					}
 				}
 			}
-			data=newData;
+			console.log(filterData);
 		}
-		that.svg.selectAll(".gene").remove();
-
-
 		//this.trackYMax=0;
 		var gene=that.svg.selectAll(".gene")
-	   			.data(data,key)
+	   			.data(filterData,key)
 				.attr("transform",function(d){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"))+")";});
 		//add new
 		gene.enter().append("g")
