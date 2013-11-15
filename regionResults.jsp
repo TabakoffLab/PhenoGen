@@ -99,7 +99,7 @@ var defaultView="<%=defView%>";
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
-            <script src="javascript/test.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.1.js" type="text/javascript"></script>
             	<script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
