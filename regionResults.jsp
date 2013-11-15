@@ -103,7 +103,7 @@ var defaultView="<%=defView%>";
             	<script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
-                    var gs=new GenomeSVG(".ucscImage",960,minCoord,maxCoord,0,chr,"gene");
+                    var gs=new GenomeSVG(".ucscImage",970,minCoord,maxCoord,0,chr,"gene");
 					loadState(0);
                     $( "ul, li" ).disableSelection();
                 </script>

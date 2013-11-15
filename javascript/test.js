@@ -126,9 +126,9 @@ $(document).on("click",".reset",function(){
 			svgList[0].redraw();
 		}
 	}else if(id.indexOf("resetTracks")==0){
-		if(level==0){
-
-		}
+		svgList[level].removeAllTracks();
+		setupDefaultView(level);
+		saveToCookie(level);
 	}
 });
 
@@ -966,6 +966,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					.attr("id","ScrollLevel"+levelNumber)
 					.style("max-height","350px")
 					.style("overflow","auto")
+					.style("width",(this.width+18)+"px")
 					.append("ul")
 					.attr("class","sortable"+levelNumber);
 	
