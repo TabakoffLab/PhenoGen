@@ -36,7 +36,7 @@
                         <div id="Annotation<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
                         	<input name="trackcbx" type="checkbox" id="codingCBXg<%=level%>"   checked="checked" /> Protein Coding 
                             <span class="Imagetooltip" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
-                            <select name="trackSelect" id="codingDense<%=level%>Select">
+                            <select name="trackSelect" class="codingDense<%=level%>Select" id="codingDense<%=level%>Selectg">
                                 <option value="1" >Dense</option>
                                 <option value="3" selected="selected">Pack</option>
                                 <option value="2" >Full</option>
@@ -44,7 +44,7 @@
              				<HR />
                             <input name="trackcbx" type="checkbox" id="noncodingCBXg<%=level%>"   checked="checked" /> Long Non-Coding 
                             <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" id="noncodingDense<%=level%>Select">
+                                <select name="trackSelect" class="noncodingDense<%=level%>Select" id="noncodingDense<%=level%>Selectg">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
@@ -53,7 +53,7 @@
                             <HR />
                         	<input name="trackcbx" type="checkbox" id="smallncCBXg<%=level%>"  checked="checked" /> Small RNA 
                             <span class="Imagetooltip" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" id="smallncDense<%=level%>Select">
+                                <select name="trackSelect" class="smallncDense<%=level%>Select" id="smallncDense<%=level%>Selectg">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
@@ -192,7 +192,7 @@
                                 <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                             </select>-->
-                            <select name="trackSelect" id="codingDense<%=level%>Select">
+                            <select name="trackSelect" class="codingDense<%=level%>Select" id="codingDense<%=level%>Selectt">
                                 <option value="1" >Dense</option>
                                 <option value="3" selected="selected">Pack</option>
                                 <option value="2" >Full</option>
@@ -204,7 +204,7 @@
                                     <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                                 </select>-->
-                                <select name="trackSelect" id="noncodingDense<%=level%>Select">
+                                <select name="trackSelect" class="noncodingDense<%=level%>Select" id="noncodingDense<%=level%>Selectt">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
@@ -217,7 +217,7 @@
                                     <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                                 </select>-->
-                                <select name="trackSelect" id="smallncDense<%=level%>Select">
+                                <select name="trackSelect" class="smallncDense<%=level%>Select" id="smallncDense<%=level%>Selectt">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
