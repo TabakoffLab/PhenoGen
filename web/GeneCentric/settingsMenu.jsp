@@ -60,6 +60,7 @@
                                 </select>
                                  
                         </div>
+                        <%if(myOrganism.equals("Rn")){%>
                         <BR />
                     	<div class="trigger triggerEC" name="Variation<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Strain Variation</div>
                         <div id="Variation<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
@@ -113,6 +114,7 @@
                                 <option value="3" >Pack</option>
                             </select>
                         </div>
+                        <%}%>
                         <BR />
                         <div class="trigger triggerEC" name="QTL<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">QTLs</div>
                         <div id="QTL<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">

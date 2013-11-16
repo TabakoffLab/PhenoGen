@@ -8,6 +8,20 @@ var selectedGeneSymbol="";
 var selectedID="";
 var trackSettings=new Array();
 
+var ratOnly=new Array();
+var mouseOnly=new Array();
+
+ratOnly["snpSHRJ"]=1;
+ratOnly["snpF344"]=1;
+ratOnly["snpSHRH"]=1;
+ratOnly["snpBNLX"]=1;
+ratOnly["helicos"]=1;
+ratOnly["illuminaTotal"]=1;
+ratOnly["illuminaSmall"]=1;
+ratOnly["illuminaPolyA"]=1;
+
+
+
 var mmVer="mm10 Strain:";
 var rnVer="rn5 Strain:BN";
 var siteVer="PhenoGen v2.10:12/1/2013";
@@ -344,19 +358,21 @@ function loadSavedConfigTracks(levelInd){
     	var addedCount=0;
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
-    		if(trackVars[0]!=""){
-    			addedCount++;
-    			var ext="";
-    			if(trackVars.length>2){
-    				for(var n=2;n<trackVars.length;n++){
-    					if(n==2){
-    						ext=trackVars[n];
-    					}else{
-    						ext=ext+","+trackVars[n];
-    					}
-    				}
-    			}
-    			svgList[levelInd].addTrack(trackVars[0],trackVars[1],ext,0);
+    		if(organism=="Rn" || (organism=="Mm" && ratOnly[trackVars[0]]== undefined)){
+	    		if(trackVars[0]!=""){
+	    			addedCount++;
+	    			var ext="";
+	    			if(trackVars.length>2){
+	    				for(var n=2;n<trackVars.length;n++){
+	    					if(n==2){
+	    						ext=trackVars[n];
+	    					}else{
+	    						ext=ext+","+trackVars[n];
+	    					}
+	    				}
+	    			}
+	    			svgList[levelInd].addTrack(trackVars[0],trackVars[1],ext,0);
+	    		}
     		}
     	}
     	if(addedCount==0){
@@ -418,8 +434,14 @@ function setupTrackSettingUI(levelInd){
     			}else{
     				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBX"+levelInd).attr('checked',true);
     			}
-    			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").length>0  && trackVars[1]!=undefined){
+    			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").length>0 
+    				&& trackVars[1]!=undefined){
     				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
+    			}else if( ($("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Selectg").length>0||
+    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Selectt").length>0) 
+    					  && trackVars[1]!=undefined){
+    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Selectt").val(trackVars[1]);
+    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Selectg").val(trackVars[1]);
     			}
     			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+levelInd+"Select").length>0  && trackVars[2]!=undefined){
     				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+levelInd+"Select").val(trackVars[2]);
@@ -523,6 +545,17 @@ function saveToCookie(curLevel){
 	        }
           cookieStr=cookieStr+";";
         });
+	//Need to preserve Rat or Mouse Only tracks while other species is viewed
+	if($.cookie("state"+defaultView+curLevel+"trackList")!=null){
+    	var trackListObj=$.cookie("state"+defaultView+curLevel+"trackList");
+    	var trackArray=trackListObj.split(";");
+    	for(var m=0;m<trackArray.length;m++){
+    		var trackVars=trackArray[m].split(",");
+    		if((organism=="Rn" && mouseOnly[trackVars[0]]!= undefined) || (organism=="Mm" && ratOnly[trackVars[0]]!= undefined)){
+	    		cookieStr=cookieStr+trackArray[m]+";";
+    		}
+    	}
+    }
 	$.cookie("state"+defaultView+curLevel+"trackList",cookieStr);
 }
 function timeoutFunc(){
