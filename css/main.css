@@ -558,7 +558,7 @@ div.closeWindow {
 }
 
 /* Used for expanding/contracting */
-.trigger,.tblTrigger,.triggerImage{
+.trigger,.tblTrigger,.triggerImage,.triggerLoad,.triggerNoAction{
         cursor: pointer;
         /* needed for IE?  Don't think so */
 	/* cursor: hand; */
@@ -942,7 +942,7 @@ padding-left: 10px;
 table.geneFilter {
 	position:relative; 
 	width:100%; 
-	top:-77px;
+	top:-57px;
 }
 
 table.geneFilter  TH{

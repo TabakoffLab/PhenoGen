@@ -4,13 +4,16 @@
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("jquery.dataTables.js");
+	extrasList.add("jquery.cookie.js");
+	
 	//extrasList.add("TableTools.min.js");
 	//extrasList.add("ZeroClipboard.js");
 	//extrasList.add("ColReorder.min.js");
 	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("jquery.tooltipster.js");
-	
+	extrasList.add("d3.js");
+	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
@@ -19,9 +22,130 @@
 	//extrasList.add("TableTools_JUI.css");
 	//extrasList.add("TableTools.css");
 %>
+<style>
+div.testToolTip {   
+  position: absolute;           
+  text-align: center;
+  min-width: 100px;
+  max-width: 400px;
+  min-height:50px;                  
+  /*height: 300px;   */              
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: #d3d3d3;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;    
+  color:#000000;
+  text-align:left;     
+}
+.axis path{
+	fill:none;
+	stroke:black;
+	shape-rendering: crispEdges;
+}
+
+.tick{
+	fill:none;
+	stroke: black;
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+/*.grid path {
+      stroke-width: 0;
+}*/
+	div#collapsableReport li{
+	color:#000000;
+	cursor:pointer;
+	}
+	div#collapsableReport li.selected{
+		background-color:#CCCCCC;
+	}
+	/*div#collapsableReport td.layout {
+		border:1px solid #CECECE;
+	}*/
+	span.detailMenu,span.selectdetailMenu,span.viewMenu{
+		border-color:#CCCCCC;
+		border:solid;
+		border-width: 1px 1px 0px 1px;
+		border-radius:5px 5px 0px 0px;
+		padding-top:2px;
+		padding-bottom:2px;
+		padding-left:15px;
+		padding-right:15px;
+		cursor:pointer;
+	}
+	span.viewMenu{
+		border-color:#000000;
+	}
+	span.detailMenu{
+		background-color:#0b61A4;
+		border-color:#000000;
+		
+	}
+	span.detailMenu.selected{
+		background-color:#3f92d2;
+		/*background:#86C3E2;*/
+		color:#FFFFFF;
+	}
+	span.detailMenu:hover{
+		background-color:#3f92d2;
+		/*background:#86C3E2;*/
+		color:#FFFFFF;
+	}
+	
+	span.selectdetailMenu{
+		background-color:#00992D;
+		border-color:#000000;
+		color:#FFFFFF;
+	}
+	span.selectdetailMenu.selected{
+		background:#47c647;
+	}
+	span.selectdetailMenu:hover{
+		background:#47c647;
+	}
+	
+	span.viewMenu{
+		background:#AEAEAE;
+		color:#000000;
+	}
+	span.viewMenu.selected{
+		background:#DEDEDE;
+		color:#000000;
+	}
+	span.viewMenu:hover{
+		background:#DEDEDE;
+		color:#000000;
+	}
+	
+	.regionSubHeader{
+		background:#86C3E2;
+		color:#FFFFFF;
+	}
+	table.geneFilter TH {
+		background:#86C3E2;
+		color:#FFFFFF;
+	}
+	rect.selected{
+		fill:#00FF00;
+	}
+	.geneReport TD{
+		vertical-align:top;
+		margin-top: 10px;
+	}
+	.geneReport TD.header{
+		background-color:#67E667;
+	}
+</style>
+
 <%
 String myGene="";
 String myDisplayGene="";
+String defView="viewGenome";
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
 		myGene=request.getParameter("geneTxt").trim();
@@ -29,6 +153,10 @@ if(request.getParameter("geneTxt")!=null){
 }
 if(request.getParameter("newWindow")!=null&&request.getParameter("newWindow").equals("Y")){
 	popup=true;
+}
+
+if(request.getParameter("defaultView")!=null){
+	defView=request.getParameter("defaultView");
 }
 pageTitle="Detailed Transcription Information "+myGene;%>
 
@@ -464,7 +592,17 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
   </label>
- <span style="padding-left:40px;"> <input type="submit" name="refreshBTN" id="getTrxBTN" value="Get Transcription Details" onClick="return displayWorking()"></span>
+  
+  <label>Initial View:
+  <select name="defaultView" id="defaultView">
+  	<option value="viewGenome" <%if(defView.equals("viewGenome")){%>selected<%}%>>Genome</option>
+    <option value="viewTrxome" <%if(defView.equals("viewTrxome")){%>selected<%}%>>Transcriptome</option>
+    <option value="viewAll" <%if(defView.equals("viewAll")){%>selected<%}%>>Both</option>
+  </select>
+  </label>
+  <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" onClick="return displayWorking()">
+ <!--<span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
+ <span style="padding-left:40px;"> <input type="submit" name="transcriptomeBTN" id="getTrxBTN" value="View Transcriptome Features" onClick="return displayWorking('viewTrxome')"></span>-->
  
  	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
     <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
@@ -472,14 +610,14 @@ pageTitle="Detailed Transcription Information "+myGene;%>
     <input type="hidden" name="chromosomes" id="chromosomes" value="" />
     <input type="hidden" name="levels" id="levels" value="" />
     <input type="hidden" name="action" id="action" value="Get Transcription Details" />
-    
   	<input type="hidden" name="genURLArray" id="genURLArray" value="<%=genURLString%>" />
     <input type="hidden" name="geneSymArray" id="geneSymArray" value="<%=geneSymString%>" />
     <input type="hidden" name="ucscURLArray" id="ucscURLArray" value="<%=ucscURLString%>" />
-
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
     <input type="hidden" name="geneSelect" id="geneSelect" value="<%=selectedGene%>" />
+    <!--<input type="hidden" name="defaultView" id="defaultView" value="<%=defView%>" />-->
 </form>
+<BR />
 Or
 <input type="submit" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
 </div>
@@ -514,7 +652,7 @@ Or
 		//document.tooltip();
 </script>
 
-
+<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
 
 
 
@@ -537,50 +675,9 @@ Or
 	}
 </script>
 
-<%if(!region&&genURL.size()>0){%>
-	<div style="text-align:center;">
-        <div id="javaError" style="display:none;">
-            <BR /><BR /><br />
-            <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for this page.  Please correct the error listed below.  <BR />
-            <BR />
-        </div>
-        
-        <span id="disabledJava" style="display:none;margin-left:40px;">
-        <span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
-                    To enable Java in your browser or operating system, see:<BR><BR> 
-                    Firefox: <a href="http://support.mozilla.org/en-US/kb/unblocking-java-plugin" target="_blank">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
-                    Internet Explorer: <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
-                    Safari: <a href="http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html" target="_blank">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
-                    Chrome: <a href="http://java.com/en/download/faq/chrome.xml" target="_blank">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
-        
-        <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
-        <span id="installJava" style="display:none;" class="button">Install Java</span>
-    </div>
-    
-    <script src="http://www.java.com/js/deployJava.js"></script>
-            <script>
-                // check if current JRE version is greater than 1.5.0 
-                 if(!navigator.javaEnabled()){
-                        $('#javaError').css("display","inline-block");
-                        $('#disabledJava').css("display","inline-block");
-						//alert("Java not enabled");
-                 }else if (deployJava.versionCheck('1.6.0+') == false) {
-                     $('#javaError').css("display","inline-block");
-                    $('#noJava').css("display","inline-block");                  
-                    $('#installJava').css("display","inline-block");
-                }
-                $('#installJava').click(function (){
-                    // Set deployJava.returnPage to make sure user comes back to 
-                    // your web site after installing the JRE
-                    deployJava.returnPage = location.href;
-                            
-                    // Install latest JRE or redirect user to another page to get JRE
-                    deployJava.installLatestJRE(); 
-                });	
-    </script>
-	<%@ include file="geneResults.jsp" %>
-	<%@ include file="web/GeneCentric/resultsHelp.jsp" %>
-<%}else if(region && genURL.size()>0&&!genURL.get(0).startsWith("ERROR:")){%>
+
+<%if(genURL.size()>0){%>
+	
 
 	<%@ include file="regionResults.jsp" %>
     <%@ include file="web/GeneCentric/resultsHelp.jsp" %>
@@ -592,51 +689,7 @@ Or
         The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
 	<% }%>
 
-	<div style="text-align:center;">
-        <div id="javaError" style="display:none;">
-            <BR /><BR />
-            <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for a specific gene.  Please correct the error listed below before proceeding with a specific gene.  You may view regions, but specific genes will not work until Java is installed or updated.<BR /><BR />
-            <BR />
-        </div>
-        
-        <span id="disabledJava" style="display:none;margin-left:40px;"><span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
-                    To enable Java in your browser or operating system, see:<BR><BR> 
-                    Firefox: <a href=\"http://support.mozilla.org/en-US/kb/unblocking-java-plugin\">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
-                    Internet Explorer: <a href=\"http://java.com/en/download/help/enable_browser.xml\">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
-                    Safari: <a href=\"http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html\">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
-                    Chrome: <a href=\"http://java.com/en/download/faq/chrome.xml\">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
-        
-        <span id="oldJava" style="color:#00AA00;display:none;">A newer Java version may be available click the Install button for the latest version.(You may still use all functions even if you see this message.)<BR /></span>
-        <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
-        <span id="installJava" style="display:none;" class="button">Install Java</span>
-    </div>
-    
-    <script src="http://www.java.com/js/deployJava.js"></script>
-            <script>
-                // check if current JRE version is greater than 1.5.0 
-                if(!navigator.javaEnabled()){
-                        $('#javaError').css("display","inline-block");
-                        $('#disabledJava').css("display","inline-block");
-                }else if (deployJava.versionCheck('1.5.0+') == false) {
-                     $('#javaError').css("display","inline-block");
-                    $('#noJava').css("display","inline-block");                  
-                    $('#installJava').css("display","inline-block");
-                }else{
-                    if (deployJava.versionCheck('1.7.0+') == false) {                   
-                        $('#oldJava').css("display","inline-block");
-                        $('#installJava').html("Update Java");
-                        $('#installJava').css("display","inline-block");
-                    }
-                }
-                $('#installJava').click(function (){
-                    // Set deployJava.returnPage to make sure user comes back to 
-                    // your web site after installing the JRE
-                    deployJava.returnPage = location.href;
-                            
-                    // Install latest JRE or redirect user to another page to get JRE
-                    deployJava.installLatestJRE(); 
-                });	
-    </script>
+	
 	<div class="demo" style="text-align:center;">
 						<BR /><BR /><BR />
                         Detailed Transcription Information Demonstration<BR />

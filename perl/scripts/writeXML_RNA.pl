@@ -22,6 +22,7 @@ require 'createBED.pl';
 require 'createPng.pl';
 require 'addAlternateID.pl';
 require 'createTrack.pl';
+require 'createXMLTrack.pl';
 
 
 sub getFeatureInfo
@@ -57,6 +58,119 @@ sub find
     }
 
     return $ret;
+}
+
+sub findEnsembl{
+    my $annotRef=shift;
+    my $curCount=shift;
+    my $ens="";
+
+	my %rnaHOH=%$annotRef;
+	my $annotListRef=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation};
+	my @annotArr=();
+	eval{
+		    @annotArr=@$annotListRef;
+	    }or do{
+		    @annotArr=();
+	    };
+	
+	my $count=0;
+	foreach(@annotArr){
+	    my $source=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation}[$count]{source};
+	    #print "checking source:".$source."\n";
+	    if($source eq "AKA"){
+		$ens=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation}[$count]{annot_value};
+		$ens=substr($ens,0,index($ens,":"));
+		#print "Found:$ens\n";
+		last;
+	    }
+	}
+    return $ens;
+}
+
+sub mergeByAnnotation{
+    #print "CALLED MERGE ANNOTATION\n";
+    my $geneHOHRef=shift;
+    
+    my %geneHOH=%$geneHOHRef;
+    my $geneListRef=$geneHOH{Gene};
+    my @geneList=();
+	eval{
+		@geneList=@$geneListRef;
+	}or do{
+		@geneList=();
+	};
+    my %mainGenes;
+    my %rnaGenes;
+    my %hm;
+    
+    my $geneCount=0;
+    my $mainCount=0;
+    my $rnaCount=0;
+    foreach(@geneList){
+	if($geneHOH{Gene}[$geneCount]{source} eq ("Ensembl")){
+	    $mainGenes{Gene}[$mainCount]=$geneHOH{Gene}[$geneCount];
+	    $hm{$geneHOH{Gene}[$geneCount]{ID}}=$mainCount;
+	    $mainCount++;
+	    
+	}else{
+	    $rnaGenes{Gene}[$rnaCount]=$geneHOH{Gene}[$geneCount];
+	    $rnaCount++;
+	}
+	$geneCount++;
+    }
+    
+    my @rnaList=();
+    my $rnaGeneRef=$rnaGenes{Gene};
+    eval{
+	    @rnaList=@$rnaGeneRef;
+    }or do{
+	    @rnaList=();
+    };
+
+    $rnaCount=0;
+    foreach(@rnaList){
+	my $ens=findEnsembl(\%rnaGenes,$rnaCount);
+	print "aka match".$rnaGenes{Gene}[$rnaCount]{ID}."\t".$ens."\n";
+	if(defined $hm{$ens}){
+	    print "defined\n";
+	    my $tmpGeneIndex=$hm{$ens};
+	    my $tmpGeneArrRef=$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript};
+	    my @tmpGeneTxArr=@$tmpGeneArrRef;
+	    my $tmpCount=@tmpGeneTxArr;
+	    my @trxList=();
+	    my $trxListRef=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript};
+	    eval{
+		@trxList=@$trxListRef;
+	    }or do{
+		@trxList=();
+	    };
+	    my $trxCount=0;
+	    print "before mainLen:".$tmpCount." txAdd:".@trxList."\n";
+	    my $extStart=$mainGenes{Gene}[$tmpGeneIndex]{start};
+	    my $extStop=$mainGenes{Gene}[$tmpGeneIndex]{stop};
+	    foreach(@trxList){
+		print "loop:$trxCount\n";
+		$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript}[$tmpCount]=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount];
+		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start}<$extStart){
+		    $extStart=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start};
+		    $mainGenes{Gene}[$tmpGeneIndex]{extStart}=$extStart;
+		}
+		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{stop}>$extStop){
+		    $extStop=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{stop};
+		    $mainGenes{Gene}[$tmpGeneIndex]{extStop}=$extStop;
+		}
+		$tmpCount++;
+		$trxCount++;
+	    }
+	}else{
+	    $mainGenes{Gene}[$mainCount]=$rnaGenes{Gene}[$rnaCount];
+	    $mainCount++;
+	}
+	$rnaCount++;
+    }
+    
+    return \%mainGenes;
 }
 
 # get Image calls createPNG it should increment the timeout time if the first request fails and try again up to 3 times starting with a 30s timeout +30s/failure.
@@ -609,7 +723,7 @@ sub createXMLFile
 		#create bed files in region folder
 		
 		createQTLTrack(\%qtlHOH,$outputDir."qtl.track",$trackDB,$chr);
-		createSNPTrack(\%snpHOH,$outputDir."snp.track",$trackDB);
+		createSNPXMLTrack(\%snpHOH,$outputDir."snp.xml",$trackDB);
 		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonPlus.track",$trackDB,1,$chr);
 		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonMinus.track",$trackDB,-1,$chr);
 		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonUkwn.track",$trackDB,0,$chr);

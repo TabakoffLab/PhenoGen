@@ -7,6 +7,7 @@
 use Bio::SeqIO;
 use Data::Dumper qw(Dumper);
 
+
 use Text::CSV;
 
 require 'readAnnotationDataFromDB.pl';
@@ -345,6 +346,67 @@ sub readRNAIsoformDataFromDB{
 	#print "Gene".scalar(keys %geneHOH)."\n";
 	#print "gene name".$geneHOH{Gene}[0]{ID}."\n";
 	return (\%geneHOH);
+}
+
+
+
+
+sub readRNACountsDataFromDB{
+	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;
+	my %countHOH;
+	
+	my $org="Mm";
+	if($organism eq "Rat"){
+		$org="Rn";
+	}
+	# PERL DBI CONNECT
+	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
+	
+	$query ="Select rc.* from rna_counts rc, rna_dataset rd
+			where 
+			rd.organism = '".$org."' "."
+			and rd.user_id= $publicUserID  
+			and rd.visible=0 
+			and rd.description = '".$type."'
+			and rd.strain_panel like '".$panel."' "."
+			and rc.rna_dataset_id= rd.rna_dataset_id
+			and rc.chromosome = '".$geneChrom."'
+			and (rc.chr_start>=$geneStart and rc.chr_start<=$geneStop)";
+			$query=$query." order by rc.chr_start";
+	
+	
+	print $query."\n";		
+	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
+
+# EXECUTE THE QUERY
+	$query_handle->execute() or die ( "RNA Isoform query execute failed \n");
+
+# BIND TABLE COLUMNS TO VARIABLES
+
+	$query_handle->bind_columns(\$dsid ,\$chromosome,\$start,\$end,\$count,\$trCount);
+	my $listCount=0;
+	while($query_handle->fetch()) {
+		if($listCount==0 or ($listCount>0 and $countHOH{Count}[$listCount-1]{stop}==($start-1))){
+			$countHOH{Count}[$listCount]{start}=$start;
+			$countHOH{Count}[$listCount]{stop}=$end;
+			$countHOH{Count}[$listCount]{count}=$count;
+			$countHOH{Count}[$listCount]{logcount}=$trCount;
+		}else{
+			if($listCount>0 and $countHOH{Count}[$listCount-1]{stop}<($start-1)){
+				$countHOH{Count}[$listCount]{start}=$countHOH{Count}[$listCount-1]{stop}+1;
+				$countHOH{Count}[$listCount]{stop}=$start-1;
+				$countHOH{Count}[$listCount]{count}=0;
+				$countHOH{Count}[$listCount]{logcount}=0;
+				$listCount++;
+			}
+			$countHOH{Count}[$listCount]{start}=$start;
+			$countHOH{Count}[$listCount]{stop}=$end;
+			$countHOH{Count}[$listCount]{count}=$count;
+			$countHOH{Count}[$listCount]{logcount}=$trCount;
+		}
+		$listCount++;
+	}
+	return (\%countHOH);
 }
 1;
 

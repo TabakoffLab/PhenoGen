@@ -42,14 +42,14 @@
     </div>
 <%}%>
 
-<H2 ><%="SMNC_"+rna.getID()%></H2> 
+<H2 ><%="smRNA_"+rna.getID()%></H2> 
 
 <BR />
 <canvas id="sketch"></canvas>
 
 <script type="text/javascript">
 						var fileRequest = new window.XMLHttpRequest();
-                        fileRequest.open("GET", "/web/GeneCentric/test2.pde", false);
+                        fileRequest.open("GET", "/web/GeneCentric/smallRNASeq.pde", false);
                         fileRequest.send(null);
                         var canvas = document.getElementById("sketch");
                         var p = new Processing(canvas, fileRequest.responseText);
@@ -58,7 +58,7 @@
 						<% ArrayList<RNASequence> seqList=rna.getSeq();
 							for(int i=0;i<seqList.size();i++){
 								RNASequence s=seqList.get(i);%>
-								p.addSequence(<%=s.getOffsetFromReference()%>,"<%=s.getSequence()%>",<%=i%>);
+								p.addSequence(<%=s.getOffsetFromReference()%>,"<%=s.getSequence()%>",<%=i%>,"<%=rna.getRefSeq().toUpperCase()%>");
 						<%}%>
 						<% ArrayList<SequenceVariant> vList=rna.getVariant();
 							for(int i=0;i<vList.size();i++){
@@ -109,6 +109,7 @@
 
 <BR />
 <BR />
+<div style="text-align:center;">
 <h2>Sequences</h2>
 <table name="items" id="tblViewSMNC" class="list_base" cellpadding="0" cellspacing="0" width="100%">
 	<thead>
@@ -139,20 +140,24 @@
                 </TD>
                 <TD>
                 	<%if(s.getStrainMatch("BNLX")){%>
-                    	X
+                    	Y
+                    <%}else{%>
+                    	N
                     <%}%>
                 </TD>
                 <TD><%if(s.getStrainMatch("SHRH")){%>
-                    	X
-                    <%}%>
+                    	Y
+                    <%}else{%>
+                    	N
+					<%}%>
                 </TD>
-            <TR>
+            </TR>
         <%}%>
         
     </tbody>
 </table>
 
-
+</div>
 </div>
 
 <script type="text/javascript">

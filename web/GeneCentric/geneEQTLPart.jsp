@@ -254,7 +254,7 @@
 		</div>
 
 
-      	<table name="items" class="list_base" cellpadding="0" cellspacing="3" style="width:1000px;position:relative;top:-56px;text-align:left;" >
+      	<table id="circosOptTbl" name="items" class="list_base" cellpadding="0" cellspacing="3" style="width:1000px;text-align:left;" >
         <tbody id="circosOption">
  
 		<tr>

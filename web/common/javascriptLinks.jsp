@@ -25,7 +25,6 @@
 
             selectTab();
             /* setTimeout("setupMain()", 100); */
-
 			
 			$('span.info').tooltipster({
 				position: 'top-right',
@@ -35,6 +34,7 @@
 				interactive: true,
 				interactiveTolerance: 350
 			});
+
 			/*var tooltipSettings = { showBody : " - ",
                 				track : true,
                                         	delay: 250,
