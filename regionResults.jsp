@@ -102,11 +102,10 @@ var defaultView="<%=defView%>";
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
             <script src="javascript/GenomeDataBrowser0.1.js" type="text/javascript"></script>
-            	<script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
                     var gs=new GenomeSVG(".ucscImage",970,minCoord,maxCoord,0,chr,"gene");
-					loadState(0);
                     $( "ul, li" ).disableSelection();
                 </script>
            </div>

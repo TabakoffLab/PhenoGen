@@ -35,7 +35,7 @@ function blurOthers() {
 }
 
 function clearEQTLoptions() {
-	$("input[name='rowRestrictions']").attr('checked', '');
+	$("input[name='rowRestrictions']").prop('checked', false);
 	disableField($("input[name*='rowRestrictions']"));
 }
 function enableEQTLoptions() {

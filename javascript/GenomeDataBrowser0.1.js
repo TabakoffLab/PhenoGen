@@ -73,9 +73,7 @@ $(document).on("change","input[name='trackcbx']",function(){
 				var cbxInd=idStr.indexOf("CBX");
 				var prefix=new String(idStr.substr(0,cbxInd));
 				var level=idStr.substr(idStr.length-1);
-				console.log("change");
 				if($(this).is(":checked")){
-					console.log("checked");
 					var addtlOpt="";
 					/*if(prefix.indexOf("coding") || prefix.indexOf("noncoding")||prefix.indexOf("smallnc")){
 						var tmpType=idStr.substr(idStr.length-2,1);
@@ -86,13 +84,11 @@ $(document).on("change","input[name='trackcbx']",function(){
 						}
 					}*/
 					if(d3.select("#Level"+level+prefix).size()>0){
-						//console.log("checked redraw");
 						redrawTrack(level,prefix);
 					}else{
 						svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val(),addtlOpt,0);
 					}
 				}else{
-					//console.log("unchecked");
 					var isSelected=0;
 					$("[id^="+prefix+"CBX]").each(function (){
 						if($(this).is(":checked")){
@@ -100,10 +96,8 @@ $(document).on("change","input[name='trackcbx']",function(){
 						}
 					});
 					if(isSelected==0){
-						//console.log("remove");
 						removeTrack(level,prefix);
 					}else{
-						//console.log("redraw");
 						redrawTrack(level,prefix);
 					}
 				}
@@ -407,32 +401,32 @@ function setupTrackSettingUI(levelInd){
     	var trackArray=trackListObj.split(";");
     	$("input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
-    			console.log("unchecking"+$(this).attr("id"));
-    			$(this).attr('checked', false);
+    			//console.log("unchecking"+$(this).attr("id"));
+    			$(this).prop('checked', false);
     		}
     	});
     	console.log("SETUP UI");
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
-    		console.log(trackVars[0]);
-    		console.log(trackVars);
+    		//console.log("setupTrackVars[0] "+trackVars[0]);
+    		//console.log(trackVars);
     		if(trackVars[0]!=""){
     			if(trackVars[0]=="noncoding"||trackVars[0]=="coding"||trackVars[0]=="smallnc"){
     				if(trackVars[2]!=undefined){
     					if(trackVars[2]=="annotOnly"){
-    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).attr('checked',true);
+    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).prop('checked',true);
     					}else if(trackVars[2]=="trxOnly"){
-    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).attr('checked',true);
+    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).prop('checked',true);
     					}else{
-    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).attr('checked',true);
-							$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).attr('checked',true);
+    						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).prop('checked',true);
+							$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).prop('checked',true);
     					}
 					}else{
-						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).attr('checked',true);
-						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).attr('checked',true);
+						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXg"+levelInd).prop('checked',true);
+						$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBXt"+levelInd).prop('checked',true);
 					}
     			}else{
-    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBX"+levelInd).attr('checked',true);
+    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
     			}
     			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").length>0 
     				&& trackVars[1]!=undefined){
@@ -472,46 +466,46 @@ function setupImageSettingUI(levelInd){
 function setupDefaultView(levelInd){
 	$("input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
-    			console.log("unchecking"+$(this).attr("id"));
-    			$(this).attr('checked', false);
+    			//console.log("unchecking"+$(this).attr("id"));
+    			$(this).prop('checked', false);
     		}
     	});
 	if(defaultView=="viewGenome"){
+		$("div.settingsLevel0 #codingCBXg0").prop('checked',true);
+		$("div.settingsLevel0 #noncodingCBXg0").prop('checked',true);
+		$("div.settingsLevel0 #smallncCBXg0").prop('checked',true);
+		$("div.settingsLevel0 #snpSHRHCBX0").prop('checked',true);
+		$("div.settingsLevel0 #snpBNLXCBX0").prop('checked',true);
+		$("div.settingsLevel0 #qtlCBX0").prop('checked',true);
 		svgList[levelInd].addTrack("coding",3,"annotOnly",0);
     	svgList[levelInd].addTrack("noncoding",3,"annotOnly",0);
     	svgList[levelInd].addTrack("smallnc",3,"annotOnly",0);
 		svgList[levelInd].addTrack("snpBNLX",1,"",0);
     	svgList[levelInd].addTrack("snpSHRH",1,"",0);
 		svgList[levelInd].addTrack("qtl",3,"",0);
-		$("div.settingsLevel0 #codingCBXg0").attr('checked',true);
-		$("div.settingsLevel0 #noncodingCBXg0").attr('checked',true);
-		$("div.settingsLevel0 #smallncCBXg0").attr('checked',true);
-		$("div.settingsLevel0 #snpSHRHCBX0").attr('checked',true);
-		$("div.settingsLevel0 #snpBNLXCBX0").attr('checked',true);
-		$("div.settingsLevel0 #qtlCBX0").attr('checked',true);
 	}else if(defaultView=="viewTrxome"){
+		$("div.settingsLevel0 #codingCBXt0").prop('checked',true);
+		$("div.settingsLevel0 #noncodingCBXt0").prop('checked',true);
+		$("div.settingsLevel0 #smallncCBXt0").prop('checked',true);
 		svgList[levelInd].addTrack("coding",3,"trxOnly,",0);
     	svgList[levelInd].addTrack("noncoding",3,"trxOnly,",0);
-    	svgList[levelInd].addTrack("smallnc",3,"trxOnly,",0)
-		$("div.settingsLevel0 #codingCBXt0").attr('checked',true);
-		$("div.settingsLevel0 #noncodingCBXt0").attr('checked',true);
-		$("div.settingsLevel0 #smallncCBXt0").attr('checked',true);
+    	svgList[levelInd].addTrack("smallnc",3,"trxOnly,",0);
 	}else if(defaultView=="viewAll"){
+		$("div.settingsLevel0 #codingCBXg0").prop('checked',true);
+		$("div.settingsLevel0 #codingCBXt0").prop('checked',true);
+		$("div.settingsLevel0 #noncodingCBXg0").prop('checked',true);
+		$("div.settingsLevel0 #noncodingCBXt0").prop('checked',true);
+		$("div.settingsLevel0 #smallncCBXg0").prop('checked',true);
+		$("div.settingsLevel0 #smallncCBXt0").prop('checked',true);
+		$("div.settingsLevel0 #snpSHRHCBX0").prop('checked',true);
+		$("div.settingsLevel0 #snpBNLXCBX0").prop('checked',true);
+		$("div.settingsLevel0 #qtlCBX0").prop('checked',true);
 		svgList[levelInd].addTrack("coding",3,"all",0);
     	svgList[levelInd].addTrack("noncoding",3,"all",0);
     	svgList[levelInd].addTrack("smallnc",3,"all",0);
     	svgList[levelInd].addTrack("snpBNLX",1,"",0);
     	svgList[levelInd].addTrack("snpSHRH",1,"",0);
     	svgList[levelInd].addTrack("qtl",3,"",0);
-    	$("div.settingsLevel0 #codingCBXg0").attr('checked',true);
-		$("div.settingsLevel0 #codingCBXt0").attr('checked',true);
-		$("div.settingsLevel0 #noncodingCBXg0").attr('checked',true);
-		$("div.settingsLevel0 #noncodingCBXt0").attr('checked',true);
-		$("div.settingsLevel0 #smallncCBXg0").attr('checked',true);
-		$("div.settingsLevel0 #smallncCBXt0").attr('checked',true);
-		$("div.settingsLevel0 #snpSHRHCBX0").attr('checked',true);
-		$("div.settingsLevel0 #snpBNLXCBX0").attr('checked',true);
-		$("div.settingsLevel0 #qtlCBX0").attr('checked',true);
 	}
 }
 
@@ -530,7 +524,7 @@ function saveToCookie(curLevel){
 	        if($("#"+id+curLevel+"Select").length > 0){
 	          	cookieStr=cookieStr+","+$("#"+id+curLevel+"Select").val();
 	        }
-	        if($("#"+id+"CBXg"+curLevel).size()>0){
+	        if($("#"+id+"CBXg"+curLevel).length>0){
 	        		var curAnnot="";
 		          	if($("#"+id+"CBXg"+curLevel).is(":checked")
 						&&
@@ -1026,6 +1020,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     .style("opacity", 0);
     getAddMenuDiv(levelNumber,this.type);
 	svgList.push(this);
+	loadState(0);
 	
 	 $( ".sortable"+levelNumber ).sortable({
       revert: true,
@@ -1041,7 +1036,6 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
       revert: "invalid",
 	  axis: "y"
     });
-
     var orgVer=mmVer;
     if(organism=="Rn"){
     	orgVer=rnVer;
@@ -1575,6 +1569,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.data=data;
 		that.svg.selectAll(".gene").remove();
 		console.log("in draw"+that.annotType);
+		//console.log("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber);
+		//console.log($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked"));
+		//console.log("Size:"+$("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).length);
+		//console.log("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber);
+		//console.log($("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked"));
+		//console.log("Size:"+$("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).length);
+
 		//set annotType
 		if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")
 			&&
@@ -1640,7 +1641,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 				}
 			}
-			console.log(filterData);
+			//console.log(filterData);
 		}
 		
 		var gene=that.svg.selectAll(".gene")

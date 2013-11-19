@@ -23,7 +23,7 @@ function disablePopup(){
 		$("#popupContact").fadeOut("slow");
 		popupStatus = 0;
 	}
-	 $('#selfPIRadio1').attr('checked', true);
+	 $('#selfPIRadio1').prop('checked''checked', true);
 }
 
 //centering popup
@@ -59,7 +59,7 @@ $(document).ready(function(){
 		$piFirstName = document.getElementById("piFirstName").value;
 		$piLastName = document.getElementById("piLastName").value;			
 			
-		$('#selfPIRadio2').attr('checked', true);
+		$('#selfPIRadio2').prop('checked', true);
            
 		$.get("../../UserLookupServlet", {piFirstName:$piFirstName, piLastName:$piLastName}, function(xml) {
 			if ($("multipleMatches",xml).text() == 'true') {
@@ -74,7 +74,7 @@ $(document).ready(function(){
 					$("lastName",xml).text() +"</a></div>").
 					click(function () { 
 						$("#selectedPI").html($("firstName",xml).text() + " " +$("lastName",xml).text() ); 
-						$('#selfPIRadio1').attr('checked', true);disablePopup();
+						$('#selfPIRadio1').prop('checked', true);disablePopup();
 					});	
 				document.getElementById("pi_user_id").value = $("userID", xml).text();
 			}
@@ -85,7 +85,7 @@ $(document).ready(function(){
 	$("#useSelf").click(function(){
 		$("#selectedPI").html("Self");
 		document.getElementById("pi_user_id").value = "-99";
-		$('#selfPIRadio1').attr('checked', true);
+		$('#selfPIRadio1').prop('checked', true);
 		disablePopup();
 	});
 		
@@ -94,7 +94,7 @@ $(document).ready(function(){
 		$("#selectedPI").html("Self");
 		document.getElementById("pi_user_id").value = document.getElementById("initial_pi_user_id").value;
 		   
-		$('#selfPIRadio1').attr('checked', true);
+		$('#selfPIRadio1').prop('checked', true);
 		disablePopup();
 	});
 		
