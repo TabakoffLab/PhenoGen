@@ -8,8 +8,51 @@
  *      
 --%>
 
+<div class="whats_new version"><p><h3>Version: v2.10</h3><BR /> Updated:12/1/2013</p></div>
+				<ul>
+                <li>
+					<span class="highlight-dark">New Mouse Genome:</span> Our public data has been updated to Mm10.  Probes were aligned to the mouse genome version 10 and then new masks were generated.  The Public LXS data uses a strain specific mask with only Parental ILS and ISS SNPs included. All of three versions of the dataset were renormalized to use the new masks.  Previous results are still available, but new analyses will use the new versions of the dataset. 
+                </li><BR /> 
+				<li> 
+                    <span class="highlight-dark">Detailed Transcription Information renamed to Genome/Transcriptome Data Browser</span>
+                    <ul >
+                    	<li>The page is now centered around a new D3/SVG graphic that makes the page more like a genome browser:
+                        	<ul style="padding-left:30px;">
+                                        <li><div class="clicker" name="branch7">The graphics are interactive &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch7">
+                                        	You can easily zoom and move along the genome to browse features.  You can select a feature to pull up a detailed another detailed interactive image of that feature or a report summarizing the data available for the feature.
+                                        </span>
+                                        <li><div  class="clicker" name="branch8">Three different customizable views&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch8">
+                                        	You can view Genomic Features<BR />
+                                            	<ul>
+                                                </ul>
+                                            You can view Transcriptome Features
+                                            	<ul>
+                                                </ul>
+                                            You can view a combination of both types of features.<BR />
+                                            With all views the tracks displayed are saved so you can move around the genome viewing with the same view or you can flip between two or three views looking at different tracks.
+                                        </span>
+                                        
+                                     </ul>
+                        </li>
+                        <li>The Gene and Region views have been unified to provide a similar interface whether you enter a gene or browse a region.</li>
+                        <li>New Demos:
+                        	<UL>
+                            	<li>A new short demonstration of navigating using the Genome/Transcriptome Data Browser</li>
+                                <li>A new version of the previous demonstration showing how to use the Genome/Trascriptome Data Browser to look at regions of interest</li>
+                            </UL>
+                        </li>
+                        <li style="list-style-type:none;"><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" class="button" style="width:140px;">Try it out</a></li>
+                    </ul>
+                </li>         
+				</ul>
 
-<div class="whats_new version"><p><h3>Version: v2.9</h3><BR /> Updated:2/28/2013</p></div>
+
+				<hr/>
+
+
+<div class="whats_new version"><p><h3>Version: v2.9</h3><BR /> Updated:5/21/2013</p></div>
 				<ul>
                 <li>
 					<span class="highlight-dark">New Rat Genome:</span> All of our public data has been updated to Rn5.  Probes were aligned to the rat genome version 5 and then new masks were generated.  All of the datasets were renormalized to use the new masks.  Previous results are still available, but new analyses will use the new versions of the datasets. 
