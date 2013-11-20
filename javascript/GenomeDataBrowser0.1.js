@@ -1090,6 +1090,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 
 	this.calcY = function (start,end,i){
 		if(this.density==3){
+
 			if((start>=this.xScale.domain()[0]&&start<=this.xScale.domain()[1])||
 				(end>=this.xScale.domain()[0]&&end<=this.xScale.domain()[1])){
 				var pStart=Math.round(this.xScale(start));
@@ -1363,6 +1364,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}.bind(that);
 
 	that.redraw=function(){
+		that.trackYMax=0;
 		//console.log("in redraw:"+that.annotType);
 		//set annotType
 		var curAnnot="";
@@ -1429,7 +1431,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else if(that.density==2){
 			that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").size()+1)*15);
 		}else if(that.density==3){
-			that.svg.attr("height", (this.trackYMax+1)*15);
+			that.svg.attr("height", (that.trackYMax+1)*15);
 		}
 	}.bind(that);
 
@@ -1582,28 +1584,25 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.draw=function (data){
 		that.data=data;
+		that.trackYMax=0;
 		that.svg.selectAll(".gene").remove();
 		console.log("in draw"+that.annotType);
-		//console.log("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber);
-		//console.log($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked"));
-		//console.log("Size:"+$("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).length);
-		//console.log("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber);
-		//console.log($("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked"));
-		//console.log("Size:"+$("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).length);
+		
 
 		//set annotType
 		if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")
 			&&
 			$("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked")){
-			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Selectg").val();
+			//that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Selectg").val();
 			that.annotType="all";
 		}else if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")){
-			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Selectg").val();
+			//that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Selectg").val();
 			that.annotType="annotOnly";
 		}else if($("#"+that.trackClass+"CBXt"+that.gsvg.levelNumber).is(":checked")){
-			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Selectt").val();
+			//that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Selectt").val();
 			that.annotType="trxOnly";
 		}
+		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Selectg").val();
 		console.log("set annotType:"+that.annotType);
 		for(var j=0;j<that.gsvg.width;j++){
 				that.yArr[j]=0;
@@ -1731,7 +1730,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else if(that.density==2){
 			that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").size()+1)*15);
 		}else if(that.density==3){
-			that.svg.attr("height", (this.trackYMax+1)*15);
+			that.svg.attr("height", (that.trackYMax+1)*15);
 		}
 	}.bind(that);
 
