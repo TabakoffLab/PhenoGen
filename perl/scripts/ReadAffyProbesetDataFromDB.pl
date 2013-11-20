@@ -488,6 +488,8 @@ sub readAffyProbesetDataFromDBwoProbes{
 
 	my @probesetHOH; # giant array of hashes and arrays containing probeset data
 	
+	my %probesetH;
+	
 
 	
 	
@@ -502,10 +504,6 @@ sub readAffyProbesetDataFromDBwoProbes{
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
 	my $geneChromNumber = addChr($geneChrom,"subtract");
-
-	# PREPARE THE QUERY for probesets
-	# There's got to be a better way to handle the chromosome...
-	#if(length($geneChromNumber) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation
 		from $chromosomeTablename c, $probesetTablename s
@@ -518,24 +516,7 @@ sub readAffyProbesetDataFromDBwoProbes{
 		and s.Array_TYPE_ID = $arrayTypeID
 		and s.updatedlocation='Y'
 		order by s.probeset_id";
-	#}
-	#elsif(length($geneChromNumber) == 2) {
-	#	$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation
-	#	from $chromosomeTablename c, $probesetTablename s
-	#	where s.chromosome_id = c.chromosome_id
-	#	and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
-	#	and 
-	#	((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-	#	(s.psstop >= $geneStart and s.psstop <= $geneStop))
-	#	and s.psannotation <> 'transcript'
-	#	and s.Array_TYPE_ID = $arrayTypeID
-	#	and s.updatedlocation='Y'
-	#	order by s.probeset_id";
-	#
-	#}
-	#else{
-	#	die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-	#}
+	
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 
@@ -544,7 +525,7 @@ sub readAffyProbesetDataFromDBwoProbes{
 
 # BIND TABLE COLUMNS TO VARIABLES
 
-	$query_handle->bind_columns(undef ,\$dbname, \$dbchromStart, \$dbchromStop,\$dbstrand, \$dbtype, \$dbsequence, \$dbupdloc);
+	$query_handle->bind_columns(undef,\$dbname, \$dbchromStart, \$dbchromStop,\$dbstrand, \$dbtype, \$dbsequence, \$dbupdloc);
 # Loop through results, adding to array of hashes.
 	my $continue=1;
 	my $cntProbes=0;
@@ -557,6 +538,7 @@ sub readAffyProbesetDataFromDBwoProbes{
 	my $tmpSequence = "";
 	my $tmpChromosome = 0;
 	my $tmpUpdatedLocation = 'N';
+	my $count=0;
 
 	
 	while($query_handle->fetch()) {
@@ -572,10 +554,45 @@ sub readAffyProbesetDataFromDBwoProbes{
 				strand => $dbstrand,
 				sequence => $dbsequence,
 				chromosome => $geneChrom,
-				updatedlocation => $dbupdloc
+				updatedlocation => $dbupdloc,
+				herit => {},
+				dabg => {}
 			};
+			$probesetH{$dbname}=$count;
+			$count++;
 	}
 	$query_handle->finish();
+	
+	my $org="Mm";
+	if($arrayTypeID==22){
+		$org="Rn";
+	}
+	
+	$query = "select p.probeset_id,t.tissue,p.dabg, p.herit from probeset_herit_dabg p , rnadataset_dataset t where
+			t.organism = '".$org."'
+			and t.dataset_id = p.dataset_id
+			and p.probeset_ID in
+		(select s.Probeset_ID from $chromosomeTablename c, $probesetTablename s
+		where s.chromosome_id = c.chromosome_id
+		and c.name =  '".uc($geneChromNumber)."'
+		and 
+		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
+		(s.psstop >= $geneStart and s.psstop <= $geneStop))
+		and s.psannotation <> 'transcript'
+		and s.Array_TYPE_ID = $arrayTypeID
+		and s.updatedlocation='Y')";
+	
+	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
+
+	# EXECUTE THE QUERY
+	$query_handle->execute() or die ( "Probeset query execute failed \n");
+	
+	$query_handle->bind_columns(\$probeset,\$tissue,\$dabg,\$herit);
+	while($query_handle->fetch()) {
+		$tissue =~ s/ //g;
+		$probesetHOH[$probesetH{$probeset}]{herit}{$tissue}=$herit;
+		$probesetHOH[$probesetH{$probeset}]{dabg}{$tissue}=$dabg;
+	}
 	$connect->disconnect();
 	#close PSFILE;
 	return (\@probesetHOH);

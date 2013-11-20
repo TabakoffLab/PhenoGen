@@ -124,6 +124,21 @@ $(document).on("change","select[name='trackSelect']",function(){
 				saveToCookie(level);
 	 		});
 
+$(document).on("change","select[name='colorSelect']",function(){
+				var idStr=new String($(this).attr("id"));
+				var value=$(this).val();
+				var level=idStr.substr(idStr.length-12,1);
+				if(value=="dabg" || value=="herit"){
+						$("div#affyTissues"+level).show();
+				}else if(value=="annot"){
+						$("div#affyTissues"+level).hide();
+				}
+				if($("#probeCBX"+level).is(":checked")){
+					
+					saveToCookie(level);
+				}
+	 		});
+
 $(document).on("change","select[name='imgSelect']", function(){
 				var id=new String($(this).attr("id"));
 				var len=id.length-1;

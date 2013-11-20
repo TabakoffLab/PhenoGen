@@ -135,14 +135,14 @@
                             <option value="3" selected="selected">Pack</option>
                             <option value="2" >Full</option>
                         </select>
-                        <BR />
+                        <!--<BR />
                         filtered by:
                          <select name="filterSelect" id="probe<%=level%>filterSelect">
                             <option value="none" selected="selected">None</option>
                             <option value="annot" >Annotation</option>
                             <option value="dabg" >Detection Above Background</option>
                             <option value="herit" >Heritability</option>
-                        </select>
+                        </select>-->
                         <BR />
                         color by:
                         <select name="colorSelect" id="probe<%=level%>colorSelect">
@@ -150,6 +150,18 @@
                             <option value="dabg" >Detection Above Background</option>
                             <option value="herit" >Heritability</option>
                         </select>
+                        	
+                        		<div id="affyTissues<%=level%>" style="display:none;">
+                                	for tissues:
+                                	 <input name="tissuecbx" type="checkbox" id="affyBrainCBX<%=level%>"  checked="checked" /> Whole Brain
+                                     <%if(myOrganism.equals("Rn")){%>
+                                         <input name="tissuecbx" type="checkbox" id="affyBatCBX<%=level%>"  checked="checked" /> Brown Adipose
+                                         <BR />
+                                         <input name="tissuecbx" type="checkbox" id="affyHeartCBX<%=level%>" checked="checked"  /> Heart
+                                         <input name="tissuecbx" type="checkbox" id="affyLiverCBX<%=level%>"  checked="checked" /> Liver
+                                     <%}%>
+                            	</div>
+                            
                         </div>
                         <BR />
                         <%if(myOrganism.equals("Rn")){%>
