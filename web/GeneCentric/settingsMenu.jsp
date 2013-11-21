@@ -153,12 +153,12 @@
                         	
                         		<div id="affyTissues<%=level%>" style="display:none;">
                                 	for tissues:
-                                	 <input name="tissuecbx" type="checkbox" id="affyBrainCBX<%=level%>"  checked="checked" /> Whole Brain
+                                	 <input name="tissuecbx" type="checkbox" id="BrainAffyCBX<%=level%>"  checked="checked" /> Whole Brain
                                      <%if(myOrganism.equals("Rn")){%>
-                                         <input name="tissuecbx" type="checkbox" id="affyBatCBX<%=level%>"  checked="checked" /> Brown Adipose
+                                         <input name="tissuecbx" type="checkbox" id="BrownAdiposeAffyCBX<%=level%>"  checked="checked" /> Brown Adipose
                                          <BR />
-                                         <input name="tissuecbx" type="checkbox" id="affyHeartCBX<%=level%>" checked="checked"  /> Heart
-                                         <input name="tissuecbx" type="checkbox" id="affyLiverCBX<%=level%>"  checked="checked" /> Liver
+                                         <input name="tissuecbx" type="checkbox" id="HeartAffyCBX<%=level%>" checked="checked"  /> Heart
+                                         <input name="tissuecbx" type="checkbox" id="LiverAffyCBX<%=level%>"  checked="checked" /> Liver
                                      <%}%>
                             	</div>
                             
