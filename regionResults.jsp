@@ -20,6 +20,11 @@ var organism="<%=myOrganism%>";
 var ucsctype="region";
 var ucscgeneID="";
 var defaultView="<%=defView%>";
+<%if(region){%>
+var selectGene="";
+<%}else{%>
+var selectGene="<%=selectedEnsemblID%>";
+<%}%>
 </script>
 
 
@@ -244,6 +249,16 @@ var defaultView="<%=defView%>";
 		
 	});
 	
+	
+	$(".Imagetooltip").tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
 	
 </script>
 

@@ -128,7 +128,7 @@ function openSmallNonCoding(id,name){
 
 
 
-
+/*
 function updateTrackString(){
 	trackString="";
 	$("input[name='trackcbx']").each( function (){
@@ -209,4 +209,4 @@ function gvupdateUCSCImage(){
         			$('#gvgeneImage').html("<div>An error occurred generating this image.  Please try back later.</div>");
     			}
 			});
-}
+}*/
