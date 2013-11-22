@@ -2114,7 +2114,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 												   })
 							.attr("id",function(d){return d.getAttribute("ID")+tissue;})
 							.style("fill",function (d){return that.color(d,tissue);})
-							.style("cursor", "pointer")
+							//.style("cursor", "pointer")
 									/*.style("opacity", function(d){
 												var op=1;
 												if(!(typeof that.gsvg.selectedData ==="undefined")){
@@ -2204,7 +2204,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 									   })
 				.attr("id",function(d){return d.getAttribute("ID");})
 				.style("fill",function (d){return that.color(d,"");})
-				.style("cursor", "pointer")
+				//.style("cursor", "pointer")
 				/*.style("opacity", function(d){
 							var op=1;
 							if(!(typeof that.gsvg.selectedData ==="undefined")){
@@ -2586,7 +2586,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 								   })
 			.attr("id",function(d){return d.getAttribute("ID");})
 			.style("fill",that.color)
-			.style("cursor", "pointer")
+			//.style("cursor", "pointer")
 			//.on("mousedown", setupTranscripts)
 			.on("mouseover", function(d) { 
 				d3.select(this).style("fill","green");

@@ -39,8 +39,13 @@ div.testToolTip {
   color:#000000;
   text-align:left;     
 }
-.tooltipTable TD{
+/*table.tooltipTable{
 	background:#d3d3d3;
+}*/
+
+table.tooltipTable TD{
+	background:#d3d3d3;
+	text-align:center;
 }
 
 .axis path{

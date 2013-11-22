@@ -176,9 +176,10 @@ var defaultView="<%=defView%>";
             </TD>
             <TD style="text-align:center;" class="layout">
             <div id="trackContent">
-                <span>Break down of track count</span><BR /><BR />
+                <span style="font-weight:bold;">Break down of track count*</span><BR /><BR />
                 <div id="trackGraph">
                 </div>
+                <span>*Note: Depending on the track settings some features may not be displayed and will not be reflected in the image above.</span>
             </div>
             </TD>
             </TR>
