@@ -1263,6 +1263,8 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	      	g.append("text")
 	      		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
 	      		.attr("dy", ".35em")
+	      		.attr("fill","#FFFFFF")
+	      		//.attr("stroke","#000000")
 	      		.style("text-anchor", "middle")
 	      		.text(function(d) { 
 	      				//console.log(d);
@@ -1540,7 +1542,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		//console.log(dataElem);
 		var dispData=new Array();
 		var dispDataCount=0;
-		if (!(typeof variable === 'undefined')) {
+		if (!(typeof tmpDat === 'undefined')) {
 			for(var l=0;l<tmpDat.length;l++){
 				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
 				var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
@@ -1833,6 +1835,22 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		}
 		return color;
 	}.bind(that);
+
+	that.pieColor =function(d,i){
+		var color=d3.rgb("#000000");
+		var tmpName=new String(d.data.names);
+			if(tmpName=="Core"){
+					color=d3.rgb(255,0,0);
+			}else if(tmpName=="Extended"){
+					color=d3.rgb(0,0,255);
+			}else if(tmpName=="Full"){
+					color=d3.rgb(0,100,0);
+			}else if(tmpName=="Ambiguous"){
+					color=d3.rgb(0,0,0);
+			}
+		return color;
+	}.bind(that);
+
 	that.createToolTip=function(d){
 		var strand=".";
 		if(d.getAttribute("strand") == 1){
@@ -2252,6 +2270,37 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		}
 	}.bind(that);
 
+	that.getDisplayedData= function (){
+		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe");
+		that.counts=[{value:0,names:"Core"},{value:0,names:"Extended"},{value:0,names:"Full"},{value:0,names:"Ambiguous"}];
+		var tmpDat=dataElem[0];
+		console.log(tmpDat);
+		var dispData=new Array();
+		var dispDataCount=0;
+		if (!(typeof tmpDat === 'undefined')) {
+			for(var l=0;l<tmpDat.length;l++){
+				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+				var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+				//console.log("start:"+start+":"+stop);
+				if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
+					if(tmpDat[l].__data__.getAttribute("type")=="core"){
+						this.counts[0].value++;
+					}else if(tmpDat[l].__data__.getAttribute("type")=="extended"){
+						this.counts[1].value++;
+					}else if(tmpDat[l].__data__.getAttribute("type")=="full"){
+						this.counts[2].value++;
+					}else if(tmpDat[l].__data__.getAttribute("type")=="ambiguous"){
+						this.counts[3].value++;
+					}
+					dispData[dispDataCount]=tmpDat[l].__data__;
+					dispDataCount++;
+				}
+			}
+		}else{
+			that.counts=[];
+		}
+		return dispData;
+	}.bind(that);
 	
 	that.draw(data);
 
