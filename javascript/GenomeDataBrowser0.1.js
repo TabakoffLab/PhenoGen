@@ -1842,7 +1842,16 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		}
 		var len=d.getAttribute("stop")-d.getAttribute("start");
 		var tooltiptext="Affy Probe Set ID: "+d.getAttribute("ID")+"<BR>Strand: "+strand+"<BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+" ("+len+"bp)<BR>";
-		tooltiptext=tooltiptext+"Type: "+d.getAttribute("type");
+		tooltiptext=tooltiptext+"Type: "+d.getAttribute("type")+"<BR><BR><table class=\"tooltipTable\" width=\"100%\" colSpace=\"0\"><tr><TH>Tissue</TH><TH>Heritability</TH><TH>DABG</TH></TR>";
+		var tissues=$(".settingsLevel"+that.gsvg.levelNumber+" input[name=\"tissuecbx\"]:checked");
+		var herit=getFirstChildByName(d,"herit");
+		var dabg=getFirstChildByName(d,"dabg");
+		for(var t=0;t<tissues.length;t++){
+			var tissue=new String(tissues[t].id);
+			tissue=tissue.substr(0,tissue.indexOf("Affy"));
+			tooltiptext=tooltiptext+"<TR><TD>"+tissue+"</TD><TD>"+herit.getAttribute(tissue)+"</TD><TD>"+dabg.getAttribute(tissue)+"%</TD></TR>";
+		}
+		tooltiptext=tooltiptext+"</table>";
 		return tooltiptext;
 	}.bind(that);
 
@@ -1854,7 +1863,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		if(curColor!=that.colorSelect || ((that.colorSelect=="herit" || that.colorSelect=="dabg") && tissueLen!=that.tissueLen)){
 		//if(curColor=="annot"&&(that.colorSelect=="herit" || that.colorSelect=="dabg")||
 		//	that.colorSelect=="annot"&&(curColor=="herit" || curColor=="dabg")){
-			console.log("callDraw from redraw");
+			//console.log("callDraw from redraw");
 			that.colorSelect=curColor;
 			that.tissueLen=tissueLen;
 			that.draw(that.data);
@@ -1867,7 +1876,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 				}else if(that.colorSelect=="herit"){
 					that.drawScaleLegend("0","1.0","Probeset Heritability","#FFFFFF","#000000");
 				}
-				console.log("redraw Tissues:");
+				//console.log("redraw Tissues:");
 				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe").each( function(d){
 									var d3This=d3.select(this);
 									var strChar=">";
@@ -1887,7 +1896,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 									}
 									d3This.select("text").text(fullChar);
 								});
-				console.log(tissues);
+				//console.log(tissues);
 				
 				var totalYMax=1;
 				for(var t=0;t<tissues.length;t++){
@@ -1900,7 +1909,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 									that.yArr[j]=-299999999;
 						}
 						
-						console.log(t+":"+tissue);
+						//console.log(t+":"+tissue);
 						//that.yArr=new Array();
 						//for(var j=0;j<100;j++){
 						//	that.yArr[j]=-299999999;
