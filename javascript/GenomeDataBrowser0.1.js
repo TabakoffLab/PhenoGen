@@ -1866,11 +1866,11 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 			}
 		}else if(that.colorSelect=="herit"){
 			var value=getFirstChildByName(d,"herit").getAttribute(tissue);
-			var cval=Math.floor(value*255);
+			var cval=255-Math.floor(value*255);
 			color=d3.rgb(cval,cval,cval);
 		}else if(that.colorSelect=="dabg"){
 			var value=getFirstChildByName(d,"dabg").getAttribute(tissue);
-			var cval=Math.floor(value*2.55);
+			var cval=255-Math.floor(value*2.55);
 			color=d3.rgb(cval,cval,cval);
 		}
 		return color;
