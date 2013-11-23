@@ -1907,7 +1907,19 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		for(var t=0;t<tissues.length;t++){
 			var tissue=new String(tissues[t].id);
 			tissue=tissue.substr(0,tissue.indexOf("Affy"));
-			tooltiptext=tooltiptext+"<TR><TD>"+tissue+"</TD><TD>"+herit.getAttribute(tissue)+"</TD><TD>"+dabg.getAttribute(tissue)+"%</TD></TR>";
+			var hval=255-Math.floor(herit.getAttribute(tissue)*255);
+			var thcol="black";
+			if(hval<100){
+				thcol="white";
+			}
+			var hcol=d3.rgb(hval,hval,hval);
+			var dval=255-Math.floor(dabg.getAttribute(tissue)*2.55);
+			var tdcol="black";
+			if(dval<100){
+				tdcol="white";
+			}
+			var dcol=d3.rgb(dval,dval,dval);
+			tooltiptext=tooltiptext+"<TR><TD>"+tissue+"</TD><TD style=\"background:"+hcol+";color:"+thcol+"\">"+herit.getAttribute(tissue)+"</TD><TD style=\"background:"+dcol+";color:"+tdcol+"\">"+dabg.getAttribute(tissue)+"%</TD></TR>";
 		}
 		tooltiptext=tooltiptext+"</table>";
 		return tooltiptext;
