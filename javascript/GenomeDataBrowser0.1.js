@@ -1125,7 +1125,8 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		if(this.density==3){
 
 			if((start>=this.xScale.domain()[0]&&start<=this.xScale.domain()[1])||
-				(end>=this.xScale.domain()[0]&&end<=this.xScale.domain()[1])){
+				(end>=this.xScale.domain()[0]&&end<=this.xScale.domain()[1])||
+				(start<=this.xScale.domain()[0]&&end>=this.xScale.domain()[1])){
 				var pStart=Math.round(this.xScale(start));
 				if(pStart<0){
 					pStart=0;
@@ -1470,13 +1471,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 					var fullChar="";
 					var rectW=d3This.select("rect").attr("width");
-					if(rectW>=7.5 && rectW<=15){
+					if(rectW>=7.5 && rectW<=16){
 						fullChar=strChar;
-					}else if(rectW>15){
-						rectW=rectW-7.5;
-						while(rectW>7.5){
+					}else if(rectW>16){
+						rectW=rectW-7.9;
+						while(rectW>18){
 							fullChar=fullChar+strChar;
-							rectW=rectW-7.5;
+							rectW=rectW-7.9;
 						}
 					}
 					d3This.select("text").text(fullChar);
@@ -1506,6 +1507,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				gene.attr("class","selected").style("fill","green");
 				console.log(gene.data()[0]);
 				that.setupDetailedView(gene.data()[0]);
+				selectGene="";
 			}
 		}
 	}
@@ -1791,10 +1793,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			if(rectW<7.5){
 				fullChar="";
 			}else{
-				rectW=rectW-7.5;
-				while(rectW>8.5){
+				rectW=rectW-7.9;
+				while(rectW>18){
 					fullChar=fullChar+strChar;
-					rectW=rectW-7.5;
+					rectW=rectW-7.9;
 				}
 			}
 			d3This.append("svg:text").attr("dx","1").attr("dy","10").style("pointer-events","none").text(fullChar);
