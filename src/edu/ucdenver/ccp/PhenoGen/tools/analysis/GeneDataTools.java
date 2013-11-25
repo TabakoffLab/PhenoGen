@@ -304,6 +304,13 @@ public class GeneDataTools {
                 maxCoord=Integer.parseInt(loc[2]);
         }
         ArrayList<Gene> ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01);
+        for(int i=0;i<ret.size();i++){
+            log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
+            if(ret.get(i).getGeneID().equals(ensemblIDList)){
+                log.debug("EQUAL::"+ret.get(i).getGeneID()+"::"+ensemblIDList);
+                this.returnGeneSymbol=ret.get(i).getGeneSymbol();
+            }
+        }
         /*this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
         ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chrom,arrayTypeID,0.01,"All");
         HashMap transInQTLsCore=new HashMap();

@@ -2327,7 +2327,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe");
 		that.counts=[{value:0,names:"Core"},{value:0,names:"Extended"},{value:0,names:"Full"},{value:0,names:"Ambiguous"}];
 		var tmpDat=dataElem[0];
-		console.log(tmpDat);
+		//console.log(tmpDat);
 		var dispData=new Array();
 		var dispDataCount=0;
 		if (!(typeof tmpDat === 'undefined')) {
@@ -2964,7 +2964,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 
 		qtls.exit().remove();
 		that.svg.attr("height", (data.length+1)*15);
-		that.getDisplayedData();
+		//that.getDisplayedData();
 	}.bind(that);
 	that.draw(data);
 	that.redraw();

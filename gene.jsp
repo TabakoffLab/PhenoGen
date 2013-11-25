@@ -353,6 +353,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 											}else{
 												geneSymbol.add(tmpGeneSymbol);
 											}
+											
 											if(tmpUcscURL==null){
 												ucscURL.add("");
 											}else{
@@ -685,12 +686,35 @@ Or
 </script>
 
 
-<%if(genURL.size()>0){%>
+<%if(genURL.size()==1){%>
 	
 
 	<%@ include file="regionResults.jsp" %>
     <%@ include file="web/GeneCentric/resultsHelp.jsp" %>
 
+<%}else if(genURL.size()>1){%>
+	<BR /><BR />
+                      
+            
+                <label><span style="font-weight:bold;">Multiple genes were returned please select the gene of Interest:</span>
+                <select name="geneSelectCBX" id="geneSelectCBX" >
+                    <%for(int i=0;i<firstEnsemblID.size();i++){
+                        %>
+                        <option value="<%=firstEnsemblID.get(i)%>" <%if(i==selectedGene){%>selected<%}%>>
+                                                <%if(geneSymbol.get(i)!=null&&!geneSymbol.get(i).startsWith("ERROR")){%>
+                                                        <%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
+                                                <%}else if(geneSymbol.get(i).startsWith("ERROR")){%>
+                                <%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
+                                                <%}else{%>
+                                                        <%=firstEnsemblID.get(i)%>
+                                                <%}%>
+                                                
+                        </option>
+                    <%}%>
+                </select>
+                </label>
+            
+            <input type="submit" name="action" id="selGeneBTN" value="Go" onClick="enterSelectedGene()">
 <%}else{%>
 
 	<%if(displayNoEnsembl){ %>
