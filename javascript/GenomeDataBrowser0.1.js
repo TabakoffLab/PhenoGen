@@ -2488,7 +2488,11 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 
 	that.createToolTip=function (d){
 		var tooltip="";
-		tooltip="Type: "+d.getAttribute("type")+"<BR>Strain: "+d.getAttribute("strain")+"<BR>Sequence: "+d.getAttribute("refSeq")+"->"+d.getAttribute("strainSeq")+"<BR>Location: chr"+d.getAttribute("chromosome")+":"+d.getAttribute("start");
+		var strain=d.getAttribute("strain");
+		if(strain=="SHRH"){
+			strain="SHR";
+		}
+		tooltip="Type: "+d.getAttribute("type")+"<BR>Strain: "+strain+"<BR>Sequence: "+d.getAttribute("refSeq")+"->"+d.getAttribute("strainSeq")+"<BR>Location: chr"+d.getAttribute("chromosome")+":"+d.getAttribute("start");
 		if(d.getAttribute("type")=="SNP"){
 
 		}else{
@@ -2769,7 +2773,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 }
 
 function QTLTrack(gsvg,data,trackClass,density){
-	var that=new Track(gsvg,data,trackClass,"QTLs");
+	var that=new Track(gsvg,data,trackClass,"QTLs Overlapping Region");
 	
 	that.color= function (name){
 		return that.pieColorPalette(name);

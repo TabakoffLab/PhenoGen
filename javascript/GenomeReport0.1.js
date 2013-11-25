@@ -111,7 +111,7 @@ function loadTrackTable(){
 		jspPage="web/GeneCentric/transcriptTable.jsp";
 	}
 	loadDivWithPage("div#regionTable",jspPage,params,
-		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
+		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
 
 function loadEQTLTable(){
@@ -233,5 +233,5 @@ function displayDetailedView(track){
 
 function DisplaySelectedDetailReport(jspPage,params){
 	loadDivWithPage("div#selectedReport",jspPage,params,
-		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
+		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
