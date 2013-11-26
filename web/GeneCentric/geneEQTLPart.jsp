@@ -527,46 +527,9 @@ The chromosome where the gene is physically located MUST be included in the Circ
 		//document.getElementById("circosError1").style.display = 'none';
 
 	
-		$('.fancybox').fancybox({
-			width:$(document).width(),
-			height:$(document).height()
-  		});
-  
-  		$('.hiddenLink').fancybox({
-			width:$(document).width(),
-			height:$(document).height()
-		});
 		
-		/*$('.inpageHelpContent').hide();
-  
-  		$('.inpageHelpContent').dialog({ 
-  			autoOpen: false,
-			dialogClass: "helpDialog", 
-			height:300,
-			zIndex: 3999
-		});
 		
- 
-  		$('#Help9a').click( function(){
-  			$('#Help9aContent').dialog("open").css({'height':220,'font-size':12});
-			$('.helpDialog').css({'top':450,'left':$(window).width()*0.08,'width':$(window).width()*0.33});
-			return false;
-  		});
-  		$('#Help9b').click( function(){
-  			$('#Help9bContent').dialog("open").css({'height':220,'font-size':12});
-			$('.helpDialog').css({'top':450,'left':$(window).width()*0.08,'width':$(window).width()*0.33});
-			return false;
-  		}); 
-  		$('#Help9c').click( function(){
-  			$('#Help9cContent').dialog("open").css({'height':220,'font-size':12});
-			$('.helpDialog').css({'top':450,'left':$(window).width()*0.08,'width':$(window).width()*0.33});
-			return false;
-  		}); 
-  		$('#Help9d').click( function(){
-  			$('#Help9dContent').dialog("open").css({'height':220,'font-size':12});
-			$('.helpDialog').css({'top':450,'left':$(window).width()*0.08,'width':$(window).width()*0.33});
-			return false;
-  		}); */
+		
 		/*$(".triggerEQTL").click(function(){
 		var baseName = $(this).attr("name");
 		$(this).toggleClass("less");
