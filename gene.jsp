@@ -2,19 +2,15 @@
 
 <%
 	extrasList.add("detailedTranscriptInfo.js");
-	//extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("jquery.cookie.js");
-	
 	//extrasList.add("TableTools.min.js");
 	//extrasList.add("ZeroClipboard.js");
 	//extrasList.add("ColReorder.min.js");
 	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
-	//extrasList.add("jquery.tooltipster.js");
 	extrasList.add("d3.v3.min.js");
 	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
-	//extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("tooltipster.css");
@@ -289,11 +285,11 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		
 
 		
-			//if(myGene.startsWith("ENSRNOG") ||myGene.startsWith("ENSMUSG")){
+			if(myGene.startsWith("ENSRNOG") ||myGene.startsWith("ENSMUSG")){
+				myIDecoderClient.setNum_iterations(0);
+			}else{
 				myIDecoderClient.setNum_iterations(1);
-			/*}else{
-				myIDecoderClient.setNum_iterations(1);
-			}*/
+			}
 			iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
 			myIDecoderClient.setNum_iterations(1);
 
@@ -388,43 +384,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 								displayNoEnsembl=true;
 						}
 					
-	}/*else if ((action != null) && action.equals("Go")) {
-		//iDecoderAnswer=(Set)session.getAttribute("iDecoderAnswer");
-		//List myIdentifierList=null;
-        //ArrayList<String> myEnsemblIDs=new ArrayList<String>();
-		log.debug("Selecting a new gene");
-		log.debug("\nGene:"+selectedEnsemblID+"\nurl:"+lg.getGeneLink(selectedEnsemblID,myOrganism,true,true,false));
-		response.sendRedirect(lg.getGeneLink(selectedEnsemblID,myOrganism,true,true,false));
-		/*if(request.getParameter("genURLArray")!=null){
-			log.debug("genURLArray !=null");
-			String[] tmpgenURL=request.getParameter("genURLArray").trim().split(",");
-			String[] tmpGeneSym=request.getParameter("geneSymArray").trim().split(",");
-			String[] tmpURL=request.getParameter("ucscURLArray").trim().split(",");
-			//String[] tmpFilterURL=request.getParameter("ucscFilterURLArray").trim().split(",");
-			String[] tmpFirstENS=request.getParameter("firstENSArray").trim().split(",");
-			genURL=oh.getAsArrayList(tmpgenURL);
-			geneSymbol=oh.getAsArrayList(tmpGeneSym);
-			ucscURL=oh.getAsArrayList(tmpURL);
-			//ucscURLFiltered=oh.getAsArrayList(tmpFilterURL);
-			firstEnsemblID=oh.getAsArrayList(tmpFirstENS);
-			log.debug("selected ind:"+selectedGene+"\nGene:"+firstEnsemblID.get(selectedGene)+"\nurl:"+lg.getGeneLink(firstEnsemblID.get(selectedGene),myOrganism,true,true,false));
-			
-		}else{
-			log.debug("genURLArray == null");
-			displayNoEnsembl=true;
-		}*/
-        /*if(iDecoderAnswer!=null){
-               	genURL=(ArrayList<String>)session.getAttribute("genURLArray");
-				geneSymbol=(ArrayList<String>)session.getAttribute("ucscURLArray");
-				ucscURL=(ArrayList<String>)session.getAttribute("geneSymbolArray");
-				ucscURLFiltered=(ArrayList<String>)session.getAttribute("ucscURLFilteredArray");
-				firstEnsemblID=(ArrayList<String>)session.getAttribute("firstEnsemblIDArray");
-        }else{
-			displayNoEnsembl=true;
-		}*/
-	
-	//}
-	else if(
+	}else if(
 		(((action != null) && action.equals("Get Transcription Details"))&& region )
 			|| ( auto && region )
 	
@@ -594,8 +554,6 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 
 
 <%if(genURL.size()>1){%>
-	<BR /><BR />
-                      
                 <label><span style="font-weight:bold;">Multiple genes were returned please select the gene of Interest:</span>
                 <select name="geneSelectCBX" id="geneSelectCBX" >
                     <%for(int i=0;i<firstEnsemblID.size();i++){
