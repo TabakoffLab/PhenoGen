@@ -11,7 +11,7 @@
 	//extrasList.add("ColReorder.min.js");
 	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
-	extrasList.add("jquery.tooltipster.js");
+	//extrasList.add("jquery.tooltipster.js");
 	extrasList.add("d3.v3.min.js");
 	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
 	//extrasList.add("jquery.fancybox.css");

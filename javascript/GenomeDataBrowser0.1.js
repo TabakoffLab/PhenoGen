@@ -357,6 +357,7 @@ function getAddMenuDiv(level,type){
 }
 
 function loadState(levelInd){
+	console.log("loadState("+levelInd+")");
 	setupSettingUI(levelInd);
 	loadSavedConfigTracks(levelInd);
 	loadImageState(levelInd);
@@ -424,15 +425,15 @@ function setupTrackSettingUI(levelInd){
     	var trackArray=trackListObj.split(";");
     	$("input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
-    			//console.log("unchecking"+$(this).attr("id"));
+    			console.log("unchecking"+$(this).attr("id"));
     			$(this).prop('checked', false);
     		}
     	});
     	console.log("SETUP UI");
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
-    		//console.log("setupTrackVars[0] "+trackVars[0]);
-    		//console.log(trackVars);
+    		console.log("setupTrackVars[0] "+trackVars[0]);
+    		console.log(trackVars);
     		if(trackVars[0]!=""){
     			if(trackVars[0]=="noncoding"||trackVars[0]=="coding"||trackVars[0]=="smallnc"){
     				if(trackVars[2]!=undefined){
@@ -466,6 +467,8 @@ function setupTrackSettingUI(levelInd){
     		}
 
     	}
+	}else{
+		console.log("no cookie:"+"state"+defaultView+levelInd+"trackList");
 	}
 }
 
@@ -487,6 +490,7 @@ function setupImageSettingUI(levelInd){
 }
 
 function setupDefaultView(levelInd){
+	console.log("setupDefaultView:"+defaultView);
 	$("input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
     			//console.log("unchecking"+$(this).attr("id"));
@@ -534,7 +538,7 @@ function setupDefaultView(levelInd){
 
 function saveToCookie(curLevel){
 	var cookieStr="";
-	$( ".sortable"+curLevel+" li svg").each(function() {
+	$( "#sortable"+curLevel+" li svg").each(function() {
 	        var id = (new String ($(this).attr("id"))).substr(6);
 	        cookieStr=cookieStr+id;
 	        if($("#"+id+"Dense"+curLevel+"Select").length > 0){
@@ -575,9 +579,9 @@ function saveToCookie(curLevel){
     }
 	$.cookie("state"+defaultView+curLevel+"trackList",cookieStr);
 }
-function timeoutFunc(){
+/*function timeoutFunc(){
 	console.log("timeout function call");
-}
+}*/
 
 //D3 helper functions
 function key(d) {return d.getAttribute("ID");};
