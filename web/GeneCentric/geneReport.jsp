@@ -349,7 +349,7 @@ Add report here.
             	<TD class="header">Affy Probe Set Data</TD>
                 <TD class="header">Overlapping Probe Set Count:<%=curGene.getProbeCount()%></TD>
             </TR>
-            
+            <%if(curGene.getProbeCount()>0){%>
             <TR>
             	<TD colspan="2"><B>Probe Set Detection Above Background(DABG) >1% of all samples:</B></TD>
             </TR>
@@ -448,6 +448,7 @@ Add report here.
                 	</table>
                 </TD>
             </TR>
+            <%}%>
             
             <%	if(tc!=null){	
                                     //String[] curTissues=tc.getTissueList();%>
@@ -642,7 +643,7 @@ Add report here.
 				id:selectedID
 			};
 			loadDivWithPage("div#geneEQTL",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		}
 		
 	});

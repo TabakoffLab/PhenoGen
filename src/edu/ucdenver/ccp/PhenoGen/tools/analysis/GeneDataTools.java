@@ -768,9 +768,7 @@ public class GeneDataTools {
         
         log.debug(ensemblIDList+" CreatedXML::"+createdXML);
         
-        if(!createdXML){ 
-            error=true;
-        }else{
+        
             String[] loc=null;
             try{
                 loc=myFH.getFileContents(new File(outputDir+"location.txt"));
@@ -815,7 +813,7 @@ public class GeneDataTools {
             //Moved back to AsyncGeneDataTools
             //outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
             
-        }
+        
         return error;
     }
     
@@ -1171,7 +1169,7 @@ public class GeneDataTools {
 
             } catch (ExecException e) {
                 completedSuccessfully=false;
-                log.error("In Exception of run writeXML_RNA.pl Exec_session", e);
+                log.error("In Exception of run findGeneRegion.pl Exec_session", e);
                 
                 String errorList=myExec_session.getErrors();
                 boolean missingDB=false;
