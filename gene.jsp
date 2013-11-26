@@ -563,6 +563,12 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	
 %>
 
+
+<div id="oldIE" style="display:none;color:#FF0000;">
+	This page requires IE 10+. Your browser appears to be an older version of Internet Explorer.  To use this feature please use a different browser(see <a href="<%=commonDir%>siteRequirements.jsp">Site Requirements</a>).  We are sorry for any inconvenience this may cause.  We're working hard to provide additional features which makes it difficult to maintain compatibility with all browsers.
+</div>
+
+
 <%if(!popup){%>
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
@@ -712,6 +718,12 @@ Or
 									closeDialog(translateDialog);
                 				}
 			);
+	}
+	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
+ 		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+		if (ieversion<10){
+			$("#oldIE").show();
+		}
 	}
 </script>
 

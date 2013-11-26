@@ -1017,7 +1017,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		.attr("id","settingsLevel"+this.levelNumber)
 		.style("float","right")
 		.style("width","118px")
-		.text("Settings/Tracks");
+		.text("Customize Image");
 	//this.vis.append("span").attr("class","reset button").attr("id","resetLevel"+this.levelNumber).style("float","left").style("width","118px").text("Reset Image");
 	//this.vis.append("span").attr("class","undo button").attr("id","undoLevel"+this.levelNumber).style("float","left").style("width","220px").text("Undo last Zoom/Move");
 	this.topDiv=this.vis.append("div")
