@@ -1815,7 +1815,30 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.redrawLegend=function (){
 		var legend=[];
-		if(that.annotType=="annotOnly"){
+		var curPos=0;
+		if(that.annotType!="trxOnly"){
+			if(trackClass == "coding"){
+				legend[curPos]={color:"#DFC184",label:"Ensembl"};
+			}else if(trackClass == "noncoding"){
+				legend[curPos]={color:"#B58AA5",label:"Ensembl"};
+			}else if(trackClass == "smallnc"){
+				legend[curPos]={color:"#FFCC00",label:"Ensembl"};
+			}
+			curPos++;
+		}
+
+		if(organism=="Rn" && that.annotType!="annotOnly"){
+			if(trackClass == "coding"){
+				legend[curPos]={color:"#7EB5D6",label:"Brain RNA-Seq"};
+			}else if(trackClass == "noncoding"){
+				legend[curPos]={color:"#CECFCE",label:"Brain RNA-Seq"};
+			}else if(trackClass == "smallnc"){
+				legend[curPos]={color:"#99CC99",label:"Brain RNA-Seq"};
+			}
+			curPos++;
+		}
+
+		/*if(that.annotType=="annotOnly"){
 			if(trackClass == "coding"){
 				legend=[{color:"#DFC184",label:"Ensembl"}];
 			}else if(trackClass == "noncoding"){
@@ -1839,7 +1862,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}else if(trackClass == "smallnc"){
 				legend=[{color:"#FFCC00",label:"Ensembl"},{color:"#99CC99",label:"Brain RNA-Seq"}];
 			}
-		}
+		}*/
 		that.drawLegend(legend);
 	}.bind(that);
 
@@ -3187,7 +3210,30 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 		return (i+1)*15;
 	}
 
-	
+	that.redrawLegend=function (){
+		var legend=[];
+		var curPos=0;
+			if(this.gsvg.txType=="protein"){
+				legend[curPos]={color:"#DFC184",label:"Ensembl"};
+			}else if(this.gsvg.txType=="long"){
+				legend[curPos]={color:"#B58AA5",label:"Ensembl"};
+			}else if(this.gsvg.txType=="small"){
+				legend[curPos]={color:"#FFCC00",label:"Ensembl"};
+			}
+			curPos++;
+
+		if(organism=="Rn"){
+			if(this.gsvg.txType=="protein"){
+				legend[curPos]={color:"#7EB5D6",label:"Brain RNA-Seq"};
+			}else if(this.gsvg.txType=="long"){
+				legend[curPos]={color:"#CECFCE",label:"Brain RNA-Seq"};
+			}else if(this.gsvg.txType=="small"){
+				legend[curPos]={color:"#99CC99",label:"Brain RNA-Seq"};
+			}
+			curPos++;
+		}
+		that.drawLegend(legend);
+	}.bind(that);
 
 	that.txMin=that.gsvg.selectedData.getAttribute("extStart");
 	that.txMax=that.gsvg.selectedData.getAttribute("extStop");
@@ -3228,15 +3274,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 	
 	
 	 tx.exit().remove();
-	 var legend=[];
-	if(that.gsvg.txType=="protein"){
-		legend=[{color:"#DFC184",label:"Ensembl"},{color:"#7EB5D6",label:"RNA-Seq"}];
-	}else if(that.gsvg.txType=="long"){
-		legend=[{color:"#B58AA5",label:"Ensembl"},{color:"#CECFCE",label:"RNA-Seq"}];
-	}else if(that.gsvg.txType=="small"){
-		legend=[{color:"#FFCC00",label:"Ensembl"},{color:"#99CC99",label:"RNA-Seq"}];
-	}
-	that.drawLegend(legend);
+	that.redrawLegend();
 	 that.scaleSVG.transition()        
 				.duration(300)      
 				.style("opacity", 1);
