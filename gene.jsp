@@ -289,11 +289,11 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 		
 
 		
-			if(myGene.startsWith("ENSRNOG") ||myGene.startsWith("ENSMUSG")){
-				myIDecoderClient.setNum_iterations(0);
-			}else{
-				myIDecoderClient.setNum_iterations(2);
-			}
+			//if(myGene.startsWith("ENSRNOG") ||myGene.startsWith("ENSMUSG")){
+				myIDecoderClient.setNum_iterations(1);
+			/*}else{
+				myIDecoderClient.setNum_iterations(1);
+			}*/
 			iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
 			myIDecoderClient.setNum_iterations(1);
 
@@ -579,11 +579,41 @@ pageTitle="Detailed Transcription Information "+myGene;%>
                 Click on the Translate Region to Mouse/Rat to find regions on the Mouse/Rat genome that correspond to a region of interest in the Human/Mouse/Rat genome.<BR />
                 2. Choose a species.<BR />
                 3. Click Get Transcription Details.<BR /><BR />
-                Hint: Try other synonyms if the first ID that you enter is not found.<BR /><BR /><BR />
+                <BR /><BR /><BR />
 </div>
 
 
+
 <div style="text-align:center">
+
+
+<%if(genURL.size()>1){%>
+	<BR /><BR />
+                      
+                <label><span style="font-weight:bold;">Multiple genes were returned please select the gene of Interest:</span>
+                <select name="geneSelectCBX" id="geneSelectCBX" >
+                    <%for(int i=0;i<firstEnsemblID.size();i++){
+                        %>
+                        <option value="<%=firstEnsemblID.get(i)%>" <%if((geneSymbol.get(i)!=null&&geneSymbol.get(i).toLowerCase().equals(myGene.toLowerCase()))){%>selected<%}%>>
+                                                <%if(geneSymbol.get(i)!=null&&!geneSymbol.get(i).startsWith("ERROR")){%>
+                                                        <%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
+                                                <%}else if(geneSymbol.get(i).startsWith("ERROR")){%>
+                                <%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
+                                                <%}else{%>
+                                                        <%=firstEnsemblID.get(i)%>
+                                                <%}%>
+                                                
+                        </option>
+                    <%}%>
+                </select>
+                </label>
+            
+            <input type="submit" name="action" id="selGeneBTN" value="Go" onClick="enterSelectedGene()"><BR />
+            Hint: Try other synonyms if the first ID that you enter is not found.
+            <BR /><BR />
+<%}%>
+
+
 <form method="post" 
 		action="<%=formName%>"
 		enctype="application/x-www-form-urlencoded"
@@ -692,34 +722,16 @@ Or
 	<%@ include file="regionResults.jsp" %>
     <%@ include file="web/GeneCentric/resultsHelp.jsp" %>
 
-<%}else if(genURL.size()>1){%>
-	<BR /><BR />
-                      
-            
-                <label><span style="font-weight:bold;">Multiple genes were returned please select the gene of Interest:</span>
-                <select name="geneSelectCBX" id="geneSelectCBX" >
-                    <%for(int i=0;i<firstEnsemblID.size();i++){
-                        %>
-                        <option value="<%=firstEnsemblID.get(i)%>" <%if(i==selectedGene){%>selected<%}%>>
-                                                <%if(geneSymbol.get(i)!=null&&!geneSymbol.get(i).startsWith("ERROR")){%>
-                                                        <%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
-                                                <%}else if(geneSymbol.get(i).startsWith("ERROR")){%>
-                                <%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
-                                                <%}else{%>
-                                                        <%=firstEnsemblID.get(i)%>
-                                                <%}%>
-                                                
-                        </option>
-                    <%}%>
-                </select>
-                </label>
-            
-            <input type="submit" name="action" id="selGeneBTN" value="Go" onClick="enterSelectedGene()">
+
 <%}else{%>
 
 	<%if(displayNoEnsembl){ %>
+    	Hint: Try other synonyms if the first ID that you enter is not found.
+            <BR /><BR />
         <BR /><div class="error">ERROR:No Ensembl ID found for the ID entered.<BR /><BR />
-        The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
+        The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR />
+        <BR />
+         
 	<% }%>
 
 	

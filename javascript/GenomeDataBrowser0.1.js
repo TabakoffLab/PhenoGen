@@ -683,7 +683,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}
 					}else{
 						var data=d.documentElement.getElementsByTagName("Gene");
-						var newTrack=new GeneTrack(par,data,track,"Long Non-Coding / Non-PolyA+",additionalOptions);
+						var newTrack=new GeneTrack(par,data,track,"Long Non-Coding / Non-PolyA+ Genes",additionalOptions);
 						par.addTrackList(newTrack);
 						if(selectGene!=""){
 							newTrack.setSelected(selectGene);
@@ -708,7 +708,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}
 					}else{
 						var data=d.documentElement.getElementsByTagName("smnc");
-						var newTrack=new GeneTrack(par,data,track,"Small RNA (<200 bp)",additionalOptions);
+						var newTrack=new GeneTrack(par,data,track,"Small RNA (<200 bp) Genes",additionalOptions);
 						par.addTrackList(newTrack);
 						if(selectGene!=""){
 							newTrack.setSelected(selectGene);
@@ -1036,7 +1036,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					    .attr("height", 60)
 						.attr("pointer-events", "all")
 					    .attr("class", "scale")
-						.attr("pointer-events", "all")
+						//.attr("pointer-events", "all")
 						.on("mousedown", this.mdown)
 						.on("mouseup",mup)
 						.style("cursor", "ew-resize");
@@ -1292,9 +1292,11 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	      		//.attr("stroke","#000000")
 	      		.style("text-anchor", "middle")
 	      		.text(function(d) { 
-	      				//console.log(d);
-	      				//return d.data.names+": "+d.value; 
-	      				return d.value;
+	      				var ret=d.value;
+	      				if(d.value==0){
+	      					ret="";
+	      				}
+	      				return ret;
 	      	});
       	}
 		
@@ -1471,11 +1473,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 					var fullChar="";
 					var rectW=d3This.select("rect").attr("width");
-					if(rectW>=7.5 && rectW<=16){
+					if(rectW>=7.9 && rectW<=16){
 						fullChar=strChar;
-					}else if(rectW>16){
+					}else if(rectW>8){
 						rectW=rectW-7.9;
-						while(rectW>18){
+						while(rectW>8){
 							fullChar=fullChar+strChar;
 							rectW=rectW-7.9;
 						}
@@ -1694,11 +1696,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			lbltxSuffix="";
 		}
 		if(that.annotType=="annotOnly"){
-			lbl="Annotated "+lbl;
+			lbl="Annotated "+lbl+" Genes";
 		}else if(that.annotType=="trxOnly"){
-			lbl="RNA-Seq Transcriptome "+lbl+lbltxSuffix;
+			lbl="RNA-Seq Transcriptome "+lbl+lbltxSuffix+" Genes";
 		}else{
-			lbl=lbl+lbltxSuffix;
+			lbl=lbl+lbltxSuffix+" Genes";
 		}
 		that.updateLabel(lbl);
 		that.redrawLegend();
