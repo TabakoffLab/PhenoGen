@@ -611,11 +611,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		var par=this;
 		var tmpvis=d3.select("#Level"+this.levelNumber+track);
 		if(tmpvis[0][0]==null){
-				var dragDiv=this.topLevel.append("li");
+				var dragDiv=this.topLevel.append("li").attr("class","draggable"+this.levelNumber);
 				var svg = dragDiv.append("svg:svg")
 				.attr("width", this.get('width'))
 				.attr("height", 30)
-				.attr("class", "track draggable"+this.levelNumber)
+				.attr("class", "track")
 				.attr("id","Level"+this.levelNumber+track)
 				.attr("pointer-events", "all")
 				.style("cursor", "move");
@@ -860,6 +860,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					}
 				});
 			}
+			$(".sortable"+this.levelNumber).sortable( "refresh" );
 			
 	}.bind(this);
 	
@@ -938,9 +939,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	this.setLoading=function (){
 		for(var i=0;i<this.trackList.length;i++){
-			
-			if(this.trackList[i].updateData!=undefined){
-				console.log("not undef");
+			if(this.trackList[i]!=undefined && this.trackList[i].updateData!=undefined){
+				//console.log("not undef");
 				this.trackList[i].showLoading();
 			}
 		}
@@ -1060,30 +1060,36 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					.style("overflow","auto")
 					.style("width",(this.width+18)+"px")
 					.append("ul")
-					.attr("class","sortable"+levelNumber);
+					.attr("id","sortable"+levelNumber);
 	
 	
 	this.tt=d3.select("body").append("div")   
-    .attr("class", "testToolTip")               
-    .style("opacity", 0);
+    	.attr("class", "testToolTip")               
+    	.style("opacity", 0);
     getAddMenuDiv(levelNumber,this.type);
 	svgList.push(this);
-	loadState(0);
 	
-	 $( ".sortable"+levelNumber ).sortable({
-										      revert: true,
-											  axis: "y",
+	
+	 $( "#sortable"+levelNumber ).sortable({
+										      ///revert: true,
+										      //snap: "li",
+											  //axis: "y",
+											  appendTo: "parent",
+											  containment: "parent",
+											  //helper: "original",
 											  stop: function() {
 										        saveToCookie(levelNumber);
 										      }
-										    });
+										    }).disableSelection();
+	
     $( ".draggable"+levelNumber ).draggable({
-										      connectToSortable: ".sortable"+levelNumber,
+										      connectToSortable: "#sortable"+levelNumber,
 										      scroll: true,
-										      helper: "clone",
+										      //helper: "original",
 										      revert: "invalid",
 											  axis: "y"
 										    });
+    //$( "ul,li");
     var orgVer=mmVer;
     if(organism=="Rn"){
     	orgVer=rnVer;
@@ -1586,6 +1592,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		var dispDataCount=0;
 		if (!(typeof tmpDat === 'undefined')) {
 			for(var l=0;l<tmpDat.length;l++){
+				if(tmpDat[l].__data__ != undefined){
 				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
 				var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
 				//console.log("start:"+start+":"+stop);
@@ -1597,6 +1604,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 					dispData[dispDataCount]=tmpDat[l].__data__;
 					dispDataCount++;
+				}
 				}
 			}
 		}else{
@@ -1785,6 +1793,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		gene.exit().remove();
 		
 		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").each( function(d){
+			if(d!=undefined){
 			var d3This=d3.select(this);
 			var strChar=">";
 			if(d.getAttribute("strand")=="-1"){
@@ -1802,6 +1811,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 			}
 			d3This.append("svg:text").attr("dx","1").attr("dy","10").style("pointer-events","none").text(fullChar);
+			}
 		});
 
 		if(that.density==1){
@@ -2529,19 +2539,19 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		d3.xml(path,function (error,d){
 				if(error){
-						if(success!=1 && retry<3){//wait before trying again
+					if(retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
 								time=15000;
 							}
 							setTimeout(function (){
-								this.updateDate(retry+1);
+								that.updateData(retry+1);
 							}.bind(this),time);
-						}else if(success!=1){
+					}else if(retry>=3){
 							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
-						}
-					}else{
+					}
+				}else{
 						var snp=d.documentElement.getElementsByTagName(tag);
 						var mergeddata=new Array();
 						var checkName=new Array();
@@ -2574,19 +2584,21 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		var dispDataCount=0;
 		var total=0;
 		for(var l=0;l<tmpDat.length;l++){
-			var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
-			var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
-			if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
-				var ind=0;
-				if(tmpDat[l].__data__.getAttribute("type")=="Insertion"){
-					ind++;
-				}else if(tmpDat[l].__data__.getAttribute("type")=="Deletion"){
-					ind=ind+2;
+			if(tmpDat[l].__data__!=undefined){
+				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+				var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+				if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
+					var ind=0;
+					if(tmpDat[l].__data__.getAttribute("type")=="Insertion"){
+						ind++;
+					}else if(tmpDat[l].__data__.getAttribute("type")=="Deletion"){
+						ind=ind+2;
+					}
+					that.counts[ind].value++;
+					dispData[dispDataCount]=tmpDat[l].__data__;
+					dispDataCount++;
+					total++;
 				}
-				that.counts[ind].value++;
-				dispData[dispDataCount]=tmpDat[l].__data__;
-				dispDataCount++;
-				total++;
 			}
 		}
 		/*for(var l=0;l<that.counts.length;l++){

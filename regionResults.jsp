@@ -111,7 +111,8 @@ var selectGene="<%=selectedEnsemblID%>";
 				
                 <script type="text/javascript">
                     var gs=new GenomeSVG(".ucscImage",970,minCoord,maxCoord,0,chr,"gene");
-                    $( "ul, li" ).disableSelection();
+					loadState(0);
+                    //$( "ul, li" ).disableSelection();
                 </script>
            </div>
         </div>

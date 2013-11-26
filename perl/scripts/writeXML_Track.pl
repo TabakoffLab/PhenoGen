@@ -22,7 +22,7 @@ sub createBinnedData{
 	my $curIndex=0;
 	my $bp90=$bin-($bin*.9);
 	while($curStart<$stop){
-		print "binning\t$curStart\t$curStop\t$binInd\n";
+		#print "binning\t$curStart\t$curStop\t$binInd\n";
 		my %countHOH;
 		my $curPos=$curStart;
 		my $loopCount=0;
@@ -106,11 +106,11 @@ sub createBinnedData{
 		while($valInd<@sortVal and $curBP<$bp90){
 			my $bp=$countHOH{$sortVal[$valInd]};
 			$curBP=$curBP+$bp;
-			print "comp90\t val[$valInd]=".$sortVal[$valInd]."\t current bp=".$bp."\t total bp=$curBP\n";
+			#print "comp90\t val[$valInd]=".$sortVal[$valInd]."\t current bp=".$bp."\t total bp=$curBP\n";
 			$valInd++;
 		}
 		my $binVal=$sortVal[$valInd-1];
-		print "$binInd\t$curStart\t$binVal\n";
+		#print "$binInd\t$curStart\t$binVal\n";
 		$binHOH{Count}[$binInd]{start}=$curStart;
 		$binHOH{Count}[$binInd]{logcount}=$binVal;
 		
@@ -159,7 +159,7 @@ sub createXMLFile
 		$roundMin=$minCoord-($minCoord % $binSize);
 		$roundMax=$maxCoord+($binSize-($maxCoord % $binSize));
 	}
-	print ("min:$minCoord\nmax:$maxCoord\nroundMin:$roundMin\nroundMax:$roundMax\n");
+	#print ("min:$minCoord\nmax:$maxCoord\nroundMin:$roundMin\nroundMax:$roundMax\n");
 	my $rnaCountRef=readRNACountsDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
 	my %rnaCountHOH=%$rnaCountRef;
 	my $rnaCountEnd=time();

@@ -580,9 +580,9 @@ sub createXMLFile
 		@geneList=();
 	};
 	
-	print "list before sort:".@geneList."\n";
+	#print "list before sort:".@geneList."\n";
 	my @sortedlist = sort { $a->{start} <=> $b->{start} } @geneList;
-	print "sorted List:".@sortedlist."\n";
+	#print "sorted List:".@sortedlist."\n";
 	$GeneHOH{Gene}=\@sortedlist;
 	
 	##output XML file
@@ -617,7 +617,7 @@ sub createXMLFile
 	#my $rnaCountEnd=time();
 	#print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
 	
-	my $trackDB="mm9";
+	my $trackDB="mm10";
 	if($species eq 'Rat'){
 		$trackDB="rn5";
 	}

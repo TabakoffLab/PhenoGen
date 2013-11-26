@@ -140,7 +140,7 @@ sub createSmallNonCodingXML{
 	};
 	
 	my @sortedlist = sort { $a->{start} <=> $b->{start} } @outList;
-	print "sorted List:".@sortedlist."\n";
+	#print "sorted List:".@sortedlist."\n";
 	$outGeneHOH{smnc}=\@sortedlist;
 	
 	my $xml = new XML::Simple (RootName=>'smallRNAList');
@@ -215,7 +215,7 @@ sub createProbesetXMLTrack{
 		};
 	
 		my @sortedlist = sort { $a->{start} <=> $b->{start} } @outList;
-		print "sorted List:".@sortedlist."\n";
+		#print "sorted List:".@sortedlist."\n";
 		$outGeneHOH{probe}=\@sortedlist;
 		
 		my $xml = new XML::Simple (RootName=>'probeList');

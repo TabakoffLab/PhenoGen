@@ -14,7 +14,7 @@
 	extrasList.add("jquery.tooltipster.js");
 	extrasList.add("d3.v3.min.js");
 	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
-	extrasList.add("jquery.fancybox.css");
+	//extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("tooltipster.css");
