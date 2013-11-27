@@ -627,6 +627,7 @@ Add report here.
 
 
 <script type="text/javascript">
+	var idStr="<%=id%>";
 	$('.selectdetailMenu').click(function (){
 		var oldID=$('.selectdetailMenu.selected').attr("name");
 		$("#"+oldID).hide();
@@ -644,6 +645,14 @@ Add report here.
 			};
 			loadDivWithPage("div#geneEQTL",jspPage,params,
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+		}else if(id=="geneApp"){
+			$.ajax({
+					url: "web/GeneCentric/callPanelExpr.jsp",
+	   				type: 'GET',
+					data: {id:idStr,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
+					dataType: 'json',
+	    			error: function(xhr, status, error) {console.log(error);}
+	    			});
 		}
 		
 	});

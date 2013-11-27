@@ -75,7 +75,7 @@
         			$('#forIframe').html("<div>An error occurred generating this image.  Please try back later.</div>");
     			}
 			});
-			$('.allowChromSelection').show();
+			//$('.allowChromSelection').show();
 		}
 	</script>
     <%
@@ -248,6 +248,31 @@
     
     
 	<div style="text-align:center;">
+    <%
+			if(fileError){%>
+            	
+            </tbody>
+			</table>
+			<div style="display:block; color:#FF0000;">There was an error retrieving transcripts for <%=geneSymbolinternal%>.  Try refreshing the page.  The website administrator has been informed of the error. </div>
+        <%
+			}else if(transcriptError==null){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
+		%>
+            </tbody>
+			</table>
+			<div style="display:block; color:#FF0000;">There was an error retrieving transcripts for <%=geneSymbolinternal%>.  The website administrator has been informed.</div>
+		<%
+			}
+			else if(transcriptError) // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
+			{
+		%>
+            </tbody>
+			</table>
+			<div style="display:block; color:#FF0000;">There are no available transcript cluster IDs for <%=geneSymbolinternal%>.  Please choose a different gene to view eQTL.</div>
+		<%
+			} 
+			else 
+			{ // go ahead and make the rest of the form for entering options
+		%>
 		<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;width:1000px;text-align:left;">
     	<span class="trigger less" id="circosOption1" name="circosOption" >eQTL Image Options</span>
     	<span class="eQTLtooltip" title="The controls in this section allow you to change the chromosomes and tissues included in the image as well as the P-value threshold.  If you can't see them click on the + icon.  Once you make changes click on the Click to Run Circos button."><img src="<%=imagesDir%>icons/info.gif"></span>
@@ -256,7 +281,7 @@
 
       	<table id="circosOptTbl" name="items" class="list_base" cellpadding="0" cellspacing="3" style="width:1000px;text-align:left;" >
         <tbody id="circosOption">
- 
+ 		
 		<tr>
 			<td>
 				<strong>P-value Threshold for Highlighting:</strong> 
@@ -288,31 +313,7 @@
 		<input type="hidden" id="hiddenGeneCentricPath" name="hiddenGeneCentricPath" value=<%=geneCentricPath%> />
 		<input type="hidden" id="hiddenGeneSymbol" name="hiddenGeneSymbol" value=<%=geneSymbolinternal%> />
 
-		<%
-			if(fileError){%>
-            	
-            </tbody>
-			</table>
-			<div style="display:block; color:#FF0000;">There was an error retrieving transcripts for <%=geneSymbolinternal%>.  Try refreshing the page.  The website administrator has been informed of the error. </div>
-        <%
-			}else if(transcriptError==null){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
-		%>
-            </tbody>
-			</table>
-			<div style="display:block; color:#FF0000;">There was an error retrieving transcripts for <%=geneSymbolinternal%>.  The website administrator has been informed.</div>
-		<%
-			}
-			else if(transcriptError) // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
-			{
-		%>
-            </tbody>
-			</table>
-			<div style="display:block; color:#FF0000;">There are no available transcript cluster IDs for <%=geneSymbolinternal%>.  Please choose a different gene to view eQTL.</div>
-		<%
-			} 
-			else 
-			{ // go ahead and make the rest of the form for entering options
-		%>
+		
 		
 		<tr>
 			<td>
@@ -361,7 +362,7 @@ Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; hav
 		</tr>
 
 		
-		<TR class="allowChromSelection" style="display:none;">
+		<TR class="allowChromSelection" >
                                        <%if(myOrganism.equals("Rn")){%>
                                             <TD style="text-align:left; width:50%;">
                                                 <table style="width:100%;">
@@ -467,17 +468,7 @@ The chromosome where the gene is physically located MUST be included in the Circ
                                                   </tbody>
                                               </table>		
                                          </TD>
-          </TR>
-			
-
-		
-
-		
-		
-		
-		
-		
-		
+          </TR>		
 		<tr>	
 				<td>
 				<INPUT TYPE="submit" NAME="action" id="clickToRunCircos" Value="Click to run Circos" onClick="return runCircos()">
@@ -519,17 +510,11 @@ The chromosome where the gene is physically located MUST be included in the Circ
 
 <script>
 	
-	
 	$(document).ready(function() {	
-	
+		
 		$(".multiselect").twosidedmultiselect();
         var selectedChromosomes = $("#chromosomes")[0].options;
 		//document.getElementById("circosError1").style.display = 'none';
-
-	
-		
-		
-		
 		/*$(".triggerEQTL").click(function(){
 		var baseName = $(this).attr("name");
 		$(this).toggleClass("less");
@@ -537,14 +522,17 @@ The chromosome where the gene is physically located MUST be included in the Circ
 	});*/
 		
 		$('.eQTLtooltip').tooltipster({
-		position: 'top-right',
-		maxWidth: 350,
-		offsetX: 24,
-		offsetY: 5,
-		//arrow: false,
-		interactive: true,
-   		interactiveTolerance: 350
-		});
+										position: 'top-right',
+										maxWidth: 350,
+										offsetX: 24,
+										offsetY: 5,
+										//arrow: false,
+										interactive: true,
+										interactiveTolerance: 350
+									});
+		if($('#transcriptClusterID').length==1){
+			runCircos();
+		}
 	});
 
 </script>

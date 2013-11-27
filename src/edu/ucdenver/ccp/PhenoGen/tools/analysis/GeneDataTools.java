@@ -303,6 +303,7 @@ public class GeneDataTools {
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
         }
+        log.debug("getGeneCentricData->getRegionData");
         ArrayList<Gene> ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01);
         for(int i=0;i<ret.size();i++){
             log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
@@ -545,7 +546,9 @@ public class GeneDataTools {
         
         
         chromosome=chromosome.toLowerCase();
-        
+        if(!chromosome.startsWith("chr")){
+            chromosome="chr"+chromosome;
+        }
         //Setup a String in the format YYYYMMDDHHMM to append to the folder
         Date start = new Date();
         GregorianCalendar gc = new GregorianCalendar();
@@ -650,7 +653,7 @@ public class GeneDataTools {
         return outputDir;
     }
 
-    public void getRegionGeneView(String chromosome,int minCoord,int maxCoord,
+    /*public void getRegionGeneView(String chromosome,int minCoord,int maxCoord,
             String panel,
             String organism,int RNADatasetID,int arrayTypeID,String trackDefault) {
         
@@ -748,7 +751,7 @@ public class GeneDataTools {
             result=this.returnGenURL;
         }
         this.setPublicVariables(error,folderName);
-    }
+    }*/
     
     
     public boolean generateFiles(String organism,String rOutputPath, String ensemblIDList,String folderName,String ensemblID1,int RNADatasetID,int arrayTypeID,String panel) {
@@ -780,13 +783,13 @@ public class GeneDataTools {
                 chrom=loc[0];
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
-                String[] url=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq",organism,outputDir,chrom,minCoord,maxCoord);
-                if(url!=null){
-                    generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);
-                }else{
-                    error=true;
-                }
-                getUCSCUrl(url[1].replaceFirst(".png",".url"));
+                //String[] url=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq",organism,outputDir,chrom,minCoord,maxCoord);
+                //if(url!=null){
+                //generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);
+                //}else{
+                //    error=true;
+                //}
+                //getUCSCUrl(url[1].replaceFirst(".png",".url"));
                 outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
 
 
@@ -796,10 +799,10 @@ public class GeneDataTools {
                 //       completedSuccessfully=false;
                 //}
                 prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
-                boolean expError=callPanelExpr(chrom,minCoord,maxCoord,arrayTypeID,RNADatasetID,prevThread);
+                /*boolean expError=callPanelExpr(chrom,minCoord,maxCoord,arrayTypeID,RNADatasetID,prevThread);
                 if(expError){
                        error=true;
-                }
+                }*/
             }
 
             //String[] url=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq",organism,outputDir,chrom,minCoord,maxCoord);
@@ -856,7 +859,6 @@ public class GeneDataTools {
             //log.debug("make output dir");
             outDirF.mkdirs();
         }
-        
         boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,arrayTypeID,RNADatasetID);
         
         
@@ -892,11 +894,11 @@ public class GeneDataTools {
         if(!createdXML){ 
             
         }else{
-            String[] url=this.createImage(defaultTrack,organism,outputDir,chrom,minCoord,maxCoord);
-            if(url!=null){
+            //String[] url=this.createImage(defaultTrack,organism,outputDir,chrom,minCoord,maxCoord);
+            //if(url!=null){
                 completedSuccessfully=true;
-            }
-            getUCSCUrl(url[1].replaceFirst(".png",".url"));
+            //}
+            //getUCSCUrl(url[1].replaceFirst(".png",".url"));
             //boolean ucscComplete=getUCSCUrls("RegionView");
             //if(!ucscComplete){
             //       completedSuccessfully=false;
@@ -1460,7 +1462,7 @@ public class GeneDataTools {
         return completedSuccessfully;
     }
     
-    public String[] getUCSCGeneImage(String csvTrackList,String organism,String chr,int min, int max,String geneID){
+    /*public String[] getUCSCGeneImage(String csvTrackList,String organism,String chr,int min, int max,String geneID){
         String mainDir=fullPath + "tmpData/geneData/"+geneID+"/";
         String[] ret=new String[2];
         String[] tmp=this.createImage(csvTrackList, organism, mainDir, chr, min, max);
@@ -1663,7 +1665,7 @@ public class GeneDataTools {
                     /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
                         envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
                     }*/
-                }
+/*                }
 
 
                 //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
@@ -1713,7 +1715,7 @@ public class GeneDataTools {
         
         return ret;
     }
-    
+*/
     
     public boolean createRegionViewImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
         boolean completedSuccessfully=false;
@@ -1847,7 +1849,7 @@ public class GeneDataTools {
     
     
     
-    public boolean callPanelExpr(String chr, int min, int max,int arrayTypeID,int rnaDS_ID,AsyncGeneDataTools prevThread){
+    public boolean callPanelExpr(String id,String chr, int min, int max,int arrayTypeID,int rnaDS_ID,AsyncGeneDataTools prevThread){
         boolean error=false;
         //create File with Probeset Tissue herit and DABG
         String datasetQuery="select rd.dataset_id, rd.tissue "+
@@ -1862,17 +1864,18 @@ public class GeneDataTools {
             try{
                 String ver="v1";
                 if(arrayTypeID==21){
-                    ver="v3";
+                    ver="v6";
                 }
+                String tmpOutput= fullPath + "tmpData/geneData/" + id+ "/";
                 //log.debug("Getting ready to start");
-                File indivf=new File(outputDir+"Panel_Expr_indiv_tmp.txt");
-                File groupf=new File(outputDir+"Panel_Expr_group_tmp.txt");
+                File indivf=new File(tmpOutput+"Panel_Expr_indiv_tmp.txt");
+                File groupf=new File(tmpOutput+"Panel_Expr_group_tmp.txt");
                 BufferedWriter outGroup=new BufferedWriter(new FileWriter(groupf));
                 BufferedWriter outIndiv=new BufferedWriter(new FileWriter(indivf));
                 ArrayList<AsyncGeneDataExpr> localList=new ArrayList<AsyncGeneDataExpr>();
                 SyncAndClose sac=new SyncAndClose(start,localList,dbConn,outGroup,outIndiv,usageID,outputDir);
                 while(rs.next()){
-                    AsyncGeneDataExpr agde=new AsyncGeneDataExpr(session,outputDir+"tmp_psList.txt",outputDir,prevThread,threadList,maxThreadRunning,outGroup,outIndiv,sac,ver);
+                    AsyncGeneDataExpr agde=new AsyncGeneDataExpr(session,tmpOutput+"tmp_psList.txt",tmpOutput,null,threadList,maxThreadRunning,outGroup,outIndiv,sac,ver);
                     String dataset_id=Integer.toString(rs.getInt("DATASET_ID"));
                     int iDSID=rs.getInt("DATASET_ID");
                     String tissue=rs.getString("TISSUE");
