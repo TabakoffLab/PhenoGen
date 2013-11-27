@@ -2397,9 +2397,11 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 	var strain=(new String(trackClass)).substr(3);
 	var lbl=strain;
 	if(lbl=="SHRH"){
-		lbl="SHR";
+		lbl="SHR/OlaPrin";
 	}else if(lbl=="BNLX"){
-		lbl="BN-Lx";
+		lbl="BN-Lx/CubPrin";
+	}else if(lbl=="SHRJ"){
+		lbl="SHR/NCrlPrin";
 	}
 	that.displayStrain=lbl;
 	if(include==1){
@@ -2582,7 +2584,8 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 	that.getDisplayedData= function (){
 		//console.log("getDisplayedData");
 		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".snp");
-		that.counts=[{value:0,perc:0,names:"SNP "+that.displayStrain},{value:0,perc:0,names:"Insertion "+that.displayStrain},{value:0,perc:0,names:"Deletion "+that.displayStrain}];
+		//that.counts=[{value:0,perc:0,names:"SNP "+that.displayStrain},{value:0,perc:0,names:"Insertion "+that.displayStrain},{value:0,perc:0,names:"Deletion "+that.displayStrain}];
+		that.counts=[{value:0,perc:0,names:"SNP"},{value:0,perc:0,names:"Insertion"},{value:0,perc:0,names:"Deletion"}];
 		var tmpDat=dataElem[0];
 		var dispData=new Array();
 		var dispDataCount=0;
@@ -2620,9 +2623,11 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 
 		var lbl=that.strain;
 		if(lbl=="SHRH"){
-			lbl="SHR";
+			lbl="SHR/OlaPrin";
 		}else if(lbl=="BNLX"){
-			lbl="BN-Lx";
+			lbl="BN-Lx/CubPrin";
+		}else if(lbl=="SHRJ"){
+			lbl="SHR/NCrlPrin";
 		}
 		if(that.include==1){
 			lbl=lbl+" SNPs";
@@ -2716,7 +2721,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		var tmpName=new String(d.data.names);
 		//console.log(d.data.names);
 		//console.log(tmpName);
-		if(tmpName.indexOf("BN-Lx")>-1){
+		if(that.strain=="BNLX"){
 			if(tmpName.indexOf("SNP")>-1){
 				color=d3.rgb(0,0,255);
 			}else if(tmpName.indexOf("Insertion")>-1){
@@ -2724,7 +2729,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 			}else{
 				color=d3.rgb(0,0,125);
 			}
-		}else if(tmpName.indexOf("SHRJ")>-1){
+		}else if(that.strain=="SHRJ"){
 			if(tmpName.indexOf("SNP")>-1){
 				color=d3.rgb(0,255,0);
 			}else if(tmpName.indexOf("Insertion")>-1){
@@ -2732,7 +2737,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 			}else{
 				color=d3.rgb(0,125,00);
 			}
-		}else if(tmpName.indexOf("F344")>-1){
+		}else if(that.strain=="F344"){
 			if(tmpName.indexOf("SNP")>-1){
 				color=d3.rgb(0,255,255);
 			}else if(tmpName.indexOf("Insertion")>-1){
@@ -2740,7 +2745,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 			}else{
 				color=d3.rgb(0,125,125);
 			}
-		}else if(tmpName.indexOf("SHR")>-1){
+		}else if(that.strain=="SHRH"){
 			if(tmpName.indexOf("SNP")>-1){
 				color=d3.rgb(255,0,0);
 			}else if(tmpName.indexOf("Insertion")>-1){
@@ -2758,37 +2763,37 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		var legend=[];
 		if(that.include==4){
 			if(that.strain=="BNLX"){
-				legend=[{color:"#0000FF",label:"SNP BN-Lx"},{color:"#000096",label:"Indel BN-Lx"}];
+				legend=[{color:"#0000FF",label:"SNP"},{color:"#000096",label:"Indel"}];
 			}else if(that.strain=="SHRH"){
-				legend=[{color:"#FF0000",label:"SNP SHR"},{color:"#960000",label:"Indel SHR"}];
+				legend=[{color:"#FF0000",label:"SNP"},{color:"#960000",label:"Indel"}];
 			}else if(that.strain=="SHRJ"){
-				legend=[{color:"#00FF00",label:"SNP SHRJ"},{color:"#009600",label:"Indel SHRJ"}];
+				legend=[{color:"#00FF00",label:"SNP"},{color:"#009600",label:"Indel"}];
 			}else if(that.strain=="F344"){
-				legend=[{color:"#00FFFF",label:"SNP F344"},{color:"#009696",label:"Indel F344"}];
+				legend=[{color:"#00FFFF",label:"SNP"},{color:"#009696",label:"Indel"}];
 			}else{
 				legend=[{color:"#DEDEDE",label:"SNP"},{color:"#969696",label:"Indel"}];
 			}
 		}else if(that.include==3 || that.include==2){
 			if(that.strain=="BNLX"){
-				legend=[{color:"#000096",label:"Indel BN-Lx"}];
+				legend=[{color:"#000096",label:"Indel"}];
 			}else if(that.strain=="SHRH"){
-				legend=[{color:"#960000",label:"Indel SHR"}];
+				legend=[{color:"#960000",label:"Indel"}];
 			}else if(that.strain=="SHRJ"){
-				legend=[{color:"#009600",label:"Indel SHRJ"}];
+				legend=[{color:"#009600",label:"Indel"}];
 			}else if(that.strain=="F344"){
-				legend=[{color:"#009696",label:"Indel F344"}];
+				legend=[{color:"#009696",label:"Indel"}];
 			}else{
 				legend=[{color:"#969696",label:"Indel"}];
 			}
 		}else if(that.include==1){
 			if(that.strain=="BNLX"){
-				legend=[{color:"#0000FF",label:"SNP BN-Lx"}];
+				legend=[{color:"#0000FF",label:"SNP"}];
 			}else if(that.strain=="SHRH"){
-				legend=[{color:"#FF0000",label:"SNP SHR"}];
+				legend=[{color:"#FF0000",label:"SNP"}];
 			}else if(that.strain=="SHRJ"){
-				legend=[{color:"#00FF00",label:"SNP SHRJ"}];
+				legend=[{color:"#00FF00",label:"SNP"}];
 			}else if(that.strain=="F344"){
-				legend=[{color:"#00FFFF",label:"SNP F344"}];
+				legend=[{color:"#00FFFF",label:"SNP"}];
 			}else{
 				legend=[{color:"#DEDEDE",label:"SNP"}];
 			}
