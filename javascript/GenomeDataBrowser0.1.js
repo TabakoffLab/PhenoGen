@@ -7,6 +7,7 @@ var ajaxList=new Array();
 var selectedGeneSymbol="";
 var selectedID="";
 var trackSettings=new Array();
+var overSelectable=0;
 
 var ratOnly=new Array();
 var mouseOnly=new Array();
@@ -622,7 +623,17 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				.attr("class", "track")
 				.attr("id","Level"+this.levelNumber+track)
 				.attr("pointer-events", "all")
-				.style("cursor", "move");
+				.style("cursor", "move")
+				.on("mouseover", function(){
+					if(overSelectable==0){
+						$("#mouseHelp").html("<B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Reorder Tracks:</B> Click on the track and drag up or down to desired location.");
+					}
+				})
+				.on("mouseout", function(){
+					if(overSelectable==0){
+						$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+					}
+				});
 				//.on("mousedown", this.panDown);
 				//this.svg.append("text").text(this.label).attr("x",this.gsvg.width/2-20).attr("y",12);
 				var lblStr=new String("Loading...");
@@ -1049,6 +1060,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						//.attr("pointer-events", "all")
 						.on("mousedown", this.mdown)
 						.on("mouseup",mup)
+						.on("mouseover", function(){
+							$("#mouseHelp").html("ZOOM: Click and Drag right to zoom in or left to zoom out.");
+						})
+						.on("mouseout", function(){
+							$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+						})
 						.style("cursor", "ew-resize");
 	
 	this.scaleSVG.append("g")
@@ -1796,15 +1813,20 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				})
 			.on("dblclick", that.zoomToFeature)
 			.on("mouseover", function(d) { 
+				overSelectable=1;
+				$("#mouseHelp").html("<B>Click</B> to see additional details. <B>Double Click</B> to zoom in on this feature.");
 				d3.select(this).style("fill","green");
-		         that.gsvg.get('tt').transition()        
+		        	that.gsvg.get('tt').transition()        
 		                .duration(200)      
 		                .style("opacity", .95);      
-		         that.gsvg.get('tt').html(that.createToolTip(d))  
+		        	that.gsvg.get('tt').html(that.createToolTip(d))  
 		                .style("left", ((d3.event.pageX-gsvg.get('halfWindowWidth')) + "px") )  
-		                .style("top", (d3.event.pageY + 20) + "px");  
+		                .style("top", (d3.event.pageY + 20) + "px"); 
+		            return false;
 	            })
 			.on("mouseout", function(d) { 
+				overSelectable=0;
+				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 				if(d3.select(this).attr("class")!="selected"){
 					d3.select(this).style("fill",that.color);
 				}
@@ -2217,7 +2239,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 												   })
 							.attr("id",function(d){return d.getAttribute("ID")+tissue;})
 							.style("fill",function (d){return that.color(d,tissue);})
-							//.style("cursor", "pointer")
+							.style("cursor", "pointer")
 									/*.style("opacity", function(d){
 												var op=1;
 												if(!(typeof that.gsvg.selectedData ==="undefined")){
@@ -2229,7 +2251,11 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 												}
 												return op;
 										})*/
+							.on("dblclick", that.zoomToFeature)
+
 							.on("mouseover", function(d) {
+										overSelectable=1;
+										$("#mouseHelp").html("<B>Double Click</B> to zoom in on this feature.");
 										var thisD3=d3.select(this); 
 										that.curTTColor=thisD3.style("fill");
 										if(thisD3.style("opacity")>0){
@@ -2243,6 +2269,8 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 							            }
 							            })
 							.on("mouseout", function(d) {
+								overSelectable=0;
+								$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 								var thisD3=d3.select(this); 
 								if(thisD3.style("opacity")>0){  
 								thisD3.style("fill",that.curTTColor);
@@ -2308,7 +2336,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 									   })
 				.attr("id",function(d){return d.getAttribute("ID");})
 				.style("fill",function (d){return that.color(d,"");})
-				//.style("cursor", "pointer")
+				.style("cursor", "pointer")
 				/*.style("opacity", function(d){
 							var op=1;
 							if(!(typeof that.gsvg.selectedData ==="undefined")){
@@ -2320,7 +2348,10 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 							}
 							return op;
 					})*/
+				.on("dblclick", that.zoomToFeature)
 				.on("mouseover", function(d) {
+					overSelectable=1;
+					$("#mouseHelp").html("<B>Double Click</B> to zoom in on this feature.");
 					var thisD3=d3.select(this); 
 					if(thisD3.style("opacity")>0){
 						thisD3.style("fill","green");
@@ -2333,6 +2364,8 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		            }
 		            })
 				.on("mouseout", function(d) {
+					overSelectable=0;
+					$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 					var thisD3=d3.select(this); 
 					if(thisD3.style("opacity")>0){  
 					thisD3.style("fill",that.color);
@@ -3020,6 +3053,8 @@ function QTLTrack(gsvg,data,trackClass,density){
 			//.on("mouseout", that.onMouseOut);
 			.on("click", that.setupDetailedView)
 			.on("mouseover", function(d) { 
+				overSelectable=1;
+				$("#mouseHelp").html("<B>Click</B> to see additional details. <B>Double Click</B> to zoom in on this feature.");
 				d3.select(this).style("fill","green");
 	            that.gsvg.get('tt').transition()        
 	                .duration(200)      
@@ -3029,6 +3064,8 @@ function QTLTrack(gsvg,data,trackClass,density){
 	                .style("top", (d3.event.pageY + 20) + "px");  
 	            })
 			.on("mouseout", function(d) {
+				overSelectable=0;
+				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 				var nameStr=d.getAttribute("name");
 				var end=nameStr.indexOf("QTL")-1;
 				var name=nameStr.substr(0,end);  

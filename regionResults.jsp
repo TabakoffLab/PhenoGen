@@ -101,7 +101,8 @@ var selectGene="<%=selectedEnsemblID%>";
             </span>-->
     </div>
     
-    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">    
+    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
+    	<span id="mouseHelp">Navigation Hints: Hold mouse over areas of the image for available actions.</span>    
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
