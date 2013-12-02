@@ -22,9 +22,9 @@ ratOnly["illuminaPolyA"]=1;
 
 
 
-var mmVer="mm10 Strain:";
-var rnVer="rn5 Strain:BN";
-var siteVer="PhenoGen v2.10(12/1/2013)";
+var mmVer="Mouse(mm10) Strain:C57BL/6J";
+var rnVer="Rat(rn5) Strain:BN";
+var siteVer="PhenoGen v2.10(12/4/2013)";
 
 var trackBinCutoff=10000;
 
@@ -3065,7 +3065,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 			id=id.replace(/^0+/, '');
 			id="Brain.T"+id;
 		}
-		tooltip="ID: "+id+"<BR>Location:"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Strand: "+strand;
+		tooltip="ID: "+id+"<BR>Location: chr"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Strand: "+strand;
 		if(new String(d.getAttribute("ID")).indexOf("ENS")==-1){
 				var annot=getFirstChildByName(getFirstChildByName(d,"annotationList"),"annotation");
 				if(annot!=null){

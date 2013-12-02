@@ -26,8 +26,23 @@
 </style>
 
     <div class="settingsLevel<%=level%>"  style="display:none;width:400px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:50px; left:-98px; background-color:#FFFFFF; min-height:450px;">
-        	<span style="color:#000000;">Available Tracks/Settings:</span>
-        	<span class="closeBtn" id="close_settingsLevel<%=level%>" style="position:relative;top:3px;left:104px;"><img src="<%=imagesDir%>icons/close.png"></span>
+        	<span style="color:#000000; ">Image Settings:</span>
+        	<span class="closeBtn" id="close_settingsLevel<%=level%>" style="position:relative;top:3px;left:136px;"><img src="<%=imagesDir%>icons/close.png"></span>
+            <div>
+            	Image Area Height:
+                <select name="imgSelect" id="displaySelect<%=level%>">
+                	<option value="150">Small</option>
+                	<option value="350" selected>Normal</option>
+                    <option value="700">Large</option>
+                	<option value="0">No Scrolling</option>
+                </select>
+                <BR />
+            	<span class="reset button" id="resetImage<%=level%>" style="width:150px;">Reset Image Zoom</span>
+                <%if(level==0){%>
+                	<span class="reset button" id="resetTracks<%=level%>" style="width:150px;">View Default Tracks</span>
+                <%}%>
+          </div>
+          <div style="color:#000000; text-align:left;">Image Tracks:</div>
 			<div id="topAccord<%=level%>" style="height:100%; text-align:left;">
             	<H2>Genome Feature Tracks</H2>
                 <div>
@@ -241,19 +256,8 @@
                     </div>
                 <!--</div>-->
             </div>
-            <div>
-            	Track Area Height:
-                <select name="imgSelect" id="displaySelect<%=level%>">
-                	<option value="150">Small</option>
-                	<option value="350" selected>Normal</option>
-                    <option value="700">Large</option>
-                	<option value="0">No Scrolling</option>
-                </select>
-                <BR />
-            	<span class="reset button" id="resetImage<%=level%>" style="width:150px;">Reset Image Zoom</span>
-                <span class="reset button" id="resetTracks<%=level%>" style="width:150px;">View Default Tracks</span>
-          </div>
+            
 </div>
           <script type="text/javascript">
-		  	$( "#topAccord<%=level%>" ).accordion({ heightStyle: "fill" });
+		  	$( "#topAccord<%=level%>" ).accordion({ heightStyle: "content" });
 		  </script>
