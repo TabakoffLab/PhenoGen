@@ -705,6 +705,13 @@ public class Gene {
                 NamedNodeMap attrib=genes.item(i).getAttributes();
                 if(attrib.getLength()>0){
                     String geneID=attrib.getNamedItem("ID").getNodeValue();
+                    if(geneID.contains("XLOC")){
+                        Matcher m=Pattern.compile("_0+").matcher(geneID);
+                        if(m.find()){
+                            int startPos=m.end();
+                            geneID="Brain.G"+geneID.substring(startPos);
+                        }
+                    }
                     //System.out.println("reading gene ID:"+geneID);
                     String geneSymbol=attrib.getNamedItem("geneSymbol").getNodeValue();
                     String biotype=attrib.getNamedItem("biotype").getNodeValue();
@@ -743,6 +750,8 @@ public class Gene {
         String tissue="";
         if(!geneID.startsWith("ENS")&&geneID.indexOf(".")>-1){
             tissue=geneID.substring(0,geneID.indexOf("."));
+        }else{
+            tissue="Brain";
         }
         for(int i=0;i<nodes.getLength();i++){
             if(nodes.item(i).getNodeName().equals("Transcript")){
@@ -770,7 +779,7 @@ public class Gene {
                     Matcher m=Pattern.compile("_0+").matcher(trID);
                     if(m.find()){
                         int startPos=m.end();
-                        trID=tissue+"."+trID.substring(startPos);
+                        trID=tissue+".T"+trID.substring(startPos);
                     }
                 }
                 Transcript tmptrans=new Transcript(trID,nnm.getNamedItem("strand").getNodeValue(),start,end);

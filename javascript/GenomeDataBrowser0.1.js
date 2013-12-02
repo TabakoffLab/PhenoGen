@@ -1422,14 +1422,20 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else{
 			var txList=getAllChildrenByName(getFirstChildByName(d,"TranscriptList"),"Transcript");
 			for(var m=0;m<txList.length;m++){
+				var id=new String(txList[m].getAttribute("ID"));
+				if(id.indexOf("ENS")==-1){
+					id=id.substr(id.indexOf("_")+1);
+					id=id.replace(/^0+/, '');
+					id="Brain.T"+id;
+				}
 				if(that.annotType=="annotOnly" && new String(txList[m].getAttribute("ID")).indexOf("ENS")>-1){
-					txListStr+="<B>"+txList[m].getAttribute("ID")+"</B>";
+					txListStr+="<B>"+id+"</B>";
 					txListStr+="<br>";
 				}else if(that.annotType=="trxOnly" && new String(txList[m].getAttribute("ID")).indexOf("ENS")==-1){
-					txListStr+="<B>"+txList[m].getAttribute("ID")+"</B>";
+					txListStr+="<B>"+id+"</B>";
 					txListStr+="<br>";
 				}else if(that.annotType=="all"){
-					txListStr+="<B>"+txList[m].getAttribute("ID")+"</B>";
+					txListStr+="<B>"+id+"</B>";
 					if(new String(txList[m].getAttribute("ID")).indexOf("ENS")==-1 ){
 						var annot=getFirstChildByName(getFirstChildByName(txList[m],"annotationList"),"annotation");
 						if(annot!=null){
@@ -1440,7 +1446,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 
 			}
-			tooltip="ID: "+d.getAttribute("ID")+"<BR>Gene Symbol:"+d.getAttribute("geneSymbol")+"<BR>Location:"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Strand:"+d.getAttribute("strand")+"<BR>Transcripts:<BR>"+txListStr;
+			var gid=d.getAttribute("ID");
+			if(gid.indexOf("ENS")==-1){
+					gid=gid.substr(gid.indexOf("_")+1);
+					gid=gid.replace(/^0+/, '');
+					gid="Brain.G"+gid;
+			}
+			tooltip="ID: "+gid+"<BR>Gene Symbol:"+d.getAttribute("geneSymbol")+"<BR>Location:"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Strand:"+d.getAttribute("strand")+"<BR>Transcripts:<BR>"+txListStr;
 		}
 		return tooltip;
 	}.bind(that);
@@ -3047,7 +3059,13 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 		}else if(d.getAttribute("strand")==-1){
 			strand="-";
 		}
-		tooltip="ID: "+d.getAttribute("ID")+"<BR>Location:"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Strand: "+strand;
+		var id=d.getAttribute("ID");
+		if(id.indexOf("ENS")==-1){
+			id=id.substr(id.indexOf("_")+1);
+			id=id.replace(/^0+/, '');
+			id="Brain.T"+id;
+		}
+		tooltip="ID: "+id+"<BR>Location:"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Strand: "+strand;
 		if(new String(d.getAttribute("ID")).indexOf("ENS")==-1){
 				var annot=getFirstChildByName(getFirstChildByName(d,"annotationList"),"annotation");
 				if(annot!=null){
