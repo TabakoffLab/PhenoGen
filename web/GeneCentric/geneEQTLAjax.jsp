@@ -94,7 +94,7 @@
 <script type="text/javascript">
 	$('#geneEQTL table#circosOptTbl').css("top","0px");
 	$("span[name='circosOption']").css("margin-left","60px");
-	runCircos();
+	//runCircos();
 </script>
 
 

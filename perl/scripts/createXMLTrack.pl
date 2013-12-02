@@ -32,17 +32,32 @@ sub createSNPXMLTrack{
 	#	@snpList=();
 	#	print "EMPTY SNP LIST\n";
 	#};
-	
+	if(!(defined $snpHOH{"BNLX"}) and ($trackDB eq "rn5")){
+		push(@snpStrainList,"BNLX");
+		$snpHOH{"BNLX"}={};
+	}
+	if(!(defined $snpHOH{"SHRH"}) and ($trackDB eq "rn5")){
+		push(@snpStrainList,"SHRH");
+		$snpHOH{"SHRH"}={};
+	}
+	if(!(defined $snpHOH{"SHRJ"}) and ($trackDB eq "rn5")){
+		push(@snpStrainList,"SHRJ");
+		$snpHOH{"SHRJ"}={};
+	}
+	if(!(defined $snpHOH{"F344"}) and ($trackDB eq "rn5")){
+		push(@snpStrainList,"F344");
+		$snpHOH{"F344"}={};
+	}
 	foreach my $strain(@snpStrainList){
-		print "Strain SNPS:$strain\n";
-		my %tmp;
-		my $ref=$snpHOH{$strain};
-		%tmp=%$ref;
-		open OFILE, ">".$outputDir."snp".$strain.".xml" or die " Could not open two track file $outputDir for writing $!\n\n";
-		my $xml = new XML::Simple (RootName=>'SNPList');
-		my $data = $xml->XMLout(\%tmp);
-		print OFILE $data;
-		close OFILE;
+			print "Strain SNPS:$strain\n";
+			my %tmp;
+			my $ref=$snpHOH{$strain};
+			%tmp=%$ref;
+			open OFILE, ">".$outputDir."snp".$strain.".xml" or die " Could not open two track file $outputDir for writing $!\n\n";
+			my $xml = new XML::Simple (RootName=>'SNPList');
+			my $data = $xml->XMLout(\%tmp);
+			print OFILE $data;
+			close OFILE;
 	}
 } # End of
 

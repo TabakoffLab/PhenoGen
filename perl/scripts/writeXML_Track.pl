@@ -127,53 +127,71 @@ sub createXMLFile
 	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$dsn,$usr,$passwd)=@_;
 	
 	my $scriptStart=time();
-	my $rnaCountStart=time();
-	if(index($chromosome,"chr")>-1){
-		$chromosome=substr($chromosome,3);
+	if(index($type,"illumina")>-1 or index($type,"helicos")>-1 ){
+		my $rnaCountStart=time();
+		if(index($chromosome,"chr")>-1){
+			$chromosome=substr($chromosome,3);
+		}
+		my $len=$maxCoord-$minCoord;
+		my $binSize=0;
+		if($len>10000 and $len<=50000){
+			$binSize=5;
+		}elsif($len>50000 and $len<=500000){
+			$binSize=25;
+		}elsif($len>500000 and $len<=2500000){
+			$binSize=100;
+		}elsif($len>2500000 and $len<=5000000){
+			$binSize=1000;
+		}elsif($len>5000000 and $len<=10000000){
+			$binSize=5000;
+		}elsif($len>10000000 and $len<=20000000){
+			$binSize=10000;
+		}elsif($len>20000000 and $len<=50000000){
+			$binSize=100000;
+		}elsif($len>50000000 and $len<=100000000){
+			$binSize=500000;
+		}else{
+			$binSize=1000000;
+		}
+		
+		my $roundMin=$minCoord;
+		my $roundMax=$maxCoord;
+		if($binSize>0){
+			$roundMin=$minCoord-($minCoord % $binSize);
+			$roundMax=$maxCoord+($binSize-($maxCoord % $binSize));
+		}
+		#print ("min:$minCoord\nmax:$maxCoord\nroundMin:$roundMin\nroundMax:$roundMax\n");
+		my $rnaCountRef=readRNACountsDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
+		my %rnaCountHOH=%$rnaCountRef;
+		my $rnaCountEnd=time();
+		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
+		my $trackDB="mm10";
+		if($species eq 'Rat'){
+			$trackDB="rn5";
+		}
+		if($binSize>0){
+			my $ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
+			my %rnaBinned=%$ref;
+			createRNACountXMLTrack(\%rnaBinned,$outputDir."bincount".$type.".xml");
+		}
+		createRNACountXMLTrack(\%rnaCountHOH,$outputDir."count".$type.".xml");
+	}elsif(index($type,"snp")>-1){
+		my $rnaCountStart=time();
+		if(index($chromosome,"chr")>-1){
+			$chromosome=substr($chromosome,3);
+		}
+		my $rnaCountRef=readSNPDataFromDB($chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		my %rnaCountHOH=%$rnaCountRef;
+		my $rnaCountEnd=time();
+		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
+		my $trackDB="mm10";
+		if($species eq 'Rat'){
+			$trackDB="rn5";
+		}
+		print "output:".$outputDir;
+		#my $output=$outputDir.$type.".xml";
+		createSNPXMLTrack(\%rnaCountHOH,$outputDir,$trackDB);
 	}
-	my $len=$maxCoord-$minCoord;
-	my $binSize=0;
-	if($len>10000 and $len<=50000){
-		$binSize=5;
-	}elsif($len>50000 and $len<=500000){
-		$binSize=25;
-	}elsif($len>500000 and $len<=2500000){
-		$binSize=100;
-	}elsif($len>2500000 and $len<=5000000){
-		$binSize=1000;
-	}elsif($len>5000000 and $len<=10000000){
-		$binSize=5000;
-	}elsif($len>10000000 and $len<=20000000){
-		$binSize=10000;
-	}elsif($len>20000000 and $len<=50000000){
-		$binSize=100000;
-	}elsif($len>50000000 and $len<=100000000){
-		$binSize=500000;
-	}else{
-		$binSize=1000000;
-	}
-	
-	my $roundMin=$minCoord;
-	my $roundMax=$maxCoord;
-	if($binSize>0){
-		$roundMin=$minCoord-($minCoord % $binSize);
-		$roundMax=$maxCoord+($binSize-($maxCoord % $binSize));
-	}
-	#print ("min:$minCoord\nmax:$maxCoord\nroundMin:$roundMin\nroundMax:$roundMax\n");
-	my $rnaCountRef=readRNACountsDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
-	my %rnaCountHOH=%$rnaCountRef;
-	my $rnaCountEnd=time();
-	print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-	my $trackDB="mm9";
-	if($species eq 'Rat'){
-		$trackDB="rn5";
-	}
-	if($binSize>0){
-		my $ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
-		my %rnaBinned=%$ref;
-		createRNACountXMLTrack(\%rnaBinned,$outputDir."bincount".$type.".xml");
-	}
-	createRNACountXMLTrack(\%rnaCountHOH,$outputDir."count".$type.".xml");
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 }

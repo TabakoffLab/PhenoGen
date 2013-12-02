@@ -119,6 +119,7 @@ sub readSNPDataFromDB{
 		}
 		$cntSnp++;
 	}
+	print "SNP Count:".$cntSnp."\n";
 	$query_handle->finish();
 	$connect->disconnect();
 	return (\%strainHOH);
