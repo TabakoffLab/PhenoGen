@@ -193,9 +193,9 @@ var selectGene="<%=selectedEnsemblID%>";
             </div>
             </TD>
             </TR>
-            <TR><TD colspan="2">
+            <TR id="regionDetailRow"><TD colspan="2">
                 <div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:left; width:100%; ">
-                    <span class=" trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>
+                    <span class="trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>
                     <span>Track Feature Table<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                 </div>
                 <div id="regionTable" style="display:none;">

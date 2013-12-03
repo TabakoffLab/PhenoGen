@@ -2,25 +2,37 @@ var reportSelectedTrack=null;
 var loadedTrackTable=null;
 var regionDetailLoaded={};
 
+
 $(document).on('click','span.triggerRegionTable', function (event){
+		console.log("triggerRegionTable");
 		var baseName = $(this).attr("name");
         var thisHidden = $("div#" + baseName).is(":hidden");
-        //$(this).toggleClass("less");
-		//console.log(baseName+":"+thisHidden);
         if (thisHidden) {
+        	console.log("div#" + baseName+ " is hidden");
 			$("div#" + baseName).show();
 			$(this).addClass("less");
-			var curRptRegion=chr+":"+minCoord+"-"+maxCoord+":"+reportSelectedTrack;
-			if( regionDetailLoaded[baseName]  && regionDetailLoaded[selectedTab]==curRptRegion){
+			var tc=new String(reportSelectedTrack.trackClass);
+			if(tc=="coding" || tc=="noncoding" || tc=="smallnc" || tc=="qtl"){
+				$("tr#regionDetailRow").show();
+			}else{
+				$("tr#regionDetailRow").hide();
+			}
+			if(!$('div#regionTable').is(":hidden")){
+				loadTrackTable();
+			}
+			/*var curRptRegion=chr+":"+minCoord+"-"+maxCoord+":"+reportSelectedTrack;
+			if( loadedTrackTable!=undefined  && regionDetailLoaded[baseName]==curRptRegion){
 				//don't have to load might reset?
+				console.log("div#" + baseName+ " is loaded");
 			}else{
 				//last loaded in a different region need to update.
 				if(reportSelectedTrack!=null){
-					loadTrackTable();
+					
 				}
 				regionDetailLoaded[baseName]=curRptRegion;
-			}
+			}*/
         } else {
+        	console.log("div#" + baseName+ " is visible");
 			$("div#" + baseName).hide();
 			$(this).removeClass("less");
         }
@@ -84,34 +96,49 @@ $(document).on('click','span.detailMenu', function (event){
 });*/
 
 function loadTrackTable(){
-	var jspPage="";
-	var params={
-			species: organism,
-			minCoord: minCoord,
-			maxCoord: maxCoord,
-			chromosome: chr,
-			rnaDatasetID: rnaDatasetID,
-			arrayTypeID: arrayTypeID,
-			forwardPvalueCutoff:forwardPValueCutoff,
-			folderName: folderName
-		};
-	if(reportSelectedTrack.trackClass=="coding"){
-		jspPage="web/GeneCentric/geneTable.jsp";
-		params.type="coding";
-	}else if(reportSelectedTrack.trackClass=="noncoding"){
-		params.type="noncoding";
-		jspPage="web/GeneCentric/geneTable.jsp";
-	}else if(reportSelectedTrack.trackClass=="smallnc"){
-		jspPage="web/GeneCentric/smallGeneTable.jsp";
-	}else if(reportSelectedTrack.trackClass=="snp"){
-		jspPage="web/GeneCentric/snpTable.jsp";
-	}else if(reportSelectedTrack.trackClass=="qtl"){
-		jspPage="web/GeneCentric/bqtlTable.jsp";
-	}else if(reportSelectedTrack.trackClass=="transcript"){
-		jspPage="web/GeneCentric/transcriptTable.jsp";
+	console.log("loadTrackTable");
+	console.log(reportSelectedTrack.trackClass);
+	var curRptRegion=chr+":"+minCoord+"-"+maxCoord+":"+reportSelectedTrack.trackClass;
+	if( loadedTrackTable!=null  && loadedTrackTable==curRptRegion){
+				//don't have to load might reset?
+				console.log(curRptRegion);
+				console.log(loadedTrackTable);
+	}else{
+		loadedTrackTable=curRptRegion;
+		var jspPage="";
+		var params={
+				species: organism,
+				minCoord: minCoord,
+				maxCoord: maxCoord,
+				chromosome: chr,
+				rnaDatasetID: rnaDatasetID,
+				arrayTypeID: arrayTypeID,
+				forwardPvalueCutoff:forwardPValueCutoff,
+				folderName: folderName
+			};
+		if(reportSelectedTrack.trackClass=="coding"){
+			jspPage="web/GeneCentric/geneTable.jsp";
+			params.type="coding";
+		}else if(reportSelectedTrack.trackClass=="noncoding"){
+			params.type="noncoding";
+			jspPage="web/GeneCentric/geneTable.jsp";
+		}else if(reportSelectedTrack.trackClass=="smallnc"){
+			jspPage="web/GeneCentric/smallGeneTable.jsp";
+		}else if((new String(reportSelectedTrack.trackClass)).indexOf("snp")>-1){
+			//jspPage="web/GeneCentric/snpTable.jsp";
+		}else if(reportSelectedTrack.trackClass=="qtl"){
+			jspPage="web/GeneCentric/bqtlTable.jsp";
+		}else if(reportSelectedTrack.trackClass=="transcript"){
+
+			//jspPage="web/GeneCentric/transcriptTable.jsp";
+		}else{
+
+		}
+		if(jspPage!=""){
+			loadDivWithPage("div#regionTable",jspPage,params,
+						"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+		}
 	}
-	loadDivWithPage("div#regionTable",jspPage,params,
-		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
 
 function loadEQTLTable(){
@@ -176,6 +203,7 @@ function trKey(d){
 }
 
 function DisplayRegionReport(){
+	console.log("DisplayRegionReport");
 	if(!$('div#collapsableReport').is(":hidden")){
 		//d3.select('#collaspableReportList').selectAll('li').remove();
 		var tmptrackList=svgList[0].trackList;
@@ -211,32 +239,12 @@ function DisplayRegionReport(){
 
 		if(reportSelectedTrack!=null){
 			displayDetailedView(reportSelectedTrack);
-			if(d3.select('#collapsableReportList').selectAll('li.report.selected').length==0){
-				$("li."+reportSelectedTrack.trackClass).addClass("selected");
-			}
-			if(!$('div#regionTable').is(":hidden")){
-				loadTrackTable();
-			}
 		}
-
-		//d3.select('#collaspableReportList').selectAll('li.report.selected').forEach(function (d){displayDetailedView(d);});
-		//for(var l=0;l<tmptrackList.length;l++){
-		//	displayTrackReport(tmptrackList[l]);
-		//}
-		//displayBQTLReport(loadBQTLs());
-		//displayGeneEQTLReport(loadGeneEQTLs());
 	}
 }
 
-
-/*function displayTrackReport(track){
-	var data=track.getData();
-	console.log(data);
-	d3.select('#collaspableReportList').append("li").html(track.label+": "+data[0].length).on("click",displayDetailedView);
-}*/
-
-
 function displayDetailedView(track){
+	console.log("displayDetailedView");
 	reportSelectedTrack=track;
 	$('li.report').removeClass("selected");
 	$("li."+track.trackClass).addClass("selected");
@@ -244,8 +252,14 @@ function displayDetailedView(track){
 		$('div#trackGraph').html("");
 		track.displayBreakDown("div#collapsableReport div#trackGraph");
 	}
+	var tc=new String(track.trackClass);
+	if(tc=="coding" || tc=="noncoding" || tc=="smallnc" || tc=="qtl"){
+		$("tr#regionDetailRow").show();
+	}else{
+		$("tr#regionDetailRow").hide();
+	}
 	if(!$('div#regionTable').is(":hidden")){
-			loadTrackTable();
+		loadTrackTable();
 	}
 }
 

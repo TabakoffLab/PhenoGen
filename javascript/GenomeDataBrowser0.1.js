@@ -201,10 +201,13 @@ function mup() {
 				}
         		svgList[i].downx = Math.NaN;
 				svgList[i].downPanx = Math.NaN;
+				if(i==0){
+					DisplayRegionReport();
+				}
 			}
 		}
 	}
-	DisplayRegionReport();
+	
 }
 function mmove(){
 	for (var i=0; i<svgList.length; i++){
