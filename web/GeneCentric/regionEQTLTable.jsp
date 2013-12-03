@@ -859,7 +859,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
                                       </TR>
                                       <TR>
                                         <TD colspan="2" style="text-align:center;">
-                                          <input type="button" name="filterBTN" id="filterBTN" value="Run Filter" onClick="return runFilter()">
+                                          <input type="button" name="filterBTN" id="filterBTN" value="Run Filter" onClick="runFilter()">
                                         </TD>
                                 	</TR>
                                    </tbody>
