@@ -37,12 +37,29 @@ To see additional detail click on a feature.  Features that are clickable will h
 <BR />
 To Zoom in/out move the mouse over the scale at the top(view example pointer <span style="cursor:ew-resize;color:#0000FF;">Here</span>) of the image and drag right to zoom in and left to zoom out.  Or you can double click on a feature to zoom in on it specifically.
 <BR /><BR />
-To move left or right along the genome position your mouse over any track below the scale.  Your mouse should look something like this and then you can click and drag to move in the direction you desire.
+To move left or right along the genome position your mouse over any track below the scale(view example pointer <span style="cursor:move;color:#0000FF;">Here</span>).  You can click and drag to move in the direction you desire.
 <BR /><BR />
 You may also move a track up or down to reorder the tracks to any order you wish.  If cookies are enabled the tracks you select and order will be preserved between genes/regions/visits/etc for each seperate view(Genome/Transcriptome/Both).
 <BR /><BR />
 To add/remove/change tracks in the image click the Customize Image button.
 </div></div>
+
+
+<div id="HelpRegionSummaryContent" class="inpageHelpContent" title="Help-Region Summary"><div class="help-content">
+	<H3>Region Summary</H3>
+	This section provides tables, charts, images sumarizing the features in the current region of the genome or genes with eQTLs in the region.  You may switch between the two options using the blue tabs immediately above. For more detail see the help for each tab.<BR /><BR /> You can show or hide this section at any time use the + or - icon to the left of the section header.  This section is automatically hidden when a feature is selected in the image above.  If you would like to view it again you may always expand the selection again with the + or - icons.  
+</div></div>
+
+<div id="HelpTrackDetailsContent" class="inpageHelpContent" title="Help-Track Details"><div class="help-content">
+	<H3>Track Details</H3>
+	This section lists tracks that are available to summarize. This view provides a break down of features in a track for example if you are view annotated and reconstructed Protein Coding genes it will provide a breakdown of Ensembl annotated and unique to RNA-Seq genes or for SNPs/Indels will display the proportion of SNPs/Insertions/Deletions in a region for the selected track.
+    Most of the tracks also can display a table listing each feature in a track.  These tables are displayed for the selected track when the Track Feature Table is expanded.  
+</div></div>
+
+
+
+
+
 
 
 <div id="HelpUCSCImageControlContent" class="inpageHelpContent" title="Help-Image Controls"><div class="help-content">

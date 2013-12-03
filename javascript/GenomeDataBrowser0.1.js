@@ -177,9 +177,20 @@ $(document).on("click",".reset",function(){
 	}
 });
 
+function displayHelpFirstTime(){
+	/*if($.cookie("genomeBrowserHelp")!=null){
+    	var trackListObj=$.cookie("genomeBrowserHelp");
+    	if(trackListObj==siteVer){
 
-
-
+    	}else{
+    		$("a#helpExampleNav").click();
+    		$.cookie("genomeBrowserHelp",siteVer);
+    	}
+    }else{
+    	$("a#helpExampleNav").click();
+    	$.cookie("genomeBrowserHelp",siteVer);
+    }*/
+}
 
 function mup() {
 	for (var i=0; i<svgList.length; i++){

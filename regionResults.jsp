@@ -115,6 +115,7 @@ var selectGene="<%=selectedEnsemblID%>";
                 <script type="text/javascript">
                     var gs=new GenomeSVG(".ucscImage",970,minCoord,maxCoord,0,chr,"gene");
 					loadState(0);
+					
                     //$( "ul, li" ).disableSelection();
                 </script>
            </div>
@@ -163,13 +164,13 @@ var selectGene="<%=selectedEnsemblID%>";
     
     <div style="width:100%;">
             	<div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
-                    <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-                    <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an eQTL in this region<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpTrackDetails" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an eQTL in this region<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
 				</div>
     </div>
     <div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:left; width:100%;">
     		<span class="trigger less triggerEC" name="collapsableReport" >Region Summary</span>
-    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionSummary" class="helpImage" src="../web/images/icons/help.png" /></div>
     </div>
     <div id="collapsableReport" style="width:100%;">
     		
@@ -221,7 +222,9 @@ var selectGene="<%=selectedEnsemblID%>";
         <div id="selectedReport">
         </div>
     </div>
-
+    <div style="display:none">
+		<a id="helpExampleNav" class="fancybox fancybox.iframe" href="web/GeneCentric/example.jsp" title="Browser Navigation"></a>
+    </div>
 </div><!-- ends page div -->
 
 <script type="text/javascript">
@@ -253,6 +256,17 @@ var selectGene="<%=selectedEnsemblID%>";
 		
 	});
 	
+	//Setup Fancy box for example
+     $('.fancybox').fancybox({
+                width:"800px",
+                height:$(document).height(),
+                scrollOutside:false
+                /*afterClose: function(){
+                        $('body.noPrint').css("margin","5px auto 60px");
+                        return;
+                }*/
+  	});
+	displayHelpFirstTime();
 	
 	$(".Imagetooltip").tooltipster({
 		position: 'top-right',

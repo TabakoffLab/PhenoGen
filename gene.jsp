@@ -4,6 +4,7 @@
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("jquery.cookie.js");
+	extrasList.add("fancyBox/jquery.fancybox.js");
 	//extrasList.add("TableTools.min.js");
 	//extrasList.add("ZeroClipboard.js");
 	//extrasList.add("ColReorder.min.js");
@@ -14,6 +15,7 @@
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("tooltipster.css");
+	extrasList.add("jquery.fancybox.css");
 	//extrasList.add("ColReorder.css");
 	//extrasList.add("TableTools_JUI.css");
 	//extrasList.add("TableTools.css");
