@@ -81,7 +81,7 @@ function runFilter(){
 	//$('#chromosomes').val($('#chromosomesMS').val());
 	//alert("val:"+$('#chromosomesMS').val());
 	$('#pvalueCutoffInput').val($('#pvalueCutoffSelect2').val());
-	$('#geneCentricForm').submit();
+	loadEQTLTableWParams(levelList,chrList,tisList,$('#pvalueCutoffSelect2').val());
 }
 
 

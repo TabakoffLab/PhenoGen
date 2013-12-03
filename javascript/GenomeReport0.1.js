@@ -130,6 +130,25 @@ function loadEQTLTable(){
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
 
+function loadEQTLTableWParams(levelList,chrList,tisList,pval){
+	var jspPage="web/GeneCentric/regionEQTLTable.jsp";
+	var params={
+			species: organism,
+			minCoord: minCoord,
+			maxCoord: maxCoord,
+			chromosome: chr,
+			rnaDatasetID: rnaDatasetID,
+			arrayTypeID: arrayTypeID,
+			pValueCutoff:pval,
+			tissues:tisList,
+			chromosomes:chrList,
+			levels:levelList,
+			folderName: folderName
+		};
+	loadDivWithPage("div#regionEQTLTable",jspPage,params,
+		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+}
+
 
 
 function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
