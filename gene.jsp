@@ -623,7 +623,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 </form>
 <BR />
 Or
-<input type="submit" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
+<input type="button" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
 </div>
 <%}else{%>
 	<div style="text-align:center;">
@@ -664,7 +664,7 @@ Or
 </div>
 
 <script type="text/javascript">
-	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "<center>Translate Region</center>", zIndex: 500});
+	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
 	function openTranslateRegion(){
 		$('.demo').hide();
 		var region=$('#geneTxt').val();

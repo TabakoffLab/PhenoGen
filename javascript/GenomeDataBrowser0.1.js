@@ -1034,7 +1034,13 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		.attr("id","settingsLevel"+levelNumber)
 		.style("float","right")
 		.style("width","118px")
-		.text("Customize Image");
+		.text("Customize Image")
+		.on("mouseover",function(){
+			$("#mouseHelp").html("Click to Customize Tracks,Change Image Height, Reset Image Zoom, and Reset Tracks.");
+		})
+		.on("mouseout",function(){
+			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+		});
 	//this.vis.append("span").attr("class","reset button").attr("id","resetLevel"+this.levelNumber).style("float","left").style("width","118px").text("Reset Image");
 	//this.vis.append("span").attr("class","undo button").attr("id","undoLevel"+this.levelNumber).style("float","left").style("width","220px").text("Undo last Zoom/Move");
 	this.topDiv=this.vis.append("div")
@@ -1061,7 +1067,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						.on("mousedown", this.mdown)
 						.on("mouseup",mup)
 						.on("mouseover", function(){
-							$("#mouseHelp").html("ZOOM: Click and Drag right to zoom in or left to zoom out.");
+							$("#mouseHelp").html("<B>Zoom:</b> Click and Drag right to zoom in or left to zoom out.");
 						})
 						.on("mouseout", function(){
 							$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
