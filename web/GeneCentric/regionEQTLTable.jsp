@@ -69,7 +69,7 @@
 		type=request.getParameter("type");
 	}
 	if(request.getParameter("folderName")!=null){
-		type=request.getParameter("folderName");
+		folderName=request.getParameter("folderName");
 	}
 	
 	String[] selectedChromosomes = null;
