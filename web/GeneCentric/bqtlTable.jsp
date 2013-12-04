@@ -315,7 +315,7 @@
 	"bPaginate": false,
 	"bProcessing": true,
 	"sScrollX": "950px",
-	"sScrollY": "650px",
+	"sScrollY": "500px",
 	"bDeferRender": true,
 	"aoColumnDefs": [
       { "bVisible": false, "aTargets": bqtlTarget }
@@ -426,15 +426,6 @@
 		interactive: true,
    		interactiveTolerance: 350
 	});	
-</script>
-
-
-
-
-
-
-
-<script type="text/javascript">
 	
 	//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
 	//simply remove all whitespace from html in a table and put it back.

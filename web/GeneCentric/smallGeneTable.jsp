@@ -206,7 +206,7 @@
 				}*/
 				%>
 		 	
-          	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
+          	<TABLE name="items"  id="tblsmGenes" class="list_base" cellpadding="0" cellspacing="0"  >
                 <THEAD>
                     <tr>
                         <th 
@@ -826,13 +826,13 @@
 		sortCol=5;
 	}
 	
-	var tblGenes=$('#tblGenes').dataTable({
+	var tblsmGenes=$('#tblsmGenes').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
-	"bStateSave": false,
-	"bAutoWidth": true,
+	"bAutoWidth": false,
+	"bDeferRender": true,
 	"sScrollX": "950px",
-	"sScrollY": "650px",
+	"sScrollY": "500px",
 	"aaSorting": [[ sortCol, "desc" ]],
 	/*"aoColumnDefs": [
       { "bVisible": false, "aTargets": geneTargets }
@@ -874,7 +874,7 @@
 	//	"iLeftWidth": 100
  	//} );
 
-	$('#tblGenes_wrapper').css({position: 'relative', top: '-56px'});
+	$('#tblsmGenes_wrapper').css({position: 'relative', top: '-56px'});
 	//$('.singleExon').hide();
 	
 	$('#heritCBX').click( function(){
@@ -882,45 +882,45 @@
 			if(spec=="Mm"){
 				tmpCol=13;
 			}
-			displayColumns(tblGenes, tmpCol,tisLen,$('#heritCBX').is(":checked"));
+			displayColumns(tblsmGenes, tmpCol,tisLen,$('#heritCBX').is(":checked"));
 	  });
 	  $('#dabgCBX').click( function(){
 	  		var tmpCol=17+tisLen;
 			if(spec=="Mm"){
 				tmpCol=13+tisLen;
 			}
-			displayColumns(tblGenes, tmpCol ,tisLen,$('#dabgCBX').is(":checked"));
+			displayColumns(tblsmGenes, tmpCol ,tisLen,$('#dabgCBX').is(":checked"));
 	  });
 	  $('#eqtlAllCBX').click( function(){
 	  		var tmpCol=17+tisLen*2;
 			if(spec=="Mm"){
 				tmpCol=13+tisLen*2;
 			}
-			displayColumns(tblGenes, tmpCol,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
+			displayColumns(tblsmGenes, tmpCol,tisLen*2+3,$('#eqtlAllCBX').is(":checked"));
 	  });
 		$('#eqtlCBX').click( function(){
 			var tmpCol=17+tisLen*2+3;
 			if(spec=="Mm"){
 				tmpCol=13+tisLen*2+3;
 			}
-			displayColumns(tblGenes, tmpCol,tisLen*2,$('#eqtlCBX').is(":checked"));
+			displayColumns(tblsmGenes, tmpCol,tisLen*2,$('#eqtlCBX').is(":checked"));
 	  });
 	  $('#matchesCBX').click( function(){
-			displayColumns(tblGenes,1,1,$('#matchesCBX').is(":checked"));
+			displayColumns(tblsmGenes,1,1,$('#matchesCBX').is(":checked"));
 	  });
 	   $('#geneIDCBX').click( function(){
 	   		var tmpCol=3;
 			if(spec=="Mm"){
 				tmpCol=2;
 			}
-			displayColumns(tblGenes,tmpCol,1,$('#geneIDCBX').is(":checked"));
+			displayColumns(tblsmGenes,tmpCol,1,$('#geneIDCBX').is(":checked"));
 	  });
 	  $('#geneDescCBX').click( function(){
 	  		var tmpCol=4;
 			if(spec=="Mm"){
 				tmpCol=3;
 			}
-			displayColumns($(tblGenes).dataTable(),tmpCol,1,$('#geneDescCBX').is(":checked"));
+			displayColumns($(tblsmGenes).dataTable(),tmpCol,1,$('#geneDescCBX').is(":checked"));
 	  });
 	  
 	  $('#geneBioTypeCBX').click( function(){
@@ -928,14 +928,14 @@
 			if(spec=="Mm"){
 				tmpCol=4;
 			}
-			displayColumns($(tblGenes).dataTable(),tmpCol,1,$('#geneBioTypeCBX').is(":checked"));
+			displayColumns($(tblsmGenes).dataTable(),tmpCol,1,$('#geneBioTypeCBX').is(":checked"));
 	  });
 	  $('#geneTracksCBX').click( function(){
 	  		var tmpCol=6;
 			if(spec=="Mm"){
 				tmpCol=5;
 			}
-			displayColumns($(tblGenes).dataTable(),tmpCol,3,$('#geneTracksCBX').is(":checked"));
+			displayColumns($(tblsmGenes).dataTable(),tmpCol,3,$('#geneTracksCBX').is(":checked"));
 	  });
 	  
 	  $('#geneLocCBX').click( function(){
@@ -943,7 +943,7 @@
 			if(spec=="Mm"){
 				tmpCol=8;
 			}
-			displayColumns($(tblGenes).dataTable(),tmpCol,2,$('#geneLocCBX').is(":checked"));
+			displayColumns($(tblsmGenes).dataTable(),tmpCol,2,$('#geneLocCBX').is(":checked"));
 	  });
 	  
 	  $('#pvalueCutoffSelect1').change( function(){
@@ -972,7 +972,7 @@
 				}else{
 					$('tr.'+type).hide();
 				}
-				tblGenes.fnDraw();
+				tblsmGenes.fnDraw();
 			}
 			
 	 });
@@ -1006,20 +1006,6 @@
 		interactive: true,
    		interactiveTolerance: 350
 	});
-	 
-</script>
-
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript">
 	
 	//below fixes a bug in IE9 where some whitespace may cause an extra column in random rows in large tables.
 	//simply remove all whitespace from html in a table and put it back.
@@ -1027,11 +1013,12 @@
  		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
 		if (ieversion<10){
 			var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
-			var tbhtml = $('#tblGenes').html();
-			$('#tblGenes').html(tbhtml.replace(expr, '><'));
+			var tbhtml = $('#tblsmGenes').html();
+			$('#tblsmGenes').html(tbhtml.replace(expr, '><'));
 		}	
 	}
 	
-	$('#tblGenes').dataTable().fnAdjustColumnSizing();
+	//tblsmGenes.fnAdjustColumnSizing();
+	//tblsmGenes.fnDraw();
 </script>
 

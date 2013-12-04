@@ -145,7 +145,7 @@ Add report here.
 
 <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
             <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    		<span class="selectdetailMenu" name="geneEQTL">Gene EQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    		<span class="selectdetailMenu" name="geneEQTL">Gene eQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
     		<span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
 </div>
 
@@ -349,19 +349,19 @@ Add report here.
             	<TD class="header">Affy Probe Set Data</TD>
                 <TD class="header">Overlapping Probe Set Count:<%=curGene.getProbeCount()%></TD>
             </TR>
-            
+            <%if(curGene.getProbeCount()>0){%>
             <TR>
-            	<TD colspan="2"><B>Probe Set Detection Above Background(DABG) >1% of all samples:</B></TD>
+            	<TD colspan="2"><B>Probe sets detected above background:</B></TD>
             </TR>
             <TR>
             	<TD colspan="2">
-                	<table  name="items" class="list_base" style="width:100%; text-align:center;">
+                	<table id="tblGeneDabg"  name="items" class="list_base" style="width:100%; text-align:center;">
                                         <thead>
                                         <tr class="col_title">
-                                        	<TH>Tissue</TH>
-                                            <TH>Total Probe Sets (out of <%=curGene.getProbeCount()%>)</TH>
-                                            <TH>Avg % of samples DABG</TH>
-                                            <TH>Range</TH>
+                                        	<TH style="color:#000000;">Tissue</TH>
+                                            <TH style="color:#000000;">Number of probe sets detected above background in more than 1% of samples (out of <%=curGene.getProbeCount()%> probe sets for this gene)</TH>
+                                            <TH style="color:#000000;">Avg % of samples DABG</TH>
+                                            <TH style="color:#000000;">Range</TH>
                                             
                                         </tr>
                                         </thead>
@@ -400,19 +400,19 @@ Add report here.
                 </TD>
             </TR>
              <TR>
-            	<TD colspan="2"><B>Probe Set Heritability >0.33</B></TD>
+            	<TD colspan="2"><B>Probe Set Heritability >0.33:</B></TD>
                 
             </TR>
             <TR>
             	<TD colspan="2">
-                	<table  name="items" class="list_base" style="width:100%; text-align:center;">
+                	<table id="tblGeneHerit" name="items" class="list_base" style="width:100%; text-align:center;">
                                         <thead>
                                         
                                         <tr class="col_title">
-                                        	<TH>Tissue</TH>
-                                            <TH>Total Probe Sets(out of <%=curGene.getProbeCount()%>) </TH>
-                                            <TH>Avg Herit</TH>
-                                            <TH>Range</TH>
+                                        	<TH style="color:#000000;">Tissue</TH>
+                                            <TH style="color:#000000;">Number of probe sets with a heritability greater than 0.33 (out of <%=curGene.getProbeCount()%> probe sets for this gene)</TH>
+                                            <TH style="color:#000000;">Avg Herit</TH>
+                                            <TH style="color:#000000;">Range</TH>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -448,6 +448,7 @@ Add report here.
                 	</table>
                 </TD>
             </TR>
+            <%}%>
             
             <%	if(tc!=null){	
                                     //String[] curTissues=tc.getTissueList();%>
@@ -458,17 +459,17 @@ Add report here.
                                      
                                     <TR>
                                     <TD colspan="2">
-                                    	<table  name="items" class="list_base" style="width:100%; text-align:center;">
+                                    	<table id="tblGeneEQTL"  name="items" class="list_base" style="width:100%; text-align:center;">
                                         <thead>
                                         <tr class="col_title">
                                         	<TH colspan="2"></TH>
-                                            <TH colspan="2">Minimum P-value EQTL</TH>
+                                            <TH colspan="2" style="color:#000000;">Minimum P-value EQTL</TH>
                                         </tr>
                                         <tr class="col_title">
-                                        	<TH>Tissue</TH>
-                                            <TH># of eQTLs</TH>
-                                            <TH>P-value</TH>
-                                            <TH>Location</TH>
+                                        	<TH style="color:#000000;">Tissue</TH>
+                                            <TH style="color:#000000;">Number of eQTLs</TH>
+                                            <TH style="color:#000000;">P-value</TH>
+                                            <TH style="color:#000000;">Location</TH>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -626,6 +627,15 @@ Add report here.
 
 
 <script type="text/javascript">
+	var idStr="<%=id%>";
+	
+	var rows=$("table#tblGeneDabg tr");
+	stripeTable(rows);
+	rows=$("table#tblGeneHerit tr");
+	stripeTable(rows);
+	rows=$("table#tblGeneEQTL tr");
+	stripeTable(rows);
+	
 	$('.selectdetailMenu').click(function (){
 		var oldID=$('.selectdetailMenu.selected').attr("name");
 		$("#"+oldID).hide();
@@ -642,7 +652,15 @@ Add report here.
 				id:selectedID
 			};
 			loadDivWithPage("div#geneEQTL",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+		}else if(id=="geneApp"){
+			$.ajax({
+					url: "web/GeneCentric/callPanelExpr.jsp",
+	   				type: 'GET',
+					data: {id:idStr,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
+					dataType: 'json',
+	    			error: function(xhr, status, error) {console.log(error);}
+	    			});
 		}
 		
 	});

@@ -191,7 +191,7 @@
 		  		edu.ucdenver.ccp.PhenoGen.data.Bio.Gene tmpGene=fullGeneList.get(0);
 				%>
 		 	
-          	<TABLE name="items"  id="tblGenes" class="list_base" cellpadding="0" cellspacing="0"  >
+          	<TABLE name="items"  id="tblGenes<%=type%>" class="list_base" cellpadding="0" cellspacing="0"  >
                 <THEAD>
                     <tr>
                         <th 
@@ -425,6 +425,7 @@
                                 </TD>
                                 <%String description=curGene.getDescription();
                                         String shortDesc=description;
+										
                                         String remain="";
                                         if(description.indexOf("[")>0){
                                             shortDesc=description.substring(0,description.indexOf("["));
@@ -469,11 +470,7 @@
                                 </TD>
                                  
                                 <%String bioType=curGene.getBioType();
-                                  
-                                %>
-                                <TD title="<%=remain%>">
-                                    <%=shortDesc%>
-                                    <% HashMap displayed=new HashMap();
+                                  HashMap displayed=new HashMap();
                                     HashMap bySource=new HashMap();
                                     for(int k=0;k<tmpTrx.size();k++){
                                         ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation> annot=tmpTrx.get(k).getAnnotation();
@@ -498,12 +495,8 @@
                                     }
                                     Set keys=bySource.keySet();
                                     Iterator itr=keys.iterator();
-                                    while(itr.hasNext()){
-                                        String source=itr.next().toString();
-                                        String values=bySource.get(source).toString();
-                                    %>
-                                        <%="<BR>"+source+":"+values%>
-                                    <%}%>
+                                %>
+                                <TD title="<%=remain%>"><%=shortDesc.trim().replaceAll("-","&nbsp;")%><%while(itr.hasNext()){String source=itr.next().toString();String values=bySource.get(source).toString();%><BR><%=source.trim()+":"+values.trim()%><%}%>
                                 </TD>
                                 
                                 <TD><%=chr+": "+dfC.format(curGene.getStart())+"-"+dfC.format(curGene.getEnd())%></TD>
@@ -676,12 +669,14 @@
 		sortCol=4;
 	}
 	
-	var tblGenes=$('#tblGenes').dataTable({
+	
+	var tblGenes=$('#tblGenes<%=type%>').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
 	"bStateSave": false,
-	"bAutoWidth": true,
-	"sScrollX": "850px",
+	"bAutoWidth": false,
+	"bDeferRender": true,
+	"sScrollX": "980px",
 	"sScrollY": "550px",
 	"aaSorting": [[ sortCol, "desc" ]],
 	/*"aoColumnDefs": [
@@ -817,14 +812,14 @@
  		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
 		if (ieversion<10){
 			var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
-			var tbhtml = $('#tblGenes').html();
-			$('#tblGenes').html(tbhtml.replace(expr, '><'));
+			var tbhtml = $('#tblGenes<%=type%>').html();
+			$('#tblGenes<%=type%>').html(tbhtml.replace(expr, '><'));
 			
 		}	
 	}
 	
-	$('#tblGenes').dataTable().fnAdjustColumnSizing();
-	 
+	tblGenes.fnAdjustColumnSizing();
+	 tblGenes.fnDraw();
 </script>
 
 

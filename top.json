@@ -1,7 +1,7 @@
 {
   "nodes":[
     {"id":0,"name":"What can you do with PhenoGen?","group":1,"groupName":"main","level":0},
-    {"id":1,"name":"Detailed Genome / Transcriptome Information","group":2,"groupName":"genomeBrowse","level":1},
+    {"id":1,"name":"Genome / Transcriptome Data Browser","group":2,"groupName":"genomeBrowse","level":1},
     {"id":2,"name":"Download Data","group":3,"groupName":"download","level":1},
     {"id":3,"name":"Microarray Analysis","group":4,"groupName":"microarray","level":1},
     {"id":4,"name":"QTL Analysis","group":5,"groupName":"qtl","level":1},

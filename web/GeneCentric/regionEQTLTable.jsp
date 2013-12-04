@@ -68,6 +68,9 @@
 	if(request.getParameter("type")!=null){
 		type=request.getParameter("type");
 	}
+	if(request.getParameter("folderName")!=null){
+		folderName=request.getParameter("folderName");
+	}
 	
 	String[] selectedChromosomes = null;
 	String[] selectedTissues = null;
@@ -231,9 +234,9 @@
 		}
 		java.util.Date time=new java.util.Date();
 		log.debug("Setup before finging Path:"+(time.getTime()-startDate.getTime()));
-		String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,0.01,false);
-		int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
-		folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
+		//String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,0.01,false);
+		//int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
+		//folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
 	
 	/*if(min<max){
 			if(min<1){
@@ -856,7 +859,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
                                       </TR>
                                       <TR>
                                         <TD colspan="2" style="text-align:center;">
-                                          <input type="submit" name="filterBTN" id="filterBTN" value="Run Filter" onClick="return runFilter()">
+                                          <input type="button" name="filterBTN" id="filterBTN" value="Run Filter" onClick="runFilter()">
                                         </TD>
                                 	</TR>
                                    </tbody>

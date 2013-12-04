@@ -20,6 +20,11 @@ var organism="<%=myOrganism%>";
 var ucsctype="region";
 var ucscgeneID="";
 var defaultView="<%=defView%>";
+<%if(region){%>
+var selectGene="";
+<%}else{%>
+var selectGene="<%=selectedEnsemblID%>";
+<%}%>
 </script>
 
 
@@ -61,6 +66,8 @@ var defaultView="<%=defView%>";
 			var id=$(this).attr('id');
 			$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
 			$('#'+id+'Content').dialog("open").css({'font-size':12});
+			event.stopPropagation();
+			//return false;
 		}
 		);
 		
@@ -74,9 +81,9 @@ var defaultView="<%=defView%>";
 	<div id="imageMenu"></div>
     <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:
-    		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-            <span class="viewMenu" name="viewAll" >Both<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+    		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageTranscriptomeView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+            <span class="viewMenu" name="viewAll" >Both<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageAllView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">
@@ -86,7 +93,7 @@ var defaultView="<%=defView%>";
     </div>
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
     		<span class="trigger less" name="collapsableImage" >Region Image</span>
-    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="../web/images/icons/help.png" /></div>
             <div id="imageHeader" style=" font-size:12px; float:right;"></div>
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
@@ -96,18 +103,20 @@ var defaultView="<%=defView%>";
             </span>-->
     </div>
     
-    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">    
+    <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
+    	<span id="mouseHelp">Navigation Hints: Hold mouse over areas of the image for available actions.</span>    
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
             <script src="javascript/GenomeDataBrowser0.1.js" type="text/javascript"></script>
-            	<script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
                     var gs=new GenomeSVG(".ucscImage",970,minCoord,maxCoord,0,chr,"gene");
 					loadState(0);
-                    $( "ul, li" ).disableSelection();
+					
+                    //$( "ul, li" ).disableSelection();
                 </script>
            </div>
         </div>
@@ -155,13 +164,13 @@ var defaultView="<%=defView%>";
     
     <div style="width:100%;">
             	<div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
-                    <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-                    <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an EQTL in region<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpTrackDetails" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an eQTL in this region<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
 				</div>
     </div>
     <div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:left; width:100%;">
     		<span class="trigger less triggerEC" name="collapsableReport" >Region Summary</span>
-    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionSummary" class="helpImage" src="../web/images/icons/help.png" /></div>
     </div>
     <div id="collapsableReport" style="width:100%;">
     		
@@ -177,15 +186,16 @@ var defaultView="<%=defView%>";
             </TD>
             <TD style="text-align:center;" class="layout">
             <div id="trackContent">
-                <span>Break down of track count</span><BR /><BR />
+                <span style="font-weight:bold;">Break down of track count*</span><BR /><BR />
                 <div id="trackGraph">
                 </div>
+                <span>*Note: Depending on the track settings some features may not be displayed and will not be reflected in the image above.</span>
             </div>
             </TD>
             </TR>
-            <TR><TD colspan="2">
+            <TR id="regionDetailRow"><TD colspan="2">
                 <div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:left; width:100%; ">
-                    <span class=" trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>
+                    <span class="trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>
                     <span>Track Feature Table<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                 </div>
                 <div id="regionTable" style="display:none;">
@@ -212,7 +222,10 @@ var defaultView="<%=defView%>";
         <div id="selectedReport">
         </div>
     </div>
-
+    <div style="display:none">
+		<a id="helpExampleNav" class="fancybox fancybox.iframe" href="web/GeneCentric/example.jsp" title="Browser Navigation"></a>
+    </div>
+    <BR /><BR /><BR />
 </div><!-- ends page div -->
 
 <script type="text/javascript">
@@ -244,6 +257,27 @@ var defaultView="<%=defView%>";
 		
 	});
 	
+	//Setup Fancy box for example
+     $('.fancybox').fancybox({
+                width:"800px",
+                height:$(document).height(),
+                scrollOutside:false
+                /*afterClose: function(){
+                        $('body.noPrint').css("margin","5px auto 60px");
+                        return;
+                }*/
+  	});
+	displayHelpFirstTime();
+	
+	$(".Imagetooltip").tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
 	
 </script>
 

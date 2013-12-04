@@ -46,7 +46,7 @@ function setupPage() {
                         function(data){
                                 confirmGrantAccessToPublic.dialog("open").html(data);
                                 closeDialog(confirmGrantAccessToPublic);
-                                $('input[name=grant]').attr('checked', false);
+                                $('input[name=grant]').prop('checked', false);
                         });
             });
     });

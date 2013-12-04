@@ -343,13 +343,14 @@ sub createXMLFile
 			$cntProbesets=0;
 			my $cntMatchingProbesets=0;
 			my $cntMatchingIntronProbesets=0;
-			foreach(@probesetHOH){
-				
+			foreach(@probesetHOH){				
 				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
 					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
 				       and
 					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
 				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
 					    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
 					    $cntMatchingProbesets=$cntMatchingProbesets+1;
 				    }elsif((($probesetHOH[$cntProbesets]{start} >= $intronStart) and ($probesetHOH[$cntProbesets]{start} <= $intronStop) or 
@@ -357,11 +358,12 @@ sub createXMLFile
 					and
 					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
 				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
 					    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
 						    $probesetHOH[$cntProbesets];
 					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
 				    }
-				
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
@@ -501,6 +503,8 @@ sub createXMLFile
 					        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
 					    ){
 						    #This is a probeset overlapping the current exon
+						    delete $probesetHOH[$cntProbesets]{herit};
+						    delete $probesetHOH[$cntProbesets]{dabg};
 						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ProbesetList}{Probeset}[$cntMatchingProbesets] = 
 							    $probesetHOH[$cntProbesets];
 						    $cntMatchingProbesets=$cntMatchingProbesets+1;
@@ -509,6 +513,8 @@ sub createXMLFile
 						   and
 					        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
 					    ){
+						    delete $probesetHOH[$cntProbesets]{herit};
+						    delete $probesetHOH[$cntProbesets]{dabg};
 						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{intronList}{intron}[$cntIntrons-1]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
 							    $probesetHOH[$cntProbesets];
 						    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
@@ -574,9 +580,9 @@ sub createXMLFile
 		@geneList=();
 	};
 	
-	print "list before sort:".@geneList."\n";
+	#print "list before sort:".@geneList."\n";
 	my @sortedlist = sort { $a->{start} <=> $b->{start} } @geneList;
-	print "sorted List:".@sortedlist."\n";
+	#print "sorted List:".@sortedlist."\n";
 	$GeneHOH{Gene}=\@sortedlist;
 	
 	##output XML file
@@ -611,7 +617,7 @@ sub createXMLFile
 	#my $rnaCountEnd=time();
 	#print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
 	
-	my $trackDB="mm9";
+	my $trackDB="mm10";
 	if($species eq 'Rat'){
 		$trackDB="rn5";
 	}

@@ -649,7 +649,7 @@ public class Resource {
 		markerFileList = new ArrayList<MarkerDataFile>();
 		markerFileList.add(new MarkerDataFile("SNP information on the LXS RI panel was collected by Dr. Gary Churchill and colleagues at the Jackson "+
 					"Laboratory using the Affymetrix Mouse Diversity Genotyping array.  This information was gathered with funding from NIH "+
-					"grants (GM0706833 and AG0038070).", resourcesDir + "LXS_Markers.txt.zip","LXS"));
+					"grants (GM0706833 and AG0038070).", resourcesDir + "LXS.markers.mm10.txt.zip","LXS"));
 		markerFileArray = myObjectHandler.getAsArray(markerFileList, MarkerDataFile.class);
 
 		eQTLFileList = new ArrayList<EQTLDataFile>();

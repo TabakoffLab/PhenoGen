@@ -26,8 +26,23 @@
 </style>
 
     <div class="settingsLevel<%=level%>"  style="display:none;width:400px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:50px; left:-98px; background-color:#FFFFFF; min-height:450px;">
-        	<span style="color:#000000;">Available Tracks/Settings:</span>
-        	<span class="closeBtn" id="close_settingsLevel<%=level%>" style="position:relative;top:3px;left:104px;"><img src="<%=imagesDir%>icons/close.png"></span>
+        	<span style="color:#000000; ">Image Settings:</span>
+        	<span class="closeBtn" id="close_settingsLevel<%=level%>" style="position:relative;top:3px;left:136px;"><img src="<%=imagesDir%>icons/close.png"></span>
+            <div>
+            	Image Area Height:
+                <select name="imgSelect" id="displaySelect<%=level%>">
+                	<option value="150">Small</option>
+                	<option value="350" selected>Normal</option>
+                    <option value="700">Large</option>
+                	<option value="0">No Scrolling</option>
+                </select>
+                <BR />
+            	<span class="reset button" id="resetImage<%=level%>" style="width:150px;">Reset Image Zoom</span>
+                <%if(level==0){%>
+                	<span class="reset button" id="resetTracks<%=level%>" style="width:150px;">View Default Tracks</span>
+                <%}%>
+          </div>
+          <div style="color:#000000; text-align:left;">Image Tracks:</div>
 			<div id="topAccord<%=level%>" style="height:100%; text-align:left;">
             	<H2>Genome Feature Tracks</H2>
                 <div>
@@ -65,7 +80,7 @@
                     	<div class="trigger triggerEC" name="Variation<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Strain Variation</div>
                         <div id="Variation<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
                         	
-                        	<input name="trackcbx" type="checkbox" id="snpSHRHCBX<%=level%>" />SHR <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
+                        	<input name="trackcbx" type="checkbox" id="snpSHRHCBX<%=level%>" />SHR/OlaPrin <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <select name="trackSelect" id="snpSHRH<%=level%>Select">
                                 <option value="1" selected="selected">SNPs only</option>
                                 <option value="2" >Insertions only</option>
@@ -78,7 +93,7 @@
                             </select>
                              
                              <HR />
-                             <input name="trackcbx" type="checkbox" id="snpBNLXCBX<%=level%>"  />BN-Lx <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
+                             <input name="trackcbx" type="checkbox" id="snpBNLXCBX<%=level%>"  />BN-Lx/CubPrin <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <select name="trackSelect" id="snpBNLX<%=level%>Select" >
                                 <option value="1" selected="selected">SNPs only</option>
                                 <option value="2" >Insertions only</option>
@@ -102,7 +117,7 @@
                                 <option value="3" >Pack</option>
                             </select>
                             <HR />
-                            <input name="trackcbx" type="checkbox" id="snpSHRJCBX<%=level%>" />SHRJ:<span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
+                            <input name="trackcbx" type="checkbox" id="snpSHRJCBX<%=level%>" />SHR/NCrlPrin <span class="Imagetooltip" title="SNPs/Indels from the DNA sequencing of the BN-Lx and the SHR inbred rat strain genome.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  SNPs/indels are in relation to the reference BN genome (rn5).  When labels are visible for the SNP/Indel features the labels are the reference sequence:strain sequence.<BR><BR> For example:<BR>T:A is a SNP where T was changed to an A in the strain specific sequence.<BR>TA:TAA - is an insertion of an A in the reference Sequence TA.<BR>TAA:TA is the deletion of an A from the reference sequence TAA.<BR><BR>Capitalization:<BR>Bases are reported in lower case if they are part of an algorithmically determined repeat region and are not altered from the reference. Reference bases that are altered (SNPs and deletions) are reported in uppercase in the reference sequence and the strain-specific sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <select name="trackSelect" id="snpSHRJ<%=level%>Select" >
                                 <option value="1" selected="selected">SNPs only</option>
                                 <option value="2" >Insertions only</option>
@@ -135,14 +150,14 @@
                             <option value="3" selected="selected">Pack</option>
                             <option value="2" >Full</option>
                         </select>
-                        <BR />
+                        <!--<BR />
                         filtered by:
                          <select name="filterSelect" id="probe<%=level%>filterSelect">
                             <option value="none" selected="selected">None</option>
                             <option value="annot" >Annotation</option>
                             <option value="dabg" >Detection Above Background</option>
                             <option value="herit" >Heritability</option>
-                        </select>
+                        </select>-->
                         <BR />
                         color by:
                         <select name="colorSelect" id="probe<%=level%>colorSelect">
@@ -150,6 +165,18 @@
                             <option value="dabg" >Detection Above Background</option>
                             <option value="herit" >Heritability</option>
                         </select>
+                        	
+                        		<div id="affyTissues<%=level%>" style="display:none;">
+                                	for tissues:
+                                	 <input name="tissuecbx" type="checkbox" id="BrainAffyCBX<%=level%>"  checked="checked" /> Whole Brain
+                                     <%if(myOrganism.equals("Rn")){%>
+                                         <input name="tissuecbx" type="checkbox" id="BrownAdiposeAffyCBX<%=level%>"  checked="checked" /> Brown Adipose
+                                         <BR />
+                                         <input name="tissuecbx" type="checkbox" id="HeartAffyCBX<%=level%>" checked="checked"  /> Heart
+                                         <input name="tissuecbx" type="checkbox" id="LiverAffyCBX<%=level%>"  checked="checked" /> Liver
+                                     <%}%>
+                            	</div>
+                            
                         </div>
                         <BR />
                         <%if(myOrganism.equals("Rn")){%>
@@ -229,19 +256,8 @@
                     </div>
                 <!--</div>-->
             </div>
-            <div>
-            	Track Area Height:
-                <select name="imgSelect" id="displaySelect<%=level%>">
-                	<option value="150">Small</option>
-                	<option value="350" selected>Normal</option>
-                    <option value="700">Large</option>
-                	<option value="0">No Scrolling</option>
-                </select>
-                <BR />
-            	<span class="reset button" id="resetImage<%=level%>" style="width:150px;">Reset Image Zoom</span>
-                <span class="reset button" id="resetTracks<%=level%>" style="width:150px;">View Default Tracks</span>
-          </div>
+            
 </div>
           <script type="text/javascript">
-		  	$( "#topAccord<%=level%>" ).accordion({ heightStyle: "fill" });
+		  	$( "#topAccord<%=level%>" ).accordion({ heightStyle: "content" });
 		  </script>

@@ -19,7 +19,7 @@ function setupGrantAccessPage() {
 			$("input[type='checkbox']").val(0);
 		} else {
 			$("input[type='checkbox']").val(-1);
-			$(this).find("td:first input").attr("checked","checked");
+			$(this).find("td:first input").prop("checked",true);
 		} 
 	});
    
@@ -30,11 +30,11 @@ function setupGrantAccessPage() {
 				if (this.checked) {
 					this.value = 0;
 					this.checked = false;
-					$("#grantAll").attr('checked', false);
+					$("#grantAll").prop('checked', false);
 				} else {
 					this.value = -1; 
 					this.checked = true;
-					$("#grantAll").attr('checked', true);
+					$("#grantAll").prop('checked', true);
 				}
 			}
 		});

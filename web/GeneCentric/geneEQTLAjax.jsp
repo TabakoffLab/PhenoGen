@@ -85,7 +85,7 @@
 								arrayTypeID=tmp[0];
 							}
 	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID);
-	
+	log.debug("OPENED GENE:"+id);
         %>
 <BR />
 
@@ -94,7 +94,7 @@
 <script type="text/javascript">
 	$('#geneEQTL table#circosOptTbl').css("top","0px");
 	$("span[name='circosOption']").css("margin-left","60px");
-	runCircos();
+	//runCircos();
 </script>
 
 

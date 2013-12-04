@@ -270,18 +270,20 @@ public class AsyncGeneDataExpr extends Thread {
     public void run() throws RuntimeException {
         doneThread=false;
         Thread thisThread = Thread.currentThread();
-        boolean done=prevThread.isDone();
-        log.debug("WAITING PREVTHREAD");
-        while(!done){
-            try{
-                //log.debug("WAITING PREVTHREAD");
-                thisThread.sleep(5000);
-            }catch(InterruptedException er){
-                log.error("wait interrupted",er);
+        if(prevThread!=null){
+            boolean done=prevThread.isDone();
+            log.debug("WAITING PREVTHREAD");
+            while(!done){
+                try{
+                    //log.debug("WAITING PREVTHREAD");
+                    thisThread.sleep(5000);
+                }catch(InterruptedException er){
+                    log.error("wait interrupted",er);
+                }
+                done=prevThread.isDone();
             }
-            done=prevThread.isDone();
+            log.debug("Done Waiting Starting");
         }
-        log.debug("Done Waiting Starting");
         //wait for other Expr threads to finish
         boolean waiting=true;
         while(waiting){

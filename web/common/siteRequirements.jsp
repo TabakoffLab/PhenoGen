@@ -23,10 +23,10 @@
 
                 <h2>Supported Browsers</h2>
                 <p>
-                	Firefox 10.0+<BR />
-                    Safari 5.0+<BR />
-                    Chrome 17+<BR />
-                    IE 9+ <BR />
+                	Firefox 23.0+<BR />
+                    Safari 6.0+<BR />
+                    Chrome 25+<BR />
+                    IE 10+ (Most features will still work with IE 9, but the Genome/Transcriptome Data Browser will NOT work)<BR />
 				</p>
                 <BR /><BR />
 		<h2>Additional Software Required</h2>

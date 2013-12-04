@@ -279,54 +279,85 @@ sub createXMLFile
 	
 	#fill genelist and slicelist for each Ensembl gene found and determine the min and max coordinates to find overlapping RNA isoforms.
 	while ( my $geneName1 = shift @geneNamesList ) {
-	    #print "Get:$geneName1\n";
-	    my $tmpslice = $slice_adaptor->fetch_by_gene_stable_id( $geneName1, 50 ); # the 50 just returns a little more on the chromosome. shortened from 5000 since this returns too much.
-	    # Get all the genes.  Theoretically there should only be one, but possibly there might be more????
-	    my $genes = $tmpslice->get_all_Genes();
-	    while(my $tmpgene=shift @{$genes}){
-		my $curstart = $tmpgene->seq_region_start();
-		my $curstop = $tmpgene->seq_region_end();
-		if($firstGeneSymbol eq ""){
-			$firstGeneSymbol = $tmpgene->external_name();
+	    if(index($geneName1,"XLOC")==-1){
+		#print "Get:$geneName1\n";
+		my $tmpslice = $slice_adaptor->fetch_by_gene_stable_id( $geneName1, 50 ); # the 50 just returns a little more on the chromosome. shortened from 5000 since this returns too much.
+		# Get all the genes.  Theoretically there should only be one, but possibly there might be more????
+		my $genes = $tmpslice->get_all_Genes();
+		while(my $tmpgene=shift @{$genes}){
+		    my $curstart = $tmpgene->seq_region_start();
+		    my $curstop = $tmpgene->seq_region_end();
+		    if($firstGeneSymbol eq ""){
+			    $firstGeneSymbol = $tmpgene->external_name();
+		    }
+		    $chr=$tmpgene->slice->seq_region_name();
+		    print "on chromosome:".$chr."\n";
+		    if($curstart<=$curstop){
+			if($curstart<$minCoord){
+			    $minCoord=$curstart;
+			}
+			if($curstop>$maxCoord){
+			    $maxCoord=$curstop;
+			}
+		    }else{
+			if($curstop<$minCoord){
+			    $minCoord=$curstop;
+			}
+			if($curstart>$maxCoord){
+			    $maxCoord=$curstart;
+			}
+		    }
+		    push(@genelist, $tmpgene);
+		    push(@slicelist, $tmpslice);
 		}
-		$chr=$tmpgene->slice->seq_region_name();
-		print "on chromosome:".$chr."\n";
-		if($curstart<=$curstop){
-		    if($curstart<$minCoord){
-			$minCoord=$curstart;
-		    }
-		    if($curstop>$maxCoord){
-			$maxCoord=$curstop;
-		    }
-		}else{
-		    if($curstop<$minCoord){
-			$minCoord=$curstop;
-		    }
-		    if($curstart>$maxCoord){
-			$maxCoord=$curstart;
-		    }
-		}
-		push(@genelist, $tmpgene);
-		push(@slicelist, $tmpslice);
+		#print "gene size found:".@{$genes}."\n";
+		print "gene list:".@genelist."\n";
+	    }else{
+		
 	    }
-	    #print "gene size found:".@{$genes}."\n";
-	    print "gene list:".@genelist."\n";
 	}
 	
 	#get RNA isoform Gene list
 	
-	my $diff=$maxCoord-$minCoord;
-	$diff=$diff*0.03;
-	$diff=POSIX::floor($diff);
+	#my $diff=$maxCoord-$minCoord;
+	#$diff=$diff*0.03;
+	#$diff=POSIX::floor($diff);
 	
-	$minCoord=$minCoord-$diff;
-	$maxCoord=$maxCoord+$diff;
+	#$minCoord=$minCoord-$diff;
+	#$maxCoord=$maxCoord+$diff;
 	#read SNPs/Indels
 	
 	if($shortSpecies eq 'Rn'){
 	    #get expanded min max
 	    if($prevMin!=$minCoord||$prevMax!=$maxCoord){
 	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,0);
+		my $tmpGeneArray=$$isoformHOH{Gene};
+		foreach my $tmpgene ( @$tmpGeneArray){
+		    print "gene:".$$tmpgene{ID}."\n";
+		    my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
+		    foreach my $tmptranscript (@$tmpTransArray){
+			print $$tmptranscript{ID}."\n";
+			if($$tmptranscript{start}<$minCoord){
+			    $minCoord=$$tmptranscript{start};
+			}elsif($$tmptranscript{start}>$maxCoord){
+			    $maxCoord=$$tmptranscript{start};
+			}
+			if($$tmptranscript{stop}<$minCoord){
+			    $minCoord=$$tmptranscript{stop};
+			}elsif($$tmptranscript{stop}>$maxCoord){
+			    $maxCoord=$$tmptranscript{stop};
+			}
+		    }
+		}
+		#extend global Min Max by 1000bp
+		#$minCoord=$minCoord-1000;
+		#$maxCoord=$maxCoord+1000;
+		#my $diff=$maxCoord-$minCoord;
+		#$diff=$diff*0.03;
+		#$diff=POSIX::floor($diff);
+		
+		#$minCoord=$minCoord-$diff;
+		#$maxCoord=$maxCoord+$diff;
 	    }
 	}
 	
@@ -354,59 +385,9 @@ sub createXMLFile
 			$intronStop=$$tmptranscript{intronList}{intron}[$cntIntron]{stop};
 
 		    }
-		#		$cntProbesets=0;
-		#		$cntMatchingProbesets=0;
-		#		$cntMatchingIntronProbesets=0;
-		#		foreach(@probesetHOH){
-		#			if($exonStart<$exonStop){# if gene is in the forward direction
-		#			    if(($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or 
-		#			    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
-		#			    {
-		#				    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
-		#				    $cntMatchingProbesets=$cntMatchingProbesets+1;
-		#			    }elsif(($probesetHOH[$cntProbesets]{start} >= $intronStart) and ($probesetHOH[$cntProbesets]{start} <= $intronStop) or 
-		#			    ($probesetHOH[$cntProbesets]{stop} >= $intronStart) and ($probesetHOH[$cntProbesets]{stop} <= $intronStop)){
-		#				    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-		#					    $probesetHOH[$cntProbesets];
-		#				    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-		#			    }
-		#			}else{# gene is in reverse direction
-		#			    if(($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
-		#			    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
-		#			    {
-		#				    #This is a probeset overlapping the current exon
-		#				    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
-		#				    $cntMatchingProbesets=$cntMatchingProbesets+1;
-		#			    }elsif(($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
-		#			    ($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop)){
-		#				    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-		#					    $probesetHOH[$cntProbesets];
-		#				    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-		#			    }
-		#			}
-		#			$cntProbesets = $cntProbesets+1;
-		#		} # loop through probesets
-		#		
-		#		#match snps/indels to exons
-		#		my $cntSnps=0;
-		#		my $cntMatchingSnps=0;
-		#		foreach(@snpList){
-		#			
-		#			    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
-		#				($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
-		#			    ){
-		#				    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
-		#				    $cntMatchingSnps++;
-		#				    print "Exon Variant";
-		#			    }
-		#			
-		#			$cntSnps++;
-		#		} # loop through snps/indels
 		    $cntIntron++;
 		}
 	    }
-	    #create gene image for ExonCorrelationViewer
-	    
 	}
 	
 	my $geneListFile=$outputDir."geneList.txt";
@@ -456,55 +437,12 @@ sub createXMLFile
 	} # loop through genes
 	
 	close GLFILE;
-	
-	# We're finished with the Genes
-		#my $tissueProbesRef=readTissueAffyProbesetDataFromDB($chr,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,1,$dsn,$usr,$passwd);
-		#my %tissueProbes=%$tissueProbesRef;
-		
-		
-		#$GeneHOHRef = addAlternateID_RNA(\%GeneHOH,$species,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,$outputDir);
-		#%GeneHOH = %$GeneHOHRef;
-		
-		
-		
-		
-		#createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonPlus.track",$trackDB,1,$chr);
-		#createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonMinus.track",$trackDB,-1,$chr);
-		#createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonUkwn.track",$trackDB,0,$chr);
-		#createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
-		#createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
-		#createProbesetTrack(\@probesetHOH,$outputDir."probe.track",$trackDB,$chr);
-		#createFilteredProbesetTrack(\%tissueProbes,$outputDir."filterprobe.track",$trackDB,$chr);
 		
 		open LOCFILE,">".$outputDir."location.txt";
 		print LOCFILE "chr$chr\n$minCoord\n$maxCoord\n";
 		close LOCFILE;
 		
-		#my $geneArrayRef = $GeneHOH{Gene};
-		#my @geneArray = @$geneArrayRef;
-		#$cntGenes=0;
-		#foreach(@geneArray){
-		#    my $tmpGeneName=$GeneHOH{Gene}[$cntGenes]{ID};
-		#    if(!($tmpGeneName eq "")){
-		#	my $tmpStart=$GeneHOH{Gene}[$cntGenes]{start};
-		#	my $tmpStop=$GeneHOH{Gene}[$cntGenes]{stop};
-		#	#create gene image for ExonCorrelationViewer
-		#	my $indivTrackOutputFileName = $bedOutputFileName."exCor_".$tmpGeneName.".tracks";
-		#	my $newPngOutputFileName = $outputDir."exCor_".$tmpGeneName.".png";
-		#	createTrackFile(\%GeneHOH, $cntGenes,  $indivTrackOutputFileName, $species);
-		#	my $newresultCode=0;
-		#	my $resultCode=getImage($species,$chr,$tmpStart, $tmpStop,$newPngOutputFileName,$indivTrackOutputFileName,"exCor_".$tmpGeneName);
-		#	#my $resultCode=createPngRNA($species, "exCor_".$tmpGeneName, "chr".$chr, $tmpStart, $tmpStop, $newPngOutputFileName,$indivTrackOutputFileName,(30+30*$tryCount));
-		#	    my $url=substr($resultCode,index($resultCode,"<>")+2);
-		#	    #print "URL:$url\n";
-		#	    #print URLFILE "$url\n";
-		#	    $newresultCode=substr($resultCode,0,index($resultCode,"<>"));
-		#	    if($newresultCode==200){
-		#		unlink($indivTrackOutputFileName);
-		#	    }
-		#    }
-		#    $cntGenes=$cntGenes+1;
-		#}
+		
 }
 #
 #	

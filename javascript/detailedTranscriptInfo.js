@@ -58,30 +58,23 @@ function setFilterTableStatus(baseName){
 }
 
 function runFilter(){
-	$("#wait1").show();
 	var chrList = "";
           $("#chromosomesMS option").each(function () {
                 chrList += $(this).val() + ";";
               });
 	$('#chromosomes').val(chrList);
-	//alert(chrList);
 	var tisList = "";
           $("#tissuesMS option").each(function () {
                 tisList += $(this).val() + ";";
               });
 	$('#tissues').val(tisList);
-	//alert(tisList);
 	var levelList = "";
           $("#trxAnnotMS option").each(function () {
                 levelList += $(this).val() + ";";
               });
 	$('#levels').val(levelList);
-	//alert(levelList);
-	//$('#tissues').val($('#tissuesMS').val());
-	//$('#chromosomes').val($('#chromosomesMS').val());
-	//alert("val:"+$('#chromosomesMS').val());
 	$('#pvalueCutoffInput').val($('#pvalueCutoffSelect2').val());
-	$('#geneCentricForm').submit();
+	loadEQTLTableWParams(levelList,chrList,tisList,$('#pvalueCutoffSelect2').val());
 }
 
 
@@ -128,7 +121,7 @@ function openSmallNonCoding(id,name){
 
 
 
-
+/*
 function updateTrackString(){
 	trackString="";
 	$("input[name='trackcbx']").each( function (){
@@ -209,4 +202,4 @@ function gvupdateUCSCImage(){
         			$('#gvgeneImage').html("<div>An error occurred generating this image.  Please try back later.</div>");
     			}
 			});
-}
+}*/

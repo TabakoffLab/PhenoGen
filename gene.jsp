@@ -2,22 +2,20 @@
 
 <%
 	extrasList.add("detailedTranscriptInfo.js");
-	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("jquery.cookie.js");
-	
+	extrasList.add("fancyBox/jquery.fancybox.js");
 	//extrasList.add("TableTools.min.js");
 	//extrasList.add("ZeroClipboard.js");
 	//extrasList.add("ColReorder.min.js");
 	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
-	extrasList.add("jquery.tooltipster.js");
-	extrasList.add("d3.js");
+	extrasList.add("d3.v3.min.js");
 	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
-	extrasList.add("jquery.fancybox.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("tooltipster.css");
+	extrasList.add("jquery.fancybox.css");
 	//extrasList.add("ColReorder.css");
 	//extrasList.add("TableTools_JUI.css");
 	//extrasList.add("TableTools.css");
@@ -39,6 +37,15 @@ div.testToolTip {
   color:#000000;
   text-align:left;     
 }
+/*table.tooltipTable{
+	background:#d3d3d3;
+}*/
+
+table.tooltipTable TD{
+	background:#d3d3d3;
+	text-align:center;
+}
+
 .axis path{
 	fill:none;
 	stroke:black;
@@ -283,7 +290,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 			if(myGene.startsWith("ENSRNOG") ||myGene.startsWith("ENSMUSG")){
 				myIDecoderClient.setNum_iterations(0);
 			}else{
-				myIDecoderClient.setNum_iterations(2);
+				myIDecoderClient.setNum_iterations(1);
 			}
 			iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
 			myIDecoderClient.setNum_iterations(1);
@@ -344,6 +351,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 											}else{
 												geneSymbol.add(tmpGeneSymbol);
 											}
+											
 											if(tmpUcscURL==null){
 												ucscURL.add("");
 											}else{
@@ -378,43 +386,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 								displayNoEnsembl=true;
 						}
 					
-	}/*else if ((action != null) && action.equals("Go")) {
-		//iDecoderAnswer=(Set)session.getAttribute("iDecoderAnswer");
-		//List myIdentifierList=null;
-        //ArrayList<String> myEnsemblIDs=new ArrayList<String>();
-		log.debug("Selecting a new gene");
-		log.debug("\nGene:"+selectedEnsemblID+"\nurl:"+lg.getGeneLink(selectedEnsemblID,myOrganism,true,true,false));
-		response.sendRedirect(lg.getGeneLink(selectedEnsemblID,myOrganism,true,true,false));
-		/*if(request.getParameter("genURLArray")!=null){
-			log.debug("genURLArray !=null");
-			String[] tmpgenURL=request.getParameter("genURLArray").trim().split(",");
-			String[] tmpGeneSym=request.getParameter("geneSymArray").trim().split(",");
-			String[] tmpURL=request.getParameter("ucscURLArray").trim().split(",");
-			//String[] tmpFilterURL=request.getParameter("ucscFilterURLArray").trim().split(",");
-			String[] tmpFirstENS=request.getParameter("firstENSArray").trim().split(",");
-			genURL=oh.getAsArrayList(tmpgenURL);
-			geneSymbol=oh.getAsArrayList(tmpGeneSym);
-			ucscURL=oh.getAsArrayList(tmpURL);
-			//ucscURLFiltered=oh.getAsArrayList(tmpFilterURL);
-			firstEnsemblID=oh.getAsArrayList(tmpFirstENS);
-			log.debug("selected ind:"+selectedGene+"\nGene:"+firstEnsemblID.get(selectedGene)+"\nurl:"+lg.getGeneLink(firstEnsemblID.get(selectedGene),myOrganism,true,true,false));
-			
-		}else{
-			log.debug("genURLArray == null");
-			displayNoEnsembl=true;
-		}*/
-        /*if(iDecoderAnswer!=null){
-               	genURL=(ArrayList<String>)session.getAttribute("genURLArray");
-				geneSymbol=(ArrayList<String>)session.getAttribute("ucscURLArray");
-				ucscURL=(ArrayList<String>)session.getAttribute("geneSymbolArray");
-				ucscURLFiltered=(ArrayList<String>)session.getAttribute("ucscURLFilteredArray");
-				firstEnsemblID=(ArrayList<String>)session.getAttribute("firstEnsemblIDArray");
-        }else{
-			displayNoEnsembl=true;
-		}*/
-	
-	//}
-	else if(
+	}else if(
 		(((action != null) && action.equals("Get Transcription Details"))&& region )
 			|| ( auto && region )
 	
@@ -553,6 +525,12 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 	
 %>
 
+
+<div id="oldIE" style="display:none;color:#FF0000;">
+	This page requires IE 10+. Your browser appears to be an older version of Internet Explorer.  To use this feature please use a different browser(see <a href="<%=commonDir%>siteRequirements.jsp">Site Requirements</a>).  We are sorry for any inconvenience this may cause.  We're working hard to provide additional features which makes it difficult to maintain compatibility with all browsers.
+</div>
+
+
 <%if(!popup){%>
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
@@ -569,11 +547,39 @@ pageTitle="Detailed Transcription Information "+myGene;%>
                 Click on the Translate Region to Mouse/Rat to find regions on the Mouse/Rat genome that correspond to a region of interest in the Human/Mouse/Rat genome.<BR />
                 2. Choose a species.<BR />
                 3. Click Get Transcription Details.<BR /><BR />
-                Hint: Try other synonyms if the first ID that you enter is not found.<BR /><BR /><BR />
+                <BR /><BR /><BR />
 </div>
 
 
+
 <div style="text-align:center">
+
+
+<%if(genURL.size()>1){%>
+                <label><span style="font-weight:bold;">Multiple genes were returned please select the gene of Interest:</span>
+                <select name="geneSelectCBX" id="geneSelectCBX" >
+                    <%for(int i=0;i<firstEnsemblID.size();i++){
+                        %>
+                        <option value="<%=firstEnsemblID.get(i)%>" <%if((geneSymbol.get(i)!=null&&geneSymbol.get(i).toLowerCase().equals(myGene.toLowerCase()))){%>selected<%}%>>
+                                                <%if(geneSymbol.get(i)!=null&&!geneSymbol.get(i).startsWith("ERROR")){%>
+                                                        <%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
+                                                <%}else if(geneSymbol.get(i).startsWith("ERROR")){%>
+                                <%=geneSymbol.get(i)%> (<%=firstEnsemblID.get(i)%>) 
+                                                <%}else{%>
+                                                        <%=firstEnsemblID.get(i)%>
+                                                <%}%>
+                                                
+                        </option>
+                    <%}%>
+                </select>
+                </label>
+            
+            <input type="submit" name="action" id="selGeneBTN" value="Go" onClick="enterSelectedGene()"><BR />
+            Hint: Try other synonyms if the first ID that you enter is not found.
+            <BR /><BR />
+<%}%>
+
+
 <form method="post" 
 		action="<%=formName%>"
 		enctype="application/x-www-form-urlencoded"
@@ -619,7 +625,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 </form>
 <BR />
 Or
-<input type="submit" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
+<input type="button" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
 </div>
 <%}else{%>
 	<div style="text-align:center;">
@@ -660,7 +666,7 @@ Or
 </div>
 
 <script type="text/javascript">
-	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "<center>Translate Region</center>", zIndex: 500});
+	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
 	function openTranslateRegion(){
 		$('.demo').hide();
 		var region=$('#geneTxt').val();
@@ -673,20 +679,31 @@ Or
                 				}
 			);
 	}
+	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
+ 		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+		if (ieversion<10){
+			$("#oldIE").show();
+		}
+	}
 </script>
 
 
-<%if(genURL.size()>0){%>
+<%if(genURL.size()==1){%>
 	
 
 	<%@ include file="regionResults.jsp" %>
     <%@ include file="web/GeneCentric/resultsHelp.jsp" %>
 
+
 <%}else{%>
 
 	<%if(displayNoEnsembl){ %>
+    	Hint: Try other synonyms if the first ID that you enter is not found.
+            <BR /><BR />
         <BR /><div class="error">ERROR:No Ensembl ID found for the ID entered.<BR /><BR />
-        The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR /><BR />
+        The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR />
+        <BR />
+         
 	<% }%>
 
 	
