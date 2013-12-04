@@ -204,7 +204,6 @@ function trKey(d){
 
 function DisplayRegionReport(){
 	console.log("DisplayRegionReport");
-	if(!$('div#collapsableReport').is(":hidden")){
 		//d3.select('#collaspableReportList').selectAll('li').remove();
 		var tmptrackList=svgList[0].trackList;
 		if(reportSelectedTrack==null){
@@ -237,10 +236,9 @@ function DisplayRegionReport(){
 
 		list.exit().remove();
 
-		if(reportSelectedTrack!=null){
+		if(!$('div#collapsableReport').is(":hidden") && reportSelectedTrack!=null){
 			displayDetailedView(reportSelectedTrack);
 		}
-	}
 }
 
 function displayDetailedView(track){

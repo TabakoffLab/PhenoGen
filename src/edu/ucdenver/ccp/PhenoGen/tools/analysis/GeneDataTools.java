@@ -169,6 +169,41 @@ public class GeneDataTools {
         
     }
 
+    
+    public String getGeneFolder(String inputID,String ensemblIDList,
+            String panel,String organism,int RNADatasetID,int arrayTypeID) {
+        String ret="";
+        String[] ensemblList = ensemblIDList.split(",");
+        String ensemblID1 = ensemblList[0];
+        boolean error=false;
+        if(ensemblID1!=null && !ensemblID1.equals("")){
+            //Define output directory
+            String tmpoutputDir = fullPath + "tmpData/geneData/" + ensemblID1 + "/";
+            //session.setAttribute("geneCentricPath", outputDir);
+            log.debug("checking for path:"+tmpoutputDir);
+            String folderName = ensemblID1;
+            //String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
+            //publicPath = publicPath.substring(0, publicPath.indexOf("/Affy.NormVer.h5"));
+            
+           
+        String[] loc=null;
+        try{
+                loc=myFH.getFileContents(new File(tmpoutputDir+"location.txt"));
+        }catch(IOException e){
+                log.error("Couldn't load location for gene.",e);
+        }
+        if(loc!=null){
+                chrom=loc[0];
+                minCoord=Integer.parseInt(loc[1]);
+                maxCoord=Integer.parseInt(loc[2]);
+        }
+        //log.debug("getGeneCentricData->getRegionData");
+        ret=this.getImageRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.001,false);
+        }else{
+            ret="";
+        }
+        return ret;
+    }
     /**
      * Calls the Perl script WriteXML_RNA.pl and R script ExonCorrelation.R.
      * @param ensemblID       the ensemblIDs as a comma separated list
@@ -303,12 +338,12 @@ public class GeneDataTools {
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
         }
-        log.debug("getGeneCentricData->getRegionData");
+        //log.debug("getGeneCentricData->getRegionData");
         ArrayList<Gene> ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01);
         for(int i=0;i<ret.size();i++){
-            log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
+            //log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
             if(ret.get(i).getGeneID().equals(ensemblIDList)){
-                log.debug("EQUAL::"+ret.get(i).getGeneID()+"::"+ensemblIDList);
+                //log.debug("EQUAL::"+ret.get(i).getGeneID()+"::"+ensemblIDList);
                 this.returnGeneSymbol=ret.get(i).getGeneSymbol();
             }
         }

@@ -225,6 +225,7 @@ var selectGene="<%=selectedEnsemblID%>";
     <div style="display:none">
 		<a id="helpExampleNav" class="fancybox fancybox.iframe" href="web/GeneCentric/example.jsp" title="Browser Navigation"></a>
     </div>
+    <BR /><BR /><BR />
 </div><!-- ends page div -->
 
 <script type="text/javascript">

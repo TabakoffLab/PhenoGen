@@ -1625,11 +1625,15 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 				selectedGeneSymbol=d.getAttribute("geneSymbol");
 				selectedID=d.getAttribute("ID");
-				$('div#selectedReport').show();
 				$('div#selectedImage').show();
-				var jspPage="web/GeneCentric/geneReport.jsp";
-				var params={id:selectedID,geneSymbol:selectedGeneSymbol,chromosome:chr,species:organism};
-				DisplaySelectedDetailReport(jspPage,params)
+				if((new String(selectedID)).indexOf("ENS")>-1){
+					$('div#selectedReport').show();
+					var jspPage="web/GeneCentric/geneReport.jsp";
+					var params={id:selectedID,geneSymbol:selectedGeneSymbol,chromosome:chr,species:organism};
+					DisplaySelectedDetailReport(jspPage,params);
+				}else{
+					$('div#selectedReport').html("Detailed Gene Reports are not currently provided for RNA-Seq(Cufflinks) generated genes.");
+				}
 			}else if(localTxType=="small"){
 				if(new String(d.getAttribute("ID")).indexOf("ENS")==-1){
 					$('div#selectedImage').hide();

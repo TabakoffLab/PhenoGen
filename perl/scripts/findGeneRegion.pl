@@ -279,38 +279,42 @@ sub createXMLFile
 	
 	#fill genelist and slicelist for each Ensembl gene found and determine the min and max coordinates to find overlapping RNA isoforms.
 	while ( my $geneName1 = shift @geneNamesList ) {
-	    #print "Get:$geneName1\n";
-	    my $tmpslice = $slice_adaptor->fetch_by_gene_stable_id( $geneName1, 50 ); # the 50 just returns a little more on the chromosome. shortened from 5000 since this returns too much.
-	    # Get all the genes.  Theoretically there should only be one, but possibly there might be more????
-	    my $genes = $tmpslice->get_all_Genes();
-	    while(my $tmpgene=shift @{$genes}){
-		my $curstart = $tmpgene->seq_region_start();
-		my $curstop = $tmpgene->seq_region_end();
-		if($firstGeneSymbol eq ""){
-			$firstGeneSymbol = $tmpgene->external_name();
+	    if(index($geneName1,"XLOC")==-1){
+		#print "Get:$geneName1\n";
+		my $tmpslice = $slice_adaptor->fetch_by_gene_stable_id( $geneName1, 50 ); # the 50 just returns a little more on the chromosome. shortened from 5000 since this returns too much.
+		# Get all the genes.  Theoretically there should only be one, but possibly there might be more????
+		my $genes = $tmpslice->get_all_Genes();
+		while(my $tmpgene=shift @{$genes}){
+		    my $curstart = $tmpgene->seq_region_start();
+		    my $curstop = $tmpgene->seq_region_end();
+		    if($firstGeneSymbol eq ""){
+			    $firstGeneSymbol = $tmpgene->external_name();
+		    }
+		    $chr=$tmpgene->slice->seq_region_name();
+		    print "on chromosome:".$chr."\n";
+		    if($curstart<=$curstop){
+			if($curstart<$minCoord){
+			    $minCoord=$curstart;
+			}
+			if($curstop>$maxCoord){
+			    $maxCoord=$curstop;
+			}
+		    }else{
+			if($curstop<$minCoord){
+			    $minCoord=$curstop;
+			}
+			if($curstart>$maxCoord){
+			    $maxCoord=$curstart;
+			}
+		    }
+		    push(@genelist, $tmpgene);
+		    push(@slicelist, $tmpslice);
 		}
-		$chr=$tmpgene->slice->seq_region_name();
-		print "on chromosome:".$chr."\n";
-		if($curstart<=$curstop){
-		    if($curstart<$minCoord){
-			$minCoord=$curstart;
-		    }
-		    if($curstop>$maxCoord){
-			$maxCoord=$curstop;
-		    }
-		}else{
-		    if($curstop<$minCoord){
-			$minCoord=$curstop;
-		    }
-		    if($curstart>$maxCoord){
-			$maxCoord=$curstart;
-		    }
-		}
-		push(@genelist, $tmpgene);
-		push(@slicelist, $tmpslice);
+		#print "gene size found:".@{$genes}."\n";
+		print "gene list:".@genelist."\n";
+	    }else{
+		
 	    }
-	    #print "gene size found:".@{$genes}."\n";
-	    print "gene list:".@genelist."\n";
 	}
 	
 	#get RNA isoform Gene list
