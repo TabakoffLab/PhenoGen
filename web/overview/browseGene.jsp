@@ -15,9 +15,10 @@
                     <div id="accordion">
                     	<H3>Feature List</H3>
                         <div>
+                        Interactively explore Genomic Data/Transcriptomic Data (including RNA-Seq and Microarray Data) along the genome around a gene of interest.
                         <ul>
                         	<li>View Rat Brain Isoforms from RNA-Seq transcriptome reconstruction</li>
-                            <li>View Rat SNPs/Short Indels for BN-Lx and SHR with more coming soon</li>
+                            <li>View Rat SNPs/Short Indels for BN-Lx/CubPrin, SHR/OlaPrin, F344, and SHR/NCrlPrin with more coming soon</li>
                             <li>View Ensembl Isoforms</li>
                             <li>View Affymetrix Microarray Probe set locations</li>
                             <li>View eQTLs for the gene</li>
@@ -32,8 +33,10 @@
                         </div>
                         <h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
-                        Gene View showing the gene image, table of features in the region:
-                        <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene.jpg" title="Gene View showing the gene image, table of features in the region:"><img src="web/overview/browseGene.jpg"  style="width:100%;"  title="Click to view a larger image"/></a>
+                        An interactive SVG image of the region around the gene entered.  You have the option to zoom in/out, reorder tracks, add/customize tracks, click on features for more detailed data, and view the tables of all the features(see following screen shots).
+                        <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene.jpg" title="Region View showing the region around the gene entered."><img src="web/overview/browseGene.jpg"  style="width:100%;"  title="Click to view a larger image"/></a>
+                        The lower part of the page when a gene is selected. Zooms in on the gene and shows all transcripts, allows you to add any other tracks including Affymetrix Probesets that can be colored based on data or annotation, and RNA-Seq read counts accross the area covered by the gene.
+                        <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene2.jpg" title="Gene View showing transcripts for the selected gene, and any other tracks that have been added."><img src="web/overview/browseGene2.jpg"  style="width:100%;"  title="Click to view a larger image"/></a>
                         eQTL view showing what regions are associated with expression in each available tissue:
                         <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz.jpg" title="eQTL view showing what regions are associated with expression in each available tissue:"><img src="web/overview/qtlViz.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>

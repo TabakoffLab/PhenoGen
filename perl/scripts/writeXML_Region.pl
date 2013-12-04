@@ -1,11 +1,10 @@
 #!/usr/bin/perl
 
-#use lib "/opt/ensembl_ucsc/bioperl-live";
-#use lib "/opt/ensembl_ucsc/ensembl/modules";
 
 use Bio::EnsEMBL::Registry;
 use XML::LibXML;
 use XML::Simple;
+
 
 
 use strict;
@@ -15,7 +14,7 @@ require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'createBED.pl';
-
+require 'createXMLTrack.pl';
 
 
 sub getFeatureInfo
@@ -55,6 +54,118 @@ sub find
 }
 
 
+sub findEnsembl{
+    my $annotRef=shift;
+    my $curCount=shift;
+    my $ens="";
+
+	my %rnaHOH=%$annotRef;
+	my $annotListRef=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation};
+	my @annotArr=();
+	eval{
+		    @annotArr=@$annotListRef;
+	    }or do{
+		    @annotArr=();
+	    };
+	
+	my $count=0;
+	foreach(@annotArr){
+	    my $source=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation}[$count]{source};
+	    #print "checking source:".$source."\n";
+	    if($source eq "AKA"){
+		$ens=$rnaHOH{Gene}[$curCount]{TranscriptList}{Transcript}[0]{annotationList}{annotation}[$count]{annot_value};
+		$ens=substr($ens,0,index($ens,":"));
+		#print "Found:$ens\n";
+		last;
+	    }
+	}
+    return $ens;
+}
+
+sub mergeByAnnotation{
+    #print "CALLED MERGE ANNOTATION\n";
+    my $geneHOHRef=shift;
+    
+    my %geneHOH=%$geneHOHRef;
+    my $geneListRef=$geneHOH{Gene};
+    my @geneList=();
+	eval{
+		@geneList=@$geneListRef;
+	}or do{
+		@geneList=();
+	};
+    my %mainGenes;
+    my %rnaGenes;
+    my %hm;
+    
+    my $geneCount=0;
+    my $mainCount=0;
+    my $rnaCount=0;
+    foreach(@geneList){
+	if($geneHOH{Gene}[$geneCount]{source} eq ("Ensembl")){
+	    $mainGenes{Gene}[$mainCount]=$geneHOH{Gene}[$geneCount];
+	    $hm{$geneHOH{Gene}[$geneCount]{ID}}=$mainCount;
+	    $mainCount++;
+	    
+	}else{
+	    $rnaGenes{Gene}[$rnaCount]=$geneHOH{Gene}[$geneCount];
+	    $rnaCount++;
+	}
+	$geneCount++;
+    }
+    
+    my @rnaList=();
+    my $rnaGeneRef=$rnaGenes{Gene};
+    eval{
+	    @rnaList=@$rnaGeneRef;
+    }or do{
+	    @rnaList=();
+    };
+
+    $rnaCount=0;
+    foreach(@rnaList){
+	my $ens=findEnsembl(\%rnaGenes,$rnaCount);
+	#print "aka match".$rnaGenes{Gene}[$rnaCount]{ID}."\t".$ens."\n";
+	if(defined $hm{$ens}){
+	    #print "defined\n";
+	    my $tmpGeneIndex=$hm{$ens};
+	    my $tmpGeneArrRef=$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript};
+	    my @tmpGeneTxArr=@$tmpGeneArrRef;
+	    my $tmpCount=@tmpGeneTxArr;
+	    my @trxList=();
+	    my $trxListRef=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript};
+	    eval{
+		@trxList=@$trxListRef;
+	    }or do{
+		@trxList=();
+	    };
+	    my $trxCount=0;
+	    #print "before mainLen:".$tmpCount." txAdd:".@trxList."\n";
+	    my $extStart=$mainGenes{Gene}[$tmpGeneIndex]{start};
+	    my $extStop=$mainGenes{Gene}[$tmpGeneIndex]{stop};
+	    foreach(@trxList){
+		#print "loop:$trxCount\n";
+		$mainGenes{Gene}[$tmpGeneIndex]{TranscriptList}{Transcript}[$tmpCount]=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount];
+		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start}<$extStart){
+		    $extStart=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{start};
+		    $mainGenes{Gene}[$tmpGeneIndex]{extStart}=$extStart;
+		}
+		if($rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{stop}>$extStop){
+		    $extStop=$rnaGenes{Gene}[$rnaCount]{TranscriptList}{Transcript}[$trxCount]{stop};
+		    $mainGenes{Gene}[$tmpGeneIndex]{extStop}=$extStop;
+		}
+		$tmpCount++;
+		$trxCount++;
+	    }
+	}else{
+	    $mainGenes{Gene}[$mainCount]=$rnaGenes{Gene}[$rnaCount];
+	    $mainCount++;
+	}
+	$rnaCount++;
+    }
+    
+    return \%mainGenes;
+}
 
 
 sub createXMLFile
@@ -180,6 +291,7 @@ sub createXMLFile
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
 	my $psTimeEnd=time();
+	createProbesetXMLTrack(\@probesetHOH,$outputDir."probe.xml");
 	print "Probeset Time=".($psTimeEnd-$psTimeStart)."sec\n";
 	#read SNPs/Indels
 	
@@ -209,6 +321,8 @@ sub createXMLFile
 	    foreach my $tmpgene ( @$tmpGeneArray){
 		# "gene:".$$tmpgene{ID}."\n";
 		$GeneHOH{Gene}[$cntGenes]=$tmpgene;
+		$GeneHOH{Gene}[$cntGenes]{extStart}=$GeneHOH{Gene}[$cntGenes]{start};
+		$GeneHOH{Gene}[$cntGenes]{extStop}=$GeneHOH{Gene}[$cntGenes]{stop};
 		$cntGenes++;
 		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
 		foreach my $tmptranscript (@$tmpTransArray){
@@ -229,13 +343,14 @@ sub createXMLFile
 			$cntProbesets=0;
 			my $cntMatchingProbesets=0;
 			my $cntMatchingIntronProbesets=0;
-			foreach(@probesetHOH){
-				
+			foreach(@probesetHOH){				
 				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
 					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
 				       and
 					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
 				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
 					    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
 					    $cntMatchingProbesets=$cntMatchingProbesets+1;
 				    }elsif((($probesetHOH[$cntProbesets]{start} >= $intronStart) and ($probesetHOH[$cntProbesets]{start} <= $intronStop) or 
@@ -243,11 +358,12 @@ sub createXMLFile
 					and
 					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
 				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
 					    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
 						    $probesetHOH[$cntProbesets];
 					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
 				    }
-				
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
@@ -310,7 +426,9 @@ sub createXMLFile
 			biotype => $geneBioType,
 			geneSymbol => $geneExternalName,
 			source => "Ensembl",
-			description => $geneDescription
+			description => $geneDescription,
+			extStart => $geneStart ,
+			extStop => $geneStop
 			};
 		#print GLFILE "$geneName\t$geneExternalName\t$geneStart\t$geneStop\n";
 
@@ -385,6 +503,8 @@ sub createXMLFile
 					        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
 					    ){
 						    #This is a probeset overlapping the current exon
+						    delete $probesetHOH[$cntProbesets]{herit};
+						    delete $probesetHOH[$cntProbesets]{dabg};
 						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{ProbesetList}{Probeset}[$cntMatchingProbesets] = 
 							    $probesetHOH[$cntProbesets];
 						    $cntMatchingProbesets=$cntMatchingProbesets+1;
@@ -393,6 +513,8 @@ sub createXMLFile
 						   and
 					        $probesetHOH[$cntProbesets]{strand}==$tmpStrand
 					    ){
+						    delete $probesetHOH[$cntProbesets]{herit};
+						    delete $probesetHOH[$cntProbesets]{dabg};
 						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{intronList}{intron}[$cntIntrons-1]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
 							    $probesetHOH[$cntProbesets];
 						    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
@@ -447,6 +569,22 @@ sub createXMLFile
 	} # loop through genes
 	#close GLFILE;
 	
+	my $geneHOHRef=mergeByAnnotation(\%GeneHOH);
+	my %tmpGeneHOH=%$geneHOHRef;
+	
+	my $geneListRef=$tmpGeneHOH{Gene};
+	my @geneList=();
+	eval{
+		@geneList=@$geneListRef;
+	}or do{
+		@geneList=();
+	};
+	
+	#print "list before sort:".@geneList."\n";
+	my @sortedlist = sort { $a->{start} <=> $b->{start} } @geneList;
+	#print "sorted List:".@sortedlist."\n";
+	$GeneHOH{Gene}=\@sortedlist;
+	
 	##output XML file
 	my $xml = new XML::Simple (RootName=>'GeneList');
 	my $data = $xml->XMLout(\%GeneHOH);
@@ -473,17 +611,26 @@ sub createXMLFile
 	my $smEnd=time();
 	print "Small RNA completed in ".($smEnd-$smStart)." sec.\n";
 	
-	my $trackDB="mm9";
+	#my $rnaCountStart=time();
+	#my $rnaCountRef=readRNACountsDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	#my %rnaCountHOH=%$rnaCountRef;
+	#my $rnaCountEnd=time();
+	#print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
+	
+	my $trackDB="mm10";
 	if($species eq 'Rat'){
 		$trackDB="rn5";
 	}
 	
 	#create bed files in region folder
-	createQTLTrack(\%qtlHOH,$outputDir."qtl.track",$trackDB,$chr);
-	createSNPTrack(\%snpHOH,$outputDir."snp.track",$trackDB);
-	createProteinCodingTrack(\%GeneHOH,$outputDir."coding.track",$trackDB,1);
-	createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
-	createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
+	createQTLXMLTrack(\%qtlHOH,$outputDir."qtl.xml",$trackDB,$chr);
+	
+	
+	createSNPXMLTrack(\%snpHOH,$outputDir,$trackDB);
+	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."coding.xml",$trackDB,1);
+	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."noncoding.xml",$trackDB,0);
+	createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."smallnc.xml",$trackDB,$chr);
+	#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."helicos.xml");
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 }

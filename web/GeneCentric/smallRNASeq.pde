@@ -5,7 +5,7 @@ int lengthSeq=0;
 int ht=6;
 int margin=10;
 int rtMargin=40;
-int topMargin=85;
+int topMargin=55;
 int heightNeeded=100;
 double widthPerBase=2;
 int halfWidth=1;
@@ -17,8 +17,8 @@ int genomeStart=0;
 int genomeStop=0;
 String chr="";
 
-Sequence addSequence(int offset, String sequence, int num) {
-    Sequence s = new Sequence(offset,sequence,num);
+Sequence addSequence(int offset, String sequence, int num,String ref) {
+    Sequence s = new Sequence(offset,sequence,num,ref);
      sequences.add(s);
      return s;
 }
@@ -52,6 +52,7 @@ void setup(){
     heightNeeded=topMargin+(sequences.size()*ht)+((sequences.size()+2)*margin)+ht*2;
     size(850,heightNeeded);
     startY=ht*2+topMargin+margin;
+    //startY=topMargin+margin;
 }
 
 void draw(){
@@ -70,8 +71,8 @@ void draw(){
   size(850,heightNeeded);
   
   //draw reference rectangles
-  fill(49,122,255);
-  rect(rtMargin+halfWidth,topMargin,widthPerBase*lengthSeq-halfWidth,ht*1.5);
+  //fill(49,122,255);
+  //rect(rtMargin+halfWidth,topMargin,widthPerBase*lengthSeq-halfWidth,ht*1.5);
   
   //draw read seq rectangles
   for(int p=0, end=sequences.size(); p<end; p++) {
@@ -104,27 +105,41 @@ void draw(){
   text("BNLX:",0,56);
   text("SHRH:",0,70);
   fill(49,122,255);
-  text("Ref.",0,topMargin+10);
+  text("Ref. Seq.",0,topMargin-16);
   fill(98, 139, 97);
-   text("Read",0,topMargin+30);
-   text("Seq.",0,topMargin+45);
+   text("RNA",0,topMargin+36);
+   text("Seq.",0,topMargin+51);
+   text("reads",0,topMargin+65);
 }
 
 class Sequence {
   int offset;
-  String seq;
+  String seq,refSeq;
   int vertNum=0;
-  Sequence(int offset,String seq,int num){
+  Sequence(int offset,String seq,int num,String refSeq){
       this.offset=offset;
       this.seq=seq;
+      this.refSeq=refSeq;
       this.vertNum=num;
   }
-  void draw(){
+  /*void draw(){
       fill(98, 139, 97);
          int os=(int)widthPerBase*offset;
          int len=(int)widthPerBase*seq.length();
          int curY=startY+(ht*vertNum)+(margin*vertNum);
          rect(rtMargin+halfWidth+os,curY,len, ht);
+  }*/
+  void draw(){
+    double os=widthPerBase*offset;
+    for(int i=0;i<seq.length();i++){
+      int x=(int)(rtMargin+halfWidth+widthPerBase*i+os);
+      int curY=startY+14+(ht*vertNum)+(margin*vertNum);
+      fill(98, 139, 97);
+      if(seq.charAt(i)!=refSeq.charAt(i+offset)){
+        fill(255, 0, 0);
+      }
+      text(seq.charAt(i),x,curY);
+    }
   }
 }
 

@@ -61,7 +61,7 @@ sub readQTLDataFromDB{
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
 	#if(length($geneChrom) == 1){
-		$query ="Select pq.QTL_NAME,c.NAME,pq.QTL_START,pq.QTL_END
+		$query ="Select pq.QTL_NAME,c.NAME,pq.QTL_START,pq.QTL_END,pq.RGD_ID,pq.TRAIT_NAME,pq.PHENOTYPE,pq.CANDIDATE_GENE_SYMBOLS
 			from public_qtls pq,chromosomes c 
 			where 
 			c.chromosome_id=pq.chromosome 
@@ -91,7 +91,7 @@ sub readQTLDataFromDB{
 
 # BIND TABLE COLUMNS TO VARIABLES
 
-	$query_handle->bind_columns(\$qtl_name,\$qtl_chrom,\$qtl_start,\$qtl_stop);
+	$query_handle->bind_columns(\$qtl_name,\$qtl_chrom,\$qtl_start,\$qtl_stop,\$rgd_id,\$trait,\$phenotype,\$candid_gene);
 # Loop through results, adding to array of hashes.
 	my $cntQTL=0;
 	
@@ -102,7 +102,11 @@ sub readQTLDataFromDB{
 			name => $qtl_name,
 			chromosome => $qtl_chrom,
 			start=> $qtl_start,
-			stop => $qtl_stop
+			stop => $qtl_stop,
+			ID=> $rgd_id,
+			trait=> $trait,
+			phenotype=> $phenotype,
+			candidate=> $candid_gene
 		};
 		$cntQTL++;
 	}

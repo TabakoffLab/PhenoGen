@@ -121,8 +121,19 @@ if(displayNoEnsembl){ %>
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
             <div id="geneImage" class="ucscImage"  style="display:inline-block; height:400px; width:980px; overflow:auto;">
-            	<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
-            	<img src="<%= contextRoot+"tmpData/geneData/"+firstEnsemblID.get(selectedGene)+"/ucsc.probe.numExonPlus.numExonMinus.noncoding.smallnc.refseq.png"%>"/></a>
+            	<script src="javascript/GenomeDataBrowser.js" type="text/javascript"></script>
+				<script type="text/javascript">
+					var folderName="<%=folderName%>";
+                    setupGenomeDataBrowser(".ucscImage",960);
+                    d3.xml("tmpData/geneData/"+folderName+"/Gene.xml",function (d){
+                        data=d.documentElement.getElementsByTagName("Gene");
+                        console.log(data);
+                        drawGenes();
+                    });
+                
+                </script>
+            	<!--<a class="fancybox fancybox.iframe" href="<%=ucscURL.get(0)%>" title="UCSC Genome Browser">
+            	<img src="<%= contextRoot+"tmpData/geneData/"+firstEnsemblID.get(selectedGene)+"/ucsc.probe.numExonPlus.numExonMinus.noncoding.smallnc.refseq.png"%>"/></a>-->
             </div>
         </div><!-- end geneimage div -->
     	<div class="geneimageControl">

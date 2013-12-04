@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+
 import org.apache.log4j.Logger;
 
 
@@ -269,18 +270,20 @@ public class AsyncGeneDataExpr extends Thread {
     public void run() throws RuntimeException {
         doneThread=false;
         Thread thisThread = Thread.currentThread();
-        boolean done=prevThread.isDone();
-        log.debug("WAITING PREVTHREAD");
-        while(!done){
-            try{
-                //log.debug("WAITING PREVTHREAD");
-                thisThread.sleep(5000);
-            }catch(InterruptedException er){
-                log.error("wait interrupted",er);
+        if(prevThread!=null){
+            boolean done=prevThread.isDone();
+            log.debug("WAITING PREVTHREAD");
+            while(!done){
+                try{
+                    //log.debug("WAITING PREVTHREAD");
+                    thisThread.sleep(5000);
+                }catch(InterruptedException er){
+                    log.error("wait interrupted",er);
+                }
+                done=prevThread.isDone();
             }
-            done=prevThread.isDone();
+            log.debug("Done Waiting Starting");
         }
-        log.debug("Done Waiting Starting");
         //wait for other Expr threads to finish
         boolean waiting=true;
         while(waiting){
@@ -308,15 +311,14 @@ public class AsyncGeneDataExpr extends Thread {
         }
         Date start=new Date();
         //try{
+                
+            int loopcount=0;
             
-            int count =0;
-            
-            while (!DSPathList.isEmpty()) {
-                count++;
+            while (!DSPathList.isEmpty()  && loopcount<6) {
                 String psListFile=outputDir + "tmp_psList.txt";
                 File psFile=new File(psListFile);
                 if(psFile.length()>0){
-                    count=0;
+                    loopcount=0;
                     String sampleFile=sampleFileList.remove(0);
                     String DSPath=DSPathList.remove(0);
                     String outIndivFile=outIndivFileList.remove(0);
@@ -360,28 +362,18 @@ public class AsyncGeneDataExpr extends Thread {
                             }
                     }
                 }else{
-                    log.debug("NO PROBESETS");
-                    Date curTime=new Date();
-                    long diff=curTime.getTime()-start.getTime();
-                    if(diff>120000||count>15){
-                        count=0;
-                        sampleFileList.remove(0);
-                        DSPathList.remove(0);
-                        outIndivFileList.remove(0);
-                        outGroupFileList.remove(0);
-                        groupFileList.remove(0);
-                        tissueList.remove(0);
-                        platformList.remove(0);
-                    }else{
-                        try{
-                            //log.debug("WAITING PREVTHREAD");
-                            thisThread.sleep(10000);
-                        }catch(InterruptedException er){
-                            log.error("wait interrupted",er);
-                        }
+
+                    
+                    log.debug("NO PROBESETS:"+psListFile);
+                    try {
+                        thisThread.wait(20000);
+                    } catch (InterruptedException ex) {
+                        log.error("Error NO PROBESETS",ex);
+                        //Logger.getLogger(AsyncGeneDataExpr.class.getName()).log(Level.SEVERE, null, ex);
+
                     }
                 }
-                
+                loopcount++;
             }
             
             

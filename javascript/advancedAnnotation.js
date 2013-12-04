@@ -48,18 +48,18 @@ function IsAdvancedAnnotationComplete(){
 
 // check the Affymetrix ID if any of the Affy-specific chips are requested 
 function clickAffyID() {
-	$("input[value='Affymetrix ID']").attr('checked', true);
+	$("input[value='Affymetrix ID']").prop('checked', true);
 }
 
 // check the CodeLink ID if any of the CodeLink-specific chips are requested 
 function clickCodeLinkID() {
-	$("input[value='CodeLink ID']").attr('checked', true);
+	$("input[value='CodeLink ID']").prop('checked', true);
 }
 
 function checkUncheckCodeLinkID(id) {
-   $("input[value='CodeLink ID']").attr('checked', $('#' + id).is(':checked'));
+   $("input[value='CodeLink ID']").prop('checked', $('#' + id).is(':checked'));
 }
 function checkUncheckAffyID(id) {
-   $("input[value='Affymetrix ID']").attr('checked', $('#' + id).is(':checked'));
+   $("input[value='Affymetrix ID']").prop('checked', $('#' + id).is(':checked'));
 }
 

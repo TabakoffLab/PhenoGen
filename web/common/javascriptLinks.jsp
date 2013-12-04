@@ -1,6 +1,5 @@
 
 	<!-- Line 4673 of jquery-1.5.js and jquery-1.7.js(line 5432-5444) jquery1.8.3(7069-7079) has been modified. Do not forget to change in new file -->
-	<!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.8.3.js"></script>-->
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.10.2.min.js">
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.1.1.min.js"></script>
     <!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.1.1.js"></script>-->
@@ -25,7 +24,6 @@
 
             selectTab();
             /* setTimeout("setupMain()", 100); */
-
 			
 			$('span.info').tooltipster({
 				position: 'top-right',
@@ -35,6 +33,7 @@
 				interactive: true,
 				interactiveTolerance: 350
 			});
+
 			/*var tooltipSettings = { showBody : " - ",
                 				track : true,
                                         	delay: 250,

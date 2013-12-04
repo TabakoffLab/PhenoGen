@@ -168,7 +168,7 @@ function IsNormalizationFormComplete() {
 
 function autoSelectNewGrouping(){
 	var newGroupingId = $("#newGroupingID").val();
-	$(":radio[value="+newGroupingId+"]").attr('checked',true);
+	$(":radio[value="+newGroupingId+"]").prop('checked',true);
 	$("input[name='grouping_id']").val(newGroupingId);
 	
 	//temporarily highlight newly created grouping		

@@ -12,11 +12,13 @@
     
                 	<H2>Browse Region</H2>
                     <div id="accordion" style="height:100%;">
+                    	
                     	<H3>Feature List</H3>
                         <div>
+                        Interactively explore Genomic Data/Transcriptomic Data (including RNA-Seq and Microarray Data) along a region of the genome.
                         <ul>
                         	<li>View Rat Brain Isoforms from RNA-Seq transcriptome reconstruction</li>
-                            <li>View Rat SNPs/Short Indels for BN-Lx and SHR with more coming soon</li>
+                            <li>View Rat SNPs/Short Indels for BN-Lx/CubPrin, SHR/OlaPrin, F344, and SHR/NCrlPrin with more coming soon</li>
                             <li>View Ensembl Isoforms</li>
                             <li>View Affymetrix Exon 1.0 ST Microarray Probe set locations</li>
                             <li>View bQTLs</li>
@@ -28,7 +30,7 @@
                         </div>
                     	<h3>Sample Screen Shots</h3>
                         <div style="text-align:center">
-                        	A UCSC Genome Browser image that includes the tracks selected below.
+                        	An interactive SVG image of the region entered.  You have the option to zoom in/out, reorder tracks, add/customize tracks, click on features for more detailed data, and view the tables of all the features(see following screen shots).
                         	<a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion1.jpg" title="A UCSC Genome Browser image that includes the tracks selected below."><img src="web/overview/browseRegion1.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
                             <BR /><BR />
                             The far left side of the table of features in the region.  This includes any annotation available from ensembl, and links to various databases for the given gene.  For rats this also includes any RNA-Seq reconstructed transcripts along with a description of how closely they match an Ensembl annotated transcript.

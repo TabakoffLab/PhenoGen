@@ -182,7 +182,11 @@ public class RGDParser extends InputFileParser {
         if (column.trim().equals("")) {
             return EMPTY_STRING_ARRAY;
         } else {
-            return column.split(INPUT_LIST_DELIM);
+            String delim=";";
+            if(column.indexOf(";")<0 && column.indexOf(",")>-1){
+                delim=",";
+            }
+            return column.split(delim);
         }
     }
 

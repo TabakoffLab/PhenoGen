@@ -122,7 +122,7 @@ sub callCircosReverse{
 		$perlBinary = '/opt/phenogen/perl-5.10.1/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
-	elsif($hostname eq 'stan.ucdenver.pvt'){
+	elsif($hostname eq 'stan.ucdenver.pvt.ucdenver.pvt'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';

@@ -46,7 +46,11 @@ public class Gene {
     HashMap hcounts=new HashMap();
     HashMap dcounts=new HashMap();
     HashMap havg=new HashMap();
+    HashMap hmin=new HashMap();
+    HashMap hmax=new HashMap();
     HashMap davg=new HashMap();
+    HashMap dmin=new HashMap();
+    HashMap dmax=new HashMap();
     HashMap qtls=new HashMap();
     HashMap qtlCounts=new HashMap();
     HashMap totalCounts=new HashMap();
@@ -308,9 +312,13 @@ public class Gene {
         Set tmpSet=fullProbeList.keySet();
         Object[] psList=tmpSet.toArray();
         hcounts=new HashMap();
-        havg=new HashMap();
+        havg=new HashMap<String,Double>();
+        hmin=new HashMap<String,Double>();
+        hmax=new HashMap<String,Double>();
         dcounts=new HashMap();
-        davg=new HashMap();
+        davg=new HashMap<String,Double>();
+        dmin=new HashMap<String,Double>();
+        dmax=new HashMap<String,Double>();
         if(psList!=null&&psList.length>0){
             HashMap tisHM=(HashMap) phm.get(psList[0].toString());
             int count=1;
@@ -328,6 +336,10 @@ public class Gene {
                     dcounts.put(tissue[i],0);
                     havg.put(tissue[i],0);
                     davg.put(tissue[i],0);
+                    hmin.put(tissue[i],1);
+                    hmax.put(tissue[i],0);
+                    dmin.put(tissue[i],100);
+                    dmax.put(tissue[i],0);
                 }
                 for(int i=0;i<psList.length;i++){
                     HashMap tmpHM=(HashMap) phm.get(psList[i].toString());
@@ -336,6 +348,7 @@ public class Gene {
                             HashMap values=(HashMap) tmpHM.get(tissue[j]);
                             double herit=Double.parseDouble(values.get("herit").toString());
                             double dabg=Double.parseDouble(values.get("dabg").toString());
+                            
                             if(herit>0.33){
                                 int tmpCount=Integer.parseInt(hcounts.get(tissue[j]).toString());
                                 double tmpSum=Double.parseDouble(havg.get(tissue[j]).toString());
@@ -343,6 +356,12 @@ public class Gene {
                                 tmpCount++;
                                 hcounts.put(tissue[j], tmpCount);
                                 havg.put(tissue[j], tmpSum);
+                                if(herit<(new Double(hmin.get(tissue[j]).toString())).doubleValue()){
+                                    hmin.put(tissue[j], herit);
+                                }
+                                if(herit>(new Double(hmax.get(tissue[j]).toString())).doubleValue()){
+                                    hmax.put(tissue[j], herit);
+                                }
                             }
                             if(dabg>1.0){
                                 int tmpCount=Integer.parseInt(dcounts.get(tissue[j]).toString());
@@ -351,6 +370,12 @@ public class Gene {
                                 tmpCount++;
                                 dcounts.put(tissue[j], tmpCount);
                                 davg.put(tissue[j], tmpSum);
+                                if(dabg<(new Double(dmin.get(tissue[j]).toString())).doubleValue()){
+                                    dmin.put(tissue[j], dabg);
+                                }
+                                if(dabg>(new Double(dmax.get(tissue[j]).toString())).doubleValue()){
+                                    dmax.put(tissue[j], dabg);
+                                }
                             }
                         }
                     }
@@ -371,10 +396,23 @@ public class Gene {
         return havg;
     }
     
+    public HashMap getHeritMin(){
+        return hmin;
+    }
+    
+    public HashMap getHeritMax(){
+        return hmax;
+    }
+    
     public HashMap getDabgAvg(){
         return davg;
     }
-    
+    public HashMap getDabgMin(){
+        return dmin;
+    }
+    public HashMap getDabgMax(){
+        return dmax;
+    }
     
     public void addEQTLs(ArrayList<EQTL> eqtls,HashMap eqtlInd,Logger log){
         //log.debug("fullprobelist.size():"+fullProbeList.size());
@@ -667,6 +705,13 @@ public class Gene {
                 NamedNodeMap attrib=genes.item(i).getAttributes();
                 if(attrib.getLength()>0){
                     String geneID=attrib.getNamedItem("ID").getNodeValue();
+                    if(geneID.contains("XLOC")){
+                        Matcher m=Pattern.compile("_0+").matcher(geneID);
+                        if(m.find()){
+                            int startPos=m.end();
+                            geneID="Brain.G"+geneID.substring(startPos);
+                        }
+                    }
                     //System.out.println("reading gene ID:"+geneID);
                     String geneSymbol=attrib.getNamedItem("geneSymbol").getNodeValue();
                     String biotype=attrib.getNamedItem("biotype").getNodeValue();
@@ -705,6 +750,8 @@ public class Gene {
         String tissue="";
         if(!geneID.startsWith("ENS")&&geneID.indexOf(".")>-1){
             tissue=geneID.substring(0,geneID.indexOf("."));
+        }else{
+            tissue="Brain";
         }
         for(int i=0;i<nodes.getLength();i++){
             if(nodes.item(i).getNodeName().equals("Transcript")){
@@ -732,7 +779,7 @@ public class Gene {
                     Matcher m=Pattern.compile("_0+").matcher(trID);
                     if(m.find()){
                         int startPos=m.end();
-                        trID=tissue+"."+trID.substring(startPos);
+                        trID=tissue+".T"+trID.substring(startPos);
                     }
                 }
                 Transcript tmptrans=new Transcript(trID,nnm.getNamedItem("strand").getNodeValue(),start,end);

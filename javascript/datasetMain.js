@@ -34,7 +34,7 @@ function setupFinalizeDataset() {
 		                        		theRow.remove();
 							$("input[id='test']").val($("input[id='test']").val() - 1);
 							var uncheckRow = $("#"+itemID);
-            						uncheckRow.find(":checkbox").attr('checked',false);
+            						uncheckRow.find(":checkbox").prop('checked',false);
                     				},
                     				error: function(XMLHttpRequest, textStatus, errorThrown) {
                         				alert( "there was an error processing this request: " + textStatus + " " + errorThrown );

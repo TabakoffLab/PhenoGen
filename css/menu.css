@@ -8,7 +8,7 @@
 {width:11.2%; }
 
 #cssmenu > ul > li > a,#cssmenu > ul > li > span.noLink
-{ outline:none; display:block; position:relative; padding:12px 20px; font:bold 13px/100% Arial, Helvetica, sans-serif; text-align:center; vertical-align:middle; text-decoration:none; text-shadow:1px 1px 0 rgba(0,0,0, 0.4); height:39px;}
+{ outline:none; display:block; position:relative; padding:12px 10px; font:bold 13px/100% Arial, Helvetica, sans-serif; text-align:center; vertical-align:middle; text-decoration:none; /*text-shadow:1px 1px 0 rgba(0,0,0, 0.4);*/ height:39px;}
 #cssmenu > ul > li:first-child > a
 {border-radius:5px 0 0 5px;} 
 #cssmenu > ul > li:last-child > a
@@ -36,7 +36,7 @@
 #cssmenu ul li > ul li
 {display:block; list-style:inside none; padding:0; margin:0; position:relative;} 
 #cssmenu ul li > ul li a
-{ outline:none; display:block; position:relative; margin:0; padding:8px 20px; font:10pt Arial, Helvetica, sans-serif; color:#fff; text-decoration:none; text-shadow:1px 1px 0 rgba(0,0,0, 0.5); } 
+{ outline:none; display:block; position:relative; margin:0; padding:8px 20px; font:10pt Arial, Helvetica, sans-serif; color:#fff; text-decoration:none; /*text-shadow:1px 1px 0 rgba(0,0,0, 0.5);*/ } 
 
 #cssmenu, #cssmenu > ul > li > ul > li a:hover
 { background:#3e698c; background:-moz-linear-gradient(top,  #3e698c 0%, #30576e 100%); background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#3e698c), color-stop(100%,#30576e)); background:-webkit-linear-gradient(top,  #3e698c 0%,#30576e 100%); background:-o-linear-gradient(top, #3e698c 0%,#30576e 100%); background:-ms-linear-gradient(top, #3e698c 0%,#30576e 100%); background:linear-gradient(top,  #3e698c 0%,#30576e 100%); filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#3e698c', endColorstr='#30576e',GradientType=0 ); } 
