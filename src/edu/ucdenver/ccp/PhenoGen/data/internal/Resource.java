@@ -378,15 +378,15 @@ public class Resource {
 		datasetDir = LXSRI_Dataset.getPath();
 
 		expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "LXS_v1_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "LXS_v2_Affymetrix.Normalization.output.csv.zip"));
-                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "LXS_v3_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.LXS.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.LXS.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.LXS.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.LXS.PhenoGen.txt.zip"));
-                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.LXS.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.LXS.PhenoGen.txt.zip"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "LXS_mm10_v4_Affymetrix.Normalization.output.csv.zip"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "LXS_mm10_v5_Affymetrix.Normalization.output.csv.zip"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "LXS_mm10_v6_Affymetrix.Normalization.output.csv.zip"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.LXS.mm10.PhenoGen.txt.zip"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.LXS.mm10.PhenoGen.txt.zip"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.LXS.mm10.PhenoGen.txt.zip"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.LXS.mm10.PhenoGen.txt.zip"));
+                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.LXS.mm10.PhenoGen.txt.zip"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.LXS.mm10.PhenoGen.txt.zip"));
 		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicLXSRIMice_RawData_Part1.zip"));
 		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicLXSRIMice_RawData_Part2.zip"));
 		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicLXSRIMice_RawData_Part3.zip"));
@@ -405,16 +405,16 @@ public class Resource {
 		expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
                                                                                                                                                                                                 
 		eQTLFileList = new ArrayList<EQTLDataFile>();
-		eQTLFileList.add(new EQTLDataFile("eQTLs for Core Transcripts from the Affymetrix Mouse Diversity SNP Array data gathered by Churchill et al. in .csv format", resourcesDir + "LXS_eQTL_CoreTrans_JAXMarkers_01Jun12.csv.zip"));
-		eQTLFileList.add(new EQTLDataFile("eQTLs for Core Transcripts from the Affymetrix Mouse Diversity SNP Array data gathered by Churchill et al. in .txt format", resourcesDir + "LXS_eQTL_CoreTrans_JAXMarkers_01Jun12.txt.zip"));
-                eQTLFileList.add(new EQTLDataFile("eQTLs for Full Probesets from the Affymetrix Mouse Diversity SNP Array data gathered by Churchill et al. in .csv format", resourcesDir + "LXS_eQTL_FullPS_JAXMarkers_27Jun12.csv.zip"));
-		eQTLFileList.add(new EQTLDataFile("eQTLs for Full Probesets from the Affymetrix Mouse Diversity SNP Array data gathered by Churchill et al. in .txt format", resourcesDir + "LXS_eQTL_FullPS_JAXMarkers_27Jun12.txt.zip"));
+		eQTLFileList.add(new EQTLDataFile("eQTLs for Core Transcripts from the Affymetrix Mouse Diversity SNP Array data gathered by Churchill et al. in .csv format", resourcesDir + "LXS.eQTL.coreTrans.mm10.11Nov13.csv.zip"));
+		eQTLFileList.add(new EQTLDataFile("eQTLs for Core Transcripts from the Affymetrix Mouse Diversity SNP Array data gathered by Churchill et al. in .txt format", resourcesDir + "LXS.eQTL.coreTrans.mm10.11Nov13.txt.zip"));
+                eQTLFileList.add(new EQTLDataFile("eQTLs for Full Probesets from the Affymetrix Mouse Diversity SNP Array data gathered by Churchill et al. in .csv format", resourcesDir + "LXS.eQTL.fullPS.mm10.19Nov13.csv.zip"));
+		eQTLFileList.add(new EQTLDataFile("eQTLs for Full Probesets from the Affymetrix Mouse Diversity SNP Array data gathered by Churchill et al. in .txt format", resourcesDir + "LXS.eQTL.fullPS.mm10.19Nov13.txt.zip"));
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.LXS.Brain.txt.zip"));
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.LXS.Brain.txt.zip"));
-                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullPS.LXS.Brain.txt.zip"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.LXS.mm10.Brain.txt.zip"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.LXS.mm10.Brain.txt.zip"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullPS.LXS.mm10.Brain.txt.zip"));
 		heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
 
                 resourceList.add(new Resource(2, "Mouse", LXSRI_PANEL, LXSRI_Dataset, "Whole Brain", myArray.MOUSE_EXON_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray));
