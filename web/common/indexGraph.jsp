@@ -140,7 +140,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
                         <a href="web/graphics/genome.jsp">View Genome Coverage<BR /><img src="<%=imagesDir%>rnaseq_genome.gif" width="200px"/></a><BR />
                         <a href="web/graphics/transcriptome.jsp">View Reconstructed Long RNA Genes(Rat Brain Transcriptome)<BR /><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="200px"/></a>
                         </div><BR />
-                        Reconstructed transcripts from this RNA-Seq data are still combined with PhenoGen array data in <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Detailed Genome/Transcription Information</a>.
+                        Reconstructed transcripts from this RNA-Seq data are still combined with PhenoGen array data in <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Genome/Transcriptome Data Browser</a>.
                         </div>
     				</div>
                     <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000;">
