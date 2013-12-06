@@ -62,7 +62,9 @@
 		<div class="brClear"></div>
 		<%@ include file="/web/datasets/include/preAnalysisSteps.jsp" %>
 		<div class="brClear"></div>
-    <%if(!selectedDataset.getName().startsWith("Public HXB/BXH RI Rats (") ||(selectedDataset.getName().startsWith("Public HXB/BXH RI Rats (") && selectedDatasetVersion.getVersion()>3)){%>
+    <%if( !(selectedDataset.getName().startsWith("Public HXB/BXH RI Rats (") || selectedDataset.getName().equals("Public ILSXISS RI Mice"))
+			||
+		((selectedDataset.getName().startsWith("Public HXB/BXH RI Rats (") || selectedDataset.getName().equals("Public ILSXISS RI Mice") )&& selectedDatasetVersion.getVersion()>3)){%>
     <div class="page-intro">
                         <p>You may perform any of the following types of analyses on your normalized dataset.</p>
                         <% if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(selectedDataset.getArray_type())) { %>
