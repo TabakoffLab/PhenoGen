@@ -92,7 +92,7 @@ sub createCircosConfFile{
 		print CONFFILE 'karyotype   = '.$karyotypeLocation.'karyotype.rat.rn5.txt'."\n";
 	}
 	elsif($organism eq 'Mm'){
-		 print CONFFILE 'karyotype   = '.$karyotypeLocation.'karyotype.mouse.mm9.txt'."\n";
+		 print CONFFILE 'karyotype   = '.$karyotypeLocation.'karyotype.mouse.mm10.txt'."\n";
 	}
 	else{
 		die (" Organism is neither mouse nor rat :!\n");

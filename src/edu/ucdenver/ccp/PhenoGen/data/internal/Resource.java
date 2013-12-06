@@ -653,7 +653,7 @@ public class Resource {
 		markerFileArray = myObjectHandler.getAsArray(markerFileList, MarkerDataFile.class);
 
 		eQTLFileList = new ArrayList<EQTLDataFile>();
-		eQTLFileList.add(new EQTLDataFile("eQTLs for Core Transcripts from the Affymetrix Mouse Diversity SNP Array", resourcesDir + "LXS_eQTL_CoreTrans_JAXMarkers_13Sep11.txt.zip"));
+		eQTLFileList.add(new EQTLDataFile("eQTLs for Core Transcripts from the Affymetrix Mouse Diversity SNP Array", resourcesDir + "LXS.eQTL.coreTrans.mm10.11Nov13.txt.zip"));
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
                 resourceList.add(new Resource(11, "Mouse", "Affymetrix Mouse Diversity SNP Array", LXSRI_Dataset, markerFileArray, eQTLFileArray,"LXS"));

@@ -110,7 +110,7 @@ public class RefSetCreator {
                 }
                 //myRefSetCreator.setConnection(myRefSetCreator.getConnection(propertiesFile));
                 ArrayList<ChipHandler> list=new ArrayList<ChipHandler>();
-                for(int i=0;i<5;i++){
+                for(int i=0;i<2;i++){
                     ChipHandler ch=new ChipHandler(referenceFilesDir,propertiesFile,queue,i);
                     ch.start();
                     list.add(ch);
