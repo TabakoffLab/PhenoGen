@@ -115,7 +115,13 @@
                 <h3>Go To Previous Analysis:<span class="infoSpan" title="A list of previous analyses that have been performed on this Dataset/Version.  In most cases you may resume, using a link in the Statistics column, although it is not currently possible to resume filtering.<BR><BR>This list will automatically refresh if you are waiting on statistics the status will update when they complete.<BR><BR>Note: Some analyses that have errors may still say they are running.  It is best to delete them and start over if you have been waiting for more than 3 hours they are no longer running and in most cases you should have received an email stating there was an error.">
                     		<img src="<%=imagesDir%>icons/info.gif" alt="Help">
 			</span></h3><BR />
-                
+            <%
+                    User tmpUser=(User) session.getAttribute("userLoggedIn");
+                    selectedDatasetVersion.getFilterStatsFromDB(tmpUser.getUser_id(),dbConn);
+                    DSFilterStat[] dsfs = selectedDatasetVersion.getFilterStats(tmpUser.getUser_id(),dbConn);%>
+            <script type="text/javascript">
+                var resultLen=<%=dsfs.length%>;
+			</script>
                 <table id="prevList" class="list_base" cellpadding="0" cellspacing="3" width="95%" style="text-align:center;">
                 <thead>
                 <tr>
@@ -137,11 +143,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <%
-                    User tmpUser=(User) session.getAttribute("userLoggedIn");
-                    selectedDatasetVersion.getFilterStatsFromDB(tmpUser.getUser_id(),dbConn);
-                    DSFilterStat[] dsfs = selectedDatasetVersion.getFilterStats(tmpUser.getUser_id(),dbConn);
-                    if(dsfs!=null&&dsfs.length>0){
+                
+                   <% if(dsfs!=null&&dsfs.length>0){
                         for (int j=0; j<dsfs.length; j++) {
                             FilterStep[] tmpFSteps=new FilterStep[0];
 							FilterGroup tmpFG=dsfs[j].getFilterGroup();
@@ -241,6 +244,7 @@
 <script type="text/javascript">
 	var intervalTime=60000;
 	var interval;
+	
 	$(document).ready(function() {
 		$('.infoSpan').tooltipster({
 			position: 'top-right',
@@ -254,24 +258,26 @@
 		setupPage();
 		setTimeout("setupMain()", 100);
 		
-		$("table[id='prevList']").dataTable({
-					"bPaginate": false,
-					"bProcessing": true,
-					"bStateSave": false,
-					"bAutoWidth": true,
-					/*"sScrollX": "950px",*/
-					"sScrollY": "650px",
-					"aaSorting": [[ 0, "desc" ]],
-					/*"aoColumnDefs": [
-      						{ "bVisible": false, "aTargets": hideFirst }
-    					],*/
-					"sDom": '<"leftSearch"fr><t>'
-					/*"oTableTools": {
-							"sSwfPath": "/css/swf/copy_csv_xls.swf",
-							"aButtons": [ "csv", "xls","copy"]
-							}*/
-	
-			});
+		if(resultLen>0){
+			$("table[id='prevList']").dataTable({
+						"bPaginate": false,
+						"bProcessing": true,
+						"bStateSave": false,
+						"bAutoWidth": true,
+						/*"sScrollX": "950px",*/
+						"sScrollY": "650px",
+						"aaSorting": [[ 0, "desc" ]],
+						/*"aoColumnDefs": [
+								{ "bVisible": false, "aTargets": hideFirst }
+							],*/
+						"sDom": '<"leftSearch"fr><t>'
+						/*"oTableTools": {
+								"sSwfPath": "/css/swf/copy_csv_xls.swf",
+								"aButtons": [ "csv", "xls","copy"]
+								}*/
+		
+				});
+		}
 		
 		interval=window.setInterval(function(){
   			location.reload(true);

@@ -71,16 +71,16 @@
                 String dataPrepOutputFile = groupingUserPhenotypeDir + "QTLdataPrepResults.Rdata";
 
                 try {
-			if (!(new File(dataPrepOutputFile)).exists()) {
-				log.debug("data prep file does not already exist");
+			/*if (!(new File(dataPrepOutputFile)).exists()) {
+				log.debug("data prep file does not already exist");*/
                 		myStatistic.callQTLDataPrep(groupingUserPhenotypeDir,
 							inputGenotypeFile,
 							selectedDatasetVersion.getPhenotypeDataOutputFileName(userName, phenotypeName),
                                         		dataPrepOutputFile);
                         	mySessionHandler.createDatasetActivity("Ran QTL.data.prep Function", dbConn);
-			} else {
+			/*} else {
 				log.debug("data prep file already exists");
-			}
+			}*/
 			response.sendRedirect(qtlsDir + "runQTLAnalysis.jsp?datasetID="+selectedDataset.getDataset_id() +
 					"&datasetVersion=1&phenotypeParameterGroupID=" + phenotypeParameterGroupID);
                 } catch (RException e) {
