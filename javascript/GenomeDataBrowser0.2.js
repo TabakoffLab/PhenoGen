@@ -528,10 +528,12 @@ function setupDefaultView(levelInd){
 	}else if(defaultView=="viewTrxome"){
 		$("div.settingsLevel0 #codingCBXt0").prop('checked',true);
 		$("div.settingsLevel0 #noncodingCBXt0").prop('checked',true);
+		$("div.settingsLevel0 #probeCBX0").prop('checked',true);
 		$("div.settingsLevel0 #smallncCBXt0").prop('checked',true);
 		svgList[levelInd].addTrack("coding",3,"trxOnly,",0);
     	svgList[levelInd].addTrack("noncoding",3,"trxOnly,",0);
     	svgList[levelInd].addTrack("smallnc",3,"trxOnly,",0);
+    	svgList[levelInd].addTrack("probe",3,"",0);
 	}else if(defaultView=="viewAll"){
 		$("div.settingsLevel0 #codingCBXg0").prop('checked',true);
 		$("div.settingsLevel0 #codingCBXt0").prop('checked',true);
@@ -539,6 +541,7 @@ function setupDefaultView(levelInd){
 		$("div.settingsLevel0 #noncodingCBXt0").prop('checked',true);
 		$("div.settingsLevel0 #smallncCBXg0").prop('checked',true);
 		$("div.settingsLevel0 #smallncCBXt0").prop('checked',true);
+		$("div.settingsLevel0 #probeCBX0").prop('checked',true);
 		$("div.settingsLevel0 #snpSHRHCBX0").prop('checked',true);
 		$("div.settingsLevel0 #snpBNLXCBX0").prop('checked',true);
 		$("div.settingsLevel0 #qtlCBX0").prop('checked',true);
@@ -547,6 +550,7 @@ function setupDefaultView(levelInd){
     	svgList[levelInd].addTrack("smallnc",3,"all",0);
     	svgList[levelInd].addTrack("snpBNLX",1,"",0);
     	svgList[levelInd].addTrack("snpSHRH",1,"",0);
+    	svgList[levelInd].addTrack("probe",3,"",0);
     	svgList[levelInd].addTrack("qtl",3,"",0);
 	}
 }
@@ -686,13 +690,24 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
 						}
 					}else{
-						var data=d.documentElement.getElementsByTagName("Gene");
-						var newTrack=new GeneTrack(par,data,track,"Protein Coding / PolyA+",additionalOptions);
-						par.addTrackList(newTrack);
-						if(selectGene!=""){
-							newTrack.setSelected(selectGene);
+						if(d==null){
+							if(retry>=4){
+								var data=new Array();
+								var newTrack=new GeneTrack(par,data,track,"Protein Coding / PolyA+",additionalOptions);
+								par.addTrackList(newTrack);
+							}else{
+								setTimeout(function (){
+									this.addTrack(track,density,additionalOptions,4);
+								}.bind(this),5000);
+							}
+						}else{
+							var data=d.documentElement.getElementsByTagName("Gene");
+							var newTrack=new GeneTrack(par,data,track,"Protein Coding / PolyA+",additionalOptions);
+							par.addTrackList(newTrack);
+							if(selectGene!=""){
+								newTrack.setSelected(selectGene);
+							}
 						}
-						success=1;
 					}
 				}.bind(this));
 			}else if(track=="noncoding"){
@@ -711,13 +726,24 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
 						}
 					}else{
-						var data=d.documentElement.getElementsByTagName("Gene");
-						var newTrack=new GeneTrack(par,data,track,"Long Non-Coding / Non-PolyA+ Genes",additionalOptions);
-						par.addTrackList(newTrack);
-						if(selectGene!=""){
-							newTrack.setSelected(selectGene);
+						if(d==null){
+							if(retry>=4){
+								var data=new Array();
+								var newTrack=new GeneTrack(par,data,track,"Long Non-Coding / Non-PolyA+ Genes",additionalOptions);
+								par.addTrackList(newTrack);
+							}else{
+								setTimeout(function (){
+									this.addTrack(track,density,additionalOptions,4);
+								}.bind(this),5000);
+							}
+						}else{
+							var data=d.documentElement.getElementsByTagName("Gene");
+							var newTrack=new GeneTrack(par,data,track,"Long Non-Coding / Non-PolyA+ Genes",additionalOptions);
+							par.addTrackList(newTrack);
+							if(selectGene!=""){
+								newTrack.setSelected(selectGene);
+							}
 						}
-						success=1;
 					}
 				}.bind(this));
 			}else if(track=="smallnc"){
@@ -736,13 +762,24 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
 						}
 					}else{
-						var data=d.documentElement.getElementsByTagName("smnc");
-						var newTrack=new GeneTrack(par,data,track,"Small RNA (<200 bp) Genes",additionalOptions);
-						par.addTrackList(newTrack);
-						if(selectGene!=""){
-							newTrack.setSelected(selectGene);
+						if(d==null){
+							if(retry>=4){
+								var data=new Array();
+								var newTrack=new GeneTrack(par,data,track,"Small RNA (<200 bp) Genes",additionalOptions);
+								par.addTrackList(newTrack);
+							}else{
+								setTimeout(function (){
+									this.addTrack(track,density,additionalOptions,4);
+								}.bind(this),5000);
+							}
+						}else{
+							var data=d.documentElement.getElementsByTagName("smnc");
+							var newTrack=new GeneTrack(par,data,track,"Small RNA (<200 bp) Genes",additionalOptions);
+							par.addTrackList(newTrack);
+							if(selectGene!=""){
+								newTrack.setSelected(selectGene);
+							}
 						}
-						success=1;
 					}
 				}.bind(this));
 			}else if(track.indexOf("snp")==0){
@@ -780,10 +817,21 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
 						}
 					}else{
-						var snp=d.documentElement.getElementsByTagName("Snp");
-						var newTrack=new SNPTrack(par,snp,track,density,include);
-						par.addTrackList(newTrack);
-						success=1;
+						if(d==null){
+							if(retry>=4){
+								var snp=new Array();
+								var newTrack=new SNPTrack(par,snp,track,density,include);
+								par.addTrackList(newTrack);
+							}else{
+								setTimeout(function (){
+									this.addTrack(track,density,additionalOptions,4);
+								}.bind(this),5000);
+							}
+						}else{
+							var snp=d.documentElement.getElementsByTagName("Snp");
+							var newTrack=new SNPTrack(par,snp,track,density,include);
+							par.addTrackList(newTrack);
+						}
 					}
 				}.bind(this));
 			}else if(track=="qtl"){
@@ -802,10 +850,22 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
 						}
 					}else{
-						var qtl=d.documentElement.getElementsByTagName("QTL");
-						var newTrack=new QTLTrack(par,qtl,track,density);
-						par.addTrackList(newTrack);
-						success=1;
+						if(d==null){
+							if(retry>=4){
+								var qtl=new Array();
+								var newTrack=new QTLTrack(par,qtl,track,density);
+								par.addTrackList(newTrack);
+							}else{
+								setTimeout(function (){
+									this.addTrack(track,density,additionalOptions,4);
+								}.bind(this),5000);
+							}
+						}else{
+							var qtl=d.documentElement.getElementsByTagName("QTL");
+							var newTrack=new QTLTrack(par,qtl,track,density);
+							par.addTrackList(newTrack);
+							//success=1;
+						}
 					}
 				}.bind(this));
 			}else if(track=="trx"){
@@ -829,10 +889,22 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
 						}
 					}else{
-						var probe=d.documentElement.getElementsByTagName("probe");
-						var newTrack=new ProbeTrack(par,probe,track,"Affy Exon 1.0 ST Probe Sets",density);
-						par.addTrackList(newTrack);
-						success=1;
+						if(d==null){
+							if(retry>=4){
+								probe=new Array();
+								var newTrack=new ProbeTrack(par,probe,track,"Affy Exon 1.0 ST Probe Sets",density);
+								par.addTrackList(newTrack);
+							}else{
+								setTimeout(function (){
+								this.addTrack(track,density,additionalOptions,4);
+								}.bind(this),5000);
+							}
+						}else{
+							var probe=d.documentElement.getElementsByTagName("probe");
+							var newTrack=new ProbeTrack(par,probe,track,"Affy Exon 1.0 ST Probe Sets",density);
+							par.addTrackList(newTrack);
+							//success=1;
+						}
 					}
 				}.bind(this));
 			}else if(track=="helicos"||track=="illuminaTotal"||track=="illuminaSmall"||track=="illuminaPolyA"){
@@ -861,9 +933,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							});
 						}
 						if(retry<3){//wait before trying again
-							var time=10000;
+							var time=15000;
 							if(retry==1){
-								time=15000;
+								time=20000;
 							}
 							setTimeout(function (){
 								this.addTrack(track,density,additionalOptions,retry+1);
@@ -873,19 +945,40 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
 						}
 					}else{
-						var data=d.documentElement.getElementsByTagName("Count");
-						var newTrack;
-						if(track=="helicos"){
-							newTrack=new HelicosTrack(par,data,track,1);
-						}else if(track=="illuminaTotal"){
-							newTrack=new IlluminaTotalTrack(par,data,track,1);
-						}else if(track=="illuminaSmall"){
-							newTrack=new IlluminaSmallTrack(par,data,track,1);
-						}else if(track=="illuminaPolyA"){
-							newTrack=new IlluminaPolyATrack(par,data,track,1);
+						//console.log(d);
+						if(d==null){
+							if(retry>=4){
+								data=new Array();
+								if(track=="helicos"){
+									newTrack=new HelicosTrack(par,data,track,1);
+								}else if(track=="illuminaTotal"){
+									newTrack=new IlluminaTotalTrack(par,data,track,1);
+								}else if(track=="illuminaSmall"){
+									newTrack=new IlluminaSmallTrack(par,data,track,1);
+								}else if(track=="illuminaPolyA"){
+									newTrack=new IlluminaPolyATrack(par,data,track,1);
+								}
+								par.addTrackList(newTrack);
+							}else{
+								setTimeout(function (){
+									this.addTrack(track,density,additionalOptions,4);
+								}.bind(this),5000);
+							}
+						}else{
+							var data=d.documentElement.getElementsByTagName("Count");
+							var newTrack;
+							if(track=="helicos"){
+								newTrack=new HelicosTrack(par,data,track,1);
+							}else if(track=="illuminaTotal"){
+								newTrack=new IlluminaTotalTrack(par,data,track,1);
+							}else if(track=="illuminaSmall"){
+								newTrack=new IlluminaSmallTrack(par,data,track,1);
+							}else if(track=="illuminaPolyA"){
+								newTrack=new IlluminaPolyATrack(par,data,track,1);
+							}
+							par.addTrackList(newTrack);
+							//success=1;
 						}
-						par.addTrackList(newTrack);
-						success=1;
 					}
 				}.bind(this));
 			}
