@@ -297,6 +297,9 @@ public class AsyncGeneDataTools extends Thread {
     
     public boolean callDEHeatMap(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         boolean error=false;
+        if(chr.startsWith("chr")){
+            chr=chr.substring(3);
+        }
         //create DE mean heatmap
         String meanQuery="select dem.probeset_id,dem.mean,dad.tissue,des.strain_name from de_means dem, de_arrays_dataset dad,de_strains des "+
                          "where des.diff_exp_id=dad.diff_exp_id "+
@@ -307,7 +310,7 @@ public class AsyncGeneDataTools extends Thread {
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and substr(c.name,1,2) = '"+chr+"' "+
+                                "and c.name = '"+chr+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -326,7 +329,7 @@ public class AsyncGeneDataTools extends Thread {
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and substr(c.name,1,2) = '"+chr+"' "+
+                                "and c.name = '"+chr+"' "+
                                 "and  "+
                                 "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                                 "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -548,6 +551,9 @@ public class AsyncGeneDataTools extends Thread {
     
     public boolean callPanelHerit(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         boolean error=false;
+        if(chr.startsWith("chr")){
+            chr=chr.substring(3);
+        }
         //create File with Probeset Tissue herit and DABG
         String probeQuery="select phd.probeset_id, rd.tissue, phd.herit,phd.dabg "+
                             "from probeset_herit_dabg phd , rnadataset_dataset rd "+
@@ -557,7 +563,7 @@ public class AsyncGeneDataTools extends Thread {
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and substr(c.name,1,2) = '"+chr+"' "+
+                                "and c.name = '"+chr+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
