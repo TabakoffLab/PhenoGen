@@ -735,6 +735,7 @@ sub createXMLFile
 		#print LOCFILE "chr$chr\n$minCoord\n$maxCoord\n";
 		#close LOCFILE;
 		
+		#print "generate UCSC Image\n";
 		my $geneArrayRef = $GeneHOH{Gene};
 		my @geneArray = @$geneArrayRef;
 		$cntGenes=0;
