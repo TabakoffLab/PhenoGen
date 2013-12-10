@@ -657,7 +657,7 @@ Add report here.
 			$.ajax({
 					url: "web/GeneCentric/callPanelExpr.jsp",
 	   				type: 'GET',
-					data: {id:idStr,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
+					data: {id:idStr,organism: organism,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
 					dataType: 'json',
 	    			error: function(xhr, status, error) {console.log(error);}
 	    			});
