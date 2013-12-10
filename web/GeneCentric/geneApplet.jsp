@@ -1,26 +1,81 @@
 <%@ include file="/web/common/session_vars.jsp" %>
 
 <%@ include file="/web/common/header_noBorder_noMenu.jsp" %>
+<jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
+
+
 <%
-	String selectedID="";
+String chromosome="",panel="",myOrganism="Rn";
+int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
+
+String selectedID="";
+
 	if(request.getParameter("selectedID")!=null){
 		selectedID=request.getParameter("selectedID");
 	}
+
+if(request.getParameter("chromosome")!=null){
+		chromosome=request.getParameter("chromosome").trim();
+}
+if(request.getParameter("minCoord")!=null){
+	try{
+		min=Integer.parseInt(request.getParameter("minCoord").trim());
+	}catch(NumberFormatException e){
+		log.error("Number format exception:Min\n",e);
+	}
+}
+if(request.getParameter("maxCoord")!=null){
+	try{
+		max=Integer.parseInt(request.getParameter("maxCoord").trim());
+	}catch(NumberFormatException e){
+		log.error("Number format exception:Max\n",e);
+	}
+}
+if(request.getParameter("panel")!=null){
+		panel=request.getParameter("panel").trim();
+}
+if(request.getParameter("myOrganism")!=null){
+		myOrganism=request.getParameter("myOrganism").trim();
+}
+if(request.getParameter("rnaDatasetID")!=null){
+	try{
+		rnaDatasetID=Integer.parseInt(request.getParameter("rnaDatasetID").trim());
+	}catch(NumberFormatException e){
+		log.error("Number format exception:rnaDatasetID\n",e);
+	}
+}
+if(request.getParameter("arrayTypeID")!=null){
+	try{
+		arrayTypeID=Integer.parseInt(request.getParameter("arrayTypeID").trim());
+	}catch(NumberFormatException e){
+		log.error("Number format exception:arrayTypeID\n",e);
+	}
+}
+String tmpOutput=gdt.getGeneFolder(selectedID,selectedID,panel,myOrganism,rnaDatasetID,arrayTypeID);
+	int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
+	String folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
+%>
+
+<%
+	
 	String genURL="";
 	String urlPrefix=(String)session.getAttribute("mainURL");
     if(urlPrefix.endsWith(".jsp")){
          urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
     }
 	genURL=urlPrefix+ "tmpData/geneData/" +selectedID+"/";
+	String regionURL=urlPrefix+"tmpData/regionData/"+folderName+"/";
 %>
 <script type="text/javascript">
 	$('#wait1').hide();
 	var selectedID="<%=selectedID%>";
 	var genURL="<%=genURL%>";
+	var regionURL="<%=regionURL%>";
 </script>
 
 
-
+<div id="unsupportedChrome" style="display:none;color:#FF0000;">A Java plug in is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  
+            	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.</div>
 
 <div id="macBugDesc" style="display:none;color:#FF0000;">The applet above is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  When Oracle fixes this bug we will update the applet to provide a more optimal experience.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
         <BR /><BR /><BR />
@@ -73,6 +128,7 @@
 					jnlp_href:"/web/GeneCentric/launch.jnlp",
 					main_ensembl_id:ensembl,
 					genURL:genURL,
+					regionURL:regionURL,
 					macBug:bugString
 				}; 
 				var version = "1.6"; 

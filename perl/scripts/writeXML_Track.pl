@@ -30,7 +30,7 @@ sub createBinnedData{
 			my $segStart=$fullRNA{Count}[$curIndex]{start};
 			my $segStop=$fullRNA{Count}[$curIndex]{stop};
 			my $segValue=$fullRNA{Count}[$curIndex]{logcount};
-			print $segStart."-".$segStop.":".$segValue."\n";
+			#print $segStart."-".$segStop.":".$segValue."\n";
 			my $bp=0;
 			my $skipCur=0;
 			if($segStart==$curPos){
@@ -98,9 +98,9 @@ sub createBinnedData{
 		#find 90th percentile
 		my @valueList=keys %countHOH;
 		my @sortVal=sort {$b <=> $a} @valueList;
-		foreach my $tmpVal(@sortVal){
-			print "Vallist:$tmpVal\n";
-		}
+		#foreach my $tmpVal(@sortVal){
+		#	print "Vallist:$tmpVal\n";
+		#}
 		my $curBP=0;
 		my $valInd=0;
 		while($valInd<@sortVal and $curBP<$bp90){
@@ -188,7 +188,7 @@ sub createXMLFile
 		if($species eq 'Rat'){
 			$trackDB="rn5";
 		}
-		print "output:".$outputDir;
+		#print "output:".$outputDir;
 		#my $output=$outputDir.$type.".xml";
 		createSNPXMLTrack(\%rnaCountHOH,$outputDir,$trackDB);
 	}
