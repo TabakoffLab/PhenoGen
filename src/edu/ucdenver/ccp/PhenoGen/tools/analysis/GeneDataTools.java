@@ -1884,6 +1884,157 @@ public class GeneDataTools {
     
     
     
+    public boolean callWriteXML(String id,String organism,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+        boolean completedSuccessfully=false;
+        try{
+            int publicUserID=new User().getUser_id("public",dbConn);
+            String tmpoutputDir = fullPath + "tmpData/geneData/" + id + "/";
+            log.debug("createXML outputDir:"+tmpoutputDir);
+            File outDir=new File(tmpoutputDir);
+            if(outDir.exists()){
+                outDir.mkdirs();
+            }
+            Properties myProperties = new Properties();
+            File myPropertiesFile = new File(dbPropertiesFile);
+            myProperties.load(new FileInputStream(myPropertiesFile));
+
+            String dsn="dbi:"+myProperties.getProperty("PLATFORM") +":"+myProperties.getProperty("DATABASE");
+            String dbUser=myProperties.getProperty("USER");
+            String dbPassword=myProperties.getProperty("PASSWORD");
+
+            File ensPropertiesFile = new File(ensemblDBPropertiesFile);
+            Properties myENSProperties = new Properties();
+            myENSProperties.load(new FileInputStream(ensPropertiesFile));
+            String ensHost=myENSProperties.getProperty("HOST");
+            String ensPort=myENSProperties.getProperty("PORT");
+            String ensUser=myENSProperties.getProperty("USER");
+            String ensPassword=myENSProperties.getProperty("PASSWORD");
+            //construct perl Args
+            String[] perlArgs = new String[17];
+            perlArgs[0] = "perl";
+            perlArgs[1] = perlDir + "writeXML_RNA.pl";
+            perlArgs[2] = tmpoutputDir;
+            if (organism.equals("Rn")) {
+                perlArgs[3] = "Rat";
+            } else if (organism.equals("Mm")) {
+                perlArgs[3] = "Mouse";
+            }
+            perlArgs[4] = "Core";
+            perlArgs[5] = id;
+            perlArgs[6] = ucscDir+ucscGeneDir;
+            perlArgs[7] = Integer.toString(arrayTypeID);
+            perlArgs[8] = Integer.toString(rnaDS_ID);
+            perlArgs[9] = Integer.toString(publicUserID);
+            perlArgs[10] = dsn;
+            perlArgs[11] = dbUser;
+            perlArgs[12] = dbPassword;
+            perlArgs[13] = ensHost;
+            perlArgs[14] = ensPort;
+            perlArgs[15] = ensUser;
+            perlArgs[16] = ensPassword;
+            
+            
+            for (int i = 0; i < perlArgs.length; i++) {
+                log.debug(i + " PerlArgs::" + perlArgs[i]);
+                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }*/
+            }
+            
+            log.debug("setup params");
+            //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+            String[] envVar=perlEnvVar.split(",");
+
+            for (int i = 0; i < envVar.length; i++) {
+                log.debug(i + " EnvVar::" + envVar[i]);
+                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                }*/
+            }
+
+            log.debug("setup envVar");
+            //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/geneData/"+id+"/");
+
+            try {
+
+                myExec_session.runExec();
+
+            } catch (ExecException e) {
+                completedSuccessfully=false;
+                log.error("In Exception of run findGeneRegion.pl Exec_session", e);
+                
+                String errorList=myExec_session.getErrors();
+                boolean missingDB=false;
+                String apiVer="";
+                
+                    if(errorList.contains("does not exist in DB.")){
+                        missingDB=true;
+                    }
+                    if(errorList.contains("Ensembl API version =")){
+                        int apiStart=errorList.indexOf("Ensembl API version =")+22;
+                        apiVer=errorList.substring(apiStart,apiStart+3);
+                    }
+                
+                if(!missingDB){
+                    setError("Running Perl Script to get Gene and Transcript details/images. Ensembl Assembly v"+apiVer);
+                }else{
+                    setError("The current Ensembl database does not have an entry for this gene ID."+
+                                " As Ensembl IDs are added/removed from new versions it is likely this ID has been removed."+
+                                " If you used a Gene Symbol and reached this the administrator will investigate. "+
+                                "If you entered this Ensembl ID please try to use a synonym or visit Ensembl to investigate the status of this ID. "+
+                                "Ensembl Assembly v"+apiVer);
+                                        
+                }
+                
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                myAdminEmail.setContent("There was an error while running "
+                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+
+                        ")\n\n"+myExec_session.getErrors());
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+            }
+
+            if(myExec_session.getExitValue()!=0){
+                completedSuccessfully=false;
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                myAdminEmail.setContent("There was an error while running "
+                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
+                        ")\n\n"+myExec_session.getErrors());
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+            }
+        }catch(Exception e){
+            completedSuccessfully=false;
+            log.error("Error getting DB properties or Public User ID.",e);
+            String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+            Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
+                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+        }
+        return completedSuccessfully;
+    }
+    
     public boolean callPanelExpr(String id,String chr, int min, int max,int arrayTypeID,int rnaDS_ID,AsyncGeneDataTools prevThread){
         boolean error=false;
         //create File with Probeset Tissue herit and DABG

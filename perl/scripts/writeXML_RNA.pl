@@ -217,7 +217,7 @@ sub createXMLFile
 	#
 
 	# Read in the arguments for the subroutine	
-	my($bedOutputFileName, $outputDir, $xmlOutputFileName,$species,$type,$geneNames,$bedFileFolder,$arrayTypeID,$rnaDatasetID,$publicID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
+	my($outputDir, $species,$type,$geneNames,$bedFileFolder,$arrayTypeID,$rnaDatasetID,$publicID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
 	
 	my @geneNamesList=split(/,/,$geneNames);
 	my $geneNameGlobal=$geneNamesList[0];
@@ -298,8 +298,6 @@ sub createXMLFile
 	}
 	
 	
-
-	#print "connected\n";
 	my $slice_adaptor = $registry->get_adaptor( $species, $type, 'Slice' );
 	
 	my @genelist=();
@@ -318,8 +316,9 @@ sub createXMLFile
 	
 	
 	#fill genelist and slicelist for each Ensembl gene found and determine the min and max coordinates to find overlapping RNA isoforms.
-	while ( my $geneName1 = shift @geneNamesList ) {
-	    #print "Get:$geneName1\n";
+	my $geneName1 = shift @geneNamesList;
+	#while ( my $geneName1 = shift @geneNamesList ) {
+	    print "Get:$geneName1\n";
 	    my $tmpslice = $slice_adaptor->fetch_by_gene_stable_id( $geneName1, 50 ); # the 50 just returns a little more on the chromosome. shortened from 5000 since this returns too much.
 	    # Get all the genes.  Theoretically there should only be one, but possibly there might be more????
 	    my $genes = $tmpslice->get_all_Genes();
@@ -351,7 +350,7 @@ sub createXMLFile
 	    }
 	    #print "gene size found:".@{$genes}."\n";
 	    print "gene list:".@genelist."\n";
-	}
+	#}
 	
 	#get RNA isoform Gene list
 	$prevMin=$minCoord-1000;
@@ -690,17 +689,17 @@ sub createXMLFile
 	close GLFILE;
 	
 	# We're finished with the Genes
-		my $tissueProbesRef=readTissueAffyProbesetDataFromDB($chr,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,1,$dsn,$usr,$passwd);
-		my %tissueProbes=%$tissueProbesRef;
+		#my $tissueProbesRef=readTissueAffyProbesetDataFromDB($chr,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,1,$dsn,$usr,$passwd);
+		#my %tissueProbes=%$tissueProbesRef;
 		
 		
-		$GeneHOHRef = addAlternateID_RNA(\%GeneHOH,$species,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,$outputDir);
-		%GeneHOH = %$GeneHOHRef;
+		#$GeneHOHRef = addAlternateID_RNA(\%GeneHOH,$species,$minCoord,$maxCoord,\%tissueProbes,\@probesetHOH,$outputDir);
+		#%GeneHOH = %$GeneHOHRef;
 		
 		my $xml = new XML::Simple (RootName=>'GeneList');
 		my $data = $xml->XMLout(\%GeneHOH);
 		# open xml file
-		open XMLFILE, $xmlOutputFileName or die " Could not open XML file $xmlOutputFileName for writing $!\n\n";
+		open XMLFILE, ">",$outputDir."/Region.xml" or die " Could not open XML file Region.xml for writing $!\n\n";
 		# write the header 
 		print XMLFILE '<?xml version="1.0" encoding="UTF-8"?>';
 		print XMLFILE "\n\n";
@@ -709,32 +708,32 @@ sub createXMLFile
 		close XMLFILE;
 		
 		#read QTLs
-		my $qtlRef=readQTLDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
-		my %qtlHOH=%$qtlRef;
+		#my $qtlRef=readQTLDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		#my %qtlHOH=%$qtlRef;
 		
-		my $smncRef=readSmallNoncodingDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
-		my %smncHOH=%$smncRef;
+		#my $smncRef=readSmallNoncodingDataFromDB($chr,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		#my %smncHOH=%$smncRef;
 		
-		my $trackDB="mm9";
+		my $trackDB="mm10";
 		if($species eq 'Rat'){
 			$trackDB="rn5";
 		}
 		
 		#create bed files in region folder
 		
-		createQTLTrack(\%qtlHOH,$outputDir."qtl.track",$trackDB,$chr);
-		createSNPXMLTrack(\%snpHOH,$outputDir."snp.xml",$trackDB);
-		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonPlus.track",$trackDB,1,$chr);
-		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonMinus.track",$trackDB,-1,$chr);
-		createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonUkwn.track",$trackDB,0,$chr);
-		createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
-		createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
-		createProbesetTrack(\@probesetHOH,$outputDir."probe.track",$trackDB,$chr);
-		createFilteredProbesetTrack(\%tissueProbes,$outputDir."filterprobe.track",$trackDB,$chr);
+		#createQTLTrack(\%qtlHOH,$outputDir."qtl.track",$trackDB,$chr);
+		#createSNPXMLTrack(\%snpHOH,$outputDir."snp.xml",$trackDB);
+		#createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonPlus.track",$trackDB,1,$chr);
+		#createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonMinus.track",$trackDB,-1,$chr);
+		#createStrandedCodingTrack(\%GeneHOH,$outputDir."numExonUkwn.track",$trackDB,0,$chr);
+		#createProteinCodingTrack(\%GeneHOH,$outputDir."noncoding.track",$trackDB,0);
+		#createSmallNonCoding(\%smncHOH,\%GeneHOH,$outputDir."smallnc.track",$trackDB,$chr);
+		#createProbesetTrack(\@probesetHOH,$outputDir."probe.track",$trackDB,$chr);
+		#createFilteredProbesetTrack(\%tissueProbes,$outputDir."filterprobe.track",$trackDB,$chr);
 		
-		open LOCFILE,">".$outputDir."location.txt";
-		print LOCFILE "chr$chr\n$minCoord\n$maxCoord\n";
-		close LOCFILE;
+		#open LOCFILE,">".$outputDir."location.txt";
+		#print LOCFILE "chr$chr\n$minCoord\n$maxCoord\n";
+		#close LOCFILE;
 		
 		my $geneArrayRef = $GeneHOH{Gene};
 		my @geneArray = @$geneArrayRef;
@@ -745,7 +744,7 @@ sub createXMLFile
 			my $tmpStart=$GeneHOH{Gene}[$cntGenes]{start};
 			my $tmpStop=$GeneHOH{Gene}[$cntGenes]{stop};
 			#create gene image for ExonCorrelationViewer
-			my $indivTrackOutputFileName = $bedOutputFileName."exCor_".$tmpGeneName.".tracks";
+			my $indivTrackOutputFileName = $bedFileFolder."/exCor_".$tmpGeneName.".tracks";
 			my $newPngOutputFileName = $outputDir."exCor_".$tmpGeneName.".png";
 			createTrackFile(\%GeneHOH, $cntGenes,  $indivTrackOutputFileName, $species);
 			my $newresultCode=0;
@@ -766,7 +765,7 @@ sub createXMLFile
 #	
 	my $arg1 = $ARGV[0]; # ucsc file path
 	my $arg2 = $ARGV[1]; # output directory path
-	my $arg3 = '>'.$ARGV[2]; #xml file name
+	my $arg3 = $ARGV[2]; #xml file name
 	my $arg4 = $ARGV[3]; #species
 	my $arg5 = $ARGV[4]; #annotation level
 	my $arg6 = $ARGV[5]; #Gene name list
@@ -779,9 +778,7 @@ sub createXMLFile
 	my $arg13=$ARGV[12];
 	my $arg14=$ARGV[13];
 	my $arg15=$ARGV[14];
-	my $arg16=$ARGV[15];
-	my $arg17=$ARGV[16];
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17);
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15);
 
 	
 	# Example call:

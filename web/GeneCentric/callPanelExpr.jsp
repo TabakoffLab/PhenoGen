@@ -20,7 +20,7 @@ import="org.json.*" %>
 
 
 <%
-String id="",chromosome="";
+String id="",chromosome="",organism="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 if(request.getParameter("chromosome")!=null){
 		chromosome=request.getParameter("chromosome").trim();
@@ -56,14 +56,18 @@ if(request.getParameter("arrayTypeID")!=null){
 if(request.getParameter("id")!=null){
 	id=request.getParameter("id").trim();
 }
+if(request.getParameter("organism")!=null){
+	organism=request.getParameter("organism").trim();
+}
 %>
 
 
 <% 
-	boolean error=gdt.callPanelExpr(id,chromosome,min,max,arrayTypeID,rnaDatasetID,null);
+	boolean error1=gdt.callWriteXML(id,organism,chromosome,min,max,arrayTypeID,rnaDatasetID);
+	boolean error2=gdt.callPanelExpr(id,chromosome,min,max,arrayTypeID,rnaDatasetID,null);
 	JSONObject genejson;
 	genejson = new JSONObject();
-    genejson.put("success" , error);
+    genejson.put("success" , error1&&error2);
 	response.setContentType("application/json");
 	response.getWriter().write(genejson.toString());
 %>

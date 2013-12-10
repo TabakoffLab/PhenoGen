@@ -49,8 +49,8 @@ $(document).on("click",".closeBtn",function(){
 					setting=setting.substr(6);
 					//if($("."+setting).is(":visible")){
 						//alert("visible fading out");
-					console.log(setting);
-					console.log($("."+setting));
+					//console.log(setting);
+					//console.log($("."+setting));
 						$("."+setting).fadeOut("fast");
 					//}
 					return false;
@@ -155,7 +155,7 @@ $(document).on("change","select[name='imgSelect']", function(){
 				var id=new String($(this).attr("id"));
 				var len=id.length-1;
 				var curlvl=id.substr(len);
-				console.log("height:"+curlvl);
+				//console.log("height:"+curlvl);
 	 			changeTrackHeight("Level"+curlvl,$(this).val());
 	 			$.cookie("imgstate"+defaultView+curlvl,"displaySelect"+curlvl+"="+$(this).val()+";");
 	 		});
@@ -372,7 +372,7 @@ function getAddMenuDiv(level,type){
 }
 
 function loadState(levelInd){
-	console.log("loadState("+levelInd+")");
+	//console.log("loadState("+levelInd+")");
 	setupSettingUI(levelInd);
 	loadSavedConfigTracks(levelInd);
 	loadImageState(levelInd);
@@ -386,7 +386,7 @@ function setupSettingUI(levelInd){
 function loadSavedConfigTracks(levelInd){
 	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
     	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
-    	console.log("LOADING:"+trackListObj);
+    	//console.log("LOADING:"+trackListObj);
     	var trackArray=trackListObj.split(";");
     	var addedCount=0;
     	for(var m=0;m<trackArray.length;m++){
@@ -421,7 +421,7 @@ function loadSavedConfigTracks(levelInd){
 function loadImageState(levelInd){
 	if($.cookie("imgstate"+defaultView+levelInd)!=null){
     	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
-    	console.log("img state:"+trackListObj);
+    	//console.log("img state:"+trackListObj);
     	var trackArray=trackListObj.split(";");
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split("=");
@@ -440,15 +440,15 @@ function setupTrackSettingUI(levelInd){
     	var trackArray=trackListObj.split(";");
     	$("input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
-    			console.log("unchecking"+$(this).attr("id"));
+    			//console.log("unchecking"+$(this).attr("id"));
     			$(this).prop('checked', false);
     		}
     	});
-    	console.log("SETUP UI");
+    	//console.log("SETUP UI");
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
-    		console.log("setupTrackVars[0] "+trackVars[0]);
-    		console.log(trackVars);
+    		//console.log("setupTrackVars[0] "+trackVars[0]);
+    		//console.log(trackVars);
     		if(trackVars[0]!=""){
     			if(trackVars[0]=="noncoding"||trackVars[0]=="coding"||trackVars[0]=="smallnc"){
     				if(trackVars[2]!=undefined){
@@ -490,7 +490,7 @@ function setupTrackSettingUI(levelInd){
 function setupImageSettingUI(levelInd){
 	if($.cookie("imgstate"+defaultView+levelInd)!=null){
     	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
-    	console.log("img state:"+trackListObj);
+    	//console.log("img state:"+trackListObj);
     	var trackArray=trackListObj.split(";");
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split("=");
@@ -505,7 +505,7 @@ function setupImageSettingUI(levelInd){
 }
 
 function setupDefaultView(levelInd){
-	console.log("setupDefaultView:"+defaultView);
+	//console.log("setupDefaultView:"+defaultView);
 	$("input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
     			//console.log("unchecking"+$(this).attr("id"));
@@ -1140,7 +1140,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	this.vis.append("span").attr("class","settings button")
 		.attr("id","settingsLevel"+levelNumber)
 		.style("float","right")
-		.style("width","118px")
+		.style("width","130px")
 		.text("Customize Image")
 		.on("mouseover",function(){
 			$("#mouseHelp").html("Click to Customize Tracks,Change Image Height, Reset Image Zoom, and Reset Tracks.");
@@ -1667,7 +1667,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			var gene=d3.select("g.gene rect#"+geneID);
 			if(gene != undefined){
 				gene.attr("class","selected").style("fill","green");
-				console.log(gene.data()[0]);
+				//console.log(gene.data()[0]);
 				that.setupDetailedView(gene.data()[0]);
 				selectGene="";
 			}
@@ -1831,7 +1831,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.data=data;
 		that.trackYMax=0;
 		that.svg.selectAll(".gene").remove();
-		console.log("in draw"+that.annotType);
+		//console.log("in draw"+that.annotType);
 		
 
 		//set annotType
@@ -1848,7 +1848,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			that.annotType="trxOnly";
 		}
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Selectg").val();
-		console.log("set annotType:"+that.annotType);
+		//console.log("set annotType:"+that.annotType);
 		for(var j=0;j<that.gsvg.width;j++){
 				that.yArr[j]=0;
 		}
@@ -2310,13 +2310,13 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 			that.svg.selectAll(".tissueLbl").remove();
 			var tissues=$(".settingsLevel"+that.gsvg.levelNumber+" input[name=\"tissuecbx\"]:checked");
 			that.tissueLen=tissues.length;
-			console.log("redraw Tissues:");
+			//console.log("redraw Tissues:");
 			var totalYMax=1;
 			//that.svg.selectAll(".probe").remove();
 			for(var t=0;t<tissues.length;t++){
 						var tissue=new String(tissues[t].id);
 						tissue=tissue.substr(0,tissue.indexOf("Affy"));
-						console.log(t+":"+tissue);
+						//console.log(t+":"+tissue);
 						that.trackYMax=0;
 						that.yArr=new Array();
 						for(var j=0;j<100;j++){
