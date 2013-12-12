@@ -1633,11 +1633,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 					var fullChar="";
 					var rectW=d3This.select("rect").attr("width");
-					if(rectW>=7.9 && rectW<=16){
+					if(rectW>=7.9 && rectW<=15.8){
 						fullChar=strChar;
-					}else if(rectW>8){
-						rectW=rectW-7.9;
-						while(rectW>8){
+					}else{
+						while(rectW>8.5){
 							fullChar=fullChar+strChar;
 							rectW=rectW-7.9;
 						}
@@ -1964,11 +1963,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}
 			var fullChar=strChar;
 			var rectW=d3This.select("rect").attr("width");
-			if(rectW<7.5){
+			if(rectW<7.9){
 				fullChar="";
 			}else{
 				rectW=rectW-7.9;
-				while(rectW>18){
+				fullChar=strChar;
+				while(rectW>8.5){
 					fullChar=fullChar+strChar;
 					rectW=rectW-7.9;
 				}
@@ -3285,7 +3285,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 				var intStop=that.xScale(exList[m].getAttribute("start"));
 				var rectW=intStop-intStart;
 				var alt=0;
-				var charW=6;
+				var charW=6.5;
 				if(rectW<charW){
 						fullChar="";
 				}else{
@@ -3302,11 +3302,11 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 					}
 				}
 				txG.append("svg:text").attr("id",function(d){ return "IntTxt"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID");}).attr("dx",intStart+1)
-					.attr("dy","10")
+					.attr("dy","11")
 					.style("pointer-events","none")
-					.style("opacity","0.6")
+					.style("opacity","0.5")
 					.style("fill",that.color)
-					.style("font-size","14px")
+					.style("font-size","16px")
 					.text(fullChar);
 				
 			}
@@ -3334,7 +3334,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 						var intStop=that.xScale(exList[m].getAttribute("start"));
 						var rectW=intStop-intStart;
 						var alt=0;
-						var charW=6;
+						var charW=6.5;
 						if(rectW<charW){
 								fullChar="";
 						}else{
@@ -3495,7 +3495,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 
 function CountTrack(gsvg,data,trackClass,density){
 	var that=new Track(gsvg,data,trackClass,"Generic Counts");
-	that.density=density;
+	//that.density=density;
 	that.data=data;
 	that.prevDensity=density;
 	that.displayBreakDown=null;
@@ -3516,6 +3516,7 @@ function CountTrack(gsvg,data,trackClass,density){
 
 	that.redraw= function (){
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
+		console.log("count:redraw("+that.density+")");
 		if(that.density==1){
 			if(that.density!=that.prevDensity){
 				that.prevDensity=that.density;
@@ -3548,7 +3549,7 @@ function CountTrack(gsvg,data,trackClass,density){
 									   });
 			}
 			that.svg.attr("height", 30);
-		}else{
+		}else if(that.density==2){
 			//filter out extra data
 			/*var tmpMin=that.gsvg.xScale.domain()[0];
 			var tmpMax=that.gsvg.xScale.domain()[1];
@@ -3572,7 +3573,7 @@ function CountTrack(gsvg,data,trackClass,density){
 				that.svg.append("g")
 				      .attr("class", "y axis")
 				      .call(that.yAxis);
-			    that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","957").attr("dy","0.05em");});
+			    that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","10").attr("dy","0.05em");});
 				that.svg.append("g")         
 		        	.attr("class", "grid")
 		        	.call(that.yAxis
@@ -3647,7 +3648,8 @@ function CountTrack(gsvg,data,trackClass,density){
 	that.draw=function(data){
 		that.data=data;
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		if(density==1){
+		console.log("count:draw("+that.density+")");
+		if(that.density==1){
 	    	var points=that.svg.selectAll("."+that.trackClass)
 	   			.data(data,keyStart)
 	    	points.enter()
@@ -3681,7 +3683,7 @@ function CountTrack(gsvg,data,trackClass,density){
 			                .style("opacity", 0);
 			        });
 			that.svg.attr("height", 30);
-	    }else{
+	    }else if(that.density==2){
 	    	that.y.domain([0, d3.max(that.data, function(d) { return d.getAttribute("logcount"); })]);
 	    	that.yAxis = d3.svg.axis()
     				.scale(that.y)
@@ -3698,7 +3700,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		      .style("text-anchor", "end")
 		      .text("log2(read count)");*/
 
-		     that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","957").attr("dy","0.05em");});
+		     that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","10").attr("dy","0.05em");});
 
 	    	that.svg.append("g")         
 		        .attr("class", "grid")
@@ -3724,10 +3726,7 @@ function CountTrack(gsvg,data,trackClass,density){
    						.domain([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
    						.range(["#FFFFFF","#EEEEEE","#DDDDDD","#CCCCC","#BBBBBB","#AAAAAA","#999999","#888888","#777777","#666666","#555555","#444444","#333333","#222222","#111111","#000000"]);
 
-    that.yAxis = d3.svg.axis()
-    				.scale(that.y)
-    				.orient("left")
-    				.ticks(5);
+    
 
     that.area = d3.svg.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
@@ -3735,7 +3734,10 @@ function CountTrack(gsvg,data,trackClass,density){
 				    .y1(function(d) { return that.y(d.getAttribute("logcount")); });
 
     that.y.domain([0, d3.max(that.data, function(d) { return d.getAttribute("logcount"); })]);
-
+    that.yAxis = d3.svg.axis()
+    				.scale(that.y)
+    				.orient("left")
+    				.ticks(5);
     that.draw(data);
 	return that;
 }
