@@ -186,9 +186,9 @@ function displayHelpFirstTime(){
     		$("a#helpExampleNav").click();
     		$.cookie("genomeBrowserHelp",siteVer);
     	}
-    }else{
-    	$("a#helpExampleNav").click();
-    	$.cookie("genomeBrowserHelp",siteVer);
+    }else{*/
+    //	$("a#helpExampleNav").click();
+    /*	$.cookie("genomeBrowserHelp",siteVer);
     }*/
 }
 
@@ -668,10 +668,6 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				info.append("text").attr("x","2.5").attr("y",10).attr("fill","#FFFFFF").text("i");
 		}
 
-
-
-
-
 		var success=0;
 		if(track=="coding"){
 
@@ -1056,12 +1052,33 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				this.trackList[i].updateData(0);
 			}
 		}
+		var chkStr=new String(folderName);
+		if(chkStr.indexOf("img")>-1){
+			$.ajax({
+					url: "web/GeneCentric/getFullPath.jsp",
+	   				type: 'GET',
+	   				async: false,
+					data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
+					dataType: 'json',
+	    			success: function(data2){ 
+	        			folderName=data2.folderName;
+	    			}.bind(this),
+	    			error: function(xhr, status, error) {
+	        			console.log(error);
+	    			}
+				});
+		}
+		for(var i=0;i<this.trackList.length;i++){
+			if(this.trackList[i]!=undefined && this.trackList[i].updateFullData!=undefined){
+				this.trackList[i].updateFullData(0);
+			}
+		}
 		DisplayRegionReport();
 	}.bind(this);
 
 	this.setLoading=function (){
 		for(var i=0;i<this.trackList.length;i++){
-			if(this.trackList[i]!=undefined && this.trackList[i].updateData!=undefined){
+			if(this.trackList[i]!=undefined && (this.trackList[i].updateData!=undefined||this.trackList[i].updateFullData!=undefined)){
 				//console.log("not undef");
 				this.trackList[i].showLoading();
 			}
@@ -3012,12 +3029,12 @@ function QTLTrack(gsvg,data,trackClass,density){
 
 		/*var qtl=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass)
 										.selectAll(".qtl");*/
-		qtls[0].forEach(function(d){
+		/*qtls[0].forEach(function(d){
 				var nameStr=d.__data__.getAttribute("name");
 				var end=nameStr.indexOf("QTL")-1;
 				var name=nameStr.substr(0,end);
 				d3.select(d).select("rect").style("fill",that.color(name));
-		});
+		});*/
 		that.svg.attr("height", that.yCount*15);
 	}.bind(that);
 
@@ -3194,6 +3211,13 @@ function QTLTrack(gsvg,data,trackClass,density){
 	        });
 
 		qtls.exit().remove();
+
+		qtls[0].forEach(function(d){
+				var nameStr=d.__data__.getAttribute("name");
+				var end=nameStr.indexOf("QTL")-1;
+				var name=nameStr.substr(0,end);
+				d3.select(d).select("rect").style("fill",that.color(name));
+		});
 		that.svg.attr("height", that.yCount*15);
 		//that.getDisplayedData();
 	}.bind(that);
@@ -3630,19 +3654,70 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.redraw();
 	}.bind(that);
 
-	that.updateData = function(){
+	that.updateFullData = function(retry){
+		var tmpMin=this.xScale.domain()[0];
+		var tmpMax=this.xScale.domain()[1];
+		var len=tmpMax-tmpMin;
 		var tag="Count";
 		var file="tmpData/regionData/"+folderName+"/count"+that.trackClass+".xml";
 		if(len>trackBinCutoff){
 			file="tmpData/regionData/"+folderName+"/bincount"+that.trackClass+".xml";
 		}
+		d3.xml(file,function (error,d){
+					if(error){
+						console.log(error);
+						if(retry==0){
+							$.ajax({
+								url: contextPath + "/web/GeneCentric/generateTrackXML.jsp",
+				   				type: 'GET',
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName},
+								dataType: 'json',
+				    			success: function(data2){
+				    				
+				    			},
+				    			error: function(xhr, status, error) {
+				        			
+				    			}
+							});
+						}
+						if(retry<3){//wait before trying again
+							var time=15000;
+							if(retry==1){
+								time=20000;
+							}
+							setTimeout(function (){
+								that.updateFullData(retry+1);
+							}.bind(this),time);
+						}else{
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
+					}else{
+						//console.log(d);
+						if(d==null){
+							if(retry>=4){
+								data=new Array();
+								that.draw(data);
+								that.hideLoading();
+							}else{
+								setTimeout(function (){
+									that.updateFullData(retry+1);
+								}.bind(this),5000);
+							}
+						}else{
+							var data=d.documentElement.getElementsByTagName("Count");
+							that.draw(data);
+							that.hideLoading();
+						}
+					}
+				}.bind(this));
 		//var path="tmpData/regionData/"+folderName+"/count"+that.trackClass+".xml";
-		d3.xml(file,function (d){
+		/*d3.xml(file,function (d){
 				var data=d.documentElement.getElementsByTagName(tag);
 				that.data=data;
 				that.draw(data);
 				that.hideLoading();
-			});
+			});*/
 	}.bind(that);
 
 	that.draw=function(data){
