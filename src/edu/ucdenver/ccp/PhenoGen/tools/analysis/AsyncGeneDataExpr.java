@@ -286,12 +286,14 @@ public class AsyncGeneDataExpr extends Thread {
         }
         //wait for other Expr threads to finish
         boolean waiting=true;
+        int myIndex=-1;
         while(waiting){
             int waitingOnCount=0;
             boolean reachedMySelf=false;
             for(int i=0;i<threadList.size()&&!reachedMySelf;i++){
                 if(thisThread.equals(threadList.get(i))){
                     reachedMySelf=true;
+                    myIndex=i;
                 }else{
                     if(threadList.get(i).isAlive()){
                         waitingOnCount++;
@@ -399,7 +401,10 @@ public class AsyncGeneDataExpr extends Thread {
     public boolean isDone() {
         return doneThread;
     }
-    
+   
+    public String getOuputDir(){
+        return outputDir;
+    }
     
     
 }
