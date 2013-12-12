@@ -298,7 +298,7 @@ class ChipHandler extends Thread {
 				};
 
 		myIDecoderClient.setNum_iterations(1);
-		
+		//myIDecoderClient.setNum_iterations(0);
                 	//int geneListID = new DbUtils().getUniqueID("gene_lists_seq", dbConn);
                     
 			String organism = getOrganism(thisChip);
