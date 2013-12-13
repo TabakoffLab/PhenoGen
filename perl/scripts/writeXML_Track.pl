@@ -2,6 +2,7 @@
 
 use XML::LibXML;
 use XML::Simple;
+use Math::Round qw(:all);
 use DBI;
 
 use strict;
@@ -29,7 +30,7 @@ sub createBinnedData{
 		while($curPos<$curStop and $loopCount<$bin){
 			my $segStart=$fullRNA{Count}[$curIndex]{start};
 			my $segStop=$fullRNA{Count}[$curIndex]{stop};
-			my $segValue=$fullRNA{Count}[$curIndex]{logcount};
+			my $segValue=nearest(.01,$fullRNA{Count}[$curIndex]{logcount});
 			#print $segStart."-".$segStop.":".$segValue."\n";
 			my $bp=0;
 			my $skipCur=0;
