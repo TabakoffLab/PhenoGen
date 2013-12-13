@@ -3723,6 +3723,7 @@ function CountTrack(gsvg,data,trackClass,density){
 	that.draw=function(data){
 		that.data=data;
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
+		that.redrawLegend();
 		console.log("count:draw("+that.density+")");
 		if(that.density==1){
 	    	var points=that.svg.selectAll("."+that.trackClass)
@@ -3794,12 +3795,42 @@ function CountTrack(gsvg,data,trackClass,density){
 		}
 	}.bind(that);
 
+	that.redrawLegend=function (){
+		if(that.density==2){
+			d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).selectAll(".legend").remove();
+		}else if(that.density==1){
+			var lblStr=new String(that.label);
+			var x=that.gsvg.width/2+(lblStr.length/2)*10.5+50;
+			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".legend").remove();
+			this.svg.append("text").text("0").attr("class","legend").attr("x",x-10).attr("y",12);
+			
+			for(var i=0;i<that.colorRange.length;i++){
+				this.svg.append("rect")
+					.attr("class","legend")
+					.attr("x",x)
+					.attr("y",0)
+					//.attr("rx",3)
+					//.attr("ry",3)
+			    	.attr("height",12)
+					.attr("width",10)
+					.attr("fill",that.colorRange[i])
+					.attr("stroke",that.colorRange[i]);
+				//lblStr=new String(legendList[i].label);
+				//this.svg.append("text").text(lblStr).attr("class","legend").attr("x",x+18).attr("y",12);
+				x=x+10;
+			}
+			this.svg.append("text").text("16+").attr("class","legend").attr("x",x+10).attr("y",12);
+		}
+		
+	}.bind(that);
+
 	that.y = d3.scale.linear()
     	.range([140, 20]);
-
+    that.colorDomain=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
+    that.colorRange=["#FFFFFF","#EEEEEE","#DDDDDD","#CCCCCC","#BBBBBB","#AAAAAA","#999999","#888888","#777777","#666666","#555555","#444444","#333333","#222222","#111111","#000000"];
    	that.colorScale= d3.scale.threshold()
-   						.domain([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
-   						.range(["#FFFFFF","#EEEEEE","#DDDDDD","#CCCCC","#BBBBBB","#AAAAAA","#999999","#888888","#777777","#666666","#555555","#444444","#333333","#222222","#111111","#000000"]);
+   						.domain(that.colorDomain)
+   						.range(that.colorRange);
 
     
 
@@ -3813,6 +3844,7 @@ function CountTrack(gsvg,data,trackClass,density){
     				.scale(that.y)
     				.orient("left")
     				.ticks(5);
+   	that.redrawLegend();
     that.draw(data);
 	return that;
 }
