@@ -73,7 +73,7 @@
 			if(min<1){
 				min=1;
 			}
-			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff);					
+			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);					
 			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 			folderName=tmpURL.substring(second+1,tmpURL.length()-1);

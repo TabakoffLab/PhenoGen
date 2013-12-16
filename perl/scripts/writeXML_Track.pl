@@ -15,6 +15,8 @@ require 'createXMLTrack.pl';
 
 sub createBinnedData{
 	my($refRNA,$bin,$start,$stop)=@_;
+	print "Bin Data:$bin\n";
+	print "Start:$start\tStop:$stop\n";
 	my %fullRNA=%$refRNA;
 	my %binHOH;
 	my $curStart=$start;
@@ -112,13 +114,22 @@ sub createBinnedData{
 		}
 		my $binVal=$sortVal[$valInd-1];
 		#print "$binInd\t$curStart\t$binVal\n";
-		$binHOH{Count}[$binInd]{start}=$curStart;
-		$binHOH{Count}[$binInd]{logcount}=$binVal;
-		
-		$binInd++;
+		if($binInd>0 and $binHOH{Count}[$binInd-1]{logcount}==$binVal){
+			#skip since its the same value.
+			$binHOH{Count}[$binInd-1]{start}=$binHOH{Count}[$binInd-1]{start}+$bin;
+		}else{
+			$binHOH{Count}[$binInd]{start}=$curStart;
+			$binHOH{Count}[$binInd]{logcount}=$binVal;
+			$binInd++;
+			$binHOH{Count}[$binInd]{start}=$curStart+$bin-1;
+			$binHOH{Count}[$binInd]{logcount}=$binVal;
+			$binInd++;
+		}
 		$curStart=$curStop;
 		$curStop=$bin+$curStart;
 	}
+	#fill in
+	
 	return \%binHOH;
 }
 
