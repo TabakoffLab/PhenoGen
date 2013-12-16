@@ -159,3 +159,4 @@ sub writeGeneIDs
 	my $arg7 = $ARGV[6]; # ens password
 	
 	writeGeneIDs($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7);
+1;

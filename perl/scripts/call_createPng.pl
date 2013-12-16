@@ -42,3 +42,4 @@ sub getImage{
 	my $lblWidth=$ARGV[6];
 	my $urlFile=$ARGV[7];
 	getImage($species,$chr,$minCoord,$maxCoord,$pngFile,$trackFile,$lblWidth,$urlFile);
+1;
