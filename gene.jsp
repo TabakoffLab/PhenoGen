@@ -463,7 +463,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 					}
 					DecimalFormat df0 = new DecimalFormat("#,###");
 					myDisplayGene=chromosome+":"+df0.format(min)+"-"+df0.format(max);
-					fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff);					
+					fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);					
 					String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 					String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
 					String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
