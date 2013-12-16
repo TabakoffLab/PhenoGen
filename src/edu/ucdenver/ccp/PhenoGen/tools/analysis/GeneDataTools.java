@@ -248,6 +248,7 @@ public class GeneDataTools {
         }catch(SQLException e){
             log.error("Error saving Transcription Detail Usage",e);
         }
+        Date endDBSetup=new Date();
         //EnsemblIDList can be a comma separated list break up the list
         String[] ensemblList = ensemblIDList.split(",");
         String ensemblID1 = ensemblList[0];
@@ -322,8 +323,8 @@ public class GeneDataTools {
             error=true;
             setError("No Ensembl IDs");
         }
+        Date endFindGen=new Date();
         if(error){
-
             result=(String)session.getAttribute("genURL");
         }
         this.setPublicVariables(error,ensemblID1);
@@ -338,8 +339,9 @@ public class GeneDataTools {
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
         }
+        Date endLoadLoc=new Date();
         //log.debug("getGeneCentricData->getRegionData");
-        ArrayList<Gene> ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01);
+        ArrayList<Gene> ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01,false);
         for(int i=0;i<ret.size();i++){
             //log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
             if(ret.get(i).getGeneID().equals(ensemblIDList)){
@@ -347,6 +349,7 @@ public class GeneDataTools {
                 this.returnGeneSymbol=ret.get(i).getGeneSymbol();
             }
         }
+        Date endRegion=new Date();
         /*this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
         ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chrom,arrayTypeID,0.01,"All");
         HashMap transInQTLsCore=new HashMap();
@@ -401,12 +404,21 @@ public class GeneDataTools {
         }catch(SQLException e){
             log.error("Error saving Transcription Detail Usage",e);
         }
+        Date endDB=new Date();
+        
+        log.debug("Timing:");
+        log.debug("Total:"+(endDB.getTime()-start.getTime())/1000+"s");
+        log.debug("DB Setup:"+(endDBSetup.getTime()-start.getTime())/1000+"s");
+        log.debug("Find Gene:"+(endFindGen.getTime()-endDBSetup.getTime())/1000+"s");
+        log.debug("Load Location:"+(endLoadLoc.getTime()-endFindGen.getTime())/1000+"s");
+        log.debug("Get Region:"+(endRegion.getTime()-endLoadLoc.getTime())/1000+"s");
+        log.debug("DB Final:"+(endDB.getTime()-endRegion.getTime())/1000+"s");
         return ret;
     }
     
     public ArrayList<Gene> getRegionData(String chromosome,int minCoord,int maxCoord,
             String panel,
-            String organism,int RNADatasetID,int arrayTypeID,double pValue) {
+            String organism,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL) {
         
         
         chromosome=chromosome.toLowerCase();
@@ -538,27 +550,26 @@ public class GeneDataTools {
         this.pathReady=true;
         
         ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
-        //ret=this.mergeOverlapping(ret);
-        //ret=this.mergeAnnotatedOverlapping(ret);
-        this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID);
-        //ArrayList<String> tissues=new ArrayList<String>();
-        //ArrayList<EQTL> probeeQTLs=this.getProbeEQTLs(minCoord, maxCoord, chromosome, arrayTypeID,tissues);
-        //addQTLS(ret,probeeQTLs);
-        ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chromosome,arrayTypeID,pValue,"All");
-        HashMap transInQTLsCore=new HashMap();
-        HashMap transInQTLsExtended=new HashMap();
-        HashMap transInQTLsFull=new HashMap();
-        for(int i=0;i<tcList.size();i++){
-            TranscriptCluster tmp=tcList.get(i);
-            if(tmp.getLevel().equals("core")){
-                transInQTLsCore.put(tmp.getTranscriptClusterID(),tmp);
-            }else if(tmp.getLevel().equals("extended")){
-                transInQTLsExtended.put(tmp.getTranscriptClusterID(),tmp);
-            }else if(tmp.getLevel().equals("full")){
-                transInQTLsFull.put(tmp.getTranscriptClusterID(),tmp);
+
+
+        if(withEQTL){
+            this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID);
+            ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chromosome,arrayTypeID,pValue,"All");
+            HashMap transInQTLsCore=new HashMap();
+            HashMap transInQTLsExtended=new HashMap();
+            HashMap transInQTLsFull=new HashMap();
+            for(int i=0;i<tcList.size();i++){
+                TranscriptCluster tmp=tcList.get(i);
+                if(tmp.getLevel().equals("core")){
+                    transInQTLsCore.put(tmp.getTranscriptClusterID(),tmp);
+                }else if(tmp.getLevel().equals("extended")){
+                    transInQTLsExtended.put(tmp.getTranscriptClusterID(),tmp);
+                }else if(tmp.getLevel().equals("full")){
+                    transInQTLsFull.put(tmp.getTranscriptClusterID(),tmp);
+                }
             }
+            addFromQTLS(ret,transInQTLsCore,transInQTLsExtended,transInQTLsFull);
         }
-        addFromQTLS(ret,transInQTLsCore,transInQTLsExtended,transInQTLsFull);
         try{
             PreparedStatement ps=dbConn.prepareStatement(updateSQL, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,

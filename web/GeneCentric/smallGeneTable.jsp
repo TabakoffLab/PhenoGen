@@ -70,7 +70,7 @@
 			if(min<1){
 				min=1;
 			}
-			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff);
+			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
 			
 
 			//Match smncRNA to ensembl based on annotations

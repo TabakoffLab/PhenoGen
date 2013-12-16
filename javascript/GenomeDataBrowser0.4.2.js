@@ -3540,9 +3540,10 @@ function CountTrack(gsvg,data,trackClass,density){
 
 	that.redraw= function (){
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		console.log("count:redraw("+that.density+")");
+		//console.log("count:redraw("+that.density+")");
 		if(that.density==1){
 			if(that.density!=that.prevDensity){
+				var tmpMax=that.gsvg.xScale.domain()[1];
 				that.prevDensity=that.density;
 				that.svg.selectAll(".area").remove();
 				that.svg.selectAll("g.y").remove();
@@ -3554,46 +3555,78 @@ function CountTrack(gsvg,data,trackClass,density){
 						.attr("y",15)
 						.attr("class", that.trackClass)
 			    		.attr("height",10)
-						.attr("width",function(d) {
+						.attr("width",function(d,i) {
 										   var wX=1;
-										   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
-											   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
-										   }
+										   if((i+1)<that.data.length){
+										   		if(that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"))>1){
+											   		wX=that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"));
+										   		}
+											}else{
+												if(that.xScale(tmpMax)-that.xScale(d.getAttribute("start"))>1){
+											   		wX=that.xScale(tmpMax)-that.xScale(d.getAttribute("start"));
+										   		}
+											}
 										   return wX;
 										   })
-						.attr("fill",that.color);
+						.attr("fill",that.color)
+						.on("mouseover", function(d) { 
+							d3.select(this).style("fill","green");
+	            			that.gsvg.tt.transition()        
+								.duration(200)      
+								.style("opacity", .95);      
+							that.gsvg.tt.html(that.createToolTip(d))  
+								.style("left", (d3.event.pageX-that.gsvg.halfWindowWidth) + "px")     
+								.style("top", (d3.event.pageY +5) + "px");  
+	            			})
+						.on("mouseout", function(d) {  
+							d3.select(this).style("fill",that.color);
+				            that.gsvg.get('tt').transition()
+								 .delay(500)       
+				                .duration(200)      
+				                .style("opacity", 0);
+				        });
 			}else{
 				that.svg.selectAll("."+that.trackClass).attr("x",function(d){return that.xScale(d.getAttribute("start"));})
-					.attr("width",function(d) {
-									   var wX=1;
-									   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
-										   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
-									   }
-									   return wX;
-									   });
+					.attr("width",function(d,i) {
+										   var wX=1;
+										   if((i+1)<that.data.length){
+										   		if(that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"))>1){
+											   		wX=that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"));
+										   		}
+											}else{
+												if(that.xScale(tmpMax)-that.xScale(d.getAttribute("start"))>1){
+											   		wX=that.xScale(tmpMax)-that.xScale(d.getAttribute("start"));
+										   		}
+											}
+										   return wX;
+										   });
 			}
 			that.svg.attr("height", 30);
 		}else if(that.density==2){
-			//filter out extra data
-			/*var tmpMin=that.gsvg.xScale.domain()[0];
-			var tmpMax=that.gsvg.xScale.domain()[1];
-			var tmpData=that.data;
-			var filterData=new Array();
-			var curInd=0;
-			for(var o=0;o<tmpData.length;o++){
-				if(tmpData[o].getAttribute("start")>tmpMin && tmpData[o].getAttribute("start")<tmpMax ){
-					filterData[curInd]=tmpData[o];
-					curInd++;
+			/*
+			var tmpMin=that.xScale.domain()[0];
+			var tmpMax=that.xScale.domain()[1];
+
+			that.y.domain([0, d3.max(that.data, function(d,i) {
+				var ret=d.getAttribute("logcount");
+				var start=d.getAttribute("start");
+				if(start<tmpMin || start>tmpMax){
+					ret=0;
 				}
-			}*/
+				return ret; 
+				})]);
+				*/
+
+			that.svg.select(".area").remove();
 			that.area = d3.svg.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
 				    .y0(140)
 				    .y1(function(d) { return that.y(d.getAttribute("logcount")); });
 			//that.y.domain([0, d3.max(that.data, function(d) { return d.getAttribute("logcount"); })]);
+
 			if(that.density!=that.prevDensity){
 				that.prevDensity=that.density;
-				that.svg.selectAll("."+trackClass).remove();
+				that.svg.selectAll("."+that.trackClass).remove();
 				that.svg.append("g")
 				      .attr("class", "y axis")
 				      .call(that.yAxis);
@@ -3611,29 +3644,30 @@ function CountTrack(gsvg,data,trackClass,density){
 			      	.attr("fill","steelblue")
 			      	.attr("d", that.area);
 			}else{
-				//that.svg.select(".area").remove();
-				//that.svg.select("g.y").remove();
+				
+				//that.svg.select("g.y.axis").remove();
 				//that.svg.selectAll("g.grid").remove();
-				that.svg.select('.area').attr("d", that.area);
-			}
 
-			/*that.yAxis = d3.svg.axis()
-    				.scale(that.y)
-    				.orient("left")
-    				.ticks(5);*/
+				/*that.svg.append("g")
+			      .attr("class", "y axis")
+			      .call(that.yAxis);
 
-			
-			      /*.append("text")
-			      .attr("transform", "rotate(-90)")
-			      .attr("y", 6)
-			      .attr("dy", ".5em")
-			      .style("text-anchor", "end")
-			      .text("log10(reads)");*/
+		     	that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","10").attr("dy","0.05em");});
 
-			
-			
-			/**/
-			//
+		    	that.svg.append("g")         
+			        .attr("class", "grid")
+			        .call(that.yAxis
+			            		.tickSize((-that.gsvg.width+10), 0, 0)
+			            		.tickFormat("")
+			        		);*/
+
+				that.svg.append("path")
+			      	.datum(that.data)
+			      	.attr("class", "area")
+			      	.attr("stroke","steelblue")
+			      	.attr("fill","steelblue")
+			      	.attr("d", that.area);
+			}			
 			that.svg.attr("height", 140);
 		}
 	}.bind(that);
@@ -3654,10 +3688,17 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.redraw();
 	}.bind(that);
 
+	that.calculateBin= function(len){
+		var w=that.gsvg.width;
+		var bpPerPixel=len/w;
+
+	}.bind(that);
+
 	that.updateFullData = function(retry){
 		var tmpMin=this.xScale.domain()[0];
 		var tmpMax=this.xScale.domain()[1];
 		var len=tmpMax-tmpMin;
+		//that.bin=that.calculateBin(len);
 		var tag="Count";
 		var file="tmpData/regionData/"+folderName+"/count"+that.trackClass+".xml";
 		if(len>trackBinCutoff){
@@ -3726,6 +3767,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.redrawLegend();
 		console.log("count:draw("+that.density+")");
 		if(that.density==1){
+			var tmpMax=that.gsvg.xScale.domain()[1];
 	    	var points=that.svg.selectAll("."+that.trackClass)
 	   			.data(data,keyStart)
 	    	points.enter()
@@ -3734,11 +3776,17 @@ function CountTrack(gsvg,data,trackClass,density){
 					.attr("y",15)
 					.attr("class", that.trackClass)
 		    		.attr("height",10)
-					.attr("width",function(d) {
+					.attr("width",function(d,i) {
 									   var wX=1;
-									   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
-										   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
-									   }
+									   if((i+1)<that.data.length){
+										   if(that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"))>1){
+											   wX=that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"));
+										   }
+										}else{
+											if(that.xScale(tmpMax)-that.xScale(d.getAttribute("start"))>1){
+											   	wX=that.xScale(tmpMax)-that.xScale(d.getAttribute("start"));
+										   	}
+										}
 									   return wX;
 									   })
 					.attr("fill",that.color)
