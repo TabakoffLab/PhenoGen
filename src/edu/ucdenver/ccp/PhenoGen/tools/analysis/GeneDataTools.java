@@ -349,6 +349,7 @@ public class GeneDataTools {
                 this.returnGeneSymbol=ret.get(i).getGeneSymbol();
             }
         }
+        Date endRegion=new Date();
         /*this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
         ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chrom,arrayTypeID,0.01,"All");
         HashMap transInQTLsCore=new HashMap();
@@ -403,6 +404,15 @@ public class GeneDataTools {
         }catch(SQLException e){
             log.error("Error saving Transcription Detail Usage",e);
         }
+        Date endDB=new Date();
+        
+        log.debug("Timing:");
+        log.debug("Total:"+(endDB.getTime()-start.getTime())/1000+"s");
+        log.debug("DB Setup:"+(endDBSetup.getTime()-start.getTime())/1000+"s");
+        log.debug("Find Gene:"+(endFindGen.getTime()-endDBSetup.getTime())/1000+"s");
+        log.debug("Load Location:"+(endLoadLoc.getTime()-endFindGen.getTime())/1000+"s");
+        log.debug("Get Region:"+(endRegion.getTime()-endLoadLoc.getTime())/1000+"s");
+        log.debug("DB Final:"+(endDB.getTime()-endRegion.getTime())/1000+"s");
         return ret;
     }
     
