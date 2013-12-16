@@ -422,4 +422,4 @@ sub createRNACountXMLTrack{
 	close OFILE;
 	return 1;
 }
-return 1;
+1;
