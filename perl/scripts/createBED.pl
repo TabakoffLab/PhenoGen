@@ -577,4 +577,5 @@ sub createStrandedCodingTrack{
 	}
 	close OFILE;
 }
-return 1;
+
+1;

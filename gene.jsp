@@ -531,7 +531,11 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 </div>
 
 
-<%if(!popup){%>
+<%if(popup){%>
+<div style="text-align:center;">
+	<span class="button" onclick="window.close()" style="width:150px;">Close this Window</span>
+</div>
+<%}%>
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
 
@@ -581,7 +585,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 
 
 <form method="post" 
-		action="<%=formName%>"
+		action="gene.jsp"
 		enctype="application/x-www-form-urlencoded"
 		name="geneCentricForm" id="geneCentricForm">
         <%if(!regionError.equals("")){%>
@@ -627,38 +631,9 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 Or
 <input type="button" name="translateBTN" id="translateBTN" value="Translate Region to Mouse/Rat" onClick="openTranslateRegion()"> 
 </div>
-<%}else{%>
-	<div style="text-align:center;">
-	<span class="button" onclick="window.close()" style="width:150px;">Close this Window</span>
-    </div>
-    <form method="post" 
-		action="<%=formName%>"
-		enctype="application/x-www-form-urlencoded"
-		name="geneCentricForm" id="geneCentricForm">
-        
-  		<input type="hidden" name="geneTxt" id="geneTxt" value="<%= (myGene!=null)?myGene:"" %>">
- 		<input type="hidden" name="speciesCB" id="speciesCB" value="<%=(myOrganism!=null)?myOrganism:"" %>"> 
- 	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
-    <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
-    <input type="hidden" name="tissues" id="tissues" value="" />
-    <input type="hidden" name="chromosomes" id="chromosomes" value="" />
-    <input type="hidden" name="levels" id="levels" value="" />
-    <input type="hidden" name="action" id="action" value="Get Transcription Details" />
-  	<input type="hidden" name="genURLArray" id="genURLArray" value="<%=genURLString%>" />
-    <input type="hidden" name="geneSymArray" id="geneSymArray" value="<%=geneSymString%>" />
-    <input type="hidden" name="ucscURLArray" id="ucscURLArray" value="<%=ucscURLString%>" />
 
-    <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
-    <input type="hidden" name="geneSelect" id="geneSelect" value="<%=selectedGene%>" />
-</form>
-    
-<%}%>
-<script type="text/javascript">
-		document.getElementById("wait1").style.display = 'none';
-		//document.tooltip();
-</script>
 
-<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
+<!--<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>-->
 
 
 
@@ -666,6 +641,7 @@ Or
 </div>
 
 <script type="text/javascript">
+	document.getElementById("wait1").style.display = 'none';
 	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
 	function openTranslateRegion(){
 		$('.demo').hide();
