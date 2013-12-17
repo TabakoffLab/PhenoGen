@@ -3844,11 +3844,12 @@ function CountTrack(gsvg,data,trackClass,density){
 	}.bind(that);
 
 	that.redrawLegend=function (){
+		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		if(that.density==2){
 			d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).selectAll(".legend").remove();
 		}else if(that.density==1){
 			var lblStr=new String(that.label);
-			var x=that.gsvg.width/2+(lblStr.length/2)*10.5+50;
+			var x=that.gsvg.width/2+(lblStr.length/2)*9.5+20;
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".legend").remove();
 			this.svg.append("text").text("0").attr("class","legend").attr("x",x-10).attr("y",12);
 			
