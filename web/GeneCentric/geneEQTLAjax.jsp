@@ -84,7 +84,7 @@
 								rnaDatasetID=tmp[1];
 								arrayTypeID=tmp[0];
 							}
-	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID);
+	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID,true);
 	log.debug("OPENED GENE:"+id);
         %>
 <BR />

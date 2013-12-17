@@ -47,6 +47,7 @@ $(document).on('click','span.viewMenu', function (event){
 $(document).on("click",".closeBtn",function(){
 					var setting=new String($(this).attr("id"));
 					setting=setting.substr(6);
+					
 					//if($("."+setting).is(":visible")){
 						//alert("visible fading out");
 					//console.log(setting);
@@ -1085,6 +1086,14 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}
 	}.bind(this);
 
+	this.clearSelection=function (){
+		for(var i=0;i<this.trackList.length;i++){
+			if(this.trackList[i]!=undefined && this.trackList[i].clearSelection!=undefined){
+				this.trackList[i].clearSelection();
+			}
+		}
+	}.bind(this);
+
 	this.mdown=function() {
 			//console.log(this.vis);
 			if(processAjax==0){
@@ -1275,7 +1284,11 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 									this.gsvg.redraw();
 					}
 	}.bind(this);
-
+	this.clearSelection = function (){
+		d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).selectAll(".selected").each(function(){
+							d3.select(this).attr("class","").style("fill",that.color);
+						});
+	}.bind(this);
 	this.colorStroke = function (d){
 			var colorRet="black";
 			if(this.xScale(d.getAttribute("stop"))-this.xScale(d.getAttribute("start"))<3){

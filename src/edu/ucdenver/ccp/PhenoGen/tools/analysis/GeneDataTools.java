@@ -212,7 +212,7 @@ public class GeneDataTools {
      * 
      */
     public ArrayList<Gene> getGeneCentricData(String inputID,String ensemblIDList,
-            String panel,String organism,int RNADatasetID,int arrayTypeID) {
+            String panel,String organism,int RNADatasetID,int arrayTypeID,boolean eQTL) {
         
         //Setup a String in the format YYYYMMDDHHMM to append to the folder
         Date start = new Date();
@@ -341,7 +341,7 @@ public class GeneDataTools {
         }
         Date endLoadLoc=new Date();
         //log.debug("getGeneCentricData->getRegionData");
-        ArrayList<Gene> ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01,false);
+        ArrayList<Gene> ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01,eQTL);
         for(int i=0;i<ret.size();i++){
             //log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
             if(ret.get(i).getGeneID().equals(ensemblIDList)){
