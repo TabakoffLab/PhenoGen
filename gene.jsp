@@ -328,7 +328,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 									if(homologIdentifier.getIdentifier().indexOf("ENSMUSG")>-1||homologIdentifier.getIdentifier().indexOf("ENSRNOG")>-1){
 										//myEnsemblIDs.add(homologIdentifier.getIdentifier());	
 										log.debug("RUNNING GDT for "+homologIdentifier.getIdentifier());
-										ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID);
+										ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(myGene,homologIdentifier.getIdentifier(),panel,myOrganism,rnaDatasetID,arrayTypeID,false);
 										String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 										String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
 										log.debug(tmpURL+"\n"+tmpGeneSymbol);
@@ -382,7 +382,7 @@ pageTitle="Detailed Transcription Information "+myGene;%>
 						}else{
 								//gene="No Ensembl ID";
 								//heat="No Ensembl ID";
-								gdt.getGeneCentricData(myGene,"",panel,myOrganism,rnaDatasetID,arrayTypeID);
+								gdt.getGeneCentricData(myGene,"",panel,myOrganism,rnaDatasetID,arrayTypeID,false);
 								displayNoEnsembl=true;
 						}
 					

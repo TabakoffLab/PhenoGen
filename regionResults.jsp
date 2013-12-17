@@ -110,7 +110,7 @@ var selectGene="<%=selectedEnsemblID%>";
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
-            <script src="javascript/GenomeDataBrowser0.4.3.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.4.4.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
@@ -235,6 +235,11 @@ var selectGene="<%=selectedEnsemblID%>";
 	$(document).on('click','span.closeDetail', function(){
 			$('div#selectedDetail').hide();
 			$('div#selectedDetailHeader').hide();
+			svgList[0].clearSelection();
+			if(!$('div#collapsableReport').is(':visible')){
+						$('div#collapsableReport').show();
+						$("span[name='collapsableReport']").addClass("less");
+			}
 		});
 		
 	$('.regionDetailMenu').click(function (){

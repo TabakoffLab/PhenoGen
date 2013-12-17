@@ -91,7 +91,7 @@
          urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
     }
 	genURL=urlPrefix+ "tmpData/geneData/" +id+"/";
-	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID);
+	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID,true);
 	edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=null;
 	for(int i=0;i<tmpGeneList.size();i++){
 		log.debug("check:"+tmpGeneList.get(i).getGeneID()+":"+id);
