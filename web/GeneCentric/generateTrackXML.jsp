@@ -21,7 +21,7 @@ import="org.json.*" %>
 
 <%
 String chromosome="",panel="",myOrganism="Rn",track="",folderName="";
-int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
+int min=0,max=0,rnaDatasetID=0,arrayTypeID=0,binSize=0;
 double forwardPValueCutoff=0;
 if(request.getParameter("chromosome")!=null){
 		chromosome=request.getParameter("chromosome").trim();
@@ -66,12 +66,19 @@ if(request.getParameter("arrayTypeID")!=null){
 		log.error("Number format exception:arrayTypeID\n",e);
 	}
 }
+if(request.getParameter("binSize")!=null){
+	try{
+		binSize=Integer.parseInt(request.getParameter("binSize").trim());
+	}catch(NumberFormatException e){
+		log.error("Number format exception:binSize\n",e);
+	}
+}
 
 %>
 
 
 <% 
-	String status=gdt.generateXMLTrack(chromosome,min,max,panel,track,myOrganism,rnaDatasetID,arrayTypeID,folderName);
+	String status=gdt.generateXMLTrack(chromosome,min,max,panel,track,myOrganism,rnaDatasetID,arrayTypeID,folderName,binSize);
 	JSONObject genejson;
 	genejson = new JSONObject();
     genejson.put("status" , status);

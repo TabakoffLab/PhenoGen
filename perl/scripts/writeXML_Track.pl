@@ -136,35 +136,36 @@ sub createBinnedData{
 sub createXMLFile
 {
 	# Read in the arguments for the subroutine	
-	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$dsn,$usr,$passwd)=@_;
+	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$dsn,$usr,$passwd)=@_;
 	
 	my $scriptStart=time();
 	if(index($type,"illumina")>-1 or index($type,"helicos")>-1 ){
+		unlink $outputDir."bincount.".$binSize.".".$type.".xml";
 		my $rnaCountStart=time();
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-		my $len=$maxCoord-$minCoord;
-		my $binSize=0;
-		if($len>10000 and $len<=50000){
-			$binSize=5;
-		}elsif($len>50000 and $len<=500000){
-			$binSize=25;
-		}elsif($len>500000 and $len<=2500000){
-			$binSize=100;
-		}elsif($len>2500000 and $len<=5000000){
-			$binSize=1000;
-		}elsif($len>5000000 and $len<=10000000){
-			$binSize=5000;
-		}elsif($len>10000000 and $len<=20000000){
-			$binSize=10000;
-		}elsif($len>20000000 and $len<=50000000){
-			$binSize=100000;
-		}elsif($len>50000000 and $len<=100000000){
-			$binSize=500000;
-		}else{
-			$binSize=1000000;
-		}
+		#my $len=$maxCoord-$minCoord;
+		#my $binSize=0;
+		#if($len>10000 and $len<=50000){
+		#	$binSize=5;
+		#}elsif($len>50000 and $len<=500000){
+		#	$binSize=25;
+		#}elsif($len>500000 and $len<=2500000){
+		#	$binSize=100;
+		#}elsif($len>2500000 and $len<=5000000){
+		#	$binSize=1000;
+		#}elsif($len>5000000 and $len<=10000000){
+		#	$binSize=5000;
+		#}elsif($len>10000000 and $len<=20000000){
+		#	$binSize=10000;
+		#}elsif($len>20000000 and $len<=50000000){
+		#	$binSize=100000;
+		#}elsif($len>50000000 and $len<=100000000){
+		#	$binSize=500000;
+		#}else{
+		#	$binSize=1000000;
+		#}
 		
 		my $roundMin=$minCoord;
 		my $roundMax=$maxCoord;
@@ -184,7 +185,7 @@ sub createXMLFile
 		if($binSize>0){
 			my $ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
 			my %rnaBinned=%$ref;
-			createRNACountXMLTrack(\%rnaBinned,$outputDir."bincount".$type.".xml");
+			createRNACountXMLTrack(\%rnaBinned,$outputDir."bincount.".$binSize.".".$type.".xml");
 		}
 		createRNACountXMLTrack(\%rnaCountHOH,$outputDir."count".$type.".xml");
 	}elsif(index($type,"snp")>-1){
@@ -219,6 +220,7 @@ sub createXMLFile
 	my $arg8 = $ARGV[7]; 
 	my $arg9= $ARGV[8]; 
 	my $arg10=$ARGV[9];
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10);
+	my $arg11=$ARGV[10];
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11);
 
 1;
