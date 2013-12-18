@@ -1290,7 +1290,7 @@ public class GeneDataTools {
         }
         return completedSuccessfully;
     }
-    public String generateXMLTrack(String chromosome,int min,int max,String panel,String track,String organism,int rnaDatasetID,int arrayTypeID,String folderName){
+    public String generateXMLTrack(String chromosome,int min,int max,String panel,String track,String organism,int rnaDatasetID,int arrayTypeID,String folderName,int binSize){
         String status="";
         try{
             int publicUserID=new User().getUser_id("public",dbConn);
@@ -1303,7 +1303,7 @@ public class GeneDataTools {
             String dbUser=myProperties.getProperty("USER");
             String dbPassword=myProperties.getProperty("PASSWORD");
             //construct perl Args
-            String[] perlArgs = new String[12];
+            String[] perlArgs = new String[13];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Track.pl";
             perlArgs[2] = tmpOutputDir;
@@ -1317,9 +1317,10 @@ public class GeneDataTools {
              perlArgs[6] = Integer.toString(min);
             perlArgs[7] = Integer.toString(max);
             perlArgs[8] = Integer.toString(publicUserID);
-            perlArgs[9] = dsn;
-            perlArgs[10] = dbUser;
-            perlArgs[11] = dbPassword;
+            perlArgs[9] = Integer.toString(binSize);
+            perlArgs[10] = dsn;
+            perlArgs[11] = dbUser;
+            perlArgs[12] = dbPassword;
 
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
