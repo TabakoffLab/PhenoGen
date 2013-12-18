@@ -205,6 +205,7 @@ function mup() {
 				if(i==0){
 					DisplayRegionReport();
 				}
+				svgList[i].updateFullData();
 			}
 		}
 	}
@@ -292,6 +293,7 @@ function updatePage(topSVG){
     			}
 			});
 	}
+	
 }
 
 function removeTrack(level,track){
@@ -599,6 +601,21 @@ function saveToCookie(curLevel){
     }
 	$.cookie("state"+defaultView+curLevel+"trackList",cookieStr);
 }
+
+function calculateBin(len,width){
+		var bpPerPixel=len/width;
+		bpPerPixel=Math.floor(bpPerPixel);
+		var bpPerPixelStr=new String(bpPerPixel);
+		var firstDigit=bpPerPixelStr.substr(0,1);
+		var firstNum=firstDigit*Math.pow(10,(bpPerPixelStr.length-1));
+		var bin=firstNum/2;
+		bin=Math.floor(bin);
+		if(bin<5){
+			bin=0;
+		}
+		return bin;
+	}
+
 /*function timeoutFunc(){
 	console.log("timeout function call");
 }*/
@@ -908,9 +925,10 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				var tmpMin=this.xScale.domain()[0];
 				var tmpMax=this.xScale.domain()[1];
 				var len=tmpMax-tmpMin;
+				var tmpBin=calculateBin(len,this.width);
 				var file="tmpData/regionData/"+folderName+"/count"+track+".xml";
-				if(len>trackBinCutoff){
-					file="tmpData/regionData/"+folderName+"/bincount"+track+".xml";
+				if(tmpBin>0){
+					file="tmpData/regionData/"+folderName+"/bincount."+tmpBin+"."+track+".xml";
 				}
 				d3.xml(file,function (error,d){
 					if(error){
@@ -919,7 +937,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							$.ajax({
 								url: contextPath + "/web/GeneCentric/generateTrackXML.jsp",
 				   				type: 'GET',
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: track, folder: folderName},
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: track, folder: folderName,binSize:tmpBin},
 								dataType: 'json',
 				    			success: function(data2){
 				    				
@@ -1075,6 +1093,14 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}
 		}
 		DisplayRegionReport();
+	}.bind(this);
+
+	this.updateFullData=function(){
+		for(var i=0;i<this.trackList.length;i++){
+			if(this.trackList[i]!=undefined && this.trackList[i].updateFullData!=undefined){
+				this.trackList[i].updateFullData(0);
+			}
+		}
 	}.bind(this);
 
 	this.setLoading=function (){
@@ -3532,17 +3558,30 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 
 function CountTrack(gsvg,data,trackClass,density){
 	var that=new Track(gsvg,data,trackClass,"Generic Counts");
-	//that.density=density;
+
+	that.calculateBin= function(len){
+		var w=that.gsvg.width;
+		var bpPerPixel=len/w;
+		bpPerPixel=Math.floor(bpPerPixel);
+		var bpPerPixelStr=new String(bpPerPixel);
+		var firstDigit=bpPerPixelStr.substr(0,1);
+		var firstNum=firstDigit*Math.pow(10,(bpPerPixelStr.length-1));
+		var bin=firstNum/2;
+		bin=Math.floor(bin);
+		if(bin<5){
+			bin=0;
+		}
+		return bin;
+	}.bind(that);
+
 	that.data=data;
 	that.prevDensity=density;
 	that.displayBreakDown=null;
-	that.bin=0;
 	var tmpMin=that.gsvg.xScale.domain()[0];
 	var tmpMax=that.gsvg.xScale.domain()[1];
 	var len=tmpMax-tmpMin;
-	if(len>trackBinCutoff){
-		that.bin=100;
-	}
+	that.bin=that.calculateBin(len);
+
 	that.color= function (d){
 		var color="#FFFFFF";
 		if(d.getAttribute("logcount")>0){
@@ -3553,136 +3592,153 @@ function CountTrack(gsvg,data,trackClass,density){
 
 	that.redraw= function (){
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		//console.log("count:redraw("+that.density+")");
-		if(that.density==1){
-			if(that.density!=that.prevDensity){
-				var tmpMax=that.gsvg.xScale.domain()[1];
-				that.prevDensity=that.density;
-				that.svg.selectAll(".area").remove();
-				that.svg.selectAll("g.y").remove();
-				that.svg.selectAll(".grid").remove();
-				var points=that.svg.selectAll("."+that.trackClass).data(that.data,keyStart)
-		    	points.enter()
-						.append("rect")
-						.attr("x",function(d){return that.xScale(d.getAttribute("start"));})
-						.attr("y",15)
-						.attr("class", that.trackClass)
-			    		.attr("height",10)
+		var tmpMin=that.gsvg.xScale.domain()[0];
+		var tmpMax=that.gsvg.xScale.domain()[1];
+		//var len=tmpMax-tmpMin;
+		var tmpBin=that.bin;
+		console.log("redraw bin:"+tmpBin);
+		var tmpW=that.xScale(tmpMin+tmpBin)-that.xScale(tmpMin);
+		console.log("curBinWidth:"+tmpW);
+		/*if(tmpW>2||tmpW<0.5){
+			that.updateFullData(0,1);
+		}*//*else if(tmpMin<that.prevMinCoord||tmpMax>that.prevMaxCoord){
+			that.updateFullData(0,1);
+		}*///else{
+			that.prevMinCoord=tmpMin;
+			that.prevMaxCoord=tmpMax;
+			//console.log("count:redraw("+that.density+")");
+			if(that.density==1){
+				if(that.density!=that.prevDensity){
+					that.redrawLegend();
+					var tmpMax=that.gsvg.xScale.domain()[1];
+					that.prevDensity=that.density;
+					that.svg.selectAll(".area").remove();
+					that.svg.selectAll("g.y").remove();
+					that.svg.selectAll(".grid").remove();
+					var points=that.svg.selectAll("."+that.trackClass).data(that.data,keyStart)
+			    	points.enter()
+							.append("rect")
+							.attr("x",function(d){return that.xScale(d.getAttribute("start"));})
+							.attr("y",15)
+							.attr("class", that.trackClass)
+				    		.attr("height",10)
+							.attr("width",function(d,i) {
+											   var wX=1;
+											   if((i+1)<that.data.length){
+											   		if(that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"))>1){
+												   		wX=that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"));
+											   		}
+												}else{
+													if(that.xScale(tmpMax)-that.xScale(d.getAttribute("start"))>1){
+												   		wX=that.xScale(tmpMax)-that.xScale(d.getAttribute("start"));
+											   		}
+												}
+											   return wX;
+											   })
+							.attr("fill",that.color)
+							.on("mouseover", function(d) { 
+								d3.select(this).style("fill","green");
+		            			that.gsvg.tt.transition()        
+									.duration(200)      
+									.style("opacity", .95);      
+								that.gsvg.tt.html(that.createToolTip(d))  
+									.style("left", (d3.event.pageX-that.gsvg.halfWindowWidth) + "px")     
+									.style("top", (d3.event.pageY +5) + "px");  
+		            			})
+							.on("mouseout", function(d) {  
+								d3.select(this).style("fill",that.color);
+					            that.gsvg.get('tt').transition()
+									 .delay(500)       
+					                .duration(200)      
+					                .style("opacity", 0);
+					        });
+				}else{
+					that.svg.selectAll("."+that.trackClass).attr("x",function(d){return that.xScale(d.getAttribute("start"));})
 						.attr("width",function(d,i) {
-										   var wX=1;
-										   if((i+1)<that.data.length){
-										   		if(that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"))>1){
-											   		wX=that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"));
-										   		}
-											}else{
-												if(that.xScale(tmpMax)-that.xScale(d.getAttribute("start"))>1){
-											   		wX=that.xScale(tmpMax)-that.xScale(d.getAttribute("start"));
-										   		}
-											}
-										   return wX;
-										   })
-						.attr("fill",that.color)
-						.on("mouseover", function(d) { 
-							d3.select(this).style("fill","green");
-	            			that.gsvg.tt.transition()        
-								.duration(200)      
-								.style("opacity", .95);      
-							that.gsvg.tt.html(that.createToolTip(d))  
-								.style("left", (d3.event.pageX-that.gsvg.halfWindowWidth) + "px")     
-								.style("top", (d3.event.pageY +5) + "px");  
-	            			})
-						.on("mouseout", function(d) {  
-							d3.select(this).style("fill",that.color);
-				            that.gsvg.get('tt').transition()
-								 .delay(500)       
-				                .duration(200)      
-				                .style("opacity", 0);
-				        });
-			}else{
-				that.svg.selectAll("."+that.trackClass).attr("x",function(d){return that.xScale(d.getAttribute("start"));})
-					.attr("width",function(d,i) {
-										   var wX=1;
-										   if((i+1)<that.data.length){
-										   		if(that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"))>1){
-											   		wX=that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"));
-										   		}
-											}else{
-												if(that.xScale(tmpMax)-that.xScale(d.getAttribute("start"))>1){
-											   		wX=that.xScale(tmpMax)-that.xScale(d.getAttribute("start"));
-										   		}
-											}
-										   return wX;
-										   });
-			}
-			that.svg.attr("height", 30);
-		}else if(that.density==2){
-			/*
-			var tmpMin=that.xScale.domain()[0];
-			var tmpMax=that.xScale.domain()[1];
-
-			that.y.domain([0, d3.max(that.data, function(d,i) {
-				var ret=d.getAttribute("logcount");
-				var start=d.getAttribute("start");
-				if(start<tmpMin || start>tmpMax){
-					ret=0;
+											   var wX=1;
+											   if((i+1)<that.data.length){
+											   		if(that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"))>1){
+												   		wX=that.xScale((that.data[i+1].getAttribute("start")))-that.xScale(d.getAttribute("start"));
+											   		}
+												}else{
+													if(that.xScale(tmpMax)-that.xScale(d.getAttribute("start"))>1){
+												   		wX=that.xScale(tmpMax)-that.xScale(d.getAttribute("start"));
+											   		}
+												}
+											   return wX;
+											   });
 				}
-				return ret; 
-				})]);
-				*/
+				that.svg.attr("height", 30);
+			}else if(that.density==2){
+				/*
+				var tmpMin=that.xScale.domain()[0];
+				var tmpMax=that.xScale.domain()[1];
 
-			that.svg.select(".area").remove();
-			that.area = d3.svg.area()
-    				.x(function(d) { return that.xScale(d.getAttribute("start")); })
-				    .y0(140)
-				    .y1(function(d) { return that.y(d.getAttribute("logcount")); });
-			//that.y.domain([0, d3.max(that.data, function(d) { return d.getAttribute("logcount"); })]);
+				that.y.domain([0, d3.max(that.data, function(d,i) {
+					var ret=d.getAttribute("logcount");
+					var start=d.getAttribute("start");
+					if(start<tmpMin || start>tmpMax){
+						ret=0;
+					}
+					return ret; 
+					})]);
+					*/
 
-			if(that.density!=that.prevDensity){
-				that.prevDensity=that.density;
-				that.svg.selectAll("."+that.trackClass).remove();
-				that.svg.append("g")
-				      .attr("class", "y axis")
-				      .call(that.yAxis);
-			    that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","10").attr("dy","0.05em");});
-				that.svg.append("g")         
-		        	.attr("class", "grid")
-		        	.call(that.yAxis
-		            		.tickSize((-that.gsvg.width+10), 0, 0)
-		            		.tickFormat("")
-		        		);
-		        that.svg.append("path")
-			      	.datum(that.data)
-			      	.attr("class", "area")
-			      	.attr("stroke","steelblue")
-			      	.attr("fill","steelblue")
-			      	.attr("d", that.area);
-			}else{
-				
-				//that.svg.select("g.y.axis").remove();
-				//that.svg.selectAll("g.grid").remove();
+				that.svg.select(".area").remove();
+				that.area = d3.svg.area()
+	    				.x(function(d) { return that.xScale(d.getAttribute("start")); })
+					    .y0(140)
+					    .y1(function(d) { return that.y(d.getAttribute("logcount")); });
+				//that.y.domain([0, d3.max(that.data, function(d) { return d.getAttribute("logcount"); })]);
 
-				/*that.svg.append("g")
-			      .attr("class", "y axis")
-			      .call(that.yAxis);
-
-		     	that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","10").attr("dy","0.05em");});
-
-		    	that.svg.append("g")         
-			        .attr("class", "grid")
-			        .call(that.yAxis
+				if(that.density!=that.prevDensity){
+					that.redrawLegend();
+					that.prevDensity=that.density;
+					that.svg.selectAll("."+that.trackClass).remove();
+					that.svg.append("g")
+					      .attr("class", "y axis")
+					      .call(that.yAxis);
+				    that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","10").attr("dy","0.05em");});
+					that.svg.append("g")         
+			        	.attr("class", "grid")
+			        	.call(that.yAxis
 			            		.tickSize((-that.gsvg.width+10), 0, 0)
 			            		.tickFormat("")
-			        		);*/
+			        		);
+			        that.svg.append("path")
+				      	.datum(that.data)
+				      	.attr("class", "area")
+				      	.attr("stroke","steelblue")
+				      	.attr("fill","steelblue")
+				      	.attr("d", that.area);
+				}else{
+					
+					//that.svg.select("g.y.axis").remove();
+					//that.svg.selectAll("g.grid").remove();
 
-				that.svg.append("path")
-			      	.datum(that.data)
-			      	.attr("class", "area")
-			      	.attr("stroke","steelblue")
-			      	.attr("fill","steelblue")
-			      	.attr("d", that.area);
-			}			
-			that.svg.attr("height", 140);
-		}
+					/*that.svg.append("g")
+				      .attr("class", "y axis")
+				      .call(that.yAxis);
+
+			     	that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","10").attr("dy","0.05em");});
+
+			    	that.svg.append("g")         
+				        .attr("class", "grid")
+				        .call(that.yAxis
+				            		.tickSize((-that.gsvg.width+10), 0, 0)
+				            		.tickFormat("")
+				        		);*/
+
+					that.svg.append("path")
+				      	.datum(that.data)
+				      	.attr("class", "area")
+				      	.attr("stroke","steelblue")
+				      	.attr("fill","steelblue")
+				      	.attr("d", that.area);
+				}			
+				that.svg.attr("height", 140);
+			}
+		//}
 	}.bind(that);
 
 	that.createToolTip=function (d){
@@ -3701,30 +3757,26 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.redraw();
 	}.bind(that);
 
-	that.calculateBin= function(len){
-		var w=that.gsvg.width;
-		var bpPerPixel=len/w;
-
-	}.bind(that);
-
-	that.updateFullData = function(retry){
+	that.updateFullData = function(retry,force){
+		//that.showLoading();
 		var tmpMin=this.xScale.domain()[0];
 		var tmpMax=this.xScale.domain()[1];
 		var len=tmpMax-tmpMin;
-		//that.bin=that.calculateBin(len);
+		that.bin=that.calculateBin(len);
 		var tag="Count";
 		var file="tmpData/regionData/"+folderName+"/count"+that.trackClass+".xml";
-		if(len>trackBinCutoff){
-			file="tmpData/regionData/"+folderName+"/bincount"+that.trackClass+".xml";
+		if(that.bin>0){
+			file="tmpData/regionData/"+folderName+"/bincount."+that.bin+"."+that.trackClass+".xml";
 		}
 		d3.xml(file,function (error,d){
 					if(error){
 						console.log(error);
-						if(retry==0){
+						if(retry==0 || force==1){
 							$.ajax({
 								url: contextPath + "/web/GeneCentric/generateTrackXML.jsp",
 				   				type: 'GET',
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName},
+								//data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
+								data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 								dataType: 'json',
 				    			success: function(data2){
 				    				
@@ -3745,6 +3797,7 @@ function CountTrack(gsvg,data,trackClass,density){
 						}else{
 							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+							that.hideLoading();
 						}
 					}else{
 						//console.log(d);
@@ -3764,14 +3817,8 @@ function CountTrack(gsvg,data,trackClass,density){
 							that.hideLoading();
 						}
 					}
+					that.hideLoading();
 				}.bind(this));
-		//var path="tmpData/regionData/"+folderName+"/count"+that.trackClass+".xml";
-		/*d3.xml(file,function (d){
-				var data=d.documentElement.getElementsByTagName(tag);
-				that.data=data;
-				that.draw(data);
-				that.hideLoading();
-			});*/
 	}.bind(that);
 
 	that.draw=function(data){
@@ -3779,6 +3826,34 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		that.redrawLegend();
 		console.log("count:draw("+that.density+")");
+		var tmpMin=this.xScale.domain()[0];
+		var tmpMax=this.xScale.domain()[1];
+		var newData=[];
+		var newCount=0;
+		for(var l=0;l<data.length;l++){
+			if(data[l]!=undefined ){
+				if((l+1)<that.data.length){
+					if(	(that.data[l].getAttribute("start")>=tmpMin&&that.data[l].getAttribute("start")<=tmpMax)
+						||
+						(that.data[l+1].getAttribute("start")>=tmpMin&&that.data[l+1].getAttribute("start")<=tmpMax)
+						){
+						newData[newCount]=data[l];
+						newCount++;
+					}else{ 
+
+					}
+				}else{
+					if((that.data[l].getAttribute("start")>=tmpMin&&that.data[l].getAttribute("start")<=tmpMax)){
+						newData[newCount]=data[l];
+						newCount++;
+					}else{
+
+					}
+				}
+			}
+		}
+		data=newData;
+
 		if(that.density==1){
 			var tmpMax=that.gsvg.xScale.domain()[1];
 	    	var points=that.svg.selectAll("."+that.trackClass)
@@ -3830,12 +3905,6 @@ function CountTrack(gsvg,data,trackClass,density){
 	    	that.svg.append("g")
 		      .attr("class", "y axis")
 		      .call(that.yAxis);
-		    /*.append("text")
-		      .attr("transform", "rotate(-90)")
-		      .attr("y", 6)
-		      .attr("dy", ".5em")
-		      .style("text-anchor", "end")
-		      .text("log2(read count)");*/
 
 		     that.svg.select("g.y").selectAll("text").each(function(){d3.select(this).attr("x","10").attr("dy","0.05em");});
 
@@ -3862,23 +3931,19 @@ function CountTrack(gsvg,data,trackClass,density){
 			d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).selectAll(".legend").remove();
 		}else if(that.density==1){
 			var lblStr=new String(that.label);
-			var x=that.gsvg.width/2+(lblStr.length/2)*9.5+20;
+			var x=that.gsvg.width/2+(lblStr.length/2)*7.5+5;
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".legend").remove();
-			this.svg.append("text").text("0").attr("class","legend").attr("x",x-10).attr("y",12);
+			this.svg.append("text").text("0").attr("class","legend").attr("x",x-15).attr("y",12);
 			
 			for(var i=0;i<that.colorRange.length;i++){
 				this.svg.append("rect")
 					.attr("class","legend")
 					.attr("x",x)
 					.attr("y",0)
-					//.attr("rx",3)
-					//.attr("ry",3)
 			    	.attr("height",12)
 					.attr("width",10)
 					.attr("fill",that.colorRange[i])
 					.attr("stroke",that.colorRange[i]);
-				//lblStr=new String(legendList[i].label);
-				//this.svg.append("text").text(lblStr).attr("class","legend").attr("x",x+18).attr("y",12);
 				x=x+10;
 			}
 			this.svg.append("text").text("16+").attr("class","legend").attr("x",x+10).attr("y",12);
@@ -3893,14 +3958,10 @@ function CountTrack(gsvg,data,trackClass,density){
    	that.colorScale= d3.scale.threshold()
    						.domain(that.colorDomain)
    						.range(that.colorRange);
-
-    
-
     that.area = d3.svg.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
 				    .y0(140)
 				    .y1(function(d) { return that.y(d.getAttribute("logcount")); });
-
     that.y.domain([0, d3.max(that.data, function(d) { return d.getAttribute("logcount"); })]);
     that.yAxis = d3.svg.axis()
     				.scale(that.y)
@@ -3915,24 +3976,28 @@ function HelicosTrack(gsvg,data,trackClass,density){
 	var that=new CountTrack(gsvg,data,trackClass,density);
 	var lbl="Helicos RNA log2(read counts)";
 	that.updateLabel(lbl);
+	that.redrawLegend();
 	return that;
 }
 function IlluminaSmallTrack(gsvg,data,trackClass,density){
 	var that=new CountTrack(gsvg,data,trackClass,density);
 	var lbl="Illumina Small RNA log2(read counts)";
 	that.updateLabel(lbl);
+	that.redrawLegend();
 	return that;
 }
 function IlluminaTotalTrack(gsvg,data,trackClass,density){
 	var that=new CountTrack(gsvg,data,trackClass,density);
 	var lbl="Illumina Total RNA(rRNA depleted) log2(read counts)";
 	that.updateLabel(lbl);
+	that.redrawLegend();
 	return that;
 }
 function IlluminaPolyATrack(gsvg,data,trackClass,density){
 	var that=new CountTrack(gsvg,data,trackClass,density);
 	var lbl="Illumina PolyA+ RNA log2(read counts)";
 	that.updateLabel(lbl);
+	that.redrawLegend();
 	return that;
 }
 
