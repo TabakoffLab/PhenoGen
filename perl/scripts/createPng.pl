@@ -48,7 +48,7 @@ sub createPng{
 		$urldb = '?db=rn5';
 	}
 	else{
-		$urldb = '?db=mm9';
+		$urldb = '?db=mm10';
 	}
 	my $urlchrom = '&position='.$geneChrom.':';
 	my $urlstart = $geneStart.'-';
@@ -149,7 +149,7 @@ sub createPngRNA{
 		$urldb = '?db=rn5';
 	}
 	else{
-		$urldb = '?db=mm9';
+		$urldb = '?db=mm10';
 	}
 	my $urlchrom = '&position='.uc($geneChrom).':';
 	my $urlstart = $geneStart.'-';
