@@ -207,10 +207,10 @@ sub addAlternateID{
 	print TWOFILE "browser hide all\n";	
 	print TWOFILE "browser pack ensGene knownGene\n";
 	if($species eq 'Mouse'){
-		print TWOFILE 'track db=mm9 type=bigBed name="AffyMouseProbesets" ';
+		print TWOFILE 'track db=mm10 type=bigBed name="AffyMouseProbesets" ';
 		print TWOFILE 'description="Affy Mouse Exon Probesets: Red=Core Blue=Extended Green=Full" ';
 		print TWOFILE 'visibility=3 itemRgb=On bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/mouseBigBed.bb'."\n";
-		print TWOFILE 'track db=mm9 type=bigBed name="Exons_';
+		print TWOFILE 'track db=mm10 type=bigBed name="Exons_';
 		print TWOFILE $GeneHOH{Gene}[$cntGenes]{ID}.'" ';
 		print TWOFILE 'description="Exons For Gene '.$GeneHOH{Gene}[$cntGenes]{ID}.'" visibility=3 itemRgb=On bigDataUrl=';
 		print TWOFILE 'http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/'.$bigBedOutputFileName;
@@ -572,7 +572,7 @@ sub addAlternateID_RNA{
 	my $geneStartSmaller = $minCoord;
 	my $geneStopBigger = $maxCoord;
 	
-	my $trackDB="mm9";	
+	my $trackDB="mm10";	
 	if($species eq 'Rat'){
 		$trackDB="rn5";
 	}

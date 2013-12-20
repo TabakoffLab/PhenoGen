@@ -444,7 +444,7 @@ sub createXMLFile
 		my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 		my %snpHOH=%$snpRef;
 
-		my $trackDB="mm9";
+		my $trackDB="mm10";
 		if($species eq 'Rat'){
 			$trackDB="rn5";
 		}
