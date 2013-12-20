@@ -20,7 +20,7 @@ sub createTrackFile{
 	my %GeneHOH = %$GeneHOHRef;
 
 	my $geneName=$GeneHOH{Gene}[$cntGenes]{ID};
-	my $trackDB="mm9";
+	my $trackDB="mm10";
 	my $orgBB="mouseBigBed.bb";
 	
 	if($species eq 'Rat'){
@@ -178,7 +178,7 @@ sub createTrackFileRegion{
 		@qtlList=();
 	};
 	
-	my $trackDB="mm9";
+	my $trackDB="mm10";
 	my $qtlTrack="jaxQtl";
 	
 	if($species eq 'Rat'){
@@ -344,7 +344,7 @@ sub createTrackFileRegionView{
 		@snpList=();
 	};
 	
-	my $trackDB="mm9";
+	my $trackDB="mm10";
 	my $qtlTrack="jaxQtl";
 	my $orgBB="mouseBigBed.bb";
 	
