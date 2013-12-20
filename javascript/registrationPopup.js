@@ -23,7 +23,7 @@ function disablePopup(){
 		$("#popupContact").fadeOut("slow");
 		popupStatus = 0;
 	}
-	 $('#selfPIRadio1').prop('checked''checked', true);
+	 $('#selfPIRadio1').prop('checked', true);
 }
 
 //centering popup

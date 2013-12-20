@@ -1098,7 +1098,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	this.updateFullData=function(){
 		for(var i=0;i<this.trackList.length;i++){
 			if(this.trackList[i]!=undefined && this.trackList[i].updateFullData!=undefined){
-				this.trackList[i].updateFullData(0);
+				this.trackList[i].updateFullData(0,1);
 			}
 		}
 	}.bind(this);

@@ -106,7 +106,7 @@
 						myUser.createTSUBMTR(newUser, dbConn);
 			
 						User requestor = myUser.getUser(newUserID, dbConn);
-						session.setAttribute("userID", "-1");
+						//session.setAttribute("userID", "-1");
 								//session.setAttribute("userLoggedIn", userLoggedIn);
 			
 						mainURL = "http://" + host + contextRoot + "index.jsp";
