@@ -49,7 +49,7 @@
                 	<!--<div id="genomeSub<%=level%>" style="width:100%;">-->
                     	<div class="trigger triggerEC" name="Annotation<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Annotations</div>
                         <div id="Annotation<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
-                        	<input name="trackcbx" type="checkbox" id="codingCBXg<%=level%>"   checked="checked" /> Protein Coding 
+                        	<input name="trackcbx" type="checkbox" id="codingCBXg<%=level%>"   checked="checked" />Ensembl Protein Coding Genes
                             <span class="Imagetooltip" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <select name="trackSelect" class="codingDense<%=level%>Select" id="codingDense<%=level%>Selectg">
                                 <option value="1" >Dense</option>
@@ -57,7 +57,7 @@
                                 <option value="2" >Full</option>
                             </select>
              				<HR />
-                            <input name="trackcbx" type="checkbox" id="noncodingCBXg<%=level%>"   checked="checked" /> Long Non-Coding 
+                            <input name="trackcbx" type="checkbox" id="noncodingCBXg<%=level%>"   checked="checked" />Ensembl Long Non-Coding Genes
                             <span class="Imagetooltip" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" class="noncodingDense<%=level%>Select" id="noncodingDense<%=level%>Selectg">
                                     <option value="1" >Dense</option>
@@ -66,13 +66,22 @@
                                 </select>
                                  
                             <HR />
-                        	<input name="trackcbx" type="checkbox" id="smallncCBXg<%=level%>"  checked="checked" /> Small RNA 
+                        	<input name="trackcbx" type="checkbox" id="smallncCBXg<%=level%>"  checked="checked" />Ensembl Small RNA Genes
                             <span class="Imagetooltip" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" class="smallncDense<%=level%>Select" id="smallncDense<%=level%>Selectg">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
+                            <HR />
+                            
+                           	<!--<input name="trackcbx" type="checkbox" id="smallncCBXg<%=level%>"  checked="checked" />Ref Seq Genes
+                            <span class="Imagetooltip" title="This track consists of "><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <select name="trackSelect" class="smallncDense<%=level%>Select" id="smallncDense<%=level%>Selectg">
+                                    <option value="1" >Dense</option>
+                                    <option value="3" selected="selected">Pack</option>
+                                    <option value="2" >Full</option>
+                                </select>-->
                                  
                         </div>
                         <%if(myOrganism.equals("Rn")){%>
