@@ -16,6 +16,7 @@
 	extrasList.add("userCommon.js");
 	extrasList.add("registrationPopup.js");
 	extrasList.add("registrationPopup.css");
+	pageDescription="Sign up for a free account to analyze data";
 	
 %>
 

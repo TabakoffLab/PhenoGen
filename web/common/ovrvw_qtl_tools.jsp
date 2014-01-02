@@ -12,7 +12,8 @@
 
 <% extrasList.add("index.css"); %>
 
-<%pageTitle="Overview QTL Tools";%>
+<%pageTitle="Overview QTL Tools";
+pageDescription="Overview of available Quantitative Trait Loci Tools";%>
 
 <%@ include file="/web/common/basicHeader.jsp" %>
 

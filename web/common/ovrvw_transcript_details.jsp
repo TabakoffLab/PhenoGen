@@ -13,24 +13,25 @@
 <% extrasList.add("index.css"); %>
 <% extrasList.add("overview.js"); %>
 
-<%pageTitle="Overview Detailed Transcription Information";%>
+<%pageTitle="Overview Genome/Transcriptome Data Browser";
+pageDescription="Overview of features and data available in the new Genome/Transcriptome Browser";%>
 
 <%@ include file="/web/common/basicHeader.jsp" %>
 
         <div id="welcome" style="height:575px; width:980px; overflow:auto;">
-            <h2>Detailed Transcription Information</h2>
+            <h2>Genome/Transcriptome Data Browser</h2>
             <div id="overview-wrap" >
                 	<div id="overview-content-wide">
                         <p>This tool provides a way to explore various data for transcripts of a specific gene or data for a region of a genome.  
-                        You may use the Detailed Transcriptome Tool to:
+                        You may use the Genome/Transcriptome Data Browser to:
                         <ul>
-                        	<li>View a region of the mouse or rat genomes that includes information on array expression data and transcripts expressed in rat brain identified in RNA-Seq data:
+                        	<li>View a region of the mouse or rat genomes that includes information on array expression data and for rats transcripts expressed in brain identified in PhenoGen RNA-Seq data:
 <BR />
                             	Data Availalbe:<BR />
                                 	<ul >
-                                        <li><div class="clicker" name="branch1">View UCSC Image of region  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <li><div class="clicker" name="branch1">View an image of region  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch1">
-                                        	The image shows genes in the region and bQTLs.  Optionally you may view additional information such as Ensembl transcripts and RNA-Seq transcripts(Rat only), UCSC/Affymetrix exon expression data, and homologus human chromosome regions and proteins.
+                                        	The image shows genes in the region, bQTLs, strain variants(SNPs/Short Indels for BN-Lx, SHR, F344, SHRJ).  Optionally you may view additional information such as Ensembl transcripts and RNA-Seq transcripts(Rat only).
                                         </span>
                                         <li><div  class="clicker" name="branch2">For Rat RNA-Seq transcripts from Brain are included<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch2">
@@ -52,13 +53,17 @@
                                         <span class="branch" id="branch6">
                                         	eQTLs are calculated for the recombinant inbred panels at the Gene level(Affy Exon Transcript Clusters having a core annotation).  This is used to return a list of genes that have a core transcript cluster and an eQTL that overlaps the region.
                                         </span>
+                                         <li><div  class="clicker" name="branch7">View SNPs and short indels across the region&nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <span class="branch" id="branch7">
+                                        	SNPs and short indels have been identified by genomic sequencing of 4 rat strains.  More will be available soon.
+                                        </span>
                                      </ul>
                              </li><BR />
                             <li>Translate a region from Human/Mouse/Rat to Mouse/Rat and view the new regions(using UCSC liftOver)</li><BR />
-                            <li>View a specific gene:<BR />
+                            <li>When you select a specific gene you can view anything listed above as well as:<BR />
                             	Data Availabe:<BR />
                                     <ul >
-                                        <li><div class="clicker" name="branch20">View Parental Strain(Rat) Differential Expression  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
+                                        <li><div class="clicker" name="branch20">View Parental Strain Differential Expression  &nbsp;&nbsp;&nbsp;<img src="<%=imagesDir%>icons/next.png" alt="more"></li>
                                         <span class="branch" id="branch20">
                                        		We have Affy Exon array data for the parental strains of the recombinant inbred panels.  This data is displayed in the first tab of the gene level view.  You have the option to filter on a number of parameters and view the data as a heat map of expression values or as fold differences between strains.
                                         </span>

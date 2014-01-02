@@ -11,7 +11,8 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
 <% extrasList.add("index.css"); %>
-<%pageTitle="Overview Downloads";%>
+<%pageTitle="Overview Downloads";
+pageDescription="Overview of available Expression/Genomic Data for download.";%>
 
 <%@ include file="/web/common/basicHeader.jsp" %>
 

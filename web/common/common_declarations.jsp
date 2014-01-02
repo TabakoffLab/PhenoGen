@@ -70,6 +70,7 @@
         String caller = request.getHeader("referer");
         String host = request.getHeader("host");
 		String pageTitle="";
+		String pageDescription="";
 	session.setAttribute("host", host);
 /*
 	for (Enumeration itr = request.getHeaderNames(); itr.hasMoreElements();) {

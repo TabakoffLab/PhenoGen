@@ -10,6 +10,9 @@
 	extrasList.add("jquery.fancybox-thumbs.css");
     request.setAttribute( "extras", extrasList);
 %>
+
+<%pageDescription="The site for quantitative genetics of the transcriptome";%>
+
 <%@ include file="/web/common/basicHeader.jsp" %>
 
 <style>
@@ -72,7 +75,8 @@
 
     	<!--<div id="primary-content">-->
         <div id="welcome" style="height:1050px; width:996px;">
-			<h2 class="homePage">Welcome to PhenoGen Informatics - The site for quantitative genetics of the transcriptome.</h2>
+			<h1 id="index" class="homePage">Welcome to PhenoGen Informatics</h1>    
+            <H2> The site for quantitative genetics of the transcriptome.</h2>
             <div>
             	<%@ include file="/web/common/indexGraph.jsp" %>
            </div>

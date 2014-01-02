@@ -12,7 +12,9 @@
 
 <% extrasList.add("index.css"); %>
 
-<%pageTitle="Overview What's New";%>
+<%	pageTitle="Overview What's New";
+	pageDescription="Description of new features on PhenoGen";
+%>
 
 <%@ include file="/web/common/basicHeader.jsp" %>
 
