@@ -40,7 +40,7 @@
         	<li class="has-sub hideLogin <%if(mainMenuSelected.equals("overview")){%>selected<%}%>"><a href='<%=commonDir%>selectMenu.jsp?menuURL=<%=contextRoot%>index.jsp' class="public"><span class="menu1line">Overview</span></a>
         		<ul>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>ovrvw_whats_new.jsp"><span>What's New</span></a></li>
-                    <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>ovrvw_transcript_details.jsp"><span>Detailed Transcription Information</span></a></li>
+                    <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>ovrvw_transcript_details.jsp"><span>Genome/Transcriptome Data Browser</span></a></li>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>ovrvw_downloads.jsp"><span>Downloads</span></a></li>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>ovrvw_microarray_tools.jsp"><span>Microarray Analysis Tools</span></a></li>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>ovrvw_genelist_tools.jsp"><span>Gene List Analysis Tools</span></a></li>

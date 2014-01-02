@@ -12,7 +12,8 @@
 
 <% extrasList.add("index.css"); %>
 
-<%pageTitle="Publications";%>
+<%pageTitle="Publications";
+pageDescription="A list of publications utilizing PhenoGen";%>
 
 <%@ include file="/web/common/header.jsp" %>
 

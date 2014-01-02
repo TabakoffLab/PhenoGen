@@ -12,7 +12,8 @@
 
 <% extrasList.add("index.css"); %>
 
-<%pageTitle="Acknowledgements";%>
+<%pageTitle="Acknowledgements";
+pageDescription="Acknowledgements for providing funding and resources";%>
 
 <%@ include file="/web/common/header.jsp" %>
 

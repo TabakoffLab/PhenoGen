@@ -165,7 +165,9 @@ if(request.getParameter("newWindow")!=null&&request.getParameter("newWindow").eq
 if(request.getParameter("defaultView")!=null){
 	defView=request.getParameter("defaultView");
 }
-pageTitle="Detailed Transcription Information "+myGene;%>
+pageTitle="Genome/Trascriptome Browser "+myGene;
+pageDescription="Genome Browser provides a vizualization of Microarray and RNA-Seq data";
+%>
 
 
 <%if(popup){%>

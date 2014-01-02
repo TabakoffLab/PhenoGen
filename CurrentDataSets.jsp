@@ -1,5 +1,6 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
-<%pageTitle="Current Datasets";%>
+<%pageTitle="Current Datasets";
+pageDescription="A list of public datasets available for download or analysis";%>
 <%@ include file="/web/common/header.jsp" %>
 <div style="margin:10px;">
 <a name="Mouse">

@@ -126,9 +126,9 @@
     <loc>http://phenogen.ucdenver.edu/PhenoGen/web/common/contact.jsp</loc>
 </url>
 <url> 
-    <loc>http://phenogen.ucdenver.edu/PhenoGen/helpdocs/PhenoGen_Overview_CSH.htm#Phenogen_Overview.htm#Overview</loc>
-</url>
-<url> 
     <loc>http://phenogen.ucdenver.edu/PhenoGen/web/access/registration.jsp</loc>
+</url>
+<url>
+    <loc>http://phenogen.ucdenver.edu/PhenoGen/helpdocs/PhenoGen_Overview_Left.htm</loc>
 </url>
 </urlset>
