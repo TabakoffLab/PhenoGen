@@ -6,9 +6,10 @@
 
 html { text-align: center; background: #365473; }
 body { position: relative; margin: 5px auto 60px; width: 1000px; text-align: left; font-size: 14px; font-family: Arial, Verdana, sans-serif; color: #666; background: #fff; padding: 5px 0 10px 0;}
-h1 { float: left; margin-left: 10px; font-size: 24px; font-weight: normal; line-height: 72px; color: #fff; }
-h2 { height: 40px; margin-bottom: 10px; padding-left: 10px; font-size: 16px; font-weight: normal; line-height: 40px; color: #36424e; background: #e4e7ea; }
-h2.homePage { margin-bottom: 0px; }
+/*h1 { float: left; margin-left: 10px; font-size: 24px; font-weight: normal; line-height: 72px; color: #fff; }*/
+h1#index { height: 40px; margin-bottom: 10px; padding-left: 10px; font-size: 20px; font-weight: normal; line-height: 40px; color: #36424e; background: #e4e7ea; margin-bottom: 0px;}
+h2 { height: 30px; margin-bottom: 10px; padding-left: 10px; font-size: 16px; font-weight: normal; line-height: 40px; color: #36424e; background: #e4e7ea; }
+h2.homePage{ margin-bottom: 0px; }
 h2.recentPub {margin-bottom:0; padding-top: 5px;}
 a, a:focus { color: #749BC1; /*##658cb2;*/
  text-decoration: underline; outline: none; }

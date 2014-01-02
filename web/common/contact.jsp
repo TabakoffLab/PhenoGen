@@ -38,7 +38,9 @@
 	}
 	//mySessionHandler.createSessionActivity(session.getId(), "Looked at contact page", dbConn);
 %>
-<%pageTitle="Contact Us";%>
+<%pageTitle="Contact Us";
+pageDescription="Contact Us, provide feedback or ask questions";
+%>
 	<%@ include file="/web/common/header.jsp" %>
 
         	<div id="welcome" style="height:575px; width:946px;">

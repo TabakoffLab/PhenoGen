@@ -14,7 +14,9 @@
 <%
         extrasList.add("index.css");
 %>
-<%pageTitle="Browser/Software Requirements";%>
+<%pageTitle="Browser/Software Requirements";
+pageDescription="Browser and Software Requirements for PhenoGen";
+%>
 
 <%@ include file="/web/common/header.jsp" %>
 

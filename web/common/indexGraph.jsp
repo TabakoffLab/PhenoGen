@@ -35,7 +35,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
 
 </style>
 
-					<div id="svgAlternate1" class="svgAlternate" style="display:none;color:#FF0000; background-color:#FFFFFF;"><BR />Your browser does not seem to support SVG(Scalable Vector Graphics).  The list below will appear in a graphic when viewed with a browser supporting SVG, as all major current browsers support SVG (PhenoGen supports Chrome 25+, FireFox 20+,  IE 9+, Safari 5+) please install a different browser or update this browser to be able to use PhenoGen.  Some features will not work without SVG and more graphics will be migrating to SVG in the future.  While it is unlikely, please let us know if you receive this message and have a browser that meets the minimum supported version or higher. <BR /><BR /></div>
+					
                     <div id="announcementSmall" style="display:none;background-color:#FFFFFF; width:100%;min-height:20px; max-height:150px; position:relative;color:#000000; font-weight:bold;">
                     	NEW! RNA-Seq data summary graphics available. Click one 
                         <a href="web/graphics/genome.jsp">Genome</a>
@@ -43,14 +43,15 @@ div#announcement a:hover, div#announcementSmall a:hover {
     				</div>
 					<table class="index" cellspacing="0" cellpadding="0">
                     <tr><TD id="imageColumn" class="wide">
-                    <div id="svgInst">
+                    <div id="svgInst" style="display:none;">
                     	<h3 title="If you do not see a graph below please go to Help->Browser Support.">Hover over or click on nodes in the graph below to see the tools/data available on the site.</h3>
                     </div>
-                    
-                    <div id="svgAlternate2" class="svgAlternate" style="display:none;">
+                    <div id="svgAlternate1" class="svgAlternate" style="color:#FF0000; background-color:#FFFFFF;"><BR />Your browser does not seem to support SVG(Scalable Vector Graphics).  The list below will appear in a graphic when viewed with a browser supporting SVG, as all major current browsers support SVG (PhenoGen supports Chrome 25+, FireFox 23+,  IE 10+, Safari 6+) please install a different browser or update this browser to be able to use PhenoGen.  Some features will not work without SVG and more graphics will be migrating to SVG in the future.  While it is unlikely, please let us know if you receive this message and have a browser that meets the minimum supported version or higher. <BR /><BR /></div>
+                    <div id="svgAlternate2" class="svgAlternate" >
                     	<BR /><BR />
                         <h3>Click on a function in the list below to view additional information.</h3>
                     <H2>What can you do with PhenoGen?</H2>
+                    	 <div id="svgAlternate3" class="svgAlternate" style="color:#FF0000;">JavaScript is disabled.  Please enable JavaScript for this site.  The links below will not work until JavaScript is enabled.</div>
                     	<ul>
                         	<li>Gene List Analysis</li>
                             	<UL class="sub">
@@ -69,7 +70,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
                                     <li id="microShare">Share Data</li>
                                     <li id="microPublic">Access Public Data</li>
                                 </UL>
-                            <li>Detailed Genome/Transcriptome Information</li>
+                            <li>Genome/Transcriptome Data Browser</li>
                             	<UL class="sub">
                                 	<li id="browseGene">Browse a Region</li>
                                     <li id="browseRegion">Browse by a Gene</li>
@@ -93,9 +94,9 @@ div#announcement a:hover, div#announcementSmall a:hover {
                      </div><!-- Alternate to SVG -->
                     <script type="text/javascript">
 						if(!document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")){
-							$('div.svgAlternate').show();
-							$('div#svgInst').hide();
 							$('ul.sub li').click(function (){
+										$('#announcement').hide();
+										$('#announcementSmall').show();
 										var jspPage=$(this).attr("id")+".jsp";
 										selectedSection= $( "#accordion" ).accordion( "option", "active" );
 										$('#indexDesc').slideUp("250");
@@ -121,12 +122,15 @@ div#announcement a:hover, div#announcementSmall a:hover {
 																 });*/
 										$('#indexDesc').slideDown("250");
 								});
+						}else{
+							$('div.svgAlternate').hide();
+							$('div#svgInst').show();
 						}
 						var selectedSection=0;
                     </script>
                 	<div id="indexImage" >
-                    	<script src="javascript/indexGraph.js">
-						</script>
+                    <script src="javascript/indexGraph.js">
+					</script>
                     </div>
                     
                     </TD>

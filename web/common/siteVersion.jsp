@@ -24,7 +24,8 @@
 	//mySessionHandler.createSessionActivity(session.getId(), "Looked at site version page", dbConn);
 
 %>
-<%pageTitle="Version";%>
+<%pageTitle="Version";
+pageDescription="Current website version and external software versions";%>
 <%@ include file="/web/common/header.jsp" %>
 
 

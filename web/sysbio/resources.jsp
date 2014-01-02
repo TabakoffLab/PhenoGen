@@ -30,7 +30,8 @@
 	
 %>
 
-<%pageTitle="Download Resources";%>
+<%pageTitle="Download Resources";
+pageDescription="Data resources available for downloading includes Microarrays, Sequencing, and GWAS data";%>
 
 <%@ include file="/web/common/header.jsp"  %>
 

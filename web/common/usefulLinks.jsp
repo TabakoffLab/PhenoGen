@@ -14,7 +14,8 @@
 
 %>
 
-<%pageTitle="Useful Links";%>
+<%pageTitle="Useful Links";
+pageDescription="Links to related resources";%>
 
 <%@ include file="/web/common/header.jsp" %>
 
