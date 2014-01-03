@@ -1030,7 +1030,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	this.removeTrack=function (track){
 			d3.select("#Level"+this.levelNumber+track).remove();
 			for(var l=0;l<this.trackList.length;l++){
-				if(this.trackList[l].trackClass==track){
+				if(this.trackList[l]!=undefined && this.trackList[l].trackClass==track){
 					this.trackList.splice(l,1);
 					this.trackCount--;
 				}
@@ -1040,7 +1040,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	this.redrawTrack=function (track){
 			for(var l=0;l<this.trackList.length;l++){
-				if(this.trackList[l].trackClass==track){
+				if(this.trackList[l]!=undefined && this.trackList[l].trackClass==track){
 					this.trackList[l].redraw();
 				}
 			}
@@ -1395,7 +1395,8 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		var lblStr=new String(this.label);
 		var x=this.gsvg.width/2+(lblStr.length/2)*7.5+16;
 		d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).selectAll(".legend").remove();
-		var grad=this.svg.append("defs").append("linearGradient").attr("id","grad1");
+		d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).selectAll("#def1").remove();
+		var grad=this.svg.append("defs").attr("id","def1").append("linearGradient").attr("id","grad1");
 		grad.append("stop").attr("offset","0%").style("stop-color",minColor);
 		grad.append("stop").attr("offset","100%").style("stop-color",maxColor);
 		this.svg.append("rect")
@@ -3103,8 +3104,22 @@ function QTLTrack(gsvg,data,trackClass,density){
 			var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
 			if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)||(start<=0&&stop>=that.gsvg.width)){
 				var nameStr=new String(tmpDat[l].__data__.getAttribute("name"));
-				var end=nameStr.indexOf("QTL")-1;
-				var name=nameStr.substr(0,end);
+				var re = /[0-9]+\s*$/g;
+				var end1=nameStr.search(re);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1);
+				}
+				re = /QTL\s*$/g;
+				end1=nameStr.search(re);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1);
+				}
+				re = /traits+\s*$/g;
+				end1=nameStr.search(re);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1+5);
+				}
+				var name=nameStr;
 				if(that.counts[name]==undefined){
 					that.counts[name]=new Object();
 					that.counts[countsInd]=that.counts[name];
@@ -3240,8 +3255,23 @@ function QTLTrack(gsvg,data,trackClass,density){
 				overSelectable=0;
 				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 				var nameStr=d.getAttribute("name");
-				var end=nameStr.indexOf("QTL")-1;
-				var name=nameStr.substr(0,end);  
+				var re = /[0-9]+\s*$/g;
+				var end1=nameStr.search(re);
+				console.log("End Number"+nameStr+"::"+end1);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1);
+				}
+				re = /QTL\s*$/g;
+				end1=nameStr.search(re);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1);
+				}
+				re = /traits?\s*$/g;
+				end1=nameStr.search(re);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1+5);
+				}
+				var name=nameStr;
 				d3.select(this).style("fill",that.color(name));
 	            that.gsvg.tt.transition()
 					 .delay(500)       
@@ -3252,9 +3282,24 @@ function QTLTrack(gsvg,data,trackClass,density){
 		qtls.exit().remove();
 
 		qtls[0].forEach(function(d){
-				var nameStr=d.__data__.getAttribute("name");
-				var end=nameStr.indexOf("QTL")-1;
-				var name=nameStr.substr(0,end);
+				var nameStr=new String(d.__data__.getAttribute("name"));
+				var re = /[0-9]+\s*$/g;
+				var end1=nameStr.search(re);
+				console.log("End Number"+nameStr+"::"+end1);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1);
+				}
+				re = /QTL\s*$/g;
+				end1=nameStr.search(re);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1);
+				}
+				re = /traits?\s*$/g;
+				end1=nameStr.search(re);
+				if(end1>-1){
+					nameStr=nameStr.substr(0,end1+5);
+				}
+				var name=nameStr;
 				d3.select(d).select("rect").style("fill",that.color(name));
 		});
 		that.svg.attr("height", that.yCount*15);
