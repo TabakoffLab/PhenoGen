@@ -1302,8 +1302,22 @@ public class GeneDataTools {
             String dsn="dbi:"+myProperties.getProperty("PLATFORM") +":"+myProperties.getProperty("DATABASE");
             String dbUser=myProperties.getProperty("USER");
             String dbPassword=myProperties.getProperty("PASSWORD");
+            
+            File ensPropertiesFile = new File(ensemblDBPropertiesFile);
+            Properties myENSProperties = new Properties();
+            myENSProperties.load(new FileInputStream(ensPropertiesFile));
+            String ensHost=myENSProperties.getProperty("HOST");
+            String ensPort=myENSProperties.getProperty("PORT");
+            String ensUser=myENSProperties.getProperty("USER");
+            String ensPassword=myENSProperties.getProperty("PASSWORD");
+            String refSeqDB="Rn_refseq_1";
+            if(organism.equals("Mm")){
+                refSeqDB="Mm_refseq_1";
+            }
+            String ensDsn="DBI:mysql:database="+refSeqDB+";host="+ensHost+";port="+ensPort+";";
+            
             //construct perl Args
-            String[] perlArgs = new String[13];
+            String[] perlArgs = new String[16];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Track.pl";
             perlArgs[2] = tmpOutputDir;
@@ -1321,6 +1335,9 @@ public class GeneDataTools {
             perlArgs[10] = dsn;
             perlArgs[11] = dbUser;
             perlArgs[12] = dbPassword;
+            perlArgs[13] = ensDsn;
+            perlArgs[14] = ensUser;
+            perlArgs[15] = ensPassword;
 
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
