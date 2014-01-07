@@ -685,15 +685,33 @@ Or
 	<% }%>
 
 	
-	<div class="demo" style="text-align:center;">
-						<BR /><BR /><BR />
-                        Detailed Transcription Information Demonstration<BR />
-						<video width="800" height="650" controls="controls">
+	<div class="demo" style="width:100%;text-align:center;">
+    	<table style="width:100%;text-align:center;">
+        <TR>
+        	<TD colspan="2" style="text-align:center;"><h2>Demonstrations</h2></TD>
+        </TR>
+        <TR>
+        <TD style="text-align:center;">
+        	<h2>Quick Navigation Demonstration</h2>
+            <BR />
+            <video width="400" height="270" controls="controls">
+            <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
+            <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
+            <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="400" height="270">
+                          </object>
+            </video>
+        </TD>
+        <TD style="text-align:center;">
+                        <h2>Detailed Transcription Information Demonstration</h2><BR />
+						<video width="400" height="325" controls="controls">
                     		<source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
                             <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                          <object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="800" height="650">
+                          <object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="400" height="325">
                           </object>
                         </video>
+       </TD>
+       </TR>
+       </table>
 	</div>
 <%}%>
 
