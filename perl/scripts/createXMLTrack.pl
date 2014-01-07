@@ -422,4 +422,14 @@ sub createRNACountXMLTrack{
 	close OFILE;
 	return 1;
 }
+sub createRefSeqXMLTrack{
+	my($refSeqHOHRef, $outputFile) = @_; 
+	my %refSeqHOH = %$refSeqHOHRef;
+	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	my $xml = new XML::Simple (RootName=>'GeneList');
+	my $data = $xml->XMLout(\%refSeqHOH);
+	print OFILE $data;
+	close OFILE;
+	return 1;
+}
 1;
