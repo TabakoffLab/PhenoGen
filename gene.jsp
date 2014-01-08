@@ -286,7 +286,7 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 	if (    (((action != null) && action.equals("Get Transcription Details")) && (!region))  || (auto && (!region))
 		) {
 		myDisplayGene=myGene;
-		mySessionHandler.createSessionActivity(session.getId(), "Ran Transcription Details on "+myGene, dbConn);
+		mySessionHandler.createSessionActivity(session.getId(), "GTD Browser Gene: "+myGene, dbConn);
 		List homologList=null;
 		
 
@@ -390,11 +390,9 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 								displayNoEnsembl=true;
 						}
 					
-	}else if(
-		(((action != null) && action.equals("Get Transcription Details"))&& region )
-			|| ( auto && region )
-	
-	){
+	}else if((((action != null) && action.equals("Get Transcription Details"))&& region )
+			|| ( auto && region )){
+			mySessionHandler.createSessionActivity(session.getId(), "GTD Browser Region: "+myGene, dbConn);
 		//log.debug("RUNNING REGION");
 		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,dbConn);
 		if(tmp!=null&&tmp.length==2){
