@@ -78,7 +78,10 @@ var selectGene="<%=selectedEnsemblID%>";
     </script>
     <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
 <div id="page" style="min-height:1050px;text-align:center;">
-
+	<div style="width:100%;text-align:left;">
+	<a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">Not sure where to start? Watch a quick navigation demonstration</a>
+    </div>
+    
 	<div id="imageMenu"></div>
     <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:

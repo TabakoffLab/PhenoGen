@@ -14,10 +14,10 @@
 
 <div style="text-align:center;">
 	
-    <video width="800" height="650" controls="controls">
+    <video width="950" height="750" controls="controls">
                     		<source src="<%=contextRoot%><%=mainFilePart%>.mp4" type="video/mp4">
                             <source src="<%=contextRoot%><%=mainFilePart%>.webm" type="video/webm">
-                          <object data="<%=contextRoot%><%=mainFilePart%>.mp4" width="800" height="650">
+                          <object data="<%=contextRoot%><%=mainFilePart%>.mp4" width="950" height="750">
                           </object>
                         </video>
     

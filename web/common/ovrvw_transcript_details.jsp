@@ -100,7 +100,16 @@ pageDescription="Overview of features and data available in the new Genome/Trans
 			</div> <!-- // end overview-content -->
             	</div> <!-- // end overview-wrap -->
                 
-                <div class="demoVideo" style="display:inline-block;float:right;position:relative;top:-450px; padding-right:10px;">
+                <div class="demoVideo" style="display:inline-block;float:right;position:relative;top:-600px; padding-right:10px;">
+                			<span style="text-align:center;"><h3>New! Browser Navigation Demo</h3></span>
+                        	<video id="demoVid1" width="400" height="270" controls="controls">
+                                <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
+                                <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
+                            
+                              	<object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="400" height="270">
+                              	</object>
+                        	</video><BR />
+                            <div id="showOpenLargeVideo" style="display:none;text-align:center; width:100%;"><a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" class="button" style="width:180px;" target="_blank" >View larger version</a></div>
                         	<span style="text-align:center;"><h3>Detail Transcription Information Demo</h3></span>
                         	<video id="demoVid" width="400" height="300" controls="controls">
                                 <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
