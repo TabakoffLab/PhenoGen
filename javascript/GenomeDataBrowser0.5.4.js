@@ -2406,13 +2406,74 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		}
 		return color;
 	}.bind(that);
-
 	that.pieColor =function(d,i){
 		var color=d3.rgb("#000000");
-		
+		var tmpName=new String(d.data.names);
+		if(tmpName.indexOf("Validated")>-1){
+				color=d3.rgb("#38A16F");
+		}else if(tmpName.indexOf("Provisional")>-1){
+				color=d3.rgb("#78E1AF");
+		}else if(tmpName.indexOf("Inferred")>-1){
+				color=d3.rgb("#A8FFDF");
+		}
 		return color;
 	}.bind(that);
-
+	
+	that.getDisplayedData= function (){
+		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".gene");
+		that.counts=new Array();
+		var countsInd=0;
+		var tmpDat=dataElem[0];
+		var dispData=new Array();
+		var dispDataCount=0;
+		var total=0;
+		for(var l=0;l<tmpDat.length;l++){
+			var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+			var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+			if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)||(start<=0&&stop>=that.gsvg.width)){
+				//var nameStr=new String(tmpDat[l].__data__.getAttribute("name"));
+				var txList=getAllChildrenByName(getFirstChildByName(tmpDat[l].__data__,"TranscriptList"),"Transcript");
+				var mostValid=-1;
+				for(var m=0;m<txList.length;m++){
+						var cat=new String(txList[m].getAttribute("category"));
+						var val=-1;
+						if(cat=="Validated"){
+							val=3;
+						}else if(cat=="Provisional"){
+							val=2;
+						}else if(cat=="Inferred"){
+							val=1;
+						}else{
+							val=0;
+						}
+						if(mostValid<val){
+							mostValid=val;
+						}
+				}
+				var name="Unknown";
+				if(mostValid==3){
+					name="Validated";
+				}else if(mostValid==2){
+					name="Provisional";
+				}else if(mostValid==1){
+					name="Inferred";
+				}
+				if(that.counts[name]==undefined){
+					that.counts[name]=new Object();
+					that.counts[countsInd]=that.counts[name];
+					countsInd++;
+					that.counts[name].value=1;
+					that.counts[name].names=name;
+				}else{
+					that.counts[name].value++;
+				}
+				dispData[dispDataCount]=tmpDat[l].__data__;
+				dispDataCount++;
+				total++;
+			}
+		}
+		return dispData;
+	}.bind(that);
 	that.createToolTip=function(d){
 		var tooltip="";
 		if(that.drawAs=="Gene"){
@@ -3782,7 +3843,6 @@ function QTLTrack(gsvg,data,trackClass,density){
 	var that=new Track(gsvg,data,trackClass,"QTLs Overlapping Region");
 	
 	that.color= function (name){
-		//console.log("QTLCOLOR:"+name+">>");
 		return that.pieColorPalette(name);
 	}.bind(that);
 
