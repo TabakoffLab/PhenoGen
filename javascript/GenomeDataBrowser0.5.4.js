@@ -2418,7 +2418,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		}
 		return color;
 	}.bind(that);
-	
+
 	that.getDisplayedData= function (){
 		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".gene");
 		that.counts=new Array();
@@ -2616,21 +2616,38 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.updateData=function(retry){
 		var tag="Gene";
+		var tmpMin=this.xScale.domain()[0];
+		var tmpMax=this.xScale.domain()[1];
 		var path="tmpData/regionData/"+folderName+"/refSeq.xml";
 		d3.xml(path,function (error,d){
 			if(error){
-				if(retry<3){//wait before trying again
+				console.log(error);
+				if(retry==0){
+							$.ajax({
+								url: contextPath + "/web/GeneCentric/generateTrackXML.jsp",
+				   				type: 'GET',
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName},
+								dataType: 'json',
+				    			success: function(data2){
+				    				
+				    			},
+				    			error: function(xhr, status, error) {
+				        			
+				    			}
+							});
+						}
+						if(retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
 								time=15000;
 							}
 							setTimeout(function (){
-								this.updateData(retry+1);
+								that.updateData(retry+1);
 							}.bind(this),time);
-				}else{
-							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
-							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
-				}
+						}else{
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+						}
 			}else{
 				var data=d.documentElement.getElementsByTagName(tag);
 				var mergeddata=new Array();
