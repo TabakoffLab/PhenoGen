@@ -43,7 +43,7 @@
                                 <li>A new version of the previous demonstration showing how to use the Genome/Trascriptome Data Browser to look at regions of interest</li>
                             </UL>
                         </li>
-                        <li style="list-style-type:none;"><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" class="button" style="width:140px;">Try it out</a></li>
+                        <li style="list-style-type:none;"><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" class="button" style="width:140px;">Try it out</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" class="button" style="width:140px;" target="_blank">View Demonstration</a></li>
                     </ul>
                 </li>         
 				</ul>
