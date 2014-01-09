@@ -74,21 +74,26 @@ public class SyncAndClose {
             try{
                 outGroup.flush();
                 outGroup.close();
+                log.debug("Group File Closed");
             }catch(IOException e){
                 log.error("Error Closing Group File",e);
             }
             try{
                 outIndiv.flush();
                 outIndiv.close();
+                log.debug("Indiv File Closed");
             }catch(IOException e){
                 log.error("Error Closing Individual File",e);
             }
-            File indivf=new File(outputDir+"Panel_Expr_indiv_tmp.txt");
+            
             File groupf=new File(outputDir+"Panel_Expr_group_tmp.txt");
-            File indivfinal=new File(outputDir+"Panel_Expr_indiv.txt");
             File groupfinal=new File(outputDir+"Panel_Expr_group.txt");
-            indivf.renameTo(indivfinal);
             groupf.renameTo(groupfinal);
+            log.debug("Group File Renamed\n"+groupf+"->"+groupfinal+"\n");
+            File indivf=new File(outputDir+"Panel_Expr_indiv_tmp.txt");
+            File indivfinal=new File(outputDir+"Panel_Expr_indiv.txt");
+            indivf.renameTo(indivfinal);
+            log.debug("Indiv File Renamed\n"+indivf+"->"+indivfinal+"\n");
             end=new Date();
             try{
                 PreparedStatement ps=dbConn.prepareStatement(updateSQL, 

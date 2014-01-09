@@ -25,6 +25,8 @@ var selectGene="";
 <%}else{%>
 var selectGene="<%=selectedEnsemblID%>";
 <%}%>
+var pathPrefix="web/GeneCentric/";
+var dataPrefix="";
 </script>
 
 
@@ -113,7 +115,7 @@ var selectGene="<%=selectedEnsemblID%>";
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
-            <script src="javascript/GenomeDataBrowser0.5.4.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.5.5.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">

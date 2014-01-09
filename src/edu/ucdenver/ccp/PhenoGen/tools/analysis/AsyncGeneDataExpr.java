@@ -364,8 +364,6 @@ public class AsyncGeneDataExpr extends Thread {
                             }
                     }
                 }else{
-
-                    
                     log.debug("NO PROBESETS:"+psListFile);
                     try {
                         thisThread.wait(20000);
@@ -377,7 +375,7 @@ public class AsyncGeneDataExpr extends Thread {
                 }
                 loopcount++;
             }
-            
+            doneThread=true;
             
         /*}catch(IOException e){
             sac.done(this, "AsyncGeneDataExpr had errors:"+e.getMessage());

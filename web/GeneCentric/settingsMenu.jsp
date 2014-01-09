@@ -25,7 +25,7 @@
 	}
 </style>
 
-    <div class="settingsLevel<%=level%>"  style="display:none;width:400px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:50px; left:-98px; background-color:#FFFFFF; min-height:450px;">
+    <div class="settingsLevel<%=level%>"  style="display:none;width:400px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:50px; left:-98px; background-color:#FFFFFF; min-height:450px; text-align:center;">
         	<span style="color:#000000; ">Image Settings:</span>
         	<span class="closeBtn" id="close_settingsLevel<%=level%>" style="position:relative;top:3px;left:136px;"><img src="<%=imagesDir%>icons/close.png"></span>
             <div>

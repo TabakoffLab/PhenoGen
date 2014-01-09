@@ -2090,8 +2090,8 @@ public class GeneDataTools {
                 }
                 String tmpOutput= fullPath + "tmpData/geneData/" + id+ "/";
                 //log.debug("Getting ready to start");
-                File indivf=new File(tmpOutput+"Panel_Expr_indiv_tmp.txt");
-                File groupf=new File(tmpOutput+"Panel_Expr_group_tmp.txt");
+                File indivf=new File(tmpOutput+"Panel_Expr_indiv.txt");
+                File groupf=new File(tmpOutput+"Panel_Expr_group.txt");
                 long curTime=new Date().getTime();
                 long indLM=indivf.lastModified();
                 long groupLM=groupf.lastModified();
@@ -2102,7 +2102,7 @@ public class GeneDataTools {
                     BufferedWriter outGroup=new BufferedWriter(new FileWriter(groupf));
                     BufferedWriter outIndiv=new BufferedWriter(new FileWriter(indivf));
                     ArrayList<AsyncGeneDataExpr> localList=new ArrayList<AsyncGeneDataExpr>();
-                    SyncAndClose sac=new SyncAndClose(start,localList,dbConn,outGroup,outIndiv,usageID,outputDir);
+                    SyncAndClose sac=new SyncAndClose(start,localList,dbConn,outGroup,outIndiv,usageID,tmpOutput);
                     while(rs.next()){
                         AsyncGeneDataExpr agde=new AsyncGeneDataExpr(session,tmpOutput+"tmp_psList.txt",tmpOutput,null,threadList,maxThreadRunning,outGroup,outIndiv,sac,ver);
                         String dataset_id=Integer.toString(rs.getInt("DATASET_ID"));
