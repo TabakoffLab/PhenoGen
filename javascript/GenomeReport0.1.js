@@ -205,24 +205,12 @@ function trKey(d){
 function DisplayRegionReport(){
 	console.log("DisplayRegionReport");
 		//d3.select('#collaspableReportList').selectAll('li').remove();
-		var tmptrackList=svgList[0].trackList;
-		if(reportSelectedTrack==null){
-			reportSelectedTrack=tmptrackList[0];
-		}
-		var list=d3.select('#collapsableReportList').selectAll('li.report').data(tmptrackList,trKey).html(function(d){
-				var label="";
-				if(d!=undefined){
-					if(d.getDisplayedData!=undefined){
-						var data=d.getDisplayedData();
-						label=d.label+": "+data.length;
-					}
-				}
-				return label;
-		});
-
-		list.enter().append("li")
-			.attr("class",function (d){if(d!=undefined){return "report "+d.trackClass;}else{return "report";}})
-			.html(function(d){
+		if(d3.select('#collapsableReportList').size()>0){
+			var tmptrackList=svgList[0].trackList;
+			if(reportSelectedTrack==null){
+				reportSelectedTrack=tmptrackList[0];
+			}
+			var list=d3.select('#collapsableReportList').selectAll('li.report').data(tmptrackList,trKey).html(function(d){
 					var label="";
 					if(d!=undefined){
 						if(d.getDisplayedData!=undefined){
@@ -231,13 +219,27 @@ function DisplayRegionReport(){
 						}
 					}
 					return label;
-				})
-			.on("click",displayDetailedView);
+			});
 
-		list.exit().remove();
+			list.enter().append("li")
+				.attr("class",function (d){if(d!=undefined){return "report "+d.trackClass;}else{return "report";}})
+				.html(function(d){
+						var label="";
+						if(d!=undefined){
+							if(d.getDisplayedData!=undefined){
+								var data=d.getDisplayedData();
+								label=d.label+": "+data.length;
+							}
+						}
+						return label;
+					})
+				.on("click",displayDetailedView);
 
-		if(!$('div#collapsableReport').is(":hidden") && reportSelectedTrack!=null){
-			displayDetailedView(reportSelectedTrack);
+			list.exit().remove();
+
+			if(!$('div#collapsableReport').is(":hidden") && reportSelectedTrack!=null){
+				displayDetailedView(reportSelectedTrack);
+			}
 		}
 }
 
