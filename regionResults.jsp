@@ -110,12 +110,13 @@ var dataPrefix="";
     </div>
     
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
-    	<span id="mouseHelp">Navigation Hints: Hold mouse over areas of the image for available actions.</span>    
+    	<span id="mouseHelp">Navigation Hints: Hold mouse over areas of the image for available actions.</span> <BR />
+        <!--<span id="saveBtn" class="button">Save</span>-->   
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
-            <script src="javascript/GenomeDataBrowser0.5.5.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.5.6.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
@@ -289,6 +290,16 @@ var dataPrefix="";
 		interactive: true,
    		interactiveTolerance: 350
 	});
+	
+	/*$('#saveBtn').click( function(){
+		html2canvas($('div#Level0'), {
+			background: "#ffffff",
+			timeout: 15000,
+  			onrendered: function(canvas) {
+    		document.body.appendChild(canvas);
+  		}
+		});
+	});*/
 	
 </script>
 

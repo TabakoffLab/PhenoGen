@@ -20,9 +20,10 @@
 		url.equals(commonDir+"ovrvw_qtl_tools.jsp")
 	){
 		mainMenu="overview";
-	}else if(url.equals(accessDir+"createAnnonymousSession.jsp?url="+contextRoot+"gene.jsp")){
+		
+	}else if(url.equals(contextRoot+"gene.jsp")){
 		mainMenu="transcript";
-		mainFunc="Detailed Transcription Information";
+		mainFunc="Genome/Transcriptome Data Browser";
 	}else if(url.equals(accessDir+"createAnnonymousSession.jsp?url="+sysBioDir+"resources.jsp")){
 		mainMenu="download";
 		mainFunc="Downloads";
