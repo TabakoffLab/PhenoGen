@@ -12,6 +12,7 @@ require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'readRefSeqDataFromDB.pl';
+require 'readEnsemblSeqFromDB.pl';
 require 'createXMLTrack.pl';
 
 sub createBinnedData{
@@ -199,7 +200,17 @@ sub createXMLFile
 		#print "output:".$outputDir;
 		#my $output=$outputDir.$type.".xml";
 		createRefSeqXMLTrack(\%refSeqHOH,$outputDir.$type.".xml",$trackDB);
+	}elsif(index($type,"genomeSeq")>-1){
+		my $rnaCountStart=time();
+		if(index($chromosome,"chr")>-1){
+			$chromosome=substr($chromosome,3);
+		}
+		my $seq=readEnsemblSeqFromDB($chromosome,$species,$minCoord,$maxCoord,$ensDsn,$ensUsr,$ensPasswd);
+		open OUT,">".$outputDir.$minCoord."_".$maxCoord.".seq";
+		print OUT $seq;
+		close OUT;
 	}
+	
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 	return 1;
