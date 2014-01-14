@@ -47,6 +47,17 @@
             	<H2>Genome Feature Tracks</H2>
                 <div>
                 	
+                    	<div class="trigger triggerEC" name="Sequence<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Sequence</div>
+                        <div id="Sequence<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
+                        	<input name="trackcbx" type="checkbox" id="genomeSeqCBX<%=level%>"   checked="checked" />Reference Genomic Sequence
+                            <span class="Imagetooltip" title="This track displays the reference genomic sequence of the selected organism. It is automatically displayed when viewing <=300bp.  You can uncheck to disable displaying the track when viewing <300bp."><img src="<%=imagesDir%>icons/info.gif"></span>
+                            <select name="trackSelect" class="genomeSeq<%=level%>Select" id="genomeSeq<%=level%>Select">
+                                <option value="both" selected="selected">+/- strands</option>
+                                <option value="+" >+ strand</option>
+                                <option value="-" >- strand</option>
+                            </select>
+                        </div>
+                        <BR />
                 	<!--<div id="genomeSub<%=level%>" style="width:100%;">-->
                     	<div class="trigger triggerEC" name="Annotation<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Annotations</div>
                         <div id="Annotation<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">

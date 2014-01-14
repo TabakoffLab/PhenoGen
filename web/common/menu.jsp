@@ -52,7 +52,7 @@
         <%}%>
    		
 
-       		<li class="hideLogin <%if(mainMenuSelected.equals("transcript")){%>selected<%}%>" ><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu3line">Genome / Transcriptome Data Browser</span></a></li>
+       		<li class="hideLogin <%if(mainMenuSelected.equals("transcript")){%>selected<%}%>" ><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=contextRoot%>gene.jsp" <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu3line">Genome / Transcriptome Data Browser</span></a></li>
        		<li class="hideLogin <%if(mainMenuSelected.equals("download")){%>selected<%}%>"><a href='<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp' <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu2line">Available Data Downloads</span></a></li>
        
        <li class='has-sub hideLogin <%if(mainMenuSelected.equals("microarray")){%>selected<%}%>'><span class="noLink"><span class="menu2line">Microarray Analysis Tools</span></span>
