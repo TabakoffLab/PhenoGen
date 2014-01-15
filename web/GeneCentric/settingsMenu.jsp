@@ -56,6 +56,7 @@
                                 <option value="+" >+ strand</option>
                                 <option value="-" >- strand</option>
                             </select>
+                            &nbsp;&nbsp;&nbsp;<input name="optioncbx" type="checkbox" id="genomeSeqCBX<%=level%>dispAA"   checked="checked" />w/ Amino Acid
                         </div>
                         <BR />
                 	<!--<div id="genomeSub<%=level%>" style="width:100%;">-->
