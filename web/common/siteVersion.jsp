@@ -12,7 +12,8 @@
 
 <jsp:useBean id="myDbUtils" class="edu.ucdenver.ccp.PhenoGen.util.DbUtils"> </jsp:useBean>
 <%
-        extrasList.add("index.css");
+	extrasList.add("normalize.css");
+    extrasList.add("index.css");
 	String dbVersion="";
 	String dbUpdateDate="";
 	

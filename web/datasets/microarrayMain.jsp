@@ -1,5 +1,6 @@
 <%@ include file="/web/common/session_vars.jsp" %>
 <%
+	extrasList.add("normalize.css");
 	extrasList.add("index.css");
 	request.setAttribute( "selectedMain", "microarrayTools" );
 	session.setAttribute("dummyDataset", null);

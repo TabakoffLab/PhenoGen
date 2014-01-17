@@ -1,5 +1,6 @@
 <%@ include file="/web/common/mainHeadTags.jsp" %>
 
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/normalize.css" type="text/css" media="screen, projection">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/index.css" type="text/css" media="screen, projection">
      
 

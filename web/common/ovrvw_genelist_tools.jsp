@@ -10,7 +10,8 @@
 
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
-<% extrasList.add("index.css"); %>
+<% 	extrasList.add("normalize.css");
+	extrasList.add("index.css"); %>
 <%pageTitle="Overview Gene List Analaysis Tools";
 pageDescription="Overview of available Gene List Analysis Tools";%>
 <%@ include file="/web/common/basicHeader.jsp" %>

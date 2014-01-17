@@ -10,8 +10,9 @@
 
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
-<% extrasList.add("index.css"); %>
-<% extrasList.add("overview.js"); %>
+<% 	extrasList.add("normalize.css");
+	extrasList.add("index.css");
+	extrasList.add("overview.js"); %>
 
 <%pageTitle="Overview Genome/Transcriptome Data Browser";
 pageDescription="Overview of features and data available in the new Genome/Transcriptome Browser";%>

@@ -2,6 +2,7 @@
 <jsp:useBean id="myDataset" class="edu.ucdenver.ccp.PhenoGen.data.Dataset"> </jsp:useBean>
 
 <%
+	extrasList.add("normalize.css");
 	extrasList.add("index.css");
 	request.setAttribute( "selectedMain", "qtlTools" );
 
