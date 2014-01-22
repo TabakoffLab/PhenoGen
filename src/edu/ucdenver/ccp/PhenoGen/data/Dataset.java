@@ -103,6 +103,15 @@ public class Dataset {
 			add(LXSRI_DATASET_NAME);
 		}
 	};
+        public static final Set<String> PUBLIC_EXON_DATASETS = new LinkedHashSet<String>() { 
+		{
+			add(LXSRI_DATASET_NAME);
+			add(HXBRI_BRAIN_EXON_DATASET_NAME);
+			add(HXBRI_HEART_EXON_DATASET_NAME);
+                        add(HXBRI_LIVER_EXON_DATASET_NAME);
+			add(HXBRI_BROWN_ADIPOSE_EXON_DATASET_NAME);
+		}
+	};
 
 
   	private int[] dataset_users;

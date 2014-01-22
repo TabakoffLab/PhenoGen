@@ -246,25 +246,49 @@
                         </th><%
 					}
 					%></tr></thead><tbody><%
-					for (int i=1; i<fileContents.length; i++) {
-						String[] columns = fileContents[i].split("\t");
-							if(columns[0].equals(columns[1])){
-								isExpandedFilterable=true;
-						%>
-                        	<TR class="noExpansion">
-                            <TD>Original</TD>
-                        <%}else{%>
-                        	<tr class="expanded">
-                            <TD>Expanded</TD>
-                        <%}%>
-                        <TD>
-                        	<%=geneSymbolsHM.get(columns[0])%>
-                        </TD>
-						<%
-						for (int j=0; j<columns.length; j++) {
-							%><td><%=columns[j].replaceAll("\"", "")%></td><%
+					if(!(myDataset.PUBLIC_EXON_DATASETS.contains(selectedDataset.getName())) ||(myDataset.PUBLIC_EXON_DATASETS.contains(selectedDataset.getName())&&(selectedDatasetVersion.getVersion()==3||selectedDatasetVersion.getVersion()>=6))){
+						for (int i=1; i<fileContents.length; i++) {
+							String[] columns = fileContents[i].split("\t");
+								if(columns[0].equals(columns[1])){
+									isExpandedFilterable=true;
+							%>
+								<TR class="noExpansion">
+								<TD>Original</TD>
+							<%}else{%>
+								<tr class="expanded">
+								<TD>Expanded</TD>
+							<%}%>
+							<TD>
+								<%=geneSymbolsHM.get(columns[0])%>
+							</TD>
+							<%
+							for (int j=0; j<columns.length; j++) {
+								%><td><%=columns[j].replaceAll("\"", "")%></td><%
+							}
+							%></tr><%
 						}
-						%></tr><%
+					}else{//versions 1,2,4,5 should be transcript cluster ids only and should be in the 6xxxxxx Affy ID range.  This will remove the few control probesets in the 4xxxxxx and 5xxxxxx range left for normalization.
+						for (int i=1; i<fileContents.length; i++) {
+							String[] columns = fileContents[i].split("\t");
+							if(columns[1].startsWith("6")){
+								if(columns[0].equals(columns[1])){
+									isExpandedFilterable=true;%>
+									<TR class="noExpansion">
+									<TD>Original</TD>
+								<%}else{%>
+									<tr class="expanded">
+									<TD>Expanded</TD>
+								<%}%>
+								<TD>
+									<%=geneSymbolsHM.get(columns[0])%>
+								</TD>
+								<%
+								for (int j=0; j<columns.length; j++) {
+									%><td><%=columns[j].replaceAll("\"", "")%></td><%
+								}
+								%></tr><%
+							}
+						}
 					}
 					%></tbody></table>
 				</div> <!-- displayGroupMeans -->
@@ -288,25 +312,49 @@
                         </th><%
 					}
 					%></tr></thead><tbody><%
-					for (int i=1; i<fileContents.length; i++) {
-						String[] columns = fileContents[i].split("\t");
-						if(columns[0].equals(columns[1])){
-								isExpandedFilterable=true;
-						%>
-                        	<TR class="noExpansion">
-                            <TD>Original</TD>
-                        <%}else{%>
-                        	<tr class="expanded">
-                            <TD>Expanded</TD>
-                        <%}%>
-						<TD>
-                        	<%=geneSymbolsHM.get(columns[0])%>
-                        </TD>
-						<%
-						for (int j=0; j<columns.length; j++) {
-							%><td><%=columns[j].replaceAll("\"", "")%></td><%
+					if(!(myDataset.PUBLIC_EXON_DATASETS.contains(selectedDataset.getName())) ||(myDataset.PUBLIC_EXON_DATASETS.contains(selectedDataset.getName())&&(selectedDatasetVersion.getVersion()==3||selectedDatasetVersion.getVersion()>=6))){
+						for (int i=1; i<fileContents.length; i++) {
+							String[] columns = fileContents[i].split("\t");
+							if(columns[0].equals(columns[1])){
+									isExpandedFilterable=true;
+							%>
+								<TR class="noExpansion">
+								<TD>Original</TD>
+							<%}else{%>
+								<tr class="expanded">
+								<TD>Expanded</TD>
+							<%}%>
+							<TD>
+								<%=geneSymbolsHM.get(columns[0])%>
+							</TD>
+							<%
+							for (int j=0; j<columns.length; j++) {
+								%><td><%=columns[j].replaceAll("\"", "")%></td><%
+							}
+							%></tr><%
 						}
-						%></tr><%
+					}else{//versions 1,2,4,5 should be transcript cluster ids only and should be in the 6xxxxxx Affy ID range.  This will remove the few control probesets in the 4xxxxxx and 5xxxxxx range left for normalization.
+						for (int i=1; i<fileContents.length; i++) {
+							String[] columns = fileContents[i].split("\t");
+							if(columns[1].startsWith("6")){
+								if(columns[0].equals(columns[1])){
+									isExpandedFilterable=true;%>
+									<TR class="noExpansion">
+									<TD>Original</TD>
+								<%}else{%>
+									<tr class="expanded">
+									<TD>Expanded</TD>
+								<%}%>
+								<TD>
+									<%=geneSymbolsHM.get(columns[0])%>
+								</TD>
+								<%
+								for (int j=0; j<columns.length; j++) {
+									%><td><%=columns[j].replaceAll("\"", "")%></td><%
+								}
+								%></tr><%
+							}
+						}
 					}
 					%></tbody></table>
 				</div> <!-- displayArrayValues -->
