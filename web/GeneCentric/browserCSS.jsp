@@ -117,6 +117,7 @@ table.tooltipTable TD{
 	}
 	rect.selected{
 		fill:#00FF00;
+		stroke:#00FF00;
 	}
 	.geneReport TD{
 		vertical-align:top;
