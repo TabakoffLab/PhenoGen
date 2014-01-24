@@ -40,7 +40,10 @@
             	<span class="reset button" id="resetImage<%=level%>" style="width:150px;">Reset Image Zoom</span>
                 <%if(level==0){%>
                 	<span class="reset button" id="resetTracks<%=level%>" style="width:150px;">View Default Tracks</span>
+                    <BR />
+                	<input name="imgCBX" type="checkbox" id="forceTrxCBX<%=level%>" />Force Drawing Transcripts <span class="Imagetooltip" title="Checking this will force gene tracks to show all transcripts instead of grouping transcripts into genes.  This is instead of the default where genes are drawn as transcripts only in regions smaller than 100kbp."><img src="<%=imagesDir%>icons/info.gif"></span>
                 <%}%>
+                
           </div>
           <div style="color:#000000; text-align:left;">Image Tracks:</div>
 			<div id="topAccord<%=level%>" style="height:100%; text-align:left;">
@@ -63,7 +66,7 @@
                     	<div class="trigger triggerEC" name="Annotation<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Annotations</div>
                         <div id="Annotation<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
                         	<%if(level==1){%>
-                    			<input name="trackcbx" type="checkbox" id="selectedTrxCBX<%=level%>"   checked="checked" />Transcripts for only the selected gene.
+                    			<input name="trackcbx" type="checkbox" id="trxCBX<%=level%>"   checked="checked" />Transcripts for only the selected gene.
                             <span class="Imagetooltip" title="This track consists of transcripts from the selected feature.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
              				<HR />
                     		<%}%>

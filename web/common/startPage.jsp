@@ -1,6 +1,6 @@
 <%@ include file="/web/common/session_vars.jsp" %>
 
-<%
+<%	extrasList.add("normalize.css");
 	extrasList.add("index.css");
 	request.setAttribute( "selectedMain", "home" );
 	//log.debug("full_name = XXX"+full_name+"XXX");

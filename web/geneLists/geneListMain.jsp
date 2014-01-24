@@ -1,5 +1,6 @@
 <%@ include file="/web/common/session_vars.jsp" %>
 <%
+	extrasList.add("normalize.css");
 	extrasList.add("index.css");
 	request.setAttribute( "selectedMain", "geneListTools" );
 	mySessionHandler.createActivity("On Research Genes Main Page", dbConn);

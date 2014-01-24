@@ -12,6 +12,7 @@
 
 <% 	//extrasList.add("jquery-ui-1.8.23.min.js");
 	extrasList.add("/smoothness/jquery-ui-1.9.1.custom.css");
+	extrasList.add("normalize.css");
 	extrasList.add("index.css"); %>
 <%pageTitle="Demonstrations";%>
 

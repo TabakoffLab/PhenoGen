@@ -10,7 +10,8 @@
 
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
-<% extrasList.add("index.css"); %>
+<% 	extrasList.add("normalize.css");
+	extrasList.add("index.css"); %>
 
 
        
