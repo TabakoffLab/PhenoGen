@@ -66,7 +66,7 @@ sub readRefSeqDataFromDB{
 
 	
 	while($query_handle->fetch()) {
-		print "$txID\n$exonStarts\n";
+		#print "$txID\n$exonStarts\n";
 		if($geneSym eq $previousGeneSym){		
 			$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
 					ID => $txID,

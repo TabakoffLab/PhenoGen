@@ -30,11 +30,7 @@
                 <br/>
 				<p>Click the Overview option above to see examples of what you can do on our site.  The options to the right of the Overview are the main areas of the site.  The functions with a <span style=" background-color:#2d7a32; color:#FFFFFF;">green background</span> indicate publicly accessible parts of the site, while the remaining functions with the <span style="background-color:#436f93; color:#FFFFFF;">blue background</span> require a login.</p>
 
-            			<!--<p>View the <a href="<%=commonDir%>PhenoGenDemo.ppt"  
-				title="Getting Started with PhenoGen Informatics Demo">Getting 
-				Started With PhenoGen Informatics Demo</a> to learn how to get started.</p>
-
-				<BR>-->
+            			
             			<p>Review the <a href="CurrentDataSets.jsp"  
 				title="Current Datasets">current datasets</a> that we have available for public use.</p>
             

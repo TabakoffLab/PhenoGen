@@ -11,7 +11,7 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
 <jsp:useBean id="myDbUtils" class="edu.ucdenver.ccp.PhenoGen.util.DbUtils"> </jsp:useBean>
-<%
+<%		extrasList.add("normalize.css");
         extrasList.add("index.css");
 %>
 <%pageTitle="Browser/Software Requirements";

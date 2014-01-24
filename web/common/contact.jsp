@@ -12,7 +12,7 @@
 
 <jsp:useBean id="myEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
 
-<% 
+<% 	extrasList.add("normalize.css");
 	extrasList.add("index.css"); 
 	String msg = "";
 	if (action != null && action.equals("Submit")) {
