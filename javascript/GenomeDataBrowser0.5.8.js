@@ -176,6 +176,7 @@ $(document).on("change","input[name='imgCBX']", function(){
 	var prefix=new String(idStr.substr(0,cbxInd));
 	var level=idStr.substr(cbxInd+3,1);
 	svgList[level].redraw();
+	DisplayRegionReport();
 });
 
 $(document).on("click",".reset",function(){
@@ -474,7 +475,7 @@ function setupTrackSettingUI(levelInd){
     	var trackArray=trackListObj.split(";");
     	$("div.settingsLevel"+levelInd+" input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
-    			console.log("unchecking"+$(this).attr("id"));
+    			//console.log("unchecking"+$(this).attr("id"));
     			$(this).prop('checked', false);
     		}
     	});
@@ -1223,7 +1224,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					dataType: 'json',
 	    			success: function(data2){ 
 	        			folderName=data2.folderName;
-	        			console.log("new folder for update"+folderName);
+	        			//console.log("new folder for update"+folderName);
 	    			}.bind(this),
 	    			error: function(xhr, status, error) {
 	        			console.log(error);
@@ -1448,7 +1449,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	}.bind(this);
 
 	this.zoomToFeature= function(d){
-			console.log("zoomToFeature:"+d);
+			//console.log("zoomToFeature:"+d);
 					var len=d.getAttribute("stop")-d.getAttribute("start");
 					len=len*0.25;
 					var minx=d.getAttribute("start")-len;
@@ -2085,7 +2086,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			aaFont="8px";
 		}
 		if(that.willDraw==1&&((len<=that.aaDispCutoff&&that.includeAA==1)||(len<=that.dispCutoff))){
-			console.log("will draw sequence");
+			//console.log("will draw sequence");
 			that.svg.selectAll("text.dir").remove();
 			if(that.strands=="both"){
 				that.svg.append("text").attr("class","dir").attr("x",5).attr("y",15).text("-->");
@@ -2423,7 +2424,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}.bind(that);
 
 	that.createToolTip=function(d){
-		console.log("gene toottip");
+		//console.log("gene toottip");
 		var tooltip="";
 		var txListStr="";
 		if((d.getAttribute("stop")-d.getAttribute("start"))<200){
@@ -2745,31 +2746,58 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}.bind(that);
 
 	that.getDisplayedData= function (){
-		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene");
-		that.counts=[{value:0,names:"Ensembl"},{value:0,names:"RNA-Seq"}];
-		var tmpDat=dataElem[0];
-		//console.log(dataElem);
 		var dispData=new Array();
 		var dispDataCount=0;
-		if (!(typeof tmpDat === 'undefined')) {
-			for(var l=0;l<tmpDat.length;l++){
-				if(tmpDat[l].__data__ != undefined){
-				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
-				var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
-				//console.log("start:"+start+":"+stop);
-				if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
-					if((new String(tmpDat[l].childNodes[0].id)).indexOf("ENS")>-1){
-						this.counts[0].value++;
-					}else{
-						this.counts[1].value++;
+		if(that.drawnAs=="Gene"){
+			var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene");
+			that.counts=[{value:0,names:"Ensembl"},{value:0,names:"RNA-Seq"}];
+			var tmpDat=dataElem[0];
+			//console.log(dataElem);
+			
+			if (!(typeof tmpDat === 'undefined')) {
+				for(var l=0;l<tmpDat.length;l++){
+					if(tmpDat[l].__data__ != undefined){
+					var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+					var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+					//console.log("start:"+start+":"+stop);
+					if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
+						if((new String(tmpDat[l].childNodes[0].id)).indexOf("ENS")>-1){
+							this.counts[0].value++;
+						}else{
+							this.counts[1].value++;
+						}
+						dispData[dispDataCount]=tmpDat[l].__data__;
+						dispDataCount++;
 					}
-					dispData[dispDataCount]=tmpDat[l].__data__;
-					dispDataCount++;
+					}
 				}
-				}
+			}else{
+				that.counts=[];
 			}
-		}else{
-			that.counts=[];
+		}else if(that.drawnAs=="Trx"){
+			var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber);
+			that.counts=[{value:0,names:"Ensembl"},{value:0,names:"RNA-Seq"}];
+			var tmpDat=dataElem[0];
+			if (!(typeof tmpDat === 'undefined')) {
+				for(var l=0;l<tmpDat.length;l++){
+					if(tmpDat[l].__data__ != undefined){
+					var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+					var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+					//console.log("start:"+start+":"+stop);
+					if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
+						if((new String(tmpDat[l].childNodes[0].id)).indexOf("ENS")>-1){
+							this.counts[0].value++;
+						}else{
+							this.counts[1].value++;
+						}
+						dispData[dispDataCount]=tmpDat[l].__data__;
+						dispDataCount++;
+					}
+					}
+				}
+			}else{
+				that.counts=[];
+			}
 		}
 		return dispData;
 	}.bind(that);
@@ -2952,11 +2980,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.redrawLegend();
 	
 		var filterData=data;
-		if(that.gsvg.levelNumber==0){
+		/*if(that.gsvg.levelNumber==0){
 			console.log("before filter:Data:");
 			console.log(data);
 			console.log("annotation type:"+that.annotType);
-		}
+		}*/
 		if(that.annotType!="all"){
 			filterData=[];
 			var newCount=0;
@@ -3035,13 +3063,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 			}
 		}
-		if(that.gsvg.levelNumber==0){
+		/*if(that.gsvg.levelNumber==0){
 			console.log("draw:"+that.trackClass);
 			console.log("selectedData=");
 			console.log(that.gsvg.selectedData);
 			console.log("DrawGeneTrack: FilterData:");
 			console.log(filterData);
-		}
+		}*/
 		/*if(that.gsvg.levelNumber==1 && that.gsvg.selectedData!=undefined){
 			var newFilter=[];
 			var ind=0;
@@ -3206,7 +3234,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		            	})
 					.on("mouseout", function(d) {
 						var tmp=new String(d3.select(this).attr("class"));
-						console.log("class(mouseout):"+tmp);
+						//console.log("class(mouseout):"+tmp);
 						if(tmp.indexOf("selected")==-1){
 							if(that.gsvg.levelNumber==0){
 								var str=(new String(d.parent.getAttribute("ID"))).replace(".","_");
@@ -5121,7 +5149,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 	that=new Track(gsvg,data,trackClass,"Selected Gene Transcripts");
 
 	that.createToolTip= function(d){
-		console.log("transcript toottip");
+		//console.log("transcript toottip");
 		var tooltip="";
 		var strand=".";
 		if(d.getAttribute("strand") == 1){
@@ -5622,7 +5650,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		if(that.bin>0){
 			file=dataPrefix+"tmpData/regionData/"+folderName+"/bincount."+that.bin+"."+that.trackClass+".xml";
 		}
-		console.log("");
+		//console.log("");
 		d3.xml(file,function (error,d){
 					if(error){
 						console.log(error);
