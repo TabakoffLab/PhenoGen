@@ -25,7 +25,7 @@ ratOnly["illuminaPolyA"]=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.10(12/4/2013)";
+var siteVer="PhenoGen v2.10.1(1/28/2014)";
 
 var trackBinCutoff=10000;
 
@@ -1780,11 +1780,11 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		that.codons["GGG"]="G";
 		that.codons["GGC"]="G";
 	}
-	that.transcribe=function(d){
+	that.translate=function(d){
 		d=d.toUpperCase();
 		return that.codons[d];
 	}
-	that.transcribeRegion=function(aaLevel,offset,start,stop){
+	that.translateRegion=function(aaLevel,offset,start,stop){
 		var aaSeq=new Array();
 		var aaCount=0;
 		var minus=0;
@@ -1800,9 +1800,9 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					seq=that.reverseCompliment(seq);
 				}
 				aaSeq[aaCount]=[];
-				aaSeq[aaCount].aa=that.transcribe(seq);
+				aaSeq[aaCount].aa=that.translate(seq);
 				aaSeq[aaCount].pos=offset+(i-start);
-				aaSeq[aaCount].id=aaLevel+":"+i+":"+that.transcribe(seq);
+				aaSeq[aaCount].id=aaLevel+":"+i+":"+that.translate(seq);
 				aaCount++;
 		}
 		return aaSeq;
@@ -1930,9 +1930,9 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 							var modStart=tmpMin%3;
 							var zeroStart=startInd-modStart;
 							var aaList=new Array();
-							aaList[0]=that.transcribeRegion(0,tmpMin-modStart,zeroStart,zeroStart+len);
-							aaList[1]=that.transcribeRegion(1,tmpMin-modStart-1,zeroStart-1,zeroStart-1+len);
-							aaList[2]=that.transcribeRegion(2,tmpMin-modStart-2,zeroStart-2,zeroStart-2+len);
+							aaList[0]=that.translateRegion(0,tmpMin-modStart,zeroStart,zeroStart+len);
+							aaList[1]=that.translateRegion(1,tmpMin-modStart-1,zeroStart-1,zeroStart-1+len);
+							aaList[2]=that.translateRegion(2,tmpMin-modStart-2,zeroStart-2,zeroStart-2+len);
 							var tmpLineAt=25;
 							for(var j=0;j<3;j++){
 								var aa=that.svg.selectAll(".aa"+j)
@@ -1989,9 +1989,9 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 							var modStart=tmpMin%3;
 							var zeroStart=startInd-modStart;
 							var aaList=new Array();
-							aaList[0]=that.transcribeRegion(0,tmpMin-modStart,zeroStart+len,zeroStart);
-							aaList[1]=that.transcribeRegion(1,tmpMin-modStart-1,zeroStart-1+len,zeroStart-1);
-							aaList[2]=that.transcribeRegion(2,tmpMin-modStart-2,zeroStart-2+len,zeroStart-2);
+							aaList[0]=that.translateRegion(0,tmpMin-modStart,zeroStart+len,zeroStart);
+							aaList[1]=that.translateRegion(1,tmpMin-modStart-1,zeroStart-1+len,zeroStart-1);
+							aaList[2]=that.translateRegion(2,tmpMin-modStart-2,zeroStart-2+len,zeroStart-2);
 							for(var j=0;j<3;j++){
 								var aa=that.svg.selectAll(".aarev"+j)
 					   				.data(aaList[j],keyID)
@@ -2166,9 +2166,9 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					var modStart=tmpMin%3;
 					var zeroStart=startInd-modStart;
 					var aaList=new Array();
-					aaList[0]=that.transcribeRegion(0,tmpMin-modStart,zeroStart,zeroStart+len);
-					aaList[1]=that.transcribeRegion(1,tmpMin-modStart-2,zeroStart-2,zeroStart-2+len);
-					aaList[2]=that.transcribeRegion(2,tmpMin-modStart-1,zeroStart-1,zeroStart-1+len);
+					aaList[0]=that.translateRegion(0,tmpMin-modStart,zeroStart,zeroStart+len);
+					aaList[1]=that.translateRegion(1,tmpMin-modStart-2,zeroStart-2,zeroStart-2+len);
+					aaList[2]=that.translateRegion(2,tmpMin-modStart-1,zeroStart-1,zeroStart-1+len);
 					var tmpLineAt=25;
 					for(var j=0;j<3;j++){
 						var aa=that.svg.selectAll(".aa"+j)
@@ -2206,9 +2206,9 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					var modStart=tmpMin%3;
 					var zeroStart=startInd-modStart;
 					var aaList=new Array();
-					aaList[0]=that.transcribeRegion(0,tmpMin-modStart,zeroStart+len,zeroStart);
-					aaList[1]=that.transcribeRegion(1,tmpMin-modStart-1,zeroStart-1+len,zeroStart-1);
-					aaList[2]=that.transcribeRegion(2,tmpMin-modStart-2,zeroStart-2+len,zeroStart-2);
+					aaList[0]=that.translateRegion(0,tmpMin-modStart,zeroStart+len,zeroStart);
+					aaList[1]=that.translateRegion(1,tmpMin-modStart-1,zeroStart-1+len,zeroStart-1);
+					aaList[2]=that.translateRegion(2,tmpMin-modStart-2,zeroStart-2+len,zeroStart-2);
 					for(var j=0;j<3;j++){
 						var aa=that.svg.selectAll(".aarev"+j)
 			   				.data(aaList[j],keyID)
@@ -2285,6 +2285,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		return size;
 	}
 	that.updateData=function(retry){
+		console.log("Seq.UpdateData("+retry+")");
 		this.svg.attr("height", 30);
 		if(retry==0){
 			that.showLoading();
@@ -2328,9 +2329,11 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 							d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).attr("height", 15);
 				}
 			}else{
+				console.log("Seq.UpdateData.Success:"+retry+":"+tmpseqRegionMin+"_"+tmpseqRegionMax);
 				that.seqRegionMin=tmpseqRegionMin;
 				that.seqRegionMax=tmpseqRegionMax;
 				that.hideLoading();	
+				console.log(d);
 				that.draw(d);
 				DisplayRegionReport();
 			}
@@ -2660,15 +2663,43 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.setSelected=function(geneID){
 		if(geneID !=""){
-			d3.selectAll("rect.selected").each(function(){
-															d3.select(this).attr("class","").style("fill",that.color);
-														});
-			var gene=d3.select("g.gene rect#"+geneID);
-			if(gene != undefined){
-				gene.attr("class","selected").style("fill","green");
-				//console.log(gene.data()[0]);
-				that.setupDetailedView(gene.data()[0]);
+			if(d3.selectAll("g.gene").size()>0){
+				d3.selectAll("rect.selected").each(function(){
+																d3.select(this).attr("class","").style("fill",that.color);
+															});
+				var gene=d3.select("g.gene rect#"+geneID);
+				if(gene != undefined){
+					gene.attr("class","selected").style("fill","green");
+					//console.log(gene.data()[0]);
+					that.setupDetailedView(gene.data()[0]);
+					selectGene="";
+				}
+			}else if(d3.selectAll("g.trx"+that.gsvg.levelNumber).size()>0){
+				var str=(new String(geneID)).replace(".","_");
+				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("line").style("stroke",that.color);
+				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("rect").style("fill",that.color);
+				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("text").style("opacity","0.6").style("fill",that.color);
+
+				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").each(function(){var tmpCl=new String($(this).attr("class"));tmpCl=tmpCl.replace(" selected","");$(this).attr("class",tmpCl);});
+				that.svg.selectAll("g.gene"+str).each(function(){var tmpCl=$(this).attr("class")+" selected";$(this).attr("class",tmpCl);});
+							
+				that.svg.selectAll("g.gene"+str).selectAll("line").style("stroke","green");
+				that.svg.selectAll("g.gene"+str).selectAll("rect").style("fill","green");
+				that.svg.selectAll("g.gene"+str).selectAll("text").style("opacity","0.3").style("fill","green");
+				var tmp=that.svg.selectAll("g.gene"+str)[0][0].__data__;
+				console.log(tmp.parent);
+				that.setupDetailedView(tmp.parent);
 				selectGene="";
+				/*d3.selectAll("rect.selected").each(function(){
+																d3.select(this).attr("class","").style("fill",that.color);
+															});
+				var gene=d3.select("g.gene rect#"+geneID);
+				if(gene != undefined){
+					gene.attr("class","selected").style("fill","green");
+					//console.log(gene.data()[0]);
+					that.setupDetailedView(gene.data()[0]);
+					selectGene="";
+				}*/
 			}
 		}
 	}
