@@ -1686,6 +1686,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 }
 
 //Specific Track Objects
+/*Track for displaying sequence and translated aa sequence*/
 function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 	var data=new Array();
 	var that=new Track(gsvg,data,trackClass,label);
@@ -2344,7 +2345,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 	that.draw(data);
 	return that;
 }
-
+/*Track for displaying ProteinCoding,Long Non Coding, Small RNAs*/
 function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	var that=new Track(gsvg,data,trackClass,label);
 	that.counts=[{value:0,names:"Ensembl"},{value:0,names:"RNA-Seq"}];
@@ -2655,7 +2656,6 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 						}
 				}
 			}else{
-				//console.log("run draw");
 				that.draw(that.data);
 			}
 		}
@@ -2665,12 +2665,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		if(geneID !=""){
 			if(d3.selectAll("g.gene").size()>0){
 				d3.selectAll("rect.selected").each(function(){
-																d3.select(this).attr("class","").style("fill",that.color);
-															});
+					d3.select(this).attr("class","").style("fill",that.color);
+					});
 				var gene=d3.select("g.gene rect#"+geneID);
 				if(gene != undefined){
 					gene.attr("class","selected").style("fill","green");
-					//console.log(gene.data()[0]);
 					that.setupDetailedView(gene.data()[0]);
 					selectGene="";
 				}
@@ -2690,19 +2689,21 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				console.log(tmp.parent);
 				that.setupDetailedView(tmp.parent);
 				selectGene="";
-				/*d3.selectAll("rect.selected").each(function(){
-																d3.select(this).attr("class","").style("fill",that.color);
-															});
-				var gene=d3.select("g.gene rect#"+geneID);
-				if(gene != undefined){
-					gene.attr("class","selected").style("fill","green");
-					//console.log(gene.data()[0]);
-					that.setupDetailedView(gene.data()[0]);
-					selectGene="";
-				}*/
 			}
 		}
-	}
+	}.bind(that);
+	that.clearSelection=function(){
+		if(d3.selectAll("g.gene").size()>0){
+				d3.selectAll("rect.selected").each(function(){
+					d3.select(this).attr("class","").style("fill",that.color);
+					});
+			}else if(d3.selectAll("g.trx"+that.gsvg.levelNumber).size()>0){
+				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("line").style("stroke",that.color);
+				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("rect").style("fill",that.color);
+				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("text").style("opacity","0.6").style("fill",that.color);
+				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").each(function(){var tmpCl=new String($(this).attr("class"));tmpCl=tmpCl.replace(" selected","");$(this).attr("class",tmpCl);});
+			}
+	}.bind(that);
 
 	that.setupDetailedView=function(d){
 			var e = jQuery.Event("keyup");
@@ -3333,7 +3334,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	
 	return that;
 }
-
+/*Track for displaying RefSeq Genes/Transcripts*/
 function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	var that=new GeneTrack(gsvg,data,trackClass,label);
 	that.counts=[{value:0,names:"Ensembl"},{value:0,names:"RNA-Seq"}];
@@ -3924,7 +3925,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	
 	return that;
 }
-
+/*Track for displaying Probesets*/
 function ProbeTrack(gsvg,data,trackClass,label,density){
 	var that=new Track(gsvg,data,trackClass,label);
 	that.density=density;
@@ -4439,7 +4440,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 	
 	return that;
 }
-
+/*Track for displaying SNPs/Indels*/
 function SNPTrack(gsvg,data,trackClass,density,include){
 	var that=new Track(gsvg,data,trackClass,lbl);
 	var strain=(new String(trackClass)).substr(3);
@@ -4903,7 +4904,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 	
 	return that;
 }
-
+/*Track for displaying QTLs*/
 function QTLTrack(gsvg,data,trackClass,density){
 	var that=new Track(gsvg,data,trackClass,"QTLs Overlapping Region");
 	
@@ -5175,7 +5176,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 	that.redraw();
 	return that;
 }
-
+/*Track to display transcripts for a selected Gene*/
 function TranscriptTrack(gsvg,data,trackClass,density){
 	that=new Track(gsvg,data,trackClass,"Selected Gene Transcripts");
 
@@ -5468,7 +5469,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 	that.redraw();
 	return that;
 }
-
+/*Generic numeric track which displays numeric values accross the genome*/
 function CountTrack(gsvg,data,trackClass,density){
 	var that=new Track(gsvg,data,trackClass,"Generic Counts");
 
@@ -5885,7 +5886,7 @@ function CountTrack(gsvg,data,trackClass,density){
     that.draw(data);
 	return that;
 }
-
+/* Setup specific count tracks*/
 function HelicosTrack(gsvg,data,trackClass,density){
 	var that=new CountTrack(gsvg,data,trackClass,density);
 	var lbl="Helicos RNA log2(read counts)";
