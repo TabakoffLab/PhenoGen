@@ -84,7 +84,7 @@ var dataPrefix="";
 	<a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">Not sure where to start? Watch a quick navigation demonstration</a>
     </div>
     
-	<div id="imageMenu"></div>
+    <div id="imageMenu"></div>
     <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:
     		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
@@ -116,7 +116,7 @@ var dataPrefix="";
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
-            <script src="javascript/GenomeDataBrowser0.5.9.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.5.10.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
@@ -232,6 +232,7 @@ var dataPrefix="";
     <div style="display:none">
 		<a id="helpExampleNav" class="fancybox fancybox.iframe" href="web/GeneCentric/example.jsp" title="Browser Navigation"></a>
     </div>
+    
     <BR /><BR /><BR />
     
 </div><!-- ends page div -->
