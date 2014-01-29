@@ -28,10 +28,11 @@
 			$('span.info').tooltipster({
 				position: 'top-right',
 				maxWidth: 250,
-				offsetX: 24,
+				offsetX: 10,
 				offsetY: 5,
 				interactive: true,
-				interactiveTolerance: 350
+				interactiveTolerance: 350,
+				contentAsHTML:true
 			});
 
 			/*var tooltipSettings = { showBody : " - ",

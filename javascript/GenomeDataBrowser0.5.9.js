@@ -735,7 +735,43 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				//this.svg.append("text").text(this.label).attr("x",this.gsvg.width/2-20).attr("y",12);
 				var lblStr=new String("Loading...");
 				svg.append("text").text(lblStr).attr("x",this.width/2-(lblStr.length/2)*7.5).attr("y",12).attr("id","trkLbl");
-				var info=svg.append("g").attr("class","infoIcon").attr("transform", "translate(" + this.width/2+(lblStr.length/2)*7.5+16 + ",0)");;
+				//var info=svg.append("g").attr("class","infoIcon").attr("transform", "translate(" + (this.width/2+((lblStr.length/2)*7.5)+16) + ",0)");
+				var info=svg.append("g").attr("class","infoIcon")
+										.attr("transform", "translate("+(this.width-20)+",0)")
+										.style("cursor","pointer")
+										.attr("track",track)
+										.attr("title",track)
+										/*function(){
+												var text="testing123";
+												console.log($('#'+track+'InfoDesc'));
+												if($('#'+track+'InfoDesc')!=undefined){
+													console.log($('#'+track+'InfoDesc').tooltipster('content'));
+												}
+												
+												return text;
+										})*/
+										.on("mouseover",function(){
+											var tmpTrack=$(this).attr("track");
+											var tmp=$('#'+tmpTrack+'InfoDesc');
+											
+											var ttsr=$(this).tooltipster({
+												position: 'top-right',
+												maxWidth: 250,
+												offsetX: 24,
+												offsetY: 5,
+												contentAsHTML:true,
+												//arrow: false,
+												interactive: true,
+										   		interactiveTolerance: 350
+											});
+											console.log(ttsr.tooltipster('content'));
+											ttsr.tooltipster('content',tmp.tooltipster('content'));
+											ttsr.tooltipster('show');
+										})
+										.on("mouseout",function(){
+											var tmpTrack=$(this).attr("track");
+											$('#'+tmpTrack+'InfoDesc').tooltipster('hide');
+										});
 				info.append("rect")
 									.attr("x",0)
 									.attr("y",0)
@@ -743,8 +779,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 									.attr("ry",3)
 							    	.attr("height",14)
 									.attr("width",14)
-									.attr("fill","#A7C5E2");
-				info.append("text").attr("x","2.5").attr("y",10).attr("fill","#FFFFFF").text("i");
+									.attr("fill","#A7C5E2")
+									.attr("stroke","#7795B2");
+				info.append("text").attr("x",2.5).attr("y",12).attr("style","font-family:monospace;font-weight:bold;").attr("fill","#FFFFFF").text("i");
 		}
 
 		var success=0;
@@ -1667,6 +1704,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		this.label=label;
 		var lblStr=new String(this.label);
 		d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select("#trkLbl").attr("x",this.gsvg.width/2-(lblStr.length/2)*7.5).text(lblStr);
+		//d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select(".infoIcon").attr("transform", "translate(" + (this.gsvg.width/2+((lblStr.length/2)*7.5)) + ",0)");
 	}.bind(this);
 	this.gsvg=gsvgP;
 	this.data=dataP;
