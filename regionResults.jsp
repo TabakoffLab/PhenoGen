@@ -116,7 +116,7 @@ var dataPrefix="";
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
-            <script src="javascript/GenomeDataBrowser0.5.8.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.5.9.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
@@ -233,6 +233,7 @@ var dataPrefix="";
 		<a id="helpExampleNav" class="fancybox fancybox.iframe" href="web/GeneCentric/example.jsp" title="Browser Navigation"></a>
     </div>
     <BR /><BR /><BR />
+    
 </div><!-- ends page div -->
 
 <script type="text/javascript">
@@ -269,6 +270,17 @@ var dataPrefix="";
 		
 	});
 	
+	$(".Imagetooltip").tooltipster({
+		position: 'top-right',
+		maxWidth: 250,
+		offsetX: 24,
+		offsetY: 5,
+		//arrow: false,
+		interactive: true,
+   		interactiveTolerance: 350
+	});
+	
+	
 	//Setup Fancy box for example
      $('.fancybox').fancybox({
                 width:"800px",
@@ -281,15 +293,7 @@ var dataPrefix="";
   	});
 	displayHelpFirstTime();
 	
-	$(".Imagetooltip").tooltipster({
-		position: 'top-right',
-		maxWidth: 250,
-		offsetX: 24,
-		offsetY: 5,
-		//arrow: false,
-		interactive: true,
-   		interactiveTolerance: 350
-	});
+	
 	
 	/*$('#saveBtn').click( function(){
 		html2canvas($('div#Level0'), {
