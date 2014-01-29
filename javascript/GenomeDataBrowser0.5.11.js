@@ -4223,7 +4223,50 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		that.redraw();
 	}.bind(that);
 
+	that.updateData = function(retry){
+		var tag="probe";
+		var path=dataPrefix+"tmpData/regionData/"+folderName+"/probe.xml";
+		d3.xml(path,function (error,d){
+				if(error){
+					if(retry<3){//wait before trying again
+							var time=5000;
+							if(retry==1){
+								time=10000;
+							}
+							setTimeout(function (){
+								that.updateData(retry+1);
+							}.bind(this),time);
+					}else if(retry>=3){
+							d3.select("#Level"+this.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+this.levelNumber+track).attr("height", 15);
+					}
+				}else{
+						var probe=d.documentElement.getElementsByTagName(tag);
+						var mergeddata=new Array();
+						var checkName=new Array();
+						var curInd=0;
+						for(var l=0;l<that.data.length;l++){
+							if(that.data[l]!=undefined){ 
+								mergeddata[curInd]=that.data[l];
+								checkName[that.data[l].getAttribute("ID")]=1;
+								curInd++;
+							}
+						}
+						for(var l=0;l<probe.length;l++){
+							if(probe[l]!=undefined && checkName[probe[l].getAttribute("ID")]==undefined){
+								mergeddata[curInd]=probe[l];
+								curInd++;
+							}
+						}
+						
+						that.draw(mergeddata);
+						that.hideLoading();
+					}
+			});
+	}.bind(that);
+
 	that.draw= function (data){
+		that.data=data;
 		that.density=$("#probeDense"+that.gsvg.levelNumber+"Select").val();
 		that.colorSelect=$("#probe"+that.gsvg.levelNumber+"colorSelect").val();
 		if(that.colorSelect=="dabg"||that.colorSelect=="herit"){
@@ -4262,12 +4305,12 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 						//update
 						var probes=that.svg.selectAll(".probe."+tissue)
 				   			.data(data,function(d){return keyTissue(d,tissue);})
-							.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),density,i,2)+totalYMax*15-10)+")";})
+							.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+totalYMax*15-10)+")";})
 										
 						//add new
 						probes.enter().append("g")
 							.attr("class","probe "+tissue)
-							.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),density,i,2)+totalYMax*15-10)+")";})
+							.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+totalYMax*15-10)+")";})
 							.append("rect")
 							.attr("class",tissue)
 					    	.attr("height",10)
@@ -4360,12 +4403,12 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 			//update
 			var probes=that.svg.selectAll(".probe.annot")
 	   			.data(data,key)
-				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),density,i,2)+")";})
+				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+")";})
 					
 			//add new
 			probes.enter().append("g")
 				.attr("class","probe annot")
-				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),density,i,2)+")";})
+				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+")";})
 				.append("rect")
 		    	.attr("height",10)
 				.attr("rx",1)
@@ -4440,12 +4483,12 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 			
 		
 			//probes.exit().remove();
-			if(density==1){
+			if(that.density==1){
 				that.svg.attr("height", 30);
-			}else if(density==2){
+			}else if(that.density==2){
 				//that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe").length+1)*15);
 				that.svg.attr("height", (that.trackYMax+1)*15);
-			}else if(density==3){
+			}else if(that.density==3){
 				that.svg.attr("height", (that.trackYMax+1)*15);
 			}
 		}
