@@ -3405,7 +3405,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 						val=2;
 					}else if(cat=="Inferred"){
 						val=1;
-					}else{
+					}else if(cat=="Predicted"){
 						val=0;
 					}
 					if(mostValid<val){
@@ -3419,6 +3419,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				color=d3.rgb("#78E1AF");
 			}else if(mostValid==1){
 				color=d3.rgb("#A8FFDF");
+			}else if(mostValid==0){
+				color=d3.rgb("#A8DFFF");
 			}
 		}else if(that.drawnAs=="Trx"){
 			var cat=new String(d.getAttribute("category"));
@@ -3431,6 +3433,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			}else if(cat=="Inferred"){
 				color=d3.rgb("#A8FFDF");
 				//color=d3.rgb("#88F1BF");
+			}else if(cat=="Predicted"){
+				color=d3.rgb("#A8DFFF");
 			}
 		}
 		return color;
@@ -3444,6 +3448,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				color=d3.rgb("#78E1AF");
 		}else if(tmpName.indexOf("Inferred")>-1){
 				color=d3.rgb("#A8FFDF");
+		}else if(tmpName.indexOf("Predicted")>-1){
+				color=d3.rgb("#A8DFFF");
 		}
 		return color;
 	}.bind(that);
@@ -3472,7 +3478,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 							val=2;
 						}else if(cat=="Inferred"){
 							val=1;
-						}else{
+						}else if(cat=="Predicted"){
 							val=0;
 						}
 						if(mostValid<val){
@@ -3486,6 +3492,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 					name="Provisional";
 				}else if(mostValid==1){
 					name="Inferred";
+				}else if(mostValid==0){
+					name="Predicted";
 				}
 				if(that.counts[name]==undefined){
 					that.counts[name]=new Object();
@@ -3781,6 +3789,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.data=data;
 		that.trackYMax=0;
 		that.svg.selectAll(".gene").remove();
+		that.svg.selectAll(".trx"+that.gsvg.levelNumber).remove();
 			//console.log("in draw"+that.annotType);
 			
 		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
@@ -3888,6 +3897,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			//console.log("drawRefSeq as TRX");
 			that.label="Ref Seq Transcripts";
 			that.updateLabel(that.label);
+			that.redrawLegend();
 			//var geneList=getAllChildrenByName(getFirstChildByName(data,"GeneList"),"Gene");
 			var txList=new Array();
 			var txListSize=0;
@@ -3959,7 +3969,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.redrawLegend=function (){
 		var legend=[];
 		var curPos=0;
-		legend=[{color:"#38A16F",label:"Validated"},{color:"#78E1AF",label:"Provisional"},{color:"#A8FFDF",label:"Inferred"}];
+		legend=[{color:"#38A16F",label:"Validated"},{color:"#78E1AF",label:"Provisional"},{color:"#A8FFDF",label:"Inferred"},{color:"#A8DFFF",label:"Predicted"}];
 		that.drawLegend(legend);
 	}.bind(that);
 
