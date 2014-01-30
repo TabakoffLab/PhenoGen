@@ -5751,7 +5751,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		tooltip="log2(read count)="+d.getAttribute("logcount");
 		if(that.bin>0){
 			var tmpEnd=(d.getAttribute("start")*1)+(that.bin*1);
-			tooltip=tooltip+"*<BR><BR>*Data compressed for display. Using 90th percentile of<BR>region:"+d.getAttribute("start")+"-"+tmpEnd+"<BR><BR>Zoom in to a region smaller than "+trackBinCutoff+"bp to see raw data.";
+			tooltip=tooltip+"*<BR><BR>*Data compressed for display. Using 90th percentile of<BR>region:"+d.getAttribute("start")+"-"+tmpEnd+"<BR><BR>Zoom in further to see raw data(roughly a region <1000bp). The bin size will decrease as you zoom in thus the resolution of the count data will improve as you zoom in.";
 		}else{
 			tooltip=tooltip+"<BR>Read Count:"+d.getAttribute("logcount");
 		}
