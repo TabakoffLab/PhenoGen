@@ -97,7 +97,7 @@
                             <HR />
                             
                            	<input name="trackcbx" type="checkbox" id="refSeqCBX<%=level%>"  checked="checked" />Ref Seq <%if(level==0){%>Genes <%}else{%> Transcripts <%}%>
-                            <span class="tracktooltip<%=level%>" id="refSeqInfoDesc<%=level%>" title="This track consists of Ref Seq Transcripts that were grouped into genes to match the Ensembl Tracks."><img src="<%=imagesDir%>icons/info.gif"></span>
+                            <span class="tracktooltip<%=level%>" id="refSeqInfoDesc<%=level%>" title="This track consists of Ref Seq Transcripts.  Features are color coded according to the refSeq status for the transcript or highest confidence status when displayed in the Gene view.  For example if one transcript had a validated status while another corresponding to the same gene had a provisional status the gene is displayed with a validated status."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" class="refSeqDense<%=level%>Select" id="refSeqDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>

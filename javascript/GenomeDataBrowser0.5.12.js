@@ -298,7 +298,7 @@ function updatePage(topSVG){
 		$.ajax({
 				url: pathPrefix+"updateRegion.jsp",
    				type: 'GET',
-				data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,fullminCoord:min,fullmaxCoord:max,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
+				data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,fullminCoord:min,fullmaxCoord:max,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism},
 				dataType: 'json',
     			success: function(data2){ 
         			//console.log(data2);
@@ -701,7 +701,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					url:  pathPrefix +"getFullPath.jsp",
 	   				type: 'GET',
 	   				async: false,
-					data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
+					data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism},
 					dataType: 'json',
 	    			success: function(data2){ 
 	        			folderName=data2.folderName;
@@ -898,7 +898,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
 				   				type: 'GET',
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: track, folder: folderName},
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: folderName},
 								dataType: 'json',
 				    			success: function(data2){
 				    				
@@ -950,7 +950,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
 				   				type: 'GET',
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: track, folder: folderName},
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: folderName},
 								dataType: 'json',
 				    			success: function(data2){
 				    				
@@ -1079,7 +1079,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
 				   				type: 'GET',
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: track, folder: folderName,binSize:tmpBin},
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: folderName,binSize:tmpBin},
 								dataType: 'json',
 				    			success: function(data2){
 				    				
@@ -1219,7 +1219,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					url:  pathPrefix +"getFullPath.jsp",
 	   				type: 'GET',
 	   				async: false,
-					data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
+					data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism},
 					dataType: 'json',
 	    			success: function(data2){ 
 	        			folderName=data2.folderName;
@@ -1247,7 +1247,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					url:  pathPrefix +"getFullPath.jsp",
 	   				type: 'GET',
 	   				async: false,
-					data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism},
+					data: {chromosome: chr,minCoord:this.xScale.domain()[0],maxCoord:this.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism},
 					dataType: 'json',
 	    			success: function(data2){ 
 	        			folderName=data2.folderName;
@@ -2347,7 +2347,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 								$.ajax({
 									url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
 					   				type: 'GET',
-									data: {chromosome: chr,minCoord:tmpseqRegionMin,maxCoord:tmpseqRegionMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName},
+									data: {chromosome: chr,minCoord:tmpseqRegionMin,maxCoord:tmpseqRegionMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName},
 									dataType: 'json',
 					    			success: function(data2){
 					    				
@@ -3663,7 +3663,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
 				   				type: 'GET',
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName},
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,panel:panel},
 								dataType: 'json',
 				    			success: function(data2){
 				    				
@@ -5781,8 +5781,8 @@ function CountTrack(gsvg,data,trackClass,density){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
 				   				type: 'GET',
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
-								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrgansim: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
+								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 								dataType: 'json',
 				    			success: function(data2){
 				    				
