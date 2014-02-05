@@ -181,7 +181,7 @@ sub createXMLFile
 		if($species eq 'Rat'){
 			$trackDB="rn5";
 		}
-		#print "output:".$outputDir;
+		#print "track:".$outputDir;
 		#my $output=$outputDir.$type.".xml";
 		createSNPXMLTrack(\%rnaCountHOH,$outputDir,$trackDB);
 	}elsif(index($type,"refSeq")>-1){
@@ -197,8 +197,6 @@ sub createXMLFile
 		if($species eq 'Rat'){
 			$trackDB="rn5";
 		}
-		#print "output:".$outputDir;
-		#my $output=$outputDir.$type.".xml";
 		createRefSeqXMLTrack(\%refSeqHOH,$outputDir.$type.".xml",$trackDB);
 	}elsif(index($type,"genomeSeq")>-1){
 		my $rnaCountStart=time();

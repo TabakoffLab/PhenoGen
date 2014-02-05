@@ -34,17 +34,22 @@ sub readRefSeqDataFromDB{
 		$geneChrom="chr".$geneChrom;
 	}
 	
+	my $shortOrg="Mm";
+	if($organism eq 'Rat'){
+		$shortOrg="Rn";
+	}
+	
 	# PERL DBI CONNECT
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
 		$query ="SELECT g.name,g.chrom,g.strand,g.txStart,g.txEnd,g.cdsStart,g.cdsEnd,g.exonStarts,g.exonEnds,g.name2,s.status
-			FROM Rn_refseq_1.refGene g, Rn_refseq_1.refSeqStatus s
+			FROM ".$shortOrg."_refseq_2.refGene g, ".$shortOrg."_refseq_2.refSeqStatus s
 			where g.chrom='".$geneChrom."'
 			and ((".$geneStart."<=g.txStart and g.txStart<=".$geneStop.") or (".$geneStart."<=g.txEnd and g.txEnd<=".$geneStop.") or (g.txStart<=".$geneStart." and ".$geneStop."<=g.txEnd))
 			and g.name=s.mrnaAcc
 			order by g.txStart,g.name2;";
 	
-	print $query."\n";
+	print "Updated\n$shortOrg\n".$organism."\n".$query."\n";
 	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
 
 # EXECUTE THE QUERY
