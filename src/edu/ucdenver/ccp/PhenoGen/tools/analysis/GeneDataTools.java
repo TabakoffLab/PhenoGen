@@ -1310,9 +1310,9 @@ public class GeneDataTools {
             String ensPort=myENSProperties.getProperty("PORT");
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
-            String refSeqDB="Rn_refseq_1";
+            String refSeqDB="Rn_refseq_2";
             if(organism.equals("Mm")){
-                refSeqDB="Mm_refseq_1";
+                refSeqDB="Mm_refseq_2";
             }
             String ensDsn="DBI:mysql:database="+refSeqDB+";host="+ensHost+";port="+ensPort+";";
             
@@ -1323,7 +1323,7 @@ public class GeneDataTools {
             perlArgs[2] = tmpOutputDir;
             if (organism.equals("Rn")) {
                 perlArgs[3] = "Rat";
-            } else if (organism.equals("Mm")) {
+            }else if (organism.equals("Mm")) {
                 perlArgs[3] = "Mouse";
             }
             perlArgs[4] = track;
