@@ -3,11 +3,11 @@ div.testToolTip {
   position: absolute;           
   text-align: center;
   min-width: 100px;
-  max-width: 400px;
+  max-width: 455px;
   min-height:50px;                  
   /*height: 300px;   */              
   padding: 2px;             
-  font: 12px sans-serif;        
+  /*font: 12px sans-serif; */       
   background: #d3d3d3;   
   border: 0px;      
   border-radius: 8px;           
