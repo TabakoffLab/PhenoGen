@@ -1332,6 +1332,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	this.type=type;
 	this.div=div;
 	this.margin=0;
+	
 	this.halfWindowWidth = $(window).width()/2;
 	//this.mw=this.width-this.margin;
 	this.mh=400;
