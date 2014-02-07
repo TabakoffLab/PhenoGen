@@ -20,7 +20,7 @@ import="org.json.*" %>
 
 
 <%
-String chromosome="",panel="",myOrganism="Rn",track="",folderName="";
+String chromosome="",panel="",myOrganism="",track="",folderName="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0,binSize=0;
 double forwardPValueCutoff=0;
 if(request.getParameter("chromosome")!=null){
@@ -49,9 +49,6 @@ if(request.getParameter("maxCoord")!=null){
 if(request.getParameter("panel")!=null){
 		panel=request.getParameter("panel").trim();
 }
-if(request.getParameter("myOrganism")!=null){
-		myOrganism=request.getParameter("myOrganism").trim();
-}
 if(request.getParameter("rnaDatasetID")!=null){
 	try{
 		rnaDatasetID=Integer.parseInt(request.getParameter("rnaDatasetID").trim());
@@ -73,6 +70,22 @@ if(request.getParameter("binSize")!=null){
 		log.error("Number format exception:binSize\n",e);
 	}
 }
+if(request.getParameter("myOrganism")!=null){
+		myOrganism=request.getParameter("myOrganism").trim();
+}else{
+	if(!panel.equals("")){
+		if(panel.equals("BNLX/SHRH")){
+			myOrganism="Rn";
+		}else if(panel.equals("ILS/ISS")){
+			myOrganism="Mm";
+		}
+	}else if(arrayTypeID==21){
+		myOrganism="Mm";
+	}else if(arrayTypeID==22){
+		myOrganism="Rn";
+	}
+}
+
 
 %>
 
