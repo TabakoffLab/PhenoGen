@@ -69,6 +69,14 @@ $(document).on('click','span.viewMenu', function (event){
     loadState(0);
 });
 
+$(window).resize(function (){
+	for (var i=0; i<svgList.length; i++){
+		if(svgList[i]!=null){
+			svgList[i].resize($(window).width()-25);
+		}
+	}
+});
+
 $(document).on("click",".closeBtn",function(){
 					var setting=new String($(this).attr("id"));
 					setting=setting.substr(6);
@@ -1328,11 +1336,33 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		this.forceDrawAsValue=value;
 	}.bind(this);
 
+	this.resize=function(newWidth){
+		this.width=newWidth;
+		this.xScale.range([0, this.width]);
+		this.xAxis = d3.svg.axis()
+    				.scale(this.xScale)
+				    .orient("top")
+					.ticks(6)
+					.tickSize(8)
+				    .tickPadding(10);
+		this.scaleSVG.attr("width", this.width);
+		this.scaleSVG.select(".x.axis").call(this.xAxis);
+	
+		d3.select("#Level"+this.levelNumber).select(".axisLbl")
+					.attr("x", ((this.width-(this.margin*2))/2));
+	
+		this.topLevel.style("width",(this.width+18)+"px");
+		for(var l=0;l<this.trackList.length;l++){
+			if(this.trackList[l]!=undefined && this.trackList[l].redraw!=undefined){
+				this.trackList[l].resize();
+			}
+		}
+	}.bind(this);
 
 	this.type=type;
 	this.div=div;
 	this.margin=0;
-	
+
 	this.halfWindowWidth = $(window).width()/2;
 	//this.mw=this.width-this.margin;
 	this.mh=400;
@@ -1376,9 +1406,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	//setup code
 	this.width=imageWidth;
 	this.mw=this.width-this.margin;
-	if($(window).width()>1000){
+	/*if($(window).width()>1000){
 		this.halfWindowWidth=($(window).width()-1000)/2;
-	}
+	}*/
 
 	d3.select(div).select("#settingsLevel"+levelNumber).remove();
 	d3.select(div).select("#Level"+levelNumber).remove();
@@ -1449,7 +1479,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					.attr("id","ScrollLevel"+levelNumber)
 					.style("max-height","350px")
 					.style("overflow","auto")
-					.style("width",(this.width+18)+"px")
+					.style("width","100%")
 					.append("ul")
 					.attr("id","sortable"+levelNumber);
     
@@ -2094,13 +2124,24 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	this.updateLabel= function (label){
 		this.label=label;
 		var lblStr=new String(this.label);
-		if(this.gsvg.width>500){
+		if(this.gsvg.width>600){
 			d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select("#trkLbl").attr("x",this.gsvg.width/2-(lblStr.length/2)*7.5).text(lblStr);
 		}else{
 			d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select("#trkLbl").attr("x",0).text(lblStr);
 		}
+		d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select(".infoIcon").attr("transform", "translate("+(this.gsvg.width-20)+",0)");
 		//d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).select(".infoIcon").attr("transform", "translate(" + (this.gsvg.width/2+((lblStr.length/2)*7.5)) + ",0)");
 	}.bind(this);
+
+	this.resize=function(){
+		d3.select("#Level"+this.gsvg.levelNumber+this.trackClass).attr("width", this.gsvg.width);
+		this.updateLabel(this.label);
+		if(this.redrawLegend!=undefined){
+			this.redrawLegend();
+		}
+		this.redraw();
+	}.bind(this);
+
 	this.gsvg=gsvgP;
 	this.data=dataP;
 	this.label=labelP;
@@ -3123,6 +3164,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.setSelected=function(geneID){
 		if(geneID !=""){
 			if(d3.selectAll("g.gene").size()>0){
+				console.log("setup with genes");
 				d3.selectAll("rect.selected").each(function(){
 					d3.select(this).attr("class","").style("fill",that.color);
 					});
@@ -3133,6 +3175,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					selectGene="";
 				}
 			}else if(d3.selectAll("g.trx"+that.gsvg.levelNumber).size()>0){
+				console.log("setup with transcripts");
 				var str=(new String(geneID)).replace(".","_");
 				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("line").style("stroke",that.color);
 				that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("rect").style("fill",that.color);
@@ -3617,8 +3660,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				        	//that.gsvg.get('tt').html(that.createToolTip(d)) 
 				        	tt.html(that.createToolTip(d)) 
 				                .style("left", function(){
-				                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-				                	if(x>500){
+				                	var x=d3.event.pageX;
+				                	if(x>that.gsvg.halfWindowWidth){
 				                		x=x-450;
 				                	}
 				                	var xPos=x+"px";
@@ -3762,8 +3805,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 									.style("opacity", .95);      
 								tt.html(that.createToolTip(d))  
 									.style("left", function(){
-					                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-					                	if(x>500){
+					                	var x=d3.event.pageX;
+					                	if(x>that.gsvg.halfWindowWidth){
 					                		x=x-450;
 					                	}
 					                	var xPos=x+"px";
@@ -4208,7 +4251,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				.attr("stroke",that.color)
 				.attr("stroke-width","2");
 				var strChar=">";
-				if(d.getAttribute("strand")=="-1"){
+				if(d.getAttribute("strand")=="-"){
 					strChar="<";
 				}
 				var fullChar=strChar;
@@ -4299,8 +4342,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			        	//that.gsvg.get('tt').html(that.createToolTip(d))  
 			        	tt.html(that.createToolTip(d))
 			                .style("left", function(){
-				                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-				                	if(x>500){
+				                	var x=d3.event.pageX;
+				                	if(x>that.gsvg.halfWindowWidth){
 				                		x=x-450;
 				                	}
 				                	var xPos=x+"px";
@@ -4335,7 +4378,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				if(d!=undefined){
 				var d3This=d3.select(this);
 				var strChar=">";
-				if(d.getAttribute("strand")=="-1"){
+				if(d.getAttribute("strand")=="-"){
 					strChar="<";
 				}
 				var fullChar=strChar;
@@ -4405,8 +4448,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 									.style("opacity", .95);      
 								tt.html(that.createToolTip(d))  
 									.style("left", function(){
-					                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-					                	if(x>500){
+					                	var x=d3.event.pageX;
+					                	if(x>that.gsvg.halfWindowWidth){
 					                		x=x-450;
 					                	}
 					                	var xPos=x+"px";
@@ -4829,8 +4872,8 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 							                	.style("opacity", .95);      
 							            	tt.html(that.createToolTip(d))  
 							                	.style("left", function(){
-									                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-									                	if(x>500){
+									                	var x=d3.event.pageX;
+									                	if(x>that.gsvg.halfWindowWidth){
 									                		x=x-250;
 									                	}
 									                	var xPos=x+"px";
@@ -4931,8 +4974,8 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 		                	.style("opacity", .95);      
 		            	tt.html(that.createToolTip(d))  
 		                	.style("left", function(){
-				                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-				                	if(x>500){
+				                	var x=d3.event.pageX;
+				                	if(x>that.gsvg.halfWindowWidth){
 				                		x=x-250;
 				                	}
 				                	var xPos=x+"px";
@@ -5368,8 +5411,8 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 	                .style("opacity", .95);      
 	            tt.html(that.createToolTip(d))  
 	                .style("left", function(){
-				                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-				                	if(x>500){
+				                	var x=d3.event.pageX;
+				                	if(x>that.gsvg.halfWindowWidth){
 				                		x=x-150;
 				                	}
 				                	var xPos=x+"px";
@@ -5706,8 +5749,8 @@ function QTLTrack(gsvg,data,trackClass,density){
 	                .style("opacity", .95);      
 	            tt.html(that.createToolTip(d))  
 	                .style("left", function(){
-				                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-				                	if(x>500){
+				                	var x=d3.event.pageX;
+				                	if(x>that.gsvg.halfWindowWidth){
 				                		x=x-250;
 				                	}
 				                	var xPos=x+"px";
@@ -5961,8 +6004,8 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 								.style("opacity", .95);      
 							tt.html(that.createToolTip(d))  
 								.style("left", function(){
-				                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-				                	if(x>500){
+				                	var x=d3.event.pageX;
+				                	if(x>that.gsvg.halfWindowWidth){
 				                		x=x-450;
 				                	}
 				                	var xPos=x+"px";
@@ -6048,8 +6091,8 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 							.style("opacity", .95);      
 						tt.html(that.createToolTip(d))  
 							.style("left", function(){
-				                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-				                	if(x>500){
+				                	var x=d3.event.pageX;
+				                	if(x>that.gsvg.halfWindowWidth){
 				                		x=x-450;
 				                	}
 				                	var xPos=x+"px";
@@ -6168,8 +6211,8 @@ function CountTrack(gsvg,data,trackClass,density){
 									.style("opacity", .95);      
 								tt.html(that.createToolTip(d))  
 									.style("left", function(){
-					                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-					                	if(x>500){
+					                	var x=d3.event.pageX;
+					                	if(x>that.gsvg.halfWindowWidth){
 					                		x=x-450;
 					                	}
 					                	var xPos=x+"px";
@@ -6418,8 +6461,8 @@ function CountTrack(gsvg,data,trackClass,density){
 							.style("opacity", .95);      
 						tt.html(that.createToolTip(d))  
 							.style("left", function(){
-				                	var x=d3.event.pageX-gsvg.get('halfWindowWidth');
-				                	if(x>500){
+				                	var x=d3.event.pageX;
+				                	if(x>that.gsvg.halfWindowWidth){
 				                		x=x-450;
 				                	}
 				                	var xPos=x+"px";

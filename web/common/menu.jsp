@@ -18,7 +18,7 @@
 	}
 %>
 
-<div id="page_header">
+<div id="page_header_wide" >
     <div id="header_title"><a href="<%=request.getContextPath()%>">PhenoGen Informatics</a>
     <div style=" font-size:12px;">The site for quantitative genetics of the transcriptome.</div>
     </div>
@@ -31,8 +31,8 @@
         <%}%>
     </div>
   </div> <!-- page_header -->
-  
-<div id='cssmenu'>
+<div style="width:100%; text-align:center;">
+<div id='cssmenu' >
    		<ul>
         
 		<!-- HOME -->
@@ -105,9 +105,9 @@
        </li>
        
    <% if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%>
-   		<li  class='has-sub <%if(mainMenuSelected.equals("login")){%>selected<%}%>'><a href='#' class="end login_btn" ><span class="menu2line">Login/ Register</span></a></li>
+   		<li id="loginMenu"  class='has-sub <%if(mainMenuSelected.equals("login")){%>selected<%}%>'><a href='#' class="end login_btn" ><span class="menu2line">Login/ Register</span></a></li>
    <%} else {%>
-   		<li class='has-sub <%if(mainMenuSelected.equals("account")){%>selected<%}%>'><a href='#' class="end" ><span class="menu1line">Account</span></a>
+   		<li id="loginMenu" class='has-sub <%if(mainMenuSelected.equals("account")){%>selected<%}%>'><a href='#' class="end" ><span class="menu1line">Account</span></a>
         	<UL id="account">
             	<li><a href="<%=request.getContextPath()%>/web/access/userUpdate.jsp">My Profile</a></li>
                 <li><a href="<%=accessDir%>logout.jsp">Logout</a></li>
@@ -118,11 +118,22 @@
        
 </ul>
 </div>
+
 <%@ include file="/web/access/include/accountBox.jsp" %>
+
+</div>
+
+<!-- Website status message or other important message-->
+<span style="color:#FF0000;display:none;" ></span>
 
 <span id="noJS" style="color:#FF0000;display:inline-block;" >This site requires JavaScript and it is currently disabled.  Please visit <a href="<%=commonDir%>siteRequirements.jsp">Browser Support/Software Requirments</a>.</span>
 <script type="text/javascript">	
-			$('#noJS').css("display","none");	
+			$('#noJS').css("display","none");
+			$('#login_box').css("left",$('#loginMenu').position().left-53);
+			$(window).resize(function(){
+				var x=$('#loginMenu').position().left;
+				$('#login_box').css("left",x-53);
+			});
 </script>
 
 

@@ -4,6 +4,6 @@
     
 
 	<%@ include file="/web/common/cssLinks.jsp" %>
-	<%@ include file="/web/common/javascriptLinks.jsp" %>
+	<%@ include file="/web/common/javascriptLinks.adaptive.jsp" %>
 	<%@ include file="/web/common/closingHeadTags.jsp" %>
 

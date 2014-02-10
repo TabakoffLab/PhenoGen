@@ -9,7 +9,7 @@
 	extrasList.add("tooltipster.css");
 %>
 
-<%@ include file="/web/common/header_noBorder_noMenu.jsp" %>
+<%@ include file="/web/common/header_adaptive_noMenu.jsp" %>
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="myFH" class="edu.ucdenver.ccp.util.FileHandler"/>
 
@@ -129,12 +129,12 @@ if(request.getParameter("arrayTypeID")!=null){
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
-            <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
+            <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
             <script src="<%=contextRoot%>javascript/GenomeDataBrowser0.6.1.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
-                    var gs=new GenomeSVG(".ucscImage",970,minCoord,maxCoord,0,chr,"gene");
+                    var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
 					gs.forceDrawAs("Trx");
 					loadState(0);
 					gs.xMax=maxCoord;

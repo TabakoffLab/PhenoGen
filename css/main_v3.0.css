@@ -13,3 +13,607 @@ body{
         background-color: #FFFFFF;
 }
 
+
+
+    #main_body {
+        border: solid 1px #777;
+        background: #fff url("../web/images/bg/tab-field-bg_grey.jpg") repeat-x 0 0px;
+        text-align: left;
+    }
+	#white_body {
+        border: solid 1px #777;
+        background: #fff; 
+        text-align: left;
+    }
+	
+	#main_body_plain {
+        text-align: left;
+    }
+	
+    div.body_border {
+	margin: 0 10px;
+    }
+/*
+ *          END SECTION DEFINITIONS
+ *****************************************************************************************/
+
+.itemDetails, .arrayDetails, div.object_details, div.downloadItem, div.scrollable {
+    overflow: auto;
+}
+
+.details, .publicDetails {
+    cursor: pointer;
+    color: #416fbf;
+}
+
+.vDesc {
+    cursor: pointer;
+    color: #416fbf;
+}
+
+div.brClear {
+    clear: both;
+    float: none;
+}
+
+P.indent {
+    margin-left: .5in;
+}
+
+SPAN.heading {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #000000; /* black */
+}
+
+div#wait1{
+	width: 100%;
+    text-align: center;
+	display:block;
+}
+
+
+.hide { position:absolute; visibility:hidden; }
+.show { position:absolute; visibility:visible; }
+
+    div.center {
+        width: 100%;
+        text-align: center;
+        float: left;
+    }
+    div.right {
+        text-align: right;
+        float: right;
+    }
+
+    div.left {
+        text-align: left;
+        float: left;
+    }
+
+
+span.buttonRef { 
+	font-size: 14px;
+	font-weight: bold;
+}
+
+span.info { 
+	cursor: pointer; 
+	margin: 0 5px;
+}
+.extra_class { 
+	width: 300px; 
+}
+
+/*
+    div.help img {
+        float: left;
+        position: relative;
+        margin:0px 0px 0px 50px;
+    }
+*/
+
+
+/* page-intro */
+div.page-intro{ 
+	float: left; 
+	margin: 20px 0px 20px 20px;
+	width: 700px;
+	font-size: 14px;
+}
+/* tab-intro */
+div.tab-intro{ 
+	float: left; 
+	margin: 20px 0px 20px 20px;
+	width: 600px;
+}
+
+TD.orange {
+  color: #E47833;               /* Mandarin Orange */
+}
+
+.pagedisplay {
+	font-size: 12px;
+	font-family: Arial, Verdana, sans-serif;
+	border: solid 1px #FFF;
+	text-align: center;
+}
+.numArraysDisplay {
+	font-size: 12pt;
+	color: #545454;
+	font-family: Arial, Verdana, sans-serif;
+	border: solid 1px transparent;
+	background: transparent;
+	text-align: center;
+}
+
+div.alertMsg {
+	text-align: center;
+	margin: 40px 10px;	
+}
+
+div.closeWindow {
+	text-align: center;
+	margin: 40px 0px;	
+	cursor: pointer;
+	color: #416fbf;
+}
+
+#prevNext {
+    clear: left;
+    padding: 80px 0px 10px 0px;
+    margin: 10px;
+    height: 25px;
+}
+
+#prevNext div.right,
+#prevNext div.left {
+    width: 200px;
+}
+
+/* Used for expanding/contracting */
+.trigger,.tblTrigger,.triggerImage,.triggerLoad,.triggerNoAction{
+        cursor: pointer;
+        /* needed for IE?  Don't think so */
+	/* cursor: hand; */
+	background: url(../web/images/icons/add.png) center left no-repeat; 
+	padding: 0 10px 0 20px;
+}
+
+.less{
+	background: url(../web/images/icons/min.png) center left no-repeat; 
+}
+
+/*- Circles --------------------------- */
+
+    /* top right bottom left */
+    #circles {
+        width: 700px;
+        line-height:normal;
+        padding-left: 20px;
+    }
+
+    #circles div.picture.earlierStep {
+	text-decoration:underline;
+    }
+
+    #circles img.currentStep {
+	border: solid 4px #aaa;
+	padding: 4px 6px;
+	margin: 0px 15px;
+	background: white;
+    }
+
+    #circles a img:hover {
+/*
+	border: solid 4px #aaa;
+	background: #d3d4d8;
+*/
+    }
+
+/*- Steps --------------------------- */
+    div.steps_container {
+        margin: 0 auto;
+	padding-top: 8px;
+	
+    }
+
+    /* top-bottom right-left */
+    /* top right bottom left */
+    #steps {
+        text-align: left;
+        padding: 10px 0px 10px 40px;
+    }
+    #steps span {
+	float:left;
+	display:block;
+	color: #658CB2;
+	width: 40px;
+	text-align:center;
+	margin:0px 40px 0px 0px;
+	text-decoration:none;
+      }
+
+	.toolbarPicture {
+		padding: 3px; 
+		font-size: 11px; 
+		text-align:center; 
+		color:#326f9b; 
+		width:63px;
+		cursor:pointer;
+	}
+	.toolbarPicture:hover {
+		background:white;
+		border: solid 4px #aaa;
+	}
+	.toolbarPicture img {
+		vertical-align:middle; 
+		margin-bottom: 3px;
+	}
+	.picture {
+		padding: 3px; 
+		font-size: 11px; 
+		text-align:center; 
+		color:#326f9b; 
+		width:63px;
+	}
+	.picture:hover {
+		background:white;
+	}
+	.picture.earlierStep:hover {
+		background:white;
+		border: solid 4px #aaa;
+	}
+	.picture.laterStep{
+		background:#d3d4d8; 
+		text-decoration:none;
+	}
+
+	.picture img {
+		margin-bottom: 3px;
+	}
+	.currentStep {
+		background:white; 
+		border:4px solid #AAAAAA;
+	}
+	.icons {
+		margin: 5px 0px; 
+		float:left;
+	 }
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          Tabs for modal windows
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+#arrayDetailsTab ul {
+	float: left;
+	/* outer background color of the tabs */
+	background: #fff;
+	width: 900px;
+	padding-top: 4px;
+}
+
+
+#arrayDetailsTab li {
+	margin-left: 1px;
+	list-style: none;
+	cursor: pointer;
+        float: left;
+        position: relative;
+        background: transparent url("../web/images/tableftJ.gif") no-repeat left top;
+        padding: 0 0 0 5px;
+       
+        /*line-height: 30px;*/
+		
+		
+		max-width:150px;
+		height: 40px;
+		text-align:center;
+	
+}
+
+
+
+
+#arrayDetailsTab ul li.active a {
+    /* font color of the tab */
+	 background-position: 100% -42px;
+        color: #fff;
+  
+}
+#arrayDetailsTab div {
+    /* bg color of tab content */
+	/* background: #FFFFCC; */
+	clear: both;
+	padding: 15px;
+	min-height: 200px;
+}
+
+#arrayDetailsTab ul li a {
+
+      font-weight: bold;
+        height: 40px;
+        overflow: hidden;
+        background:url("../web/images/tabrightJ2.gif") no-repeat right top;
+        display: block;
+        color: #24618e;
+        float: left;
+        padding: 0 11px 0 3px;
+		text-align:center;
+}
+
+
+
+
+#arrayDetailsTab li.selected {
+	margin-left: 1px;
+	list-style: none;
+	cursor: pointer;
+        float: left;
+        position: relative;
+        background: transparent url("../web/images/tableftJ.gif") no-repeat 0px -42px;;
+        padding: 0 0 0 5px;
+       
+        /*line-height: 30px;*/
+	
+}
+
+
+
+        
+  div.modalTab { position:absolute; top:10%; left:2%; width:95%;
+		height:70%; background-color:white; padding:0 1em; }
+
+.modalTabContent
+{
+  BORDER-TOP: #808080 2px solid;
+  BORDER-LEFT: #808080 2px solid;
+  BORDER-BOTTOM: #808080 2px solid;
+  BORDER-RIGHT: #808080 2px solid;
+  position:absolute; top:7%; left:0; width:98%; height:110%;
+}
+
+
+.modalWindowClose
+{
+ bottom:0;
+ position:absolute;
+ left:40%;
+ width:20%;
+ height:20%;
+
+}
+
+/*---------------Errors-----------*/
+div.error{ 
+	float: left; 
+	margin: 20px 0px 20px 20px;
+	width: 700px;
+	font-size: 16px;
+	font-weight:bold;
+	
+}
+
+div.whats-new { background:  #fefefe; float: left; overflow: auto; width: 425px; height:200px; margin: 20px 30px; border: #999 1px solid; color: #999; font-size:12px}
+ 
+div.whats-new ul{ 
+		list-style: square outside;
+		margin-left: 30px; 
+		display: block;
+        color: #24618e;
+		line-height:16px;
+		
+}
+
+div.whats-new ol{ 
+		list-style: outside lower-alpha;
+		margin-left: 40px; 
+		display: block;
+        color: #24618e;
+		
+}
+
+div.whats-new li{ 
+		padding-top:8px;
+}
+
+div.whats-new  SPAN.highlight-dark {
+	font-size: 12pt; 
+	color:#3c3c3c;
+}
+
+div.whats-new .version h3{
+	font-size: 13pt; 
+	color:#3c3c3c;
+}
+div.whats-new .version{
+	font-size: 11pt; 
+	color:#3c3c3c;
+}
+
+div.smallSummary {
+	font-size:10px;
+	}
+	
+span.button, a.button{
+	display: inline-block;
+	height: 20px;
+	width: 100px;
+	background: #DDDDDD;
+	border:2px solid #AAAAAA;
+	
+	cursor:pointer;
+	
+	color: rgba(0, 0, 0, 0.55);
+	text-align: center;
+	font: bold 14px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+ 
+	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+span.button:hover,a.button:hover{
+	display: inline-block;
+	height: 20px;
+	width: 100px;
+	background: #BBBBBB;
+	border:2px solid #AAAAAA;
+	
+	color: rgba(0, 0, 0, 0.55);
+	text-align: center;
+	font: bold 14px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+ 
+	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+a.button {
+	text-decoration: none;
+}
+
+.button#logInOutBtn{
+	background:#3e698c;
+	color: #FFFFFF;
+	-webkit-border-radius: 0px;
+	-khtml-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+
+.button#accountBtn{
+	background:#3e698c;
+	color: #FFFFFF;
+	-webkit-border-radius: 0px;
+	-khtml-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+
+.button#logInOutBtn:hover{
+	background:#436f93;
+	color:#CCCCCC;
+	-webkit-border-radius: 0px;
+	-khtml-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+
+.button#accountBtn:hover{
+	background:#436f93;
+	color: #CCCCCC;
+	-webkit-border-radius: 0px;
+	-khtml-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+	
+}
+
+
+ol
+{
+list-style: decimal;
+list-style-type:decimal;
+padding-left:30px;
+}
+
+ol li
+{
+background-position: 0px 5px;
+padding-left: 10px;
+}
+
+.inpageHelp{
+	cursor:pointer;
+}
+
+.inpageHelpContent{
+	font-size:9px;
+}
+
+
+.header_status{
+	color:#FFFFFF;
+	text-align:right;
+	padding-right: 10px;
+	padding-top:20px;
+}
+
+.header_step{
+	color:#FFFFFF;
+	text-align:right;
+	padding-right: 10px;
+	padding-top:20px;
+}
+
+table.geneFilter {
+	position:relative; 
+	width:100%; 
+	top:-57px;
+}
+
+table.geneFilter  TH{
+font-size:18px; font-weight:bold; background-color:#DEDEDE; text-align:center;
+}
+
+div.columnLeft{
+	float:left;
+	width:50%;
+}
+
+div.columnRight{
+	float:right;
+	width:50%;
+}
+
+tr.smallnc.ensembl .viewSMNC, tr.smallnc.ensembl .viewTrx{
+	color: #4C7298;
+}
+
+.viewTrx,.viewSMNC{
+text-decoration:underline;
+color: #FFFFFF;
+cursor:pointer;
+}
+
+.leftSearch{
+	text-align:left;
+}
+
+/* Recommended styles for two sided multi-select*/
+		.tsmsselect {
+			width: 40%;
+			float: left;
+		}
+		
+		.tsmsselect select {
+			width: 100%;
+		}
+		
+		.tsmsoptions {
+			width: 20%;
+			float: left;
+		}
+		
+		.tsmsoptions p {
+			margin: 2px;
+			text-align: center;
+			font-size: larger;
+			cursor: pointer;
+		}
+		
+		.tsmsoptions p:hover {
+			color: White;
+			background-color: Silver;
+		}
+		
+.legendBtn,.legendBtn2,.gvlegendBtn{
+	cursor:pointer;
+}
