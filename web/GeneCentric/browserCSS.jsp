@@ -124,5 +124,11 @@ table.tooltipTable TD{
 	}
 	.geneReport TD.header{
 		background-color:#67E667;
+		font-size:14px;
+	}
+	.geneReport.header{
+		background-color:#67E667;
+		font-size:14px;
+		color:#000000;
 	}
 </style>

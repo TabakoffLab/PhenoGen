@@ -273,17 +273,17 @@
 			else 
 			{ // go ahead and make the rest of the form for entering options
 		%>
-		<div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000;width:1000px;text-align:left;">
-    	<span class="trigger less" id="circosOption1" name="circosOption" >eQTL Image Options</span>
+		<div style="font-size:18px; font-weight:bold; background-color:#47c647; color:#FFFFFF;width:100%;text-align:left;">
+    	<span class="trigger less triggerEC" id="circosOption1" name="circosOption" >eQTL Image Options</span>
     	<span class="eQTLtooltip" title="The controls in this section allow you to change the chromosomes and tissues included in the image as well as the P-value threshold.  If you can't see them click on the + icon.  Once you make changes click on the Click to Run Circos button."><img src="<%=imagesDir%>icons/info.gif"></span>
 		</div>
 
 
-      	<table id="circosOptTbl" name="items" class="list_base" cellpadding="0" cellspacing="3" style="width:1000px;text-align:left;" >
+      	<table id="circosOptTbl" name="items" class="list_base" cellpadding="0" cellspacing="3" style="width:100%;text-align:left;" >
         <tbody id="circosOption">
  		
 		<tr>
-			<td>
+			<td style="text-align:center;">
 				<strong>P-value Threshold for Highlighting:</strong> 
 				<span class="eQTLtooltip" title="Loci with p-values below the chosen threshold are highlighted on the Circos plot in yellow; a line connects the significant loci with the physical location of the gene. All p-values are displayed on the Circos graphic as the negative log base 10 of the p-value."><img src="<%=imagesDir%>icons/info.gif"></span>	
 			
@@ -306,17 +306,8 @@
 				%>
 				<%@ include file="/web/common/selectBox.jsp" %>
             </td>
-			<td>
-			</td>			
-		</tr>
-
-		<input type="hidden" id="hiddenGeneCentricPath" name="hiddenGeneCentricPath" value=<%=geneCentricPath%> />
-		<input type="hidden" id="hiddenGeneSymbol" name="hiddenGeneSymbol" value=<%=geneSymbolinternal%> />
-
-		
-		
-		<tr>
-			<td>
+			
+            	<td style="text-align:center;">
 							<strong>Transcript Cluster ID:</strong>
                             <span class="eQTLtooltip" title="On the Affymetrix Exon Array, gene level expression summaries are labeled as transcript clusters.  
 Each gene may have more than one transcript cluster associated with it, due to differences in annotation among databases and therefore, differences in which individual exons (probe sets) are included in the transcript cluster.  <BR><BR>
@@ -357,9 +348,15 @@ Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; hav
 			%>
 			<%@ include file="/web/common/selectBox.jsp" %>
             </td>
-			<td>
-			</td>
+					
 		</tr>
+
+		<input type="hidden" id="hiddenGeneCentricPath" name="hiddenGeneCentricPath" value=<%=geneCentricPath%> />
+		<input type="hidden" id="hiddenGeneSymbol" name="hiddenGeneSymbol" value=<%=geneSymbolinternal%> />
+
+		
+		
+		
 
 		
 		<TR class="allowChromSelection" >
@@ -499,7 +496,7 @@ The chromosome where the gene is physically located MUST be included in the Circ
 			document.getElementById("wait2").style.display = 'none';
 	</script>
 	
-<div id="forIframe" style="position:relative;top:-50px;">
+<div id="forIframe" style="position:relative;top:-50px; width:100%;">
 </div>
 	
 
@@ -524,8 +521,9 @@ The chromosome where the gene is physically located MUST be included in the Circ
 		$('.eQTLtooltip').tooltipster({
 										position: 'top-right',
 										maxWidth: 350,
-										offsetX: 24,
+										offsetX: 8,
 										offsetY: 5,
+										contentAsHTML:true,
 										//arrow: false,
 										interactive: true,
 										interactiveTolerance: 350
@@ -533,6 +531,11 @@ The chromosome where the gene is physically located MUST be included in the Circ
 		if($('#transcriptClusterID').length==1){
 			runCircos();
 		}
+		
+		$('#circosIFrame').attr('width',$(window).width()-50);
+		$(window).resize(function (){
+			$('#circosIFrame').attr('width',$(window).width()-50);
+		});
 	});
 
 </script>

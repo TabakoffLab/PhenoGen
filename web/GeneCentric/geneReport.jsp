@@ -102,7 +102,34 @@
 	}
 %>
 
-
+<style>
+	#psHeritTbl{
+		width:42%;
+	}
+	#psDABGTbl{
+		width:57%;
+	}
+	#genePart1Tbl{
+		width:45%;
+	}
+	#genePart2Tbl{
+		width:53%;
+	}
+	@media screen and (max-width:1200px){
+		#psHeritTbl{
+			width:100%;
+		}
+		#psDABGTbl{
+			width:100%;
+		}
+		#genePart1Tbl{
+			width:100%;
+		}
+		#genePart2Tbl{
+			width:100%;
+		}
+	}
+</style>
 <!--<a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>" target="_blank">View Affy Probe Set Details</a>
 <BR /><BR />
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
@@ -178,12 +205,12 @@ Add report here.
 				chr="chr"+chr;
 			}
             %>
-            <table class="geneReport" style="width:100%;">
+            <table id="genePart1Tbl" class="geneReport" style="display:inline-block;">
             <TR>
-            <TD style="min-width:150px;">
+            <TD style="width:20%;">
              Gene Symbol: 
              </TD>
-             <TD>
+             <TD style="width:78%;">
             <%if(curGene.getGeneSymbol()!=null && !curGene.getGeneSymbol().equals("")){%>
                                         <%=curGene.getGeneSymbol()%>
             <%}else{%>
@@ -303,17 +330,13 @@ Add report here.
             	<TD></TD>
                 <TD></TD>
             </TR>
-            
-            
-                               
-                                 
-                                
+            </table>
+            <table id="genePart2Tbl" class="geneReport" style="display:inline-block;">          
                                
             <%if(myOrganism.equals("Rn")){%>
    			<TR>
-            	<TD>Exonic SNPs:</TD>
-                
-                                <TD>
+            	<TD style="width:20%;">Exonic SNPs:</TD>
+                <TD style="width:78%;">
                                     <%if(curGene.getSnpCount("common","SNP")>0 || curGene.getSnpCount("common","Indel")>0 ){%>
                                         Common:<BR /><%=curGene.getSnpCount("common","SNP")%> / <%=curGene.getSnpCount("common","Indel")%><BR />
                                     <%}%>
@@ -328,10 +351,10 @@ Add report here.
             </TR>
             <%}%>
             <TR>
-            <TD>
+            <TD style="width:20%;">
 			Transcripts:
             </TD>
-            <TD>
+            <TD style="width:78%;">
                 <%	                       
                 for(int l=0;l<tmpTrx.size();l++){%>
 					<B><%=tmpTrx.get(l).getIDwToolTip()%></B>
@@ -345,119 +368,132 @@ Add report here.
                	<%}%>
             </TD>
             </TR>
-            <TR>
-            	<TD class="header">Affy Probe Set Data</TD>
-                <TD class="header">Overlapping Probe Set Count:<%=curGene.getProbeCount()%></TD>
-            </TR>
-            <%if(curGene.getProbeCount()>0){%>
-            <TR>
-            	<TD colspan="2"><B>Probe sets detected above background:</B></TD>
-            </TR>
-            <TR>
-            	<TD colspan="2">
-                	<table id="tblGeneDabg"  name="items" class="list_base" style="width:100%; text-align:center;">
-                                        <thead>
-                                        <tr class="col_title">
-                                        	<TH style="color:#000000;">Tissue</TH>
-                                            <TH style="color:#000000;">Number of probe sets detected above background in more than 1% of samples (out of <%=curGene.getProbeCount()%> probe sets for this gene)</TH>
-                                            <TH style="color:#000000;">Avg % of samples DABG</TH>
-                                            <TH style="color:#000000;">Range</TH>
-                                            
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-										<%for(int j=0;j<tissuesList1.length;j++){
-                                                        Object tmpD=dCount.get(tissuesList1[j]);
-                                                        Object tmpDa=dSum.get(tissuesList1[j]);
-														Object tmpDl=dMin.get(tissuesList1[j]);
-														Object tmpDh=dMax.get(tissuesList1[j]);
-														%>
-                                                        <TR>
-														<%if(tmpD!=null){
-                                                            int count=Integer.parseInt(tmpD.toString());
-                                                            double sum=Double.parseDouble(tmpDa.toString());
-															double min=Double.parseDouble(tmpDl.toString());
-															double max=Double.parseDouble(tmpDh.toString());
-                                                        %>
-                                                            <TD><%=tissuesList1[j]%></TD>
-															<TD><%=count%></TD> 
-															<%if(count>0){%>
-																<TD><%=df0.format(sum/count)%> %</TD>
-                                                                <TD><%=df2.format(min)%> - <%=df2.format(max)%> %</TD>
-															<%}else{%>
-                                                            	<TD>0</TD>
-                                                                <TD></TD>
-                                                                <TD></TD>
-                                                            <%}%>
-                                                           
-                                                        <%}else{%>
-                                                            <TD><%=tissuesList1[j]%></TD><TD></TD><TD></TD><TD></TD><TD></TD>
-                                                        <%}%>
-                                                        </TR>
-                                       <%}%>
-                                       </tbody>
-                      </table>
-                </TD>
-            </TR>
-             <TR>
-            	<TD colspan="2"><B>Probe Set Heritability >0.33:</B></TD>
-                
-            </TR>
-            <TR>
-            	<TD colspan="2">
-                	<table id="tblGeneHerit" name="items" class="list_base" style="width:100%; text-align:center;">
-                                        <thead>
-                                        
-                                        <tr class="col_title">
-                                        	<TH style="color:#000000;">Tissue</TH>
-                                            <TH style="color:#000000;">Number of probe sets with a heritability greater than 0.33 (out of <%=curGene.getProbeCount()%> probe sets for this gene)</TH>
-                                            <TH style="color:#000000;">Avg Herit</TH>
-                                            <TH style="color:#000000;">Range</TH>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-										<%for(int j=0;j<tissuesList1.length;j++){
-                                                        Object tmpH=hCount.get(tissuesList1[j]);
-                                                        Object tmpHa=hSum.get(tissuesList1[j]);
-														Object tmpHl=hMin.get(tissuesList1[j]);
-														Object tmpHh=hMax.get(tissuesList1[j]);%>
-                                                        <TR>
-                                                        <%if(tmpH!=null){
-                                                            int count=Integer.parseInt(tmpH.toString());
-                                                            double sum=Double.parseDouble(tmpHa.toString());
-															double min=Double.parseDouble(tmpHl.toString());
-															double max=Double.parseDouble(tmpHh.toString());
-                                                        %>
-                                                        
-                                                            <TD><%=tissuesList1[j]%></TD>
-															<TD><%=count%></TD>
-															<%if(count>0){%>
-                                                            	<TD><%=df2.format(sum/count)%></TD>
-                                                                <TD><%=df2.format(min)%> - <%=df2.format(max)%></TD>
-															<%}else{%>
-                                                            	<TD>0</TD>
-                                                                <TD></TD>
+            </table>
+            <div>
+            		<div class="geneReport header" style="width:100%;">
+                    Affy Probe Set Data: Overlapping Probe Set Count:<%=curGene.getProbeCount()%>
+                    </div>
+                    <%if(curGene.getProbeCount()>0){%>
+                    <table id="psDABGTbl" class="geneReport" style="display:inline-block;">
+                    <TR>
+                        <TD colspan="2"><B>Probe sets detected above background:</B></TD>
+                    </TR>
+                    <TR>
+                        <TD colspan="2">
+                            <table id="tblGeneDabg"  name="items" class="list_base" style="width:100%; text-align:center;">
+                                                <thead>
+                                                <tr class="col_title">
+                                                    <TH style="color:#000000;">Tissue</TH>
+                                                    <TH style="color:#000000;">Number of probe sets detected above background in more than 1% of samples (out of <%=curGene.getProbeCount()%> probe sets for this gene)</TH>
+                                                    <TH style="color:#000000;">Avg % of samples DABG</TH>
+                                                    <TH style="color:#000000;">Range</TH>
+                                                    
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <%for(int j=0;j<tissuesList1.length;j++){
+                                                                Object tmpD=dCount.get(tissuesList1[j]);
+                                                                Object tmpDa=dSum.get(tissuesList1[j]);
+                                                                Object tmpDl=dMin.get(tissuesList1[j]);
+                                                                Object tmpDh=dMax.get(tissuesList1[j]);
+                                                                %>
+                                                                <TR>
+                                                                <%if(tmpD!=null){
+                                                                    int count=Integer.parseInt(tmpD.toString());
+                                                                    double sum=Double.parseDouble(tmpDa.toString());
+                                                                    double min=Double.parseDouble(tmpDl.toString());
+                                                                    double max=Double.parseDouble(tmpDh.toString());
+                                                                %>
+                                                                    <TD><%=tissuesList1[j]%></TD>
+                                                                    <TD><%=count%></TD> 
+                                                                    <%if(count>0){%>
+                                                                        <TD><%=df0.format(sum/count)%> %</TD>
+                                                                        <TD><%=df2.format(min)%> - <%=df2.format(max)%> %</TD>
+                                                                    <%}else{%>
+                                                                        <TD>0</TD>
+                                                                        <TD></TD>
+                                                                        <TD></TD>
+                                                                    <%}%>
+                                                                   
+                                                                <%}else{%>
+                                                                    <TD><%=tissuesList1[j]%></TD><TD></TD><TD></TD><TD></TD><TD></TD>
+                                                                <%}%>
+                                                                </TR>
+                                               <%}%>
+                                               </tbody>
+                              </table>
+                        </TD>
+                    </TR>
+                    </table>
+                    <table id="psHeritTbl"  class="geneReport" style="display:inline-block;">
+                     <TR>
+                        <TD colspan="2"><B>Probe Set Heritability:</B></TD>
+                        
+                    </TR>
+                    <TR>
+                        <TD colspan="2">
+                            <table id="tblGeneHerit" name="items" class="list_base" style="width:100%; text-align:center;">
+                                                <thead>
+                                                
+                                                <tr class="col_title">
+                                                    <TH style="color:#000000;">Tissue</TH>
+                                                    <TH style="color:#000000;">Number of probe sets with a heritability greater than 0.33 (out of <%=curGene.getProbeCount()%> probe sets for this gene)</TH>
+                                                    <TH style="color:#000000;">Avg Herit</TH>
+                                                    <TH style="color:#000000;">Range</TH>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <%for(int j=0;j<tissuesList1.length;j++){
+                                                                Object tmpH=hCount.get(tissuesList1[j]);
+                                                                Object tmpHa=hSum.get(tissuesList1[j]);
+                                                                Object tmpHl=hMin.get(tissuesList1[j]);
+                                                                Object tmpHh=hMax.get(tissuesList1[j]);%>
+                                                                <TR>
+                                                                <%if(tmpH!=null){
+                                                                    int count=Integer.parseInt(tmpH.toString());
+                                                                    double sum=Double.parseDouble(tmpHa.toString());
+                                                                    double min=Double.parseDouble(tmpHl.toString());
+                                                                    double max=Double.parseDouble(tmpHh.toString());
+                                                                %>
                                                                 
-                                                             <%}%>
-                                                        <%}else{%>
-                                                            <TD><%=tissuesList1[j]%></TD><TD></TD><TD></TD><TD></TD>
-                                                        <%}%>
-                                                        </TR>
-                                       <%}%>
-                                       </tbody>
-                	</table>
-                </TD>
-            </TR>
+                                                                    <TD><%=tissuesList1[j]%></TD>
+                                                                    <TD><%=count%></TD>
+                                                                    <%if(count>0){%>
+                                                                        <TD><%=df2.format(sum/count)%></TD>
+                                                                        <TD><%=df2.format(min)%> - <%=df2.format(max)%></TD>
+                                                                    <%}else{%>
+                                                                        <TD>0</TD>
+                                                                        <TD></TD>
+                                                                        
+                                                                     <%}%>
+                                                                <%}else{%>
+                                                                    <TD><%=tissuesList1[j]%></TD><TD></TD><TD></TD><TD></TD>
+                                                                <%}%>
+                                                                </TR>
+                                               <%}%>
+                                               </tbody>
+                            </table>
+                        </TD>
+                    </TR>
+                    </table>
+                    </div>
             <%}%>
             
             <%	if(tc!=null){	
+			
+				
                                     //String[] curTissues=tc.getTissueList();%>
-                                    <TR>
+                    <div style="width:100%;">
+                    	<div class="geneReport header" style="width:100%;">
+                    		EQTLs Affymetrix Transcript Cluster(Confidence Level): <%=tc.getTranscriptClusterID()%> (<%=tc.getLevel()%>)
+                    	</div>
+					<table style="width:100%;">
+                                    <!--<TR>
                                          <TD class="header">EQTLs</TD>
                                          <TD class="header">Affymetrix Transcript Cluster(Confidence Level): <%=tc.getTranscriptClusterID()%> (<%=tc.getLevel()%>)</TD>
                                      </TR>
                                      
-                                    <TR>
+                                    <TR>-->
                                     <TD colspan="2">
                                     	<table id="tblGeneEQTL"  name="items" class="list_base" style="width:100%; text-align:center;">
                                         <thead>
@@ -520,15 +556,20 @@ Add report here.
                                         </table>
                                     </TD>
                                     </TR>
+                                    </table>
+                                    Click the Gene eQTLs Tab above to view a Circos Plot of the eQTLs listed above.
+                                    </div>
              <%}%>
                                     
-          </table>              
+                  
                                 
     </div>
     <div style="display:none;" id="geneEQTL">
     </div>
     <div style="display:none;" id="geneApp">
     		<div style="text-align:center;">
+            This feature requires Java which will open in a seperate window, when you click the button below.  If any problems were detected with your version of Java instructions would appear further below.  Please correct any errors you may see below before proceeding.<BR /><BR />
+            <span class="button" style="width:200px;"><a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>" target="_blank">View Affy Probe Set Details</a></span><BR />
                 <div id="javaError" style="display:none;">
                     <BR /><BR /><br />
                     <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for this page.  Please correct the error listed below.  <BR />
@@ -614,8 +655,8 @@ Add report here.
 				}
 				</script>
         <div >
-                        This feature requires Java which will open in a seperate window, when you click the button below.  If any problems were detected with your version of Java instructions would appear above.  Please continue if you do not see an error with instructions for fixing the error.<BR /><BR />
-                        <span class="button" style="width:200px;"><a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>" target="_blank">View Affy Probe Set Details</a></span>
+                        
+                        
         </div>
  	</div>
  </div>
