@@ -50,7 +50,7 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 <%if(popup){%>
 <%@ include file="/web/common/header_noBorder_noMenu.jsp" %>
 <%}else{%>
-<%@ include file="/web/common/header_noBorder.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <%}%>
 
 <jsp:useBean id="myIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>

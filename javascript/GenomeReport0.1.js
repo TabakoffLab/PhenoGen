@@ -2,8 +2,8 @@ var reportSelectedTrack=null;
 var loadedTrackTable=null;
 var regionDetailLoaded={};
 
-
-$(document).on('click','span.triggerRegionTable', function (event){
+//automatically loads but keeping incase we decide to change functionality.
+/*$(document).on('click','span.triggerRegionTable', function (event){
 		console.log("triggerRegionTable");
 		var baseName = $(this).attr("name");
         var thisHidden = $("div#" + baseName).is(":hidden");
@@ -31,12 +31,12 @@ $(document).on('click','span.triggerRegionTable', function (event){
 				}
 				regionDetailLoaded[baseName]=curRptRegion;
 			}*/
-        } else {
+        /*} else {
         	console.log("div#" + baseName+ " is visible");
 			$("div#" + baseName).hide();
 			$(this).removeClass("less");
         }
-	});
+	});*/
 
 $(document).on('click','span.detailMenu', function (event){
 	var baseName = $(this).attr("name");
@@ -67,33 +67,6 @@ $(document).on('click','span.detailMenu', function (event){
 		}
 	}
 });
-
-
-
-/*$(document).on('click','span.detailMenu', function (event){
-	var baseName = $(this).attr("name");
-    var selectedTab=$('span.detailMenu.selected').attr("name");
-    $("div#"+selectedTab).hide();
-    $('span.detailMenu.selected').removeClass("selected");
-    $("span[name='"+baseName+"']").addClass("selected");
-    $("div#"+baseName).show();
-    //check if loaded load if not
-    var curRptRegion=chr+":"+minCoord+"-"+maxCoord;
-    if(baseName=="regionTable"){
-		curRptRegion=curRptRegion+":"+reportSelectedTrack;
-	}
-
-	if(regionDetailLoaded[baseName] && regionDetailLoaded[baseName]==curRptRegion){
-				//don't have to load might reset?
-	}else{
-		if(baseName=="regionTable" && reportSelectedTrack!=null){
-					loadTrackTable();
-		}else if(baseName="regionEQTLTable"){
-					loadEQTLTable();
-		}
-		regionDetailLoaded[baseName]=curRptRegion;
-	}
-});*/
 
 function loadTrackTable(){
 	console.log("loadTrackTable");
@@ -254,9 +227,11 @@ function displayDetailedView(track){
 	}
 	var tc=new String(track.trackClass);
 	if(tc=="coding" || tc=="noncoding" || tc=="smallnc" || tc=="qtl"){
-		$("tr#regionDetailRow").show();
+		$("#regionTableSubHeader").show();
+		$("#regionTable").show();
 	}else{
-		$("tr#regionDetailRow").hide();
+		$("#regionTableSubHeader").hide();
+		$("#regionTable").hide();
 	}
 	if(!$('div#regionTable').is(":hidden")){
 		loadTrackTable();

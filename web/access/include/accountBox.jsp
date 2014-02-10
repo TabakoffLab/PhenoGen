@@ -1,7 +1,6 @@
      <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){
 	 	actionForm=accessDir+"include/handleRedirectLogin.jsp";
 	 %>
-     	
         <div id="login_box">
         		
                 <% if(!loginEnabled){ %>

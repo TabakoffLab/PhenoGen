@@ -29,6 +29,41 @@ var pathPrefix="web/GeneCentric/";
 var dataPrefix="";
 </script>
 
+<style>
+  #trackListDiv{
+    display: inline-block;
+	vertical-align:text-top;
+    width: 20%;
+  }
+  #regionTableDiv{
+    display: inline-block;
+	vertical-align:text-top;
+    width: 79%;
+  }
+  #trackContent{
+  	text-align:center;
+  }
+  @media screen and (max-width:1450px){
+    #trackListDiv{
+      width: 100%;
+	  text-align:left;
+    }
+	#trackList{
+		display: inline-block;
+		vertical-align:text-top;
+		width:48%;
+	}
+	#trackContent{
+		display: inline-block;
+		vertical-align:text-top;
+		width:47%;
+	}
+    #regionTableDiv{
+      width: 100%;
+    }
+  }
+
+</style>
 
 
 <%if(genURL.get(0)!=null && !genURL.get(0).startsWith("ERROR:")){%>
@@ -115,12 +150,12 @@ var dataPrefix="";
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
-            <div id="geneImage" class="ucscImage"  style="display:inline-block;width:980px;">
-            <script src="javascript/GenomeDataBrowser0.6.js" type="text/javascript"></script>
+            <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
+            <script src="javascript/GenomeDataBrowser0.6.1.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
-                    var gs=new GenomeSVG(".ucscImage",970,minCoord,maxCoord,0,chr,"gene");
+                    var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
 					loadState(0);
 					
                     //$( "ul, li" ).disableSelection();
@@ -180,38 +215,30 @@ var dataPrefix="";
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionSummary" class="helpImage" src="../web/images/icons/help.png" /></div>
     </div>
     <div id="collapsableReport" style="width:100%;">
-    		
-
         <div style="display:inline-block;width:100%;" id="regionSummary">
-            <table style="width:100%;" cellspacing="0">
-            <TR><TD style="vertical-align:top;   " class="layout">
-            <div id="list" style="text-align:left; overflow:auto;">
-            <span style="color:#000000; font-weight:bold;">Track List:</span>
-            <UL id="collapsableReportList" style="list-style:none; margin:10px;">
-            </UL>
+            <div id="trackListDiv">
+                <div id="trackList" style="text-align:left;">
+                	<span style="color:#000000; font-weight:bold;">Track List:</span>
+                    <UL id="collapsableReportList" style="list-style:none; margin:10px;">
+                    </UL>
+                </div>
+                <div id="trackContent">
+                    <span style="font-weight:bold;">Break down of track count*</span><BR /><BR />
+                    <div id="trackGraph">
+                    </div>
+                    <span>*Note: Depending on the track settings some features may not be displayed and will not be reflected in the image above.</span>
+                </div>
             </div>
-            </TD>
-            <TD style="text-align:center;" class="layout">
-            <div id="trackContent">
-                <span style="font-weight:bold;">Break down of track count*</span><BR /><BR />
-                <div id="trackGraph">
-                </div>
-                <span>*Note: Depending on the track settings some features may not be displayed and will not be reflected in the image above.</span>
-            </div>
-            </TD>
-            </TR>
-            <TR id="regionDetailRow"><TD colspan="2">
-                <div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:left; width:100%; ">
-                    <span class="trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>
-                    <span>Track Feature Table<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-                </div>
-                <div id="regionTable" style="display:none;">
-                    
-                    
-                </div>
-            </TD>
-            </TR>
-            </table>
+               <div id="regionTableDiv">
+                   <div id="regionTableSubHeader" class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:left; width:100%; ">
+                        <!--<span class="trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>-->
+                        <span>Features in Selected Track<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                   </div>
+                   <div id="regionTable" style="display:none;">
+                        
+                        
+                   </div>
+               </div>
           </div>
           <div style="display:none;" id="regionEQTLTable">
          

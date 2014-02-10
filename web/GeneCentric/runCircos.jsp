@@ -432,7 +432,7 @@ else if((selectedChromosomeError!=null)&&(selectedChromosomeError)){
 			<img src="/web/images/icons/download_g.png">
 			</a>
           <div id="iframe_parent" align="center">
-               <iframe src=<%=iframeURL%> height=950 width=950  position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
+               <iframe id="circosIFrame" src=<%=iframeURL%> height=950 width=950  position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
                </iframe>
           </div>
           </div>
