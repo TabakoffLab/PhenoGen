@@ -103,16 +103,16 @@
 	
 %>
 
-<div id="bQTLList" class="modalTabContent" style="position:relative;top:56px;border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:100%;">
+<div id="bQTLList"  style="border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:100%;">
 	
-	<table class="geneFilter">
+	<table class="geneFilter" style="top:0px;">
                 	<thead>
-                    	<TH style="width:50%"><span class="trigger triggerEC" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left;">Filter List</span><span class="bQTLListToolTip" title="Click the + icon to view fitlering options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH style="width:50%"><span class="trigger triggerEC" id="bqtlListFilter2" name="bqtlListFilter" style=" position:relative;text-align:left;">View Columns</span><span class="bQTLListToolTip" title="Click the + icon to view options to show or hide additional columns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    	<!--<TH style="width:50%"><span class="trigger triggerEC" id="bqtlListFilter1" name="bqtlListFilter" style=" position:relative;text-align:left;">Filter List</span><span class="bQTLListToolTip" title="Click the + icon to view fitlering options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>-->
+                        <TH style="width:50%"><span class="trigger triggerEC" id="bqtlListFilter2" name="bqtlListFilter" style="text-align:left;">View Columns</span><span class="bQTLListToolTip" title="Click the + icon to view options to show or hide additional columns."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     </thead>
                 	<tbody id="bqtlListFilter" style="display:none;">
                     	<TR>
-                        	<td></td>
+                        	<!--<td></td>-->
                         	<td>
                             	<div class="columnLeft">
                                 	<%if(myOrganism.equals("Mm")){%>
@@ -314,8 +314,8 @@
 	var tblBQTL=$('#tblBQTL').dataTable({
 	"bPaginate": false,
 	"bProcessing": true,
-	"sScrollX": "950px",
-	"sScrollY": "500px",
+	"sScrollX": "100%",
+	"sScrollY": "100%",
 	"bDeferRender": true,
 	"aoColumnDefs": [
       { "bVisible": false, "aTargets": bqtlTarget }
@@ -323,26 +323,8 @@
 	"sDom": '<"leftSearch"fr><t>'
 	});
 	
-	$('#tblBQTL_wrapper').css({position: 'relative', top: '-56px'});
-	$('#bqtlTabID').removeClass('disable');
-	$('#bqtlTabID').click(function() {    
-			$('div#changingTabs').show(10);
-				//change the tab
-				$('#mainTab ul li a').removeClass('selected');
-				$(this).addClass('selected');
-				var currentTab = $(this).attr('href'); 
-				$('#mainTab div.modalTabContent').hide();       
-				$(currentTab).show();
-				//adjust row and column widths if needed(only needs to be done once)
-				if(!tblBQTLAdjust&&bQTLSize>0){
-						tblBQTL.fnAdjustColumnSizing();
-						tblBQTLAdjust=true;
-				}
-				setFilterTableStatus("bqtlListFilter");
-				
-			$('div#changingTabs').hide(10);
-			return false;
-        });
+	
+	
 	/* Seutp Filtering/Viewing in tblBQTL*/
 	 $('#rgdIDCBX').click( function(){
 			displayColumns(tblBQTL,1,1,$('#rgdIDCBX').is(":checked"));
@@ -420,8 +402,9 @@
 	  $('.bQTLListToolTip').tooltipster({
 		position: 'top-right',
 		maxWidth: 250,
-		offsetX: 24,
+		offsetX: 8,
 		offsetY: 5,
+		contentAsHTML:true,
 		//arrow: false,
 		interactive: true,
    		interactiveTolerance: 350

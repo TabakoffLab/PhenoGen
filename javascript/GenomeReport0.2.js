@@ -176,12 +176,18 @@ function trKey(d){
 }
 
 function DisplayRegionReport(){
-	console.log("DisplayRegionReport");
+	//console.log("DisplayRegionReport");
 		//d3.select('#collaspableReportList').selectAll('li').remove();
-		if(d3.select('#collapsableReportList').size()>0){
+	if(d3.select('#collapsableReportList').size()>0){
 			var tmptrackList=svgList[0].trackList;
 			if(reportSelectedTrack==null){
-				reportSelectedTrack=tmptrackList[0];
+				for(var i=0;i<tmptrackList.length&&reportSelectedTrack==null;i++){
+					console.log(tmptrackList[i].trackClass);
+					console.log(tmptrackList[i].getDisplayedData);
+					if(tmptrackList[i].getDisplayedData!=undefined){
+						reportSelectedTrack=tmptrackList[i];
+					}
+				}
 			}
 			var list=d3.select('#collapsableReportList').selectAll('li.report').data(tmptrackList,trKey).html(function(d){
 					var label="";
