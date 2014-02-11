@@ -109,9 +109,9 @@
 
 <BR />
 <BR />
-<div style="text-align:center;">
+<div style="display:inline-block; text-align:center;">
 <h2>Sequences</h2>
-<table name="items" id="tblViewSMNC" class="list_base" cellpadding="0" cellspacing="0" width="100%">
+<table name="items" id="tblViewSMNC" class="list_base" cellpadding="0" cellspacing="0" width="950px" style="display:inline-block;text-align:center;">
 	<thead>
     	<TR >
         	<TH colspan="3"></TH>
