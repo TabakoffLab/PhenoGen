@@ -273,7 +273,34 @@
 	log.debug("Setup after finging Path:"+(time.getTime()-startDate.getTime()));
 %>
 
-<div id="eQTLListFromRegion"  style="position:relative;top:56px;width:998px;">
+<style>
+  #circosDiv{
+    display: inline-block;
+	vertical-align:text-top;
+    width: 43%;
+  }
+  #qtlTableDiv{
+    display: inline-block;
+	vertical-align:text-top;
+    width: 56%;
+  }
+  
+  @media screen and (max-width:1200px){
+	  #circosDiv{
+		display: inline-block;
+		vertical-align:text-top;
+		width: 100%;
+	  }
+	  #qtlTableDiv{
+		display: inline-block;
+		vertical-align:text-top;
+		width: 100%;
+	  }
+  }
+
+</style>
+
+<div id="eQTLListFromRegion"  style="width:100%;">
 		
         
 		<!--<table class="geneFilter">
@@ -304,17 +331,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 	log.debug("Setup after get eqtls regions:"+(time.getTime()-startDate.getTime()));
   if(session.getAttribute("getTransControllingEQTL")==null){
   	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
-            <div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:center; width:100%; position:relative; top:-56px">
-            	<span class="trigger less triggerEC" name="eQTLRegionNote" >EQTL Region</span>
-                <span class="eQTLListToolTip" title="This section lists the regions being reported as begin associated with control of the genes following.  It is important to note that the region entered may only be close to or overlap with a defined SNP or Region between SNPs and may larger than the region selected or may only include part of the region selected."><img src="<%=imagesDir%>icons/info.gif"></span>
-            </div>
-            <div id="eQTLRegionNote" style="width:100%; position:relative; top:-56px">
-            Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the following region(s):<BR />
-            <%for(int i=0;i<eQTLRegions.size();i++){%>
-                <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=eQTLRegions.get(i)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank"><%=eQTLRegions.get(i)%></a><BR />
-            <%}%>
-            So the genes listed below could be controlled from anywhere in the region(s) above.
-            </div>
+            
         
             <%
 		String shortRegionCentricPath;
@@ -350,47 +367,56 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 		String iframeURL = shortRegionCentricPath + "/circos"+cutoffTimesTen+"/svg/circos_new.svg";
 		String svgPdfFile= shortRegionCentricPath + "/circos"+cutoffTimesTen+"/svg/circos_new.pdf";
 	%>
-                  
-   	<div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:center; width:100%;top:-56px; position:relative;">
-    	<span class="trigger less triggerEC" name="circosPlot" >Gene Location Circos Plot</span>
-    	<div class="inpageHelp" style="display:inline-block;"><img id="HelpRevCircos" class="helpImage" src="../web/images/icons/help.png" /></div>
-        <span style="font-size:12px; font-weight:normal;">
-        Adjust Vertical Viewable Size:
-        <select name="circosSizeSelect" id="circosSizeSelect">
-        		<option value="200" >Smallest</option>
-            	<option value="475" >Half</option>
-                <option value="950" selected="selected">Full</option>
-                <option value="1000" >Maximized</option>
-            </select>
-        </span>
-        <span class="eQTLListToolTip" title="To control the viewable area of the Circos Plot below simply select your prefered size."><img src="<%=imagesDir%>icons/info.gif"></span>
+    
+    
+    <div id="circosDiv">
+        <div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:center; width:100%;">
+            Gene Location Circos Plot
+            <div class="inpageHelp" style="display:inline-block;"><img id="HelpRevCircos" class="helpImage" src="../web/images/icons/help.png" /></div>
+            <!--<span style="font-size:12px; font-weight:normal;">
+            Adjust Vertical Viewable Size:
+            <select name="circosSizeSelect" id="circosSizeSelect">
+                    <option value="200" >Smallest</option>
+                    <option value="475" >Half</option>
+                    <option value="950" selected="selected">Full</option>
+                    <option value="1000" >Maximized</option>
+                </select>
+            </span>
+            <span class="eQTLListToolTip" title="To control the viewable area of the Circos Plot below simply select your prefered size."><img src="<%=imagesDir%>icons/info.gif"></span>-->
+            
+        </div> 
+        <%if(session.getAttribute("getTransControllingEQTLCircos")==null){%>
+        <div id="circosPlot" style="text-align:center;">
+            <div style="display:inline-block;text-align:center; width:100%;">
+                <!--<span id="circosMinMax" style="cursor:pointer;"><img src="web/images/icons/circos_min.jpg"></span>-->
+                <a href="<%=svgPdfFile%>" target="_blank">
+                <img src="web/images/icons/download_g.png" title:"Download Circos Image">
+                </a>
+                Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
+                <span id="filterBtn1" class="filter button" >Filter eQTLs</span>
+            </div>
+    
+            
+    
+              <div id="iframe_parent" align="center" style="width:100%">
+                   <iframe id="circosIFrame" src=<%=iframeURL%> height=950   position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
+                   </iframe>
+              </div>
+              <a href="http://genome.cshlp.org/content/early/2009/06/15/gr.092759.109.abstract" target="_blank" style="text-decoration: none">Circos: an Information Aesthetic for Comparative Genomics.</a>
+         </div><!-- end CircosPlot -->
+        <%}else{%>
+            <div id="circosPlot" style="text-align:center;">
+            <strong><%=session.getAttribute("getTransControllingEQTLCircos")%></strong><BR /><BR /><BR />
+            </div><!-- end CircosPlot -->
+        <%}
         
-    </div> 
-    <%if(session.getAttribute("getTransControllingEQTLCircos")==null){%>
-    <div id="circosPlot" style="text-align:center; top:-45px; position:relative;">
-		<div style="display:inline-block;text-align:center; width:100%;">
-        	<!--<span id="circosMinMax" style="cursor:pointer;"><img src="web/images/icons/circos_min.jpg"></span>-->
-			<a href="<%=svgPdfFile%>" target="_blank">
-			<img src="web/images/icons/download_g.png" title:"Download Circos Image">
-			</a>
-            Inside of border below, the mouse wheel zooms.  Outside of the border, the mouse wheel scrolls. 
-            <span id="filterBtn1" class="filter button" style="float:right;">Filter eQTLs</span>
-     	</div>
-
-		
-
-          <div id="iframe_parent" align="center">
-               <iframe id="circosIFrame" src=<%=iframeURL%> height=950 width=950  position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
-               </iframe>
-          </div>
-          <a href="http://genome.cshlp.org/content/early/2009/06/15/gr.092759.109.abstract" target="_blank" style="text-decoration: none">Circos: an Information Aesthetic for Comparative Genomics.</a>
-     </div><!-- end CircosPlot -->
-	<%}else{%>
-    	<div id="circosPlot" style="text-align:center;">
-    	<strong><%=session.getAttribute("getTransControllingEQTLCircos")%></strong><BR /><BR /><BR />
-        </div><!-- end CircosPlot -->
-	<%}
-	log.debug("end circos");%>
+        log.debug("end circos");%>
+    </div>
+    <div id="qtlTableDiv" style="display:inline-block;">
+    	<div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:center; width:100%;">
+            List of Genes
+            <span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span>
+        </div> 
 			<%String idList="";
 			int idListCount=0;
 			log.debug("before outer");
@@ -452,7 +478,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
             </div>
 		<BR />	
 
-	<TABLE name="items" id="tblFrom" class="list_base" cellpadding="0" cellspacing="0">
+	<TABLE name="items" id="tblFrom" class="list_base" cellpadding="0" cellspacing="0" border="0" width="100%" >
                 <THEAD>
                 	<tr>
                         <th colspan="3" class="topLine noSort noBox"></th>
@@ -628,14 +654,17 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
                    	 
 				 </tbody>
               </table>
+           </div>
               <BR /><BR /><BR />
               
               <script type="text/javascript">
+			  		
 					var tblFrom=$('#tblFrom').dataTable({
+					"bAutoWidth": false,
 					"bPaginate": false,
 					"bProcessing": true,
-					"sScrollX": "950px",
-					"sScrollY": "650px",
+					"sScrollX": "100%",
+					"sScrollY": "100%",
 					"bDeferRender": false,
 					"sDom": '<"leftSearch"fr><t>'
 					});
@@ -676,23 +705,26 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 						$('#circosSizeSelect').change( function(){
 								var size=$(this).val();
 								$('#circosIFrame').attr("height",size);
-								if(size<=950){
+								tblFrom.fnSettings().oScroll.sY = size;
+								tblFrom.fnDraw();
+								/*if(size<=950){
 									$('#circosIFrame').attr("width",950);
 								}else{
 									$('#circosIFrame').attr("width",size-2);
-								}
+								}*/
 						});
 						$('.eQTLListToolTip').tooltipster({
 							position: 'top-right',
 							maxWidth: 250,
-							offsetX: 24,
+							offsetX: 8,
 							offsetY: 5,
+							contentAsHTML:true,
 							//arrow: false,
 							interactive: true,
 							interactiveTolerance: 350
 						});
 						
-					tblFrom.fnAdjustColumnSizing();
+					
 			  </script>
       	<%}else{%>
       		No genes to display.  Try changing the filtering parameters.
@@ -700,10 +732,21 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
      <%}else{%>
      	<strong><%=session.getAttribute("getTransControllingEQTL")%></strong>
      <%}%>
+     <div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:center; width:100%;">
+            	<span class="trigger less triggerEC" name="eQTLRegionNote" >EQTL Region</span>
+                <span class="eQTLListToolTip" title="This section lists the regions being reported as begin associated with control of the genes following.  It is important to note that the region entered may only be close to or overlap with a defined SNP or Region between SNPs and may larger than the region selected or may only include part of the region selected."><img src="<%=imagesDir%>icons/info.gif"></span>
+            </div>
+            <div id="eQTLRegionNote" style="width:100%;">
+            Genes controlled from and P-values reported for eQTLs from this region are not specific to the region you entered. The "P-value from region" columns correspond to the following region(s):<BR />
+            <%for(int i=0;i<eQTLRegions.size();i++){%>
+                <a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=eQTLRegions.get(i)%>&speciesCB=<%=myOrganism%>&auto=Y&newWindow=Y" target="_blank"><%=eQTLRegions.get(i)%></a><BR />
+            <%}%>
+            So the genes listed below could be controlled from anywhere in the region(s) above.
+            </div>
 </div><!-- end eQTL List-->
 
 
-<div id="filterdivEQTL" class="filterdivEQTL" style=" background-color:F8F8F8;display:none;position:absolute;z-index:999; top:660px; left:451px; border:solid;border-color:#000000;border-width:1px;">
+<div id="filterdivEQTL" class="filterdivEQTL" style=" background-color:F8F8F8;display:none;position:absolute;z-index:999; border:solid;border-color:#000000;border-width:1px;">
 	<span style="color:#000000;">Filter Settings</span>
    	<span class="closeBtn" id="close_filterdivEQTL" style="position:relative;top:1px;left:215px;"><img src="<%=imagesDir%>icons/close.png"></span>
 	<table style="width:100%;">
@@ -905,32 +948,51 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 <script type="text/javascript">
 	//$(document).ready(function() {
 		$(".multiselect").twosidedmultiselect();
+		tblFrom.fnAdjustColumnSizing();
+		tblFrom.fnDraw();
 		
+		var pW=$('#iframe_parent').width();
+		$('#circosIFrame').attr('width',pW-25);
+		console.log("parent size(init):"+pW);
+		$(window).resize(function (){
+			var pW=$('#iframe_parent').width();
+			$('#circosIFrame').attr('width',pW-25);
+			tblFrom.fnAdjustColumnSizing();
+			tblFrom.fnDraw();
+		});
 		
 		$(document).on("click","span.filter",function(){
 				var id=new String($(this).attr("id"));
 				if(!$("div#filterdivEQTL").is(":visible")){
-						var p=$("span#"+id).position();
-						var top=578;
-						var left=443;
-						if(id.indexOf("2")>0){
-							top=516;
-							left=430;
+						var p=$(this).position();
+						var left=p.left;
+						if(left>$(window).width()/2){
+							left=left-$("#filterdivEQTL").width()+130;
 						}
-						$("#filterdivEQTL").css("top",p.top+top).css("left",p.left-left);
-						$("#filterdivEQTL").fadeIn("fast");
+						console.log("top:"+top+" left:"+left);
+						$("#filterdivEQTL").css("display","inline-block");
+						$("#filterdivEQTL").css("top",p.top).css("left",left);
+						$("#filterdivEQTL").show();
 				}else{
-						$("#filterdivEQTL").fadeOut("fast");
+						//$("#filterdivEQTL").fadeOut("fast");
+						var p=$(this).position();
+						var left=p.left;
+						if(left>$(window).width()/2){
+							left=left-$("#filterdivEQTL").width()+130;
+						}
+						$("#filterdivEQTL").css("top",p.top).css("left",left);
 				}
-				return false;
+				return true;
 			});
 			
 		$(document).on("click","span.view",function(){
 				var id=new String($(this).attr("id"));
 				if(!$("div#viewEQTL").is(":visible")){
 						var p=$(this).position();
-						$("#viewEQTL").css("top",p.top+516).css("left",p.left-226);
-						$("#viewEQTL").fadeIn("fast");
+						$("#viewEQTL").css("display","inline-block");
+						$("#viewEQTL").css("top",p.top).css("left",p.left-226);
+						$("#viewEQTL").show();
+						//$("#viewEQTL").fadeIn("fast");
 				}else{
 						$("#viewEQTL").fadeOut("fast");
 				}
