@@ -380,7 +380,7 @@ At least one tissue MUST be included in the Circos plot."><img src="<%=imagesDir
                                                         <tr>
                                                             <td>
                                                                 
-                                                                <select name="tissuesMS" id="tissuesMS" class="multiselect" size="6" multiple="true">
+                                                                <select name="tissuesMS" id="tissuesMS" class="genemultiselect" size="6" multiple="true">
                                                                 
                                                                     <% 
                                                                     
@@ -430,7 +430,7 @@ The chromosome where the gene is physically located MUST be included in the Circ
                                                     <tr>
                                                         <td>
                                                             
-                                                            <select name="chromosomesMS" id="chromosomesMS" class="multiselect" size="6" multiple="true">
+                                                            <select name="chromosomesMS" id="chromosomesMS" class="genemultiselect" size="6" multiple="true">
                                                             
                                                                 <% 
                                                                 
@@ -509,7 +509,7 @@ The chromosome where the gene is physically located MUST be included in the Circ
 	
 	$(document).ready(function() {	
 		
-		$(".multiselect").twosidedmultiselect();
+		$(".genemultiselect").twosidedmultiselect();
         var selectedChromosomes = $("#chromosomes")[0].options;
 		//document.getElementById("circosError1").style.display = 'none';
 		/*$(".triggerEQTL").click(function(){
