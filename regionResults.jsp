@@ -63,6 +63,7 @@ var dataPrefix="";
     }
   }
 
+	
 </style>
 
 
@@ -303,6 +304,7 @@ var dataPrefix="";
 		maxWidth: 250,
 		offsetX: 24,
 		offsetY: 5,
+		contentAsHTML:true,
 		//arrow: false,
 		interactive: true,
    		interactiveTolerance: 350
