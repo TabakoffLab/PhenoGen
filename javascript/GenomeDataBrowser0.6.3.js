@@ -30,6 +30,7 @@ var siteVer="PhenoGen v2.10.2(2/6/2014)";
 var trackBinCutoff=10000;
 
 
+
 //setup tooltip text div
 var tt=d3.select("body").append("div")   
 	    	.attr("class", "testToolTip") 
@@ -237,6 +238,10 @@ $(document).on("change","input[name='optioncbx']",function(){
 });
 
 
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function displayHelpFirstTime(){
 	/*if($.cookie("genomeBrowserHelp")!=null){
     	var trackListObj=$.cookie("genomeBrowserHelp");
@@ -265,6 +270,30 @@ function mup() {
 					DisplayRegionReport();
 				}
 				svgList[i].updateFullData();
+			}else if(!isNaN(svgList[i].downZoomx)){
+				var start=svgList[i].downZoomx;
+				var p = d3.mouse(svgList[i].vis[0][0]);
+				svgList[i].downZoomxEnd=p[0];
+				var width=1;
+				if(p[0]<start){
+					start=p[0];
+					width=svgList[i].downZoomx-start;
+				}else{
+					width=p[0]-start;
+				}
+				var minx=Math.round(svgList[i].xScale.invert(start));
+				var maxx=Math.round(svgList[i].xScale.invert(start+width));
+				svgList[i].downZoomx = Math.NaN;
+				svgList[i].downZoomxEnd = Math.NaN;
+				if(i==0){
+					$('#geneTxt').val(chr+":"+minx+"-"+maxx);
+				}
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg rect.zoomRect").remove();
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextStart").remove();
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextEnd").remove();
+	            svgList[i].xScale.domain([minx,maxx]);
+				svgList[i].scaleSVG.select(".x.axis").call(svgList[i].xAxis);
+				svgList[i].redraw();
 			}
 		}
 	}
@@ -309,6 +338,24 @@ function mmove(){
 						}
 					
 				  }
+			}else if(!isNaN(svgList[i].downZoomx)){
+				var start=svgList[i].downZoomx;
+				var p = d3.mouse(svgList[i].vis[0][0]);
+				svgList[i].downZoomxEnd=p[0];
+				var width=1;
+				if(p[0]<start){
+					start=p[0];
+					width=svgList[i].downZoomx-start;
+				}else{
+					width=p[0]-start;
+				}
+				var minx=Math.round(svgList[i].xScale.invert(start));
+				var maxx=Math.round(svgList[i].xScale.invert(start+width));
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg rect.zoomRect")
+								.attr("x",start)
+								.attr("width",width);
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextStart").attr("x",start).attr("y",15).text(numberWithCommas(minx));
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextEnd").attr("x",start+width).attr("y",50).text(numberWithCommas(maxx));
 			}
 		}
 	}
@@ -749,6 +796,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		var tmpvis=d3.select("#Level"+this.levelNumber+track);
 		if(tmpvis[0][0]==null){
 				var dragDiv=this.topLevel.append("li").attr("class","draggable"+this.levelNumber);
+				//dragDiv.append("span").style("background","#CECECE").style("height","100%").style("width","10px").style("display","inline-block");
 				var svg = dragDiv.append("svg:svg")
 				.attr("width", this.get('width'))
 				.attr("height", 30)
@@ -756,9 +804,10 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				.attr("id","Level"+this.levelNumber+track)
 				.attr("pointer-events", "all")
 				.style("cursor", "move")
+				
 				.on("mouseover", function(){
 					if(overSelectable==0){
-						$("#mouseHelp").html("<B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Reorder Tracks:</B> Click on the track and drag up or down to desired location.");
+						$("#mouseHelp").html("<B>Zoom:</B> Hold the Alt Key while clicking then drag. <B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Reorder Tracks:</B> Click on the track and drag up or down to desired location.");
 					}
 				})
 				.on("mouseout", function(){
@@ -1316,8 +1365,20 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	}.bind(this);
 
 	this.mdown=function() {
-			//console.log(this.vis);
-			if(processAjax==0){
+		if(d3.event.altKey){
+				var p = d3.mouse(this.vis[0][0]);
+				this.downZoomx=p[0];
+				this.scaleSVG.append("rect")
+						.attr("class","zoomRect")
+						.attr("x",p[0])
+						.attr("y",0)
+		    			.attr("height",this.scaleSVG.attr("height"))
+						.attr("width",1)
+						.attr("fill","#CECECE")
+						.attr("opacity",0.3);
+				this.scaleSVG.append("text").attr("id","zoomTextStart").attr("x",this.downZoomx).attr("y",15).text(numberWithCommas(Math.round(this.xScale.invert(this.downZoomx))));
+				this.scaleSVG.append("text").attr("id","zoomTextEnd").attr("x",this.downZoomx).attr("y",50).text(numberWithCommas(Math.round(this.xScale.invert(this.downZoomx))));
+		}else if(processAjax==0){
 				this.prevMinCoord=this.xScale.domain()[0];
 				this.prevMaxCoord=this.xScale.domain()[1];
 		        var p = d3.mouse(this.vis[0][0]);
@@ -1371,6 +1432,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	this.downx = Math.NaN;
 	this.downscalex;
 	this.downPanx=Math.NaN;
+	this.downZoomx=Math.NaN;
+	this.downZoomxEnd=Math.NaN;
 
 
 	this.xMax=290000000;
@@ -1455,7 +1518,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						.on("mousedown", this.mdown)
 						.on("mouseup",mup)
 						.on("mouseover", function(){
-							$("#mouseHelp").html("<B>Zoom:</b> Click and Drag right to zoom in or left to zoom out.");
+							$("#mouseHelp").html("<B>Zoom:</b> Click and Drag right to zoom in or left to zoom out. <B>OR</B> Hold the Alt Key while clicking, then drag to select a specific area.");
 						})
 						.on("mouseout", function(){
 							$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
@@ -1893,7 +1956,33 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 //Track Functions
 function Track(gsvgP,dataP,trackClassP,labelP){
 	this.panDown=function(){
-		if(processAjax==0){
+		console.log("mousedown key:"+d3.event.altKey);
+		if(d3.event.altKey||d3.event.shiftKey){
+			if(d3.event.altKey){
+				var p = d3.mouse(this.gsvg.vis[0][0]);
+				this.gsvg.downZoomx=p[0];
+				this.svg.append("rect")
+						.attr("class","zoomRect")
+						.attr("x",p[0])
+						.attr("y",0)
+		    			.attr("height",this.svg.attr("height"))
+						.attr("width",1)
+						.attr("fill","#CECECE")
+						.attr("opacity",0.3);
+				this.scaleSVG.append("rect")
+						.attr("class","zoomRect")
+						.attr("x",p[0])
+						.attr("y",0)
+		    			.attr("height",this.scaleSVG.attr("height"))
+						.attr("width",1)
+						.attr("fill","#CECECE")
+						.attr("opacity",0.3);
+				this.scaleSVG.append("text").attr("id","zoomTextStart").attr("x",this.gsvg.downZoomx).attr("y",15).text(numberWithCommas(Math.round(this.xScale.invert(this.gsvg.downZoomx))));
+				this.scaleSVG.append("text").attr("id","zoomTextEnd").attr("x",this.gsvg.downZoomx).attr("y",50).text(numberWithCommas(Math.round(this.xScale.invert(this.gsvg.downZoomx))));
+			}else if(d3.event.shiftKey){//Disable panning to make rearranging easier
+
+			}
+		}else if(processAjax==0){
 			var p = d3.mouse(this.gsvg.vis[0][0]);
         	this.gsvg.downPanx = p[0];
         	this.gsvg.downscalex = this.xScale;
