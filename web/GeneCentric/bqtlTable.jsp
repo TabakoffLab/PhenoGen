@@ -3,9 +3,9 @@
 
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 <%
-	
+	log.debug("top of bqtlTable.jsp");
     gdt.setSession(session);
-	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> fullGeneList=new ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene>();
+	//ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> fullGeneList=new ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene>();
 	DecimalFormat dfC = new DecimalFormat("#,###");
 	String myOrganism="";
 	String fullOrg="";
@@ -73,10 +73,13 @@
 			if(min<1){
 				min=1;
 			}
-			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);					
-			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
-			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
-			folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+			String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);
+			int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
+			folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
+			//fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);					
+			//String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
+			//int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
+			//folderName=tmpURL.substring(second+1,tmpURL.length()-1);
 					//String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
 					//String tmpUcscURL =gdt.getUCSCURL();//(String)session.getAttribute("ucscURL");
 					//String tmpUcscURLFiltered =gdt.getUCSCURLFiltered();//(String)session.getAttribute("ucscURLFiltered");
@@ -100,7 +103,7 @@
 					//}
 	}
 			
-	
+	log.debug("after initial setup bqtlTable.jsp");
 %>
 
 <div id="bQTLList"  style="border-color:#CCCCCC; border-width:1px 0px 0px 0px; border-style:inset;width:100%;">
@@ -151,9 +154,12 @@
 
 
 	<% ArrayList<BQTL> bqtls=gdt.getBQTLs(min,max,chromosome,myOrganism);
+		log.debug("testing for error");
 	if(session.getAttribute("getBQTLsERROR")==null){
+		log.debug("no error");
 		if(bqtls.size()>0){
 		//log.debug("BQTLS >0 ");
+			log.debug("BQTLS>0");
 	%>
     
 	<TABLE name="items" id="tblBQTL" class="list_base" cellpadding="0" cellspacing="0" >
