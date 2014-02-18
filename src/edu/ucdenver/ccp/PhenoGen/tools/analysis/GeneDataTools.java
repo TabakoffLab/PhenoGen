@@ -3435,7 +3435,7 @@ public class GeneDataTools {
         ArrayList<BQTL> bqtl=new ArrayList<BQTL>();
         session.removeAttribute("getBQTLsERROR");
         boolean run=true;
-        if(this.cacheHM.containsKey(tmpRegion)){
+        /*if(this.cacheHM.containsKey(tmpRegion)){
             HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
             String testParam=(String)regionHM.get("bqtlParams");
             if(curParams.equals(testParam)){
@@ -3444,7 +3444,7 @@ public class GeneDataTools {
                 run=false;
             }
         }
-        if(run){
+        if(run){*/
             log.debug("\ngenerating new-bqtl\n");
         //if(curParams.equals(this.bqtlParams)){
         //    bqtl=this.bqtlResult;
@@ -3523,7 +3523,7 @@ public class GeneDataTools {
                     log.error("error sending message", mailException);
                 }
             }
-        }
+        //}
         
         return bqtl;
     }

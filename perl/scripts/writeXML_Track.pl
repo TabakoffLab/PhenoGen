@@ -10,6 +10,7 @@ require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromDB.pl';
 require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
+require 'readSpliceJunctFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'readRefSeqDataFromDB.pl';
 require 'readEnsemblSeqFromDB.pl';
@@ -207,12 +208,26 @@ sub createXMLFile
 		open OUT,">".$outputDir.$minCoord."_".$maxCoord.".seq";
 		print OUT $seq;
 		close OUT;
+	}elsif(index($type,"spliceJnct")>-1){
+		my $rnaCountStart=time();
+		if(index($chromosome,"chr")>-1){
+			$chromosome=substr($chromosome,3);
+		}
+		my $spliceRef=readSpliceJunctFromDB($chromosome,$species,$minCoord,$maxCoord,$publicID,'BNLX/SHRH',$dsn,$usr,$passwd);
+		my %spliceHOH=%$spliceRef;
+		my $rnaCountEnd=time();
+		print "Splice Junction completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
+		my $trackDB="mm10";
+		if($species eq 'Rat'){
+			$trackDB="rn5";
+		}
+		createGenericXMLTrack(\%spliceHOH,$outputDir.$type.".xml");
 	}
-	
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
 	return 1;
 }
+
 #
 #	
 	my $arg1 = $ARGV[0]; # output directory path

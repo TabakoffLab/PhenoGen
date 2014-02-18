@@ -281,6 +281,15 @@
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
+                          
+                           <HR />
+                        	<input name="trackcbx" type="checkbox" id="spliceJnctCBX<%=level%>"  checked="checked" /> Splice Junction Support
+                            <span class="tracktooltip<%=level%>" id="spliceJnctInfoDesc<%=level%>" title="Displays information about splice junctions in reconstructed transcripts.  Showing how much of the exons on either side of the splicing junction were covered by a continuous read that bridged the junction.  The junctions are color coded by read depth."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <select name="trackSelect" class="spliceJnctDense<%=level%>Select" id="spliceJnctDense<%=level%>Select">
+                                    <option value="1" >Dense</option>
+                                    <option value="3" selected="selected">Pack</option>
+                                    <option value="2" >Full</option>
+                                </select>
                            </div>
             		<%}%>
                     </div>
