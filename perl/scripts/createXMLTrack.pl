@@ -432,4 +432,14 @@ sub createRefSeqXMLTrack{
 	close OFILE;
 	return 1;
 }
+sub createGenericXMLTrack{
+	my($trackHOHRef, $outputFile) = @_; 
+	my %trackHOH = %$trackHOHRef;
+	open OFILE, '>'.$outputFile or die " Could not open xml file $outputFile for writing $!\n\n";
+	my $xml = new XML::Simple (RootName=>'FeatureList');
+	my $data = $xml->XMLout(\%trackHOH);
+	print OFILE $data;
+	close OFILE;
+	return 1;
+}
 1;

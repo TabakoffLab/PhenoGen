@@ -69,13 +69,13 @@ $(document).on('click','span.detailMenu', function (event){
 });
 
 function loadTrackTable(){
-	console.log("loadTrackTable");
-	console.log(reportSelectedTrack.trackClass);
+	//console.log("loadTrackTable");
+	//console.log(reportSelectedTrack.trackClass);
 	var curRptRegion=chr+":"+minCoord+"-"+maxCoord+":"+reportSelectedTrack.trackClass;
 	if( loadedTrackTable!=null  && loadedTrackTable==curRptRegion){
 				//don't have to load might reset?
-				console.log(curRptRegion);
-				console.log(loadedTrackTable);
+				//console.log(curRptRegion);
+				//console.log(loadedTrackTable);
 	}else{
 		loadedTrackTable=curRptRegion;
 		var jspPage="";
@@ -182,8 +182,8 @@ function DisplayRegionReport(){
 			var tmptrackList=svgList[0].trackList;
 			if(reportSelectedTrack==null){
 				for(var i=0;i<tmptrackList.length&&reportSelectedTrack==null;i++){
-					console.log(tmptrackList[i].trackClass);
-					console.log(tmptrackList[i].getDisplayedData);
+					//console.log(tmptrackList[i].trackClass);
+					//console.log(tmptrackList[i].getDisplayedData);
 					if(tmptrackList[i].getDisplayedData!=undefined){
 						reportSelectedTrack=tmptrackList[i];
 					}
@@ -223,7 +223,7 @@ function DisplayRegionReport(){
 }
 
 function displayDetailedView(track){
-	console.log("displayDetailedView");
+	//console.log("displayDetailedView");
 	reportSelectedTrack=track;
 	$('li.report').removeClass("selected");
 	$("li."+track.trackClass).addClass("selected");
