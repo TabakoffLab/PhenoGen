@@ -153,7 +153,7 @@ var dataPrefix="";
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
             <script src="javascript/GenomeDataBrowser0.8.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport0.2.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport0.2.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
                     var gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");

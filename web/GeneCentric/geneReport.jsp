@@ -569,7 +569,8 @@ Add report here.
     <div style="display:none;" id="geneApp">
     		<div style="text-align:center;">
             This feature requires Java which will open in a seperate window, when you click the button below.  If any problems were detected with your version of Java instructions would appear further below.  Please correct any errors you may see below before proceeding.<BR /><BR />
-            <span class="button" style="width:200px;"><a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>" target="_blank">View Affy Probe Set Details</a></span><BR />
+            
+            <span class="button" style="width:200px;"><a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>" target="_blank">View Affy Probe Set Details</a></span><BR />
                 <div id="javaError" style="display:none;">
                     <BR /><BR /><br />
                     <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for this page.  Please correct the error listed below.  <BR />

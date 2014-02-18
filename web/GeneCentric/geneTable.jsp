@@ -75,7 +75,9 @@
 			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);					
 			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
-			folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+			if(second>-1){
+				folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+			}
 	}
 			
 	
@@ -355,8 +357,7 @@
                                                         int ind1=tmpList2.indexOf("<BR>");
                                                         int ind2=tmpList2.indexOf("<BR>",ind1+4);
                                                         String newTmp=tmpList2.substring(0,ind2);
-                                                        newTmp=newTmp+"</span><BR><span id=\"rg_"+i+"\" style=\"display:none;\">"+tmpList2.substring(ind2+4);
-                                                        tmpList2=newTmp;
+                                                        tmpList2=newTmp+"</span><BR><span id=\"rg_"+i+"\" style=\"display:none;\">"+tmpList2.substring(ind2+4);
                                                         tmpList2=tmpList2+"</span>";
                                                     }
                                                 
