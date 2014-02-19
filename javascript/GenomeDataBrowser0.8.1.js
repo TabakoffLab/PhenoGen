@@ -17,6 +17,7 @@ ratOnly["snpF344"]=1;
 ratOnly["snpSHRH"]=1;
 ratOnly["snpBNLX"]=1;
 ratOnly["helicos"]=1;
+ratOnly["spliceJnct"]=1;
 ratOnly["illuminaTotal"]=1;
 ratOnly["illuminaSmall"]=1;
 ratOnly["illuminaPolyA"]=1;
@@ -25,7 +26,7 @@ ratOnly["illuminaPolyA"]=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.10.2(2/6/2014)";
+var siteVer="PhenoGen v2.10.3(2/18/2014)";
 
 var trackBinCutoff=10000;
 
