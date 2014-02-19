@@ -436,7 +436,7 @@ The chromosome where the gene is physically located MUST be included in the Circ
                                                                 
                                                                 for(int i = 0; i < numberOfChromosomes; i ++){
                                                                     chromosomeSelected=isNotSelectedText;
-                                                                    if(chromosomeDisplayArray[i].substring(4).equals(chromosome.substring(3))){
+                                                                    if(chromosomeDisplayArray[i].substring(4).equals(chromosome)){
                                                                         chromosomeSelected=isSelectedText;
                                                                     }
                                                                     else {
