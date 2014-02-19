@@ -24,6 +24,8 @@ import edu.ucdenver.ccp.PhenoGen.tools.analysis.Statistic;
 import edu.ucdenver.ccp.PhenoGen.tools.analysis.AsyncGeneDataExpr;
 import edu.ucdenver.ccp.PhenoGen.tools.analysis.AsyncGeneDataTools;
 
+
+
 import java.util.GregorianCalendar;
 import java.util.Date;
 
@@ -955,13 +957,18 @@ public class GeneDataTools {
     }
     
     private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+        if(chr.toLowerCase().startsWith("chr")){
+            chr=chr.substring(3);
+        }
         String probeQuery="select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 "and c.name = '"+chr.toUpperCase()+"' "+
-                            "and "+
-                            "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
-                            "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
+                            "and ( "+
+                            "(s.psstart >= "+min+" and s.psstart <="+max+") OR "+
+                            "(s.psstop >= "+min+" and s.psstop <= "+max+") OR "+
+                            "(s.psstart <= "+min+" and s.psstop >="+min+")"+
+                            ") "+
                             "and s.psannotation <> 'transcript' " +
                             "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = "+arrayTypeID;
@@ -970,9 +977,10 @@ public class GeneDataTools {
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 "and c.name = '"+chr.toUpperCase()+"' "+
-                            "and "+
-                            "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
-                            "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
+                            "and ( "+
+                            "(s.psstart >= "+min+" and s.psstart <="+max+") OR "+
+                            "(s.psstop >= "+min+" and s.psstop <= "+max+") OR "+
+                            "(s.psstart <= "+min+" and s.psstop >="+min+") )"+
                             "and s.psannotation like 'transcript' " +
                             "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = " + arrayTypeID +
@@ -1001,17 +1009,20 @@ public class GeneDataTools {
             }
             
             ArrayList<GeneLoc> geneList=GeneLoc.readGeneListFile(outputDir,log);
+            log.debug("Read in gene list:"+geneList.size());
             String ptransListFiletmp = outputDir + "tmp_psList_transcript.txt";
-            String ptransListFile = outputDir + "tmp_psList_transcript.txt";
-            File srcFile=new File(ptransListFiletmp);
-            File destFile=new File(ptransListFile);
-            try{
-                BufferedWriter psout = new BufferedWriter(new FileWriter(srcFile));
+            //String ptransListFile = outputDir + "tmp_psList_transcript.txt";
+            //File srcFile=new File(ptransListFiletmp);
+            //File destFile=new File(ptransListFile);
+            //try{
+                StringBuffer sb=new StringBuffer();
+                //BufferedWriter psout = new BufferedWriter(new FileWriter(srcFile));
                 try{
                     PreparedStatement ps = dbConn.prepareStatement(probeTransQuery);
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
                         int psid = rs.getInt(1);
+                        log.debug("read ps:"+psid);
                         String ch = rs.getString(2);
                         long start = rs.getLong(3);
                         long stop = rs.getLong(4);
@@ -1023,6 +1034,7 @@ public class GeneDataTools {
                         GeneLoc maxGene=null;
                         for(int i=0;i<geneList.size();i++){
                             GeneLoc tmpLoc=geneList.get(i);
+                            log.debug("strand:"+tmpLoc.getStrand()+":"+strand);
                             if(tmpLoc.getStrand().equals(strand)){
                                 long maxStart=tmpLoc.getStart();
                                 long minStop=tmpLoc.getStop();
@@ -1054,21 +1066,33 @@ public class GeneDataTools {
                             if(tmpGS.equals("")){
                                 tmpGS=maxGene.getID();
                             }
-                            psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                            log.debug("out:"+psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                            sb.append(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                            
                         }else{
-                            psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                            log.debug("out"+psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                            sb.append(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                            
                         }
                     }
                     ps.close();
+                    
                 }catch(SQLException ex){
                     log.error("Error getting transcript probesets",ex);
                 }
-                psout.flush();
+                try{
+                    log.debug("To File:"+ptransListFiletmp+"\n\n"+sb.toString());
+                    myFH.writeFile(sb.toString(),ptransListFiletmp);
+                    log.debug("DONE");
+                }catch(IOException e){
+                    log.error("Error outputing transcript ps list.",e);
+                }
+                /*psout.flush();
                 psout.close();
             }catch(IOException e){
                 log.error("Error writing transcript probesets",e);
-            }
-            srcFile.renameTo(destFile);
+            }*/
+            //srcFile.renameTo(destFile);
             
     }
     
@@ -2762,7 +2786,7 @@ public class GeneDataTools {
                                     "from location_specific_eqtl lse, snps s, chromosomes c1 , affy_exon_probeset aep "+
                                     "where s.snp_id=lse.snp_id "+
                                     "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
-                                    "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
+                                    "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
                                     " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
                                     "and s.chromosome_id=c1.chromosome_id "+
                                     "and s.organism ='"+organism+"' "+
