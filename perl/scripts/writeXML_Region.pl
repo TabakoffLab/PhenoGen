@@ -297,17 +297,13 @@ sub createXMLFile
 	
 	my %snpHOH;
 	my @snpList=();
+	my @snpStrain=();
 	
 	if($shortSpecies eq 'Rn'){
 	    my $sTimeStart=time();
 	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	    %snpHOH=%$snpRef;
-	    my $snpListRef=$snpHOH{Snp};
-	    eval{
-		@snpList=@$snpListRef;
-	    }or do{
-		@snpList=();
-	    };
+	    @snpStrain=("BNLX","SHRH","SHRJ","F344");
 	    my $sTimeEnd=time();
 	    print "SNP Time=".($sTimeEnd-$sTimeStart)."sec\n";
 	    my $iTimeStart=time();
@@ -367,21 +363,27 @@ sub createXMLFile
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
-			#match snps/indels to exons
-			my $cntSnps=0;
-			my $cntMatchingSnps=0;
-			foreach(@snpList){
-				
-				    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
-					($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
-				    ){
-					    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
-					    $cntMatchingSnps++;
-					    #print "Exon Variant";
-				    }
-				
-				$cntSnps++;
-			} # loop through snps/indels
+			foreach my $strain(@snpStrain){
+			    print "match snp strains:".$strain;
+			    my $snpListRef=$snpHOH{$strain}{Snp};
+			    eval{
+				@snpList=@$snpListRef;
+			    }or do{
+				@snpList=();
+			    };
+			    #match snps/indels to exons
+			    my $cntSnps=0;
+			    my $cntMatchingSnps=0;
+			    foreach(@snpList){
+					if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+					    ($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+					){
+						$$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+						$cntMatchingSnps++;
+					}
+				    $cntSnps++;
+			    } # loop through snps/indels
+			}
 			$cntIntron++;
 		    }
 		}
@@ -542,21 +544,32 @@ sub createXMLFile
 					$cntProbesets = $cntProbesets+1;
 				} # loop through probesets
 				
-				#match snps/indels to exons
-				my $cntSnps=0;
-				my $cntMatchingSnps=0;
-				foreach(@snpList){
-				    #print "check snp".$snpHOH{Snp}[$cntSnps]{start}."-".$snpHOH{Snp}[$cntSnps]{stop};
-					#if($exonStart<$exonStop){# if gene is in the forward direction
-					    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
-						($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
-					    ){
-						    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
-						    $cntMatchingSnps++;
-						    #print "Exon Variant";
-					    }
-					$cntSnps++;
-				} # loop through snps/indels
+				
+				
+				foreach my $strain(@snpStrain){
+				    print "match snp strains:".$strain;
+				    my $snpListRef=$snpHOH{$strain}{Snp};
+				    eval{
+					@snpList=@$snpListRef;
+				    }or do{
+					@snpList=();
+				    };
+					#match snps/indels to exons
+					my $cntSnps=0;
+					my $cntMatchingSnps=0;
+					foreach(@snpList){
+					    #print "check snp".$snpHOH{Snp}[$cntSnps]{start}."-".$snpHOH{Snp}[$cntSnps]{stop};
+						#if($exonStart<$exonStop){# if gene is in the forward direction
+						    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+							($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+						    ){
+							    $GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{exonList}{exon}[$cntExons]{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+							    $cntMatchingSnps++;
+							    #print "Exon Variant";
+						    }
+						$cntSnps++;
+					} # loop through snps/indels
+				}
 				
 				$cntExons=$cntExons+1;
 				#print "finished matching probesets\n";

@@ -474,7 +474,13 @@
                                         BN-Lx:<BR /><%=curGene.getSnpCount("BNLX","SNP")%> / <%=curGene.getSnpCount("BNLX","Indel")%><BR />
                                     <%}%>
                                     <%if(curGene.getSnpCount("SHRH","SNP")>0 || curGene.getSnpCount("SHRH","Indel")>0){%>
-                                        SHR:<BR /><%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%>
+                                        SHR:<BR /><%=curGene.getSnpCount("SHRH","SNP")%> / <%=curGene.getSnpCount("SHRH","Indel")%><BR />
+                                    <%}%>
+                                    <%if(curGene.getSnpCount("SHRJ","SNP")>0 || curGene.getSnpCount("SHRJ","Indel")>0){%>
+                                        SHRJ:<BR /><%=curGene.getSnpCount("SHRJ","SNP")%> / <%=curGene.getSnpCount("SHRJ","Indel")%><BR />
+                                    <%}%>
+                                    <%if(curGene.getSnpCount("F344","SNP")>0 || curGene.getSnpCount("F344","Indel")>0){%>
+                                        F344:<BR /><%=curGene.getSnpCount("F344","SNP")%> / <%=curGene.getSnpCount("F344","Indel")%><BR />
                                     <%}%>
                                 </TD>
                                 <%}%>

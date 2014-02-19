@@ -177,6 +177,9 @@
 			String geneChromosome = "Y";			
             columns = transcriptClusterArray[0].split("\t");
             geneChromosome = columns[1];
+			if(geneChromosome.toLowerCase().startsWith("chr")){
+				geneChromosome.substring(3);
+			}
             log.debug(" geneChromosome "+geneChromosome);
             String speciesGeneChromosome = species.toLowerCase() + geneChromosome;
             

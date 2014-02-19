@@ -1105,9 +1105,9 @@ public class GeneDataTools {
    		// perlScriptArguments[0] is "perl" or maybe includes the path??
    		// perlScriptArguments[1] is the filename including directory of the perl script
    		// perlScriptArguments[2] ... are argument inputs to the perl script
-   		//for (int i=0; i<perlScriptArguments.length; i++){
-   		//	log.debug(i + "::" + perlScriptArguments[i]);
-   		//}
+   		/*for (int i=0; i<perlScriptArguments.length; i++){
+   			log.debug(i + "::" + perlScriptArguments[i]);
+   		}*/
    
         //set environment variables so you can access oracle. Environment variables are pulled from perlEnvironmentVariables which is a comma separated list
         String[] envVar=perlEnvironmentVariables.split(",");
@@ -1214,12 +1214,12 @@ public class GeneDataTools {
             perlArgs[13] = ensPassword;
             
             
-            for (int i = 0; i < perlArgs.length; i++) {
+            /*for (int i = 0; i < perlArgs.length; i++) {
                 log.debug(i + " PerlArgs::" + perlArgs[i]);
                 /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
                     envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
                 }*/
-            }
+            //}
             
             log.debug("setup params");
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
@@ -1993,12 +1993,12 @@ public class GeneDataTools {
                 perlArgs[16] = ensPassword;
 
 
-                for (int i = 0; i < perlArgs.length; i++) {
-                    log.debug(i + " PerlArgs::" + perlArgs[i]);
+                //for (int i = 0; i < perlArgs.length; i++) {
+                //    log.debug(i + " PerlArgs::" + perlArgs[i]);
                     /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
                         envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
                     }*/
-                }
+                //}
 
                 log.debug("setup params");
                 //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
