@@ -19,6 +19,7 @@ import edu.ucdenver.ccp.PhenoGen.driver.RException;
 import edu.ucdenver.ccp.PhenoGen.driver.R_session;
 import edu.ucdenver.ccp.util.ObjectHandler;
 import edu.ucdenver.ccp.util.sql.PropertiesConnection;
+import edu.ucdenver.ccp.util.FileHandler;
 
 /* for handling exceptions in Threads */
 import au.com.forward.threads.ThreadReturn;
@@ -120,7 +121,7 @@ public class AsyncGeneDataTools extends Thread {
         }
         Date start=new Date();
         try{
-            //outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
+            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
             callDEHeatMap(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
             callPanelHerit(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
             done=true;
@@ -179,28 +180,33 @@ public class AsyncGeneDataTools extends Thread {
         done=true;
     }
     
-    /*private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
-        if(chr.startsWith("chr")){
+    private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+        if(chr.toLowerCase().startsWith("chr")){
             chr=chr.substring(3);
         }
         String probeQuery="select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and c.name = '"+chr+"' "+
-                            "and "+
-                            "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
-                            "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
+                                "and c.name = '"+chr.toUpperCase()+"' "+
+                            "and ( "+
+                            "(s.psstart >= "+min+" and s.psstart <="+max+") OR "+
+                            "(s.psstop >= "+min+" and s.psstop <= "+max+") OR "+
+                            "(s.psstart <= "+min+" and s.psstop >="+min+")"+
+                            ") "+
                             "and s.psannotation <> 'transcript' " +
+                            "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = "+arrayTypeID;
         
-        String probeTransQuery="select s.Probeset_ID,c.name,s.PSSTART,s.PSSTOP,s.PSLEVEL "+
+        String probeTransQuery="select s.Probeset_ID,c.name,s.PSSTART,s.PSSTOP,s.PSLEVEL,s.Strand "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                "and c.name = '"+chr+"' "+
-                            "and "+
-                            "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
-                            "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
+                                "and c.name = '"+chr.toUpperCase()+"' "+
+                            "and ( "+
+                            "(s.psstart >= "+min+" and s.psstart <="+max+") OR "+
+                            "(s.psstop >= "+min+" and s.psstop <= "+max+") OR "+
+                            "(s.psstart <= "+min+" and s.psstop >="+min+") )"+
                             "and s.psannotation like 'transcript' " +
+                            "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = " + arrayTypeID +
                             " and exists(select l.probe_id from location_specific_eqtl l where s.probeset_id = l.probe_id)";
         
@@ -227,73 +233,93 @@ public class AsyncGeneDataTools extends Thread {
             }
             done=true;
             ArrayList<GeneLoc> geneList=GeneLoc.readGeneListFile(outputDir,log);
+            log.debug("Read in gene list:"+geneList.size());
             String ptransListFiletmp = outputDir + "tmp_psList_transcript.txt";
-            String ptransListFile = outputDir + "tmp_psList_transcript.txt";
-            File srcFile=new File(ptransListFiletmp);
-            File destFile=new File(ptransListFile);
-            try{
-                BufferedWriter psout = new BufferedWriter(new FileWriter(srcFile));
+            //String ptransListFile = outputDir + "tmp_psList_transcript.txt";
+            //File srcFile=new File(ptransListFiletmp);
+            //File destFile=new File(ptransListFile);
+            //try{
+                StringBuffer sb=new StringBuffer();
+                //BufferedWriter psout = new BufferedWriter(new FileWriter(srcFile));
                 try{
                     PreparedStatement ps = dbConn.prepareStatement(probeTransQuery);
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
                         int psid = rs.getInt(1);
+                        log.debug("read ps:"+psid);
                         String ch = rs.getString(2);
                         long start = rs.getLong(3);
                         long stop = rs.getLong(4);
                         String level=rs.getString(5);
+                        String strand=rs.getString(6);
+                        
                         String ensemblId="",ensGeneSym="";
                         double maxOverlapTC=0.0,maxOverlapGene=0.0,maxComb=0.0;
                         GeneLoc maxGene=null;
                         for(int i=0;i<geneList.size();i++){
                             GeneLoc tmpLoc=geneList.get(i);
-                            long maxStart=tmpLoc.getStart();
-                            long minStop=tmpLoc.getStop();
-                            if(start>maxStart){
-                                maxStart=start;
-                            }
-                            if(stop<minStop){
-                                minStop=stop;
-                            }
-                            long genLen=tmpLoc.getStop()-tmpLoc.getStart();
-                            long tcLen=stop-start;
-                            double overlapLen=minStop-maxStart;
-                            double curTCperc=0.0,curGperc=0.0,comb=0.0;
-                            if(overlapLen>0){
-                                curTCperc=overlapLen/tcLen*100;
-                                curGperc=overlapLen/tcLen*100;
-                                comb=curTCperc+curGperc;
-                                if(comb>maxComb){
-                                    maxOverlapTC=curTCperc;
-                                    maxOverlapGene=curGperc;
-                                    maxComb=comb;
-                                    maxGene=tmpLoc;
+                            log.debug("strand:"+tmpLoc.getStrand()+":"+strand);
+                            if(tmpLoc.getStrand().equals(strand)){
+                                long maxStart=tmpLoc.getStart();
+                                long minStop=tmpLoc.getStop();
+                                if(start>maxStart){
+                                    maxStart=start;
+                                }
+                                if(stop<minStop){
+                                    minStop=stop;
+                                }
+                                long genLen=tmpLoc.getStop()-tmpLoc.getStart();
+                                long tcLen=stop-start;
+                                double overlapLen=minStop-maxStart;
+                                double curTCperc=0.0,curGperc=0.0,comb=0.0;
+                                if(overlapLen>0){
+                                    curTCperc=overlapLen/tcLen*100;
+                                    curGperc=overlapLen/tcLen*100;
+                                    comb=curTCperc+curGperc;
+                                    if(comb>maxComb){
+                                        maxOverlapTC=curTCperc;
+                                        maxOverlapGene=curGperc;
+                                        maxComb=comb;
+                                        maxGene=tmpLoc;
+                                    }
                                 }
                             }
-                            
                         }
                         if(maxGene!=null){
                             String tmpGS=maxGene.getGeneSymbol();
                             if(tmpGS.equals("")){
                                 tmpGS=maxGene.getID();
                             }
-                            psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                            log.debug("out:"+psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                            sb.append(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                            
                         }else{
-                            psout.write(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                            log.debug("out"+psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                            sb.append(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                            
                         }
                     }
                     ps.close();
+                    
                 }catch(SQLException ex){
                     log.error("Error getting transcript probesets",ex);
                 }
-                psout.flush();
+                try{
+                    log.debug("To File:"+ptransListFiletmp+"\n\n"+sb.toString());
+                    FileHandler myFH=new FileHandler();
+                    myFH.writeFile(sb.toString(),ptransListFiletmp);
+                    log.debug("DONE");
+                }catch(IOException e){
+                    log.error("Error outputing transcript ps list.",e);
+                }
+                /*psout.flush();
                 psout.close();
             }catch(IOException e){
                 log.error("Error writing transcript probesets",e);
-            }
-            srcFile.renameTo(destFile);
+            }*/
+            //srcFile.renameTo(destFile);
             
-    }*/
+    }
     
     public boolean callDEHeatMap(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         boolean error=false;
