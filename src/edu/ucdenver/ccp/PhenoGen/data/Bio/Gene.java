@@ -615,6 +615,7 @@ public class Gene {
                 }
             }
         }
+        /* ********************@TODO NEED TO UPDATE FOR MULTIPLE STRAINS AND UNCOMMENT.
         //find common variants
         HashMap common=null;
         if(snps.containsKey("common")){
@@ -650,7 +651,7 @@ public class Gene {
                     }
                 }
             }
-        }
+        }*/
     }
     
     private void matchCommon(HashMap common,HashMap bTypeHM,HashMap sTypeHM,ArrayList<Integer> bToRemove,ArrayList<Integer> sToRemove){
