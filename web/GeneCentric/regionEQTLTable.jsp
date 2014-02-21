@@ -549,7 +549,12 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
         						String remain="";
 								if(description.indexOf("[")>0){
             						shortDesc=description.substring(0,description.indexOf("["));
-									remain=description.substring(description.indexOf("[")+1,description.indexOf("]"));
+									if(description.indexOf("]")>0){
+										remain=description.substring(description.indexOf("[")+1,description.indexOf("]"));
+									}else{
+										remain=description.substring(description.indexOf("[")+1);
+									}
+									
         						}
                         %>
                         <TR>
@@ -836,10 +841,14 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
                                                             <select name="chromosomesMS" id="chromosomesMS" class="multiselect" size="6" multiple="true">
                                                             
                                                                 <% 
-                                                                
+                                                                String tmpChromosome=chromosome;
+																if(tmpChromosome.toLowerCase().startsWith("chr")){
+																	tmpChromosome.substring(3);
+																}
                                                                 for(int i = 0; i < numberOfChromosomes; i ++){
                                                                     chromosomeSelected=isNotSelectedText;
-                                                                    if(chromosomeDisplayArray[i].substring(4).equals(chromosome.substring(3))){
+																	
+                                                                    if(chromosomeDisplayArray[i].substring(4).equals(tmpChromosome)){
                                                                         chromosomeSelected=isSelectedText;
                                                                     }
                                                                     else {
