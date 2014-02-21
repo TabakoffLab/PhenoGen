@@ -76,6 +76,7 @@ if(request.getParameter("arrayTypeID")!=null){
 
 <script type="text/javascript">
 	$('#wait1').hide();
+	var urlprefix="<%=host+contextRoot%>";
 	var selectedID="<%=selectedID%>";
 	var genURL="<%=genURL%>";
 	var regionURL="<%=regionURL%>";
@@ -130,7 +131,7 @@ if(request.getParameter("arrayTypeID")!=null){
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser0.8.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser0.8.2.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport0.2.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">

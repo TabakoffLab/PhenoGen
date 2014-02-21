@@ -26,7 +26,7 @@ ratOnly["illuminaPolyA"]=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.10.3(2/18/2014)";
+var siteVer="PhenoGen v2.10.4(2/20/2014)";
 
 var trackBinCutoff=10000;
 
@@ -237,6 +237,51 @@ $(document).on("change","input[name='optioncbx']",function(){
 	redrawTrack(level,prefix);
 });
 
+
+$(document).on("click",".saveImage",function(){
+	var id=$(this).attr("id");
+	var levelID=(new String(id)).substr(4);
+	var content=$("div#"+levelID).html();
+		content+"\n";
+		$.ajax({
+				url: pathPrefix+"saveBrowserImage.jsp",
+   				type: 'POST',
+				contentType: 'text/html',
+				data: content,
+				processData: false,
+				dataType: 'json',
+    			success: function(data2){ 
+        			console.log(data2.imageFile);
+        			var d=new Date();
+        			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
+					var url="http://"+urlprefix+"/tmpData/download/"+data2.imageFile;
+					var region=new String($('#geneTxt').val());
+					region=region.replace(/:/g,"_");
+					region=region.replace(/-/g,"_");
+					region=region.replace(/,/g,"");
+					if(levelID=="Level1"){
+						region=svgList[1].selectedData.getAttribute("geneSymbol");
+					}
+					 var filename = region+"_"+datePart+".png";
+					  var xhr = new XMLHttpRequest();
+					  xhr.responseType = 'blob';
+					  xhr.onload = function() {
+						var a = document.createElement('a');
+						a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+						a.download = filename; // Set the file name.
+						a.style.display = 'none';
+						document.body.appendChild(a);
+						a.click();
+						delete a;
+					  };
+					  xhr.open('GET', url);
+					  xhr.send();
+    			},
+    			error: function(xhr, status, error) {
+        			console.log(error);
+    			}
+			});
+});
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -1520,6 +1565,20 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	d3.select(div).select("#settingsLevel"+levelNumber).remove();
 	d3.select(div).select("#Level"+levelNumber).remove();
 	that.vis=d3.select(div);
+
+	that.vis.append("span").attr("class","saveImage")
+		.attr("id","saveLevel"+levelNumber)
+		.style("float","left")
+		.style("cursor","pointer")
+		//.style("width","130px")
+		.html("<img src=\"/web/images/icons/download_g.png\">")
+		.on("mouseover",function(){
+			$("#mouseHelp").html("Click to download a PNG image of the current view.");
+		})
+		.on("mouseout",function(){
+			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+		});
+
 	that.vis.append("span").attr("class","settings button")
 		.attr("id","settingsLevel"+levelNumber)
 		.style("float","right")
@@ -1531,6 +1590,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		.on("mouseout",function(){
 			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 		});
+
 	//that.vis.append("span").attr("class","reset button").attr("id","resetLevel"+that.levelNumber).style("float","left").style("width","118px").text("Reset Image");
 	//that.vis.append("span").attr("class","undo button").attr("id","undoLevel"+that.levelNumber).style("float","left").style("width","220px").text("Undo last Zoom/Move");
 	that.topDiv=that.vis.append("div")
@@ -3369,8 +3429,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}
 			if(localTxType=="protein"||localTxType=="long"){
 				//if(svgList[newLevel]==null){
-
-					var newSvg= GenomeSVG("div#selectedImage",that.gsvg.width,d.getAttribute("extStart"),d.getAttribute("extStop"),newLevel,d.getAttribute("ID"),"transcript");
+					var displayID=d.getAttribute("ID");
+					if(d.getAttribute("geneSymbol")!=undefined&&d.getAttribute("geneSymbol")!=""){
+						displayID=displayID+" ("+d.getAttribute("geneSymbol")+")"
+					}
+					var newSvg= GenomeSVG("div#selectedImage",that.gsvg.width,d.getAttribute("extStart"),d.getAttribute("extStop"),newLevel,displayID,"transcript");
 					newSvg.xMin=d.getAttribute("extStart")-(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
 					newSvg.xMax=d.getAttribute("extStop")+(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
 					svgList[newLevel]=newSvg;

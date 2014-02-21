@@ -1,4 +1,5 @@
 <script type="text/javascript">
+var urlprefix="<%=host+contextRoot%>";
 var trackString="coding,noncoding,snp,smallnc";
 var minCoord=<%=min%>;
 var maxCoord=<%=max%>;
@@ -147,12 +148,12 @@ var dataPrefix="";
     
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
     	<span id="mouseHelp">Navigation Hints: Hold mouse over areas of the image for available actions.</span> <BR />
-        <!--<span id="saveBtn" class="button">Save</span>-->   
+        <!--<span id="saveBtn" style="display:inline-block;cursor:pointer;"><img src="/web/images/icons/download_g.png"></span>-->
         <div id="collapsableImage" class="geneimage" >
-       		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
+       		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser0.8.1.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.8.2.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.2.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
@@ -323,7 +324,39 @@ var dataPrefix="";
   	});
 	displayHelpFirstTime();
 	
-	
+	/*$('#saveBtn').click( function(){
+		var content=$("div#Level0").html();
+		content+"\n";
+		$.ajax({
+				url: pathPrefix+"saveBrowserImage.jsp",
+   				type: 'POST',
+				contentType: 'text/html',
+				data: content,
+				processData: false,
+				dataType: 'json',
+    			success: function(data2){ 
+        			console.log(data2.imageFile);
+					var url="http://<%=host+contextRoot%>/tmpData/download/"+data2.imageFile;
+					 var filename = data2.imageFile;
+					  var xhr = new XMLHttpRequest();
+					  xhr.responseType = 'blob';
+					  xhr.onload = function() {
+						var a = document.createElement('a');
+						a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+						a.download = filename; // Set the file name.
+						a.style.display = 'none';
+						document.body.appendChild(a);
+						a.click();
+						delete a;
+					  };
+					  xhr.open('GET', url);
+					  xhr.send();
+    			},
+    			error: function(xhr, status, error) {
+        			console.log(error);
+    			}
+			});
+	});*/
 	
 	/*$('#saveBtn').click( function(){
 		html2canvas($('div#Level0'), {
