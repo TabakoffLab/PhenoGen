@@ -1640,6 +1640,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	
 	that.topLevel=that.topDiv.append("div")
 					.attr("id","ScrollLevel"+levelNumber)
+					.attr("class","scroll")
 					.style("max-height","350px")
 					.style("overflow","auto")
 					.style("width","100%")
