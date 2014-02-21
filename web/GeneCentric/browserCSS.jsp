@@ -31,7 +31,7 @@ table.tooltipTable TD{
 }
 
 .tick{
-	fill:none;
+	fill:black;
 	stroke: black;
 }
 
