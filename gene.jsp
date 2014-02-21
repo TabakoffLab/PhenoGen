@@ -48,7 +48,7 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 
 
 <%if(popup){%>
-<%@ include file="/web/common/header_noBorder_noMenu.jsp" %>
+<%@ include file="/web/common/header_adaptive_nomenu.jsp" %>
 <%}else{%>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <%}%>
