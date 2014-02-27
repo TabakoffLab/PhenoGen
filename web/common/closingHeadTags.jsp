@@ -1,5 +1,5 @@
 <%@ include file="/web/common/googleAnalytics.jsp" %>
-
+<%@ include file="/web/common/bugsense.jsp" %>
 </head>
 
 <%

@@ -28,6 +28,8 @@ function displayColumns(table,colStart,colLen,showOrHide){
 	}
 }
 
+
+
 function expandCollapse(baseName){
 	//alert("expand collapse");
 	 var thisHidden = $("tbody#" + baseName).is(":hidden");

@@ -20,7 +20,7 @@ import="org.json.*" %>
 
 
 <%
-String chromosome="",panel="",myOrganism="",track="",folderName="";
+String chromosome="",panel="",myOrganism="",track="",folderName="",bedFile="",outputFile="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0,binSize=0;
 double forwardPValueCutoff=0;
 if(request.getParameter("chromosome")!=null){
@@ -86,12 +86,23 @@ if(request.getParameter("myOrganism")!=null){
 	}
 }
 
-
+if(request.getParameter("bedFile")!=null){
+		bedFile=request.getParameter("bedFile").trim();
+}
+if(request.getParameter("outFile")!=null){
+		outputFile=request.getParameter("outFile").trim();
+}
 %>
 
 
 <% 
-	String status=gdt.generateXMLTrack(chromosome,min,max,panel,track,myOrganism,rnaDatasetID,arrayTypeID,folderName,binSize);
+	String status="";
+	if(!track.startsWith("custom")&&bedFile.equals("") && outputFile.equals("") ){
+		status=gdt.generateXMLTrack(chromosome,min,max,panel,track,myOrganism,rnaDatasetID,arrayTypeID,folderName,binSize);
+	}else if(track.startsWith("custom")){
+		log.debug("Generating custom xml track");
+		status=gdt.generateCustomXMLTrack(chromosome,min,max,track,myOrganism,folderName,bedFile,outputFile);
+	}
 	JSONObject genejson;
 	genejson = new JSONObject();
     genejson.put("status" , status);
