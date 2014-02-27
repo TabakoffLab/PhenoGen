@@ -44,12 +44,17 @@ public class ExecHandler {
 	} 
 
 	public String getErrors() {
+            FileHandler myFileHandler = new FileHandler();
+            String[] errorFileContents=new String[0];
+            try{
+                errorFileContents = myFileHandler.getFileContents(new File(errorFileName));
+            }catch(IOException e){
+                log.error("Error reading exec_error file contents.",e);
+            }
+            if(errorFileContents.length>0 && !errorFileContents[0].equals("")){
                 execErrors = "Error File Contents:\n\n";
-                FileHandler myFileHandler = new FileHandler();
-                String[] errorFileContents=new String[0];
                 String[] outputFileContents=new String[0];
                 try{
-                     errorFileContents = myFileHandler.getFileContents(new File(errorFileName));
                      outputFileContents = myFileHandler.getFileContents(new File(outputFileName));
                 }catch(IOException e){
                     log.error("Error reading exec output files",e);
@@ -63,7 +68,8 @@ public class ExecHandler {
                 for (int i=0; i<outputFileContents.length; i++) {
                         execErrors = execErrors + "\n" + outputFileContents[i];
                 }
-		return execErrors;
+            }
+            return execErrors;
 	} 
         
         public int getExitValue(){

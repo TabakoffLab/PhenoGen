@@ -48,7 +48,7 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 
 
 <%if(popup){%>
-<%@ include file="/web/common/header_adaptive_nomenu.jsp" %>
+<%@ include file="/web/common/header_adaptive_noMenu.jsp" %>
 <%}else{%>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <%}%>
@@ -532,6 +532,7 @@ Or
                 				}
 			);
 	}
+	
 	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
  		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
 		if (ieversion<10){
