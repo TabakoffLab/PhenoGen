@@ -26,8 +26,8 @@
 </style>
 
     <div class="settingsLevel<%=level%>"  style="display:none;width:400px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:50px; left:-98px; background-color:#FFFFFF; min-height:450px; text-align:center;">
-        	<span style="color:#000000; ">Image Settings:</span>
-        	<span class="closeBtn" id="close_settingsLevel<%=level%>" style="position:relative;top:3px;left:136px;"><img src="<%=imagesDir%>icons/close.png"></span>
+        	<div style="display:block;width:100%;color:#000000; text-align:left; background:#EEEEEE; font-weight:bold;">Image Settings:<span class="closeBtn" id="close_settingsLevel<%=level%>" style="position:relative;top:2px;left:270px;"><img src="<%=imagesDir%>icons/close.png"></span></div>
+        	
             <div>
             	Image Area Height:
                 <select name="imgSelect" id="displaySelect<%=level%>">
@@ -45,7 +45,7 @@
                 <%}%>
                 
           </div>
-          <div style="color:#000000; text-align:left;">Image Tracks:</div>
+          <div style="color:#000000; text-align:left; background:#EEEEEE;font-weight:bold;">Image Tracks:</div>
 			<div id="topAccord<%=level%>" style="height:100%; text-align:left;">
             	<H2>Genome Feature Tracks</H2>
                 <div>
@@ -294,10 +294,68 @@
             		<%}%>
                     </div>
                 <!--</div>-->
+                <H2>Custom Feature Tracks</H2>
+                <div>
+                	<div class="trigger triggerEC" name="usrTrack<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">User Defined Tracks <span class="tracktooltip<%=level%>" id="UserDefTrkInfoDesc<%=level%>" title="Any Tracks that you create by uploading .bed files will appear here.  They are saved and will be availble when you return on the same computer and browser(refer to limitation #1).  You may change the display density and coloring of the track at any time using the controls next to it. <B>Note changes are temporary.</B>  You may also delete tracks that you aren't using.  Tracks may expire after 1 year and will expire on moving to new versions of the genome.<BR><div style='text-align:left;'><B>Current Limitations:</B><ol><li>Tracks information is currently saved to cookies and are not portable between computers.</li><li>Tracks are currently limited to bed files.  Support is coming soon for additional files.</li><li>Files are limited to 20MB.  Support is coming for other file types that will allow you to use larger files hosted on your own web server.</li></ol></div>"><img src="<%=imagesDir%>icons/info.gif"></span></div>
+                    <div id="usrTrack<%=level%>" class="usrTrack" style="width:372px;display:none;border:solid; border-color:#000000; border-width:1px 1px 1px 1px;">
+                    	
+                    </div>
+                    <BR />
+                    <div class="trigger triggerEC" name="addUsrTrack<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Add Custom Track <span class="tracktooltip<%=level%>" id="UserDefTrkInfoDesc<%=level%>" title="Use the form in this section to create your own track with your own data. Please note the limitations listed below.  We are working to remove these limitations. <BR><div style='text-align:left;'><B>Current Limitations:</B><ol><li>Tracks information is currently saved to cookies and are not portable between computers.  In the future tracks will save to your profile if logged in. This will provide portability at a future date.</li><li>Tracks are currently limited to bed files.  Support is coming soon for additional files.</li><li>Files are limited to 20MB.  Support is coming for other file types that will allow you to use larger files hosted on your own web server.</li></ol></div>"><img src="<%=imagesDir%>icons/info.gif"></span></div>
+                    <div id="addUsrTrack<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:1px 1px 1px 1px;">
+                    	Track Name:<input type="text" name="usrtrkNameTxt" id="usrtrkNameTxt<%=level%>" size="25" value="">
+                        <BR /><BR />
+                        BED File:<input type="file" id="customBedFile<%=level%>">
+                        <BR /><BR />
+                        Color Track by:<select name="usrtrkColor" class="usrtrkColor" id="usrtrkColorSelect<%=level%>">
+                                    <option value="Score" >Score based scale</option>
+                                    <option value="Color" selected="selected">Feature defined</option>
+                                </select>
+                        <BR /><BR />
+                        <div id="usrtrkGrad<%=level%>" style="display:none;">
+                        	Scale Definition:<BR />
+                        	Data(min-max)*:<input type="text" name="usrtrkScoreMinTxt" id="usrtrkScoreMinTxt<%=level%>" size="5" value="0"> - <input type="text" name="usrtrkScoreMaxTxt" id="usrtrkScoreMaxTxt<%=level%>" size="5" value="1000">
+                            <BR />
+                            Gradient(min-max):<input class="color" id="usrtrkColorMin<%=level%>" size="5" value="#FFFFFF"> - <input class="color" id="usrtrkColorMax<%=level%>" size="5" value="#000000">
+                            <BR />
+                            *Data outside this range will be assigned to the corresponding min or max color.<BR /><BR />
+                        </div>
+  						
+                        <div style="width:100%;">
+                        	<div id="uploadBtn<%=level%>">
+                        	<input type="button" name="uploadTrack" id="uploadTrack<%=level%>" value="Create Track" onClick="return confirmUpload(<%=level%>)">
+                            </div>
+                            <div id="confirmUpload<%=level%>" style="display:none;">
+                            	Please Confirm that this track is for <B><%if(myOrganism.equals("Rn")){%>Rat<%}else{%>Mouse<%}%></B> and has coordinates for <B><%if(myOrganism.equals("Rn")){%>rn5<%}else{%>mm10<%}%></B>.  Coordinates must match this genome version, coordinates <B>will not</B> be converted.<BR /><BR />
+                                <input type="button" name="confirmuploadTrack" id="confirmuploadTrack<%=level%>" value="Continue" onClick="return createCustomTrack(<%=level%>)">
+                                <input type="button" name="canceluploadTrack" id="canceluploadTrack<%=level%>" value="Cancel" onClick="return cancelUpload(<%=level%>)">
+                            </div>
+                            <div id="confirmBed<%=level%>" style="display:none;">
+                            	This file is missing a .bed extension.  Is this a .bed file fitting the standard format(<a href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1" target="_blank">UCSC Genome BED Format</a>)?<BR /><BR />
+                                <input type="button" name="confirmbedTrack" id="confirmbedTrack<%=level%>" value="Yes/Continue" onClick="return confirmBed(<%=level%>)">
+                                <input type="button" name="cancelbedTrack" id="cancelbedTrack<%=level%>" value="No/Cancel" onClick="return cancelUpload(<%=level%>)">
+                                <input type="hidden" id="hasconfirmBed<%=level%>" value="0" />
+                            </div>
+                        	<div class="progressInd" style="display:none;">
+                        		<progress></progress>
+                        	</div>
+                            <div class="uploadStatus"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
+            
 </div>
+<script type="text/javascript" src="javascript/jscolor/jscolor.js"></script>
           <script type="text/javascript">
+		  	$("div.settingsLevel<%=level%> #usrtrkColorSelect<%=level%>").on("change",function(){
+				if($("div.settingsLevel<%=level%> #usrtrkColorSelect<%=level%>").val()=="Score"){
+					$("div.settingsLevel<%=level%> div#usrtrkGrad<%=level%>").show();
+				}else{
+					$("div.settingsLevel<%=level%> div#usrtrkGrad<%=level%>").hide();
+				}
+			});
 		  	$( '#topAccord<%=level%>' ).accordion({ heightStyle: "content" });
 			$('div.settingsLevel<%=level%> span.tracktooltip<%=level%>').each(function(){
 				$(this).tooltipster({

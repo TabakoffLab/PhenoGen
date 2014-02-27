@@ -1,3 +1,15 @@
+/*
+*	D3js based Genome Data Browser
+*
+* 	Author: Spencer Mahaffey
+*	for http://phenogen.ucdenver.edu
+*	Tabakoff Lab
+* 	University of Colorado Denver AMC
+* 	Department of Pharmaceutical Sciences Skaggs School of Pharmacy & Pharmaceutical Sciences
+*
+*	Builds an interactive multilevel view of the rat/mouse genome.
+*/
+
 $.cookie.defaults.expires=365;
 
 //global varaiable to store a list of GenomeSVG images representing each level.
@@ -11,6 +23,8 @@ var overSelectable=0;
 
 var ratOnly=new Array();
 var mouseOnly=new Array();
+
+var customTrackCount=0;
 
 ratOnly["snpSHRJ"]=1;
 ratOnly["snpF344"]=1;
@@ -26,9 +40,10 @@ ratOnly["illuminaPolyA"]=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.10.4(2/20/2014)";
+var siteVer="PhenoGen v2.10.5(2/28/2014)";
 
 var trackBinCutoff=10000;
+var customTrackLevel=-1;
 
 
 
@@ -152,12 +167,14 @@ $(document).on("change","input[name='trackcbx']",function(){
 	 		});
 $(document).on("change","select[name='trackSelect']",function(){
 				var idStr=new String($(this).attr("id"));
+				console.log("TrackSelect:"+idStr);
 				var cl=$(this).attr("class");
 				var value=$(this).val();
 				var level=idStr.substr(idStr.length-7,1);
 				if(level=="S"){
 					level=idStr.substr(idStr.length-8,1);
 				}
+				console.log("TrackSelect Level:"+level);
 				if(idStr.indexOf("Dense")>0){
 					if(idStr.indexOf("coding")>-1 || idStr.indexOf("smallnc")>-1){
 						$("."+cl).each(function(){
@@ -251,7 +268,7 @@ $(document).on("click",".saveImage",function(){
 				processData: false,
 				dataType: 'json',
     			success: function(data2){ 
-        			console.log(data2.imageFile);
+        			//console.log(data2.imageFile);
         			var d=new Date();
         			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
 					var url="http://"+urlprefix+"/tmpData/download/"+data2.imageFile;
@@ -282,6 +299,142 @@ $(document).on("click",".saveImage",function(){
     			}
 			});
 });
+
+function confirmUpload(level){
+	$("div#confirmUpload"+level).show();
+	$("div#uploadBtn"+level).hide();
+}
+function confirmBed(level){
+	$("input#hasconfirmBed"+level).val(1);
+	createCustomTrack(level);
+}
+function cancelUpload(level){
+	$("div#confirmUpload"+level).hide();
+	$("div#confirmBed"+level).hide();
+	$("div#uploadBtn"+level).show();
+}
+function createCustomTrack(level){
+	$("div#confirmUpload"+level).hide();
+	customTrackLevel=level;
+	var file = $("input#customBedFile"+level)[0].files[0]; //Files[0] = 1st file
+	var fName=file.name;
+	var fSize=(file.size/1000.0)/1000.0;
+	console.log(fName);
+	console.log(fSize);
+	$(".uploadStatus").show();
+	var fExt="";
+	if(fName.indexOf(".")>0){
+		var ind=0;
+		var fTrunc=fName;
+		while(fTrunc.indexOf(".")>-1){
+			fTrunc=fTrunc.substr(fTrunc.indexOf(".")+1);
+		}
+		if(fTrunc!="" && fTrunc!=fName){
+			fExt=fTrunc;
+		}
+	}
+	console.log("extension:"+fExt);
+	//check file size and extension
+	if(fSize<20){
+		if(fExt!="bed"){
+			console.log("hasConfirmed:"+$("input#hasconfirmBed"+level).val());
+			if(fExt=="gz"||fExt=="tar"||fExt=="zip"||fExt=="exe"||fExt=="bin"){
+				//cancel with no support
+				setTimeout(function(){
+        				$("div#uploadBtn"+customTrackLevel).show();
+        				$(".progressInd").hide();
+        			},5000);
+				$(".uploadStatus").html("Error: Selected File Type is not supported.");
+			}else if($("input#hasconfirmBed"+level).val()==0){
+				//display confirmation
+				$("div#confirmBed"+customTrackLevel).show();
+			}else if($("input#hasconfirmBed"+level).val()==1){
+				$("div#confirmBed"+customTrackLevel).hide();
+				//continue
+				readFile(file);
+			}
+		}else{
+			readFile(file);
+		}
+	}else{
+		$("div#uploadBtn"+customTrackLevel).show();
+        $(".progressInd").hide();
+		$(".uploadStatus").html("File is too large.  20MB is the current limit.");
+	}
+}
+
+function readFile(file){
+	var reader = new FileReader();
+	reader.readAsText(file, 'UTF-8');
+	reader.onload = sendFile;
+}
+
+function sendFile(event){
+	var result = event.target.result;
+	$.ajax({
+				url: pathPrefix+"trackUpload.jsp",
+   				type: 'POST',
+				contentType: 'text/plain',
+				xhr: function() {  // Custom XMLHttpRequest
+		            var myXhr = $.ajaxSettings.xhr();
+		            //if(myXhr.upload){ // Check if upload property exists
+		                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+		            //}
+		            return myXhr;
+		        },
+				data: result,
+				processData: false,
+				cache: false,
+				dataType: 'json',
+    			success: function(data2){
+        			$(".uploadStatus").html("Upload Completed Successfully");
+        			var tmp=new Date();
+        			//add new custom track to Custom Track Cookie
+        			var track=data2.trackFile.substring(0,data2.trackFile.length-4)
+
+        			var trackToAdd="custom"+track+",organism="+organism+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customBedFile"+customTrackLevel)[0].files[0].name+",";
+        			if($("#usrtrkColorSelect"+customTrackLevel).val()=="Score"){
+        				trackToAdd=trackToAdd+"colorBy=Score,";
+        				trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+customTrackLevel).val()+",";
+        				trackToAdd=trackToAdd+"maxValue="+$("#usrtrkScoreMaxTxt"+customTrackLevel).val()+",";
+        				trackToAdd=trackToAdd+"minColor=#"+$("#usrtrkColorMin"+customTrackLevel).val()+",";
+        				trackToAdd=trackToAdd+"maxColor=#"+$("#usrtrkColorMax"+customTrackLevel).val()+",";
+        			}else{
+						trackToAdd=trackToAdd+"colorBy=Color,";
+        			}
+        			saveCustomTrackCookie(trackToAdd+";");
+        			//load the track from the new cookie
+        			svgList[customTrackLevel].addTrack("custom"+track,3,"",0);
+        			//update the Custom UI 
+        			addCustomTrackUI(trackToAdd,1);
+
+        			//reset some of the inputs
+        			$("input#customBedFile"+customTrackLevel).val("");
+        			$("input#usrtrkNameTxt"+customTrackLevel).val("");
+        			$("#usrtrkColorSelect"+customTrackLevel).val("color");
+        			setTimeout(function(){
+        				$("div#uploadBtn"+customTrackLevel).show();
+        				$(".progressInd").hide();
+        				$(".uploadStatus").hide();
+        				saveToCookie(customTrackLevel);
+        			},15000);
+    			},
+    			error: function(xhr, status, error) {
+        			console.log(error);
+        			$(".uploadStatus").html("Error:"+error);
+        			$("div#uploadBtn"+customTrackLevel).show();
+    			}
+			});
+}
+
+function progressHandlingFunction(e){
+	$(".progressInd").show();
+	$(".uploadStatus").html("Uploading...");
+    if(e.lengthComputable){
+        $('progress').attr({value:e.loaded,max:e.total});
+    }
+}
+
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -443,8 +596,9 @@ function updatePage(topSVG){
 }
 
 function removeTrack(level,track){
-
-	svgList[level].removeTrack(track);
+	if(svgList[level]!=undefined){
+		svgList[level].removeTrack(track);
+	}
 }
 
 function redrawTrack(level,track){
@@ -523,7 +677,10 @@ function getAddMenuDiv(level,type){
 			});
 }
 
+
+//Load/Save settings to/from cookies
 function loadState(levelInd){
+	loadCustomTracksCookie();
 	setupSettingUI(levelInd);
 	loadSavedConfigTracks(levelInd);
 	loadImageState(levelInd);
@@ -754,7 +911,7 @@ function saveToCookie(curLevel){
 	        }
           cookieStr=cookieStr+";";
         });
-	//Need to preserve Rat or Mouse Only tracks while other species is viewed
+	//Need to preserve Rat or Mouse Only tracks and custom tracks while other species is viewed
 	if($.cookie("state"+defaultView+curLevel+"trackList")!=null){
     	var trackListObj=$.cookie("state"+defaultView+curLevel+"trackList");
     	var trackArray=trackListObj.split(";");
@@ -762,10 +919,279 @@ function saveToCookie(curLevel){
     		var trackVars=trackArray[m].split(",");
     		if((organism=="Rn" && mouseOnly[trackVars[0]]!= undefined) || (organism=="Mm" && ratOnly[trackVars[0]]!= undefined)){
 	    		cookieStr=cookieStr+trackArray[m]+";";
+    		}else if(trackVars[0].indexOf("custom")==0){//Supports preserving custom tracks.  Will add any of the opposite species to the new cookieStr
+    			var trackStr=loadCustomTrackCookie(trackVars[0]);
+    			var trkOrg=trackStr.substr(trackStr.indexOf("organism=")+9,2);
+    			if(organism!=trkOrg){
+    				cookieStr=cookieStr+trackStr+";";
+    			}
     		}
     	}
     }
 	$.cookie("state"+defaultView+curLevel+"trackList",cookieStr);
+}
+
+
+function loadCustomTracksCookie(){
+	loadCustomTrackCookieUI();
+}
+
+function saveCustomTrackCookie(newTrack){
+	var existingCookieStr="";
+	if($.cookie("customTrackList")!=null){
+    	existingCookieStr=$.cookie("customTrackList");
+    }
+    existingCookieStr=existingCookieStr+newTrack;
+    $.cookie("customTrackList",existingCookieStr);
+}
+
+function removeCustomTrackCookie(removeTrack){
+	var existingCookieStr="";
+	var newCookieStr="";
+	console.log("remove from cookie:"+removeTrack);
+	if($.cookie("customTrackList")!=null){
+    	existingCookieStr=$.cookie("customTrackList");
+    	var trackArray=existingCookieStr.split(";");
+    	for(var m=0;m<trackArray.length;m++){
+    		console.log("checking:"+trackArray[m]);
+    		if(trackArray[m].indexOf(removeTrack)==0){
+    			console.log("removed track from cookie:"+trackArray[m]);
+    		}else{
+    				newCookieStr=newCookieStr+trackArray[m]+";";
+    		}
+    	}
+    }
+    $.cookie("customTrackList",newCookieStr);
+}
+
+function loadCustomTrackCookieUI(){
+	var existingCookieStr="";
+	if($.cookie("customTrackList")!=null){
+    	existingCookieStr=$.cookie("customTrackList");
+    	//console.log("Custom String:"+existingCookieStr);
+    	var trackArray=existingCookieStr.split(";");
+    	var addedCount=0;
+    	for(var m=0;m<trackArray.length;m++){
+    		if(trackArray[m].indexOf("custom")==0 && trackArray[m].indexOf("organism="+organism)>0){
+    			addCustomTrackUI(trackArray[m],0);
+    		}
+    	}
+    }
+}
+
+function addCustomTrackUI(trackString,checked){
+	var dispName="";
+	var date="";
+	var filename="";
+
+	var details=trackString.split(",");
+	var id=details[0];
+
+	for(var m=1;m<details.length;m++){
+		if(details[m].indexOf("dispTrackName=")==0){
+			dispName=details[m].substr(details[m].indexOf("=")+1);
+		}
+		if(details[m].indexOf("originalFile=")==0){
+			filename=details[m].substr(details[m].indexOf("=")+1);
+		}
+		if(details[m].indexOf("created=")==0){
+			date=details[m].substr(details[m].indexOf("=")+1);
+		}
+	}
+	$(".usrTrack").each(function(){
+		var divID=$(this).attr("id");
+		var level=$(this).attr("id").substr(8);
+		var trackDiv=d3.select("#"+divID).append("div").attr("class","custTrack"+id);
+		//var tmp=$(this).html();
+		var check="";
+		if(checked==1){
+			check="checked=\"checked\"";
+		}
+
+        var tmp="<input name=\"trackcbx\" type=\"checkbox\" id=\""+id+"CBX"+level+"\""+check+"> "+dispName;
+		tmp=tmp+" <span class=\"tracktooltip"+level+"\" id=\""+id+"InfoDesc"+level+"\" title=\"Custom Track<BR>Defined: "+date+"<BR>Original Filename: "+filename+"\"><img src=\"web/images/icons/info.gif\"></span><select name=\"trackSelect\" class=\""+id+"Dense"+level+"Select\" id=\""+id+"Dense"+level+"Select\">";
+        tmp=tmp+"<option value=\"1\" >Dense</option><option value=\"3\" selected=\"selected\">Pack</option>";
+        tmp=tmp+"<option value=\"2\" >Full</option></select>";
+        //tmp=tmp+"<input type=\"button\" id=\""+id+"ColorBtn"+level+"\" value=\"Edit Color\" onClick=\"showCustomColor('"+id+"','"+level+"')\">";
+        tmp=tmp+"&nbsp&nbsp&nbsp<span id=\""+id+"ColorBtn"+level+"\" title=\"Edit Color\" style=\"cursor:pointer;\"><img src=\"web/images/icons/color_sm2.png\"></span>";
+        //tmp=tmp+"&nbsp&nbsp&nbsp<span title=\"Save as Track Default Settings\" style=\"cursor:pointer;\"><img src=\"web/images/icons/disk_sm.png\"></span>";
+        //tmp=tmp+"<input type=\"button\" id=\""+id+"SaveBtn"+level+"\" value=\"Save As Default\" title=\"Saves the current track settings as the default settings in the future.\" onClick=\"saveDefault('"+id+"','"+level+"')\">";
+        /**/
+        tmp=tmp+"<span class=\"delCustom\"  id=\""+id+"Delete"+level+"\" title=\"Delete Custom Track\" style=\"float:right;\"><img src=\"web/images/icons/delete.png\">"+"</span>";
+        tmp=tmp+"<div id=\""+id+"Scale"+level+"\" style=\"display:none;\">Color*:<select id=\""+id+"ColorSelect"+level+"\" class=\"usrtrkColor\" id=\"\">";
+       	tmp=tmp+"<option value=\"Score\" >Score based scale</option>";
+        tmp=tmp+"<option value=\"Color\" selected=\"selected\">Feature defined</option></select>";
+        tmp=tmp+"<div id=\""+id+"ScaleSetting"+level+"\" style=\"display:none;\">Setup Scale:Data:<input id=\""+id+"minData"+level+"\" type=\"text\" size=\"4\"> - <input id=\""+id+"maxData"+level+"\" type=\"text\" size=\"4\"> <BR>";
+        tmp=tmp+"Color: <input id=\""+id+"minColor"+level+"\" class=\"color\" size=\"6\" value=\"FFFFFF\"> - <input id=\""+id+"maxColor"+level+"\" class=\"color\" size=\"6\" value=\"000000\"></div></div><HR />";
+        trackDiv.html(tmp);
+
+        $("div#usrTrack"+level+" span#"+id+"InfoDesc"+level).each(function(){
+				$(this).tooltipster({
+					position: 'top-right',
+					maxWidth: 250,
+					offsetX: 10,
+					offsetY: 5,
+					contentAsHTML:true,
+					//arrow: false,
+					interactive: true,
+					interactiveTolerance: 350
+				});
+			});
+        $("div#usrTrack"+level+" span#"+id+"Delete"+level).each(function(){
+        		$(this).on("click",function(){
+        			var tmpID=$(this).attr("id");
+        			tmpID=tmpID.substring(0,tmpID.length-7);
+        			deleteCustomTrack(tmpID);
+        			});
+        	});
+       	$("div#usrTrack"+level+" #"+id+"ColorSelect"+level).each(function(){
+        		$(this).on("change",function(){
+        			var tmpID=$(this).attr("id");
+        			tmpID=tmpID.substring(0,tmpID.length-12);
+        			if($(this).val()=="Score"){
+        				$("div#"+tmpID+"ScaleSetting"+level).show();
+        			}else{
+        				$("div#"+tmpID+"ScaleSetting"+level).hide();
+        			}
+        			var track=svgList[level].getTrack(tmpID);
+        			track.setColorBy($(this).val());
+        			});
+        	});
+       	$("span#"+id+"ColorBtn"+level).each(function(){
+       		$(this).on("click",function(){
+       			if($("div#"+id+"Scale"+level).is(':visible')){
+					$("div#"+id+"Scale"+level).hide();
+					//$("#"+id+"ColorBtn"+level).prop("value","Edit Color");
+				}else{
+					$("div#"+id+"Scale"+level).show();
+					//$("#"+id+"ColorBtn"+level).prop("value","Hide Edit Color");
+				    var track=svgList[level].getTrack(id);
+				    $("#"+id+"ColorSelect"+level).val(track.colorBy);
+				    if(track.colorBy=="Score"){
+				    	$("div#"+id+"ScaleSetting"+level).show();
+				    }else{
+				    	$("div#"+id+"ScaleSetting"+level).hide();
+				    }
+				    if(track!=undefined && track.minColor!=undefined&&track.maxColor!=undefined){
+				        $("#"+id+"minData"+level).val(track.minValue);
+				        $("#"+id+"maxData"+level).val(track.maxValue);
+				        document.getElementById(id+"minColor"+level).color.fromString(track.minColor);
+				        document.getElementById(id+"maxColor"+level).color.fromString(track.maxColor);
+				    }
+				}
+       		});
+       	});
+
+		$("div#usrTrack"+level+" #"+id+"minColor"+level).each(function(){
+        	$(this).on("change",function(){
+        		var tmpID=$(this).attr("id");
+        		tmpID=tmpID.substring(0,tmpID.length-9);
+        		var track=svgList[level].getTrack(tmpID);
+        		track.setMinColor($(this).val());
+        	});
+        });
+        $("div#usrTrack"+level+" #"+id+"maxColor"+level).each(function(){
+        	$(this).on("change",function(){
+        		var tmpID=$(this).attr("id");
+        		tmpID=tmpID.substring(0,tmpID.length-9);
+        		var track=svgList[level].getTrack(tmpID);
+        		track.setMaxColor($(this).val());
+        	});
+        });
+        $("div#usrTrack"+level+" #"+id+"minData"+level).each(function(){
+        	$(this).on("change",function(){
+        		var tmpID=$(this).attr("id");
+        		tmpID=tmpID.substring(0,tmpID.length-8);
+        		var track=svgList[level].getTrack(tmpID);
+        		track.setMinValue($(this).val());
+        	});
+        });
+        $("div#usrTrack"+level+" #"+id+"maxData"+level).each(function(){
+        	$(this).on("change",function(){
+        		var tmpID=$(this).attr("id");
+        		tmpID=tmpID.substring(0,tmpID.length-8);
+        		var track=svgList[level].getTrack(tmpID);
+        		track.setMaxValue($(this).val());
+        	});
+        });
+	});
+}
+
+/*function showCustomColor(id,level){
+	if($("div#"+id+"Scale"+level).is(':visible')){
+		$("div#"+id+"Scale"+level).hide();
+		$("#"+id+"ColorBtn"+level).prop("value","Edit Color");
+	}else{
+		$("div#"+id+"Scale"+level).show();
+		$("#"+id+"ColorBtn"+level).prop("value","Hide Edit Color");
+	    var track=svgList[level].getTrack(id);
+	    $("#"+id+"ColorSelect"+level).val(track.colorBy);
+	    if(track.colorBy=="Score"){
+	    	$("div#"+id+"ScaleSetting"+level).show();
+	    }else{
+	    	$("div#"+id+"ScaleSetting"+level).hide();
+	    }
+	    if(track!=undefined && track.minColor!=undefined&&track.maxColor!=undefined){
+	        $("#"+id+"minData"+level).val(track.minValue);
+	        $("#"+id+"maxData"+level).val(track.maxValue);
+	        document.getElementById(id+"minColor"+level).color.fromString(track.minColor);
+	        document.getElementById(id+"maxColor"+level).color.fromString(track.maxColor);
+	    }
+	}
+	
+}*/
+
+function updateCustomColor(id,level){
+
+}
+
+function deleteCustomTrack(track){
+	console.log("remove custom track:"+track);
+	//delete from cookie
+	removeCustomTrackCookie(track);
+	console.log("after delete from cookie");
+	//remove track from image
+	removeTrack(0,track);
+	console.log("after remove from level0");
+	removeTrack(1,track);
+	console.log("after remove from level 1");
+	//remove track from UI
+	$("div.custTrack"+track).each(function(){$(this).remove();});
+	console.log("after remove from settings");
+	saveToCookie(0);
+	console.log("after save to cookie");
+	//remove track from server
+	$.ajax({
+			url: contextPath +"/"+ pathPrefix +"removeCustomTrack.jsp",
+			type: 'GET',
+			data: {id: track},
+								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
+			dataType: 'json',
+			success: function(data2){
+				    				
+			},
+			error: function(xhr, status, error) {
+					        			
+			}
+	});
+	console.log("end of remove");
+}
+
+function loadCustomTrackCookie(track){
+	var existingCookieStr="";
+	var customTrack="";
+	if($.cookie("customTrackList")!=null){
+    	existingCookieStr=$.cookie("customTrackList");
+    	var trackArray=existingCookieStr.split(";");
+    	var addedCount=0;
+    	for(var m=0;m<trackArray.length;m++){
+    		//console.log(trackArray[m]);
+    		if(trackArray[m].indexOf(track)==0){
+    			customTrack=trackArray[m];
+    		}
+    	}
+    }
+    return customTrack;
 }
 
 function calculateBin(len,width){
@@ -780,7 +1206,7 @@ function calculateBin(len,width){
 			bin=0;
 		}
 		return bin;
-	}
+}
 
 /*function timeoutFunc(){
 	console.log("timeout function call");
@@ -807,6 +1233,15 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				}
 			}
 			return data;
+	};
+	that.getTrack=function (track){
+			var tr;
+			for(var l=0;l<that.trackList.length;l++){
+				if(that.trackList[l]!=undefined && that.trackList[l].trackClass==track){
+					tr=that.trackList[l];
+				}
+			}
+			return tr;
 	};
 	that.addTrack=function (track,density,additionalOptions,retry){
 		if(that.forceDrawAsValue=="Trx"){
@@ -847,7 +1282,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				
 				.on("mouseover", function(){
 					if(overSelectable==0){
-						$("#mouseHelp").html("<B>Zoom:</B> Hold the Alt Key while clicking then drag. <B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Reorder Tracks:</B> Click on the track and drag up or down to desired location.");
+						$("#mouseHelp").html("<B>Zoom:</B> Hold the Alt/Option Key while clicking then drag. <B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Reorder Tracks:</B> Click on the track and drag up or down to desired location.");
 					}
 				})
 				.on("mouseout", function(){
@@ -1312,7 +1747,24 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}
 					}
 				});
-				
+			}else if(track.indexOf("custom")==0){
+				var trackDetails=loadCustomTrackCookie(track);
+				if(trackDetails.indexOf("organism="+organism)>0){
+					console.log("loadedFromCookie:"+trackDetails);
+					var details=trackDetails.split(",");
+					var dispName="";
+					for(var m=0;m<details.length;m++){
+						if(details[m].indexOf("dispTrackName=")==0){
+							dispName=details[m].substr(details[m].indexOf("=")+1);
+						}
+					}
+					var data=new Array();
+					var newTrack=CustomTranscriptTrack(that,data,track,dispName,3,trackDetails);
+					that.addTrackList(newTrack);
+					newTrack.updateFullData(0,0);
+				}else{
+					d3.select("#Level"+that.levelNumber+track).remove();
+				}
 			}
 			$(".sortable"+that.levelNumber).sortable( "refresh" );
 			
@@ -1618,7 +2070,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						.on("mousedown", that.mdown)
 						.on("mouseup",mup)
 						.on("mouseover", function(){
-							$("#mouseHelp").html("<B>Zoom:</b> Click and Drag right to zoom in or left to zoom out. <B>OR</B> Hold the Alt Key while clicking, then drag to select a specific area.");
+							$("#mouseHelp").html("<B>Zoom:</b> Click and Drag right to zoom in or left to zoom out. <B>OR</B> Hold the Alt/Option Key while clicking, then drag to select a specific area.");
 						})
 						.on("mouseout", function(){
 							$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
@@ -2198,7 +2650,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		}
 		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".legend").remove();
 		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("#def1").remove();
-		var grad=that.svg.append("defs").attr("id","def1").append("linearGradient").attr("id","grad1");
+		var grad=that.svg.append("defs").attr("id","def1").append("linearGradient").attr("id","grad"+that.gsvg.levelNumber+that.trackClass);
 		grad.append("stop").attr("offset","0%").style("stop-color",minColor);
 		grad.append("stop").attr("offset","100%").style("stop-color",maxColor);
 		that.svg.append("rect")
@@ -2209,7 +2661,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				.attr("ry",3)
 		    	.attr("height",12)
 				.attr("width",75)
-				.attr("fill","url(#grad1)");
+				.attr("fill","url(#grad"+that.gsvg.levelNumber+that.trackClass+")");
 				//.attr("stroke","#FFFFFF");
 			lblStr=new String(minVal);
 			that.svg.append("text").text(lblStr).attr("class","legend").attr("x",x).attr("y",12);
@@ -6527,6 +6979,10 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 	that.ttSVG=1;
 	that.ttTrackList=new Array();
 	that.ttTrackList[0]="coding";
+	that.colorValueField="readCount";
+	that.colorScale=d3.scale.linear().domain([1,1000]).range(["#E6E6E6","#000000"]);
+
+	
 
 	that.getDisplayID=function(d){
 		return	d.getAttribute("name");
@@ -6555,21 +7011,6 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 		tooltip=tooltip+"<BR>Intron: "+numberWithCommas((bList[1].getAttribute("start")*1-bList[0].getAttribute("stop")*1))+" bp<BR>";
 		//console.log(tooltip);
 		return tooltip;
-	};
-
-	that.color= function (d){
-		var color="#FFFFFF";
-		if(d.getAttribute("readCount")>0){
-			var value=d.getAttribute("readCount")*1;
-			if(value>=1000){
-				color=d3.rgb(0,0,0);
-			}else{
-				var cval=Math.floor(229-((value/1000)*229));
-				color=d3.rgb(cval,cval,cval);
-			}
-			//console.log("value"+value+"   color:"+color);
-		}		
-		return color;
 	};
 
    	that.drawScaleLegend("1","1000+","Read Counts","#E6E6E6","#000000");
@@ -7009,6 +7450,75 @@ function CountTrack(gsvg,data,trackClass,density){
 	return that;
 }
 
+function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOptions){
+	var that=GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOptions);
+	that.dataFileName=trackClass.substr(6)+".bed";
+	that.density=3;
+	that.colorValueField="score";
+
+	that.updateFullData = function(retry,force){
+		var tmpMin=that.xScale.domain()[0];
+		var tmpMax=that.xScale.domain()[1];
+		var file=dataPrefix+"tmpData/trackXML/"+folderName+"/"+that.dataFileName+".xml";
+		var bedFile=dataPrefix+"tmpData/trackUpload/"+that.dataFileName;
+		//console.log(file);
+		//console.log(bedFile);
+		d3.xml(file,function (error,d){
+					if(error){
+						console.log(error);
+						if(retry==0 || force==1){
+							//console.log("calling ajax");
+							$.ajax({
+								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+				   				type: 'GET',
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,folder:folderName,bedFile: bedFile,outFile:file,track:that.trackClass},
+								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
+								dataType: 'json',
+				    			success: function(data2){
+				    				console.log("custom ajax success");
+				    				console.log(data2);
+				    			},
+				    			error: function(xhr, status, error) {
+				        			console.log(error);
+				    			}
+							});
+						}
+						if(retry<3){//wait before trying again
+							var time=10000;
+							if(retry==1){
+								time=15000;
+							}
+							setTimeout(function (){
+								that.updateFullData(retry+1,0);
+							},time);
+						}else{
+							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
+							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
+							that.hideLoading();
+						}
+					}else{
+						//console.log(d);
+						if(d==null){
+							if(retry>=4){
+								data=new Array();
+								that.draw(data);
+								that.hideLoading();
+							}else{
+								setTimeout(function (){
+									that.updateFullData(retry+1,0);
+								},5000);
+							}
+						}else{
+							var data=d.documentElement.getElementsByTagName(that.xmlTag);
+							//console.log(data);
+							that.draw(data);
+							that.hideLoading();
+						}
+					}
+				});
+	};
+	return that;
+}
 
 /*Not fully implemented only partly to support splice junctions*/
 function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOptions){
@@ -7020,17 +7530,37 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	that.idPrefix="genTrx";
 	that.ttSVG=0;
 	that.ttTrackList=new Array();
+	that.colorValueField="Score";
+	that.colorBy="Score";
+	that.minValue=1;
+	that.maxValue=1000;
+	that.minColor="#E6E6E6";
+	that.maxColor="#000000";
 	//Set Specified Options
 	var addtlOpt=new String(additionalOptions);
+	//console.log(additionalOptions);
 	if(additionalOptions.length>0){
 		var opt=addtlOpt.split(",");
 		for(var i=0;i<opt.length;i++){
 			var optStr=new String(opt[i]);
 			if(optStr.indexOf("colorBy=")==0){
 				that.colorBy=optStr.substr(optStr.indexOf("=")+1);
+			}else if(optStr.indexOf("minColor=")==0){
+				that.minColor=optStr.substr(optStr.indexOf("=")+1);
+			}else if(optStr.indexOf("maxColor=")==0){
+				that.maxColor=optStr.substr(optStr.indexOf("=")+1);
+			}else if(optStr.indexOf("minValue=")==0){
+				that.minValue=optStr.substr(optStr.indexOf("=")+1);
+			}else if(optStr.indexOf("maxValue=")==0){
+				that.maxValue=optStr.substr(optStr.indexOf("=")+1);
 			}
 		}
 	}
+
+	//setup color scales if needed
+	//if(that.minColor!=undefined && that.maxColor!=undefined){
+		
+	//}
 
 	//Initialize Y Positioning Variables
 	that.yMaxArr=new Array();
@@ -7041,9 +7571,45 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 				that.yArr[0][j]=0;
 	}
 	
+	that.createColorScale=function (){
+		if(that.minColor!=undefined && that.maxColor!=undefined){
+			that.colorScale=d3.scale.linear().domain([that.minValue,that.maxValue]).range([that.minColor,that.maxColor]);
+		}
+	};
+	that.createColorScale();
+
+	that.setMinColor=function (color){
+		that.minColor="#"+color;
+		that.createColorScale();
+		that.draw(that.data);
+	};
+
+	that.setMaxColor=function(color){
+		that.maxColor="#"+color;
+		that.createColorScale();
+		that.draw(that.data);
+	};
+
+	that.setMinValue=function (value){
+		that.minValue=value;
+		that.createColorScale();
+		that.draw(that.data);
+	};
+
+	that.setMaxValue=function (value){
+		that.maxValue=value;
+		that.createColorScale();
+		that.draw(that.data);
+	};
+	that.setColorBy=function(value){
+		that.colorBy=value;
+		that.createColorScale();
+		that.draw(that.data);
+	}
+
 	that.getDisplayID=function(d){
 		return d.getAttribute("ID");
-	}
+	};
 
 	that.createToolTip=function(d){
 		var tooltip="";
@@ -7134,25 +7700,31 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 		return tmpY;
 	};
 
-	//NOT COMPLETE
+	that.getColorValue=function(d){
+		return d.getAttribute(that.colorValueField);
+	}
+
 	that.color= function (d){
-		var color=d3.rgb("#000000");
+		var color=d3.rgb("#FFFFFF");
 		if(that.colorBy=="Score"){
-
+			color=that.colorScale(that.getColorValue(d));
 		}else if(that.colorBy=="Color"){
-			color=d3.rgb(d.color);
-		}else if(that.colorBy=="Scale"){
-
+			var colorStr=new String(d.getAttribute("color"));
+			var colorArr=colorStr.split(",");
+			if(colorArr.length==3){
+				color=d3.rgb(colorArr[0],colorArr[1],colorArr[2]);
+			}
 		}
 		return color;
 	};
 
 	that.drawTrx=function (d,i){
-		//console.log("genericTrx.drawTrx()");
+		//console.log("genericTrx.drawTrx("+i+")");
+		//console.log(d);
 		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#"+that.idPrefix+"tx"+d.getAttribute("ID"));
 		exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
 		for(var m=0;m<exList.length;m++){
-			txG.append("rect")
+			var curR=txG.append("rect")
 			.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start"))-that.xScale(d.getAttribute("start")); })
 			.attr("rx",1)
 			.attr("ry",1)
@@ -7167,7 +7739,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 					return id;
 				})
 			.style("fill",that.color)
-			.style("cursor", "pointer")
+			.style("cursor", "pointer");
 			if(m>0){
 				var intStart=that.xScale(exList[m-1].getAttribute("stop"))-that.xScale(d.getAttribute("start"));
 				var intStop=that.xScale(exList[m].getAttribute("start"))-that.xScale(d.getAttribute("start"));
@@ -7230,93 +7802,90 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 	that.redraw = function (){
-		//console.log("genericTrx.redraw()");
-		that.yMaxArr=new Array();
-		that.yArr=new Array();
-		that.yArr[0]=new Array();
-		for(var p=0;p<that.gsvg.width;p++){
-				that.yMaxArr[p]=0;
-				that.yArr[0][p]=0;
-		}
-		that.trackYMax=0;
-		//console.log("g."+that.idPrefix+"trx"+that.gsvg.levelNumber);
-		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g."+that.idPrefix+"trx"+that.gsvg.levelNumber)
-			.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";});
-		txG.each(function(d,i){
-			//console.log("genericTrx.redraw().each()");
-				exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
-				for(var m=0;m<exList.length;m++){
-					var id=that.idPrefix+"Ex"+exList[m].getAttribute("ID");
-					if(exList[m].getAttribute("ID")==null){
-						id=that.idPrefix+"Ex"+d.getAttribute("ID")+"_"+m;
-					}
-					d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" rect#"+id)
-						.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")) -that.xScale(d.getAttribute("start")); })
-						.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); });
-					if(m>0){
-						var strChar=">";
-						if(d.getAttribute("strand")=="-1"){
-							strChar="<";
-						}
-						var fullChar=strChar;
-						var intStart=that.xScale(exList[m-1].getAttribute("stop")) -that.xScale(d.getAttribute("start"));
-						var intStop=that.xScale(exList[m].getAttribute("start")) -that.xScale(d.getAttribute("start"));
-						var rectW=intStop-intStart;
-						var alt=0;
-						var charW=6.5;
-						if(rectW<charW){
-								fullChar="";
-						}else{
-							rectW=rectW-charW;
-							while(rectW>(charW+1)){
-								if(alt==0){
-									fullChar=fullChar+" ";
-									alt=1;
-								}else{
-									fullChar=fullChar+strChar;
-									alt=0;
-								}
-								rectW=rectW-charW;
-							}
-						}
-						var id=exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID");
+		var tmpDen=that.checkDensity();
+		if(tmpDen!=that.density){
+			that.draw(that.data);
+		}else{
+			//console.log("genericTrx.redraw()");
+			that.yMaxArr=new Array();
+			that.yArr=new Array();
+			that.yArr[0]=new Array();
+			for(var p=0;p<that.gsvg.width;p++){
+					that.yMaxArr[p]=0;
+					that.yArr[0][p]=0;
+			}
+			that.trackYMax=0;
+			//console.log("g."+that.idPrefix+"trx"+that.gsvg.levelNumber);
+			var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g."+that.idPrefix+"trx"+that.gsvg.levelNumber)
+				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";});
+			txG.each(function(d,i){
+				//console.log("genericTrx.redraw().each()");
+					exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
+					for(var m=0;m<exList.length;m++){
+						var id=that.idPrefix+"Ex"+exList[m].getAttribute("ID");
 						if(exList[m].getAttribute("ID")==null){
-							id=d.getAttribute("ID")+"_"+(m-1)+"_"+m;
+							id=that.idPrefix+"Ex"+d.getAttribute("ID")+"_"+m;
 						}
-						d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" line#"+that.idPrefix+"Int"+id)
-							.attr("x1",intStart)
-							.attr("x2",intStop);
+						d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" rect#"+id)
+							.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")) -that.xScale(d.getAttribute("start")); })
+							.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); });
+						if(m>0){
+							var strChar=">";
+							if(d.getAttribute("strand")=="-1"){
+								strChar="<";
+							}
+							var fullChar=strChar;
+							var intStart=that.xScale(exList[m-1].getAttribute("stop")) -that.xScale(d.getAttribute("start"));
+							var intStop=that.xScale(exList[m].getAttribute("start")) -that.xScale(d.getAttribute("start"));
+							var rectW=intStop-intStart;
+							var alt=0;
+							var charW=6.5;
+							if(rectW<charW){
+									fullChar="";
+							}else{
+								rectW=rectW-charW;
+								while(rectW>(charW+1)){
+									if(alt==0){
+										fullChar=fullChar+" ";
+										alt=1;
+									}else{
+										fullChar=fullChar+strChar;
+										alt=0;
+									}
+									rectW=rectW-charW;
+								}
+							}
+							var id=exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID");
+							if(exList[m].getAttribute("ID")==null){
+								id=d.getAttribute("ID")+"_"+(m-1)+"_"+m;
+							}
+							d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" line#"+that.idPrefix+"Int"+id)
+								.attr("x1",intStart)
+								.attr("x2",intStop);
 
-						d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" #"+that.idPrefix+"IntTxt"+id)
-							.attr("dx",intStart+1).text(fullChar);
+							d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" #"+that.idPrefix+"IntTxt"+id)
+								.attr("dx",intStart+1).text(fullChar);
+						}
 					}
-				}
-			});
-		if(that.density==1){
-							that.svg.attr("height", 30);
-		}else if(that.density==2){
-							that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g."+that.idPrefix+"trx"+that.gsvg.levelNumber).size()+1)*15);
-		}else if(that.density==3){
-							that.svg.attr("height", (that.trackYMax+1)*15);
+				});
+			if(that.density==1){
+								that.svg.attr("height", 30);
+			}else if(that.density==2){
+								that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g."+that.idPrefix+"trx"+that.gsvg.levelNumber).size()+1)*15);
+			}else if(that.density==3){
+								that.svg.attr("height", (that.trackYMax+1)*15);
+			}
 		}
 	};
 
-	//NOT COMPLETE
 	that.update=function (d){
-		//console.log("genericTrx.Update");
 		that.redraw();
 	};
 
 	that.updateFullData = function(retry,force){
-		//console.log("genericTrx.updateFullData()");
-		//that.showLoading();
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
-		
-		//var tag="Count";
 		var file=dataPrefix+"tmpData/regionData/"+folderName+"/"+that.dataFileName;
-		
-		//console.log("genericTrx.updateFullData:file:"+file);
 		d3.xml(file,function (error,d){
 					if(error){
 						console.log(error);
@@ -7370,41 +7939,36 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 				});
 	};
 
-
-	//NOT COMPLETE
 	that.redrawLegend=function (){
 		var legend=[];
 		var curPos=0;
-			if(that.gsvg.txType=="protein"){
-				legend[curPos]={color:"#DFC184",label:"Ensembl"};
-			}else if(that.gsvg.txType=="long"){
-				legend[curPos]={color:"#B58AA5",label:"Ensembl"};
-			}else if(that.gsvg.txType=="small"){
-				legend[curPos]={color:"#FFCC00",label:"Ensembl"};
-			}
-			curPos++;
-
-		if(organism=="Rn"){
-			if(that.gsvg.txType=="protein"){
-				legend[curPos]={color:"#7EB5D6",label:"Brain RNA-Seq"};
-			}else if(that.gsvg.txType=="long"){
-				legend[curPos]={color:"#CECFCE",label:"Brain RNA-Seq"};
-			}else if(that.gsvg.txType=="small"){
-				legend[curPos]={color:"#99CC99",label:"Brain RNA-Seq"};
-			}
-			curPos++;
+		if(that.colorBy=="Score"){
+			that.drawScaleLegend(that.minValue,that.maxValue+"+","",that.minColor,that.maxColor);
+		}else if(that.colorBy=="Color"){
+			legend[curPos]={color:"#FFFFFF",label:"User assigned color from track file."};
+			that.drawLegend(legend);
 		}
-		that.drawLegend(legend);
+		
 	};
 
-	that.setDensity=function(){
+
+	that.checkDensity=function(){
+		var den=-1;
 		if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
-			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
+			den=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		}
+		return den;
+	}
+	that.setDensity=function(){
+		var tmpDen=that.checkDensity();
+		if(tmpDen>0){
+			that.density=tmpDen;
+			console.log("density="+that.density);
+		}
+		console.log("return:"+that.density);
 	};
 
 	that.draw=function(data){
-		//console.log("draw()");
 		that.data=data;
 		that.setDensity();
 		that.trackYMax=0;
@@ -7414,8 +7978,13 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 				that.yMaxArr[j]=0;
 				that.yArr[0][j]=0;
 		}
-		//d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", (1+data.length)*15);
+		//console.log("GenericTranscriptTrack.draw()");
+		//console.log(data);
+
 		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber).remove();
+		//console.log("#Level"+that.gsvg.levelNumber+that.trackClass);
+		//console.log("."+that.idPrefix+"trx"+that.gsvg.levelNumber);
+		that.redrawLegend();
 		var tx=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber)
 	   			.data(data,key)
 				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";});

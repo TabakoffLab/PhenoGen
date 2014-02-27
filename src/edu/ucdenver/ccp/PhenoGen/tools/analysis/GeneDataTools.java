@@ -1119,12 +1119,13 @@ public class GeneDataTools {
        
         //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
         myExec_session = new ExecHandler(perlScriptDirectory, perlScriptArguments, envVar, filePrefixWithPath);
-
+        boolean exception = false;
         try {
 
             myExec_session.runExec();
 
         } catch (ExecException e) {
+            exception = true;
             log.error("In Exception of createCircosFiles Exec_session", e);
             Email myAdminEmail = new Email();
             myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -1143,7 +1144,8 @@ public class GeneDataTools {
             }
         }
         
-        if(myExec_session.getExitValue()!=0){
+        String errors=myExec_session.getErrors();
+        if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
             Email myAdminEmail = new Email();
             myAdminEmail.setSubject("Exception thrown in Exec_session");
             circosErrorMessage = "There was an error while running ";
@@ -1151,7 +1153,7 @@ public class GeneDataTools {
             for(int i=2; i<perlScriptArguments.length; i++){
             	circosErrorMessage = circosErrorMessage + " " + perlScriptArguments[i];
             }
-            circosErrorMessage = circosErrorMessage + ")\n\n"+myExec_session.getErrors();
+            circosErrorMessage = circosErrorMessage + ")\n\n"+errors;
             myAdminEmail.setContent(circosErrorMessage);
             try {
                 myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
@@ -1235,12 +1237,13 @@ public class GeneDataTools {
             log.debug("setup envVar");
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
             myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/geneData/"+ensemblID1+"/");
-
+            boolean exception=false;
             try {
 
                 myExec_session.runExec();
 
             } catch (ExecException e) {
+                exception = true;
                 completedSuccessfully=false;
                 log.error("In Exception of run findGeneRegion.pl Exec_session", e);
                 
@@ -1255,10 +1258,12 @@ public class GeneDataTools {
                         int apiStart=errorList.indexOf("Ensembl API version =")+22;
                         apiVer=errorList.substring(apiStart,apiStart+3);
                     }
-                
+                Email myAdminEmail = new Email();
                 if(!missingDB){
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
                     setError("Running Perl Script to get Gene and Transcript details/images. Ensembl Assembly v"+apiVer);
                 }else{
+                    myAdminEmail.setSubject("Missing Ensembl ID in DB");
                     setError("The current Ensembl database does not have an entry for this gene ID."+
                                 " As Ensembl IDs are added/removed from new versions it is likely this ID has been removed."+
                                 " If you used a Gene Symbol and reached this the administrator will investigate. "+
@@ -1267,8 +1272,8 @@ public class GeneDataTools {
                                         
                 }
                 
-                Email myAdminEmail = new Email();
-                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                
+                
                 myAdminEmail.setContent("There was an error while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+
                         ")\n\n"+myExec_session.getErrors());
@@ -1280,13 +1285,14 @@ public class GeneDataTools {
                 }
             }
 
-            if(myExec_session.getExitValue()!=0){
+            String errors=myExec_session.getErrors();
+            if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
                 completedSuccessfully=false;
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
                 myAdminEmail.setContent("There was an error while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
-                        ")\n\n"+myExec_session.getErrors());
+                        ")\n\n"+errors);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
@@ -1375,10 +1381,12 @@ public class GeneDataTools {
             }
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
             myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/regionData/"+folderName+"/");
+            boolean exception=false;
             try {
                 myExec_session.runExec();
                 status="successful";
             } catch (ExecException e) {
+                exception=true;
                 status="Error generating track";
                 log.error("In Exception of run writeXML_Track.pl Exec_session", e);
                 setError("Running Perl Script to get Gene and Transcript details/images.");
@@ -1395,21 +1403,21 @@ public class GeneDataTools {
                 }
             }
 
-            if(myExec_session.getExitValue()!=0){
+            String errors=myExec_session.getErrors();
+            //log.debug("Error String:"+errors);
+            if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
                 status="Error generating track";
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
                 myAdminEmail.setContent("There was an error while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
-                        ")\n\n"+myExec_session.getErrors());
+                        ")\n\n"+errors);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
                 }
-            }else{
-                
             }
         }catch(Exception e){
             status="Error generating track";
@@ -1431,6 +1439,99 @@ public class GeneDataTools {
         }
         return status;
     }
+    
+     public String generateCustomXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
+        String status="";
+        try{        
+            //construct perl Args
+            String[] perlArgs = new String[7];
+            perlArgs[0] = "perl";
+            perlArgs[1] = perlDir + "bed2XML.pl";
+            perlArgs[2] = fullPath +bedFile;
+            perlArgs[3] = fullPath +outputFile;
+            
+            perlArgs[4] = Integer.toString(min);
+            perlArgs[5] = Integer.toString(max);
+            perlArgs[6] = chromosome;
+
+            File dir=new File(fullPath + "tmpData/trackXML/"+folder+"/");
+            if(dir.exists()||dir.mkdirs()){
+                for (int i = 0; i < perlArgs.length; i++) {
+                    log.debug(i + " perlArgs::" + perlArgs[i]);
+                }
+                //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+                String[] envVar=perlEnvVar.split(",");
+                
+                for (int i = 0; i < envVar.length; i++) {
+                    log.debug(i + " EnvVar::" + envVar[i]);
+                    /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                    }*/
+                }
+                //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/trackXML/"+folder+"/");
+                boolean exception=false;
+                try {
+                    myExec_session.runExec();
+                    status="successful";
+                } catch (ExecException e) {
+                    exception=true;
+                    status="Error generating track";
+                    log.error("In Exception of run bed2XML.pl Exec_session", e);
+                    setError("Running Perl Script to get Gene and Transcript details/images.");
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+
+                            ")\n\n"+myExec_session.getErrors());
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                    }
+                }
+
+                String errors=myExec_session.getErrors();
+                if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+                    status="Error generating track";
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
+                            ")\n\n"+errors);
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                    }
+                }else{
+
+                }
+            }
+        }catch(Exception e){
+            status="Error generating track";
+            log.error("Error getting DB properties or Public User ID.",e);
+            String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+            Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
+                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+        }
+        return status;
+    }
+    
+    
     public boolean createRegionImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
         boolean completedSuccessfully=false;
         try{
@@ -1495,12 +1596,13 @@ public class GeneDataTools {
 
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
             myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir);
-
+            boolean exception=false;
             try {
 
                 myExec_session.runExec();
 
             } catch (ExecException e) {
+                exception=true;
                 log.error("In Exception of run writeXML_RNA.pl Exec_session", e);
                 setError("Running Perl Script to get Gene and Transcript details/images.");
                 Email myAdminEmail = new Email();
@@ -1516,12 +1618,13 @@ public class GeneDataTools {
                 }
             }
 
-            if(myExec_session.getExitValue()!=0){
+            String errors=myExec_session.getErrors();
+            if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
                 myAdminEmail.setContent("There was an error while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
-                        ")\n\n"+myExec_session.getErrors());
+                        ")\n\n"+errors);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
@@ -1870,12 +1973,13 @@ public class GeneDataTools {
 
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
             myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir);
-
+            boolean exception = false;
             try {
 
                 myExec_session.runExec();
 
             } catch (ExecException e) {
+                exception=true;
                 log.error("In Exception of run writeXML_RNA.pl Exec_session", e);
                 setError("Running Perl Script to get Gene and Transcript details/images.");
                 Email myAdminEmail = new Email();
@@ -1891,12 +1995,13 @@ public class GeneDataTools {
                 }
             }
 
-            if(myExec_session.getExitValue()!=0){
+            String errors=myExec_session.getErrors();
+            if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
                 myAdminEmail.setContent("There was an error while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
-                        ")\n\n"+myExec_session.getErrors());
+                        ")\n\n"+errors);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
@@ -2014,12 +2119,13 @@ public class GeneDataTools {
                 log.debug("setup envVar");
                 //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
                 myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/geneData/"+id+"/");
-
+                boolean exception = false;
                 try {
 
                     myExec_session.runExec();
 
                 } catch (ExecException e) {
+                    exception=true;
                     completedSuccessfully=false;
                     log.error("In Exception of run findGeneRegion.pl Exec_session", e);
 
@@ -2034,10 +2140,12 @@ public class GeneDataTools {
                             int apiStart=errorList.indexOf("Ensembl API version =")+22;
                             apiVer=errorList.substring(apiStart,apiStart+3);
                         }
-
+                    Email myAdminEmail = new Email();
                     if(!missingDB){
+                        myAdminEmail.setSubject("Exception thrown in Exec_session");
                         setError("Running Perl Script to get Gene and Transcript details/images. Ensembl Assembly v"+apiVer);
                     }else{
+                        myAdminEmail.setSubject("Missing Ensembl ID in DB");
                         setError("The current Ensembl database does not have an entry for this gene ID."+
                                     " As Ensembl IDs are added/removed from new versions it is likely this ID has been removed."+
                                     " If you used a Gene Symbol and reached this the administrator will investigate. "+
@@ -2046,8 +2154,6 @@ public class GeneDataTools {
 
                     }
 
-                    Email myAdminEmail = new Email();
-                    myAdminEmail.setSubject("Exception thrown in Exec_session");
                     myAdminEmail.setContent("There was an error while running "
                             + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+
                             ")\n\n"+myExec_session.getErrors());
@@ -2059,13 +2165,14 @@ public class GeneDataTools {
                     }
                 }
 
-                if(myExec_session.getExitValue()!=0){
+                String errors=myExec_session.getErrors();
+                if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
                     completedSuccessfully=false;
                     Email myAdminEmail = new Email();
                     myAdminEmail.setSubject("Exception thrown in Exec_session");
                     myAdminEmail.setContent("There was an error while running "
                             + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
-                            ")\n\n"+myExec_session.getErrors());
+                            ")\n\n"+errors);
                     try {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
@@ -3018,12 +3125,13 @@ public class GeneDataTools {
 
                 //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
                 myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+"toGeneID");
-
+                boolean exception=false;
                 try {
 
                     myExec_session.runExec();
 
                 } catch (ExecException e) {
+                    exception=true;
                     error=true;
                     log.error("In Exception of run writeGeneIDs.pl Exec_session", e);
                     session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
@@ -3040,14 +3148,15 @@ public class GeneDataTools {
                     }
                 }
 
-                if(myExec_session.getExitValue()!=0){
+                String errors=myExec_session.getErrors();
+                if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
                     error=true;
                     Email myAdminEmail = new Email();
                     session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
                     myAdminEmail.setSubject("Exception thrown in Exec_session");
                     myAdminEmail.setContent("There was an error while running "
                             + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+
-                            ")\n\n"+myExec_session.getErrors());
+                            ")\n\n"+errors);
                     try {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
@@ -3237,7 +3346,7 @@ public class GeneDataTools {
 
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
             myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+"circos_"+pvalue);
-
+            
             try {
 
                 myExec_session.runExec();

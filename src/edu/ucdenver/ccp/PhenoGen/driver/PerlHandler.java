@@ -88,16 +88,18 @@ public class PerlHandler {
 
                 	if (errorFile.exists() && errorFile.length() > 0) {
                         	errorFileContents = myFileHandler.getFileContents(errorFile);
-                        	inputFileContents = myFileHandler.getFileContents(inputFile);
-                        	for (int i=0; i<errorFileContents.length; i++) {
-                                	perlErrors = perlErrors + "\n" + errorFileContents[i];
-                        	}
-                        	perlErrors = perlErrors + "\n\n" + 
-					"The following information may be useful in determining "+
-                                         "where the problem occurred:\n";
-                        	for (int i=0; i<inputFileContents.length; i++) {
-                                	perlErrors = perlErrors + "\n" + inputFileContents[i];
-                        	}
+                                if(errorFileContents.length>0 && !errorFileContents[0].equals("")){
+                                    inputFileContents = myFileHandler.getFileContents(inputFile);
+                                    for (int i=0; i<errorFileContents.length; i++) {
+                                            perlErrors = perlErrors + "\n" + errorFileContents[i];
+                                    }
+                                    perlErrors = perlErrors + "\n\n" + 
+                                            "The following information may be useful in determining "+
+                                             "where the problem occurred:\n";
+                                    for (int i=0; i<inputFileContents.length; i++) {
+                                            perlErrors = perlErrors + "\n" + inputFileContents[i];
+                                    }
+                                }
                 	} else {
                         	log.info("No Perl errors found");
                 	}
