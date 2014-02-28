@@ -330,51 +330,33 @@ public class GeneDataTools {
             result=(String)session.getAttribute("genURL");
         }
         this.setPublicVariables(error,ensemblID1);
-        String[] loc=null;
-        try{
-                loc=myFH.getFileContents(new File(outputDir+"location.txt"));
-        }catch(IOException e){
-                log.error("Couldn't load location for gene.",e);
-        }
-        if(loc!=null){
-                chrom=loc[0];
-                minCoord=Integer.parseInt(loc[1]);
-                maxCoord=Integer.parseInt(loc[2]);
-        }
         Date endLoadLoc=new Date();
-        //log.debug("getGeneCentricData->getRegionData");
-        ArrayList<Gene> ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01,eQTL);
-        for(int i=0;i<ret.size();i++){
-            //log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
-            if(ret.get(i).getGeneID().equals(ensemblIDList)){
-                //log.debug("EQUAL::"+ret.get(i).getGeneID()+"::"+ensemblIDList);
-                this.returnGeneSymbol=ret.get(i).getGeneSymbol();
-            }
-        }
         Date endRegion=new Date();
-        /*this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
-        ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chrom,arrayTypeID,0.01,"All");
-        HashMap transInQTLsCore=new HashMap();
-        HashMap transInQTLsExtended=new HashMap();
-        HashMap transInQTLsFull=new HashMap();
-        for(int i=0;i<tcList.size();i++){
-            TranscriptCluster tmp=tcList.get(i);
-            if(tmp.getLevel().equals("core")){
-                transInQTLsCore.put(tmp.getTranscriptClusterID(),tmp);
-            }else if(tmp.getLevel().equals("extended")){
-                transInQTLsExtended.put(tmp.getTranscriptClusterID(),tmp);
-            }else if(tmp.getLevel().equals("full")){
-                transInQTLsFull.put(tmp.getTranscriptClusterID(),tmp);
+        ArrayList<Gene> ret=new ArrayList<Gene>();
+        if(!error){
+            String[] loc=null;
+            try{
+                    loc=myFH.getFileContents(new File(outputDir+"location.txt"));
+            }catch(IOException e){
+                    log.error("Couldn't load location for gene.",e);
             }
             if(loc!=null){
                     chrom=loc[0];
                     minCoord=Integer.parseInt(loc[1]);
                     maxCoord=Integer.parseInt(loc[2]);
             }
-            ret=Gene.readGenes(outputDir+"Region.xml");
-            //ret=this.mergeOverlapping(ret);
-            ret=this.mergeAnnotatedOverlapping(ret);
-            this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
+            endLoadLoc=new Date();
+            //log.debug("getGeneCentricData->getRegionData");
+            ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01,eQTL);
+            for(int i=0;i<ret.size();i++){
+                //log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
+                if(ret.get(i).getGeneID().equals(ensemblIDList)){
+                    //log.debug("EQUAL::"+ret.get(i).getGeneID()+"::"+ensemblIDList);
+                    this.returnGeneSymbol=ret.get(i).getGeneSymbol();
+                }
+            }
+            endRegion=new Date();
+            /*this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
             ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chrom,arrayTypeID,0.01,"All");
             HashMap transInQTLsCore=new HashMap();
             HashMap transInQTLsExtended=new HashMap();
@@ -388,10 +370,33 @@ public class GeneDataTools {
                 }else if(tmp.getLevel().equals("full")){
                     transInQTLsFull.put(tmp.getTranscriptClusterID(),tmp);
                 }
+                if(loc!=null){
+                        chrom=loc[0];
+                        minCoord=Integer.parseInt(loc[1]);
+                        maxCoord=Integer.parseInt(loc[2]);
+                }
+                ret=Gene.readGenes(outputDir+"Region.xml");
+                //ret=this.mergeOverlapping(ret);
+                ret=this.mergeAnnotatedOverlapping(ret);
+                this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
+                ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chrom,arrayTypeID,0.01,"All");
+                HashMap transInQTLsCore=new HashMap();
+                HashMap transInQTLsExtended=new HashMap();
+                HashMap transInQTLsFull=new HashMap();
+                for(int i=0;i<tcList.size();i++){
+                    TranscriptCluster tmp=tcList.get(i);
+                    if(tmp.getLevel().equals("core")){
+                        transInQTLsCore.put(tmp.getTranscriptClusterID(),tmp);
+                    }else if(tmp.getLevel().equals("extended")){
+                        transInQTLsExtended.put(tmp.getTranscriptClusterID(),tmp);
+                    }else if(tmp.getLevel().equals("full")){
+                        transInQTLsFull.put(tmp.getTranscriptClusterID(),tmp);
+                    }
+                }
+                addFromQTLS(ret,transInQTLsCore,transInQTLsExtended,transInQTLsFull);
             }
-            addFromQTLS(ret,transInQTLsCore,transInQTLsExtended,transInQTLsFull);
+            addFromQTLS(ret,transInQTLsCore,transInQTLsExtended,transInQTLsFull);*/
         }
-        addFromQTLS(ret,transInQTLsCore,transInQTLsExtended,transInQTLsFull);*/
         try{
             PreparedStatement ps=dbConn.prepareStatement(updateSQL, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -819,7 +824,7 @@ public class GeneDataTools {
         
         log.debug(ensemblIDList+" CreatedXML::"+createdXML);
         
-        
+        if(createdXML){
             String[] loc=null;
             try{
                 loc=myFH.getFileContents(new File(outputDir+"location.txt"));
@@ -864,7 +869,9 @@ public class GeneDataTools {
             
             //Moved back to AsyncGeneDataTools
             //outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
-            
+        }else{
+            error=true;
+        }    
         
         return error;
     }
