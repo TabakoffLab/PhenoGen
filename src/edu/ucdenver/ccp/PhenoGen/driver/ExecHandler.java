@@ -46,24 +46,26 @@ public class ExecHandler {
 	public String getErrors() {
             FileHandler myFileHandler = new FileHandler();
             String[] errorFileContents=new String[0];
+            execErrors="";
             try{
                 errorFileContents = myFileHandler.getFileContents(new File(errorFileName));
+                execErrors="";
+                for (int i=0; i<errorFileContents.length; i++) {
+                        execErrors = execErrors + "\n" + errorFileContents[i];
+                }
             }catch(IOException e){
                 log.error("Error reading exec_error file contents.",e);
             }
-            if(errorFileContents.length>0 && !errorFileContents[0].equals("")){
-                execErrors = "Error File Contents:\n\n";
+            if(!execErrors.equals("")){
+                execErrors = "Error File Contents:\n\n"+execErrors;
                 String[] outputFileContents=new String[0];
                 try{
                      outputFileContents = myFileHandler.getFileContents(new File(outputFileName));
                 }catch(IOException e){
                     log.error("Error reading exec output files",e);
                 }
-                for (int i=0; i<errorFileContents.length; i++) {
-                        execErrors = execErrors + "\n" + errorFileContents[i];
-                }
-                execErrors = execErrors + "\n\n" + 
-                        "The following information may be useful in determining "+
+                execErrors = execErrors + 
+                        "\n\nThe following information may be useful in determining "+
                             "where the problem occurred:\n\n OUTPUT FILE CONTENTS:\n\n";
                 for (int i=0; i<outputFileContents.length; i++) {
                         execErrors = execErrors + "\n" + outputFileContents[i];
