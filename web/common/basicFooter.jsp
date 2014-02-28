@@ -1,6 +1,6 @@
 
 	<div id="page_footer">
-        	<p>&copy;2011-2012 Regents of the University of Colorado. All Rights Reserved.</p>
+        	<p>&copy;2011-2013 Regents of the University of Colorado. All Rights Reserved.</p>
 		<div id="footer_link_container">
 			<div class="footer_nav">
             	<a href="https://github.com/TabakoffLab/PhenoGen" target="CU Policy Window">Source Code (GitHub)</a> |

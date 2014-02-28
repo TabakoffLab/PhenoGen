@@ -1,4 +1,7 @@
 <script type="text/javascript">
+	if(bugsense !=undefined){
+		bugsense.addExtraData( 'gene', '<%=selectedEnsemblID%>' );
+	}
 //var bugsense = new Bugsense( { apiKey: "1c083a70", appVersion: "0.9", userIdentifier: "<%=myGene%>" } );
 var urlprefix="<%=host+contextRoot%>";
 var trackString="coding,noncoding,snp,smallnc";
@@ -63,6 +66,9 @@ var dataPrefix="";
     #regionTableDiv{
       width: 100%;
     }
+	#mouseHelp{
+  		font-size:12px;
+  	}
   }
 
 	
@@ -148,13 +154,13 @@ var dataPrefix="";
     </div>
     
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
-    	<span id="mouseHelp">Navigation Hints: Hold mouse over areas of the image for available actions.</span> <BR />
+    	<span id="mouseHelp" style=" min-height:20px;">Navigation Hints: Hold mouse over areas of the image for available actions.</span> <BR />
         <!--<span id="saveBtn" style="display:inline-block;cursor:pointer;"><img src="/web/images/icons/download_g.png"></span>-->
         <div id="collapsableImage" class="geneimage" >
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser0.9.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.9.1.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.2.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
@@ -264,6 +270,8 @@ var dataPrefix="";
     </div>
     
     <BR /><BR /><BR />
+    
+    <a href="" target="_blank" style="display:none;" id="fileDownload"></a>
     
 </div><!-- ends page div -->
 

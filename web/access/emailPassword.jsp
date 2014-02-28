@@ -73,18 +73,18 @@
 	<table class="list_base">
         	<tr>
 			<td width="50%"><b>Email Address</b>:</td>
-			<td><input type="text" name="emailAddress"  size="60"></td>
+			<td><input type="text" name="emailAddress" id="emailAddress"  size="60"></td>
 		</tr>
 		<tr><td colspan="100%">&nbsp;</td></tr>
 		<tr><td colspan="100%"><strong>OR</strong></td></tr>
 		<tr><td colspan="100%">&nbsp;</td></tr>
         	<tr>
 			<td><b>First Name</b>:</td>
-			<td><input type="text" name="firstName"  size="60"></td>
+			<td><input type="text" name="firstName" id="firstName"  size="60"></td>
 		</tr>
         	<tr>
 			<td><b>Last Name</b>:</td>
-			<td><input type="text" name="lastName"  size="60"></td>
+			<td><input type="text" name="lastName" id="lastName"  size="60"></td>
 		</tr>
 		<tr><td colspan="100%">&nbsp;</td></tr>
 		<tr><td>&nbsp;</td>
@@ -97,38 +97,37 @@
 	</div> <!-- emailPassword -->
 <% } %>
 	</div> <!-- main_body -->
+    </div></div>
 	<div class="brClear"></div>
 	<%@ include file="/web/common/basicFooter.jsp" %>
         <script type="text/javascript">
                 $(document).ready(function() {
-			document.emailPassword.emailAddress.focus();
+						$("#emailAddress").focus();
+						//document.emailPassword.emailAddress.focus();
                         setTimeout("setupMain()", 100);
                 });
-        </script>
-
-	<script language="JAVASCRIPT" type="text/javascript">
 	function IsPasswordRequestFormComplete(){
 
-        	if (document.emailPassword.emailAddress.value != '' &&
-        		document.emailPassword.firstName.value != '' &&
-        		document.emailPassword.lastName.value != '') { 
-                	alert('Enter either your email address OR your first and last name, but not both.')
-                        	document.emailPassword.emailAddress.focus();
+		if ($("#emailAddress").val() != '' &&
+        		$("#firstName").val() != '' &&
+        		$("#lastName").val() != '') { 
+                	alert('Enter either your email address OR your first and last name, but not both.');
+                    $("#emailAddress").focus();
                 	return false;
 		}
-        	if (document.emailPassword.emailAddress.value == '' &&
-        		document.emailPassword.firstName.value == '' &&
-        		document.emailPassword.lastName.value == '') { 
-                	alert('Enter either your email address or your first and last name before proceeding.')
-                        	document.emailPassword.emailAddress.focus();
+        	if ($("#emailAddress").val() == '' &&
+        		$("#firstName").val() == '' &&
+        		$("#lastName").val() == '') { 
+                	alert('Enter either your email address or your first and last name before proceeding.');
+                    $("#emailAddress").focus();
                 	return false;
 		}
-        	if ((document.emailPassword.firstName.value != '' &&
-        		document.emailPassword.lastName.value == '') ||
-        		(document.emailPassword.firstName.value == '' &&
-        		document.emailPassword.lastName.value != '')) {
-                	alert('Enter both your first and last name before proceeding.')
-                        	document.emailPassword.firstName.focus();
+        	if (($("#firstName").val() != '' &&
+        		$("#lastName").val() == '') ||
+        		($("#firstName").val() == '' &&
+        		$("#lastName").val() != '')) {
+                	alert('Enter both your first and last name before proceeding.');
+                    $("#emailAddress").focus();
                 	return false;
         	}
 	}

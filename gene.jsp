@@ -17,7 +17,7 @@
 	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
-	extrasList.add("tooltipster.css");
+	//extrasList.add("tooltipster.css");
 	extrasList.add("jquery.fancybox.css");
 	
 	//extrasList.add("ColReorder.css");

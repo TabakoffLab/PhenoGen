@@ -175,19 +175,26 @@ $(document).on("change","select[name='trackSelect']",function(){
 					level=idStr.substr(idStr.length-8,1);
 				}
 				console.log("TrackSelect Level:"+level);
-				if(idStr.indexOf("Dense")>0){
-					if(idStr.indexOf("coding")>-1 || idStr.indexOf("smallnc")>-1){
-						$("."+cl).each(function(){
-							$(this).val(value);
-						});
+				if(svgList[level]!=undefined){
+					try{
+						if(idStr.indexOf("Dense")>0){
+							if(idStr.indexOf("coding")>-1 || idStr.indexOf("smallnc")>-1){
+								$("."+cl).each(function(){
+									$(this).val(value);
+								});
+							}
+							svgList[level].redraw();
+						}else if(idStr.indexOf("snp")==0){
+							svgList[level].updateData();
+						}else{
+							svgList[level].redraw();
+						}
+					}catch(err){
+						bugsense.notify( err, { controlID:idStr,level:level } );
 					}
-					svgList[level].redraw();
-				}else if(idStr.indexOf("snp")==0){
-					svgList[level].updateData();
-				}else{
-					svgList[level].redraw();
 				}
 				saveToCookie(level);
+
 	 		});
 
 $(document).on("change","select[name='colorSelect']",function(){
@@ -281,8 +288,42 @@ $(document).on("click",".saveImage",function(){
 					}
 					 var filename = region+"_"+datePart+".png";
 					  var xhr = new XMLHttpRequest();
+					  
+					  xhr.open('GET', url);
 					  xhr.responseType = 'blob';
-					  xhr.onload = function() {
+					  xhr.send();
+					  xhr.onreadystatechange = function(){
+
+					  										
+
+															    //ready?
+															    if (xhr.readyState != 4)
+															        return false;
+
+															    //get status:
+															    var status = xhr.status;
+
+															    //maybe not successful?
+															    if (status != 200) {
+															    	console.log("xhr status:"+status);
+															        //alert("AJAX: server status " + status);
+															        return false;
+															    }
+															    var a = document.createElement('a');
+																a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+																a.download = filename; // Set the file name.
+																a.style.display = 'none';
+																document.body.appendChild(a);
+																try{
+																	a.click();
+																}catch(error){
+																	$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+																	window.open(url);
+																}	
+																delete a;
+															    return true;
+															}
+					  /*xhr.onload = function() {
 						var a = document.createElement('a');
 						a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
 						a.download = filename; // Set the file name.
@@ -290,9 +331,8 @@ $(document).on("click",".saveImage",function(){
 						document.body.appendChild(a);
 						a.click();
 						delete a;
-					  };
-					  xhr.open('GET', url);
-					  xhr.send();
+					  };*/
+					  
     			},
     			error: function(xhr, status, error) {
         			console.log(error);
@@ -611,7 +651,7 @@ function changeTrackHeight(id,val){
 		var size=val+"px";
 		$("#Scroll"+id).css({"max-height":size,"overflow":"auto"});
 	}else{
-		$("#Scroll"+id).css({"max-height":'',"overflow":"none"});
+		$("#Scroll"+id).css({"max-height":'',"overflow":"hidden"});
 	}
 
 }
@@ -1017,7 +1057,7 @@ function addCustomTrackUI(trackString,checked){
         //tmp=tmp+"&nbsp&nbsp&nbsp<span title=\"Save as Track Default Settings\" style=\"cursor:pointer;\"><img src=\"web/images/icons/disk_sm.png\"></span>";
         //tmp=tmp+"<input type=\"button\" id=\""+id+"SaveBtn"+level+"\" value=\"Save As Default\" title=\"Saves the current track settings as the default settings in the future.\" onClick=\"saveDefault('"+id+"','"+level+"')\">";
         /**/
-        tmp=tmp+"<span class=\"delCustom\"  id=\""+id+"Delete"+level+"\" title=\"Delete Custom Track\" style=\"float:right;\"><img src=\"web/images/icons/delete.png\">"+"</span>";
+        tmp=tmp+"<span class=\"delCustom\"  id=\""+id+"Delete"+level+"\" title=\"Delete Custom Track\" style=\"float:right;cursor:pointer;\"><img src=\"web/images/icons/delete.png\">"+"</span>";
         tmp=tmp+"<div id=\""+id+"Scale"+level+"\" style=\"display:none;\">Color*:<select id=\""+id+"ColorSelect"+level+"\" class=\"usrtrkColor\" id=\"\">";
        	tmp=tmp+"<option value=\"Score\" >Score based scale</option>";
         tmp=tmp+"<option value=\"Color\" selected=\"selected\">Feature defined</option></select>";
@@ -1141,9 +1181,6 @@ function addCustomTrackUI(trackString,checked){
 	
 }*/
 
-function updateCustomColor(id,level){
-
-}
 
 function deleteCustomTrack(track){
 	console.log("remove custom track:"+track);
@@ -1213,12 +1250,12 @@ function calculateBin(len,width){
 }*/
 
 //D3 helper functions
-function key(d) {return d.getAttribute("ID");};
-function keyName(d) {return d.getAttribute("name");};
-function keyStart(d) {return d.getAttribute("start");};
-function keyTissue(d,tissue){return d.getAttribute("ID")+tissue;};
-function keyPos(d){return d.pos;};
-function keyID(d){return d.id;};
+function key(d) {if(d!=undefined){return d.getAttribute("ID");}else{return "unknown"}};
+function keyName(d) {if(d!=undefined){return d.getAttribute("name");}else{return "unknown"}};
+function keyStart(d) {if(d!=undefined){return d.getAttribute("start");}else{return "unknown"}};
+function keyTissue(d,tissue){if(d!=undefined){return d.getAttribute("ID")+tissue;}else{return "unknown"}};
+function keyPos(d){if(d!=undefined){return d.pos;}else{return "unknown"}};
+function keyID(d){if(d!=undefined){return d.id;}else{return "unknown"}};
 
 
 //SVG functions
@@ -1780,9 +1817,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	that.changeTrackHeight = function (level,val){
 			if(val>0){
-				d3.select("#"+level+"Scroll").style("max-height",val+"px");
+				d3.select("#"+level+"Scroll").style("max-height",val+"px").style("overflow","auto");
 			}else{
-				d3.select("#"+level+"Scroll").style("max-height","none");
+				d3.select("#"+level+"Scroll").style("max-height","none").style("overflow","hidden");
 			}
 		};
 
@@ -3204,6 +3241,9 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			that.label=that.labelBase+aaLabel+" on + strand";
 		}else if(that.strands=="-"){
 			that.label=that.labelBase+aaLabel+" on - strand";
+		}
+		if(that.willDraw==0){//Only needed to Fix IE Bug which still displays the label
+			that.label="";
 		}
 		that.updateLabel(that.label);
 		that.data=data;

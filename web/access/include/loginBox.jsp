@@ -10,7 +10,7 @@
 			<% } %>
                 </form>
         <script type="text/javascript">
-                document.loginForm.user_name.focus();
+                $("#user_name").focus();
         </script>
 
         </div> <!-- // end login-form -->
