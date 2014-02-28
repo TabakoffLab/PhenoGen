@@ -1312,8 +1312,11 @@ public class GeneDataTools {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
                 }
+            }else{
+                completedSuccessfully=true;
             }
             log.debug("after if Exec Errors");
+            completedSuccessfully=true;
         }catch(Exception e){
             completedSuccessfully=false;
             log.error("Error getting DB properties or Public User ID.",e);
