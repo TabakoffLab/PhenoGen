@@ -1171,13 +1171,16 @@ public class GeneDataTools {
 
     public boolean createXMLFiles(String organism,String ensemblIDList,String ensemblID1){
         boolean completedSuccessfully=false;
+        if(ensemblIDList!=null && ensemblID1!=null && !ensemblIDList.equals("") && !ensemblID1.equals("")){
         try{
+            log.debug(ensemblIDList+"\n\n"+ensemblID1);
             int publicUserID=new User().getUser_id("public",dbConn);
             log.debug("createXML outputDir:"+outputDir);
             File outDir=new File(outputDir);
             if(outDir.exists()){
                 outDir.mkdirs();
             }
+            log.debug("after mkdir");
             Properties myProperties = new Properties();
             File myPropertiesFile = new File(dbPropertiesFile);
             myProperties.load(new FileInputStream(myPropertiesFile));
@@ -1185,7 +1188,7 @@ public class GeneDataTools {
             String dsn="dbi:"+myProperties.getProperty("PLATFORM") +":"+myProperties.getProperty("DATABASE");
             String dbUser=myProperties.getProperty("USER");
             String dbPassword=myProperties.getProperty("PASSWORD");
-
+            log.debug("after dbprop");
             File ensPropertiesFile = new File(ensemblDBPropertiesFile);
             Properties myENSProperties = new Properties();
             myENSProperties.load(new FileInputStream(ensPropertiesFile));
@@ -1193,6 +1196,7 @@ public class GeneDataTools {
             String ensPort=myENSProperties.getProperty("PORT");
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
+            log.debug("after ens dbprop");
             //construct perl Args
             String[] perlArgs = new String[14];
             perlArgs[0] = "perl";
@@ -1215,7 +1219,7 @@ public class GeneDataTools {
             perlArgs[12] = ensUser;
             perlArgs[13] = ensPassword;
             
-            
+            log.debug("after perl args");
             /*for (int i = 0; i < perlArgs.length; i++) {
                 log.debug(i + " PerlArgs::" + perlArgs[i]);
                 /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
@@ -1238,10 +1242,11 @@ public class GeneDataTools {
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
             myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/geneData/"+ensemblID1+"/");
             boolean exception=false;
+            log.debug("setup exec");
             try {
 
                 myExec_session.runExec();
-
+                log.debug("after exec No Exception");
             } catch (ExecException e) {
                 exception = true;
                 completedSuccessfully=false;
@@ -1286,6 +1291,7 @@ public class GeneDataTools {
             }
 
             String errors=myExec_session.getErrors();
+            log.debug("after read Exec Errors");
             if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
                 completedSuccessfully=false;
                 Email myAdminEmail = new Email();
@@ -1300,6 +1306,7 @@ public class GeneDataTools {
                     throw new RuntimeException();
                 }
             }
+            log.debug("after if Exec Errors");
         }catch(Exception e){
             completedSuccessfully=false;
             log.error("Error getting DB properties or Public User ID.",e);
@@ -1317,6 +1324,7 @@ public class GeneDataTools {
                     log.error("error sending message", mailException);
                     throw new RuntimeException();
                 }
+        }
         }
         return completedSuccessfully;
     }
