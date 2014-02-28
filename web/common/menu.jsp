@@ -151,7 +151,7 @@
         	}else{
             	loginBox.fadeIn("fast");
 				//$(".triangle_down").removeClass('triangle_down').addClass('triangle_up');
-				document.loginForm.user_name.focus();
+				$("#user_name").focus();
 			}
         	return false;
     	});
@@ -159,7 +159,7 @@
 			if (!loginBox.is(":visible")){
            		loginBox.fadeIn("fast");
 				//$(".triangle_down").removeClass('triangle_down').addClass('triangle_up');
-				document.loginForm.user_name.focus();
+				$("#user_name").focus();
 			}
         	return false;
     	});
