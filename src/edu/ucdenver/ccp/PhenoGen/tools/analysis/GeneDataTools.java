@@ -1637,7 +1637,8 @@ public class GeneDataTools {
             }
 
             String errors=myExec_session.getErrors();
-            if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+            log.debug("ERRORS:\n:"+errors+":");
+            if(!exception && errors!=null && !(errors.equals(""))){
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
                 myAdminEmail.setContent("There was an error while running "
