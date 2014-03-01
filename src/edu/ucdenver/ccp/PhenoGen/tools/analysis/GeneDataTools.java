@@ -1152,7 +1152,7 @@ public class GeneDataTools {
         }
         
         String errors=myExec_session.getErrors();
-        if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+        if(!exception && errors!=null && !(errors.equals(""))){
             Email myAdminEmail = new Email();
             myAdminEmail.setSubject("Exception thrown in Exec_session");
             circosErrorMessage = "There was an error while running ";
@@ -1299,7 +1299,7 @@ public class GeneDataTools {
 
             String errors=myExec_session.getErrors();
             log.debug("after read Exec Errors");
-            if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+            if(!exception && errors!=null && !(errors.equals(""))){
                 completedSuccessfully=false;
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -1423,7 +1423,7 @@ public class GeneDataTools {
 
             String errors=myExec_session.getErrors();
             //log.debug("Error String:"+errors);
-            if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+            if(!exception && errors!=null && !(errors.equals(""))){
                 status="Error generating track";
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -1511,7 +1511,7 @@ public class GeneDataTools {
                 }
 
                 String errors=myExec_session.getErrors();
-                if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+                if(!exception && errors!=null && !(errors.equals(""))){
                     status="Error generating track";
                     Email myAdminEmail = new Email();
                     myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -2015,7 +2015,7 @@ public class GeneDataTools {
             }
 
             String errors=myExec_session.getErrors();
-            if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+            if(!exception && errors!=null && !(errors.equals(""))){
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
                 myAdminEmail.setContent("There was an error while running "
@@ -2185,7 +2185,7 @@ public class GeneDataTools {
                 }
 
                 String errors=myExec_session.getErrors();
-                if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+                if(!exception && errors!=null && !(errors.equals(""))){
                     completedSuccessfully=false;
                     Email myAdminEmail = new Email();
                     myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -3168,7 +3168,7 @@ public class GeneDataTools {
                 }
 
                 String errors=myExec_session.getErrors();
-                if(!exception && errors!=null && (!errors.equals("null")||!errors.equals(""))){
+                if(!exception && errors!=null && !(errors.equals(""))){
                     error=true;
                     Email myAdminEmail = new Email();
                     session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
