@@ -191,7 +191,8 @@ function IsClusterFormComplete(){
 		alert('You must have at least 2 probes in order to perform a cluster analysis.')
 		return false; 
 	} 
-	CallJS('Demo(document.cluster)');
+	//CallJS('Demo(document.cluster)');
+	$("form[name='cluster']").submit();
 	return true;
 }
 
