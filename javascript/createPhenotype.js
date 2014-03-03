@@ -276,7 +276,7 @@
 	}
 
 	function displayProgressBar() {
-		CallJS('Demo(document.createPhenotype)');
+		//CallJS('Demo(document.createPhenotype)');
 	}
 
 	function clearNewPhenotypeValues() {

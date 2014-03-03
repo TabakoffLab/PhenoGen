@@ -38,6 +38,11 @@
 
         String[] checkedList = new String[3];
 	String numPerms = (String) fieldValues.get("numPerms");
+	
+	int selectedVer=4;//default for ILSXISS and HXBBXH will set to 1 for BXD.
+	if((selectedDataset.getDataset_id() != -99)&&selectedDataset.getName().equals(selectedDataset.BXDRI_DATASET_NAME)){
+		selectedVer=1;
+	}
 
 	log.debug("phenotypeParameterGroupID = "+phenotypeParameterGroupID);
 	String phenotypeName = (phenotypeParameterGroupID != -99 ? 
@@ -309,7 +314,7 @@
 		<input type="hidden" name="formName" id="formName" value="displayQTLResults"/>
 		<input type="hidden" name="datasetID" value="<%=selectedDataset.getDataset_id()%>"/>
 		<!-- hard-coded this because version does not need to be selected here -->
-		<input type="hidden" name="datasetVersion" value="1"/>
+		<input type="hidden" name="datasetVersion" value="<%=selectedVer%>"/>
 
 	</form>
 
