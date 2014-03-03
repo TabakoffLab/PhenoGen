@@ -141,7 +141,8 @@ function IsRunQTLSummaryFormComplete(){
 	        confType.focus();
 		return false; 
 	}
-	CallJS('Demo(document.displayQTLResults)');
+	//CallJS('Demo(document.displayQTLResults)');
+	$("form[name='displayQTLResults']").submit();
 	return true;
 }
 

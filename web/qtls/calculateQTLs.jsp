@@ -31,6 +31,7 @@
                 !((String) request.getParameter("datasetID")).equals("")  ?
                 Integer.parseInt((String)request.getParameter("datasetID")) :
                 -99);
+	int selectedVer=4;//default for ILSXISS and HXBBXH will set to 1 for BXD.
 	
 	for (int i=0; i<qtlDatasets.length; i++) {
 		log.debug("datasetID= "+datasetID);
@@ -51,6 +52,9 @@
 	log.debug("action = " + action + " whichDataset = "+selectedDataset.getDataset_id() + 
 			", whichVersion = "+selectedDatasetVersion.getVersion());
 
+	if((selectedDataset.getDataset_id() != -99)&&selectedDataset.getName().equals(selectedDataset.BXDRI_DATASET_NAME)){
+		selectedVer=1;
+	}
 	if (action != null && action.equals("Run") && phenotypeParameterGroupID != -99) {
 		log.debug("phenotypeParameterGroupID = "+phenotypeParameterGroupID);
 		String phenotypeName = (phenotypeParameterGroupID != -99 ? 
@@ -82,7 +86,7 @@
 				log.debug("data prep file already exists");
 			}*/
 			response.sendRedirect(qtlsDir + "runQTLAnalysis.jsp?datasetID="+selectedDataset.getDataset_id() +
-					"&datasetVersion=1&phenotypeParameterGroupID=" + phenotypeParameterGroupID);
+					"&datasetVersion="+selectedVer+"&phenotypeParameterGroupID=" + phenotypeParameterGroupID);
                 } catch (RException e) {
 			log.debug("got error running QTLDataPrep. datasetID = " + selectedDataset.getDataset_id());
                         rExceptionErrorMsg = e.getMessage();
@@ -138,8 +142,9 @@
 
 		<%@ include file="/web/common/formatPhenotypes.jsp" %>
 
-		<input type="hidden" name="datasetID" value="<%=selectedDataset.getDataset_id()%>"/> 
-		<input type="hidden" name="datasetVersion" value="1"/>
+		<input type="hidden" name="datasetID" value="<%=selectedDataset.getDataset_id()%>"/>
+        
+		<input type="hidden" name="datasetVersion" value="<%=selectedVer%>"/>
 
                 <input type="hidden" name="phenotypeParameterGroupID" id="phenotypeParameterGroupID" value=""/>
 		<input type="hidden" name="formName" id="formName" value="<%=formName%>"/>

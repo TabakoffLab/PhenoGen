@@ -26,7 +26,10 @@
         %><%@ include file="/web/common/getFieldValues.jsp" %><%
 
         String numPerms = (String) fieldValues.get("numPerms");
-	
+	int selectedVer=4;//Default for ILS and HXB datasets will check if BXD is selected and set to 1
+	if((selectedDataset.getDataset_id() != -99)&&(selectedDataset.getName().equals(Dataset.BXDRI_DATASET_NAME))){
+		selectedVer=1;
+	}
 	String weight = (fieldValues.get("weight") == null || 
 			(fieldValues.get("weight") != null && 
 			((String) fieldValues.get("weight")).equals("")) ? 
@@ -63,7 +66,7 @@
 		}
 
 		response.sendRedirect(qtlsDir + "displayQTLResults.jsp?datasetID="+selectedDataset.getDataset_id()+
-					"&datasetVersion=1&phenotypeParameterGroupID=" + phenotypeParameterGroupID +
+					"&datasetVersion="+selectedVer+"&phenotypeParameterGroupID=" + phenotypeParameterGroupID +
 					"&numPerms="+numPerms);
 	}
 
@@ -71,7 +74,9 @@
 
 <%@ include file="/web/common/header.jsp" %>
 
-<% if (selectedDataset.getDataset_id() != -99) { %>
+<% if (selectedDataset.getDataset_id() != -99) { 
+	
+	%>
 
 	<%@ include file="/web/qtls/include/viewingPane.jsp" %>
 	<form name="runQTLAnalysis"
@@ -133,7 +138,7 @@
                 <input type="hidden" name="phenotypeParameterGroupID" value="<%=phenotypeParameterGroupID%>" />
 		<input type="hidden" name="datasetID" value="<%=selectedDataset.getDataset_id()%>"/>
 		<!-- hard-coded this because version does not need to be selected here -->
-		<input type="hidden" name="datasetVersion" value="1"/>
+		<input type="hidden" name="datasetVersion" value="<%=selectedVer%>"/>
 
 	</form>
 <% } %>
