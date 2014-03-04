@@ -78,6 +78,8 @@ sub readRefSeqDataFromDB{
 					geneSymbol=>$geneSym,
 					start=> $txStart,
 					stop => $txStop,
+					cdsStart=>$cdsStart,
+					cdsStop=>$cdsStop,
 					source => "RefSeq",
 					strand => $strand,
 					category => $status,
@@ -136,6 +138,8 @@ sub readRefSeqDataFromDB{
 					geneSymbol=>$geneSym,
 					start=> $txStart,
 					stop => $txStop,
+					cdsStart=>$cdsStart,
+					cdsStop=>$cdsStop,
 					source => "RefSeq",
 					strand => $strand,
 					category => $status,
@@ -168,6 +172,7 @@ sub readRefSeqDataFromDB{
 			if($geneMax==-1||$txStop<$geneMax){
 				$geneMax=$txStop;
 			}
+			$previousGeneSym=$geneSym;
 			$cntGene++;	
 		}
 	}

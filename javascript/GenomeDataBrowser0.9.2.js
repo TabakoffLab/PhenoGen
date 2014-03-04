@@ -2052,6 +2052,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.width=imageWidth;
 	that.mw=that.width-that.margin;
 	d3.select(div).select("#settingsLevel"+levelNumber).remove();
+	d3.select(div).select("#saveLevel"+levelNumber).remove();
 	d3.select(div).select("#Level"+levelNumber).remove();
 	that.vis=d3.select(div);
 
@@ -2652,6 +2653,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		if(that.trackYMax<(tmpY/15)){
 			that.trackYMax=(tmpY/15);
 		}
+		//console.log(start+":"+end+":"+i+"->"+tmpY)
 		return tmpY;
 	};
 
@@ -3879,12 +3881,16 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.svg.selectAll("g.gene"+str).selectAll("line").style("stroke","green");
 				that.svg.selectAll("g.gene"+str).selectAll("rect").style("fill","green");
 				that.svg.selectAll("g.gene"+str).selectAll("text").style("opacity","0.3").style("fill","green");
-				var tmp=that.svg.selectAll("g.gene"+str)[0][0].__data__;
+				var tmp;
+				if(that.svg.selectAll("g.gene"+str)[0][0]!=undefined){
+					tmp=that.svg.selectAll("g.gene"+str)[0][0].__data__;
+				}
 				that.setupDetailedView(tmp.parent);
 				selectGene="";
 			}
 		}
 	};
+
 	that.clearSelection=function(){
 		if(d3.selectAll("g.gene").size()>0){
 				d3.selectAll("rect.selected").each(function(){
@@ -4623,6 +4629,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.counts=[{value:0,names:"Ensembl"},{value:0,names:"RNA-Seq"}];
 	that.drawAs="Gene";
 	that.trxCutoff=100000;
+	that.density=2;
 	var additionalOptStr=new String(additionalOptions);
 	if(additionalOptStr.indexOf("DrawTrx")>-1){
 		that.drawAs="Trx";
@@ -4832,15 +4839,35 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			
 				txG//.attr("transform",function(d,i){ return "translate("+txXScale(d.getAttribute("start"))+","+i*15+")";})
 					.each(function(d,i){
+						var cdsStart=d.getAttribute("cdsStart");
+						var cdsStop=d.getAttribute("cdsStop");
 						exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 						var pref="";
 						if(that.gsvg.levelNumber==1){
 								pref="tx";
 						}
 						for(var m=0;m<exList.length;m++){
+							var exStrt=exList[m].getAttribute("start");
+							var exStp=exList[m].getAttribute("stop");
+							if((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt)){
+								var ncStrt=exStrt;
+								var ncStp=cdsStart;
+								if(exStp>cdsStop){
+									ncStrt=cdsStop;
+									ncStp=exStp;
+									exStrt=exStrt;
+									exStp=cdsStop;
+								}else{
+									exStrt=cdsStart;
+									exStp=exStp;
+								}
+								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#ExNC"+exList[m].getAttribute("ID"))
+									.attr("x",function(d){ return that.xScale(ncStrt); })
+									.attr("width",function(d){ return that.xScale(ncStp) - that.xScale(ncStrt); });
+							}
 							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
-								.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
-								.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); });
+								.attr("x",function(d){ return that.xScale(exStrt); })
+								.attr("width",function(d){ return that.xScale(exStp) - that.xScale(exStrt); });
 							if(m>0){
 								var strChar=">";
 								if(d.getAttribute("strand")=="-1"){
@@ -4879,7 +4906,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				if(that.density==1){
 					that.svg.attr("height", 30);
 				}else if(that.density==2){
-					that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").size()+1)*15);
+					that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber).size()+1)*15);
 				}else if(that.density==3){
 					that.svg.attr("height", (that.trackYMax+2)*15);
 				}
@@ -4956,7 +4983,10 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.drawTrx=function (d,i){
 		//console.log("drawTrx:"+i);
-		//console.log(d);
+		var cdsStart=d.getAttribute("cdsStart");
+		var cdsStop=d.getAttribute("cdsStop");
+		console.log("CDS:"+cdsStart);
+		console.log("CDS:"+cdsStop);
 		var prefix="";
 		if(that.gsvg.levelNumber==1){
 			prefix="tx";
@@ -4964,16 +4994,71 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		var txG=that.svg.select("#"+prefix+d.getAttribute("ID"));
 		exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 		for(var m=0;m<exList.length;m++){
-			txG.append("rect")
-			.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
-			.attr("rx",1)
-			.attr("ry",1)
-	    	.attr("height",10)
-			.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
-			.attr("title",function(d){ return exList[m].getAttribute("ID");})
-			.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
-			.style("fill",that.color)
-			.style("cursor", "pointer")
+			var exStrt=exList[m].getAttribute("start");
+			var exStp=exList[m].getAttribute("stop");
+			if((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt)){//need to draw two rect one for CDS and one non CDS
+				var xPos1=0;
+				var xWidth1=0;
+				var xPos2=0;
+				var xWidth2=0;
+				if(exStrt<cdsStart){
+					xPos1=that.xScale(exList[m].getAttribute("start"));
+					xWidth1=that.xScale(cdsStart) - that.xScale(exList[m].getAttribute("start"));
+					xPos2=that.xScale(cdsStart);
+					xWidth2=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStart);
+				}else if(exStp>cdsStop){
+					xPos2=that.xScale(exList[m].getAttribute("start"));
+					xWidth2=that.xScale(cdsStop) - that.xScale(exList[m].getAttribute("start"));
+					xPos1=that.xScale(cdsStop);
+					xWidth1=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStop);
+				}
+				console.log("xPos1"+xPos1+"xPos2:"+xPos2+"xWidth1"+xWidth1+"xWidth2:"+xWidth2);
+				txG.append("rect")//non CDS
+					.attr("x",xPos1)
+					.attr("y",2.5)
+					//.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+					//.attr("rx",1)
+					//.attr("ry",1)
+			    	.attr("height",5)
+			    	.attr("width",xWidth1)
+					//.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+					.attr("title",function(d){ return exList[m].getAttribute("ID");})
+					.attr("id",function(d){return "ExNC"+exList[m].getAttribute("ID");})
+					//.attr("class",function(d){})
+					.style("fill",that.color)
+					.style("cursor", "pointer");
+				txG.append("rect")//CDS
+						.attr("x",xPos2)
+						//.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+						//.attr("rx",1)
+						//.attr("ry",1)
+				    	.attr("height",10)
+				    	.attr("width",xWidth2)
+						//.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+						.attr("title",function(d){ return exList[m].getAttribute("ID");})
+						.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
+						.style("fill",that.color)
+						.style("cursor", "pointer");
+				
+			}else{
+				var height=10;
+				var y=0;
+				if((exStrt<cdsStart&&exStp<cdsStart)||(exStp>cdsStop&&exStrt>cdsStop)){
+					height=5;
+					y=2.5;
+				}
+				txG.append("rect")
+					.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+					.attr("y",y)
+					//.attr("rx",1)
+					//.attr("ry",1)
+			    	.attr("height",height)
+					.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+					.attr("title",function(d){ return exList[m].getAttribute("ID");})
+					.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
+					.style("fill",that.color)
+					.style("cursor", "pointer");
+			}
 			if(m>0){
 				txG.append("line")
 				.attr("x1",function(d){ return that.xScale(exList[m-1].getAttribute("stop")); })
@@ -5027,7 +5112,9 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.svg.selectAll(".gene").remove();
 		that.svg.selectAll(".trx"+that.gsvg.levelNumber).remove();
 		
-		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
+		if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
+			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
+		}
 			//console.log("set annotType:"+that.annotType);
 		for(var j=0;j<that.gsvg.width;j++){
 			that.yArr[j]=0;
@@ -5151,10 +5238,11 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				var tmpTxList=getAllChildrenByName(getFirstChildByName(data[j],"TranscriptList"),"Transcript");
 				for(var k=0;k<tmpTxList.length;k++){
 					txList[txListSize]=tmpTxList[k];
+					txList[txListSize].parent=data[j];
 					txListSize++;
 				}
 			}
-			//console.log(txList);
+			console.log(txList);
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".trx"+that.gsvg.levelNumber).remove();
 			var tx=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".trx"+that.gsvg.levelNumber)
 		   			.data(txList,key)
@@ -5208,7 +5296,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			 tx.exit().remove();
 			 //console.log("density:"+that.density);
 			if(that.density==2){
-				that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").size()+1)*15);
+				that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber).size()+1)*15);
 			}else if(that.density==3){
 				that.svg.attr("height", (that.trackYMax+2)*15);
 			}else{
@@ -5226,7 +5314,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.drawLegend(legend);
 	};
 
-	that.density=2;
+	
 	that.redrawLegend();
 	//console.log("RefSeq First draw");
 	//console.log(data);
