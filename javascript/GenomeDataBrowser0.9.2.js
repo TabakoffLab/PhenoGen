@@ -26,6 +26,8 @@ var mouseOnly=new Array();
 
 var customTrackCount=0;
 
+//var defaultMouseFunct="pan";
+
 ratOnly["snpSHRJ"]=1;
 ratOnly["snpF344"]=1;
 ratOnly["snpSHRH"]=1;
@@ -262,7 +264,7 @@ $(document).on("change","input[name='optioncbx']",function(){
 });
 
 
-$(document).on("click",".saveImage",function(){
+/*$(document).on("click",".saveImage",function(){
 	var id=$(this).attr("id");
 	var levelID=(new String(id)).substr(4);
 	var content=$("div#"+levelID).html();
@@ -333,12 +335,12 @@ $(document).on("click",".saveImage",function(){
 						delete a;
 					  };*/
 					  
-    			},
+/*				},
     			error: function(xhr, status, error) {
         			console.log(error);
     			}
 			});
-});
+});*/
 
 function confirmUpload(level){
 	$("div#confirmUpload"+level).show();
@@ -359,8 +361,6 @@ function createCustomTrack(level){
 	var file = $("input#customBedFile"+level)[0].files[0]; //Files[0] = 1st file
 	var fName=file.name;
 	var fSize=(file.size/1000.0)/1000.0;
-	console.log(fName);
-	console.log(fSize);
 	$(".uploadStatus").show();
 	var fExt="";
 	if(fName.indexOf(".")>0){
@@ -373,11 +373,9 @@ function createCustomTrack(level){
 			fExt=fTrunc;
 		}
 	}
-	console.log("extension:"+fExt);
 	//check file size and extension
 	if(fSize<20){
 		if(fExt!="bed"){
-			console.log("hasConfirmed:"+$("input#hasconfirmBed"+level).val());
 			if(fExt=="gz"||fExt=="tar"||fExt=="zip"||fExt=="exe"||fExt=="bin"){
 				//cancel with no support
 				setTimeout(function(){
@@ -988,12 +986,10 @@ function saveCustomTrackCookie(newTrack){
 function removeCustomTrackCookie(removeTrack){
 	var existingCookieStr="";
 	var newCookieStr="";
-	console.log("remove from cookie:"+removeTrack);
 	if($.cookie("customTrackList")!=null){
     	existingCookieStr=$.cookie("customTrackList");
     	var trackArray=existingCookieStr.split(";");
     	for(var m=0;m<trackArray.length;m++){
-    		console.log("checking:"+trackArray[m]);
     		if(trackArray[m].indexOf(removeTrack)==0){
     			console.log("removed track from cookie:"+trackArray[m]);
     		}else{
@@ -1008,7 +1004,6 @@ function loadCustomTrackCookieUI(){
 	var existingCookieStr="";
 	if($.cookie("customTrackList")!=null){
     	existingCookieStr=$.cookie("customTrackList");
-    	//console.log("Custom String:"+existingCookieStr);
     	var trackArray=existingCookieStr.split(";");
     	var addedCount=0;
     	for(var m=0;m<trackArray.length;m++){
@@ -1183,20 +1178,20 @@ function addCustomTrackUI(trackString,checked){
 
 
 function deleteCustomTrack(track){
-	console.log("remove custom track:"+track);
+	//console.log("remove custom track:"+track);
 	//delete from cookie
 	removeCustomTrackCookie(track);
-	console.log("after delete from cookie");
+	//console.log("after delete from cookie");
 	//remove track from image
 	removeTrack(0,track);
-	console.log("after remove from level0");
+	//console.log("after remove from level0");
 	removeTrack(1,track);
-	console.log("after remove from level 1");
+	//console.log("after remove from level 1");
 	//remove track from UI
 	$("div.custTrack"+track).each(function(){$(this).remove();});
-	console.log("after remove from settings");
+	//console.log("after remove from settings");
 	saveToCookie(0);
-	console.log("after save to cookie");
+	//console.log("after save to cookie");
 	//remove track from server
 	$.ajax({
 			url: contextPath +"/"+ pathPrefix +"removeCustomTrack.jsp",
@@ -1211,7 +1206,7 @@ function deleteCustomTrack(track){
 					        			
 			}
 	});
-	console.log("end of remove");
+	//console.log("end of remove");
 }
 
 function loadCustomTrackCookie(track){
@@ -1947,7 +1942,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.mdown=function() {
-		if(d3.event.altKey){
+		if((that.defaultMouseFunct!="dragzoom" && d3.event.altKey ) || (that.defaultMouseFunct=="dragzoom" && !d3.event.altKey )){
 				var p = d3.mouse(that.vis[0][0]);
 				that.downZoomx=p[0];
 				that.scaleSVG.append("rect")
@@ -1960,14 +1955,16 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						.attr("opacity",0.3);
 				that.scaleSVG.append("text").attr("id","zoomTextStart").attr("x",that.downZoomx).attr("y",15).text(numberWithCommas(Math.round(that.xScale.invert(that.downZoomx))));
 				that.scaleSVG.append("text").attr("id","zoomTextEnd").attr("x",that.downZoomx).attr("y",50).text(numberWithCommas(Math.round(that.xScale.invert(that.downZoomx))));
-		}else if(processAjax==0){
+		}else{ 
+			if(processAjax==0){
 				that.prevMinCoord=that.xScale.domain()[0];
 				that.prevMaxCoord=that.xScale.domain()[1];
 		        var p = d3.mouse(that.vis[0][0]);
 		        that.downx = that.xScale.invert(p[0]);
 		        that.downscalex = that.xScale;
 	    	}
-		};
+	    }
+	};
 
 	that.forceDrawAs=function(value){
 		for(var i=0;i<that.trackList.length;i++){
@@ -2002,6 +1999,28 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}
 	};
 
+	//Function Bar functions
+	that.resetDefaultMouse=function(prevSelected){
+		var image="/web/images/icons/"+prevSelected+"_dark.png";
+		d3.select("span#"+prevSelected+that.levelNumber+" img").attr("src",image);
+		d3.select("span#"+prevSelected+that.levelNumber).style("background","#DCDCDC");
+	}
+
+	that.changeTrackCursor=function(cursor){
+		for(var i=0;i<that.trackList.length;i++){
+			if(that.trackList[i]!=undefined && that.trackList[i].svg!=undefined){
+				that.trackList[i].svg.style("cursor",cursor);
+			}
+		}
+	};
+
+	that.changeScaleCursor=function(cursor){
+		that.scaleSVG.style("cursor",cursor);
+	};
+
+
+
+	//Genome SVG Setup
 	that.type=type;
 	that.div=div;
 	that.margin=0;
@@ -2016,6 +2035,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.downPanx=Math.NaN;
 	that.downZoomx=Math.NaN;
 	that.downZoomxEnd=Math.NaN;
+	that.defaultMouseFunct="pan";
 
 
 	that.xMax=290000000;
@@ -2024,6 +2044,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.prevMinCoord=minCoord;
 	that.prevMaxCoord=maxCoord;
 	
+	that.initMin=minCoord;
+	that.initMax=maxCoord;
+
 	that.dataMinCoord=minCoord;
 	that.dataMaxCoord=maxCoord;
 
@@ -2052,23 +2075,221 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.width=imageWidth;
 	that.mw=that.width-that.margin;
 	d3.select(div).select("#settingsLevel"+levelNumber).remove();
-	d3.select(div).select("#saveLevel"+levelNumber).remove();
+	d3.select(div).select("#functLevel"+levelNumber).remove();
 	d3.select(div).select("#Level"+levelNumber).remove();
 	that.vis=d3.select(div);
 
-	that.vis.append("span").attr("class","saveImage")
-		.attr("id","saveLevel"+levelNumber)
-		.style("float","left")
+	//Setup Function Bar
+	that.functionBar=that.vis.append("div").attr("class","functionBar")
+		.attr("id","functLevel"+levelNumber)
+		.style("float","left");
+	//Setup Mouse Default Function Control
+	var defMouse=that.functionBar.append("div").attr("class","defaultMouse").attr("id","defaultMouse"+levelNumber);
+	defMouse.append("span").attr("id","dragzoom"+that.levelNumber).style("height","24px").style("display","inline-block")
 		.style("cursor","pointer")
-		//.style("width","130px")
-		.html("<img src=\"/web/images/icons/download_g.png\">")
+		.append("img").attr("class","mouseOpt dragzoom")
+		.attr("src","/web/images/icons/dragzoom_dark.png")
+		.attr("pointer-events","all")
+		.on("click",function(){
+			that.resetDefaultMouse(that.defaultMouseFunct);
+			that.defaultMouseFunct="dragzoom";
+			d3.select(this).attr("src","/web/images/icons/dragzoom_white.png");
+			d3.select("span#dragzoom"+that.levelNumber).style("background","#989898");
+			that.changeTrackCursor("crosshair");
+			that.changeScaleCursor("crosshair");
+		})
+		.on("mouseout",function(){
+			if(that.defaultMouseFunct!="dragzoom"){
+				d3.select(this).attr("src","/web/images/icons/dragzoom_dark.png");
+				d3.select("span#dragzoom"+that.levelNumber).style("background","#DCDCDC");
+			}
+		})
 		.on("mouseover",function(){
+			d3.select(this).attr("src","/web/images/icons/dragzoom_white.png");
+			d3.select("span#dragzoom"+that.levelNumber).style("background","#989898");
+			$("#mouseHelp").html("Click to set default mouse function to allow click and drag to select a region to zoom in on.");
+		});
+	defMouse.append("span").attr("id","pan"+that.levelNumber).style("height","24px").style("display","inline-block")
+		.style("cursor","pointer")
+		.append("img")
+		.attr("class","mouseOpt pan")
+		.attr("src","/web/images/icons/pan_dark.png")
+		.attr("pointer-events","all")
+		.on("click",function(){
+			that.resetDefaultMouse(that.defaultMouseFunct);
+			that.defaultMouseFunct="pan";
+			d3.select(this).attr("src","/web/images/icons/pan_white.png");
+			d3.select("span#pan"+that.levelNumber).style("background","#989898");
+			that.changeTrackCursor("move");
+			that.changeScaleCursor("ew-resize");
+		})
+		.on("mouseout",function(){
+			if(that.defaultMouseFunct!="pan"){
+				d3.select(this).attr("src","/web/images/icons/pan_dark.png");
+				d3.select("span#pan"+that.levelNumber).style("background","#DCDCDC");
+			}
+		})
+		.on("mouseover",function(){
+			d3.select(this).attr("src","/web/images/icons/pan_white.png");
+			d3.select("span#pan"+that.levelNumber).style("background","#989898");
+			$("#mouseHelp").html("Click to set default mouse function to allow click and drag to navigate along the genome.");
+		});
+	defMouse.append("span").attr("id","reorder"+that.levelNumber).style("height","24px").style("display","inline-block")
+		.style("cursor","pointer").append("img")
+		.attr("class","mouseOpt pan")
+		.attr("src","/web/images/icons/reorder_dark.png")
+		.attr("pointer-events","all")
+		.on("click",function(){
+			that.resetDefaultMouse(that.defaultMouseFunct);
+			that.defaultMouseFunct="reorder";
+			d3.select(this).attr("src","/web/images/icons/reorder_white.png");
+			d3.select("span#reorder"+that.levelNumber).style("background","#989898");
+			that.changeTrackCursor("ns-resize");
+			that.changeScaleCursor("ew-resize");
+		})
+		.on("mouseout",function(){
+			if(that.defaultMouseFunct!="reorder"){
+				d3.select(this).attr("src","/web/images/icons/reorder_dark.png");
+				d3.select("span#reorder"+that.levelNumber).style("background","#DCDCDC");
+			}
+		})
+		.on("mouseover",function(){
+			d3.select(this).attr("src","/web/images/icons/reorder_white.png");
+			d3.select("span#reorder"+that.levelNumber).style("background","#989898");
+			$("#mouseHelp").html("Click to set default mouse function to reorder image tracks.");
+		});
+	$("span#"+that.defaultMouseFunct+that.levelNumber+" img").click();
+	//Setup Additional Buttons
+	that.functionBar.append("span").attr("class","saveImage control").style("display","inline-block")
+		.attr("id","saveLevel"+levelNumber)
+		.style("cursor","pointer")
+		.append("img")//.attr("class","mouseOpt dragzoom")
+		.attr("src","/web/images/icons/savePic_dark.png")
+		.attr("pointer-events","all")
+		.attr("cursor","pointer")
+		.on("click",function(){
+			var id=$(this).parent().attr("id");
+			var levelID=(new String(id)).substr(9);
+			console.log("Level #:"+levelID);
+			var content=$("div#Level"+levelID).html();
+			content=content+"\n";
+			$.ajax({
+					url: pathPrefix+"saveBrowserImage.jsp",
+	   				type: 'POST',
+					contentType: 'text/html',
+					data: content,
+					processData: false,
+					dataType: 'json',
+	    			success: function(data2){ 
+	        			var d=new Date();
+	        			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
+						var url="http://"+urlprefix+"/tmpData/download/"+data2.imageFile;
+						var region=new String($('#geneTxt').val());
+						region=region.replace(/:/g,"_");
+						region=region.replace(/-/g,"_");
+						region=region.replace(/,/g,"");
+						if(levelID=="Level1"){
+							region=svgList[1].selectedData.getAttribute("geneSymbol");
+						}
+						 var filename = region+"_"+datePart+".png";
+						  var xhr = new XMLHttpRequest();
+						  
+						  xhr.open('GET', url);
+						  xhr.responseType = 'blob';
+						  xhr.send();
+						  xhr.onreadystatechange = function(){
+
+						  										
+
+																    //ready?
+																    if (xhr.readyState != 4)
+																        return false;
+
+																    //get status:
+																    var status = xhr.status;
+
+																    //maybe not successful?
+																    if (status != 200) {
+																    	console.log("xhr status:"+status);
+																        //alert("AJAX: server status " + status);
+																        return false;
+																    }
+																    var a = document.createElement('a');
+																	a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+																	a.download = filename; // Set the file name.
+																	a.style.display = 'none';
+																	document.body.appendChild(a);
+																	try{
+																		a.click();
+																	}catch(error){
+																		$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+																		window.open(url);
+																	}	
+																	delete a;
+																    return true;
+																}
+						  /*xhr.onload = function() {
+							var a = document.createElement('a');
+							a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+							a.download = filename; // Set the file name.
+							a.style.display = 'none';
+							document.body.appendChild(a);
+							a.click();
+							delete a;
+						  };*/
+						  
+	    			},
+	    			error: function(xhr, status, error) {
+	        			console.log(error);
+	    			}
+				});
+			})
+		.on("mouseover",function(){
+			d3.select(this).attr("src","/web/images/icons/savePic_white.png");
+			d3.select("span#savePic"+that.levelNumber).style("background","#DCDCDC");
+			//$(this).css("background","#989898").html("<img src=\"/web/images/icons/savePic_white.png\">");
 			$("#mouseHelp").html("Click to download a PNG image of the current view.");
 		})
 		.on("mouseout",function(){
+			d3.select(this).attr("src","/web/images/icons/savePic_dark.png");
+			d3.select("span#savePic"+that.levelNumber).style("background","#989898");
+			//$(this).css("background","#DCDCDC").html("<img src=\"/web/images/icons/savePic_dark.png\">");
 			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 		});
 
+	that.functionBar.append("span").attr("class","reset control").style("display","inline-block")
+		.attr("id","resetImage"+levelNumber)
+		.style("cursor","pointer")
+		.append("img")//.attr("class","mouseOpt dragzoom")
+		.attr("src","/web/images/icons/reset_dark.png")
+		.attr("pointer-events","all")
+		.attr("cursor","pointer")
+		.on("click",function(){
+			var id=new String($(this).parent().attr("id"));
+			var level=id.substr(id.length-1);
+			if(level==0){
+				$('#geneTxt').val(chr+":"+initMin+"-"+initMax);
+			    svgList[0].xScale.domain([initMin,initMax]);
+				svgList[0].scaleSVG.select(".x.axis").call(svgList[0].xAxis);
+				svgList[0].redraw();
+			}else{
+			    svgList[level].xScale.domain([svgList[level].initMin,svgList[level].initMax]);
+				svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
+				svgList[level].redraw();
+			}
+		})
+		.on("mouseover",function(){
+			d3.select(this).attr("src","/web/images/icons/reset_white.png");
+			d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
+			$("#mouseHelp").html("Click to reset image zoom to initial region.");
+		})
+		.on("mouseout",function(){
+			d3.select(this).attr("src","/web/images/icons/reset_dark.png");
+			d3.select("span#reset"+that.levelNumber).style("background","#989898");
+			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+		});
+
+	//Setup Settings Button
 	that.vis.append("span").attr("class","settings button")
 		.attr("id","settingsLevel"+levelNumber)
 		.style("float","right")
@@ -2108,10 +2329,30 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						.on("mousedown", that.mdown)
 						.on("mouseup",mup)
 						.on("mouseover", function(){
-							$("#mouseHelp").html("<B>Zoom:</b> Click and Drag right to zoom in or left to zoom out. <B>OR</B> Hold the Alt/Option Key while clicking, then drag to select a specific area.");
+							if(defaultMouseFunct!="dragzoom"){
+								$("#mouseHelp").html("<B>Zoom:</b> Click and Drag right to zoom in or left to zoom out. <B>OR</B> Hold the Alt/Option Key while clicking, then drag to select a specific area.");
+							}else{
+								$("#mouseHelp").html("<B>Zoom:</b> Click and Drag to select an area to zoom in on it. <B>OR</B> Hold the Alt/Option Key while clicking and drag right to zoom in or left to zoom out.");
+							}
+							if(d3.event.altKey && defaultMouseFunct!="dragzoom"){
+								that.changeScaleCursor("crosshair");
+							}else if(d3.event.altKey && defaultMouseFunct=="dragzoom"){
+								that.changeScaleCursor("ew-resize");
+							}
 						})
 						.on("mouseout", function(){
 							$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+						})
+						.on("mousemove",function(){
+							if(d3.event.altKey && defaultMouseFunct!="dragzoom"){
+								that.changeScaleCursor("crosshair");
+							}else if(d3.event.altKey && defaultMouseFunct=="dragzoom"){
+								that.changeScaleCursor("ew-resize");
+							}else if(!d3.event.altKey && defaultMouseFunct=="dragzoom"){
+								that.changeScaleCursor("crosshair");
+							}else if(!d3.event.altKey && defaultMouseFunct!="dragzoom"){
+								that.changeScaleCursor("ew-resize");
+							}
 						})
 						.style("cursor", "ew-resize");
 	
@@ -2176,8 +2417,8 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.get=function(attr){return that[attr];};
 	
 	that.addTrack=function (track,density,additionalOptions,data){
-		console.log("addTrack:"+track);
-		console.log(data);
+		//console.log("addTrack:"+track);
+		//console.log(data);
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -2549,7 +2790,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 //Track Functions
 function Track(gsvgP,dataP,trackClassP,labelP){
 	var that={};
-	that.panDown=function(){
+	/*that.panDown=function(){
 		if(d3.event.altKey||d3.event.shiftKey){
 			if(d3.event.altKey){
 				var p = d3.mouse(that.gsvg.vis[0][0]);
@@ -2580,6 +2821,39 @@ function Track(gsvgP,dataP,trackClassP,labelP){
         	that.gsvg.downPanx = p[0];
         	that.gsvg.downscalex = that.xScale;
     	}
+	};*/
+
+	that.panDown=function(){
+		if(that.gsvg.defaultMouseFunct=="dragzoom"){
+			var p = d3.mouse(that.gsvg.vis[0][0]);
+				that.gsvg.downZoomx=p[0];
+				that.svg.append("rect")
+						.attr("class","zoomRect")
+						.attr("x",p[0])
+						.attr("y",0)
+		    			.attr("height",that.svg.attr("height"))
+						.attr("width",1)
+						.attr("fill","#CECECE")
+						.attr("opacity",0.3);
+				that.scaleSVG.append("rect")
+						.attr("class","zoomRect")
+						.attr("x",p[0])
+						.attr("y",0)
+		    			.attr("height",that.scaleSVG.attr("height"))
+						.attr("width",1)
+						.attr("fill","#CECECE")
+						.attr("opacity",0.3);
+				that.scaleSVG.append("text").attr("id","zoomTextStart").attr("x",that.gsvg.downZoomx).attr("y",15).text(numberWithCommas(Math.round(that.xScale.invert(that.gsvg.downZoomx))));
+				that.scaleSVG.append("text").attr("id","zoomTextEnd").attr("x",that.gsvg.downZoomx).attr("y",50).text(numberWithCommas(Math.round(that.xScale.invert(that.gsvg.downZoomx))));
+		}else if(that.gsvg.defaultMouseFunct=="pan"){
+			if(processAjax==0){
+				var p = d3.mouse(that.gsvg.vis[0][0]);
+	        	that.gsvg.downPanx = p[0];
+	        	that.gsvg.downscalex = that.xScale;
+        	}
+		}else if(that.gsvg.defaultMouseFunct=="reorder"){
+
+		}
 	};
 
 	that.zoomToFeature= function(d){
@@ -4094,6 +4368,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.drawTrx=function (d,i){
+		var cdsStart=d.getAttribute("cdsStart");
+		var cdsStop=d.getAttribute("cdsStop");
+		console.log(cdsStart+":"+cdsStop);
 		var pref="";
 		if(that.gsvg.levelNumber==1){
 			pref="tx";
@@ -4101,7 +4378,75 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#"+pref+d.getAttribute("ID"));
 		exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 		for(var m=0;m<exList.length;m++){
-			txG.append("rect")
+			var exStrt=exList[m].getAttribute("start");
+			var exStp=exList[m].getAttribute("stop");
+			if((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt)){//need to draw two rect one for CDS and one non CDS
+				var xPos1=0;
+				var xWidth1=0;
+				var xPos2=0;
+				var xWidth2=0;
+				if(exStrt<cdsStart){
+					xPos1=that.xScale(exList[m].getAttribute("start"));
+					xWidth1=that.xScale(cdsStart) - that.xScale(exList[m].getAttribute("start"));
+					xPos2=that.xScale(cdsStart);
+					xWidth2=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStart);
+				}else if(exStp>cdsStop){
+					xPos2=that.xScale(exList[m].getAttribute("start"));
+					xWidth2=that.xScale(cdsStop) - that.xScale(exList[m].getAttribute("start"));
+					xPos1=that.xScale(cdsStop);
+					xWidth1=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStop);
+				}
+				console.log("xPos1:"+xPos1);
+				console.log("xWidth1:"+xWidth1);
+				console.log("xPos2:"+xPos2);
+				console.log("xWidth2:"+xWidth2);
+				txG.append("rect")//non CDS
+					.attr("x",xPos1)
+					.attr("y",2.5)
+					//.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+					//.attr("rx",1)
+					//.attr("ry",1)
+			    	.attr("height",5)
+			    	.attr("width",xWidth1)
+					//.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+					.attr("title",function(d){ return exList[m].getAttribute("ID");})
+					.attr("id",function(d){return "ExNC"+exList[m].getAttribute("ID");})
+					//.attr("class",function(d){})
+					.style("fill",that.color)
+					.style("cursor", "pointer");
+				txG.append("rect")//CDS
+						.attr("x",xPos2)
+						//.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+						//.attr("rx",1)
+						//.attr("ry",1)
+				    	.attr("height",10)
+				    	.attr("width",xWidth2)
+						//.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+						.attr("title",function(d){ return exList[m].getAttribute("ID");})
+						.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
+						.style("fill",that.color)
+						.style("cursor", "pointer");
+				
+			}else{
+				var height=10;
+				var y=0;
+				if((exStrt<cdsStart&&exStp<cdsStart)||(exStp>cdsStop&&exStrt>cdsStop)){
+					height=5;
+					y=2.5;
+				}
+				txG.append("rect")
+					.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+					.attr("y",y)
+					//.attr("rx",1)
+					//.attr("ry",1)
+			    	.attr("height",height)
+					.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+					.attr("title",function(d){ return exList[m].getAttribute("ID");})
+					.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
+					.style("fill",that.color)
+					.style("cursor", "pointer");
+			}
+			/*txG.append("rect")
 			.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
 			.attr("rx",1)
 			.attr("ry",1)
@@ -4110,7 +4455,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			.attr("title",function(d){ return exList[m].getAttribute("ID");})
 			.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
 			.style("fill",that.color)
-			.style("cursor", "pointer")
+			.style("cursor", "pointer")*/
 			if(m>0){
 				txG.append("line")
 				.attr("x1",function(d){ return that.xScale(exList[m-1].getAttribute("stop")); })
@@ -4159,7 +4504,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.draw=function (data){
-		console.log("geneTrack.draw()");
+		//console.log("geneTrack.draw()");
 		that.data=data;
 
 		that.trackYMax=0;
@@ -4550,7 +4895,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			
 			
 			 tx.exit().remove();
-			 	tx.each(that.drawTrx);
+			 tx.each(that.drawTrx);
 			if(that.density==1){
 				that.svg.attr("height", 30);
 			}else if(that.density==2){
@@ -4985,8 +5330,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		//console.log("drawTrx:"+i);
 		var cdsStart=d.getAttribute("cdsStart");
 		var cdsStop=d.getAttribute("cdsStop");
-		console.log("CDS:"+cdsStart);
-		console.log("CDS:"+cdsStop);
+		//console.log("CDS:"+cdsStart);
+		//console.log("CDS:"+cdsStop);
 		var prefix="";
 		if(that.gsvg.levelNumber==1){
 			prefix="tx";
@@ -5012,7 +5357,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 					xPos1=that.xScale(cdsStop);
 					xWidth1=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStop);
 				}
-				console.log("xPos1"+xPos1+"xPos2:"+xPos2+"xWidth1"+xWidth1+"xWidth2:"+xWidth2);
+				//console.log("xPos1"+xPos1+"xPos2:"+xPos2+"xWidth1"+xWidth1+"xWidth2:"+xWidth2);
 				txG.append("rect")//non CDS
 					.attr("x",xPos1)
 					.attr("y",2.5)
@@ -6815,10 +7160,81 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 	};
 
 	that.drawTrx=function (d,i){
+		var cdsStart=d.getAttribute("cdsStart");
+		var cdsStop=d.getAttribute("cdsStop");
+		console.log(cdsStart+":"+cdsStop);
 		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#tx"+d.getAttribute("ID"));
 		exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 		for(var m=0;m<exList.length;m++){
-			txG.append("rect")
+			var exStrt=exList[m].getAttribute("start");
+			var exStp=exList[m].getAttribute("stop");
+			if(cdsStart!=undefined&& cdsStop!=undefined&&((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt))){//need to draw two rect one for CDS and one non CDS
+				var xPos1=0;
+				var xWidth1=0;
+				var xPos2=0;
+				var xWidth2=0;
+				if(exStrt<cdsStart){
+					xPos1=that.xScale(exList[m].getAttribute("start"));
+					xWidth1=that.xScale(cdsStart) - that.xScale(exList[m].getAttribute("start"));
+					xPos2=that.xScale(cdsStart);
+					xWidth2=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStart);
+				}else if(exStp>cdsStop){
+					xPos2=that.xScale(exList[m].getAttribute("start"));
+					xWidth2=that.xScale(cdsStop) - that.xScale(exList[m].getAttribute("start"));
+					xPos1=that.xScale(cdsStop);
+					xWidth1=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStop);
+				}
+				/*console.log("xPos1:"+xPos1);
+				console.log("xWidth1:"+xWidth1);
+				console.log("xPos2:"+xPos2);
+				console.log("xWidth2:"+xWidth2);*/
+				txG.append("rect")//non CDS
+					.attr("x",xPos1)
+					.attr("y",2.5)
+					//.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+					//.attr("rx",1)
+					//.attr("ry",1)
+			    	.attr("height",5)
+			    	.attr("width",xWidth1)
+					//.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+					.attr("title",function(d){ return exList[m].getAttribute("ID");})
+					.attr("id",function(d){return "ExNC"+exList[m].getAttribute("ID");})
+					//.attr("class",function(d){})
+					.style("fill",that.color)
+					.style("cursor", "pointer");
+				txG.append("rect")//CDS
+						.attr("x",xPos2)
+						//.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+						//.attr("rx",1)
+						//.attr("ry",1)
+				    	.attr("height",10)
+				    	.attr("width",xWidth2)
+						//.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+						.attr("title",function(d){ return exList[m].getAttribute("ID");})
+						.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
+						.style("fill",that.color)
+						.style("cursor", "pointer");
+				
+			}else{
+				var height=10;
+				var y=0;
+				if(cdsStart!=undefined&& cdsStop!=undefined&&((exStrt<cdsStart&&exStp<cdsStart)||(exStp>cdsStop&&exStrt>cdsStop))){
+					height=5;
+					y=2.5;
+				}
+				txG.append("rect")
+					.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
+					.attr("y",y)
+					//.attr("rx",1)
+					//.attr("ry",1)
+			    	.attr("height",height)
+					.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); })
+					.attr("title",function(d){ return exList[m].getAttribute("ID");})
+					.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
+					.style("fill",that.color)
+					.style("cursor", "pointer");
+			}
+			/*txG.append("rect")
 			.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
 			.attr("rx",1)
 			.attr("ry",1)
@@ -6827,7 +7243,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 			.attr("title",function(d){ return exList[m].getAttribute("ID");})
 			.attr("id",function(d){return "Ex"+exList[m].getAttribute("ID");})
 			.style("fill",that.color)
-			.style("cursor", "pointer")
+			.style("cursor", "pointer");*/
 			if(m>0){
 				txG.append("line")
 				.attr("x1",function(d){ return that.xScale(exList[m-1].getAttribute("stop")); })
