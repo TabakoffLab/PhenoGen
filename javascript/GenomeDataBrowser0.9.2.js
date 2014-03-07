@@ -1314,7 +1314,13 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				
 				.on("mouseover", function(){
 					if(overSelectable==0){
-						$("#mouseHelp").html("<B>Zoom:</B> Hold the Alt/Option Key while clicking then drag. <B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Reorder Tracks:</B> Click on the track and drag up or down to desired location.");
+						if(that.defaultMouseFunct=="dragzoom"){
+							$("#mouseHelp").html("<B>Zoom:</B> Click and drag to select a region to zoom in. <B>Navigate or Reorder Tracks:</B> Select the appropriate function at the top left of the image.");
+						}else if(that.defaultMouseFunct=="pan"){
+							$("#mouseHelp").html("<B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Zoom or Reorder Tracks:</B> Select the appropriate function at the top left of the image.");
+						}else if(that.defaultMouseFunct=="reorder"){
+							$("#mouseHelp").html("<B>Reorder Tracks:</B> Click on the track and drag up or down to desired location. <B>Zoom or Navigate:</B> Select the appropriate function at the top left of the image.");
+						}	
 					}
 				})
 				.on("mouseout", function(){
@@ -2015,7 +2021,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.changeScaleCursor=function(cursor){
-		that.scaleSVG.style("cursor",cursor);
+		if(that.scaleSVG!=undefined){
+			that.scaleSVG.style("cursor",cursor);
+		}
 	};
 
 
@@ -2222,7 +2230,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 																	try{
 																		a.click();
 																	}catch(error){
-																		$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+																		//$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+																		$("#mouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
 																		window.open(url);
 																	}	
 																	delete a;
@@ -2329,14 +2338,14 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						.on("mousedown", that.mdown)
 						.on("mouseup",mup)
 						.on("mouseover", function(){
-							if(defaultMouseFunct!="dragzoom"){
+							if(that.defaultMouseFunct!="dragzoom"){
 								$("#mouseHelp").html("<B>Zoom:</b> Click and Drag right to zoom in or left to zoom out. <B>OR</B> Hold the Alt/Option Key while clicking, then drag to select a specific area.");
 							}else{
 								$("#mouseHelp").html("<B>Zoom:</b> Click and Drag to select an area to zoom in on it. <B>OR</B> Hold the Alt/Option Key while clicking and drag right to zoom in or left to zoom out.");
 							}
-							if(d3.event.altKey && defaultMouseFunct!="dragzoom"){
+							if(d3.event.altKey && that.defaultMouseFunct!="dragzoom"){
 								that.changeScaleCursor("crosshair");
-							}else if(d3.event.altKey && defaultMouseFunct=="dragzoom"){
+							}else if(d3.event.altKey && that.defaultMouseFunct=="dragzoom"){
 								that.changeScaleCursor("ew-resize");
 							}
 						})
@@ -2344,13 +2353,13 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 						})
 						.on("mousemove",function(){
-							if(d3.event.altKey && defaultMouseFunct!="dragzoom"){
+							if(d3.event.altKey && that.defaultMouseFunct!="dragzoom"){
 								that.changeScaleCursor("crosshair");
-							}else if(d3.event.altKey && defaultMouseFunct=="dragzoom"){
+							}else if(d3.event.altKey && that.defaultMouseFunct=="dragzoom"){
 								that.changeScaleCursor("ew-resize");
-							}else if(!d3.event.altKey && defaultMouseFunct=="dragzoom"){
+							}else if(!d3.event.altKey && that.defaultMouseFunct=="dragzoom"){
 								that.changeScaleCursor("crosshair");
-							}else if(!d3.event.altKey && defaultMouseFunct!="dragzoom"){
+							}else if(!d3.event.altKey && that.defaultMouseFunct!="dragzoom"){
 								that.changeScaleCursor("ew-resize");
 							}
 						})
@@ -2824,7 +2833,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	};*/
 
 	that.panDown=function(){
-		if(that.gsvg.defaultMouseFunct=="dragzoom"){
+		if(that.gsvg.defaultMouseFunct=="dragzoom" && overSelectable==0){
 			var p = d3.mouse(that.gsvg.vis[0][0]);
 				that.gsvg.downZoomx=p[0];
 				that.svg.append("rect")
@@ -2845,7 +2854,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 						.attr("opacity",0.3);
 				that.scaleSVG.append("text").attr("id","zoomTextStart").attr("x",that.gsvg.downZoomx).attr("y",15).text(numberWithCommas(Math.round(that.xScale.invert(that.gsvg.downZoomx))));
 				that.scaleSVG.append("text").attr("id","zoomTextEnd").attr("x",that.gsvg.downZoomx).attr("y",50).text(numberWithCommas(Math.round(that.xScale.invert(that.gsvg.downZoomx))));
-		}else if(that.gsvg.defaultMouseFunct=="pan"){
+		}else if(that.gsvg.defaultMouseFunct=="pan" && overSelectable==0){
 			if(processAjax==0){
 				var p = d3.mouse(that.gsvg.vis[0][0]);
 	        	that.gsvg.downPanx = p[0];
@@ -4069,7 +4078,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					var txG=that.svg.selectAll(".trx"+that.gsvg.levelNumber);
 					txG//.attr("transform",function(d,i){ return "translate("+txXScale(d.getAttribute("start"))+","+i*15+")";})
 						.each(function(d,i){
-							
+							var cdsStart=d.getAttribute("start");
+							var cdsStop=d.getAttribute("stop");
+							if(d.getAttribute("cdsStart")!=undefined&&d.getAttribute("cdsStop")!=undefined){
+								cdsStart=d.getAttribute("cdsStart");
+								cdsStop=d.getAttribute("cdsStop");
+							}
+
 							exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 							//console.log("process trx:"+d.getAttribute("ID")+":"+i+":"+exList.length);
 							var pref="";
@@ -4077,9 +4092,31 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 								pref="tx";
 							}
 							for(var m=0;m<exList.length;m++){
-								d3.select("g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
+								var exStrt=exList[m].getAttribute("start");
+								var exStp=exList[m].getAttribute("stop");
+								if((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt)){
+									var ncStrt=exStrt;
+									var ncStp=cdsStart;
+									if(exStp>cdsStop){
+										ncStrt=cdsStop;
+										ncStp=exStp;
+										exStrt=exStrt;
+										exStp=cdsStop;
+									}else{
+										exStrt=cdsStart;
+										exStp=exStp;
+									}
+									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#ExNC"+exList[m].getAttribute("ID"))
+										.attr("x",function(d){ return that.xScale(ncStrt); })
+										.attr("width",function(d){ return that.xScale(ncStp) - that.xScale(ncStrt); });
+								}
+								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
+									.attr("x",function(d){ return that.xScale(exStrt); })
+									.attr("width",function(d){ return that.xScale(exStp) - that.xScale(exStrt); });
+								/*d3.select("g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
 									.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
 									.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); });
+								*/
 								if(m>0){
 									var strChar=">";
 									if(d.getAttribute("strand")=="-1"){
@@ -4368,8 +4405,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.drawTrx=function (d,i){
-		var cdsStart=d.getAttribute("cdsStart");
-		var cdsStop=d.getAttribute("cdsStop");
+		var cdsStart=d.getAttribute("start");
+		var cdsStop=d.getAttribute("stop");
+		if(d.getAttribute("cdsStart")!=undefined && d.getAttribute("cdsStop")!=undefined){
+			cdsStart=d.getAttribute("cdsStart");
+			cdsStop=d.getAttribute("cdsStop");
+		}
 		console.log(cdsStart+":"+cdsStop);
 		var pref="";
 		if(that.gsvg.levelNumber==1){
@@ -4899,7 +4940,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			if(that.density==1){
 				that.svg.attr("height", 30);
 			}else if(that.density==2){
-				that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").size()+1)*15);
+				that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber).size()+1)*15);
 			}else if(that.density==3){
 				that.svg.attr("height", (that.trackYMax+2)*15);
 			}
@@ -5154,7 +5195,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 						d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").each( function(d){
 							var d3This=d3.select(this);
 							var strChar=">";
-							if(d.getAttribute("strand")=="-1"){
+							if(d.getAttribute("strand")=="-1"||d.getAttribute("strand")=="-"){
 								strChar="<";
 							}
 							var fullChar="";
@@ -5414,7 +5455,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				.attr("stroke",that.color)
 				.attr("stroke-width","2");
 				var strChar=">";
-				if(d.getAttribute("strand")=="-"){
+				if(d.getAttribute("strand")=="-" || d.getAttribute("strand")=="-1"){
 					strChar="<";
 				}
 				var fullChar=strChar;
@@ -5543,7 +5584,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				if(d!=undefined){
 				var d3This=d3.select(this);
 				var strChar=">";
-				if(d.getAttribute("strand")=="-"){
+				if(d.getAttribute("strand")=="-" || d.getAttribute("strand")=="-1"){
 					strChar="<";
 				}
 				var fullChar=strChar;
@@ -7160,15 +7201,19 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 	};
 
 	that.drawTrx=function (d,i){
-		var cdsStart=d.getAttribute("cdsStart");
-		var cdsStop=d.getAttribute("cdsStop");
-		console.log(cdsStart+":"+cdsStop);
+		var cdsStart=d.getAttribute("start");
+		var cdsStop=d.getAttribute("stop");
+		if(d.getAttribute("cdsStart")!=undefined && d.getAttribute("cdsStop")!=undefined){
+			cdsStart=d.getAttribute("cdsStart");
+			cdsStop=d.getAttribute("cdsStop");
+		}
+
 		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#tx"+d.getAttribute("ID"));
 		exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 		for(var m=0;m<exList.length;m++){
 			var exStrt=exList[m].getAttribute("start");
 			var exStp=exList[m].getAttribute("stop");
-			if(cdsStart!=undefined&& cdsStop!=undefined&&((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt))){//need to draw two rect one for CDS and one non CDS
+			if((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt)){//need to draw two rect one for CDS and one non CDS
 				var xPos1=0;
 				var xWidth1=0;
 				var xPos2=0;
@@ -7184,10 +7229,10 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 					xPos1=that.xScale(cdsStop);
 					xWidth1=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStop);
 				}
-				/*console.log("xPos1:"+xPos1);
+				console.log("xPos1:"+xPos1);
 				console.log("xWidth1:"+xWidth1);
 				console.log("xPos2:"+xPos2);
-				console.log("xWidth2:"+xWidth2);*/
+				console.log("xWidth2:"+xWidth2);
 				txG.append("rect")//non CDS
 					.attr("x",xPos1)
 					.attr("y",2.5)
@@ -7218,7 +7263,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 			}else{
 				var height=10;
 				var y=0;
-				if(cdsStart!=undefined&& cdsStop!=undefined&&((exStrt<cdsStart&&exStp<cdsStart)||(exStp>cdsStop&&exStrt>cdsStop))){
+				if((exStrt<cdsStart&&exStp<cdsStart)||(exStp>cdsStop&&exStrt>cdsStop)){
 					height=5;
 					y=2.5;
 				}
@@ -7297,11 +7342,40 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 		
 		txG//.attr("transform",function(d,i){ return "translate("+txXScale(d.getAttribute("start"))+","+i*15+")";})
 			.each(function(d,i){
+				var cdsStart=d.getAttribute("start");
+				var cdsStop=d.getAttribute("stop");
+				if(d.getAttribute("cdsStart")!=undefined&&d.getAttribute("cdsStop")!=undefined){
+					cdsStart=d.getAttribute("cdsStart");
+					cdsStop=d.getAttribute("cdsStop");
+				}
 				exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
+				var pref="tx";
 				for(var m=0;m<exList.length;m++){
-					d3.select("g#tx"+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
+					var exStrt=exList[m].getAttribute("start");
+								var exStp=exList[m].getAttribute("stop");
+								if((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt)){
+									var ncStrt=exStrt;
+									var ncStp=cdsStart;
+									if(exStp>cdsStop){
+										ncStrt=cdsStop;
+										ncStp=exStp;
+										exStrt=exStrt;
+										exStp=cdsStop;
+									}else{
+										exStrt=cdsStart;
+										exStp=exStp;
+									}
+									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#ExNC"+exList[m].getAttribute("ID"))
+										.attr("x",function(d){ return that.xScale(ncStrt); })
+										.attr("width",function(d){ return that.xScale(ncStp) - that.xScale(ncStrt); });
+								}
+								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
+									.attr("x",function(d){ return that.xScale(exStrt); })
+									.attr("width",function(d){ return that.xScale(exStp) - that.xScale(exStrt); });
+					/*d3.select("g#tx"+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
 						.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
 						.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); });
+					*/
 					if(m>0){
 						var strChar=">";
 						if(d.getAttribute("strand")=="-1"){
