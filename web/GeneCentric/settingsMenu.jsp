@@ -37,7 +37,7 @@
                 	<option value="0">No Scrolling</option>
                 </select>
                 <BR />
-            	<span class="reset button" id="resetImage<%=level%>" style="width:150px;">Reset Image Zoom</span>
+            	<!--<span class="reset button" id="resetImage<%=level%>" style="width:150px;">Reset Image Zoom</span>-->
                 <%if(level==0){%>
                 	<span class="reset button" id="resetTracks<%=level%>" style="width:150px;">View Default Tracks</span>
                     <BR />

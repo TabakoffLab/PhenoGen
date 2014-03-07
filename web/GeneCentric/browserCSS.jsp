@@ -131,4 +131,55 @@ table.tooltipTable TD{
 		font-size:14px;
 		color:#000000;
 	}
+	div.functionBar{
+		background:#FFFFFF;
+	}
+	div.defaultMouse{
+		display:inline-block;
+		height:24px;
+		width:94px;
+		background:#DCDCDC;
+		border-style:solid;
+		border-width:1px;
+		border-color:#777777;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+
+	span#dragzoom0,div#dragzoom1{
+		padding-left:1px;
+		border-radius: 5px 0px 0px 5px;
+		height:100%;
+	}
+	span#reorder0,div#reorder1{
+		border-radius: 0px 5px 5px 0px;
+		padding-right:3px;
+		height:100%;
+	}
+	
+	span.control{
+		background:#DCDCDC;
+		margin-left:2px;
+		margin-right:2px;
+		/*padding:2px;*/
+		display:inline-block;
+		width:35px;
+		border-style:solid;
+		border-width:1px;
+		border-color:#777777;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+	span.control:hover{
+		background:#989898;
+	}
+	span.control.selected{
+		border-width:2px;
+		border-color:#000000;
+	}
+	
 </style>
