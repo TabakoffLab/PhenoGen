@@ -169,14 +169,14 @@ $(document).on("change","input[name='trackcbx']",function(){
 	 		});
 $(document).on("change","select[name='trackSelect']",function(){
 				var idStr=new String($(this).attr("id"));
-				console.log("TrackSelect:"+idStr);
+				//console.log("TrackSelect:"+idStr);
 				var cl=$(this).attr("class");
 				var value=$(this).val();
 				var level=idStr.substr(idStr.length-7,1);
 				if(level=="S"){
 					level=idStr.substr(idStr.length-8,1);
 				}
-				console.log("TrackSelect Level:"+level);
+				//console.log("TrackSelect Level:"+level);
 				if(svgList[level]!=undefined){
 					try{
 						if(idStr.indexOf("Dense")>0){
@@ -2178,7 +2178,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		.on("click",function(){
 			var id=$(this).parent().attr("id");
 			var levelID=(new String(id)).substr(9);
-			console.log("Level #:"+levelID);
+			//console.log("Level #:"+levelID);
 			var content=$("div#Level"+levelID).html();
 			content=content+"\n";
 			$.ajax({
@@ -2218,7 +2218,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 																    //maybe not successful?
 																    if (status != 200) {
-																    	console.log("xhr status:"+status);
+																    	//console.log("xhr status:"+status);
 																        //alert("AJAX: server status " + status);
 																        return false;
 																    }
@@ -2426,8 +2426,6 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.get=function(attr){return that[attr];};
 	
 	that.addTrack=function (track,density,additionalOptions,data){
-		//console.log("addTrack:"+track);
-		//console.log(data);
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -4001,6 +3999,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.redraw=function(){
+		console.log("gene.draw()");
 		//set annotType
 		var curAnnot="";
 		if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")
@@ -4090,6 +4089,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							var pref="";
 							if(that.gsvg.levelNumber==1){
 								pref="tx";
+							}else if(that.gsvg.levelNumber==99){
+								pref="ttTx";
 							}
 							for(var m=0;m<exList.length;m++){
 								var exStrt=exList[m].getAttribute("start");
@@ -4106,11 +4107,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 										exStrt=cdsStart;
 										exStp=exStp;
 									}
-									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#ExNC"+exList[m].getAttribute("ID"))
+									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" rect#ExNC"+exList[m].getAttribute("ID"))
 										.attr("x",function(d){ return that.xScale(ncStrt); })
 										.attr("width",function(d){ return that.xScale(ncStp) - that.xScale(ncStrt); });
 								}
-								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
+								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" rect#Ex"+exList[m].getAttribute("ID"))
 									.attr("x",function(d){ return that.xScale(exStrt); })
 									.attr("width",function(d){ return that.xScale(exStp) - that.xScale(exStrt); });
 								/*d3.select("g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
@@ -4143,11 +4144,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 											rectW=rectW-charW;
 										}
 									}
-									d3.select("g#"+pref+d.getAttribute("ID")+" line#Int"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
+									console.log("redraw:"+"#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" line#Int"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
+									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" line#Int"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
 										.attr("x1",intStart)
 										.attr("x2",intStop);
 
-									d3.select("g#"+pref+d.getAttribute("ID")+" #IntTxt"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
+									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" #IntTxt"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
 										.attr("dx",intStart+1).text(fullChar);
 								}
 							}
@@ -4405,18 +4407,21 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.drawTrx=function (d,i){
+		console.log("drawTrx level:"+that.gsvg.levelNumber);
 		var cdsStart=d.getAttribute("start");
 		var cdsStop=d.getAttribute("stop");
 		if(d.getAttribute("cdsStart")!=undefined && d.getAttribute("cdsStop")!=undefined){
 			cdsStart=d.getAttribute("cdsStart");
 			cdsStop=d.getAttribute("cdsStop");
 		}
-		console.log(cdsStart+":"+cdsStop);
 		var pref="";
 		if(that.gsvg.levelNumber==1){
 			pref="tx";
+		}else if(that.gsvg.levelNumber==99){
+			pref="ttTx";
 		}
-		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#"+pref+d.getAttribute("ID"));
+		//var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#"+pref+d.getAttribute("ID"));
+		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" #"+pref+d.getAttribute("ID")+that.gsvg.levelNumber);
 		exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 		for(var m=0;m<exList.length;m++){
 			var exStrt=exList[m].getAttribute("start");
@@ -4437,10 +4442,6 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					xPos1=that.xScale(cdsStop);
 					xWidth1=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStop);
 				}
-				console.log("xPos1:"+xPos1);
-				console.log("xWidth1:"+xWidth1);
-				console.log("xPos2:"+xPos2);
-				console.log("xWidth2:"+xWidth2);
 				txG.append("rect")//non CDS
 					.attr("x",xPos1)
 					.attr("y",2.5)
@@ -4691,8 +4692,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 			}
 		}
-		console.log("geneTrack.filterData");
-		console.log(filterData);
+		//console.log("geneTrack.filterData");
+		//console.log(filterData);
 		/*if(that.gsvg.levelNumber==0){
 			console.log("draw:"+that.trackClass);
 			console.log("selectedData=");
@@ -4742,7 +4743,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					})
 				.on("dblclick", that.zoomToFeature)
 				.on("mouseover", function(d) { 
-						console.log("mouseover geneTrack:asGene");
+						//console.log("mouseover geneTrack:asGene");
 						//if(mouseTTOver==0){
 							overSelectable=1;
 							$("#mouseHelp").html("<B>Click</B> to see additional details. <B>Double Click</B> to zoom in on this feature.");
@@ -4864,8 +4865,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 						var prefix="";
 						if(that.gsvg.levelNumber==1){
 							prefix="tx";
+						}if(that.gsvg.levelNumber==99){
+							prefix="ttTx";
 						}
-						return prefix+d.getAttribute("ID");})
+						return prefix+d.getAttribute("ID")+that.gsvg.levelNumber;})
 					.attr("pointer-events", "all")
 					.style("cursor", "pointer")
 					.on("click", function(d){
@@ -5628,7 +5631,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 					txListSize++;
 				}
 			}
-			console.log(txList);
+			//console.log(txList);
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".trx"+that.gsvg.levelNumber).remove();
 			var tx=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".trx"+that.gsvg.levelNumber)
 		   			.data(txList,key)
@@ -7208,7 +7211,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 			cdsStop=d.getAttribute("cdsStop");
 		}
 
-		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#tx"+d.getAttribute("ID"));
+		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" #tx"+d.getAttribute("ID"));
 		exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 		for(var m=0;m<exList.length;m++){
 			var exStrt=exList[m].getAttribute("start");
@@ -7229,10 +7232,10 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 					xPos1=that.xScale(cdsStop);
 					xWidth1=that.xScale(exList[m].getAttribute("stop")) - that.xScale(cdsStop);
 				}
-				console.log("xPos1:"+xPos1);
-				console.log("xWidth1:"+xWidth1);
-				console.log("xPos2:"+xPos2);
-				console.log("xWidth2:"+xWidth2);
+				//console.log("xPos1:"+xPos1);
+				//console.log("xWidth1:"+xWidth1);
+				//console.log("xPos2:"+xPos2);
+				//console.log("xWidth2:"+xWidth2);
 				txG.append("rect")//non CDS
 					.attr("x",xPos1)
 					.attr("y",2.5)
@@ -7352,26 +7355,26 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 				var pref="tx";
 				for(var m=0;m<exList.length;m++){
 					var exStrt=exList[m].getAttribute("start");
-								var exStp=exList[m].getAttribute("stop");
-								if((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt)){
-									var ncStrt=exStrt;
-									var ncStp=cdsStart;
-									if(exStp>cdsStop){
-										ncStrt=cdsStop;
-										ncStp=exStp;
-										exStrt=exStrt;
-										exStp=cdsStop;
-									}else{
-										exStrt=cdsStart;
-										exStp=exStp;
-									}
-									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#ExNC"+exList[m].getAttribute("ID"))
-										.attr("x",function(d){ return that.xScale(ncStrt); })
-										.attr("width",function(d){ return that.xScale(ncStp) - that.xScale(ncStrt); });
-								}
-								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
-									.attr("x",function(d){ return that.xScale(exStrt); })
-									.attr("width",function(d){ return that.xScale(exStp) - that.xScale(exStrt); });
+					var exStp=exList[m].getAttribute("stop");
+					if((exStrt<cdsStart&&cdsStart<exStp)||(exStp>cdsStop&&cdsStop>exStrt)){
+						var ncStrt=exStrt;
+						var ncStp=cdsStart;
+						if(exStp>cdsStop){
+							ncStrt=cdsStop;
+							ncStp=exStp;
+							exStrt=exStrt;
+							exStp=cdsStop;
+						}else{
+							exStrt=cdsStart;
+							exStp=exStp;
+						}
+						d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#"+pref+d.getAttribute("ID")+" rect#ExNC"+exList[m].getAttribute("ID"))
+							.attr("x",function(d){ return that.xScale(ncStrt); })
+							.attr("width",function(d){ return that.xScale(ncStp) - that.xScale(ncStrt); });
+					}
+					d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#"+pref+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
+						.attr("x",function(d){ return that.xScale(exStrt); })
+						.attr("width",function(d){ return that.xScale(exStp) - that.xScale(exStrt); });
 					/*d3.select("g#tx"+d.getAttribute("ID")+" rect#Ex"+exList[m].getAttribute("ID"))
 						.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")); })
 						.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); });
@@ -7402,11 +7405,11 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 								rectW=rectW-charW;
 							}
 						}
-						d3.select("g#tx"+d.getAttribute("ID")+" line#Int"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
+						d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#tx"+d.getAttribute("ID")+" line#Int"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
 							.attr("x1",intStart)
 							.attr("x2",intStop);
 
-						d3.select("g#tx"+d.getAttribute("ID")+" #IntTxt"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
+						d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#tx"+d.getAttribute("ID")+" #IntTxt"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
 							.attr("dx",intStart+1).text(fullChar);
 					}
 				}
