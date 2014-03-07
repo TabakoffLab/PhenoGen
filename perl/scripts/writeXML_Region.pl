@@ -451,7 +451,8 @@ sub createXMLFile
 			$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{ID} = $transcriptName;
 			$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{strand} = $transcriptStrand;
 			$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{chromosome} = $transcriptChrom;
-			
+			$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{cdsStart} = $transcript->coding_region_start()+ $slice->start() - 1;
+			$GeneHOH{Gene}[$cntGenes]{TranscriptList}{Transcript}[$cntTranscripts]{cdsStop} = $transcript->coding_region_end()+ $slice->start() - 1;
 			my $tmpStrand=$transcriptStrand;
 			
 			my $cntExons = 0;

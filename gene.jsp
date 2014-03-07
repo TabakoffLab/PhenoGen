@@ -1,28 +1,16 @@
 <%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <%
-	
-
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
-	//extrasList.add("TableTools.min.js");
-	//extrasList.add("ZeroClipboard.js");
-	//extrasList.add("ColReorder.min.js");
-	//extrasList.add("FixedColumns.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("d3.v3.min.js");
-	//extrasList.add("html2canvas.js");
 	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
-	//extrasList.add("tooltipster.css");
 	extrasList.add("jquery.fancybox.css");
-	
-	//extrasList.add("ColReorder.css");
-	//extrasList.add("TableTools_JUI.css");
-	//extrasList.add("TableTools.css");
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
