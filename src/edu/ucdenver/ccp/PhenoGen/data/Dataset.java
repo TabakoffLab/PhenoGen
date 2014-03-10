@@ -34,6 +34,9 @@ import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 import edu.ucdenver.ccp.PhenoGen.web.mail.Email; 
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler; 
 import java.sql.*;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -2953,8 +2956,20 @@ public class Dataset {
 		}
                 
                 public boolean hasFilterStatsResults(int userID,Connection conn) {
-                    
-			if (this.getFilterStats(userID,conn) != null && this.getFilterStats(userID,conn).length > 0) {
+                    DataSource pool=null;    
+                    try {
+                        // Create a JNDI Initial context to be able to lookup the DataSource
+                        InitialContext ctx = new InitialContext();
+                        // Lookup the DataSource, which will be backed by a pool
+                        //   that the application server provides.
+                        pool = (DataSource)ctx.lookup("java:comp/env/jdbc/DevDB");
+                        if (pool == null){
+                           log.error("Unknown DataSource 'jdbc/DevDB'",new Exception("Unknown DataSource 'jdbc/DevDB'"));
+                        }
+                    } catch (NamingException ex) {
+                       ex.printStackTrace();
+                    }
+			if (this.getFilterStats(userID,pool) != null && this.getFilterStats(userID,pool).length > 0) {
 				return true;
 			} else {
 				return false;
@@ -3092,47 +3107,47 @@ public class Dataset {
 	 	* @param conn	the database connection
 	 	* @throws            SQLException if a database error occurs
 	 	*/
-                public DSFilterStat[] getFilterStats(int userID,Connection conn){
+                public DSFilterStat[] getFilterStats(int userID,DataSource pool){
                     if(filterstats==null){
                         try{
-                            this.getFilterStatsFromDB(userID,conn);
+                            this.getFilterStatsFromDB(userID,pool);
                         }catch(SQLException ex){
                             
                         }
                     }
                     return filterstats;
                 }
-		public void getFilterStatsFromDB (int userID,Connection conn) throws SQLException {
-			filterstats=new DSFilterStat().getFilterStatsFromDB(this.dataset,this,userID,conn);
+		public void getFilterStatsFromDB (int userID,DataSource pool) throws SQLException {
+			filterstats=new DSFilterStat().getFilterStatsFromDB(this.dataset,this,userID,pool);
                         //System.out.println("Returned FilterStats Size:"+filterstats.length);
 		}
                 
-                public int createFilterStats(String filterdate,String filtertime,String analysisType,int userID,Connection conn) throws SQLException{
+                public int createFilterStats(String filterdate,String filtertime,String analysisType,int userID,DataSource pool) throws SQLException{
                     int ret=-1;    
                     DSFilterStat tmp=new DSFilterStat();
-                    ret=tmp.createFilterStats(filterdate,filtertime,this.dataset,this,analysisType,userID,conn);
+                    ret=tmp.createFilterStats(filterdate,filtertime,this.dataset,this,analysisType,userID,pool);
                     //System.out.println("Returned ID:"+ret);
-                    this.getFilterStatsFromDB(userID,conn);
+                    this.getFilterStatsFromDB(userID,pool);
                     return ret;
                 }
                 
-                public void addFilterStep(int dsFilterStatID,String method,String parameters,int step_count, int stepNumber,int userID,Connection conn){
-                    DSFilterStat curDSFS=getFilterStat(dsFilterStatID,userID,conn);
+                public void addFilterStep(int dsFilterStatID,String method,String parameters,int step_count, int stepNumber,int userID,DataSource pool){
+                    DSFilterStat curDSFS=getFilterStat(dsFilterStatID,userID,pool);
                     if(curDSFS!=null){
-                        curDSFS.addFilterStep(method,parameters,step_count,stepNumber,-1,-1,conn);
+                        curDSFS.addFilterStep(method,parameters,step_count,stepNumber,-1,-1,pool);
                     }
                 }
                 
-                public void addStatsStep(int dsFilterStatID,String method,String parameters, int step_count,int stepNumber,int status,int userID, Connection conn){
-                    DSFilterStat curDSFS=getFilterStat(dsFilterStatID,userID,conn);
-                    curDSFS.addStatsStep(method,parameters,step_count,stepNumber, status,conn);
+                public void addStatsStep(int dsFilterStatID,String method,String parameters, int step_count,int stepNumber,int status,int userID, DataSource pool){
+                    DSFilterStat curDSFS=getFilterStat(dsFilterStatID,userID,pool);
+                    curDSFS.addStatsStep(method,parameters,step_count,stepNumber, status,pool);
                 }
                 
-                public DSFilterStat getFilterStat(int id,int userID,Connection conn){
+                public DSFilterStat getFilterStat(int id,int userID,DataSource pool){
                     DSFilterStat ret=null;
                     if(filterstats==null){
                         try{
-                            this.getFilterStatsFromDB(userID,conn);
+                            this.getFilterStatsFromDB(userID,pool);
                         }catch(SQLException ex){
                             
                         }
@@ -3147,11 +3162,11 @@ public class Dataset {
                     return ret;
                 }
                 
-                public DSFilterStat getFilterStat(String curDay,String curTime,int userID,Connection conn){
+                public DSFilterStat getFilterStat(String curDay,String curTime,int userID,DataSource pool){
                     DSFilterStat ret=null;
                     if(filterstats==null){
                         try{
-                            this.getFilterStatsFromDB(userID,conn);
+                            this.getFilterStatsFromDB(userID,pool);
                         }catch(SQLException ex){
                             
                         }
@@ -3176,7 +3191,19 @@ public class Dataset {
                 
                 //TODO Modify to delete DatasetFilterStats entries
 	 	public void deleteDatasetVersion(int userID,Connection conn) throws SQLException, Exception {
-
+                        DataSource pool=null;
+                        try {
+                            // Create a JNDI Initial context to be able to lookup the DataSource
+                            InitialContext ctx = new InitialContext();
+                            // Lookup the DataSource, which will be backed by a pool
+                            //   that the application server provides.
+                            pool = (DataSource)ctx.lookup("java:comp/env/jdbc/DevDB");
+                            if (pool == null){
+                               log.error("Unknown DataSource 'jdbc/DevDB'",new Exception("Unknown DataSource 'jdbc/DevDB'"));
+                            }
+                        } catch (NamingException ex) {
+                           ex.printStackTrace();
+                        }
 			conn.setAutoCommit(false);
   
 			int version = this.getVersion();
@@ -3196,11 +3223,11 @@ public class Dataset {
                                 if(new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(this.getDataset().getArray_type())){
                                     //delete DSFilterStats
                                     if(filterstats==null||filterstats.length==0){
-                                        this.getFilterStatsFromDB(userID, conn);
+                                        this.getFilterStatsFromDB(userID, pool);
                                     }
 
                                     for(int i=0;i<filterstats.length;i++){
-                                        filterstats[i].deleteFromDB(conn);
+                                        filterstats[i].deleteFromDB(pool);
                                     }
                                     if(!this.getDataset().getCreator().equals("public")){
                                         String execute="{call filterprep.cleanupafterdelete(" + this.getDataset().getDataset_id() + "," + version + ") }";

@@ -26,8 +26,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 
 public class Async_HDF5_FileHandler implements Runnable{
@@ -55,6 +58,7 @@ public class Async_HDF5_FileHandler implements Runnable{
     private FileHandler myFileHandler = new FileHandler();
     private HttpSession session;
     private int numProbes=-1;
+    private DataSource pool;
 
     public Async_HDF5_FileHandler(edu.ucdenver.ccp.PhenoGen.data.Dataset pds,String version,String outputDir,String H5File, String function, Thread waitThread,HttpSession session) {
         this.pds=pds;
@@ -65,6 +69,18 @@ public class Async_HDF5_FileHandler implements Runnable{
         this.h5file=H5File;
         this.function=function;
         this.session=session;
+        try {
+                    // Create a JNDI Initial context to be able to lookup the DataSource
+                    InitialContext ctx = new InitialContext();
+                    // Lookup the DataSource, which will be backed by a pool
+                    //   that the application server provides.
+                    pool = (DataSource)ctx.lookup("java:comp/env/jdbc/DevDB");
+                    if (pool == null){
+                       log.error("Unknown DataSource 'jdbc/DevDB'",new Exception("Unknown DataSource 'jdbc/DevDB'"));
+                    }
+                } catch (NamingException ex) {
+                   ex.printStackTrace();
+                }
         //NEEDED ON COMPBIO AND PHENOGEN UNCOMMENT
         //String applicationPath=((String)session.getAttribute("applicationRoot"))+((String)session.getAttribute("contextRoot"))+"/WEB-INF/lib/linux";
         //log.debug("LIB path:"+applicationPath);
@@ -86,9 +102,9 @@ public class Async_HDF5_FileHandler implements Runnable{
         System.out.println("Group:Sample:"+this.groupArrayFile+":"+this.sampleArrayFile);
     }
     
-    public void setFillHDFFilterParameters(int userID,Connection conn,String phenoDataPath){
+    public void setFillHDFFilterParameters(int userID,String phenoDataPath){
         this.userID=userID;
-        this.conn=conn;
+        //this.conn=conn;
         this.phenoDataPath=phenoDataPath;
     }
     
@@ -331,6 +347,7 @@ public class Async_HDF5_FileHandler implements Runnable{
                     System.out.println("Open version");
                     //get included probesets from DB
                     String query = "Select probeset_id from exon_user_filter_temp where dataset_id=? and dataset_version=? and user_id=? and cumulative_filter=1 order by probeset_id";
+                    conn= pool.getConnection();
                     PreparedStatement ps = conn.prepareStatement(query);
                     ps.setInt(1, pds.getDataset_id());
                     ps.setInt(2, v);
@@ -341,6 +358,9 @@ public class Async_HDF5_FileHandler implements Runnable{
                     while (rs.next()) {
                         list.add(rs.getInt("probeset_id"));
                     }
+                    rs.close();
+                    conn.close();
+                    conn=null;
                     //convert to probeset list to long[]
                     long[] probelist = new long[list.size()];
                     for (int i = 0; i < list.size(); i++) {
@@ -367,7 +387,12 @@ public class Async_HDF5_FileHandler implements Runnable{
                 } catch (Exception er) {
                 }
                 log.error("Error creating HDF5 file", e);
-            }
+            }finally{
+                            if (conn != null) {
+                                 try { conn.close(); } catch (SQLException e) { ; }
+                                 conn = null;
+                            }
+                     }
             
         }else{
             try{
@@ -473,14 +498,22 @@ public class Async_HDF5_FileHandler implements Runnable{
             if(success){
                 String resetQ = "{call filter.reset(" + pds.getDataset_id() + "," + v + "," + userID + ",?)}";
                 try {
+                    conn=pool.getConnection();
                     CallableStatement cs = conn.prepareCall(resetQ);
                     cs.setInt(1, 3);
                     cs.executeUpdate();
                     cs.close();
                     conn.commit();
+                    conn.close();
+                    conn=null;
                 } catch (SQLException e) {
                     log.error("Error removing temporary filter", e);
-                }
+                }finally{
+                            if (conn != null) {
+                                 try { conn.close(); } catch (SQLException e) { ; }
+                                 conn = null;
+                            }
+                     }
             }
         }
     }

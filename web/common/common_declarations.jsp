@@ -25,6 +25,8 @@
         import="java.util.*"
         import="java.util.zip.*"
         import="javax.imageio.*"
+		import="javax.sql.DataSource"
+		import="javax.naming.*"
         import="java.awt.image.*"
         import="org.apache.log4j.Logger"
         import="edu.ucdenver.ccp.util.*"

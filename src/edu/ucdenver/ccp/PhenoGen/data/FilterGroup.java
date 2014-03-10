@@ -17,6 +17,7 @@ import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 //import edu.ucdenver.ccp.PhenoGen.util.AsyncCopyFiles;
 import edu.ucdenver.ccp.PhenoGen.web.mail.Email; 
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler; 
+import javax.sql.DataSource;
 
 
 
@@ -48,13 +49,15 @@ public class FilterGroup {
     FilterStep[] filterSteps;
     private Logger log=null;
     
-    public int addFilterGroup(int last,int phenotypeParamGroupID,int paramGroupID, Connection conn){
+    public int addFilterGroup(int last,int phenotypeParamGroupID,int paramGroupID, DataSource pool){
         int fgID=-1;
+        Connection conn=null;
         try {
             String query=insertqwo;
             if(phenotypeParamGroupID>0){
                 query=insertq;
             }
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1,last);
             if(phenotypeParamGroupID>0){
@@ -71,9 +74,16 @@ public class FilterGroup {
                 fgID=rs.getInt(1);
             }
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("FilterGroup SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
         
         System.out.println("returning FGID="+fgID);
         return fgID;
@@ -82,12 +92,12 @@ public class FilterGroup {
         log = Logger.getRootLogger();
         
     }
-    public FilterGroup(int filterGroupID,Connection conn){
+    public FilterGroup(int filterGroupID,DataSource pool){
         log = Logger.getRootLogger();
         if(filterGroupID>0){
             this.filterGroupID=filterGroupID;
-            this.setupFilterGroupFromDB(conn);
-            filterSteps=new FilterStep().getFilterSteps(this, conn);
+            this.setupFilterGroupFromDB(pool);
+            filterSteps=new FilterStep().getFilterSteps(this, pool);
         }else{
             filterSteps=new FilterStep[0];
         }
@@ -120,9 +130,11 @@ public class FilterGroup {
         this.filterSteps = filterSteps;
     }
     
-    public void setupFilterGroupFromDB(Connection conn){
+    public void setupFilterGroupFromDB(DataSource pool){
+        Connection conn=null;
         try {
             String query=selectq+fromq+whereFilterGroupID;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, filterGroupID);
             ResultSet rs = ps.executeQuery();
@@ -134,39 +146,55 @@ public class FilterGroup {
                 //error
             }
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("FilterGroup SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
     
-    public void updateLastCount(int lastCount,Connection conn){
+    public void updateLastCount(int lastCount,DataSource pool){
+        Connection conn=null;
         try {
             String query=updateCountq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, lastCount);
             ps.setInt(2, filterGroupID);
             ps.executeUpdate();
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("FilterGroup SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
     
-    public void addStep(String method,String parameters, int step_count, int stepNumber,Connection conn){
+    public void addStep(String method,String parameters, int step_count, int stepNumber,DataSource pool){
         int curInd=stepNumberIndex(stepNumber);
         if(curInd>-1){
-            filterSteps[curInd].updateStep(method,parameters,step_count,conn);
+            filterSteps[curInd].updateStep(method,parameters,step_count,pool);
             if(curInd==filterSteps.length-1){
-                this.updateLastCount(step_count,conn);
+                this.updateLastCount(step_count,pool);
             }
         }else{
             if(stepNumber==-1){
                 int max=findMaxStepNumber();
                 stepNumber=max+1;
             }
-            new FilterStep().addStep(this.getFilterGroupID(),method, parameters, step_count,stepNumber, conn);
-            filterSteps=new FilterStep().getFilterSteps(this, conn);
-            this.updateLastCount(step_count,conn);
+            new FilterStep().addStep(this.getFilterGroupID(),method, parameters, step_count,stepNumber, pool);
+            filterSteps=new FilterStep().getFilterSteps(this, pool);
+            this.updateLastCount(step_count,pool);
         }
     }
     private int findMaxStepNumber(){
@@ -192,9 +220,11 @@ public class FilterGroup {
         return ret;
     }
     
-    public void deleteFromDB(Connection conn){
+    public void deleteFromDB(DataSource pool){
+        Connection conn=null;
         try {
             String stepquery=deleteStepsq+whereFilterGroupID;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(stepquery);
             ps.setInt(1, this.getFilterGroupID());
             ps.executeUpdate();
@@ -204,9 +234,16 @@ public class FilterGroup {
             ps.setInt(1, this.getFilterGroupID());
             ps.executeUpdate();
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("FilterGroup SQL ERROR:"+ex);
-        }
+        } finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
     
     public void setPhenotypeParamGroupID(int id){

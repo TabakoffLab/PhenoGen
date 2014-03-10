@@ -1,5 +1,9 @@
 <%@ include file="/web/datasets/include/analysisHeader.jsp"  %>
 <%
+
+	DataSource pool=(DataSource)session.getAttribute("dbPool");
+
+
 	request.setAttribute( "selectedStep", "2" );
 	extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("typeOfAnalysis.js");
@@ -143,8 +147,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                
-                   <% if(dsfs!=null&&dsfs.length>0){
+
+                   <%
+                    User tmpUser=(User) session.getAttribute("userLoggedIn");
+                    selectedDatasetVersion.getFilterStatsFromDB(tmpUser.getUser_id(),pool);
+                    DSFilterStat[] dsfs = selectedDatasetVersion.getFilterStats(tmpUser.getUser_id(),pool);
+                    if(dsfs!=null&&dsfs.length>0){
                         for (int j=0; j<dsfs.length; j++) {
                             FilterStep[] tmpFSteps=new FilterStep[0];
 							FilterGroup tmpFG=dsfs[j].getFilterGroup();

@@ -17,7 +17,9 @@
 <%
 
 	log.info("in filters. user = " + user);
-
+	
+	DataSource pool=(DataSource)session.getAttribute("dbPool");
+	
 	request.setAttribute( "selectedMain", "microarrayTools" );
 	request.setAttribute( "selectedStep", "3" ); 
     if (analysisType.equals("correlation")) {
@@ -524,11 +526,11 @@
 						String verFDate=(String)session.getAttribute("verFilterDate");
                 		String verFTime=(String)session.getAttribute("verFilterTime");
 						DSFilterStat tmpDS=new DSFilterStat();
-						DSFilterStat dsfs = tmpDS.getFilterStatFromDB(selectedDataset.getDataset_id(), selectedDatasetVersion.getVersion(), userLoggedIn.getUser_id(), verFDate, verFTime, dbConn);
+						DSFilterStat dsfs = tmpDS.getFilterStatFromDB(selectedDataset.getDataset_id(), selectedDatasetVersion.getVersion(), userLoggedIn.getUser_id(), verFDate, verFTime, pool);
 						if(dsfs.getDSFilterStatID()==0){
-							int fsID=selectedDatasetVersion.createFilterStats(verFDate,verFTime,analysisType,userLoggedIn.getUser_id(),dbConn);
-							DSFilterStat tmp=selectedDatasetVersion.getFilterStat(fsID,userLoggedIn.getUser_id(),dbConn);
-							tmp.addFilterStep("Not Filtered","Not Filtered",tmpnumprobe,1,0,0,dbConn);
+							int fsID=selectedDatasetVersion.createFilterStats(verFDate,verFTime,analysisType,userLoggedIn.getUser_id(),pool);
+							DSFilterStat tmp=selectedDatasetVersion.getFilterStat(fsID,userLoggedIn.getUser_id(),pool);
+							tmp.addFilterStep("Not Filtered","Not Filtered",tmpnumprobe,1,0,0,pool);
 						}
 			}
 			if (!analysisType.equals("cluster")) {
