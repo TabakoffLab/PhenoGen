@@ -1303,9 +1303,10 @@ public class Statistic {
                                 }catch(IOException e){
                                     log.error("Exception Opening Stats Count file:"+e,e);
                                 }
-                                dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,dbConn);
+                                //dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,dbConn);
+                                dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,pool);
                             }
-                            dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,pool);
+                            //dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,tmpcount,2,1,pool);
                         }
 		} catch (Exception e) {
                         dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,-1,2,-1,pool);

@@ -1,8 +1,8 @@
 <%@ include file="/web/datasets/include/analysisHeader.jsp"  %>
 <%
 
-	DataSource pool=(DataSource)session.getAttribute("dbPool");
-
+	//DataSource pool=(DataSource)session.getAttribute("dbPool");
+	pool=(DataSource)session.getAttribute("dbPool");
 
 	request.setAttribute( "selectedStep", "2" );
 	extrasList.add("jquery.dataTables.min.js");
@@ -59,7 +59,7 @@
 		mySessionHandler.createDatasetActivity("Chose to do "+ analysisAction + " analysis", dbConn);
 		response.sendRedirect("correlation.jsp" + queryString + "&analysisType="+analysisAction);
 	} 
-	
+	log.debug("Before microarrayHeader/viewing pane includes etc.");
 %>
 	<%@ include file="/web/common/microarrayHeader.jsp" %>
 	<%@ include file="/web/datasets/include/viewingPane.jsp" %>
@@ -80,6 +80,7 @@
 		<h3>Start A New Analysis:</h3> Choose a type of analysis:
 
 		<%
+		log.debug("setup a new analysis.");
 		selectName = "analysisAction";
         	selectedOption = analysisAction;
         	onChange = "submit()";
@@ -108,7 +109,9 @@
        </div>
     <%}%>
     <BR />
-    <% if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(selectedDataset.getArray_type())) { %>
+    <% 
+		log.debug("before table");
+		if (new edu.ucdenver.ccp.PhenoGen.data.Array().EXON_ARRAY_TYPES.contains(selectedDataset.getArray_type())) { %>
         <div class="list_container">
         <form name="tableList" action="choosePrevResult.jsp" method="get">
                 <input type="hidden" name="datasetVersion" value="<%= selectedDatasetVersion.getVersion()%>" />
@@ -119,13 +122,8 @@
                 <h3>Go To Previous Analysis:<span class="infoSpan" title="A list of previous analyses that have been performed on this Dataset/Version.  In most cases you may resume, using a link in the Statistics column, although it is not currently possible to resume filtering.<BR><BR>This list will automatically refresh if you are waiting on statistics the status will update when they complete.<BR><BR>Note: Some analyses that have errors may still say they are running.  It is best to delete them and start over if you have been waiting for more than 3 hours they are no longer running and in most cases you should have received an email stating there was an error.">
                     		<img src="<%=imagesDir%>icons/info.gif" alt="Help">
 			</span></h3><BR />
-            <%
-                    User tmpUser=(User) session.getAttribute("userLoggedIn");
-                    selectedDatasetVersion.getFilterStatsFromDB(tmpUser.getUser_id(),dbConn);
-                    DSFilterStat[] dsfs = selectedDatasetVersion.getFilterStats(tmpUser.getUser_id(),dbConn);%>
-            <script type="text/javascript">
-                var resultLen=<%=dsfs.length%>;
-			</script>
+
+            
                 <table id="prevList" class="list_base" cellpadding="0" cellspacing="3" width="95%" style="text-align:center;">
                 <thead>
                 <tr>
@@ -149,11 +147,18 @@
                 <tbody>
 
                    <%
+				   	log.debug("before setup dsfs");
                     User tmpUser=(User) session.getAttribute("userLoggedIn");
                     selectedDatasetVersion.getFilterStatsFromDB(tmpUser.getUser_id(),pool);
                     DSFilterStat[] dsfs = selectedDatasetVersion.getFilterStats(tmpUser.getUser_id(),pool);
-                    if(dsfs!=null&&dsfs.length>0){
+					log.debug("after setup dsfs");
+					%>
+                    <script type="text/javascript">
+						var resultLen=<%=dsfs.length%>;
+					</script>
+                    <%if(dsfs!=null&&dsfs.length>0){
                         for (int j=0; j<dsfs.length; j++) {
+							log.debug("in dsfs for loop");
                             FilterStep[] tmpFSteps=new FilterStep[0];
 							FilterGroup tmpFG=dsfs[j].getFilterGroup();
 							if(tmpFG!=null){
@@ -234,6 +239,7 @@
                                 </tr>
                     	<%}
 						}	
+						log.debug("after table for loop");
                     } else { 
                     %> <tr><td colspan="9" class="center"><h2>There are no Filter/Statistics results for this dataset</h2></td></tr>
                     <% } %>

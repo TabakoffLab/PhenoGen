@@ -1110,7 +1110,7 @@
 								//ArrayList<String> relQTLreason=curBQTL.getRelatedQTLReason();
 							if(relQTL!=null){
 							for(int j=0;j<relQTL.size();j++){
-								String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism,dbConn);
+								String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism);
                             	if(regionQTL.startsWith("chr")){
 								%>
                                     <a href="<%=lg.getGeneLink(regionQTL,myOrganism,true,true,false)%>" target="_blank" title="Click to view this bQTL region in a new window.">

@@ -63,6 +63,7 @@ public class SessionHandler {
         private String adminEmail="";
         private String maxRThreadCount="1";
         private String dbExtFileDir="";
+        private String dbMain="DevDB";
 	
         private Dataset selectedDataset = null;
         private Dataset.DatasetVersion selectedDatasetVersion = null;
@@ -88,18 +89,19 @@ public class SessionHandler {
 	private HttpSession session; 
 
 	private	DbUtils myDbUtils = new DbUtils();
+        
 
         public SessionHandler() {
                 log = Logger.getRootLogger();
-                DataSource pool=null;
+                pool=null;
                 try {
                                 // Create a JNDI Initial context to be able to lookup the DataSource
                                 InitialContext ctx = new InitialContext();
                                 // Lookup the DataSource, which will be backed by a pool
                                 //   that the application server provides.
-                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/DevDB");
+                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/"+this.dbMain);
                                 if (pool == null){
-                                   log.error("Unknown DataSource 'jdbc/DevDB'",new Exception("Unknown DataSource 'jdbc/DevDB'"));
+                                   log.error("Unknown DataSource 'jdbc/"+this.dbMain+"'",new Exception("Unknown DataSource 'jdbc/"+this.dbMain+"'"));
                                 }
                 } catch (NamingException ex) {
                                ex.printStackTrace();
@@ -110,19 +112,20 @@ public class SessionHandler {
 	
         public SessionHandler(HttpSession session) {
                 log = Logger.getRootLogger();
-		setSession(session);
+		
                 try {
                                 // Create a JNDI Initial context to be able to lookup the DataSource
                                 InitialContext ctx = new InitialContext();
                                 // Lookup the DataSource, which will be backed by a pool
                                 //   that the application server provides.
-                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/DevDB");
+                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/"+this.dbMain);
                                 if (pool == null){
-                                   log.error("Unknown DataSource 'jdbc/DevDB'",new Exception("Unknown DataSource 'jdbc/DevDB'"));
+                                   log.error("Unknown DataSource 'jdbc/"+this.dbMain+"'",new Exception("Unknown DataSource 'jdbc/"+this.dbMain+"'"));
                                 }
                 } catch (NamingException ex) {
                                ex.printStackTrace();
                 }
+                setSession(session);
 	//	this.session = session;
 		//log.debug("instantiated SessionHandler setting session variable");
 	}
@@ -150,6 +153,8 @@ public class SessionHandler {
         	this.selectedGeneList = ((GeneList) session.getAttribute("selectedGeneList") == null ?
                         new GeneList(-99) :
                         (GeneList) session.getAttribute("selectedGeneList"));
+                
+                session.setAttribute("dbPool",pool);
 
 		/*
         	log.debug("here selectedDataset = " + selectedDataset.getDataset_id()); 
@@ -182,7 +187,15 @@ public class SessionHandler {
 	public void setUserFilesRoot(String inString) {
 		this.userFilesRoot = inString;
 	}
+        
+        public String getDBMain() {
+		return dbMain;
+	}
 
+	public void setDBMain(String inString) {
+		this.dbMain = inString;
+	}
+        
 	public String getR_FunctionDir() {
 		return getApplicationRoot() + getContextRoot() + rFunctionDir + "/";
 	}
@@ -780,6 +793,24 @@ public class SessionHandler {
 		createSessionActivity(mySessionHandler, conn);
 	 }
 
+         
+         /**
+	 * Creates a record in the session_activities table. Replaces the Connection Version once the site is converted to use pooling.
+	 * @param sessionID	the identifier of the session
+	 * @param activityName	the activity
+	 * @param pool	the database connection pool
+	 * @throws            SQLException if a database error occurs
+	 */
+	public void createSessionActivity(String sessionID, String activityName, DataSource pool) throws SQLException {
+
+		SessionHandler mySessionHandler = new SessionHandler();
+
+       		mySessionHandler.setSession_id(sessionID);
+        	mySessionHandler.setActivity_name(activityName);
+		
+		createSessionActivity(mySessionHandler, pool);
+	}
+         
 	/**
 	 * Creates a record in the session_activities table. 
 	 * @param sessionID	the identifier of the session

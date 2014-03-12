@@ -182,45 +182,65 @@
 	int windowWidth=1000;
         String onClickString = "";
         action = (String)request.getParameter("action");
+		
+	//DataSource pool=null;
+	if(session.getAttribute("dbPool")!=null){
+		pool=(DataSource)session.getAttribute("dbPool");
+		log.debug("DB POOL SETUP");
+	}
 
 	// this file has to be after the logger initialization and no line breaks 
 	//to avoid extra lines in the html 
-%>
-<%@ include file="/web/common/dbutil.jsp"%>	
+%>	
 
 <%
 	if(!loginEnabled){
 		response.sendRedirect(accessDir +"siteDownPage.jsp");
-	}else if(dbConn==null){
+	}else if(pool==null){
 		session.setAttribute("errorPageMsg","The Database is currently unavailable.  The administrator has been notified and every effort will be made to return the database as soon as possible.");
 		response.sendRedirect(commonDir +"errorPage.jsp");
 	}else{
 		if(!loggedIn){
-			userLoggedIn = myUser.getUser("anon", "4lesw7n35h!", dbConn);
-		   	log.debug("last_name = "+userLoggedIn.getLast_name() + ", id = "+userLoggedIn.getUser_id());
-			if (userLoggedIn.getUser_id() == -1) {
-					log.info("anon just failed to log in.");
-					session.setAttribute("loginErrorMsg", "Invalid");
-					response.sendRedirect(accessDir+ "loginError.jsp");
-			} else {
-					session.setAttribute("isAdministrator", "N");
-					//log.debug("user is NOT an Administrator");
-					session.setAttribute("isISBRA", "N");
-					//log.debug("user is NOT an ISBRA");
-					session.setAttribute("isPrincipalInvestigator", "N");
-					//log.debug("user is NOT a PI");
-					mySessionHandler.setSessionVariables(session, userLoggedIn);
-					mySessionHandler.setSession_id(session.getId());
-					mySessionHandler.setUser_id(userLoggedIn.getUser_id());
-					mySessionHandler.createSession(mySessionHandler, dbConn);
-					userFilesRoot = (String) session.getAttribute("userFilesRoot");
-					userLoggedIn.setUserMainDir(userFilesRoot);
-					session.setAttribute("userLoggedIn", userLoggedIn);
-					userID = Integer.parseInt((String) session.getAttribute("userID"));
-					session.setAttribute("userID", Integer.toString(userID));
-					session.setAttribute("user", userID + "-"+ (String) session.getAttribute("userName"));
-					session.setAttribute("full_name", (String) session.getAttribute("full_name"));
+			Connection conn=null;
+			try{
+				conn=pool.getConnection();
+				userLoggedIn = myUser.getUser("anon", "4lesw7n35h!", conn);
+				conn.close();
+				log.debug("last_name = "+userLoggedIn.getLast_name() + ", id = "+userLoggedIn.getUser_id());
+				if (userLoggedIn.getUser_id() == -1) {
+						log.info("anon just failed to log in.");
+						session.setAttribute("loginErrorMsg", "Invalid");
+						response.sendRedirect(accessDir+ "loginError.jsp");
+				} else {
+						session.setAttribute("isAdministrator", "N");
+						//log.debug("user is NOT an Administrator");
+						session.setAttribute("isISBRA", "N");
+						//log.debug("user is NOT an ISBRA");
+						session.setAttribute("isPrincipalInvestigator", "N");
+						//log.debug("user is NOT a PI");
+						mySessionHandler.setSessionVariables(session, userLoggedIn);
+						mySessionHandler.setSession_id(session.getId());
+						mySessionHandler.setUser_id(userLoggedIn.getUser_id());
+						conn=pool.getConnection();
+						mySessionHandler.createSession(mySessionHandler, conn);
+						conn.close();
+						userFilesRoot = (String) session.getAttribute("userFilesRoot");
+						userLoggedIn.setUserMainDir(userFilesRoot);
+						session.setAttribute("userLoggedIn", userLoggedIn);
+						userID = Integer.parseInt((String) session.getAttribute("userID"));
+						session.setAttribute("userID", Integer.toString(userID));
+						session.setAttribute("user", userID + "-"+ (String) session.getAttribute("userName"));
+						session.setAttribute("full_name", (String) session.getAttribute("full_name"));
+				}
+			}catch(SQLException e){
+			}finally{
+				try{
+					if(conn!=null)
+						conn.close();
+				}catch(SQLException er){
+				}
 			}
+		   	
 		}
 	}
 	
@@ -243,7 +263,7 @@
 	String lab_name = (String) session.getAttribute("lab_name");
 	String user = userID + "-"+ userName;
 
-        if (publicDatasets == null || privateDatasetsForUser == null) {
+    /*    if (publicDatasets == null || privateDatasetsForUser == null) {
 		Dataset myDataset = new Dataset();
 		Dataset[] allDatasets = myDataset.getAllDatasetsForUser(userLoggedIn, dbConn);
         	if (publicDatasets == null) {
@@ -256,6 +276,6 @@
                 	privateDatasetsForUser = myDataset.getDatasetsForUser(allDatasets, "private");
 			session.setAttribute("privateDatasetsForUser", privateDatasetsForUser);
 		}
-	}
+	}*/
 %>
-<%@ include file="/web/common/alertMsgSetup.jsp" %>
+

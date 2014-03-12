@@ -8,7 +8,7 @@
  *      
 --%><jsp:useBean id="myDbConnErrorEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"/><%
 	/* see if we have a connection in the session */
-	Connection dbConn = (Connection)session.getAttribute("dbConn");
+	dbConn = (Connection)session.getAttribute("dbConn");
 	boolean dbConnAvailable = true;
 
 	if (dbConn == null || dbConn.isClosed()) {

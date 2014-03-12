@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import org.apache.log4j.Logger;
+import javax.sql.DataSource;
 
 
 public class SyncAndClose {
@@ -30,12 +31,13 @@ public class SyncAndClose {
     String message="";
     String outputDir="";
     private Logger log = null;
-    
+    DataSource pool=null;
 
-    public SyncAndClose(Date start,ArrayList<AsyncGeneDataExpr> list,Connection dbConn,BufferedWriter outGroup,BufferedWriter outIndiv,int usageID,String outputDir) {
+    public SyncAndClose(Date start,ArrayList<AsyncGeneDataExpr> list,Connection dbConn,DataSource pool,BufferedWriter outGroup,BufferedWriter outIndiv,int usageID,String outputDir) {
         this.start=start;
         this.list=list;
         this.dbConn=dbConn;
+        this.pool=pool;
         this.outGroup=outGroup;
         this.outIndiv=outIndiv;
         this.usageID=usageID;
@@ -95,18 +97,37 @@ public class SyncAndClose {
             indivf.renameTo(indivfinal);
             log.debug("Indiv File Renamed\n"+indivf+"->"+indivfinal+"\n");
             end=new Date();
+            Connection conn=null;
             try{
-                PreparedStatement ps=dbConn.prepareStatement(updateSQL, 
+                PreparedStatement ps=null;
+                
+                if(pool!=null){
+                    conn=pool.getConnection();
+                    ps=conn.prepareStatement(updateSQL, 
                                                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                                                     ResultSet.CONCUR_UPDATABLE);
+                }else{
+                    ps=dbConn.prepareStatement(updateSQL, 
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+                }
+                
                 long returnTimeMS=end.getTime()-start.getTime();
                 ps.setLong(1, returnTimeMS);
                 ps.setString(2, this.message);
                 ps.setInt(3, usageID);
                 ps.executeUpdate();
                 ps.close();
+                if(conn!=null)
+                    conn.close();
             }catch(SQLException ex){
                 log.error("Error saving AsyncGeneDataExpr Timing",ex);
+            }finally{
+                try {
+                    if(conn!=null)
+                        conn.close();
+                } catch (SQLException ex) {
+                }
             }
         }
     }

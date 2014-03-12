@@ -18,7 +18,7 @@
 
 	log.info("in filters. user = " + user);
 	
-	DataSource pool=(DataSource)session.getAttribute("dbPool");
+	pool=(DataSource)session.getAttribute("dbPool");
 	
 	request.setAttribute( "selectedMain", "microarrayTools" );
 	request.setAttribute( "selectedStep", "3" ); 

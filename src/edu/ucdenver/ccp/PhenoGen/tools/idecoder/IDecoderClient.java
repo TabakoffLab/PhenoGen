@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -221,6 +222,8 @@ public class IDecoderClient {
                 //myResults.close();
             return doSearchAll(organism, conn);
         }
+        
+        
         
         /**
          * Returns the main HashMap that is used by other methods
@@ -1398,7 +1401,7 @@ public class IDecoderClient {
 		}
 		return setOfInputIdentifiers;
 	}
-        
+
 	/** 
 	 * Get a Set of Identifiers for a particular list of targets, although it is not organized by target.  Also restrict the
 	 * list by geneChipName.
@@ -1853,7 +1856,14 @@ public class IDecoderClient {
 		//log.debug("startSet now = "); myDebugger.print(startSet);
 		return startSet;
 	}
-        
+        public Set<Identifier> getIdentifiersByInputIDAndTarget(String geneID,String organism, String[] targets, DataSource pool) throws SQLException {
+               Set<Identifier> startSet = null;
+                log.debug("in getIdentifiersByInputIDAndTarget passing in geneID");
+                Connection conn=pool.getConnection();
+		startSet = getIdentifiersByInputIDAndTarget(geneID,organism, targets, conn);
+                conn.close();
+		return startSet;
+	}
         
 	/**
 	 * Get a Set of Identifiers for a particular list of targets.

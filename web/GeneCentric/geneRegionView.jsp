@@ -65,7 +65,7 @@ if(request.getParameter("gene")!=null){
 	
 	
 		log.debug("RUNNING REGION");
-		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,dbConn);
+		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
 		if(tmp!=null&&tmp.length==2){
 			rnaDatasetID=tmp[1];
 			arrayTypeID=tmp[0];

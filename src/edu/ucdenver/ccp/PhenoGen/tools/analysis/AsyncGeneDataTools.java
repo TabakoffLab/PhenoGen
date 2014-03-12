@@ -17,6 +17,7 @@ import edu.ucdenver.ccp.PhenoGen.driver.ExecHandler;
 import edu.ucdenver.ccp.PhenoGen.web.mail.Email;
 import edu.ucdenver.ccp.PhenoGen.driver.RException;
 import edu.ucdenver.ccp.PhenoGen.driver.R_session;
+import edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneLoc;
 import edu.ucdenver.ccp.util.ObjectHandler;
 import edu.ucdenver.ccp.util.sql.PropertiesConnection;
 import edu.ucdenver.ccp.util.FileHandler;
@@ -34,6 +35,7 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
+import javax.sql.DataSource;
 
 
 
@@ -47,7 +49,7 @@ public class AsyncGeneDataTools extends Thread {
         private String userFilesRoot = "";
         private String urlPrefix = "";
         private String ucscDir="";
-        private Connection dbConn = null;
+        private DataSource pool=null;
         private String dbPropertiesFile=null;
         String outputDir="";
         String chrom="";
@@ -60,13 +62,13 @@ public class AsyncGeneDataTools extends Thread {
         boolean done=false;
         String updateSQL="update TRANS_DETAIL_USAGE set TIME_ASYNC_GENE_DATA_TOOLS=? , RESULT=? where TRANS_DETAIL_ID=?";
         
-    public AsyncGeneDataTools(HttpSession inSession,String outputDir,String chr,int min,int max,int arrayTypeID,int rnaDS_ID,int usageID) {
+    public AsyncGeneDataTools(HttpSession inSession,DataSource pool,String outputDir,String chr,int min,int max,int arrayTypeID,int rnaDS_ID,int usageID) {
                 this.session = inSession;
                 this.outputDir=outputDir;
                 log = Logger.getRootLogger();
                 log.debug("in AsynGeneDataTools()");
                 this.session = inSession;
-                
+                this.pool=pool;
                 this.chrom=chr;
                 this.minCoord=min;
                 this.maxCoord=max;
@@ -79,7 +81,7 @@ public class AsyncGeneDataTools extends Thread {
                 //this.selectedDataset = (Dataset) session.getAttribute("selectedDataset");
                 //this.selectedDatasetVersion = (Dataset.DatasetVersion) session.getAttribute("selectedDatasetVersion");
                 //this.publicDatasets = (Dataset[]) session.getAttribute("publicDatasets");
-                this.dbConn = (Connection) session.getAttribute("dbConn");
+                this.pool = (DataSource) session.getAttribute("dbPool");
                 dbPropertiesFile = (String) session.getAttribute("dbPropertiesFile");
                 //log.debug("db");
                 
@@ -105,29 +107,21 @@ public class AsyncGeneDataTools extends Thread {
 
     public void run() throws RuntimeException {
         done=false;
-        boolean closeDB=false;
-        if(dbPropertiesFile!=null&&!dbPropertiesFile.equals("")){
-            Connection oldDB=dbConn;
-            try{
-                dbConn = new PropertiesConnection().getConnection(dbPropertiesFile);
-                if(dbConn==null||dbConn.isClosed()){
-                    dbConn=oldDB;
-                }else{
-                    closeDB=true;
-                }
-            }catch(Exception e){
-                dbConn=oldDB;
-            }
-        }
         Date start=new Date();
         try{
+            log.debug("Before outputProbesetID");
             outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
+            log.debug("before DEHeatMap");
             callDEHeatMap(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
+            log.debug("before Panel HErit");
             callPanelHerit(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
+            log.debug("After Panel Herit");
             done=true;
             Date end=new Date();
+            Connection conn=null;
             try{
-                PreparedStatement ps=dbConn.prepareStatement(updateSQL);
+                conn=pool.getConnection();
+                PreparedStatement ps=conn.prepareStatement(updateSQL);
                 long returnTimeMS=end.getTime()-start.getTime();
                 ps.setLong(1, returnTimeMS);
                 ps.setString(2, "AsyncGeneDataTools completed successfully");
@@ -135,8 +129,15 @@ public class AsyncGeneDataTools extends Thread {
                 int updated=ps.executeUpdate();
                 log.debug("AsyncGeneDataTools: updated "+updated +"records");
                 ps.close();
+                conn.close();
             }catch(SQLException e){
                 log.error("Error saving AsyncGeneDataTools Timing",e);
+            }finally{
+                try {
+                    if(conn!=null)
+                        conn.close();
+                } catch (SQLException ex) {
+                }
             }
             
             log.debug("AsyncGeneDataTools DONE");
@@ -144,16 +145,25 @@ public class AsyncGeneDataTools extends Thread {
             done=true;
             log.error("Error processing initial files in AsyncGeneDataTools",ex);
             Date end=new Date();
+            Connection conn2=null;
             try{
-                PreparedStatement ps=dbConn.prepareStatement(updateSQL);
+                conn2=pool.getConnection();
+                PreparedStatement ps=conn2.prepareStatement(updateSQL);
                 long returnTimeMS=end.getTime()-start.getTime();
                 ps.setLong(1, returnTimeMS);
                 ps.setString(2, "AsyncGeneDataTools had errors:"+ex.getMessage());
                 ps.setInt(3, usageID);
                 ps.executeUpdate();
                 ps.close();
+                conn2.close();
             }catch(SQLException e){
                 log.error("Error saving AsyncGeneDataTools Timing",e);
+            }finally{
+                try {
+                    if(conn2!=null)
+                        conn2.close();
+                } catch (SQLException ex2) {
+                }
             }
             String fullerrmsg=ex.getMessage();
                     StackTraceElement[] tmpEx=ex.getStackTrace();
@@ -168,13 +178,6 @@ public class AsyncGeneDataTools extends Thread {
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();
-            }
-        }
-        if(closeDB){
-            try {
-                dbConn.close();
-            } catch (SQLException ex) {
-                log.error("error closing DB", ex);
             }
         }
         done=true;
@@ -212,19 +215,28 @@ public class AsyncGeneDataTools extends Thread {
         
         log.debug("PSLEVEL SQL:"+probeQuery);
         log.debug("Transcript Level SQL:"+probeTransQuery);
-            String pListFile=outputDir+"tmp_psList.txt";
+        String pListFile=outputDir+"tmp_psList.txt";
             try{
                 BufferedWriter psout=new BufferedWriter(new FileWriter(new File(pListFile)));
+                Connection conn=null;
                 try{
-                    PreparedStatement ps = dbConn.prepareStatement(probeQuery);
+                    conn=pool.getConnection();
+                    PreparedStatement ps = conn.prepareStatement(probeQuery);
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
                         int psid = rs.getInt(1);
                         psout.write(psid + "\n");
                     }
                     ps.close();
+                    conn.close();
                 }catch(SQLException ex){
                     log.error("Error getting exon probesets",ex);
+                }finally{
+                    try {
+                        if(conn!=null)
+                            conn.close();
+                    } catch (SQLException ex) {
+                    }
                 }
                 psout.flush();
                 psout.close();
@@ -235,18 +247,15 @@ public class AsyncGeneDataTools extends Thread {
             ArrayList<GeneLoc> geneList=GeneLoc.readGeneListFile(outputDir,log);
             log.debug("Read in gene list:"+geneList.size());
             String ptransListFiletmp = outputDir + "tmp_psList_transcript.txt";
-            //String ptransListFile = outputDir + "tmp_psList_transcript.txt";
-            //File srcFile=new File(ptransListFiletmp);
-            //File destFile=new File(ptransListFile);
-            //try{
-                StringBuffer sb=new StringBuffer();
-                //BufferedWriter psout = new BufferedWriter(new FileWriter(srcFile));
+                StringBuilder sb=new StringBuilder();
+                Connection conn=null;
                 try{
-                    PreparedStatement ps = dbConn.prepareStatement(probeTransQuery);
+                    conn=pool.getConnection();
+                    PreparedStatement ps = conn.prepareStatement(probeTransQuery);
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
                         int psid = rs.getInt(1);
-                        log.debug("read ps:"+psid);
+                        log.debug("transcript read ps:"+psid);
                         String ch = rs.getString(2);
                         long start = rs.getLong(3);
                         long stop = rs.getLong(4);
@@ -258,7 +267,7 @@ public class AsyncGeneDataTools extends Thread {
                         GeneLoc maxGene=null;
                         for(int i=0;i<geneList.size();i++){
                             GeneLoc tmpLoc=geneList.get(i);
-                            log.debug("strand:"+tmpLoc.getStrand()+":"+strand);
+                            //log.debug("strand:"+tmpLoc.getStrand()+":"+strand);
                             if(tmpLoc.getStrand().equals(strand)){
                                 long maxStart=tmpLoc.getStart();
                                 long minStop=tmpLoc.getStop();
@@ -290,19 +299,25 @@ public class AsyncGeneDataTools extends Thread {
                             if(tmpGS.equals("")){
                                 tmpGS=maxGene.getID();
                             }
-                            log.debug("out:"+psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
+                            //log.debug("out:"+psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
                             sb.append(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t"+tmpGS+"\n");
                             
                         }else{
-                            log.debug("out"+psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
+                            //log.debug("out"+psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
                             sb.append(psid + "\t" + ch + "\t" + start + "\t" + stop + "\t" + level + "\t\n");
                             
                         }
                     }
                     ps.close();
-                    
+                    conn.close();
                 }catch(SQLException ex){
                     log.error("Error getting transcript probesets",ex);
+                }finally{
+                    try {
+                        if(conn!=null)
+                            conn.close();
+                    } catch (SQLException ex) {
+                    }
                 }
                 try{
                     log.debug("To File:"+ptransListFiletmp+"\n\n"+sb.toString());
@@ -312,12 +327,6 @@ public class AsyncGeneDataTools extends Thread {
                 }catch(IOException e){
                     log.error("Error outputing transcript ps list.",e);
                 }
-                /*psout.flush();
-                psout.close();
-            }catch(IOException e){
-                log.error("Error writing transcript probesets",e);
-            }*/
-            //srcFile.renameTo(destFile);
             
     }
     
@@ -362,9 +371,11 @@ public class AsyncGeneDataTools extends Thread {
                                 "and s.psannotation <> 'transcript' "+
                                 "and s.Array_TYPE_ID = "+arrayTypeID+")  "+
                     "order by def.probeset_id,dad.tissue,des1.strain_name,des2.strain_name";
+        Connection conn=null;
         try{
             log.debug("SQL\n"+meanQuery);
-            PreparedStatement ps = dbConn.prepareStatement(meanQuery);
+            conn=pool.getConnection();
+            PreparedStatement ps = conn.prepareStatement(meanQuery);
             ResultSet rs = ps.executeQuery();
             ArrayList<HashMap> data=new ArrayList<HashMap>();
             ArrayList<String> tissueList=new ArrayList<String>();
@@ -408,6 +419,7 @@ public class AsyncGeneDataTools extends Thread {
                 }
             }
             ps.close();
+            conn.close();
             DecimalFormat df = new DecimalFormat("#############.##");
             try{
             BufferedWriter out=new BufferedWriter(new FileWriter(new File(outputDir+"DE_means.csv")));
@@ -454,11 +466,19 @@ public class AsyncGeneDataTools extends Thread {
         }catch(SQLException e){
             error=true;
             log.error("Error getting dataset id",e);
+        }finally{
+            try {
+                    if(conn!=null)
+                        conn.close();
+                } catch (SQLException ex) {
+                }
         }
         //create DE foldchange heatmap
+        conn=null;
         try{
            log.debug("SQL\n"+foldchangeQuery);
-            PreparedStatement ps = dbConn.prepareStatement(foldchangeQuery);
+           conn=pool.getConnection();
+            PreparedStatement ps = conn.prepareStatement(foldchangeQuery);
             ResultSet rs = ps.executeQuery();
             ArrayList<HashMap> data=new ArrayList<HashMap>();
             ArrayList<String> tissueList=new ArrayList<String>();
@@ -518,6 +538,7 @@ public class AsyncGeneDataTools extends Thread {
                 }
             }
             ps.close();
+            conn.close();
             DecimalFormat df = new DecimalFormat("#############.##");
             try{
             BufferedWriter out=new BufferedWriter(new FileWriter(new File(outputDir+"DE_folddiff.csv")));
@@ -570,6 +591,12 @@ public class AsyncGeneDataTools extends Thread {
         }catch(SQLException e){
             error=true;
             log.error("Error getting dataset id",e);
+        }finally{
+            try {
+                    if(conn!=null)
+                        conn.close();
+                } catch (SQLException ex) {
+                }
         }
         return error;
     }
@@ -597,10 +624,11 @@ public class AsyncGeneDataTools extends Thread {
                             "and s.Array_TYPE_ID = "+arrayTypeID+") "+ 
                             "order by phd.probeset_id,rd.tissue";
         
-        
+        Connection conn=null;
         try{
             //log.debug("SQL\n"+meanQuery);
-            PreparedStatement ps = dbConn.prepareStatement(probeQuery);
+            conn=pool.getConnection();
+            PreparedStatement ps = conn.prepareStatement(probeQuery);
             ResultSet rs = ps.executeQuery();
             ArrayList<HashMap> data=new ArrayList<HashMap>();
             ArrayList<String> tissueList=new ArrayList<String>();
@@ -636,6 +664,7 @@ public class AsyncGeneDataTools extends Thread {
                 }
             }
             ps.close();
+            conn.close();
             DecimalFormat df = new DecimalFormat("#############.###");
             try{
             BufferedWriter out=new BufferedWriter(new FileWriter(new File(outputDir+"Panel_Herit.csv")));
@@ -682,6 +711,12 @@ public class AsyncGeneDataTools extends Thread {
         }catch(SQLException e){
             error=true;
             log.error("Error getting dataset id",e);
+        }finally{
+            try {
+                    if(conn!=null)
+                        conn.close();
+            } catch (SQLException ex) {
+            }
         }
         return error;
     }

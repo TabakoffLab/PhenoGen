@@ -10,7 +10,15 @@
   <session-config>
     <session-timeout>60</session-timeout>
   </session-config>
-
+  
+  <resource-ref><!-- This Name should match the resource defined in META-INF/context.xml -->
+      <description>DB Connection Pool</description>
+      <res-ref-name>jdbc/DBName</res-ref-name>
+      <res-type>javax.sql.DataSource</res-type>
+      <res-auth>Container</res-auth>
+      <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+  
 <welcome-file-list>
    <welcome-file>index.html</welcome-file>
    <welcome-file>index.jsp</welcome-file>
@@ -46,6 +54,11 @@
 
 
 <!-- Change the following four parameters when creating a new environment -->
+
+<context-param><!-- This Name should match the resource defined above in the DB Connection Pool it is used to load the resource. -->
+	<param-name>dbMain</param-name>
+	<param-value>DBName</param-value>
+</context-param>
 
 <context-param>
 	<param-name>applicationRoot</param-name>
