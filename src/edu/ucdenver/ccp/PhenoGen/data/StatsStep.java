@@ -18,6 +18,7 @@ import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 import edu.ucdenver.ccp.PhenoGen.web.mail.Email; 
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler; 
 import java.util.ArrayList;
+import javax.sql.DataSource;
 
 
 /* for logging messages */
@@ -51,19 +52,21 @@ public class StatsStep {
             log = Logger.getRootLogger();
         }
         
-        public StatsStep[] getStatsSteps(StatsGroup sg, Connection conn){
-            StatsStep[] ret=this.getStatsSteps(sg.getStatsGroupID(),conn);
+        public StatsStep[] getStatsSteps(StatsGroup sg, DataSource pool){
+            StatsStep[] ret=this.getStatsSteps(sg.getStatsGroupID(),pool);
             for(int i=0;i<ret.length;i++){
                 ret[i].setStatsGroup(sg);
             }
             return ret;
         }
         
-    public StatsStep[] getStatsSteps(int StatsGroupID, Connection conn){
+    public StatsStep[] getStatsSteps(int StatsGroupID, DataSource pool){
         ArrayList<StatsStep> steps=new ArrayList<StatsStep>();
+        Connection conn=null;
         try {
             
             String query=selectq+fromq+whereStatGroupID+orderq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, StatsGroupID);
             ResultSet rs = ps.executeQuery();
@@ -79,13 +82,20 @@ public class StatsStep {
             ps.close();
         } catch (SQLException ex) {
             log.error("StatsStep SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
         return steps.toArray(new StatsStep[0]);
     }
     
-    public void addStep(int StatsGroupID, String method,String parameters, int step_count, int stepNumber, Connection conn){
+    public void addStep(int StatsGroupID, String method,String parameters, int step_count, int stepNumber, DataSource pool){
+        Connection conn=null;
         try {
             String query=insertq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, StatsGroupID);
             ps.setString(2, method);
@@ -94,14 +104,23 @@ public class StatsStep {
             ps.setInt(5, step_count);
             ps.executeUpdate();
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("StatsStep SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
     
-    public void updateStep(String method,String param,int stepCount,Connection conn){
+    public void updateStep(String method,String param,int stepCount,DataSource pool){
+        Connection conn=null;
         try {
             String query=updateq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, method);
             ps.setString(2, param);
@@ -110,12 +129,19 @@ public class StatsStep {
             ps.setInt(5, this.getStatsGroup().getStatsGroupID());
             ps.executeUpdate();
             ps.close();
+            conn.close();
+            conn=null;
             this.setStatsName(method);
             this.setStatsParameter(param);
             this.setStepCount(stepCount);
         } catch (SQLException ex) {
             log.error("StatsStep SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
 
     public StatsGroup getStatsGroup() {

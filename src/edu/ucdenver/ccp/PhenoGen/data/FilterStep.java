@@ -18,6 +18,7 @@ import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 import edu.ucdenver.ccp.PhenoGen.web.mail.Email; 
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler; 
 import java.util.ArrayList;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -49,18 +50,20 @@ public class FilterStep {
             log = Logger.getRootLogger();
         }
         
-        public FilterStep[] getFilterSteps(FilterGroup fg, Connection conn){
-            FilterStep[] ret=this.getFilterSteps(fg.getFilterGroupID(),conn);
+        public FilterStep[] getFilterSteps(FilterGroup fg, DataSource pool){
+            FilterStep[] ret=this.getFilterSteps(fg.getFilterGroupID(),pool);
             for(int i=0;i<ret.length;i++){
                 ret[i].setFilterGroup(fg);
             }
             return ret;
         }
         
-    public FilterStep[] getFilterSteps(int FilterGroupID, Connection conn){
+    public FilterStep[] getFilterSteps(int FilterGroupID, DataSource pool){
         ArrayList<FilterStep> steps=new ArrayList<FilterStep>();
+        Connection conn=null;
         try {
             String query=selectq+fromq+whereStatGroupID;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, FilterGroupID);
             ResultSet rs = ps.executeQuery();
@@ -73,15 +76,24 @@ public class FilterStep {
                 steps.add(tmps);
             }
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("FilterStep SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
         return steps.toArray(new FilterStep[0]);
     }
     
-    public void addStep(int filterGroupID, String method,String parameters, int step_count, int stepNumber, Connection conn){
+    public void addStep(int filterGroupID, String method,String parameters, int step_count, int stepNumber, DataSource pool){
+        Connection conn=null;
         try {
             String query=insertq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, filterGroupID);
             ps.setString(2, method);
@@ -90,14 +102,24 @@ public class FilterStep {
             ps.setInt(5, step_count);
             ps.executeUpdate();
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("FilterStep SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
+        
     }
     
-    public void updateStep(String method,String param,int stepCount,Connection conn){
+    public void updateStep(String method,String param,int stepCount,DataSource pool){
+        Connection conn=null;
         try {
             String query=updateq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, method);
             ps.setString(2, param);
@@ -110,10 +132,17 @@ public class FilterStep {
             this.setFilterParameter(param);
             this.setStepCount(stepCount);
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             
             log.error("FilterStep SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
 
     public FilterGroup getFilterGroup() {

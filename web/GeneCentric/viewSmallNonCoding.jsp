@@ -21,7 +21,7 @@
 			nameList=name.split(",");
 		}
 	}
-	rna=new SmallNonCodingRNA(smncID,dbConn,log);
+	rna=new SmallNonCodingRNA(smncID,pool,log);
 	
 %>
 <script type="text/javascript">

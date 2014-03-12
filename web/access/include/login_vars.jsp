@@ -80,6 +80,8 @@
     <jsp:setProperty name="mySessionHandler" property="dbExtFileDir" 
                	value="<%=application.getInitParameter(\"dbExtFileDir\") %>" />
    
+   	<jsp:setProperty name="mySessionHandler" property="DBMain" 
+               	value="<%=application.getInitParameter(\"dbMain\") %>" />
 </jsp:useBean>
 
 <%

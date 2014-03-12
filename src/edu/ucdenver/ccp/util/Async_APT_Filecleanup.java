@@ -16,7 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
@@ -32,16 +34,17 @@ public class Async_APT_Filecleanup implements Runnable{
     private String userFileRoot="";
     private String dbExtFilePath="";
     private Connection dbConn=null;
+    private DataSource pool=null;
     
 
-    public Async_APT_Filecleanup(Dataset selectedDataset,Dataset.DatasetVersion dsVer,String userFileRoot,String dbExtFilePath,Connection dbConn, Thread waitThread) {
+    public Async_APT_Filecleanup(Dataset selectedDataset,Dataset.DatasetVersion dsVer,String userFileRoot,String dbExtFilePath,DataSource pool, Thread waitThread) {
         log = Logger.getRootLogger();
         this.waitThread = waitThread;
         this.selectedDataset=selectedDataset;
         this.newDatasetVersion=dsVer;
         this.userFileRoot=userFileRoot;
         this.outputDir = selectedDataset.getPath()+"v"+dsVer.getVersion();
-        this.dbConn=dbConn;
+        this.pool=pool;
         this.dbExtFilePath=dbExtFilePath;
         
     }
@@ -130,26 +133,37 @@ public class Async_APT_Filecleanup implements Runnable{
 
             //Call filter prep
             String filterprep="{call filterprep.combinedprep(" + newDatasetVersion.getDataset().getDataset_id() + "," + newDatasetVersion.getVersion() + ")}";
-            CallableStatement cs = dbConn.prepareCall(filterprep);
-            cs.execute();
-            cs.close();
-            
-            //clean up v# files
-            log.debug("Deleting:"+outputDir);
-            File dir=new File(outputDir);
-            File[] list=dir.listFiles();
-            for(int i=0;i<list.length;i++){
-                delete(list[i]);
-            }
-            dir.delete();
-            
-            //clean up /oracle files
-            dir=new File(selectedDataset.getPath()+"oracle");
-            list=dir.listFiles();
-            for(int i=0;i<list.length;i++){
-                delete(list[i]);
-            }
-            dir.delete();
+            try{
+                dbConn=pool.getConnection();
+                CallableStatement cs = dbConn.prepareCall(filterprep);
+                cs.execute();
+                cs.close();
+                dbConn.close();
+                dbConn=null;
+                //clean up v# files
+                log.debug("Deleting:"+outputDir);
+                File dir=new File(outputDir);
+                File[] list=dir.listFiles();
+                for(int i=0;i<list.length;i++){
+                    delete(list[i]);
+                }
+                dir.delete();
+
+                //clean up /oracle files
+                dir=new File(selectedDataset.getPath()+"oracle");
+                list=dir.listFiles();
+                for(int i=0;i<list.length;i++){
+                    delete(list[i]);
+                }
+                dir.delete();
+            }catch(SQLException sqle){
+                log.error("Error Inserting Dataset into Database.",sqle);
+            }finally{
+                            if (dbConn != null) {
+                                 try { dbConn.close(); } catch (SQLException e) { ; }
+                                 dbConn = null;
+                            }
+                     }
             //
             // If this thread is interrupted, throw an Exception
             //

@@ -12,13 +12,16 @@
 <%
 	log.debug("DELETE FILTER STAT");
 	 extrasList.add("main.js");
+	
+	DataSource pool=(DataSource)session.getAttribute("dbPool");
+	
    String itemIDString = (request.getParameter("itemIDString") == null ? 
 				(request.getParameter("itemID") == null ? "-99": (String) request.getParameter("itemID")) :
 				(String) request.getParameter("itemIDString"));
 	userLoggedIn=(User)session.getAttribute("userLoggedIn");
 
 	log.debug("action = "+action);
-	DSFilterStat dsfs=selectedDatasetVersion.getFilterStat(Integer.parseInt(itemIDString),userLoggedIn.getUser_id(),dbConn);
+	DSFilterStat dsfs=selectedDatasetVersion.getFilterStat(Integer.parseInt(itemIDString),userLoggedIn.getUser_id(),pool);
 	if (action != null && action.equals("Delete")) {
         	if (userLoggedIn.getUser_name().equals("guest")) {
                 	//Error - "Feature not allowed for guests"
@@ -46,7 +49,7 @@
                     Thread thread = new Thread(ahf);
 					thread.start();
 					myFileHandler.deleteAllFilesPlusDirectory(new File(analysisPath));
-					dsfs.deleteFromDB(dbConn);
+					dsfs.deleteFromDB(pool);
 					mySessionHandler.createDatasetActivity("Deleted Filter/Stats results for Dataset_Filter_Stat_ID = " + itemID, dbConn);
 					//Success - "Cluster analysis deleted"
 					session.setAttribute("successMsg", "EXP-055");

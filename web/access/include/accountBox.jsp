@@ -2,11 +2,10 @@
 	 	actionForm=accessDir+"include/handleRedirectLogin.jsp";
 	 %>
         <div id="login_box">
-        		
                 <% if(!loginEnabled){ %>
         			<!-- Uncomment Line below when site is down.  comment out the form following to prevent logins -->
         			<%@ include file="/web/access/siteDown.jsp" %>
-                <% }else if(dbConn==null){%>
+                <% }else if(dbConn==null  && pool==null){%>
                 	<form method="post" enctype="application/x-www-form-urlencoded" action="<%=actionForm%>" name="loginForm" id="login-form">
                 	<h3>Database is unavailable</h3>
                     <p>The database is currently unavailable.  The administrator has been notified and every effort will be made to make the database available as soon as possible.</p>
