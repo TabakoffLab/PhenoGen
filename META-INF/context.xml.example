@@ -6,7 +6,7 @@
     maxWait: Maximum milliseconds to wait for a dB connection to become available
              Set to -1 to wait indefinitely.
   -->
-  <Resource name="jdbc/DBName" auth="Container" type="javax.sql.DataSource"
+  <Resource name="jdbc/dbMain" auth="Container" type="javax.sql.DataSource"
      maxActive="20" maxIdle="2" maxWait="30000" removeAbandoned="true"
      username="Username" password="Password" driverClassName="oracle.jdbc.OracleDriver"
      url="jdbc:oracle:thin:@server:port:db" />
