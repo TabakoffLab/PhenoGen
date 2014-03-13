@@ -17,6 +17,7 @@ import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 //import edu.ucdenver.ccp.PhenoGen.util.AsyncCopyFiles;
 import edu.ucdenver.ccp.PhenoGen.web.mail.Email; 
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler; 
+import javax.sql.DataSource;
 
 
 
@@ -49,11 +50,13 @@ public class StatsGroup {
     private Logger log=null;
     
     
-    public int addStatsGroup(int last,int status, Connection conn){
+    public int addStatsGroup(int last,int status, DataSource pool){
         System.out.println("ADDSTATSGROUP CALLED");
+        Connection conn=null;
         int sgID=-1;
         try {
             String query=insertq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1,last);
             ps.setInt(2,status);
@@ -66,21 +69,28 @@ public class StatsGroup {
                 sgID=rs.getInt(1);
             }
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("StatsGroup SQL ERROR:"+ex);
             ex.printStackTrace(System.out);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
         System.out.println("Added Stats Group ID:"+sgID);
         return sgID;
     }
     public StatsGroup(){
         log = Logger.getRootLogger();
     }
-    public StatsGroup(int statsGroupID,Connection conn){
+    public StatsGroup(int statsGroupID,DataSource pool){
         log = Logger.getRootLogger();
         this.statsGroupID=statsGroupID;
-        this.setupStatsGroupFromDB(conn);
-        statsSteps=new StatsStep().getStatsSteps(this, conn);
+        this.setupStatsGroupFromDB(pool);
+        statsSteps=new StatsStep().getStatsSteps(this, pool);
     }
 
     public int getLastCount() {
@@ -110,9 +120,11 @@ public class StatsGroup {
         this.statsSteps = statsSteps;
     }
     
-    public void setupStatsGroupFromDB(Connection conn){
+    public void setupStatsGroupFromDB(DataSource pool){
+        Connection conn=null;
         try {
             String query=selectq+fromq+whereStatGroupID;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, statsGroupID);
             ResultSet rs = ps.executeQuery();
@@ -123,50 +135,74 @@ public class StatsGroup {
                 //log.error("StatsGroup SQL ERROR: No matches for StatsGroupID"+statsGroupID);
             }
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("StatsGroup SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
     
-    public void updateLastCount(int lastCount,Connection conn){
+    public void updateLastCount(int lastCount,DataSource pool){
+        Connection conn=null;
         try {
             String query=updateCountq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, lastCount);
             ps.setInt(2, statsGroupID);
             ps.executeUpdate();
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("StatsGroup SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
     
-    public void updateStatus(int status,int lastCount,Connection conn){
-        
+    public void updateStatus(int status,int lastCount,DataSource pool){
+        Connection conn=null;
         try {
             String query=updateStatusq;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, status);
             ps.setInt(2, lastCount);
             ps.setInt(3, statsGroupID);
             ps.executeUpdate();
             ps.close();
+            conn.close();
+            conn=null;
             this.status=status;
             this.lastCount=lastCount;
         } catch (SQLException ex) {
             log.error("StatsGroup SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
     
-    public void addStep(String method,String parameters, int step_count, int stepNumber,int status,Connection conn){
+    public void addStep(String method,String parameters, int step_count, int stepNumber,int status,DataSource pool){
         int curInd=stepNumberIndex(stepNumber);
         if(curInd>-1){
-            statsSteps[curInd].updateStep(method,parameters,step_count,conn);
+            statsSteps[curInd].updateStep(method,parameters,step_count,pool);
         }else{
-            new StatsStep().addStep(this.getStatsGroupID(),method, parameters, step_count,stepNumber, conn);
-            statsSteps=new StatsStep().getStatsSteps(this, conn);
+            new StatsStep().addStep(this.getStatsGroupID(),method, parameters, step_count,stepNumber, pool);
+            statsSteps=new StatsStep().getStatsSteps(this, pool);
         }
-        this.updateStatus(status, step_count, conn);
+        this.updateStatus(status, step_count, pool);
     }
     
     private int stepNumberIndex(int stepNum){
@@ -208,9 +244,11 @@ public class StatsGroup {
         
     }
     
-    public void deleteFromDB(Connection conn){
+    public void deleteFromDB(DataSource pool){
+        Connection conn=null;
         try {
             String stepquery=deleteStepsq+whereStatGroupID;
+            conn=pool.getConnection();
             PreparedStatement ps = conn.prepareStatement(stepquery);
             ps.setInt(1, this.getStatsGroupID());
             ps.executeUpdate();
@@ -220,9 +258,16 @@ public class StatsGroup {
             ps.setInt(1, this.getStatsGroupID());
             ps.executeUpdate();
             ps.close();
+            conn.close();
+            conn=null;
         } catch (SQLException ex) {
             log.error("FilterGroup SQL ERROR:"+ex);
-        }
+        }finally{
+                   if (conn != null) {
+                        try { conn.close(); } catch (SQLException e) { ; }
+                        conn = null;
+                   }
+                }
     }
     
     public int getClusterIDFromParam(){

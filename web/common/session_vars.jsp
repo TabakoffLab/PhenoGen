@@ -99,6 +99,10 @@
 	if(session.getAttribute("maxRThreadCount")!=null){
 		maxRThreadCount=(String)session.getAttribute("maxRThreadCount");
 	}
+	if(session.getAttribute("dbPool")!=null){
+		pool=(DataSource)session.getAttribute("dbPool");
+		log.debug("DB POOL SETUP");
+	}
 	
 	String checkMark = "<img src='" + imagesDir + "icons/" + "checkmark.gif' height=\"20\" width=\"20\" alt=\"\">";
 	String resultsIcon = "<img src='" + imagesDir + "icons/" + "results.png' height=\"20\" width=\"20\" alt=\"\">";

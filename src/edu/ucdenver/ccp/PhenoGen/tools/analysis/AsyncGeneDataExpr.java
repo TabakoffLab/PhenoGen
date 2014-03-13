@@ -32,7 +32,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
-
+import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
@@ -53,7 +53,7 @@ public class AsyncGeneDataExpr extends Thread {
         private String ucscDir="";
         private String bedDir="";
         private String ver="";
-        private Connection dbConn = null;
+        private DataSource pool=null;
         String outputDir="";
         String pListFile="";
         boolean doneThread=false;
@@ -95,7 +95,7 @@ public class AsyncGeneDataExpr extends Thread {
                 //this.selectedDataset = (Dataset) session.getAttribute("selectedDataset");
                 //this.selectedDatasetVersion = (Dataset.DatasetVersion) session.getAttribute("selectedDatasetVersion");
                 //this.publicDatasets = (Dataset[]) session.getAttribute("publicDatasets");
-                this.dbConn = (Connection) session.getAttribute("dbConn");
+                this.pool = (DataSource) session.getAttribute("dbPool");
                 //log.debug("db");
                 this.perlDir = (String) session.getAttribute("perlDir") + "scripts/";
                 //log.debug("perl" + perlDir);

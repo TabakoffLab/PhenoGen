@@ -149,7 +149,7 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 	if (    (((action != null) && action.equals("Get Transcription Details")) && (!region))  || (auto && (!region))
 		) {
 		myDisplayGene=myGene;
-		mySessionHandler.createSessionActivity(session.getId(), "GTD Browser Gene: "+myGene, dbConn);
+		mySessionHandler.createSessionActivity(session.getId(), "GTD Browser Gene: "+myGene, pool);
 		List homologList=null;
 		
 
@@ -159,7 +159,7 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 			}else{
 				myIDecoderClient.setNum_iterations(1);
 			}
-			iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},dbConn);
+			iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(myGene,myOrganism, new String[] {"Ensembl ID"},pool);
 			myIDecoderClient.setNum_iterations(1);
 
 			List myIdentifierList=null;
@@ -184,7 +184,7 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 			}
 	
 						if(homologList!=null&&homologList.size()>0){
-								int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,dbConn);
+								int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
 								if(tmp!=null&&tmp.length==2){
 									rnaDatasetID=tmp[1];
 									arrayTypeID=tmp[0];
@@ -255,9 +255,9 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 					
 	}else if((((action != null) && action.equals("Get Transcription Details"))&& region )
 			|| ( auto && region )){
-			mySessionHandler.createSessionActivity(session.getId(), "GTD Browser Region: "+myGene, dbConn);
+			mySessionHandler.createSessionActivity(session.getId(), "GTD Browser Region: "+myGene, pool);
 		//log.debug("RUNNING REGION");
-		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,dbConn);
+		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
 		if(tmp!=null&&tmp.length==2){
 			rnaDatasetID=tmp[1];
 			arrayTypeID=tmp[0];

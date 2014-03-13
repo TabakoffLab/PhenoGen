@@ -15,6 +15,7 @@ import au.com.forward.threads.ThreadException;
 import au.com.forward.threads.ThreadReturn;
 import java.io.File;
 import java.io.IOException;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -34,6 +35,7 @@ public class AsyncUpdateStatsDataset implements Runnable{
 	private Thread waitThread = null;
 	private HttpSession session;
         private DSFilterStat dsfs=null;
+        private DataSource pool;
         private Connection dbConn;
         private String geneCountAfterStatisticsFileName="";
 
@@ -43,8 +45,9 @@ public class AsyncUpdateStatsDataset implements Runnable{
 
                 log = Logger.getRootLogger();
                 this.session = session;
-                dbConn=(Connection)session.getAttribute("dbConn");
+                pool=(DataSource)session.getAttribute("dbPool");
                 this.dsID=dsID;
+                dbConn=(Connection)session.getAttribute("dbConn");
                 try{
                     this.dataset=new Dataset().getDataset(dsID,dbConn,(String) session.getAttribute("userFilesRoot"));
                 }catch(SQLException e){
@@ -74,9 +77,9 @@ public class AsyncUpdateStatsDataset implements Runnable{
 
 		String mainContent = userLoggedIn.getFormal_name() + ",\n\n" +
 					"Thank you for using the PhenoGen Informatics website.  ";
-		Connection conn = null;
+		//Connection conn = null;
 		try {
-			conn = new PropertiesConnection().getConnection(dbPropertiesFile);
+			//conn = new PropertiesConnection().getConnection(dbPropertiesFile);
 
 			log.debug("In AsyncUpdateDataset waiting on previous thread, '" +
 					waitThread.getName() + "',  to finish");
@@ -118,7 +121,7 @@ public class AsyncUpdateStatsDataset implements Runnable{
                                 }
                             }
                             
-                            dsfs.addStatsStep(methodname,params,tmpcount,1,1,dbConn);
+                            dsfs.addStatsStep(methodname,params,tmpcount,1,1,pool);
                         }
 			
 
@@ -141,7 +144,7 @@ public class AsyncUpdateStatsDataset implements Runnable{
 			//
 			try {
 				myEmail.sendEmail();
-       		        	mySessionHandler.createSessionActivity(mySessionHandler, conn);
+       		        	mySessionHandler.createSessionActivity(mySessionHandler, pool);
 				log.debug("just created session activity");
 			} catch (Exception e) {
 				log.error("exception while trying to send message or createSessionActivity", e);
@@ -178,9 +181,9 @@ public class AsyncUpdateStatsDataset implements Runnable{
 				mySessionHandler.setActivity_name("Unsuccessfully tried to normalize dataset");
 
 				try {
-       		        		mySessionHandler.createSessionActivity(mySessionHandler, conn);
+       		        		mySessionHandler.createSessionActivity(mySessionHandler, pool);
 					log.debug("just created session activity");
-					datasetVersion.updateVisibleToError(conn);
+					datasetVersion.updateVisibleToError(dbConn);
 				} catch (Exception e) {
 					log.error("exception while trying to log session activity or deleteDatasetVersion", e);
 					throw new RuntimeException();
@@ -207,14 +210,6 @@ public class AsyncUpdateStatsDataset implements Runnable{
 			} else {
 				log.debug("exception caused in AsyncUpdateDataset");
 				ThreadReturn.save(new Throwable("Error in AsyncUpdateDataset", t));
-			}
-
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				log.error("exception while closing connection in Async UpdateDataset", e);
-				throw new RuntimeException();
 			}
 
 		}

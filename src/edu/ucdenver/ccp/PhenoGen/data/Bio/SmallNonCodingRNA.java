@@ -6,6 +6,7 @@ import edu.ucdenver.ccp.PhenoGen.data.Bio.Annotation;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.MirDeepAnnotation;
 import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import java.sql.Connection;
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -56,7 +57,7 @@ public class SmallNonCodingRNA extends Transcript{
         }
     }
     
-    public SmallNonCodingRNA(int id,Connection conn, Logger log){
+    public SmallNonCodingRNA(int id,DataSource pool, Logger log){
         this.ID=Integer.toString(id);
         String smncQuery="Select rsn.rna_smnc_id,rsn.feature_start,rsn.feature_stop,rsn.sample_count,rsn.total_reads,rsn.strand,rsn.reference_seq,c.name "+
                              "from rna_sm_noncoding rsn, chromosomes c "+ 
@@ -74,9 +75,10 @@ public class SmallNonCodingRNA extends Transcript{
                                 "where v.rna_smnc_id="+id;
         String smncMirQuery="select * from rna_smnc_mirdeep where rna_smnc_annot_id in (select rna_smnc_annot_id from rna_smnc_annot "+
                                 "where rna_smnc_id="+id+" )";
-
+        Connection conn=null;
             try{
                 log.debug("SQL smnc FROM QUERY\n"+smncQuery);
+                conn=pool.getConnection();
                 PreparedStatement ps = conn.prepareStatement(smncQuery);
                 ResultSet rs = ps.executeQuery();
                 while(rs.next()){
@@ -178,6 +180,7 @@ public class SmallNonCodingRNA extends Transcript{
                     this.addVariant(tmpVar);
                 }
                 ps.close();
+                conn.close();
             }catch(SQLException e){
                 log.error("Error retreiving SMNCs.",e);
                 //session.setAttribute("getTransControllingEQTL","Error retreiving eQTLs.  Please try again later.  The administrator has been notified of the problem.");
@@ -189,6 +192,12 @@ public class SmallNonCodingRNA extends Transcript{
                         myAdminEmail.sendEmailToAdministrator("");
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
+                    }
+            }finally{
+                    try {
+                        if(conn!=null)
+                            conn.close();
+                    } catch (SQLException ex) {
                     }
             }
     }
