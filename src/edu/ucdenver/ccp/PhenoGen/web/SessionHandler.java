@@ -99,9 +99,9 @@ public class SessionHandler {
                                 InitialContext ctx = new InitialContext();
                                 // Lookup the DataSource, which will be backed by a pool
                                 //   that the application server provides.
-                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/"+this.dbMain);
+                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/dbMain");
                                 if (pool == null){
-                                   log.error("Unknown DataSource 'jdbc/"+this.dbMain+"'",new Exception("Unknown DataSource 'jdbc/"+this.dbMain+"'"));
+                                   log.error("Unknown DataSource 'jdbc/dbMain'",new Exception("Unknown DataSource 'jdbc/dbMain'"));
                                 }
                 } catch (NamingException ex) {
                                ex.printStackTrace();
@@ -118,9 +118,9 @@ public class SessionHandler {
                                 InitialContext ctx = new InitialContext();
                                 // Lookup the DataSource, which will be backed by a pool
                                 //   that the application server provides.
-                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/"+this.dbMain);
+                                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/dbMain");
                                 if (pool == null){
-                                   log.error("Unknown DataSource 'jdbc/"+this.dbMain+"'",new Exception("Unknown DataSource 'jdbc/"+this.dbMain+"'"));
+                                   log.error("Unknown DataSource 'jdbc/dbMain'",new Exception("Unknown DataSource 'jdbc/dbMain'"));
                                 }
                 } catch (NamingException ex) {
                                ex.printStackTrace();
@@ -188,13 +188,6 @@ public class SessionHandler {
 		this.userFilesRoot = inString;
 	}
         
-        public String getDBMain() {
-		return dbMain;
-	}
-
-	public void setDBMain(String inString) {
-		this.dbMain = inString;
-	}
         
 	public String getR_FunctionDir() {
 		return getApplicationRoot() + getContextRoot() + rFunctionDir + "/";
