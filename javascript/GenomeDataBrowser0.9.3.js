@@ -42,7 +42,7 @@ ratOnly["illuminaPolyA"]=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.10.5(2/28/2014)";
+var siteVer="PhenoGen v2.10.6(3/13/2014)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -4197,8 +4197,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				var tmp;
 				if(that.svg.selectAll("g.gene"+str)[0][0]!=undefined){
 					tmp=that.svg.selectAll("g.gene"+str)[0][0].__data__;
+					that.setupDetailedView(tmp.parent);
 				}
-				that.setupDetailedView(tmp.parent);
+				
 				selectGene="";
 			}
 		}
@@ -8141,7 +8142,6 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 	return that;
 }
 
-/*Not fully implemented only partly to support splice junctions*/
 function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOptions){
 	var that= Track(gsvg,data,trackClass,label);
 	//Set Defaults
