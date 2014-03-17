@@ -1,5 +1,10 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 <%
+
+	session.setAttribute("mainMenuSelected","");
+	session.setAttribute("mainFunction","");
+	session.setAttribute("mainFunctionStep","");
+	
 	//loggedIn = false;
 	extrasList.add("landing.js");
 	extrasList.add("d3.v3.min.js");

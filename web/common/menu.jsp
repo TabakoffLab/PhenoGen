@@ -3,6 +3,7 @@
 	String mainMenuSelected="";
 	String mainFunction="";
 	String mainStep="";
+	String topPos="45px";
 	
 	String tmpMMS=(String)session.getAttribute("mainMenuSelected");
 	String tmpMF=(String)session.getAttribute("mainFunction");
@@ -16,7 +17,20 @@
 	if(tmpMS!=null){
 		mainStep=tmpMS;
 	}
+	if(!mainFunction.equals("")||!mainStep.equals("")){
+		topPos="5px";
+	}
 %>
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 
 <div id="page_header_wide" >
     <div id="header_title"><a href="<%=request.getContextPath()%>">PhenoGen Informatics</a>
@@ -29,7 +43,15 @@
         <%if(!mainStep.equals("")){%>
         	<span class="header_step"><%=mainStep%></span>
         <%}%>
+       
     </div>
+    <div style="float:right;position:relative;top:<%=topPos%>;padding-right:5px;">
+    	<div class="fb-follow" data-href="https://www.facebook.com/phenogen" data-width="50px" data-height="16px" data-colorscheme="dark" data-layout="button" data-show-faces="true"></div>
+    	<a href="https://plus.google.com/104166350576727657445?prsrc=3"
+           rel="publisher" target="_top" style="text-decoration:none;">
+        <img src="//ssl.gstatic.com/images/icons/gplus-16.png" alt="Google+" style="border:0;width:16px;height:16px;"/>
+        </a>
+   </div>
   </div> <!-- page_header -->
 <div style="width:100%; text-align:center;">
 <div id='cssmenu' >

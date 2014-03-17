@@ -188,6 +188,14 @@
 		pool=(DataSource)session.getAttribute("dbPool");
 		log.debug("DB POOL SETUP");
 	}
+	
+	try{
+		Connection test=pool.getConnection();
+		test.close();
+	}catch(Exception e){
+		session.setAttribute("errorPageMsg","The Database is currently unavailable.  The administrator has been notified and every effort will be made to return the database as soon as possible.");
+		response.sendRedirect(commonDir +"errorPage.jsp");
+	}
 
 	// this file has to be after the logger initialization and no line breaks 
 	//to avoid extra lines in the html 
