@@ -16,13 +16,14 @@
 
 <%
 	//get parameters
+	boolean exception=false;
 	String sourceVersion="hg19";
 	String fullSourceSpecies="Human";
 	
-	String targetSpecies="Mm9";
+	String targetSpecies="Mm10";
 	
 	String fullSpecies="Mouse";
-	String targetChainFile="hg19ToMm9.over.chain";
+	String targetChainFile="hg19ToMm10.over.chain";
 	String srcRegion="";
 	String displayHumanRegion="";
 	String chromosome="";
@@ -153,12 +154,13 @@
 		myExec_session.runExec();
 
 	} catch (ExecException e) {
+		exception=true;
 		log.error("In Exception of run liftOver.", e);
 		e.printStackTrace(System.err);
 		Email myAdminEmail = new Email();
 		myAdminEmail.setSubject("Exception thrown in Exec_session");
 		myAdminEmail.setContent("There was an error while running "
-				+ execArgs[0] + " " + execArgs[1] + " " + execArgs[2] + " " + execArgs[3] + " " + execArgs[4] + " " + execArgs[5] + " " + execArgs[6] + " "+  execArgs[7] + " " + execArgs[8] + "\n\n"+myExec_session.getErrors());
+				+ execArgs[0] + " " + execArgs[1] + " " + execArgs[2] + " " + execArgs[3] + " " + execArgs[4] + " " + execArgs[5] + " " + execArgs[6] + " "+  execArgs[7] + " " + execArgs[8] +"\n\nRegion:"+contents+ "\n\n"+myExec_session.getErrors());
 		try {
 			myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
 		} catch (Exception mailException) {
@@ -225,6 +227,8 @@ Click on a row above to view the region in the current page.
 </script>
 
 <%
-	//clean up files
-	 fh.deleteAllFilesPlusDirectory(new File(outputDir));
+	if(!exception){//If an exception occurs leave files so error can be found.
+		//clean up files
+	 	fh.deleteAllFilesPlusDirectory(new File(outputDir));
+	 }
 %>
