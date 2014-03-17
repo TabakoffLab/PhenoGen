@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -876,6 +878,25 @@ public class User{
 
 		myResults.close();
 
+    		return user_id;
+	}
+        
+        public int getUser_id(String user_name, DataSource pool) throws SQLException {
+
+		//log.debug("in getUser_id from user_name");
+
+		String query = 
+			"select user_id "+
+			"from users "+
+			"where user_name = ?";
+
+		//log.debug("query = " + query);
+                Connection conn=pool.getConnection();
+                Results myResults = new Results(query, user_name, conn);
+                int user_id = myResults.getIntValueFromFirstRow();
+		myResults.close();
+                conn.close();
+                
     		return user_id;
 	}
 

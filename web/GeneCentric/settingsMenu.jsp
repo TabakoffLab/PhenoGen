@@ -347,7 +347,7 @@
             
             
 </div>
-<script type="text/javascript" src="javascript/jscolor/jscolor.js"></script>
+<script type="text/javascript" src="<%=mainURL.substring(0,mainURL.length()-10)%>/javascript/jscolor/jscolor.js"></script>
           <script type="text/javascript">
 		  	$("div.settingsLevel<%=level%> #usrtrkColorSelect<%=level%>").on("change",function(){
 				if($("div.settingsLevel<%=level%> #usrtrkColorSelect<%=level%>").val()=="Score"){

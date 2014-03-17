@@ -1260,9 +1260,9 @@ public class GeneDataTools {
         if(ensemblIDList!=null && ensemblID1!=null && !ensemblIDList.equals("") && !ensemblID1.equals("")){
         try{
             log.debug(ensemblIDList+"\n\n"+ensemblID1);
-            Connection tmpConn=pool.getConnection();
-            int publicUserID=new User().getUser_id("public",tmpConn);
-            tmpConn.close();
+            //Connection tmpConn=pool.getConnection();
+            int publicUserID=new User().getUser_id("public",pool);
+            //tmpConn.close();
             log.debug("createXML outputDir:"+outputDir);
             File outDir=new File(outputDir);
             if(outDir.exists()){
@@ -1408,7 +1408,7 @@ public class GeneDataTools {
                     }
             Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
-                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                myAdminEmail.setContent("There was an error setting up to run findGeneRegion.pl.pl\n\nFull Stacktrace:\n"+fullerrmsg);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
@@ -1422,9 +1422,9 @@ public class GeneDataTools {
     public String generateXMLTrack(String chromosome,int min,int max,String panel,String track,String organism,int rnaDatasetID,int arrayTypeID,String folderName,int binSize){
         String status="";
         try{
-            Connection tmpConn=pool.getConnection();
-            int publicUserID=new User().getUser_id("public",tmpConn);
-            tmpConn.close();
+            //Connection tmpConn=pool.getConnection();
+            int publicUserID=new User().getUser_id("public",pool);
+            //tmpConn.close();
             String tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
             Properties myProperties = new Properties();
             File myPropertiesFile = new File(dbPropertiesFile);
@@ -1530,7 +1530,7 @@ public class GeneDataTools {
                     }
             Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
-                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                myAdminEmail.setContent("There was an error setting up to run writeXML_Track.pl\n\nFull Stacktrace:\n"+fullerrmsg);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
@@ -1621,7 +1621,7 @@ public class GeneDataTools {
                     }
             Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
-                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                myAdminEmail.setContent("There was an error setting up to run bed2XML.pl\n\nFull Stacktrace:\n"+fullerrmsg);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
@@ -1636,9 +1636,9 @@ public class GeneDataTools {
     public boolean createRegionImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
         boolean completedSuccessfully=false;
         try{
-            Connection tmpConn=pool.getConnection();
-            int publicUserID=new User().getUser_id("public",tmpConn);
-            tmpConn.close();
+            //Connection tmpConn=pool.getConnection();
+            int publicUserID=new User().getUser_id("public",pool);
+            //tmpConn.close();
             Properties myProperties = new Properties();
             File myPropertiesFile = new File(dbPropertiesFile);
             myProperties.load(new FileInputStream(myPropertiesFile));
@@ -1705,7 +1705,7 @@ public class GeneDataTools {
 
             } catch (ExecException e) {
                 exception=true;
-                log.error("In Exception of run writeXML_RNA.pl Exec_session", e);
+                log.error("In Exception of run writeXML_Region.pl Exec_session", e);
                 setError("Running Perl Script to get Gene and Transcript details/images.");
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -1746,7 +1746,7 @@ public class GeneDataTools {
                     }
             Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
-                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                myAdminEmail.setContent("There was an error setting up to run writeXML_Region.pl\n\nFull Stacktrace:\n"+fullerrmsg);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
@@ -2015,9 +2015,9 @@ public class GeneDataTools {
     public boolean createRegionViewImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
         boolean completedSuccessfully=false;
         try{
-            Connection tmpConn=pool.getConnection();
-            int publicUserID=new User().getUser_id("public",tmpConn);
-            tmpConn.close();
+            //Connection tmpConn=pool.getConnection();
+            int publicUserID=new User().getUser_id("public",pool);
+            //tmpConn.close();
             
             Properties myProperties = new Properties();
             File myPropertiesFile = new File(dbPropertiesFile);
@@ -2085,7 +2085,7 @@ public class GeneDataTools {
 
             } catch (ExecException e) {
                 exception=true;
-                log.error("In Exception of run writeXML_RNA.pl Exec_session", e);
+                log.error("In Exception of run writeXML_RegionView.pl Exec_session", e);
                 setError("Running Perl Script to get Gene and Transcript details/images.");
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -2125,7 +2125,7 @@ public class GeneDataTools {
                     }
             Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
-                myAdminEmail.setContent("There was an error setting up to run writeXML_RNA.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                myAdminEmail.setContent("There was an error setting up to run writeXML_RegionView.pl\n\nFull Stacktrace:\n"+fullerrmsg);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
@@ -2151,9 +2151,9 @@ public class GeneDataTools {
     public boolean callWriteXML(String id,String organism,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         boolean completedSuccessfully=false;
         try{
-            Connection tmpConn=pool.getConnection();
-            int publicUserID=new User().getUser_id("public",tmpConn);
-            tmpConn.close();
+            //Connection tmpConn=pool.getConnection();
+            int publicUserID=new User().getUser_id("public",pool);
+            //tmpConn.close();
             String tmpoutputDir = fullPath + "tmpData/geneData/" + id + "/";
             File test=new File(tmpoutputDir+"Region.xml");
             long testLM=test.lastModified();
