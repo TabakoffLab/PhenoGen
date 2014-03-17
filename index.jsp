@@ -79,7 +79,7 @@
     	        
 
     	<!--<div id="primary-content">-->
-        <div id="welcome" style="height:1050px; width:996px;">
+        <div id="welcome" style="height:1125px; width:996px;">
 			<h1 id="index" class="homePage">Welcome to PhenoGen Informatics</h1>    
             <H2> The site for quantitative genetics of the transcriptome.</h2>
             <div>
@@ -99,9 +99,11 @@
         
 
   	</div> <!-- end index -->
-	<div id="footer"> &nbsp; </div>
+	
 	</div> <!-- // end site-wrap -->
     
+    </div>
+    </div>
 
     	<script type="text/javascript">
 			$("#closeBTN").on("click",function(){
