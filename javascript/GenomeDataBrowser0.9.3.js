@@ -4219,6 +4219,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.setupDetailedView=function(d){
+		if(d!=undefined){
 			var e = jQuery.Event("keyup");
 			e.which = 32; // # Some key code value
 			var newLevel=that.gsvg.levelNumber+1;
@@ -4290,7 +4291,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					DisplaySelectedDetailReport(jspPage,params);
 				}
 			}
-			
+		}	
 	};
 
 	that.getDisplayedData= function (){
@@ -4764,31 +4765,33 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				                	return xPos;
 				                })  
 				                .style("top", (d3.event.pageY + 15) + "px");
-				            that.triggerTableFilter(d);
-				            if(that.trackClass!="smallnc"){
-					            var newSvg=toolTipSVG("div#ttSVG",450,d.getAttribute("extStart"),d.getAttribute("extStop"),99,d.getAttribute("ID"),"transcript");
-								newSvg.xMin=d.getAttribute("extStart")-(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
-								newSvg.xMax=d.getAttribute("extStop")+(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
-								var localTxType="none";
-								if(d.getAttribute("biotype")=="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
-									localTxType="protein";
-								}else if(d.getAttribute("biotype")!="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
-									localTxType="long";
-								}else if((d.getAttribute("stop")-d.getAttribute("start"))<200){
-									localTxType="small";
+				            if(d!=undefined){
+					            that.triggerTableFilter(d);
+					            if(that.trackClass!="smallnc"){
+						            var newSvg=toolTipSVG("div#ttSVG",450,d.getAttribute("extStart"),d.getAttribute("extStop"),99,d.getAttribute("ID"),"transcript");
+									newSvg.xMin=d.getAttribute("extStart")-(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
+									newSvg.xMax=d.getAttribute("extStop")+(d.getAttribute("extStop")-d.getAttribute("extStart"))*0.05;
+									var localTxType="none";
+									if(d.getAttribute("biotype")=="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
+										localTxType="protein";
+									}else if(d.getAttribute("biotype")!="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
+										localTxType="long";
+									}else if((d.getAttribute("stop")-d.getAttribute("start"))<200){
+										localTxType="small";
+									}
+									newSvg.txType=localTxType;
+									newSvg.selectedData=d;
+									var dataArr=new Array();
+									dataArr[0]=d;
+									newSvg.addTrack("trx",2,"",dataArr);
+								}else{
+									var newSvg=toolTipSVG("div#ttSVG",450,((d.getAttribute("start")*1)-10),((d.getAttribute("stop")*1)+10),99,that.getDisplayID(d.getAttribute("ID")),"");
+									newSvg.xMin=d.getAttribute("start")-20;
+									newSvg.xMax=d.getAttribute("stop")+20;
+									var dataArr=new Array();
+									dataArr[0]=d;
+									newSvg.addTrack("smallnc",2,"",dataArr);
 								}
-								newSvg.txType=localTxType;
-								newSvg.selectedData=d;
-								var dataArr=new Array();
-								dataArr[0]=d;
-								newSvg.addTrack("trx",2,"",dataArr);
-							}else{
-								var newSvg=toolTipSVG("div#ttSVG",450,((d.getAttribute("start")*1)-10),((d.getAttribute("stop")*1)+10),99,that.getDisplayID(d.getAttribute("ID")),"");
-								newSvg.xMin=d.getAttribute("start")-20;
-								newSvg.xMax=d.getAttribute("stop")+20;
-								var dataArr=new Array();
-								dataArr[0]=d;
-								newSvg.addTrack("smallnc",2,"",dataArr);
 							}
 						//}
 			            //return false;
