@@ -163,6 +163,7 @@ table.tooltipTable TD{
 		background:#DCDCDC;
 		margin-left:2px;
 		margin-right:2px;
+		height:24px;
 		/*padding:2px;*/
 		display:inline-block;
 		width:35px;

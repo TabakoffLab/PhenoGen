@@ -48,6 +48,8 @@ public class Email  {
 		setSmtpHost("");
 		setFrom("");
 		Properties properties = System.getProperties();
+                
+                content=content+"\n\n\nPlease do not reply to this message.  This message is sent from an unmonitored account.  We welcome any feedback and questions. Please use the form here(http://phenogen.ucdenver.edu/PhenoGen/web/common/contact.jsp) to submit questions or feedback.";
 
 		//populate the 'Properties' object with the mail
 		//server address, so that the default 'Session'
