@@ -79,17 +79,10 @@ var dataPrefix="";
 
 
 <%
-	
-	
 	String tmpURL=genURL.get(0);
 	int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 	String folderName=tmpURL.substring(second+1,tmpURL.length()-1);
-	DecimalFormat dfC = new DecimalFormat("#,###");
-	
-	
-	
-		
-		
+	DecimalFormat dfC = new DecimalFormat("#,###");	
 %>
     
     <script>

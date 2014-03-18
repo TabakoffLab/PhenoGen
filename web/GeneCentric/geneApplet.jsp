@@ -175,8 +175,9 @@ if(request.getParameter("arrayTypeID")!=null){
 <div id="unsupportedChrome" style="display:none;color:#FF0000;">A Java plug in is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  
             	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.</div>
 
-<div id="macBugDesc" style="display:none;color:#FF0000;">The applet below is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  When Oracle fixes this bug we will update the applet to provide a more optimal experience.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
+<div id="macBugDesc" style="display:none;color:#FF0000;">The applet below is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  This bug has been fixed if you update to Java plug-in version 1.7.0_51 or higher the display will be improved.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
         <BR /><BR /><BR />
+        <div style="text-align:center;">
         <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
         <script type="text/javascript">
 			var ensembl=selectedID;
@@ -207,9 +208,13 @@ if(request.getParameter("arrayTypeID")!=null){
 						//alert("update:"+update);
 						if(update>=10){
 							//alert("update >10");
+							if(deployJava.versionCheck('1.7.0_51+')){//This version no longer has the bug so if newer mac OS X and JRE update 51 or higher don't actually change the applet
+							
+							}else{
 								bug=1;
 								appletHeight=700;
 								bugString='true';
+							}
 						}
 					}
 			}
@@ -240,7 +245,7 @@ if(request.getParameter("arrayTypeID")!=null){
        
 		</script>
 
-
+	</div>
 
 
 <div id="Help3Content" class="inpageHelpContent" title="Help"><div class="help-content">

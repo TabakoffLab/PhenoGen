@@ -136,7 +136,20 @@ div#announcement a:hover, div#announcementSmall a:hover {
                     </TD>
                     <TD  id="descColumn"  class="narrow">
                     
-                    <div id="announcement" style="background-color:#FFFFFF; width:100%;min-height:300px; max-height:650px; position:relative;color:#000000; ">
+                    <div id="announcement" style="background-color:#FFFFFF; width:100%;min-height:300px; max-height:650px; position:relative;color:#000000; overflow:auto; ">
+                    	<H2>Follow on Facebook/Google+/Twitter</H2>
+                        <div style=" margin-left:5px;">
+                        	Follow PhenoGen to keep up with new features, demonstrations, and help provide feedback to direct future updates.<BR />
+                           	<div style="float:left;display:inline-block;position:relative;top:0px;padding-right:5px;">  	
+                                <div class="fb-follow" data-href="https://www.facebook.com/phenogen" data-width="50px" data-height="16px" data-colorscheme="dark" data-layout="button" data-show-faces="true"></div>
+                           	</div>
+                            <div style="float:left;display:inline-block;">
+                            <div class="g-follow" data-annotation="none" data-height="20" data-href="https://plus.google.com/104166350576727657445" data-rel="publisher"></div>
+                            	<a href="https://twitter.com/phenogen" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false" data-lang="en" style="margin-top:5px;"></a>
+                          	</div>
+                           
+                            <BR /><BR />
+                        </div>
                     	<H2>NEW! RNA-Seq Data Summary Graphics</H2>
                         <div style=" margin-left:5px;">
                     	Rat Brain RNA-Seq data summary graphics are now available. Click below to browse the RNA-Seq data summary:<BR />

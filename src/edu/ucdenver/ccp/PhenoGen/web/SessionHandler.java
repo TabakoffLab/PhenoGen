@@ -50,6 +50,7 @@ public class SessionHandler {
 	private String propertiesDir = "";
 	private String dbPropertiesFile = "";
         private String ensDbPropertiesFile = "";
+        private String captchaPropertiesFile= "";
 	private String adminDir = "";
 	private String isbraDir = "";
 	private String helpDir = "";
@@ -331,6 +332,14 @@ public class SessionHandler {
 		this.ensDbPropertiesFile = inString;
 	}    
         
+        public String getCaptchaPropertiesFile() {
+		return this.getPropertiesDir() + "/" + captchaPropertiesFile; 
+	}
+
+	public void setCaptchaPropertiesFile(String inString) {
+		this.captchaPropertiesFile = inString;
+	}    
+        
 	public String getAdminDir() {
 		return getContextRoot() + adminDir + "/";
 	}
@@ -552,6 +561,7 @@ public class SessionHandler {
                 session.setAttribute("webDir", this.getWebDir());
                 session.setAttribute("dbPropertiesFile", this.getDbPropertiesFile()); 
                 session.setAttribute("ensDbPropertiesFile", this.getENSDbPropertiesFile());
+                session.setAttribute("captchaPropertiesFile", this.getCaptchaPropertiesFile());
 		//log.debug("in SessionHandler.dbPropertiesFile = "+ dbPropertiesFile);
                 session.setAttribute("perlEnvVar", this.getPerlEnvVar());
                 session.setAttribute("adminEmail", this.getAdminEmail());
