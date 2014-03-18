@@ -1,4 +1,5 @@
 	<%@ include file="/web/common/session_vars.jsp" %>
+    <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 <% 
 			//
 			// Initialize some variables
@@ -370,8 +371,9 @@
 			//
 			// call perl script
 			//
-     		GeneDataTools gdtCircos=new GeneDataTools();
-        	circosReturnStatus = gdtCircos.createCircosFiles(perlScriptDirectory,perlEnvironmentVariables,perlScriptArguments,filePrefixWithPath);
+     		//GeneDataTools gdtCircos=new GeneDataTools();
+			//gdtCircos.setSession(session);
+        	circosReturnStatus = gdt.createCircosFiles(perlScriptDirectory,perlEnvironmentVariables,perlScriptArguments,filePrefixWithPath);
         	if(circosReturnStatus){
         		log.debug("Circos run completed successfully");       		
 				String shortGeneCentricPath;

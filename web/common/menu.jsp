@@ -46,13 +46,15 @@
        
     </div>
     <div style="float:right;position:relative;top:<%=topPos%>;padding-right:5px;">
-    	<div class="fb-follow" data-href="https://www.facebook.com/phenogen" data-width="50px" data-height="16px" data-colorscheme="dark" data-layout="button" data-show-faces="true"></div>
     	<a href="https://plus.google.com/104166350576727657445?prsrc=3"
            rel="publisher" target="_top" style="text-decoration:none;">
         <img src="//ssl.gstatic.com/images/icons/gplus-16.png" alt="Google+" style="border:0;width:16px;height:16px;"/>
         </a>
+    	<div class="fb-follow" data-href="https://www.facebook.com/phenogen" data-width="50px" data-height="16px" data-colorscheme="dark" data-layout="button" data-show-faces="true" style="padding-bottom:5px;"></div>
+        <a href="https://twitter.com/phenogen" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false" data-lang="en"></a>
    </div>
   </div> <!-- page_header -->
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 <div style="width:100%; text-align:center;">
 <div id='cssmenu' >
    		<ul>
