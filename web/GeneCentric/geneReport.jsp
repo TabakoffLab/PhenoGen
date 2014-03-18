@@ -597,13 +597,7 @@ Add report here.
                 <span id="installJava" style="display:none;" class="button">Install Java</span>
 			</div>
 
-
-	
-            <!--<script>
-                
-    </script>-->
-            
-                <script type="text/javascript">
+     <script type="text/javascript">
 				var bug=0;
 				var jre=deployJava.getJREs();
 				var unsupportedChrome=0;
@@ -648,7 +642,11 @@ Add report here.
 							var tmpUp=new String(jre);
 							var update=tmpUp.substr((tmpUp.indexOf("_")+1));
 							if(update>=10){
+								if(deployJava.versionCheck('1.7.0_51+')){//This version no longer has the bug so if newer mac OS X and JRE update 51 or higher don't actually change the applet
+								
+								}else{
 									bug=1;
+								}
 							}
 						}
 				}
