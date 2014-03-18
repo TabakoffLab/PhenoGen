@@ -1209,7 +1209,7 @@ public class GeneDataTools {
         try {
 
             myExec_session.runExec();
-
+            completedSuccessfully=true;
         } catch (ExecException e) {
             exception = true;
             log.error("In Exception of createCircosFiles Exec_session", e);
@@ -1247,12 +1247,9 @@ public class GeneDataTools {
                 log.error("error sending message", mailException);
                 throw new RuntimeException();
             }
-        }else{
-            completedSuccessfully=true;
         }
-        
-   		return completedSuccessfully;
-   	} 
+   	return completedSuccessfully;
+   } 
     
 
     public boolean createXMLFiles(String organism,String ensemblIDList,String ensemblID1){
