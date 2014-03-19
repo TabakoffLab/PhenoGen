@@ -139,7 +139,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
                     <div id="announcement" style="background-color:#FFFFFF; width:100%;min-height:300px; max-height:650px; position:relative;color:#000000; overflow:auto; ">
                     	<H2>Follow on Facebook/Google+/Twitter</H2>
                         <div style=" margin-left:5px;">
-                        	Follow PhenoGen to keep up with new features, demonstrations, and help provide feedback to direct future updates.<BR />
+                        	Follow PhenoGen to keep up with new features, demonstrations, and help by providing feedback to direct future updates.<BR />
                            	<div style="float:left;display:inline-block;position:relative;top:0px;padding-right:5px;">  	
                                 <div class="fb-follow" data-href="https://www.facebook.com/phenogen" data-width="50px" data-height="16px" data-colorscheme="dark" data-layout="button" data-show-faces="true"></div>
                            	</div>
