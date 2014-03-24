@@ -2590,17 +2590,18 @@ public class GeneDataTools {
         //log.debug("perl"+perlDir);
         String contextRoot = (String) session.getAttribute("contextRoot");
         //log.debug("context"+contextRoot);
+        String host = (String) session.getAttribute("host");
+        //log.debug("host"+host);
         String appRoot = (String) session.getAttribute("applicationRoot");
         //log.debug("app"+appRoot);
         this.fullPath = appRoot + contextRoot;
         //log.debug("fullpath");
         this.rFunctDir = (String) session.getAttribute("rFunctionDir");
         //log.debug("rFunction");
-        this.userFilesRoot = (String) session.getAttribute("userFilesRoot");
-        //log.debug("userFilesRoot");
-        this.urlPrefix=(String)session.getAttribute("mainURL");
+        
+        //this.urlPrefix=(String)session.getAttribute("mainURL");
         if(urlPrefix.endsWith(".jsp")){
-            urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
+            urlPrefix="http://" + host + contextRoot;
         }
         //log.debug("mainURL");
         this.perlEnvVar=(String)session.getAttribute("perlEnvVar");
@@ -2615,6 +2616,10 @@ public class GeneDataTools {
         this.ensemblDBPropertiesFile = (String)session.getAttribute("ensDbPropertiesFile");
         if(session.getAttribute("maxRThreadCount")!=null){
             this.maxThreadRunning = Integer.parseInt((String)session.getAttribute("maxRThreadCount"));
+        }
+        if(session.getAttribute("userFilesRoot")!=null){
+            this.userFilesRoot = (String) session.getAttribute("userFilesRoot");
+            //log.debug("userFilesRoot");
         }
     }
     
