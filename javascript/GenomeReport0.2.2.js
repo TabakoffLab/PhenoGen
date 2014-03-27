@@ -184,7 +184,7 @@ function DisplayRegionReport(){
 				for(var i=0;i<tmptrackList.length&&reportSelectedTrack==null;i++){
 					//console.log(tmptrackList[i].trackClass);
 					//console.log(tmptrackList[i].getDisplayedData);
-					if(tmptrackList[i].getDisplayedData!=undefined){
+					if(tmptrackList[i]!=undefined && tmptrackList[i].getDisplayedData!=undefined){
 						reportSelectedTrack=tmptrackList[i];
 					}
 				}
