@@ -14,7 +14,7 @@
                                 if (phenotypeParameterGroupID == -99) {
                                         optionHash.put("BH", "Benjamini and Hochberg");
                                         optionHash.put("BY", "Benjamini and Yekutieli");
-                                        optionHash.put("Storey","Storey");
+                                        //optionHash.put("Storey","Storey");
                                         optionHash.put("Bonferroni","Bonferroni");
                                         optionHash.put("Holm","Holm");
                                         optionHash.put("Hochberg","Hochberg");
@@ -26,7 +26,7 @@
                                 } else {
                                         optionHash.put("BH", "Benjamini and Hochberg");
                                         optionHash.put("BY", "Benjamini and Yekutieli");
-                                        optionHash.put("Storey","Storey");
+                                        //optionHash.put("Storey","Storey");
                                         optionHash.put("Bonferroni","Bonferroni");
                                         optionHash.put("Holm","Holm");
                                         optionHash.put("Hochberg","Hochberg");
@@ -38,7 +38,7 @@
 			} else {
                                 optionHash.put("BH", "Benjamini and Hochberg");
                                 optionHash.put("BY", "Benjamini and Yekutieli");
-                                optionHash.put("Storey","Storey");
+                                //optionHash.put("Storey","Storey");
                                 optionHash.put("Bonferroni","Bonferroni");
                                 optionHash.put("Holm","Holm");
                                 optionHash.put("Hochberg","Hochberg");
@@ -59,7 +59,8 @@
                         }
 
                         %><%@ include file="/web/common/selectBox.jsp" %>
-			<% optGroupHash.clear(); %>
+						<% optGroupHash.clear(); %>
+            			<BR>*Storey has been temporarily removed.
                         </TD>
                 </TR>
                 </TABLE>

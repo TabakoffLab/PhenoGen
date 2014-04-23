@@ -49,7 +49,7 @@ sub prepCircos
 	elsif($hostname eq 'compbio.ucdenver.edu'){
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
 	}
-	elsif($hostname eq 'phenogen.ucdenver.edu'){
+	elsif($hostname eq 'phenogen'){
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt.ucdenver.pvt'){

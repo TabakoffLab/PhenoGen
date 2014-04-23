@@ -86,7 +86,7 @@ multipleTest <- function(InputFile, mt.method, MCC.parameter1 = -99, MCC.paramet
 
   # set up libraries and R functions needed
   library(multtest)
-  library(qvalue)
+  #library(qvalue)
   fileLoader('fdr.R')
 
 
