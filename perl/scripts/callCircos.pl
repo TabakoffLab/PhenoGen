@@ -98,9 +98,9 @@ sub callCircos{
 		$perlBinary = '/usr/local/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
-	elsif($hostname eq 'phenogen.ucdenver.edu'){
+	elsif($hostname eq 'phenogen'){
 		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
-		$perlBinary = '/opt/phenogen/perl-5.10.1/perl';
+		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt.ucdenver.pvt'){
