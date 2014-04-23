@@ -90,7 +90,7 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
 
   # set up libraries and R functions needed
   library(multtest)
-  library(qvalue)
+  #library(qvalue)
   fileLoader('fdr.R')
 
 
