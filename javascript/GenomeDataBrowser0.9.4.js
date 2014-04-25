@@ -5150,7 +5150,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.createToolTip=function(d){
 		var tooltip="";
-		if(that.drawAs=="Gene"){
+		if(that.drawnAs=="Gene"){
 			var txListStr="";
 			var txList=getAllChildrenByName(getFirstChildByName(d,"TranscriptList"),"Transcript");
 			for(var m=0;m<txList.length;m++){
@@ -5159,12 +5159,12 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				txListStr+="<br>";
 			}
 			tooltip="<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;\"></div>Gene Symbol: "+d.getAttribute("geneSymbol")+"<BR>Location: "+d.getAttribute("chromosome")+":"+numberWithCommas(d.getAttribute("start"))+"-"+numberWithCommas(d.getAttribute("stop"))+"<BR>Strand: "+d.getAttribute("strand")+"<BR>Transcripts:<BR>"+txListStr;
-		}else if(that.drawAs=="Trx"){
+		}else if(that.drawnAs=="Trx"){
 			//console.log(d);
 				var txListStr="";
 				var id=new String(d.getAttribute("ID"));
-				txListStr+="<B>"+id+"</B>";
-			tooltip="Transcript:"+txListStr+"<BR>Status: "+d.getAttribute("category")+"<BR>Gene Symbol: "+d.getAttribute("geneSymbol")+"<BR>Location: "+d.getAttribute("chromosome")+":"+numberWithCommas(d.getAttribute("start"))+"-"+numberWithCommas(d.getAttribute("stop"))+"<BR>Strand: "+d.getAttribute("strand");
+				txListStr="<B>"+id+"</B>";
+			tooltip="RefSeq ID:"+txListStr+"<BR>Status: "+d.getAttribute("category")+"<BR>Gene Symbol: "+d.getAttribute("geneSymbol")+"<BR>Location: "+d.getAttribute("chromosome")+":"+numberWithCommas(d.getAttribute("start"))+"-"+numberWithCommas(d.getAttribute("stop"))+"<BR>Strand: "+d.getAttribute("strand");
 		}
 		return tooltip;
 	};
