@@ -333,7 +333,7 @@ $(document).on("change","select[name='trackSelect']",function(){
 							svgList[level].redraw();
 						}
 					}catch(err){
-						bugsense.notify( err, { controlID:idStr,level:level } );
+						Bugsense.notify( err, { controlID:idStr,level:level } );
 					}
 				}
 				saveToCookie(level);
@@ -3315,6 +3315,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					that.updateData(0);
 				}else{
 					var charWidth=that.gsvg.width/len;
+					var offsetNA=charWidth/2;
 					var startInd=tmpMin-that.seqRegionMin;
 					var stopInd=len+startInd;
 					var seqYPos=27;
@@ -3338,11 +3339,11 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 						
 						var base=that.svg.selectAll(".base")
 					   			.data(dArr,keyID)
-								.attr("transform",function(d,i){ return "translate("+((d.pos)*charWidth)+","+seqYPos+")";});
+								.attr("transform",function(d,i){ return "translate("+((d.pos)*charWidth-offsetNA)+","+seqYPos+")";});
 						//add new
 						var appended=base.enter().append("g")
 								.attr("class","base")
-								.attr("transform",function(d,i){ return "translate("+((d.pos)*charWidth)+","+seqYPos+")";});
+								.attr("transform",function(d,i){ return "translate("+((d.pos)*charWidth-offsetNA)+","+seqYPos+")";});
 						appended.each(function(d){
 								d3.select(this).append("text")
 					    		.text(function(d){
@@ -3378,6 +3379,10 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					}
 					if(that.includeAA==1){
 						var aaCharW=charWidth*3;
+						/*var offsetAA=charWidth/2;
+						if(offsetAA<5){
+							offsetAA=0;
+						}*/
 						var aaXLoc=aaCharW/2-4;
 						var tmpLineAt=25;
 						if(that.strands=="both"||that.strands=="+"){
@@ -3391,7 +3396,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 							for(var j=0;j<3;j++){
 								var aa=that.svg.selectAll(".aa"+j)
 					   				.data(aaList[j],keyID)
-									.attr("transform",function(d,i){ return "translate("+that.xScale(d.pos)+","+tmpLineAt+")";})
+									.attr("transform",function(d,i){ return "translate("+(that.xScale(d.pos)-charWidth)+","+tmpLineAt+")";})
 									.each(function(d){
 										d3.select(this).select("rect").attr("width",aaCharW);
 										if(len<that.dispCutoff){
@@ -3412,7 +3417,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 								//add new
 								var appended=aa.enter().append("g")
 										.attr("class","aa"+j)
-										.attr("transform",function(d,i){ return "translate("+that.xScale(d.pos)+","+tmpLineAt+")";});
+										.attr("transform",function(d,i){ return "translate("+(that.xScale(d.pos)-charWidth)+","+tmpLineAt+")";});
 								appended.each( function (d){
 										d3.select(this).append("rect")
 											.attr("y",-10)
@@ -3449,7 +3454,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 							for(var j=0;j<3;j++){
 								var aa=that.svg.selectAll(".aarev"+j)
 					   				.data(aaList[j],keyID)
-									.attr("transform",function(d,i){ return "translate("+that.xScale(d.pos)+","+tmpLineAt+")";})
+									.attr("transform",function(d,i){ return "translate("+(that.xScale(d.pos)-charWidth)+","+tmpLineAt+")";})
 									.each(function(d){
 										d3.select(this).select("rect").attr("width",aaCharW);
 										if(len<that.dispCutoff){
@@ -3616,6 +3621,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			}
 			if(that.includeAA==1){
 				var aaCharW=charWidth*3;
+				var offsetAA=charWidth/2;
 				var aaXLoc=aaCharW/2-4;
 				var tmpLineAt=25;
 				if(that.strands=="both"||that.strands=="+"){
