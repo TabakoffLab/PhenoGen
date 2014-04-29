@@ -1,7 +1,7 @@
 <script type="text/javascript">
-	if(bugsense !=undefined){
-		bugsense.addExtraData( 'gene', '<%=selectedEnsemblID%>' );
-	}
+	//if(bugsense !=undefined){
+		Bugsense.addExtraData( 'gene', '<%=selectedEnsemblID%>' );
+	//}
 //var bugsense = new Bugsense( { apiKey: "1c083a70", appVersion: "0.9", userIdentifier: "<%=myGene%>" } );
 var urlprefix="<%=host+contextRoot%>";
 var trackString="coding,noncoding,snp,smallnc";
@@ -153,7 +153,7 @@ var dataPrefix="";
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser0.9.4.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser0.9.5.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport0.2.2.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">

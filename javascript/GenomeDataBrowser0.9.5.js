@@ -13,30 +13,30 @@
 $.cookie.defaults.expires=365;
 
 //global varaiable to store a list of GenomeSVG images representing each level.
-var svgList=new Array();
+var svgList=[];
 var processAjax=0;
-var ajaxList=new Array();
+var ajaxList=[];
 var selectedGeneSymbol="";
 var selectedID="";
-var trackSettings=new Array();
+var trackSettings=[];
 var overSelectable=0;
 
-var ratOnly=new Array();
-var mouseOnly=new Array();
+var ratOnly=[];
+var mouseOnly=[];
 
 var customTrackCount=0;
 
 //var defaultMouseFunct="pan";
 
-ratOnly["snpSHRJ"]=1;
-ratOnly["snpF344"]=1;
-ratOnly["snpSHRH"]=1;
-ratOnly["snpBNLX"]=1;
-ratOnly["helicos"]=1;
-ratOnly["spliceJnct"]=1;
-ratOnly["illuminaTotal"]=1;
-ratOnly["illuminaSmall"]=1;
-ratOnly["illuminaPolyA"]=1;
+ratOnly.snpSHRJ=1;
+ratOnly.snpF344=1;
+ratOnly.snpSHRH=1;
+ratOnly.snpBNLX=1;
+ratOnly.helicos=1;
+ratOnly.spliceJnct=1;
+ratOnly.illuminaTotal=1;
+ratOnly.illuminaSmall=1;
+ratOnly.illuminaPolyA=1;
 
 
 
@@ -72,8 +72,149 @@ var tt=d3.select("body").append("div")
 	    	})*/;
 
 
+function updatePage(topSVG){
+	'use strict';
+	var min=Math.round(topSVG.xScale.domain()[0]),max=Math.round(topSVG.xScale.domain()[1]),tmpMin,tmpMax;
+	if((min<topSVG.prevMinCoord||max>topSVG.prevMaxCoord)&&(min<topSVG.dataMinCoord||max>topSVG.dataMaxCoord)){
+		processAjax=1;
+		tmpMin=min;
+		tmpMax=max;
+		if(min>=topSVG.dataMinCoord&& max>topSVG.dataMaxCoord){
+			tmpMin=topSVG.dataMaxCoord+1;
+		}else if(min<topSVG.dataMinCoord && max<=topSVG.dataMaxCoord){
+			tmpMax=topSVG.dataMinCoord-1;
+		}
+		topSVG.setLoading();
+		$.ajax({
+				url: pathPrefix+"updateRegion.jsp",
+   				type: 'GET',
+				data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,fullminCoord:min,fullmaxCoord:max,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism},
+				dataType: 'json',
+    			success: function(data2){ 
+        			topSVG.prevMinCoord=min;
+        			topSVG.prevMaxCoord=max;
+        			if(min<topSVG.dataMinCoord){
+        				topSVG.dataMinCoord=min;
+        			}
+        			if(max>topSVG.dataMaxCoord){
+        				topSVG.dataMaxCoord=max;
+        			}
+        			folderName=data2.folderName;
+        			topSVG.updateData();
+        			processAjax=0;
+    			},
+    			error: function(xhr, status, error) {
+        			console.log(error);
+    			}
+			});
+	}
+	
+}
 
 //setup event handlers
+function mup() {
+	var i=0,p,start,width,minx,maxx;
+	for (i=0; i<svgList.length; i++){
+		if(svgList[i]!==null){
+			if(!isNaN(svgList[i].downx)|| !isNaN(svgList[i].downPanx)){
+				if(i===0){
+					updatePage(svgList[i]);
+				}
+        		svgList[i].downx = Math.NaN;
+				svgList[i].downPanx = Math.NaN;
+				svgList[i].updateFullData();
+				if(i===0){
+					DisplayRegionReport();
+				}
+			}else if(!isNaN(svgList[i].downZoomx)){
+				start=svgList[i].downZoomx;
+				p = d3.mouse(svgList[i].vis[0][0]);
+				svgList[i].downZoomxEnd=p[0];
+				width=1;
+				if(p[0]<start){
+					start=p[0];
+					width=svgList[i].downZoomx-start;
+				}else{
+					width=p[0]-start;
+				}
+				minx=Math.round(svgList[i].xScale.invert(start));
+				maxx=Math.round(svgList[i].xScale.invert(start+width));
+				svgList[i].downZoomx = Math.NaN;
+				svgList[i].downZoomxEnd = Math.NaN;
+				if(i===0){
+					$('#geneTxt').val(chr+":"+minx+"-"+maxx);
+				}
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg rect.zoomRect").remove();
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextStart").remove();
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextEnd").remove();
+	            svgList[i].xScale.domain([minx,maxx]);
+				svgList[i].scaleSVG.select(".x.axis").call(svgList[i].xAxis);
+				svgList[i].redraw();
+			}
+		}
+	}
+	
+}
+function mmove(){
+	var i,p,minx,maxx,dist,scaleDist,start,width;
+	for (i=0; i<svgList.length; i++){
+		if(svgList[i]!==null){
+			if (!isNaN(svgList[i].downx)) {
+	          p = d3.mouse(svgList[i].vis[0][0]), rupx = p[0];
+	          if (rupx !== 0) {
+			  		minx=Math.round(svgList[i].downscalex.domain()[0]);
+			  		maxx=Math.round(svgList[i].mw * (svgList[i].downx - svgList[i].downscalex.domain()[0]) / rupx + svgList[i].downscalex.domain()[0]);
+
+					if(maxx<=svgList[i].xMax && minx>=svgList[i].xMin){
+						if(i==0){
+							$('#geneTxt').val(chr+":"+minx+"-"+maxx);
+						}
+	            		svgList[i].xScale.domain([minx,maxx]);
+						svgList[i].scaleSVG.select(".x.axis").call(svgList[i].xAxis);
+						svgList[i].redraw();
+					}
+	          }
+	        }else if(!isNaN(svgList[i].downPanx)){
+				p = d3.mouse(svgList[i].vis[0][0]), rupx = p[0];
+				  if (rupx !== 0) {
+						dist=svgList[i].downPanx-rupx;
+						scaleDist=(svgList[i].downscalex.domain()[1]-svgList[i].downscalex.domain()[0])/svgList[i].mw;
+						minx=Math.round(svgList[i].downscalex.domain()[0]+dist*scaleDist);
+						maxx=Math.round(dist*scaleDist + svgList[i].downscalex.domain()[1]);
+						if(maxx<=svgList[i].xMax && minx>=svgList[i].xMin){
+							if(i===0){
+								$('#geneTxt').val(chr+":"+minx+"-"+maxx);
+							}
+							svgList[i].xScale.domain([minx,maxx]);
+							svgList[i].scaleSVG.select(".x.axis").call(svgList[i].xAxis);
+							svgList[i].redraw();
+							svgList[i].downPanx=p[0];
+						}
+					
+				  }
+			}else if(!isNaN(svgList[i].downZoomx)){
+				start=svgList[i].downZoomx;
+				p = d3.mouse(svgList[i].vis[0][0]);
+				svgList[i].downZoomxEnd=p[0];
+				width=1;
+				if(p[0]<start){
+					start=p[0];
+					width=svgList[i].downZoomx-start;
+				}else{
+					width=p[0]-start;
+				}
+				minx=Math.round(svgList[i].xScale.invert(start));
+				maxx=Math.round(svgList[i].xScale.invert(start+width));
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg rect.zoomRect")
+								.attr("x",start)
+								.attr("width",width);
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextStart").attr("x",start).attr("y",15).text(numberWithCommas(minx));
+				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextEnd").attr("x",start+width).attr("y",50).text(numberWithCommas(maxx));
+			}
+		}
+	}
+}
+
 d3.select('html')
       .on("mousemove", mmove)
 	  .on("mouseup", mup);
@@ -493,145 +634,9 @@ function displayHelpFirstTime(){
     }*/
 }
 
-function mup() {
-	for (var i=0; i<svgList.length; i++){
-		if(svgList[i]!=null){
-			if(!isNaN(svgList[i].downx)|| !isNaN(svgList[i].downPanx)){
-				if(i==0){
-					updatePage(svgList[i]);
-				}
-        		svgList[i].downx = Math.NaN;
-				svgList[i].downPanx = Math.NaN;
-				svgList[i].updateFullData();
-				if(i==0){
-					DisplayRegionReport();
-				}
-			}else if(!isNaN(svgList[i].downZoomx)){
-				var start=svgList[i].downZoomx;
-				var p = d3.mouse(svgList[i].vis[0][0]);
-				svgList[i].downZoomxEnd=p[0];
-				var width=1;
-				if(p[0]<start){
-					start=p[0];
-					width=svgList[i].downZoomx-start;
-				}else{
-					width=p[0]-start;
-				}
-				var minx=Math.round(svgList[i].xScale.invert(start));
-				var maxx=Math.round(svgList[i].xScale.invert(start+width));
-				svgList[i].downZoomx = Math.NaN;
-				svgList[i].downZoomxEnd = Math.NaN;
-				if(i==0){
-					$('#geneTxt').val(chr+":"+minx+"-"+maxx);
-				}
-				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg rect.zoomRect").remove();
-				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextStart").remove();
-				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextEnd").remove();
-	            svgList[i].xScale.domain([minx,maxx]);
-				svgList[i].scaleSVG.select(".x.axis").call(svgList[i].xAxis);
-				svgList[i].redraw();
-			}
-		}
-	}
-	
-}
-function mmove(){
-	for (var i=0; i<svgList.length; i++){
-		if(svgList[i]!=null){
-			if (!isNaN(svgList[i].downx)) {
-	          var p = d3.mouse(svgList[i].vis[0][0]), rupx = p[0];
-	          if (rupx != 0) {
-			  		var minx=Math.round(svgList[i].downscalex.domain()[0]);
-			  		var maxx=Math.round(svgList[i].mw * (svgList[i].downx - svgList[i].downscalex.domain()[0]) / rupx + svgList[i].downscalex.domain()[0]);
 
-					if(maxx<=svgList[i].xMax && minx>=svgList[i].xMin){
-						if(i==0){
-							$('#geneTxt').val(chr+":"+minx+"-"+maxx);
-						}
-	            		svgList[i].xScale.domain([minx,maxx]);
-						svgList[i].scaleSVG.select(".x.axis").call(svgList[i].xAxis);
-						svgList[i].redraw();
-					}
-	          }
-	        }else if(!isNaN(svgList[i].downPanx)){
-				var p = d3.mouse(svgList[i].vis[0][0]), rupx = p[0];
-				  if (rupx != 0) {
-						var dist=svgList[i].downPanx-rupx;
-						var scaleDist=(svgList[i].downscalex.domain()[1]-svgList[i].downscalex.domain()[0])/svgList[i].mw;
-						var minx=Math.round(svgList[i].downscalex.domain()[0]+dist*scaleDist);
-						var maxx=Math.round(dist*scaleDist + svgList[i].downscalex.domain()[1]);
-						if(maxx<=svgList[i].xMax && minx>=svgList[i].xMin){
-							if(i==0){
-								$('#geneTxt').val(chr+":"+minx+"-"+maxx);
-							}
-							svgList[i].xScale.domain([minx,maxx]);
-							svgList[i].scaleSVG.select(".x.axis").call(svgList[i].xAxis);
-							svgList[i].redraw();
-							svgList[i].downPanx=p[0];
-						}
-					
-				  }
-			}else if(!isNaN(svgList[i].downZoomx)){
-				var start=svgList[i].downZoomx;
-				var p = d3.mouse(svgList[i].vis[0][0]);
-				svgList[i].downZoomxEnd=p[0];
-				var width=1;
-				if(p[0]<start){
-					start=p[0];
-					width=svgList[i].downZoomx-start;
-				}else{
-					width=p[0]-start;
-				}
-				var minx=Math.round(svgList[i].xScale.invert(start));
-				var maxx=Math.round(svgList[i].xScale.invert(start+width));
-				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg rect.zoomRect")
-								.attr("x",start)
-								.attr("width",width);
-				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextStart").attr("x",start).attr("y",15).text(numberWithCommas(minx));
-				d3.select("#Level"+svgList[i].levelNumber).selectAll("svg text#zoomTextEnd").attr("x",start+width).attr("y",50).text(numberWithCommas(maxx));
-			}
-		}
-	}
-}
 
-function updatePage(topSVG){
-	var min=Math.round(topSVG.xScale.domain()[0]);
-	var max=Math.round(topSVG.xScale.domain()[1]);
-	if((min<topSVG.prevMinCoord||max>topSVG.prevMaxCoord)&&(min<topSVG.dataMinCoord||max>topSVG.dataMaxCoord)){
-		processAjax=1;
-		var tmpMin=min;
-		var tmpMax=max;
-		if(min>=topSVG.dataMinCoord&& max>topSVG.dataMaxCoord){
-			tmpMin=topSVG.dataMaxCoord+1;
-		}else if(min<topSVG.dataMinCoord && max<=topSVG.dataMaxCoord){
-			tmpMax=topSVG.dataMinCoord-1;
-		}
-		topSVG.setLoading();
-		$.ajax({
-				url: pathPrefix+"updateRegion.jsp",
-   				type: 'GET',
-				data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,fullminCoord:min,fullmaxCoord:max,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism},
-				dataType: 'json',
-    			success: function(data2){ 
-        			topSVG.prevMinCoord=min;
-        			topSVG.prevMaxCoord=max;
-        			if(min<topSVG.dataMinCoord){
-        				topSVG.dataMinCoord=min;
-        			}
-        			if(max>topSVG.dataMaxCoord){
-        				topSVG.dataMaxCoord=max;
-        			}
-        			folderName=data2.folderName;
-        			topSVG.updateData();
-        			processAjax=0;
-    			},
-    			error: function(xhr, status, error) {
-        			console.log(error);
-    			}
-			});
-	}
-	
-}
+
 
 function removeTrack(level,track){
 	if(svgList[level]!=undefined){
@@ -991,7 +996,7 @@ function removeCustomTrackCookie(removeTrack){
     	var trackArray=existingCookieStr.split(";");
     	for(var m=0;m<trackArray.length;m++){
     		if(trackArray[m].indexOf(removeTrack)==0){
-    			console.log("removed track from cookie:"+trackArray[m]);
+    			//console.log("removed track from cookie:"+trackArray[m]);
     		}else{
     				newCookieStr=newCookieStr+trackArray[m]+";";
     		}
@@ -1788,7 +1793,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}else if(track.indexOf("custom")==0){
 				var trackDetails=loadCustomTrackCookie(track);
 				if(trackDetails.indexOf("organism="+organism)>0){
-					console.log("loadedFromCookie:"+trackDetails);
+					//console.log("loadedFromCookie:"+trackDetails);
 					var details=trackDetails.split(",");
 					var dispName="";
 					for(var m=0;m<details.length;m++){
@@ -3999,7 +4004,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.redraw=function(){
-		console.log("gene.draw()");
+		//console.log("gene.draw()");
 		//set annotType
 		var curAnnot="";
 		if($("#"+that.trackClass+"CBXg"+that.gsvg.levelNumber).is(":checked")
@@ -4144,7 +4149,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 											rectW=rectW-charW;
 										}
 									}
-									console.log("redraw:"+"#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" line#Int"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
+									//console.log("redraw:"+"#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" line#Int"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
 									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" line#Int"+exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID"))
 										.attr("x1",intStart)
 										.attr("x2",intStop);
@@ -4409,7 +4414,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.drawTrx=function (d,i){
-		console.log("drawTrx level:"+that.gsvg.levelNumber);
+		//console.log("drawTrx level:"+that.gsvg.levelNumber);
 		var cdsStart=d.getAttribute("start");
 		var cdsStop=d.getAttribute("stop");
 		if(d.getAttribute("cdsStart")!=undefined && d.getAttribute("cdsStop")!=undefined){
@@ -4651,7 +4656,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 				}
 			}else if(that.drawAs=="Trx"){
-				console.log("geneTrack.draw(ALL,TRX)");
+				//console.log("geneTrack.draw(ALL,TRX)");
 				for(var l=0;l<data.length;l++){
 					if(data[l]!=undefined ){
 						if(that.gsvg.levelNumber!=1 ||
@@ -8100,8 +8105,8 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 								dataType: 'json',
 				    			success: function(data2){
-				    				console.log("custom ajax success");
-				    				console.log(data2);
+				    				//console.log("custom ajax success");
+				    				//console.log(data2);
 				    			},
 				    			error: function(xhr, status, error) {
 				        			console.log(error);
@@ -8587,9 +8592,9 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 		var tmpDen=that.checkDensity();
 		if(tmpDen>0){
 			that.density=tmpDen;
-			console.log("density="+that.density);
+			//console.log("density="+that.density);
 		}
-		console.log("return:"+that.density);
+		//console.log("return:"+that.density);
 	};
 
 	that.draw=function(data){
@@ -8690,4 +8695,6 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	return that;
 }
 
+window['GenomeSVG']=GenomeSVG;
+window['loadState']=loadState;
 

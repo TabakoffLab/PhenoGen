@@ -4,7 +4,6 @@
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("d3.v3.min.js");
-	extrasList.add("bugsense.min.js");
 	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tooltipster.css");
@@ -12,6 +11,7 @@
 %>
 
 <%@ include file="/web/common/header_adaptive_noMenu.jsp" %>
+
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="myFH" class="edu.ucdenver.ccp.util.FileHandler"/>
 
