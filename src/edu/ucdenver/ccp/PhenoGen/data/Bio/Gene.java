@@ -1,18 +1,19 @@
 package edu.ucdenver.ccp.PhenoGen.data.Bio;
 
-import edu.ucdenver.ccp.PhenoGen.data.Bio.Exon;
-import edu.ucdenver.ccp.PhenoGen.data.Bio.Intron;
-import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptElement;
-import edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript;
-import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptCluster;
-import edu.ucdenver.ccp.PhenoGen.data.Bio.ProbeSet;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.EQTL;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.EQTLCount;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.Exon;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.Intron;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.ProbeSet;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.SequenceVariant;
 
+import edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptCluster;
+import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptElement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -21,9 +22,6 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-
-/* for logging messages */
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -220,6 +218,7 @@ public class Gene {
                 System.err.println("ERROR: Gene is assigned multiple ensembl genes:"+this.geneID+":"+ensemblAnnot+":"+geneID);               
             }
         }
+        sortTranscripts();
         this.setupSnps(toAdd);
     }
     
@@ -239,6 +238,7 @@ public class Gene {
                     System.err.println("ERROR: Gene is assigned multiple ensembl genes:"+this.geneID+":"+ensemblAnnot+":"+geneID);               
                 }
             }
+            sortTranscripts();
     }
     
     public int getTranscriptCountEns(){
@@ -706,13 +706,13 @@ public class Gene {
                 NamedNodeMap attrib=genes.item(i).getAttributes();
                 if(attrib.getLength()>0){
                     String geneID=attrib.getNamedItem("ID").getNodeValue();
-                    if(geneID.contains("XLOC")){
+                    /*if(geneID.contains("XLOC")){
                         Matcher m=Pattern.compile("_0+").matcher(geneID);
                         if(m.find()){
                             int startPos=m.end();
                             geneID="Brain.G"+geneID.substring(startPos);
                         }
-                    }
+                    }*/
                     //System.out.println("reading gene ID:"+geneID);
                     String geneSymbol=attrib.getNamedItem("geneSymbol").getNodeValue();
                     String biotype=attrib.getNamedItem("biotype").getNodeValue();
@@ -972,4 +972,31 @@ public class Gene {
         ret[1]=max;
         return ret;
     }
+    
+    private void sortTranscripts(){
+        ComparatorTranscript cmp=new ComparatorTranscript();
+        Collections.sort(transcripts,cmp);
+    }
+    
+}
+
+class ComparatorTranscript implements Comparator {
+
+    public int compare(Object arg0, Object arg1) {
+        Transcript tx0 = (Transcript) arg0;
+        Transcript tx1 = (Transcript) arg1;
+
+        int ret=-99;
+        
+        if(tx0.getID().startsWith("ENS")&& !tx1.getID().startsWith("ENS")){
+            return -1;
+        }else if(!tx0.getID().startsWith("ENS")&& tx1.getID().startsWith("ENS")){
+            return 1;
+        }else{
+            tx0.getID().compareTo(tx1.getID());
+        }
+
+        return ret;
+    }
+
 }

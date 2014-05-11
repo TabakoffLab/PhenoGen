@@ -1,9 +1,6 @@
 <script type="text/javascript">
-	//if(bugsense !=undefined){
-		Bugsense.addExtraData( 'gene', '<%=selectedEnsemblID%>' );
-		Bugsense.addExtraData( 'region', '<%=chromosome+":"+min+"-"+max%>' );
-	//}
-//var bugsense = new Bugsense( { apiKey: "1c083a70", appVersion: "0.9", userIdentifier: "<%=myGene%>" } );
+//Bugsense.addExtraData( 'gene', '<%=selectedEnsemblID%>' );
+//Bugsense.addExtraData( 'region', '<%=chromosome+":"+min+"-"+max%>' );
 var urlprefix="<%=host+contextRoot%>";
 var trackString="coding,noncoding,snp,smallnc";
 var minCoord=<%=min%>;
@@ -154,8 +151,8 @@ var dataPrefix="";
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser0.9.6.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport0.2.2.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser1.0.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport1.0.0.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
                     var gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
