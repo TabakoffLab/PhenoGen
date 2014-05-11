@@ -32,7 +32,7 @@ sub addChr{
 
 
 sub readSpliceJunctFromDB{
-	my($geneChrom,$organism,$geneStart,$geneStop,$publicUserID,$panel,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$organism,$geneStart,$geneStop,$publicUserID,$panel,$tissue,$dsn,$usr,$passwd)=@_;   
 
 
 	my %spliceHOH; # giant array of hashes and arrays containing probeset data
@@ -51,9 +51,10 @@ sub readSpliceJunctFromDB{
 			and rd.user_id=$publicUserID  
 			and rd.visible=1 
 			and rd.strain_panel like '".$panel."'
+			and rd.tissue = '".$tissue."'
+			and rd.organism = '".$organism."' "."
 			and sj.rna_dataset_id=rd.rna_dataset_id
 			and c.name =  '".uc($geneChrom)."' "."
-			and rd.organism = '".$organism."' "."
 			and ((sj.exon1_start>=$geneStart and sj.exon1_start<=$geneStop) OR (sj.exon1_Stop>=$geneStart and sj.exon1_Stop<=$geneStop) OR (sj.exon1_Start<=$geneStart and sj.exon1_Stop>=$geneStop)
 				OR (sj.exon2_start>=$geneStart and sj.exon2_start<=$geneStop) OR (sj.exon2_Stop>=$geneStart and sj.exon2_Stop<=$geneStop) OR (sj.exon2_Start<=$geneStart and sj.exon2_Stop>=$geneStop)
 				OR  (sj.exon1_Stop<=$geneStart and sj.exon2_Start>=$geneStop))

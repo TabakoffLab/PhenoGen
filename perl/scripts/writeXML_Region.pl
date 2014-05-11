@@ -15,7 +15,7 @@ require 'readSNPDataFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'createBED.pl';
 require 'createXMLTrack.pl';
-
+require 'PolyA2XML.pl';
 
 sub getFeatureInfo
 {
@@ -294,13 +294,25 @@ sub createXMLFile
 	my $psTimeEnd=time();
 	createProbesetXMLTrack(\@probesetHOH,$outputDir."probe.xml");
 	print "Probeset Time=".($psTimeEnd-$psTimeStart)."sec\n";
-	#read SNPs/Indels
+	
+	
+	
+	
 	
 	my %snpHOH;
 	my @snpList=();
 	my @snpStrain=();
 	
 	if($shortSpecies eq 'Rn'){
+	    
+	    my $refliverHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"totalRNA");
+	    my %liverHOH=%$refliverHOH;
+	    createLiverTotalXMLTrack(\%liverHOH,$outputDir."liverTotal.xml");
+
+	    my $output=$outputDir."polyASite.xml";
+	    my $refPoly=PolyA2XML($output,$minCoord,$maxCoord,$chr,$shortSpecies,$dsn,$usr,$passwd);
+
+	    #read SNPs/Indels
 	    my $sTimeStart=time();
 	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	    %snpHOH=%$snpRef;
@@ -308,7 +320,7 @@ sub createXMLFile
 	    my $sTimeEnd=time();
 	    print "SNP Time=".($sTimeEnd-$sTimeStart)."sec\n";
 	    my $iTimeStart=time();
-	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1);
+	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1," in ('PolyA+','NonPolyA+')");
 	    my $tmpGeneArray=$$isoformHOH{Gene};
 	    my $iTimeEnd=time();
 	    print "Isoform Time=".($iTimeEnd-$iTimeStart)."sec\n";
@@ -648,6 +660,7 @@ sub createXMLFile
 	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."coding.xml",$trackDB,1);
 	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."noncoding.xml",$trackDB,0);
 	createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."smallnc.xml",$trackDB,$chr);
+	
 	#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."helicos.xml");
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";

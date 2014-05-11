@@ -107,6 +107,13 @@
                         </div>
                         <%if(myOrganism.equals("Rn")){%>
                         <BR />
+                        <div class="trigger triggerEC" name="Predicted<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Predicted Features</div>
+                        <div id="Predicted<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
+                        	<input name="trackcbx" type="checkbox" id="polyASiteCBX<%=level%>"   checked="checked" />PolyA sites predicted from genomic sequence(source: PhenoGen)
+                            <span class="tracktooltip<%=level%>" id="polyASiteInfoDesc<%=level%>" title="This track consists of PolyA sites predicted from genomic sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
+             				<HR />
+                        </div>
+                        <BR />
                     	<div class="trigger triggerEC" name="Variation<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Strain Variation</div>
                         <div id="Variation<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
                         	
@@ -210,16 +217,18 @@
                         </div>
                         <BR />
                         <%if(myOrganism.equals("Rn")){%>
-                            <div class="trigger triggerEC" name="RNACount<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Brain Tissue RNA-Seq Count Data</div>
+                            <div class="trigger triggerEC" name="RNACount<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">RNA-Seq Count Data</div>
                             <div id="RNACount<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
-                                <input name="trackcbx" type="checkbox" id="illuminaTotalCBX<%=level%>"  /> Illumina rRNA-depleted Total-RNA <span class="tracktooltip<%=level%>" id="illuminaTotalInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                            
+                                <input name="trackcbx" type="checkbox" id="illuminaTotalCBX<%=level%>"  /> Brain Illumina rRNA-depleted Total-RNA <span class="tracktooltip<%=level%>" id="illuminaTotalInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" id="illuminaTotalDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
                                 </select>
                                 <HR />
+                                
                                  
-                                 <input name="trackcbx" type="checkbox" id="illuminaPolyACBX<%=level%>"  /> Illumina PolyA+ RNA <span class="tracktooltip<%=level%>" id="illuminaPolyAInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on PolyA+ RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                 <input name="trackcbx" type="checkbox" id="illuminaPolyACBX<%=level%>"  /> Brain Illumina PolyA+ RNA <span class="tracktooltip<%=level%>" id="illuminaPolyAInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on PolyA+ RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" id="illuminaPolyADense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
@@ -227,7 +236,7 @@
                                  
                                  <HR />
                                  
-                                 <input name="trackcbx" type="checkbox" id="illuminaSmallCBX<%=level%>"  /> Illumina small RNA <span class="tracktooltip<%=level%>" id="illuminaSmallInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on small RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                 <input name="trackcbx" type="checkbox" id="illuminaSmallCBX<%=level%>"  /> Brain Illumina small RNA <span class="tracktooltip<%=level%>" id="illuminaSmallInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on small RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" id="illuminaSmallDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
@@ -235,18 +244,29 @@
                                  
                                  <HR />
                                  
-                                 <input name="trackcbx" type="checkbox" id="helicosCBX<%=level%>"  /> Helicos Data <span class="tracktooltip<%=level%>" id="helicosInfoDesc<%=level%>" title="Helicos Single Molecule RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                 <input name="trackcbx" type="checkbox" id="helicosCBX<%=level%>"  /> Brain Helicos Data <span class="tracktooltip<%=level%>" id="helicosInfoDesc<%=level%>" title="Helicos Single Molecule RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" id="helicosDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
                                 </select>
-                                 
+                                 <HR />
+                                 <input name="trackcbx" type="checkbox" id="liverilluminaTotalPlusCBX<%=level%>"  /> Liver + Strand Total-RNA (BN-Lx only for now) <span class="tracktooltip<%=level%>" id="liverilluminaTotalPlusInfoDesc<%=level%>" title="Illumina RNA-Seq data with strandedness was collected from livers of the BN-Lx (and SHR although not currently displayed) inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <select name="trackSelect" id="liverilluminaTotalPlusDense<%=level%>Select">
+                                    <option value="1" selected="selected">Dense</option>
+                                    <option value="2" >Full</option>
+                                </select>
+                                 <HR />
+                                 <input name="trackcbx" type="checkbox" id="liverilluminaTotalMinusCBX<%=level%>"  /> Liver - Strand Total-RNA (BN-Lx only for now)<span class="tracktooltip<%=level%>" id="liverilluminaTotalMinusInfoDesc<%=level%>" title="Illumina RNA-Seq data with strandedness was collected from livers of the BN-Lx (and SHR although not currently displayed) inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <select name="trackSelect" id="liverilluminaTotalMinusDense<%=level%>Select">
+                                    <option value="1" selected="selected">Dense</option>
+                                    <option value="2" >Full</option>
+                                </select>
                            </div>
                            <BR />
-                           <div class="trigger triggerEC" name="RNATrx<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Brain Tissue RNA-Seq Transcript Reconstruction</div>
+                           <div class="trigger triggerEC" name="RNATrx<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">RNA-Seq Transcript Reconstruction(Brain/Liver)</div>
                            <div id="RNATrx<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:1px 1px 1px 1px;">
-                           		<input name="trackcbx" type="checkbox" id="codingCBXt<%=level%>"   checked="checked" /> Protein Coding / PolyA+ <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
-                            <span class="tracktooltip<%=level%>" id="codingtInfoDesc<%=level%>" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
+                           		<input name="trackcbx" type="checkbox" id="codingCBXt<%=level%>"   checked="checked" /> Brain Protein Coding / PolyA+ <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
+                            <span class="tracktooltip<%=level%>" id="codingtInfoDesc<%=level%>" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.G/T#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <!--<select name="trackSelect" id="codingOverlay<%=level%>Select">
                                 <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
@@ -257,7 +277,7 @@
                                 <option value="2" >Full</option>
                             </select>
              				<HR />
-                            <input name="trackcbx" type="checkbox" id="noncodingCBXt<%=level%>"  checked="checked" /> Long Non-Coding / NonPolyA+ <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
+                            <input name="trackcbx" type="checkbox" id="noncodingCBXt<%=level%>"  checked="checked" /> Brain Long Non-Coding / NonPolyA+ <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
                             <span class="tracktooltip<%=level%>" id="noncodingtInfoDesc<%=level%>" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <!--<select name="trackSelect" id="noncodingOverlay<%=level%>Select">
                                     <option value="1" >Overlay with Annotated</option>
@@ -268,9 +288,8 @@
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
-                                 
                             <HR />
-                        	<input name="trackcbx" type="checkbox" id="smallncCBXt<%=level%>"  checked="checked" /> Small RNA <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
+                        	<input name="trackcbx" type="checkbox" id="smallncCBXt<%=level%>"  checked="checked" /> Brain Small RNA <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
                             <span class="tracktooltip<%=level%>" id="smallnctInfoDesc<%=level%>" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <!--<select name="trackSelect" id="smallncOverlay<%=level%>Select">
                                     <option value="1" >Overlay with Annotated</option>
@@ -281,15 +300,35 @@
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
-                          
                            <HR />
-                        	<input name="trackcbx" type="checkbox" id="spliceJnctCBX<%=level%>"  checked="checked" /> Splice Junction Support
+                           <input name="trackcbx" type="checkbox" id="spliceJnctCBX<%=level%>"  checked="checked" /> Brain Splice Junction Support
                             <span class="tracktooltip<%=level%>" id="spliceJnctInfoDesc<%=level%>" title="Displays information about splice junctions in reconstructed transcripts.  Showing how much of the exons on either side of the splicing junction were covered by a continuous read that bridged the junction.  The junctions are color coded by read depth."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" class="spliceJnctDense<%=level%>Select" id="spliceJnctDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
+                            <HR />
+                           <input name="trackcbx" type="checkbox" id="liverTotalCBXt<%=level%>"  checked="checked" /> Liver Total-RNA (BN-Lx only) <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
+                            <span class="tracktooltip<%=level%>" id="liverTotalInfoDesc<%=level%>" title="This track consists of transcripts from reconstructed from PhenoGen rRNA-depleted Total-RNA sequencing of BN-Lx Liver.(SHR data will be merged with this track soon)"><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <!--<select name="trackSelect" id="smallncOverlay<%=level%>Select">
+                                    <option value="1" >Overlay with Annotated</option>
+                                    <option value="2" selected="selected">Seperate Track from Annotation</option>
+                                </select>-->
+                                <select name="trackSelect" class="liverTotalDense<%=level%>Select" id="liverTotalDense<%=level%>Selectt">
+                                    <option value="1" >Dense</option>
+                                    <option value="3" selected="selected">Pack</option>
+                                    <option value="2" >Full</option>
+                                </select>
+ 						<input name="trackcbx" type="checkbox" id="liverspliceJnctCBX<%=level%>"  checked="checked" /> Liver Splice Junction Support (BN-Lx only)
+                            <span class="tracktooltip<%=level%>" id="liverspliceJnctInfoDesc<%=level%>" title="Displays information about splice junctions in reconstructed transcripts from the BN-Lx Liver transcriptome reconstruction (SHR data will be merged with this track soon).  Showing how much of the exons on either side of the splicing junction were covered by a continuous read that bridged the junction.  The junctions are color coded by read depth."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <select name="trackSelect" class="liverspliceJnctDense<%=level%>Select" id="liverspliceJnctDense<%=level%>Select">
+                                    <option value="1" >Dense</option>
+                                    <option value="3" selected="selected">Pack</option>
+                                    <option value="2" >Full</option>
+                                </select>
+                            <HR />
+                        	
                            </div>
             		<%}%>
                     </div>

@@ -139,7 +139,7 @@ sub createBinnedData{
 sub createXMLFile
 {
 	# Read in the arguments for the subroutine	
-	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd)=@_;
+	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd)=@_;
 	
 	my $scriptStart=time();
 	if(index($type,"illumina")>-1 or index($type,"helicos")>-1 ){
@@ -213,7 +213,7 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-		my $spliceRef=readSpliceJunctFromDB($chromosome,$species,$minCoord,$maxCoord,$publicID,'BNLX/SHRH',$dsn,$usr,$passwd);
+		my $spliceRef=readSpliceJunctFromDB($chromosome,$species,$minCoord,$maxCoord,$publicID,'BNLX/SHRH',$tissue,$dsn,$usr,$passwd);
 		my %spliceHOH=%$spliceRef;
 		my $rnaCountEnd=time();
 		print "Splice Junction completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
@@ -244,6 +244,8 @@ sub createXMLFile
 	my $arg12=$ARGV[11];
 	my $arg13=$ARGV[12];
 	my $arg14=$ARGV[13];
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14);
+	my $arg15=$ARGV[14];
+
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15);
 
 1;

@@ -77,8 +77,17 @@ sub readTranscriptAnnotationDataFromDB{
 			and rd.user_id= $publicUserID  
 			and rd.visible=1 
 			and rd.strain_panel like '".$panel."' "."
-			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop)))
-		order by rta.rna_transcript_id";
+			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))
+			and rt.rna_dataset_id=rd.rna_dataset_id";
+		
+			if($type ne "Any"){
+				if(index($type," in (")>-1){
+					$query=$query." and rt.category".$type;
+				}else{
+					$query=$query." and rt.category='".$type."'";
+				}
+			}
+			$query=$query.") order by rta.rna_transcript_id";
 	#}
 	#elsif(length($geneChrom) == 2) {
 	#	$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name,rta.match_reason

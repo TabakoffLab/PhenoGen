@@ -44,7 +44,7 @@ sub readRNAIsoformDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName)=@_;   
+	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName, $tmpType)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	#print "read probesets chr:$geneChrom\n";
@@ -61,6 +61,9 @@ sub readRNAIsoformDataFromDB{
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
 	my $type="Any";
+	if(defined $tmpType){
+		$type=$tmpType;
+	}
 	
 	#my $geneChromNumber = addChr($geneChrom,"subtract");
 	
@@ -68,49 +71,32 @@ sub readRNAIsoformDataFromDB{
 	my %annotHOH=%$ref;
 	
 	
-	# PREPARE THE QUERY for probesets
-	# There's got to be a better way to handle the chromosome...
-	#if(length($geneChrom) == 1){
+
 		$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,c.name as \"chromosome\",
 			re.enumber,re.estart,re.estop ,rt.rna_transcript_id 
 			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
 			where 
 			c.chromosome_id=rt.chromosome_id 
 			and c.name =  '".uc($geneChrom)."' "."
-			and re.rna_transcript_id=rt.rna_transcript_id 
-			and rt.rna_dataset_id=rd.rna_dataset_id 
-			and rd.organism = '".$organism."' "."
-			and rd.user_id= $publicUserID  
-			and rd.visible=1 
-			and rd.strain_panel like '".$panel."' "."
-			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))";
+			and re.rna_transcript_id=rt.rna_transcript_id
+			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))
+			
+			and rt.rna_dataset_id in 
+			(select rd2.rna_dataset_id from rna_dataset rd2 where
+				rd2.organism = '".$organism."' "."
+				and rd2.user_id= $publicUserID  
+				and rd2.visible=1 
+				and rd2.strain_panel like '".$panel."')";
+			$query=$query." and rt.rna_dataset_id=rd.rna_dataset_id ";
 			if($type ne "Any"){
-				$query=$query." and rt.category=".$type;	
+				if(index($type," in (")>-1){
+					$query=$query." and rt.category".$type;
+				}else{
+					$query=$query." and rt.category='".$type."'";
+				}
 			}
-			$query=$query." order by rt.trstart,rt.gene_id,rt.isoform_id,re.enumber";
-	#}
-	#elsif(length($geneChrom) == 2) {
-	#	$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,c.name as \"chromosome\",
-	#		re.enumber,re.estart,re.estop,rt.rna_transcript_id 
-	#		from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
-	#		where 
-	#		c.chromosome_id=rt.chromosome_id 
-	#		and c.name,1,2) =  '".$geneChrom."' "."
-	#		and re.rna_transcript_id=rt.rna_transcript_id 
-	#		and rt.rna_dataset_id=rd.rna_dataset_id 
-	#		and rd.organism = '".$organism."' "."
-	#		and rd.user_id= $publicUserID  
-	#		and rd.visible=1 
-	#		and rd.strain_panel like '".$panel."' "."
-	#		and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))";
-	#		if($type ne "Any"){
-	#			$query=$query." and rt.category=".$type;	
-	#		}
-	#		$query=$query."order by rt.trstart,rt.gene_id,rt.isoform_id,re.enumber";
-	#}
-	#else{
-	#	die "Something is wrong with the RNA Isoform query \nChromosome#:$geneChrom\n";
-	#}
+			$query=$query." order by rt.trstart,rt.gene_id,rt.isoform_id,re.estart";
+	
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
 
@@ -256,10 +242,10 @@ sub readRNAIsoformDataFromDB{
 				$cntTranscript++;
 			}
 			#print "adding gene $gene_id\n";
-			my $tmpGeneID=$tissue.".".$gene_id;
+			my $tmpGeneID=$gene_id;
 			if($shortName==1){
-				my $shortGID=substr($gene_id,index($gene_id,".")+1);
-				$tmpGeneID=$tissue.".".$shortGID;
+				my $shortGID=substr($gene_id,index($gene_id,"_")+1);
+				$tmpGeneID=$tissue."_".$shortGID;
 			}
 			my $bioType="protein_coding";
 			if($trcategory ne "PolyA+"){

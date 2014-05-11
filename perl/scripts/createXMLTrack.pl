@@ -442,4 +442,17 @@ sub createGenericXMLTrack{
 	close OFILE;
 	return 1;
 }
+
+sub createLiverTotalXMLTrack{
+	my($GeneHOHRef, $outputFile) = @_; 
+	# Dereference the hash and array
+	my %GeneHOH = %$GeneHOHRef;
+	open OFILE, ">".$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	my $xml = new XML::Simple (RootName=>'GeneList');
+	my $data = $xml->XMLout(\%GeneHOH);
+	print OFILE $data;
+	close OFILE;
+		return 1;
+} # End of
+
 1;

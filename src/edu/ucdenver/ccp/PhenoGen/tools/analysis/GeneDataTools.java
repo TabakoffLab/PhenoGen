@@ -1444,8 +1444,13 @@ public class GeneDataTools {
             }
             String ensDsn="DBI:mysql:database="+refSeqDB+";host="+ensHost+";port="+ensPort+";";
             
+            String tissue="Brain";
+            if(track.startsWith("liver")){
+                tissue="Liver";
+            }
+            
             //construct perl Args
-            String[] perlArgs = new String[16];
+            String[] perlArgs = new String[17];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Track.pl";
             perlArgs[2] = tmpOutputDir;
@@ -1460,12 +1465,13 @@ public class GeneDataTools {
             perlArgs[7] = Integer.toString(max);
             perlArgs[8] = Integer.toString(publicUserID);
             perlArgs[9] = Integer.toString(binSize);
-            perlArgs[10] = dsn;
-            perlArgs[11] = dbUser;
-            perlArgs[12] = dbPassword;
-            perlArgs[13] = ensDsn;
-            perlArgs[14] = ensUser;
-            perlArgs[15] = ensPassword;
+            perlArgs[10] = tissue;
+            perlArgs[11] = dsn;
+            perlArgs[12] = dbUser;
+            perlArgs[13] = dbPassword;
+            perlArgs[14] = ensDsn;
+            perlArgs[15] = ensUser;
+            perlArgs[16] = ensPassword;
 
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
