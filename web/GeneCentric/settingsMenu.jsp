@@ -320,6 +320,7 @@
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
+                                <HR />
  						<input name="trackcbx" type="checkbox" id="liverspliceJnctCBX<%=level%>"  checked="checked" /> Liver Splice Junction Support (BN-Lx only)
                             <span class="tracktooltip<%=level%>" id="liverspliceJnctInfoDesc<%=level%>" title="Displays information about splice junctions in reconstructed transcripts from the BN-Lx Liver transcriptome reconstruction (SHR data will be merged with this track soon).  Showing how much of the exons on either side of the splicing junction were covered by a continuous read that bridged the junction.  The junctions are color coded by read depth."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" class="liverspliceJnctDense<%=level%>Select" id="liverspliceJnctDense<%=level%>Select">
@@ -327,7 +328,6 @@
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
-                            <HR />
                         	
                            </div>
             		<%}%>
