@@ -7,6 +7,62 @@
  *  Modification Log:
  *      
 --%>
+<style>
+span.control{
+		background:#DCDCDC;
+		margin-left:2px;
+		margin-right:2px;
+		height:24px;
+		/*padding:2px;*/
+		display:inline-block;
+		width:35px;
+		border-style:solid;
+		border-width:1px;
+		border-color:#777777;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+	span.control:hover{
+		background:#989898;
+	}
+</style>
+<div class="whats_new version"><p><h3>Version: v2.11</h3><BR /> Updated:5/11/2014</p></div>
+				<ul>
+					<li> <span class="highlight-dark">Genome/Transcriptome Data Browser:</span>
+                    	<ul>
+                        	<li>Liver RNA-Seq Data
+                            	<ul>
+                                	<li>Added Liver RNA-Seq transcriptome reconstruction track (BN-Lx only for now - SHR will be added soon)</li>
+                                    <li>Added Liver RNA-Seq splice junction track (BN-Lx only for now - SHR will be added soon)</li>
+                                    <li>Added Liver RNA-Seq stranded read depth count track (BN-Lx only for now - SHR will be added soon)</li>
+                                </ul>
+                            </li>
+                            <li>PolyA sites
+                            	<ul><li style="list-style-type:none;">
+                                	A new track indicating polyadenylation sites.  For now only known sites are included, but soon predicted sites will be included.
+                                </li></ul>
+                            </li>
+                            <li>Other changes since v2.10:
+                            	<ul>
+                                	<li> Previews of many features in the information windows that open when you hover over a feature.</li>
+                                    <li> Saving an browser image directly to your computer is now possible look for the <span class="saveImage control" style="display: inline-block; cursor: pointer;"><img src="/web/images/icons/savePic_dark.png" cursor="pointer"></span> icon.</li>	
+                                    <li> Improved navigation.  This tool bar <div class="defaultMouse" style="display:inline-block;"><span style="height: 24px; display: inline-block; cursor: pointer; background-color: rgb(220, 220, 220); background-position: initial initial; background-repeat: initial initial;"><img class="mouseOpt dragzoom" src="/web/images/icons/dragzoom_dark.png" pointer-events="all"></span><span id="pan0" style="height: 24px; display: inline-block; cursor: pointer; background-color: rgb(152, 152, 152); background-position: initial initial; background-repeat: initial initial;"><img class="mouseOpt pan" src="/web/images/icons/pan_white.png" pointer-events="all"></span><span id="reorder0" style="height: 24px; display: inline-block; cursor: pointer; background-color: rgb(220, 220, 220); background-position: initial initial; background-repeat: initial initial;"><img class="mouseOpt pan" src="/web/images/icons/reorder_dark.png" pointer-events="all"></span></div> now allows you to control the default mouse function when you click making it easier to move along the genome, zoom by selecting a region, and reorder tracks without moving left or right.</li>
+                                    <li> Support for small custom tracks.  You may upload small <20MB custom track files and display them along with changing the display type and coloring.</li>
+                                    <li> Added Rat/Mouse RefSeq tracks.</li>
+                                    <li> The browser adjusts to the size of the window.  Before you were limited to 1000pixel width, now it will redraw to fit any width window including spanning monitors.</li>
+                                    <li> Transcripts from Ensembl/RefSeq now indicate any annotated untranslated region.</li>
+                                    <li> Detailed probe set view had a bug on Mac OS X, now that is fixed in the Oracle runtime environment.  If you update Java this bug will be corrected.</li>
+                                    <li> In large regions transcripts are grouped into genes.  In smaller regions transcripts are drawn separately, but the user can force drawing transcripts if desired.</li>
+                                    <li> View genome sequence and 3 possible amino acid sequences when zoomed in below 3000bp.</li>
+                                </ul>
+                            </li>
+                        	<li style="list-style-type:none;"><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" class="button" style="width:140px;">Try it out</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" class="button" style="width:140px;" target="_blank">View Demonstration</a></li>
+                    	</ul>
+                	</li>         
+				</ul>
+				<hr/>
 
 <div class="whats_new version"><p><h3>Version: v2.10</h3><BR /> Updated:12/1/2013</p></div>
 				<ul>
