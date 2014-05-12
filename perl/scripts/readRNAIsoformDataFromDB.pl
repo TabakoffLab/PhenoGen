@@ -348,6 +348,8 @@ sub readRNACountsDataFromDB{
 	# PERL DBI CONNECT
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
+	$geneChrom=uc($geneChrom);
+	
 	$query ="Select rc.* from rna_counts rc, rna_dataset rd
 			where 
 			rd.organism = '".$org."' "."
