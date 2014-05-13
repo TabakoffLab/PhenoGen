@@ -217,7 +217,7 @@
                         </div>
                         <BR />
                         <%if(myOrganism.equals("Rn")){%>
-                            <div class="trigger triggerEC" name="RNACount<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">RNA-Seq Count Data</div>
+                            <div class="trigger triggerEC" name="RNACount<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">RNA-Seq Count Data(Brain/Liver)</div>
                             <div id="RNACount<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
                             
                                 <input name="trackcbx" type="checkbox" id="illuminaTotalCBX<%=level%>"  /> Brain Illumina rRNA-depleted Total-RNA <span class="tracktooltip<%=level%>" id="illuminaTotalInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>

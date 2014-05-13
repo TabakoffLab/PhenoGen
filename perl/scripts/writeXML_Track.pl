@@ -35,7 +35,11 @@ sub createBinnedData{
 		while($curPos<$curStop and $loopCount<$bin){
 			my $segStart=$fullRNA{Count}[$curIndex]{start};
 			my $segStop=$fullRNA{Count}[$curIndex]{stop};
-			my $segValue=nearest(.01,$fullRNA{Count}[$curIndex]{logcount});
+			
+			#my $segValue=nearest(.01,$fullRNA{Count}[$curIndex]{logcount});
+			my $segValue=$fullRNA{Count}[$curIndex]{count};
+			
+			
 			#print $segStart."-".$segStop.":".$segValue."\n";
 			my $bp=0;
 			my $skipCur=0;
@@ -117,15 +121,19 @@ sub createBinnedData{
 		}
 		my $binVal=$sortVal[$valInd-1];
 		#print "$binInd\t$curStart\t$binVal\n";
-		if($binInd>0 and $binHOH{Count}[$binInd-1]{logcount}==$binVal){
+		if($binInd>0 and $binHOH{Count}[$binInd-1]{count}==$binVal){
 			#skip since its the same value.
 			$binHOH{Count}[$binInd-1]{start}=$binHOH{Count}[$binInd-1]{start}+$bin;
+			$binHOH{Count}[$binInd-2]{stop}=$curStart+$bin-1;
+			$binHOH{Count}[$binInd-1]{stop}=$curStart+$bin-1;
 		}else{
 			$binHOH{Count}[$binInd]{start}=$curStart;
-			$binHOH{Count}[$binInd]{logcount}=$binVal;
+			$binHOH{Count}[$binInd]{count}=$binVal;
+			$binHOH{Count}[$binInd]{stop}=$curStart+$bin-1;
 			$binInd++;
 			$binHOH{Count}[$binInd]{start}=$curStart+$bin-1;
-			$binHOH{Count}[$binInd]{logcount}=$binVal;
+			$binHOH{Count}[$binInd]{count}=$binVal;
+			$binHOH{Count}[$binInd]{stop}=$curStart+$bin-1;
 			$binInd++;
 		}
 		$curStart=$curStop;
