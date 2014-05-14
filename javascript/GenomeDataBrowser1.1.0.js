@@ -738,7 +738,7 @@ function loadSavedConfigTracks(levelInd){
     	var addedCount=0;
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
-    		if(organism=="Rn" || (organism=="Mm" && ratOnly[trackVars[0]]== undefined)){
+    		if(trackVars[0]!="liverilluminaTotalMinus" && (organism=="Rn" || (organism=="Mm" && ratOnly[trackVars[0]]== undefined))){
 	    		if(trackVars[0]!=""){
 	    			addedCount++;
 	    			var ext="";
@@ -1749,9 +1749,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 									newTrack= IlluminaPolyATrack(that,data,track,1);
 								}else if(track=="liverilluminaTotalPlus"){
 									newTrack= LiverIlluminaTotalPlusTrack(that,data,track,1);
-								}else if(track=="liverilluminaTotalMinus"){
+								}/*else if(track=="liverilluminaTotalMinus"){
 									newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
-								}
+								}*/
 								that.addTrackList(newTrack);
 							}else{
 								setTimeout(function (){
@@ -1771,9 +1771,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								newTrack= IlluminaPolyATrack(that,data,track,1);
 							}else if(track=="liverilluminaTotalPlus"){
 								newTrack= LiverIlluminaTotalPlusTrack(that,data,track,1);
-							}else if(track=="liverilluminaTotalMinus"){
+							}/*else if(track=="liverilluminaTotalMinus"){
 								newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
-							}
+							}*/
 							that.addTrackList(newTrack);
 							//success=1;
 						}
@@ -7821,7 +7821,7 @@ function IlluminaTotalTrack(gsvg,data,trackClass,density){
 function LiverIlluminaTotalPlusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	that.graphColorText="#abaecd";
-	var lbl="Liver + Strand Total-RNA Read Counts";
+	var lbl="Liver Total-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
@@ -8454,6 +8454,7 @@ function PolyATrack(gsvg,data,trackClass,label,density,additionalOptions){
 	that.ttTrackList[0]="coding";
 	that.ttTrackList[1]="liverTotal";
 	that.ttTrackList[2]="refSeq";
+	that.ttSVGMinWidth=200;
 	
 
 	that.createToolTip=function(d){
@@ -8608,6 +8609,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	that.minColor="#E6E6E6";
 	that.maxColor="#000000";
 	that.minFeatureWidth=-1;
+	that.ttSVGMinWidth=0;
 	that.legendLbl="";
 	//Set Specified Options
 	var addtlOpt=new String(additionalOptions);
@@ -9100,7 +9102,13 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 								var stop=d.getAttribute("stop")*1;
 								var len=stop-start;
 								var fivePerc=Math.floor(len*0.05);
-								var newSvg=toolTipSVG("div#ttSVG",450,start-fivePerc,stop+fivePerc,99,that.getDisplayID(d),"transcript");
+								var newStart=start-fivePerc;
+								var newStop=stop+fivePerc;
+								if(newStop-newStart<that.ttSVGMinWidth){
+									newStart=start-(that.ttSVGMinWidth/2);
+									newStop=stop+(that.ttSVGMinWidth/2);
+								}
+								var newSvg=toolTipSVG("div#ttSVG",450,newStart,newStop,99,that.getDisplayID(d),"transcript");
 								//Setup Track for current feature
 								var dataArr=new Array();
 								dataArr[0]=d;
