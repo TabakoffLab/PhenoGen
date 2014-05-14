@@ -133,7 +133,7 @@ if(request.getParameter("arrayTypeID")!=null){
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser1.1.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser1.1.1.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport1.0.0.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">

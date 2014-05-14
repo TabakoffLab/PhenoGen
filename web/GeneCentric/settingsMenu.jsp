@@ -219,7 +219,18 @@
                         <%if(myOrganism.equals("Rn")){%>
                             <div class="trigger triggerEC" name="RNACount<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">RNA-Seq Count Data(Brain/Liver)</div>
                             <div id="RNACount<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
-                            
+                            	
+                                Dense View Scale Range Selector:<span class="tracktooltip<%=level%>" id="illuminaTotalInfoDesc<%=level%>" title="Adjust the dense view scales range to better view changes over the area you are interested in.  Ex. If you are viewing a transcript decrease the maximum to view differences in low read count areas while exons will remain a solid black color.  Or increase the maximum(and possibly the minimum) to view differences in read counts over the length of exons. "><img src="<%=imagesDir%>icons/info.gif"></span><BR />
+                                <p>
+                                  Scale Range:<input type="text" id="amount" style="border:0; color:#f6931f; font-weight:bold;">
+                                </p>
+ 								<div >
+                                    Min: <div id="slider-range-min<%=level%>" style="width:85%;display:inline-block;float:right;"></div>
+                                    <BR />
+                                    Max: <div id="slider-range-max<%=level%>" style="width:85%;display:inline-block;float:right;"></div>
+                            	</div>
+                                
+                            	<HR />
                                 <input name="trackcbx" type="checkbox" id="illuminaTotalCBX<%=level%>"  /> Brain Illumina rRNA-depleted Total-RNA <span class="tracktooltip<%=level%>" id="illuminaTotalInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from brains of the BN-Lx and SHR inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were not used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" id="illuminaTotalDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
@@ -408,5 +419,32 @@
 					interactiveTolerance: 350
 				});
 			});
+			
+			$( "#slider-range-min<%=level%>" ).slider({
+				  min: 1,
+				  max: 1000,
+				  step:1,
+				  value:  1 ,
+				  slide: function( event, ui ) {
+					$( "#amount" ).val( ui.value + " - " + $( "#slider-range-max<%=level%>" ).slider( "value") );
+					if(svgList!=undefined && svgList[<%=level%>] != undefined){
+						svgList[<%=level%>].updateCountScales(ui.value,$( "#slider-range-max<%=level%>" ).slider( "value"));
+					}
+				  }
+				});
+			$( "#slider-range-max<%=level%>" ).slider({
+				  min: 1000,
+				  max: 20000,
+				  step:100,
+				  value: 5000 ,
+				  slide: function( event, ui ) {
+					$( "#amount" ).val( $( "#slider-range-min<%=level%>" ).slider( "value") + " - " + ui.value );
+					if(svgList!=undefined && svgList[<%=level%>] != undefined){
+						svgList[<%=level%>].updateCountScales($( "#slider-range-min<%=level%>" ).slider( "value"),ui.value);
+					}
+				  }
+				});
+			$( "#amount" ).val( $( "#slider-range-min<%=level%>" ).slider( "value" ) +
+			  " - " + $( "#slider-range-max<%=level%>" ).slider( "value") );
 			
 		  </script>
