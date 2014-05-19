@@ -1022,6 +1022,8 @@ function addCustomTrackUI(trackString,checked){
 	var filename="";
 
 	var details=trackString.split(",");
+	console.log("addCustomTrackUI");
+	console.log(details);
 	var id=details[0];
 
 	for(var m=1;m<details.length;m++){
@@ -1036,121 +1038,126 @@ function addCustomTrackUI(trackString,checked){
 		}
 	}
 	$(".usrTrack").each(function(){
-		var divID=$(this).attr("id");
-		var level=$(this).attr("id").substr(8);
-		var trackDiv=d3.select("#"+divID).append("div").attr("class","custTrack"+id);
-		//var tmp=$(this).html();
-		var check="";
-		if(checked==1){
-			check="checked=\"checked\"";
-		}
+		if($(".custTrack"+id).size()==0){
+			var divID=$(this).attr("id");
+			var level=$(this).attr("id").substr(8);
+			var trackDiv=d3.select("#"+divID).append("div").attr("class","custTrack"+id);
+			//var tmp=$(this).html();
+			var check="";
+			if(checked==1){
+				check="checked=\"checked\"";
+			}
 
-        var tmp="<input name=\"trackcbx\" type=\"checkbox\" id=\""+id+"CBX"+level+"\""+check+"> "+dispName;
-		tmp=tmp+" <span class=\"tracktooltip"+level+"\" id=\""+id+"InfoDesc"+level+"\" title=\"Custom Track<BR>Defined: "+date+"<BR>Original Filename: "+filename+"\"><img src=\"web/images/icons/info.gif\"></span><select name=\"trackSelect\" class=\""+id+"Dense"+level+"Select\" id=\""+id+"Dense"+level+"Select\">";
-        tmp=tmp+"<option value=\"1\" >Dense</option><option value=\"3\" selected=\"selected\">Pack</option>";
-        tmp=tmp+"<option value=\"2\" >Full</option></select>";
-        //tmp=tmp+"<input type=\"button\" id=\""+id+"ColorBtn"+level+"\" value=\"Edit Color\" onClick=\"showCustomColor('"+id+"','"+level+"')\">";
-        tmp=tmp+"&nbsp&nbsp&nbsp<span id=\""+id+"ColorBtn"+level+"\" title=\"Edit Color\" style=\"cursor:pointer;\"><img src=\"web/images/icons/color_sm2.png\"></span>";
-        //tmp=tmp+"&nbsp&nbsp&nbsp<span title=\"Save as Track Default Settings\" style=\"cursor:pointer;\"><img src=\"web/images/icons/disk_sm.png\"></span>";
-        //tmp=tmp+"<input type=\"button\" id=\""+id+"SaveBtn"+level+"\" value=\"Save As Default\" title=\"Saves the current track settings as the default settings in the future.\" onClick=\"saveDefault('"+id+"','"+level+"')\">";
-        /**/
-        tmp=tmp+"<span class=\"delCustom\"  id=\""+id+"Delete"+level+"\" title=\"Delete Custom Track\" style=\"float:right;cursor:pointer;\"><img src=\"web/images/icons/delete.png\">"+"</span>";
-        tmp=tmp+"<div id=\""+id+"Scale"+level+"\" style=\"display:none;\">Color*:<select id=\""+id+"ColorSelect"+level+"\" class=\"usrtrkColor\" id=\"\">";
-       	tmp=tmp+"<option value=\"Score\" >Score based scale</option>";
-        tmp=tmp+"<option value=\"Color\" selected=\"selected\">Feature defined</option></select>";
-        tmp=tmp+"<div id=\""+id+"ScaleSetting"+level+"\" style=\"display:none;\">Setup Scale:Data:<input id=\""+id+"minData"+level+"\" type=\"text\" size=\"4\"> - <input id=\""+id+"maxData"+level+"\" type=\"text\" size=\"4\"> <BR>";
-        tmp=tmp+"Color: <input id=\""+id+"minColor"+level+"\" class=\"color\" size=\"6\" value=\"FFFFFF\"> - <input id=\""+id+"maxColor"+level+"\" class=\"color\" size=\"6\" value=\"000000\"></div></div><HR />";
-        trackDiv.html(tmp);
+	        var tmp="<input name=\"trackcbx\" type=\"checkbox\" id=\""+id+"CBX"+level+"\""+check+"> "+dispName;
+			tmp=tmp+" <span class=\"tracktooltip"+level+"\" id=\""+id+"InfoDesc"+level+"\" title=\"Custom Track<BR>Defined: "+date+"<BR>Original Filename: "+filename+"\"><img src=\"web/images/icons/info.gif\"></span><select name=\"trackSelect\" class=\""+id+"Dense"+level+"Select\" id=\""+id+"Dense"+level+"Select\">";
+	        tmp=tmp+"<option value=\"1\" >Dense</option><option value=\"3\" selected=\"selected\">Pack</option>";
+	        tmp=tmp+"<option value=\"2\" >Full</option></select>";
+	        //tmp=tmp+"<input type=\"button\" id=\""+id+"ColorBtn"+level+"\" value=\"Edit Color\" onClick=\"showCustomColor('"+id+"','"+level+"')\">";
+	        tmp=tmp+"&nbsp&nbsp&nbsp<span id=\""+id+"ColorBtn"+level+"\" title=\"Edit Color\" style=\"cursor:pointer;\"><img src=\"web/images/icons/color_sm2.png\"></span>";
+	        //tmp=tmp+"&nbsp&nbsp&nbsp<span title=\"Save as Track Default Settings\" style=\"cursor:pointer;\"><img src=\"web/images/icons/disk_sm.png\"></span>";
+	        //tmp=tmp+"<input type=\"button\" id=\""+id+"SaveBtn"+level+"\" value=\"Save As Default\" title=\"Saves the current track settings as the default settings in the future.\" onClick=\"saveDefault('"+id+"','"+level+"')\">";
+	        /**/
+	        tmp=tmp+"<span class=\"delCustom\"  id=\""+id+"Delete"+level+"\" title=\"Delete Custom Track\" style=\"float:right;cursor:pointer;\"><img src=\"web/images/icons/delete.png\">"+"</span>";
+	        tmp=tmp+"<div id=\""+id+"Scale"+level+"\" style=\"display:none;\">Color*:<select id=\""+id+"ColorSelect"+level+"\" class=\"usrtrkColor\" id=\"\">";
+	       	tmp=tmp+"<option value=\"Score\" >Score based scale</option>";
+	        tmp=tmp+"<option value=\"Color\" selected=\"selected\">Feature defined</option></select>";
+	        tmp=tmp+"<div id=\""+id+"ScaleSetting"+level+"\" style=\"display:none;\">Setup Scale:Data:<input id=\""+id+"minData"+level+"\" type=\"text\" size=\"4\"> - <input id=\""+id+"maxData"+level+"\" type=\"text\" size=\"4\"> <BR>";
+	        tmp=tmp+"Color: <input id=\""+id+"minColor"+level+"\" class=\"color\" size=\"6\" value=\"FFFFFF\"> - <input id=\""+id+"maxColor"+level+"\" class=\"color\" size=\"6\" value=\"000000\"></div></div><HR />";
+	        trackDiv.html(tmp);
 
-        $("div#usrTrack"+level+" span#"+id+"InfoDesc"+level).each(function(){
-				$(this).tooltipster({
-					position: 'top-right',
-					maxWidth: 250,
-					offsetX: 10,
-					offsetY: 5,
-					contentAsHTML:true,
-					//arrow: false,
-					interactive: true,
-					interactiveTolerance: 350
+	        $("div#usrTrack"+level+" span#"+id+"InfoDesc"+level).each(function(){
+					$(this).tooltipster({
+						position: 'top-right',
+						maxWidth: 250,
+						offsetX: 10,
+						offsetY: 5,
+						contentAsHTML:true,
+						//arrow: false,
+						interactive: true,
+						interactiveTolerance: 350
+					});
 				});
-			});
-        $("div#usrTrack"+level+" span#"+id+"Delete"+level).each(function(){
-        		$(this).on("click",function(){
-        			var tmpID=$(this).attr("id");
-        			tmpID=tmpID.substring(0,tmpID.length-7);
-        			deleteCustomTrack(tmpID);
-        			});
-        	});
-       	$("div#usrTrack"+level+" #"+id+"ColorSelect"+level).each(function(){
-        		$(this).on("change",function(){
-        			var tmpID=$(this).attr("id");
-        			tmpID=tmpID.substring(0,tmpID.length-12);
-        			if($(this).val()=="Score"){
-        				$("div#"+tmpID+"ScaleSetting"+level).show();
-        			}else{
-        				$("div#"+tmpID+"ScaleSetting"+level).hide();
-        			}
-        			var track=svgList[level].getTrack(tmpID);
-        			track.setColorBy($(this).val());
-        			});
-        	});
-       	$("span#"+id+"ColorBtn"+level).each(function(){
-       		$(this).on("click",function(){
-       			if($("div#"+id+"Scale"+level).is(':visible')){
-					$("div#"+id+"Scale"+level).hide();
-					//$("#"+id+"ColorBtn"+level).prop("value","Edit Color");
-				}else{
-					$("div#"+id+"Scale"+level).show();
-					//$("#"+id+"ColorBtn"+level).prop("value","Hide Edit Color");
-				    var track=svgList[level].getTrack(id);
-				    $("#"+id+"ColorSelect"+level).val(track.colorBy);
-				    if(track.colorBy=="Score"){
-				    	$("div#"+id+"ScaleSetting"+level).show();
-				    }else{
-				    	$("div#"+id+"ScaleSetting"+level).hide();
-				    }
-				    if(track!=undefined && track.minColor!=undefined&&track.maxColor!=undefined){
-				        $("#"+id+"minData"+level).val(track.minValue);
-				        $("#"+id+"maxData"+level).val(track.maxValue);
-				        document.getElementById(id+"minColor"+level).color.fromString(track.minColor);
-				        document.getElementById(id+"maxColor"+level).color.fromString(track.maxColor);
-				    }
-				}
-       		});
-       	});
+	        $("div#usrTrack"+level+" span#"+id+"Delete"+level).each(function(){
+	        		$(this).on("click",function(){
+	        			var tmpID=$(this).attr("id");
+	        			tmpID=tmpID.substring(0,tmpID.length-7);
+	        			deleteCustomTrack(tmpID);
+	        			});
+	        	});
+	       	$("div#usrTrack"+level+" #"+id+"ColorSelect"+level).each(function(){
+	        		$(this).on("change",function(){
+	        			var tmpID=$(this).attr("id");
+	        			tmpID=tmpID.substring(0,tmpID.length-12);
+	        			if($(this).val()=="Score"){
+	        				$("div#"+tmpID+"ScaleSetting"+level).show();
+	        			}else{
+	        				$("div#"+tmpID+"ScaleSetting"+level).hide();
+	        			}
+	        			var track=svgList[level].getTrack(tmpID);
+	        			track.setColorBy($(this).val());
+	        			});
+	        	});
+	       	$("span#"+id+"ColorBtn"+level).each(function(){
+	       		$(this).on("click",function(){
+	       			if($("div#"+id+"Scale"+level).is(':visible')){
+						$("div#"+id+"Scale"+level).hide();
+						//$("#"+id+"ColorBtn"+level).prop("value","Edit Color");
+					}else{
+						$("div#"+id+"Scale"+level).show();
+						//$("#"+id+"ColorBtn"+level).prop("value","Hide Edit Color");
+					    var track=svgList[level].getTrack(id);
+					    $("#"+id+"ColorSelect"+level).val(track.colorBy);
+					    if(track.colorBy=="Score"){
+					    	$("div#"+id+"ScaleSetting"+level).show();
+					    }else{
+					    	$("div#"+id+"ScaleSetting"+level).hide();
+					    }
+					    if(track!=undefined && track.minColor!=undefined&&track.maxColor!=undefined){
+					        $("#"+id+"minData"+level).val(track.minValue);
+					        $("#"+id+"maxData"+level).val(track.maxValue);
+					        //console.log("Color Error:");
+					        //console.log(track.minColor);
+					        //console.log(track.maxColor);
+					        document.getElementById(id+"minColor"+level).color=track.minColor;
+					        document.getElementById(id+"maxColor"+level).color=track.maxColor;
+					    }
+					}
+	       		});
+	       	});
 
-		$("div#usrTrack"+level+" #"+id+"minColor"+level).each(function(){
-        	$(this).on("change",function(){
-        		var tmpID=$(this).attr("id");
-        		tmpID=tmpID.substring(0,tmpID.length-9);
-        		var track=svgList[level].getTrack(tmpID);
-        		track.setMinColor($(this).val());
-        	});
-        });
-        $("div#usrTrack"+level+" #"+id+"maxColor"+level).each(function(){
-        	$(this).on("change",function(){
-        		var tmpID=$(this).attr("id");
-        		tmpID=tmpID.substring(0,tmpID.length-9);
-        		var track=svgList[level].getTrack(tmpID);
-        		track.setMaxColor($(this).val());
-        	});
-        });
-        $("div#usrTrack"+level+" #"+id+"minData"+level).each(function(){
-        	$(this).on("change",function(){
-        		var tmpID=$(this).attr("id");
-        		tmpID=tmpID.substring(0,tmpID.length-8);
-        		var track=svgList[level].getTrack(tmpID);
-        		track.setMinValue($(this).val());
-        	});
-        });
-        $("div#usrTrack"+level+" #"+id+"maxData"+level).each(function(){
-        	$(this).on("change",function(){
-        		var tmpID=$(this).attr("id");
-        		tmpID=tmpID.substring(0,tmpID.length-8);
-        		var track=svgList[level].getTrack(tmpID);
-        		track.setMaxValue($(this).val());
-        	});
-        });
+			$("div#usrTrack"+level+" #"+id+"minColor"+level).each(function(){
+	        	$(this).on("change",function(){
+	        		var tmpID=$(this).attr("id");
+	        		tmpID=tmpID.substring(0,tmpID.length-9);
+	        		var track=svgList[level].getTrack(tmpID);
+	        		track.setMinColor($(this).val());
+	        	});
+	        });
+	        $("div#usrTrack"+level+" #"+id+"maxColor"+level).each(function(){
+	        	$(this).on("change",function(){
+	        		var tmpID=$(this).attr("id");
+	        		tmpID=tmpID.substring(0,tmpID.length-9);
+	        		var track=svgList[level].getTrack(tmpID);
+	        		track.setMaxColor($(this).val());
+	        	});
+	        });
+	        $("div#usrTrack"+level+" #"+id+"minData"+level).each(function(){
+	        	$(this).on("change",function(){
+	        		var tmpID=$(this).attr("id");
+	        		tmpID=tmpID.substring(0,tmpID.length-8);
+	        		var track=svgList[level].getTrack(tmpID);
+	        		track.setMinValue($(this).val());
+	        	});
+	        });
+	        $("div#usrTrack"+level+" #"+id+"maxData"+level).each(function(){
+	        	$(this).on("change",function(){
+	        		var tmpID=$(this).attr("id");
+	        		tmpID=tmpID.substring(0,tmpID.length-8);
+	        		var track=svgList[level].getTrack(tmpID);
+	        		track.setMaxValue($(this).val());
+	        	});
+	        });
+		}
 	});
 }
 
@@ -1218,6 +1225,8 @@ function loadCustomTrackCookie(track){
     	existingCookieStr=$.cookie("customTrackList");
     	var trackArray=existingCookieStr.split(";");
     	var addedCount=0;
+    	console.log("load custom track:"+track);
+    	console.log(trackArray);
     	for(var m=0;m<trackArray.length;m++){
     		//console.log(trackArray[m]);
     		if(trackArray[m].indexOf(track)==0){
@@ -8560,7 +8569,11 @@ function PolyATrack(gsvg,data,trackClass,label,density,additionalOptions){
 		}else if(d.getAttribute("strand")==-1){
 			strand="-";
 		}
-		tooltip="<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;\"></div><BR>Motif:"+d.getAttribute("motif")+"<BR>Strand:"+strand+"<BR>Location: chr"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>P-value:"+d.getAttribute("pvalue");
+		var zero="0";
+		if(d.getAttribute("pvalue")==1){
+			zero="";
+		}
+		tooltip="<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;\"></div><BR>Motif:"+d.getAttribute("motif")+"<BR>Strand:"+strand+"<BR>Location: chr"+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop")+"<BR>Probability of site: "+zero+d.getAttribute("pvalue");
 		return tooltip;
 	};
 
@@ -9209,21 +9222,23 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 								dataArr[0]=d;
 								newSvg.addTrack(that.trackClass,3,"",dataArr);
 								//Setup Other tracks included in the track type(listed in that.ttTrackList)
-								for(var r=0;r<that.ttTrackList.length;r++){
-									var tData=that.gsvg.getTrackData(that.ttTrackList[r]);
-									var fData=new Array();
-									if(tData!=undefined&&tData.length>0){
-										var fCount=0;
-										for(var s=0;s<tData.length;s++){
-											if((start<=tData[s].getAttribute("start")&&tData[s].getAttribute("start")<=stop)
-												|| (tData[s].getAttribute("start")<=start&&tData[s].getAttribute("stop")>=start)
-												){
-												fData[fCount]=tData[s];
-												fCount++;
+								if(that.gsvg.getTrackData!=undefined){
+									for(var r=0;r<that.ttTrackList.length;r++){
+										var tData=that.gsvg.getTrackData(that.ttTrackList[r]);
+										var fData=new Array();
+										if(tData!=undefined&&tData.length>0){
+											var fCount=0;
+											for(var s=0;s<tData.length;s++){
+												if((start<=tData[s].getAttribute("start")&&tData[s].getAttribute("start")<=stop)
+													|| (tData[s].getAttribute("start")<=start&&tData[s].getAttribute("stop")>=start)
+													){
+													fData[fCount]=tData[s];
+													fCount++;
+												}
 											}
-										}
-										if(fData.length>0){
-											newSvg.addTrack(that.ttTrackList[r],3,"DrawTrx",fData);	
+											if(fData.length>0){
+												newSvg.addTrack(that.ttTrackList[r],3,"DrawTrx",fData);	
+											}
 										}
 									}
 								}

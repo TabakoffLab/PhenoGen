@@ -109,7 +109,7 @@
                         <BR />
                         <div class="trigger triggerEC" name="Predicted<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">Predicted Features</div>
                         <div id="Predicted<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:0px 1px 1px 1px;">
-                        	<input name="trackcbx" type="checkbox" id="polyASiteCBX<%=level%>"   checked="checked" />PolyA sites predicted from genomic sequence(source: PhenoGen)
+                        	<input name="trackcbx" type="checkbox" id="polyASiteCBX<%=level%>"   checked="checked" />PolyA sites predicted from genomic sequence (source: PhenoGen)
                             <span class="tracktooltip<%=level%>" id="polyASiteInfoDesc<%=level%>" title="This track consists of PolyA sites predicted from genomic sequence."><img src="<%=imagesDir%>icons/info.gif"></span>
              				<HR />
                         </div>
