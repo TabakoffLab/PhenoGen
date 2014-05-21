@@ -177,6 +177,8 @@ if(request.getParameter("arrayTypeID")!=null){
 
 <div id="macBugDesc" style="display:none;color:#FF0000;">The applet below is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  This bug has been fixed if you update to Java plug-in version 1.7.0_51 or higher the display will be improved.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
         <BR /><BR /><BR />
+        <div style="margin-left:10px;margin-right:10px;"><p><span style="color:#FF0000">Note:</span>If you don't see the applet below try adjusting security settings as directed <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">here</a>. You will be asked 1-2 times if you want to allow the applet to run, please select "Run" or "Yes" if prompted.  If that does not work and you are on a Windows operating system we are aware of changes in the most recent update that prevent the applet from running unsigned applets.  We are working to provide a signed applet very soon.  We are sorry for any inconvenience.  We are also working to provide similar expression data that is not dependent on Java at some point in the future.</p></div>
+        <BR /><BR />
         <div style="text-align:center;">
         <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
         <script type="text/javascript">
