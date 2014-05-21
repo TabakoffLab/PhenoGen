@@ -47,30 +47,33 @@ var siteVer="PhenoGen v2.11.1(5/13/2014)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
-
+var mouseTTOver=0;
 
 
 //setup tooltip text div
 var tt=d3.select("body").append("div")   
 	    	.attr("class", "testToolTip") 
-	    	.attr("pointer-events", "all")              
-	    	.style("opacity", 0)
-	    	/*.on("mouseover",function(){
-	    		console.log("Mouse OVER TT");
-	    		mouseTTOver=1;
-	    	})
+	    	//.attr("pointer-events", "all")              
+	    	//.style("opacity", 0)
+	    	.on("mouseover",function(){
+					    		console.log("Mouse OVER TT");
+					    		//if(tt.style("opacity")>0){
+					    			mouseTTOver=1;
+					    		//}
+					    	})
 	    	.on("mouseout",function(){
 	    		console.log("Mouse OUT TT");
-	    		if(mouseTTOver==1){
-	    			setTimeout(function(){
-		    		mouseTTOver=0;
-		    		tt.transition()
-								 .delay(500)       
-				                .duration(200)      
-				                .style("opacity", 0);
-				    },500);
-			    }
-	    	})*/;
+	    		mouseTTOver=0;
+	    			//setTimeout(function(){
+				    		//if(mouseTTOver==0){
+				    			tt.transition()
+										.delay(200)       
+						                .duration(200)      
+						                .style("opacity", 0);
+				            //}
+				    //},1000);
+			    
+	    	});
 
 
 function updatePage(topSVG){
@@ -1267,6 +1270,7 @@ function keyID(d){if(d!=undefined){return d.id;}else{return "unknown"}};
 //SVG functions
 function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	var that={};
+	that.isToolTip=0;
 	that.get=function(attr){return that[attr];};
 	that.getTrackData=function (track){
 			var data=new Array();
@@ -2524,6 +2528,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	var that={};
 	
+	that.isToolTip=1;
+
 	that.get=function(attr){return that[attr];};
 	
 	that.addTrack=function (track,density,additionalOptions,data){
@@ -9186,14 +9192,15 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 				.attr("id",function(d){return that.idPrefix+"tx"+d.getAttribute("ID");})
 				.attr("pointer-events", "all")
 				.style("cursor", "move")
-				.on("mouseover", function(d) { 
+				.on("mouseover", function(d) {
+						if(that.gsvg.isToolTip==0){ 
 							//console.log("mouseover GenericTranscriptTrack");
 							d3.select(this).selectAll("line").style("stroke","green");
 							d3.select(this).selectAll("rect").style("fill","green");
 							d3.select(this).selectAll("text").style("opacity","0.3").style("fill","green");
 	            			tt.transition()        
 								.duration(200)      
-								.style("opacity", .95);      
+								.style("opacity", 0.95);      
 							tt.html(that.createToolTip(d))  
 								.style("left", function(){
 					                	var x=d3.event.pageX;
@@ -9204,6 +9211,12 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 					                	return xPos;
 					                })     
 								.style("top", (d3.event.pageY +5) + "px");
+								tt.on("mouseover",function(){
+												    		console.log("Mouse OVER TT");
+												    		if(tt.style("opacity")>0){
+												    			mouseTTOver=1;
+												    		}
+					    						});
 							if(that.ttSVG==1){
 								//Setup Tooltip SVG
 								var start=d.getAttribute("start")*1;
@@ -9243,15 +9256,25 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 									}
 								}
 							}
+						}
 	            	})
 				.on("mouseout", function(d) {
-						d3.select(this).selectAll("line").style("stroke",that.color);
-						d3.select(this).selectAll("rect").style("fill",that.color);
-						d3.select(this).selectAll("text").style("opacity","0.6").style("fill",that.color);  
-						tt.transition()
-							 .delay(1000)       
-							.duration(200)      
-							.style("opacity", 0);  
+						if(that.gsvg.isToolTip==0){ 
+							var tmpThis=this;
+							setTimeout(function(){
+										console.log("FEATURE MOUSEOUT");
+										if(mouseTTOver==0){
+											console.log("MOUSE NOT OVER TT");
+											d3.select(tmpThis).selectAll("line").style("stroke",that.color);
+											d3.select(tmpThis).selectAll("rect").style("fill",that.color);
+											d3.select(tmpThis).selectAll("text").style("opacity","0.6").style("fill",that.color);  
+											tt.transition()
+												 .delay(100)       
+												.duration(200)      
+												.style("opacity", 0);
+										}
+										},2000);
+						}
 	        		})
 				.each(that.drawTrx);
 		tx.exit().remove();

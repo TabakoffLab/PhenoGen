@@ -136,7 +136,7 @@ public class GeneDataTools {
             String atQuery="select Array_type_id from array_types "+
                         "where array_name like 'Affymetrix GeneChip "+organismLong+" Exon 1.0 ST Array'";
             String rnaIDQuery="select rna_dataset_id from RNA_DATASET "+
-                        "where organism = '"+organism+"' and visible=1";
+                        "where organism = '"+organism+"' and tissue='Brain' and visible=1";
             Connection conn=null;
             PreparedStatement ps=null;
             try {
