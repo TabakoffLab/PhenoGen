@@ -741,8 +741,8 @@ function loadSavedConfigTracks(levelInd){
     	var addedCount=0;
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split(",");
-    		if(trackVars[0]!="liverilluminaTotalMinus" && (organism=="Rn" || (organism=="Mm" && ratOnly[trackVars[0]]== undefined))){
-	    		if(trackVars[0]!=""){
+    		if(organism=="Rn" || (organism=="Mm" && ratOnly[trackVars[0]]== undefined)) {
+	    		if(trackVars[0]!="") {
 	    			addedCount++;
 	    			var ext="";
 	    			if(trackVars.length>2){
@@ -1762,9 +1762,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 									newTrack= IlluminaPolyATrack(that,data,track,1);
 								}else if(track=="liverilluminaTotalPlus"){
 									newTrack= LiverIlluminaTotalPlusTrack(that,data,track,1);
-								}/*else if(track=="liverilluminaTotalMinus"){
+								}else if(track=="liverilluminaTotalMinus"){
 									newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
-								}*/
+								}
 								that.addTrackList(newTrack);
 							}else{
 								setTimeout(function (){
@@ -1784,9 +1784,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								newTrack= IlluminaPolyATrack(that,data,track,1);
 							}else if(track=="liverilluminaTotalPlus"){
 								newTrack= LiverIlluminaTotalPlusTrack(that,data,track,1);
-							}/*else if(track=="liverilluminaTotalMinus"){
+							}else if(track=="liverilluminaTotalMinus"){
 								newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
-							}*/
+							}
 							that.addTrackList(newTrack);
 							//success=1;
 						}
@@ -2645,9 +2645,9 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				newTrack= IlluminaPolyATrack(that,data,track,2);
 			}else if(track=="liverilluminaTotalPlus"){
 				newTrack= LiverIlluminaTotalPlusTrack(that,data,track,2);
-			}/*else if(track=="liverilluminaTotalMinus"){
+			}else if(track=="liverilluminaTotalMinus"){
 				newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
-			}*/
+			}
 			that.addTrackList(newTrack);
 		}
 			$(".sortable"+that.levelNumber).sortable( "refresh" );
@@ -7861,7 +7861,7 @@ function IlluminaTotalTrack(gsvg,data,trackClass,density){
 function LiverIlluminaTotalPlusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	that.graphColorText="#abaecd";
-	var lbl="Liver Total-RNA Read Counts";
+	var lbl="Liver + Strand Total-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();

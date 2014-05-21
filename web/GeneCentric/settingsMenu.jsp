@@ -261,17 +261,17 @@
                                     <option value="2" >Full</option>
                                 </select>
                                  <HR />
-                                 <input name="trackcbx" type="checkbox" id="liverilluminaTotalPlusCBX<%=level%>"  /> Liver Total-RNA (BN-Lx only for now) <span class="tracktooltip<%=level%>" id="liverilluminaTotalPlusInfoDesc<%=level%>" title="Illumina RNA-Seq data was collected from livers of the BN-Lx (and SHR although not currently displayed) inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                 <input name="trackcbx" type="checkbox" id="liverilluminaTotalPlusCBX<%=level%>"  /> Liver + Strand Total-RNA (BN-Lx only for now) <span class="tracktooltip<%=level%>" id="liverilluminaTotalPlusInfoDesc<%=level%>" title="Illumina RNA-Seq data with strandedness was collected from livers of the BN-Lx (and SHR although not currently displayed) inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" id="liverilluminaTotalPlusDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
                                 </select>
-                                 <!--<HR />
+                                 <HR />
                                  <input name="trackcbx" type="checkbox" id="liverilluminaTotalMinusCBX<%=level%>"  /> Liver - Strand Total-RNA (BN-Lx only for now)<span class="tracktooltip<%=level%>" id="liverilluminaTotalMinusInfoDesc<%=level%>" title="Illumina RNA-Seq data with strandedness was collected from livers of the BN-Lx (and SHR although not currently displayed) inbred rat strains based on ribosomal RNA depleted RNA.  BN-Lx and SHR are the parental strains of the HXB/BXH recombinant inbred panel used in the microarray studies displayed on this page.  These data were used in the transcriptome reconstruction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <select name="trackSelect" id="liverilluminaTotalMinusDense<%=level%>Select">
                                     <option value="1" selected="selected">Dense</option>
                                     <option value="2" >Full</option>
-                                </select>-->
+                                </select>
                            </div>
                            <BR />
                            <div class="trigger triggerEC" name="RNATrx<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">RNA-Seq Transcript Reconstruction(Brain/Liver)</div>
