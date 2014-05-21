@@ -15,7 +15,7 @@
                     	<H3>Description</H3>
                         <div>
                         	We have RNA-Seq data from two strains of rat brains, which consists of 3 samples of each of the HXB inbred panel parental strains(BN-Lx/CubPrin and SHR/OlaIpcvPrin). PolyA+, Total RNA (>200 nt) after ribosomal RNA depletion, and Small RNA data is available from the Illumina platform and Total RNA from Helicos for both strains.<BR /><BR />
-                        	The raw read data is downloadable as a  .bam file(Illumina/PolyA+,Totatl RNA, Small RNA) or .bed(Helicos/Total RNA). 
+                        	The raw read data is downloadable as a  .bam file(Illumina/PolyA+,Total RNA, Small RNA) or .bed(Helicos/Total RNA). 
                             <BR /><BR />
                             More strains will become available so keep checking back.
                             <BR /><BR />
