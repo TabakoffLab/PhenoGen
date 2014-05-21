@@ -54,7 +54,7 @@ var mouseTTOver=0;
 var tt=d3.select("body").append("div")   
 	    	.attr("class", "testToolTip") 
 	    	//.attr("pointer-events", "all")              
-	    	//.style("opacity", 0)
+	    	.style("opacity", 0)
 	    	.on("mouseover",function(){
 					    		console.log("Mouse OVER TT");
 					    		//if(tt.style("opacity")>0){
