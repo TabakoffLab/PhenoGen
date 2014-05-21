@@ -2646,7 +2646,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}else if(track=="liverilluminaTotalPlus"){
 				newTrack= LiverIlluminaTotalPlusTrack(that,data,track,2);
 			}else if(track=="liverilluminaTotalMinus"){
-				newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
+				newTrack= LiverIlluminaTotalMinusTrack(that,data,track,2);
 			}
 			that.addTrackList(newTrack);
 		}
