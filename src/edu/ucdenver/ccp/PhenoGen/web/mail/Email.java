@@ -27,7 +27,7 @@ public class Email  {
 	//private static String administratorEmail = "inia.help@uchsc.edu";
 	//private static String ADMINISTRATOR_EMAIL = "Spencer.Mahaffey@ucdenver.edu";
 	//private static String ADMINISTRATOR2_EMAIL = "Laura.Clemens@ucdenver.edu";
-        private static String defaultAdmin="Spencer.Mahaffey@ucdenver.edu,Laura.Clemens@ucdenver.edu";
+        private static String defaultAdmin="Spencer.Mahaffey@ucdenver.edu,Laura.Saba@ucdenver.edu";
 	private Logger log = null;
 
 
