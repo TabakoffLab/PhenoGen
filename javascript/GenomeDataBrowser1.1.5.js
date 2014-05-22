@@ -38,12 +38,15 @@ ratOnly.illuminaTotal=1;
 ratOnly.illuminaSmall=1;
 ratOnly.illuminaPolyA=1;
 ratOnly.liverTotal=1;
+ratOnly.liverspliceJnct=1;
+ratOnly.liverilluminaTotalPlus=1;
+ratOnly.LiverIlluminaTotalMinus=1;
 
 
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.11.1(5/13/2014)";
+var siteVer="PhenoGen v2.11.2(5/22/2014)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
