@@ -113,6 +113,9 @@ sub bed2XML
 			$featureHOH{Feature}[$count]{blockList}{block}[$i]{start}=$start+$starts[$i];
 			$featureHOH{Feature}[$count]{blockList}{block}[$i]{stop}=$start+$starts[$i]+$sizes[$i];
 		    }
+		}else{
+		    $featureHOH{Feature}[$count]{blockList}{block}[0]{start}=$start;
+		    $featureHOH{Feature}[$count]{blockList}{block}[0]{stop}=$end;
 		}
 		$count++;
 	    }
