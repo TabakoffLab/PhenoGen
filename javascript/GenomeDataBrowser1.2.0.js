@@ -40,7 +40,7 @@ ratOnly.illuminaPolyA=1;
 ratOnly.liverTotal=1;
 ratOnly.liverspliceJnct=1;
 ratOnly.liverilluminaTotalPlus=1;
-ratOnly.LiverIlluminaTotalMinus=1;
+ratOnly.liverIlluminaTotalMinus=1;
 
 
 
@@ -8645,6 +8645,7 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 	that.dataFileName=trackClass.substr(6)+".bed";
 	that.density=3;
 	that.colorValueField="score";
+	that.minFeatureWidth=1;
 
 	that.updateFullData = function(retry,force){
 		var tmpMin=that.xScale.domain()[0];
