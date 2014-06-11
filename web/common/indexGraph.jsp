@@ -137,6 +137,15 @@ div#announcement a:hover, div#announcementSmall a:hover {
                     <TD  id="descColumn"  class="narrow">
                     
                     <div id="announcement" style="background-color:#FFFFFF; width:100%;min-height:300px; max-height:650px; position:relative;color:#000000; overflow:auto; ">
+                    	<H2>Added multiMiR</H2>
+                        <div style=" margin-left:5px;">
+                        	<img src="<%=imagesDir%>multimir.png" width="300px"/><BR />
+                        	Using multiMiR(an R package available <a href="http://multimir.ucdenver.edu/" target="_blank">here</a>) you can view validated and predicted miRNAs that target specific genes.  You can also select a miRNA and view all genes targeted by the miRNA.  multiMiR is avaialble as a new tab for a selected gene in the Genome/Transcriptome Data Browser. It is currently available only for mouse genes, but will be available in rat soon.
+                        </div>
+                        <H2>Added Rat Liver Transcriptome</H2>
+                        <div style=" margin-left:5px;">
+                        	We've added rat liver tracks including, a transcriptome reconstructiong track, splice junction track, and stranded read depth count tracks.  Available in the Genome/Transcriptome Browser.
+                        </div>
                     	<H2>Follow on Facebook/Google+/Twitter</H2>
                         <div style=" margin-left:5px;">
                         	Follow PhenoGen to keep up with new features, demonstrations, and help by providing feedback to direct future updates.<BR />
@@ -150,12 +159,16 @@ div#announcement a:hover, div#announcementSmall a:hover {
                            
                             <BR /><BR />
                         </div>
-                    	<H2>NEW! RNA-Seq Data Summary Graphics</H2>
+                    	<H2>RNA-Seq Data Summary Graphics</H2>
                         <div style=" margin-left:5px;">
                     	Rat Brain RNA-Seq data summary graphics are now available. Click below to browse the RNA-Seq data summary:<BR />
                         <div style="text-align:center;">
-                        <a href="web/graphics/genome.jsp">View Genome Coverage<BR /><img src="<%=imagesDir%>rnaseq_genome.gif" width="200px"/></a><BR />
-                        <a href="web/graphics/transcriptome.jsp">View Reconstructed Long RNA Genes(Rat Brain Transcriptome)<BR /><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="200px"/></a>
+                        <ul>
+                        <li><a href="web/graphics/genome.jsp">View Genome Coverage</a></li>
+                        <li><a href="web/graphics/transcriptome.jsp">View Reconstructed Long RNA Genes(Rat Brain Transcriptome)</a></li>
+                        </ul>
+                        <a href="web/graphics/genome.jsp"><img src="<%=imagesDir%>rnaseq_genome.gif" width="100px"/></a>
+                        <a href="web/graphics/transcriptome.jsp"><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="100px"/></a>
                         </div><BR />
                         Reconstructed transcripts from this RNA-Seq data are still combined with PhenoGen array data in <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Genome/Transcriptome Data Browser</a>.
                         </div>

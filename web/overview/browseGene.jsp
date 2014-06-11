@@ -22,6 +22,7 @@
                             <li>View Ensembl Isoforms</li>
                             <li>View Affymetrix Microarray Probe set locations</li>
                             <li>View eQTLs for the gene</li>
+                            <li>View validated/predicted miRNAs targeting the selected gene. Further you can view additional detail and view all genes targeted by a particular miRNA.</li>
                             <li>Access detailed Affy Exon 1.0 ST data</li>
                             	<ul>
                                 	<li>Parental Strain Differential Expression(BN-Lx/SHR or ILS/ISS)</li>
@@ -39,6 +40,8 @@
                         <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene2.jpg" title="Gene View showing transcripts for the selected gene, and any other tracks that have been added."><img src="web/overview/browseGene2.jpg"  style="width:100%;"  title="Click to view a larger image"/></a>
                         eQTL view showing what regions are associated with expression in each available tissue:
                         <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz.jpg" title="eQTL view showing what regions are associated with expression in each available tissue:"><img src="web/overview/qtlViz.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
+                        When a gene is selected the multiMiR tab is available which provides a list of validated/predicted miRNAs that target the gene.  You can view additional details on each miRNA/database hit and find all targets of an miRNA.
+                        <a class="fancybox" rel="fancybox-thumb" href="web/images/multimir.png" title="multiMiR results for a selected gene."><img src="web/images/multimir.png"  style="width:100%;" title="Click to view a larger image"/></a>
                         </div>
                         <H3>Demonstration Video</H3>
                         <div class="demo" style="text-align:center;">

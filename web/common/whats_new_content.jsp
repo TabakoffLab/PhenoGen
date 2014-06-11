@@ -28,6 +28,36 @@ span.control{
 		background:#989898;
 	}
 </style>
+<div class="whats_new version"><p><h3>Version: v2.12</h3><BR /> Updated:6/11/2014</p></div>
+				<ul>
+					<li> <span class="highlight-dark">Genome/Transcriptome Data Browser:</span>
+                    	<ul>
+                        	<li>Incorporated multiMiR(an R package available <a href="http://multimir.ucdenver.edu/" target="_blank">here</a>) to summarize validated and predicted targets of miRNA from 14 databases.
+                            	<ul>
+                                	<li>To use start with a mouse gene (rat will be available in the future) in the Genome/Transcriptome Browser.  You will see a new miRNA Targeting Gene(multiMiR) tab.</li>
+                                    <li>View a list of validated and predicted miRNAs targeting the selected gene.</li>
+                                    <li>Select a miRNA:
+                                    	<UL>
+                                        	<li>view a list of all predicted database hits and scores</li>
+                                            <li>view a list of all validated database hits with experiment details and pubmed reference</li>
+                                        	<li>view a list of all genes targeted by that miRNA</li>
+                                        </UL>
+                                    </li>
+                                    <li>Future additions:
+                                    	<UL>
+                                        	<li>run multiMiR on a Gene List</li>
+                                            <li>run multiMiR on genes or miRNA in a region of interest</li>
+                                        	<li>run multiMiR with disease/drug targeting</li>
+                                        </UL>
+                                    </li>
+                                </ul>
+                            </li>
+                            
+                        	<li style="list-style-type:none;"><a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp" class="button" style="width:140px;">Try it out</a>
+                    	</ul>
+                	</li>         
+				</ul>
+				<hr/>
 <div class="whats_new version"><p><h3>Version: v2.11</h3><BR /> Updated:5/11/2014</p></div>
 				<ul>
 					<li> <span class="highlight-dark">Genome/Transcriptome Data Browser:</span>

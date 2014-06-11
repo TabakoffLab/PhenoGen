@@ -174,6 +174,9 @@ Add report here.
             <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
     		<span class="selectdetailMenu" name="geneEQTL">Gene eQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
     		<span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+            <%if(myOrganism.equals("Mm")){%>
+            	<span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+            <%}%>
 </div>
 
 <div style="font-size:18px; font-weight:bold; background-color:#47c647; color:#FFFFFF; text-align:left; width:100%; ">
@@ -596,6 +599,9 @@ Add report here.
                 <span id="oldJava" style="color:#00AA00;display:none;">A newer Java version may be available click the Install button for the latest version.(You may still use all functions even if you see this message.)<BR /></span>
                 <span id="installJava" style="display:none;" class="button">Install Java</span>
 			</div>
+            </div>
+   	<div style="display:none;" id="geneMIrna">
+    </div>
 
      <script type="text/javascript">
 				var bug=0;
@@ -705,6 +711,14 @@ Add report here.
 					dataType: 'json',
 	    			error: function(xhr, status, error) {console.log(error);}
 	    			});
+		}else if(id=="geneMIrna"){
+			var jspPage="web/GeneCentric/geneMiRnaAjax.jsp";
+			var params={
+				species: organism,
+				id:selectedID
+			};
+			loadDivWithPage("div#geneMIrna",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		}
 		
 	});
