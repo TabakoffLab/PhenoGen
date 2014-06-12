@@ -11,7 +11,7 @@
 <%@ include file="/web/datasets/include/datasetHeader.jsp"  %>
 <%@ include file="/web/datasets/include/selectDataset.jsp"  %>
 <%
-	DataSource pool=(DataSource)session.getAttribute("dbPool");
+	//DataSource pool=(DataSource)session.getAttribute("dbPool");
 
 	String dsfsID = (request.getParameter("dsFilterStatID") != null ?
 				(String) request.getParameter("dsFilterStatID") : "");
