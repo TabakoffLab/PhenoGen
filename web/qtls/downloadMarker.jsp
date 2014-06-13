@@ -69,7 +69,7 @@
 				<td> Marker data used in calculating eQTLs for HXB/BXH Rats</td> 
 			</tr>
             <tr>  
-				<td> <input type="checkbox" name="fileList" value="<%=LXSRIResourcesDir%>LXS_Markers.txt.zip" /> </td>  
+				<td> <input type="checkbox" name="fileList" value="<%=LXSRIResourcesDir%>LXS.markers.mm10.txt.zip" /> </td>  
 				<td> Marker data used in calculating eQTLs for ILS/ISS Mice</td> 
 			</tr> 
 			</tbody>
