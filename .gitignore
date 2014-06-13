@@ -33,8 +33,8 @@ MEME/
 ensembl_ucsc/
 ensembl_ucsc_old/
 mirDeep/
-GeneCentric/lib
-exons/lib
+GeneCentric/lib/
+exons/lib/
 
 
 # Demo Files #
