@@ -12,6 +12,8 @@ bugsense.jsp
 bedSort
 bedToBigBed
 sitemap*.xml
+GeneCentricViewer.jar
+ExonCorrelationViewer2.jar
 
 # Users need to download platform specific tools from	#
 # Affymetrix and then current probeset files from 	#
@@ -31,6 +33,9 @@ MEME/
 ensembl_ucsc/
 ensembl_ucsc_old/
 mirDeep/
+GeneCentric/lib
+exons/lib
+
 
 # Demo Files #
 ##############
