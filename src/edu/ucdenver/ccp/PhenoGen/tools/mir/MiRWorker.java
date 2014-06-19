@@ -66,19 +66,29 @@ import au.com.forward.threads.ThreadReturn;
 public class MiRWorker extends Thread {
     private MiRTools parent;
     private DataSource pool;
-    private int geneListID;
+    private GeneList geneList;
     private String geneListPath;
     private MiRWorker prevThread;
     private boolean done=false;
     private HttpSession session;
     private String fullPath;
+    private String rFunctDir;
+    private String organism;
+    private String table;
+    private String predType;
+    private int cutoff;
     
-    public MiRWorker(int geneListID,DataSource pool,MiRTools parent,HttpSession session,String path){
-        this.geneListID=geneListID;
+    public MiRWorker(GeneList gl,DataSource pool,MiRTools parent,HttpSession session,String path,String org,String table,String predType,int cutoff){
+        this.geneList=gl;
         this.pool=pool;
         this.parent=parent;
         this.session=session;
+        this.rFunctDir = (String) session.getAttribute("rFunctionDir");
         this.fullPath=path.substring(0, path.lastIndexOf("/"));
+        this.organism=org;
+        this.table=table;
+        this.predType =predType;
+        this.cutoff=cutoff;
     }
     
     /*public MiRWorker(String geneListPath,DataSource pool,MiRTools parent){
@@ -110,15 +120,13 @@ public class MiRWorker extends Thread {
         }
         //convert Genelist ID to Gene Symbol/Ensembl IDs fill 
         Connection conn=null;
-        GeneList gl=null;
         GeneList tmpGL=new GeneList();
         String[] myGeneArray=null;
         HashMap<String,String> identifiers=new HashMap<String,String>();
         StringBuilder sb=new StringBuilder();
         try{
             conn=pool.getConnection();
-            gl=tmpGL.getGeneList(geneListID,conn);
-            myGeneArray = gl.getGenesAsArray("Original",conn);
+            myGeneArray = geneList.getGenesAsArray("Original",conn);
             conn.close();
         }catch(SQLException e){
             
@@ -132,13 +140,31 @@ public class MiRWorker extends Thread {
         Identifier myIdentifier=new Identifier();
         String[] targets=new String[] {"Gene Symbol","Ensembl ID"};
         IDecoderClient myIDecoderClient=new IDecoderClient();
-        /*try{
-            Set iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(gl.getGene_list_id(), 
+        HashMap<String,String> prevRunHM=new HashMap<String,String>();
+        String prefix="tmp";
+        R_session myR_session = new R_session();
+        String rOrg="mmu";
+        if(organism.equals("Rn")){
+            rOrg="rno";
+        }
+        String[] functionArgs=new String[7];
+        functionArgs[0] = "geneID= ''";
+        functionArgs[1] = "organism = '" + rOrg + "'";
+        functionArgs[2] = "outputDir = '" + fullPath +"/'";
+        functionArgs[3] = "outputPrefix = '" + prefix +"'";
+        functionArgs[4] = "tbl = '" + table +"'";
+        functionArgs[5] = "cutoffType = '" + predType +"'";
+        functionArgs[6] = "cutoff = " + cutoff;
+        File dirs=new File(fullPath);
+        if(!dirs.exists()&& dirs.mkdirs()){
+        }
+        try{
+            Set iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(geneList.getGene_list_id(), 
 							targets, pool);
             for (int i=0; i<myGeneArray.length; i++) {
                 Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i], iDecoderSet); 			
                 if (thisIdentifier != null) {
-                    myIDecoderClient.setNum_iterations(3);
+                    myIDecoderClient.setNum_iterations(2);
                     Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), targets);
                     String geneSym="";
                     String ens="";
@@ -151,42 +177,43 @@ public class MiRWorker extends Thread {
                                 geneSym=geneSym+symbol.getIdentifier()+",";
                             }
                         }
-                        if(!geneSym.equals("")){
-                            sb.append(geneSym);
-                            identifiers.put(myGeneArray[i],geneSym);
-                        }else if(!ens.equals("")){
-                            sb.append(ens);
-                            identifiers.put(myGeneArray[i],ens);
+                        String search=geneSym;
+                        if(geneSym.equals("")&&!ens.equals("")){
+                            search=ens;
                         }
+                        //Split search
+                        String[] tmpList=search.split(",");
+                        //search each name not previously searched
+                        for(int j=0;j<tmpList.length;j++){
+                            if(!prevRunHM.containsKey(tmpList[j])){
+                                
+                                //prep R call by updating to new geneID
+                                functionArgs[0] = "geneID= '"+tmpList[j]+"'";
+                                try{
+                                    String[] errorMsg=myR_session.callR(this.rFunctDir, "multiMiR.getMiRTargetingGene", functionArgs, fullPath+"/", -99);
+                                    if(errorMsg==null){
+                                    }else{
+
+                                    }
+                                }catch(RException er){
+
+                                }
+                                //append to summary files
+                                mergeFile(fullPath+"/"+prefix+".val.txt",fullPath+"/full.val.txt");
+                                mergeFile(fullPath+"/"+prefix+".pred.txt",fullPath+"/full.pred.txt");
+                                mergeFile(fullPath+"/"+prefix+".summary.txt",fullPath+"/full.summary.txt");
+                                
+                            }
+                        }
+                        //rename summary files
+                        //update status
                     } else {
                     } 
                 }                       
             }
-            //output a list of gene symbol/ensembl id
-            FileHandler FH=new FileHandler();
-            try{
-                File dir=new File(fullPath);
-                if(!dir.exists()){
-                    dir.mkdirs();
-                }
-                sb.deleteCharAt(sb.length()-1);
-                FH.writeFile(sb.toString(),fullPath+"/tmpInputList.txt");
-            }catch(IOException e){
-
-            }
-            /*rFunction = "mir.getTargets";
-            //call multimir
-            functionArgs = new String[9];
-            functionArgs[0] = "InputFile = " + inputFile;
-            functionArgs[1] = "ClusterType = '" + cluster_method + "'";
-            rErrorMsg = myR_session.callR(this.getRFunctionDir(), rFunction, functionArgs, analysisPath, -99);
-            if (warningFile.exists()) {
-
-            } */
-            //output multimir results to file
-        /*}catch(SQLException er){
+        }catch(SQLException er){
             
-        }*/
+        }
         done=true;
         parent.removeThread(this);
     }
@@ -197,6 +224,28 @@ public class MiRWorker extends Thread {
     
     public boolean isDone(){
         return this.done;
+    }
+
+    private void mergeFile(String source, String dest){
+        try{
+            BufferedWriter out=new BufferedWriter(new FileWriter(dest,true));
+            BufferedReader in=new BufferedReader(new FileReader(source));
+            int count=0;
+            while(in.ready()){
+                if(count>0){
+                    out.write(in.readLine()+"\n");
+                }else{
+                    in.readLine();
+                }
+                count++;
+            }
+            out.flush();
+            out.close();
+            in.close();
+            File toDel=new File(source);
+            toDel.delete();
+        }catch(IOException e){
+        }
     }
     
 }

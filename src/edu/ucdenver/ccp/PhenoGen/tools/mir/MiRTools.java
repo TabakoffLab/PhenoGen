@@ -95,19 +95,33 @@ public class MiRTools {
         return ret;
     }
     
-    public void runMultiMiRIfNoResult(GeneList gl){
-        String mirFilePath=this.user.getUserGeneListsDir() +"/" + gl.getGene_list_name_no_spaces() +"/mir.txt";
-        if(!this.isMirResults(mirFilePath)){
-            MiRWorker mw=new MiRWorker(gl.getGene_list_id(),this.pool,this,this.session,mirFilePath);
-            if(threads.size()>0){
+    public String runMultiMiRGeneList(GeneList gl,String org,String table,String predType,int cutoff,String name){
+        String status="Running..."+name;
+        Date start = new Date();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(start);
+        String datePart=Integer.toString(gc.get(gc.MONTH)+1)+
+                Integer.toString(gc.get(gc.DAY_OF_MONTH))+
+                Integer.toString(gc.get(gc.YEAR))+"_"+
+                Integer.toString(gc.get(gc.HOUR_OF_DAY))+
+                Integer.toString(gc.get(gc.MINUTE))+
+                Integer.toString(gc.get(gc.SECOND));
+        String mirFilePath=this.user.getUserGeneListsDir() +"/" + gl.getGene_list_name_no_spaces() +"/multiMir/"+datePart+"/";
+        //create DB entry
+        
+        
+        
+        MiRWorker mw=new MiRWorker(gl,this.pool,this,this.session,mirFilePath,org,table,predType,cutoff);
+        if(threads.size()>0){
                 MiRWorker prev=threads.get(threads.size()-1);
                 if(prev.isAlive()){
                     mw.setPreviousThread(prev);
+                    status="In Queue...Waiting";
                 }
-            }
-            mw.start();
-            threads.add(mw);
         }
+        mw.start();
+        threads.add(mw);
+        return status;
     }
     
     public synchronized void removeThread(MiRWorker done){

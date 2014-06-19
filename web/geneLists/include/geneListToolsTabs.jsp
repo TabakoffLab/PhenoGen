@@ -8,8 +8,12 @@
   <div class="action_tabs">
         <div id="list" class="single" data-landingPage="geneList"><span>List</span></div>
         <div id="annotation" class="single" data-landingPage="annotation"><span>Annotation</span></div>
-        <div id="loc_eQTL" class="single" data-landingPage="locationEQTL"><span>Location(eQTL)</span> </div>
+        <div id="loc_eQTL"  data-landingPage="locationEQTL"><span>Location<BR />(eQTL)</span> </div>
         <div id="literature" class="single" data-landingPage="litSearch"><span>Literature </span></div>
+        <% if (!selectedGeneList.getOrganism().equalsIgnoreCase("Mm")) { %>  
+        	<div id="mir" data-landingPage="mir"><span>miRNA<BR />(multiMiR)</span> </div>
+        <%}%>
+
     <% if (!selectedGeneList.getOrganism().equalsIgnoreCase("Dm")) { %>    
         <div id="promoter" class="single" data-landingPage="promoter"><span>Promoter</span></div>
      <% } %>   
@@ -33,7 +37,7 @@
 	<% } %>
         <div id="expressionValues" data-landingPage="expressionValues"><span>Expression<BR />Values</span></div>
         <div id="exonCorrelationTab" data-landingPage="exonCorrelationTab"><span>Exon<BR />Correlation</span></div>
-        <div id="saveAs" class="single" data-landingPage="saveAs"><span>Save As...</span></div>
+        <div id="saveAs"  data-landingPage="saveAs"><span>Save <BR /> As...</span></div>
         <div id="compare" class="single" data-landingPage="compareGeneLists"><span>Compare</span></div>
         <div id="share" class="single" data-landingPage="geneListUsers" class="last"><span>Share</span></div>
     </div>

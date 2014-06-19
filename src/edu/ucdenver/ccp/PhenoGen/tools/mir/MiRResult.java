@@ -128,6 +128,15 @@ public class MiRResult {
     }
     
     
+    public static ArrayList<MiRResult> getResultListFromDB(int geneListID){
+        ArrayList<MiRResult> ret=new ArrayList<MiRResult>();
+        return ret;
+    }
+    
+    public static ArrayList<MiRResult> readGeneListResults(String path){
+        ArrayList<MiRResult> ret=new ArrayList<MiRResult>();
+        return ret;
+    }
     
     public static ArrayList<MiRResult> readResults(String path,String prefix){
         ArrayList<MiRResult> ret=new ArrayList<MiRResult>();

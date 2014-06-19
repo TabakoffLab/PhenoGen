@@ -1725,7 +1725,17 @@ public class IDecoderClient {
 		return startSet;
 	}
 
-	/**
+        public Set<Identifier> getIdentifiersByInputIDAndTarget(int geneListID, String[] targets, DataSource pool) throws SQLException {
+                Set<Identifier> startSet = null;
+                log.debug("in getIdentifiersByInputIDAndTarget passing in geneID");
+                Connection conn=pool.getConnection();
+		startSet = getIdentifiersByInputIDAndTarget(geneListID, targets, conn);
+                conn.close();
+		return startSet;
+        }
+	/** Get a Set of Identifiers for all input IDs for a particular list of targets, organized by input ID and target.
+
+        /**
 	 * Get a Set of Identifiers for all input IDs for a particular list of targets, organized by input ID and target.
 	 * <p>
 	 * This starts by calling {@link #getIdentifiersByInputID(int geneListID, String[] targets, Connection conn) getIdentifiersByInputID()} which returns a * a Set of Identifiers pointing to
