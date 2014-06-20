@@ -957,8 +957,11 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 <script type="text/javascript">
 	//$(document).ready(function() {
 		$(".multiselect").twosidedmultiselect();
-		tblFrom.fnAdjustColumnSizing();
-		tblFrom.fnDraw();
+		
+		if(tblFrom!=undefined){
+			tblFrom.fnAdjustColumnSizing();
+			tblFrom.fnDraw();
+		}
 		
 		var pW=$('#iframe_parent').width();
 		$('#circosIFrame').attr('width',pW-25);
@@ -966,8 +969,10 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 		$(window).resize(function (){
 			var pW=$('#iframe_parent').width();
 			$('#circosIFrame').attr('width',pW-25);
-			tblFrom.fnAdjustColumnSizing();
-			tblFrom.fnDraw();
+			if(tblFrom!=undefined){
+				tblFrom.fnAdjustColumnSizing();
+				tblFrom.fnDraw();
+			}
 		});
 		
 		$(document).on("click","span.filter",function(){
