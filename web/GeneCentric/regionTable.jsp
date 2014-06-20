@@ -1925,7 +1925,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 				$('#mainTab div.modalTabContent').hide();       
 				$(currentTab).show();
 				//adjust row and column widths if needed(only needs to be done once)
-				if(!tblFromAdjust){
+				if(!tblFromAdjust&& tblFrom!=undefined){
 						tblFrom.fnAdjustColumnSizing();
 						tblFromAdjust=true;
 					}
