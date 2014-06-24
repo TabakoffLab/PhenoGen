@@ -95,7 +95,7 @@ public class MiRTools {
         return ret;
     }
     
-    public String runMultiMiRGeneList(GeneList gl,String org,String table,String predType,int cutoff,String name){
+    public String runMultiMiRGeneList(GeneList gl,String org,String table,String predType,int cutoff,String name,int glaID){
         String status="Running..."+name;
         Date start = new Date();
         GregorianCalendar gc = new GregorianCalendar();
@@ -111,7 +111,7 @@ public class MiRTools {
         
         
         
-        MiRWorker mw=new MiRWorker(gl,this.pool,this,this.session,mirFilePath,org,table,predType,cutoff);
+        MiRWorker mw=new MiRWorker(gl,this.pool,this,this.session,mirFilePath,org,table,predType,cutoff,glaID);
         if(threads.size()>0){
                 MiRWorker prev=threads.get(threads.size()-1);
                 if(prev.isAlive()){

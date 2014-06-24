@@ -26,7 +26,7 @@
 	request.setAttribute( "selectedTabId", "mir" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
-	optionsList.add("download");
+	//optionsList.add("download");
 	
 	//multiMiR Defaults
 	String table="all";
@@ -98,7 +98,7 @@
 		  <div id="mirAccord" style="height:100%; text-align:left;">
             	<H2>Run New Analysis on Gene List</H2>
                 <div style="font-size:12px;">
-                	Save Results as: <input type="text" size="15"/>
+                	Save Results as: <input id="name" type="text" size="15"/>
                     <HR />
                 	Validation Level: 
                             <select name="table" id="table">
@@ -119,7 +119,7 @@
                    Predicted Cutoff: Top <input id="cutoff" type="text" size="5" value="<%=cutoff%>" /><span id="lblPerc">% of </span> miRNAs 
                             <span class="mirtooltip"  title="Set the cutoff for the predicted cutoff type.  Ex. If Top percentage of miRNA targets is selected and 10 is entered you are searching the top 10% of predicted targets.  If Top number of miRNA targets is selected and 30000 is entered you are searching only the top 30,000 predicted targets."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <HR />
-                   Disease/Drug Association: <input id="name" type="text" size="15"/>
+                   Disease/Drug Association: <input id="disease" type="text" size="15"/>
                             <HR />
                    <input type="button" id="runBtn"  value="Run MultiMiR" onclick="runMultiMir()"/><span id="runStatus"></span>
                 </div>
@@ -127,7 +127,7 @@
                 <H2>multiMiR Results</H2>
                 <div>
                 	<span>Select a row below to view full results</span>
-                    <div>
+                    <div id="resultList">
                         <div id="waitLoadResults" align="center" style="position:relative;top:0px;"><img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" >
         <BR />Loading Previous Results...</div>
                     </div>
@@ -141,6 +141,8 @@
          	<div>
             	<H3>Results</H3>
                Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
+               <div id="resultList">
+               </div>
          	</div>
          </div>
          <!--END data section-->
@@ -150,9 +152,10 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$( 'div#mirAccord' ).accordion({ heightStyle: "content" });
-			setupPage();
+			//setupPage();
 			setTimeout("setupMain()", 100); 
 			setupExpandCollapse();
+			runGetMultiMiRResults();
 		});
 		function runMultiMir(){
 			var species="<%=myOrganism%>";
@@ -161,24 +164,52 @@
 			var predType=$('select#predType').val();
 			var cutoff=$('input#cutoff').val();
 			var name=$('input#name').val();
+			var disease=$('input#disease').val();
 			$('#wait2').show();
 			$('#runStatus').html("");
 			$.ajax({
 				url: contextPath + "/web/geneLists/include/runMultiMiR.jsp",
    				type: 'GET',
-				data: {species:species,geneListID:id,table:table,predType:predType,cutoff:cutoff},
+				data: {species:species,geneListID:id,table:table,predType:predType,cutoff:cutoff,disease:disease,name:name},
 				dataType: 'html',
 				beforeSend: function(){
 					$('#runStatus').html("Submitting...");
 				},
 				complete: function(){
 					$('#runStatus').show();
+					setTimeout(function (){
+						$('#runStatus').html("");
+					},20000);
+					runGetMultiMiRResults();
 				},
     			success: function(data2){ 
         			$('#runStatus').html(data2);
     			},
     			error: function(xhr, status, error) {
         			
+    			}
+			});
+		}
+		
+		function runGetMultiMiRResults(){
+			var id=<%=selectedGeneList.getGene_list_id()%>;
+			$('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\"<%=imagesDir%>wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
+			$.ajax({
+				url: contextPath + "/web/geneLists/include/getMultiMiRAnalyses.jsp",
+   				type: 'GET',
+				data: {geneListID:id},
+				dataType: 'html',
+				/*beforeSend: function(){
+					
+				},
+				complete: function(){
+					
+				},*/
+    			success: function(data2){ 
+        			$('#resultList').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('#resultList').html("Error retreiving results.  Please try again.");
     			}
 			});
 		}

@@ -28,12 +28,12 @@
 
         if ((action != null) && action.equals("Run MEME")) {
 
-		String upstreamLengthPassedIn = (String) request.getParameter("upstreamLength");
-		String minWidth = (String) request.getParameter("minWidth");
-		String maxWidth = (String) request.getParameter("maxWidth");
-		String distribution = (String) request.getParameter("distribution");
-		String maxMotifs = (String) request.getParameter("maxMotifs");
-                String description = (String) request.getParameter("description");
+			String upstreamLengthPassedIn = (String) request.getParameter("upstreamLength");
+			String minWidth = (String) request.getParameter("minWidth");
+			String maxWidth = (String) request.getParameter("maxWidth");
+			String distribution = (String) request.getParameter("distribution");
+			String maxMotifs = (String) request.getParameter("maxMotifs");
+            String description = (String) request.getParameter("description");
 
         	//
         	// upstreamLengthPassedIn will be 0.5, 1, or 2, so multiply it by 1000 to get kb
@@ -46,106 +46,104 @@
         	int totalLength = upstreamLength * selectedGeneList.getNumber_of_genes(); 
         	log.debug("totalLength = "+ totalLength);
         	if (totalLength > 60000) {
-			NumberFormat nf = NumberFormat.getInstance();
+				NumberFormat nf = NumberFormat.getInstance();
                         //Error - "Over 60,000 characters"
-                        session.setAttribute("errorMsg", "PRM-004");
-                        session.setAttribute("additionalInfo", "Your request contains "+selectedGeneList.getNumber_of_genes() + 
-					" genes times "+upstreamLength + " characters for each gene, which equals "+
-        				nf.format(totalLength) + " total characters.");
-                        response.sendRedirect(commonDir + "errorMsg.jsp");
-		} else {
-	
-	        	String now = myObjectHandler.getNowAsMMddyyyy_HHmmss();
-			java.sql.Timestamp timeNow = myObjectHandler.getNowAsTimestamp();
-
-        		String geneListAnalysisDir = selectedGeneList.getGeneListAnalysisDir(userLoggedIn.getUserMainDir());
-        		String memeDir = selectedGeneList.getMemeDir(geneListAnalysisDir,now);
-        		//String sequenceFileName = selectedGeneList.getUpstreamFileName(memeDir, upstreamLength, now);
-				String sequenceFileName = memeDir+"upstream_"+ upstreamLength + "bp.fasta.txt";
-
-			if (!myFileHandler.createDir(geneListAnalysisDir) || 
-        			!myFileHandler.createDir(memeDir)) {
-				log.debug("error creating geneListAnalysisDir or memeDir directory in meme.jsp"); 
-					
-				mySessionHandler.createGeneListActivity(
-					"got error creating geneListAnalysisDir or memeDir directory in meme.jsp for " +
-					selectedGeneList.getGene_list_name(),
-					dbConn);
-				session.setAttribute("errorMsg", "SYS-001");
-                        	response.sendRedirect(commonDir + "errorMsg.jsp");
+				session.setAttribute("errorMsg", "PRM-004");
+				session.setAttribute("additionalInfo", "Your request contains "+selectedGeneList.getNumber_of_genes() + 
+						" genes times "+upstreamLength + " characters for each gene, which equals "+
+							nf.format(totalLength) + " total characters.");
+				response.sendRedirect(commonDir + "errorMsg.jsp");
 			} else {
-				log.debug("no problems creating geneListAnalysisDir or memeDir directory in meme.jsp"); 
-
-
-	        		int parameter_group_id = myParameterValue.createParameterGroup(dbConn);
-
-				myGeneListAnalysis.setGene_list_id(selectedGeneList.getGene_list_id());
-                		myGeneListAnalysis.setUser_id(userID);
-                		myGeneListAnalysis.setCreate_date(timeNow);
-                		myGeneListAnalysis.setAnalysis_type("MEME");
-                		myGeneListAnalysis.setDescription(description);
-                		myGeneListAnalysis.setAnalysisGeneList(myGeneList.getGeneList(selectedGeneList.getGene_list_id(), dbConn));
-				myGeneListAnalysis.setParameter_group_id(parameter_group_id);
-		
-				log.debug("now = "+now);
-	        		//String memeFileName = selectedGeneList.getMemeFileName(memeDir, now);
-				String memeFileName = memeDir;
-
-				ParameterValue[] myParameterValues = new ParameterValue[6];
-				for (int i=0; i<myParameterValues.length; i++) {
-					myParameterValues[i] = new ParameterValue();
-					myParameterValues[i].setCreate_date();
-					myParameterValues[i].setParameter_group_id(parameter_group_id);
-					myParameterValues[i].setCategory("MEME");
-				}
-                		myParameterValues[0].setParameter("Sequence Length");
-                		myParameterValues[0].setValue(Integer.toString(upstreamLength));
-                		myParameterValues[1].setParameter("Distribution of Motifs");
-                		myParameterValues[1].setValue(distribution);
-                		myParameterValues[2].setParameter("Maximum Number of Motifs");
-                		myParameterValues[2].setValue(maxMotifs);
-                		myParameterValues[3].setParameter("Minimum Motif Width");
-                		myParameterValues[3].setValue(minWidth);
-                		myParameterValues[4].setParameter("Maximum Motif Width");
-                		myParameterValues[4].setValue(maxWidth);
-						myParameterValues[5].setParameter("MEME Dir");
-                		myParameterValues[5].setValue(memeDir);
-
-				myGeneListAnalysis.setParameterValues(myParameterValues);
-
-				mySessionHandler.createGeneListActivity("Ran MEME on Gene List", dbConn);
+					String now = myObjectHandler.getNowAsMMddyyyy_HHmmss();
+					java.sql.Timestamp timeNow = myObjectHandler.getNowAsTimestamp();
 	
-				Thread thread = new Thread(new AsyncPromoterExtraction(
-						session,
-						sequenceFileName,
-						true,
-                        myGeneListAnalysis));
-
-				log.debug("Starting first thread to run PromoterExtraction: "+ thread.getName());
-
-                		thread.start();
-
-				Thread thread2 = new Thread(new AsyncMeme(
-						session,
-						memeFileName,
-						sequenceFileName,
-						distribution,
-						maxMotifs,
-						minWidth,
-						maxWidth,
-                        myGeneListAnalysis,
-						thread));
-
-				log.debug("Starting second thread to run Meme "+ thread2.getName());
-
-                		thread2.start();
-
-				//Success - "MEME started"
-				session.setAttribute("successMsg", "GLT-012");
-				response.sendRedirect(commonDir + "successMsg.jsp");
+					String geneListAnalysisDir = selectedGeneList.getGeneListAnalysisDir(userLoggedIn.getUserMainDir());
+					String memeDir = selectedGeneList.getMemeDir(geneListAnalysisDir,now);
+					//String sequenceFileName = selectedGeneList.getUpstreamFileName(memeDir, upstreamLength, now);
+					String sequenceFileName = memeDir+"upstream_"+ upstreamLength + "bp.fasta.txt";
+	
+					if (!myFileHandler.createDir(geneListAnalysisDir) || 
+							!myFileHandler.createDir(memeDir)) {
+						log.debug("error creating geneListAnalysisDir or memeDir directory in meme.jsp"); 
+							
+						mySessionHandler.createGeneListActivity(
+							"got error creating geneListAnalysisDir or memeDir directory in meme.jsp for " +
+							selectedGeneList.getGene_list_name(),
+							dbConn);
+						session.setAttribute("errorMsg", "SYS-001");
+									response.sendRedirect(commonDir + "errorMsg.jsp");
+					} else {
+						log.debug("no problems creating geneListAnalysisDir or memeDir directory in meme.jsp"); 
+		
+		
+						int parameter_group_id = myParameterValue.createParameterGroup(dbConn);
+		
+						myGeneListAnalysis.setGene_list_id(selectedGeneList.getGene_list_id());
+						myGeneListAnalysis.setUser_id(userID);
+						myGeneListAnalysis.setCreate_date(timeNow);
+						myGeneListAnalysis.setAnalysis_type("MEME");
+						myGeneListAnalysis.setDescription(description);
+						myGeneListAnalysis.setAnalysisGeneList(myGeneList.getGeneList(selectedGeneList.getGene_list_id(), dbConn));
+						myGeneListAnalysis.setParameter_group_id(parameter_group_id);
+				
+						log.debug("now = "+now);
+							//String memeFileName = selectedGeneList.getMemeFileName(memeDir, now);
+						String memeFileName = memeDir;
+		
+						ParameterValue[] myParameterValues = new ParameterValue[6];
+						for (int i=0; i<myParameterValues.length; i++) {
+							myParameterValues[i] = new ParameterValue();
+							myParameterValues[i].setCreate_date();
+							myParameterValues[i].setParameter_group_id(parameter_group_id);
+							myParameterValues[i].setCategory("MEME");
+						}
+						myParameterValues[0].setParameter("Sequence Length");
+						myParameterValues[0].setValue(Integer.toString(upstreamLength));
+						myParameterValues[1].setParameter("Distribution of Motifs");
+						myParameterValues[1].setValue(distribution);
+						myParameterValues[2].setParameter("Maximum Number of Motifs");
+						myParameterValues[2].setValue(maxMotifs);
+						myParameterValues[3].setParameter("Minimum Motif Width");
+						myParameterValues[3].setValue(minWidth);
+						myParameterValues[4].setParameter("Maximum Motif Width");
+						myParameterValues[4].setValue(maxWidth);
+						myParameterValues[5].setParameter("MEME Dir");
+						myParameterValues[5].setValue(memeDir);
+	
+						myGeneListAnalysis.setParameterValues(myParameterValues);
+	
+						mySessionHandler.createGeneListActivity("Ran MEME on Gene List", dbConn);
+			
+						Thread thread = new Thread(new AsyncPromoterExtraction(
+								session,
+								sequenceFileName,
+								true,
+								myGeneListAnalysis));
+		
+						log.debug("Starting first thread to run PromoterExtraction: "+ thread.getName());
+		
+								thread.start();
+		
+						Thread thread2 = new Thread(new AsyncMeme(
+								session,
+								memeFileName,
+								sequenceFileName,
+								distribution,
+								maxMotifs,
+								minWidth,
+								maxWidth,
+								myGeneListAnalysis,
+								thread));
+		
+						log.debug("Starting second thread to run Meme "+ thread2.getName());
+		
+								thread2.start();
+		
+						//Success - "MEME started"
+						session.setAttribute("successMsg", "GLT-012");
+						response.sendRedirect(commonDir + "successMsg.jsp");
+					}
 			}
-
-		}
 	}
 %>
 <% if (selectedGeneList.getOrganism().equals("Mm") ||

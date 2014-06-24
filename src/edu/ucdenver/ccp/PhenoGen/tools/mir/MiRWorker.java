@@ -33,6 +33,7 @@ import edu.ucdenver.ccp.PhenoGen.tools.mir.MiRTools;
 import edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient;
 import edu.ucdenver.ccp.PhenoGen.tools.idecoder.Identifier;
 import edu.ucdenver.ccp.PhenoGen.data.GeneList;
+import edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis;
 
 
 import java.util.GregorianCalendar;
@@ -72,23 +73,71 @@ public class MiRWorker extends Thread {
     private boolean done=false;
     private HttpSession session;
     private String fullPath;
+    private String shortPath;
     private String rFunctDir;
     private String organism;
     private String table;
     private String predType;
     private int cutoff;
+    private GeneListAnalysis gla;
+    private int glaID;
+    String [] validated=new String[3];
+    String [] predicted=new String[8];
+    String[] total=new String[3];
+    String[] all=new String[14];
+	/*String [][] disease=new String[3][3];
+	disease[0][0]="mir2disease";
+	disease[0][1]="mir2disease";
+	disease[0][2]="mir2disease";
+	disease[1][0]="pharmaco_mir";
+	disease[1][1]="pharmaco_mir";
+	disease[1][2]="pharmaco_mir";
+	disease[2][0]="phenomir";
+	disease[2][1]="phenomir";
+	disease[2][2]="phenomir";*/
+	
+
     
-    public MiRWorker(GeneList gl,DataSource pool,MiRTools parent,HttpSession session,String path,String org,String table,String predType,int cutoff){
+    public MiRWorker(GeneList gl,DataSource pool,MiRTools parent,HttpSession session,String path,String org,String table,String predType,int cutoff,int glaID){
         this.geneList=gl;
         this.pool=pool;
         this.parent=parent;
         this.session=session;
         this.rFunctDir = (String) session.getAttribute("rFunctionDir");
         this.fullPath=path.substring(0, path.lastIndexOf("/"));
+        this.shortPath=fullPath.substring(fullPath.lastIndexOf("/")+1);
         this.organism=org;
         this.table=table;
         this.predType =predType;
         this.cutoff=cutoff;
+        this.glaID=glaID;
+        validated[0]="mirecords";
+	validated[1]="mirtarbase";
+	validated[2]="tarbase";
+        predicted[0]="diana_microt";
+	predicted[1]="eimmo";
+	predicted[2]="microcosm";
+	predicted[3]="miranda";
+	predicted[4]="mirdb";
+	predicted[5]="pictar";
+	predicted[6]="pita";
+	predicted[7]="targetscan";
+        total[0]="validated.sum";
+	total[1]="predicted.sum";
+	total[2]="all.sum";
+        int ind=0;
+        for(int i=0;i<predicted.length;i++){
+            all[ind]=predicted[i];
+            ind++;
+        }
+        for(int i=0;i<validated.length;i++){
+            all[ind]=validated[i];
+            ind++;
+        }
+        for(int i=0;i<total.length;i++){
+            all[ind]=total[i];
+            ind++;
+        }
     }
     
     /*public MiRWorker(String geneListPath,DataSource pool,MiRTools parent){
@@ -99,6 +148,13 @@ public class MiRWorker extends Thread {
     
     public void run() throws RuntimeException {
         done=false;
+        
+        try{
+            gla=(new GeneListAnalysis()).getGeneListAnalysis(glaID,pool);
+            gla.updatePath(pool,shortPath);
+        }catch(SQLException e){
+            
+        }
         try{
             //
             // If this thread is interrupted, throw an Exception
@@ -201,7 +257,7 @@ public class MiRWorker extends Thread {
                                 //append to summary files
                                 mergeFile(fullPath+"/"+prefix+".val.txt",fullPath+"/full.val.txt");
                                 mergeFile(fullPath+"/"+prefix+".pred.txt",fullPath+"/full.pred.txt");
-                                mergeFile(fullPath+"/"+prefix+".summary.txt",fullPath+"/full.summary.txt");
+                                mergeSummaryFile(fullPath+"/"+prefix+".summary.txt",fullPath+"/full.summary.txt",all);
                                 
                             }
                         }
@@ -211,8 +267,13 @@ public class MiRWorker extends Thread {
                     } 
                 }                       
             }
+            this.gla.updateStatus(pool,"Complete");
         }catch(SQLException er){
-            
+            try{
+                this.gla.updateStatus(pool,"Error");
+            }catch(SQLException e){
+                
+            }
         }
         done=true;
         parent.removeThread(this);
@@ -227,6 +288,11 @@ public class MiRWorker extends Thread {
     }
 
     private void mergeFile(String source, String dest){
+        boolean newFile=true;
+        File tmp=new File(dest);
+        if(tmp.exists()){
+            newFile=false;
+        }
         try{
             BufferedWriter out=new BufferedWriter(new FileWriter(dest,true));
             BufferedReader in=new BufferedReader(new FileReader(source));
@@ -235,7 +301,10 @@ public class MiRWorker extends Thread {
                 if(count>0){
                     out.write(in.readLine()+"\n");
                 }else{
-                    in.readLine();
+                   String header=in.readLine();
+                   if(newFile){
+                       out.write(header+"\n");
+                   }
                 }
                 count++;
             }
@@ -247,5 +316,54 @@ public class MiRWorker extends Thread {
         }catch(IOException e){
         }
     }
-    
+    private void mergeSummaryFile(String source, String dest,String[] list){
+        boolean newFile=true;
+        File tmp=new File(dest);
+        if(tmp.exists()){
+            newFile=false;
+        }
+        try{
+            HashMap<String,String> columns=new HashMap<String,String>();
+            BufferedWriter out=new BufferedWriter(new FileWriter(dest,true));
+            BufferedReader in=new BufferedReader(new FileReader(source));
+            int count=0;
+            while(in.ready()){
+                if(count>0){
+                    String newline="";
+                    String line=in.readLine();
+                    String[] cols=line.split("\t");
+                    newline=cols[0]+"\t"+cols[1]+"\t"+cols[2]+"\t"+cols[3]+"\t"+cols[4];
+                    for(int i=0;i<list.length;i++){
+                        if(columns.containsKey(list[i])){
+                            int tmpind=Integer.parseInt(columns.get(list[i]));
+                            newline=newline+"\t"+cols[tmpind];
+                        }else{
+                            newline=newline+"\t0";
+                        }
+                    }
+                    out.write(newline+"\n");
+                }else{
+                    String header=in.readLine();
+                    String[] cols=header.split("\t");
+                    for(int i=5;i<cols.length;i++){
+                        columns.put(cols[i],Integer.toString(i));
+                    }
+                    if(newFile){
+                        out.write(cols[0]+"\t"+cols[1]+"\t"+cols[2]+"\t"+cols[3]+"\t"+cols[4]);
+                        for(int i=0;i<list.length;i++){
+                            out.write("\t"+list[i]);
+                        }
+                        out.write("\n");
+                    }
+                }
+                count++;
+            }
+            out.flush();
+            out.close();
+            in.close();
+            File toDel=new File(source);
+            toDel.delete();
+        }catch(IOException e){
+        }
+    }
 }
