@@ -92,7 +92,7 @@
                         <h4 style="margin:10px;">Recombinant Inbred Panels</h4>
                         <p>We are grateful to the following investigators for providing the recombinant inbred panels found on the site.<BR />
                         HXB/BXH Rat RI Panel was provided by <a href="http://pharmacology.ucsd.edu/faculty/printz.html">Morton Printz</a>(UC San Diego).<BR />
-                        ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and <a href="http://profiles.ucdenver.edu/ProfileDetails.aspx?From=SE&Person=568">John DeFries</a>(CU Boulder).</p>
+                        ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and John DeFries (CU Boulder).</p>
            </div>
 		</div>
     	<!--</div>--> <!-- // end primary-content -->

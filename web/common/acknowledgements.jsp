@@ -28,7 +28,7 @@ pageDescription="Acknowledgements for providing funding and resources";%>
     <BR /><BR />
     <h3>Recombinant Inbred Panels</h3>
     We are grateful to the following investigators for providing the recombinant inbred panels found on the site.<BR />
-    HXB/BXH Rat RI Panel was provided by <a href="http://pharmacology.ucsd.edu/faculty/printz.html">Morton Prinz</a>(UC San Diego).<BR />
-	ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and <a href="http://profiles.ucdenver.edu/ProfileDetails.aspx?From=SE&Person=568">John DeFries</a>(CU Boulder).<BR />
+    HXB/BXH Rat RI Panel was provided by <a href="http://pharmacology.ucsd.edu/faculty/printz.html">Morton Printz</a>(UC San Diego).<BR />
+	ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and John DeFries (CU Boulder).<BR />
     
 <%@ include file="/web/common/footer.jsp" %>
