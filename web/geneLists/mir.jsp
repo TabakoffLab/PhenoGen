@@ -17,7 +17,7 @@
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 
 <%
-
+	extrasList.add("jquery.dataTables.js");
 	extrasList.add("smoothness/jquery-ui-1.10.4.min.css");
 
 	QTL.EQTL myEQTL = myQTL.new EQTL();
@@ -126,10 +126,8 @@
                 
                 <H2>multiMiR Results</H2>
                 <div>
-                	<span>Select a row below to view full results</span>
+                	<span style="font-size:10px;">Select a row below to view full results</span>
                     <div id="resultList">
-                        <div id="waitLoadResults" align="center" style="position:relative;top:0px;"><img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" >
-        <BR />Loading Previous Results...</div>
                     </div>
                 </div>
                 
@@ -139,10 +137,10 @@
          <!--data section-->
          <div style="width:68%; overflow:auto;display:inline-block;">
          	<div>
-            	<H3>Results</H3>
-               Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
-               <div id="resultList">
-               </div>
+            	<div id="mirResult">
+                    <H2>Results</H2>
+                   Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
+				</div>
          	</div>
          </div>
          <!--END data section-->
@@ -150,6 +148,8 @@
  
 	
 	<script type="text/javascript">
+		var mirAutoRefreshHandle=0;
+		
 		$(document).ready(function() {
 			$( 'div#mirAccord' ).accordion({ heightStyle: "content" });
 			//setupPage();
@@ -181,12 +181,17 @@
 						$('#runStatus').html("");
 					},20000);
 					runGetMultiMiRResults();
+					$('select#table').val("all");
+					$('select#predType').val("p");
+					$('input#cutoff').val("20");
+					$('input#disease').val("");
+					$('input#name').val("");
 				},
     			success: function(data2){ 
         			$('#runStatus').html(data2);
     			},
     			error: function(xhr, status, error) {
-        			
+        			$('#runStatus').html("An error occurred Try submitting again. Error:"+error);
     			}
 			});
 		}
@@ -206,12 +211,30 @@
 					
 				},*/
     			success: function(data2){ 
+					mirAutoRefreshHandle=setTimeout(function (){
+						runGetMultiMiRResults();
+					},20000);
         			$('#resultList').html(data2);
+					
     			},
     			error: function(xhr, status, error) {
         			$('#resultList').html("Error retreiving results.  Please try again.");
     			}
 			});
+		}
+		function stopRefresh(){
+			if(mirAutoRefreshHandle){
+				clearTimeout(mirAutoRefreshHandle);
+				mirAutoRefreshHandle=0;
+			}
+		}
+		function startRefresh(){
+			if(!mirAutoRefreshHandle){
+				mirAutoRefreshHandle=setTimeout(
+												function (){
+													runGetMultiMiRResults();
+												},20000);
+			}
 		}
 		
 	</script>
