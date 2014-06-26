@@ -5,7 +5,8 @@
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
 <%
 	miRT.setup(pool,session);
-	
+	MiRResult myMiRResult=new MiRResult();
+	MiRResultSummary myMiRResultSummary=new MiRResultSummary();
 	String id="";
 	
 	if(request.getParameter("geneListAnalysisID")!=null){
@@ -88,31 +89,69 @@
 	total[2][0]="all.sum";
 	total[2][1]="Total All";
 	ArrayList<MiRResult> mirList=new ArrayList<MiRResult>();
+	String fullpath=userLoggedIn.getUserGeneListsDir() +"/" + selectedGeneList.getGene_list_name_no_spaces() +"/multiMir/"+result.getPath()+"/";
+	mirList=myMiRResult.readGeneListResults(fullpath);
+	
+	ArrayList<MiRResultSummary> summaryList=new ArrayList<MiRResultSummary>();
+	summaryList=myMiRResultSummary.createSummaryList(mirList);
 	
 %>
-<H2>Results - <%=result.getName()%></H2>
-<table><TR>
+<H1 style="color:#000000;">Results - <%=result.getName()%><span class="mirDetailResultInfo"  title="Tables Searched: <%=tables%><BR><BR>Predicted Cutoff Type/Value: <%=cutoffStr%><BR><BR>Disease/Drug Terms: <%=disease%>"><img src="<%=imagesDir%>icons/info.gif"></span></H1>
+<!--<table><TR>
 <TD>Tables Searched: <%=tables%></TD></TR><TR><TD>Predicted Cutoff Type/Value: <%=cutoffStr%></TD></TR><TR><TD>Disease/Drug Terms: <%=disease%></TD></TR>
 </TR>
+</table>-->
+<H2>miRNAs Targeting Genes in List</H2>
+<span id="btnresultSummary" class="button resultViewBTN" style="display:none;">View summary</span><span id="btnresultDetail" class="button resultViewBTN" >View detailed</span>
+<div id="resultSummary" class="resultMainTable">
+<table id="resultSummaryMirGeneTbl" name="items" class="list_base" style="text-align:center;">
+	<thead>
+        	<TR class="col_title">
+            	<TH colspan="2" style="color:#000000;">Mature miRNA</TH>
+                <TH colspan="3" style="color:#000000;"># Targeted Genes from Gene List</TH>
+            </TR>
+        	<TR class="col_title">
+            <TH style="color:#000000;">Accession <span class="mirtooltip2"  title="Click to view miRBase page for the miRNA."><img src="<%=imagesDir%>icons/info.gif"></span><BR />(click for miRBase)</TH>
+            <TH style="color:#000000;">ID <span class="mirtooltip2"  title="Click to view additional informat on validated/predicted results and all genes targeted by miRNA."><img src="<%=imagesDir%>icons/info.gif"></span><BR />(click to view details)</TH>
+            <TH style="color:#000000;">Validated</TH>
+            <TH style="color:#000000;">Predicted</TH>
+            <TH style="color:#000000;">Total</TH>
+           	</TR>
+        </thead>
+        <tbody>
+        	<%for (int i=0;i<summaryList.size();i++){
+				MiRResultSummary tmp=summaryList.get(i);
+				%>
+            	<TR>
+                	<TD><a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a></TD>
+            		<TD><span id="mirDetail<%=tmp.getAccession()%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
+                    <TD><span class="<%if(tmp.getValidCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getValidListHTML()%>"><%=tmp.getValidCount()%></span></TD>
+                    <TD><span class="<%if(tmp.getPredictedCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getPredictedListHTML()%>"><%=tmp.getPredictedCount()%></span></TD>
+                    <TD><span class="hoverDetail" title="<%=tmp.getTotalListHTML()%>"><%=tmp.getTotalCount()%></span></TD>
+                </TR>
+            <%}%>
+        </tbody>
 </table>
-<H3>miRNAs Targeting Genes in List</H3>
-<table id="resultMirGeneTbl" name="items" class="list_base" style="text-align:center;width:100%;">
+</div>
+<div id="resultDetail" class="resultMainTable">
+<table id="resultDetailMirGeneTbl" name="items" class="list_base" style="text-align:center;">
 	<%if(mirList.size()>0){
 		Set sourceKey=mirList.get(0).getSourceCount().keySet();
 		%>
         <thead>
         	<TR class="col_title">
-            	<TH colspan="2"></TH>
+            	<TH colspan="2">Mature miRNA</TH>
+                <TH colspan="3">Target</TH>
                 <TH colspan="3" style="color:#000000;">Validated</TH>
                 <TH colspan="8" style="color:#000000;">Predicted</TH>
                 <TH colspan="3" style="color:#000000;">Total</TH>
             </TR>
         	<TR class="col_title">
-            <TH style="color:#000000;">Mature miRNA Accession <span class="mirtooltip2"  title="Click to view miRBase page for the miRNA."><img src="<%=imagesDir%>icons/info.gif"></span><BR />(click for miRBase)</TH>
-            <TH style="color:#000000;">Mature miRNA ID <span class="mirtooltip2"  title="Click to view additional informat on validated/predicted results and all genes targeted by miRNA."><img src="<%=imagesDir%>icons/info.gif"></span><BR />(click to view details)</TH>
-            <!--<TH style="color:#000000;">Target Gene Symbol</TH>
-            <TH style="color:#000000;">Target Entrez ID</TH>
-            <TH style="color:#000000;">Target Ensembl ID</TH>-->
+            <TH style="color:#000000;">Accession <span class="mirtooltip2"  title="Click to view miRBase page for the miRNA."><img src="<%=imagesDir%>icons/info.gif"></span><BR />(click for miRBase)</TH>
+            <TH style="color:#000000;">ID <span class="mirtooltip2"  title="Click to view additional informat on validated/predicted results and all genes targeted by miRNA."><img src="<%=imagesDir%>icons/info.gif"></span><BR />(click to view details)</TH>
+            <TH style="color:#000000;">Gene Symbol</TH>
+            <TH style="color:#000000;">Entrez ID</TH>
+            <TH style="color:#000000;">Ensembl ID</TH>
             
             <%for(int i=0;i<validated.length;i++){%>
             	<TH><a href="<%=validated[i][2]%>" target="_blank"><%=validated[i][1]%></a></TH>
@@ -136,9 +175,9 @@
             <TR class="<%=tmp.getAccession()%>">
             <TD><a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a></TD>
             <TD><span id="mirDetail<%=tmp.getAccession()%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
-            <!--<TD><%=tmp.getTargetSym()%></TD>
+            <TD><%=tmp.getTargetSym()%></TD>
             <TD><a href="http://www.ncbi.nlm.nih.gov/gene/?term=<%=tmp.getTargetEntrez()%>" target="_blank"><%=tmp.getTargetEntrez()%></a></TD>
-            <TD><a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tmp.getTargetEnsembl(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tmp.getTargetEnsembl()%></a></TD>-->
+            <TD><a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tmp.getTargetEnsembl(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tmp.getTargetEnsembl()%></a></TD>
             <%	for(int j=0;j<validated.length;j++){
 					if(sourceKey.contains(validated[j][0])){
 						String x="-";
@@ -187,19 +226,50 @@
     	</tbody>
     <%}%>
 </table>
-<BR />
+</div>
+
 <div id="selectedDetail">
 </div>
 <script type="text/javascript">
 
-	var tblMir=$('#resultMirGeneTbl').dataTable({
+	$('.resultViewBTN').on('click',function(){
+		var id=new String($(this).attr('id'));
+		var divName=id.substr(3);
+		$('.resultMainTable').hide();
+		$('#'+divName).show();
+		$('.resultViewBTN').show();
+		$(this).hide();
+	});
+	var tblMirSummaryResult=$('#resultSummaryMirGeneTbl').dataTable({
 			"bPaginate": false,
-			"bDeferRender": true,
-			"aaSorting": [[ 1, "desc" ]],
+			"bDeferRender": false,
+			"sScrollX": "650px",
+			"sScrollY": "450px",
+			"aaSorting": [[ 0, "desc" ]],
 			"sDom": '<fr><t><i>'
 	});
 	
-	$(".mirResultInfo").tooltipster({
+	var tblMirDetailResult=$('#resultDetailMirGeneTbl').dataTable({
+			"bPaginate": false,
+			"bDeferRender": false,
+			"sScrollX": "650px",
+			"sScrollY": "450px",
+			"aaSorting": [[ 0, "desc" ]],
+			"sDom": '<fr><t><i>'
+	});
+	$('#resultDetail').hide();
+	
+	$(".mirDetailResultInfo").tooltipster({
+				position: 'top-left',
+				maxWidth: 350,
+				offsetX: 10,
+				offsetY: 5,
+				contentAsHTML:true,
+				//arrow: false,
+				interactive: true,
+				interactiveTolerance: 350
+			});
+	$(".hoverDetail").tooltipster({
 				position: 'top-left',
 				maxWidth: 350,
 				offsetX: -230,
@@ -207,9 +277,33 @@
 				contentAsHTML:true,
 				//arrow: false,
 				interactive: true,
-				interactiveTolerance: 350
+				interactiveTolerance: 550
 			});
 	
-	
+	$('span.mirViewDetail').on('click',function(){
+			var id="<%=id%>";
+			var selectedID=(new String($(this).attr("id"))).substr(9);
+			/*$('html, body').animate({
+				scrollTop: $( '#mirDetailedView' ).offset().top
+			}, 200);
+			$('table#mirTbl tr.selected').removeClass("selected");
+			$('table#mirTbl tr.'+selectedID).addClass("selected");*/
+			//$('#wait2').show();
+			$.ajax({
+				url: contextPath + "/web/geneLists/include/getmultiMiRDetail.jsp",
+   				type: 'GET',
+				data: {geneListAnalysisID:id,selectedID:selectedID},
+				dataType: 'html',
+				complete: function(){
+					
+				},
+    			success: function(data2){ 
+        			$('div#mirresultDetail').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('div#mirresultDetail').html("<div>An error occurred generating this image.  Please try back later.</div>");
+    			}
+			});
+	});
 	
 </script>

@@ -91,10 +91,14 @@
                 <p> This page contains miRNAs that target the genes in your list.  </p>
         </div> <!-- // end page-intro -->
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
-
+	<style>
+		.hoverDetail{ text-decoration:underline;}
+	</style>
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
-    	<div style="width:30%; overflow:auto;display:inline-block;">
+    <table style="width:100%;">
+    <TR><TD style="width:30%;vertical-align:top;">
+    	<div style="display:inline-block;height:100%;">
 		  <div id="mirAccord" style="height:100%; text-align:left;">
             	<H2>Run New Analysis on Gene List</H2>
                 <div style="font-size:12px;">
@@ -134,16 +138,26 @@
          	</div>
          </div>
          <!-- END Side bar controls-->
+         </TD>
+         <TD  style="width:68%; vertical-align:top;">
          <!--data section-->
-         <div style="width:68%; overflow:auto;display:inline-block;">
+         <div style="display:inline-block;">
          	<div>
-            	<div id="mirResult">
+            	<div id="resultLoading" style="display:none;width:100%;text-align:center;">
+                	<img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
+                </div>
+            	<div id="mirResult" style="width:662px;">
                     <H2>Results</H2>
                    Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
 				</div>
          	</div>
          </div>
          <!--END data section-->
+         </TD>
+         </TR>
+         </table>
+         <div id="mirresultDetail">
+         </div>
 	<% } %>
  
 	

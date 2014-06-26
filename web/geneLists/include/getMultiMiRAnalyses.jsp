@@ -108,11 +108,16 @@
    				type: 'GET',
 				data: {geneListAnalysisID:id},
 				dataType: 'html',
+				beforeSend: function(){
+					$('#resultLoading').show();
+				},
     			success: function(data2){ 
         			$('#mirResult').html(data2);
+					$('#resultLoading').hide();
     			},
     			error: function(xhr, status, error) {
         			$('#mirResult').html("Error retreiving result.  Please try again.");
+					$('#resultLoading').hide();
     			}
 			});
 	});

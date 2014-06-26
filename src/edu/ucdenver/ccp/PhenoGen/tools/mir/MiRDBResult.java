@@ -47,25 +47,28 @@ public class MiRDBResult{
     private String support="";
     private String pubmedID="";
     private double score=0.0;
+    private String link="";
     
     public MiRDBResult(){
         
     }
     
-    public MiRDBResult(String db,String accession,String id,double score){
+    public MiRDBResult(String db,String accession,String id,double score,String link){
         this.database=db;
         this.accession=accession;
         this.id=id;
         this.score=score;
+        this.link=link;
     }
 
-    public MiRDBResult(String db,String accession,String id,String experiment,String support, String pubmedID){
+    public MiRDBResult(String db,String accession,String id,String experiment,String support, String pubmedID,String link){
         this.database=db;
         this.accession=accession;
         this.id=id;
         this.experiment=experiment;
         this.support=support;
         this.pubmedID=pubmedID;
+        this.link=link;
     }
     
     public String getDatabase() {
@@ -122,6 +125,14 @@ public class MiRDBResult{
 
     public void setPubmedID(String pubmedID) {
         this.pubmedID = pubmedID;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
     
     
