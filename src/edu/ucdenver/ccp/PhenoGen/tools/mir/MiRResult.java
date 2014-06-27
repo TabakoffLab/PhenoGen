@@ -214,7 +214,7 @@ public class MiRResult {
                         if(col.length>10){
                             link=col[9];
                         }
-                        MiRDBResult res=new MiRDBResult(db,acc,id,exp,sup,pmid,link);
+                        MiRDBResult res=new MiRDBResult(db,acc,id,exp,sup,pmid,link,entrez,ensembl,targetSym);
                         MiRResult mir=list.get(hm.get(acc+":"+targetSym+":"+entrez+":"+ensembl));
                         mir.addDBResult(res);
                     }
@@ -245,7 +245,7 @@ public class MiRResult {
                         if(col.length>7){
                             link=col[7];
                         }
-                        MiRDBResult res=new MiRDBResult(db,acc,id,score,link);
+                        MiRDBResult res=new MiRDBResult(db,acc,id,score,link,entrez,ensembl,targetSym);
                         MiRResult mir=list.get(hm.get(acc+":"+targetSym+":"+entrez+":"+ensembl));
                         mir.addDBResult(res);
                     }

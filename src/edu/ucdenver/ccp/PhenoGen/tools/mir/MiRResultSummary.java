@@ -70,6 +70,7 @@ public class MiRResultSummary {
                 includedGenes.put(res.getTargetSym()+":"+res.getTargetEntrez()+":"+res.getTargetEnsembl(),res);
             }
         }
+        results.add(res);
     }
 
     public String getAccession() {
@@ -128,6 +129,27 @@ public class MiRResultSummary {
         }
         return ret;
     }
+    
+    public HashMap<String, ArrayList<MiRDBResult>> getDBResult(){
+        HashMap<String, ArrayList<MiRDBResult>> ret=new HashMap<String, ArrayList<MiRDBResult>>();
+        for(int i=0;i<results.size();i++){
+            HashMap<String, ArrayList<MiRDBResult>> tmpDB=results.get(i).getDbResult();
+            Iterator dbItr=tmpDB.keySet().iterator();
+            while(dbItr.hasNext()){
+                String db=(String)dbItr.next();
+                if(ret.containsKey(db)){
+                    ArrayList<MiRDBResult> tmpArr=ret.get(db);
+                    tmpArr.addAll(tmpDB.get(db));
+                }else{
+                    ArrayList<MiRDBResult> tmpArr=new ArrayList<MiRDBResult>();
+                    tmpArr.addAll(tmpDB.get(db));
+                    ret.put(db, tmpArr);
+                }
+            }
+        }
+        return ret;
+    }
+    
     
     public String getPredictedListHTML(){
         String ret="Predicted Genes Targets:<BR>";

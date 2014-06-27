@@ -3,6 +3,13 @@
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
+
+<style>
+	table#resultSummaryMirGeneTbl tr.selected td, table#resultDetailMirGeneTbl tr.selected td{
+		background:	#bed9ba;
+	}
+</style>
+
 <%
 	miRT.setup(pool,session);
 	MiRResult myMiRResult=new MiRResult();
@@ -122,7 +129,7 @@
         	<%for (int i=0;i<summaryList.size();i++){
 				MiRResultSummary tmp=summaryList.get(i);
 				%>
-            	<TR>
+            	<TR class="<%=tmp.getAccession()%>">
                 	<TD><a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a></TD>
             		<TD><span id="mirDetail<%=tmp.getAccession()%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
                     <TD><span class="<%if(tmp.getValidCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getValidListHTML()%>"><%=tmp.getValidCount()%></span></TD>
@@ -262,18 +269,28 @@
 	$(".mirDetailResultInfo").tooltipster({
 				position: 'top-left',
 				maxWidth: 350,
-				offsetX: 10,
-				offsetY: 5,
+				offsetX: -10,
+				offsetY: -10,
 				contentAsHTML:true,
 				//arrow: false,
 				interactive: true,
 				interactiveTolerance: 350
 			});
+	$(".mirtooltip2").tooltipster({
+				position: 'top-left',
+				maxWidth: 350,
+				offsetX: -10,
+				offsetY: 5,
+				contentAsHTML:true,
+				//arrow: false,
+				interactive: true,
+				interactiveTolerance: 550
+			});
 	$(".hoverDetail").tooltipster({
 				position: 'top-left',
 				maxWidth: 350,
-				offsetX: -230,
-				offsetY: 5,
+				offsetX: -10,
+				offsetY: 0,
 				contentAsHTML:true,
 				//arrow: false,
 				interactive: true,
@@ -283,12 +300,14 @@
 	$('span.mirViewDetail').on('click',function(){
 			var id="<%=id%>";
 			var selectedID=(new String($(this).attr("id"))).substr(9);
-			/*$('html, body').animate({
-				scrollTop: $( '#mirDetailedView' ).offset().top
+			$('html, body').animate({
+				scrollTop: $( '#mirresultDetail' ).offset().top
 			}, 200);
-			$('table#mirTbl tr.selected').removeClass("selected");
-			$('table#mirTbl tr.'+selectedID).addClass("selected");*/
-			//$('#wait2').show();
+			$('table#resultSummaryMirGeneTbl tr.selected').removeClass("selected");
+			$('table#resultDetailMirGeneTbl tr.selected').removeClass("selected");
+			$('table#resultSummaryMirGeneTbl tr.'+selectedID).addClass("selected");
+			$('table#resultDetailMirGeneTbl tr.'+selectedID).addClass("selected");
+			
 			$.ajax({
 				url: contextPath + "/web/geneLists/include/getmultiMiRDetail.jsp",
    				type: 'GET',
@@ -297,7 +316,7 @@
 				complete: function(){
 					
 				},
-    			success: function(data2){ 
+    			success: function(data2){
         			$('div#mirresultDetail').html(data2);
     			},
     			error: function(xhr, status, error) {

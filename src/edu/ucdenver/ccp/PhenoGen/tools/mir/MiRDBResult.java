@@ -48,20 +48,26 @@ public class MiRDBResult{
     private String pubmedID="";
     private double score=0.0;
     private String link="";
+    private String entrez="";
+    private String ensembl="";
+    private String geneSymbol="";
     
     public MiRDBResult(){
         
     }
     
-    public MiRDBResult(String db,String accession,String id,double score,String link){
+    public MiRDBResult(String db,String accession,String id,double score,String link,String entrez,String ensembl,String geneSym){
         this.database=db;
         this.accession=accession;
         this.id=id;
         this.score=score;
         this.link=link;
+        this.entrez=entrez;
+        this.ensembl=ensembl;
+        this.geneSymbol=geneSym;
     }
 
-    public MiRDBResult(String db,String accession,String id,String experiment,String support, String pubmedID,String link){
+    public MiRDBResult(String db,String accession,String id,String experiment,String support, String pubmedID,String link,String entrez,String ensembl,String geneSym){
         this.database=db;
         this.accession=accession;
         this.id=id;
@@ -69,6 +75,9 @@ public class MiRDBResult{
         this.support=support;
         this.pubmedID=pubmedID;
         this.link=link;
+        this.entrez=entrez;
+        this.ensembl=ensembl;
+        this.geneSymbol=geneSym;
     }
     
     public String getDatabase() {
@@ -133,6 +142,30 @@ public class MiRDBResult{
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getEntrez() {
+        return entrez;
+    }
+
+    public void setEntrez(String entrez) {
+        this.entrez = entrez;
+    }
+
+    public String getEnsembl() {
+        return ensembl;
+    }
+
+    public void setEnsembl(String ensembl) {
+        this.ensembl = ensembl;
+    }
+
+    public String getGeneSymbol() {
+        return geneSymbol;
+    }
+
+    public void setGeneSymbol(String geneSymbol) {
+        this.geneSymbol = geneSymbol;
     }
     
     

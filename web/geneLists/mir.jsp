@@ -97,7 +97,7 @@
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
     <table style="width:100%;">
-    <TR><TD style="width:30%;vertical-align:top;">
+    <TR><TD style="width:30%;vertical-align:top;height:100%; min-height:500px;">
     	<div style="display:inline-block;height:100%;">
 		  <div id="mirAccord" style="height:100%; text-align:left;">
             	<H2>Run New Analysis on Gene List</H2>
@@ -123,8 +123,8 @@
                    Predicted Cutoff: Top <input id="cutoff" type="text" size="5" value="<%=cutoff%>" /><span id="lblPerc">% of </span> miRNAs 
                             <span class="mirtooltip"  title="Set the cutoff for the predicted cutoff type.  Ex. If Top percentage of miRNA targets is selected and 10 is entered you are searching the top 10% of predicted targets.  If Top number of miRNA targets is selected and 30000 is entered you are searching only the top 30,000 predicted targets."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <HR />
-                   Disease/Drug Association: <input id="disease" type="text" size="15"/>
-                            <HR />
+                   <!--Disease/Drug Association: --><input id="disease" type="hidden" value="" />
+                            <!--<HR />-->
                    <input type="button" id="runBtn"  value="Run MultiMiR" onclick="runMultiMir()"/><span id="runStatus"></span>
                 </div>
                 
@@ -137,6 +137,7 @@
                 
          	</div>
          </div>
+
          <!-- END Side bar controls-->
          </TD>
          <TD  style="width:68%; vertical-align:top;">
@@ -165,12 +166,28 @@
 		var mirAutoRefreshHandle=0;
 		
 		$(document).ready(function() {
-			$( 'div#mirAccord' ).accordion({ heightStyle: "content" });
+			$( 'div#mirAccord' ).accordion({ heightStyle: "fill"  });
+			
 			//setupPage();
 			setTimeout("setupMain()", 100); 
 			setupExpandCollapse();
 			runGetMultiMiRResults();
+			$( 'div#mirAccord' ).accordion({'active':1});
+			
+			$(".mirtooltip").tooltipster({
+				position: 'top-left',
+				maxWidth: 350,
+				offsetX: -10,
+				offsetY: 5,
+				contentAsHTML:true,
+				//arrow: false,
+				interactive: true,
+				interactiveTolerance: 350
+			});
 		});
+		
+		
+		
 		function runMultiMir(){
 			var species="<%=myOrganism%>";
 			var id=<%=selectedGeneList.getGene_list_id()%>;

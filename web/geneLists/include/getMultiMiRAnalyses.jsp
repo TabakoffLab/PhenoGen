@@ -17,6 +17,11 @@
 	boolean running=false;
 	
 %>
+<style>
+	table#resultTbl tr.selected td{
+		background:	#bed9ba;
+	}
+</style>
 <BR />
 <table id="resultTbl" name="items" class="list_base" style="text-align:center;width:100%;">
 	<thead>
@@ -60,7 +65,7 @@
 				}
 			}
 		%>
-        	<TR>
+        	<TR class="arid<%=results[i].getAnalysis_id()%>">
             	<TD><%=results[i].getName()%> <span class="mirResultInfo"  title="Tables Searched: <%=tables%><BR><BR>Predicted Cutoff Type/Value: <%=cutoffStr%><BR><BR>Disease/Drug Terms: <%=disease%>"><img src="<%=imagesDir%>icons/info.gif"></span></TD>
                 <TD><%=results[i].getCreate_date_as_string()%></TD>
                 <TD><%=results[i].getStatus()%></TD>
@@ -87,7 +92,7 @@
 	$(".mirResultInfo").tooltipster({
 				position: 'top-left',
 				maxWidth: 350,
-				offsetX: -230,
+				offsetX: -10,
 				offsetY: 5,
 				contentAsHTML:true,
 				//arrow: false,
@@ -110,10 +115,15 @@
 				dataType: 'html',
 				beforeSend: function(){
 					$('#resultLoading').show();
+					$('#mirresultDetail').html("");
+					$('table#resultTbl tr.selected').removeClass("selected");
+					$('table#resultTbl tr.arid'+id).addClass("selected");
 				},
     			success: function(data2){ 
-        			$('#mirResult').html(data2);
+        			
+					$('#mirResult').html(data2);
 					$('#resultLoading').hide();
+					$( 'div#mirAccord').accordion( "refresh" );
     			},
     			error: function(xhr, status, error) {
         			$('#mirResult').html("Error retreiving result.  Please try again.");

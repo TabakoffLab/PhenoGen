@@ -81,55 +81,41 @@
 	String fullpath=userLoggedIn.getUserGeneListsDir() +"/" + selectedGeneList.getGene_list_name_no_spaces() +"/multiMir/"+result.getPath()+"/";
 	mirList=myMiRResult.readGeneListResults(fullpath);
 	
-	
+	ArrayList<MiRResultSummary> summaryList=new ArrayList<MiRResultSummary>();
+	summaryList=myMiRResultSummary.createSummaryList(mirList);
 %>
 
 	<%if(mirList.size()>0){
-		MiRResult selected=null;
-		for(int i=0;i<mirList.size()&&selected==null;i++){
-			if(selectedID.equals(mirList.get(i).getAccession())){
-				selected=mirList.get(i);
-			}
-		}
-		int val=0,pred=0;
-		if(selected!=null){
-			Set sourceKey=selected.getSourceCount().keySet();
-			for(int i=0;i<validated.length;i++){
-				if(sourceKey.contains(validated[i][0])){
-					val++;
-				}
-			}
-			for(int i=0;i<predicted.length;i++){
-				if(sourceKey.contains(predicted[i][0])){
-					pred++;
-				}
+		MiRResultSummary selected=null;
+		for(int i=0;i<summaryList.size()&&selected==null;i++){
+			if(selectedID.equals(summaryList.get(i).getAccession())){
+				selected=summaryList.get(i);
 			}
 		}
 		%>
-        <div style="width:100%;background:#66CCFF;">Selected miRNA - <%=selected.getAccession()%> ( <%=selected.getId()%>)</div>
+        <div style="width:100%;background:#bed9ba;font-size:16px;">Selected miRNA - <%=selected.getAccession()%> ( <%=selected.getId()%>)</div>
       <div><div style="text-align:left;font-size:18px; font-weight:bold;width:100%;"> Validated Database Results</div>
           <table id="mirValTbl" name="items" class="list_base" style="text-align:center;width:100%;">
                 <thead>
                     <TR class="col_title">
                     <TH style="color:#000000;">Gene</TH>
-                    <TH style="color:#000000;">Database</TH>
+                    <TH style="color:#000000;">Database<span class="mirtooltip5"  title="Each database is linked below to the specific page for the gene listed.  Some links will not work as some of the databases are not updated."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     <TH style="color:#000000;">Experiment</TH>
                     <TH style="color:#000000;">Support Type</TH>
                     <TH style="color:#000000;">Pubmed ID</TH>
                     </TR>
                 </thead>
-                <%if(val>0){%>
                     <tbody>
                         <%
-                            HashMap<String, ArrayList<MiRDBResult>> dblist=selected.getDbResult();
+                            HashMap<String, ArrayList<MiRDBResult>> dblist=selected.getDBResult();
                             for(int i=0;i<validated.length;i++){
                                 if(dblist.containsKey(validated[i][0])){
                                     ArrayList<MiRDBResult> list=dblist.get(validated[i][0]);
                                     for(int j=0;j<list.size();j++){
                                     %>
                                         <TR>
-                                        	<TD></TD>
-                                            <TD><%=validated[i][1]%></TD>
+                                        	<TD><%=list.get(j).getGeneSymbol()%> - <span style="font-size:10px;"><a href="http://www.ncbi.nlm.nih.gov/gene/?term=<%=list.get(j).getEntrez()%>" target="_blank">NCBI</a> - <a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(list.get(j).getEnsembl(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details">Ensembl</a></span></TD>
+                                            <TD><a href="<%=list.get(j).getLink()%>" target="_blank"><%=validated[i][1]%></a></TD>
                                             <TD><%=list.get(j).getExperiment()%></TD>
                                             <TD><%=list.get(j).getSupport()%></TD>
                                             <TD><a href="<%=lg.getPubmedRefLink(list.get(j).getPubmedID())%>" target="_blank"><%=list.get(j).getPubmedID()%></a></TD>
@@ -140,11 +126,6 @@
                             }
                         %>
                     </tbody>
-                <%}else{%>
-                    <tbody>
-                     <TR><TD colspan="4">No results to display</TD></TR>
-                    </tbody>
-                <%}%>
         </table>
         </div>
     
@@ -157,22 +138,21 @@
                     
                     <TR class="col_title">
                     <TH style="color:#000000;">Gene</TH>
-                    <TH style="color:#000000;">Database</TH>
-                    <TH style="color:#000000;">Score<span class="mirtooltip3"  title="Each database has its own scoring method.  Please refer to the multiMiR <a href=&quot;http://multimir.ucdenver.edu/&quot; target=&quot;_blank&quot;>site</a>/paper or each database for documentation on the scoring algorithm."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH style="color:#000000;">Database<span class="mirtooltip5"  title="Each database is linked below to the specific page for the gene listed.  Some links will not work as some of the databases are not updated."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
+                    <TH style="color:#000000;">Score<span class="mirtooltip5"  title="Each database has its own scoring method.  Please refer to the multiMiR <a href=&quot;http://multimir.ucdenver.edu/&quot; target=&quot;_blank&quot;>site</a>/paper or each database for documentation on the scoring algorithm."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
                     </TR>
                 </thead>
-                <%if(pred>0){%>
                     <tbody>
                         <%
-                            HashMap<String, ArrayList<MiRDBResult>> dblist=selected.getDbResult();
+                            //HashMap<String, ArrayList<MiRDBResult>> dblist=selected.getDBResult();
                             for(int i=0;i<predicted.length;i++){
                                 if(dblist.containsKey(predicted[i][0])){
                                     ArrayList<MiRDBResult> list=dblist.get(predicted[i][0]);
                                     for(int j=0;j<list.size();j++){
                                     %>
                                         <TR>
-                                        	<TD> </TD>
-                                            <TD><%=predicted[i][1]%></TD>
+                                        	<TD><%=list.get(j).getGeneSymbol()%> - <span style="font-size:10px;"><a href="http://www.ncbi.nlm.nih.gov/gene/?term=<%=list.get(j).getEntrez()%>" target="_blank">NCBI</a> - <a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(list.get(j).getEnsembl(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details">Ensembl</a></span></TD>
+                                            <TD><a href="<%=list.get(j).getLink()%>" target="_blank"><%=predicted[i][1]%></a></TD>
                                             <TD><%=list.get(j).getScore()%></TD>
                                         </TR>
                                     <%
@@ -181,11 +161,7 @@
                             }
                         %>
                     </tbody>
-                <%}else{%>
-                    <tbody>
-                     <TR><TD colspan="2">No results to display</TD></TR>
-                    </tbody>
-                <%}%>
+           
         </table>
         </div>
         <%}%>
@@ -220,6 +196,15 @@
 				interactiveTolerance: 550
 			});*/
 	
-
+	$(".mirtooltip5").tooltipster({
+				position: 'top-left',
+				maxWidth: 350,
+				offsetX: -10,
+				offsetY: 5,
+				contentAsHTML:true,
+				//arrow: false,
+				interactive: true,
+				interactiveTolerance: 550
+			});
 	
 </script>
