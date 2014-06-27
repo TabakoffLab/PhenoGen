@@ -1165,6 +1165,16 @@ public class GeneList{
   	public String getPathwayDir(String geneListAnalysisDir) {
 		return geneListAnalysisDir + "Pathway" + "/"; 
   	}
+        
+        /**
+	 * Constructs the path where the files for a pathway analysis performed on this GeneList will be held.
+	 * @param geneListAnalysisDir	the directory where all analyses for this GeneList will be held 
+	 * @return            a String containing the path for this pathway analysis
+	 */
+
+  	public String getMultiMiRDir(String geneListAnalysisDir) {
+		return geneListAnalysisDir + "multiMir" + "/"; 
+  	}
 
   	/** Retrieves the prefix for the files created during a MEME execution.  The prefix is the location of the userFiles directory +
 	 * the gene list name + "_" + the createDate + "_" + "MEME". 

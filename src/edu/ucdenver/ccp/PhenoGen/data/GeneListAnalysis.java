@@ -1,17 +1,15 @@
 package edu.ucdenver.ccp.PhenoGen.data;
 
-import java.sql.*;
-import java.io.*;
-import java.util.*;
-
-import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
-import edu.ucdenver.ccp.util.sql.*;
 import edu.ucdenver.ccp.PhenoGen.data.GeneList;
 import edu.ucdenver.ccp.PhenoGen.data.ParameterValue;
+import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 import edu.ucdenver.ccp.util.Debugger;
 import edu.ucdenver.ccp.util.ObjectHandler;
-
-/* for logging messages */
+import edu.ucdenver.ccp.util.sql.*;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
+import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 
 /**
@@ -31,11 +29,16 @@ public class GeneListAnalysis {
   private String create_date_for_filename;
   private String analysis_type;
   private String description;
-  private int visible;
+  private int visible=0;
   private GeneList analysisGeneList;
   private String sortColumn;
   private String sortOrder;
   private ParameterValue[] parameterValues;
+  private String name="";
+  private String status="";
+  private String path="";
+  private long excessiveTimeLimit=(24*60*60*1000);
+
 
   private Logger log=null;
 
@@ -51,6 +54,11 @@ public class GeneListAnalysis {
 	setAnalysis_id(analysis_id);
   }
 
+  public GeneListAnalysis (int analysis_id, DataSource pool) throws SQLException {
+	log = Logger.getRootLogger();
+	getGeneListAnalysis(analysis_id, pool);
+  }
+  
   public GeneListAnalysis (int analysis_id, Connection conn) throws SQLException {
 	log = Logger.getRootLogger();
 	getGeneListAnalysis(analysis_id, conn);
@@ -168,8 +176,38 @@ public class GeneListAnalysis {
     this.sortOrder = inString;
   }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
   
-   
+        public int createGeneListAnalysis(DataSource pool) throws SQLException{
+            int ret=0;
+            Connection conn=pool.getConnection();
+            ret=createGeneListAnalysis(conn);
+            conn.close();
+            return ret;
+        }
 	/**
 	 * Creates a record in the gene_list_analysis table.
 	 * @param conn	the database connection
@@ -187,9 +225,9 @@ public class GeneListAnalysis {
         	String query =
                 	"insert into gene_list_analyses "+
                 	"(analysis_id, gene_list_id, user_id, parameter_group_id, analysis_type, "+
-			"create_date, description, visible) values "+
+			"create_date, description, visible,name,status,path) values "+
                 	"(?, ?, ?, ?, ?, "+
-			"?, ?, 0)";
+			"?, ?, ?, ?, ?, ?)";
                 
 
 		log.debug("in GeneListAnalysis.createGeneListAnalysis.");
@@ -203,6 +241,10 @@ public class GeneListAnalysis {
                 pstmt.setString(5, this.getAnalysis_type());
                 pstmt.setTimestamp(6, this.getCreate_date());
                 pstmt.setString(7, this.getDescription());
+                pstmt.setInt(8, this.getVisible());
+                pstmt.setString(9, this.getName());
+                pstmt.setString(10, this.getStatus());
+                pstmt.setString(11, this.getPath());
                 
                 pstmt.executeUpdate();
 
@@ -210,6 +252,7 @@ public class GeneListAnalysis {
 		
 		for (int i=0; i<this.getParameterValues().length; i++) {
 			ParameterValue thisParameterValue = this.getParameterValues()[i];
+                        log.debug(i+": Parameter Value:"+thisParameterValue.getValue()+":"+thisParameterValue.getParameter());
 			thisParameterValue.createParameterValue(conn);
 		}
   		return analysis_id;
@@ -234,6 +277,9 @@ public class GeneListAnalysis {
 			"to_char(ga.create_date, 'MMddyyyy_hh24miss'), "+ 
 			"ga.analysis_type, "+
 			"ga.visible, "+
+                        "ga.name, "+
+                        "ga.status, "+
+                        "ga.path, "+
 			"ga.parameter_group_id "+
                 	"from gene_list_analyses ga, gene_lists gl "+ 
 			"where ga.gene_list_id = gl.gene_list_id "+
@@ -261,6 +307,39 @@ public class GeneListAnalysis {
         	return myGeneListAnalysisResultArray;
 	}
   
+        /**
+	 * Returns the particular gene list analysis type results for this user and/or gene_list_id
+	 * @param user_id	the identifier of the user 
+	 * @param gene_list_id	the identifier of the gene_list 
+	 * @param analysis_type	the type of analysis
+	 * @param conn	the database connection
+	 * @return            an array of the results 
+	 * @throws	SQLException if a database error occurs
+	 */
+
+	public GeneListAnalysis[] getGeneListAnalysisResults(int user_id, int gene_list_id, 
+						String analysis_type, DataSource pool) throws SQLException {
+            Connection conn=null;
+            SQLException err=null;
+            GeneListAnalysis[] ret=new GeneListAnalysis[0];
+            try{
+                conn=pool.getConnection();
+                ret=getGeneListAnalysisResults(user_id,gene_list_id,analysis_type,conn);
+                conn.close();
+            }catch(SQLException e){
+                err=e;
+            }finally{
+                if (conn != null) {
+                                 try { conn.close(); } catch (SQLException e) { ; }
+                                 conn = null;
+                                 if(err!=null){
+                                     throw(err);
+                                 }
+                }
+            }
+            return ret;
+        }
+        
 	/**
 	 * Returns the particular gene list analysis type results for this user and/or gene_list_id
 	 * @param user_id	the identifier of the user 
@@ -283,6 +362,9 @@ public class GeneListAnalysis {
 			"to_char(ga.create_date, 'MMddyyyy_hh24miss'), "+ 
 			"ga.analysis_type, "+
 			"ga.visible, "+
+                        "ga.name, "+
+                        "ga.status, "+
+                        "ga.path, "+
 			"ga.parameter_group_id "+
                 	"from gene_list_analyses ga, gene_lists gl "+ 
                 	"where ga.user_id = ? "+ 
@@ -343,15 +425,50 @@ public class GeneListAnalysis {
 		newGeneListAnalysis.setCreate_date_for_filename(dataRow[5]);
 		newGeneListAnalysis.setAnalysis_type(dataRow[6]);
 		newGeneListAnalysis.setVisible(Integer.parseInt(dataRow[7]));
-		if (dataRow[8] != null && !dataRow[8].equals("")) {
-			newGeneListAnalysis.setParameter_group_id(Integer.parseInt(dataRow[8]));
+                newGeneListAnalysis.setName(dataRow[8]);
+                newGeneListAnalysis.setStatus(dataRow[9]);
+                newGeneListAnalysis.setPath(dataRow[10]);
+		if (dataRow[11] != null && !dataRow[11].equals("")) {
+			newGeneListAnalysis.setParameter_group_id(Integer.parseInt(dataRow[11]));
 		} else {
 			newGeneListAnalysis.setParameter_group_id(-99);
 		}
+                
+                //check for long running probably an error
+                if(newGeneListAnalysis.getStatus().equals("Running")){
+                    java.util.Date cur=new java.util.Date();
+                    long diff=cur.getTime()-newGeneListAnalysis.getCreate_date().getTime();
+                    if(diff>excessiveTimeLimit){
+                        newGeneListAnalysis.setStatus("Error");
+                    }
+                }
 
         	return newGeneListAnalysis;
   	}
 
+        
+        public GeneListAnalysis getGeneListAnalysis(int analysis_id, DataSource pool) throws SQLException {
+            Connection conn=null;
+            SQLException err=null;
+            GeneListAnalysis ret=new GeneListAnalysis();
+            try{
+                conn=pool.getConnection();
+                ret=getGeneListAnalysis(analysis_id,conn);
+                conn.close();
+            }catch(SQLException e){
+                err=e;
+            }finally{
+                if (conn != null) {
+                                 try { conn.close(); } catch (SQLException e) { ; }
+                                 conn = null;
+                                 if(err!=null){
+                                     throw(err);
+                                 }
+                }
+            }
+            return ret;
+        }
+        
 	/**
 	 * Returns the gene list analysis results for this analysis_id.
 	 * @param analysis_id the identifier of the analysis record
@@ -369,6 +486,9 @@ public class GeneListAnalysis {
 			"to_char(ga.create_date, 'MMddyyyy_hh24miss'), "+ 
 			"ga.analysis_type, "+
 			"ga.visible, "+
+                        "ga.name, "+
+                        "ga.status, "+
+                        "ga.path, "+
 			"ga.parameter_group_id "+
                 	"from gene_list_analyses ga "+
                 	"where ga.analysis_id = ? "+
@@ -433,6 +553,103 @@ public class GeneListAnalysis {
 		pstmt.executeUpdate();
 	}
 
+        /**
+	 * Updates the status text.
+	 * @param conn	the database connection
+	 */
+
+	public void updateStatus (DataSource pool,String status) throws SQLException {
+                this.setStatus(status);
+                Connection conn=null;
+		try{
+                    conn=pool.getConnection();
+                    String query = 
+                            "update gene_list_analyses "+
+                            "set status = ? "+
+                            "where analysis_id = ?";
+
+                    log.debug("in updateStatus.  analysis = "+this.getDescription());
+                    PreparedStatement pstmt = conn.prepareStatement(query, 
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+                    pstmt.setString(1, this.getStatus());
+                    pstmt.setInt(2, this.getAnalysis_id());	
+                    pstmt.executeUpdate();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    
+                }finally{
+                    if (conn != null) {
+                                 try { conn.close(); } catch (SQLException e) { ; }
+                                 conn = null;
+                    }
+                }
+	}
+        
+        /**
+	 * Updates the path text.
+	 * @param conn	the database connection
+	 */
+
+	public void updatePath (DataSource pool,String path) throws SQLException {
+                this.setPath(path);
+                Connection conn=null;
+		try{
+                    conn=pool.getConnection();
+                    String query = 
+                            "update gene_list_analyses "+
+                            "set path = ? "+
+                            "where analysis_id = ?";
+
+                    log.debug("in updateStatus.  analysis = "+this.getDescription());
+                    PreparedStatement pstmt = conn.prepareStatement(query, 
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+                    pstmt.setString(1, this.getPath());
+                    pstmt.setInt(2, this.getAnalysis_id());	
+                    pstmt.executeUpdate();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    
+                }finally{
+                    if (conn != null) {
+                                 try { conn.close(); } catch (SQLException e) { ; }
+                                 conn = null;
+                    }
+                }
+	}
+        /**
+	 * Updates the status text.
+	 * @param conn	the database connection
+	 */
+
+	public void updateStatusVisible (DataSource pool,String status) throws SQLException {
+                Connection conn=null;
+		try{
+                    conn=pool.getConnection();
+                    String query = 
+                            "update gene_list_analyses "+
+                            "set status = ?, visible = 1"+
+                            "where analysis_id = ?";
+
+                    log.debug("in updateStatusVisible.  analysis = "+this.getDescription());
+                    PreparedStatement pstmt = conn.prepareStatement(query, 
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+                    pstmt.setString(1, this.getStatus());
+                    pstmt.setInt(2, this.getAnalysis_id());	
+                    pstmt.executeUpdate();
+                }catch(SQLException e){
+                    
+                }finally{
+                    if (conn != null) {
+                                 try { conn.close(); } catch (SQLException e) { ; }
+                                 conn = null;
+                    }
+                }
+	}
   
 	/**
 	 * Deletes a record from the gene_list_analyses table, and all associated records.
@@ -527,7 +744,9 @@ public class GeneListAnalysis {
 			dirToDelete = thisGeneList.getUpstreamDir(glaDir);	
 		} else if (thisGLA.getAnalysis_type().equals("Pathway")) {
 			dirToDelete = thisGeneList.getPathwayDir(glaDir);	
-		}
+		} else if (thisGLA.getAnalysis_type().equals("multiMiR")){
+                    dirToDelete=thisGeneList.getMultiMiRDir(glaDir)+this.getPath();
+                }
 		log.debug("glaDir="+glaDir);
 		log.debug("dirToDelete="+dirToDelete);
 		File[] filesInDir = new File(dirToDelete).listFiles();

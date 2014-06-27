@@ -1,27 +1,23 @@
 package edu.ucdenver.ccp.PhenoGen.data;
 
+import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
+import edu.ucdenver.ccp.util.Debugger;
+import edu.ucdenver.ccp.util.FileHandler;
+import edu.ucdenver.ccp.util.ObjectHandler;
+import edu.ucdenver.ccp.util.sql.Results;
 import java.io.File;
 import java.io.IOException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-
-import edu.ucdenver.ccp.util.ObjectHandler;
-import edu.ucdenver.ccp.util.Debugger;
-import edu.ucdenver.ccp.util.FileHandler;
-import edu.ucdenver.ccp.util.sql.Results;
-import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
-
-/* for logging messages */
+import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 
 /**
@@ -1247,6 +1243,36 @@ public class ParameterValue implements Comparable{
         	return myParameterValueArray;
 	}
 
+        
+        /**
+	 * Gets the parameters used by parameter group ID.
+	 * @param parameterGroupID     the identifier of the parameter group
+	 * @param pool    the database pool 
+	 * @return            An array of ParameterValue objects
+	 * @throws	SQLException if a database error occurs
+	 */
+	public ParameterValue[] getParameterValues (int parameterGroupID, DataSource pool) throws SQLException {
+            Connection conn=null;
+            SQLException err=null;
+            ParameterValue[] ret=new ParameterValue[0];
+            try{
+                conn=pool.getConnection();
+                ret=getParameterValues(parameterGroupID,conn);
+                conn.close();
+            }catch(SQLException e){
+                err=e;
+            }finally{
+                if (conn != null) {
+                                 try { conn.close(); } catch (SQLException e) { ; }
+                                 conn = null;
+                                 if(err!=null){
+                                     throw(err);
+                                 }
+                }
+            }
+            return ret;
+        }
+        
 	/**
 	 * Gets the parameters used by parameter group ID.
 	 * @param parameterGroupID     the identifier of the parameter group

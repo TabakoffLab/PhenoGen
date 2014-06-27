@@ -36,7 +36,7 @@ import java.util.Properties;
 import java.util.Set;
 import javax.sql.DataSource;
 import java.lang.Thread;
-
+import org.apache.log4j.Logger;
 
 
 public class MiRResult {
@@ -45,16 +45,18 @@ public class MiRResult {
     String targetSym="";
     String targetEntrez="";
     String targetEnsembl="";
-    HashMap sourceCount=new HashMap();
+    HashMap<String,String> sourceCount=new HashMap<String,String>();
+    Logger log=null;
     HashMap<String,ArrayList<MiRDBResult>> dbResult=new HashMap<String,ArrayList<MiRDBResult>>();
     
     
     public MiRResult(){
-        
+        log = Logger.getRootLogger();
     }
 
     
-    public MiRResult(String acc,String id,String targetSym,String entrez,String ensembl,HashMap sourceCount){
+    public MiRResult(String acc,String id,String targetSym,String entrez,String ensembl,HashMap<String,String> sourceCount){
+        log = Logger.getRootLogger();
         this.accession=acc;
         this.id=id;
         this.targetSym=targetSym;
@@ -107,8 +109,11 @@ public class MiRResult {
         return sourceCount;
     }
 
-    public void setSourceCount(HashMap sourceCount) {
+    public void setSourceCount(HashMap<String,String> sourceCount) {
         this.sourceCount = sourceCount;
+    }
+    public String getCountForSource(String source){
+        return sourceCount.get(source);
     }
     
     public void addDBResult(MiRDBResult res){
@@ -128,8 +133,14 @@ public class MiRResult {
     }
     
     
+    public ArrayList<MiRResult> readGeneListResults(String path){
+        log.debug("read Mir Results Gene List:"+path);
+        ArrayList<MiRResult> ret=new ArrayList<MiRResult>();
+        ret=MiRResult.readResults(path,"full");
+        return ret;
+    }
     
-    public static ArrayList<MiRResult> readResults(String path,String prefix){
+    public static  ArrayList<MiRResult> readResults(String path,String prefix){
         ArrayList<MiRResult> ret=new ArrayList<MiRResult>();
         HashMap<String,Integer> hm=new HashMap<String,Integer>();
         try{
@@ -150,14 +161,14 @@ public class MiRResult {
                         String targetSym=col[2];
                         String entrez=col[3];
                         String ensembl=col[4];
-                        HashMap sourceCount=new HashMap();
+                        HashMap<String,String> sourceCount=new HashMap<String,String>();
                         for(int i=5;i<col.length;i++){
                             sourceCount.put(columnList.get(i-5) , col[i].trim());
                         }
                         
                         MiRResult res=new MiRResult(acc,id,targetSym,entrez,ensembl,sourceCount);
                         ret.add(res);
-                        hm.put(acc, count-1);
+                        hm.put(acc+":"+targetSym+":"+entrez+":"+ensembl, count-1);
                     }
                     count++;
                 }
@@ -184,6 +195,9 @@ public class MiRResult {
                         String db=col[0];
                         String acc=col[1];
                         String id=col[2];
+                        String targetSym=col[3];
+                        String entrez=col[4];
+                        String ensembl=col[5];
                         String exp="";
                         if(col.length>=7){
                             exp=col[6];
@@ -196,8 +210,12 @@ public class MiRResult {
                         if(col.length>=9){
                             pmid=col[8];
                         }
-                        MiRDBResult res=new MiRDBResult(db,acc,id,exp,sup,pmid);
-                        MiRResult mir=list.get(hm.get(acc));
+                        String link="";
+                        if(col.length>10){
+                            link=col[9];
+                        }
+                        MiRDBResult res=new MiRDBResult(db,acc,id,exp,sup,pmid,link,entrez,ensembl,targetSym);
+                        MiRResult mir=list.get(hm.get(acc+":"+targetSym+":"+entrez+":"+ensembl));
                         mir.addDBResult(res);
                     }
                     count++;
@@ -219,9 +237,16 @@ public class MiRResult {
                         String db=col[0];
                         String acc=col[1];
                         String id=col[2];
+                        String targetSym=col[3];
+                        String entrez=col[4];
+                        String ensembl=col[5];
                         double score=Double.parseDouble(col[6]);
-                        MiRDBResult res=new MiRDBResult(db,acc,id,score);
-                        MiRResult mir=list.get(hm.get(acc));
+                        String link="";
+                        if(col.length>7){
+                            link=col[7];
+                        }
+                        MiRDBResult res=new MiRDBResult(db,acc,id,score,link,entrez,ensembl,targetSym);
+                        MiRResult mir=list.get(hm.get(acc+":"+targetSym+":"+entrez+":"+ensembl));
                         mir.addDBResult(res);
                     }
                     count++;
