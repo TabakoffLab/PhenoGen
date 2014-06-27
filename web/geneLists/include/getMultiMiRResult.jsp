@@ -108,9 +108,9 @@
 <TD>Tables Searched: <%=tables%></TD></TR><TR><TD>Predicted Cutoff Type/Value: <%=cutoffStr%></TD></TR><TR><TD>Disease/Drug Terms: <%=disease%></TD></TR>
 </TR>
 </table>-->
-<H2>miRNAs Targeting Genes in List</H2>
-<span id="btnresultSummary" class="button resultViewBTN" style="display:none;">View summary</span><span id="btnresultDetail" class="button resultViewBTN" >View detailed</span>
+<span style="font-size:16px; font-weight:bold;">miRNAs Targeting Genes in Gene List</span> <span id="btnresultSummary" class="button resultViewBTN" style="display:none;width:175px;">View Short Summary</span><span id="btnresultDetail" class="button resultViewBTN" style="width:175px;">View Detailed Summary</span>
 <div id="resultSummary" class="resultMainTable">
+Short Summary Table
 <table id="resultSummaryMirGeneTbl" name="items" class="list_base" style="text-align:center;">
 	<thead>
         	<TR class="col_title">
@@ -141,6 +141,7 @@
 </table>
 </div>
 <div id="resultDetail" class="resultMainTable">
+Detailed Summary Table
 <table id="resultDetailMirGeneTbl" name="items" class="list_base" style="text-align:center;">
 	<%if(mirList.size()>0){
 		Set sourceKey=mirList.get(0).getSourceCount().keySet();
@@ -307,7 +308,9 @@
 			$('table#resultDetailMirGeneTbl tr.selected').removeClass("selected");
 			$('table#resultSummaryMirGeneTbl tr.'+selectedID).addClass("selected");
 			$('table#resultDetailMirGeneTbl tr.'+selectedID).addClass("selected");
-			
+			var loadingTimer=setTimeout(function(){
+				$('#detailResultLoading').show();
+				},4000);
 			$.ajax({
 				url: contextPath + "/web/geneLists/include/getmultiMiRDetail.jsp",
    				type: 'GET',
@@ -317,7 +320,8 @@
 					
 				},
     			success: function(data2){
-        			$('div#mirresultDetail').html(data2);
+        			clearTimeout(loadingTimer);
+					$('div#mirresultDetail').html(data2);
     			},
     			error: function(xhr, status, error) {
         			$('div#mirresultDetail').html("<div>An error occurred generating this image.  Please try back later.</div>");

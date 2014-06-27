@@ -93,6 +93,9 @@
 			}
 		}
 		%>
+        <div id="detailResultLoading" style="display:none;width:100%;text-align:center;">
+                	<img src="<%=imagesDir%>wait.gif" alt="Loading Detailed Results..." text-align="center" ><BR />Loading Detailed Results...
+        </div>
         <div style="width:100%;background:#bed9ba;font-size:16px;">Selected miRNA - <%=selected.getAccession()%> ( <%=selected.getId()%>)</div>
       <div><div style="text-align:left;font-size:18px; font-weight:bold;width:100%;"> Validated Database Results</div>
           <table id="mirValTbl" name="items" class="list_base" style="text-align:center;width:100%;">
