@@ -28,6 +28,43 @@ span.control{
 		background:#989898;
 	}
 </style>
+<div class="whats_new version"><p><h3>Version: v2.12.2</h3><BR /> Updated:6/27/2014</p></div>
+				<ul>
+					<li> <span class="highlight-dark">Gene List Analysis</span>
+                    	<ul>
+                        	<li>Incorporated multiMiR(an R package available <a href="http://multimir.ucdenver.edu/" target="_blank">here</a>) to summarize validated and predicted targets of miRNA from 14 databases.
+                            	<ul>
+                                	<li>After selecting a mouse Gene List (support for Rat will be available in the future), you will see a new miRNA Targeting Gene(multiMiR) tab.</li>
+                                    <li>You may run a new analysis</li>
+                                    <li>Select a previous analysis:
+                                    <UL>
+                                    	<li>
+                                        	View:
+                                            <UL>
+                                                <li>a small table sumarizing the number of validated/predicted genes targeted.</li>
+                                                <li>a larger table with further detail about all the validated/predicted genes and databases.</li>
+                                            </UL>
+                                        </li>
+                                    	<li>Select an miRNA to view details:
+                                            <UL>
+                                                <li>view a list of all predicted database hits and scores</li>
+                                                <li>view a list of all validated database hits with experiment details and pubmed reference</li>
+                                            </UL>
+                                        </li>
+                                    </li>
+                                    </UL>
+                                    <li>Future additions:
+                                    	<UL>
+                                        	<li>run multiMiR with disease/drug targeting</li>
+                                            <li>in the browser run multiMiR on genes or miRNA in a region of interest</li>
+                                        </UL>
+                                    </li>
+                                </ul>
+                            </li>
+                    	</ul>
+                	</li>         
+				</ul>
+				<hr/>
 <div class="whats_new version"><p><h3>Version: v2.12</h3><BR /> Updated:6/11/2014</p></div>
 				<ul>
 					<li> <span class="highlight-dark">Genome/Transcriptome Data Browser:</span>

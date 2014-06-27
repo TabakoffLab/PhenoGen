@@ -140,7 +140,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
                     	<H2>Added multiMiR</H2>
                         <div style=" margin-left:5px;">
                         	<img src="<%=imagesDir%>multimir.png" width="300px"/><BR />
-                        	Using multiMiR(an R package available <a href="http://multimir.ucdenver.edu/" target="_blank">here</a>) you can view validated and predicted miRNAs that target specific genes.  You can also select a miRNA and view all genes targeted by the miRNA.  multiMiR is avaialble as a new tab for a selected gene in the Genome/Transcriptome Data Browser. It is currently available only for mouse genes, but will be available in rat soon.
+                        	Using multiMiR(an R package available <a href="http://multimir.ucdenver.edu/" target="_blank">here</a>) you can view validated and predicted miRNAs that target specific genes.  You can also select a miRNA and view all genes targeted by the miRNA.  multiMiR is avaialble as a new tab for a selected gene in the Genome/Transcriptome Data Browser and in Gene Lists after selecting a list. It is currently available only for mouse genes, but will be available in rat soon.
                         </div>
                         <H2>Added Rat Liver Transcriptome</H2>
                         <div style=" margin-left:5px;">
