@@ -8,7 +8,7 @@ multiMiR.getMiRTargetingGene <- function(geneID,organism,outputDir,outputPrefix,
 
 	library(multiMiR)
   
-	output=get.multimir(org=organism,target=geneID, table=tbl,predicted.cutoff.type=cutoffType,predicted.cutoff=cutoff,summary=TRUE)
+	output=get.multimir(org=organism,target=geneID, table=tbl,predicted.cutoff.type=cutoffType,predicted.cutoff=cutoff,summary=TRUE,add.link=TRUE)
 
 	###  Output txt file with Group Means and Standard Errors
   outputPred=paste(outputDir,outputPrefix,".pred.txt",sep="")

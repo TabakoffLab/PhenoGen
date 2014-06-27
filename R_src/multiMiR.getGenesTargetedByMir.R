@@ -8,7 +8,7 @@ multiMiR.getGenesTargetedByMir <- function(mirID,organism,outputDir,outputPrefix
   
   library(multiMiR)
   
-  output=get.multimir(org=organism,mirna=mirID, table=tbl,predicted.cutoff.type=cutoffType,predicted.cutoff=cutoff,summary=TRUE)
+  output=get.multimir(org=organism,mirna=mirID, table=tbl,predicted.cutoff.type=cutoffType,predicted.cutoff=cutoff,summary=TRUE,add.link=TRUE)
   
   outputPred=paste(outputDir,outputPrefix,".pred.txt",sep="")
   outputVal=paste(outputDir,outputPrefix,".val.txt",sep="")

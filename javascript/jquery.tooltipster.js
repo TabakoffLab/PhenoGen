@@ -806,7 +806,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				
 				if(practicalPosition == 'top-left') {
 					myLeft = proxy.offset.left + offsetX;
-					
+					if($(window).width()>1000){
+ 							myLeft=myLeft-(($(window).width()-1000)/2);
+ 					}
 					myTop = (proxy.offset.top - tooltipHeight) - offsetY - 12;
 					dontGoOffScreenX();
 					dontGoOffScreenY('bottom-left', 'top-left');
@@ -814,7 +816,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				
 				if(practicalPosition == 'top-right') {
 					myLeft = (proxy.offset.left + proxy.dimension.width + offsetX) - tooltipWidth;
-					
+					if($(window).width()>1000){
+ 						myLeft=myLeft-(($(window).width()-1000)/2);
+ 					}
 					myTop = (proxy.offset.top - tooltipHeight) - offsetY - 12;
 					dontGoOffScreenX();
 					dontGoOffScreenY('bottom-right', 'top-right');
@@ -830,7 +834,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				
 				if(practicalPosition == 'bottom-left') {
 					myLeft = proxy.offset.left + offsetX;
-					
+					if($(window).width()>1000){
+ 							myLeft=myLeft-(($(window).width()-1000)/2);
+ 					}
 					myTop = (proxy.offset.top + proxy.dimension.height) + offsetY + 12;
 					dontGoOffScreenX();
 					dontGoOffScreenY('top-left', 'bottom-left');
@@ -838,7 +844,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				
 				if(practicalPosition == 'bottom-right') {
 					myLeft = (proxy.offset.left + proxy.dimension.width + offsetX) - tooltipWidth;
-					
+					if($(window).width()>1000){
+ 							myLeft=myLeft-(($(window).width()-1000)/2);
+ 					}
 					myTop = (proxy.offset.top + proxy.dimension.height) + offsetY + 12;
 					dontGoOffScreenX();
 					dontGoOffScreenY('top-right', 'bottom-right');
