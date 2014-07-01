@@ -128,10 +128,21 @@ Short Summary Table
         <tbody>
         	<%for (int i=0;i<summaryList.size();i++){
 				MiRResultSummary tmp=summaryList.get(i);
+				String rowID=tmp.getAccession();
+				if(tmp.getAccession().equals("")){
+					rowID=tmp.getId();
+				}
 				%>
-            	<TR class="<%=tmp.getAccession()%>">
-                	<TD><a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a></TD>
-            		<TD><span id="mirDetail<%=tmp.getAccession()%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
+            	<TR class="<%=rowID.replace("*","")%>">
+                	<TD>
+                    	<%if(tmp.getAccession().equals("")){%>
+                            <a href="http://www.mirbase.org/cgi-bin/query.pl?terms=<%=tmp.getId().replace("*","")%>" target="_blank" title="Link to miRBase.">Accession # Missing</a>
+                        <%}else{%>
+                            <a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
+                        <%}%>
+                    	
+                    </TD>
+            		<TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:#688eb3;"><%=tmp.getId()%></span></TD>
                     <TD><span class="<%if(tmp.getValidCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getValidListHTML()%>"><%=tmp.getValidCount()%></span></TD>
                     <TD><span class="<%if(tmp.getPredictedCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getPredictedListHTML()%>"><%=tmp.getPredictedCount()%></span></TD>
                     <TD><span class="hoverDetail" title="<%=tmp.getTotalListHTML()%>"><%=tmp.getTotalCount()%></span></TD>
@@ -179,10 +190,19 @@ Detailed Summary Table
         <%for (int i=0;i<mirList.size();i++){
 			MiRResult tmp=mirList.get(i);
 			HashMap tmpSC=tmp.getSourceCount();
+			String rowID=tmp.getAccession();
+			if(tmp.getAccession().equals("")){
+				rowID=tmp.getId();
+			}
 			%>
-            <TR class="<%=tmp.getAccession()%>">
-            <TD><a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a></TD>
-            <TD><span id="mirDetail<%=tmp.getAccession()%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
+            <TR class="<%=rowID.replace("*","")%>">
+            <TD><%if(tmp.getAccession().equals("")){%>
+                	<a href="http://www.mirbase.org/cgi-bin/query.pl?terms=<%=tmp.getId().replace("*","")%>" target="_blank" title="Link to miRBase.">Accession # Missing</a>
+				<%}else{%>
+                	<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
+                <%}%>
+            </TD>
+            <TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
             <TD><%=tmp.getTargetSym()%></TD>
             <TD><a href="http://www.ncbi.nlm.nih.gov/gene/?term=<%=tmp.getTargetEntrez()%>" target="_blank"><%=tmp.getTargetEntrez()%></a></TD>
             <TD><a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tmp.getTargetEnsembl(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tmp.getTargetEnsembl()%></a></TD>
