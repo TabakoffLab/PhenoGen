@@ -105,7 +105,7 @@
 			</thead>
 			<tbody>
 			<%
-					myIDecoderClient.setNum_iterations(0);
+					myIDecoderClient.setNum_iterations(2);
 	                session.setAttribute("myGeneArray", myGeneArray);
                 	for (int i=0; i<myGeneArray.length; i++) {
 				%>

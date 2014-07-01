@@ -122,10 +122,18 @@ public class MiRResultSummary {
         for(int i=0;i<validatedList.size();i++){
             String[] list=validatedList.get(i).split(":");
             String text=list[0]+" - ";
-            if(list[0].equals("")){
+            if(list[0].equals("")&& list.length>=3){
                 text=list[2]+" - ";
+            }else if(list[0].equals("")&& list.length==2){
+                text=list[1]+" - ";
             }
-            ret=ret+"<BR>"+text+"<a href=http://www.ncbi.nlm.nih.gov/gene/?term="+list[1]+" target=_blank>NCBI</a> - <a href="+LinkGenerator.getEnsemblLinkEnsemblID(list[2],"mus_musculus")+" target=_blank>Ensembl</a>";
+            ret=ret+"<BR>"+text;
+            if(list.length>=2){
+                ret=ret+"<a href=http://www.ncbi.nlm.nih.gov/gene/?term="+list[1]+" target=_blank>NCBI</a>";
+            }
+            if(list.length>=3){
+                ret=ret+" - <a href="+LinkGenerator.getEnsemblLinkEnsemblID(list[2],"mus_musculus")+" target=_blank>Ensembl</a>";
+            }
         }
         return ret;
     }
@@ -156,10 +164,18 @@ public class MiRResultSummary {
         for(int i=0;i<predictedList.size();i++){
             String[] list=predictedList.get(i).split(":");
             String text=list[0]+" - ";
-            if(list[0].equals("")){
+            if(list[0].equals("")&& list.length>=3){
                 text=list[2]+" - ";
+            }else if(list[0].equals("")&& list.length==2){
+                text=list[1]+" - ";
             }
-            ret=ret+"<BR>"+text+"<a href=http://www.ncbi.nlm.nih.gov/gene/?term="+list[1]+" target=_blank>NCBI</a> - <a href="+LinkGenerator.getEnsemblLinkEnsemblID(list[2],"mus_musculus")+" target=_blank>Ensembl</a>";
+            ret=ret+"<BR>"+text;
+            if(list.length>=2){
+                ret=ret+"<a href=http://www.ncbi.nlm.nih.gov/gene/?term="+list[1]+" target=_blank>NCBI</a>";
+            }
+            if(list.length>=3){
+                ret=ret+" - <a href="+LinkGenerator.getEnsemblLinkEnsemblID(list[2],"mus_musculus")+" target=_blank>Ensembl</a>";
+            }
         }
         return ret;
     }
@@ -184,13 +200,13 @@ public class MiRResultSummary {
       HashMap<String,MiRResultSummary> hm=new HashMap<String,MiRResultSummary>();
       for(int i=0;i<results.size();i++){
           MiRResult cur=results.get(i);
-          if(hm.containsKey(cur.getAccession())){
-              MiRResultSummary sum=hm.get(cur.getAccession());
+          if(hm.containsKey(cur.getAccession()+":"+cur.getId())){
+              MiRResultSummary sum=hm.get(cur.getAccession()+":"+cur.getId());
               sum.addResult(cur);
           }else{
               MiRResultSummary sum=new MiRResultSummary(cur.getAccession(),cur.getId());
               sum.addResult(cur);
-              hm.put(cur.getAccession(),sum);
+              hm.put(cur.getAccession()+":"+cur.getId(),sum);
           }
       }
       ArrayList<MiRResultSummary> ret=new ArrayList<MiRResultSummary>();

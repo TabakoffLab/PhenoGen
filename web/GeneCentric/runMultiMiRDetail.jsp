@@ -105,8 +105,14 @@
 		</div>
 	<%if(mirList.size()>0){
 		MiRResult selected=null;
+		boolean useID=false;
+		if(selectedID.indexOf("-")>-1){
+			useID=true;
+		}
 		for(int i=0;i<mirList.size()&&selected==null;i++){
-			if(selectedID.equals(mirList.get(i).getAccession())){
+			if(!useID && selectedID.equals(mirList.get(i).getAccession())){
+				selected=mirList.get(i);
+			}else if(useID && selectedID.equals(mirList.get(i).getId())){
 				selected=mirList.get(i);
 			}
 		}
