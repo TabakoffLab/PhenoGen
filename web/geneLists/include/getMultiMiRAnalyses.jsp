@@ -123,7 +123,9 @@
         			
 					$('#mirResult').html(data2);
 					$('#resultLoading').hide();
-					$( 'div#mirAccord').accordion( "refresh" );
+					if($('div#mirAccord' ).data( "accordion" )){
+						$( 'div#mirAccord').accordion( "refresh" );
+					}
     			},
     			error: function(xhr, status, error) {
         			$('#mirResult').html("Error retreiving result.  Please try again.");

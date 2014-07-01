@@ -103,7 +103,7 @@
 	summaryList=myMiRResultSummary.createSummaryList(mirList);
 	
 %>
-<H1 style="color:#000000;">Results - <%=result.getName()%><span class="mirDetailResultInfo"  title="Tables Searched: <%=tables%><BR><BR>Predicted Cutoff Type/Value: <%=cutoffStr%><BR><BR>Disease/Drug Terms: <%=disease%>"><img src="<%=imagesDir%>icons/info.gif"></span></H1>
+<H1 style="color:#000000;">Results - <%=result.getName()%> &nbsp;&nbsp;&nbsp;<span class="mirDetailResultInfo"  title="Tables Searched: <%=tables%><BR><BR>Predicted Cutoff Type/Value: <%=cutoffStr%><BR><BR>Disease/Drug Terms: <%=disease%>"><img src="<%=imagesDir%>icons/info.gif"></span></H1>
 <!--<table><TR>
 <TD>Tables Searched: <%=tables%></TD></TR><TR><TD>Predicted Cutoff Type/Value: <%=cutoffStr%></TD></TR><TR><TD>Disease/Drug Terms: <%=disease%></TD></TR>
 </TR>
@@ -111,7 +111,7 @@
 <span style="font-size:16px; font-weight:bold;">miRNAs Targeting Genes in Gene List</span> <span id="btnresultSummary" class="button resultViewBTN" style="display:none;width:175px;">View Short Summary</span><span id="btnresultDetail" class="button resultViewBTN" style="width:175px;">View Detailed Summary</span>
 <div id="resultSummary" class="resultMainTable">
 Short Summary Table
-<table id="resultSummaryMirGeneTbl" name="items" class="list_base" style="text-align:center;">
+<table id="resultSummaryMirGeneTbl" name="items" class="list_base" style="text-align:center;width:100%;">
 	<thead>
         	<TR class="col_title">
             	<TH colspan="2" style="color:#000000;">Mature miRNA</TH>
@@ -128,10 +128,21 @@ Short Summary Table
         <tbody>
         	<%for (int i=0;i<summaryList.size();i++){
 				MiRResultSummary tmp=summaryList.get(i);
+				String rowID=tmp.getAccession();
+				if(tmp.getAccession().equals("")){
+					rowID=tmp.getId();
+				}
 				%>
-            	<TR class="<%=tmp.getAccession()%>">
-                	<TD><a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a></TD>
-            		<TD><span id="mirDetail<%=tmp.getAccession()%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
+            	<TR class="<%=rowID.replace("*","")%>">
+                	<TD>
+                    	<%if(tmp.getAccession().equals("")){%>
+                            <a href="http://www.mirbase.org/cgi-bin/query.pl?terms=<%=tmp.getId().replace("*","")%>" target="_blank" title="Link to miRBase.">Accession # Missing</a>
+                        <%}else{%>
+                            <a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
+                        <%}%>
+                    	
+                    </TD>
+            		<TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:#688eb3;"><%=tmp.getId()%></span></TD>
                     <TD><span class="<%if(tmp.getValidCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getValidListHTML()%>"><%=tmp.getValidCount()%></span></TD>
                     <TD><span class="<%if(tmp.getPredictedCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getPredictedListHTML()%>"><%=tmp.getPredictedCount()%></span></TD>
                     <TD><span class="hoverDetail" title="<%=tmp.getTotalListHTML()%>"><%=tmp.getTotalCount()%></span></TD>
@@ -179,10 +190,19 @@ Detailed Summary Table
         <%for (int i=0;i<mirList.size();i++){
 			MiRResult tmp=mirList.get(i);
 			HashMap tmpSC=tmp.getSourceCount();
+			String rowID=tmp.getAccession();
+			if(tmp.getAccession().equals("")){
+				rowID=tmp.getId();
+			}
 			%>
-            <TR class="<%=tmp.getAccession()%>">
-            <TD><a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a></TD>
-            <TD><span id="mirDetail<%=tmp.getAccession()%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
+            <TR class="<%=rowID.replace("*","")%>">
+            <TD><%if(tmp.getAccession().equals("")){%>
+                	<a href="http://www.mirbase.org/cgi-bin/query.pl?terms=<%=tmp.getId().replace("*","")%>" target="_blank" title="Link to miRBase.">Accession # Missing</a>
+				<%}else{%>
+                	<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
+                <%}%>
+            </TD>
+            <TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
             <TD><%=tmp.getTargetSym()%></TD>
             <TD><a href="http://www.ncbi.nlm.nih.gov/gene/?term=<%=tmp.getTargetEntrez()%>" target="_blank"><%=tmp.getTargetEntrez()%></a></TD>
             <TD><a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tmp.getTargetEnsembl(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tmp.getTargetEnsembl()%></a></TD>
@@ -250,7 +270,7 @@ Detailed Summary Table
 	});
 	var tblMirSummaryResult=$('#resultSummaryMirGeneTbl').dataTable({
 			"bPaginate": false,
-			"bDeferRender": false,
+			"bDeferRender": true,
 			"sScrollX": "650px",
 			"sScrollY": "450px",
 			"aaSorting": [[ 0, "desc" ]],
@@ -259,7 +279,7 @@ Detailed Summary Table
 	
 	var tblMirDetailResult=$('#resultDetailMirGeneTbl').dataTable({
 			"bPaginate": false,
-			"bDeferRender": false,
+			"bDeferRender": true,
 			"sScrollX": "650px",
 			"sScrollY": "450px",
 			"aaSorting": [[ 0, "desc" ]],
@@ -308,9 +328,9 @@ Detailed Summary Table
 			$('table#resultDetailMirGeneTbl tr.selected').removeClass("selected");
 			$('table#resultSummaryMirGeneTbl tr.'+selectedID).addClass("selected");
 			$('table#resultDetailMirGeneTbl tr.'+selectedID).addClass("selected");
-			var loadingTimer=setTimeout(function(){
-				$('#detailResultLoading').show();
-				},4000);
+			//var loadingTimer=setTimeout(function(){
+			$('#detailResultLoading').show();
+				//},4000);
 			$.ajax({
 				url: contextPath + "/web/geneLists/include/getmultiMiRDetail.jsp",
    				type: 'GET',
@@ -320,7 +340,7 @@ Detailed Summary Table
 					
 				},
     			success: function(data2){
-        			clearTimeout(loadingTimer);
+        			//clearTimeout(loadingTimer);
 					$('div#mirresultDetail').html(data2);
     			},
     			error: function(xhr, status, error) {

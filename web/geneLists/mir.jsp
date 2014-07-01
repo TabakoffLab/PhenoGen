@@ -97,8 +97,8 @@
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
     <table style="width:100%;">
-    <TR><TD style="width:30%;vertical-align:top;height:100%; min-height:500px;">
-    	<div style="display:inline-block;height:100%;">
+    <TR><TD style="width:30%;vertical-align:top;height:100%; min-height:600px;">
+    	<div style="display:inline-block;height:100%;min-height:600px;">
 		  <div id="mirAccord" style="height:100%; text-align:left;">
             	<H2>Run New Analysis on Gene List</H2>
                 <div style="font-size:12px;">
@@ -245,7 +245,7 @@
 					mirAutoRefreshHandle=setTimeout(function (){
 						runGetMultiMiRResults();
 					},20000);
-        			$('#resultList').html(data2);
+					$('#resultList').html(data2);
 					
     			},
     			error: function(xhr, status, error) {

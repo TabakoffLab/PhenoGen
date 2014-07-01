@@ -87,11 +87,18 @@
 
 	<%if(mirList.size()>0){
 		MiRResultSummary selected=null;
+		boolean useID=false;
+		if(selectedID.indexOf("-")>-1){
+			useID=true;
+		}
 		for(int i=0;i<summaryList.size()&&selected==null;i++){
-			if(selectedID.equals(summaryList.get(i).getAccession())){
+			if(!useID && selectedID.equals(summaryList.get(i).getAccession())){
+				selected=summaryList.get(i);
+			}else if(useID &&selectedID.equals(summaryList.get(i).getId())){
 				selected=summaryList.get(i);
 			}
 		}
+		
 		%>
         <div id="detailResultLoading" style="display:none;width:100%;text-align:center;">
                 	<img src="<%=imagesDir%>wait.gif" alt="Loading Detailed Results..." text-align="center" ><BR />Loading Detailed Results...
