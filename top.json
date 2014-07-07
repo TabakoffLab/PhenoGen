@@ -27,7 +27,13 @@
     {"id":24,"name":"Strain Specific Genomes","group":3,"groupName":"download","level":2,"descPage":"downloadGenome.jsp"},
     {"id":25,"name":"Genomic Marker Files","group":3,"groupName":"download","level":2,"descPage":"downloadMarker.jsp"},
     {"id":26,"name":"Homologs","group":6,"groupName":"genelist","level":2,"descPage":"glHomolog.jsp"},
-    {"id":27,"name":"Pathway Analysis","group":6,"groupName":"genelist","level":2,"descPage":"glPathway.jsp"}
+    {"id":27,"name":"Pathway Analysis","group":6,"groupName":"genelist","level":2,"descPage":"glPathway.jsp"},
+    {"id":28,"name":"General Info","group":7,"groupName":"announce","level":1},
+    {"id":29,"name":"What's New","group":7,"groupName":"announce","level":2,"descPage":"whats_new.jsp"},
+    {"id":30,"name":"Version Info","group":7,"groupName":"announce","level":2,"descPage":"curVer.jsp"},
+    {"id":31,"name":"Announce- ments","group":7,"groupName":"announce","level":2,"descPage":"announce.jsp"},
+    {"id":32,"name":"multiMiR","group":6,"groupName":"genelist","level":2,"descPage":"glMultiMir.jsp"}
+    
   ],
   "links":[
     {"source":1,"target":0,"value":3},
@@ -56,6 +62,11 @@
     {"source":24,"target":2,"value":3},
     {"source":25,"target":2,"value":3},
     {"source":26,"target":5,"value":3},
-    {"source":27,"target":5,"value":3}
+    {"source":27,"target":5,"value":3},
+    {"source":28,"target":0,"value":3},
+    {"source":29,"target":28,"value":3},
+    {"source":30,"target":28,"value":3},
+    {"source":31,"target":28,"value":3},
+    {"source":32,"target":5,"value":3}
   ]
 }

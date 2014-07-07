@@ -55,7 +55,7 @@ function setXSpacing(newSpace){
 
 
 var width = 660,
-    height = 800,
+    height = 925,
 	radius = 50;
 var charWidth=7.5;
 var xSpacing=240;
@@ -65,6 +65,8 @@ var curSelectedID="";
 var descLineX=0;
 var descLineY=0;
 
+var displayOverride=0;
+
 var xLevel=new Array();
 xLevel[0]=radius*1.3;
 xLevel[1]=xLevel[0]+xSpacing;
@@ -72,7 +74,7 @@ xLevel[2]=xLevel[1]+xSpacing;
 
 var yPos=new Array();
 
-var middle=height/2;
+var middle=height/2-50;
 
 var mouseEnter=NaN;
 
@@ -119,6 +121,32 @@ d3.json("top.json", function(error, graph) {
 									  return stroke; 
 									});
 
+  var inst=svg.append("g").attr("transform","translate(5,5)").attr("id","instructBox");
+  inst.append("rect")
+      					.attr("width",250).attr("height",120)
+      					.attr("rx",5).attr("ry",5)
+      					.style("fill","#FFFFFF");
+
+    inst.append("text").style("color","#000000").style("font-size","18px")
+    					.attr("x",10).attr("y",20)
+      					.text("Hover over or click on nodes");
+
+    inst.append("text").style("color","#000000").style("font-size","18px")
+    					.attr("x",10).attr("y",40)
+    					.text("in the graph below to see the");
+    inst.append("text").style("color","#000000")
+    					.attr("x",10).attr("y",60).style("font-size","18px")
+    					.text("tools/data available on the");
+    inst.append("text").style("color","#000000")
+    					.attr("x",10).attr("y",80).style("font-size","18px")
+    					.text("site.");
+    inst.append("text").style("stroke","#688eb3").style("fill","#688eb3").style("text-decoration","underline").style("cursor","pointer")
+    					.attr("x",10).attr("y",100).style("font-size","18px")
+    					.attr("id","pauseTxt")
+    					.on("click",animationToggle)
+    					.text("Pause");
+
+
   var node = svg.selectAll(".node")
       .data(graph.nodes)
     .enter().append("g")
@@ -153,6 +181,7 @@ d3.json("top.json", function(error, graph) {
 								  return op;
 								  })
 	.style("cursor","pointer")
+	.attr("id",function(d){return "d"+d.id})
 	.attr("class", function(d,i){
 								var classStr="mainFeature";
 							if(i==0){
@@ -210,24 +239,30 @@ d3.json("top.json", function(error, graph) {
         .attr("y2", function(d) { return graph.nodes[d.target].y; })
 	  });
 
+
+
 });
 
 
 function hoverClickNode(d){
 	var curTime=new Date().getTime();
-							 if(mouseEnter!=NaN && (curTime-mouseEnter>40 && d.level==1) ){
+							 if( (displayOverride==1 && d.level==1) //For programatic click through
+							 	|| (mouseEnter!=NaN && (curTime-mouseEnter>40 && d.level==1)) ){//for user interaction
 									 showDetailNodes(d);
+									if(displayOverride!=1){
+										animationStop();
+									}
 							 }
 							 if(d.level==2){
-								 if(mouseEnter!=NaN && curTime-mouseEnter>60){
-									 if(d3.select(this).style("opacity")==1){
-									 	if(d.id!=curSelectedID){
+								 if(displayOverride==1 || (mouseEnter!=NaN && curTime-mouseEnter>60)){
+									 if(displayOverride==1 || d3.select(this).style("opacity")==1){
+									 	if(displayOverride==1 || d.id!=curSelectedID){
 									 		boxLineTop.transition().duration(250)
 														.attr("x2", descLineX+radius).attr("y2", descLineY);
 											boxLineBottom.transition().duration(250)
 														.attr("x2", descLineX+radius).attr("y2", descLineY);
 										 	d3.selectAll("circle").style("stroke",d3.rgb("#999999")).style("stroke-width","1px");
-											d3.select(this).select("circle").transition().duration(350).style("stroke",d3.rgb("#FFFF66")).style("stroke-width","4px");
+											d3.select("g#d"+d.id).select("circle").transition().duration(350).style("stroke",d3.rgb("#FFFF66")).style("stroke-width","4px");
 											showDiv(d.descPage);
 											var tmpX=d.x;
 											var tmpY=d.y;
@@ -240,15 +275,18 @@ function hoverClickNode(d){
 											boxLineTop.transition().delay(500).duration(250)
 															.attr("x1", tmpX+radius)
 														  .attr("y1", tmpY)
-														  .attr("x2", width).attr("y2", 68).style("stroke-width",2);
+														  .attr("x2", width).attr("y2", 89).style("stroke-width",2);
 											boxLineBottom.transition().delay(500).duration(250)
 															.attr("x1", tmpX+radius).attr("y1", tmpY)
-														  .attr("x2", width).attr("y2",height-83).style("stroke-width",2);
+														  .attr("x2", width).attr("y2",height-87).style("stroke-width",2);
 											curSelectedID=d.id;
+											if(displayOverride!=1){
+												animationStop();
+											}
 										}
 									 }
 								 }
-							 }else if(d.level==0 && curTime-mouseEnter>80){
+							 }else if((displayOverride==1 && d.level==0) || (d.level==0 && curTime-mouseEnter>80)){
 								 hideDiv();
 								 boxLineTop.transition().duration(5).style("stroke-width",0);
 								 boxLineBottom.transition().duration(5).style("stroke-width",0);
@@ -364,3 +402,86 @@ do {
   } while (words.length);
   return lines;
 } 
+
+
+function animationToggle(){
+	if(timeoutHandle!=-1){
+		animationStop();
+	}else{
+		animationStart();
+	}
+}
+
+function animationStop(){
+	d3.select("#pauseTxt").text("Run");
+	stopRunningSelection();
+}
+
+function animationStart(){
+	d3.select("#pauseTxt").text("Pause");
+	startRunningSelection(0);
+}
+
+
+setTimeout(function(){
+		displayOverride=1;
+		//set selected node to announcements
+		var mn=svg.selectAll('g#d28')[0];
+		console.log(mn);
+		var d=mn[0].__data__;
+		hoverClickNode(d);
+		var dn=svg.selectAll('g#d31')[0];
+		console.log(dn);
+		var d2=dn[0].__data__;
+		hoverClickNode(d2);
+		displayOverride=0;
+	},200);
+
+//start rotating through.
+var mainCount=Math.floor((Math.random() * 5));;
+var featCount=0;
+var mainNode;
+var timeoutHandle=-1;
+
+//start automatic scrolling of features
+startRunningSelection(10000);
+function startRunningSelection(delay){
+	if(timeoutHandle==-1 ){
+		runSelection(delay);
+	}
+}
+
+function runSelection(delay){
+	timeoutHandle=setTimeout(function(){
+			displayOverride=1;
+			var mainNode=svg.selectAll('.mainFeature')[0];
+			if(mainCount>=mainNode.length){
+				mainCount=0;
+			}
+			var d=mainNode[mainCount].__data__;
+			hoverClickNode(d);
+
+			var detailNode=svg.selectAll('g.detail.'+d.groupName)[0];
+			if(featCount>=detailNode.length){
+				featCount=0;
+			}
+			var d2=detailNode[featCount].__data__;
+			hoverClickNode(d2);
+
+			featCount++;
+			if(featCount>=detailNode.length){
+				featCount=0;
+				mainCount++;
+			}
+			displayOverride=0;
+			runSelection(7500);
+		},delay);
+}
+
+function stopRunningSelection(){
+	
+	if(timeoutHandle!=-1){
+		clearTimeout(timeoutHandle);
+	}
+	timeoutHandle=-1;
+}

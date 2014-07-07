@@ -202,7 +202,7 @@ Detailed Summary Table
                 	<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
                 <%}%>
             </TD>
-            <TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
+            <TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:#688eb3;"><%=tmp.getId()%></span></TD>
             <TD><%=tmp.getTargetSym()%></TD>
             <TD><a href="http://www.ncbi.nlm.nih.gov/gene/?term=<%=tmp.getTargetEntrez()%>" target="_blank"><%=tmp.getTargetEntrez()%></a></TD>
             <TD><a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tmp.getTargetEnsembl(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tmp.getTargetEnsembl()%></a></TD>
@@ -332,7 +332,7 @@ Detailed Summary Table
 			$('#detailResultLoading').show();
 				//},4000);
 			$.ajax({
-				url: contextPath + "/web/geneLists/include/getmultiMiRDetail.jsp",
+				url: contextPath + "/web/geneLists/include/getMultiMiRDetail.jsp",
    				type: 'GET',
 				data: {geneListAnalysisID:id,selectedID:selectedID},
 				dataType: 'html',
