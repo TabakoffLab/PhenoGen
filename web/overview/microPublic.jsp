@@ -11,7 +11,26 @@
 
     
 	<H2>Access Public Data</H2>
-                    <div id="accordion" style="height:100%;">
+                   <div  style="overflow:auto;height:92%;">
+                    	<H3>Demo/Screen Shots</H3>
+                        <div style="overflow:auto;display:inline-block;height:27%;width:100%;">
+                        	<table>
+                            <TR>
+                            <TD>
+                            <span class="tooltip"  title="Basic Array Search<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_basic.jpg" title="Basic Array Search"><img src="web/overview/microPublic_basic.jpg"  style="width:200px;"/></a></span>
+                            </TD>
+                            <TD>
+                            <span class="tooltip"  title="Advanced Array Search<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_advanced.jpg" title="Advanced Array Search" ><img src="web/overview/microPublic_advanced.jpg"  style="width:200px;" /></a></span>
+                            </TD>
+                            <TD>
+                            <span class="tooltip"  title="Example Results for Affy Rat Exon 1.0 ST Arrays<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_results.jpg" title="Example Results for Affy Rat Exon 1.0 ST Arrays" ><img src="web/overview/microPublic_results.jpg"  style="width:200px;" /></a></span>
+                            </TD>
+                            </TR>
+                            </table>
+                            </div>
                     	<H3>Feature List</H3>
                         <div>
                         <ul>
@@ -22,20 +41,19 @@
                             
                         </ul>
                         </div>
-                    	<h3>Sample Screen Shots</h3>
-                        <div style="text-align:center">
-                        	Basic Array Search
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_basic.jpg" title="Basic Array Search"><img src="web/overview/microPublic_basic.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
-                            Advanced Array Search
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_advanced.jpg" title="Advanced Array Search" ><img src="web/overview/microPublic_advanced.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
-                            Example Results for Affy Rat Exon 1.0 ST Arrays
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_results.jpg" title="Example Results for Affy Rat Exon 1.0 ST Arrays" ><img src="web/overview/microPublic_results.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
-                            
+                    	<BR /><BR />
+                        <div style="text-align:center;width:100%;">
+                        	<a href="<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>basicQuery.jsp" class="button" style="width:200px;color:#666666;">Login to Create a Dataset</a>
+                        	
+                            <BR />or<BR />
+                            <a href="<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>listDatasets.jsp" class="button" style="width:200px;color:#666666;">Login to Start an Analysis</a>
+                            <BR />or<BR />
+                            <a href="<%=accessDir%>registration.jsp" class="button" style="width:140px;color:#666666;">Register Here</a>
                         </div>
                         
                    </div>
 
-<script src="javascript/indexGraphAccordion.js">
+<script src="javascript/indexGraphAccordion1.0.js">
 						</script>
 
     

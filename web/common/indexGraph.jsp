@@ -36,16 +36,16 @@ div#announcement a:hover, div#announcementSmall a:hover {
 </style>
 
 					
-                    <div id="announcementSmall" style="display:none;background-color:#FFFFFF; width:100%;min-height:20px; max-height:150px; position:relative;color:#000000; font-weight:bold;">
+                    <!--<div id="announcementSmall" style="display:none;background-color:#FFFFFF; width:100%;min-height:20px; max-height:150px; position:relative;color:#000000; font-weight:bold;">
                     	NEW! RNA-Seq data summary graphics available. Click one 
                         <a href="web/graphics/genome.jsp">Genome</a>
                         <a href="web/graphics/transcriptome.jsp">Transcriptome</a>
-    				</div>
+    				</div>-->
 					<table class="index" cellspacing="0" cellpadding="0">
                     <tr><TD id="imageColumn" class="wide">
-                    <div id="svgInst" style="display:none;">
+                    <!--<div id="svgInst" style="display:none;">
                     	<h3 title="If you do not see a graph below please go to Help->Browser Support.">Hover over or click on nodes in the graph below to see the tools/data available on the site.</h3>
-                    </div>
+                    </div>-->
                     <div id="svgAlternate1" class="svgAlternate" style="color:#FF0000; background-color:#FFFFFF;"><BR />Your browser does not seem to support SVG(Scalable Vector Graphics).  The list below will appear in a graphic when viewed with a browser supporting SVG, as all major current browsers support SVG (PhenoGen supports Chrome 25+, FireFox 23+,  IE 10+, Safari 6+) please install a different browser or update this browser to be able to use PhenoGen.  Some features will not work without SVG and more graphics will be migrating to SVG in the future.  While it is unlikely, please let us know if you receive this message and have a browser that meets the minimum supported version or higher. <BR /><BR /></div>
                     <div id="svgAlternate2" class="svgAlternate" >
                     	<BR /><BR />
@@ -96,7 +96,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
 						if(!document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")){
 							$('ul.sub li').click(function (){
 										$('#announcement').hide();
-										$('#announcementSmall').show();
+										//$('#announcementSmall').show();
 										var jspPage=$(this).attr("id")+".jsp";
 										selectedSection= $( "#accordion" ).accordion( "option", "active" );
 										$('#indexDesc').slideUp("250");
@@ -129,14 +129,14 @@ div#announcement a:hover, div#announcementSmall a:hover {
 						var selectedSection=0;
                     </script>
                 	<div id="indexImage" >
-                    <script src="javascript/indexGraph.js">
+                    <script src="javascript/indexGraph1.0.js">
 					</script>
                     </div>
                     
                     </TD>
                     <TD  id="descColumn"  class="narrow">
                     
-                    <div id="announcement" style="background-color:#FFFFFF; width:100%;min-height:300px; max-height:650px; position:relative;color:#000000; overflow:auto; ">
+                    <!--<div id="announcement" style="background-color:#FFFFFF; width:100%;min-height:300px; max-height:650px; position:relative;color:#000000; overflow:auto; ">
                     	<H2>Added multiMiR</H2>
                         <div style=" margin-left:5px;">
                         	<img src="<%=imagesDir%>multimir.png" width="300px"/><BR />
@@ -172,10 +172,10 @@ div#announcement a:hover, div#announcementSmall a:hover {
                         </div><BR />
                         Reconstructed transcripts from this RNA-Seq data are still combined with PhenoGen array data in <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Genome/Transcriptome Data Browser</a>.
                         </div>
-    				</div>
+    				</div>-->
                     <div id="indexDesc" style="display:none;border-color:#000000; border-style:solid; border-width:1px; background-color:#FFFFFF; color:#000000;">
                             <span id="expandBTN" class="expandSect" style=" float:left; position:relative; top:9px; cursor:pointer;"><img src="web/images/icons/expand_section.jpg"></span>
-                            <div id="indexDescContent" style="height:650px;">
+                            <div id="indexDescContent" style="height:750px;width:335px;">
                             </div>
                             
         			</div>
@@ -184,6 +184,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
                     </table>
                     
                     <script type="text/javascript">
+						var contentWidth="335px";
 						$('#expandBTN').click( function () {
 							if($(this).attr("class")=="expandSect"){
 								$(this).removeClass("expandSect").addClass("minSect");
@@ -191,9 +192,10 @@ div#announcement a:hover, div#announcementSmall a:hover {
 								$('#imageColumn').removeClass("wide").addClass("narrow");
 								$('#descColumn').removeClass("narrow").addClass("wide");
 								$('#expandBTN img').attr("src","web/images/icons/minimize_section.jpg");
-								$('#demoVideo').attr("width","580px");
+								//$('#demoVideo').attr("width","580px");
 								//shiftLeft();
 								width=335;
+								contentWidth="660px";
 								setXSpacing(180);
 								redraw();
 								
@@ -203,12 +205,14 @@ div#announcement a:hover, div#announcementSmall a:hover {
 								$('#imageColumn').removeClass("narrow").addClass("wide");
 								$('#indexImage svg').attr("width","660px");
 								$('#expandBTN img').attr("src","web/images/icons/expand_section.jpg");
-								$('#demoVideo').attr("width","260px");
+								//$('#demoVideo').attr("width","260px");
 								//shiftRight();
 								width=660;
+								contentWidth="335px";
 								setXSpacing(240);
 								redraw();
 							}
+							$('#indexDescContent').css("width",contentWidth);
 						});
                     </script>
 

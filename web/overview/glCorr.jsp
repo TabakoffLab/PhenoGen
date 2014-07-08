@@ -10,7 +10,34 @@
 --%>
 
                 	<H2>Exon Expression Correlation</H2>
-                    <div id="accordion" style="height:100%;">
+                    <div  style="overflow:auto;height:92%;">
+                    	<H3>Demo/Screen Shots</H3>
+                        <div style="overflow:auto;display:inline-block;height:34%;width:100%;">
+                        	<table>
+                            <TR>
+                            <TD>
+                            <span class="tooltip"  title="The initial form to calculate exon-exon correlations for a tissue.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_form.jpg" title="Form to calculate exon-exon correlations for a tissue:"><img src="web/overview/glCorr_form.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                            </TD>
+                            <TD>
+                            <span class="tooltip"  title="Example default view of a gene.<BR>Click to view a larger image.">
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example default view of a gene:"><img src="web/overview/glCorr_gene.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                            </TD>
+                            <TD>
+                            <span class="tooltip"  title="Example of comparing two different transcripts side by side.<BR>Click to view a larger image.">
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_sidebyside.jpg" title="Example of comparing two different transcripts side by side"><img src="web/overview/glCorr_sidebyside.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                            </TD>
+                            <TD>
+                            <span class="tooltip"  title="Example of correlations in different tissues Heart(this image), Brown Adipose(next image).  Possibly indicating different isoforms in each tissue.<BR>Click to view a larger image.">
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example different corelations in different tissues Heart"><img src="web/overview/glCorr_gene.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                            </TD>
+                            <TD>
+                             <span class="tooltip"  title="Example of correlations in different tissues Heart(previous image), Brown Adipose(this image).  Possibly indicating different isoforms in each tissue.<BR>Click to view a larger image.">
+                             <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_bat.jpg" title="Example different corelations in different tissues Brown Adipose"><img src="web/overview/glCorr_bat.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                            </TD>
+                            </TR>
+                            </table>
+                        </div>
                     	<H3>Feature List</H3>
                         <div>
                         	<ul>
@@ -21,21 +48,13 @@
                                 
                             </ul>
                         </div>
-                        <h3>Sample Screen Shots</h3>
-                        <div style="text-align:center">
-                        	The initial form to calculate exon-exon correlations for a tissue:
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_form.jpg" title="Form to calculate exon-exon correlations for a tissue:"><img src="web/overview/glCorr_form.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
-                   			Example default view of a gene:
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example default view of a gene:"><img src="web/overview/glCorr_gene.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
-                            Example of comparing two different transcripts side by side
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_sidebyside.jpg" title="Example of comparing two different transcripts side by side"><img src="web/overview/glCorr_sidebyside.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
-                            Example of correlations in different tissues Heart(left), Brown Adipose(right).  Possibly indicating different isoforms in each tissue.<BR />
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example different corelations in different tissues Heart"><img src="web/overview/glCorr_gene.jpg"  style="width:49%;" title="Click to view a larger image"/></a>
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_bat.jpg" title="Example different corelations in different tissues Brown Adipose"><img src="web/overview/glCorr_bat.jpg"  style="width:49%;" title="Click to view a larger image"/></a>
+                        <BR /><BR />
+                        <div style="text-align:center;width:100%;">
+                        	<a href="<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>listGeneLists.jsp" class="button" style="width:170px;color:#666666;">Login to View Gene Lists</a><BR />or<BR /><a href="<%=accessDir%>registration.jsp" class="button" style="width:140px;color:#666666;">Register Here</a>
                         </div>
                     </div>
     
-    <script src="javascript/indexGraphAccordion.js">
+    <script src="javascript/indexGraphAccordion1.0.js">
 						</script>
 						
 
