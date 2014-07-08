@@ -11,20 +11,25 @@
 
 
                 	<H2>Human Whole Genome SNP Data</H2>
-                    <div id="accordion" style="height:100%;">
+                    <div style="height:100%;">
                     	<H3>Description</H3>
                         <div>
                         	Human array data for alcohol dependent subjects receiving outpatient treatment at the Medical University of Vienna (Austria).
                             <a href="http://www.ncbi.nlm.nih.gov/pubmed/23278386" target="_blank">PubMed Reference</a>
                         </div>
+                        <BR /><BR />
                         <H3>Files Available</H3>
                         <div>
                         	.CEL files from the Affymetrix Genome-Wide Human SNP Array 6.0.
                         </div>
+                        <BR /><BR />
+                        <div style="text-align:center;width:100%;">
+                        	<a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp" class="button" style="width:140px;color:#666666;">Go To Download</a>
+                        </div>
                     </div>
 
     
-    <script src="javascript/indexGraphAccordion.js">
+    <script src="javascript/indexGraphAccordion1.0.js">
 						</script>						
 
     

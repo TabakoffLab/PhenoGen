@@ -18,3 +18,15 @@
     nextEffect: 'fade',
     prevEffect: 'fade'
 });
+
+
+		$(".tooltip").tooltipster({
+				position: 'top-left',
+				maxWidth: 350,
+				offsetX: 0,
+				offsetY: 80,
+				contentAsHTML:true,
+				//arrow: false,
+				interactive: true,
+				interactiveTolerance: 550
+			});

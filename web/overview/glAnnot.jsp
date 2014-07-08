@@ -10,7 +10,29 @@
 --%>
 
                 	<H2>Annotations</H2>
-                    <div id="accordion" style="height:100%;">
+                    <div  style="overflow:auto;height:92%;">
+                    	<H3>Demo/Screen Shots</H3>
+                        <div style="overflow:auto;display:inline-block;height:20%;width:100%;">
+                        	<table>
+                            <TR>
+                            <TD>
+                            <span class="tooltip"  title="Annotation Table for a rat gene list.<BR>Click to view a larger image.">
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_rat.jpg" title="Annotation Table for a rat gene list"><img src="web/overview/glAnnot_rat.jpg"  style="width:150px;" title="Click to view a larger image"/></a>
+                            </span>
+                            </TD>
+                            <TD>
+                            <span class="tooltip"  title="Annotation Table for a mouse gene list.<BR>Click to view a larger image.">
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_mouse.jpg" title="Annotation Table for a mouse gene list"><img src="web/overview/glAnnot_mouse.jpg"  style="width:150px;" title="Click to view a larger image"/></a>
+                            </span>
+                            </TD>
+                            <TD>
+                            <span class="tooltip"  title="Annotation options for a longer gene list.<BR>Click to view a larger image.">
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_list.jpg" title="Annotation options for a longer gene list"><img src="web/overview/glAnnot_list.jpg"  style="width:150px;" title="Click to view a larger image"/></a>
+                            </span>
+                            </TD>
+                            </TR>
+                            </table>
+                        </div>
                     	<H3>Feature List</H3>
                         <div>
                         	However your gene list was created, we link supported identifiers to other database identifiers and provide links to the other databases with further information about each gene.
@@ -28,17 +50,13 @@
                                 <li>Allen Brain Atlas</li>
                             </ul>
                         </div>
-                        <h3>Sample Screen Shots</h3>
-                        <div style="text-align:center">
-                        	Annotation Table for a rat gene list
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_rat.jpg" title="Annotation Table for a rat gene list"><img src="web/overview/glAnnot_rat.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
-                            Annotation Table for a mouse gene list
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_mouse.jpg" title="Annotation Table for a mouse gene list"><img src="web/overview/glAnnot_mouse.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
-                            Annotation options for a longer gene list
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_list.jpg" title="Annotation options for a longer gene list"><img src="web/overview/glAnnot_list.jpg"  style="width:100%;" title="Click to view a larger image"/></a>
+                       <BR /><BR />
+                        <div style="text-align:center;width:100%;">
+                        	<a href="<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>listGeneLists.jsp" class="button" style="width:170px;color:#666666;">Login to View Gene Lists</a><BR />or<BR /><a href="<%=accessDir%>registration.jsp" class="button" style="width:140px;color:#666666;">Register Here</a>
                         </div>
+                        
                     </div>
     
-    <script src="javascript/indexGraphAccordion.js">
-						</script>
+    <script src="javascript/indexGraphAccordion1.0.js">
+	</script>
     
