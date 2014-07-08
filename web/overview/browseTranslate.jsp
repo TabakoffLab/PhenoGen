@@ -32,7 +32,10 @@
                             <li>Open regions directly from the search window</li>
                         </ul>
                         </div>
-                        
+                        <BR /><BR />
+                        <div style="text-align:center;width:100%;">
+                        	<a href="<%=contextRoot%>gene.jsp" class="button" style="width:170px;color:#666666;">Try Translating a Region</a>
+                        </div>
                     </div>
 
     

@@ -184,6 +184,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
                     </table>
                     
                     <script type="text/javascript">
+						var contentWidth="335px";
 						$('#expandBTN').click( function () {
 							if($(this).attr("class")=="expandSect"){
 								$(this).removeClass("expandSect").addClass("minSect");
@@ -191,9 +192,10 @@ div#announcement a:hover, div#announcementSmall a:hover {
 								$('#imageColumn').removeClass("wide").addClass("narrow");
 								$('#descColumn').removeClass("narrow").addClass("wide");
 								$('#expandBTN img').attr("src","web/images/icons/minimize_section.jpg");
-								$('#demoVideo').attr("width","580px");
+								//$('#demoVideo').attr("width","580px");
 								//shiftLeft();
 								width=335;
+								contentWidth="660px";
 								setXSpacing(180);
 								redraw();
 								
@@ -203,12 +205,14 @@ div#announcement a:hover, div#announcementSmall a:hover {
 								$('#imageColumn').removeClass("narrow").addClass("wide");
 								$('#indexImage svg').attr("width","660px");
 								$('#expandBTN img').attr("src","web/images/icons/expand_section.jpg");
-								$('#demoVideo').attr("width","260px");
+								//$('#demoVideo').attr("width","260px");
 								//shiftRight();
 								width=660;
+								contentWidth="335px";
 								setXSpacing(240);
 								redraw();
 							}
+							$('#indexDescContent').css("width",contentWidth);
 						});
                     </script>
 

@@ -12,7 +12,7 @@
     
 
                 	<H2>Browse Gene</H2>
-                    <div  style="overflow:auto;height:92%;">
+                    <div  style="overflow:auto;height:92%;width:100%;">
                     	<H3>Demo/Screen Shots</H3>
                         <div style="overflow:auto;display:inline-block;height:34%;width:100%;">
                         	<table>
@@ -50,9 +50,10 @@
                             </TR>
                             </table>
                         </div>
+                        <BR /><BR />
                         <div >
                         	<H3 style="font-weight:bold;font-size:16px;">Try the genome browser:</H3>
-                            <div style=" border:thin; border-color:#999999; border-style:solid; border-width:2px;margin-left:10px;">
+                            <div style=" border:thin; border-color:#999999; border-style:solid; border-width:2px;margin-left:5px;margin-right:5px;">
                                 <form method="post" action="gene.jsp" enctype="application/x-www-form-urlencoded"name="geneCentricForm" id="geneCentricForm">
                 
                                     <label>Gene Identifier or Region:
@@ -64,7 +65,7 @@
                 2. Choose a species.<BR />
                 3. Click Get Transcription Details."><img src="<%=imagesDir%>icons/info.gif"></span>
                                         </label>
-                                        <BR />
+                                        
                 
                
                                   <label>Species:

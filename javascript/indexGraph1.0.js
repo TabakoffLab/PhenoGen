@@ -18,8 +18,8 @@ if (/MSIE[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){
 
 
 function showDiv(jspPage){
-	$('#announcement').hide();
-	$('#announcementSmall').show();
+	//$('#announcement').hide();
+	//$('#announcementSmall').show();
 	selectedSection= $( "#accordion" ).accordion( "option", "active" );
 	$('#indexDesc').slideUp("250");
 	$('div#indexDescContent').html("<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
@@ -353,11 +353,14 @@ function showDetailNodes(d){
 function redraw(){
 	d3.selectAll("g")
     .attr("transform", function(d){
-    	var x=xLevel[d.level];
-    	var y=d.y;
+    	var x=5;
+    	var y=5;
+    	if(d!=undefined){
+	    	x=xLevel[d.level];
+	    	y=d.y;
+	    	d.x=x;
+    	}
     	var ret="translate("+x+","+y+")";
-    	d.x=x;
-    	
     	return ret;
     });
     d3.selectAll(".link").each(function(d){
