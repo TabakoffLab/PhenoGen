@@ -584,6 +584,8 @@ Or
 	<span class="button" onclick="window.close()" style="width:150px;">Close this Window</span>
     </div>
 <%}%>
+</div>
+</div>
 
 <%@ include file="/web/common/footer.jsp" %>
 

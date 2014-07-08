@@ -47,6 +47,48 @@
                             </TR>
                             </table>
                         </div>
+                        <div >
+                        	<H3 style="font-weight:bold;font-size:16px;">Try the genome browser:</H3>
+                            <div style=" border:thin; border-color:#999999; border-style:solid; border-width:2px;margin-left:10px;">
+                                <form method="post" action="gene.jsp" enctype="application/x-www-form-urlencoded"name="geneCentricForm" id="geneCentricForm">
+                
+                                    <label>Gene Identifier or Region:
+                                        <input type="text" name="geneTxt" id="geneTxt" size="15" value=""><span class="tooltip2"  title="1. Enter a gene identifier(e.g. gene symbol, probe set ID, ensembl ID, etc.) in the gene field.<BR />or<BR />Enter a region such as<div style=&quot;padding-left:20px;&quot;>
+                    &quot;chr1:1-50000&quot; which would be Chromosome 1 @ bp 1-50,000.<BR />
+                    &quot;chr1:5000+-2000&quot; which would be Chromosome 1 @ bp 3,000-7,000.<BR />
+                    &quot;chr1:5000+2000&quot; which would be Chromosome 1 @ bp 5,000-7,000.<BR />
+                    </div>or<BR />Click on the Translate Region to Mouse/Rat to find regions on the Mouse/Rat genome that correspond to a region of interest in the Human/Mouse/Rat genome.<BR />
+                2. Choose a species.<BR />
+                3. Click Get Transcription Details."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                        </label>
+                                        <BR />
+                
+               
+                                  <label>Species:
+                                  <select name="speciesCB" id="speciesCB">
+                                    <option value="Mm" >Mus musculus</option>
+                                    <option value="Rn" >Rattus norvegicus</option>
+                                  </select>
+                                  <span class="tooltip2"  title="Select the organism to view.  We currently support Rat(rn5) and Mouse(mm10)"><img src="<%=imagesDir%>icons/info.gif"></span>
+                                  </label>
+                                  <BR />
+                                  <label>Initial View:
+                                  <select name="defaultView" id="defaultView">
+                                    <option value="viewGenome" >Genome</option>
+                                    <option value="viewTrxome" >Transcriptome</option>
+                                    <option value="viewAll" >Both</option>
+                                  </select>
+                                  <span class="tooltip2"  title="Select the types of feature/tracks to display.  You can customize the tracks after the region/gene opens, but this allows you to select where to start from."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                </label>
+                                <BR />
+                                	<input type="hidden" id="auto" value="Y" />
+                                    <input type="hidden" name="action" id="action" value="Get Transcription Details" />
+                                <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" ></span>
+         
+                                </form>
+                            </div>
+                        </div>
+                        <BR /><BR />
                     	<H3>Feature List</H3>
                         <div>
                         Interactively explore Genomic Data/Transcriptomic Data (including RNA-Seq and Microarray Data) along a region of the genome.
@@ -70,3 +112,15 @@
 <script src="javascript/indexGraphAccordion1.0.js">
 						</script>
     
+   						 <script type="text/javascript">
+							$(".tooltip2").tooltipster({
+								position: 'top-right',
+								maxWidth: 350,
+								offsetX: 5,
+								offsetY: 5,
+								contentAsHTML:true,
+								//arrow: false,
+								interactive: true,
+								interactiveTolerance: 550
+							});
+                        </script>
