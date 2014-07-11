@@ -43,15 +43,68 @@ div#announcement a:hover, div#announcementSmall a:hover {
     				</div>-->
 					<table class="index" cellspacing="0" cellpadding="0">
                     <tr><TD id="imageColumn" class="wide">
-                    <!--<div id="svgInst" style="display:none;">
-                    	<h3 title="If you do not see a graph below please go to Help->Browser Support.">Hover over or click on nodes in the graph below to see the tools/data available on the site.</h3>
-                    </div>-->
-                    <div id="svgAlternate1" class="svgAlternate" style="color:#FF0000; background-color:#FFFFFF;"><BR />Your browser does not seem to support SVG(Scalable Vector Graphics).  The list below will appear in a graphic when viewed with a browser supporting SVG, as all major current browsers support SVG (PhenoGen supports Chrome 25+, FireFox 23+,  IE 10+, Safari 6+) please install a different browser or update this browser to be able to use PhenoGen.  Some features will not work without SVG and more graphics will be migrating to SVG in the future.  While it is unlikely, please let us know if you receive this message and have a browser that meets the minimum supported version or higher. <BR /><BR /></div>
-                    <div id="svgAlternate2" class="svgAlternate" >
+                    
+                    	<div class="javascriptAlt">
+                       		 <div style="color:#FF0000;">JavaScript is disabled.  Please enable JavaScript for this site.</div>
+                             <BR /><BR />
+                        	<h3>Click on a function in the list below to view additional information.</h3>
+                    		<div style="width:100%;color:#FFFFFF;margin-left:20px;">
+                            <H2>What can you do with PhenoGen?</H2>
+                            
+                            <ul style="color:#FFFFFF;">
+                                <li>Gene List Analysis</li>
+                                    <UL class="sub" style="margin-left:40px;">
+                                        <li><a href="web/overview/glPathway.jsp">Pathway Analysis</a></li>
+                                        <li><a href="web/overview/glValues.jsp">Statistics/Expression Values</a></li>
+                                        <li><a href="web/overview/glCorr.jsp">Exon Expression Correlations</a></li>
+                                        <li><a href="web/overview/glAnnot.jsp">Annotations</a></li>
+                                        <li><a href="web/overview/glPromoter.jsp">Promoter Analysis</a></li>
+                                        <li><a href="web/overview/glShare.jsp">Compare/Share</a></li>
+                                        <li><a href="web/overview/glHomolog.jsp">Homologs</a></li>
+                                        <li><a href="web/overview/glMultiMir.jsp">multiMiR</a></li>
+                                    </UL>
+                                <li>Microarray Analysis</li>
+                                    <UL class="sub" style="margin-left:40px;">
+                                        <li><a href="web/overview/microAnalysis.jsp">Normalize->Statistics->GeneLists</a></li>
+                                        <li ><a href="web/overview/microUpload.jsp">Upload Private Data</a></li>
+                                        <li ><a href="web/overview/microShare.jsp">Share Data</a></li>
+                                        <li ><a href="web/overview/microPublic.jsp">Access Public Data</a></li>
+                                    </UL>
+                                <li>Genome/Transcriptome Data Browser</li>
+                                    <UL class="sub" style="margin-left:40px;">
+                                        <li><a href="web/overview/browseGene.jsp">Browse a Region</a></li>
+                                        <li><a href="web/overview/browseRegion.jsp">Browse by a Gene</a></li>
+                                        <li><a href="web/overview/browseTranslate.jsp">Translate regions from one organism to another</a></li>
+                                    </UL>
+                                <li>Download Data</li>
+                                    <UL class="sub" style="margin-left:40px;">
+                                        <li><a href="web/overview/downloadMarker.jsp">Genomic Marker Files</a></li>
+                                        <li><a href="web/overview/downloadHumanSNP.jsp">Human Whole Genome SNP Data</a></li>
+                                        <li><a href="web/overview/downloadMicroarray.jsp">Microarray Data</a></li>
+                                        <li><a href="web/overview/downloadRNASeq.jsp">RNA-Seq Data</a></li>
+                                        <li ><a href="web/overview/downloadGenome.jsp">Strain Specific Genomes</a></li>
+                                    </UL>
+                                <li>QTL Analysis</li>
+                                    <UL class="sub" style="margin-left:40px;">
+                                        <li><a href="web/overview/qtlViz.jsp">Visualize eQTLs</a></li>
+                                        <li><a href="web/overview/qtlCalc.jsp">Calculate bQTLs</a></li>
+                                        <li><a href="web/overview/qtlList.jsp">Create eQTL Lists</a></li>
+                                    </UL>
+                                 <li>General Information</li>
+                                    <UL class="sub" style="margin-left:40px;">
+                                        <li><a href="web/overview/announce.jsp">Announcements</a></li>
+                                        <li><a href="web/overview/curVer.jsp">What's New</a></li>
+                                        <li><a href="web/overview/whats_new.jsp">Version Information</a></li>
+                                    </UL>
+                            </ul>
+                            </div>
+                     </div><!-- Alternate to javascript -->
+
+                    <div id="svgAlternate1" class="svgAlternate" style="color:#FF0000; background-color:#FFFFFF;display:none;"><BR />Your browser does not seem to support SVG(Scalable Vector Graphics).  The list below will appear in a graphic when viewed with a browser supporting SVG, as all major current browsers support SVG (PhenoGen supports Chrome 25+, FireFox 23+,  IE 10+, Safari 6+) please install a different browser or update this browser to be able to use PhenoGen.  Some features will not work without SVG and more graphics will be migrating to SVG in the future.  While it is unlikely, please let us know if you receive this message and have a browser that meets the minimum supported version or higher. <BR /><BR /></div>
+                    <div id="svgAlternate2" class="svgAlternate" style="display:none;">
                     	<BR /><BR />
                         <h3>Click on a function in the list below to view additional information.</h3>
                     <H2>What can you do with PhenoGen?</H2>
-                    	 <div id="svgAlternate3" class="svgAlternate" style="color:#FF0000;">JavaScript is disabled.  Please enable JavaScript for this site.  The links below will not work until JavaScript is enabled.</div>
                     	<ul>
                         	<li>Gene List Analysis</li>
                             	<UL class="sub">
@@ -93,7 +146,9 @@ div#announcement a:hover, div#announcementSmall a:hover {
                         </ul>
                      </div><!-- Alternate to SVG -->
                     <script type="text/javascript">
+						$('div.javascriptAlt').hide();
 						if(!document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")){
+							$('div.svgAlternate').show();
 							$('ul.sub li').click(function (){
 										$('#announcement').hide();
 										//$('#announcementSmall').show();
@@ -123,8 +178,9 @@ div#announcement a:hover, div#announcementSmall a:hover {
 										$('#indexDesc').slideDown("250");
 								});
 						}else{
-							$('div.svgAlternate').hide();
-							$('div#svgInst').show();
+							
+							//$('div.svgAlternate').hide();
+							//$('div#svgInst').show();
 						}
 						var selectedSection=0;
                     </script>
