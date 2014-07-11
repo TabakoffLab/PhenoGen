@@ -232,7 +232,7 @@ var dataPrefix="";
                <div id="regionTableDiv">
                    <div id="regionTableSubHeader" class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:left; width:100%; ">
                         <!--<span class="trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>-->
-                        <span>Features in Selected Track<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                        <span style="margin-left:30px;">Features in Selected Track<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                    </div>
                    <div id="regionTable" style="display:none;">
                         

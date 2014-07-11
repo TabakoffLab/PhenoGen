@@ -4391,7 +4391,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				localTxType="small";
 			}
 			//console.log("Selected TX Type:"+localTxType);
-			if(localTxType=="protein"||localTxType=="long"||localTxType=="liverTotal"){
+			if(localTxType=="protein"||localTxType=="long"||localTxType=="liverTotal"||(localTxType=="small"&& new String(d.getAttribute("ID")).indexOf("ENS")>-1)){
 				//if(svgList[newLevel]==null){
 					var displayID=d.getAttribute("ID");
 					if(d.getAttribute("geneSymbol")!=undefined&&d.getAttribute("geneSymbol")!=""){
@@ -4910,9 +4910,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 								d3.select(this).attr("class","").style("fill",that.color);
 							});
 						d3.select(this).attr("class","selected").style("fill","green");
+						that.zoomToFeature(d);
 						that.setupDetailedView(d);
 					})
-				.on("dblclick", that.zoomToFeature)
+				//.on("dblclick", that.zoomToFeature)
 				.on("mouseover", function(d) { 
 						//if(mouseTTOver==0){
 							overSelectable=1;
@@ -5206,7 +5207,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			//console.log("trigger:feature");
 			filterStr=that.getDisplayID(d.getAttribute("ID"));
 		}
-		if(that.trackClass!="smallnc"){
+		if(that.trackClass.indexOf("smallnc")==-1){
 			$('#tblGenes'+that.trackClass+'_filter input').val(filterStr).trigger(e);
 		}else{
 			$('#tblsmGenes_filter input').val(filterStr).trigger(e);

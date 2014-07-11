@@ -733,9 +733,9 @@ sub createXMLFile
 	
 	
 	createSNPXMLTrack(\%snpHOH,$outputDir,$trackDB);
-	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."combinedcoding.xml",$trackDB,1);
-	createProteinCodingXMLTrack(\%GeneHOH,$outputDir."combinednoncoding.xml",$trackDB,0);
-	createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."combinedsmallnc.xml",$outputDir."brainsmallnc.xml",$outputDir."ensemblsmallnc.xml",$trackDB,$chr);
+	#createProteinCodingXMLTrack(\%GeneHOH,$outputDir."combinedcoding.xml",$trackDB,1);
+	#createProteinCodingXMLTrack(\%GeneHOH,$outputDir."combinednoncoding.xml",$trackDB,0);
+	#createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."combinedsmallnc.xml",$outputDir."brainsmallnc.xml",$outputDir."ensemblsmallnc.xml",$trackDB,$chr);
 	
 	#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."helicos.xml");
 	my $scriptEnd=time();
