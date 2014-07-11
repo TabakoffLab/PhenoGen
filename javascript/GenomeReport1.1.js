@@ -89,13 +89,13 @@ function loadTrackTable(){
 				forwardPvalueCutoff:forwardPValueCutoff,
 				folderName: folderName
 			};
-		if(reportSelectedTrack.trackClass=="coding"){
-			jspPage="web/GeneCentric/geneTable.jsp";
-			params.type="coding";
-		}else if(reportSelectedTrack.trackClass=="noncoding"){
+		if(reportSelectedTrack.trackClass.indexOf("noncoding")>-1){
 			params.type="noncoding";
 			jspPage="web/GeneCentric/geneTable.jsp";
-		}else if(reportSelectedTrack.trackClass=="smallnc"){
+		}else if(reportSelectedTrack.trackClass=="coding"){
+			jspPage="web/GeneCentric/geneTable.jsp";
+			params.type="coding";
+		}else if(reportSelectedTrack.trackClass.indexOf("smallnc")>-1){
 			jspPage="web/GeneCentric/smallGeneTable.jsp";
 		}else if((new String(reportSelectedTrack.trackClass)).indexOf("snp")>-1){
 			//jspPage="web/GeneCentric/snpTable.jsp";
@@ -232,7 +232,7 @@ function displayDetailedView(track){
 		track.displayBreakDown("div#collapsableReport div#trackGraph");
 	}
 	var tc=new String(track.trackClass);
-	if(tc=="coding" || tc=="noncoding" || tc=="smallnc" || tc=="qtl"){
+	if(tc.indexOf("coding")>-1 || tc.indexOf("noncoding")>-1 || tc.indexOf("smallnc")>-1 || tc=="qtl"){
 		$("#regionTableSubHeader").show();
 		$("#regionTable").show();
 	}else{

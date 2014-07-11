@@ -70,26 +70,26 @@
                             <span class="tracktooltip<%=level%>" id="trxInfoDesc<%=level%>" title="This track consists of transcripts from the selected feature.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
              				<HR />
                     		<%}%>
-                        	<input name="trackcbx" type="checkbox" id="codingCBXg<%=level%>"   checked="checked" />Ensembl Protein Coding <%if(level==0){%>Genes <%}else{%> Transcripts <%}%>
-                            <span class="tracktooltip<%=level%>" id="codingInfoDesc<%=level%>" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
-                            <select name="trackSelect" class="codingDense<%=level%>Select" id="codingDense<%=level%>Selectg">
+                        	<input name="trackcbx" type="checkbox" id="ensemblcodingCBX<%=level%>"   checked="checked" />Ensembl Protein Coding <%if(level==0){%>Genes <%}else{%> Transcripts <%}%>
+                            <span class="tracktooltip<%=level%>" id="ensemblcodingInfoDesc<%=level%>" title="This track consists of transcripts from Ensembl.  Features are labeled with their Ensembl ID."><img src="<%=imagesDir%>icons/info.gif"></span>
+                            <select name="trackSelect" class="ensemblcodingDense<%=level%>Select" id="ensemblcodingDense<%=level%>Select">
                                 <option value="1" >Dense</option>
                                 <option value="3" selected="selected">Pack</option>
                                 <option value="2" >Full</option>
                             </select>
              				<HR />
-                            <input name="trackcbx" type="checkbox" id="noncodingCBXg<%=level%>"   checked="checked" />Ensembl Long Non-Coding <%if(level==0){%>Genes <%}else{%> Transcripts <%}%>
-                            <span class="tracktooltip<%=level%>" id="noncodingInfoDesc<%=level%>" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" class="noncodingDense<%=level%>Select" id="noncodingDense<%=level%>Selectg">
+                            <input name="trackcbx" type="checkbox" id="ensemblnoncodingCBX<%=level%>"   checked="checked" />Ensembl Long Non-Coding <%if(level==0){%>Genes <%}else{%> Transcripts <%}%>
+                            <span class="tracktooltip<%=level%>" id="ensemblnoncodingInfoDesc<%=level%>" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl.  This includes any biotype other than protein coding that is >=200bp."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <select name="trackSelect" class="ensemblnoncodingDense<%=level%>Select" id="ensemblnoncodingDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
                                  
                             <HR />
-                        	<input name="trackcbx" type="checkbox" id="smallncCBXg<%=level%>"  checked="checked" />Ensembl Small RNA <%if(level==0){%>Genes <%}else{%> Transcripts <%}%>
-                            <span class="tracktooltip<%=level%>" id="smallncInfoDesc<%=level%>" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
-                                <select name="trackSelect" class="smallncDense<%=level%>Select" id="smallncDense<%=level%>Selectg">
+                        	<input name="trackcbx" type="checkbox" id="ensemblsmallncCBX<%=level%>"  checked="checked" />Ensembl Small RNA <%if(level==0){%>Genes <%}else{%> Transcripts <%}%>
+                            <span class="tracktooltip<%=level%>" id="ensemblsmallncInfoDesc<%=level%>" title="This track consists of small RNAs(<200bp) from Ensembl."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                <select name="trackSelect" class="ensemblsmallncDense<%=level%>Select" id="ensemblsmallncDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
@@ -276,37 +276,37 @@
                            <BR />
                            <div class="trigger triggerEC" name="RNATrx<%=level%>" style="width:342px;background-color:#CCCCCC;border:solid; border-color:#000000; border-width:1px 1px 0px 1px;">RNA-Seq Transcript Reconstruction(Brain/Liver)</div>
                            <div id="RNATrx<%=level%>" style="width:372px;display:none;border:solid; border-color:#000000; border-width:1px 1px 1px 1px;">
-                           		<input name="trackcbx" type="checkbox" id="codingCBXt<%=level%>"   checked="checked" /> Brain Protein Coding / PolyA+ <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
-                            <span class="tracktooltip<%=level%>" id="codingtInfoDesc<%=level%>" title="This track consists of transcripts from Ensembl(Brown,Ensembl ID) and PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks) (Light Blue, Tissue.G/T#).  Tracks are labeled with either an Ensembl ID or a PhenoGen ID that also indicates the tissue sequenced.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
+                           		<input name="trackcbx" type="checkbox" id="braincodingCBX<%=level%>"   checked="checked" /> Brain Protein Coding / PolyA+ <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
+                            <span class="tracktooltip<%=level%>" id="braincodingtInfoDesc<%=level%>" title="This track consists of transcripts from PhenoGen RNA-Seq reconstructed transcripts(from CuffLinks).  Tracks are labeled with eithera PhenoGen ID that also indicates the tissue sequenced."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <!--<select name="trackSelect" id="codingOverlay<%=level%>Select">
                                 <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                             </select>-->
-                            <select name="trackSelect" class="codingDense<%=level%>Select" id="codingDense<%=level%>Selectt">
+                            <select name="trackSelect" class="braincodingDense<%=level%>Select" id="braincodingDense<%=level%>Select">
                                 <option value="1" >Dense</option>
                                 <option value="3" selected="selected">Pack</option>
                                 <option value="2" >Full</option>
                             </select>
              				<HR />
-                            <input name="trackcbx" type="checkbox" id="noncodingCBXt<%=level%>"  checked="checked" /> Brain Long Non-Coding / NonPolyA+ <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
-                            <span class="tracktooltip<%=level%>" id="noncodingtInfoDesc<%=level%>" title="This track consists of Long Non-Coding RNAs(>=200bp) from Ensembl(Purple,Ensembl ID) and PhenoGen RNA-Seq(Green,Tissue.#).  For Ensembl Transcripts this includes any biotype other than protein coding.  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
+                            <input name="trackcbx" type="checkbox" id="brainnoncodingCBX<%=level%>"  checked="checked" /> Brain Long Non-Coding / NonPolyA+ <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
+                            <span class="tracktooltip<%=level%>" id="brainnoncodingInfoDesc<%=level%>" title="This track consists of Long Non-Coding RNAs(>=200bp) from PhenoGen RNA-Seq(Green,Tissue.#).  For PhenoGen RNA-Seq it includes any transcript detected in the Non-PolyA+ fraction."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <!--<select name="trackSelect" id="noncodingOverlay<%=level%>Select">
                                     <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                                 </select>-->
-                                <select name="trackSelect" class="noncodingDense<%=level%>Select" id="noncodingDense<%=level%>Selectt">
+                                <select name="trackSelect" class="brainnoncodingDense<%=level%>Select" id="brainnoncodingDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
                                 </select>
                             <HR />
-                        	<input name="trackcbx" type="checkbox" id="smallncCBXt<%=level%>"  checked="checked" /> Brain Small RNA <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
-                            <span class="tracktooltip<%=level%>" id="smallnctInfoDesc<%=level%>" title="This track consists of small RNAs(<200bp) from Ensembl(Yellow,Ensembl ID) and PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
+                        	<input name="trackcbx" type="checkbox" id="brainsmallncCBX<%=level%>"  checked="checked" /> Brain Small RNA <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
+                            <span class="tracktooltip<%=level%>" id="brainsmallncInfoDesc<%=level%>" title="This track consists of small RNAs(<200bp) from PhenoGen RNA-Seq(Green,smRNA.#)."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <!--<select name="trackSelect" id="smallncOverlay<%=level%>Select">
                                     <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                                 </select>-->
-                                <select name="trackSelect" class="smallncDense<%=level%>Select" id="smallncDense<%=level%>Selectt">
+                                <select name="trackSelect" class="brainsmallncDense<%=level%>Select" id="brainsmallncDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
@@ -320,13 +320,13 @@
                                     <option value="2" >Full</option>
                                 </select>
                             <HR />
-                           <input name="trackcbx" type="checkbox" id="liverTotalCBXt<%=level%>"  checked="checked" /> Liver Total-RNA (BN-Lx only) <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
+                           <input name="trackcbx" type="checkbox" id="liverTotalCBX<%=level%>"  checked="checked" /> Liver Total-RNA (BN-Lx only) <%if(level==0){%>Reconstructed Genes <%}else{%>Reconstructed Transcripts <%}%>
                             <span class="tracktooltip<%=level%>" id="liverTotalInfoDesc<%=level%>" title="This track consists of transcripts from reconstructed from PhenoGen rRNA-depleted Total-RNA sequencing of BN-Lx Liver.(SHR data will be merged with this track soon)"><img src="<%=imagesDir%>icons/info.gif"></span>
                                 <!--<select name="trackSelect" id="smallncOverlay<%=level%>Select">
                                     <option value="1" >Overlay with Annotated</option>
                                     <option value="2" selected="selected">Seperate Track from Annotation</option>
                                 </select>-->
-                                <select name="trackSelect" class="liverTotalDense<%=level%>Select" id="liverTotalDense<%=level%>Selectt">
+                                <select name="trackSelect" class="liverTotalDense<%=level%>Select" id="liverTotalDense<%=level%>Select">
                                     <option value="1" >Dense</option>
                                     <option value="3" selected="selected">Pack</option>
                                     <option value="2" >Full</option>
