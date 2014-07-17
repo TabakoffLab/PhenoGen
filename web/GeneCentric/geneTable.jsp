@@ -12,6 +12,7 @@
 	String chromosome="";
 	String folderName="";
 	String type="";
+	String source="";
 	LinkGenerator lg=new LinkGenerator(session);
 	double forwardPValueCutoff=0.01;
 	int rnaDatasetID=0;
@@ -67,7 +68,9 @@
 	if(request.getParameter("type")!=null){
 		type=request.getParameter("type");
 	}
-	
+	if(request.getParameter("source")!=null){
+		source=request.getParameter("source");
+	}
 	if(min<max){
 			if(min<1){
 				min=1;
@@ -291,8 +294,15 @@
 						}
                         
 						if(	(curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200 && type.equals("coding")) ||
-							(!curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200 && type.equals("noncoding"))
-						){%>
+							(!curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200 && type.equals("noncoding")) ||
+							(type.equals("all"))
+						){
+						
+						
+							if( (source.equals("ensembl")&&curGene.getGeneID().startsWith("ENS")) ||	//ensembl track
+								(source.equals("brain")&&(curGene.getGeneID().toLowerCase().startsWith("brain")||curGene.containsTranscripts("brain")))||	//Brain track
+								(source.equals("liver")&&(curGene.getGeneID().toLowerCase().startsWith("liver")||curGene.containsTranscripts("liver")))	//Liver track
+							){%>
                         
                             <TR class="
                             <% String geneID="";
@@ -305,8 +315,12 @@
                             if(curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200){%>
                                 coding
                             <%}else if(!curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200){
-                                    viewClass="longRNA";%>
-                                    noncoding
+									if(curGene.getGeneID().toLowerCase().startsWith("liver")){%>
+										liver
+									<%}else{
+                                    	viewClass="longRNA";%>
+                                    	noncoding
+                                    <%}%>
                              <%}else if(curGene.getLength()<200){
                                     viewClass="smallRNA";%>
                                     smallnc
@@ -456,10 +470,10 @@
                                 <TD title="<%=remain%>"><!--DEscription -->
 									<%=shortDesc.trim().replaceAll("-","&nbsp;")%>
 									<%while(itr.hasNext()){
-										String source=itr.next().toString();
-										String values=bySource.get(source).toString();%>
+										String sourceItr=itr.next().toString();
+										String values=bySource.get(sourceItr).toString();%>
                                         <BR>
-                                        <%=source.trim()+":"+values.trim()%>
+                                        <%=sourceItr.trim()+":"+values.trim()%>
 									<%}%>
                                 </TD>
                                 
@@ -578,6 +592,7 @@
                                     <%}%>
                          <%}%>
                         </TR>
+                     <%}%>
                      <%}%>
                  <%}%>
 					

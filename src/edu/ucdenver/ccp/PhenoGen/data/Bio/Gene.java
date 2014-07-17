@@ -179,12 +179,23 @@ public class Gene {
         return this.ensemblAnnot;
     }
     
-    
+    public boolean containsTranscripts(String trxStart){
+        boolean ret=false;
+        for(int i=0;i<transcripts.size()&&!ret;i++){
+            Transcript tr=transcripts.get(i);
+            if(tr.getID().toLowerCase().startsWith(trxStart)){
+                ret=true;
+            }
+        }
+        return ret;
+    }
 
     public ArrayList<Transcript> getTranscripts() {
         return transcripts;
     }
 
+    
+    
     public void setTranscripts(ArrayList<Transcript> transcripts) {
         this.transcripts = transcripts;
         if(transcripts!=null){
