@@ -54,7 +54,7 @@ table.list_base tr.smallnc.ensembl td a{
 	color:#4C7298;
 	text-decoration:underline;
 }
-table.list_base tr.coding td a,table.list_base tr.noncoding td a,table.list_base tr.smallnc td a,table.list_base tr.numExonPlus td a,table.list_base tr.numExonMinus td a,table.list_base tr.numExonUknw td a{
+table.list_base tr.coding td a,table.list_base tr.noncoding td a,table.list_base tr.smallnc td a,table.list_base tr.numExonPlus td a,table.list_base tr.numExonMinus td a,table.list_base tr.numExonUknw td a,table.list_base tr.liver td a{
 	color:#FFFFFF;
 	text-decoration:underline;
 }
@@ -72,6 +72,16 @@ table.list_base tr.noncoding.ensembl.odd td,table.list_base tr td.noncoding.ense
 table.list_base tr.noncoding.odd td,table.list_base tr td.noncoding.odd{
 	background:#CECFCE;
 } 
+
+
+
+table.list_base tr.liver.odd td{
+	background:#bbbedd;
+}
+table.list_base tr.liver.even td{
+	background:#abaecd;
+}
+
 table.list_base tr.noncoding.ensembl.even td{
 	background:#BE95AE;
 }

@@ -13,6 +13,7 @@
 	String panel="";
 	String chromosome="";
 	String folderName="";
+	String source="";
 	LinkGenerator lg=new LinkGenerator(session);
 	double forwardPValueCutoff=0.01;
 	int rnaDatasetID=0;
@@ -64,6 +65,9 @@
 	}
 	if(request.getParameter("maxCoord")!=null){
 		max=Integer.parseInt(request.getParameter("maxCoord"));
+	}
+	if(request.getParameter("source")!=null){
+		source=request.getParameter("source");
 	}
 	ArrayList<SmallNonCodingRNA> smncRNA=gdt.getSmallNonCodingRNA(min,max,chromosome,rnaDatasetID,myOrganism);
 	if(min<max){
@@ -320,6 +324,10 @@
 							chr="chr"+chr;
 						}
 						if(curGene.getLength()<200){
+							if(
+								(source.equals("ensembl")&&curGene.getGeneID().startsWith("ENS")) ||
+								(source.equals("brain")&&curGene.containsTranscripts("smrna"))
+							){
                         %>
                         <TR class="
 						<% String geneID="";
@@ -472,10 +480,10 @@
 								Set keys=bySource.keySet();
                 				Iterator itr=keys.iterator();
 								while(itr.hasNext()){
-									String source=itr.next().toString();
-									String values=bySource.get(source).toString();
+									String sourceItr=itr.next().toString();
+									String values=bySource.get(sourceItr).toString();
 								%>
-                                	<%="<BR>"+source+":"+values%>
+                                	<%="<BR>"+sourceItr+":"+values%>
                                 <%}%>
                             </TD>
                             
@@ -544,8 +552,9 @@
                             
                         </TR>
                     	<%}
+						}
 					}%>
-					<%if(smncRNA!=null){
+					<%if(smncRNA!=null && source.equals("brain")){
 						for(int i=0;i<smncRNA.size();i++){
 							SmallNonCodingRNA rna=smncRNA.get(i);
 							if(!skipSMRNA.containsKey(rna.getID())){
@@ -613,10 +622,10 @@
                                     Set keys=bySource.keySet();
                                     Iterator itr=keys.iterator();
                                     while(itr.hasNext()){
-                                        String source=itr.next().toString();
-                                        String values=bySource.get(source).toString();
+                                        String sourceItr=itr.next().toString();
+                                        String values=bySource.get(sourceItr).toString();
                                     %>
-                                        <%="<BR>"+source+":"+values%>
+                                        <%="<BR>"+sourceItr+":"+values%>
                                     <%}%>
                                 </TD>
                                 

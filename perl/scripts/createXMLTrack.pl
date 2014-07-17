@@ -102,7 +102,7 @@ sub createProteinCodingXMLTrack{
 
 
 sub createSmallNonCodingXML{
-	my($smncHOHRef,$geneHOHRef, $outputFile,$trackDB,$chr) = @_; 
+	my($smncHOHRef,$geneHOHRef, $combinedoutputFile,$smncoutputFile,$ensoutputFile,$trackDB,$chr) = @_; 
 	my %smncHOH = %$smncHOHRef;
 	my %geneHOH=%$geneHOHRef;
 	
@@ -123,9 +123,11 @@ sub createSmallNonCodingXML{
 	};
 	
 	my %outGeneHOH;
+	my %ensHOH;
+	my $ensCount=0;
 	my $outCount=0;
 	
-	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	
 	if(@smncList>0){
 		my $cntSmnc=0;
 		foreach my $tmpSmnc (@smncList){
@@ -139,8 +141,12 @@ sub createSmallNonCodingXML{
 		foreach my $tmpGene (@geneList){
 			my $gLen=$geneHOH{Gene}[$cntGenes]{stop}-$geneHOH{Gene}[$cntGenes]{start};
 			$gLen=abs($gLen);
+			
 			if($gLen<200){
+				$ensHOH{smnc}[$ensCount]=$geneHOH{Gene}[$cntGenes];
+				$ensCount++;
 				$outGeneHOH{smnc}[$outCount]=$geneHOH{Gene}[$cntGenes];
+				$outCount++;
 			}
 			$cntGenes=$cntGenes+1;
 		}
@@ -155,13 +161,51 @@ sub createSmallNonCodingXML{
 	};
 	
 	my @sortedlist = sort { $a->{start} <=> $b->{start} } @outList;
-	#print "sorted List:".@sortedlist."\n";
 	$outGeneHOH{smnc}=\@sortedlist;
 	
+	open OFILE, '>'.$combinedoutputFile or die " Could not open two track file $combinedoutputFile for writing $!\n\n";
 	my $xml = new XML::Simple (RootName=>'smallRNAList');
 	my $data = $xml->XMLout(\%outGeneHOH);
 	print OFILE $data;
 	close OFILE;
+	
+	$outListRef=$smncHOH{smnc};
+	@outList=();
+	eval{
+		@outList=@$outListRef;
+	}or do{
+		@outList=();
+	};
+	
+	@sortedlist = sort { $a->{start} <=> $b->{start} } @outList;
+	my %outsmncHOH;
+	$outsmncHOH{smnc}=\@sortedlist;
+	
+	open OFILE, '>'.$smncoutputFile or die " Could not open two track file $smncoutputFile for writing $!\n\n";
+	$xml = new XML::Simple (RootName=>'smallRNAList');
+	$data = $xml->XMLout(\%outsmncHOH);
+	print OFILE $data;
+	close OFILE;
+	
+	$outListRef=$ensHOH{smnc};
+	@outList=();
+	eval{
+		@outList=@$outListRef;
+	}or do{
+		@outList=();
+	};
+	
+	@sortedlist = sort { $a->{start} <=> $b->{start} } @outList;
+	my %outensHOH;
+	$outensHOH{smnc}=\@sortedlist;
+	
+	open OFILE, '>'.$ensoutputFile or die " Could not open two track file $ensoutputFile for writing $!\n\n";
+	$xml = new XML::Simple (RootName=>'smallRNAList');
+	$data = $xml->XMLout(\%outensHOH);
+	print OFILE $data;
+	close OFILE;
+	
+	
 	return 1;
 }
 

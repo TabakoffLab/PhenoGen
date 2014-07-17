@@ -87,15 +87,31 @@ function loadTrackTable(){
 				rnaDatasetID: rnaDatasetID,
 				arrayTypeID: arrayTypeID,
 				forwardPvalueCutoff:forwardPValueCutoff,
-				folderName: folderName
+				folderName: regionfolderName
 			};
-		if(reportSelectedTrack.trackClass=="coding"){
+		if(reportSelectedTrack.trackClass.indexOf("noncoding")>-1){
+			params.type="noncoding";
+			params.source="ensembl";
+			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
+				params.source="brain";
+			}
+			jspPage="web/GeneCentric/geneTable.jsp";
+		}else if(reportSelectedTrack.trackClass.indexOf("coding")>-1){
 			jspPage="web/GeneCentric/geneTable.jsp";
 			params.type="coding";
-		}else if(reportSelectedTrack.trackClass=="noncoding"){
-			params.type="noncoding";
+			params.source="ensembl";
+			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
+				params.source="brain";
+			}
+		}else if(reportSelectedTrack.trackClass=="liverTotal"){
 			jspPage="web/GeneCentric/geneTable.jsp";
-		}else if(reportSelectedTrack.trackClass=="smallnc"){
+			params.type="all";
+			params.source="liver";
+		}else if(reportSelectedTrack.trackClass.indexOf("smallnc")>-1){
+			params.source="ensembl";
+			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
+				params.source="brain";
+			}
 			jspPage="web/GeneCentric/smallGeneTable.jsp";
 		}else if((new String(reportSelectedTrack.trackClass)).indexOf("snp")>-1){
 			//jspPage="web/GeneCentric/snpTable.jsp";
@@ -124,7 +140,7 @@ function loadEQTLTable(){
 			rnaDatasetID: rnaDatasetID,
 			arrayTypeID: arrayTypeID,
 			pValueCutoff:pValueCutoff,
-			folderName: folderName
+			folderName: regionfolderName
 		};
 	loadDivWithPage("div#regionEQTLTable",jspPage,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
@@ -143,7 +159,7 @@ function loadEQTLTableWParams(levelList,chrList,tisList,pval){
 			tissues:tisList,
 			chromosomes:chrList,
 			levels:levelList,
-			folderName: folderName
+			folderName: regionfolderName
 		};
 	loadDivWithPage("div#regionEQTLTable",jspPage,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
@@ -232,7 +248,7 @@ function displayDetailedView(track){
 		track.displayBreakDown("div#collapsableReport div#trackGraph");
 	}
 	var tc=new String(track.trackClass);
-	if(tc=="coding" || tc=="noncoding" || tc=="smallnc" || tc=="qtl"){
+	if(tc.indexOf("coding")>-1 || tc.indexOf("noncoding")>-1 || tc.indexOf("smallnc")>-1 || tc.indexOf("liverTotal")>-1 || tc=="qtl"){
 		$("#regionTableSubHeader").show();
 		$("#regionTable").show();
 	}else{

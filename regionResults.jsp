@@ -86,7 +86,7 @@ var dataPrefix="";
     <script>
 		hideWorking();
 		var tisLen=<%=tissuesList1.length%>;
-		var folderName="<%=folderName%>";
+		var regionfolderName="<%=folderName%>";
 		$('#inst').hide();
 		$(document).on('click','.triggerEC',function(event){
 			var baseName = $(this).attr("name");
@@ -151,8 +151,8 @@ var dataPrefix="";
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser1.2.1.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport1.0.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser1.3.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport1.1.js" type="text/javascript"></script>
 				
                 <script type="text/javascript">
                     var gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
@@ -164,7 +164,7 @@ var dataPrefix="";
         </div>
 
     </div><!--end Border Div -->
-    <BR />
+
     
 <script type="text/javascript">
   $('#legendDialog').dialog({
@@ -204,6 +204,10 @@ var dataPrefix="";
                 <%@ include file="/web/GeneCentric/legendBox.jsp" %>
     </div>
     
+    
+    
+    <div id="regionDiv">
+    <BR />
     <div style="width:100%;">
             	<div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
                     <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpTrackDetails" class="helpImage" src="../web/images/icons/help.png" /></div></span>
@@ -232,7 +236,7 @@ var dataPrefix="";
                <div id="regionTableDiv">
                    <div id="regionTableSubHeader" class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:left; width:100%; ">
                         <!--<span class="trigger triggerRegionTable" name="regionTable"  style="margin-left:30px;"></span>-->
-                        <span>Features in Selected Track<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                        <span style="margin-left:30px;">Features in Selected Track<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                    </div>
                    <div id="regionTable" style="display:none;">
                         
@@ -244,7 +248,8 @@ var dataPrefix="";
          
           </div>
     </div><!--collapsableReport end-->
-    <BR />
+    </div>
+
 	<div id="selectedDetailHeader" style=" display:none; font-size:18px; font-weight:bold; background-color:#00992D; color:#FFFFFF; text-align:left; width:100%;">
     		<span class="trigger less triggerEC" name="selectedDetail" >Selected Feature Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
