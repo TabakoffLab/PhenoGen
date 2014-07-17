@@ -158,10 +158,10 @@ sub createXMLFile
 		}
 		my $roundMin=$minCoord;
 		my $roundMax=$maxCoord;
-		if($binSize>0){
-			$roundMin=$minCoord-($minCoord % $binSize);
-			$roundMax=$maxCoord+($binSize-($maxCoord % $binSize));
-		}
+		#if($binSize>0){
+		#	$roundMin=$minCoord-($minCoord % $binSize);
+		#	$roundMax=$maxCoord+($binSize-($maxCoord % $binSize));
+		#}
 		#print ("min:$minCoord\nmax:$maxCoord\nroundMin:$roundMin\nroundMax:$roundMax\n");
 		my $rnaCountRef=readRNACountsDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
 		my %rnaCountHOH=%$rnaCountRef;
@@ -174,7 +174,12 @@ sub createXMLFile
 		if($binSize>0){
 			my $ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
 			my %rnaBinned=%$ref;
-			createRNACountXMLTrack(\%rnaBinned,$outputDir."bincount.".$binSize.".".$type.".xml");
+			if(-d $outputDir."tmp"){
+				
+			}else{
+				mkdir $outputDir."tmp";
+			}
+			createRNACountXMLTrack(\%rnaBinned,$outputDir."tmp/".$roundMin."_".$roundMax.".bincount.".$binSize.".".$type.".xml");
 		}
 		createRNACountXMLTrack(\%rnaCountHOH,$outputDir."count".$type.".xml");
 	}elsif(index($type,"snp")>-1){
