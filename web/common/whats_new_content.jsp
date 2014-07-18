@@ -28,6 +28,30 @@ span.control{
 		background:#989898;
 	}
 </style>
+<div class="whats_new version"><p><h3>Version: v2.12.3</h3><BR /> Updated:7/17/2014</p></div>
+				<ul>
+					<li> <span class="highlight-dark">Genome/Transcriptome Data Browser</span>
+                    	<ul>
+                        	<li>Rearranged Ensembl and Rat Brain Transcriptome Reconstruction Tracks into a seperate track for each source.
+                            	<ul>
+                                	<li>Brain transcripts were removed from Ensembl tracks and added to their own track to mirror the additional tissue tracks to be added in the next few months.</li>
+                                    <li>Region summary tables now include Liver transcripts</li>
+                                </ul>
+                            </li>
+                            <li>Improved the feature selection
+                            	<ul>
+                                	<li>Changed how sections are displayed and now hide the region section completely when a feature is selected</li>
+                                    <li>Now the selected area is highlighted in the top graphic.</li>
+                                </ul>
+                            </li>
+                            <li>Improved navigation by adding a back button to step back through zooming and panning allowing better control than just resetting to the original region when the page loaded.</li>
+                            <li>Improved tool tip images for RNA-Seq read depth count tracks- the image will now refresh with higher resolution count data if you pause for a fraction of a second.
+                            </li>
+                            
+                    	</ul>
+                	</li>         
+				</ul>
+				<hr/>
 <div class="whats_new version"><p><h3>Version: v2.12.2</h3><BR /> Updated:6/27/2014</p></div>
 				<ul>
 					<li> <span class="highlight-dark">Gene List Analysis</span>
