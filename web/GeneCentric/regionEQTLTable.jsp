@@ -674,36 +674,54 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 					"sDom": '<"leftSearch"fr><t>'
 					});
 					$('#geneIDFCBX').click( function(){
-							displayColumns(tblFrom,1,1,$('#geneIDFCBX').is(":checked"));
+							if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,1,1,$('#geneIDFCBX').is(":checked"));
+							}
 					  });
 					  $('#geneDescFCBX').click( function(){
+					  	if(typeof tblFrom != 'undefined'){
 							displayColumns(tblFrom,2,1,$('#geneDescFCBX').is(":checked"));
+						}
 					  });
 					  
 					  $('#transAnnotCBX').click( function(){
-							displayColumns(tblFrom,3,2,$('#transAnnotCBX').is(":checked"));
+					  		if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,3,2,$('#transAnnotCBX').is(":checked"));
+							}
 					  });
 					  $('#allPvalCBX').click( function(){
-							for(var i=0;i<tisLen;i++){
-								displayColumns(tblFrom,i*2+7,1,$('#allPvalCBX').is(":checked"));
+					  		if(typeof tblFrom != 'undefined'){
+								for(var i=0;i<tisLen;i++){
+									displayColumns(tblFrom,i*2+7,1,$('#allPvalCBX').is(":checked"));
+								}
 							}
 					  });
 					  $('#allLocCBX').click( function(){
-							for(var i=0;i<tisLen;i++){
-								displayColumns(tblFrom,i*2+8,1,$('#allLocCBX').is(":checked"));
+					  		if(typeof tblFrom != 'undefined'){
+								for(var i=0;i<tisLen;i++){
+									displayColumns(tblFrom,i*2+8,1,$('#allLocCBX').is(":checked"));
+								}
 							}
 					  });
 					  $('#fromBrainCBX').click( function(){
-							displayColumns(tblFrom,7,2,$('#fromBrainCBX').is(":checked"));
+					  		if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,7,2,$('#fromBrainCBX').is(":checked"));
+							}
 					  });
 					   $('#fromHeartCBX').click( function(){
-							displayColumns(tblFrom,9,2,$('#fromHeartCBX').is(":checked"));
+					   		if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,9,2,$('#fromHeartCBX').is(":checked"));
+							}
 					  });
 					  $('#fromLiverCBX').click( function(){
-							displayColumns(tblFrom,11,2,$('#fromLiverCBX').is(":checked"));
+					  		if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,11,2,$('#fromLiverCBX').is(":checked"));
+							}
 					  });
 					  $('#fromBATCBX').click( function(){
-							displayColumns(tblFrom,13,2,$('#fromBATCBX').is(":checked"));
+					  		if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,13,2,$('#fromBATCBX').is(":checked"));
+							}
 					  });
 					  
 					  
@@ -958,7 +976,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 	//$(document).ready(function() {
 		$(".multiselect").twosidedmultiselect();
 		
-		if(tblFrom!=undefined){
+		if(typeof tblFrom != 'undefined'){
 			tblFrom.fnAdjustColumnSizing();
 			tblFrom.fnDraw();
 		}
@@ -969,7 +987,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 		$(window).resize(function (){
 			var pW=$('#iframe_parent').width();
 			$('#circosIFrame').attr('width',pW-25);
-			if(tblFrom!=undefined){
+			if(typeof tblFrom != 'undefined'){
 				tblFrom.fnAdjustColumnSizing();
 				tblFrom.fnDraw();
 			}
