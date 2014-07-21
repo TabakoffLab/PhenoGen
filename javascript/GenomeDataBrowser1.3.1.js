@@ -4520,7 +4520,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		};
 
 	that.redraw=function(){
-		that.redrawSelectedArea();
+		
 		if($("#"+that.trackClass+"CBX"+that.gsvg.levelNumber).is(":checked")){
 			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		}
@@ -4674,6 +4674,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 			
 		}
+		that.redrawSelectedArea();
 	};
 
 	that.setSelected=function(geneID){
@@ -5153,7 +5154,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.draw=function (data){
-		that.redrawSelectedArea();
+
 		that.data=data;
 
 		that.trackYMax=0;
@@ -5453,6 +5454,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.svg.attr("height", (that.trackYMax+1)*15);
 			}
 		}
+		that.redrawSelectedArea();
 		that.drawAs=prevDrawAs;
 	};
 
@@ -5770,7 +5772,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		};
 
 	that.redraw=function(){
-		that.redrawSelectedArea();
+		
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
 		var len=tmpMax-tmpMin;
@@ -5912,6 +5914,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 			}
 		}
+		that.redrawSelectedArea();
 	};
 
 	that.updateData=function(retry){
@@ -6086,7 +6089,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.draw=function (data){
 
-		that.redrawSelectedArea();
+
 		that.data=data;
 		
 		that.trackYMax=0;
@@ -6297,6 +6300,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.svg.attr("height", 30);
 			}
 		}
+		that.redrawSelectedArea();
 		that.drawAs=prevDrawAs;
 	};
 
@@ -6393,7 +6397,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 	};
 
 	that.redraw=function(){
-		that.redrawSelectedArea();
+		
 		that.density=$("#probeDense"+that.gsvg.levelNumber+"Select").val();
 		var curColor=$("#probe"+that.gsvg.levelNumber+"colorSelect").val();
 		var tissues=$(".settingsLevel"+that.gsvg.levelNumber+" input[name=\"tissuecbx\"]:checked");
@@ -6517,6 +6521,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 				}
 			}
 		}
+		that.redrawSelectedArea();
 	};
 
 	that.calcY=function (start,end,density,i,spacing){
@@ -6607,7 +6612,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 	};
 
 	that.draw= function (data){
-		that.redrawSelectedArea();
+		
 		that.data=data;
 		if($("#probeDense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#probeDense"+that.gsvg.levelNumber+"Select").val();
@@ -6908,6 +6913,7 @@ function ProbeTrack(gsvg,data,trackClass,label,density){
 				that.svg.attr("height", (that.trackYMax+1)*15);
 			}
 		}
+		that.redrawSelectedArea();
 	};
 
 	that.getDisplayedData= function (){
@@ -6983,7 +6989,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 
 
 	that.redraw=function (){
-		that.redrawSelectedArea();
+
 		that.density=$("#snp"+strain+"Dense"+that.gsvg.levelNumber+"Select").val();
 		that.include=$("#snp"+strain+that.gsvg.levelNumber+"Select").val();
 		if(that.density==null || that.density==undefined){
@@ -7062,6 +7068,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 				}
 			}
 		}
+		that.redrawSelectedArea();
 	};
 
 	that.calcY=function (start,end,i,spacing){
@@ -7230,7 +7237,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 	};
 
 	that.draw= function (data){
-		that.redrawSelectedArea();
+		
 		that.data=data;
 		for(var j=0;j<that.yArr.length;j++){
 				that.yArr[j]=-299999999;
@@ -7337,6 +7344,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 				}
 			};
 		snps.exit().remove();
+		that.redrawSelectedArea();
 	};
 
 	that.pieColor =function(d,i){
@@ -7440,7 +7448,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 	};
 
 	that.redraw= function (){
-		that.redrawSelectedArea();
+		
 		//var qtlSvg=d3.select("#"+level+"qtl");
 		var density=2;
 		that.yCount=0;
@@ -7471,6 +7479,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 				d3.select(d).select("rect").style("fill",that.color(name));
 		});*/
 		that.svg.attr("height", that.yCount*15);
+		that.redrawSelectedArea();
 	};
 
 	that.createToolTip=function (d){
@@ -7619,7 +7628,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 		return (ret+1)*15;
 	}
 	that.draw=function(data){
-		that.redrawSelectedArea();
+		
 		that.data=data;
 		that.yCount=0;
 		that.idList=new Array();
@@ -7721,6 +7730,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 		});
 		that.svg.attr("height", that.yCount*15);
 		//that.getDisplayedData();
+		that.redrawSelectedArea();
 	};
 	that.draw(data);
 	that.redraw();
@@ -7899,7 +7909,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 	};
 
 	that.redraw = function (){
-		that.redrawSelectedArea();
+		
 		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber);
 		//var txG=that.svg.selectAll("g.trx"+that.gsvg.levelNumber);
 		
@@ -7970,6 +7980,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 					}
 				}
 			});
+		that.redrawSelectedArea();
 	};
 
 	that.update = function(){
@@ -8312,7 +8323,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		}
-		that.redrawSelectedArea();
+		
 		var tmpMin=that.gsvg.xScale.domain()[0];
 		var tmpMax=that.gsvg.xScale.domain()[1];
 		//var len=tmpMax-tmpMin;
@@ -8485,7 +8496,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		
 				that.svg.attr("height", 140);
 			}
-
+			that.redrawSelectedArea();
 		//}
 	};
 
@@ -8659,7 +8670,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		}
-		that.redrawSelectedArea();
+		
 		that.redrawLegend();
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
@@ -8837,6 +8848,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		      	.attr("d", that.area);
 			that.svg.attr("height", 140);
 		}
+		that.redrawSelectedArea();
 	};
 
 	that.redrawLegend=function (){
@@ -9361,7 +9373,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 	that.redraw = function (){
-		that.redrawSelectedArea();
+		
 		var tmpDen=that.checkDensity();
 		if(tmpDen!=that.density){
 			that.draw(that.data);
@@ -9432,6 +9444,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 			}else if(that.density==3){
 								that.svg.attr("height", (that.trackYMax+1)*15);
 			}
+			that.redrawSelectedArea();
 		}
 	};
 
@@ -9523,7 +9536,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 	that.draw=function(data){
-		that.redrawSelectedArea();
+		
 		that.data=data;
 		that.setDensity();
 		that.trackYMax=0;
@@ -9640,6 +9653,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 		}else if(that.density==3){
 							that.svg.attr("height", (that.trackYMax+2)*15);
 		}
+		that.redrawSelectedArea();
 	};
 	return that;
 }

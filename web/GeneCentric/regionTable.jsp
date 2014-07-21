@@ -1820,36 +1820,54 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 					});
 	
 					$('#geneIDFCBX').click( function(){
+							if(typeof tblFrom != 'undefined'){
 							displayColumns(tblFrom,1,1,$('#geneIDFCBX').is(":checked"));
+							}
 					  });
 					  $('#geneDescFCBX').click( function(){
+					  		if(typeof tblFrom != 'undefined'){
 							displayColumns(tblFrom,2,1,$('#geneDescFCBX').is(":checked"));
+							}
 					  });
 					  
 					  $('#transAnnotCBX').click( function(){
-							displayColumns(tblFrom,3,2,$('#transAnnotCBX').is(":checked"));
+					  		if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,3,2,$('#transAnnotCBX').is(":checked"));
+							}
 					  });
 					  $('#allPvalCBX').click( function(){
+					  		if(typeof tblFrom != 'undefined'){
 							for(var i=0;i<tisLen;i++){
 								displayColumns(tblFrom,i*2+7,1,$('#allPvalCBX').is(":checked"));
 							}
+							}
 					  });
 					  $('#allLocCBX').click( function(){
+					  		if(typeof tblFrom != 'undefined'){
 							for(var i=0;i<tisLen;i++){
 								displayColumns(tblFrom,i*2+8,1,$('#allLocCBX').is(":checked"));
 							}
+							}
 					  });
 					  $('#fromBrainCBX').click( function(){
-							displayColumns(tblFrom,7,2,$('#fromBrainCBX').is(":checked"));
+					  		if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,7,2,$('#fromBrainCBX').is(":checked"));
+							}
 					  });
 					   $('#fromHeartCBX').click( function(){
-							displayColumns(tblFrom,9,2,$('#fromHeartCBX').is(":checked"));
+					   		if(typeof tblFrom != 'undefined'){
+								displayColumns(tblFrom,9,2,$('#fromHeartCBX').is(":checked"));
+							}
 					  });
 					  $('#fromLiverCBX').click( function(){
+					  		if(typeof tblFrom != 'undefined'){
 							displayColumns(tblFrom,11,2,$('#fromLiverCBX').is(":checked"));
+							}
 					  });
 					  $('#fromBATCBX').click( function(){
+					  		if(typeof tblFrom != 'undefined'){
 							displayColumns(tblFrom,13,2,$('#fromBATCBX').is(":checked"));
+							}
 					  });
 					  
 					  
@@ -1925,7 +1943,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 				$('#mainTab div.modalTabContent').hide();       
 				$(currentTab).show();
 				//adjust row and column widths if needed(only needs to be done once)
-				if(!tblFromAdjust&& tblFrom!=undefined){
+				if(!tblFromAdjust && typeof tblFrom != 'undefined'){
 						tblFrom.fnAdjustColumnSizing();
 						tblFromAdjust=true;
 					}
