@@ -784,6 +784,7 @@ function setupSettingUI(levelInd){
 }
 
 function loadSavedConfigTracks(levelInd){
+	var hasOldTrackValues=false;
 	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
     	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
     	var trackArray=trackListObj.split(";");
@@ -818,6 +819,7 @@ function loadSavedConfigTracks(levelInd){
 	    					svgList[levelInd].addTrack("ensembl"+trackVars[0],trackVars[1],"",0);
 	    					svgList[levelInd].addTrack("brain"+trackVars[0],trackVars[1],"",0);
 	    				}
+	    				hasOldTrackValues=true;
 	    			}else{
 	    				svgList[levelInd].addTrack(trackVars[0],trackVars[1],ext,0);
 	    			}
@@ -831,6 +833,9 @@ function loadSavedConfigTracks(levelInd){
 	}else{
 		setupDefaultView(levelInd);
     	saveToCookie(levelInd);
+	}
+	if(hasOldTrackValues){
+		saveToCookie(levelInd);
 	}
 }
 
@@ -850,7 +855,6 @@ function loadImageState(levelInd){
 }
 
 function setupTrackSettingUI(levelInd){
-	var hasOldTrackValues=false;
 	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
     	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
     	var trackArray=trackListObj.split(";");
@@ -883,7 +887,7 @@ function setupTrackSettingUI(levelInd){
 						$("div.settingsLevel"+levelInd+" #brain"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
 						$("div.settingsLevel"+levelInd+" #brain"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
 					}
-					hasOldTrackValues=true;
+					
     			}else{
     				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
     			}
@@ -900,9 +904,7 @@ function setupTrackSettingUI(levelInd){
 	}else{
 		//console.log("no cookie:"+"state"+defaultView+levelInd+"trackList");
 	}
-	if(hasOldTrackValues){
-		saveToCookie(levelInd);
-	}
+	
 }
 
 function setupImageSettingUI(levelInd){
