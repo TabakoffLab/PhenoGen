@@ -104,7 +104,8 @@ if(request.getParameter("arrayTypeID")!=null){
 	var dataPrefix="../../";
 </script>
 <div id="imageMenu"></div>
-    <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
+<div id="viewMenu"></div>
+    <!--<div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:
     		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
     		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageTranscriptomeView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
@@ -115,7 +116,7 @@ if(request.getParameter("arrayTypeID")!=null){
                 		<option value="0" >------Login to use saved views------</option>
                 </select>
             </span>-->
-    </div>
+    <!--</div>-->
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
     		<span class="trigger less" name="collapsableImage" >Transcripts Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div>
@@ -133,7 +134,7 @@ if(request.getParameter("arrayTypeID")!=null){
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser1.3.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser1.4.0.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport1.1.js" type="text/javascript"></script>
 				
             <script type="text/javascript">

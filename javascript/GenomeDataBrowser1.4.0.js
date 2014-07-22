@@ -309,7 +309,21 @@ $(document).on("click",".settings",function(){
 					var setting=$(this).attr("id");
 					if(!$("."+setting).is(":visible")){
 						var p=$(this).position();
-						$("."+setting).css("top",p.top-3).css("left",p.left-277);
+						$("."+setting).css("top",p.top-3).css("left",p.left-267);
+						$("."+setting).fadeIn("fast");
+						//var tmpStr=new String(setting);
+						//setupSettingUI(tmpStr.substr(tmpStr.length-1));
+					}else{
+						$("."+setting).fadeOut("fast");
+					}
+					return false;
+				});
+
+$(document).on("click",".views",function(){
+					var setting=$(this).attr("id");
+					if(!$("."+setting).is(":visible")){
+						var p=$(this).position();
+						$("."+setting).css("top",p.top-3).css("left",p.left-380);
 						$("."+setting).fadeIn("fast");
 						//var tmpStr=new String(setting);
 						//setupSettingUI(tmpStr.substr(tmpStr.length-1));
@@ -2260,6 +2274,31 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}
 	};
 
+
+	that.getAddViewMenu=function (){
+		var tmpContext=contextPath +"/"+ pathPrefix;
+		if(pathPrefix==""){
+			tmpContext="";
+		}
+		$.ajax({
+				url:  tmpContext+"viewMenu.jsp",
+   				type: 'GET',
+				data: {level: that.levelNumber, organism: organism},
+				dataType: 'html',
+    			success: function(data2){
+    				$("#viewMenu"+that.levelNumber).remove();
+    				d3.select("div#viewMenu").append("div").attr("id","viewMenu"+that.levelNumber);
+    				$("#viewMenu"+that.levelNumber).html(data2);
+    			},
+    			error: function(xhr, status, error) {
+    				$("#viewMenu"+that.levelNumber).remove();
+    				d3.select("div#viewMenu").append("div").attr("id","viewMenu"+that.levelNumber);
+        			$('#viewMenu'+that.levelNumber).append("<div class=\"viewsLevel"+that.levelNumber+"\">An error occurred generating this menu.  Please try back later.</div>");
+    			},
+    			async:   false
+			});
+	}
+
 	//Genome SVG Setup
 	that.type=type;
 	that.div=div;
@@ -2567,6 +2606,19 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 		});
 
+	that.vis.append("span").attr("class","views button")
+		.attr("id","viewsLevel"+levelNumber)
+		.style("float","right")
+		.style("width","80px")
+		.style("margin-right","5px")
+		.text("Views")
+		.on("mouseover",function(){
+			$("#mouseHelp").html("Click to change views or save the current view.");
+		})
+		.on("mouseout",function(){
+			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+		});
+
 	//that.vis.append("span").attr("class","reset button").attr("id","resetLevel"+that.levelNumber).style("float","left").style("width","118px").text("Reset Image");
 	//that.vis.append("span").attr("class","undo button").attr("id","undoLevel"+that.levelNumber).style("float","left").style("width","220px").text("Undo last Zoom/Move");
 	that.topDiv=that.vis.append("div")
@@ -2649,6 +2701,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					.attr("id","sortable"+levelNumber);
     
     getAddMenuDiv(levelNumber,that.type);
+    that.getAddViewMenu();
 	svgList[levelNumber]=that;
 	
 	 $( "#sortable"+levelNumber ).sortable({
