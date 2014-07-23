@@ -136,11 +136,12 @@ if(request.getParameter("arrayTypeID")!=null){
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
             <script src="<%=contextRoot%>javascript/GenomeDataBrowser1.4.0.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport1.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeViewMenu.js" type="text/javascript"></script>
 				
             <script type="text/javascript">
                     var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
 					gs.forceDrawAs("Trx");
-					loadState(0);
+					loadStateFromCookie(0);
 					gs.xMax=maxCoord;
 					gs.xMin=minCoord;
 					

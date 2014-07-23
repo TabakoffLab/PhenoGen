@@ -121,6 +121,14 @@ public class BrowserView{
         btList.add(toAdd);
     }
 
+    public String getImageSettings() {
+        return imageSettings;
+    }
+
+    public void setImageSettings(String imageSettings) {
+        this.imageSettings = imageSettings;
+    }
+
     public int getID() {
         return id;
     }

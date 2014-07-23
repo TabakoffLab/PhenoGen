@@ -73,10 +73,24 @@
                          </div>
                          <div id="previewOuter<%=level%>" style="height:500px; overflow:auto;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:98%;text-align:left;">
                          	<div id="previewContent" style="margin:5px 5px 5px 5px;width:98%;">
+                            	
                             </div>
                          </div>
                          <div id="trackOuter<%=level%>" style="height:500px; overflow:auto;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:98%;">
                          	<div id="trackContent" style="margin:5px 5px 5px 5px;width:98%;text-align:left;">
+                            	<table id="trackListTbl<%=level%>" class="list_base" style="width:100%">
+                                	<thead>
+                                        <TR class="col_title" style="text-align:left;">
+                                            <TH >Order</TH>
+                                            <TH >Track Name</TH>
+                                            <TH >Organism</TH>
+                                            <TH >Edit</TH>
+                                        </TR>
+                                    </thead>
+                                    <tbody>
+                                    	
+                                    </tbody>
+                                </table>
                             </div>
                          </div>
                     </TD>
@@ -96,7 +110,9 @@
 </div>
 
           <script type="text/javascript">
-		  		var  viewList=[];
+		  		viewMenu[<%=level%>]=ViewMenu(<%=level%>);
+				var iconPath="<%=imagesDir%>icons/";
+		  		
 		  		$(".viewtooltip<%=level%>").tooltipster({
 					position: 'top-right',
 					maxWidth: 250,
@@ -108,7 +124,6 @@
 					interactiveTolerance: 350
 				});
 				
-				
 				$(".viewDetailTab").on("click", function(){
 							var oldID=new String($('.viewDetailTab.selected').attr("id"));
 							$("#"+oldID.substr(4)).hide();
@@ -118,79 +133,10 @@
 							$("#"+id.substr(4)).show();
 				});
 				
-				function getViewData(){
-					var tmpContext=contextPath +"/"+ pathPrefix;
-					if(pathPrefix==""){
-						tmpContext="";
-					}
-					
-					d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
-						if(error){
-							
-						}else{
-							viewList=d;
-							var opt=d3.select("#viewSelect<%=level%>").on("change",selectChange).selectAll('option').data(d);
-							opt.enter().append("option").attr("value",function(d){return d.ViewID;}).text(function(d){
-									var ret=d.Name;
-									if(d.UserID==0){
-										ret=ret+"      (Predefined)";
-									}else{
-										ret=ret+"     (Custom)";
-									}
-									ret=ret+"     ("+d.TrackList.length+" tracks)";
-									
-									return ret;
-								});
-						}
-					});
-				}
+				$(".applyView").on("click", function(){
+						var id=$("#viewSelect<%=level%>").val();
+						viewMenu[<%=level%>].applyView(id);
+				});
 				
-				function selectChange(){
-					var id=$("#viewSelect<%=level%>").val();
-					var d=NaN;
-					for(var i=0;i<viewList.length&&isNaN(d);i++){
-						if(viewList[i].ViewID==id){
-							d=viewList[i];
-						}
-					}
-					$("#descContent").html(d.Description);
-					generatePreview(d);
-					generateTrackList(d);
-				}
 				
-				function generatePreview(d){
-					
-				}
-				function generateTrackList(d){
-					var list="<OL style=&quot;text-align:left;&quot;>";
-					for(var i=0;i<d.TrackList.length;i++){
-						var species="";
-						if(d.TrackList[i].Organism!="AA"){
-							var shortOrg=d.TrackList[i].Organism;
-							if(shortOrg=="RN"){
-								shortOrg="Rat";
-							}else if(shortOrg=="MM"){
-								shortOrg="Mouse";
-							}
-							species="( "+shortOrg+" only )";
-						}
-						list=list+"<LI>"+d.TrackList[i].Name+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+species+"&nbsp;&nbsp;<span class=listtooltip<%=level%> title="+d.TrackList[i].Description+"><img src=<%=imagesDir%>icons/info.gif></span></LI>";
-						
-					}
-					list=list+"</OL>";
-					$("#trackContent").html(list);
-					$(".listtooltip<%=level%>").tooltipster({
-						position: 'top-right',
-						maxWidth: 250,
-						offsetX: 10,
-						offsetY: 5,
-						contentAsHTML:true,
-						//arrow: false,
-						interactive: true,
-						interactiveTolerance: 350
-					});
-				}
-				
-				//setup data
-				getViewData();
 		  </script>

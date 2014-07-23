@@ -62,7 +62,8 @@ var mouseTTOver=0;
 
 //setup tooltip text div
 var tt=d3.select("body").append("div")   
-	    	.attr("class", "testToolTip") 
+	    	.attr("class", "testToolTip")
+	    	.style("z-index",1000) 
 	    	//.attr("pointer-events", "all")              
 	    	.style("opacity", 0)
 	    	.on("mouseover",function(){
@@ -785,92 +786,122 @@ function getAddMenuDiv(level,type){
 
 
 //Load/Save settings to/from cookies
-function loadState(levelInd){
-	loadCustomTracksCookie();
-	setupSettingUI(levelInd);
-	loadSavedConfigTracks(levelInd);
-	loadImageState(levelInd);
+function loadStateFromString(state,imgState,levelInd,svg){
+	console.log(state);
+	//TODO MAKE SURE TO LOAD CUSTOM TRACKS ON LOADING TRACK EDITOR
+	//loadCustomTracks(state);
+	loadCustomTracksCookie();//also loading any that might be setup in a cookie
+	//setupSettingUI(state,levelInd);
+	setupTrackSettingUI(state,levelInd);
+	loadSavedConfigTracks(state,levelInd,svg);
+	setupImageSettingUI(imgState,levelInd);
+	loadImageState(imgState,levelInd);
 }
 
-function setupSettingUI(levelInd){
-	setupTrackSettingUI(levelInd);
-	setupImageSettingUI(levelInd);
-}
-
-function loadSavedConfigTracks(levelInd){
-	var hasOldTrackValues=false;
+//loading data from cookie
+function loadStateFromCookie(levelInd){
 	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
     	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
-    	var trackArray=trackListObj.split(";");
-    	var addedCount=0;
-    	for(var m=0;m<trackArray.length;m++){
-    		var trackVars=trackArray[m].split(",");
-    		if(organism=="Rn" || (organism=="Mm" && ratOnly[trackVars[0]]== undefined)) {
-	    		if(trackVars[0]!="") {
-	    			addedCount++;
-	    			var ext="";
-	    			if(trackVars.length>2){
-	    				for(var n=2;n<trackVars.length;n++){
-	    					if(n==2){
-	    						ext=trackVars[n];
-	    					}else{
-	    						ext=ext+","+trackVars[n];
-	    					}
-	    				}
-	    			}
-	    			if(levelInd==1){
-	    				ext=ext+",DrawTrx";
-	    			}
-
-	    			//Need to correct for previously saved cookies where brain and ensembl tracks are combined.
-	    			if(trackVars[0]=="coding"||trackVars[0]=="noncoding"||trackVars[0]=="smallnc"){
-	    				var extStr=new String(ext);
-	    				if(extStr.indexOf("annotOnly")>-1){
-	    					svgList[levelInd].addTrack("ensembl"+trackVars[0],trackVars[1],"",0);
-	    				}else if(extStr.indexOf("trxOnly")>-1){
-	    					svgList[levelInd].addTrack("brain"+trackVars[0],trackVars[1],"",0);
-	    				}else {
-	    					svgList[levelInd].addTrack("ensembl"+trackVars[0],trackVars[1],"",0);
-	    					svgList[levelInd].addTrack("brain"+trackVars[0],trackVars[1],"",0);
-	    				}
-	    				hasOldTrackValues=true;
-	    			}else{
-	    				svgList[levelInd].addTrack(trackVars[0],trackVars[1],ext,0);
-	    			}
-	    		}
-    		}
-    	}
-    	if(addedCount==0){
-    		setupDefaultView(levelInd);
-    		saveToCookie(levelInd);
-    	}
+		loadCustomTracksCookie();
+		//setupSettingUI(trackListObj,levelInd);
+		setupTrackSettingUI(trackListObj,levelInd);
+		loadSavedConfigTracks(trackListObj,levelInd,"");
 	}else{
 		setupDefaultView(levelInd);
     	saveToCookie(levelInd);
+    }
+	if($.cookie("imgstate"+defaultView+levelInd)!=null){
+    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
+    	setupImageSettingUI(trackListObj,levelInd);
+		loadImageState(trackListObj,levelInd);
 	}
+}
+
+/*function setupSettingUI(levelInd){
+	setupTrackSettingUI(levelInd);
+	setupImageSettingUI(levelInd);
+}*/
+
+function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
+	var hasOldTrackValues=false;
+	/*if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
+	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");*/
+	var trackArray=trackListObj.split(";");
+	var addedCount=0;
+	var tmpSvg=NaN;
+	if(levelInd<90){
+		tmpSvg=svgList[levelInd];
+	}else{
+		tmpSvg=curSvg;
+	}
+	for(var m=0;m<trackArray.length;m++){
+		var trackVars=trackArray[m].split(",");
+		if(organism=="Rn" || (organism=="Mm" && ratOnly[trackVars[0]]== undefined)) {
+    		if(trackVars[0]!="") {
+    			addedCount++;
+    			var ext="";
+    			if(trackVars.length>2){
+    				for(var n=2;n<trackVars.length;n++){
+    					if(n==2){
+    						ext=trackVars[n];
+    					}else{
+    						ext=ext+","+trackVars[n];
+    					}
+    				}
+    			}
+    			if(levelInd==1){
+    				ext=ext+",DrawTrx";
+    			}
+
+    			//Need to correct for previously saved cookies where brain and ensembl tracks are combined.
+    			if(trackVars[0]=="coding"||trackVars[0]=="noncoding"||trackVars[0]=="smallnc"){
+    				var extStr=new String(ext);
+    				if(extStr.indexOf("annotOnly")>-1){
+    					tmpSvg.addTrack("ensembl"+trackVars[0],trackVars[1],"",0);
+    				}else if(extStr.indexOf("trxOnly")>-1){
+    					tmpSvg.addTrack("brain"+trackVars[0],trackVars[1],"",0);
+    				}else {
+    					tmpSvg.addTrack("ensembl"+trackVars[0],trackVars[1],"",0);
+    					tmpSvg.addTrack("brain"+trackVars[0],trackVars[1],"",0);
+    				}
+    				hasOldTrackValues=true;
+    			}else{
+    				tmpSvg.addTrack(trackVars[0],trackVars[1],ext,0);
+    			}
+    		}
+		}
+	}
+	if(addedCount==0){
+		setupDefaultView(levelInd);
+		saveToCookie(levelInd);
+	}
+	/*}else{
+		setupDefaultView(levelInd);
+    	saveToCookie(levelInd);
+	}*/
 	if(hasOldTrackValues){
 		saveToCookie(levelInd);
 	}
 }
 
-function loadImageState(levelInd){
-	if($.cookie("imgstate"+defaultView+levelInd)!=null){
-    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
-    	var trackArray=trackListObj.split(";");
-    	for(var m=0;m<trackArray.length;m++){
-    		var trackVars=trackArray[m].split("=");
-    		var tmp=new String(trackVars[0]);
-    		if(tmp.indexOf("displaySelect")==0){
-    			changeTrackHeight("Level"+levelInd,trackVars[1]);
-    		}
-    	}
+function loadImageState(trackListObj,levelInd){
+	/*if($.cookie("imgstate"+defaultView+levelInd)!=null){
+    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);*/
+    var trackArray=trackListObj.split(";");
+    for(var m=0;m<trackArray.length;m++){
+		var trackVars=trackArray[m].split("=");
+		var tmp=new String(trackVars[0]);
+		if(tmp.indexOf("displaySelect")==0){
+			changeTrackHeight("Level"+levelInd,trackVars[1]);
+		}
+    }
 
-	}	
+	//}	
 }
 
-function setupTrackSettingUI(levelInd){
-	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
-    	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
+function setupTrackSettingUI(trackListObj,levelInd){
+	/*if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
+    	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");*/
     	var trackArray=trackListObj.split(";");
     	$("div.settingsLevel"+levelInd+" input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
@@ -915,15 +946,15 @@ function setupTrackSettingUI(levelInd){
     		}
 
     	}
-	}else{
+	/*}else{
 		//console.log("no cookie:"+"state"+defaultView+levelInd+"trackList");
-	}
+	}*/
 	
 }
 
-function setupImageSettingUI(levelInd){
-	if($.cookie("imgstate"+defaultView+levelInd)!=null){
-    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
+function setupImageSettingUI(trackListObj,levelInd){
+	/*if($.cookie("imgstate"+defaultView+levelInd)!=null){
+    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);*/
     	var trackArray=trackListObj.split(";");
     	for(var m=0;m<trackArray.length;m++){
     		var trackVars=trackArray[m].split("=");
@@ -934,7 +965,7 @@ function setupImageSettingUI(levelInd){
     		}*/
     	}
 
-	}
+	//}
 }
 
 function setupDefaultView(levelInd){
@@ -1069,7 +1100,11 @@ function saveToCookie(curLevel){
 
 
 function loadCustomTracksCookie(){
-	loadCustomTrackCookieUI();
+	var existingCookieStr="";
+	if($.cookie("customTrackList")!=null){
+    	existingCookieStr=$.cookie("customTrackList");
+		loadCustomTrack(existingCookieStr);
+	}
 }
 
 function saveCustomTrackCookie(newTrack){
@@ -1098,18 +1133,18 @@ function removeCustomTrackCookie(removeTrack){
     $.cookie("customTrackList",newCookieStr);
 }
 
-function loadCustomTrackCookieUI(){
-	var existingCookieStr="";
+function loadCustomTracks(trackStr){
+	/*var existingCookieStr="";
 	if($.cookie("customTrackList")!=null){
-    	existingCookieStr=$.cookie("customTrackList");
-    	var trackArray=existingCookieStr.split(";");
+    	existingCookieStr=$.cookie("customTrackList");*/
+    	var trackArray=trackStr.split(";");
     	var addedCount=0;
     	for(var m=0;m<trackArray.length;m++){
     		if(trackArray[m].indexOf("custom")==0 && trackArray[m].indexOf("organism="+organism)>0){
     			addCustomTrackUI(trackArray[m],0);
     		}
     	}
-    }
+    //}
 }
 
 function addCustomTrackUI(trackString,checked){
@@ -1372,6 +1407,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	tmp.chr=chr;
 	tmp.start=minCoord;
 	tmp.stop=maxCoord;
+	
 	history[levelNumber].push(tmp);
 
 	that.get=function(attr){return that[attr];};
@@ -9714,5 +9750,5 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 }
 
 window['GenomeSVG']=GenomeSVG;
-window['loadState']=loadState;
+window['loadStateFromCookie']=loadStateFromCookie;
 
