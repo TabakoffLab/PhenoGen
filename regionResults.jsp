@@ -133,10 +133,23 @@ var dataPrefix="";
                 </select>
             </span>-->
     <!--</div>-->
-    <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
-    		<span class="trigger less" name="collapsableImage" >Region Image</span>
-    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="../web/images/icons/help.png" /></div>
-            <div id="imageHeader" style=" font-size:12px; float:right;"></div>
+    <div style=" background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
+    		<table style="width:100%;" cellpadding="0" cellspacing="0">
+            <tbody>
+            	<TR>
+                	<TD style="background-color:#DEDEDE;font-size:18px; font-weight:bold;">
+                        <span class="trigger less" name="collapsableImage" >Region Image</span>
+                        <div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+                  	</TD>
+                    <TD style="background-color:#DEDEDE; text-align:center; width:50%;">
+                    	<span>View:</span>
+                    </TD>
+                    <TD style="background-color:#DEDEDE;">
+                        <div id="imageHeader" style=" font-size:12px; float:right;"></div>
+            		</TD>
+               </TR>
+               </tbody>
+            </table>
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">

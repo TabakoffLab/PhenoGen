@@ -2819,9 +2819,15 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			var newTrack= GeneTrack(that,data,track,"Small RNA (<200 bp) Genes",additionalOptions);
 			that.addTrackList(newTrack);
 		}else if(track.indexOf("refSeq")==0){
-			additionalOptions=additionalOptions+"DrawTrx,";
+			if(that.levelNumber==99){
+				additionalOptions=additionalOptions+"DrawTrx,";
+			}
 			var newTrack= RefSeqTrack(that,data,track,"Ref Seq Genes",additionalOptions);
-			newTrack.density=2;
+			if(that.levelNumber==99){
+				newTrack.density=2;
+			}else{
+				newTrack.density=density;
+			}
 			that.addTrackList(newTrack);
 		}else if(track.indexOf("snp")==0){
 			var newTrack= SNPTrack(that,data,track,3,4);
@@ -2842,6 +2848,9 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					lblPrefix="Liver ";
 				}
 				var newTrack= SpliceJunctionTrack(that,data,track,lblPrefix+"Splice Junctions",3,"");
+				if(that.levelNumber==100){
+					newTrack.density=density;
+				}
 				that.addTrackList(newTrack);
 		}else if(track=="polyASite"){
 				var newTrack= PolyATrack(that,data,track,"Predicted PolyA Sites",additionalOptions);
@@ -2861,14 +2870,16 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}else if(track=="liverilluminaTotalMinus"){
 				newTrack= LiverIlluminaTotalMinusTrack(that,data,track,2);
 			}
-			if(that.updateTimeoutHandle!=0){
-				clearTimeout(that.updateTimeoutHandle);
-				that.updateTimeoutHandle=0;
+			if(that.levelNumber==99){
+				if(that.updateTimeoutHandle!=0){
+					clearTimeout(that.updateTimeoutHandle);
+					that.updateTimeoutHandle=0;
+				}
+				that.updateTimeoutHandle= setTimeout(function(){
+					newTrack.updateFullData(0,1);
+					that.updateTimeoutHandle=0;
+				},400);
 			}
-			that.updateTimeoutHandle= setTimeout(function(){
-				newTrack.updateFullData(0,1);
-				that.updateTimeoutHandle=0;
-			},400);
 			that.addTrackList(newTrack);
 		}
 			$(".sortable"+that.levelNumber).sortable( "refresh" );

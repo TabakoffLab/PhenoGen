@@ -8,10 +8,13 @@ function ViewMenu(level){
 
 	that.generatePreview=function(d){
 		$("div#previewOuter"+that.level+" div#previewContent").html("");
-		var newSvg=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",570,minCoord,maxCoord,100,chr,svgList[that.level].type);
+		var min=svgList[that.level].xScale.domain()[0];
+		var max=svgList[that.level].xScale.domain()[1];
+		var newSvg=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",570,min,max,100,chr,svgList[that.level].type);
 		var trackString=that.generateSettingsString(d);
 		loadStateFromString(trackString,"",100,newSvg);
 		newSvg.updateData();
+		newSvg.updateFullData();
 	};
 
 	that.generateTrackList=function(d){
@@ -23,10 +26,12 @@ function ViewMenu(level){
 				}else{
 					return "odd";
 				}
-			});
+			}).attr("id",function(d){return "trk"+d.TrackID;});
 		tracktbl.each(function(d,i){
-			d3.select(this).append("td").attr("class","ind").html(i+1);
-			var info="  <span class=\"listtooltip"+that.level+"\" title= \""+d.Description+"\"><img src=\""+iconPath+"info.gif\"</span>";
+			var grab="<img src=\""+iconPath+"grab_light.png\" style=\"cursor: move; cursor: -webkit-grab; cursor: -moz-grab; \">";
+			d3.select(this).append("td").attr("class","ind").html(grab+(i + 1));
+			var info="  <span class=\"listtooltip"+that.level+"\" title= \""+d.Description+"\"><img src=\""+iconPath+"info.gif\"></span>";
+
 			d3.select(this).append("td").html(d.Name+info);
 			var species="";
 			if(d.Organism!="AA"){
@@ -39,18 +44,32 @@ function ViewMenu(level){
 				species=shortOrg+" only";
 			}
 			d3.select(this).append("td").html(species);
-			var edit="<span class=\"moveUp"+that.level+"\" name=\""+d.TrackID+"\" ><img src=\""+iconPath+"smArrowUp.png\"</span>";
-			edit=edit+"<span class=\"moveDown"+that.level+"\" name=\""+d.TrackID+"\" ><img src=\""+iconPath+"smArrowDown.png\"</span>";
+			var edit="<span class=\"moveUp"+that.level+"\" name=\""+d.TrackID+"\" ><img src=\""+iconPath+"smArrowUp.png\"></span>";
+			edit=edit+" <span class=\"moveDown"+that.level+"\" name=\""+d.TrackID+"\" ><img src=\""+iconPath+"smArrowDown.png\"></span>";
+			edit=edit+" <span class=\"trackSetting"+that.level+"\"><img src=\""+iconPath+"gear.png\"></span>";
 			if(bvData.UserID!=0){
-				edit=edit+"<span class=\"delete"+that.level+"\" name=\""+d.TrackID+"\" ><img src=\""+iconPath+"delete.png\"</span>";
+				edit=edit+" <span class=\"delete"+that.level+"\" name=\""+d.TrackID+"\" ><img src=\""+iconPath+"delete.png\"></span>";
 			}
 			d3.select(this).append("td").html(edit);
 		});
 		
 		$("#trackListTbl"+that.level+" tbody").sortable({
-									//helper: fixHelperModified,
+									//start: that.updateDraggingInterface,
 									stop: that.updateTrackNumber
 								}).disableSelection();
+
+		$(".moveUp"+that.level).on("click",function(){
+			console.log("mup");
+			var trkID=$(this).attr("name");
+			$('tr#trk'+trkID).insertBefore($("table#trackListTbl"+that.level+" tbody tr:first"));
+			that.updateTrackNumber("",$('tr#trk'+trkID));
+		});
+		$(".moveDown"+that.level).on("click",function(){
+			console.log("mdown");
+			var trkID=$(this).attr("name");
+			$('tr#trk'+trkID).insertAfter($("table#trackListTbl"+that.level+" tbody tr:last"));
+			that.updateTrackNumber("",$('tr#trk'+trkID));
+		});
 								
 		$(".listtooltip"+that.level).tooltipster({
 			position: 'top-right',
@@ -72,8 +91,9 @@ function ViewMenu(level){
 	};
 
 	that.updateTrackNumber=function(e, ui) {
-		$('td.ind', ui.item.parent()).each(function (i) {
-			 	$(this).html(i + 1);
+		$('td.ind', $("table#trackListTbl"+that.level)).each(function (i) {
+				var grab="<img src=\""+iconPath+"grab_light.png\" style=\"cursor: move; cursor: -webkit-grab; cursor: -moz-grab; \">    ";
+			 	$(this).html(grab+(i + 1));
 		});
 		d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').attr("class",function(d,i){
 				if(i%2==0){

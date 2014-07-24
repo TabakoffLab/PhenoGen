@@ -23,6 +23,9 @@
 	.ui-accordion .ui-accordion-content {
 		padding:1em 0.5em;
 	}
+	table#trackListTbl<%=level%> tr{
+		vertical-align:middle;
+	}
 </style>
 
     <div class="viewsLevel<%=level%>"  style="display:none;width:600px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:50px; left:-98px; background-color:#FFFFFF; min-height:550px; text-align:center;">
@@ -37,6 +40,15 @@
                     		<TD><span style="font-weight:bold;color:#000000;">Sign in to see views/tracks not saved to this computer.  <span class="viewtooltip<%=level%>" title="If you sign in views and tracks are saved to the server so that you may use them on any computer that you use to login to the website.  If you don't login views and tracks are stored locally using cookies and will not be available if you disable/clear cookies or use another computer."><img src="<%=imagesDir%>icons/info.gif"></span></span></TD>
                     	</TR>
                     <%}%>
+                    <TR>
+                    	<TD style="vertical-align:middle"><span style="height:38px;position:relative;top:-13;">View Controls:</span>
+                        <span class="control<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Create a new view with no tracks."><img src="<%=imagesDir%>icons/createNew.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Create a new view copied from the selected view."><img src="<%=imagesDir%>icons/copy.png" style="position:relative;top:2px;left:2px;"></span>
+                        <!--<span class="control" style="display:inline-block;height:38px;"><img src="<%=imagesDir%>icons/disk.png"></span>-->
+                        <span class="control<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Delete the selected view."><img src="<%=imagesDir%>icons/delete_lg.png" style="position:relative;top:2px;left:2px;"></span>
+                        </TD>
+                        
+                    </TR>
                     <TR>
                     <TD>
 					View types:
@@ -77,6 +89,11 @@
                             </div>
                          </div>
                          <div id="trackOuter<%=level%>" style="height:500px; overflow:auto;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:98%;">
+                         	<div>
+                            	Track Controls:
+                            	<span class="control<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Add a track to the current view."><img src="<%=imagesDir%>icons/createNew.png" style="position:relative;top:2px;left:2px;"></span>
+                        		<span class="control<%=level%>" style="display:inline-block;height:38px;"  title="Save changes to the current view. Save track settings."><img src="<%=imagesDir%>icons/disk.png"></span>
+                            </div>
                          	<div id="trackContent" style="margin:5px 5px 5px 5px;width:98%;text-align:left;">
                             	<table id="trackListTbl<%=level%>" class="list_base" style="width:100%">
                                 	<thead>
@@ -122,6 +139,14 @@
 					//arrow: false,
 					interactive: true,
 					interactiveTolerance: 350
+				});
+				$(".control<%=level%>").tooltipster({
+					position: 'top-right',
+					maxWidth: 250,
+					offsetX: 10,
+					offsetY: 5,
+					//arrow: false,
+					interactive: false
 				});
 				
 				$(".viewDetailTab").on("click", function(){
