@@ -18,6 +18,7 @@ function TrackMenu(level){
 	that.level=level;
 	that.trackList=[];
 	that.previewLevel=101;
+	that.dataInitialized=0;
 
 	that.generateTrackTable=function(){
 		var btData=[];
@@ -60,7 +61,7 @@ function TrackMenu(level){
 			"bStateSave": false,
 			"bAutoWidth": true,
 			"bDeferRender": true,*/
-			"sScrollY": "750px",
+			"sScrollY": "750px" ,
 			"sDom": '<"rightSearch"fr><t>'
 		});
 		$("td#selectedTrack"+that.level).hide();
@@ -73,9 +74,10 @@ function TrackMenu(level){
 	            var d=that.findSelectedTrack();
 	            var data="Selected Track Name: "+d.Name+"  <span class=\"trInfotooltip"+that.level+"\" title= \""+d.Description+"\"><img src=\""+iconPath+"info.gif\"></span>";
 	            $("div#trackHeaderOuter"+that.level+" #trackHeaderContent").html(data);
-	            trackDataTable.fnSettings().oScroll.sY = "300px";
+	            var tblHeight=that.getTrackTableHeight(btData);
+	            trackDataTable.fnSettings().oScroll.sY =  tblHeight;
 				trackDataTable.fnDraw();
-				$('#trkSelList'+that.level+'_wrapper div.dataTables_scroll div.dataTables_scrollBody').css('height', '300px');
+				$('#trkSelList'+that.level+'_wrapper div.dataTables_scroll div.dataTables_scrollBody').css('height', tblHeight);
 	            $("td#selectedTrack"+that.level).show();
 	            $(".trInfotooltip"+that.level).tooltipster({
 						position: 'top-right',
@@ -103,19 +105,34 @@ function TrackMenu(level){
 		});
 	};
 
-	that.getViewData=function(){
+	that.getTrackTableHeight=function (btData){
+		var ret="300px";
+		if(btData.length<10){
+			ret=(30*btData.length)+"px";
+		}
+		return ret;
+	};
+
+	that.getTrackData=function(){
 		var tmpContext=contextPath +"/"+ pathPrefix;
 		if(pathPrefix==""){
 			tmpContext="";
 		}
-		
 		d3.json(tmpContext+"getBrowserTracks.jsp",function (error,d){
 			if(error){
 				
 			}else{
 				that.trackList=d;
+				if(that.level==0){
+					trackInfo=[];
+					for(var i=0;i<that.trackList.length;i++){
+						trackInfo[that.trackList[i].TrackClass]=that.trackList[i];
+					}
+					console.log(trackInfo);
+				}
+				that.dataInitialized=1;
 				that.generateTrackTable();
-				
+
 			}
 		});
 	};
@@ -211,9 +228,7 @@ function TrackMenu(level){
 			}
 		}
 	};
-
-
-	that.getViewData();
+	that.getTrackData();
 	return that;
 }
 

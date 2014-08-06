@@ -109,7 +109,7 @@
 	</div>
     
     <script type="text/javascript">
-		trackMenu[<%=level%>]=TrackMenu(<%=level%>);
+		//trackMenu[<%=level%>]=TrackMenu(<%=level%>);
 		/*$('table#trkSelList<%=level%>').dataTable({
 			"bPaginate": false,
 			"bProcessing": true,

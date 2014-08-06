@@ -16,6 +16,7 @@ $.cookie.defaults.expires=365;
 var svgList=[];
 var processAjax=0;
 var ajaxList=[];
+var trackInfo=[];
 var selectedGeneSymbol="";
 var selectedID="";
 var trackSettings=[];
@@ -336,7 +337,7 @@ $(document).on("click",".views",function(){
 					var setting=$(this).attr("id");
 					if(!$("."+setting).is(":visible")){
 						var p=$(this).position();
-						$("."+setting).css("top",p.top-3).css("left",p.left-380);
+						$("."+setting).css("top",p.top-3).css("left",p.left-515);
 						$("."+setting).fadeIn("fast");
 						//var tmpStr=new String(setting);
 						//setupSettingUI(tmpStr.substr(tmpStr.length-1));
@@ -420,6 +421,16 @@ $(document).on("change","select[name='trackSelect']",function(){
 
 	 		});
 
+$(document).on("change","input[name='optioncbx']",function(){
+	var idStr=new String($(this).attr("id"));
+	var cbxInd=idStr.indexOf("CBX");
+	var prefix=new String(idStr.substr(0,cbxInd));
+	var level=idStr.substr(cbxInd+3,1);
+	redrawTrack(level,prefix);
+});
+
+
+//Controls for probe tracks
 $(document).on("change","select[name='colorSelect']",function(){
 				var idStr=new String($(this).attr("id"));
 				var value=$(this).val();
@@ -429,26 +440,18 @@ $(document).on("change","select[name='colorSelect']",function(){
 				}else if(value=="annot"){
 						$("div#affyTissues"+level).hide();
 				}
-				if($("#probeCBX"+level).is(":checked")){
+				//if($("#probeCBX"+level).is(":checked")){
 					redrawTrack(level,"probe");
 					saveToCookie(level);
-				}
+				//}
 	 		});
-$(document).on("change","input[name='optioncbx']",function(){
-	var idStr=new String($(this).attr("id"));
-	var cbxInd=idStr.indexOf("CBX");
-	var prefix=new String(idStr.substr(0,cbxInd));
-	var level=idStr.substr(cbxInd+3,1);
-	redrawTrack(level,prefix);
-});
-
 $(document).on("change","input[name='tissuecbx']",function(){
 	 			var idStr=new String($(this).attr("id"));
 				var level=idStr.substr(idStr.length-1,1);
-				if($("#probeCBX"+level).is(":checked")){
-					redrawTrack(level,"probe");
-					saveToCookie(level);
-				}
+				//if($("#probeCBX"+level).is(":checked")){
+				redrawTrack(level,"probe");
+				saveToCookie(level);
+				//}
 	 		});
 
 
@@ -1426,6 +1429,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	var that={};
 	that.isToolTip=0;
 	that.folderName="";
+	that.selectedTrackSetting="";
 	if(levelNumber==0){
 		that.folderName=regionfolderName;
 	}
@@ -2559,7 +2563,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.setupFunctionBar();
 
 	//Setup Settings Button
-	that.vis.append("span").attr("class","settings button")
+	/*that.vis.append("span").attr("class","settings button")
 		.attr("id","settingsLevel"+levelNumber)
 		.style("float","right")
 		.style("width","130px")
@@ -2569,7 +2573,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		})
 		.on("mouseout",function(){
 			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-		});
+		});*/
 
 	that.vis.append("span").attr("class","views button")
 		.attr("id","viewsLevel"+levelNumber)
@@ -2663,7 +2667,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					.append("ul")
 					.attr("id","sortable"+levelNumber);
     
-    getAddMenuDiv(levelNumber,that.type);
+    //getAddMenuDiv(levelNumber,that.type);
     that.getAddViewMenu();
 	svgList[levelNumber]=that;
 	
@@ -2696,7 +2700,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     that.addTrack("genomeSeq",3,"both",0);
 
     that.selectSvg= selectionSVG('#Level'+that.levelNumber,that.width,that.levelNumber,that);
-
+    trackMenu[that.levelNumber]=TrackMenu(that.levelNumber);
     return that;
 }
 
@@ -3494,7 +3498,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	};
 
 	that.setupToolTipSVG=function(d,perc){
-		 //Setup Tooltip SVG
+		//Setup Tooltip SVG
 		var start=d.getAttribute("start")*1;
 		var stop=d.getAttribute("stop")*1;
 		var len=stop-start;
@@ -3536,6 +3540,69 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 					newSvg.addTrack(that.ttTrackList[r],3,"DrawTrx",fData);	
 				}
 			}
+		}
+	};
+
+	that.generateSettingsDiv=function(){
+		var d=trackInfo[that.trackClass];
+		console.log(trackInfo);
+		console.log(d);
+		d3.select("div#trackSettingContent").select("table").select("tbody").html("");
+		if(d.Controls.length>0 && d.Controls!="null"){
+			var controls=new String(d.Controls).split(",");
+			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			for(var c=0;c<controls.length;c++){
+				if(controls[c]!=undefined && controls[c]!=""){
+					var params=controls[c].split(";");
+					var div=table.append("tr").append("td");
+					var lbl=params[0].substr(5);
+					div.append("text").text(lbl+": ");
+					var def="";
+					if(params.length>3  && params[3].indexOf("Default=")==0){
+						def=params[3].substr(8);
+					}
+					if(params[1].toLowerCase().indexOf("select")==0){
+						var selClass=params[1].split(":");
+						var opts=params[2].split("}");
+						var sel=div.append("select").attr("id",that.trackClass+"Dense"+that.level+"Select")
+							.attr("name",selClass[1]);
+						for(var o=0;o<opts.length;o++){
+							var option=opts[o].substr(1).split(":");
+							if(option.length==2){
+								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
+								if(option[1]==def){
+									tmpOpt.attr("selected","selected");
+								}
+							}
+						}
+					}else {
+						console.log("Undefined track settings:  "+controls[c]);
+					}
+				}
+			}
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+				that.gsvg.removeTrack(that.trackClass);
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
+
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}else{
+			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			table.append("tr").append("td").html("Sorry no settings for this track.");
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
 		}
 	};
 
@@ -3625,8 +3692,27 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 									.attr("stroke","#7795B2");
 				info.append("text").attr("x",2.5).attr("y",12).attr("style","font-family:monospace;font-weight:bold;").attr("fill","#FFFFFF").text("i");
 				var settings=svg.append("g").attr("class","settings")
+										.attr("id",that.trackClass+"_"+that.level)
 										.attr("transform", "translate("+(that.gsvg.width-40)+",0)")
-										.style("cursor","pointer");
+										.style("cursor","pointer")
+										.on("click",function(d){
+											if(that.trackClass!=that.gsvg.selectedTrackSetting){
+												that.generateSettingsDiv();
+												that.gsvg.selectedTrackSetting=that.trackClass;
+												var p=$(this).position();
+												$('#trackSettingDialog').css("top",p.top).css("left",$(window).width()-380);
+												$('#trackSettingDialog').fadeIn("fast");
+											}else{
+												that.gsvg.selectedTrackSetting="";
+												$('#trackSettingDialog').fadeOut("fast");
+											}
+										})
+										.on("mouseover",function(){
+											$("#mouseHelp").html("Track Settings: Click to access track settings or quickly remove the track from the current view.");
+										})
+										.on("mouseout",function(){
+											$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+										});
 				settings.append("image").attr("width","16px")
 									.attr("height","16px")
 									.attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAA"+
@@ -6718,7 +6804,6 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.update=function (d){
-
 		that.redraw();
 	};
 
@@ -7110,10 +7195,95 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		}
 		return dispData;
 	};
+
+	that.generateSettingsDiv=function(){
+		var d=trackInfo[that.trackClass];
+		console.log(trackInfo);
+		console.log(d);
+		d3.select("div#trackSettingContent").select("table").select("tbody").html("");
+		if(d.Controls.length>0 && d.Controls!="null"){
+			var controls=new String(d.Controls).split(",");
+			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			for(var c=0;c<controls.length;c++){
+				if(controls[c]!=undefined && controls[c]!=""){
+					var params=controls[c].split(";");
+					
+					var div=table.append("tr").append("td");
+					var lbl=params[0].substr(5);
+					
+					var def="";
+					if(params.length>3  && params[3].indexOf("Default=")==0){
+						def=params[3].substr(8);
+					}
+					if(params[1].toLowerCase().indexOf("select")==0){
+						div.append("text").text(lbl+": ");
+						var selClass=params[1].split(":");
+						var opts=params[2].split("}");
+						var id=that.trackClass+"Dense"+that.level+"Select";
+						if(selClass[1]=="colorSelect"){
+							id=that.trackClass+that.level+"colorSelect";
+						}
+						var sel=div.append("select").attr("id",id)
+							.attr("name",selClass[1]);
+						for(var o=0;o<opts.length;o++){
+							var option=opts[o].substr(1).split(":");
+							if(option.length==2){
+								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
+								if(option[1]==def){
+									tmpOpt.attr("selected","selected");
+								}
+							}
+						}
+					}else if(params[1].toLowerCase().indexOf("cbx")==0){
+						div=div.append("div").attr("id","affyTissues"+that.level).style("display","none");
+						div.append("text").text(lbl+": ");
+						var selClass=params[1].split(":");
+						var opts=params[2].split("}");
+						
+						for(var o=0;o<opts.length;o++){
+							var option=opts[o].substr(1).split(":");
+							if(option.length==2){
+								var sel=div.append("input").attr("type","checkbox").attr("id",option[1]+"CBX"+that.level)
+									.attr("name",selClass[1])
+									.style("margin-left","5px");
+								div.append("text").text(option[0]);
+								//console.log(def+"::"+option[1]);
+								if(def.indexOf(option[1])>-1){
+									$("#"+option[1]+"CBX"+that.level).prop('checked',true);
+									//sel.attr("checked","checked");
+								}
+							}
+						}
+					}
+				}
+			}
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+				that.gsvg.removeTrack(that.trackClass);
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
+
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}else{
+			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			table.append("tr").append("td").html("Sorry no settings for this track.");
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}
+	};
 	
 	that.draw(data);
-
-	
 	return that;
 }
 /*Track for displaying SNPs/Indels*/
