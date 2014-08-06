@@ -38,5 +38,15 @@ public class BrowserTools{
         }
         return ret;
     }
-    
+    public ArrayList<BrowserTrack> getBrowserTracks(int userID){
+        BrowserTrack bv=new BrowserTrack();
+        ArrayList<BrowserTrack> ret=bv.getBrowserTracks(0,pool);
+        if(userID>0){
+            ArrayList<BrowserTrack> tmp=bv.getBrowserTracks(userID,pool);
+            if(tmp.size()>0){
+                ret.addAll(tmp);
+            }
+        }
+        return ret;
+    }
 }

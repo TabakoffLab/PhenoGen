@@ -69,8 +69,6 @@ public class BrowserView{
                     hm.put(id,tmpBV);
                     //count++;
                 }
-                log.debug("size:"+hm.size());
-                log.debug("keys:"+hm.keySet());
                 ps.close();
                 ps = conn.prepareStatement(trackquery);
                 rs = ps.executeQuery();
@@ -82,12 +80,13 @@ public class BrowserView{
                     String name=rs.getString(5);
                     String desc=rs.getString(6);
                     String org=rs.getString(7);
-                    String sett=rs.getString(8);
-                    int order=rs.getInt(9);
-                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order);
-                    log.debug("test:"+bvid);
+                    String genCat=rs.getString(8);
+                    String cat=rs.getString(9);
+                    String controls=rs.getString(10);
+                    String sett=rs.getString(11);
+                    int order=rs.getInt(12);
+                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls);
                     if(hm.containsKey(bvid)){
-                        log.debug("bvid found:"+bvid);
                         hm.get(bvid).addTrack(tmpBT);
                     }
                 }

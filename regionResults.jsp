@@ -121,6 +121,7 @@ var dataPrefix="";
     
     <div id="imageMenu"></div>
     <div id="viewMenu"></div>
+    <div id="trackMenu"></div>
     <!--<div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:
     		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
@@ -141,8 +142,8 @@ var dataPrefix="";
                         <span class="trigger less" name="collapsableImage" >Region Image</span>
                         <div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="../web/images/icons/help.png" /></div>
                   	</TD>
-                    <TD style="background-color:#DEDEDE; text-align:center; width:50%;">
-                    	<span>View:</span>
+                    <TD style="background-color:#DEDEDE; text-align:center; width:50%;font-size:18px; font-weight:bold;">
+                    	<span id="viewLbl0">View:</span>
                     </TD>
                     <TD style="background-color:#DEDEDE;">
                         <div id="imageHeader" style=" font-size:12px; float:right;"></div>
@@ -168,6 +169,7 @@ var dataPrefix="";
             <script src="javascript/GenomeDataBrowser1.4.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport1.1.js" type="text/javascript"></script>
 			<script src="javascript/GenomeViewMenu.js" type="text/javascript"></script>
+            <script src="javascript/GenomeTrackMenu.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">

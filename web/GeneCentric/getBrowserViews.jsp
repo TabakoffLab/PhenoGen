@@ -55,7 +55,8 @@ response.setContentType("application/json");
                         "Description": "<%=btrk.getTrackDescription()%>",
                         "Organism":"<%=btrk.getOrganism()%>",
                         "Settings":"<%=btrk.getSettings()%>",
-                        "Order":<%=btrk.getOrder()%>
+                        "Order":<%=btrk.getOrder()%>,
+                        "Controls":"<%=btrk.getControls()%>"
                         }
                     <%}%>
                 ]

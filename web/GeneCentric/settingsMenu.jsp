@@ -70,6 +70,9 @@
                             <span class="tracktooltip<%=level%>" id="trxInfoDesc<%=level%>" title="This track consists of transcripts from the selected feature.  See the legend for the color coding."><img src="<%=imagesDir%>icons/info.gif"></span>
              				<HR />
                     		<%}%>
+                            
+                            
+                            
                         	<input name="trackcbx" type="checkbox" id="ensemblcodingCBX<%=level%>"   checked="checked" />Ensembl Protein Coding <%if(level==0){%>Genes <%}else{%> Transcripts <%}%>
                             <span class="tracktooltip<%=level%>" id="ensemblcodingInfoDesc<%=level%>" title="This track consists of transcripts from Ensembl.  Features are labeled with their Ensembl ID."><img src="<%=imagesDir%>icons/info.gif"></span>
                             <select name="trackSelect" class="ensemblcodingDense<%=level%>Select" id="ensemblcodingDense<%=level%>Select">

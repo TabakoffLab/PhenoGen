@@ -183,4 +183,38 @@ table.tooltipTable TD{
 		border-color:#000000;
 	}
 	
+	table.trkSelList tr.odd:hover td,table.trkSelList tr.even:hover td
+	{
+  		background: #bbbbee;
+	}
+	
+	table.trkSelList tr.odd.selected td,table.trkSelList tr.even.selected td
+	{
+  		background: #9b9bce;
+	}
+	
+	
+	div#trackSettingDialog{
+		position:absolute;
+		display:none;
+		background-color:#EEEEEE;
+		border: 2px solid;
+    	border-radius: 25px;
+		
+		max-height:400px;
+		width:300px;
+	}
+	div#trackSettingContent{
+		background-color:#EEEEEE;
+		overflow:auto;
+		width:93%;
+		height:93%;
+		margin:3%;
+	}
+	div#trackSettingContent table{
+		width:100%;
+	}
+	div#trackSettingContent td {
+	background-color:#EEEEEE;
+	}
 </style>
