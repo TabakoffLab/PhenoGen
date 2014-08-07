@@ -21,7 +21,7 @@ function ViewMenu(level){
 	that.viewList=[];
 	that.selectedTrackSetting=0;
 	that.previewLevel=100;
-
+	that.previewSVG=NaN;
 	//generates the preview image on the preview tab.
 	that.generatePreview=function(d){
 		$("div#previewOuter"+that.level+" div#previewContent").html("");
@@ -29,12 +29,12 @@ function ViewMenu(level){
 		if(d.Organism=="AA"||d.Organism==tmpOrg){
 			var min=svgList[that.level].xScale.domain()[0];
 			var max=svgList[that.level].xScale.domain()[1];
-			var newSvg=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
+			that.previewSVG=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
 			$("div#ScrollLevel"+that.previewLevel).css("overflow","auto").css("max-height","430px");
 			var trackString=that.generateSettingsString(d);
-					loadStateFromString(trackString,"",that.previewLevel,newSvg);
-					newSvg.updateData();
-					newSvg.updateFullData();
+					loadStateFromString(trackString,"",that.previewLevel,that.previewSVG);
+					that.previewSVG.updateData();
+					that.previewSVG.updateFullData();
 		}else{
 			$("div#previewOuter"+that.level+" div#previewContent").html("No Preview Available: The current organism doesn't match the tracks included in this view.");
 		}
@@ -84,7 +84,9 @@ function ViewMenu(level){
 				.on("click",function(){
 					var trackID=d3.select(this).attr("name");
 					if(trackID!=that.selectedTrackSetting){
-						that.generateSettingsDiv(that.findTrack(trackID));
+						var track=that.previewSVG.getTrack(that.findTrack(trackID).TrackClass);
+						track.generateSettingsDiv("div#trackSettingContent");
+						//that.generateSettingsDiv(that.findTrack(trackID));
 						that.selectedTrackSetting=trackID;
 						var p=$(this).position();
 						$('#trackSettingDialog').css("top",p.top+240).css("left",$(window).width()-415);
@@ -323,7 +325,7 @@ function ViewMenu(level){
 		});
 	};
 
-	that.generateSettingsDiv=function (d){
+	/*that.generateSettingsDiv=function (d){
 		d3.select("div#trackSettingContent").select("table").select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
@@ -383,7 +385,7 @@ function ViewMenu(level){
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}
-	};
+	};*/
 
 	that.getViewData();
 	that.setupControls();

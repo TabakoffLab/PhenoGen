@@ -347,7 +347,7 @@ $(document).on("click",".views",function(){
 					return false;
 				});
 			
-$(document).on("change","input[name='trackcbx']",function(){
+/*$(document).on("change","input[name='trackcbx']",function(){
 	 			//var type=$(this).val();
 				//var typeStr=new String(type);
 				var idStr=new String($(this).attr("id"));
@@ -367,7 +367,7 @@ $(document).on("change","input[name='trackcbx']",function(){
 							addtlOpt="trxOnly;";
 						}
 					}*/
-					if(d3.select("#Level"+level+prefix).size()>0){
+/*					if(d3.select("#Level"+level+prefix).size()>0){
 						redrawTrack(level,prefix);
 					}else{
 						if($("#"+prefix+"Dense"+level+"Select").length>0){
@@ -388,8 +388,8 @@ $(document).on("change","input[name='trackcbx']",function(){
 					}
 				}
 				saveToCookie(level);
-	 		});
-$(document).on("change","select[name='trackSelect']",function(){
+	 		});*/
+/*$(document).on("change","select[name='trackSelect']",function(){
 				var idStr=new String($(this).attr("id"));
 				//console.log("TrackSelect:"+idStr);
 				var cl=$(this).attr("class");
@@ -401,14 +401,16 @@ $(document).on("change","select[name='trackSelect']",function(){
 				//console.log("TrackSelect Level:"+level);
 				if(svgList[level]!=undefined){
 					try{
-						if(idStr.indexOf("Dense")>0){
+						/*if(idStr.indexOf("Dense")>0){
 							if(idStr.indexOf("coding")>-1 || idStr.indexOf("smallnc")>-1){
 								$("."+cl).each(function(){
 									$(this).val(value);
 								});
 							}
 							svgList[level].redraw();
-						}else if(idStr.indexOf("snp")==0){
+						}else */
+/*						svgList[level].updateTrackSettings();
+						if(idStr.indexOf("snp")==0){
 							svgList[level].updateData();
 						}else{
 							svgList[level].redraw();
@@ -419,7 +421,7 @@ $(document).on("change","select[name='trackSelect']",function(){
 				}
 				saveToCookie(level);
 
-	 		});
+	 		});*/
 
 $(document).on("change","input[name='optioncbx']",function(){
 	var idStr=new String($(this).attr("id"));
@@ -431,7 +433,7 @@ $(document).on("change","input[name='optioncbx']",function(){
 
 
 //Controls for probe tracks
-$(document).on("change","select[name='colorSelect']",function(){
+/*$(document).on("change","select[name='colorSelect']",function(){
 				var idStr=new String($(this).attr("id"));
 				var value=$(this).val();
 				var level=idStr.substr(idStr.length-12,1);
@@ -444,15 +446,15 @@ $(document).on("change","select[name='colorSelect']",function(){
 					redrawTrack(level,"probe");
 					saveToCookie(level);
 				//}
-	 		});
-$(document).on("change","input[name='tissuecbx']",function(){
+	 		});*/
+/*$(document).on("change","input[name='tissuecbx']",function(){
 	 			var idStr=new String($(this).attr("id"));
 				var level=idStr.substr(idStr.length-1,1);
 				//if($("#probeCBX"+level).is(":checked")){
 				redrawTrack(level,"probe");
 				saveToCookie(level);
 				//}
-	 		});
+	 		});*/
 
 
 
@@ -813,9 +815,9 @@ function loadStateFromString(state,imgState,levelInd,svg){
 	//loadCustomTracks(state);
 	loadCustomTracksCookie();//also loading any that might be setup in a cookie
 	//setupSettingUI(state,levelInd);
-	setupTrackSettingUI(state,levelInd);
+	//setupTrackSettingUI(state,levelInd);
 	loadSavedConfigTracks(state,levelInd,svg);
-	setupImageSettingUI(imgState,levelInd);
+	//setupImageSettingUI(imgState,levelInd);
 	loadImageState(imgState,levelInd);
 }
 
@@ -825,7 +827,7 @@ function loadStateFromCookie(levelInd){
     	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
 		loadCustomTracksCookie();
 		//setupSettingUI(trackListObj,levelInd);
-		setupTrackSettingUI(trackListObj,levelInd);
+		//setupTrackSettingUI(trackListObj,levelInd);
 		loadSavedConfigTracks(trackListObj,levelInd,"");
 	}else{
 		setupDefaultView(levelInd);
@@ -833,15 +835,10 @@ function loadStateFromCookie(levelInd){
     }
 	if($.cookie("imgstate"+defaultView+levelInd)!=null){
     	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
-    	setupImageSettingUI(trackListObj,levelInd);
+    	//setupImageSettingUI(trackListObj,levelInd);
 		loadImageState(trackListObj,levelInd);
 	}
 }
-
-/*function setupSettingUI(levelInd){
-	setupTrackSettingUI(levelInd);
-	setupImageSettingUI(levelInd);
-}*/
 
 function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
 	var hasOldTrackValues=false;
@@ -919,89 +916,6 @@ function loadImageState(trackListObj,levelInd){
     }
 
 	//}	
-}
-
-function setupTrackSettingUI(trackListObj,levelInd){
-	/*if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
-    	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");*/
-    	var trackArray=trackListObj.split(";");
-    	$("div.settingsLevel"+levelInd+" input[name='trackcbx']").each(function(){
-    		if($(this).is(":checked")){
-    			$(this).prop('checked', false);
-    		}
-    	});
-    	for(var m=0;m<trackArray.length;m++){
-    		var trackVars=trackArray[m].split(",");
-    		if(trackVars[0]!=""){
-    			//still needed incase someone visited and has a cookie with the other tracks saved.
-    			if(trackVars[0]=="noncoding"||trackVars[0]=="coding"||trackVars[0]=="smallnc"){
-    				if(trackVars[2]!=undefined){
-    					if(trackVars[2]=="annotOnly"){
-    						$("div.settingsLevel"+levelInd+" #ensembl"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
-    						$("div.settingsLevel"+levelInd+" #ensembl"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
-    					}else if(trackVars[2]=="trxOnly"){
-    						$("div.settingsLevel"+levelInd+" #brain"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
-    						$("div.settingsLevel"+levelInd+" #brain"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
-    					}else{
-    						$("div.settingsLevel"+levelInd+" #ensembl"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
-    						$("div.settingsLevel"+levelInd+" #ensembl"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
-							$("div.settingsLevel"+levelInd+" #brain"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
-							$("div.settingsLevel"+levelInd+" #brain"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
-    					}
-					}else{
-						$("div.settingsLevel"+levelInd+" #ensembl"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
-						$("div.settingsLevel"+levelInd+" #ensembl"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
-						$("div.settingsLevel"+levelInd+" #brain"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
-						$("div.settingsLevel"+levelInd+" #brain"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
-					}
-					
-    			}else{
-    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"CBX"+levelInd).prop('checked',true);
-    			}
-    			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").length>0 
-    				&& trackVars[1]!=undefined){
-    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+"Dense"+levelInd+"Select").val(trackVars[1]);
-    			}
-    			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+levelInd+"Select").length>0  && trackVars[2]!=undefined){
-    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+levelInd+"Select").val(trackVars[2]);
-    			}
-    			//Support for coloring option
-    			if($("div.settingsLevel"+levelInd+" #"+trackVars[0]+levelInd+"colorSelect").length>0  && trackVars[2]!=undefined){
-    				$("div.settingsLevel"+levelInd+" #"+trackVars[0]+levelInd+"colorSelect").val(trackVars[2]);
-    				if(trackVars[2]!="annot"){
-    					$("div.settingsLevel"+levelInd+" #affyTissues"+levelInd).show();
-    				}
-    				if(trackVars.length>3){
-    					$(".settingsLevel"+levelInd+" input[name=\"tissuecbx\"]:checked").prop('checked',false);
-    					var tissues=new String(trackVars[3]).split(":");
-    					for(var n=0;n<tissues.length;n++){
-    						$("div.settingsLevel"+levelInd+" #"+tissues[n]+"AffyCBX"+levelInd).prop('checked',true);
-    					}
-    				}
-    			}
-    		}
-
-    	}
-	/*}else{
-		//console.log("no cookie:"+"state"+defaultView+levelInd+"trackList");
-	}*/
-	
-}
-
-function setupImageSettingUI(trackListObj,levelInd){
-	/*if($.cookie("imgstate"+defaultView+levelInd)!=null){
-    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);*/
-    	var trackArray=trackListObj.split(";");
-    	for(var m=0;m<trackArray.length;m++){
-    		var trackVars=trackArray[m].split("=");
-    		$("#"+trackVars[0]).val(trackVars[1]);
-    		/*var tmp=new String(trackVars[0]);
-    		if(tmp.indexOf("displaySelect")==0){
-    			changeTrackHeight("Level"+levelInd,trackVars[1]);
-    		}*/
-    	}
-
-	//}
 }
 
 function setupDefaultView(levelInd){
@@ -1183,146 +1097,6 @@ function loadCustomTracks(trackStr){
     //}
 }
 
-function addCustomTrackUI(trackString,checked){
-	var dispName="";
-	var date="";
-	var filename="";
-
-	var details=trackString.split(",");
-	var id=details[0];
-
-	for(var m=1;m<details.length;m++){
-		if(details[m].indexOf("dispTrackName=")==0){
-			dispName=details[m].substr(details[m].indexOf("=")+1);
-		}
-		if(details[m].indexOf("originalFile=")==0){
-			filename=details[m].substr(details[m].indexOf("=")+1);
-		}
-		if(details[m].indexOf("created=")==0){
-			date=details[m].substr(details[m].indexOf("=")+1);
-		}
-	}
-	$(".usrTrack").each(function(){
-		if($(".custTrack"+id).size()==0){
-			var divID=$(this).attr("id");
-			var level=$(this).attr("id").substr(8);
-			var trackDiv=d3.select("#"+divID).append("div").attr("class","custTrack"+id);
-			//var tmp=$(this).html();
-			var check="";
-			if(checked==1){
-				check="checked=\"checked\"";
-			}
-
-	        var tmp="<input name=\"trackcbx\" type=\"checkbox\" id=\""+id+"CBX"+level+"\""+check+"> "+dispName;
-			tmp=tmp+" <span class=\"tracktooltip"+level+"\" id=\""+id+"InfoDesc"+level+"\" title=\"Custom Track<BR>Defined: "+date+"<BR>Original Filename: "+filename+"\"><img src=\"web/images/icons/info.gif\"></span><select name=\"trackSelect\" class=\""+id+"Dense"+level+"Select\" id=\""+id+"Dense"+level+"Select\">";
-	        tmp=tmp+"<option value=\"1\" >Dense</option><option value=\"3\" selected=\"selected\">Pack</option>";
-	        tmp=tmp+"<option value=\"2\" >Full</option></select>";
-	        //tmp=tmp+"<input type=\"button\" id=\""+id+"ColorBtn"+level+"\" value=\"Edit Color\" onClick=\"showCustomColor('"+id+"','"+level+"')\">";
-	        tmp=tmp+"&nbsp&nbsp&nbsp<span id=\""+id+"ColorBtn"+level+"\" title=\"Edit Color\" style=\"cursor:pointer;\"><img src=\"web/images/icons/color_sm2.png\"></span>";
-	        //tmp=tmp+"&nbsp&nbsp&nbsp<span title=\"Save as Track Default Settings\" style=\"cursor:pointer;\"><img src=\"web/images/icons/disk_sm.png\"></span>";
-	        //tmp=tmp+"<input type=\"button\" id=\""+id+"SaveBtn"+level+"\" value=\"Save As Default\" title=\"Saves the current track settings as the default settings in the future.\" onClick=\"saveDefault('"+id+"','"+level+"')\">";
-	        /**/
-	        tmp=tmp+"<span class=\"delCustom\"  id=\""+id+"Delete"+level+"\" title=\"Delete Custom Track\" style=\"float:right;cursor:pointer;\"><img src=\"web/images/icons/delete.png\">"+"</span>";
-	        tmp=tmp+"<div id=\""+id+"Scale"+level+"\" style=\"display:none;\">Color*:<select id=\""+id+"ColorSelect"+level+"\" class=\"usrtrkColor\" id=\"\">";
-	       	tmp=tmp+"<option value=\"Score\" >Score based scale</option>";
-	        tmp=tmp+"<option value=\"Color\" selected=\"selected\">Feature defined</option></select>";
-	        tmp=tmp+"<div id=\""+id+"ScaleSetting"+level+"\" style=\"display:none;\">Setup Scale:Data:<input id=\""+id+"minData"+level+"\" type=\"text\" size=\"4\"> - <input id=\""+id+"maxData"+level+"\" type=\"text\" size=\"4\"> <BR>";
-	        tmp=tmp+"Color: <input id=\""+id+"minColor"+level+"\" class=\"color\" size=\"6\" value=\"FFFFFF\"> - <input id=\""+id+"maxColor"+level+"\" class=\"color\" size=\"6\" value=\"000000\"></div></div><HR />";
-	        trackDiv.html(tmp);
-
-	        $("div#usrTrack"+level+" span#"+id+"InfoDesc"+level).each(function(){
-					$(this).tooltipster({
-						position: 'top-right',
-						maxWidth: 250,
-						offsetX: 10,
-						offsetY: 5,
-						contentAsHTML:true,
-						//arrow: false,
-						interactive: true,
-						interactiveTolerance: 350
-					});
-				});
-	        $("div#usrTrack"+level+" span#"+id+"Delete"+level).each(function(){
-	        		$(this).on("click",function(){
-	        			var tmpID=$(this).attr("id");
-	        			tmpID=tmpID.substring(0,tmpID.length-7);
-	        			deleteCustomTrack(tmpID);
-	        			});
-	        	});
-	       	$("div#usrTrack"+level+" #"+id+"ColorSelect"+level).each(function(){
-	        		$(this).on("change",function(){
-	        			var tmpID=$(this).attr("id");
-	        			tmpID=tmpID.substring(0,tmpID.length-12);
-	        			if($(this).val()=="Score"){
-	        				$("div#"+tmpID+"ScaleSetting"+level).show();
-	        			}else{
-	        				$("div#"+tmpID+"ScaleSetting"+level).hide();
-	        			}
-	        			var track=svgList[level].getTrack(tmpID);
-	        			track.setColorBy($(this).val());
-	        			});
-	        	});
-	       	$("span#"+id+"ColorBtn"+level).each(function(){
-	       		$(this).on("click",function(){
-	       			if($("div#"+id+"Scale"+level).is(':visible')){
-						$("div#"+id+"Scale"+level).hide();
-						//$("#"+id+"ColorBtn"+level).prop("value","Edit Color");
-					}else{
-						$("div#"+id+"Scale"+level).show();
-						//$("#"+id+"ColorBtn"+level).prop("value","Hide Edit Color");
-					    var track=svgList[level].getTrack(id);
-					    $("#"+id+"ColorSelect"+level).val(track.colorBy);
-					    if(track.colorBy=="Score"){
-					    	$("div#"+id+"ScaleSetting"+level).show();
-					    }else{
-					    	$("div#"+id+"ScaleSetting"+level).hide();
-					    }
-					    if(track!=undefined && track.minColor!=undefined&&track.maxColor!=undefined){
-					        $("#"+id+"minData"+level).val(track.minValue);
-					        $("#"+id+"maxData"+level).val(track.maxValue);
-					        document.getElementById(id+"minColor"+level).color=track.minColor;
-					        document.getElementById(id+"maxColor"+level).color=track.maxColor;
-					    }
-					}
-	       		});
-	       	});
-
-			$("div#usrTrack"+level+" #"+id+"minColor"+level).each(function(){
-	        	$(this).on("change",function(){
-	        		var tmpID=$(this).attr("id");
-	        		tmpID=tmpID.substring(0,tmpID.length-9);
-	        		var track=svgList[level].getTrack(tmpID);
-	        		track.setMinColor($(this).val());
-	        	});
-	        });
-	        $("div#usrTrack"+level+" #"+id+"maxColor"+level).each(function(){
-	        	$(this).on("change",function(){
-	        		var tmpID=$(this).attr("id");
-	        		tmpID=tmpID.substring(0,tmpID.length-9);
-	        		var track=svgList[level].getTrack(tmpID);
-	        		track.setMaxColor($(this).val());
-	        	});
-	        });
-	        $("div#usrTrack"+level+" #"+id+"minData"+level).each(function(){
-	        	$(this).on("change",function(){
-	        		var tmpID=$(this).attr("id");
-	        		tmpID=tmpID.substring(0,tmpID.length-8);
-	        		var track=svgList[level].getTrack(tmpID);
-	        		track.setMinValue($(this).val());
-	        	});
-	        });
-	        $("div#usrTrack"+level+" #"+id+"maxData"+level).each(function(){
-	        	$(this).on("change",function(){
-	        		var tmpID=$(this).attr("id");
-	        		tmpID=tmpID.substring(0,tmpID.length-8);
-	        		var track=svgList[level].getTrack(tmpID);
-	        		track.setMaxValue($(this).val());
-	        	});
-	        });
-		}
-	});
-}
-
 /*function showCustomColor(id,level){
 	if($("div#"+id+"Scale"+level).is(':visible')){
 		$("div#"+id+"Scale"+level).hide();
@@ -1346,7 +1120,6 @@ function addCustomTrackUI(trackString,checked){
 	}
 	
 }*/
-
 
 function deleteCustomTrack(track){
 	//console.log("remove custom track:"+track);
@@ -1411,10 +1184,6 @@ function calculateBin(len,width){
 		return bin;
 }
 
-/*function timeoutFunc(){
-	console.log("timeout function call");
-}*/
-
 //D3 helper functions
 function key(d) {if(d!=undefined){return d.getAttribute("ID");}else{return "unknown"}};
 function keyName(d) {if(d!=undefined){return d.getAttribute("name");}else{return "unknown"}};
@@ -1422,7 +1191,6 @@ function keyStart(d) {if(d!=undefined){return d.getAttribute("start");}else{retu
 function keyTissue(d,tissue){if(d!=undefined){return d.getAttribute("ID")+tissue;}else{return "unknown"}};
 function keyPos(d){if(d!=undefined){return d.pos;}else{return "unknown"}};
 function keyID(d){if(d!=undefined){return d.id;}else{return "unknown"}};
-
 
 //SVG functions
 function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
@@ -2714,6 +2482,16 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	that.get=function(attr){return that[attr];};
 	
+	that.getTrack=function (track){
+			var tr;
+			for(var l=0;l<that.trackList.length;l++){
+				if(that.trackList[l]!=undefined && that.trackList[l].trackClass==track){
+					tr=that.trackList[l];
+				}
+			}
+			return tr;
+	};
+
 	that.addTrack=function (track,density,additionalOptions,data){
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
@@ -3543,14 +3321,14 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		}
 	};
 
-	that.generateSettingsDiv=function(){
+	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
 		console.log(trackInfo);
 		console.log(d);
-		d3.select("div#trackSettingContent").select("table").select("tbody").html("");
+		d3.select(topLevelSelector).select("table").select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
-			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
 			for(var c=0;c<controls.length;c++){
 				if(controls[c]!=undefined && controls[c]!=""){
@@ -3565,7 +3343,15 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 					if(params[1].toLowerCase().indexOf("select")==0){
 						var selClass=params[1].split(":");
 						var opts=params[2].split("}");
-						var sel=div.append("select").attr("id",that.trackClass+"Dense"+that.level+"Select")
+						var prefix="";
+						var suffix="";
+						if(selClass.length>2){
+							prefix=selClass[2];
+						}
+						if(selClass.length>3){
+							suffix=selClass[3];
+						}
+						var sel=div.append("select").attr("id",that.trackClass+prefix+that.level+suffix)
 							.attr("name",selClass[1]);
 						for(var o=0;o<opts.length;o++){
 							var option=opts[o].substr(1).split(":");
@@ -3576,6 +3362,10 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 								}
 							}
 						}
+						d3.select("select#"+that.trackClass+prefix+that.level+suffix).on("change", function(){
+							that.updateSettingsFromUI();
+							that.redraw();
+						});
 					}else {
 						console.log("Undefined track settings:  "+controls[c]);
 					}
@@ -3587,13 +3377,13 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				that.gsvg.removeTrack(that.trackClass);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
-
+				$('#trackSettingDialog').fadeOut("fast");
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}else{
-			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
 			table.append("tr").append("td").html("Sorry no settings for this track.");
 			var buttonDiv=table.append("tr").append("td");
@@ -3604,6 +3394,21 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}
+	};
+
+	//poll UI controls to adjust settings and do nothing if they are not found
+	that.updateSettingsFromUI=function(){
+		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
+			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
+		}
+	};
+	//update current settings from a view setting string
+	that.updateSettings=function(setting){
+
+	};
+	//generate the setting string for a view from current settings
+	that.generateSettingString=function(){
+
 	};
 
 	that.gsvg=gsvgP;
@@ -3697,7 +3502,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 										.style("cursor","pointer")
 										.on("click",function(d){
 											if(that.trackClass!=that.gsvg.selectedTrackSetting){
-												that.generateSettingsDiv();
+												that.generateSettingsDiv("div#trackSettingContent");
 												that.gsvg.selectedTrackSetting=that.trackClass;
 												var p=$(this).position();
 												$('#trackSettingDialog').css("top",p.top).css("left",$(window).width()-380);
@@ -4725,9 +4530,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.redraw=function(){
 		
-		if($("#"+that.trackClass+"CBX"+that.gsvg.levelNumber).is(":checked")){
+		/*if($("#"+that.trackClass+"CBX"+that.gsvg.levelNumber).is(":checked")){
 			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		}
+		}*/
 
 		that.yMaxArr=new Array();
 		that.yArr=new Array();
@@ -5369,9 +5174,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		
 		that.svg.selectAll(".gene").remove();
 		
-		if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
+		/*if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		}
+		}*/
 		
 		var prevDrawAs=that.drawAs;
 		var tmpMin=that.xScale.domain()[0];
@@ -5729,7 +5534,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.counts=[{value:0,names:"Ensembl"},{value:0,names:"RNA-Seq"}];
 	that.drawAs="Gene";
 	that.trxCutoff=100000;
-	that.density=2;
+	that.density=3;
 	var additionalOptStr=new String(additionalOptions);
 	if(additionalOptStr.indexOf("DrawTrx")>-1){
 		that.drawAs="Trx";
@@ -6305,9 +6110,9 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.svg.selectAll(".gene").remove();
 		that.svg.selectAll(".trx"+that.gsvg.levelNumber).remove();
 		
-		if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
+		/*if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		}
+		}*/
 			
 		var prevDrawAs=that.drawAs;
 		var tmpMin=that.xScale.domain()[0];
@@ -6546,6 +6351,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 			that.tissues=["Brain","BrownAdipose","Heart","Liver"];
 		}
 	}
+	that.curColor=that.colorSelect;
 	
 	that.ttTrackList=new Array();
 	that.ttTrackList[0]="ensemblcoding";
@@ -6621,8 +6427,29 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		return tooltiptext;
 	};
 
+	that.updateSettingsFromUI=function(){
+		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
+			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
+		}
+		that.curColor=that.colorSelect;
+		if($("#"+that.trackClass+that.level+"colorSelect").length>0){
+			that.curColor=$("#"+that.trackClass+that.level+"colorSelect").val();
+		}
+		var count=0;
+		if($("#affyTissues"+that.level+" input[name=\"tissuecbx\"]").length>0){
+			that.tissues=[];
+			var tis=$("#affyTissues"+that.level+" input[name=\"tissuecbx\"]:checked");
+			for(var t=0;t<tis.length;t++){
+					var tissue=new String(tis[t].id);
+					tissue=tissue.substr(0,tissue.indexOf("Affy"));
+					that.tissues[count]=tissue;
+					count++;
+			}
+		}
+	};
+
 	that.redraw=function(){
-		if($("#probeDense"+that.gsvg.levelNumber+"Select").length>0){
+		/*if($("#probeDense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#probeDense"+that.gsvg.levelNumber+"Select").val();
 		}
 		var curColor=that.colorSelect;
@@ -6639,13 +6466,13 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 					that.tissues[count]=tissue;
 					count++;
 			}
-		}
-		var tissueLen=count;
-		if(curColor!=that.colorSelect || ((that.colorSelect=="herit" || that.colorSelect=="dabg") && tissueLen!=that.tissueLen)){
+		}*/
+		var tissueLen=that.tissues.length;
+		if(that.curColor!=that.colorSelect || ((that.colorSelect=="herit" || that.colorSelect=="dabg") && tissueLen!=that.tissueLen)){
 			that.tissueLen=tissueLen;
 			that.draw(that.data);
 		}else{
-			that.colorSelect=curColor;
+			that.colorSelect=that.curColor;
 			that.tissueLen=tissueLen;
 			if(that.colorSelect=="dabg"||that.colorSelect=="herit"){
 				if(that.colorSelect=="dabg"){
@@ -6852,12 +6679,13 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.draw= function (data){
 		
 		that.data=data;
-		if($("#probeDense"+that.gsvg.levelNumber+"Select").length>0){
+		that.colorSelect=that.curColor;
+		/*if($("#probeDense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#probeDense"+that.gsvg.levelNumber+"Select").val();
 		}
 		if($("#probe"+that.gsvg.levelNumber+"colorSelect").length>0){
 			that.colorSelect=$("#probe"+that.gsvg.levelNumber+"colorSelect").val();
-		}
+		}*/
 		if(that.colorSelect=="dabg"||that.colorSelect=="herit"){
 			if(that.colorSelect=="dabg"){
 				that.drawScaleLegend("0%","100%","of Samples DABG","#000000","#00FF00",0);
@@ -6868,7 +6696,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 			that.svg.selectAll(".tissueLbl").remove();
 			//var tissues=$(".settingsLevel"+that.gsvg.levelNumber+" input[name=\"tissuecbx\"]:checked");
 			//that.tissueLen=tissues.length;
-			var count=0;
+			/*var count=0;
 			if($(".settingsLevel"+that.gsvg.levelNumber+" input[name=\"tissuecbx\"]").length>0){
 				that.tissues=[];
 				var tis=$(".settingsLevel"+that.gsvg.levelNumber+" input[name=\"tissuecbx\"]:checked");
@@ -6878,8 +6706,8 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 						that.tissues[count]=tissue;
 						count++;
 				}
-			}
-			that.tissueLen=count;
+			}*/
+			that.tissueLen=that.tissues.length;
 			var totalYMax=1;
 			for(var t=0;t<that.tissues.length;t++){
 						var tissue=new String(that.tissues[t]);
@@ -7196,14 +7024,14 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		return dispData;
 	};
 
-	that.generateSettingsDiv=function(){
+	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
 		console.log(trackInfo);
 		console.log(d);
-		d3.select("div#trackSettingContent").select("table").select("tbody").html("");
+		d3.select(topLevelSelector).select("table").select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
-			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
 			for(var c=0;c<controls.length;c++){
 				if(controls[c]!=undefined && controls[c]!=""){
@@ -7235,6 +7063,15 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 								}
 							}
 						}
+						d3.select("select#"+id).on("change", function(){
+							if($(this).val()=="dabg"||$(this).val()=="herit"){
+								$("div#affyTissues"+that.level).show();
+							}else{
+								$("div#affyTissues"+that.level).hide();
+							}
+							that.updateSettingsFromUI();
+							that.redraw();
+						});
 					}else if(params[1].toLowerCase().indexOf("cbx")==0){
 						div=div.append("div").attr("id","affyTissues"+that.level).style("display","none");
 						div.append("text").text(lbl+": ");
@@ -7244,15 +7081,20 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 						for(var o=0;o<opts.length;o++){
 							var option=opts[o].substr(1).split(":");
 							if(option.length==2){
-								var sel=div.append("input").attr("type","checkbox").attr("id",option[1]+"CBX"+that.level)
+								var span=div.append("div").style("display","inline-block");
+								var sel=span.append("input").attr("type","checkbox").attr("id",option[1]+"CBX"+that.level)
 									.attr("name",selClass[1])
 									.style("margin-left","5px");
-								div.append("text").text(option[0]);
+								span.append("text").text(option[0]);
 								//console.log(def+"::"+option[1]);
 								if(def.indexOf(option[1])>-1){
 									$("#"+option[1]+"CBX"+that.level).prop('checked',true);
 									//sel.attr("checked","checked");
 								}
+								d3.select("input#"+option[1]+"CBX"+that.level).on("change", function(){
+									that.updateSettingsFromUI();
+									that.redraw();
+								});
 							}
 						}
 					}
@@ -7270,7 +7112,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}else{
-			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
 			table.append("tr").append("td").html("Sorry no settings for this track.");
 			var buttonDiv=table.append("tr").append("td");
@@ -7322,14 +7164,97 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 	that.ttTrackList[7]="brainsmallnc";
 	that.ttTrackList[8]="probe";
 
+	that.updateSettingsFromUI=function(){
+		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
+			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
+		}
+		if($("#"+that.trackClass+that.level+"Select").length>0){
+			that.include=$("#"+that.trackClass+that.level+"Select").val();
+		}
+	};
+
+		that.generateSettingsDiv=function(topLevelSelector){
+		var d=trackInfo[that.trackClass];
+		console.log(trackInfo);
+		console.log(d);
+		d3.select(topLevelSelector).select("table").select("tbody").html("");
+		if(d.Controls.length>0 && d.Controls!="null"){
+			var controls=new String(d.Controls).split(",");
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			for(var c=0;c<controls.length;c++){
+				if(controls[c]!=undefined && controls[c]!=""){
+					var params=controls[c].split(";");
+					var div=table.append("tr").append("td");
+					var lbl=params[0].substr(5);
+					div.append("text").text(lbl+": ");
+					var def="";
+					if(params.length>3  && params[3].indexOf("Default=")==0){
+						def=params[3].substr(8);
+					}
+					if(params[1].toLowerCase().indexOf("select")==0){
+						var selClass=params[1].split(":");
+						var opts=params[2].split("}");
+						var prefix="";
+						var suffix="";
+						if(selClass.length>2){
+							prefix=selClass[2];
+						}
+						if(selClass.length>3){
+							suffix=selClass[3];
+						}
+						var sel=div.append("select").attr("id",that.trackClass+prefix+that.level+suffix)
+							.attr("name",selClass[1]);
+						for(var o=0;o<opts.length;o++){
+							var option=opts[o].substr(1).split(":");
+							if(option.length==2){
+								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
+								if(option[1]==def){
+									tmpOpt.attr("selected","selected");
+								}
+							}
+						}
+						d3.select("select#"+that.trackClass+prefix+that.level+suffix).on("change", function(){
+							//alert(d3.select(this).attr("id"));
+							that.updateData();
+						});
+					}else {
+						console.log("Undefined track settings:  "+controls[c]);
+					}
+				}
+			}
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+				that.gsvg.removeTrack(that.trackClass);
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}else{
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			table.append("tr").append("td").html("Sorry no settings for this track.");
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}
+	};
 
 	that.redraw=function (){
 
-		that.density=$("#snp"+strain+"Dense"+that.gsvg.levelNumber+"Select").val();
+		/*that.density=$("#snp"+strain+"Dense"+that.gsvg.levelNumber+"Select").val();
 		that.include=$("#snp"+strain+that.gsvg.levelNumber+"Select").val();
 		if(that.density==null || that.density==undefined){
 			that.density=1;
-		}
+		}*/
 		for(var j=0;j<that.yArr.length;j++){
 			that.yArr[j]=-299999999;
 		}
@@ -7728,27 +7653,27 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		var legend=[];
 		if(that.include==4){
 			if(that.strain=="BNLX"){
-				legend=[{color:"#0000FF",label:"SNP"},{color:"#000096",label:"Indel"}];
+				legend=[{color:"#0000FF",label:"SNP"},{color:"#000096",label:"Insertion/Deletion"}];
 			}else if(that.strain=="SHRH"){
-				legend=[{color:"#FF0000",label:"SNP"},{color:"#960000",label:"Indel"}];
+				legend=[{color:"#FF0000",label:"SNP"},{color:"#960000",label:"Insertion/Deletion"}];
 			}else if(that.strain=="SHRJ"){
-				legend=[{color:"#00FF00",label:"SNP"},{color:"#009600",label:"Indel"}];
+				legend=[{color:"#00FF00",label:"SNP"},{color:"#009600",label:"Insertion/Deletion"}];
 			}else if(that.strain=="F344"){
-				legend=[{color:"#00FFFF",label:"SNP"},{color:"#009696",label:"Indel"}];
+				legend=[{color:"#00FFFF",label:"SNP"},{color:"#009696",label:"Insertion/Deletion"}];
 			}else{
-				legend=[{color:"#DEDEDE",label:"SNP"},{color:"#969696",label:"Indel"}];
+				legend=[{color:"#DEDEDE",label:"SNP"},{color:"#969696",label:"Insertion/Deletion"}];
 			}
 		}else if(that.include==3 || that.include==2){
 			if(that.strain=="BNLX"){
-				legend=[{color:"#000096",label:"Indel"}];
+				legend=[{color:"#000096",label:"Insertion/Deletion"}];
 			}else if(that.strain=="SHRH"){
-				legend=[{color:"#960000",label:"Indel"}];
+				legend=[{color:"#960000",label:"Insertion/Deletion"}];
 			}else if(that.strain=="SHRJ"){
-				legend=[{color:"#009600",label:"Indel"}];
+				legend=[{color:"#009600",label:"Insertion/Deletion"}];
 			}else if(that.strain=="F344"){
-				legend=[{color:"#009696",label:"Indel"}];
+				legend=[{color:"#009696",label:"Insertion/Deletion"}];
 			}else{
-				legend=[{color:"#969696",label:"Indel"}];
+				legend=[{color:"#969696",label:"Insertion/Deletion"}];
 			}
 		}else if(that.include==1){
 			if(that.strain=="BNLX"){
@@ -8951,7 +8876,7 @@ function CountTrack(gsvg,data,trackClass,density){
 	};
 
 	that.setupToolTipSVG=function(d,perc){
-		 //Setup Tooltip SVG
+		//Setup Tooltip SVG
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
 		var start=d.getAttribute("start")*1;
@@ -9254,6 +9179,125 @@ function CountTrack(gsvg,data,trackClass,density){
 							.attr("opacity",0.3)
 							.attr("pointer-events","none");
 		}
+	};
+
+	that.generateSettingsDiv=function(topLevelSelector){
+		var d=trackInfo[that.trackClass];
+		console.log(trackInfo);
+		console.log(d);
+		d3.select(topLevelSelector).select("table").select("tbody").html("");
+		if(d.Controls.length>0 && d.Controls!="null"){
+			var controls=new String(d.Controls).split(",");
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			for(var c=0;c<controls.length;c++){
+				if(controls[c]!=undefined && controls[c]!=""){
+					var params=controls[c].split(";");
+					
+					var div=table.append("tr").append("td");
+					var lbl=params[0].substr(5);
+					
+					var def="";
+					if(params.length>3  && params[3].indexOf("Default=")==0){
+						def=params[3].substr(8);
+					}
+					if(params[1].toLowerCase().indexOf("select")==0){
+						div.append("text").text(lbl+": ");
+						var selClass=params[1].split(":");
+						var opts=params[2].split("}");
+						var id=that.trackClass+"Dense"+that.level+"Select";
+						if(selClass[1]=="colorSelect"){
+							id=that.trackClass+that.level+"colorSelect";
+						}
+						var sel=div.append("select").attr("id",id)
+							.attr("name",selClass[1]);
+						for(var o=0;o<opts.length;o++){
+							var option=opts[o].substr(1).split(":");
+							if(option.length==2){
+								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
+								if(option[1]==def){
+									tmpOpt.attr("selected","selected");
+								}
+							}
+						}
+						d3.select("select#"+id).on("change", function(){
+							if($(this).attr("id")==that.trackClass+"Dense"+that.level+"Select" && $(this).val()==1){
+								$("#scaleControl"+that.level).show();
+							}else{
+								$("#scaleControl"+that.level).hide();
+							}
+							that.updateSettingsFromUI();
+							that.redraw();
+						});
+					}else if(params[1].toLowerCase().indexOf("slider")==0){
+						var disp="none";
+						if(that.density==1){
+							disp="inline-block";
+						}
+						div=div.append("div").attr("id","scaleControl"+that.level).style("display",disp);
+						div.append("text").text(lbl+": ");
+						div.append("input").attr("type","text").attr("id","amount").attr("value","1-5000").style("border",0).style("color","#f6931f").style("font-weight","bold").style("background-color","#EEEEEE");
+						var selClass=params[1].split(":");
+						var opts=params[2].split("}");
+						
+						div=div.append("div");
+						div.append("text").text("Min:").append("div").attr("id","min-"+selClass[1]).style("width","85%").style("display","inline-block").style("float","right");
+						div.append("br");
+						div.append("text").text("Max:").append("div").attr("id","max-"+selClass[1]).style("width","85%").style("display","inline-block").style("float","right");
+
+						$( "#min-"+selClass[1] ).slider({
+							  min: 1,
+							  max: 1000,
+							  step:1,
+							  value:  1 ,
+							  slide: that.processSlider
+							});
+						$( "#max-"+selClass[1] ).slider({
+							  min: 1000,
+							  max: 20000,
+							  step:100,
+							  value: 5000 ,
+							  slide: that.processSlider
+							});
+						
+							that.updateSettingsFromUI();
+							that.redraw();
+						
+							
+						
+					}
+				}
+			}
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+				that.gsvg.removeTrack(that.trackClass);
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
+
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}else{
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			table.append("tr").append("td").html("Sorry no settings for this track.");
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}
+	};
+
+	that.processSlider=function(event,ui){
+		var min=$( "#min-rangeslider" ).slider( "value");
+		var max=$( "#max-rangeslider" ).slider( "value");
+		$( "#amount" ).val(  min+ " - " + max );
+		that.updateCountScale(min,max);
 	};
 
 	that.yScale = d3.scale.linear()

@@ -463,8 +463,8 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
        
   <label>Species:
   <select name="speciesCB" id="speciesCB">
-  	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus</option>
-    <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
+  	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus (mm10)</option>
+    <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus (rn5)</option>
   </select>
   </label>
   

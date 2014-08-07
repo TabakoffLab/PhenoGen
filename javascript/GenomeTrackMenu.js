@@ -19,6 +19,7 @@ function TrackMenu(level){
 	that.level=level;
 	that.trackList=[];
 	that.previewLevel=101;
+	that.previewSVG=NaN;
 	that.dataInitialized=0;
 
 	that.generateTrackTable=function(){
@@ -95,8 +96,10 @@ function TrackMenu(level){
 						interactive: true,
 						interactiveTolerance: 350
 					});
-	            that.generateSettingsDiv(d);
+	            //that.generateSettingsDiv(d);
 	           	that.generatePreview(d);
+	           	var track=that.previewSVG.getTrack(d.TrackClass);
+				track.generateSettingsDiv("td#selectedTrack"+that.level);
 	        }
     	} );
 
@@ -168,12 +171,12 @@ function TrackMenu(level){
 		if(d.Organism=="AA"||d.Organism==tmpOrg){
 			var min=svgList[that.level].xScale.domain()[0];
 			var max=svgList[that.level].xScale.domain()[1];
-			var newSvg=toolTipSVG("div#trackPreviewOuter"+that.level+" div#trackPreviewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
-			newSvg.folderName=svgList[that.level].folderName;
+			that.previewSVG=toolTipSVG("div#trackPreviewOuter"+that.level+" div#trackPreviewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
+			that.previewSVG.folderName=svgList[that.level].folderName;
 			var trackString=that.generateSettingsString(d);
-			loadStateFromString(trackString,"",that.previewLevel,newSvg);
-			newSvg.updateData();
-			newSvg.updateFullData();
+			loadStateFromString(trackString,"",that.previewLevel,that.previewSVG);
+			that.previewSVG.updateData();
+			that.previewSVG.updateFullData();
 			$("div#trackPreviewContent div#ScrollLevel"+that.previewLevel).css("max-height","250px").css("overflow","auto");
 		}else{
 			$("div#previewOuter"+that.level+" div#previewContent").html("No Preview Available: The current organism doesn't match the tracks included in this view.");
@@ -181,7 +184,7 @@ function TrackMenu(level){
 		
 	};
 
-	that.generateSettingsDiv=function (d){
+	/*that.generateSettingsDiv=function (d){
 		d3.select("td#selectedTrack"+that.level).select("table#trackListTbl"+that.level).select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
@@ -233,7 +236,7 @@ function TrackMenu(level){
 				}
 			}
 		}
-	};
+	};*/
 	that.getTrackData();
 	return that;
 }
