@@ -2764,12 +2764,12 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			var newTrack= SNPTrack(that,data,track,3,4);
 			that.addTrackList(newTrack);
 		}else if(track=="qtl"){
-				
+			var newTrack= QTLTrack(that,data,track,1);
+			that.addTrackList(newTrack);
 		}else if(track=="trx"){
 				var txList=getAllChildrenByName(getFirstChildByName(that.selectedData,"TranscriptList"),"Transcript");
 				var newTrack= TranscriptTrack(that,txList,track,density);
 				that.addTrackList(newTrack);
-
 		}else if(track=="probe"){
 				var newTrack= ProbeTrack(that,data,track,"Affy Exon 1.0 ST Probe Sets",density+","+additionalOptions);
 				that.addTrackList(newTrack);
@@ -8044,6 +8044,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 		qtls.exit().remove();
 
 		qtls[0].forEach(function(d){
+			if(d!=undefined){
 				var nameStr=new String(d.__data__.getAttribute("name"));
 				var re = /[0-9]+\s*$/g;
 				var end1=nameStr.search(re);
@@ -8062,6 +8063,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 				}
 				var name=nameStr;
 				d3.select(d).select("rect").style("fill",that.color(name));
+			}
 		});
 		that.svg.attr("height", that.yCount*15);
 		//that.getDisplayedData();

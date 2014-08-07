@@ -20,6 +20,7 @@ function ViewMenu(level){
 	that.level=level;
 	that.viewList=[];
 	that.selectedTrackSetting=0;
+	that.previewLevel=100;
 
 	//generates the preview image on the preview tab.
 	that.generatePreview=function(d){
@@ -28,9 +29,10 @@ function ViewMenu(level){
 		if(d.Organism=="AA"||d.Organism==tmpOrg){
 			var min=svgList[that.level].xScale.domain()[0];
 			var max=svgList[that.level].xScale.domain()[1];
-			var newSvg=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",570,min,max,100,chr,svgList[that.level].type);
+			var newSvg=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
+			$("div#ScrollLevel"+that.previewLevel).css("overflow","auto").css("max-height","430px");
 			var trackString=that.generateSettingsString(d);
-					loadStateFromString(trackString,"",100,newSvg);
+					loadStateFromString(trackString,"",that.previewLevel,newSvg);
 					newSvg.updateData();
 					newSvg.updateFullData();
 		}else{
@@ -249,6 +251,9 @@ function ViewMenu(level){
 					$("div#descOuter"+that.level+" div#descContent").html(d.Description+append);
 					that.generateTrackList(d);
 					that.generatePreview(d);
+					if($(".trackLevel"+that.level).is(":visible")){
+						trackMenu[that.level].generateTrackTable();
+					}
 	};
 
 	that.findSelectedView=function (){
@@ -301,10 +306,11 @@ function ViewMenu(level){
 						});
 				}
 				if(!$(".trackLevel"+that.level).is(":visible")){
+						trackMenu[that.level].generateTrackTable();
 						var p=$("span#viewsLevel"+that.level).position();
 						var left=-380;
 						if($(window).width()>=1200){
-							left=-982;
+							left=-1117;
 						}
 						$(".trackLevel"+that.level).css("top",p.top).css("left",p.left+left);
 						var d=that.findSelectedView();

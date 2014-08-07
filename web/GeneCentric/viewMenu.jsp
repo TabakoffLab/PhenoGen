@@ -84,7 +84,7 @@
                          	<div id="descContent" style="margin:5px 5px 5px 5px;width:98%;">
                             </div>
                          </div>
-                         <div id="previewOuter<%=level%>" style="height:500px; overflow:auto;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:98%;text-align:left;">
+                         <div id="previewOuter<%=level%>" style="height:500px;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:100%;text-align:left;">
                          	<div id="previewContent" style="margin:5px 5px 5px 5px;width:98%;">
                             	
                             </div>

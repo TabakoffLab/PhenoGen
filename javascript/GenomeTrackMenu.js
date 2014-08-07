@@ -11,6 +11,7 @@
 */
 
 var trackDataTable;
+var trackMenu=[];
 
 
 function TrackMenu(level){
@@ -23,13 +24,17 @@ function TrackMenu(level){
 	that.generateTrackTable=function(){
 		var btData=[];
 		var count=0;
+		console.log("generateTrackTable");
+		console.log(that.trackList);
 		for(var j=0;j<that.trackList.length;j++){
 			if($("table#trackListTbl"+that.level+" tr#trk"+that.trackList[j].TrackID).length==0){
 				btData[count]=that.trackList[j];
 				count++;
 			}
 		}
-
+		if($.fn.DataTable.isDataTable( 'table#trkSelList'+that.level )){
+			trackDataTable.destroy();
+		}
 		d3.select("table#trkSelList"+that.level).select("tbody").selectAll('tr').remove();
 		var tracktbl=d3.select("table#trkSelList"+that.level).select("tbody").selectAll('tr').data(btData)
 				.enter().append("tr")
@@ -54,16 +59,17 @@ function TrackMenu(level){
 		});
 		
 		//$('table#trkSelList'+that.level).dataTable().destroy();
-		
-		trackDataTable=$('table#trkSelList'+that.level).dataTable({
-			"bPaginate": false,
-			/*"bProcessing": true,
-			"bStateSave": false,
-			"bAutoWidth": true,
-			"bDeferRender": true,*/
-			"sScrollY": "750px" ,
-			"sDom": '<"rightSearch"fr><t>'
-		});
+		if(!$.fn.DataTable.isDataTable( 'table#trkSelList'+that.level )){
+			trackDataTable=$('table#trkSelList'+that.level).DataTable({
+				"bPaginate": false,
+				/*"bProcessing": true,
+				"bStateSave": false,
+				"bAutoWidth": true,
+				"bDeferRender": true,*/
+				"sScrollY": "750px" ,
+				"sDom": '<"rightSearch"fr><t>'
+			});
+		}
 		$("td#selectedTrack"+that.level).hide();
 
 		$('table#trkSelList'+that.level+' tbody').on( 'click', 'tr', function () {
@@ -75,8 +81,9 @@ function TrackMenu(level){
 	            var data="Selected Track Name: "+d.Name+"  <span class=\"trInfotooltip"+that.level+"\" title= \""+d.Description+"\"><img src=\""+iconPath+"info.gif\"></span>";
 	            $("div#trackHeaderOuter"+that.level+" #trackHeaderContent").html(data);
 	            var tblHeight=that.getTrackTableHeight(btData);
-	            trackDataTable.fnSettings().oScroll.sY =  tblHeight;
-				trackDataTable.fnDraw();
+	            //trackDataTable.settings().sScrollY =  tblHeight;
+	            trackDataTable.settings()[0].oScroll.sy=tblHeight;
+				trackDataTable.draw();
 				$('#trkSelList'+that.level+'_wrapper div.dataTables_scroll div.dataTables_scrollBody').css('height', tblHeight);
 	            $("td#selectedTrack"+that.level).show();
 	            $(".trInfotooltip"+that.level).tooltipster({
@@ -128,7 +135,6 @@ function TrackMenu(level){
 					for(var i=0;i<that.trackList.length;i++){
 						trackInfo[that.trackList[i].TrackClass]=that.trackList[i];
 					}
-					console.log(trackInfo);
 				}
 				that.dataInitialized=1;
 				that.generateTrackTable();
