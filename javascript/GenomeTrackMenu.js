@@ -23,14 +23,22 @@ function TrackMenu(level){
 	that.dataInitialized=0;
 
 	that.generateTrackTable=function(){
+		var filter=$("select#trackTypeSelect"+that.level).val();
 		var btData=[];
 		var count=0;
 		console.log("generateTrackTable");
 		console.log(that.trackList);
 		for(var j=0;j<that.trackList.length;j++){
-			if($("table#trackListTbl"+that.level+" tr#trk"+that.trackList[j].TrackID).length==0){
-				btData[count]=that.trackList[j];
-				count++;
+			if(	filter=="all" ||
+				(filter=="allpublic" && that.trackList[j].UserID==0) ||
+				(filter=="custom" && that.trackList[j].UserID!=0) ||
+				(filter=="genome" && that.trackList[j].GenericCategory=="Genome") ||
+				(filter=="trxome" && that.trackList[j].GenericCategory=="Transcriptome")
+				){
+				if($("table#trackListTbl"+that.level+" tr#trk"+that.trackList[j].TrackID).length==0){
+					btData[count]=that.trackList[j];
+					count++;
+				}
 			}
 		}
 		if($.fn.DataTable.isDataTable( 'table#trkSelList'+that.level )){
@@ -100,6 +108,8 @@ function TrackMenu(level){
 	           	that.generatePreview(d);
 	           	var track=that.previewSVG.getTrack(d.TrackClass);
 				track.generateSettingsDiv("td#selectedTrack"+that.level);
+				$("td#selectedTrack"+that.level+" #trackListTbl"+that.level+" tbody tr:first").remove();
+				$("td#selectedTrack"+that.level+" #trackListTbl"+that.level+" tbody tr:last").remove();
 	        }
     	} );
 
@@ -183,6 +193,8 @@ function TrackMenu(level){
 		}
 		
 	};
+
+
 
 	/*that.generateSettingsDiv=function (d){
 		d3.select("td#selectedTrack"+that.level).select("table#trackListTbl"+that.level).select("tbody").html("");

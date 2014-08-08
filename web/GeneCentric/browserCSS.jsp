@@ -193,6 +193,9 @@ table.tooltipTable TD{
   		background: #9b9bce;
 	}
 	
+	span.control0,span.control1{
+		cursor:pointer;
+	}
 	
 	div#trackSettingDialog{
 		position:absolute;

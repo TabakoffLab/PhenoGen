@@ -56,7 +56,7 @@ function ViewMenu(level){
 				}
 			}).attr("id",function(d){return "trk"+d.TrackID;});
 		tracktbl.each(function(d,i){
-			var grab="<img src=\""+iconPath+"grab_light.png\" style=\"cursor: move; cursor: -webkit-grab; cursor: -moz-grab; \" class=\"handle"+that.level+"\">";
+			var grab="<img src=\""+iconPath+"grab_flat.png\" style=\"cursor: move; cursor: -webkit-grab; cursor: -moz-grab; \" class=\"handle"+that.level+"\">";
 			d3.select(this).append("td").attr("class","ind").html(grab+(i + 1));
 			var info="  <span class=\"listtooltip"+that.level+"\" title= \""+d.Description+"\"><img src=\""+iconPath+"info.gif\"></span>";
 
@@ -72,12 +72,12 @@ function ViewMenu(level){
 				species=shortOrg+" only";
 			}
 			d3.select(this).append("td").html(species);
-			var edit="<span class=\"moveUp"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\" ><img src=\""+iconPath+"smArrowUp.png\"></span>";
-			edit=edit+" <span class=\"moveDown"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"smArrowDown.png\"></span>";
+			var edit="<span class=\"moveUp"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\" ><img src=\""+iconPath+"up_flat.png\"></span>";
+			edit=edit+" <span class=\"moveDown"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"down_flat.png\"></span>";
 			if(d.Controls!=undefined && d.Controls!="null" && d.Controls!=""){
-				edit=edit+"&nbsp&nbsp&nbsp<span class=\"trackSetting"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"gear.png\"></span>";
+				edit=edit+"&nbsp&nbsp&nbsp<span class=\"trackSetting"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"gear_flat.png\"></span>";
 			}
-			edit=edit+"&nbsp&nbsp&nbsp<span class=\"delete"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"delete.png\"></span>";
+			edit=edit+"&nbsp&nbsp&nbsp<span class=\"delete"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"del_flat.png\"></span>";
 			
 			d3.select(this).append("td").html(edit);
 			d3.select("table#trackListTbl"+that.level).selectAll(".trackSetting"+that.level)
@@ -179,7 +179,7 @@ function ViewMenu(level){
 	//reruns stripping to maintain appropriate alternating colors
 	that.updateTrackNumber=function(e, ui) {
 		$('td.ind', $("table#trackListTbl"+that.level)).each(function (i) {
-				var grab="<img src=\""+iconPath+"grab_light.png\" style=\"cursor: move; cursor: -webkit-grab; cursor: -moz-grab; \" class=\"handle"+that.level+"\">    ";
+				var grab="<img src=\""+iconPath+"grab_flat.png\" style=\"cursor: move; cursor: -webkit-grab; cursor: -moz-grab; \" class=\"handle"+that.level+"\">    ";
 			 	$(this).html(grab+(i + 1));
 		});
 		d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').attr("class",function(d,i){

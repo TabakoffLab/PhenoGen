@@ -31,10 +31,15 @@
                     <%}%>
                     <TR>
                     	<TD style="vertical-align:middle">
-                            <span class="control<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Create a new custom track."><img src="<%=imagesDir%>icons/createNew.png" style="position:relative;top:2px;left:2px;"></span>
+                            <span class="control<%=level%>" style="display:inline-block;" title="Create a new custom track."><img src="<%=imagesDir%>icons/add_flat.png" ></span>
                             <span class="viewtooltip<%=level%>" title="Click Add Track to add the currently selected track to the view you are editing.  Want to cancel click the close button(<img src=&quot;<%=imagesDir%>icons/close.png&quot;>)"><span class="applyView button" style="float:right;">Add Track</span></span>
                         </TD>
                         
+                    </TR>
+                    <TR>
+                    	<TD style="width:100%;" >
+                           <div style="font-size:16px;width:100%; text-align:left;background:#EEEEEE;">Available Tracks:</div>
+                        </TD>
                     </TR>
                     <TR>
                     <TD>
@@ -120,4 +125,7 @@
 			"sScrollY": "200px",
 			"sDom": '<t>'
 		});*/
+		$("#trackTypeSelect<%=level%>").on("change",function(){
+			trackMenu[<%=level%>].generateTrackTable();
+		});
 	</script>

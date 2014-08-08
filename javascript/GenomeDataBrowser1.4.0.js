@@ -346,82 +346,6 @@ $(document).on("click",".views",function(){
 					}
 					return false;
 				});
-			
-/*$(document).on("change","input[name='trackcbx']",function(){
-	 			//var type=$(this).val();
-				//var typeStr=new String(type);
-				var idStr=new String($(this).attr("id"));
-				var cbxInd=idStr.indexOf("CBX");
-				var prefix=new String(idStr.substr(0,cbxInd));
-				var level=idStr.substr(idStr.length-1);
-				if($(this).is(":checked")){
-					var addtlOpt="";
-					if(level==1){
-						addtlOpt="DrawTrx";
-					}
-					/*if(prefix.indexOf("coding") || prefix.indexOf("noncoding")||prefix.indexOf("smallnc")){
-						var tmpType=idStr.substr(idStr.length-2,1);
-						if(tmpType=="g"){
-							addtlOpt="annotOnly;";
-						}else if(tmpType=="t"){
-							addtlOpt="trxOnly;";
-						}
-					}*/
-/*					if(d3.select("#Level"+level+prefix).size()>0){
-						redrawTrack(level,prefix);
-					}else{
-						if($("#"+prefix+"Dense"+level+"Select").length>0){
-							svgList[level].addTrack(prefix,$("#"+prefix+"Dense"+level+"Select").val(),addtlOpt,0);
-						}
-					}
-				}else{
-					var isSelected=0;
-					$(".settingsLevel"+level+" [id^="+prefix+"CBX]").each(function (){
-						if($(this).is(":checked")){
-							isSelected=1;
-						}
-					});
-					if(isSelected==0){
-						removeTrack(level,prefix);
-					}else{
-						redrawTrack(level,prefix);
-					}
-				}
-				saveToCookie(level);
-	 		});*/
-/*$(document).on("change","select[name='trackSelect']",function(){
-				var idStr=new String($(this).attr("id"));
-				//console.log("TrackSelect:"+idStr);
-				var cl=$(this).attr("class");
-				var value=$(this).val();
-				var level=idStr.substr(idStr.length-7,1);
-				if(level=="S"){
-					level=idStr.substr(idStr.length-8,1);
-				}
-				//console.log("TrackSelect Level:"+level);
-				if(svgList[level]!=undefined){
-					try{
-						/*if(idStr.indexOf("Dense")>0){
-							if(idStr.indexOf("coding")>-1 || idStr.indexOf("smallnc")>-1){
-								$("."+cl).each(function(){
-									$(this).val(value);
-								});
-							}
-							svgList[level].redraw();
-						}else */
-/*						svgList[level].updateTrackSettings();
-						if(idStr.indexOf("snp")==0){
-							svgList[level].updateData();
-						}else{
-							svgList[level].redraw();
-						}
-					}catch(err){
-						Bugsense.notify( err, { controlID:idStr,level:level } );
-					}
-				}
-				saveToCookie(level);
-
-	 		});*/
 
 $(document).on("change","input[name='optioncbx']",function(){
 	var idStr=new String($(this).attr("id"));
@@ -430,35 +354,6 @@ $(document).on("change","input[name='optioncbx']",function(){
 	var level=idStr.substr(cbxInd+3,1);
 	redrawTrack(level,prefix);
 });
-
-
-//Controls for probe tracks
-/*$(document).on("change","select[name='colorSelect']",function(){
-				var idStr=new String($(this).attr("id"));
-				var value=$(this).val();
-				var level=idStr.substr(idStr.length-12,1);
-				if(value=="dabg" || value=="herit"){
-						$("div#affyTissues"+level).show();
-				}else if(value=="annot"){
-						$("div#affyTissues"+level).hide();
-				}
-				//if($("#probeCBX"+level).is(":checked")){
-					redrawTrack(level,"probe");
-					saveToCookie(level);
-				//}
-	 		});*/
-/*$(document).on("change","input[name='tissuecbx']",function(){
-	 			var idStr=new String($(this).attr("id"));
-				var level=idStr.substr(idStr.length-1,1);
-				//if($("#probeCBX"+level).is(":checked")){
-				redrawTrack(level,"probe");
-				saveToCookie(level);
-				//}
-	 		});*/
-
-
-
-
 
 $(document).on("change","select[name='imgSelect']", function(){
 				var id=new String($(this).attr("id"));
@@ -493,86 +388,6 @@ $(document).on("click",".reset",function(){
 		saveToCookie(level);
 	}
 });
-
-
-
-/*$(document).on("click",".saveImage",function(){
-	var id=$(this).attr("id");
-	var levelID=(new String(id)).substr(4);
-	var content=$("div#"+levelID).html();
-		content+"\n";
-		$.ajax({
-				url: pathPrefix+"saveBrowserImage.jsp",
-   				type: 'POST',
-				contentType: 'text/html',
-				data: content,
-				processData: false,
-				dataType: 'json',
-    			success: function(data2){ 
-        			//console.log(data2.imageFile);
-        			var d=new Date();
-        			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
-					var url="http://"+urlprefix+"/tmpData/download/"+data2.imageFile;
-					var region=new String($('#geneTxt').val());
-					region=region.replace(/:/g,"_");
-					region=region.replace(/-/g,"_");
-					region=region.replace(/,/g,"");
-					if(levelID=="Level1"){
-						region=svgList[1].selectedData.getAttribute("geneSymbol");
-					}
-					 var filename = region+"_"+datePart+".png";
-					  var xhr = new XMLHttpRequest();
-					  
-					  xhr.open('GET', url);
-					  xhr.responseType = 'blob';
-					  xhr.send();
-					  xhr.onreadystatechange = function(){
-
-					  										
-
-															    //ready?
-															    if (xhr.readyState != 4)
-															        return false;
-
-															    //get status:
-															    var status = xhr.status;
-
-															    //maybe not successful?
-															    if (status != 200) {
-															    	console.log("xhr status:"+status);
-															        //alert("AJAX: server status " + status);
-															        return false;
-															    }
-															    var a = document.createElement('a');
-																a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
-																a.download = filename; // Set the file name.
-																a.style.display = 'none';
-																document.body.appendChild(a);
-																try{
-																	a.click();
-																}catch(error){
-																	$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
-																	window.open(url);
-																}	
-																delete a;
-															    return true;
-															}
-					  /*xhr.onload = function() {
-						var a = document.createElement('a');
-						a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
-						a.download = filename; // Set the file name.
-						a.style.display = 'none';
-						document.body.appendChild(a);
-						a.click();
-						delete a;
-					  };*/
-					  
-/*				},
-    			error: function(xhr, status, error) {
-        			console.log(error);
-    			}
-			});
-});*/
 
 function confirmUpload(level){
 	$("div#confirmUpload"+level).show();
@@ -3252,6 +3067,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").attr("x",0).text(lblStr);
 		}
 		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select(".infoIcon").attr("transform", "translate("+(that.gsvg.width-20)+",0)");
+		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select(".settings").attr("transform", "translate("+(that.gsvg.width-40)+",0)");
 		//d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select(".infoIcon").attr("transform", "translate(" + (that.gsvg.width/2+((lblStr.length/2)*7.5)) + ",0)");
 	};
 
@@ -7173,7 +6989,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		}
 	};
 
-		that.generateSettingsDiv=function(topLevelSelector){
+	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
 		console.log(trackInfo);
 		console.log(d);
@@ -7423,8 +7239,8 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 	that.updateData = function(retry){
 		var tag="Snp";
 		var path=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/snp"+that.strain+".xml";
-		that.include=$("#"+that.trackClass+that.gsvg.levelNumber+"Select").val();
-		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
+		/*that.include=$("#"+that.trackClass+that.gsvg.levelNumber+"Select").val();
+		that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();*/
 		d3.xml(path,function (error,d){
 				if(error){
 					if(retry<3){//wait before trying again
@@ -8483,6 +8299,7 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 	that.colorValueField="readCount";
 	that.colorScale=d3.scale.linear().domain([1,1000]).range(["#E6E6E6","#000000"]);
 	that.legendLbl="Read Depth";
+	that.density=3;
 	
 
 	that.getDisplayID=function(d){

@@ -42,11 +42,11 @@
                     <%}%>
                     <TR>
                     	<TD style="vertical-align:middle">
-                        <span class="control<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Create a new view with no tracks."><img src="<%=imagesDir%>icons/createNew.png" style="position:relative;top:2px;left:2px;"></span>
-                        <span class="control<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Create a new view copied from the selected view."><img src="<%=imagesDir%>icons/copy.png" style="position:relative;top:2px;left:2px;"></span>
-                        <span class="control<%=level%>" style="display:inline-block;height:38px;"  title="Save changes to the current view. Includes track order and settings when saving. If signed in changes are saved to the server otherwise changes are saved locally to a cookie."><img src="<%=imagesDir%>icons/disk.png"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" title="Create a new view with no tracks."><img src="<%=imagesDir%>icons/add_flat.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" title="Create a new view copied from the selected view."><img src="<%=imagesDir%>icons/copy_flat.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;"  title="Save changes to the current view. Includes track order and settings when saving. If signed in changes are saved to the server otherwise changes are saved locally to a cookie."><img src="<%=imagesDir%>icons/save_flat.png"></span>
                         <!--<span class="control" style="display:inline-block;height:38px;"><img src="<%=imagesDir%>icons/disk.png"></span>-->
-                        <span class="control<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Delete the selected view."><img src="<%=imagesDir%>icons/delete_lg.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" title="Delete the selected view."><img src="<%=imagesDir%>icons/del_flat_48.png" style="position:relative;top:2px;left:2px;"></span>
                         </TD>
                         
                     </TR>
@@ -91,8 +91,8 @@
                          </div>
                          <div id="trackOuter<%=level%>" style="height:500px; overflow:auto;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:98%;">
                          	<div>
-                            	<span class="control<%=level%>" id="addTrack<%=level%>" style="display:inline-block;position:relative;top:-3px;height:38px;width:36px;" title="Add a track to the current view."><img src="<%=imagesDir%>icons/createNew.png" style="position:relative;top:2px;left:2px;"></span>
-                        		<span id="controlInfo<%=level%>" style="float:right;"></span>
+                            	<span class="control<%=level%>" id="addTrack<%=level%>" style="display:inline-block;" title="Add a track to the current view."><img src="<%=imagesDir%>icons/add_track_flat.png"></span>
+                        		<span id="controlInfo<%=level%>" style="float:right;position:relative;top:20px;"></span>
                             </div>
                          	<div id="trackContent" style="margin:5px 5px 5px 5px;width:98%;text-align:left;">
                             	<table id="trackListTbl<%=level%>" class="list_base" style="width:100%" col>
