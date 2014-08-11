@@ -194,6 +194,15 @@ function TrackMenu(level){
 		
 	};
 
+	that.setupControls=function(){
+		$("#trackTypeSelect"+that.level).on("change",function(){
+			that.generateTrackTable();
+		});
+	};
+
+	that.removeTrack=function(track){
+		that.generateTrackTable();
+	};
 
 
 	/*that.generateSettingsDiv=function (d){
@@ -250,6 +259,7 @@ function TrackMenu(level){
 		}
 	};*/
 	that.getTrackData();
+	that.setupControls();
 	return that;
 }
 

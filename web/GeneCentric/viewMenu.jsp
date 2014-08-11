@@ -42,11 +42,12 @@
                     <%}%>
                     <TR>
                     	<TD style="vertical-align:middle">
-                        <span class="control<%=level%>" style="display:inline-block;" title="Create a new view with no tracks."><img src="<%=imagesDir%>icons/add_flat.png" style="position:relative;top:2px;left:2px;"></span>
-                        <span class="control<%=level%>" style="display:inline-block;" title="Create a new view copied from the selected view."><img src="<%=imagesDir%>icons/copy_flat.png" style="position:relative;top:2px;left:2px;"></span>
-                        <span class="control<%=level%>" style="display:inline-block;"  title="Save changes to the current view. Includes track order and settings when saving. If signed in changes are saved to the server otherwise changes are saved locally to a cookie."><img src="<%=imagesDir%>icons/save_flat.png"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" id="addView<%=level%>" ><img src="<%=imagesDir%>icons/add_flat.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" id="copyView<%=level%>" ><img src="<%=imagesDir%>icons/copy_flat.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" id="saveView<%=level%>" ><img src="<%=imagesDir%>icons/save_flat.png"></span>
                         <!--<span class="control" style="display:inline-block;height:38px;"><img src="<%=imagesDir%>icons/disk.png"></span>-->
-                        <span class="control<%=level%>" style="display:inline-block;" title="Delete the selected view."><img src="<%=imagesDir%>icons/del_flat_48.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" id="deleteView<%=level%>"  ><img src="<%=imagesDir%>icons/del_flat_48.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span id="topcontrolInfo<%=level%>" style="float:right;position:relative;top:20px;"></span>
                         </TD>
                         
                     </TR>
@@ -61,7 +62,7 @@
                                 <option value="function">Predefined Functional Views</option>-->
                                 <option value="custom" >Custom Views</option>
                             </select>
-                            <span class="viewtooltip<%=level%>" title="Click apply to change the current view and return to the browser.  Want to cancel click the close button(<img src=&quot;<%=imagesDir%>icons/close.png&quot;>)"><span class="applyView button" style="float:right;">Apply View</span></span>
+                            <span class="applyView<%=level%> button" style="float:right;">Apply View</span>
                     </TD>
                     </TR>
                     <TR>
@@ -82,6 +83,7 @@
                             </div>
                          <div id="descOuter<%=level%>" style="height:500px; overflow:auto;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px; font-size:16px;width:98%; text-align:left;">
                          	<div id="descContent" style="margin:5px 5px 5px 5px;width:98%;">
+                            	Select a view above to see details.  Click Apply to change the browser view to the selected view.
                             </div>
                          </div>
                          <div id="previewOuter<%=level%>" style="height:500px;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:100%;text-align:left;">
@@ -91,7 +93,7 @@
                          </div>
                          <div id="trackOuter<%=level%>" style="height:500px; overflow:auto;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:98%;">
                          	<div>
-                            	<span class="control<%=level%>" id="addTrack<%=level%>" style="display:inline-block;" title="Add a track to the current view."><img src="<%=imagesDir%>icons/add_track_flat.png"></span>
+                            	<span class="control<%=level%>" id="addTrack<%=level%>" style="display:inline-block;"><img src="<%=imagesDir%>icons/add_track_flat.png"></span>
                         		<span id="controlInfo<%=level%>" style="float:right;position:relative;top:20px;"></span>
                             </div>
                          	<div id="trackContent" style="margin:5px 5px 5px 5px;width:98%;text-align:left;">
@@ -114,7 +116,7 @@
                     </TR>
                     <TR>
                     <TD>
-                    	 <span class="viewtooltip<%=level%>" title="Click apply to change the current view and return to the browser.  Want to cancel click the close button(<img src=&quot;<%=imagesDir%>icons/close.png&quot;>)"><span class="applyView button" style="float:right;">Apply View</span></span>
+                    	 <span class="applyView<%=level%> button" style="float:right;">Apply View</span>
                     </TD>
                     </TR>
                </table>   
@@ -140,14 +142,14 @@
 					interactive: true,
 					interactiveTolerance: 350
 				});
-				$(".control<%=level%>").tooltipster({
+				/*$(".control<%=level%>").tooltipster({
 					position: 'top-right',
 					maxWidth: 250,
 					offsetX: 10,
 					offsetY: 5,
 					//arrow: false,
 					interactive: false
-				});
+				});*/
 				
 				$(".viewDetailTab").on("click", function(){
 							var oldID=new String($('.viewDetailTab.selected').attr("id"));
@@ -158,10 +160,6 @@
 							$("#"+id.substr(4)).show();
 				});
 				
-				$(".applyView").on("click", function(){
-						var id=$("#viewSelect<%=level%>").val();
-						viewMenu[<%=level%>].applyView(id);
-				});
 				
 				
 		  </script>

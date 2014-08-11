@@ -285,7 +285,7 @@ d3.select('html')
       .on("mousemove", mmove)
 	  .on("mouseup", mup);
 
-$(document).on('click','span.viewMenu', function (event){
+/*$(document).on('click','span.viewMenu', function (event){
 	var baseName = $(this).attr("name");
     $('span.viewMenu.selected').removeClass("selected");
     $("span[name='"+baseName+"']").addClass("selected");
@@ -293,7 +293,7 @@ $(document).on('click','span.viewMenu', function (event){
     defaultView=baseName;
     svgList[0].removeAllTracks();
     loadState(0);
-});
+});*/
 
 $(window).resize(function (){
 	for (var i=0; i<svgList.length; i++){
@@ -2081,6 +2081,16 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			});
 	};
 
+	that.generateSettingsString=function(){
+		ret="";
+		for(var i=0;i<that.trackList.length;i++){
+			if(that.trackList[i]!=undefined && that.trackList[i].generateTrackSettingString!=undefined){
+				ret=ret+that.trackList[i].generateTrackSettingString();
+			}
+		}
+		return ret;
+	}
+
 	//Genome SVG Setup
 	that.type=type;
 	that.div=div;
@@ -2138,8 +2148,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	//setup code
 	that.width=imageWidth;
 	that.mw=that.width-that.margin;
-	d3.select(div).select("#settingsLevel"+levelNumber).remove();
-	
+	//d3.select(div).select("#settingsLevel"+levelNumber).remove();
+	d3.select(div).select("#viewsLevel"+levelNumber).remove();
 	d3.select(div).select("#Level"+levelNumber).remove();
 	that.vis=d3.select(div);
 
@@ -2544,6 +2554,15 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		that.forceDrawAsValue=value;
 	};
 
+	that.generateSettingsString=function(){
+		ret="";
+		for(var i=0;i<that.trackList.length;i++){
+			if(that.trackList[i]!=undefined && that.trackList[i].generateTrackSettingString!=undefined){
+				ret=ret+that.trackList[i].generateTrackSettingString();
+			}
+		}
+		return ret;
+	}
 
 	that.type=type;
 	that.div=div;
@@ -3223,8 +3242,8 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 
 	};
 	//generate the setting string for a view from current settings
-	that.generateSettingString=function(){
-
+	that.generateTrackSettingString=function(){
+		return that.trackClass+","+that.density+";";
 	};
 
 	that.gsvg=gsvgP;
@@ -4626,7 +4645,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					svgList[newLevel].txType=localTxType;
 					svgList[newLevel].selectedData=d;
 					svgList[newLevel].addTrack("trx",2,"",0);
-					loadState(newLevel);
+					loadStateFromString(that.gsvg.generateSettingsString(),"",that.level,newSvg);
+					//loadState(newLevel);
 
 				selectedGeneSymbol=d.getAttribute("geneSymbol");
 				selectedID=new String(d.getAttribute("ID"));
@@ -6940,6 +6960,20 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 			});
 		}
 	};
+
+	that.generateTrackSettingString=function(){
+		var tissueStr="";
+		for(var i=0;i<that.tissues.length;i++){
+			if(i>0){
+				tissueStr=tissueStr+",";
+			}
+			tissueStr=tissueStr+that.tissues[i];
+			if(i<(that.tissues.length-1)){
+				tissueStr=tissueStr+":";
+			}
+		}
+		return that.trackClass+","+that.density+","+that.curColor+","+tissueStr+";";
+	};
 	
 	that.draw(data);
 	return that;
@@ -6987,6 +7021,9 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		if($("#"+that.trackClass+that.level+"Select").length>0){
 			that.include=$("#"+that.trackClass+that.level+"Select").val();
 		}
+	};
+	that.generateTrackSettingString=function(){
+		return that.trackClass+","+that.density+","+that.include+";";
 	};
 
 	that.generateSettingsDiv=function(topLevelSelector){
@@ -7227,7 +7264,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		if(d.getAttribute("type")=="SNP"){
 
 		}else{
-			tooltip=tooltip+"-"+(d.getAttribute("stop"));
+			tooltip=tooltip+"-"+numberWithCommas((d.getAttribute("stop")));
 		}
 		return tooltip;
 	};

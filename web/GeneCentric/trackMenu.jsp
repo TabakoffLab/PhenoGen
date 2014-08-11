@@ -32,7 +32,7 @@
                     <TR>
                     	<TD style="vertical-align:middle">
                             <span class="control<%=level%>" style="display:inline-block;" title="Create a new custom track."><img src="<%=imagesDir%>icons/add_flat.png" ></span>
-                            <span class="viewtooltip<%=level%>" title="Click Add Track to add the currently selected track to the view you are editing.  Want to cancel click the close button(<img src=&quot;<%=imagesDir%>icons/close.png&quot;>)"><span class="applyView button" style="float:right;">Add Track</span></span>
+                            <span class="addTrack<%=level%> button" style="float:right;">Add Track</span>
                         </TD>
                         
                     </TR>
@@ -101,7 +101,7 @@
                     </TR>
                     <TR>
                     <TD>
-                    	 <span class="viewtooltip<%=level%>" title="Click Add Track to add the currently selected track to the view you are editing.  Want to cancel click the close button(<img src=&quot;<%=imagesDir%>icons/close.png&quot;>)"><span class="applyView button" style="float:right;">Add Track</span></span>
+                    	 <span class="addTrack<%=level%> button" style="float:right;">Add Track</span>
                     </TD>
                     </TR>
                </table>   
@@ -114,18 +114,8 @@
 	</div>
     
     <script type="text/javascript">
-		//trackMenu[<%=level%>]=TrackMenu(<%=level%>);
-		/*$('table#trkSelList<%=level%>').dataTable({
-			"bPaginate": false,
-			"bProcessing": true,
-			"bStateSave": false,
-			"bAutoWidth": true,
-			"bDeferRender": false,
-			"sScrollY": "600px",
-			"sScrollY": "200px",
-			"sDom": '<t>'
-		});*/
-		$("#trackTypeSelect<%=level%>").on("change",function(){
-			trackMenu[<%=level%>].generateTrackTable();
+		$("span.addTrack<%=level%>").on("click",function(){
+			viewMenu[<%=level%>].addTrackToView(trackMenu[<%=level%>].findSelectedTrack());
+			trackMenu[<%=level%>].removeTrack(trackMenu[<%=level%>].findSelectedTrack());
 		});
 	</script>

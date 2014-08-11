@@ -27,16 +27,23 @@
 		log.debug("Invalid session");
 		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	} else {
-		userID = Integer.parseInt((String) session.getAttribute("userID"));
-		//
-		// Is THIS STILL NECESSARY?  
-		// These attributes are re-set here, so they will be available in browseArrays.jsp
-		// after going to successMsg.jsp and back to browseArrays, which only calls login_vars.jsp
-		//
-		session.setAttribute("userID", Integer.toString(userID));
-		session.setAttribute("user", userID + "-"+ (String) session.getAttribute("userName"));
-		session.setAttribute("full_name", (String) session.getAttribute("full_name"));
-		session.setAttribute("userLoggedIn", (User) session.getAttribute("userLoggedIn"));
+	
+		if( ((User)request.getSession(false).getAttribute("userLoggedIn")).getUser_name().equals("anon") ){
+			String url=request.getRequestURL().toString();
+			url=url.substring(url.indexOf("/web"));
+			response.sendRedirect(request.getContextPath() + "/web/access/loginPage.jsp?url="+request.getContextPath()+url);
+		}else{
+			userID = Integer.parseInt((String) session.getAttribute("userID"));
+			//
+			// Is THIS STILL NECESSARY?  
+			// These attributes are re-set here, so they will be available in browseArrays.jsp
+			// after going to successMsg.jsp and back to browseArrays, which only calls login_vars.jsp
+			//
+			session.setAttribute("userID", Integer.toString(userID));
+			session.setAttribute("user", userID + "-"+ (String) session.getAttribute("userName"));
+			session.setAttribute("full_name", (String) session.getAttribute("full_name"));
+			session.setAttribute("userLoggedIn", (User) session.getAttribute("userLoggedIn"));
+		}
 	}
 	GeneList[] geneListsForUser = ((GeneList[]) session.getAttribute("geneListsForUser") == null ? 
 				null : 

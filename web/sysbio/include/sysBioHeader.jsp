@@ -7,7 +7,7 @@
  *  Modification Log:
  *      
 --%>
-<%@ include file="/web/common/session_vars.jsp"  %>
+<%@ include file="/web/common/anon_session_vars.jsp"  %>
 
 <jsp:useBean id="myDataset" class="edu.ucdenver.ccp.PhenoGen.data.Dataset"> </jsp:useBean>
 <jsp:useBean id="myResource" class="edu.ucdenver.ccp.PhenoGen.data.internal.Resource">

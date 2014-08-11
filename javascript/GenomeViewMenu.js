@@ -48,13 +48,15 @@ function ViewMenu(level){
 	that.generateTrackList=function(d){
 		var bvData=d;
 		d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').remove();
-		var tracktbl=d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').data(d.TrackList).enter().append("tr").attr("class",function(d,i){
+		var tracktbl=d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').data(d.TrackList)
+				.enter().append("tr").attr("class",function(d,i){
 				if(i%2==0){
 					return "even";
 				}else{
 					return "odd";
 				}
-			}).attr("id",function(d){return "trk"+d.TrackID;});
+					})
+				.attr("id",function(d){return "trk"+d.TrackID;});
 		tracktbl.each(function(d,i){
 			var grab="<img src=\""+iconPath+"grab_flat.png\" style=\"cursor: move; cursor: -webkit-grab; cursor: -moz-grab; \" class=\"handle"+that.level+"\">";
 			d3.select(this).append("td").attr("class","ind").html(grab+(i + 1));
@@ -103,6 +105,11 @@ function ViewMenu(level){
 					$("#controlInfo"+that.level).html("");
 				});
 			d3.select("table#trackListTbl"+that.level).selectAll(".moveUp"+that.level)
+				.on("click",function(){
+					var trkID=$(this).attr("name");
+					$('tr#trk'+trkID).insertBefore($("table#trackListTbl"+that.level+" tbody tr:first"));
+					that.updateTrackNumber("",$('tr#trk'+trkID));
+				})
 				.on("mouseover",function(){
 					$("#controlInfo"+that.level).html("Click to move the track to the top of the list.");
 				})
@@ -110,6 +117,11 @@ function ViewMenu(level){
 					$("#controlInfo"+that.level).html("");
 				});
 			d3.select("table#trackListTbl"+that.level).selectAll(".moveDown"+that.level)
+				.on("click",function(){
+					var trkID=$(this).attr("name");
+					$('tr#trk'+trkID).insertAfter($("table#trackListTbl"+that.level+" tbody tr:last"));
+					that.updateTrackNumber("",$('tr#trk'+trkID));
+				})
 				.on("mouseover",function(){
 					$("#controlInfo"+that.level).html("Click to move the track to the end of the list.");
 				})
@@ -117,6 +129,17 @@ function ViewMenu(level){
 					$("#controlInfo"+that.level).html("");
 				});
 			d3.select("table#trackListTbl"+that.level).selectAll(".delete"+that.level)
+				.on("click",function(){
+					var trackID=d3.select(this).attr("name");
+					var index=that.findTrackIndex(trackID);
+					var viewInd=that.findSelectedViewIndex();
+					var d=that.findSelectedView();
+					d.TrackList.splice(index,1);
+					that.generateTrackList(d);
+					that.generateViewList();
+					that.generatePreview(d);
+					$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
+				})
 				.on("mouseover",function(){
 					$("#controlInfo"+that.level).html("Click to remove the track from the view.");
 				})
@@ -130,26 +153,7 @@ function ViewMenu(level){
 									handle: ".handle"+that.level,
 									stop: that.updateTrackNumber
 								}).disableSelection();
-		/*$("#trackListTbl"+that.level+" tbody").draggable({
-											  handle: ".handle"+that.level,
-										      connectToSortable: "#trackListTbl"+that.level+" tbody",
-										      scroll: true,
-										      //helper: "original",
-										      revert: "invalid",
-											  axis: "y"
-										    });*/
 
-		$(".moveUp"+that.level).on("click",function(){
-			var trkID=$(this).attr("name");
-			$('tr#trk'+trkID).insertBefore($("table#trackListTbl"+that.level+" tbody tr:first"));
-			that.updateTrackNumber("",$('tr#trk'+trkID));
-		});
-		$(".moveDown"+that.level).on("click",function(){
-			var trkID=$(this).attr("name");
-			$('tr#trk'+trkID).insertAfter($("table#trackListTbl"+that.level+" tbody tr:last"));
-			that.updateTrackNumber("",$('tr#trk'+trkID));
-		});
-								
 		$(".listtooltip"+that.level).tooltipster({
 			position: 'top-right',
 			maxWidth: 250,
@@ -164,9 +168,11 @@ function ViewMenu(level){
 
 	//Called to apply current view to the main browser image
 	//automatically closes the popup windows.
-	that.applyView=function(id){
+	that.applyView=function(){
 		var d=that.findSelectedView();
-		var settingStr=that.generateSettingsString(d);
+		var settingStr=that.generateSettingStringFromUI();
+		console.log("Apply View:"+d.Name);
+		console.log(settingStr);
 		svgList[that.level].removeAllTracks();
 		loadStateFromString(settingStr,d.imgSettings,that.level,svgList[that.level]); 
 		$("div.viewsLevel"+that.level).hide();
@@ -205,6 +211,12 @@ function ViewMenu(level){
 		return ret;
 	};
 
+	that.generateSettingStringFromUI=function(){
+		var ret="";
+		ret=that.previewSVG.generateSettingsString();
+		return ret;
+	};
+
 	that.getViewData=function(){
 		var tmpContext=contextPath +"/"+ pathPrefix;
 		if(pathPrefix==""){
@@ -216,26 +228,7 @@ function ViewMenu(level){
 				
 			}else{
 				that.viewList=d;
-				var opt=d3.select("#viewSelect"+that.level).on("change",that.selectChange).selectAll('option').data(d);
-				opt.enter().append("option").attr("value",function(d){return d.ViewID;}).text(function(d){
-						var ret=d.Name;
-						if(d.UserID==0){
-							ret=ret+"      (Predefined)";
-						}else{
-							ret=ret+"     (Custom)";
-						}
-						ret=ret+"     ("+d.TrackList.length+" tracks)";
-
-						if(d.Organism!="AA"){
-							if(d.Organism=="RN"){
-								ret=ret+"      (Rat Only)";
-							}else if(d.Organism=="MM"){
-								ret=ret+"     (Mouse Only)";
-							}
-						}
-						
-						return ret;
-					});
+				that.generateViewList();
 			}
 		});
 	};
@@ -249,7 +242,12 @@ function ViewMenu(level){
 							}else if(d.Organism=="MM"){
 								append="<BR><BR>Available for Mouse Only";
 							}
-						}
+					}
+					/*if(d.UserID==0){
+						$("#deleteView"+that.level).hide();
+					}else{
+						$("#deleteView"+that.level).show();
+					}*/
 					$("div#descOuter"+that.level+" div#descContent").html(d.Description+append);
 					that.generateTrackList(d);
 					that.generatePreview(d);
@@ -268,6 +266,16 @@ function ViewMenu(level){
 		}
 		return d;
 	};
+	that.findSelectedViewIndex=function(){
+		var id=$("#viewSelect"+that.level).val();
+		var d=NaN;
+		for(var i=0;i<that.viewList.length&&isNaN(d);i++){
+			if(that.viewList[i].ViewID==id){
+				d=i;
+			}
+		}
+		return d;
+	};
 	that.findTrack=function(id){
 		var d=that.findSelectedView();
 		var trackList=d.TrackList;
@@ -280,11 +288,21 @@ function ViewMenu(level){
 		return td;
 	};
 
+	that.findTrackIndex=function(id){
+		var d=that.findSelectedView();
+		var trackList=d.TrackList;
+		var td=NaN;
+		for(var i=0;i<trackList.length&&isNaN(td);i++){
+			if(trackList[i].TrackID==id){
+				td=i;
+			}
+		}
+		return td;
+	};
+
 	that.setupControls=function(){
-		$(".control"+that.level).on("click",function(){
-			var id=$(this).attr("id");
-			if(id==("addTrack"+that.level)){
-				if($(".trackList"+that.level).length==0){
+		$(".control"+that.level+"#addTrack"+that.level).on("click",function(){
+			if($(".trackList"+that.level).length==0){
 					var tmpContext=contextPath +"/"+ pathPrefix;
 					if(pathPrefix==""){
 						tmpContext="";
@@ -321,71 +339,109 @@ function ViewMenu(level){
 				}else{
 						$(".trackLevel"+that.level).fadeOut("fast");
 				}
-			}
+		})
+		.on("mouseover",function(){
+			$("#controlInfo"+that.level).html("Click to add a track to the current view.");
+		})
+		.on("mouseout",function(){
+			$("#controlInfo"+that.level).html("");
+		});
+		$(".control"+that.level+"#addView"+that.level).on("click",function(){
+			
+		})
+		.on("mouseover",function(){
+			$("#topcontrolInfo"+that.level).html("Click to create a new view with no tracks.");
+		})
+		.on("mouseout",function(){
+			$("#topcontrolInfo"+that.level).html("");
+		});
+		$(".control"+that.level+"#copyView"+that.level).on("click",function(){
+			
+		})
+		.on("mouseover",function(){
+			$("#topcontrolInfo"+that.level).html("Click to create a new view copied from the selected view.");
+		})
+		.on("mouseout",function(){
+			$("#topcontrolInfo"+that.level).html("");
+		});
+		$(".control"+that.level+"#saveView"+that.level).on("click",function(){
+			
+		})
+		.on("mouseover",function(){
+			$("#topcontrolInfo"+that.level).html("Click to save changes to the currently selected view.");
+		})
+		.on("mouseout",function(){
+			$("#topcontrolInfo"+that.level).html("");
+		});
+		$(".control"+that.level+"#deleteView"+that.level).on("click",function(){
+			var ind=that.findSelectedViewIndex();
+			that.viewList.splice(ind,1);
+			that.generateViewList();
+		})
+		.on("mouseover",function(){
+			$("#topcontrolInfo"+that.level).html("Click to delete current view.");
+		})
+		.on("mouseout",function(){
+			$("#topcontrolInfo"+that.level).html("");
+		});
+		$(".control"+that.level+"#deleteView"+that.level).on("click",function(){
+			var ind=that.findSelectedViewIndex();
+			that.viewList.splice(ind,1);
+			that.generateViewList();
+		})
+		.on("mouseover",function(){
+			$("#topcontrolInfo"+that.level).html("Click to delete current view.");
+		})
+		.on("mouseout",function(){
+			$("#topcontrolInfo"+that.level).html("");
+		});
+
+		$(".applyView"+that.level).on("click", function(){
+						alert("apply clicked");
+						that.applyView();
 		});
 	};
 
-	/*that.generateSettingsDiv=function (d){
-		d3.select("div#trackSettingContent").select("table").select("tbody").html("");
-		if(d.Controls.length>0 && d.Controls!="null"){
-			var controls=new String(d.Controls).split(",");
-			var table=d3.select("div#trackSettingContent").select("table").select("tbody");
-			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
-			for(var c=0;c<controls.length;c++){
-				if(controls[c]!=undefined && controls[c]!=""){
-					var params=controls[c].split(";");
-					
-					var div=table.append("tr").append("td");
-					var lbl=params[0].substr(5);
-					div.append("text").text(lbl+": ");
-					var def="";
-					if(params.length>3  && params[3].indexOf("Default=")==0){
-						def=params[3].substr(8);
-					}
-					if(params[1].toLowerCase().indexOf("select")==0){
-						var selClass=params[1].split(":");
-						var opts=params[2].split("}");
-						var sel=div.append("select").attr("id",d.TrackClass+"Dense"+that.previewLevel+"Select")
-							.attr("name",selClass[1]);
-						for(var o=0;o<opts.length;o++){
-							var option=opts[o].substr(1).split(":");
-							if(option.length==2){
-								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
-								if(option[1]==def){
-									tmpOpt.attr("selected","selected");
-								}
-							}
+	that.generateViewList=function(){
+		d3.select("#viewSelect"+that.level).html("");
+		var opt=d3.select("#viewSelect"+that.level).on("change",that.selectChange)
+					.on("mouseover",function(){$("#topcontrolInfo"+that.level).html("Click on a view to select it and view preview/details.");})
+					.on("mouseout",function(){$("#topcontrolInfo"+that.level).html("");})
+					.selectAll('option').data(that.viewList);
+		opt.enter().append("option").attr("value",function(d){return d.ViewID;}).text(function(d){
+						var ret=d.Name;
+						if(d.UserID==0){
+							ret=ret+"      (Predefined)";
+						}else{
+							ret=ret+"     (Custom)";
 						}
-					}else if(params[1].toLowerCase().indexOf("cbx")==0){
-						var selClass=params[1].split(":");
-						var opts=params[2].split("}");
-						
-						for(var o=0;o<opts.length;o++){
-							var option=opts[o].substr(1).split(":");
-							if(option.length==2){
-								var sel=div.append("input").attr("type","checkbox").attr("id",option[1]+"CBX"+that.previewLevel)
-									.attr("name",selClass[1])
-									.style("margin-left","5px");
-								div.append("text").text(option[0]);
-								//console.log(def+"::"+option[1]);
-								if(def.indexOf(option[1])>-1){
-									$("#"+option[1]+"CBX"+that.previewLevel).prop('checked',true);
-									//sel.attr("checked","checked");
-								}
-							}
-						}
-					}
-				}
-			}
-			var buttonDiv=table.append("tr").append("td");
-			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
+						ret=ret+"     ("+d.TrackList.length+" tracks)";
 
-			});
-			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
-				$('#trackSettingDialog').fadeOut("fast");
-			});
-		}
-	};*/
+						if(d.Organism!="AA"){
+							if(d.Organism=="RN"){
+								ret=ret+"      (Rat Only)";
+							}else if(d.Organism=="MM"){
+								ret=ret+"     (Mouse Only)";
+							}
+						}
+						
+						return ret;
+					});
+		
+	};
+
+	that.addTrackToView=function(trackData){
+		var view=that.findSelectedView();
+		var viewInd=that.findSelectedViewIndex();
+		//Add Data if needed
+
+		view.TrackList.push(trackData);
+		that.generateTrackList(view);
+		that.generatePreview(view);
+		that.generateViewList();
+		$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
+	};
+
 
 	that.getViewData();
 	that.setupControls();
