@@ -1,4 +1,4 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 
 
 <%
@@ -117,5 +117,8 @@
 		$("span.addTrack<%=level%>").on("click",function(){
 			viewMenu[<%=level%>].addTrackToView(trackMenu[<%=level%>].findSelectedTrack());
 			trackMenu[<%=level%>].removeTrack(trackMenu[<%=level%>].findSelectedTrack());
+		});
+		$("#trackTypeSelect<%=level%>").on("change",function(){
+			trackMenu[<%=level%>].generateTrackTable();
 		});
 	</script>

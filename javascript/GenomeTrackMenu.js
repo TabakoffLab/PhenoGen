@@ -79,6 +79,7 @@ function TrackMenu(level){
 				"sDom": '<"rightSearch"fr><t>'
 			});
 		}
+		trackDataTable.draw();
 		$("td#selectedTrack"+that.level).hide();
 
 		$('table#trkSelList'+that.level+' tbody').on( 'click', 'tr', function () {
@@ -92,7 +93,7 @@ function TrackMenu(level){
 	            var tblHeight=that.getTrackTableHeight(btData);
 	            //trackDataTable.settings().sScrollY =  tblHeight;
 	            trackDataTable.settings()[0].oScroll.sy=tblHeight;
-				trackDataTable.draw();
+				trackDataTable.columns.adjust().draw();
 				$('#trkSelList'+that.level+'_wrapper div.dataTables_scroll div.dataTables_scrollBody').css('height', tblHeight);
 	            $("td#selectedTrack"+that.level).show();
 	            $(".trInfotooltip"+that.level).tooltipster({
@@ -195,9 +196,7 @@ function TrackMenu(level){
 	};
 
 	that.setupControls=function(){
-		$("#trackTypeSelect"+that.level).on("change",function(){
-			that.generateTrackTable();
-		});
+		
 	};
 
 	that.removeTrack=function(track){

@@ -625,6 +625,9 @@ function getAddMenuDiv(level,type){
 
 //Load/Save settings to/from cookies
 function loadStateFromString(state,imgState,levelInd,svg){
+	/*if(svgList[levelInd]!=undefined){
+		svgList[levelInd].removeAllTracks();
+	}*/
 	//console.log(state);
 	//TODO MAKE SURE TO LOAD CUSTOM TRACKS ON LOADING TRACK EDITOR
 	//loadCustomTracks(state);
@@ -1071,6 +1074,113 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}
 		var newTrack=null;
 		
+		//Setup the track div if not setup
+		var tmpvis=d3.select("#Level"+that.levelNumber+track);
+		if(tmpvis[0][0]==null){
+					var dragDiv=that.topLevel.append("li").attr("class","draggable"+that.levelNumber).attr("id","li"+track).style("margin-bottom","-3px");
+					//dragDiv.append("span").style("background","#CECECE").style("height","100%").style("width","10px").style("display","inline-block");
+					var svg = dragDiv.append("svg:svg")
+					.attr("width", that.width)
+					.attr("height", 30)
+					.attr("class", "track")
+					.attr("id","Level"+that.levelNumber+track)
+					.attr("pointer-events", "all")
+					.style("cursor", "move")
+					
+					.on("mouseover", function(){
+						if(overSelectable==0){
+							if(that.defaultMouseFunct=="dragzoom"){
+								$("#mouseHelp").html("<B>Zoom:</B> Click and drag to select a region to zoom in. <B>Navigate or Reorder Tracks:</B> Select the appropriate function at the top left of the image.");
+							}else if(that.defaultMouseFunct=="pan"){
+								$("#mouseHelp").html("<B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Zoom or Reorder Tracks:</B> Select the appropriate function at the top left of the image.");
+							}else if(that.defaultMouseFunct=="reorder"){
+								$("#mouseHelp").html("<B>Reorder Tracks:</B> Click on the track and drag up or down to desired location. <B>Zoom or Navigate:</B> Select the appropriate function at the top left of the image.");
+							}	
+						}
+					})
+					.on("mouseout", function(){
+						if(overSelectable==0){
+							$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+						}
+					});
+					//.on("mousedown", that.panDown);
+					//that.svg.append("text").text(that.label).attr("x",that.gsvg.width/2-20).attr("y",12);
+					var lblStr=new String("Loading...");
+					svg.append("text").text(lblStr).attr("x",that.width/2-(lblStr.length/2)*7.5).attr("y",12).attr("id","trkLbl");
+					//var info=svg.append("g").attr("class","infoIcon").attr("transform", "translate(" + (that.width/2+((lblStr.length/2)*7.5)+16) + ",0)");
+					var info=svg.append("g").attr("class","infoIcon")
+											.attr("transform", "translate("+(that.width-20)+",0)")
+											.style("cursor","pointer")
+											.attr("track",that.trackClass)
+											.attr("title",that.trackClass)
+											.on("mouseover",function(){
+												var tmpTrack=$(this).attr("track");
+												var tmp=$('#'+tmpTrack+'InfoDesc'+that.levelNumber);
+												var ttsr=$(this).tooltipster({
+													position: 'top-right',
+													maxWidth: 250,
+													offsetX: 24,
+													offsetY: 5,
+													contentAsHTML:true,
+													//arrow: false,
+													interactive: true,
+											   		interactiveTolerance: 350
+												});
+												ttsr.tooltipster('content',tmp.tooltipster('content'));
+												ttsr.tooltipster('show');
+											})
+											.on("mouseout",function(){
+												$(this).tooltipster('hide');
+											});
+					info.append("rect")
+										.attr("x",0)
+										.attr("y",0)
+										.attr("rx",3)
+										.attr("ry",3)
+								    	.attr("height",14)
+										.attr("width",14)
+										.attr("fill","#A7C5E2")
+										.attr("stroke","#7795B2");
+					info.append("text").attr("x",2.5).attr("y",12).attr("style","font-family:monospace;font-weight:bold;").attr("fill","#FFFFFF").text("i");
+					var settings=svg.append("g").attr("class","settings")
+											.attr("id",track+"_"+that.levelNumber)
+											.attr("transform", "translate("+(that.width-40)+",0)")
+											.style("cursor","pointer")
+											.on("click",function(d){
+												if(track!=that.selectedTrackSetting){
+													var trackObj=that.getTrack(track);
+													trackObj.generateSettingsDiv("div#trackSettingContent");
+													that.selectedTrackSetting=track;
+													var p=$(this).position();
+													$('#trackSettingDialog').css("top",p.top).css("left",$(window).width()-380);
+													$('#trackSettingDialog').fadeIn("fast");
+												}else{
+													that.selectedTrackSetting="";
+													$('#trackSettingDialog').fadeOut("fast");
+												}
+											})
+											.on("mouseover",function(){
+												$("#mouseHelp").html("Track Settings: Click to access track settings or quickly remove the track from the current view.");
+											})
+											.on("mouseout",function(){
+												$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+											});
+					settings.append("image").attr("width","16px")
+										.attr("height","16px")
+										.attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAA"+
+												"AEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAAGASURBVCjPlZGxaxNhAMV/9128JF/u"+
+												"LsndaVoPhEopFW2RGAXpKOpQHNwEHXTVf0Chm6OL4OhccFHoYKGFQgMOLoIUEQfBSZCUBtI2yaVt"+
+												"8hwarI6+5cF7v+HBg/+RH1U3q2/+zdxjK0znO0EhWgru20t2J/fZnXInjrYBHAD/ut30OkW3FBUR"+
+												"fXrtLDroduf2f4ABaARlLzkdRwFFLCFxFBMdPezDGLj5PT/yMChLNqLm6MDFI2eSvT9Dzj2/qLqu"+
+												"7q4+0mXVlx83BnVdUPrC9wEor6Sa0awW38oCKLy1NqsZpap8AgP5BTgk41fP6QE4u60s4xCwCQAr"+
+												"DxofUk2q1i5NAJSmantnlWphvXkXABXf3U6GsSrytwsvC6+CTlWxat2v1+SNR96ZLA9ChSrJyspX"+
+												"qFDlwfkUIAfwcbrvGRwEwAgzEjLDlJ9joPXl6VK639h5cm9rEebfv14emOaZZ9+ck0uUKJTXnret"+
+												"fHvrik7JU+W4+QsCOdzAsOEMT7LfaTGJVMIWBCwAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTAtMDIt"+
+												"MTFUMDA6NTM6MDItMDY6MDDZzrlFAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDA5LTA4LTE4VDAyOjI2"+
+												"OjEwLTA1OjAw2ytpkgAAAABJRU5ErkJggg==");
+
+		}
+		//end of track div setup
 
 		var success=0;
 		if(track=="genomeSeq"){
@@ -1273,7 +1383,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					}
 				});
 		}else if(track.indexOf("snp")==0){
-				var include=$("#"+track+that.levelNumber+"Select").val();
+				//var include=$("#"+track+that.levelNumber+"Select").val();
 				var tmpMin=that.xScale.domain()[0];
 				var tmpMax=that.xScale.domain()[1];
 				var file=dataPrefix+"tmpData/regionData/"+that.folderName+"/"+track+".xml";
@@ -1310,7 +1420,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						if(d==null){
 							if(retry>=4){
 								var snp=new Array();
-								var newTrack= SNPTrack(that,snp,track,density,include);
+								var newTrack= SNPTrack(that,snp,track,density,additionalOptions);
 								that.addTrackList(newTrack);
 							}else{
 								setTimeout(function (){
@@ -1319,7 +1429,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var snp=d.documentElement.getElementsByTagName("Snp");
-							var newTrack= SNPTrack(that,snp,track,density,include);
+							var newTrack= SNPTrack(that,snp,track,density,additionalOptions);
 							that.addTrackList(newTrack);
 						}
 					}
@@ -1612,6 +1722,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			for(var l=0;l<that.trackList.length;l++){
 				if(that.trackList[l]!=undefined&& that.trackList[l].trackClass!="genomeSeq"){
 					d3.select("#Level"+that.levelNumber+that.trackList[l].trackClass).remove();
+					d3.select("li.draggable"+that.levelNumber+"#li"+that.trackList[l].trackClass).remove();
 				}
 			}
 			that.trackList=[];
@@ -2364,7 +2475,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}
 			that.addTrackList(newTrack);
 		}else if(track.indexOf("snp")==0){
-			var newTrack= SNPTrack(that,data,track,3,4);
+			var newTrack= SNPTrack(that,data,track,1,"4");
 			that.addTrackList(newTrack);
 		}else if(track=="qtl"){
 			var newTrack= QTLTrack(that,data,track,1);
@@ -3263,112 +3374,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				that.yArr[j]=0;
 	}
 
-	//Setup the track div if not setup
-	var tmpvis=d3.select("#Level"+that.level+that.trackClass);
-	if(tmpvis[0][0]==null){
-				var dragDiv=that.topLevel.append("li").attr("class","draggable"+that.levelNumber).attr("id","li"+that.trackClass).style("margin-bottom","-3px");
-				//dragDiv.append("span").style("background","#CECECE").style("height","100%").style("width","10px").style("display","inline-block");
-				var svg = dragDiv.append("svg:svg")
-				.attr("width", that.gsvg.width)
-				.attr("height", 30)
-				.attr("class", "track")
-				.attr("id","Level"+that.level+that.trackClass)
-				.attr("pointer-events", "all")
-				.style("cursor", "move")
-				
-				.on("mouseover", function(){
-					if(overSelectable==0){
-						if(that.defaultMouseFunct=="dragzoom"){
-							$("#mouseHelp").html("<B>Zoom:</B> Click and drag to select a region to zoom in. <B>Navigate or Reorder Tracks:</B> Select the appropriate function at the top left of the image.");
-						}else if(that.defaultMouseFunct=="pan"){
-							$("#mouseHelp").html("<B>Navigate:</B> Move along Genome by clicking and dragging in desired direction. <B>Zoom or Reorder Tracks:</B> Select the appropriate function at the top left of the image.");
-						}else if(that.defaultMouseFunct=="reorder"){
-							$("#mouseHelp").html("<B>Reorder Tracks:</B> Click on the track and drag up or down to desired location. <B>Zoom or Navigate:</B> Select the appropriate function at the top left of the image.");
-						}	
-					}
-				})
-				.on("mouseout", function(){
-					if(overSelectable==0){
-						$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-					}
-				});
-				//.on("mousedown", that.panDown);
-				//that.svg.append("text").text(that.label).attr("x",that.gsvg.width/2-20).attr("y",12);
-				var lblStr=new String("Loading...");
-				svg.append("text").text(lblStr).attr("x",that.gsvg.width/2-(lblStr.length/2)*7.5).attr("y",12).attr("id","trkLbl");
-				//var info=svg.append("g").attr("class","infoIcon").attr("transform", "translate(" + (that.width/2+((lblStr.length/2)*7.5)+16) + ",0)");
-				var info=svg.append("g").attr("class","infoIcon")
-										.attr("transform", "translate("+(that.gsvg.width-20)+",0)")
-										.style("cursor","pointer")
-										.attr("track",that.trackClass)
-										.attr("title",that.trackClass)
-										.on("mouseover",function(){
-											var tmpTrack=$(this).attr("track");
-											var tmp=$('#'+tmpTrack+'InfoDesc'+that.level);
-											var ttsr=$(this).tooltipster({
-												position: 'top-right',
-												maxWidth: 250,
-												offsetX: 24,
-												offsetY: 5,
-												contentAsHTML:true,
-												//arrow: false,
-												interactive: true,
-										   		interactiveTolerance: 350
-											});
-											ttsr.tooltipster('content',tmp.tooltipster('content'));
-											ttsr.tooltipster('show');
-										})
-										.on("mouseout",function(){
-											$(this).tooltipster('hide');
-										});
-				info.append("rect")
-									.attr("x",0)
-									.attr("y",0)
-									.attr("rx",3)
-									.attr("ry",3)
-							    	.attr("height",14)
-									.attr("width",14)
-									.attr("fill","#A7C5E2")
-									.attr("stroke","#7795B2");
-				info.append("text").attr("x",2.5).attr("y",12).attr("style","font-family:monospace;font-weight:bold;").attr("fill","#FFFFFF").text("i");
-				var settings=svg.append("g").attr("class","settings")
-										.attr("id",that.trackClass+"_"+that.level)
-										.attr("transform", "translate("+(that.gsvg.width-40)+",0)")
-										.style("cursor","pointer")
-										.on("click",function(d){
-											if(that.trackClass!=that.gsvg.selectedTrackSetting){
-												that.generateSettingsDiv("div#trackSettingContent");
-												that.gsvg.selectedTrackSetting=that.trackClass;
-												var p=$(this).position();
-												$('#trackSettingDialog').css("top",p.top).css("left",$(window).width()-380);
-												$('#trackSettingDialog').fadeIn("fast");
-											}else{
-												that.gsvg.selectedTrackSetting="";
-												$('#trackSettingDialog').fadeOut("fast");
-											}
-										})
-										.on("mouseover",function(){
-											$("#mouseHelp").html("Track Settings: Click to access track settings or quickly remove the track from the current view.");
-										})
-										.on("mouseout",function(){
-											$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-										});
-				settings.append("image").attr("width","16px")
-									.attr("height","16px")
-									.attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAA"+
-											"AEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAAGASURBVCjPlZGxaxNhAMV/9128JF/u"+
-											"LsndaVoPhEopFW2RGAXpKOpQHNwEHXTVf0Chm6OL4OhccFHoYKGFQgMOLoIUEQfBSZCUBtI2yaVt"+
-											"8hwarI6+5cF7v+HBg/+RH1U3q2/+zdxjK0znO0EhWgru20t2J/fZnXInjrYBHAD/ut30OkW3FBUR"+
-											"fXrtLDroduf2f4ABaARlLzkdRwFFLCFxFBMdPezDGLj5PT/yMChLNqLm6MDFI2eSvT9Dzj2/qLqu"+
-											"7q4+0mXVlx83BnVdUPrC9wEor6Sa0awW38oCKLy1NqsZpap8AgP5BTgk41fP6QE4u60s4xCwCQAr"+
-											"DxofUk2q1i5NAJSmantnlWphvXkXABXf3U6GsSrytwsvC6+CTlWxat2v1+SNR96ZLA9ChSrJyspX"+
-											"qFDlwfkUIAfwcbrvGRwEwAgzEjLDlJ9joPXl6VK639h5cm9rEebfv14emOaZZ9+ck0uUKJTXnret"+
-											"fHvrik7JU+W4+QsCOdzAsOEMT7LfaTGJVMIWBCwAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTAtMDIt"+
-											"MTFUMDA6NTM6MDItMDY6MDDZzrlFAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDA5LTA4LTE4VDAyOjI2"+
-											"OjEwLTA1OjAw2ytpkgAAAABJRU5ErkJggg==");
-
-		}
-	//end of track div setup
+	
 
 
 	that.vis=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass);
@@ -5463,6 +5469,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		var dispData=new Array();
 		var dispDataCount=0;
 		var total=0;
+		if(tmpDat!=undefined){
 		for(var l=0;l<tmpDat.length;l++){
 			var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
 			var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
@@ -5509,6 +5516,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				dispDataCount++;
 				total++;
 			}
+		}
 		}
 		return dispData;
 	};
@@ -6979,9 +6987,16 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	return that;
 }
 /*Track for displaying SNPs/Indels*/
-function SNPTrack(gsvg,data,trackClass,density,include){
+function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 	var that= Track(gsvg,data,trackClass,lbl);
 	var strain=(new String(trackClass)).substr(3);
+	var opts=new String(additionalOptions).split(",");
+	if(opts.length>0){
+		that.include=opts[0];
+	}else{
+		that.include=4;
+	}
+	that.density=density;
 	var lbl=strain;
 	if(lbl=="SHRH"){
 		lbl="SHR/OlaPrin";
@@ -6991,13 +7006,13 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		lbl="SHR/NCrlPrin";
 	}
 	that.displayStrain=lbl;
-	if(include==1){
+	if(that.include==1){
 		lbl=lbl+" SNPs";
-	}else if(include==2){
+	}else if(that.include==2){
 		lbl=lbl+" Insertions";
-	}else if(include==3){
+	}else if(that.include==3){
 		lbl=lbl+" Deletions";
-	}else if(include==4){
+	}else if(that.include==4){
 		lbl=lbl+" SNPs/Indels";
 	}
 	that.counts=[{value:0,perc:0,names:"SNP "+that.displayStrain},{value:0,perc:0,names:"Insertion "+that.displayStrain},{value:0,perc:0,names:"Deletion "+that.displayStrain}];
@@ -7062,13 +7077,15 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 							var option=opts[o].substr(1).split(":");
 							if(option.length==2){
 								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
-								if(option[1]==def){
+								if((prefix=="Dense"&&option[1]==that.density)||
+									(prefix==""&&option[1]==that.include)){
 									tmpOpt.attr("selected","selected");
 								}
 							}
 						}
-						d3.select("select#"+that.trackClass+prefix+that.level+suffix).on("change", function(){
-							//alert(d3.select(this).attr("id"));
+						console.log("#"+that.trackClass+prefix+that.level+suffix);
+						d3.select("#"+that.trackClass+prefix+that.level+suffix).on("change", function(){
+							that.updateSettingsFromUI();
 							that.updateData();
 						});
 					}else {
@@ -7324,6 +7341,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 		var dispData=new Array();
 		var dispDataCount=0;
 		var total=0;
+		if(tmpDat!=undefined){
 		for(var l=0;l<tmpDat.length;l++){
 			if(tmpDat[l].__data__!=undefined){
 				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
@@ -7341,6 +7359,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 					total++;
 				}
 			}
+		}
 		}
 		/*for(var l=0;l<that.counts.length;l++){
 			that.counts[l].perc=Math.round(that.counts[l].value/total*100);
@@ -7545,8 +7564,7 @@ function SNPTrack(gsvg,data,trackClass,density,include){
 	};
 
 	that.strain=strain;
-	that.include=include;
-	that.density=density;
+
 	that.redrawLegend();
 	that.draw(data);	
 	
@@ -7634,6 +7652,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 		var dispData=new Array();
 		var dispDataCount=0;
 		var total=0;
+		if(tmpDat!=undefined){
 		for(var l=0;l<tmpDat.length;l++){
 			var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
 			var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
@@ -7668,6 +7687,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 				dispDataCount++;
 				total++;
 			}
+		}
 		}
 		return dispData;
 	};
@@ -7821,28 +7841,31 @@ function QTLTrack(gsvg,data,trackClass,density){
 
 		qtls.exit().remove();
 
-		qtls[0].forEach(function(d){
-			if(d!=undefined){
-				var nameStr=new String(d.__data__.getAttribute("name"));
-				var re = /[0-9]+\s*$/g;
-				var end1=nameStr.search(re);
-				if(end1>-1){
-					nameStr=nameStr.substr(0,end1);
+
+		if(qtls[0]!=undefined){
+			qtls[0].forEach(function(d){
+				if(d!=undefined){
+					var nameStr=new String(d.__data__.getAttribute("name"));
+					var re = /[0-9]+\s*$/g;
+					var end1=nameStr.search(re);
+					if(end1>-1){
+						nameStr=nameStr.substr(0,end1);
+					}
+					re = /QTL\s*$/g;
+					end1=nameStr.search(re);
+					if(end1>-1){
+						nameStr=nameStr.substr(0,end1);
+					}
+					re = /traits?\s*$/g;
+					end1=nameStr.search(re);
+					if(end1>-1){
+						nameStr=nameStr.substr(0,end1+5);
+					}
+					var name=nameStr;
+					d3.select(d).select("rect").style("fill",that.color(name));
 				}
-				re = /QTL\s*$/g;
-				end1=nameStr.search(re);
-				if(end1>-1){
-					nameStr=nameStr.substr(0,end1);
-				}
-				re = /traits?\s*$/g;
-				end1=nameStr.search(re);
-				if(end1>-1){
-					nameStr=nameStr.substr(0,end1+5);
-				}
-				var name=nameStr;
-				d3.select(d).select("rect").style("fill",that.color(name));
-			}
-		});
+			});
+		}
 		that.svg.attr("height", that.yCount*15);
 		//that.getDisplayedData();
 		that.redrawSelectedArea();

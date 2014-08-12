@@ -3,7 +3,7 @@ import="org.json.*" %>
 
 
 
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <%
 	String sessionid="";
 	sessionid=session.getId();

@@ -14,7 +14,7 @@
 <%@ page language="java"
 import="org.json.*" %>
 
-<%@ include file="/web/common/session_vars.jsp"  %>
+<%@ include file="/web/common/anon_session_vars.jsp"  %>
 
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 

@@ -171,8 +171,6 @@ function ViewMenu(level){
 	that.applyView=function(){
 		var d=that.findSelectedView();
 		var settingStr=that.generateSettingStringFromUI();
-		console.log("Apply View:"+d.Name);
-		console.log(settingStr);
 		svgList[that.level].removeAllTracks();
 		loadStateFromString(settingStr,d.imgSettings,that.level,svgList[that.level]); 
 		$("div.viewsLevel"+that.level).hide();
@@ -243,11 +241,11 @@ function ViewMenu(level){
 								append="<BR><BR>Available for Mouse Only";
 							}
 					}
-					/*if(d.UserID==0){
+					if(d.UserID==0){
 						$("#deleteView"+that.level).hide();
 					}else{
 						$("#deleteView"+that.level).show();
-					}*/
+					}
 					$("div#descOuter"+that.level+" div#descContent").html(d.Description+append);
 					that.generateTrackList(d);
 					that.generatePreview(d);
@@ -326,7 +324,6 @@ function ViewMenu(level){
 						});
 				}
 				if(!$(".trackLevel"+that.level).is(":visible")){
-						trackMenu[that.level].generateTrackTable();
 						var p=$("span#viewsLevel"+that.level).position();
 						var left=-380;
 						if($(window).width()>=1200){
@@ -336,6 +333,7 @@ function ViewMenu(level){
 						var d=that.findSelectedView();
 						$(".trackLevel"+that.level+" span#selectedViewName").html(d.Name);
 						$(".trackLevel"+that.level).fadeIn("fast");
+						trackMenu[that.level].generateTrackTable();
 				}else{
 						$(".trackLevel"+that.level).fadeOut("fast");
 				}
@@ -397,17 +395,33 @@ function ViewMenu(level){
 		});
 
 		$(".applyView"+that.level).on("click", function(){
-						alert("apply clicked");
 						that.applyView();
 		});
+
+		d3.select("#viewTypeSelect"+that.level).on("change",that.generateViewList)
+			.on("mouseover",function(){$("#topcontrolInfo"+that.level).html("Change to filter the view list by category.");})
+			.on("mouseout",function(){$("#topcontrolInfo"+that.level).html("");});
 	};
 
 	that.generateViewList=function(){
 		d3.select("#viewSelect"+that.level).html("");
+
+		that.filterList=[];
+		var filterValue=$("#viewTypeSelect"+that.level).val();
+
+		for(var i=0;i<that.viewList.length;i++){
+			if( filterValue=="all" ||
+				(filterValue=="predefined" && that.viewList[i].UserID==0)||
+				(filterValue=="custom" && that.viewList[i].UserID!=0)
+				){
+				that.filterList.push(that.viewList[i]);
+			}
+		}
+
 		var opt=d3.select("#viewSelect"+that.level).on("change",that.selectChange)
 					.on("mouseover",function(){$("#topcontrolInfo"+that.level).html("Click on a view to select it and view preview/details.");})
 					.on("mouseout",function(){$("#topcontrolInfo"+that.level).html("");})
-					.selectAll('option').data(that.viewList);
+					.selectAll('option').data(that.filterList);
 		opt.enter().append("option").attr("value",function(d){return d.ViewID;}).text(function(d){
 						var ret=d.Name;
 						if(d.UserID==0){
