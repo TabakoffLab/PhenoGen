@@ -1111,11 +1111,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					var info=svg.append("g").attr("class","infoIcon")
 											.attr("transform", "translate("+(that.width-20)+",0)")
 											.style("cursor","pointer")
-											.attr("track",that.trackClass)
-											.attr("title",that.trackClass)
+											.attr("track",track)
+											.attr("title",track)
 											.on("mouseover",function(){
 												var tmpTrack=$(this).attr("track");
-												var tmp=$('#'+tmpTrack+'InfoDesc'+that.levelNumber);
+												var d=trackInfo[tmpTrack];
 												var ttsr=$(this).tooltipster({
 													position: 'top-right',
 													maxWidth: 250,
@@ -1126,7 +1126,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 													interactive: true,
 											   		interactiveTolerance: 350
 												});
-												ttsr.tooltipster('content',tmp.tooltipster('content'));
+												ttsr.tooltipster('content',d.Description);
 												ttsr.tooltipster('show');
 											})
 											.on("mouseout",function(){
