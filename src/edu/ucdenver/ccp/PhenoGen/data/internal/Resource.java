@@ -826,6 +826,13 @@ public class Resource {
                 shrhFileList[0]=new SAMDataFile("SHRH Genome Fasta File",seqFilePath+"SHRH_rn5_Genome.fa.zip");
                 resourceList.add(new Resource(61, "Rat", "SHR/OlaIpcvPrin","Illumina HiSeq2000", shrhFileList ));
                 
+                 SAMDataFile[] shrjFileList = new SAMDataFile[1];
+                shrjFileList[0]=new SAMDataFile("SHRJ Genome Fasta File",seqFilePath+"SHRJ_rn5_Genome.fa.zip");
+                resourceList.add(new Resource(62, "Rat", "SHR/NCrlPrin","Illumina HiSeq2000", shrjFileList ));
+                
+                 SAMDataFile[] f344FileList = new SAMDataFile[1];
+                f344FileList[0]=new SAMDataFile("F344 Genome Fasta File",seqFilePath+"F344_rn5_Genome.fa.zip");
+                resourceList.add(new Resource(63, "Rat", "F344","Illumina HiSeq2000", f344FileList ));
                 
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
 		return resourceArray;
