@@ -29,7 +29,8 @@
 				(type.equals("marker") ? thisResource.getMarkerDataFiles() : 
 				(type.equals("rnaseq") ? thisResource.getSAMDataFiles() :
 				(type.equals("genotype") ? thisResource.getGenotypeDataFiles() :
-				null))))));
+				(type.equals("mask") ? thisResource.getMaskDataFiles() :
+				null)))))));
 
 	/*log.debug("dataFiles = "); myDebugger.print(dataFiles);
 	

@@ -52,12 +52,14 @@
                                 <input id="user_name" name="user_name" />
                                 <label for="password"style="color:#000000">Password</label>
                                 <input id="password" type="password" name="password" />
+                                <a href="<%=accessDir%>emailPassword.jsp" title="Click here if you forgot your password">Forgot Password?</a>
+                                <BR />
                                 <input type="submit" value="Login" name="action" class="submit" title="Log In" />
                                 
                                 <input type="hidden" name="url" value="<%=tmpUrl%>" />
                                 
                                 <a href="<%=accessDir%>registration.jsp" id="register-btn"><img src="<%=imagesDir%>register-btn.png" border="0" alt="Register for PhenoGen Informatics" /></a>
-                                <a href="<%=accessDir%>emailPassword.jsp" title="Click here if you forgot your password">Forgot Password?</a>
+                                
                                  </form>
                              <% } %>
                          

@@ -28,7 +28,8 @@
 				(type.equals("heritability") ? thisResource.getHeritabilityDataFiles() : 
 				(type.equals("marker") ? thisResource.getMarkerDataFiles() : 
 				(type.equals("rnaseq") ? thisResource.getSAMDataFiles() :
-				null)))));
+				(type.equals("mask") ? thisResource.getMaskDataFiles() :
+				null))))));
 
 	log.debug("dataFiles = "); myDebugger.print(dataFiles);
 	
