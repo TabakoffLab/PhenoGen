@@ -4,10 +4,12 @@
                         <input id="user_name" name="user_name" />
                         <label for="password">Password</label>
                         <input id="password" type="password" name="password" />
-                        <input type="submit" value="Login" name="action" class="submit" title="Log In" />
-			<% if (formName.endsWith("index.jsp")) { %>
+                        <% if (formName.endsWith("index.jsp")) { %>
                         	<a href="<%=accessDir%>emailPassword.jsp" title="Click here if you forgot your password">Forgot Password?</a>
-			<% } %>
+						<% } %>
+                        
+                        <input type="submit" value="Login" name="action" class="submit" title="Log In" />
+			
                 </form>
         <script type="text/javascript">
                 $("#user_name").focus();

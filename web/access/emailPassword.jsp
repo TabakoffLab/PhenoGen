@@ -9,11 +9,38 @@
  *      
 --%>
 <%@ include file="/web/access/include/login_vars.jsp" %>
+<%@ page import="net.tanesha.recaptcha.ReCaptcha" %>
+<%@ page import="net.tanesha.recaptcha.ReCaptchaFactory" %>
+<%@ page import="net.tanesha.recaptcha.ReCaptchaImpl" %>
+<%@ page import="net.tanesha.recaptcha.ReCaptchaResponse" %>
 <jsp:useBean id="myEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
 <% 
 	extrasList.add("main.css");
 	extrasList.add("main.js");
 	loggedIn = false;
+	
+	String emailAddress = "";
+	String firstName = "";
+	String lastName = "";
+	if( request.getParameter("emailAddress")!=null){
+		emailAddress = (String) request.getParameter("emailAddress");
+	}
+	if( request.getParameter("firstName") !=null){
+			firstName = (String) request.getParameter("firstName");
+	}
+	if( request.getParameter("lastName")!=null){
+			lastName = (String) request.getParameter("lastName");
+	}
+	
+	
+	Properties myProperties = new Properties();
+    File myPropertiesFile = new File(captchaPropertiesFile);
+    myProperties.load(new FileInputStream(myPropertiesFile));
+	String errorMsg="";
+	String pub="";
+	String secret="";
+	pub=myProperties.getProperty("PUBLIC");
+	secret=myProperties.getProperty("SECRET");
 
 	log.info("In emailPassword.jsp.");
 
@@ -21,38 +48,46 @@
 		"An email will be sent to you containing your password.";
 
 	if (action != null && action.equals("Send Password")) {
+		String remoteAddr = request.getRemoteAddr();
+		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+		reCaptcha.setPrivateKey(secret);
+	
+		String challenge = request.getParameter("recaptcha_challenge_field");
+		String uresponse = request.getParameter("recaptcha_response_field");
+		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
+	
+		if (reCaptchaResponse.isValid()) {
 
-		String emailAddress = (String) request.getParameter("emailAddress"); 
-		String firstName = (String) request.getParameter("firstName");
-		String lastName = (String) request.getParameter("lastName");
-		
-		String password = "";
-		if (emailAddress != null && !emailAddress.equals("")) {
-			password = myUser.getUserPassword(emailAddress, dbConn);
-		} else {
-			String[] values = myUser.getUserPassword(firstName, lastName, dbConn);
-			if (values != null) {
-				password = values[0];
-				emailAddress = values[1];
+			String password = "";
+			if (emailAddress != null && !emailAddress.equals("")) {
+				password = myUser.getUserPassword(emailAddress, dbConn);
+			} else {
+				String[] values = myUser.getUserPassword(firstName, lastName, dbConn);
+				if (values != null) {
+					password = values[0];
+					emailAddress = values[1];
+				}
 			}
-		}
-
-		if (password.equals("")) {
-			msg = "No matching records were found for the information entered.  Please re-enter.";
-        	} else {
-			msg = "Your website password has been sent to your email address.";
-
-			myEmail.setSubject("PhenoGen website password");
-			myEmail.setTo(emailAddress);
-			myEmail.setContent("Your password is " + password);
-			try {
-				myEmail.sendEmail();
-                        	mySessionHandler.createSessionActivity("-99",
-					firstName + " " + lastName + " requested password be sent to " + emailAddress, dbConn); 
-			} catch (Exception e) {
-				log.error("exception while trying to send message notifying user of password", e);
+	
+			if (password.equals("")) {
+				msg = "No matching records were found for the information entered.  Please re-enter.";
+				} else {
+				msg = "Your website password has been sent to your email address.";
+	
+				myEmail.setSubject("PhenoGen website password");
+				myEmail.setTo(emailAddress);
+				myEmail.setContent("Your password is " + password);
+				try {
+					myEmail.sendEmail();
+								mySessionHandler.createSessionActivity("-99",
+						firstName + " " + lastName + " requested password be sent to " + emailAddress, dbConn); 
+				} catch (Exception e) {
+					log.error("exception while trying to send message notifying user of password", e);
+				}
 			}
-                }
+		}else{
+				errorMsg="The text entered for the image doesn't match.  Please try again.";
+		} //end of if captcha is valid
 	} 
 			
 
@@ -71,22 +106,34 @@
         enctype="application/x-www-form-urlencoded" >
 	<BR><BR>
 	<table class="list_base">
+    		<TR><TD colspan="100%"><div style="text-align:center;font-size:14px;color:#FF0000; font-weight:bold;"><%=errorMsg%></div></TD></TR>
         	<tr>
 			<td width="50%"><b>Email Address</b>:</td>
-			<td><input type="text" name="emailAddress" id="emailAddress"  size="60"></td>
+			<td><input type="text" name="emailAddress" id="emailAddress"  size="60" value="<%=emailAddress%>" ></td>
 		</tr>
 		<tr><td colspan="100%">&nbsp;</td></tr>
 		<tr><td colspan="100%"><strong>OR</strong></td></tr>
 		<tr><td colspan="100%">&nbsp;</td></tr>
         	<tr>
 			<td><b>First Name</b>:</td>
-			<td><input type="text" name="firstName" id="firstName"  size="60"></td>
+			<td><input type="text" name="firstName" id="firstName"  size="60" value="<%=firstName%>"></td>
 		</tr>
         	<tr>
 			<td><b>Last Name</b>:</td>
-			<td><input type="text" name="lastName" id="lastName"  size="60"></td>
+			<td><input type="text" name="lastName" id="lastName"  size="60" value="<%=lastName%>"></td>
 		</tr>
 		<tr><td colspan="100%">&nbsp;</td></tr>
+        <TR>
+                    <TD colspan="100%" >
+                    	<div style="text-align:center;width:100%">
+                    <%
+                      ReCaptcha c = ReCaptchaFactory.newReCaptcha(pub, secret, false);
+                      out.print(c.createRecaptchaHtml(null, null));
+                    %>
+                	</div>
+                    </TD>
+                </TR>
+         <tr><td colspan="100%">&nbsp;</td></tr>
 		<tr><td>&nbsp;</td>
 		<td><input type="reset" name="reset" value="Reset"> <%=twoSpaces%>
 		<input type="submit" name="action" value="Send Password" onClick="return IsPasswordRequestFormComplete()"></td>

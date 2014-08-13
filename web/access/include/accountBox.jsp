@@ -1,7 +1,7 @@
      <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){
 	 	actionForm=accessDir+"include/handleRedirectLogin.jsp";
 	 %>
-        <div id="login_box">
+        <div id="login_box" style="text-align:left;">
                 <% if(!loginEnabled){ %>
         			<!-- Uncomment Line below when site is down.  comment out the form following to prevent logins -->
         			<%@ include file="/web/access/siteDown.jsp" %>
@@ -17,12 +17,14 @@
                             <input id="user_name" name="user_name" />
                             <label for="password">Password</label>
                             <input id="password" type="password" name="password" />
+                            <a href="<%=accessDir%>emailPassword.jsp" title="Click here if you forgot your password">Forgot Password?</a>
+                            <BR />
                             <input type="submit" value="Login" name="action" class="submit" title="Log In" />
                             
                             <input type="hidden" name="url" value="<%=commonDir%>startPage.jsp" />
                             
                             <a href="<%=accessDir%>registration.jsp" id="register-btn"><img src="<%=imagesDir%>register-btn.png" border="0" alt="Register for PhenoGen Informatics" /></a>
-                            <a href="<%=accessDir%>emailPassword.jsp" title="Click here if you forgot your password">Forgot Password?</a>
+                            
                 
                     </form>
                     
