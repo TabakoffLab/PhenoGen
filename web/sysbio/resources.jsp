@@ -61,6 +61,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 					<th>Expression Values</th>
 					<th>eQTL</th>
 					<th>Heritability</th>
+                    <TH>Masks <span class="toolTip" title="For Affymetrix exon array masks, individual probes were masked if they did not align uniquely to the rat/mouse genome (rn5/mm10) or if they aligned to a region that harbored a SNP between the reference genome and either of the RI panels parental strains(SHR/BN-Lx or ILS/ISS).  Entire probe sets were eliminated if less than three probes remained after masking.  To create masked transcript clusters, masked probe sets were removed from transcript clusters.  Remaining probe sets new locations were verified by checking that the location was still on the same strand, and within 1,000,000 base pairs of each other.  Transcript clusters with no probe sets remaining were masked."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
 					<!-- <th>Details</th> -->
 				</tr>
 			</thead>
@@ -94,14 +95,27 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 				<% } else { %>
                                 	<td>&nbsp;</td>
 				<% } %>
+                <% if (resource.getMaskDataFiles() != null && resource.getMaskDataFiles().length > 0) { %>
+					<td class="actionIcons">
+						<div class="linkedImg download" type="mask">
+                        <%if(resource.getDataset().getName().contains("Exon")&&resource.getOrganism().equals("Rat")){%>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
+                        <%}%>
+                        <div>
+						
+					</td>
+				<% } else { %>
+                                	<td>&nbsp;</td>
+				<% } %>
                 <%}else{%>
-                           <td colspan="3"><%= resource.getDataset().getVisibleNote() %></td>    
+                           <td colspan="4"><%= resource.getDataset().getVisibleNote() %></td>    
 				<% } %>	
                         </tr>
 			<% } %>
 			</tbody>
 		</table> 
 		<BR>
+        *The mask files are the same for all of these datasets.
 		<BR>
 		<div class="title"> Genomic Marker Data Files</div>
 		      <table id="markerFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
