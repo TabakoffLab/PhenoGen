@@ -18,6 +18,11 @@
 	.ui-accordion .ui-accordion-content {
 		padding:1em 0.5em;
 	}
+	.rightSearch{
+		float:right;
+		position:relative;
+		top:-4px;
+	}
 </style>
 
     <div class="trackLevel<%=level%>"  style="display:none;width:600px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:0px; left:0px; background-color:#FFFFFF; min-height:780px; text-align:center;">
@@ -43,7 +48,7 @@
                     </TR>
                     <TR>
                     <TD>
-					View types:
+						View types:
                             <select name="trackTypeSelect" class="trackTypeSelect" id="trackTypeSelect<%=level%>">
                             	<option value="all">All Tracks</option>
                             	<option value="allpublic" selected="selected">All Public Tracks</option>
@@ -56,7 +61,7 @@
                     </TR>
                     <TR>
                     <TD style=" vertical-align:top;">
-                    	<div id="trkSelList<%=level%>"  style="margin:5px 5px 5px 5px;width:585px;text-align:left;">
+                    	<div id="trkSelList<%=level%>"  style="margin:5px 5px 5px 5px;width:585px;text-align:left;position:relative;top:-23px;">
                             	<table id="trkSelList<%=level%>" class="trkSelList list_base" style="width:100%">
                                 	<thead>
                                         <TR class="col_title" style="text-align:left;">
@@ -76,7 +81,7 @@
                     </TR>
                    
                     <TR >
-                    <TD id="selectedTrack<%=level%>" style="display:none;">
+                    <TD id="selectedTrack<%=level%>" style="display:none;position:relative;top:-15px;">
                          <div id="trackHeaderOuter<%=level%>" style="font-size:16px;width:100%; text-align:left;background:#EEEEEE;">
                          	<div id="trackHeaderContent" style="margin:5px 5px 5px 5px;width:100%;">
                             </div>

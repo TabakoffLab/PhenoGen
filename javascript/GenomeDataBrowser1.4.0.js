@@ -2415,6 +2415,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.folderName=regionfolderName;
 
 	that.updateTimeoutHandle=-1;
+	that.timeoutTrack=-1;
 
 	that.get=function(attr){return that[attr];};
 	
@@ -2518,12 +2519,18 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			if(that.levelNumber==99){
 				if(that.updateTimeoutHandle!=0){
 					clearTimeout(that.updateTimeoutHandle);
+					try{
+						clearTimeout(that.timeoutTrack.fullDataTimeOutHandle);
+					}catch(error){
+						console.log(error);
+					}
 					that.updateTimeoutHandle=0;
 				}
 				that.updateTimeoutHandle= setTimeout(function(){
 					newTrack.updateFullData(0,1);
+					that.timeoutTrack=newTrack;
 					that.updateTimeoutHandle=0;
-				},400);
+				},300);
 			}
 			that.addTrackList(newTrack);
 		}
@@ -8447,6 +8454,7 @@ function CountTrack(gsvg,data,trackClass,density){
 	var tmpMax=that.gsvg.xScale.domain()[1];
 	var len=tmpMax-tmpMin;
 	that.bin=that.calculateBin(len);
+	that.fullDataTimeOutHandle=0;
 
 	that.color= function (d){
 		var color="#FFFFFF";
@@ -8698,23 +8706,28 @@ function CountTrack(gsvg,data,trackClass,density){
 						}
 						console.log(error);
 						if(retry<8){//wait before trying again
-							var time=1000;
+							var time=500;
 							/*if(retry==0){
 								time=10000;
 							}*/
-							setTimeout(function (){
+							that.fullDataTimeOutHandle=setTimeout(function (){
 								that.updateFullData(retry+1);
 							},time);
-						}else if(retry<14){
-							var time=5000;
-							setTimeout(function (){
+						}else if(retry<30){
+							var time=1000;
+							that.fullDataTimeOutHandle=setTimeout(function (){
+								that.updateFullData(retry+1);
+							},time);
+						}else if(retry<32){
+							var time=10000;
+							that.fullDataTimeOutHandle=setTimeout(function (){
 								that.updateFullData(retry+1);
 							},time);
 						}else{
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.hideLoading();
-							setTimeout(function (){
+							that.fullDataTimeOutHandle=setTimeout(function (){
 									that.updateFullData(retry+1,0);
 								},15000);
 						}
@@ -8726,11 +8739,12 @@ function CountTrack(gsvg,data,trackClass,density){
 								that.draw(data);
 								//that.hideLoading();
 							}else{
-								setTimeout(function (){
+								that.fullDataTimeOutHandle=setTimeout(function (){
 									that.updateFullData(retry+1,0);
 								},5000);
 							}
 						}else{
+							that.fullDataTimeOutHandle=0;
 							that.loadedDataMin=tmpMin;
 				    		that.loadedDataMax=tmpMax;
 							var data=d.documentElement.getElementsByTagName("Count");

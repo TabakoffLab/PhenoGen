@@ -325,7 +325,7 @@ function ViewMenu(level){
 				}
 				if(!$(".trackLevel"+that.level).is(":visible")){
 						var p=$("span#viewsLevel"+that.level).position();
-						var left=-380;
+						var left=-515;
 						if($(window).width()>=1200){
 							left=-1117;
 						}

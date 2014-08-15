@@ -7,7 +7,7 @@ use DBI;
 
 use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
-require 'readRNAIsoformDataFromDB.pl';
+require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
 require 'readSpliceJunctFromDB.pl';
@@ -163,7 +163,20 @@ sub createXMLFile
 		#	$roundMax=$maxCoord+($binSize-($maxCoord % $binSize));
 		#}
 		#print ("min:$minCoord\nmax:$maxCoord\nroundMin:$roundMin\nroundMax:$roundMax\n");
-		my $rnaCountRef=readRNACountsDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
+		
+		my $rnaCountRef;
+		#if(index($type,"liver")>-1){
+		#	my $dsid="10";
+		#	if(index($type,"plus")>-1){
+		#		$dsid="11";
+		#	}elsif(index($type,"minus")>-1){
+		#		$dsid="10";
+		#	}
+		#	print "readRNACountsDataFromMongo($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsid)\n";
+			$rnaCountRef=readRNACountsDataFromMongo($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
+		#}else{
+		#	$rnaCountRef=readRNACountsDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
+		#}
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
