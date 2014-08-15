@@ -2625,7 +2625,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	        			that.folderName=data2.folderName;
 	    			},
 	    			error: function(xhr, status, error) {
-	        			console.log(error);
+	        			//console.log(error);
 	    			}
 				});
 		}
@@ -3050,6 +3050,23 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		return tmpY;
 	};
 
+	that.positionTTLeft = function(pageX){
+		var x=pageX+20;
+    	if(x>that.gsvg.halfWindowWidth){
+    		x=x-490;
+    	}
+    	var xPos=x+"px";
+    	return xPos;
+	};
+
+	that.positionTTTop = function(pageY){
+		var topPos=(pageY + 5) + "px";
+		if(d3.event.clientY>(window.innerHeight*0.6)){
+			topPos=(d3.event.pageY - ($(".testToolTip").height()*2.2)) + "px";
+		}
+		return topPos;
+	};
+
 	that.drawLegend = function (legendList){
 		var lblStr=new String(that.label);
 		var x=that.gsvg.width/2+(lblStr.length/2)*7.5+16;
@@ -3276,8 +3293,8 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
-		console.log(trackInfo);
-		console.log(d);
+		//console.log(trackInfo);
+		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
@@ -4025,7 +4042,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 				var path=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/"+tmpseqRegionMin+"_"+tmpseqRegionMax+".seq";
 				d3.text(path,function (error,d){
 					if(error){
-						console.log(error);
+						//console.log(error);
 						if(retry==0){
 									$.ajax({
 										url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
@@ -5125,15 +5142,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				                .style("opacity", .95);      
 				        	//that.gsvg.get('tt').html(that.createToolTip(d)) 
 				        	tt.html(that.createToolTip(d)) 
-				                .style("left", function(){
-				                	var x=d3.event.pageX;
-				                	if(x>that.gsvg.halfWindowWidth){
-				                		x=x-450;
-				                	}
-				                	var xPos=x+"px";
-				                	return xPos;
-				                })  
-				                .style("top", (d3.event.pageY + 15) + "px");
+				                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+								.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 				            if(d!=undefined){
 					            that.triggerTableFilter(d);
 					            if(that.trackClass.indexOf("smallnc")==-1){
@@ -5254,15 +5264,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 									.duration(200)      
 									.style("opacity", .95);      
 								tt.html(that.createToolTip(d))  
-									.style("left", function(){
-					                	var x=d3.event.pageX;
-					                	if(x>that.gsvg.halfWindowWidth){
-					                		x=x-450;
-					                	}
-					                	var xPos=x+"px";
-					                	return xPos;
-				                	})	     
-									.style("top", (d3.event.pageY +5) + "px");  
+									.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+									.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 									that.triggerTableFilter(d);
 									if(d!=undefined){
 					            that.triggerTableFilter(d);
@@ -5782,7 +5785,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		var path=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/refSeq.xml";
 		d3.xml(path,function (error,d){
 			if(error){
-				console.log(error);
+				//console.log(error);
 				if(retry==0){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
@@ -6006,15 +6009,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			                .style("opacity", .95);      
 			        	//that.gsvg.get('tt').html(that.createToolTip(d))  
 			        	tt.html(that.createToolTip(d))
-			                .style("left", function(){
-				                	var x=d3.event.pageX;
-				                	if(x>that.gsvg.halfWindowWidth){
-				                		x=x-450;
-				                	}
-				                	var xPos=x+"px";
-				                	return xPos;
-				                })
-			                .style("top", (d3.event.pageY + 20) + "px");
+			                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+							.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 			                that.setupToolTipSVG(d,0.05);
 			            /*//var add=(d.getAttribute("stop")*1-d.getAttribute("start")*1)*0.04;
 			            var min=d.getAttribute("start")*1;
@@ -6129,15 +6125,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 									.duration(200)      
 									.style("opacity", .95);      
 								tt.html(that.createToolTip(d))  
-									.style("left", function(){
-					                	var x=d3.event.pageX;
-					                	if(x>that.gsvg.halfWindowWidth){
-					                		x=x-450;
-					                	}
-					                	var xPos=x+"px";
-					                	return xPos;
-					                })     
-									.style("top", (d3.event.pageY +5) + "px");  
+									.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+									.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 		            	})
 					.on("mouseout", function(d) {
 							d3.select(this).selectAll("line").style("stroke",function(d){return that.color(d);});
@@ -6627,15 +6616,8 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 							                	.duration(200)      
 							                	.style("opacity", .95);      
 							            	tt.html(that.createToolTip(d))  
-							                	.style("left", function(){
-									                	var x=d3.event.pageX;
-									                	if(x>that.gsvg.halfWindowWidth){
-									                		x=x-450;
-									                	}
-									                	var xPos=x+"px";
-									                	return xPos;
-									                })     
-							                	.style("top", (d3.event.pageY + 20) + "px");
+							                	.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+												.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 							                //Setup Tooltip SVG
 							                that.setupToolTipSVG(d,0.2);
 											/*var start=d.getAttribute("start")*1;
@@ -6759,15 +6741,8 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		                	.duration(200)      
 		                	.style("opacity", .95);      
 		            	tt.html(that.createToolTip(d))  
-		                	.style("left", function(){
-				                	var x=d3.event.pageX;
-				                	if(x>that.gsvg.halfWindowWidth){
-				                		x=x-250;
-				                	}
-				                	var xPos=x+"px";
-				                	return xPos;
-				                })     
-		                	.style("top", (d3.event.pageY + 20) + "px"); 
+		                	.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+							.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 		                //Setup Tooltip SVG
 						var start=d.getAttribute("start")*1;
 						var stop=d.getAttribute("stop")*1;
@@ -6877,8 +6852,8 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
-		console.log(trackInfo);
-		console.log(d);
+		//console.log(trackInfo);
+		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
@@ -7050,8 +7025,8 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
-		console.log(trackInfo);
-		console.log(d);
+		//console.log(trackInfo);
+		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
@@ -7090,7 +7065,7 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 								}
 							}
 						}
-						console.log("#"+that.trackClass+prefix+that.level+suffix);
+						//console.log("#"+that.trackClass+prefix+that.level+suffix);
 						d3.select("#"+that.trackClass+prefix+that.level+suffix).on("change", function(){
 							that.updateSettingsFromUI();
 							that.updateData();
@@ -7450,15 +7425,8 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 		                .duration(200)      
 		                .style("opacity", .95);      
 		            tt.html(that.createToolTip(d))  
-		                .style("left", function(){
-					                	var x=d3.event.pageX;
-					                	if(x>that.gsvg.halfWindowWidth){
-					                		x=x-150;
-					                	}
-					                	var xPos=x+"px";
-					                	return xPos;
-					                })     
-		                .style("top", (d3.event.pageY + 20) + "px");
+		                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+						.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 		                that.setupToolTipSVG(d,0.2);
 	            })
 			.on("mouseout", function(d) {  
@@ -7807,15 +7775,8 @@ function QTLTrack(gsvg,data,trackClass,density){
 	                .duration(200)      
 	                .style("opacity", .95);      
 	            tt.html(that.createToolTip(d))  
-	                .style("left", function(){
-				                	var x=d3.event.pageX;
-				                	if(x>that.gsvg.halfWindowWidth){
-				                		x=x-250;
-				                	}
-				                	var xPos=x+"px";
-				                	return xPos;
-				                })     
-	                .style("top", (d3.event.pageY + 20) + "px");
+	                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+					.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 	            that.triggerTableFilter(d);
 	            })
 			.on("mouseout", function(d) {
@@ -8159,15 +8120,8 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 								.duration(200)      
 								.style("opacity", .95);      
 							tt.html(that.createToolTip(d))  
-								.style("left", function(){
-				                	var x=d3.event.pageX;
-				                	if(x>that.gsvg.halfWindowWidth){
-				                		x=x-450;
-				                	}
-				                	var xPos=x+"px";
-				                	return xPos;
-				                })     
-								.style("top", (d3.event.pageY +5) + "px");  
+								.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+								.style("top", function(){return that.positionTTTop(d3.event.pageY);}); 
 	            	})
 				.on("mouseout", function(d) {
 						d3.select(this).selectAll("line").style("stroke",that.color);
@@ -8257,15 +8211,8 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 							.duration(200)      
 							.style("opacity", .95);      
 						tt.html(that.createToolTip(d))  
-							.style("left", function(){
-				                	var x=d3.event.pageX;
-				                	if(x>that.gsvg.halfWindowWidth){
-				                		x=x-450;
-				                	}
-				                	var xPos=x+"px";
-				                	return xPos;
-				                })     
-							.style("top", (d3.event.pageY +5) + "px");  
+							.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+							.style("top", function(){return that.positionTTTop(d3.event.pageY);});
             	})
 			.on("mouseout", function(d) {
 					d3.select(this).selectAll("line").style("stroke",that.color);
@@ -8551,15 +8498,8 @@ function CountTrack(gsvg,data,trackClass,density){
 									.duration(200)      
 									.style("opacity", .95);      
 								tt.html(that.createToolTip(d))  
-									.style("left", function(){
-					                	var x=d3.event.pageX;
-					                	if(x>that.gsvg.halfWindowWidth){
-					                		x=x-450;
-					                	}
-					                	var xPos=x+"px";
-					                	return xPos;
-					                })    
-									.style("top", (d3.event.pageY +5) + "px");  
+									.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+									.style("top", function(){return that.positionTTTop(d3.event.pageY);});  
 		            			})
 							.on("mouseout", function(d) {  
 								d3.select(this).style("fill",that.color);
@@ -8697,14 +8637,14 @@ function CountTrack(gsvg,data,trackClass,density){
 												//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 												dataType: 'json',
 								    			success: function(data2){
-								    				console.log("generateTrack:DONE");	
+								    				//console.log("generateTrack:DONE");	
 								    			},
 								    			error: function(xhr, status, error) {
 								        			
 								    			}
 											});
 						}
-						console.log(error);
+						//console.log(error);
 						if(retry<8){//wait before trying again
 							var time=500;
 							/*if(retry==0){
@@ -8893,15 +8833,8 @@ function CountTrack(gsvg,data,trackClass,density){
 							.duration(200)      
 							.style("opacity", .95);      
 						tt.html(that.createToolTip(d))  
-							.style("left", function(){
-				                	var x=d3.event.pageX;
-				                	if(x>that.gsvg.halfWindowWidth){
-				                		x=x-450;
-				                	}
-				                	var xPos=x+"px";
-				                	return xPos;
-				                })     
-							.style("top", (d3.event.pageY +5) + "px");
+							.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+							.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 						if(that.ttSVG==1){
 								//Setup Tooltip SVG
 
@@ -9074,8 +9007,8 @@ function CountTrack(gsvg,data,trackClass,density){
 
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
-		console.log(trackInfo);
-		console.log(d);
+		//console.log(trackInfo);
+		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
@@ -9312,7 +9245,7 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 
 		d3.xml(file,function (error,d){
 					if(error){
-						console.log(error);
+						//console.log(error);
 						if(retry==0 || force==1){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
@@ -9730,7 +9663,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 		var file=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/"+that.dataFileName;
 		d3.xml(file,function (error,d){
 					if(error){
-						console.log(error);
+						//console.log(error);
 						if(retry==0 || force==1){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
@@ -9839,15 +9772,8 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 								.duration(200)      
 								.style("opacity", 0.95);      
 							tt.html(that.createToolTip(d))  
-								.style("left", function(){
-					                	var x=d3.event.pageX;
-					                	if(x>that.gsvg.halfWindowWidth){
-					                		x=x-470;
-					                	}
-					                	var xPos=x+"px";
-					                	return xPos;
-					                })     
-								.style("top", (d3.event.pageY +5) + "px");
+								.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+								.style("top", function(){return that.positionTTTop(d3.event.pageY);});
 								tt.on("mouseover",function(){
 												    		console.log("Mouse OVER TT");
 												    		if(tt.style("opacity")>0){
