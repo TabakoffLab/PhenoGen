@@ -5,6 +5,7 @@
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
+	//extrasList.add("jscolor/jscolor.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("d3.v3.min.js");
 	extrasList.add("smoothness/jquery-ui-1.10.4.min.css");

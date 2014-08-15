@@ -195,10 +195,6 @@ function TrackMenu(level){
 		
 	};
 
-	that.setupControls=function(){
-		
-	};
-
 	that.removeTrack=function(track){
 		that.generateTrackTable();
 	};
@@ -257,8 +253,142 @@ function TrackMenu(level){
 			}
 		}
 	};*/
+
+	that.confirmUpload=function(){
+		$("div#confirmUpload"+that.level).show();
+		$("div#uploadBtn"+that.level).hide();
+	};
+	
+	that.confirmBed=function(){
+		$("input#hasconfirmBed"+that.level).val(1);
+		that.createCustomTrack(that.level);
+	};
+
+	that.cancelUpload=function(){
+		$("div#confirmUpload"+that.level).hide();
+		$("div#confirmBed"+that.level).hide();
+		$("div#uploadBtn"+that.level).show();
+	};
+
+	that.createCustomTrack=function (){
+		$("div#confirmUpload"+that.level).hide();
+		customTrackLevel=that.level;
+		var file = $("input#customBedFile"+that.level)[0].files[0]; //Files[0] = 1st file
+		var fName=file.name;
+		var fSize=(file.size/1000.0)/1000.0;
+		$(".uploadStatus").show();
+		var fExt="";
+		if(fName.indexOf(".")>0){
+			var ind=0;
+			var fTrunc=fName;
+			while(fTrunc.indexOf(".")>-1){
+				fTrunc=fTrunc.substr(fTrunc.indexOf(".")+1);
+			}
+			if(fTrunc!="" && fTrunc!=fName){
+				fExt=fTrunc;
+			}
+		}
+		//check file size and extension
+		if(fSize<20){
+			if(fExt!="bed"){
+				if(fExt=="gz"||fExt=="tar"||fExt=="zip"||fExt=="exe"||fExt=="bin"){
+					//cancel with no support
+					setTimeout(function(){
+	        				$("div#uploadBtn"+customTrackLevel).show();
+	        				$(".progressInd").hide();
+	        			},5000);
+					$(".uploadStatus").html("Error: Selected File Type is not supported.");
+				}else if($("input#hasconfirmBed"+that.level).val()==0){
+					//display confirmation
+					$("div#confirmBed"+customTrackLevel).show();
+				}else if($("input#hasconfirmBed"+that.level).val()==1){
+					$("div#confirmBed"+customTrackLevel).hide();
+					//continue
+					readFile(file);
+				}
+			}else{
+				readFile(file);
+			}
+		}else{
+			$("div#uploadBtn"+customTrackLevel).show();
+	        $(".progressInd").hide();
+			$(".uploadStatus").html("File is too large.  20MB is the current limit.");
+		}
+	};
+
+	that.readFile = function (file){
+		var reader = new FileReader();
+		reader.readAsText(file, 'UTF-8');
+		reader.onload = sendFile;
+	};
+
+	that.sendFile=function (event){
+		var result = event.target.result;
+		$.ajax({
+					url: pathPrefix+"trackUpload.jsp",
+	   				type: 'POST',
+					contentType: 'text/plain',
+					xhr: function() {  // Custom XMLHttpRequest
+			            var myXhr = $.ajaxSettings.xhr();
+			            //if(myXhr.upload){ // Check if upload property exists
+			                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+			            //}
+			            return myXhr;
+			        },
+					data: result,
+					processData: false,
+					cache: false,
+					dataType: 'json',
+	    			success: function(data2){
+	        			$(".uploadStatus").html("Upload Completed Successfully");
+	        			var tmp=new Date();
+	        			//add new custom track to Custom Track Cookie
+	        			var track=data2.trackFile.substring(0,data2.trackFile.length-4)
+
+	        			var trackToAdd="custom"+track+",organism="+organism+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customBedFile"+customTrackLevel)[0].files[0].name+",";
+	        			if($("#usrtrkColorSelect"+customTrackLevel).val()=="Score"){
+	        				trackToAdd=trackToAdd+"colorBy=Score,";
+	        				trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+customTrackLevel).val()+",";
+	        				trackToAdd=trackToAdd+"maxValue="+$("#usrtrkScoreMaxTxt"+customTrackLevel).val()+",";
+	        				trackToAdd=trackToAdd+"minColor=#"+$("#usrtrkColorMin"+customTrackLevel).val()+",";
+	        				trackToAdd=trackToAdd+"maxColor=#"+$("#usrtrkColorMax"+customTrackLevel).val()+",";
+	        			}else{
+							trackToAdd=trackToAdd+"colorBy=Color,";
+	        			}
+	        			saveCustomTrackCookie(trackToAdd+";");
+	        			//load the track from the new cookie
+	        			svgList[customTrackLevel].addTrack("custom"+track,3,"",0);
+	        			//update the Custom UI 
+	        			addCustomTrackUI(trackToAdd,1);
+
+	        			//reset some of the inputs
+	        			$("input#customBedFile"+customTrackLevel).val("");
+	        			$("input#usrtrkNameTxt"+customTrackLevel).val("");
+	        			$("#usrtrkColorSelect"+customTrackLevel).val("color");
+	        			setTimeout(function(){
+	        				$("div#uploadBtn"+customTrackLevel).show();
+	        				$(".progressInd").hide();
+	        				$(".uploadStatus").hide();
+	        				saveToCookie(customTrackLevel);
+	        			},15000);
+	    			},
+	    			error: function(xhr, status, error) {
+	        			console.log(error);
+	        			$(".uploadStatus").html("Error:"+error);
+	        			$("div#uploadBtn"+customTrackLevel).show();
+	    			}
+				});
+	}
+
+	that.progressHandlingFunction=function(e){
+		$(".progressInd").show();
+		$(".uploadStatus").html("Uploading...");
+	    if(e.lengthComputable){
+	        $('progress').attr({value:e.loaded,max:e.total});
+	    }
+	};
+
 	that.getTrackData();
-	that.setupControls();
 	return that;
 }
 

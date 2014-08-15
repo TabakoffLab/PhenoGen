@@ -344,6 +344,7 @@ function ViewMenu(level){
 		.on("mouseout",function(){
 			$("#controlInfo"+that.level).html("");
 		});
+
 		$(".control"+that.level+"#addView"+that.level).on("click",function(){
 			
 		})
@@ -353,6 +354,8 @@ function ViewMenu(level){
 		.on("mouseout",function(){
 			$("#topcontrolInfo"+that.level).html("");
 		});
+
+
 		$(".control"+that.level+"#copyView"+that.level).on("click",function(){
 			
 		})
@@ -362,6 +365,7 @@ function ViewMenu(level){
 		.on("mouseout",function(){
 			$("#topcontrolInfo"+that.level).html("");
 		});
+
 		$(".control"+that.level+"#saveView"+that.level).on("click",function(){
 			
 		})
@@ -371,6 +375,7 @@ function ViewMenu(level){
 		.on("mouseout",function(){
 			$("#topcontrolInfo"+that.level).html("");
 		});
+		
 		$(".control"+that.level+"#deleteView"+that.level).on("click",function(){
 			var ind=that.findSelectedViewIndex();
 			that.viewList.splice(ind,1);

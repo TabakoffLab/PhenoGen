@@ -59,33 +59,44 @@ var siteVer="PhenoGen v2.12.3(7/17/2014)";
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
 var mouseTTOver=0;
+var ttHideHandle=0;
 
 
 //setup tooltip text div
 var tt=d3.select("body").append("div")   
 	    	.attr("class", "testToolTip")
-	    	.style("z-index",1000) 
-	    	//.attr("pointer-events", "all")              
-	    	.style("opacity", 0)
-	    	.on("mouseover",function(){
+	    	.style("z-index",1001) 
+	    	.attr("pointer-events", "all")              
+	    	.style("opacity", 0);
+	    	/*.on("mouseover",function(){
+	    			console.log("MOUSE IS OVER:"+$(this).css("opacity"))
+	    			if($(this).css("opacity")>0){
 					    		console.log("Mouse OVER TT");
-					    		//if(tt.style("opacity")>0){
-					    			mouseTTOver=1;
-					    		//}
-					    	})
+					    		mouseTTOver=1;
+					    		if(ttHideHandle!=0){
+					    			clearTimeout(ttHideHandle);
+					    			ttHideHandle=0;
+					    		}
+					}
+				})
 	    	.on("mouseout",function(){
 	    		console.log("Mouse OUT TT");
-	    		mouseTTOver=0;
-	    			//setTimeout(function(){
-				    		//if(mouseTTOver==0){
-				    			tt.transition()
-										.delay(200)       
-						                .duration(200)      
-						                .style("opacity", 0);
-				            //}
-				    //},1000);
+	    		if($(this).css("opacity")>0){
+		    		mouseTTOver=0;
+		    		ttHideHandle=setTimeout(function(){
+		    						if(mouseTTOver==0){
+						    			console.log("Mouse still out hiding tt.")
+						    			tt.transition()
+												.delay(200)       
+								                .duration(200)      
+								                .style("opacity", 0);
+							        }
+					      
+					},3000);
+	    		}
 			    
-	    	});
+	    	});*/
+
 
 var tsDialog=d3.select("body").append("div")   
 	    	.attr("class", "trackSetting")
@@ -388,138 +399,6 @@ $(document).on("click",".reset",function(){
 		saveToCookie(level);
 	}
 });
-
-function confirmUpload(level){
-	$("div#confirmUpload"+level).show();
-	$("div#uploadBtn"+level).hide();
-}
-function confirmBed(level){
-	$("input#hasconfirmBed"+level).val(1);
-	createCustomTrack(level);
-}
-function cancelUpload(level){
-	$("div#confirmUpload"+level).hide();
-	$("div#confirmBed"+level).hide();
-	$("div#uploadBtn"+level).show();
-}
-function createCustomTrack(level){
-	$("div#confirmUpload"+level).hide();
-	customTrackLevel=level;
-	var file = $("input#customBedFile"+level)[0].files[0]; //Files[0] = 1st file
-	var fName=file.name;
-	var fSize=(file.size/1000.0)/1000.0;
-	$(".uploadStatus").show();
-	var fExt="";
-	if(fName.indexOf(".")>0){
-		var ind=0;
-		var fTrunc=fName;
-		while(fTrunc.indexOf(".")>-1){
-			fTrunc=fTrunc.substr(fTrunc.indexOf(".")+1);
-		}
-		if(fTrunc!="" && fTrunc!=fName){
-			fExt=fTrunc;
-		}
-	}
-	//check file size and extension
-	if(fSize<20){
-		if(fExt!="bed"){
-			if(fExt=="gz"||fExt=="tar"||fExt=="zip"||fExt=="exe"||fExt=="bin"){
-				//cancel with no support
-				setTimeout(function(){
-        				$("div#uploadBtn"+customTrackLevel).show();
-        				$(".progressInd").hide();
-        			},5000);
-				$(".uploadStatus").html("Error: Selected File Type is not supported.");
-			}else if($("input#hasconfirmBed"+level).val()==0){
-				//display confirmation
-				$("div#confirmBed"+customTrackLevel).show();
-			}else if($("input#hasconfirmBed"+level).val()==1){
-				$("div#confirmBed"+customTrackLevel).hide();
-				//continue
-				readFile(file);
-			}
-		}else{
-			readFile(file);
-		}
-	}else{
-		$("div#uploadBtn"+customTrackLevel).show();
-        $(".progressInd").hide();
-		$(".uploadStatus").html("File is too large.  20MB is the current limit.");
-	}
-}
-
-function readFile(file){
-	var reader = new FileReader();
-	reader.readAsText(file, 'UTF-8');
-	reader.onload = sendFile;
-}
-
-function sendFile(event){
-	var result = event.target.result;
-	$.ajax({
-				url: pathPrefix+"trackUpload.jsp",
-   				type: 'POST',
-				contentType: 'text/plain',
-				xhr: function() {  // Custom XMLHttpRequest
-		            var myXhr = $.ajaxSettings.xhr();
-		            //if(myXhr.upload){ // Check if upload property exists
-		                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-		            //}
-		            return myXhr;
-		        },
-				data: result,
-				processData: false,
-				cache: false,
-				dataType: 'json',
-    			success: function(data2){
-        			$(".uploadStatus").html("Upload Completed Successfully");
-        			var tmp=new Date();
-        			//add new custom track to Custom Track Cookie
-        			var track=data2.trackFile.substring(0,data2.trackFile.length-4)
-
-        			var trackToAdd="custom"+track+",organism="+organism+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customBedFile"+customTrackLevel)[0].files[0].name+",";
-        			if($("#usrtrkColorSelect"+customTrackLevel).val()=="Score"){
-        				trackToAdd=trackToAdd+"colorBy=Score,";
-        				trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+customTrackLevel).val()+",";
-        				trackToAdd=trackToAdd+"maxValue="+$("#usrtrkScoreMaxTxt"+customTrackLevel).val()+",";
-        				trackToAdd=trackToAdd+"minColor=#"+$("#usrtrkColorMin"+customTrackLevel).val()+",";
-        				trackToAdd=trackToAdd+"maxColor=#"+$("#usrtrkColorMax"+customTrackLevel).val()+",";
-        			}else{
-						trackToAdd=trackToAdd+"colorBy=Color,";
-        			}
-        			saveCustomTrackCookie(trackToAdd+";");
-        			//load the track from the new cookie
-        			svgList[customTrackLevel].addTrack("custom"+track,3,"",0);
-        			//update the Custom UI 
-        			addCustomTrackUI(trackToAdd,1);
-
-        			//reset some of the inputs
-        			$("input#customBedFile"+customTrackLevel).val("");
-        			$("input#usrtrkNameTxt"+customTrackLevel).val("");
-        			$("#usrtrkColorSelect"+customTrackLevel).val("color");
-        			setTimeout(function(){
-        				$("div#uploadBtn"+customTrackLevel).show();
-        				$(".progressInd").hide();
-        				$(".uploadStatus").hide();
-        				saveToCookie(customTrackLevel);
-        			},15000);
-    			},
-    			error: function(xhr, status, error) {
-        			console.log(error);
-        			$(".uploadStatus").html("Error:"+error);
-        			$("div#uploadBtn"+customTrackLevel).show();
-    			}
-			});
-}
-
-function progressHandlingFunction(e){
-	$(".progressInd").show();
-	$(".uploadStatus").html("Uploading...");
-    if(e.lengthComputable){
-        $('progress').attr({value:e.loaded,max:e.total});
-    }
-}
-
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -3381,6 +3260,19 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		return that.trackClass+","+that.density+";";
 	};
 
+	that.ttMouseOver = function (){
+		console.log("Mouse OVER triggered:"+tt.style("opacity"));
+		if(tt.style("opacity")>0){
+					    		console.log("Mouse OVER TT");
+					    		mouseTTOver=1;
+					    		clearTimeout(ttHideHandle);
+		}
+	};
+
+	that.ttMouseOver = function (){
+
+	};
+
 	that.gsvg=gsvgP;
 	that.level=that.gsvg.levelNumber;
 	that.data=dataP;
@@ -4159,35 +4051,6 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.pieColor =function(d,i){
-		/*var color=d3.rgb("#000000");
-		if(that.trackClass=="coding"){
-			if(i==0){
-				color=d3.rgb("#DFC184");
-			}else if(i==1){
-				color=d3.rgb("#7EB5D6");
-			}else if(i==2){
-				color=d3.rgb("#bbbedd");
-			}
-		}else if(that.trackClass=="noncoding"){
-			if(i==0){
-				color=d3.rgb("#B58AA5");
-			}else if(i==1){
-				color=d3.rgb("#CECFCE");
-			}else if(i==2){
-				color=d3.rgb("#36596D");
-			}
-		}else if(that.trackClass=="smallnc"){
-			if(i==0){
-				color=d3.rgb("#FFCC00");
-			}else if(i==1){
-				color=d3.rgb("#99CC99");
-			}else if(i==2){
-				color=d3.rgb("#BF9B9B");
-			}
-		}else if(that.trackClass=="liverTotal"){
-			color=d3.rgb("#bbbedd");
-		}*/
-
 		return that.color(d);
 	};
 
@@ -5139,7 +5002,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				        	//that.gsvg.get('tt').transition()
 				        	tt.transition()        
 				                .duration(200)      
-				                .style("opacity", .95);      
+				                .style("opacity", 1);      
 				        	//that.gsvg.get('tt').html(that.createToolTip(d)) 
 				        	tt.html(that.createToolTip(d)) 
 				                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
@@ -5262,7 +5125,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							}
 		            			tt.transition()        
 									.duration(200)      
-									.style("opacity", .95);      
+									.style("opacity", 1);      
 								tt.html(that.createToolTip(d))  
 									.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 									.style("top", function(){return that.positionTTTop(d3.event.pageY);});
@@ -6006,7 +5869,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			        	//that.gsvg.get('tt').transition()
 			        	tt.transition()        
 			                .duration(200)      
-			                .style("opacity", .95);      
+			                .style("opacity", 1);      
 			        	//that.gsvg.get('tt').html(that.createToolTip(d))  
 			        	tt.html(that.createToolTip(d))
 			                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
@@ -6123,7 +5986,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 								d3.select(this).selectAll("text").style("opacity","0.3").style("fill","green");
 		            			tt.transition()        
 									.duration(200)      
-									.style("opacity", .95);      
+									.style("opacity", 1);      
 								tt.html(that.createToolTip(d))  
 									.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 									.style("top", function(){return that.positionTTTop(d3.event.pageY);});
@@ -6614,7 +6477,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 											thisD3.style("fill","green");
 							            	tt.transition()        
 							                	.duration(200)      
-							                	.style("opacity", .95);      
+							                	.style("opacity", 1);      
 							            	tt.html(that.createToolTip(d))  
 							                	.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 												.style("top", function(){return that.positionTTTop(d3.event.pageY);});
@@ -6739,7 +6602,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 						thisD3.style("fill","green");
 		            	tt.transition()        
 		                	.duration(200)      
-		                	.style("opacity", .95);      
+		                	.style("opacity", 1);      
 		            	tt.html(that.createToolTip(d))  
 		                	.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 							.style("top", function(){return that.positionTTTop(d3.event.pageY);});
@@ -7423,7 +7286,7 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 				d3.select(this).style("fill","green");
 		            tt.transition()        
 		                .duration(200)      
-		                .style("opacity", .95);      
+		                .style("opacity", 1);      
 		            tt.html(that.createToolTip(d))  
 		                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 						.style("top", function(){return that.positionTTTop(d3.event.pageY);});
@@ -7773,7 +7636,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 				d3.select(this).style("fill","green");
 	            tt.transition()        
 	                .duration(200)      
-	                .style("opacity", .95);      
+	                .style("opacity", 1);      
 	            tt.html(that.createToolTip(d))  
 	                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 					.style("top", function(){return that.positionTTTop(d3.event.pageY);});
@@ -8118,7 +7981,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 							d3.select(this).selectAll("text").style("opacity","0.3").style("fill","green");
 	            			tt.transition()        
 								.duration(200)      
-								.style("opacity", .95);      
+								.style("opacity", 1);      
 							tt.html(that.createToolTip(d))  
 								.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 								.style("top", function(){return that.positionTTTop(d3.event.pageY);}); 
@@ -8209,7 +8072,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 						d3.select(this).selectAll("text").style("opacity","0.3").style("fill","green");
             			tt.transition()        
 							.duration(200)      
-							.style("opacity", .95);      
+							.style("opacity", 1);      
 						tt.html(that.createToolTip(d))  
 							.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 							.style("top", function(){return that.positionTTTop(d3.event.pageY);});
@@ -8496,7 +8359,7 @@ function CountTrack(gsvg,data,trackClass,density){
 								d3.select(this).style("fill","green");
 		            			tt.transition()        
 									.duration(200)      
-									.style("opacity", .95);      
+									.style("opacity", 1);      
 								tt.html(that.createToolTip(d))  
 									.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 									.style("top", function(){return that.positionTTTop(d3.event.pageY);});  
@@ -8831,7 +8694,7 @@ function CountTrack(gsvg,data,trackClass,density){
 						d3.select(this).style("fill","green");
             			tt.transition()        
 							.duration(200)      
-							.style("opacity", .95);      
+							.style("opacity", 1);      
 						tt.html(that.createToolTip(d))  
 							.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 							.style("top", function(){return that.positionTTTop(d3.event.pageY);});
@@ -9770,77 +9633,36 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 							d3.select(this).selectAll("text").style("opacity","0.3").style("fill","green");
 	            			tt.transition()        
 								.duration(200)      
-								.style("opacity", 0.95);      
+								.style("opacity", 1);      
 							tt.html(that.createToolTip(d))  
 								.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 								.style("top", function(){return that.positionTTTop(d3.event.pageY);});
-								tt.on("mouseover",function(){
-												    		console.log("Mouse OVER TT");
-												    		if(tt.style("opacity")>0){
-												    			mouseTTOver=1;
-												    		}
-					    						});
 							if(that.ttSVG==1){
-								//Setup Tooltip SVG
 								that.setupToolTipSVG(d,0.05);
-
-
-								/*var start=d.getAttribute("start")*1;
-								var stop=d.getAttribute("stop")*1;
-								var len=stop-start;
-								var fivePerc=Math.floor(len*0.05);
-								var newStart=start-fivePerc;
-								var newStop=stop+fivePerc;
-								if(newStop-newStart<that.ttSVGMinWidth){
-									newStart=start-(that.ttSVGMinWidth/2);
-									newStop=stop+(that.ttSVGMinWidth/2);
-								}
-								var newSvg=toolTipSVG("div#ttSVG",450,newStart,newStop,99,that.getDisplayID(d),"transcript");
-								//Setup Track for current feature
-								var dataArr=new Array();
-								dataArr[0]=d;
-								newSvg.addTrack(that.trackClass,3,"",dataArr);
-								//Setup Other tracks included in the track type(listed in that.ttTrackList)
-								if(that.gsvg.getTrackData!=undefined){
-									for(var r=0;r<that.ttTrackList.length;r++){
-										var tData=that.gsvg.getTrackData(that.ttTrackList[r]);
-										var fData=new Array();
-										if(tData!=undefined&&tData.length>0){
-											var fCount=0;
-											for(var s=0;s<tData.length;s++){
-												if((start<=tData[s].getAttribute("start")&&tData[s].getAttribute("start")<=stop)
-													|| (tData[s].getAttribute("start")<=start&&tData[s].getAttribute("stop")>=start)
-													){
-													fData[fCount]=tData[s];
-													fCount++;
-												}
-											}
-											if(fData.length>0){
-												newSvg.addTrack(that.ttTrackList[r],3,"DrawTrx",fData);	
-											}
-										}
-									}
-								}*/
 							}
 						}
 	            	})
 				.on("mouseout", function(d) {
-						if(that.gsvg.isToolTip==0){ 
-							var tmpThis=this;
-							setTimeout(function(){
-										console.log("FEATURE MOUSEOUT");
-										if(mouseTTOver==0){
-											console.log("MOUSE NOT OVER TT");
-											d3.select(tmpThis).selectAll("line").style("stroke",that.color);
-											d3.select(tmpThis).selectAll("rect").style("fill",that.color);
-											d3.select(tmpThis).selectAll("text").style("opacity","0.6").style("fill",that.color);  
-											tt.transition()
-												 .delay(100)       
-												.duration(200)      
-												.style("opacity", 0);
-										}
-										},2000);
-						}
+						//if(that.gsvg.isToolTip==0){ 
+							/*mouseTTOver=0;
+							console.log("FEATURE MOUSEOUT");
+								var tmpThis=this;*/
+								ttHideHandle=setTimeout(function(){
+												
+												//if(mouseTTOver==0){
+												//	console.log("MOUSE STILL NOT OVER TT");
+													d3.select(tmpThis).selectAll("line").style("stroke",that.color);
+													d3.select(tmpThis).selectAll("rect").style("fill",that.color);
+													d3.select(tmpThis).selectAll("text").style("opacity","0.6").style("fill",that.color);  
+													tt.transition()
+														 .delay(100)       
+														.duration(200)      
+														.style("opacity", 0);
+												/*}else{
+													console.log("MOUSE IS NOW OVER TT")
+												}*/
+											},2000);
+						//}
 	        		})
 				.each(that.drawTrx);
 		tx.exit().remove();
