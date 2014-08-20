@@ -47,6 +47,7 @@ public class BrowserView{
                         "where user_id="+userid+" and visible=1";
         String trackquery="select bvt.bvid,bt.*,bts.settings,bvt.ordering from BROWSER_VIEWS_TRACKS bvt,BROWSER_TRACKS bt, BROWSER_TRACK_SETTINGS bts where "+
                         " bvt.trackid=bt.trackid and bvt.tracksettingid=bts.tracksettingid "+
+                        " and bt.visible=1 "+
                         " and bvt.bvid in (select bvid from browser_views where user_id="+userid+" and visible=1) "+
                         " order by bvt.bvid,bvt.ordering";
             Connection conn=null;
@@ -83,8 +84,9 @@ public class BrowserView{
                     String genCat=rs.getString(8);
                     String cat=rs.getString(9);
                     String controls=rs.getString(10);
-                    String sett=rs.getString(11);
-                    int order=rs.getInt(12);
+                    boolean vis=rs.getBoolean(11);
+                    String sett=rs.getString(12);
+                    int order=rs.getInt(13);
                     BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls);
                     if(hm.containsKey(bvid)){
                         hm.get(bvid).addTrack(tmpBT);

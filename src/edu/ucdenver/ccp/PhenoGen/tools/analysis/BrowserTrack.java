@@ -69,6 +69,7 @@ public class BrowserTrack{
                     String genCat=rs.getString(7);
                     String cat=rs.getString(8);
                     String controls=rs.getString(9);
+                    boolean vis=rs.getBoolean(10);
                     BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,"",0,genCat,cat,controls);
                     ret.add(tmpBT);
                 }

@@ -39,29 +39,16 @@ sub readTranscriptAnnotationDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName,$type)=@_;   
-	
-	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
-	#print "read probesets chr:$geneChrom\n";
+	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName,$type,$tissue)=@_;   
 	#Initializing Arrays
 
 	my %annotHOH; # giant array of hashes and arrays containing annotation data
-	
-	
-	# DATA SOURCE NAME
-	#$dsn = "dbi:$platform:$service_name";
 	
 	# PERL DBI CONNECT
 	my $connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
 	my $query="";
 	
-	#my $geneChromNumber = addChr($geneChrom,"subtract");
-	
-	
-	# PREPARE THE QUERY for probesets
-	# There's got to be a better way to handle the chromosome...
-	#if(length($geneChrom) == 1){
 		$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name,rta.match_reason
 		from rna_transcripts_annot rta, rna_annot_src ras
 		where rta.source_id=ras.rna_annot_src_id
@@ -73,8 +60,9 @@ sub readTranscriptAnnotationDataFromDB{
 			and c.name =  '".uc($geneChrom)."' "."
 			and re.rna_transcript_id=rt.rna_transcript_id 
 			and rt.rna_dataset_id=rd.rna_dataset_id 
-			and rd.organism = '".$organism."' "."
-			and rd.user_id= $publicUserID  
+			and rd.organism = '".$organism."' 
+			and rd.user_id= $publicUserID
+			and rd.tissue = '".$tissue."'
 			and rd.visible=1 
 			and rd.strain_panel like '".$panel."' "."
 			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))
@@ -88,30 +76,7 @@ sub readTranscriptAnnotationDataFromDB{
 				}
 			}
 			$query=$query.") order by rta.rna_transcript_id";
-	#}
-	#elsif(length($geneChrom) == 2) {
-	#	$query ="select rta.rna_transcript_id, rta.annotation, ras.shrt_name,rta.match_reason
-	#	from rna_transcripts_annot rta, rna_annot_src ras
-	#	where rta.source_id=ras.rna_annot_src_id
-	#	and rta.rna_transcript_id in
-	#	(Select rt.rna_transcript_id
-	#		from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
-	#		where 
-	#		c.chromosome_id=rt.chromosome_id 
-	#		and substr(c.name,1,2) =  '".$geneChrom."' "."
-	#		and re.rna_transcript_id=rt.rna_transcript_id 
-	#		and rt.rna_dataset_id=rd.rna_dataset_id 
-	#		and rd.organism = '".$organism."' "."
-	#		and rd.user_id= $publicUserID  
-	#		and rd.visible=1 
-	#		and rd.strain_panel like '".$panel."' "."
-	#		and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop)))
-	#	order by rta.rna_transcript_id";
-	#}
-	#else{
-	#	die "Something is wrong with the annotation query \nChromosome#:$geneChrom\n";
-	#}
-	#print $query."\n";
+	
 	my $query_handle = $connect->prepare($query) or die (" RNA annotation query prepare failed \n");
 
 # EXECUTE THE QUERY

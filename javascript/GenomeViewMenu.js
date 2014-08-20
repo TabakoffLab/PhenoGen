@@ -22,6 +22,7 @@ function ViewMenu(level){
 	that.selectedTrackSetting=0;
 	that.previewLevel=100;
 	that.previewSVG=NaN;
+	that.curOrg=(new String(organism)).toUpperCase();
 	//generates the preview image on the preview tab.
 	that.generatePreview=function(d){
 		$("div#previewOuter"+that.level+" div#previewContent").html("");
@@ -46,9 +47,17 @@ function ViewMenu(level){
 	//creates the dragging/sorting behavior
 	//creates the controls in each row
 	that.generateTrackList=function(d){
-		var bvData=d;
+		
+		var bvData=[];
+		//filter organism specific tracks out if they don't match current organism
+		for(var i=0;i<d.TrackList.length;i++){
+			if(d.TrackList[i].Organism=="AA"||(d.TrackList[i].Organism==that.curOrg)){
+				bvData.push(d.TrackList[i]);
+			}
+		}
+
 		d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').remove();
-		var tracktbl=d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').data(d.TrackList)
+		var tracktbl=d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').data(bvData)
 				.enter().append("tr").attr("class",function(d,i){
 				if(i%2==0){
 					return "even";
@@ -375,7 +384,7 @@ function ViewMenu(level){
 		.on("mouseout",function(){
 			$("#topcontrolInfo"+that.level).html("");
 		});
-		
+
 		$(".control"+that.level+"#deleteView"+that.level).on("click",function(){
 			var ind=that.findSelectedViewIndex();
 			that.viewList.splice(ind,1);
@@ -419,7 +428,9 @@ function ViewMenu(level){
 				(filterValue=="predefined" && that.viewList[i].UserID==0)||
 				(filterValue=="custom" && that.viewList[i].UserID!=0)
 				){
-				that.filterList.push(that.viewList[i]);
+					if(that.viewList[i].Organism=="AA"||that.viewList[i].Organism==that.curOrg){
+						that.filterList.push(that.viewList[i]);
+					}
 			}
 		}
 

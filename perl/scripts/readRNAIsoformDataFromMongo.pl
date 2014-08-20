@@ -46,7 +46,7 @@ sub readRNAIsoformDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName, $tmpType)=@_;   
+	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName, $tmpType,$tissue)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	#print "read probesets chr:$geneChrom\n";
@@ -69,7 +69,7 @@ sub readRNAIsoformDataFromDB{
 	
 	#my $geneChromNumber = addChr($geneChrom,"subtract");
 	
-	my $ref=readTranscriptAnnotationDataFromDB($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName,$type);
+	my $ref=readTranscriptAnnotationDataFromDB($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName,$type,$tissue);
 	my %annotHOH=%$ref;
 	
 	
@@ -87,7 +87,8 @@ sub readRNAIsoformDataFromDB{
 			(select rd2.rna_dataset_id from rna_dataset rd2 where
 				rd2.organism = '".$organism."' "."
 				and rd2.user_id= $publicUserID  
-				and rd2.visible=1 
+				and rd2.visible=1
+				and rd2.tissue = '".$tissue."'
 				and rd2.strain_panel like '".$panel."')";
 			$query=$query." and rt.rna_dataset_id=rd.rna_dataset_id ";
 			if($type ne "Any"){

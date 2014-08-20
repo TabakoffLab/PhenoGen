@@ -314,10 +314,10 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 					part=Integer.parseInt(chrName);
 				}catch(NumberFormatException e){
 				}
-				if(chrName.toLowerCase().equals("x")||(part>0 && part<22)){
+				if(chrName.toLowerCase().equals("x")||chrName.toLowerCase().equals("y")||chrName.toLowerCase().equals("m")||(part>0 && part<22)){
 					
 				}else{
-					regionError="You have entered an invalid chromosome name.  For the supported species the chromosome should be 1-20 or 21 or X.  Example: chr1:50000-1000000";
+					regionError="You have entered an invalid chromosome name.  For the supported species the chromosome should be 1-20 or 21 or X or M.  Example: chr1:50000-1000000";
 				}
 			}
 			

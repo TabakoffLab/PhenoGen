@@ -35,9 +35,13 @@ function TrackMenu(level){
 				(filter=="genome" && that.trackList[j].GenericCategory=="Genome") ||
 				(filter=="trxome" && that.trackList[j].GenericCategory=="Transcriptome")
 				){
-				if($("table#trackListTbl"+that.level+" tr#trk"+that.trackList[j].TrackID).length==0){
-					btData[count]=that.trackList[j];
-					count++;
+				if(  that.trackList[j].Organism=="AA" || 
+					 (that.trackList[j].Organism==organism.toUpperCase())
+					){
+					if($("table#trackListTbl"+that.level+" tr#trk"+that.trackList[j].TrackID).length==0){
+						btData[count]=that.trackList[j];
+						count++;
+					}
 				}
 			}
 		}
