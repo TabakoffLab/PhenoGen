@@ -42,11 +42,11 @@
                     <%}%>
                     <TR>
                     	<TD style="vertical-align:middle">
-                        <span class="control<%=level%>" style="display:inline-block;" id="addView<%=level%>" ><img src="<%=imagesDir%>icons/add_flat.png" style="position:relative;top:2px;left:2px;"></span>
-                        <span class="control<%=level%>" style="display:inline-block;" id="copyView<%=level%>" ><img src="<%=imagesDir%>icons/copy_flat.png" style="position:relative;top:2px;left:2px;"></span>
-                        <span class="control<%=level%>" style="display:inline-block;" id="saveView<%=level%>" ><img src="<%=imagesDir%>icons/save_flat.png"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" id="addView<%=level%>" ><img src="<%=imagesDir%>icons/add_flat.png" style="position:relative;top:-3px;left:-2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" id="copyView<%=level%>" ><img src="<%=imagesDir%>icons/copy_flat.png" style="position:relative;top:-3px;left:-2px;"></span>
+                        <span class="control<%=level%>" style="display:inline-block;" id="saveView<%=level%>" ><img src="<%=imagesDir%>icons/save_flat.png" style="position:relative;top:-3px;left:-2px;"></span>
                         <!--<span class="control" style="display:inline-block;height:38px;"><img src="<%=imagesDir%>icons/disk.png"></span>-->
-                        <span class="control<%=level%>" style="display:none;" id="deleteView<%=level%>"  ><img src="<%=imagesDir%>icons/del_flat_48.png" style="position:relative;top:2px;left:2px;"></span>
+                        <span class="control<%=level%>" style="display:none;" id="deleteView<%=level%>"  ><img src="<%=imagesDir%>icons/del_flat_48.png" style="position:relative;top:-3px;left:-22px;"></span>
                         <span id="topcontrolInfo<%=level%>" style="float:right;position:relative;top:20px;"></span>
                         </TD>
                         

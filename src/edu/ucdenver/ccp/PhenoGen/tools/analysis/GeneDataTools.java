@@ -1544,7 +1544,18 @@ public class GeneDataTools {
         return status;
     }
     
-     public String generateCustomXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
+    public String generateCustomXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String inputFileOrURL,String outputXML,String type){
+        String ret="";
+        if(type.equals("remoteBW")||type.equals("remoteBG")){
+            ret=generateCustomRemoteXMLTrack(chromosome,min,max,track,organism,folder,inputFileOrURL,outputXML);
+        }else if(type.equals("bed")){
+            ret=generateCustomBedXMLTrack(chromosome,min,max,track,organism,folder,inputFileOrURL,outputXML);
+        }else if(type.equals("bedGraph")){
+            ret=generateCustomBedGraphXMLTrack(chromosome,min,max,track,organism,folder,inputFileOrURL,outputXML);
+        }
+        return ret;
+    }
+     public String generateCustomBedXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
         String status="";
         try{        
             //construct perl Args

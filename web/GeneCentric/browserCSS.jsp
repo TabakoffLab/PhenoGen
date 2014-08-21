@@ -195,8 +195,20 @@ table.tooltipTable TD{
 	
 	span.control0,span.control1{
 		cursor:pointer;
+		border-style:solid;
+		border-width:1px;
+		border-color:#777777;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		height:48px;
+		width:48px;
 	}
-	
+	span.control0:hover, span.control1:hover{
+		background:#b8b8b8;
+		border-color:#575757;
+	}
 	div#trackSettingDialog{
 		position:absolute;
 		display:none;
