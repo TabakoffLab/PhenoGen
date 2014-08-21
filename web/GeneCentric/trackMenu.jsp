@@ -19,11 +19,11 @@
 	.ui-accordion .ui-accordion-content {
 		padding:1em 0.5em;
 	}
-	.rightSearch{
+	/*.rightSearch{
 		float:right;
 		position:relative;
 		top:-4px;
-	}
+	}*/
 </style>
 
     <div class="trackLevel<%=level%>"  style="display:none;width:600px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:0px; left:0px; background-color:#FFFFFF; min-height:780px; text-align:center;">
@@ -57,7 +57,7 @@
                             	<option value="all">All Tracks</option>
                             	<option value="allpublic" selected="selected">All Public Tracks</option>
                                 <option value="custom" >All Custom Tracks</option>
-                         		<option value="genome" >  Genomic Tracks</option>
+                         		<option value="genome" >  Genome Tracks</option>
                                 <option value="trxome" >  Transcriptome Tracks</option>
                             </select>
                             
@@ -65,7 +65,7 @@
                     </TR>
                     <TR>
                     <TD style=" vertical-align:top;">
-                    	<div id="trkSelList<%=level%>"  style="margin:5px 5px 5px 5px;width:585px;text-align:left;position:relative;top:-23px;">
+                    	<div id="trkSelList<%=level%>"  style="margin:5px 5px 5px 5px;width:585px;text-align:left;/*position:relative;top:-23px;*/">
                             	<table id="trkSelList<%=level%>" class="trkSelList list_base" style="width:100%">
                                 	<thead>
                                         <TR class="col_title" style="text-align:left;">

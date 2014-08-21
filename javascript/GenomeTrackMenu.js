@@ -79,6 +79,7 @@ function TrackMenu(level){
 				"bStateSave": false,
 				"bAutoWidth": true,
 				"bDeferRender": true,*/
+				"aaSorting": [[ 3, "asc" ]],
 				"sScrollY": "750px" ,
 				"sDom": '<"rightSearch"fr><t>'
 			});

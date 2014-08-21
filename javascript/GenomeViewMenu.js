@@ -33,9 +33,11 @@ function ViewMenu(level){
 			that.previewSVG=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
 			$("div#ScrollLevel"+that.previewLevel).css("overflow","auto").css("max-height","430px");
 			var trackString=that.generateSettingsString(d);
+			if(trackString!=""){
 					loadStateFromString(trackString,"",that.previewLevel,that.previewSVG);
 					that.previewSVG.updateData();
 					that.previewSVG.updateFullData();
+			}
 		}else{
 			$("div#previewOuter"+that.level+" div#previewContent").html("No Preview Available: The current organism doesn't match the tracks included in this view.");
 		}
@@ -234,7 +236,20 @@ function ViewMenu(level){
 			if(error){
 				
 			}else{
-				that.viewList=d;
+				//that.viewList=d;
+				for(var i=0;i<d.length;i++){
+					if(d[i].Organism=="AA"||d[i].Organism==that.curOrg){
+						var orgCount=0;
+						for(var j=0;j<d[i].TrackList.length;j++){
+							var tmp=d[i].TrackList[j];
+							if(tmp.Organism=="AA"||tmp.Organism==that.curOrg){
+								orgCount++;
+							}
+						}
+						d[i].orgCount=orgCount;
+						that.viewList.push(d[i]);
+					}
+				}
 				that.generateViewList();
 			}
 		});
@@ -428,9 +443,9 @@ function ViewMenu(level){
 				(filterValue=="predefined" && that.viewList[i].UserID==0)||
 				(filterValue=="custom" && that.viewList[i].UserID!=0)
 				){
-					if(that.viewList[i].Organism=="AA"||that.viewList[i].Organism==that.curOrg){
+					//if(that.viewList[i].Organism=="AA"||that.viewList[i].Organism==that.curOrg){
 						that.filterList.push(that.viewList[i]);
-					}
+					//}
 			}
 		}
 
@@ -445,7 +460,7 @@ function ViewMenu(level){
 						}else{
 							ret=ret+"     (Custom)";
 						}
-						ret=ret+"     ("+d.TrackList.length+" tracks)";
+						ret=ret+"     ("+d.orgCount+" tracks)";
 
 						if(d.Organism!="AA"){
 							if(d.Organism=="RN"){
