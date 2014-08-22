@@ -8,11 +8,12 @@ import="org.json.*" %>
 	String sessionid="";
 	sessionid=session.getId();
 	java.util.Date d=new java.util.Date();
-	BufferedReader in=request.getReader();
 	String content="";
 	boolean htmlCreated=false;
+	BufferedReader in=request.getReader();
+	String fileName=applicationRoot+contextRoot+"tmpData/trackUpload/"+sessionid+"_"+d.getTime()+".bed";
 	try{
-			BufferedWriter output=new BufferedWriter(new FileWriter(applicationRoot+contextRoot+"tmpData/trackUpload/"+sessionid+"_"+d.getTime()+".bed"));
+			BufferedWriter output=new BufferedWriter(new FileWriter(fileName));
 			boolean cont=true;
 			while(cont){
 				String tmpc=in.readLine();

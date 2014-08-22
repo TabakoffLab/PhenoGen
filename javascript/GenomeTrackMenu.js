@@ -278,9 +278,18 @@ function TrackMenu(level){
 	that.createCustomTrack=function (){
 		$("div#confirmUpload"+that.level).hide();
 		customTrackLevel=that.level;
-		var file = $("input#customBedFile"+that.level)[0].files[0]; //Files[0] = 1st file
+		var type=$("#usrtrkFileTypeSelect"+that.level).val();
+		if(type=="bed"||type=="bg"){
+			that.createUploadedCustomTrack();
+		}else if(type=="bb"||type=="bw"){
+			that.createRemoteCustomTrack();
+		}
+	};
+
+	that.createUploadedCustomTrack=function(){
+		var file = $("input#customUploadFile"+that.level)[0].files[0]; //Files[0] = 1st file
 		var fName=file.name;
-		var fSize=(file.size/1000.0)/1000.0;
+		var fSize=(file.size/1024.0)/1024.0;
 		$(".uploadStatus").show();
 		var fExt="";
 		if(fName.indexOf(".")>0){
@@ -309,22 +318,27 @@ function TrackMenu(level){
 				}else if($("input#hasconfirmBed"+that.level).val()==1){
 					$("div#confirmBed"+customTrackLevel).hide();
 					//continue
-					readFile(file);
+					that.readFile(file);
 				}
 			}else{
-				readFile(file);
+				that.readFile(file);
 			}
 		}else{
 			$("div#uploadBtn"+customTrackLevel).show();
 	        $(".progressInd").hide();
 			$(".uploadStatus").html("File is too large.  20MB is the current limit.");
 		}
+
+	};
+
+	that.createRemoteCustomTrack=function(){
+
 	};
 
 	that.readFile = function (file){
 		var reader = new FileReader();
 		reader.readAsText(file, 'UTF-8');
-		reader.onload = sendFile;
+		reader.onload = that.sendFile;
 	};
 
 	that.sendFile=function (event){
@@ -336,7 +350,7 @@ function TrackMenu(level){
 					xhr: function() {  // Custom XMLHttpRequest
 			            var myXhr = $.ajaxSettings.xhr();
 			            //if(myXhr.upload){ // Check if upload property exists
-			                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+			                myXhr.upload.addEventListener('progress',that.progressHandlingFunction, false); // For handling the progress of the upload
 			            //}
 			            return myXhr;
 			        },
@@ -348,9 +362,9 @@ function TrackMenu(level){
 	        			$(".uploadStatus").html("Upload Completed Successfully");
 	        			var tmp=new Date();
 	        			//add new custom track to Custom Track Cookie
-	        			var track=data2.trackFile.substring(0,data2.trackFile.length-4)
+	        			var track=data2.trackFile.substring(0,data2.trackFile.length-4);
 
-	        			var trackToAdd="custom"+track+",organism="+organism+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customBedFile"+customTrackLevel)[0].files[0].name+",";
+	        			var trackToAdd="custom"+track+",organism="+organism+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customUploadFile"+customTrackLevel)[0].files[0].name+",";
 	        			if($("#usrtrkColorSelect"+customTrackLevel).val()=="Score"){
 	        				trackToAdd=trackToAdd+"colorBy=Score,";
 	        				trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+customTrackLevel).val()+",";
@@ -360,21 +374,26 @@ function TrackMenu(level){
 	        			}else{
 							trackToAdd=trackToAdd+"colorBy=Color,";
 	        			}
+	        			/*
 	        			saveCustomTrackCookie(trackToAdd+";");
 	        			//load the track from the new cookie
 	        			svgList[customTrackLevel].addTrack("custom"+track,3,"",0);
 	        			//update the Custom UI 
 	        			addCustomTrackUI(trackToAdd,1);
+	        			*/
 
 	        			//reset some of the inputs
-	        			$("input#customBedFile"+customTrackLevel).val("");
+	        			$("input#customUploadFile"+customTrackLevel).val("");
 	        			$("input#usrtrkNameTxt"+customTrackLevel).val("");
 	        			$("#usrtrkColorSelect"+customTrackLevel).val("color");
 	        			setTimeout(function(){
 	        				$("div#uploadBtn"+customTrackLevel).show();
 	        				$(".progressInd").hide();
 	        				$(".uploadStatus").hide();
-	        				saveToCookie(customTrackLevel);
+	        				//saveToCookie(customTrackLevel);
+	        				$("div#addUsrTrack"+that.level).hide();
+	        				$("div#selectTrack"+that.level).show();
+							
 	        			},15000);
 	    			},
 	    			error: function(xhr, status, error) {

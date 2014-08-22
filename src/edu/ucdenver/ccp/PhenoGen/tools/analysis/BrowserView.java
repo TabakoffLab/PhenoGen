@@ -85,9 +85,10 @@ public class BrowserView{
                     String cat=rs.getString(9);
                     String controls=rs.getString(10);
                     boolean vis=rs.getBoolean(11);
-                    String sett=rs.getString(12);
-                    int order=rs.getInt(13);
-                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls);
+                    String location=rs.getString(12);
+                    String sett=rs.getString(13);
+                    int order=rs.getInt(14);
+                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls,vis,location);
                     if(hm.containsKey(bvid)){
                         hm.get(bvid).addTrack(tmpBT);
                     }

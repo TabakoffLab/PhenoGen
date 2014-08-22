@@ -40,7 +40,7 @@
                     <%}%>
                     <TR>
                     	<TD style="vertical-align:middle">
-                            <span class="control<%=level%>" style="display:inline-block;" id="addCustomTrack<%=level%>" title="Create a new custom track."><img src="<%=imagesDir%>icons/add_flat.png" ></span>
+                            <span class="control<%=level%>" style="display:inline-block;" id="addCustomTrack<%=level%>" title="Create a new custom track."><img src="<%=imagesDir%>icons/add_flat.png"style="position:relative;top:-3px;left:-2px;" ></span>
                             <span class="addTrack<%=level%> button" style="float:right;">Add Track</span>
                         </TD>
                         
@@ -142,16 +142,26 @@
                         File Type: <select name="usrtrkFileType" class="usrtrkFileType" id="usrtrkFileTypeSelect<%=level%>">
                                     <option value="bed" >.Bed (<20MB uploaded)</option>
                                     <option value="bg" >.BedGraph (<20MB uploaded)</option>
-                                    <option value="bb" >.BigBed (remotely hosted GB sizes supported)</option>
-                                    <option value="bw" >.BigWig (remotely hosted GB sizes supported)</option>
+                                    <option value="bb" >.BigBed (remotely hosted large sizes supported)</option>
+                                    <option value="bw" >.BigWig (remotely hosted large sizes supported)</option>
                                 </select>
+                                <span class="tracktooltip<%=level%>" title="We support of number of standard <a href=&quot;http://genome.ucsc.edu/&quot; target=&quot_blank;&quot;>UCSC Genome Browser</a> file types(file format info is available <a href=&quot;http://genome.ucsc.edu/FAQ/FAQformat.html#format1&quot; target=&quot_blank;&quot;>here</a>).  Part of these file types are supported by the utillities the <a href=&quot;http://genome.ucsc.edu/&quot; target=&quot_blank;&quot;>UCSC Genome Browser</a> maintains and has made available.<BR><BR>If you run into the size limit on the .bed or .bedGraph files, you can use the UCSC Genome Browser Utilities available <a href=&quot;http://hgdownload.cse.ucsc.edu/admin/exe/&quot; target=&quot_blank;&quot;>here</a> to convert them to either .bigBed or .bigWig files which can be hosted remotely and the browser will load relevant data on demand."><img src="<%=imagesDir%>icons/info.gif"></span>
                         <BR /><BR />
+                        
                         <div id="uploadSelection<%=level%>" style="display:inline-block;">
-                        	BED File:<input type="file" id="customUploadFile<%=level%>">
+                        	<span id="uploadLbl<%=level%>">BED File:</span><input type="file" id="customUploadFile<%=level%>">
                         </div>
                         <div id="remoteSelection<%=level%>" style="display:none;">
-                        	File URL:<input type="text" id="customFileURL<%=level%>">
+                        	<span id="remoteURLLbl<%=level%>">File URL:</span><input type="text" id="customFileURL<%=level%>" size="60">
+                            <BR />
+                            Example: http://phenogen.ucdenver.edu/path/to/your/file<BR />
+                            or
+                            http://username:password@something.edu/path/to/your/file<BR />
+                            or
+                            ???Google Drive URL or DropBox URL
+                            
                         </div>
+                        
                         <BR /><BR />
                         Color Track by:<select name="usrtrkColor" class="usrtrkColor" id="usrtrkColorSelect<%=level%>">
                                     <option value="Score" >Score based scale</option>
@@ -173,18 +183,18 @@
                         		<input type="button" name="cancelCreateTrack" id="cancelCreateTrack<%=level%>" value="Cancel" onClick="return cancel(<%=level%>">
                                 </span>
                             	<span style="float:right;">
-                            	<input type="button" name="uploadTrack" id="uploadTrack<%=level%>" value="Create Track" onClick="return confirmUpload(<%=level%>)">
+                            	<input type="button" name="uploadTrack" id="uploadTrack<%=level%>" value="Create Track" onClick="return trackMenu[<%=level%>].confirmUpload(<%=level%>)">
                                 </span>
                             </div>
                             <div id="confirmUpload<%=level%>" style="display:none;">
-                            	Please Confirm that this track is for <B><%if(myOrganism.equals("Rn")){%>Rat<%}else{%>Mouse<%}%></B> and has coordinates for <B><%if(myOrganism.equals("Rn")){%>rn5<%}else{%>mm10<%}%></B>.  Coordinates must match this genome version, coordinates <B>will not</B> be converted.<BR /><BR />
-                                <input type="button" name="confirmuploadTrack" id="confirmuploadTrack<%=level%>" value="Continue" onClick="return createCustomTrack(<%=level%>)">
-                                <input type="button" name="canceluploadTrack" id="canceluploadTrack<%=level%>" value="Cancel" onClick="return cancelUpload(<%=level%>)">
+                            	Please Confirm that this track is for <B><%if(myOrganism.equals("Rn")){%>Rat<%}else{%>Mouse<%}%></B> and has coordinates for <B><%if(myOrganism.equals("Rn")){%>rn5<%}else{%>mm10<%}%></B>.  Coordinates must match this genome version, as coordinates <B>will not</B> be converted.<BR /><BR />
+                                <input type="button" name="confirmuploadTrack" id="confirmuploadTrack<%=level%>" value="Continue" onClick="return trackMenu[<%=level%>].createCustomTrack(<%=level%>)">
+                                <input type="button" name="canceluploadTrack" id="canceluploadTrack<%=level%>" value="Cancel" onClick="return trackMenu[<%=level%>].cancelUpload(<%=level%>)">
                             </div>
                             <div id="confirmBed<%=level%>" style="display:none;">
                             	This file is missing a .bed extension.  Is this a .bed file fitting the standard format(<a href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1" target="_blank">UCSC Genome BED Format</a>)?<BR /><BR />
-                                <input type="button" name="confirmbedTrack" id="confirmbedTrack<%=level%>" value="Yes/Continue" onClick="return confirmBed(<%=level%>)">
-                                <input type="button" name="cancelbedTrack" id="cancelbedTrack<%=level%>" value="No/Cancel" onClick="return cancelUpload(<%=level%>)">
+                                <input type="button" name="confirmbedTrack" id="confirmbedTrack<%=level%>" value="Yes/Continue" onClick="return trackMenu[<%=level%>].confirmBed(<%=level%>)">
+                                <input type="button" name="cancelbedTrack" id="cancelbedTrack<%=level%>" value="No/Cancel" onClick="return trackMenu[<%=level%>].cancelUpload(<%=level%>)">
                                 <input type="hidden" id="hasconfirmBed<%=level%>" value="0" />
                             </div>
                         	<div class="progressInd" style="display:none;">
@@ -202,6 +212,27 @@
 		});
 		$("#trackTypeSelect<%=level%>").on("change",function(){
 			trackMenu[<%=level%>].generateTrackTable();
+		});
+		$("#usrtrkFileTypeSelect<%=level%>").on("change",function(){
+			var fileType=$("#usrtrkFileTypeSelect<%=level%>").val();
+			if(fileType=="bed"){
+				$("#uploadLbl<%=level%>").html("Bed File:");
+				$("#uploadSelection<%=level%>").show();
+				$("#remoteSelection<%=level%>").hide();
+				
+			}else if(fileType=="bg"){
+				$("#uploadLbl<%=level%>").html("BedGraph File:");
+				$("#uploadSelection<%=level%>").show();
+				$("#remoteSelection<%=level%>").hide();
+			}else if(fileType=="bb"){
+				$("#remoteURLLbl<%=level%>").html("BigBed URL:");
+				$("#uploadSelection<%=level%>").hide();
+				$("#remoteSelection<%=level%>").show();
+			}else if(fileType=="bw"){
+				$("#remoteURLLbl<%=level%>").html("BigWig URL:");
+				$("#uploadSelection<%=level%>").hide();
+				$("#remoteSelection<%=level%>").show();
+			}
 		});
 		$("span#addCustomTrack<%=level%>").on("click",function(){
 			$("div#selectTrack<%=level%>").hide();

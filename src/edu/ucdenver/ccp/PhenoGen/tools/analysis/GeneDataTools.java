@@ -1646,7 +1646,16 @@ public class GeneDataTools {
         return status;
     }
     
+    public String generateCustomBedGraphXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
+        String status="";
+        return status;
+    }
     
+    public String generateCustomRemoteXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
+        String status="";
+        return status;
+    }
+     
     public boolean createRegionImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
         boolean completedSuccessfully=false;
         try{
@@ -2743,14 +2752,14 @@ public class GeneDataTools {
                 String tissue=rs.getString("TISSUE");
                 //log.debug("adding"+probeset);
                 if(probesets.containsKey(probeset)){
-                    HashMap phm=(HashMap)probesets.get(probeset);
-                    HashMap val=new HashMap();
+                    HashMap<String,HashMap> phm=(HashMap<String,HashMap>)probesets.get(probeset);
+                    HashMap<String,Double> val=new HashMap<String,Double>();
                     val.put("herit", herit);
                     val.put("dabg", dabg);
                     phm.put(tissue, val);
                 }else{
-                    HashMap phm=new HashMap();
-                    HashMap val=new HashMap();
+                    HashMap<String,HashMap> phm=new HashMap<String,HashMap>();
+                    HashMap<String,Double> val=new HashMap<String,Double>();
                     val.put("herit", herit);
                     val.put("dabg", dabg);
                     phm.put(tissue, val);
@@ -2817,7 +2826,7 @@ public class GeneDataTools {
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
-        HashMap probesets=new HashMap();
+        //HashMap probesets=new HashMap();
         String qtlQuery="select eq.identifier,eq.lod_score,eq.p_value,eq.fdr,eq.marker,eq.marker_chromosome,eq.marker_mb,eq.lower_limit,eq.upper_limit,eq.tissue "+
                           "from Chromosomes c, Affy_Exon_ProbeSet s "+
                           "left outer join expression_qtls eq on eq.identifier = TO_CHAR (s.probeset_id) "+

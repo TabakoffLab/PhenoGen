@@ -49,4 +49,14 @@ public class BrowserTools{
         }
         return ret;
     }
+    public void createCustomTrack(int uid,String trackclass, String trackname, String description, String organism,String settings, int order,String genCat,String category,String controls,Boolean vis,String location){
+        BrowserTrack bt=new BrowserTrack();
+        int trackID=bt.getNextID(pool);
+        BrowserTrack newTrack=new BrowserTrack(trackID, uid, trackclass, trackname, description, organism,settings, order,genCat,category,controls,vis,location);
+        if(newTrack.saveToDB(pool)){
+            
+        }else{//error
+            
+        }
+    }
 }
