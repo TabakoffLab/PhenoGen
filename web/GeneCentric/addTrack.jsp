@@ -10,16 +10,21 @@ import="org.json.*" %>
 	sessionid=session.getId();
 	
 	//Parameters
+	String trackClass="";
 	String trackName="";
 	String trackDesc="";
 	String trackOrg="";
 	String genericCat="";
 	String category="";
 	String controls="";
-	
+	User userLoggedIn=(User) session.getAttribute("userLoggedIn");
+	int uid=userLoggedIn.getUser_id();
 	
 	
 	String extension=".bed";
+	if(request.getParameter("trackClass")!=null){
+		trackClass=request.getParameter("trackClass");
+	}
 	if(request.getParameter("trackName")!=null){
 		trackName=request.getParameter("trackName");
 	}
@@ -38,17 +43,17 @@ import="org.json.*" %>
 	if(request.getParameter("controls")!=null){
 		controls=request.getParameter("controls");
 	}
+	if(request.getParameter("location")!=null){
+		location=request.getParameter("location");
+	}
 
 %>
 	
 <% 
 	int tmpuserID=0;
 	bt.setSession(session);
-	//If user is logged in other than anonymous save track to DB and return file to save to cookie.
-	if(loggedIn && !userLoggedIn.getUser_name().equals("anon")){
-		tmpuserID=userLoggedIn.getUser_id();
-		bt.createCustomTrack(tmpuserID,sessionid+"_"+d.getTime(),trackName,trackDesc,trackOrg,"",0,genericCat,category,controls,true,fileName);
-	}
+
+	bt.createCustomTrack(uid,trackClass,trackName,trackDesc,trackOrg,"",0,genericCat,category,controls,true,location);
 	//else will just return path to save to cookie.
 	JSONObject genejson;
 	genejson = new JSONObject();

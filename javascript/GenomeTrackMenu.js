@@ -318,10 +318,10 @@ function TrackMenu(level){
 				}else if($("input#hasconfirmBed"+that.level).val()==1){
 					$("div#confirmBed"+customTrackLevel).hide();
 					//continue
-					that.readFile(file);
+					that.createTrack(file);
 				}
 			}else{
-				that.readFile(file);
+				that.createTrack(file);
 			}
 		}else{
 			$("div#uploadBtn"+customTrackLevel).show();
@@ -331,9 +331,57 @@ function TrackMenu(level){
 
 	};
 
+	that.createTrack=function(file){
+		that.readFile(file);
+	};
+
 	that.createRemoteCustomTrack=function(){
 
 	};
+
+	that.saveTrack=function(trackClass){
+		//if uid==0 not logged in >0 should save back to DB.
+		if(uid>0){
+			$.ajax({
+				url:  tmpContext+"addTrack.jsp",
+   				type: 'GET',
+				data: {trackClass: trackClass,trackName: trackName, trackDesc:desc,trackOrg:org,genericCategory:genCat,category:cat,controls:control,location:loc},
+				dataType: 'html',
+    			success: function(data2){
+    				
+    			},
+    			error: function(xhr, status, error) {
+    				
+    			},
+    			async:   false
+			});
+		}
+		//Save to Cookie if not logged in.
+		var trackToAdd="custom"+track+",organism="+organism+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customUploadFile"+customTrackLevel)[0].files[0].name+",";
+	    if($("#usrtrkColorSelect"+customTrackLevel).val()=="Score"){
+			trackToAdd=trackToAdd+"colorBy=Score,";
+			trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+customTrackLevel).val()+",";
+			trackToAdd=trackToAdd+"maxValue="+$("#usrtrkScoreMaxTxt"+customTrackLevel).val()+",";
+			trackToAdd=trackToAdd+"minColor=#"+$("#usrtrkColorMin"+customTrackLevel).val()+",";
+			trackToAdd=trackToAdd+"maxColor=#"+$("#usrtrkColorMax"+customTrackLevel).val()+",";
+		}else{
+			trackToAdd=trackToAdd+"colorBy=Color,";
+		}
+		//reset some of the inputs
+		$("input#customUploadFile"+customTrackLevel).val("");
+		$("input#usrtrkNameTxt"+customTrackLevel).val("");
+		$("#usrtrkColorSelect"+customTrackLevel).val("color");
+		setTimeout(function(){
+			$("div#uploadBtn"+customTrackLevel).show();
+			$(".progressInd").hide();
+			$(".uploadStatus").hide();
+			//saveToCookie(customTrackLevel);
+			$("div#addUsrTrack"+that.level).hide();
+			$("div#selectTrack"+that.level).show();
+			
+		},15000);
+	};
+
 
 	that.readFile = function (file){
 		var reader = new FileReader();
@@ -360,41 +408,10 @@ function TrackMenu(level){
 					dataType: 'json',
 	    			success: function(data2){
 	        			$(".uploadStatus").html("Upload Completed Successfully");
-	        			var tmp=new Date();
+	        			//var tmp=new Date();
 	        			//add new custom track to Custom Track Cookie
 	        			var track=data2.trackFile.substring(0,data2.trackFile.length-4);
-
-	        			var trackToAdd="custom"+track+",organism="+organism+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customUploadFile"+customTrackLevel)[0].files[0].name+",";
-	        			if($("#usrtrkColorSelect"+customTrackLevel).val()=="Score"){
-	        				trackToAdd=trackToAdd+"colorBy=Score,";
-	        				trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+customTrackLevel).val()+",";
-	        				trackToAdd=trackToAdd+"maxValue="+$("#usrtrkScoreMaxTxt"+customTrackLevel).val()+",";
-	        				trackToAdd=trackToAdd+"minColor=#"+$("#usrtrkColorMin"+customTrackLevel).val()+",";
-	        				trackToAdd=trackToAdd+"maxColor=#"+$("#usrtrkColorMax"+customTrackLevel).val()+",";
-	        			}else{
-							trackToAdd=trackToAdd+"colorBy=Color,";
-	        			}
-	        			/*
-	        			saveCustomTrackCookie(trackToAdd+";");
-	        			//load the track from the new cookie
-	        			svgList[customTrackLevel].addTrack("custom"+track,3,"",0);
-	        			//update the Custom UI 
-	        			addCustomTrackUI(trackToAdd,1);
-	        			*/
-
-	        			//reset some of the inputs
-	        			$("input#customUploadFile"+customTrackLevel).val("");
-	        			$("input#usrtrkNameTxt"+customTrackLevel).val("");
-	        			$("#usrtrkColorSelect"+customTrackLevel).val("color");
-	        			setTimeout(function(){
-	        				$("div#uploadBtn"+customTrackLevel).show();
-	        				$(".progressInd").hide();
-	        				$(".uploadStatus").hide();
-	        				//saveToCookie(customTrackLevel);
-	        				$("div#addUsrTrack"+that.level).hide();
-	        				$("div#selectTrack"+that.level).show();
-							
-	        			},15000);
+	        			that.saveTrack(track);
 	    			},
 	    			error: function(xhr, status, error) {
 	        			console.log(error);

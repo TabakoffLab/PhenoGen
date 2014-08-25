@@ -30,6 +30,11 @@ var selectGene="<%=selectedEnsemblID%>";
 <%}%>
 var pathPrefix="web/GeneCentric/";
 var dataPrefix="";
+<%if(userLoggedIn.getUser_name().equals("anon")){%>
+	var uid=0;
+<%}else{%>
+	var uid=userLoggedIn.getUser_id();
+<%}%>
 </script>
 
 <style>
