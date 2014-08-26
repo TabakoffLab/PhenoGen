@@ -1,12 +1,13 @@
 package edu.ucdenver.ccp.PhenoGen.tools.analysis;
 
 
-import edu.ucdenver.ccp.PhenoGen.web.SessionHandler; 
 import edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTrack;
+import edu.ucdenver.ccp.PhenoGen.web.SessionHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.sql.DataSource;
@@ -86,9 +87,12 @@ public class BrowserView{
                     String controls=rs.getString(10);
                     boolean vis=rs.getBoolean(11);
                     String location=rs.getString(12);
-                    String sett=rs.getString(13);
-                    int order=rs.getInt(14);
-                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls,vis,location);
+                    Timestamp ts=rs.getTimestamp(13);
+                    String file=rs.getString(14);
+                    String type=rs.getString(15);
+                    String sett=rs.getString(16);
+                    int order=rs.getInt(17);
+                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls,vis,location,file,type,ts);
                     if(hm.containsKey(bvid)){
                         hm.get(bvid).addTrack(tmpBT);
                     }

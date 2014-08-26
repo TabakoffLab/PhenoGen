@@ -20,13 +20,11 @@ import="org.json.*" %>
 <jsp:useBean id="bt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTools" scope="session"> </jsp:useBean>
 
 <%
+log.debug("TESTING");
 int tmpuserID=0;
 bt.setSession(session);
 
-if(request.getParameter("userLoggedIn")!=null){
-	tmpuserID=userLoggedIn.getUser_id();
-}
-ArrayList<BrowserTrack> tracks=bt.getBrowserTracks(tmpuserID);
+ArrayList<BrowserTrack> tracks=bt.getBrowserTracks();
 
 response.setContentType("application/json");
 %>
@@ -45,7 +43,10 @@ response.setContentType("application/json");
         "Order":<%=btrk.getOrder()%>,
         "GenericCategory":"<%=btrk.getGenericCategory()%>",
         "Category":"<%=btrk.getCategory()%>",
-        "Controls":"<%=btrk.getControls()%>"
+        "Controls":"<%=btrk.getControls()%>",
+        "SetupDate":"<%=btrk.getSetupTime()%>",
+        "OriginalFile":"<%=btrk.getOriginalFile()%>",
+        "Type":"<%=btrk.getType()%>"
         }
     <%}%> 
 ]

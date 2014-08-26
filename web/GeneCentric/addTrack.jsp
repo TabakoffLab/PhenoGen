@@ -17,7 +17,10 @@ import="org.json.*" %>
 	String genericCat="";
 	String category="";
 	String controls="";
-	User userLoggedIn=(User) session.getAttribute("userLoggedIn");
+	String location="";
+	String type="";
+	String prevFile="";
+	//User userLoggedIn=(User) session.getAttribute("userLoggedIn");
 	int uid=userLoggedIn.getUser_id();
 	
 	
@@ -34,8 +37,8 @@ import="org.json.*" %>
 	if(request.getParameter("trackOrg")!=null){
 		trackOrg=request.getParameter("trackOrg");
 	}
-	if(request.getParameter("genericCat")!=null){
-		genericCat=request.getParameter("genericCat");
+	if(request.getParameter("genericCategory")!=null){
+		genericCat=request.getParameter("genericCategory");
 	}
 	if(request.getParameter("category")!=null){
 		category=request.getParameter("category");
@@ -46,19 +49,25 @@ import="org.json.*" %>
 	if(request.getParameter("location")!=null){
 		location=request.getParameter("location");
 	}
-
+	if(request.getParameter("type")!=null){
+		type=request.getParameter("type");
+	}
+	if(request.getParameter("file")!=null){
+		prevFile=request.getParameter("file");
+	}
 %>
 	
 <% 
 	int tmpuserID=0;
 	bt.setSession(session);
 
-	bt.createCustomTrack(uid,trackClass,trackName,trackDesc,trackOrg,"",0,genericCat,category,controls,true,location);
+	boolean success=bt.createCustomTrack(uid,trackClass,trackName,trackDesc,trackOrg,"",0,genericCat,category,controls,true,location,prevFile,type);
 	//else will just return path to save to cookie.
 	JSONObject genejson;
 	genejson = new JSONObject();
-    genejson.put("trackFile" , sessionid+"_"+d.getTime()+".bed");
+    genejson.put("success" , success);
 	response.setContentType("application/json");
 	response.getWriter().write(genejson.toString());
 %>
+
 

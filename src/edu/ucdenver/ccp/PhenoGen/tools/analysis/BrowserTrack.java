@@ -2,17 +2,20 @@ package edu.ucdenver.ccp.PhenoGen.tools.analysis;
 
 
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler; 
+import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import javax.sql.DataSource;
 import oracle.jdbc.*;
 import org.apache.log4j.Logger;
+
 
 public class BrowserTrack{
     private int id=0;
@@ -28,12 +31,18 @@ public class BrowserTrack{
     private String controls="";
     private boolean visible=true;
     private String location="";
+    private String originalFile="";
+    private String type="";
+    private Timestamp ts=null;
     
     public BrowserTrack(){
     }
     
     public BrowserTrack(int id, int userid,  String trackclass, 
-                String trackname, String description, String organism,String settings, int order,String genCat,String category,String controls,Boolean vis,String location){
+                String trackname, String description, String organism,String settings, int order,
+                String genCat,String category,String controls,Boolean vis,String location,
+                String fileName,String fileType,Timestamp ts){
+        this.ts = null;
         this.id=id;
         this.userid=userid;
         this.settings=settings;
@@ -47,13 +56,14 @@ public class BrowserTrack{
         this.controls=controls;
         this.visible=vis;
         this.location=location;
+        this.ts=ts;
+        this.originalFile=fileName;
+        this.type=fileType;
     }
 
     public ArrayList<BrowserTrack> getBrowserTracks(int userid,DataSource pool){
         Logger log=Logger.getRootLogger();
         ArrayList<BrowserTrack> ret=new ArrayList<BrowserTrack>();
-        
-        HashMap<Integer,BrowserTrack> hm=new HashMap<Integer,BrowserTrack>();
         
         String query="select * from BROWSER_TRACKS "+
                         "where user_id="+userid;
@@ -76,7 +86,10 @@ public class BrowserTrack{
                     String controls=rs.getString(9);
                     boolean vis=rs.getBoolean(10);
                     String location=rs.getString(11);
-                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,"",0,genCat,cat,controls,vis,location);
+                    Timestamp t=rs.getTimestamp(12);
+                    String file=rs.getString(13);
+                    String type=rs.getString(14);
+                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,"",0,genCat,cat,controls,vis,location,file,type,t);
                     ret.add(tmpBT);
                 }
                 
@@ -213,6 +226,32 @@ public class BrowserTrack{
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public String getOriginalFile() {
+        return originalFile;
+    }
+
+    public void setOriginalFile(String originalFile) {
+        this.originalFile = originalFile;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Timestamp getSetupTime() {
+        return ts;
+    }
+
+    public void setSetupTime(Timestamp ts) {
+        this.ts = ts;
+    }
+    
+    
     
     public int getNextID(DataSource pool){
         int id=-1;
@@ -247,9 +286,9 @@ public class BrowserTrack{
     
     public boolean saveToDB(DataSource pool){
         boolean success=false;
-        String insertUsage="insert into browser_tracks (TRACKID,USER_ID,TRACK_CLASS "
-                + "TRACK_NAME,TRACK_DESC,ORGANISM,CATEGORY_GENERIC,CATEGORY,DISPLAY_OPTS "
-                + "VISIBLE,CUSTOM_LOCATION) values (?,?,?,?,?,?,?,?,?,?,?)";
+        String insertUsage="insert into browser_tracks (TRACKID,USER_ID,TRACK_CLASS,"
+                + "TRACK_NAME,TRACK_DESC,ORGANISM,CATEGORY_GENERIC,CATEGORY,DISPLAY_OPTS,"
+                + "VISIBLE,CUSTOM_LOCATION,CUSTOM_DATE,CUSTOM_FILE_ORIGINAL,CUSTOM_TYPE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         Connection conn=null;
         try{
             conn=pool.getConnection();
@@ -261,19 +300,38 @@ public class BrowserTrack{
             ps.setString(3, this.trackClass);
             ps.setString(4, this.trackName);
             ps.setString(5, this.trackDescription);
-            ps.setString(6, this.organism);
+            ps.setString(6, this.organism.toUpperCase());
             ps.setString(7, this.genericCategory);
             ps.setString(8, this.category);
             ps.setString(9, this.controls);
             ps.setBoolean(10, this.visible);
             ps.setString(11, this.location);
+            ps.setTimestamp(12,this.ts);
+            ps.setString(13, this.originalFile);
+            ps.setString(14, this.type);
             ps.execute();
             ps.close();
             conn.close();
             conn=null;
             success=true;
         }catch(SQLException e){
-            
+            e.printStackTrace(System.err);
+            Logger log = Logger.getRootLogger();
+            log.error("Error inserting custom track:",e);
+            Email myAdminEmail = new Email();
+            String fullerrmsg=e.getMessage();
+            StackTraceElement[] tmpEx=e.getStackTrace();
+            for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+            }
+            myAdminEmail.setSubject("Exception thrown inserting a custom track");
+            myAdminEmail.setContent("There was an error inserting a custom track.\n"+fullerrmsg);
+            try {
+                    myAdminEmail.sendEmailToAdministrator("");
+            } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+            }
         }finally{
             try{
             if(conn!=null&&!conn.isClosed()){

@@ -33,7 +33,7 @@ var dataPrefix="";
 <%if(userLoggedIn.getUser_name().equals("anon")){%>
 	var uid=0;
 <%}else{%>
-	var uid=userLoggedIn.getUser_id();
+	var uid=<%=userLoggedIn.getUser_id()%>;
 <%}%>
 </script>
 
@@ -171,10 +171,10 @@ var dataPrefix="";
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser1.4.0.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport1.1.js" type="text/javascript"></script>
-			<script src="javascript/GenomeViewMenu.js" type="text/javascript"></script>
-            <script src="javascript/GenomeTrackMenu.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.0.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport2.0.js" type="text/javascript"></script>
+			<script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">

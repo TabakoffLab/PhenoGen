@@ -52,6 +52,11 @@ ratOnly.brainsmallnc=1;
 ratOnly.heartilluminaTotalPlus=1;
 ratOnly.heartilluminaTotalMinus=1;
 
+mouseOnly.brainTotal=1;
+mouseOnly.brainilluminaTotalPlus=1;
+mouseOnly.brainilluminaTotalMinus=1;
+mouseOnly.brainspliceJnct=1;
+
 
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
@@ -557,7 +562,7 @@ function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
 	}
 	for(var m=0;m<trackArray.length;m++){
 		var trackVars=trackArray[m].split(",");
-		if(organism=="Rn" || (organism=="Mm" && ratOnly[trackVars[0]]== undefined)) {
+		if( (organism=="Rn" && mouseOnly[trackVars[0]]==undefined) || (organism=="Mm" && ratOnly[trackVars[0]]== undefined)) {
     		if(trackVars[0]!="") {
     			addedCount++;
     			var ext="";

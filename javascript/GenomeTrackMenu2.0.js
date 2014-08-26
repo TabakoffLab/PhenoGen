@@ -23,20 +23,22 @@ function TrackMenu(level){
 	that.dataInitialized=0;
 
 	that.generateTrackTable=function(){
-		var filter=$("select#trackTypeSelect"+that.level).val();
+		var filter=$("#trackTypeSelect"+that.level).val();
 		var btData=[];
 		var count=0;
 		console.log("generateTrackTable");
 		console.log(that.trackList);
+		console.log(filter);
 		for(var j=0;j<that.trackList.length;j++){
+			console.log("filter:"+filter+"    uid:"+that.trackList[j].UserID);
 			if(	filter=="all" ||
 				(filter=="allpublic" && that.trackList[j].UserID==0) ||
 				(filter=="custom" && that.trackList[j].UserID!=0) ||
 				(filter=="genome" && that.trackList[j].GenericCategory=="Genome") ||
 				(filter=="trxome" && that.trackList[j].GenericCategory=="Transcriptome")
 				){
-				if(  that.trackList[j].Organism=="AA" || 
-					 (that.trackList[j].Organism==organism.toUpperCase())
+				if(  that.trackList[j].Organism.toUpperCase()=="AA" || 
+					 (that.trackList[j].Organism.toUpperCase()==organism.toUpperCase())
 					){
 					if($("table#trackListTbl"+that.level+" tr#trk"+that.trackList[j].TrackID).length==0){
 						btData[count]=that.trackList[j];
@@ -53,7 +55,13 @@ function TrackMenu(level){
 				.enter().append("tr")
 				.attr("id",function(d){return "trk"+d.TrackID;});
 		tracktbl.each(function(d,i){
-				var info="  <span class=\"trlisttooltip"+that.level+"\" title= \""+d.Description+"\"><img src=\""+iconPath+"info.gif\"></span>";
+				var addtl="";
+				if(d.UserID!=0){
+					var setup=new String(d.SetupDate);
+					setup=setup.substr(0,setup.indexOf(":",setup.indexOf(":")+1));
+					addtl="<BR><BR>File:"+d.OriginalFile+"<BR>Setup Date:"+setup+"<BR>Type:"+d.Type;
+				}
+				var info="  <span class=\"trlisttooltip"+that.level+"\" title= \""+d.Description+addtl+"\"><img src=\""+iconPath+"info.gif\"></span>";
 				d3.select(this).append("td").html(d.Name+info);
 				var org=""
 				if(d.Organism=="RN"){
@@ -146,7 +154,7 @@ function TrackMenu(level){
 		}
 		d3.json(tmpContext+"getBrowserTracks.jsp",function (error,d){
 			if(error){
-				
+				console.log(error);
 			}else{
 				that.trackList=d;
 				if(that.level==0){
@@ -339,46 +347,66 @@ function TrackMenu(level){
 
 	};
 
-	that.saveTrack=function(trackClass){
+	that.saveTrack=function(trackClass,file){
+		console.log("saving track uid:"+uid);
 		//if uid==0 not logged in >0 should save back to DB.
+		var trackName=$("#usrtrkNameTxt"+that.level).val();
+		var desc=$("#usrtrkDescTxt"+that.level).val();
+		var org=$("#usrtrkOrgSelect"+that.level).val();
+		var genCat=$("#usrtrkGenCatSelect"+that.level).val();
+		var cat=$("#usrtrkCatTxt"+that.level).val();
+		var control="";
+		var loc=file;
+		var type=$("#usrtrkFileTypeSelect"+that.level).val();
+		var prevFile="";
+		if(type=="bed"||type=="bg"){
+			prevFile=$("input#customUploadFile"+that.level)[0].files[0].name;
+		}
 		if(uid>0){
+			console.log("saving track to db");
 			$.ajax({
-				url:  tmpContext+"addTrack.jsp",
+				url:  contextPath +"/"+ pathPrefix +"addTrack.jsp",
    				type: 'GET',
-				data: {trackClass: trackClass,trackName: trackName, trackDesc:desc,trackOrg:org,genericCategory:genCat,category:cat,controls:control,location:loc},
+				data: {trackClass: trackClass,trackName: trackName, trackDesc:desc,trackOrg:org,genericCategory:genCat,category:cat,controls:control,location:loc,type:type,file:prevFile},
 				dataType: 'html',
     			success: function(data2){
     				
     			},
     			error: function(xhr, status, error) {
-    				
+    				console.log(error);
     			},
     			async:   false
 			});
 		}
 		//Save to Cookie if not logged in.
-		var trackToAdd="custom"+track+",organism="+organism+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customUploadFile"+customTrackLevel)[0].files[0].name+",";
-	    if($("#usrtrkColorSelect"+customTrackLevel).val()=="Score"){
+		var tmp=new Date();
+		var trackToAdd="custom"+trackClass+",organism="+org+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customUploadFile"+customTrackLevel)[0].files[0].name+",";
+	    if($("#usrtrkColorSelect"+that.level).val()=="Score"){
 			trackToAdd=trackToAdd+"colorBy=Score,";
-			trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+customTrackLevel).val()+",";
-			trackToAdd=trackToAdd+"maxValue="+$("#usrtrkScoreMaxTxt"+customTrackLevel).val()+",";
-			trackToAdd=trackToAdd+"minColor=#"+$("#usrtrkColorMin"+customTrackLevel).val()+",";
-			trackToAdd=trackToAdd+"maxColor=#"+$("#usrtrkColorMax"+customTrackLevel).val()+",";
+			trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+that.level).val()+",";
+			trackToAdd=trackToAdd+"maxValue="+$("#usrtrkScoreMaxTxt"+that.level).val()+",";
+			trackToAdd=trackToAdd+"minColor=#"+$("#usrtrkColorMin"+that.level).val()+",";
+			trackToAdd=trackToAdd+"maxColor=#"+$("#usrtrkColorMax"+that.level).val()+",";
 		}else{
 			trackToAdd=trackToAdd+"colorBy=Color,";
 		}
 		//reset some of the inputs
-		$("input#customUploadFile"+customTrackLevel).val("");
-		$("input#usrtrkNameTxt"+customTrackLevel).val("");
-		$("#usrtrkColorSelect"+customTrackLevel).val("color");
+		$("input#customUploadFile"+that.level).val("");
+		$("input#customURL"+that.level).val("");
+		$("input#usrtrkNameTxt"+that.level).val("");
+		$("input#usrtrkDescTxt"+that.level).val("");
+		$("input#usrtrkOrgSelect"+that.level).val("Rn");
+		$("input#usrtrkGenCatSelect"+that.level).val("Genome");
+		$("input#usrtrkCatTxt"+that.level).val("");
+		$("#usrtrkColorSelect"+that.level).val("color");
+		that.getTrackData();
 		setTimeout(function(){
-			$("div#uploadBtn"+customTrackLevel).show();
+			$("div#uploadBtn"+that.level).show();
 			$(".progressInd").hide();
 			$(".uploadStatus").hide();
 			//saveToCookie(customTrackLevel);
 			$("div#addUsrTrack"+that.level).hide();
 			$("div#selectTrack"+that.level).show();
-			
 		},15000);
 	};
 
@@ -408,10 +436,11 @@ function TrackMenu(level){
 					dataType: 'json',
 	    			success: function(data2){
 	        			$(".uploadStatus").html("Upload Completed Successfully");
-	        			//var tmp=new Date();
+	        			
 	        			//add new custom track to Custom Track Cookie
 	        			var track=data2.trackFile.substring(0,data2.trackFile.length-4);
-	        			that.saveTrack(track);
+	        			var file=data2.trackFile;
+	        			that.saveTrack(track,file);
 	    			},
 	    			error: function(xhr, status, error) {
 	        			console.log(error);
