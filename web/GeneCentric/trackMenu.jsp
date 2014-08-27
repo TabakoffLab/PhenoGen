@@ -180,7 +180,7 @@
                         <div style="width:100%;">
                         	<div id="uploadBtn<%=level%>">
                             	<span style="float:left;">
-                        		<input type="button" name="cancelCreateTrack" id="cancelCreateTrack<%=level%>" value="Cancel" onClick="return cancel(<%=level%>">
+                        		<input type="button" name="cancelCreateTrack" id="cancelCreateTrack<%=level%>" value="Cancel" onClick="return cancel(<%=level%>)">
                                 </span>
                             	<span style="float:right;">
                             	<input type="button" name="uploadTrack" id="uploadTrack<%=level%>" value="Create Track" onClick="return trackMenu[<%=level%>].confirmUpload(<%=level%>)">
@@ -192,7 +192,7 @@
                                 <input type="button" name="canceluploadTrack" id="canceluploadTrack<%=level%>" value="Cancel" onClick="return trackMenu[<%=level%>].cancelUpload(<%=level%>)">
                             </div>
                             <div id="confirmBed<%=level%>" style="display:none;">
-                            	This file is missing a .bed extension.  Is this a .bed file fitting the standard format(<a href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1" target="_blank">UCSC Genome BED Format</a>)?<BR /><BR />
+                            	This file is missing a .<span class="fileType">bed</span> extension.  Is this a .<span class="fileType">bed</span> file fitting the standard format(<a href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1" target="_blank">UCSC Genome <span class="fileTypeLong">BED</span> Format</a>)?<BR /><BR />
                                 <input type="button" name="confirmbedTrack" id="confirmbedTrack<%=level%>" value="Yes/Continue" onClick="return trackMenu[<%=level%>].confirmBed(<%=level%>)">
                                 <input type="button" name="cancelbedTrack" id="cancelbedTrack<%=level%>" value="No/Cancel" onClick="return trackMenu[<%=level%>].cancelUpload(<%=level%>)">
                                 <input type="hidden" id="hasconfirmBed<%=level%>" value="0" />
@@ -201,6 +201,10 @@
                         		<progress></progress>
                         	</div>
                             <div class="uploadStatus"></div>
+                            <div id="finished<%=level%>" style="display:none;float:right;">
+                                <input type="button" name="addAnother" id="addAnother<%=level%>" value="Create a New Track" onClick="return createNew()">
+                                <input type="button" name="done" id="done<%=level%>" value="Done" onClick="return done()">
+                            </div>
           </div>
             
 	</div>
@@ -219,19 +223,26 @@
 				$("#uploadLbl<%=level%>").html("Bed File:");
 				$("#uploadSelection<%=level%>").show();
 				$("#remoteSelection<%=level%>").hide();
-				
+				$("span.fileType").html("bed");
+				$("span.fileTypeLong").html("Bed");
 			}else if(fileType=="bg"){
 				$("#uploadLbl<%=level%>").html("BedGraph File:");
 				$("#uploadSelection<%=level%>").show();
 				$("#remoteSelection<%=level%>").hide();
+				$("span.fileType").html("bg");
+				$("span.fileTypeLong").html("BedGraph");
 			}else if(fileType=="bb"){
 				$("#remoteURLLbl<%=level%>").html("BigBed URL:");
 				$("#uploadSelection<%=level%>").hide();
 				$("#remoteSelection<%=level%>").show();
+				$("span.fileType").html("bb");
+				$("span.fileTypeLong").html("BigBed");
 			}else if(fileType=="bw"){
 				$("#remoteURLLbl<%=level%>").html("BigWig URL:");
 				$("#uploadSelection<%=level%>").hide();
 				$("#remoteSelection<%=level%>").show();
+				$("span.fileType").html("bw");
+				$("span.fileTypeLong").html("BigWig");
 			}
 		});
 		$("span#addCustomTrack<%=level%>").on("click",function(){
@@ -256,4 +267,25 @@
 					$("div#usrtrkGrad<%=level%>").hide();
 				}
 			});
+			
+		function cancel(){
+			$("div#selectTrack<%=level%>").show();
+			$("div#addUsrTrack<%=level%>").hide();
+		}
+		
+		function done(){
+			$("div#uploadBtn<%=level%>").show();
+			$(".progressInd").hide();
+			$(".uploadStatus").hide();
+			$("#finished<%=level%>").hide();
+			//saveToCookie(customTrackLevel);
+			$("div#addUsrTrack<%=level%>").hide();
+			$("div#selectTrack<%=level%>").show();
+		}
+		function createNew(){
+			$("div#uploadBtn<%=level%>").show();
+			$(".progressInd").hide();
+			$(".uploadStatus").hide();
+			$("#finished<%=level%>").hide();
+		}
 	</script>

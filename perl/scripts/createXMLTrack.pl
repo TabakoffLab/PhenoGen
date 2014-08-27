@@ -477,7 +477,8 @@ sub createRefSeqXMLTrack{
 	return 1;
 }
 sub createGenericXMLTrack{
-	my($trackHOHRef, $outputFile) = @_; 
+	my($trackHOHRef, $outputFile) = @_;
+	unlink $outputFile;
 	my %trackHOH = %$trackHOHRef;
 	open OFILE, '>'.$outputFile or die " Could not open xml file $outputFile for writing $!\n\n";
 	my $xml = new XML::Simple (RootName=>'FeatureList');

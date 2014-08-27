@@ -20,7 +20,7 @@ import="org.json.*" %>
 
 
 <%
-String chromosome="",panel="",myOrganism="",track="",folderName="",bedFile="",outputFile="";
+String chromosome="",panel="",myOrganism="",track="",folderName="",bedFile="",outputFile="",web="",type="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0,binSize=0;
 double forwardPValueCutoff=0;
 if(request.getParameter("chromosome")!=null){
@@ -92,6 +92,13 @@ if(request.getParameter("bedFile")!=null){
 if(request.getParameter("outFile")!=null){
 		outputFile=request.getParameter("outFile").trim();
 }
+if(request.getParameter("web")!=null){
+	web=request.getParameter("web");
+}
+if(request.getParameter("type")!=null){
+	type=request.getParameter("type");
+}
+
 %>
 
 
@@ -101,7 +108,23 @@ if(request.getParameter("outFile")!=null){
 		status=gdt.generateXMLTrack(chromosome,min,max,panel,track,myOrganism,rnaDatasetID,arrayTypeID,folderName,binSize);
 	}else if(track.startsWith("custom")){
 		log.debug("Generating custom xml track");
-		status=gdt.generateCustomXMLTrack(chromosome,min,max,track,myOrganism,folderName,bedFile,outputFile);
+		if(web.startsWith("http")){
+			status=gdt.generateCustomRemoteXMLTrack(chromosome,min,max,track,myOrganism,folderName,bedFile,outputFile,type,web);
+		}else{
+			if(type.equals("bed")){
+				File tmp=new File(applicationRoot+contextRoot+outputFile);
+				if(tmp.exists()){
+					tmp.delete();
+				}
+				status=gdt.generateCustomBedXMLTrack(chromosome,min,max,track,myOrganism,folderName,bedFile,outputFile);
+			}else if(type.equals("bg")){
+				File tmp=new File(applicationRoot+contextRoot+outputFile);
+				if(tmp.exists()){
+					tmp.delete();
+				}
+				status=gdt.generateCustomBedGraphXMLTrack(chromosome,min,max,track,myOrganism,folderName,bedFile,outputFile,binSize);
+			}
+		}
 	}
 	JSONObject genejson;
 	genejson = new JSONObject();

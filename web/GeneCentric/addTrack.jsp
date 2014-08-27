@@ -65,7 +65,7 @@ import="org.json.*" %>
 	//else will just return path to save to cookie.
 	JSONObject genejson;
 	genejson = new JSONObject();
-    genejson.put("success" , success);
+    genejson.put("success" , Boolean.toString(success));
 	response.setContentType("application/json");
 	response.getWriter().write(genejson.toString());
 %>

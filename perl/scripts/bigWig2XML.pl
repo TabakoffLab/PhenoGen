@@ -12,9 +12,9 @@ sub bigWig2XML
 	#
 
 	# Read in the arguments for the subroutine	
-	my($inputURL,$outputFile,$regionStart,$regionStop,$regionChr)=@_;
+	my($inputURL,$outputFile,$regionStart,$regionStop,$regionChr,$binSize)=@_;
         
-        my $tempOutputFile="../../tmpData/files/tmp.bg";
+        my $tempOutputFile="../../tmpData/tmpDownload/";
         
         my @systemArgs = ("../../bedFiles/bigWigToBedGraph","-chrom=$regionChr", "-start=$regionStart","-end=$regionStop", $inputURL,$tempOutputFile);
         print " System call with these arguments: @systemArgs \n";
@@ -28,7 +28,7 @@ sub bigWig2XML
   		printf "System Call exited with value %d", $? >> 8;
 	}
         
-        #bedGraph2XML($tempOutputFile,"../../tmpData/files/".$outputFile,-1,-1,"");
+        bedGraph2XML($tempOutputFile,$outputFile,-1,-1,"chr*",$binSize);
         
 }
 
@@ -37,11 +37,13 @@ sub bigWig2XML
 	my $arg3 = -1;
 	my $arg4 = -1;
 	my $arg5 = "chr*";
-	if(@ARGV>4){
+	my $arg6 = 0;
+	if(@ARGV>5){
 	    $arg3=$ARGV[2];
 	    $arg4=$ARGV[3];
 	    $arg5=$ARGV[4];
+	    $arg6=$ARGV[5];
 	}
-	bigWig2XML($arg1, $arg2,$arg3,$arg4,$arg5);
+	bigWig2XML($arg1, $arg2,$arg3,$arg4,$arg5,$arg6);
 
 1;

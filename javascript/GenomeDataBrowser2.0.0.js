@@ -531,7 +531,7 @@ function loadStateFromString(state,imgState,levelInd,svg){
 
 //loading data from cookie
 function loadStateFromCookie(levelInd){
-	if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
+	/*if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
     	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
 		loadCustomTracksCookie();
 		//setupSettingUI(trackListObj,levelInd);
@@ -545,7 +545,7 @@ function loadStateFromCookie(levelInd){
     	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
     	//setupImageSettingUI(trackListObj,levelInd);
 		loadImageState(trackListObj,levelInd);
-	}
+	}*/
 }
 
 function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
@@ -758,20 +758,20 @@ function saveToCookie(curLevel){
 
 
 function loadCustomTracksCookie(){
-	var existingCookieStr="";
+	/*var existingCookieStr="";
 	if($.cookie("customTrackList")!=null){
     	existingCookieStr=$.cookie("customTrackList");
 		loadCustomTrack(existingCookieStr);
-	}
+	}*/
 }
 
 function saveCustomTrackCookie(newTrack){
-	var existingCookieStr="";
+	/*var existingCookieStr="";
 	if($.cookie("customTrackList")!=null){
     	existingCookieStr=$.cookie("customTrackList");
     }
     existingCookieStr=existingCookieStr+newTrack;
-    $.cookie("customTrackList",existingCookieStr);
+    $.cookie("customTrackList",existingCookieStr);*/
 }
 
 function removeCustomTrackCookie(removeTrack){
@@ -864,7 +864,7 @@ function deleteCustomTrack(track){
 function loadCustomTrackCookie(track){
 	var existingCookieStr="";
 	var customTrack="";
-	if($.cookie("customTrackList")!=null){
+	/*if($.cookie("customTrackList")!=null){
     	existingCookieStr=$.cookie("customTrackList");
     	var trackArray=existingCookieStr.split(";");
     	var addedCount=0;
@@ -874,7 +874,7 @@ function loadCustomTrackCookie(track){
     			customTrack=trackArray[m];
     		}
     	}
-    }
+    }*/
     return customTrack;
 }
 
@@ -1596,7 +1596,21 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					}
 				});
 		}else if(track.indexOf("custom")==0){
-				var trackDetails=loadCustomTrackCookie(track);
+				var trackDetails=trackInfo[track];
+			additionalOptions="DataFile="+trackDetails.Location+","+additionalOptions;
+			if(trackDetails.Type=="bed"||trackDetails.Type=="bb"){
+				var data=new Array();
+				var newTrack=CustomTranscriptTrack(that,data,track,trackDetails.Name,3,additionalOptions);
+				that.addTrackList(newTrack);
+				//newTrack.updateFullData(0,0);
+			}else if(trackDetails.Type=="bg"){
+				var data=new Array();
+				var newTrack=CustomCountTrack(that,data,track,3,additionalOptions);
+				that.addTrackList(newTrack);
+			}else if(trackDetails.Type=="bw"){
+
+			}
+				/*var trackDetails=loadCustomTrackCookie(track);
 				if(trackDetails.indexOf("organism="+organism)>0){
 					//console.log("loadedFromCookie:"+trackDetails);
 					var details=trackDetails.split(",");
@@ -1612,7 +1626,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					newTrack.updateFullData(0,0);
 				}else{
 					d3.select("#Level"+that.levelNumber+track).remove();
-				}
+				}*/
 		}
 		$(".sortable"+that.levelNumber).sortable( "refresh" );	
 	};
@@ -2464,8 +2478,24 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				},300);
 			}
 			that.addTrackList(newTrack);
+		}else if(track.indexOf("custom")>-1){
+			var trackDetails=trackInfo[track];
+			additionalOptions="DataFile="+trackDetails.Location+","+additionalOptions;
+			if(trackDetails.Type=="bed"||trackDetails.Type=="bb"){
+				var data=new Array();
+				var newTrack=CustomTranscriptTrack(that,data,track,trackDetails.Name,3,additionalOptions);
+				that.addTrackList(newTrack);
+				//newTrack.updateFullData(0,0);
+			}else if(trackDetails.Type=="bg"){
+				var data=new Array();
+				var newTrack=CustomCountTrack(that,data,track,3,additionalOptions);
+				that.addTrackList(newTrack);
+			}else if(trackDetails.Type=="bw"){
+
+			}
+
 		}
-			$(".sortable"+that.levelNumber).sortable( "refresh" );
+		$(".sortable"+that.levelNumber).sortable( "refresh" );
 			
 	};
 	
@@ -5744,7 +5774,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 								that.updateData(retry+1);
 							},time);
 						}else{
-							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 						}
 			}else{
@@ -8324,6 +8354,105 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 	that.draw(data);
 	return that;
 }
+function CustomCountTrack(gsvg,data,trackClass,density,additionalOptions){
+	var that= CountTrack(gsvg,data,trackClass,density);
+	that.graphColorText="#4E85A6";
+	var lbl="Custom Count Track";
+
+	that.updateFullData = function(retry,force){
+		var tmpMin=that.xScale.domain()[0];
+		var tmpMax=that.xScale.domain()[1];
+		var len=tmpMax-tmpMin;
+
+		that.showLoading();
+		that.bin=that.calculateBin(len);
+		var tag="Count";
+		var file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/count"+that.trackClass+".xml";
+		var bedFile=dataPrefix+"tmpData/trackUpload/"+that.trackClass.substr(6);
+		var type="bg";
+		if(that.bin>0){
+			tmpMin=tmpMin-(that.bin*2);
+			tmpMin=tmpMin-(tmpMin%(that.bin*2));
+			tmpMax=tmpMax+(that.bin*2);
+			tmpMax=tmpMax+(that.bin*2-(tmpMax%(that.bin*2)));
+			file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/"+tmpMin+"_"+tmpMax+".bincount."+that.bin+"."+that.trackClass+".xml";
+		}
+		
+		d3.xml(file,function (error,d){
+					if(error){
+						if(retry==0||force==1){
+							$.ajax({
+												url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+								   				type: 'GET',
+												data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax, myOrganism: organism, track: that.trackClass,bedFile: bedFile,outFile:file, folder: that.gsvg.folderName,binSize:that.bin,type:type},
+												//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
+												dataType: 'json',
+								    			success: function(data2){
+								    				//console.log("generateTrack:DONE");	
+								    			},
+								    			error: function(xhr, status, error) {
+								        			
+								    			}
+											});
+						}
+						//console.log(error);
+						if(retry<8){//wait before trying again
+							var time=500;
+							/*if(retry==0){
+								time=10000;
+							}*/
+							that.fullDataTimeOutHandle=setTimeout(function (){
+								that.updateFullData(retry+1);
+							},time);
+						}else if(retry<30){
+							var time=1000;
+							that.fullDataTimeOutHandle=setTimeout(function (){
+								that.updateFullData(retry+1);
+							},time);
+						}else if(retry<32){
+							var time=10000;
+							that.fullDataTimeOutHandle=setTimeout(function (){
+								that.updateFullData(retry+1);
+							},time);
+						}else{
+							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
+							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+							that.hideLoading();
+							that.fullDataTimeOutHandle=setTimeout(function (){
+									that.updateFullData(retry+1,0);
+								},15000);
+						}
+					}else{
+						//console.log(d);
+						if(d==null){
+							if(retry>=4){
+								data=new Array();
+								that.draw(data);
+								//that.hideLoading();
+							}else{
+								that.fullDataTimeOutHandle=setTimeout(function (){
+									that.updateFullData(retry+1,0);
+								},5000);
+							}
+						}else{
+							that.fullDataTimeOutHandle=0;
+							that.loadedDataMin=tmpMin;
+				    		that.loadedDataMax=tmpMax;
+							var data=d.documentElement.getElementsByTagName("Count");
+							that.draw(data);
+							//that.hideLoading();
+						}
+					}
+					//that.hideLoading();
+				});
+	};
+
+
+	that.updateLabel(lbl);
+	that.redrawLegend();
+	that.redraw();
+	return that;
+}
 /*Generic numeric track which displays numeric values accross the genome*/
 function CountTrack(gsvg,data,trackClass,density){
 	var that= Track(gsvg,data,trackClass,"Generic Counts");
@@ -8637,7 +8766,7 @@ function CountTrack(gsvg,data,trackClass,density){
 								that.updateFullData(retry+1);
 							},time);
 						}else{
-							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.hideLoading();
 							that.fullDataTimeOutHandle=setTimeout(function (){
@@ -9205,67 +9334,202 @@ function PolyATrack(gsvg,data,trackClass,label,density,additionalOptions){
 
 function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOptions){
 	var that=GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOptions);
-	that.dataFileName=trackClass.substr(6)+".bed";
+	var opts=additionalOptions.split(",");
+	if(opts.length>0){
+		that.dataFileName=opts[0].substr(9);
+	}
+	//that.dataFileName=trackClass.substr(6)+".bed";
 	that.density=3;
-	that.colorValueField="score";
+	that.colorValueField="Score";
 	that.minFeatureWidth=1;
+	that.updateControl=0;
 
 	that.updateFullData = function(retry,force){
-		var tmpMin=that.xScale.domain()[0];
-		var tmpMax=that.xScale.domain()[1];
-		var file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/"+that.dataFileName+".xml";
-		var bedFile=dataPrefix+"tmpData/trackUpload/"+that.dataFileName;
+		if(that.updateControl==retry){
+			that.updateControl=retry+1;
+			console.log("CUSTOM UPDATEFULLDATA**********");
+			console.log("datafile:"+that.dataFileName);
+			var tmpMin=that.xScale.domain()[0];
+			var tmpMax=that.xScale.domain()[1];
+			var file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/"+that.dataFileName+".xml";
+			var bedFile=dataPrefix+"tmpData/trackUpload/"+that.dataFileName;
+			var http="";
+			var tmp=new Date();
+			var type="bed"
+			if(that.dataFileName.indexOf("http")>-1){
+				http=that.dataFileName;
+				bedFile="tmpData/tmpDownload/"+tmp.getTime()+"_"+that.trackClass;
+				file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/"+that.trackClass+".xml";
+				type="bb";
+			}
 
-		d3.xml(file,function (error,d){
-					if(error){
-						//console.log(error);
-						if(retry==0 || force==1){
-							$.ajax({
-								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
-				   				type: 'GET',
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,folder:that.gsvg.folderName,bedFile: bedFile,outFile:file,track:that.trackClass},
-								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
-								dataType: 'json',
-				    			success: function(data2){
-				    				
-				    			},
-				    			error: function(xhr, status, error) {
-				        			console.log(error);
-				    			}
-							});
-						}
-						if(retry<3){//wait before trying again
-							var time=10000;
-							if(retry==1){
-								time=15000;
+
+			console.log("file:"+file)
+			d3.xml(file,function (error,d){
+						console.log("Handling retry:"+retry+"  force:"+force);
+						if(error){
+							console.log("ERROR******");
+							console.log(error);
+							if(retry==0 || force==1){
+								$.ajax({
+									url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+					   				type: 'GET',
+									data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,folder:that.gsvg.folderName,bedFile: bedFile,outFile:file,track:that.trackClass,web:http,type:type},
+									//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
+									dataType: 'json',
+					    			success: function(data2){
+					    				
+					    			},
+					    			error: function(xhr, status, error) {
+					        			console.log(error);
+					    			}
+								});
 							}
-							setTimeout(function (){
-								that.updateFullData(retry+1,0);
-							},time);
-						}else{
-							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
-							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
-							that.hideLoading();
-						}
-					}else{
-						if(d==null){
-							if(retry>=4){
-								data=new Array();
-								that.draw(data);
-								that.hideLoading();
-							}else{
+							if(retry<3){//wait before trying again
+								var time=10000;
+								if(retry==1){
+									time=15000;
+								}
 								setTimeout(function (){
 									that.updateFullData(retry+1,0);
-								},5000);
+								},time);
+							}else{
+								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
+								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
+								that.hideLoading();
 							}
 						}else{
-							var data=d.documentElement.getElementsByTagName(that.xmlTag);
-							that.draw(data);
-							that.hideLoading();
+							console.log("SUCCESS******");
+							console.log(d);
+							/*if(d==null){
+								console.log("D:NULL");
+								if(retry>=4){
+									data=new Array();
+									that.draw(data);
+									that.hideLoading();
+								}else{
+									setTimeout(function (){
+										that.updateFullData(retry+1,0);
+									},5000);
+								}
+							}else{*/
+								console.log("SETUP TRACK");
+								var data=d.documentElement.getElementsByTagName(that.xmlTag);
+								console.log(that.trackClass+" received the following:");
+								console.log(data);
+								that.draw(data);
+								that.hideLoading();
+								that.updateControl=0;
+							//}
 						}
-					}
-				});
+					});
+		}
 	};
+
+	that.generateSettingsDiv=function(topLevelSelector){
+		var d=trackInfo[that.trackClass];
+		d3.select(topLevelSelector).select("table").select("tbody").html("");
+		if(d.Controls.length>0 && d.Controls!="null"){
+			var controls=new String(d.Controls).split(",");
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			for(var c=0;c<controls.length;c++){
+				if(controls[c]!=undefined && controls[c]!=""){
+					var params=controls[c].split(";");
+					var div=table.append("tr").append("td");
+					var lbl=params[0].substr(5);
+					var def="";
+					if(params.length>3  && params[3].indexOf("Default=")==0){
+						def=params[3].substr(8);
+					}
+					console.log("Params:"+params[1]);
+					console.log("full line:"+controls[c]);
+					if(params[1].toLowerCase().indexOf("select")==0){
+						div.append("text").text(lbl+": ");
+						var selClass=params[1].split(":");
+						var opts=params[2].split("}");
+						var id=that.trackClass+"Dense"+that.level+"Select";
+						if(selClass[1]=="colorSelect"){
+							id=that.trackClass+that.level+"colorSelect";
+						}
+						var sel=div.append("select").attr("id",id)
+							.attr("name",selClass[1]);
+						for(var o=0;o<opts.length;o++){
+							var option=opts[o].substr(1).split(":");
+							if(option.length==2){
+								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
+								if(option[1]==def){
+									tmpOpt.attr("selected","selected");
+								}
+							}
+						}
+						d3.select("select#"+id).on("change", function(){
+							if($(this).val()=="dabg"||$(this).val()=="herit"){
+								$("div#affyTissues"+that.level).show();
+							}else{
+								$("div#affyTissues"+that.level).hide();
+							}
+							that.updateSettingsFromUI();
+							that.redraw();
+						});
+					}else if(params[1].toLowerCase().indexOf("txt")==0){
+						if($("#colorTrack"+that.level).size()==0){
+							div=div.append("div").attr("id",that.trackClass+"Scale"+that.level).style("display","none");
+						}else{
+							div=d3.select("#"+that.trackClass+"Scale"+that.level);
+						}						
+						div.append("text").text("<BR><BR>"+lbl+": ");
+						var selClass=params[1].split(":");
+						var opts=params[2].split("}");
+						var txtType="Data";
+						if(selClass[1]=="color"){
+							txtType="Color";
+						}
+						div.append("input").attr("type","text").attr("id",option[1]+"min"+txtType+that.level)
+									.attr("class",selClass[1])
+									.style("margin-left","5px");
+						div.append("input").attr("type","text").attr("id",option[1]+"max"+txtType+that.level)
+									.attr("class",selClass[1])
+									.style("margin-left","5px");
+								
+						d3.select("input#"+option[1]+"CBX"+that.level).on("change", function(){
+							that.updateSettingsFromUI();
+							that.redraw();
+						});
+		
+						
+					}
+				}
+			}
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+				that.gsvg.removeTrack(that.trackClass);
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
+
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}else{
+			var table=d3.select(topLevelSelector).select("table").select("tbody");
+			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
+			table.append("tr").append("td").html("Sorry no settings for this track.");
+			var buttonDiv=table.append("tr").append("td");
+			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				$('#trackSettingDialog').fadeOut("fast");
+			});
+		}
+	};
+
+	that.generateTrackSettingString=function(){
+		return that.trackClass+","+that.density+","+that.colorBy+","+that.minValue+","+that.maxValue+","+that.minColor+","+that.maxColor+";";
+	};
+
 	return that;
 }
 

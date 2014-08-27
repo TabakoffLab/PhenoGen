@@ -46,7 +46,8 @@ response.setContentType("application/json");
         "Controls":"<%=btrk.getControls()%>",
         "SetupDate":"<%=btrk.getSetupTime()%>",
         "OriginalFile":"<%=btrk.getOriginalFile()%>",
-        "Type":"<%=btrk.getType()%>"
+        "Type":"<%=btrk.getType()%>",
+        "Location":"<%=btrk.getLocation()%>"
         }
     <%}%> 
 ]

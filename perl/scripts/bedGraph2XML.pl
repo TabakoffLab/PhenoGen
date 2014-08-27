@@ -5,6 +5,7 @@ use XML::Simple;
 
 use strict;
 require 'createXMLTrack.pl';
+require 'writeXML_Track.pl';
 
 
 sub bedGraph2XML
@@ -14,7 +15,7 @@ sub bedGraph2XML
 	#
 
 	# Read in the arguments for the subroutine	
-	my($inputFile,$outputFile,$regionStart,$regionStop,$regionChr)=@_;
+	my($inputFile,$outputFile,$regionStart,$regionStop,$regionChr,$binSize)=@_;
 	
 	my %countHOH;
 	
@@ -57,10 +58,13 @@ sub bedGraph2XML
 	}
 	close IN;
 	
-	##output XML file
-	my $xmlOutputFileName=">$outputFile";
-	createGenericXMLTrack(\%countHOH,$xmlOutputFileName);
-	
+	my $ref=\%countHOH;
+	if($binSize>0){
+	    $ref=createBinnedData(\%countHOH,$binSize,$regionStart,$regionStop);
+	}
+	my %rnaBinned=%$ref;
+	createRNACountXMLTrack(\%rnaBinned,$outputFile);
+	#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."count".$type.".xml");
 }
 1;
 #
@@ -70,11 +74,13 @@ sub bedGraph2XML
 	my $arg3 = -1;
 	my $arg4 = -1;
 	my $arg5 = "chr*";
+	my $arg6 = 0;
 	if(@ARGV>4){
 	    $arg3=$ARGV[2];
 	    $arg4=$ARGV[3];
 	    $arg5=$ARGV[4];
+	    $arg6 =$ARGV[5];
 	}
-	bedGraph2XML($arg1, $arg2,$arg3,$arg4,$arg5);
+	bedGraph2XML($arg1, $arg2,$arg3,$arg4,$arg5,$arg6);
 
 1;

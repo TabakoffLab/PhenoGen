@@ -1544,7 +1544,7 @@ public class GeneDataTools {
         return status;
     }
     
-    public String generateCustomXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String inputFileOrURL,String outputXML,String type){
+    /*public String generateCustomXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String inputFileOrURL,String outputXML,String type){
         String ret="";
         if(type.equals("remoteBW")||type.equals("remoteBG")){
             ret=generateCustomRemoteXMLTrack(chromosome,min,max,track,organism,folder,inputFileOrURL,outputXML);
@@ -1554,7 +1554,7 @@ public class GeneDataTools {
             ret=generateCustomBedGraphXMLTrack(chromosome,min,max,track,organism,folder,inputFileOrURL,outputXML);
         }
         return ret;
-    }
+    }*/
      public String generateCustomBedXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
         String status="";
         try{        
@@ -1646,13 +1646,184 @@ public class GeneDataTools {
         return status;
     }
     
-    public String generateCustomBedGraphXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
+    public String generateCustomBedGraphXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile,int binSize){
         String status="";
+        try{        
+            //construct perl Args
+            String[] perlArgs = new String[8];
+            perlArgs[0] = "perl";
+            perlArgs[1] = perlDir + "bedGraph2XML.pl";
+            perlArgs[2] = fullPath+bedFile;
+            perlArgs[3] = fullPath+outputFile;
+            perlArgs[4] = Integer.toString(min);
+            perlArgs[5] = Integer.toString(max);
+            perlArgs[6] = chromosome;
+            perlArgs[7] = Integer.toString(binSize);
+            File dir=new File(fullPath + "tmpData/trackXML/"+folder+"/");
+            if(dir.exists()||dir.mkdirs()){
+                for (int i = 0; i < perlArgs.length; i++) {
+                    log.debug(i + " perlArgs::" + perlArgs[i]);
+                }
+                //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+                String[] envVar=perlEnvVar.split(",");
+                
+                //for (int i = 0; i < envVar.length; i++) {
+                //    log.debug(i + " EnvVar::" + envVar[i]);
+                    /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                    }*/
+                //}
+                //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/trackXML/"+folder+"/");
+                boolean exception=false;
+                try {
+                    myExec_session.runExec();
+                    status="successful";
+                } catch (ExecException e) {
+                    exception=true;
+                    status="Error generating track";
+                    log.error("In Exception of run bed2XML.pl Exec_session", e);
+                    setError("Running Perl Script to get Gene and Transcript details/images.");
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+
+                            ")\n\n"+myExec_session.getErrors());
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                    }
+                }
+
+                String errors=myExec_session.getErrors();
+                if(!exception && errors!=null && !(errors.equals(""))){
+                    status="Error generating track";
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
+                            ")\n\n"+errors);
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                    }
+                }else{
+
+                }
+            }
+        }catch(Exception e){
+            status="Error generating track";
+            log.error("Error getting DB properties or Public User ID.",e);
+            String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+            Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
+                myAdminEmail.setContent("There was an error setting up to run bed2XML.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+        }
         return status;
     }
     
-    public String generateCustomRemoteXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
+    public String generateCustomRemoteXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile,String type,String url){
         String status="";
+        try{        
+            //construct perl Args
+            String[] perlArgs = new String[8];
+            perlArgs[0] = "perl";
+            perlArgs[1] = perlDir + "bigBed2XML.pl";
+            perlArgs[2] = url;
+            perlArgs[3] = fullPath+bedFile;
+            perlArgs[4] = fullPath+outputFile;
+            perlArgs[5] = Integer.toString(min);
+            perlArgs[6] = Integer.toString(max);
+            perlArgs[7] = chromosome;
+
+            File dir=new File(fullPath + "tmpData/trackXML/"+folder+"/");
+            if(dir.exists()||dir.mkdirs()){
+                for (int i = 0; i < perlArgs.length; i++) {
+                    log.debug(i + " perlArgs::" + perlArgs[i]);
+                }
+                //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+                String[] envVar=perlEnvVar.split(",");
+                
+                //for (int i = 0; i < envVar.length; i++) {
+                //    log.debug(i + " EnvVar::" + envVar[i]);
+                    /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                    }*/
+                //}
+                //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/trackXML/"+folder+"/");
+                boolean exception=false;
+                try {
+                    myExec_session.runExec();
+                    status="successful";
+                } catch (ExecException e) {
+                    exception=true;
+                    status="Error generating track";
+                    log.error("In Exception of run bed2XML.pl Exec_session", e);
+                    setError("Running Perl Script to get Gene and Transcript details/images.");
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+
+                            ")\n\n"+myExec_session.getErrors());
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                    }
+                }
+
+                String errors=myExec_session.getErrors();
+                if(!exception && errors!=null && !(errors.equals(""))){
+                    status="Error generating track";
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
+                            ")\n\n"+errors);
+                    try {
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                    }
+                }else{
+
+                }
+            }
+        }catch(Exception e){
+            status="Error generating track";
+            log.error("Error getting DB properties or Public User ID.",e);
+            String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+            Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
+                myAdminEmail.setContent("There was an error setting up to run bed2XML.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+                }
+        }
         return status;
     }
      
