@@ -19,7 +19,7 @@ var filterExpanded=0;
 var tblBQTLAdjust=false;
 var tblFromAdjust=false;
 
-var organism="<%=myOrganism%>";
+
 var ucsctype="region";
 var ucscgeneID="";
 var defaultView="<%=defView%>";
@@ -28,13 +28,9 @@ var selectGene="";
 <%}else{%>
 var selectGene="<%=selectedEnsemblID%>";
 <%}%>
-var pathPrefix="web/GeneCentric/";
+
 var dataPrefix="";
-<%if(userLoggedIn.getUser_name().equals("anon")){%>
-	var uid=0;
-<%}else{%>
-	var uid=<%=userLoggedIn.getUser_id()%>;
-<%}%>
+
 </script>
 
 <style>
@@ -173,7 +169,7 @@ var dataPrefix="";
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
             <script src="javascript/GenomeDataBrowser2.0.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.0.js" type="text/javascript"></script>
-			<script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script><script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
             
             

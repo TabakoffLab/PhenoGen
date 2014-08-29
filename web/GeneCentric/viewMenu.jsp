@@ -30,14 +30,12 @@
 
     <div class="viewsLevel<%=level%>"  style="display:none;width:600px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:50px; left:-98px; background-color:#FFFFFF; min-height:550px; text-align:center;">
         	<div style="display:block;width:100%;color:#000000; text-align:left; background:#EEEEEE; font-weight:bold;">Select/Edit Views<span class="closeBtn" id="close_viewsLevel<%=level%>" style="position:relative;top:2px;left:461px;"><img src="<%=imagesDir%>icons/close.png"></span></div>
-        	<div id="toolbar<%=level%>">
-            
-            </div>
+        	<div id="toolbar<%=level%>"></div>
 			<div id="selection<%=level%>" style=" text-align:left;">
                 <table style="width:100%;">
                 	<%if(loggedIn&&userLoggedIn.getUser_name().equals("anon")){%>
                     	<TR>
-                    		<TD><span style="font-weight:bold;color:#000000;">Sign in to see views/tracks not saved to this computer.  <span class="viewtooltip<%=level%>" title="If you sign in views and tracks are saved to the server so that you may use them on any computer that you use to login to the website.  If you don't login views and tracks are stored locally using cookies and will not be available if you disable/clear cookies or use another computer."><img src="<%=imagesDir%>icons/info.gif"></span></span></TD>
+                    		<TD><img src="<%=imagesDir%>icons/alert_24.png"><span style="font-weight:bold;color:#000000;position:relative;top:-7px;">Sign in to see views/tracks not created on this computer.  <span class="viewtooltip<%=level%>" title="If you sign in views and tracks are saved to the server so that you may use them on any device that you use to login to the website.  If you don't login views and tracks that you create are only stored locally using cookies and will not be available if you disable/clear cookies or use another computer."><img src="<%=imagesDir%>icons/info.gif"></span></span></TD>
                     	</TR>
                     <%}%>
                     <TR>
@@ -55,8 +53,8 @@
                     <TD>
 					View types:
                             <select name="viewTypeSelect" class="viewTypeSelect" id="viewTypeSelect<%=level%>">
-                            	<option value="all">All Views</option>
-                            	<option value="predefined" selected="selected">Predefined Views</option>
+                            	<option value="all" selected="selected">All Views</option>
+                            	<option value="predefined" >Predefined Views</option>
                          		<!--<option value="genome" >Predefined Genome Views</option>
                                 <option value="trxome" >Predefined Transcriptome Views</option>
                                 <option value="function">Predefined Functional Views</option>-->
@@ -121,12 +119,12 @@
                     </TR>
                </table>   
                    
-                </div>
-            </div>
-            </div>
-            
-            
+           </div>
 </div>
+<!--</div>
+            
+            
+</div>-->
 
           <script type="text/javascript">
 		  		viewMenu[<%=level%>]=ViewMenu(<%=level%>);

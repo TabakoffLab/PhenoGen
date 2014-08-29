@@ -1596,19 +1596,17 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					}
 				});
 		}else if(track.indexOf("custom")==0){
-				var trackDetails=trackInfo[track];
+			var trackDetails=trackInfo[track];
 			additionalOptions="DataFile="+trackDetails.Location+","+additionalOptions;
 			if(trackDetails.Type=="bed"||trackDetails.Type=="bb"){
 				var data=new Array();
 				var newTrack=CustomTranscriptTrack(that,data,track,trackDetails.Name,3,additionalOptions);
 				that.addTrackList(newTrack);
 				//newTrack.updateFullData(0,0);
-			}else if(trackDetails.Type=="bg"){
+			}else if(trackDetails.Type=="bg"||trackDetails.Type=="bw"){
 				var data=new Array();
 				var newTrack=CustomCountTrack(that,data,track,3,additionalOptions);
 				that.addTrackList(newTrack);
-			}else if(trackDetails.Type=="bw"){
-
 			}
 				/*var trackDetails=loadCustomTrackCookie(track);
 				if(trackDetails.indexOf("organism="+organism)>0){
@@ -2486,12 +2484,10 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				var newTrack=CustomTranscriptTrack(that,data,track,trackDetails.Name,3,additionalOptions);
 				that.addTrackList(newTrack);
 				//newTrack.updateFullData(0,0);
-			}else if(trackDetails.Type=="bg"){
+			}else if(trackDetails.Type=="bg"||trackDetails.Type=="bw"){
 				var data=new Array();
 				var newTrack=CustomCountTrack(that,data,track,3,additionalOptions);
 				that.addTrackList(newTrack);
-			}else if(trackDetails.Type=="bw"){
-
 			}
 
 		}
@@ -8356,96 +8352,112 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 }
 function CustomCountTrack(gsvg,data,trackClass,density,additionalOptions){
 	var that= CountTrack(gsvg,data,trackClass,density);
+	var opts=additionalOptions.split(",");
+	if(opts.length>0){
+		that.dataFileName=opts[0].substr(9);
+	}
 	that.graphColorText="#4E85A6";
+	that.updateControl=0;
 	var lbl="Custom Count Track";
 
 	that.updateFullData = function(retry,force){
-		var tmpMin=that.xScale.domain()[0];
-		var tmpMax=that.xScale.domain()[1];
-		var len=tmpMax-tmpMin;
+		if(that.updateControl==retry){
+			that.updateControl=retry+1;
+			var tmpMin=that.xScale.domain()[0];
+			var tmpMax=that.xScale.domain()[1];
+			var len=tmpMax-tmpMin;
 
-		that.showLoading();
-		that.bin=that.calculateBin(len);
-		var tag="Count";
-		var file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/count"+that.trackClass+".xml";
-		var bedFile=dataPrefix+"tmpData/trackUpload/"+that.trackClass.substr(6);
-		var type="bg";
-		if(that.bin>0){
-			tmpMin=tmpMin-(that.bin*2);
-			tmpMin=tmpMin-(tmpMin%(that.bin*2));
-			tmpMax=tmpMax+(that.bin*2);
-			tmpMax=tmpMax+(that.bin*2-(tmpMax%(that.bin*2)));
-			file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/"+tmpMin+"_"+tmpMax+".bincount."+that.bin+"."+that.trackClass+".xml";
-		}
-		
-		d3.xml(file,function (error,d){
-					if(error){
-						if(retry==0||force==1){
-							$.ajax({
-												url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
-								   				type: 'GET',
-												data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax, myOrganism: organism, track: that.trackClass,bedFile: bedFile,outFile:file, folder: that.gsvg.folderName,binSize:that.bin,type:type},
-												//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
-												dataType: 'json',
-								    			success: function(data2){
-								    				//console.log("generateTrack:DONE");	
-								    			},
-								    			error: function(xhr, status, error) {
-								        			
-								    			}
-											});
-						}
-						//console.log(error);
-						if(retry<8){//wait before trying again
-							var time=500;
-							/*if(retry==0){
-								time=10000;
-							}*/
-							that.fullDataTimeOutHandle=setTimeout(function (){
-								that.updateFullData(retry+1);
-							},time);
-						}else if(retry<30){
-							var time=1000;
-							that.fullDataTimeOutHandle=setTimeout(function (){
-								that.updateFullData(retry+1);
-							},time);
-						}else if(retry<32){
-							var time=10000;
-							that.fullDataTimeOutHandle=setTimeout(function (){
-								that.updateFullData(retry+1);
-							},time);
-						}else{
-							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
-							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
-							that.hideLoading();
-							that.fullDataTimeOutHandle=setTimeout(function (){
-									that.updateFullData(retry+1,0);
-								},15000);
-						}
-					}else{
-						//console.log(d);
-						if(d==null){
-							if(retry>=4){
-								data=new Array();
-								that.draw(data);
-								//that.hideLoading();
-							}else{
+			that.showLoading();
+			that.bin=that.calculateBin(len);
+			var tag="Count";
+			var file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/count"+that.trackClass+".xml";
+			var bedFile=dataPrefix+"tmpData/trackUpload/"+that.trackClass.substr(6);
+			var type="bg";
+			var web="";
+			if(that.bin>0){
+				tmpMin=tmpMin-(that.bin*2);
+				tmpMin=tmpMin-(tmpMin%(that.bin*2));
+				tmpMax=tmpMax+(that.bin*2);
+				tmpMax=tmpMax+(that.bin*2-(tmpMax%(that.bin*2)));
+				file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/"+tmpMin+"_"+tmpMax+".bincount."+that.bin+"."+that.trackClass+".xml";
+			}
+			if(that.dataFileName.indexOf("http")>-1){
+				//file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/count"+that.trackClass+".xml";
+				bedFile=that.dataFileName;
+				web=that.dataFileName;
+				type="bw";
+			}
+			
+			d3.xml(file,function (error,d){
+						if(error){
+							if(retry==0||force==1){
+								$.ajax({
+													url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+									   				type: 'GET',
+													data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax, myOrganism: organism, track: that.trackClass,bedFile: bedFile,outFile:file, folder: that.gsvg.folderName,binSize:that.bin,type:type,web:web},
+													//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
+													dataType: 'json',
+									    			success: function(data2){
+									    				//console.log("generateTrack:DONE");	
+									    			},
+									    			error: function(xhr, status, error) {
+									        			
+									    			}
+												});
+							}
+							//console.log(error);
+							if(retry<8){//wait before trying again
+								var time=500;
+								/*if(retry==0){
+									time=10000;
+								}*/
 								that.fullDataTimeOutHandle=setTimeout(function (){
-									that.updateFullData(retry+1,0);
-								},5000);
+									that.updateFullData(retry+1);
+								},time);
+							}else if(retry<30){
+								var time=1000;
+								that.fullDataTimeOutHandle=setTimeout(function (){
+									that.updateFullData(retry+1);
+								},time);
+							}else if(retry<32){
+								var time=10000;
+								that.fullDataTimeOutHandle=setTimeout(function (){
+									that.updateFullData(retry+1);
+								},time);
+							}else{
+								d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
+								d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+								that.hideLoading();
+								that.fullDataTimeOutHandle=setTimeout(function (){
+										that.updateFullData(retry+1,0);
+									},15000);
 							}
 						}else{
-							that.fullDataTimeOutHandle=0;
-							that.loadedDataMin=tmpMin;
-				    		that.loadedDataMax=tmpMax;
-							var data=d.documentElement.getElementsByTagName("Count");
-							that.draw(data);
-							//that.hideLoading();
+							//console.log(d);
+							if(d==null){
+								if(retry>=4){
+									data=new Array();
+									that.draw(data);
+									//that.hideLoading();
+								}else{
+									that.fullDataTimeOutHandle=setTimeout(function (){
+										that.updateFullData(retry+1,0);
+									},5000);
+								}
+							}else{
+								that.fullDataTimeOutHandle=0;
+								that.loadedDataMin=tmpMin;
+					    		that.loadedDataMax=tmpMax;
+								var data=d.documentElement.getElementsByTagName("Count");
+								that.draw(data);
+								//that.hideLoading();
+								that.updateControl=0;
+							}
 						}
-					}
-					//that.hideLoading();
-				});
-	};
+						//that.hideLoading();
+					});
+			}
+		};
 
 
 	that.updateLabel(lbl);
@@ -8458,7 +8470,7 @@ function CountTrack(gsvg,data,trackClass,density){
 	var that= Track(gsvg,data,trackClass,"Generic Counts");
 	that.loadedDataMin=that.xScale.domain()[0];
 	that.loadedDataMax=that.xScale.domain()[1];
-
+	that.dataFileName=that.trackClass;
 	that.scaleMin=1;
 	that.scaleMax=5000;
 	that.graphColorText="steelblue";
@@ -10019,15 +10031,15 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 				.on("mouseout", function(d) {
 						//if(that.gsvg.isToolTip==0){ 
 							/*mouseTTOver=0;
-							console.log("FEATURE MOUSEOUT");
-								var tmpThis=this;*/
+							console.log("FEATURE MOUSEOUT");*/
+								var tmpThis=this;
 								ttHideHandle=setTimeout(function(){
 												
 												//if(mouseTTOver==0){
 												//	console.log("MOUSE STILL NOT OVER TT");
-													d3.select(this).selectAll("line").style("stroke",that.color);
-													d3.select(this).selectAll("rect").style("fill",that.color);
-													d3.select(this).selectAll("text").style("opacity","0.6").style("fill",that.color);  
+													d3.select(tmpThis).selectAll("line").style("stroke",that.color);
+													d3.select(tmpThis).selectAll("rect").style("fill",that.color);
+													d3.select(tmpThis).selectAll("text").style("opacity","0.6").style("fill",that.color);  
 													tt.transition()
 														 .delay(100)       
 														.duration(200)      

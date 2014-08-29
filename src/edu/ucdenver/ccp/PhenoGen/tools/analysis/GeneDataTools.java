@@ -1736,19 +1736,30 @@ public class GeneDataTools {
         return status;
     }
     
-    public String generateCustomRemoteXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile,String type,String url){
+    public String generateCustomRemoteXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile,String type,String url,int binSize){
         String status="";
+        int paramSize=7;
+        String function="bigBed2XML.pl";
+        //String fullBed=fullPath+bedFile;
+        if(type.equals("bw")){
+                paramSize=8;
+                function="bigWig2XML.pl";
+                //fullBed=url;
+        }
+        String[] perlArgs = new String[paramSize];
+        perlArgs[0] = "perl";
+        perlArgs[1] = perlDir + function;
+        perlArgs[2] = url;
+        perlArgs[3] = fullPath+outputFile;
+        perlArgs[4] = Integer.toString(min);
+        perlArgs[5] = Integer.toString(max);
+        perlArgs[6] = chromosome;
+        if(type.equals("bw")){
+            perlArgs[7]=Integer.toString(binSize);
+        }
         try{        
             //construct perl Args
-            String[] perlArgs = new String[8];
-            perlArgs[0] = "perl";
-            perlArgs[1] = perlDir + "bigBed2XML.pl";
-            perlArgs[2] = url;
-            perlArgs[3] = fullPath+bedFile;
-            perlArgs[4] = fullPath+outputFile;
-            perlArgs[5] = Integer.toString(min);
-            perlArgs[6] = Integer.toString(max);
-            perlArgs[7] = chromosome;
+            
 
             File dir=new File(fullPath + "tmpData/trackXML/"+folder+"/");
             if(dir.exists()||dir.mkdirs()){
@@ -1816,7 +1827,7 @@ public class GeneDataTools {
                     }
             Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
-                myAdminEmail.setContent("There was an error setting up to run bed2XML.pl\n\nFull Stacktrace:\n"+fullerrmsg);
+                myAdminEmail.setContent("There was an error setting up to run "+function+"\n\nFull Stacktrace:\n"+fullerrmsg);
                 try {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {

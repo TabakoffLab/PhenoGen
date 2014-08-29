@@ -35,7 +35,7 @@
 						limitation="<li>Since you are not logged in track information is currently saved to cookies and thus are not portable between computers.  If you register/login tracks can be saved to the database allowing portability and prevent loss if cookies are cleared.</li>";
 						%>
                     	<TR>
-                    		<TD><span style="font-weight:bold;color:#000000;">Sign in to see tracks not saved to this computer. (Any tracks created will only be saved locally)  <span class="tracktooltip<%=level%>" title="If you sign in views and tracks are saved to the server so that you may use them on any computer that you use to login to the website.  If you don't login views and tracks are stored locally using cookies and will not be available if you disable/clear cookies or use another computer."><img src="<%=imagesDir%>icons/info.gif"></span></span></TD>
+                    		<TD><img src="<%=imagesDir%>icons/alert_24.png"><span style="font-weight:bold;color:#000000;position:relative;top:-7px;">Sign in to see tracks not saved to this computer. (Any tracks created will only be saved locally)  <span class="tracktooltip<%=level%>" title="If you sign in views and tracks are saved to the server so that you may use them on any device as long as you login to the website.  If you don't login views and tracks are stored locally using cookies and will not be available if you disable/clear cookies or use another computer."><img src="<%=imagesDir%>icons/info.gif"></span></span></TD>
                     	</TR>
                     <%}%>
                     <TR>
@@ -54,8 +54,8 @@
                     <TD>
 						View types:
                             <select name="trackTypeSelect" class="trackTypeSelect" id="trackTypeSelect<%=level%>">
-                            	<option value="all">All Tracks</option>
-                            	<option value="allpublic" selected="selected">All Public Tracks</option>
+                            	<option value="all" selected="selected">All Tracks</option>
+                            	<option value="allpublic" >All Public Tracks</option>
                                 <option value="custom" >All Custom Tracks</option>
                          		<option value="genome" >  Genome Tracks</option>
                                 <option value="trxome" >  Transcriptome Tracks</option>
@@ -186,8 +186,13 @@
                             	<input type="button" name="uploadTrack" id="uploadTrack<%=level%>" value="Create Track" onClick="return trackMenu[<%=level%>].confirmUpload(<%=level%>)">
                                 </span>
                             </div>
-                            <div id="confirmUpload<%=level%>" style="display:none;">
-                            	Please Confirm that this track is for <B><%if(myOrganism.equals("Rn")){%>Rat<%}else{%>Mouse<%}%></B> and has coordinates for <B><%if(myOrganism.equals("Rn")){%>rn5<%}else{%>mm10<%}%></B>.  Coordinates must match this genome version, as coordinates <B>will not</B> be converted.<BR /><BR />
+                            <div id="confirmUpload<%=level%>" style="display:none;border:solid; border-color:#000000; border-width:2px 2px 2px 2px;">
+                            <ul style="list-style-type:circle;margin-left:20px;">
+                            	<li>Please Confirm that this track is for <B><%if(myOrganism.equals("Rn")){%>Rat<%}else{%>Mouse<%}%></B> and has coordinates for <B><%if(myOrganism.equals("Rn")){%>rn5<%}else{%>mm10<%}%></B>.  Coordinates must match this genome version, as coordinates <B>will not</B> be converted.</li><BR /><BR />
+                                <li id="uploadDataConf" >Please acknowledge that this is not a repository for the browser/track data.  <B>There is no way for you to retreive any files you upload so please keep a copy of your data in a safe location with a backup.</B>  Track files older than a year not associated with an active account may eventually be removed to make space for active users.</li>
+                                <li id="remoteDataConf" style="display:none;">Please acknowledge that your data must continue to be available at the URL specified above.   Partial data files are only temporarily saved on PhenoGen.  <B>There is no way for you to retreive any of this data from PhenoGen other than through the browser, so please keep a copy of your data in a safe location with a backup.</B> </li>
+                                </ul>
+                                <BR /><BR />
                                 <input type="button" name="confirmuploadTrack" id="confirmuploadTrack<%=level%>" value="Continue" onClick="return trackMenu[<%=level%>].createCustomTrack(<%=level%>)">
                                 <input type="button" name="canceluploadTrack" id="canceluploadTrack<%=level%>" value="Cancel" onClick="return trackMenu[<%=level%>].cancelUpload(<%=level%>)">
                             </div>
@@ -223,24 +228,32 @@
 				$("#uploadLbl<%=level%>").html("Bed File:");
 				$("#uploadSelection<%=level%>").show();
 				$("#remoteSelection<%=level%>").hide();
+				$("#uploadDataConf").show();
+				$("#remoteDataConf").hide();
 				$("span.fileType").html("bed");
 				$("span.fileTypeLong").html("Bed");
 			}else if(fileType=="bg"){
 				$("#uploadLbl<%=level%>").html("BedGraph File:");
 				$("#uploadSelection<%=level%>").show();
 				$("#remoteSelection<%=level%>").hide();
+				$("#uploadDataConf").show();
+				$("#remoteDataConf").hide();
 				$("span.fileType").html("bg");
 				$("span.fileTypeLong").html("BedGraph");
 			}else if(fileType=="bb"){
 				$("#remoteURLLbl<%=level%>").html("BigBed URL:");
 				$("#uploadSelection<%=level%>").hide();
 				$("#remoteSelection<%=level%>").show();
+				$("#uploadDataConf").hide();
+				$("#remoteDataConf").show();
 				$("span.fileType").html("bb");
 				$("span.fileTypeLong").html("BigBed");
 			}else if(fileType=="bw"){
 				$("#remoteURLLbl<%=level%>").html("BigWig URL:");
 				$("#uploadSelection<%=level%>").hide();
 				$("#remoteSelection<%=level%>").show();
+				$("#uploadDataConf").hide();
+				$("#remoteDataConf").show();
 				$("span.fileType").html("bw");
 				$("span.fileTypeLong").html("BigWig");
 			}

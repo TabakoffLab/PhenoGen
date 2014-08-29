@@ -323,113 +323,115 @@ function ViewMenu(level){
 	};
 
 	that.setupControls=function(){
-		$(".control"+that.level+"#addTrack"+that.level).on("click",function(){
-			if($(".trackList"+that.level).length==0){
-					var tmpContext=contextPath +"/"+ pathPrefix;
-					if(pathPrefix==""){
-						tmpContext="";
-					}
-					$.ajax({
-							url:  tmpContext+"trackMenu.jsp",
-			   				type: 'GET',
-							data: {level: that.level, organism: organism},
-							dataType: 'html',
-			    			success: function(data2){
-			    				$("#trackMenu"+that.level).remove();
-			    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.level);
-			    				$("#trackMenu"+that.level).html(data2);
-			    			},
-			    			error: function(xhr, status, error) {
-			    				$("#trackMenu"+that.level).remove();
-			    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.level);
-			        			$('#trackMenu'+that.level).append("<div class=\"viewsLevel"+that.level+"\">An error occurred generating this menu.  Please try back later.</div>");
-			    			},
-			    			async:   false
-						});
-				}
-				if(!$(".trackLevel"+that.level).is(":visible")){
-						var p=$("span#viewsLevel"+that.level).position();
-						var left=-515;
-						if($(window).width()>=1200){
-							left=-1117;
+		if(level>-1){
+			$(".control"+that.level+"#addTrack"+that.level).on("click",function(){
+				if($(".trackList"+that.level).length==0){
+						var tmpContext=contextPath +"/"+ pathPrefix;
+						if(pathPrefix==""){
+							tmpContext="";
 						}
-						$(".trackLevel"+that.level).css("top",p.top).css("left",p.left+left);
-						var d=that.findSelectedView();
-						$(".trackLevel"+that.level+" span#selectedViewName").html(d.Name);
-						$(".trackLevel"+that.level).fadeIn("fast");
-						trackMenu[that.level].generateTrackTable();
-				}else{
-						$(".trackLevel"+that.level).fadeOut("fast");
-				}
-		})
-		.on("mouseover",function(){
-			$("#controlInfo"+that.level).html("Click to add a track to the current view.");
-		})
-		.on("mouseout",function(){
-			$("#controlInfo"+that.level).html("");
-		});
+						$.ajax({
+								url:  tmpContext+"trackMenu.jsp",
+				   				type: 'GET',
+								data: {level: that.level, organism: organism},
+								dataType: 'html',
+				    			success: function(data2){
+				    				$("#trackMenu"+that.level).remove();
+				    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.level);
+				    				$("#trackMenu"+that.level).html(data2);
+				    			},
+				    			error: function(xhr, status, error) {
+				    				$("#trackMenu"+that.level).remove();
+				    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.level);
+				        			$('#trackMenu'+that.level).append("<div class=\"viewsLevel"+that.level+"\">An error occurred generating this menu.  Please try back later.</div>");
+				    			},
+				    			async:   false
+							});
+					}
+					if(!$(".trackLevel"+that.level).is(":visible")){
+							var p=$("span#viewsLevel"+that.level).position();
+							var left=-515;
+							if($(window).width()>=1200){
+								left=-1117;
+							}
+							$(".trackLevel"+that.level).css("top",p.top).css("left",p.left+left);
+							var d=that.findSelectedView();
+							$(".trackLevel"+that.level+" span#selectedViewName").html(d.Name);
+							$(".trackLevel"+that.level).fadeIn("fast");
+							trackMenu[that.level].generateTrackTable();
+					}else{
+							$(".trackLevel"+that.level).fadeOut("fast");
+					}
+			})
+			.on("mouseover",function(){
+				$("#controlInfo"+that.level).html("Click to add a track to the current view.");
+			})
+			.on("mouseout",function(){
+				$("#controlInfo"+that.level).html("");
+			});
 
-		$(".control"+that.level+"#addView"+that.level).on("click",function(){
-			
-		})
-		.on("mouseover",function(){
-			$("#topcontrolInfo"+that.level).html("Click to create a new view with no tracks.");
-		})
-		.on("mouseout",function(){
-			$("#topcontrolInfo"+that.level).html("");
-		});
+			$(".control"+that.level+"#addView"+that.level).on("click",function(){
+				
+			})
+			.on("mouseover",function(){
+				$("#topcontrolInfo"+that.level).html("Click to create a new view with no tracks.");
+			})
+			.on("mouseout",function(){
+				$("#topcontrolInfo"+that.level).html("");
+			});
 
 
-		$(".control"+that.level+"#copyView"+that.level).on("click",function(){
-			
-		})
-		.on("mouseover",function(){
-			$("#topcontrolInfo"+that.level).html("Click to create a new view copied from the selected view.");
-		})
-		.on("mouseout",function(){
-			$("#topcontrolInfo"+that.level).html("");
-		});
+			$(".control"+that.level+"#copyView"+that.level).on("click",function(){
+				
+			})
+			.on("mouseover",function(){
+				$("#topcontrolInfo"+that.level).html("Click to create a new view copied from the selected view.");
+			})
+			.on("mouseout",function(){
+				$("#topcontrolInfo"+that.level).html("");
+			});
 
-		$(".control"+that.level+"#saveView"+that.level).on("click",function(){
-			
-		})
-		.on("mouseover",function(){
-			$("#topcontrolInfo"+that.level).html("Click to save changes to the currently selected view.");
-		})
-		.on("mouseout",function(){
-			$("#topcontrolInfo"+that.level).html("");
-		});
+			$(".control"+that.level+"#saveView"+that.level).on("click",function(){
+				
+			})
+			.on("mouseover",function(){
+				$("#topcontrolInfo"+that.level).html("Click to save changes to the currently selected view.");
+			})
+			.on("mouseout",function(){
+				$("#topcontrolInfo"+that.level).html("");
+			});
 
-		$(".control"+that.level+"#deleteView"+that.level).on("click",function(){
-			var ind=that.findSelectedViewIndex();
-			that.viewList.splice(ind,1);
-			that.generateViewList();
-		})
-		.on("mouseover",function(){
-			$("#topcontrolInfo"+that.level).html("Click to delete current view.");
-		})
-		.on("mouseout",function(){
-			$("#topcontrolInfo"+that.level).html("");
-		});
-		$(".control"+that.level+"#deleteView"+that.level).on("click",function(){
-			var ind=that.findSelectedViewIndex();
-			that.viewList.splice(ind,1);
-			that.generateViewList();
-		})
-		.on("mouseover",function(){
-			$("#topcontrolInfo"+that.level).html("Click to delete current view.");
-		})
-		.on("mouseout",function(){
-			$("#topcontrolInfo"+that.level).html("");
-		});
+			$(".control"+that.level+"#deleteView"+that.level).on("click",function(){
+				var ind=that.findSelectedViewIndex();
+				that.viewList.splice(ind,1);
+				that.generateViewList();
+			})
+			.on("mouseover",function(){
+				$("#topcontrolInfo"+that.level).html("Click to delete current view.");
+			})
+			.on("mouseout",function(){
+				$("#topcontrolInfo"+that.level).html("");
+			});
+			$(".control"+that.level+"#deleteView"+that.level).on("click",function(){
+				var ind=that.findSelectedViewIndex();
+				that.viewList.splice(ind,1);
+				that.generateViewList();
+			})
+			.on("mouseover",function(){
+				$("#topcontrolInfo"+that.level).html("Click to delete current view.");
+			})
+			.on("mouseout",function(){
+				$("#topcontrolInfo"+that.level).html("");
+			});
 
-		$(".applyView"+that.level).on("click", function(){
-						that.applyView();
-		});
+			$(".applyView"+that.level).on("click", function(){
+							that.applyView();
+			});
 
-		d3.select("#viewTypeSelect"+that.level).on("change",that.generateViewList)
-			.on("mouseover",function(){$("#topcontrolInfo"+that.level).html("Change to filter the view list by category.");})
-			.on("mouseout",function(){$("#topcontrolInfo"+that.level).html("");});
+			d3.select("#viewTypeSelect"+that.level).on("change",that.generateViewList)
+				.on("mouseover",function(){$("#topcontrolInfo"+that.level).html("Change to filter the view list by category.");})
+				.on("mouseout",function(){$("#topcontrolInfo"+that.level).html("");});
+		}
 	};
 
 	that.generateViewList=function(){

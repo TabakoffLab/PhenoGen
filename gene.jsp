@@ -471,10 +471,13 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
   
   <label>Initial View:
   <select name="defaultView" id="defaultView">
+  	<option>Loading...</option>
+  </select>
+  <!--<select name="defaultView" id="defaultView">
   	<option value="viewGenome" <%if(defView.equals("viewGenome")){%>selected<%}%>>Genome</option>
     <option value="viewTrxome" <%if(defView.equals("viewTrxome")){%>selected<%}%>>Transcriptome</option>
     <option value="viewAll" <%if(defView.equals("viewAll")){%>selected<%}%>>Both</option>
-  </select>
+  </select>-->
   </label>
   <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" onClick="return displayWorking()">
  <!--<span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
@@ -507,6 +510,13 @@ Or
 </div>
 
 <script type="text/javascript">
+	var organism="<%=myOrganism%>";
+	var pathPrefix="web/GeneCentric/";
+	<%if(userLoggedIn.getUser_name().equals("anon")){%>
+		var uid=0;
+	<%}else{%>
+		var uid=<%=userLoggedIn.getUser_id()%>;
+	<%}%>
 	document.getElementById("wait1").style.display = 'none';
 	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
 	function openTranslateRegion(){
@@ -528,6 +538,65 @@ Or
 			$("#oldIE").show();
 		}
 	}
+	
+	
+	//Setup View Menu
+	var defviewList=[];
+	var filterViewList=[];
+	
+	function getViewData(){
+		var tmpContext=contextPath +"/"+ pathPrefix;
+		if(pathPrefix==""){
+			tmpContext="";
+		}
+		
+		d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
+			if(error){
+				setTimeout(getViewData,2000);
+				d3.select("#defaultView").html("<option>Error: reloading</option>");
+			}else{
+				defviewList=d;
+				setupDefaultView();
+			}
+		});
+	};
+	
+	
+	function setupDefaultView(){
+		d3.select("#defaultView").html("");
+		filterViewList=[];
+		for(var i=0;i<defviewList.length;i++){
+			if(defviewList[i].Organism=="AA"||defviewList[i].Organism.toLowerCase()==$('#speciesCB').val().toLowerCase()){
+				filterViewList.push(defviewList[i]);
+			}
+		}
+		var opt=d3.select("#defaultView").selectAll('option').data(filterViewList);
+		opt.enter().append("option")
+					.attr("value",function(d){return d.ViewID;})
+					.text(function(d){
+						var ret=d.Name;
+						if(d.UserID==0){
+							ret=ret+"    (Predefined)";
+						}else{
+							ret=ret+"   (Custom)";
+						}
+						if(d.Organism!="AA"){
+							if(d.Organism=="RN"){
+								ret=ret+"      (Rat Only)";
+							}else if(d.Organism=="MM"){
+								ret=ret+"     (Mouse Only)";
+							}
+						}
+						
+						return ret;
+					});
+		opt.exit().remove();
+	}
+	
+	getViewData();
+	
+	$("#speciesCB").on("change",setupDefaultView);
+	
 </script>
 
 

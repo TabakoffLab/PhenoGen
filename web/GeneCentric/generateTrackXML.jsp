@@ -109,7 +109,9 @@ if(request.getParameter("type")!=null){
 	}else if(track.startsWith("custom")){
 		log.debug("Generating custom xml track");
 		if(web.startsWith("http")){
-			status=gdt.generateCustomRemoteXMLTrack(chromosome,min,max,track,myOrganism,folderName,bedFile,outputFile,type,web);
+			if(type.equals("bb")||type.equals("bw")){
+				status=gdt.generateCustomRemoteXMLTrack(chromosome,min,max,track,myOrganism,folderName,bedFile,outputFile,type,web,binSize);
+			}
 		}else{
 			if(type.equals("bed")){
 				File tmp=new File(applicationRoot+contextRoot+outputFile);

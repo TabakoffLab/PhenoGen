@@ -459,7 +459,7 @@ sub createStrandedCodingXMLTrack{
 sub createRNACountXMLTrack{
 	my($helicosHOHRef, $outputFile) = @_; 
 	my %helicosHOH = %$helicosHOHRef;
-	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	open OFILE, '>', $outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
 	my $xml = new XML::Simple (RootName=>'RNACountList');
 	my $data = $xml->XMLout(\%helicosHOH);
 	print OFILE $data;

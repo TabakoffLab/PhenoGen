@@ -123,7 +123,7 @@ sub bed2XML
 	close IN;
 	
 	##output XML file
-	my $xmlOutputFileName=">$outputFile";
+	my $xmlOutputFileName="$outputFile";
 	createGenericXMLTrack(\%featureHOH,$xmlOutputFileName);
 }
 #

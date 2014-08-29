@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
+use Time::HiRes;
 require 'bedGraph2XML.pl';
 
 
@@ -13,8 +14,12 @@ sub bigWig2XML
 
 	# Read in the arguments for the subroutine	
 	my($inputURL,$outputFile,$regionStart,$regionStop,$regionChr,$binSize)=@_;
-        
-        my $tempOutputFile="../../tmpData/tmpDownload/";
+	print "bigWig2XML\n";
+	print "$inputURL\n$outputFile\n$regionStart\n$regionStop\n$regionChr\n$binSize\n\n";
+	my $track=substr($outputFile,rindex($outputFile,"/")+1);
+        my $tempOutputFile="../../tmpData/tmpDownload/".time()."_".$track;
+	
+	print $tempOutputFile."\n";
         
         my @systemArgs = ("../../bedFiles/bigWigToBedGraph","-chrom=$regionChr", "-start=$regionStart","-end=$regionStop", $inputURL,$tempOutputFile);
         print " System call with these arguments: @systemArgs \n";
@@ -28,7 +33,7 @@ sub bigWig2XML
   		printf "System Call exited with value %d", $? >> 8;
 	}
         
-        bedGraph2XML($tempOutputFile,$outputFile,-1,-1,"chr*",$binSize);
+        bedGraph2XML($tempOutputFile,$outputFile,$regionStart,$regionStop,$regionChr,$binSize);
         
 }
 

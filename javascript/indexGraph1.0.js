@@ -210,7 +210,7 @@ d3.json("top.json", function(error, graph) {
       .attr("r",function(d,i) { var r=radius; if(i==0){r=r*1.3;} return r; })
       .style("fill", function(d) {
       		var col=color(d.group);
-      		if(d.group==2 || d.group==3){ 
+      		if(d.group==2 || d.group==3|| d.group==7){ 
       			col=d3.rgb("#2d7a32");
       		}else if(d.group>3){
       			col=d3.rgb("#3e698c");

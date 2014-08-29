@@ -19,6 +19,9 @@ sub bedGraph2XML
 	
 	my %countHOH;
 	
+	print "bedGraph2XML\n\n\nread:$inputFile\n";
+	print "output:$outputFile\n";
+	
 	open IN,"<",$inputFile;
 	my $counter=0;
 	while(<IN>){
@@ -37,7 +40,7 @@ sub bedGraph2XML
 					)
 		)
 	       ){#don't filter if regionStart or regionStop are not set otherwise check chr,start,stop
-		
+		print $line."\n";
 		if($counter==0 or ($counter>0 and $countHOH{Count}[$counter-1]{stop}==($start-1))){
 			$countHOH{Count}[$counter]{start}=$start;
 			$countHOH{Count}[$counter]{stop}=$end;
@@ -75,7 +78,7 @@ sub bedGraph2XML
 	my $arg4 = -1;
 	my $arg5 = "chr*";
 	my $arg6 = 0;
-	if(@ARGV>4){
+	if(@ARGV>5){
 	    $arg3=$ARGV[2];
 	    $arg4=$ARGV[3];
 	    $arg5=$ARGV[4];
