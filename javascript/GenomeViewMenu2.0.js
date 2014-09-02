@@ -23,6 +23,7 @@ function ViewMenu(level){
 	that.previewLevel=100;
 	that.previewSVG=NaN;
 	that.curOrg=(new String(organism)).toUpperCase();
+	that.initialized=0;
 	//generates the preview image on the preview tab.
 	that.generatePreview=function(d){
 		$("div#previewOuter"+that.level+" div#previewContent").html("");
@@ -236,6 +237,7 @@ function ViewMenu(level){
 			if(error){
 				
 			}else{
+				that.viewList=[];
 				//that.viewList=d;
 				for(var i=0;i<d.length;i++){
 					if(d[i].Organism=="AA"||d[i].Organism==that.curOrg){
@@ -251,10 +253,38 @@ function ViewMenu(level){
 					}
 				}
 				that.generateViewList();
+				if(that.initialized==0 && that.level==0){
+					that.initialized=1;
+					that.applySelectedView($("#defaultView").val());
+				}
 			}
 		});
 	};
 
+	that.applySelectedView=function(viewID){
+		var d=NaN;
+		var ind=-1;
+		for(var i=0;i<that.filterList.length&&isNaN(d);i++){
+			if(that.filterList[i].ViewID==viewID){
+				d=that.filterList[i];
+				ind=i;
+			}
+		}
+		var settingString=that.generateSettingStringFromView(d);
+		svgList[that.level].removeAllTracks();
+		loadStateFromString(settingString,"",that.level,svgList[that.level]); 
+		$("span#viewLbl"+that.level).html("View: "+d.Name);
+		$("#viewSelect"+that.level).prop("selectedIndex",ind);
+		that.selectChange();
+	};
+	that.generateSettingStringFromView=function(view){
+		var ret=""
+		var tracks=view.TrackList;
+		for(var j=0;j<tracks.length;j++){
+			ret=ret+tracks[j].TrackClass+","+tracks[j].Settings+";";
+		}
+		return ret;
+	};
 	that.selectChange=function(){
 					var append="";
 					var d=that.findSelectedView();
@@ -371,7 +401,10 @@ function ViewMenu(level){
 			});
 
 			$(".control"+that.level+"#addView"+that.level).on("click",function(){
-				
+				$("div#nameView"+that.level).show();
+				$("div#selection"+that.level).hide();
+				$("span#viewMenuLbl"+that.level).text("Create View");
+				$("input#createType"+that.level).val("blank");
 			})
 			.on("mouseover",function(){
 				$("#topcontrolInfo"+that.level).html("Click to create a new view with no tracks.");
@@ -382,7 +415,10 @@ function ViewMenu(level){
 
 
 			$(".control"+that.level+"#copyView"+that.level).on("click",function(){
-				
+				$("div#nameView"+that.level).show();
+				$("div#selection"+that.level).hide();
+				$("span#viewMenuLbl"+that.level).text("Create View");
+				$("input#createType"+that.level).val("copy");
 			})
 			.on("mouseover",function(){
 				$("#topcontrolInfo"+that.level).html("Click to create a new view copied from the selected view.");
@@ -487,6 +523,32 @@ function ViewMenu(level){
 		that.generatePreview(view);
 		that.generateViewList();
 		$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
+	};
+
+	that.createNewView = function(){
+		var name=$("input#viewNameTxt"+that.level).val();
+		var desc=$("#viewDescTxt"+that.level).val();
+		var type=$("input#createType"+that.level).val();
+		var copyID=-1;
+		if(type=="copy"){
+			copyID=that.findSelectedView().ViewID;
+		}
+		$.ajax({
+				url:  contextPath +"/"+ pathPrefix +"createBrowserViews.jsp",
+   				type: 'GET',
+				data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
+				dataType: 'html',
+    			success: function(data2){
+    				that.getViewData();
+    				$("div#nameView"+that.level).hide();
+					$("div#selection"+that.level).show();
+					$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
+    			},
+    			error: function(xhr, status, error) {
+    				console.log(error);
+    			},
+    			async:   false
+			});
 	};
 
 

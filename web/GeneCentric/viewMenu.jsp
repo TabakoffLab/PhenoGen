@@ -29,7 +29,7 @@
 </style>
 
     <div class="viewsLevel<%=level%>"  style="display:none;width:600px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:50px; left:-98px; background-color:#FFFFFF; min-height:550px; text-align:center;">
-        	<div style="display:block;width:100%;color:#000000; text-align:left; background:#EEEEEE; font-weight:bold;">Select/Edit Views<span class="closeBtn" id="close_viewsLevel<%=level%>" style="position:relative;top:2px;left:461px;"><img src="<%=imagesDir%>icons/close.png"></span></div>
+        	<div style="display:block;width:100%;color:#000000; text-align:left; background:#EEEEEE; font-weight:bold;"><span id="viewMenuLbl<%=level%>">Select/Edit Views</span><span class="closeBtn" id="close_viewsLevel<%=level%>" style="position:relative;top:2px;left:461px;"><img src="<%=imagesDir%>icons/close.png"></span></div>
         	<div id="toolbar<%=level%>"></div>
 			<div id="selection<%=level%>" style=" text-align:left;">
                 <table style="width:100%;">
@@ -120,7 +120,28 @@
                </table>   
                    
            </div>
+           <div id="nameView<%=level%>" style="width:100%;display:none;border:solid; border-color:#000000; border-width:1px 1px 1px 1px;text-align:left;">
+            <form method="post" 
+                action="createBrowserViews.jsp"
+                enctype="application/x-www-form-urlencoded"
+                name="createViewForm" id="createViewForm">
+                View Name: <input type="text" name="viewNameTxt" id="viewNameTxt<%=level%>" size="30" value=""><BR />
+                View Description:<BR /><textarea rows="5" cols="65" name="viewDescTxt" id="viewDescTxt<%=level%>" ></textarea>
+                <div id="createViewBtn<%=level%>">
+                        <span style="float:left;">
+                        <input type="button" name="cancelCreateView" id="cancelCreateView<%=level%>" value="Cancel" onClick="return cancelView(<%=level%>)">
+                        </span>
+                        <span style="float:right;">
+                        <input type="button" name="createView" id="createView<%=level%>" value="Create View" onClick="return viewMenu[<%=level%>].createNewView(<%=level%>)">
+                        </span>
+                        <input type="hidden" id="createType<%=level%>" value="blank" />
+                       
+               </div>
+           </form>
+        </div>
 </div>
+
+
 <!--</div>
             
             
@@ -130,6 +151,10 @@
 		  		viewMenu[<%=level%>]=ViewMenu(<%=level%>);
 				var iconPath="<%=imagesDir%>icons/";
 		  		
+				/*if(<%=level%>==0){
+					viewMenu[<%=level%>].applySelectedView($("#defaultView").val());
+				}*/
+				
 		  		$(".viewtooltip<%=level%>").tooltipster({
 					position: 'top-right',
 					maxWidth: 250,
@@ -158,6 +183,10 @@
 							$("#"+id.substr(4)).show();
 				});
 				
-				
+				function cancelView(level){
+					$("div#nameView<%=level%>").hide();
+					$("div#selection<%=level%>").show();
+					$("span#viewMenuLbl<%=level%>").html("Select/Edit Views");
+				}
 				
 		  </script>

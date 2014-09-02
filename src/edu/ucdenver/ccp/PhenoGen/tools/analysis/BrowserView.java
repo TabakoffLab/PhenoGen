@@ -2,6 +2,7 @@ package edu.ucdenver.ccp.PhenoGen.tools.analysis;
 
 
 import edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTrack;
+import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -192,5 +193,235 @@ public class BrowserView{
     }
     
     
+    public int getNextID(DataSource pool){
+        int id=-1;
+        String query="select Browser_View_ID_SEQ.nextVal from dual";
+        Connection conn=null;
+        try{
+            conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(query, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs=ps.executeQuery();
+            if (rs.next()){
+                id=rs.getInt(1);
+            }
+            ps.close();
+            conn.close();
+            conn=null;
+        }catch(SQLException e){
+            
+        }finally{
+            try{
+            if(conn!=null&&!conn.isClosed()){
+                conn.close();
+                conn=null;
+            }
+            }catch(SQLException er){
+                
+            }
+        }
+        return id;
+    }
+    public int getNextTrackSettingID(DataSource pool){
+        int id=-1;
+        String query="select Browser_TrackSetting_ID_SEQ.nextVal from dual";
+        Connection conn=null;
+        try{
+            conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(query, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs=ps.executeQuery();
+            if (rs.next()){
+                id=rs.getInt(1);
+            }
+            ps.close();
+            conn.close();
+            conn=null;
+        }catch(SQLException e){
+            
+        }finally{
+            try{
+            if(conn!=null&&!conn.isClosed()){
+                conn.close();
+                conn=null;
+            }
+            }catch(SQLException er){
+                
+            }
+        }
+        return id;
+    }
     
+    public boolean saveToDB(DataSource pool){
+        boolean success=false;
+        String insertUsage="insert into browser_views ("
+                + "BVID,USER_ID,NAME,DESCRIPTION,ORGANISM,"
+                + "VISIBLE,IMAGE_SETTINGS) values (?,?,?,?,?,?,?)";
+        Connection conn=null;
+        try{
+            conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(insertUsage, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+            ps.setInt(1, this.id);
+            ps.setInt(2,this.userID);
+            ps.setString(3, name);
+            ps.setString(4, this.description);
+            ps.setString(5, this.organism);
+            ps.setBoolean(6,this.visible);
+            ps.setString(7, this.imageSettings);
+            ps.execute();
+            ps.close();
+            conn.close();
+            conn=null;
+            success=true;
+        }catch(SQLException e){
+            e.printStackTrace(System.err);
+            Logger log = Logger.getRootLogger();
+            log.error("Error inserting new View:",e);
+            Email myAdminEmail = new Email();
+            String fullerrmsg=e.getMessage();
+            StackTraceElement[] tmpEx=e.getStackTrace();
+            for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+            }
+            myAdminEmail.setSubject("Exception thrown inserting a custom track");
+            myAdminEmail.setContent("There was an error inserting a custom track.\n"+fullerrmsg);
+            try {
+                    myAdminEmail.sendEmailToAdministrator("");
+            } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+            }
+        }finally{
+            try{
+            if(conn!=null&&!conn.isClosed()){
+                conn.close();
+                conn=null;
+            }
+            }catch(SQLException er){
+                
+            }
+        }
+        
+        return success;
+    }
+    public boolean copyTracksInView(int source,int dest,DataSource pool){
+            boolean success=false;
+            String query="select * from BROWSER_VIEWS_TRACKS "+
+                        "where bvid="+source;
+            String insert="insert into BROWSER_VIEWS_TRACKS (BVID,TRACKID,TRACKSETTINGID,ORDERING) VALUES (?,?,?,?)";
+            
+            Connection conn=null;
+            PreparedStatement ps=null;
+           try{
+                conn=pool.getConnection();
+                PreparedStatement insertBVT=conn.prepareStatement(insert, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+                ps = conn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery();
+                //int count=0;
+                while(rs.next()){
+                    int tid=rs.getInt(2);
+                    int tsid=rs.getInt(3);
+                    int order=rs.getInt(4);
+                    int newTSID=-1;
+                    boolean copied=false;
+                    int preventLooping=0;
+                    while(!copied && preventLooping<20){
+                        newTSID=getNextTrackSettingID(pool);
+                        copied=copyTrackSettings(tsid,newTSID,conn);
+                        preventLooping++;
+                    }
+                    if(copied && newTSID>0){
+                        insertBVT.setInt(1, dest);
+                        insertBVT.setInt(2, tid);
+                        insertBVT.setInt(3, newTSID);
+                        insertBVT.setInt(4, order);
+                        insertBVT.execute();
+                        insertBVT.clearParameters();
+                    }
+                }
+                insertBVT.close();
+                ps.close();
+                conn.close();
+                conn=null;
+                success=true;
+            }catch(SQLException e){
+                e.printStackTrace(System.err);
+                Logger log = Logger.getRootLogger();
+                log.error("Error copying View:",e);
+                Email myAdminEmail = new Email();
+                String fullerrmsg=e.getMessage();
+                StackTraceElement[] tmpEx=e.getStackTrace();
+                for(int i=0;i<tmpEx.length;i++){
+                            fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                }
+                myAdminEmail.setSubject("Exception thrown inserting a copied view");
+                myAdminEmail.setContent("There was an error inserting a copied view.\n"+fullerrmsg);
+                try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                }
+            }finally{
+                try{
+                    if(conn!=null&&!conn.isClosed()){
+                        conn.close();
+                        conn=null;
+                    }
+                }catch(SQLException er){
+
+                }
+            }
+        return success;
+    }
+        
+    public boolean copyTrackSettings(int source,int dest,Connection conn){
+        boolean success=false;
+        try{
+            String query="select * from BROWSER_TRACK_SETTINGS "+
+                        "where tracksettingid="+source;
+            String insert="insert into BROWSER_TRACK_SETTINGS (TRACKSETTINGID,SETTINGS) VALUES (?,?)";
+            PreparedStatement ps=null;
+                PreparedStatement insertBTS=conn.prepareStatement(insert, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+                ps = conn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery();
+                //int count=0;
+                if(rs.next()){
+                    String settings=rs.getString(2);
+                    insertBTS.setInt(1, dest);
+                    insertBTS.setString(2, settings);
+                    insertBTS.execute();
+                    insertBTS.close();
+                }
+                ps.close();
+                success=true;
+        }catch(SQLException e){
+             e.printStackTrace(System.err);
+            Logger log = Logger.getRootLogger();
+            log.error("Error copying track settings:",e);
+            Email myAdminEmail = new Email();
+            String fullerrmsg=e.getMessage();
+            StackTraceElement[] tmpEx=e.getStackTrace();
+            for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+            }
+            myAdminEmail.setSubject("Exception thrown inserting a track setting");
+            myAdminEmail.setContent("There was an error inserting a track setting.\n"+fullerrmsg);
+            try {
+                    myAdminEmail.sendEmailToAdministrator("");
+            } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+            }
+        }
+        return success;
+    }
 }

@@ -20,13 +20,10 @@ import="org.json.*" %>
 <jsp:useBean id="bt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTools" scope="session"> </jsp:useBean>
 
 <%
-int tmpuserID=0;
+
 bt.setSession(session);
 
-if(request.getParameter("userLoggedIn")!=null){
-	tmpuserID=userLoggedIn.getUser_id();
-}
-ArrayList<BrowserView> views=bt.getBrowserViews(tmpuserID);
+ArrayList<BrowserView> views=bt.getBrowserViews();
 
 response.setContentType("application/json");
 %>

@@ -26,7 +26,7 @@
 	}*/
 </style>
 
-    <div class="trackLevel<%=level%>"  style="display:none;width:600px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:0px; left:0px; background-color:#FFFFFF; min-height:780px; text-align:center;">
+    <div class="trackLevel<%=level%>"  style="display:none;width:600px;border:solid;border-color:#000000;border-width:1px; z-index:999; position:absolute; top:0px; left:0px; background-color:#FFFFFF; min-height:450px;  text-align:center;">
         	<div style="display:block;width:100%;color:#000000; text-align:left; background:#EEEEEE; font-weight:bold;height:23px;"><span style="position:relative;top:3px;">Select a Track to add to <span id="selectedViewName"></span></span><span class="closeBtn" id="close_trackLevel<%=level%>" style="position:relative;top:2px; float:right;"><img src="<%=imagesDir%>icons/close.png"></span>
             </div>
             <div id="selectTrack<%=level%>">
@@ -81,6 +81,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                           <div class="notSignedIn" id="notSignedIn1" style="display:none;">You are not signed in.  If you were signed in when you created custom tracks you must sign in to view them.  If you don't have a login and you created a custom track you must be on the same computer where you created the track and cookies must be enable and must not have been cleared since you created the track.  Otherwise you will have to create the track again.</div>
+                           <BR />
+                           <div id="noCustomTracks" style="display:none;">If you have created custom tracks you may not have been logged in so the tracks were saved locally to a cookie.  If cookies are enabled and have not been cleared the custom tracks should have still appeared here, so you may have to reload them.  We highly recommend creating an account to use custom tracks to help avoid loss of custom tracks.  When you are signed in track data is saved to the server and available anywhere you sign in.</div>
                     </TD>
                     </TR>
                    

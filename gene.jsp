@@ -18,7 +18,7 @@
 <%
 String myGene="";
 String myDisplayGene="";
-String defView="viewGenome";
+String defView="1";
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
 		myGene=request.getParameter("geneTxt").trim();
@@ -43,13 +43,16 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 <%}%>
 
 <jsp:useBean id="myIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
-
+<jsp:useBean id="bt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 
 <% 
 	
 	//GeneDataTools gdt=new GeneDataTools();
     gdt.setSession(session);
+	bt.setSession(session);
+	
+	ArrayList<BrowserView> views=bt.getBrowserViews();
 	
 	String myOrganism="";
 	ObjectHandler oh=new ObjectHandler();
@@ -471,7 +474,17 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
   
   <label>Initial View:
   <select name="defaultView" id="defaultView">
-  	<option>Loading...</option>
+  	<%for(int i=0;i<views.size();i++){
+    	if(views.get(i).getOrganism().toUpperCase().equals("AA") || myOrganism.toUpperCase().equals(views.get(i).getOrganism().toUpperCase())){
+			String display=views.get(i).getName();
+			if(views.get(i).getUserID()==0){
+				display=display+"   (Predefined)";
+			}else{
+				display=display+"   (Custom)";
+			}%>
+        	<option value="<%=views.get(i).getID()%>" <%if(defView.equals(Integer.toString(views.get(i).getID()))){%>selected<%}%>><%=display%></option>
+        <%}%>
+    <%}%>
   </select>
   <!--<select name="defaultView" id="defaultView">
   	<option value="viewGenome" <%if(defView.equals("viewGenome")){%>selected<%}%>>Genome</option>
@@ -556,7 +569,7 @@ Or
 				d3.select("#defaultView").html("<option>Error: reloading</option>");
 			}else{
 				defviewList=d;
-				setupDefaultView();
+				//setupDefaultView();
 			}
 		});
 	};

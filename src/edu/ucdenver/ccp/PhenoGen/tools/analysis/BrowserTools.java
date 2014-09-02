@@ -32,9 +32,10 @@ public class BrowserTools{
         this.pool= (DataSource) session.getAttribute("dbPool");
     }
     
-    public ArrayList<BrowserView> getBrowserViews(int userID){
+    public ArrayList<BrowserView> getBrowserViews(){
         BrowserView bv=new BrowserView();
         ArrayList<BrowserView> ret=bv.getBrowserViews(0,pool);
+        int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
         if(userID>0){
             ArrayList<BrowserView> tmp=bv.getBrowserViews(userID,pool);
             if(tmp.size()>0){
@@ -61,6 +62,27 @@ public class BrowserTools{
         int trackID=bt.getNextID(pool);
         BrowserTrack newTrack=new BrowserTrack(trackID, uid, trackclass, trackname, description, organism,settings, order,genCat,category,controls,vis,location,fileName,type,new Timestamp((new Date()).getTime()));
         boolean success=newTrack.saveToDB(pool);
+        return success;
+    }
+    
+    public boolean createBlankView(String name,String description,String organism,String imgDisp){
+        BrowserView bv= new BrowserView();
+        int viewID=bv.getNextID(pool);
+        int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
+        BrowserView newView=new BrowserView(viewID,userID,name,description,organism.toUpperCase(),true,imgDisp);
+        boolean success=newView.saveToDB(pool);
+        return success;
+    }
+    public boolean createCopiedView(String name,String description,String organism,String imgDisp,int copyFrom){
+        BrowserView bv= new BrowserView();
+        int viewID=bv.getNextID(pool);
+        int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
+        BrowserView newView=new BrowserView(viewID,userID,name,description,organism.toUpperCase(),true,imgDisp);
+        boolean success=newView.saveToDB(pool);
+        //copy tracks and settings
+        if(success){
+            success=bv.copyTracksInView(copyFrom,newView.getID(),pool);
+        }
         return success;
     }
 }

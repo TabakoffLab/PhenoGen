@@ -169,13 +169,14 @@ var dataPrefix="";
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
             <script src="javascript/GenomeDataBrowser2.0.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.0.js" type="text/javascript"></script>
-            <script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script><script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">
                     var gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
-					loadStateFromCookie(0);		
+					
+					//loadStateFromCookie(0);		
                     //$( "ul, li" ).disableSelection();
                 </script>
            </div>
