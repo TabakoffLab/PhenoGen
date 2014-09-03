@@ -75,7 +75,9 @@ if(request.getParameter("arrayTypeID")!=null){
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
-
+<style>
+	.ui-widget { font-size:0.8em;}
+</style>
 <script type="text/javascript">
 	$('#wait1').hide();
 	var urlprefix="<%=host+contextRoot%>";

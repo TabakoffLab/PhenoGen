@@ -2184,6 +2184,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	that.selectionStart=-1;
 	that.selectionEnd=-1;
+	that.scrollSize=350;
 	//setup code
 	that.width=imageWidth;
 	that.mw=that.width-that.margin;
@@ -2274,6 +2275,81 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			.attr("for","forceTrxCBX"+that.levelNumber)
 			.text("Draw Genes as Transcripts");
 	$("input#forceTrxCBX"+that.levelNumber).button();
+
+	var scrollCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
+	
+
+	var scrollSize=scrollCtrl.append("div").attr("class","defaultMouse")
+		.style("width","64px")
+		.attr("id","scrollSize"+that.levelNumber);
+		scrollSize.append("span")
+			.attr("id","scrollIncr"+that.levelNumber)
+			.style("height","24px")
+			.style("display","inline-block")
+			.style("cursor","pointer")
+			.append("img").attr("class","mouseOpt ")
+			.attr("src","/web/images/icons/scroll_smaller.png")
+			.attr("pointer-events","all")
+			.on("click",function(){
+				that.scrollSize=that.scrollSize-100;
+				if(that.scrollSize<100){
+					that.scrollSize=100;
+				}
+				changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
+			})
+			.on("mouseout",function(){
+				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+			})
+			.on("mouseover",function(){
+				$("#mouseHelp").html("Decrease the vertical length of the scrollable browser image on the page.");
+			});
+		scrollSize.append("span")
+			.attr("id","pan"+that.levelNumber)
+			.style("height","24px")
+			.style("display","inline-block")
+			.style("cursor","pointer")
+			.append("img")
+			.attr("class","mouseOpt pan")
+			.attr("src","/web/images/icons/scroll_larger.png")
+			.attr("pointer-events","all")
+			.on("click",function(){
+				if(that.scrollSize<$("#ScrollLevel"+that.levelNumber)[0].scrollHeight){
+					that.scrollSize=that.scrollSize+100;
+					changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
+				}
+			})
+			.on("mouseout",function(){
+				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+			})
+			.on("mouseover",function(){
+				$("#mouseHelp").html("Increase the vertical length of the scrollable browser image on the page.");
+			});
+	scrollCtrl.append("span").attr("class","scrollBtn control").style("display","inline-block")
+			.attr("id","scrollImage"+that.levelNumber)
+			.style("cursor","pointer")
+			.append("img")//.attr("class","mouseOpt dragzoom")
+			.attr("src","/web/images/icons/scroll.png")
+			.attr("pointer-events","all")
+			.attr("cursor","pointer")
+			.on("click",function(){
+				if(d3.select(this).attr("src")=="/web/images/icons/no_scroll.png"){
+					d3.select(this).attr("src","/web/images/icons/scroll.png");
+					d3.select("span#reset"+that.levelNumber).style("background","#989898");
+					$("#scrollSize"+that.levelNumber).show();
+					changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
+				}else{
+					d3.select(this).attr("src","/web/images/icons/no_scroll.png");
+					d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
+					$("#scrollSize"+that.levelNumber).hide();
+					changeTrackHeight("Level"+that.levelNumber,0);
+				}
+			})
+			.on("mouseover",function(){
+				$("#mouseHelp").html("Click to toggle browser image scrolling on/off.  <b>Off</b> the image takes as much space as needed. <b>On</b> you can adjust the maximum length of the image.");
+			})
+			.on("mouseout",function(){
+				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+			});
 
 	that.topDiv=that.vis.append("div")
 		.attr("id","Level"+levelNumber)
