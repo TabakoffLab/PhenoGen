@@ -3,7 +3,7 @@
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.11.0.min.js">
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.2.1.min.js"></script>
     <!--<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.1.1.js"></script>-->
-	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-ui-1.10.4.min.js"></script> 
+	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-ui-1.11.1.min.js"></script> 
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tooltipster.adaptive.js"></script>
 	<script  type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tablesorter.js"></script>
 	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/main.js"></script>

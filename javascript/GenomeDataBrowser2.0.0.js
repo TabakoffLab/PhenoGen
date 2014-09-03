@@ -341,7 +341,7 @@ $(document).on("click",".closeBtn",function(){
 					return false;
 				});
 
-$(document).on("click",".settings",function(){
+/*$(document).on("click",".settings",function(){
 					var setting=$(this).attr("id");
 					if(!$("."+setting).is(":visible")){
 						var p=$(this).position();
@@ -353,18 +353,19 @@ $(document).on("click",".settings",function(){
 						$("."+setting).fadeOut("fast");
 					}
 					return false;
-				});
+				});*/
 
-$(document).on("click",".views",function(){
+$(document).on("click",".viewSelect",function(){
 					var setting=$(this).attr("id");
-					if(!$("."+setting).is(":visible")){
+					var level=setting.substr(setting.length-1);
+					if(!$(".viewsLevel"+level).is(":visible")){
 						var p=$(this).position();
-						$("."+setting).css("top",p.top-3).css("left",p.left-515);
-						$("."+setting).fadeIn("fast");
+						$(".viewsLevel"+level).css("top",250).css("left",$(window).width()-610);
+						$(".viewsLevel"+level).fadeIn("fast");
 						//var tmpStr=new String(setting);
 						//setupSettingUI(tmpStr.substr(tmpStr.length-1));
 					}else{
-						$("."+setting).fadeOut("fast");
+						$(".viewsLevel"+level).fadeOut("fast");
 					}
 					return false;
 				});
@@ -2206,7 +2207,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 		});*/
 
-	that.vis.append("span").attr("class","views button")
+	/*that.vis.append("span").attr("class","views button")
 		.attr("id","viewsLevel"+levelNumber)
 		.style("float","right")
 		.style("width","80px")
@@ -2217,7 +2218,62 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		})
 		.on("mouseout",function(){
 			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-		});
+		});*/
+
+	var viewDivTop=that.vis.append("div")
+	.style("float","right")
+	.style("display","inline-block")
+	.style("margin-right","5px")
+	.style("position","relative")
+	.style("top","-8px");
+	var viewBtnSpan=viewDivTop.append("div");
+	viewBtnSpan.append("button").attr("id","viewSelect"+that.levelNumber).attr("class","viewSelect").text("Select/Edit Views");
+	viewBtnSpan.append("button").attr("id","viewMenuSelect"+that.levelNumber).attr("class","viewSelectMenu");
+	var viewDivMenu=viewDivTop.append("ul");
+	viewDivMenu.append("li").text("Save");
+	viewDivMenu.append("li").text("Save As");
+	viewDivMenu.append("li").text("Delete");
+	viewDivMenu.append("li").text("Reset");
+
+	$("#viewSelect"+that.levelNumber )
+      	.button()
+	      .click(function() {
+	        
+	      })
+      	.next()
+        	.button({
+	          text: false,
+	          icons: {
+	            primary: "ui-icon-triangle-1-s"
+	          }
+	        })
+	        .click(function() {
+	          var menu = $( this ).parent().next().show().position({
+	            my: "left top",
+	            at: "left bottom",
+	            of: this
+	          });
+	          $( document ).one( "click", function() {
+	            menu.hide();
+	          });
+	          return false;
+	        })
+        .parent()
+          .buttonset()
+          .next()
+            .hide()
+            .menu();
+
+	var imgCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
+
+	imgCtrl.append("input")
+		.attr("type","checkbox")
+		.attr("name","imgCBX")
+		.attr("id","forceTrxCBX"+that.levelNumber);
+	imgCtrl.append("label")
+			.attr("for","forceTrxCBX"+that.levelNumber)
+			.text("Draw Genes as Transcripts");
+	$("input#forceTrxCBX"+that.levelNumber).button();
 
 	that.topDiv=that.vis.append("div")
 		.attr("id","Level"+levelNumber)

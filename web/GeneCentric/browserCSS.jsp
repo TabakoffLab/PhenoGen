@@ -232,4 +232,11 @@ table.tooltipTable TD{
 	div#trackSettingContent td {
 	background-color:#EEEEEE;
 	}
+	.ui-menu { position: absolute; width: 100px; }
+	
+	button.viewSelectMenu{
+		height:26px;
+		position:relative;
+		top:8px;
+	}
 </style>

@@ -8,7 +8,7 @@
 	//extrasList.add("jscolor/jscolor.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("d3.v3.min.js");
-	extrasList.add("smoothness/jquery-ui-1.10.4.min.css");
+	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("jquery.fancybox.css");
