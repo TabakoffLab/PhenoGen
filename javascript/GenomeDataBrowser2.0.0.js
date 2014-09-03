@@ -378,13 +378,13 @@ $(document).on("change","input[name='optioncbx']",function(){
 	redrawTrack(level,prefix);
 });
 
-$(document).on("change","select[name='imgSelect']", function(){
+/*$(document).on("change","select[name='imgSelect']", function(){
 				var id=new String($(this).attr("id"));
 				var len=id.length-1;
 				var curlvl=id.substr(len);
 	 			changeTrackHeight("Level"+curlvl,$(this).val());
 	 			$.cookie("imgstate"+defaultView+curlvl,"displaySelect"+curlvl+"="+$(this).val()+";");
-	 		});
+	 		});*/
 
 $(document).on("change","input[name='imgCBX']", function(){
 	var idStr=new String($(this).attr("id"));
@@ -2230,11 +2230,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	var viewBtnSpan=viewDivTop.append("div");
 	viewBtnSpan.append("button").attr("id","viewSelect"+that.levelNumber).attr("class","viewSelect").text("Select/Edit Views");
 	viewBtnSpan.append("button").attr("id","viewMenuSelect"+that.levelNumber).attr("class","viewSelectMenu");
-	var viewDivMenu=viewDivTop.append("ul");
-	viewDivMenu.append("li").text("Save");
-	viewDivMenu.append("li").text("Save As");
-	viewDivMenu.append("li").text("Delete");
-	viewDivMenu.append("li").text("Reset");
+	var viewDivMenu=viewDivTop.append("ul").attr("id","viewSelectMenu"+that.levelNumber);
+	viewDivMenu.append("li").attr("id","saveView"+that.levelNumber).text("Save");
+	viewDivMenu.append("li").attr("id","saveAsView"+that.levelNumber).text("Save As");
+	viewDivMenu.append("li").attr("id","deleteView"+that.levelNumber).text("Delete");
+	viewDivMenu.append("li").attr("id","resetView"+that.levelNumber).text("Reset");
 
 	$("#viewSelect"+that.levelNumber )
       	.button()

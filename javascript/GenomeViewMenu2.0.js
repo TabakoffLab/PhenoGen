@@ -188,6 +188,13 @@ function ViewMenu(level){
 		$("div.viewsLevel"+that.level).hide();
 		$("div.trackLevel"+that.level).hide();
 		$("span#viewLbl"+that.level).html("View: "+d.Name);
+		if(d.UserID==0){
+			$("li#saveView"+that.level).addClass("ui-state-disabled");
+			$("li#deleteView"+that.level).addClass("ui-state-disabled");
+		}else{
+			$("li#saveView"+that.level).removeClass("ui-state-disabled");
+			$("li#deleteView"+that.level).removeClass("ui-state-disabled");
+		}
 	};
 
 
@@ -275,6 +282,13 @@ function ViewMenu(level){
 		loadStateFromString(settingString,"",that.level,svgList[that.level]); 
 		$("span#viewLbl"+that.level).html("View: "+d.Name);
 		$("#viewSelect"+that.level).prop("selectedIndex",ind);
+		if(d.UserID==0){
+			$("li#saveView"+that.level).addClass("ui-state-disabled");
+			$("li#deleteView"+that.level).addClass("ui-state-disabled");
+		}else{
+			$("li#saveView"+that.level).removeClass("ui-state-disabled");
+			$("li#deleteView"+that.level).removeClass("ui-state-disabled");
+		}
 		that.selectChange();
 	};
 	that.generateSettingStringFromView=function(view){

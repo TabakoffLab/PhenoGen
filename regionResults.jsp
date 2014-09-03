@@ -71,7 +71,9 @@ var dataPrefix="";
   }
 
 .ui-widget { font-size:0.8em;}
-
+	ul#viewSelectMenu0 li,ul#viewSelectMenu1 li{
+		cursor:pointer;
+	}
 </style>
 
 
