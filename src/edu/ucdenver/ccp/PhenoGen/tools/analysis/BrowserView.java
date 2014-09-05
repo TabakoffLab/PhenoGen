@@ -2,8 +2,8 @@ package edu.ucdenver.ccp.PhenoGen.tools.analysis;
 
 
 import edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTrack;
-import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler;
+import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import javax.sql.DataSource;
 import oracle.jdbc.*;
 import org.apache.log4j.Logger;
@@ -123,7 +125,135 @@ public class BrowserView{
             
         return ret;
     }
-    
+    public BrowserView getBrowserView(int viewid,DataSource pool){
+        Logger log=Logger.getRootLogger();
+        BrowserView ret=null;
+        
+        String query="select * from BROWSER_VIEWS "+
+                        "where bvid="+viewid;
+        String trackquery="select bvt.bvid,bt.*,bts.settings,bvt.ordering from BROWSER_VIEWS_TRACKS bvt,BROWSER_TRACKS bt, BROWSER_TRACK_SETTINGS bts where "+
+                        " bvt.trackid=bt.trackid and bvt.tracksettingid=bts.tracksettingid "+
+                        " and bt.visible=1 "+
+                        " and bvt.bvid in (select bvid from browser_views where bvid="+viewid+") "+
+                        " order by bvt.bvid,bvt.ordering";
+            Connection conn=null;
+            PreparedStatement ps=null;
+            try {
+                conn=pool.getConnection();
+                ps = conn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery();
+                //int count=0;
+                if(rs.next()){
+                    int id=rs.getInt(1);
+                    int uid=rs.getInt(2);
+                    String name=rs.getString(3);
+                    String desc=rs.getString(4);
+                    String org=rs.getString(5);
+                    boolean vis=rs.getBoolean(6);
+                    String imgsetting=rs.getString(7);
+                    ret=new BrowserView(id,uid,name,desc,org,vis,imgsetting);
+                    //count++;
+                }
+                ps.close();
+                ps = conn.prepareStatement(trackquery);
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    int bvid=rs.getInt(1);
+                    int tid=rs.getInt(2);
+                    int uid=rs.getInt(3);
+                    String tclass=rs.getString(4);
+                    String name=rs.getString(5);
+                    String desc=rs.getString(6);
+                    String org=rs.getString(7);
+                    String genCat=rs.getString(8);
+                    String cat=rs.getString(9);
+                    String controls=rs.getString(10);
+                    boolean vis=rs.getBoolean(11);
+                    String location=rs.getString(12);
+                    Timestamp ts=rs.getTimestamp(13);
+                    String file=rs.getString(14);
+                    String type=rs.getString(15);
+                    String sett=rs.getString(16);
+                    int order=rs.getInt(17);
+                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls,vis,location,file,type,ts);
+                    ret.addTrack(tmpBT);
+                }
+                ps.close();
+                conn.close();
+                conn=null;
+            } catch (SQLException ex) {
+                log.error("SQL Exception retreiving browser views:" ,ex);
+                try {
+                    ps.close();
+                } catch (Exception ex1) {
+                   
+                }
+            } finally{
+                if(conn!=null){
+                    try{
+                        conn.close();
+                        conn=null;
+                    }catch(SQLException e){
+                        
+                    }
+                    conn=null;
+                }
+            }
+            
+            
+        return ret;
+    }
+     public boolean deleteView(int viewid,DataSource pool){
+        Logger log=Logger.getRootLogger();
+        boolean ret=false;
+        
+        String settings="delete from BROWSER_TRACK_SETTINGS "+
+                        "where tracksettingid in (select tracksettingid from browser_views_tracks where "+
+                        "bvid="+viewid+" )";
+        String trackquery="delete from browser_views_tracks where bvid="+viewid;
+        String viewquery="delete from browser_views where bvid="+viewid;
+                       
+            Connection conn=null;
+            PreparedStatement ps=null;
+            try {
+                conn=pool.getConnection();
+                conn.setAutoCommit(false);
+                ps = conn.prepareStatement(settings);
+                ps.executeUpdate();
+                ps.close();
+                ps = conn.prepareStatement(trackquery);
+                ps.executeUpdate();
+                ps.close();
+                ps = conn.prepareStatement(viewquery);
+                ps.executeUpdate();
+                ps.close();
+                conn.commit();
+                conn.close();
+                conn=null;
+                ret=true;
+            } catch (SQLException ex) {
+                log.error("SQL Exception retreiving browser views:" ,ex);
+                try {
+                    conn.rollback();
+                    ps.close();
+                   
+                } catch (Exception ex1) {
+                }
+            } finally{
+                if(conn!=null){
+                    try{
+                        conn.close();
+                        conn=null;
+                    }catch(SQLException e){
+                        
+                    }
+                    conn=null;
+                }
+            }
+            
+            
+        return ret;
+    }
     public void addTrack(BrowserTrack toAdd){
         btList.add(toAdd);
     }
@@ -259,6 +389,7 @@ public class BrowserView{
         String insertUsage="insert into browser_views ("
                 + "BVID,USER_ID,NAME,DESCRIPTION,ORGANISM,"
                 + "VISIBLE,IMAGE_SETTINGS) values (?,?,?,?,?,?,?)";
+         String insertCount="insert into browser_view_counts (BVID,COUNTER) values (?,?)";
         Connection conn=null;
         try{
             conn=pool.getConnection();
@@ -272,6 +403,13 @@ public class BrowserView{
             ps.setString(5, this.organism);
             ps.setBoolean(6,this.visible);
             ps.setString(7, this.imageSettings);
+            ps.execute();
+            ps.close();
+            ps=conn.prepareStatement(insertCount, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+            ps.setInt(1,this.id);
+            ps.setInt(2,0);
             ps.execute();
             ps.close();
             conn.close();
@@ -423,5 +561,188 @@ public class BrowserView{
             }
         }
         return success;
+    }
+    
+    public String updateTracks(String tracks,DataSource pool){
+            boolean success=false;
+            String ret="";
+            String queryAll="select bt.track_class,bvt.*,bts.settings from BROWSER_VIEWS_TRACKS bvt,BROWSER_TRACK_SETTINGS bts, browser_tracks bt where bvt.bvid="+this.id+" and bvt.tracksettingid=bts.tracksettingid and bt.trackID=bvt.trackID";
+            String query="select * from BROWSER_VIEWS_TRACKS where bvid="+this.id+" and trackid=?";
+            String querySettings="select * from BROWSER_TRACK_SETTINGS where TRACKSETTINGID=?";
+            String queryTrackID="select trackid from BROWSER_TRACKS where TRACK_CLASS=?";
+            
+            String insert="insert into BROWSER_VIEWS_TRACKS (BVID,TRACKID,TRACKSETTINGID,ORDERING) VALUES (?,?,?,?)";
+            String insertSettings="insert into BROWSER_TRACK_SETTINGS (TRACKSETTINGID,SETTINGS) VALUES (?,?)";
+            
+            String updateOrder="update BROWSER_VIEWS_TRACKS set ORDERING=? where bvid="+this.id+ " and trackid=?";
+            String updateSettings="update BROWSER_TRACK_SETTINGS set SETTINGS=? where TRACKSETTINGID=?";
+            
+            String delete="delete BROWSER_VIEWS_TRACKS where bvid="+this.id+" and trackid=?";
+            String deleteSetting="delete BROWSER_TRACK_SETTINGS where tracksettingid=?";
+            
+            String[] trackList=tracks.split(";");
+            
+            Connection conn=null;
+            PreparedStatement ps=null;
+            HashMap<String,TrackSettings> hm=new HashMap<String,TrackSettings>();
+           try{
+                conn=pool.getConnection();
+                ps = conn.prepareStatement(queryAll);
+                ResultSet rs = ps.executeQuery();
+                
+                while(rs.next()){
+                    String trClass=rs.getString(1);
+                    int trackID=rs.getInt(3);
+                    int trackSettingID=rs.getInt(4);
+                    int order=rs.getInt(5);
+                    String setting=rs.getString(6);
+                    TrackSettings ts=new TrackSettings(trackID,trackSettingID,order,setting);
+                    hm.put(trClass,ts);
+                }
+                ps.close();
+                for(int i=0;i<trackList.length;i++){
+                    String trackClass=trackList[i].substring(0, trackList[i].indexOf(","));
+                    String setting=trackList[i].substring(trackList[i].indexOf(",")+1);
+                    if(hm.containsKey(trackClass)){//check and update?
+                        TrackSettings ts=hm.get(trackClass);
+                        if(ts.getOrder() != i){
+                            //update browser_view_tracks to change order
+                            PreparedStatement ips = conn.prepareStatement(updateOrder);
+                            ips.setInt(1,i);
+                            ips.setInt(2, ts.getTrackID());
+                            ips.execute();
+                            ips.close();
+                        }
+                        if(!ts.getSettings().equals(setting)){
+                            //update browser_track_settings to change settings
+                            PreparedStatement ips = conn.prepareStatement(updateSettings);
+                            ips.setString(1,setting);
+                            ips.setInt(2, ts.getTrackSettingID());
+                            ips.execute();
+                            ips.close();
+                        }
+                        //mark as processed
+                        ts.markProcessed();
+                    }else{//insert
+                        //get tracksettingid
+                        int newSettingID=getNextTrackSettingID(pool);
+                        int trackID=-1;
+                        ps = conn.prepareStatement(queryTrackID);
+                        ps.setString(1, trackClass);
+                        rs = ps.executeQuery();
+                        if(rs.next()){
+                            trackID=rs.getInt(1);
+                        }
+                        ps.close();
+                        if(trackID>0){
+                            //insert browser view tracks
+                            PreparedStatement ips = conn.prepareStatement(insert);
+                            ips.setInt(1,this.id);
+                            ips.setInt(2, trackID);
+                            ips.setInt(3, newSettingID);
+                            ips.setInt(4, i);
+                            ips.execute();
+                            ips.close();
+                            //insert browser track settings
+                            ips = conn.prepareStatement(insertSettings);
+                            ips.setInt(1,newSettingID);
+                            ips.setString(2, setting);
+                            ips.execute();
+                            ips.close();
+                        }
+                    }
+                }
+                Iterator itr=hm.keySet().iterator();
+                while(itr.hasNext()){
+                    TrackSettings ts=hm.get(itr.next());
+                    if(!ts.isProcessed()){
+                        //delete
+                        ps = conn.prepareStatement(deleteSetting);
+                        ps.setInt(1, ts.getTrackSettingID());
+                        ps.execute();
+                        ps.close();
+                        ps = conn.prepareStatement(delete);
+                        ps.setInt(1, ts.getTrackID());
+                        ps.execute();
+                        ps.close();
+                    }
+                }
+                conn.close();
+                conn=null;
+                success=true;
+            }catch(SQLException e){
+                e.printStackTrace(System.err);
+                Logger log = Logger.getRootLogger();
+                log.error("Error copying View:",e);
+                Email myAdminEmail = new Email();
+                String fullerrmsg=e.getMessage();
+                StackTraceElement[] tmpEx=e.getStackTrace();
+                for(int i=0;i<tmpEx.length;i++){
+                            fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                }
+                myAdminEmail.setSubject("Exception thrown inserting a copied view");
+                myAdminEmail.setContent("There was an error inserting a copied view.\n"+fullerrmsg);
+                try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        throw new RuntimeException();
+                }
+            }finally{
+                try{
+                    if(conn!=null&&!conn.isClosed()){
+                        conn.close();
+                        conn=null;
+                    }
+                }catch(SQLException er){
+
+                }
+            }
+           ret="Completed";
+           if(!success){
+               ret="Error saving view.";
+           }
+        return ret;
+    }
+    
+}
+
+class TrackSettings{
+    private int trackID;
+    private int trackSettingID;
+    private int order;
+    private String settings;
+    private boolean processed=false;
+    
+    TrackSettings(int trackID,int trackSettingID,int order,String settings){
+        this.trackID=trackID;
+        this.trackSettingID=trackSettingID;
+        this.order=order;
+        this.settings=settings;
+        this.processed=false;
+    }
+
+    public int getTrackID() {
+        return trackID;
+    }
+
+    public int getTrackSettingID() {
+        return trackSettingID;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public String getSettings() {
+        return settings;
+    }
+    
+    public boolean isProcessed(){
+        return this.processed;
+    }
+    
+    public void markProcessed(){
+        this.processed=true;
     }
 }

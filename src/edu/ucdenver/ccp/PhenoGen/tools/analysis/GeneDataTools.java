@@ -1191,9 +1191,9 @@ public class GeneDataTools {
    		// perlScriptArguments[0] is "perl" or maybe includes the path??
    		// perlScriptArguments[1] is the filename including directory of the perl script
    		// perlScriptArguments[2] ... are argument inputs to the perl script
-   		/*for (int i=0; i<perlScriptArguments.length; i++){
+   		for (int i=0; i<perlScriptArguments.length; i++){
    			log.debug(i + "::" + perlScriptArguments[i]);
-   		}*/
+   		}
    
         //set environment variables so you can access oracle. Environment variables are pulled from perlEnvironmentVariables which is a comma separated list
         String[] envVar=perlEnvironmentVariables.split(",");

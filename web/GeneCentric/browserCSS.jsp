@@ -235,8 +235,9 @@ table.tooltipTable TD{
 	.ui-menu { position: absolute; width: 100px; }
 	
 	button.viewSelectMenu{
-		height:26px;
+		height:2.3em;
+		/*height:26px;
 		position:relative;
-		top:8px;
+		top:8px;*/
 	}
 </style>

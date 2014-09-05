@@ -907,6 +907,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.isToolTip=0;
 	that.folderName="";
 	that.selectedTrackSetting="";
+	that.trackListHash={};
 	if(levelNumber==0){
 		that.folderName=regionfolderName;
 	}
@@ -929,11 +930,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 	that.getTrack=function (track){
 			var tr;
-			for(var l=0;l<that.trackList.length;l++){
+			tr=that.trackListHash[track];
+			/*for(var l=0;l<that.trackList.length;l++){
 				if(that.trackList[l]!=undefined && that.trackList[l].trackClass==track){
 					tr=that.trackList[l];
 				}
-			}
+			}*/
 			return tr;
 	};
 	that.addTrack=function (track,density,additionalOptions,retry){
@@ -1634,6 +1636,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		if(newTrack!=null){
 				that.trackList[that.trackCount]=newTrack;
 				that.trackCount++;
+				that.trackListHash[newTrack.trackClass]=newTrack;
 				DisplayRegionReport();
 		}
 	};
@@ -1665,6 +1668,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					that.trackCount--;
 				}
 			}
+			that.trackListHash[track]=undefined;
 			DisplayRegionReport();
 	};
 
@@ -2122,11 +2126,16 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	that.generateSettingsString=function(){
 		ret="";
-		for(var i=0;i<that.trackList.length;i++){
+		$("#ScrollLevel"+that.levelNumber+" li.draggable"+that.levelNumber).each(function(){
+			var idStr=new String($(this).attr("id"));
+			idStr=idStr.substr(2);
+			ret=ret+that.trackListHash[idStr].generateTrackSettingString();
+		});
+		/*for(var i=0;i<that.trackList.length;i++){
 			if(that.trackList[i]!=undefined && that.trackList[i].generateTrackSettingString!=undefined){
 				ret=ret+that.trackList[i].generateTrackSettingString();
 			}
-		}
+		}*/
 		return ret;
 	}
 
@@ -2224,17 +2233,48 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	var viewDivTop=that.vis.append("div")
 	.style("float","right")
 	.style("display","inline-block")
-	.style("margin-right","5px")
-	.style("position","relative")
-	.style("top","-8px");
+	.style("margin-right","5px");
 	var viewBtnSpan=viewDivTop.append("div");
 	viewBtnSpan.append("button").attr("id","viewSelect"+that.levelNumber).attr("class","viewSelect").text("Select/Edit Views");
 	viewBtnSpan.append("button").attr("id","viewMenuSelect"+that.levelNumber).attr("class","viewSelectMenu");
+	console.log(navigator.userAgent.toLowerCase());
+	var testChrome=/chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+	var testSafari=/safari/.test(navigator.userAgent.toLowerCase());
+	var testFireFox=/firefox/.test(navigator.userAgent.toLowerCase());
+	var testIE=/(wow|.net)/.test(navigator.userAgent.toLowerCase());
+	console.log("chrome"+testChrome);
+	console.log("safari:"+testSafari);
+	console.log("firefox:"+testFireFox);
+	console.log("IE:"+testIE);
+	if(testChrome){
+		viewDivTop.style("position","relative").style("top","-7px");
+		d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","7px");
+	}else if(testSafari){
+		viewDivTop.style("position","relative").style("top","-2px");
+		d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","-1px");
+	}else if(testFireFox){
+		//nothing
+	}else if(testIE){
+		d3.select("#viewSelect"+that.levelNumber).style("position","relative").style("top","-8px").style("height","2.3em");
+	}
 	var viewDivMenu=viewDivTop.append("ul").attr("id","viewSelectMenu"+that.levelNumber);
-	viewDivMenu.append("li").attr("id","saveView"+that.levelNumber).text("Save");
-	viewDivMenu.append("li").attr("id","saveAsView"+that.levelNumber).text("Save As");
-	viewDivMenu.append("li").attr("id","deleteView"+that.levelNumber).text("Delete");
-	viewDivMenu.append("li").attr("id","resetView"+that.levelNumber).text("Reset");
+	viewDivMenu.append("li").attr("id","menusaveView"+that.levelNumber).text("Save");
+	viewDivMenu.append("li").attr("id","menusaveAsView"+that.levelNumber)
+		.on("click",function(){
+			viewMenu[that.levelNumber].saveAsView(that.currentView);
+			$(".viewsLevel"+that.levelNumber).css("top",250).css("left",$(window).width()-610);
+			$(".viewsLevel"+that.levelNumber).fadeIn("fast");
+		})
+		.text("Save As");
+	viewDivMenu.append("li").attr("id","menudeleteView"+that.levelNumber)
+		.on("click",function(){
+			//viewMenu[that.levelNumber].setSelectedView(that.currentView.ViewID);
+			viewMenu[that.levelNumber].confirmDeleteView(that.currentView);
+			$(".viewsLevel"+that.levelNumber).css("top",250).css("left",$(window).width()-610);
+			$(".viewsLevel"+that.levelNumber).fadeIn("fast");
+		})
+		.text("Delete");
+	//viewDivMenu.append("li").attr("id","menuresetView"+that.levelNumber).text("Reset");
 
 	$("#viewSelect"+that.levelNumber )
       	.button()

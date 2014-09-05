@@ -26,7 +26,7 @@ String desc="";
 String type="";
 String org="AA";
 String disp="displaySelect0=700;";
-boolean status=false;
+int newID=-1;
 
 
 bt.setSession(session);
@@ -52,16 +52,13 @@ if(request.getParameter("organism")!=null){
 }
 
 if(type.equals("blank")){
-	status=bt.createBlankView(name,desc,org,disp);
+	newID=bt.createBlankView(name,desc,org,disp);
 }else{
-	status=bt.createCopiedView(name,desc,org,disp,copyFrom);
+	newID=bt.createCopiedView(name,desc,org,disp,copyFrom);
 }
 
-if(status){
+response.setContentType("application/json");
 %>
-	success
-<%}else{%>
-	failed
-<%}%>
+{"viewID": <%=newID%> }
 
 

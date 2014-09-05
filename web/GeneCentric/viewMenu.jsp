@@ -135,10 +135,29 @@
                         <input type="button" name="createView" id="createView<%=level%>" value="Create View" onClick="return viewMenu[<%=level%>].createNewView(<%=level%>)">
                         </span>
                         <input type="hidden" id="createType<%=level%>" value="blank" />
-                       
+                       	<input type="hidden" id="function<%=level%>" value="create" />
                </div>
            </form>
         </div>
+        <div id="confirmDeleteView<%=level%>" style="width:100%;display:none;border:solid; border-color:#000000; border-width:1px 1px 1px 1px;text-align:left;">
+          	Are you sure you would like to delete the following view?<BR />
+            <BR />
+            <span id="deleteViewName<%=level%>">
+            
+            </span>
+            
+				<BR /><BR />
+                        <span style="float:left; padding-bottom:5px;">
+                        <input type="button" id="cancelDeleteView<%=level%>" value="No" onClick="return viewMenu[<%=level%>].cancelDeleteView(<%=level%>)">
+                        </span>
+                        <span style="float:right;padding-bottom:5px;">
+                        <input type="button" name="createView" id="createView<%=level%>" value="Yes" onClick="return viewMenu[<%=level%>].deleteView(<%=level%>)">
+                        </span>
+                        <BR />
+                        <BR />
+                       
+       </div>
+
 </div>
 
 
