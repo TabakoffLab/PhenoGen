@@ -144,6 +144,11 @@ function TrackMenu(level){
 				}
 				$("td#selectedTrack"+that.level+" #trackListTbl"+that.level+" tbody tr:first").remove();
 				$("td#selectedTrack"+that.level+" #trackListTbl"+that.level+" tbody tr:last").remove();
+				if(d.UserID!=0){
+					$("span#deleteCustomTrack"+that.level).show();
+				}else{
+					$("span#deleteCustomTrack"+that.level).hide();
+				}
 	        }
     	} );
 
@@ -212,9 +217,14 @@ function TrackMenu(level){
 				var obj={};
 				for(k=0;k<params.length;k++){
 					var values=params[k].split("=");
-					obj[values[0]]=values[1];
+					if(values.length<=2){
+						obj[values[0]]=values[1];
+					}else if(values.length>2){
+						var name=params[k].substr(0,params[k].indexOf("="));
+						var value=params[k].substr(params[k].indexOf("=")+1);
+						obj[name]=value;
+					}
 				}
-				console.log(obj);
 				obj.Source="local";
 				if(params.length>3){
 					that.trackList.push(obj);
@@ -269,60 +279,45 @@ function TrackMenu(level){
 		that.generateTrackTable();
 	};
 
+	that.confirmdeleteCustomTrack=function(){
+		var d=that.findSelectedTrack();
+		$("#deleteUsrTrack"+that.level).show();
+		$("#selectTrack"+that.level).hide();
+		
+		var info="Name: <B>"+d.Name+"</B><BR>Description: <B>"+d.Description+"</B><BR>Original File: <B>"+d.OriginalFile+"</B><BR>Setup Date: <B>"+d.SetupDate+"</b>";
+		$("span#customTrackInfo"+that.level).html(info);
+	};
 
-	/*that.generateSettingsDiv=function (d){
-		d3.select("td#selectedTrack"+that.level).select("table#trackListTbl"+that.level).select("tbody").html("");
-		if(d.Controls.length>0 && d.Controls!="null"){
-			var controls=new String(d.Controls).split(",");
-			var table=d3.select("td#selectedTrack"+that.level).select("table#trackListTbl"+that.level).select("tbody");
-			for(var c=0;c<controls.length;c++){
-				if(controls[c]!=undefined && controls[c]!=""){
-					var params=controls[c].split(";");
-					
-					var div=table.append("tr").append("td");
-					var lbl=params[0].substr(5);
-					div.append("text").text(lbl+": ");
-					var def="";
-					if(params.length>3  && params[3].indexOf("Default=")==0){
-						def=params[3].substr(8);
-					}
-					if(params[1].toLowerCase().indexOf("select")==0){
-						var selClass=params[1].split(":");
-						var opts=params[2].split("}");
-						var sel=div.append("select").attr("id",d.TrackClass+"Dense"+that.previewLevel+"Select")
-							.attr("name",selClass[1]);
-						for(var o=0;o<opts.length;o++){
-							var option=opts[o].substr(1).split(":");
-							if(option.length==2){
-								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
-								if(option[1]==def){
-									tmpOpt.attr("selected","selected");
-								}
-							}
-						}
-					}else if(params[1].toLowerCase().indexOf("cbx")==0){
-						var selClass=params[1].split(":");
-						var opts=params[2].split("}");
-						
-						for(var o=0;o<opts.length;o++){
-							var option=opts[o].substr(1).split(":");
-							if(option.length==2){
-								var sel=div.append("input").attr("type","checkbox").attr("id",option[1]+"CBX"+that.previewLevel)
-									.attr("name",selClass[1])
-									.style("margin-left","5px");
-								div.append("text").text(option[0]);
-								//console.log(def+"::"+option[1]);
-								if(def.indexOf(option[1])>-1){
-									$("#"+option[1]+"CBX"+that.previewLevel).prop('checked',true);
-									//sel.attr("checked","checked");
-								}
-							}
-						}
+	that.cancelDeleteTrack=function(){
+		$("#deleteUsrTrack"+that.level).hide();
+		$("#selectTrack"+that.level).show();
+	};
+
+	that.deleteTrack=function(){
+		var d=that.findSelectedTrack();
+		if(d.Source=="local"){
+			//remove from the cookie
+			var toDelete="TrackClass="+d.TrackClass+"<->";
+			if($.cookie("phenogenCustomTracks")!=null){
+				var newTrackString="";
+				var trackStrings=$.cookie("phenogenCustomTracks").split("<;>");
+				for(var j=0;j<trackStrings.length;j++){
+					console.log(trackStrings[j]);
+					if(trackStrings[j].indexOf(toDelete)==-1){
+						newTrackString=newTrackString+trackStrings[j]+"<;>";
 					}
 				}
+				$.cookie("phenogenCustomTracks",newTrackString);
 			}
+		}else if(d.Source=="db"){
+			//remove from the database
+
 		}
-	};*/
+		
+		$("#deleteUsrTrack"+that.level).hide();
+		$("#selectTrack"+that.level).show();
+		that.generateTrackTable();
+	};
 
 	that.confirmUpload=function(){
 		$("div#confirmUpload"+that.level).show();
@@ -463,15 +458,9 @@ function TrackMenu(level){
 			var tmp=new Date();
 			var customTrackStr="TrackID="+trackClass+"<->UserID=-999<->TrackClass="+trackClass+"<->Name="+trackName+"<->Description="+desc+"<->Organism="+org.toUpperCase();
 			customTrackStr=customTrackStr+"<->Settings=<->Order=0<->GenericCategory="+genCat+"<->Category="+cat+"<->Controls="+control+"<->SetupDate="+tmp+"<->Type="+type;
-			//if(type=="bed"||type=="bg"){
-				customTrackStr=customTrackStr+"<->OriginalFile="+prevFile;
-				customTrackStr=customTrackStr+"<->Location="+loc;
-				
-			/*}else if(type=="bw"||type=="bb"){
-				customTrackStr=;
-				customTrackStr=;
-				customTrackStr=;
-			}*/
+			customTrackStr=customTrackStr+"<->OriginalFile="+prevFile;
+			customTrackStr=customTrackStr+"<->Location="+loc;
+
 			customTrackStr=customTrackStr+"<;>";
 			if($.cookie("phenogenCustomTracks")!=null){
 				customTrackStr=$.cookie("phenogenCustomTracks")+customTrackStr;

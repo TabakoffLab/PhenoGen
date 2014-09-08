@@ -41,6 +41,7 @@
                     <TR>
                     	<TD style="vertical-align:middle">
                             <span class="control<%=level%>" style="display:inline-block;" id="addCustomTrack<%=level%>" title="Create a new custom track."><img src="<%=imagesDir%>icons/add_flat.png"style="position:relative;top:-3px;left:-2px;" ></span>
+                            <span class="control<%=level%>" style="display:inline-block;" id="deleteCustomTrack<%=level%>" title="Delete a custom track."><img src="<%=imagesDir%>icons/del_flat_48.png"style="position:relative;top:-3px;left:-2px;" ></span>
                             <span class="addTrack<%=level%> button" style="float:right;">Add Track</span>
                         </TD>
                         
@@ -160,8 +161,6 @@
                             Example: http://phenogen.ucdenver.edu/path/to/your/file<BR />
                             or
                             http://username:password@something.edu/path/to/your/file<BR />
-                            or
-                            ???Google Drive URL or DropBox URL
                             
                         </div>
                         
@@ -214,13 +213,31 @@
                                 <input type="button" name="done" id="done<%=level%>" value="Done" onClick="return done()">
                             </div>
           </div>
-            
+           
 	</div>
+    <div id="deleteUsrTrack<%=level%>" style="width:100%;display:none;border:solid; border-color:#000000; border-width:1px 1px 1px 1px;text-align:left;">
+           		<span>Are you sure you want to delete the following custom track?</span>
+                <BR /><BR />
+                <span id="customTrackInfo<%=level%>"></span>
+                <BR /><BR />
+                        <span style="float:left; padding-bottom:5px;">
+                        <input type="button" id="cancelDeleteTrack<%=level%>" value="No" onClick="return trackMenu[<%=level%>].cancelDeleteTrack(<%=level%>)">
+                        </span>
+                        <span style="float:right;padding-bottom:5px;">
+                        <input type="button"  id="deleteTrack<%=level%>" value="Yes" onClick="return trackMenu[<%=level%>].deleteTrack(<%=level%>)">
+                        </span>
+                        <BR />
+                        <BR />
+           </div>
     <script type="text/javascript" src="<%=mainURL.substring(0,mainURL.length()-10)%>/javascript/jscolor/jscolor.js"></script>
     <script type="text/javascript">
+		$("span#deleteCustomTrack<%=level%>").hide();
 		$("span.addTrack<%=level%>").on("click",function(){
 			viewMenu[<%=level%>].addTrackToView(trackMenu[<%=level%>].findSelectedTrack());
 			trackMenu[<%=level%>].removeTrack(trackMenu[<%=level%>].findSelectedTrack());
+		});
+		$("span#deleteCustomTrack<%=level%>").on("click",function(){
+			trackMenu[<%=level%>].confirmdeleteCustomTrack();
 		});
 		$("#trackTypeSelect<%=level%>").on("change",function(){
 			trackMenu[<%=level%>].generateTrackTable();
