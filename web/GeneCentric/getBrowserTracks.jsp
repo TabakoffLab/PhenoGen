@@ -47,7 +47,8 @@ response.setContentType("application/json");
         "SetupDate":"<%=btrk.getSetupTime()%>",
         "OriginalFile":"<%=btrk.getOriginalFile()%>",
         "Type":"<%=btrk.getType()%>",
-        "Location":"<%=btrk.getLocation()%>"
+        "Location":"<%=btrk.getLocation()%>",
+        "Source": "db"
         }
     <%}%> 
 ]

@@ -120,6 +120,7 @@ function ViewMenu(level){
 				.on("click",function(){
 					var trkID=$(this).attr("name");
 					$('tr#trk'+trkID).insertBefore($("table#trackListTbl"+that.level+" tbody tr:first"));
+					that.findSelectedView().modified=1;
 					that.updateTrackNumber("",$('tr#trk'+trkID));
 				})
 				.on("mouseover",function(){
@@ -132,6 +133,7 @@ function ViewMenu(level){
 				.on("click",function(){
 					var trkID=$(this).attr("name");
 					$('tr#trk'+trkID).insertAfter($("table#trackListTbl"+that.level+" tbody tr:last"));
+					that.findSelectedView().modified=1;
 					that.updateTrackNumber("",$('tr#trk'+trkID));
 				})
 				.on("mouseover",function(){
@@ -148,6 +150,7 @@ function ViewMenu(level){
 					var d=that.findSelectedView();
 					d.TrackList.splice(index,1);
 					that.generateTrackList(d);
+					that.findSelectedView().modified=1;
 					that.generateViewList();
 					that.generatePreview(d);
 					$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
@@ -216,11 +219,11 @@ function ViewMenu(level){
 		loadStateFromString(settingString,d.imgSettings,that.level,svgList[that.level]); 
 		$("span#viewLbl"+that.level).html("View: "+d.Name);
 		if(d.UserID==0){
-			$("li#saveView"+that.level).addClass("ui-state-disabled");
-			$("li#deleteView"+that.level).addClass("ui-state-disabled");
+			$("li#menusaveView"+that.level).addClass("ui-state-disabled");
+			$("li#menudeleteView"+that.level).addClass("ui-state-disabled");
 		}else{
-			$("li#saveView"+that.level).removeClass("ui-state-disabled");
-			$("li#deleteView"+that.level).removeClass("ui-state-disabled");
+			$("li#menusaveView"+that.level).removeClass("ui-state-disabled");
+			$("li#menudeleteView"+that.level).removeClass("ui-state-disabled");
 		}
 	};
 
@@ -414,10 +417,12 @@ function ViewMenu(level){
 							});
 					}
 					if(!$(".trackLevel"+that.level).is(":visible")){
-							var p=$("span#viewsLevel"+that.level).position();
-							var left=-515;
+							var p=$("div.viewsLevel"+that.level).position();
+							//console.log($("div.trackLevel"+that.level)[0].getBoundingClientRect());
+							console.log(p);
+							var left=0;
 							if($(window).width()>=1200){
-								left=-1117;
+								left=-601;
 							}
 							$(".trackLevel"+that.level).css("top",p.top).css("left",p.left+left);
 							var d=that.findSelectedView();
@@ -544,6 +549,10 @@ function ViewMenu(level){
 								ret=ret+"     (Mouse Only)";
 							}
 						}
+
+						if(d.modified!=undefined && d.modified==1){
+							ret=ret+"   (Modified)";
+						}
 						
 						return ret;
 					});
@@ -600,7 +609,11 @@ function ViewMenu(level){
 	    			success: function(data2){
 	    				var newViewID=data2.viewID;
 	    				//save tracks/settings
-	    				var trackList=svgList[that.level].generateSettingsString();
+	    				that.saveView(newViewID,svgList[that.level],false);
+	    				$("div#nameView"+that.level).hide();
+						$("div#selection"+that.level).show();
+						$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
+	    				/*var trackList=svgList[that.level].generateSettingsString();
 	    				if(newViewID>0){
 		    				$.ajax({
 								url:  contextPath +"/"+ pathPrefix +"updateBrowserView.jsp",
@@ -618,19 +631,34 @@ function ViewMenu(level){
 				    			},
 				    			async:   false
 							});
-	    				}
+	    				}*/
 	    			},
 	    			error: function(xhr, status, error) {
 	    				console.log(error);
 	    			},
 	    			async:   false
 				});
-		}else if($("#function"+that.level).val()=="save"){
 		}
 	};
 
-	that.saveView= function(){
-
+	that.saveView= function(viewID,svgImage,async){
+		//save tracks/settings
+		var trackList=svgImage.generateSettingsString();
+		if(viewID>0){
+			$.ajax({
+				url:  contextPath +"/"+ pathPrefix +"updateBrowserView.jsp",
+   				type: 'GET',
+				data: {viewID:viewID,trackList:trackList},
+				dataType: 'json',
+    			success: function(data3){
+    				that.getViewData();
+    			},
+    			error: function(xhr, status, error) {
+    				console.log(error);
+    			},
+    			async:   async
+			});
+		}
 	};
 
 	that.saveAsView=function(viewCopy){
@@ -672,7 +700,7 @@ function ViewMenu(level){
     					that.viewList.splice(ind,1);
 						that.generateViewList();
     				}
-    				$("#topcontrolInfo"+that.level).html(msg);
+    				$("#topcontrolInfo"+that.level).html(data2.status);
     			},
     			error: function(xhr, status, error) {
     				console.log(error);

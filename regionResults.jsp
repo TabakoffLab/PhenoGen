@@ -154,7 +154,7 @@ var dataPrefix="";
                         <div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="../web/images/icons/help.png" /></div>
                   	</TD>
                     <TD style="background-color:#DEDEDE; text-align:center; width:50%;font-size:18px; font-weight:bold; vertical-align: middle;">
-                        <span id="viewLbl0">View:</span><!--<span id="viewModifiedCtl" style="display:none;">(Modified) <span class="control0" ><img src="../web/images/icons/save_24.png" style="position:relative;top:5px;"/></span></span>-->
+                        <span id="viewLbl0">View:</span><span id="viewModifiedCtl0" style="display:none;">(Modified <span class="Imagetooltip" title="This view has been modified.  To save this change you should use the arrow next to Select/Edit Views to Save or Save As..  Otherwise your change will persist only while this window is not refreshed and not left inactive for more than 59 minutes."><img src="../web/images/icons/info.gif" />)</span>
                     </TD>
                     <TD style="background-color:#DEDEDE;">
                         <div id="imageHeader" style=" font-size:12px; float:right;"></div>

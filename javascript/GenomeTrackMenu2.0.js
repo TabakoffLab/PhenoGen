@@ -27,7 +27,6 @@ function TrackMenu(level){
 		var btData=[];
 		var count=0;
 		for(var j=0;j<that.trackList.length;j++){
-			console.log("filter:"+filter+"    uid:"+that.trackList[j].UserID);
 			if(	filter=="all" ||
 				(filter=="allpublic" && that.trackList[j].UserID==0) ||
 				(filter=="custom" && that.trackList[j].UserID!=0) ||
@@ -66,13 +65,21 @@ function TrackMenu(level){
 				.attr("id",function(d){return "trk"+d.TrackID;});
 		tracktbl.each(function(d,i){
 				var addtl="";
+				var local="";
+				if(d.Source=="local"){
+					local=" (Local)";
+				}
 				if(d.UserID!=0){
 					var setup=new String(d.SetupDate);
 					setup=setup.substr(0,setup.indexOf(":",setup.indexOf(":")+1));
-					addtl="<BR><BR>File:"+d.OriginalFile+"<BR>Setup Date:"+setup+"<BR>Type:"+d.Type;
+					addtl="<BR><BR>File:"+d.OriginalFile+"<BR><BR>Setup Date:"+setup+"<BR><BR>Type:"+d.Type;
+					if(d.Source=="local"){
+						addtl=addtl+"<BR><BR>Local Track only available on this computer.";
+					}
 				}
 				var info="  <span class=\"trlisttooltip"+that.level+"\" title= \""+d.Description+addtl+"\"><img src=\""+iconPath+"info.gif\"></span>";
-				d3.select(this).append("td").html(d.Name+info);
+
+				d3.select(this).append("td").html(d.Name+local+info);
 				var org=""
 				if(d.Organism=="RN"){
 					org="Rat";
@@ -187,11 +194,36 @@ function TrackMenu(level){
 						trackInfo[that.trackList[i].TrackClass]=that.trackList[i];
 					}
 				}
+				//if(uid==0){//add cookie based tracks
+				that.readCookieTracks();
+				//}
 				that.dataInitialized=1;
 				that.generateTrackTable();
 
 			}
 		});
+	};
+
+	that.readCookieTracks=function(){
+		if($.cookie("phenogenCustomTracks")!=null){
+			var trackStrings=$.cookie("phenogenCustomTracks").split("<;>");
+			for(var j=0;j<trackStrings.length;j++){
+				var params=trackStrings[j].split("<->");
+				var obj={};
+				for(k=0;k<params.length;k++){
+					var values=params[k].split("=");
+					obj[values[0]]=values[1];
+				}
+				console.log(obj);
+				obj.Source="local";
+				if(params.length>3){
+					that.trackList.push(obj);
+					if(that.level==0){
+						trackInfo[obj.TrackClass]=obj;
+					}
+				}
+			}
+		}
 	};
 
 
@@ -426,23 +458,27 @@ function TrackMenu(level){
     			},
     			async:   false
 			});
-		}
-		//Save to Cookie if not logged in.
-		if(type=="bed"||type=="bg"){
+		}else{
+			//Save to Cookie if not logged in.
 			var tmp=new Date();
-			var trackToAdd=trackClass+",organism="+org+",created="+tmp.toDateString()+",dispTrackName="+$("input#usrtrkNameTxt"+customTrackLevel).val()+",originalFile="+$("input#customUploadFile"+customTrackLevel)[0].files[0].name+",";
-		    if($("#usrtrkColorSelect"+that.level).val()=="Score"){
-				trackToAdd=trackToAdd+"colorBy=Score,";
-				trackToAdd=trackToAdd+"minValue="+$("#usrtrkScoreMinTxt"+that.level).val()+",";
-				trackToAdd=trackToAdd+"maxValue="+$("#usrtrkScoreMaxTxt"+that.level).val()+",";
-				trackToAdd=trackToAdd+"minColor=#"+$("#usrtrkColorMin"+that.level).val()+",";
-				trackToAdd=trackToAdd+"maxColor=#"+$("#usrtrkColorMax"+that.level).val()+",";
-			}else{
-				trackToAdd=trackToAdd+"colorBy=Color,";
+			var customTrackStr="TrackID="+trackClass+"<->UserID=-999<->TrackClass="+trackClass+"<->Name="+trackName+"<->Description="+desc+"<->Organism="+org.toUpperCase();
+			customTrackStr=customTrackStr+"<->Settings=<->Order=0<->GenericCategory="+genCat+"<->Category="+cat+"<->Controls="+control+"<->SetupDate="+tmp+"<->Type="+type;
+			//if(type=="bed"||type=="bg"){
+				customTrackStr=customTrackStr+"<->OriginalFile="+prevFile;
+				customTrackStr=customTrackStr+"<->Location="+loc;
+				
+			/*}else if(type=="bw"||type=="bb"){
+				customTrackStr=;
+				customTrackStr=;
+				customTrackStr=;
+			}*/
+			customTrackStr=customTrackStr+"<;>";
+			if($.cookie("phenogenCustomTracks")!=null){
+				customTrackStr=$.cookie("phenogenCustomTracks")+customTrackStr;
 			}
-		}else if(type=="bw"||type=="bb"){
-
+			$.cookie("phenogenCustomTracks",customTrackStr);
 		}
+		
 		//reset some of the inputs
 		$("div#finished"+that.level).show();
 		$("input#customUploadFile"+that.level).val("");
