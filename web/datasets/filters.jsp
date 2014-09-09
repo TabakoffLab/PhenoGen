@@ -163,6 +163,7 @@
 	//log.debug("durationHash here = "); myDebugger.print(durationHash);
 	String curDate=(String)session.getAttribute("verFilterDate");
 	String curTime=(String)session.getAttribute("verFilterTime");
+	log.debug("curDate:"+curDate+"\nCurTime:"+curTime);
 	String analysisPathPartial = userLoggedIn.getUserGeneListsDir() + 
                        selectedDataset.getNameNoSpaces() + 
                        "_v" +
@@ -171,10 +172,12 @@
 	String analysisPathPlusDate="";
 	String analysisPathPlusDateTime="";
 	if(curDate!=null&&!curDate.equals("")&&curTime!=null&&!curTime.equals("")){
+		log.debug("Using stored values");
 		analysisPathPlusDate = analysisPathPartial + curDate + "/";
 		analysisPathPlusDateTime = analysisPathPlusDate + curTime + "/";
         analysisPath = analysisPathPlusDateTime;
 	}else{
+		log.debug("CREATING NEW VALUES");
 		java.util.Date d=new java.util.Date();
 		curDate=DateTimeFormatter.getFormattedDate(d,null);
     	curTime=DateTimeFormatter.getFormattedTime(d,null,true);
