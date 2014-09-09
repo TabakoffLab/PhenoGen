@@ -119,6 +119,63 @@ public class BrowserTrack{
         return ret;
     }
 
+        public BrowserTrack getBrowserTrack(int trackid,DataSource pool){
+        Logger log=Logger.getRootLogger();
+        BrowserTrack ret=null;
+        
+        String query="select * from BROWSER_TRACKS "+
+                        "where trackid="+trackid;
+            Connection conn=null;
+            PreparedStatement ps=null;
+            try {
+                conn=pool.getConnection();
+                ps = conn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery();
+                //int count=0;
+                if(rs.next()){
+                    int tid=rs.getInt(1);
+                    int uid=rs.getInt(2);
+                    String tclass=rs.getString(3);
+                    String name=rs.getString(4);
+                    String desc=rs.getString(5);
+                    String org=rs.getString(6);
+                    String genCat=rs.getString(7);
+                    String cat=rs.getString(8);
+                    String controls=rs.getString(9);
+                    boolean vis=rs.getBoolean(10);
+                    String location=rs.getString(11);
+                    Timestamp t=rs.getTimestamp(12);
+                    String file=rs.getString(13);
+                    String type=rs.getString(14);
+                    ret=new BrowserTrack(tid,uid,tclass,name,desc,org,"",0,genCat,cat,controls,vis,location,file,type,t);
+                }
+                
+                ps.close();
+                conn.close();
+                conn=null;
+            } catch (SQLException ex) {
+                log.error("SQL Exception retreiving browser views:" ,ex);
+                try {
+                    ps.close();
+                } catch (Exception ex1) {
+                   
+                }
+            } finally{
+                if(conn!=null){
+                    try{
+                        conn.close();
+                        conn=null;
+                    }catch(SQLException e){
+                        
+                    }
+                    conn=null;
+                }
+            }
+            
+            
+        return ret;
+    }
+    
     public String getControls() {
         return controls;
     }

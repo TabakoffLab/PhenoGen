@@ -342,7 +342,7 @@ function TrackMenu(level){
     			async:   false
 			});
 		}
-		
+		that.getTrackData();
 		$("#deleteUsrTrack"+that.level).hide();
 		$("#selectTrack"+that.level).show();
 		that.generateTrackTable();

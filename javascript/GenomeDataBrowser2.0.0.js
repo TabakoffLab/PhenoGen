@@ -2257,7 +2257,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		.on("click",function(){
 			viewMenu[that.levelNumber].saveView(that.currentView.ViewID,that,false);
 			//remove modified labels
-
+			$("#viewModifiedCtl"+that.level).hide();
 		})
 		.text("Save");
 	viewDivMenu.append("li").attr("id","menusaveAsView"+that.levelNumber)

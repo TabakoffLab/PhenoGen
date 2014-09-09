@@ -8,8 +8,8 @@ import="org.json.*" %>
 	String status="Failure";
 	
 	String id="";
-	if(request.getParameter("id")!=null){
-		id=request.getParameter("id").trim();
+	if(request.getParameter("trackID")!=null){
+		id=request.getParameter("trackID").trim();
 		log.debug("delete id:"+id);
 		if(id.startsWith("custom")){
 			id=id.substring(6);
