@@ -784,13 +784,13 @@ public class Resource {
                 bnlxFileList[0]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx1.smRNA.bam");
                 bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx2.smRNA.bam");
                 bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx3.smRNA.bam");
-                resourceList.add(new Resource(56, "Rat", "BN-Lx/CubPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", bnlxFileList ));
+                resourceList.add(new Resource(56, "Rat", "BN-Lx/CubPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","50 bp single-end", bnlxFileList ));
         	
                 shrhFileList = new SAMDataFile[3];
                 shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Small/SHR1.smRNA.bam");
                 shrhFileList[1]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/Small/SHR2.smRNA.bam");
                 shrhFileList[2]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/Small/SHR3.smRNA.bam");
-                resourceList.add(new Resource(57, "Rat", "SHR/OlaIpcvPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", shrhFileList ));
+                resourceList.add(new Resource(57, "Rat", "SHR/OlaIpcvPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","50 bp single-end", shrhFileList ));
                 
                 SAMDataFile[] helicosBNLXFileList = new SAMDataFile[3];
                 helicosBNLXFileList[0]=new SAMDataFile("BN-Lx Sample #1 BED File",seqFilePath+"Aligned/Helicos/BNLX1.Helicos.bed.zip");
