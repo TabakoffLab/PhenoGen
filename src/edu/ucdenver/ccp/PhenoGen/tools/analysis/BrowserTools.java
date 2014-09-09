@@ -1,10 +1,11 @@
 package edu.ucdenver.ccp.PhenoGen.tools.analysis;
 
 
-import edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserView;
-import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import edu.ucdenver.ccp.PhenoGen.data.User;
+import edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserView;
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler;
+import edu.ucdenver.ccp.PhenoGen.web.mail.*;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +22,7 @@ public class BrowserTools{
     private DataSource pool=null;
     private HttpSession session = null;
     private Logger log=null;
+    private String fullPath="";
     
     public BrowserTools(){
         log=Logger.getRootLogger();
@@ -35,6 +37,9 @@ public class BrowserTools{
     public void setSession(HttpSession session){
         this.session=session;
         this.pool= (DataSource) session.getAttribute("dbPool");
+        String contextRoot = (String) session.getAttribute("contextRoot");
+        String appRoot = (String) session.getAttribute("applicationRoot");
+        this.fullPath = appRoot + contextRoot;
     }
     
     public ArrayList<BrowserView> getBrowserViews(){
@@ -178,5 +183,33 @@ public class BrowserTools{
                 
             }
         }
+    }
+    
+    public String deleteCustomTrack(int id){
+        String ret="";
+        BrowserTrack bt= new BrowserTrack();
+        BrowserTrack toDelete=bt.getBrowserTrack(id,pool);
+        int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
+        if(toDelete!=null){
+            if(toDelete.getUserID()==userID&&toDelete.getUserID()>0){
+                boolean success=bt.deleteTrack(id,pool);
+                if(success){
+                    ret="Deleted Successfully";
+                    if(toDelete.getType().equals("bed")||toDelete.getType().equals("bg")){
+                        //delete files too
+                        File source=new File(fullPath+"tmpData/trackUpload/"+toDelete.getLocation());
+                        File dest=new File(fullPath+"tmpData/toDelete/"+toDelete.getLocation());
+                        source.renameTo(dest);
+                    }
+                }else{
+                    ret="An Error occurred the track was not deleted.";
+                }
+            }else{
+                ret="Delete View:Permission Denied";
+            }
+        }else{
+            ret="View not found.";
+        }
+        return ret;
     }
 }

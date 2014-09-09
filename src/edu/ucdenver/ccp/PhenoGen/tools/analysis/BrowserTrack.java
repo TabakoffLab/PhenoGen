@@ -345,4 +345,56 @@ public class BrowserTrack{
         
         return success;
     }
+    
+    public boolean deleteTrack(int trackid,DataSource pool){
+        Logger log=Logger.getRootLogger();
+        boolean ret=false;
+        
+        String settings="delete from BROWSER_TRACK_SETTINGS "+
+                        "where tracksettingid in (select tracksettingid from browser_views_tracks where "+
+                        "trackid="+trackid+" )";
+        String trackquery="delete from browser_views_tracks where trackid="+trackid;
+        String viewquery="delete from browser_tracks where trackid="+trackid;
+                       
+            Connection conn=null;
+            PreparedStatement ps=null;
+            try {
+                conn=pool.getConnection();
+                conn.setAutoCommit(false);
+                ps = conn.prepareStatement(settings);
+                ps.executeUpdate();
+                ps.close();
+                ps = conn.prepareStatement(trackquery);
+                ps.executeUpdate();
+                ps.close();
+                ps = conn.prepareStatement(viewquery);
+                ps.executeUpdate();
+                ps.close();
+                conn.commit();
+                conn.close();
+                conn=null;
+                ret=true;
+            } catch (SQLException ex) {
+                log.error("SQL Exception deleting custom track:" ,ex);
+                try {
+                    conn.rollback();
+                    ps.close();
+                   
+                } catch (Exception ex1) {
+                }
+            } finally{
+                if(conn!=null){
+                    try{
+                        conn.close();
+                        conn=null;
+                    }catch(SQLException e){
+                        
+                    }
+                    conn=null;
+                }
+            }
+            
+            
+        return ret;
+    }
 }

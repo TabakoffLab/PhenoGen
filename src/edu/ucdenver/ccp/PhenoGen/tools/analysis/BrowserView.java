@@ -203,7 +203,7 @@ public class BrowserView{
             
         return ret;
     }
-     public boolean deleteView(int viewid,DataSource pool){
+    public boolean deleteView(int viewid,DataSource pool){
         Logger log=Logger.getRootLogger();
         boolean ret=false;
         

@@ -307,11 +307,40 @@ function TrackMenu(level){
 						newTrackString=newTrackString+trackStrings[j]+"<;>";
 					}
 				}
-				$.cookie("phenogenCustomTracks",newTrackString);
+				$.ajax({
+					url:  contextPath +"/"+ pathPrefix +"removeCustomTrack.jsp",
+	   				type: 'GET',
+					data: {trackID:d.TrackID},
+					dataType: 'json',
+	    			success: function(data2){
+	    				$.cookie("phenogenCustomTracks",newTrackString);
+	    			},
+	    			error: function(xhr, status, error) {
+	    				console.log(error);
+	    			},
+	    			async:   false
+				});
 			}
 		}else if(d.Source=="db"){
 			//remove from the database
-
+			$.ajax({
+				url:  contextPath +"/"+ pathPrefix +"deleteTrack.jsp",
+   				type: 'GET',
+				data: {trackID:d.TrackID},
+				dataType: 'json',
+    			success: function(data2){
+    				console.log("add track status:"+data2.success);
+    				if(data2.success=="true"){
+    					$(".uploadStatus").html("<B>Track Setup Successfully</B>");
+    				}else{
+    					$(".uploadStatus").html("<B>Track Setup Failed</B>");
+    				}
+    			},
+    			error: function(xhr, status, error) {
+    				console.log(error);
+    			},
+    			async:   false
+			});
 		}
 		
 		$("#deleteUsrTrack"+that.level).hide();

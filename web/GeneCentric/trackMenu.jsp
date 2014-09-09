@@ -216,7 +216,7 @@
            
 	</div>
     <div id="deleteUsrTrack<%=level%>" style="width:100%;display:none;border:solid; border-color:#000000; border-width:1px 1px 1px 1px;text-align:left;">
-           		<span>Are you sure you want to delete the following custom track?</span>
+           		<span>Deleting the track will automatically remove it from any view and it will no longer be avaialble.  Are you sure you want to delete the following custom track?</span>
                 <BR /><BR />
                 <span id="customTrackInfo<%=level%>"></span>
                 <BR /><BR />
