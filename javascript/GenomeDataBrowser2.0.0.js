@@ -2265,6 +2265,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			viewMenu[that.levelNumber].saveAsView(that.currentView);
 			$(".viewsLevel"+that.levelNumber).css("top",250).css("left",$(window).width()-610);
 			$(".viewsLevel"+that.levelNumber).fadeIn("fast");
+			$("#viewModifiedCtl"+that.level).hide();
+			//TODO: still need to make it load the new view instead of using the old view.
 		})
 		.text("Save As");
 	viewDivMenu.append("li").attr("id","menudeleteView"+that.levelNumber)

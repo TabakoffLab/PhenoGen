@@ -572,92 +572,102 @@ function ViewMenu(level){
 	};
 
 	that.createNewView = function(){
-		if($("#function"+that.level).val()=="create"){
-			var name=$("input#viewNameTxt"+that.level).val();
-			var desc=$("#viewDescTxt"+that.level).val();
-			var type=$("input#createType"+that.level).val();
-			var copyID=-1;
-			if(type=="copy"){
-				copyID=that.findSelectedView().ViewID;
+		if(uid>0){
+			if($("#function"+that.level).val()=="create"){
+				var name=$("input#viewNameTxt"+that.level).val();
+				var desc=$("#viewDescTxt"+that.level).val();
+				var type=$("input#createType"+that.level).val();
+				var copyID=-1;
+				if(type=="copy"){
+					copyID=that.findSelectedView().ViewID;
+				}
+				$.ajax({
+						url:  contextPath +"/"+ pathPrefix +"createBrowserViews.jsp",
+		   				type: 'GET',
+						data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
+						dataType: 'json',
+		    			success: function(data2){
+		    				that.getViewData();
+		    				$("div#nameView"+that.level).hide();
+							$("div#selection"+that.level).show();
+							$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
+		    			},
+		    			error: function(xhr, status, error) {
+		    				console.log(error);
+		    			},
+		    			async:   false
+					});
+			}else if($("#function"+that.level).val()=="saveAs"){
+				var name=$("input#viewNameTxt"+that.level).val();
+				var desc=$("#viewDescTxt"+that.level).val();
+				var type="blank";
+				var copyID=-1;
+				$.ajax({
+						url:  contextPath +"/"+ pathPrefix +"createBrowserViews.jsp",
+		   				type: 'GET',
+						data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
+						dataType: 'json',
+		    			success: function(data2){
+		    				var newViewID=data2.viewID;
+		    				//save tracks/settings
+		    				that.saveView(newViewID,svgList[that.level],false);
+		    				$("div#nameView"+that.level).hide();
+							$("div#selection"+that.level).show();
+							$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
+		    				/*var trackList=svgList[that.level].generateSettingsString();
+		    				if(newViewID>0){
+			    				$.ajax({
+									url:  contextPath +"/"+ pathPrefix +"updateBrowserView.jsp",
+					   				type: 'GET',
+									data: {viewID:newViewID,trackList:trackList},
+									dataType: 'json',
+					    			success: function(data3){
+					    				that.getViewData();
+					    				$("div#nameView"+that.level).hide();
+										$("div#selection"+that.level).show();
+										$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
+					    			},
+					    			error: function(xhr, status, error) {
+					    				console.log(error);
+					    			},
+					    			async:   false
+								});
+		    				}*/
+		    			},
+		    			error: function(xhr, status, error) {
+		    				console.log(error);
+		    			},
+		    			async:   false
+					});
 			}
-			$.ajax({
-					url:  contextPath +"/"+ pathPrefix +"createBrowserViews.jsp",
-	   				type: 'GET',
-					data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
-					dataType: 'json',
-	    			success: function(data2){
-	    				that.getViewData();
-	    				$("div#nameView"+that.level).hide();
-						$("div#selection"+that.level).show();
-						$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
-	    			},
-	    			error: function(xhr, status, error) {
-	    				console.log(error);
-	    			},
-	    			async:   false
-				});
-		}else if($("#function"+that.level).val()=="saveAs"){
-			var name=$("input#viewNameTxt"+that.level).val();
-			var desc=$("#viewDescTxt"+that.level).val();
-			var type="blank";
-			var copyID=-1;
-			$.ajax({
-					url:  contextPath +"/"+ pathPrefix +"createBrowserViews.jsp",
-	   				type: 'GET',
-					data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
-					dataType: 'json',
-	    			success: function(data2){
-	    				var newViewID=data2.viewID;
-	    				//save tracks/settings
-	    				that.saveView(newViewID,svgList[that.level],false);
-	    				$("div#nameView"+that.level).hide();
-						$("div#selection"+that.level).show();
-						$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
-	    				/*var trackList=svgList[that.level].generateSettingsString();
-	    				if(newViewID>0){
-		    				$.ajax({
-								url:  contextPath +"/"+ pathPrefix +"updateBrowserView.jsp",
-				   				type: 'GET',
-								data: {viewID:newViewID,trackList:trackList},
-								dataType: 'json',
-				    			success: function(data3){
-				    				that.getViewData();
-				    				$("div#nameView"+that.level).hide();
-									$("div#selection"+that.level).show();
-									$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
-				    			},
-				    			error: function(xhr, status, error) {
-				    				console.log(error);
-				    			},
-				    			async:   false
-							});
-	    				}*/
-	    			},
-	    			error: function(xhr, status, error) {
-	    				console.log(error);
-	    			},
-	    			async:   false
-				});
+		}else{
+			//save view to cookie
+			if()
 		}
 	};
 
 	that.saveView= function(viewID,svgImage,async){
-		//save tracks/settings
-		var trackList=svgImage.generateSettingsString();
-		if(viewID>0){
-			$.ajax({
-				url:  contextPath +"/"+ pathPrefix +"updateBrowserView.jsp",
-   				type: 'GET',
-				data: {viewID:viewID,trackList:trackList},
-				dataType: 'json',
-    			success: function(data3){
-    				that.getViewData();
-    			},
-    			error: function(xhr, status, error) {
-    				console.log(error);
-    			},
-    			async:   async
-			});
+		if(uid>0){
+			//save tracks/settings
+			var trackList=svgImage.generateSettingsString();
+			if(viewID>0){
+				$.ajax({
+					url:  contextPath +"/"+ pathPrefix +"updateBrowserView.jsp",
+	   				type: 'GET',
+					data: {viewID:viewID,trackList:trackList},
+					dataType: 'json',
+	    			success: function(data3){
+	    				that.getViewData();
+	    			},
+	    			error: function(xhr, status, error) {
+	    				console.log(error);
+	    			},
+	    			async:   async
+				});
+			}
+		}else{
+			//save to cookie
+
 		}
 	};
 

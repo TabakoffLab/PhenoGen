@@ -38,6 +38,7 @@ response.setContentType("application/json");
             "Description": "<%=bv.getDescription()%>",
             "Organism":"<%=bv.getOrganism()%>",
             "imgSettings" : "<%=bv.getImageSettings()%>",
+            "Source":"db",
             "TrackList":
             	[
             		<% ArrayList<BrowserTrack> btrks=bv.getTracks();
