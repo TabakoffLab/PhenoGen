@@ -231,6 +231,7 @@
            </div>
     <script type="text/javascript" src="<%=mainURL.substring(0,mainURL.length()-10)%>/javascript/jscolor/jscolor.js"></script>
     <script type="text/javascript">
+		trackMenu[<%=level%>]=TrackMenu(<%=level%>);
 		$("span#deleteCustomTrack<%=level%>").hide();
 		$("span.addTrack<%=level%>").on("click",function(){
 			viewMenu[<%=level%>].addTrackToView(trackMenu[<%=level%>].findSelectedTrack());

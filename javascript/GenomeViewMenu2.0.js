@@ -288,6 +288,7 @@ function ViewMenu(level){
 						that.viewList.push(d[i]);
 					}
 				}
+				that.readCookieViews();
 				that.generateViewList();
 				if(that.initialized==0 && that.level==0){
 					that.initialized=1;
@@ -297,6 +298,73 @@ function ViewMenu(level){
 		});
 	};
 
+	that.readCookieViews=function(){
+		console.log(trackInfo);
+		var viewString="";
+		if(isLocalStorage() === true){
+			var cur=localStorage.getItem("phenogenCustomViews");
+			if(cur!=undefined){
+				viewString=cur;
+			}
+		}else{
+			if($.cookie("phenogenCustomViews")!=null){
+				viewString=$.cookie("phenogenCustomViews");
+			}
+		}
+		if(viewString!=null&&viewString.indexOf("<///>")>-1){
+			var viewStrings=viewString.split("<///>");
+			for(var j=0;j<viewStrings.length;j++){
+				var params=viewStrings[j].split("</>");
+				var obj={};
+				for(k=0;k<params.length;k++){
+					var values=params[k].split("=");
+					if(values[0]=="TrackSettingList"){
+						var trList=values[1].split(";");
+						obj.TrackList=[];
+						for(var m=0;m<trList.length;m++){
+							if(trList[m].length>0){
+								var tc=trList[m].substr(0,trList[m].indexOf(","));
+								var set=trList[m].substr(trList[m].indexOf(",")+1);
+								var track={};
+								track.TrackClass=tc;
+								track.Settings=set;
+								track.Order=m;
+								obj.TrackList.push(track);
+							}
+						}
+					}else if(values.length<=2){
+						obj[values[0]]=values[1];
+					}else if(values.length>2){
+						var name=params[k].substr(0,params[k].indexOf("="));
+						var value=params[k].substr(params[k].indexOf("=")+1);
+						obj[name]=value;
+					}
+				}
+				obj.Source="local";
+				if(params.length>3){
+					var orgCount=0;
+					for(var k=0;k<obj.TrackList.length;k++){
+						console.log(obj.TrackList[k].TrackClass);
+						var sourceTrack=trackInfo[obj.TrackList[k].TrackClass];
+						obj.TrackList[k].TrackID=sourceTrack.TrackID;
+						obj.TrackList[k].UserID=sourceTrack.UserID;
+						obj.TrackList[k].Name=sourceTrack.Name;
+						obj.TrackList[k].Description=sourceTrack.Description;
+						obj.TrackList[k].Organism=sourceTrack.Organism;
+						obj.TrackList[k].Controls=sourceTrack.Controls;
+						var tmp=obj.TrackList[k];
+						if(tmp.Organism=="AA"||tmp.Organism==that.curOrg){
+							orgCount++;
+						}
+					}
+					obj.orgCount=orgCount;
+					console.log("pushed object");
+					console.log(obj);
+					that.viewList.push(obj);
+				}
+			}
+		}
+	};
 
 	that.generateSettingStringFromView=function(view){
 		var ret=""
@@ -306,6 +374,7 @@ function ViewMenu(level){
 		}
 		return ret;
 	};
+
 	that.selectChange=function(){
 					var append="";
 					var d=that.findSelectedView();
@@ -334,7 +403,7 @@ function ViewMenu(level){
 		that.generateViewList();
 		var ind=that.findDisplayedIndex(id);
 		$("#viewSelect"+that.level).prop("selectedIndex",ind);
-	}
+	};
 
 	that.findSelectedView=function (){
 		var id=$("#viewSelect"+that.level).val();
@@ -346,6 +415,7 @@ function ViewMenu(level){
 		}
 		return d;
 	};
+
 	that.findSelectedViewIndex=function(){
 		var id=$("#viewSelect"+that.level).val();
 		var d=NaN;
@@ -356,6 +426,7 @@ function ViewMenu(level){
 		}
 		return d;
 	};
+
 	that.findDisplayedIndex=function(id){
 		var ind=NaN;
 		for(var i=0;i<that.filterList.length&&isNaN(ind);i++){
@@ -393,7 +464,7 @@ function ViewMenu(level){
 	that.setupControls=function(){
 		if(level>-1){
 			$(".control"+that.level+"#addTrack"+that.level).on("click",function(){
-				if($(".trackList"+that.level).length==0){
+				/*if($(".trackList"+that.level).length==0){
 						var tmpContext=contextPath +"/"+ pathPrefix;
 						if(pathPrefix==""){
 							tmpContext="";
@@ -415,7 +486,7 @@ function ViewMenu(level){
 				    			},
 				    			async:   false
 							});
-					}
+					}*/
 					if(!$(".trackLevel"+that.level).is(":visible")){
 							var p=$("div.viewsLevel"+that.level).position();
 							//console.log($("div.trackLevel"+that.level)[0].getBoundingClientRect());
@@ -642,7 +713,55 @@ function ViewMenu(level){
 			}
 		}else{
 			//save view to cookie
-			if()
+			var name=$("input#viewNameTxt"+that.level).val();
+			var desc=$("#viewDescTxt"+that.level).val();
+			var type=$("input#createType"+that.level).val();
+			//create a new view
+			var newView="";
+			var viewID=$.cookie("JSESSIONID");
+			var curTime=new Date().getTime();
+			viewID=viewID+"_"+curTime;
+			newView="ViewID="+viewID+"</>UserID=-999</>Name="+name+"</>Description="+desc+"</>Organism="+organism.toUpperCase()+"</>imgSettings=displaySelect0=700;</>TrackSettingList=";
+			
+			if($("#function"+that.level).val()=="saveAs"){//save tracks to new view or copy
+				var trackList=svgList[that.level].generateSettingsString();
+				newView=newView+trackList;
+				console.log("tracklist part:"+trackList);
+			}else if(type=="copy"){
+				var trackList="";
+				var sourceTracks=that.findSelectedView().TrackList;
+				for(var k=0;k<sourceTracks.length;k++){
+					trackList=trackList+sourceTracks[k].TrackClass+","+sourceTracks[k].Settings+";";
+				}
+				newView=newView+trackList;
+				console.log("tracklist part:"+trackList);
+			}
+			
+			newView=newView+"<///>";
+
+			console.log("Saving View:"+newView);
+
+			if(isLocalStorage() === true){
+				var cur=localStorage.getItem("phenogenCustomViews");
+				if(cur!=undefined){
+					localStorage.setItem("phenogenCustomViews",cur+newView);
+				}else{
+					localStorage.setItem("phenogenCustomViews",newView);
+				}
+			}else{
+				var cookieStr="";
+				if($.cookie("phenogenCustomViews")!=null){
+					cookieStr=$.cookie("phenogenCustomViews")+newView;
+				}else{
+					cookieStr=newView;
+				}
+				$.cookie("phenogenCustomViews",cookieStr);
+			}
+
+			that.getViewData();
+		    $("div#nameView"+that.level).hide();
+			$("div#selection"+that.level).show();
+			$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
 		}
 	};
 
@@ -666,8 +785,34 @@ function ViewMenu(level){
 				});
 			}
 		}else{
-			//save to cookie
-
+			//save to cookie or localStorage
+			var cookieStr="";
+			var newCookie="";
+			if(isLocalStorage() === true){
+				var cur=localStorage.getItem("phenogenCustomViews");
+				if(cur!=undefined){
+					cookieStr=cur;
+				}
+			}else{
+				if($.cookie("phenogenCustomViews")!=null){
+					cookieStr=$.cookie("phenogenCustomViews");
+				}
+			}
+			var cookieList=cookieStr.split("<///>");
+			for(var l=0;l<cookieList.length;l++){
+				if(cookieList[l].indexOf("ViewID="+viewID)>-1){
+					var begining=cookieList[l].substr(0,cookieList[l].indexOf("</>TrackSettingList="));
+					var list=svgImage.generateSettingsString();
+					newCookie=newCookie+begining+"</>TrackSettingList="+list+"<///>";
+				}else{
+					newCookie=newCookie+cookieList+"<///>";
+				}
+			}
+			if(isLocalStorage() === true){
+				localStorage.setItem("phenogenCustomViews",newCookie);
+			}else{
+				$.cookie("phenogenCustomViews",newCookie);
+			}
 		}
 	};
 
@@ -684,7 +829,7 @@ function ViewMenu(level){
 		if(that.findSelectedView().ViewID!=toDelete.ViewID){
 			that.setSelectedView(toDelete.ViewID);
 		}
-		if(toDelete.UserID>0){
+		if(toDelete.UserID>0||toDelete.UserID==-999){
 			$("div#selection"+that.level).hide();
 			$("#deleteViewName"+that.level).html(toDelete.Name+"    ("+toDelete.orgCount+ " tracks)");
 			$("#confirmDeleteView"+that.level).show();
@@ -697,27 +842,57 @@ function ViewMenu(level){
 		$("#confirmDeleteView"+that.level).hide();
 		$("div#selection"+that.level).show();
 	};
+
 	that.deleteView = function(){
 		var ind=that.findSelectedViewIndex();
 		var d=that.viewList[ind];
-		$.ajax({
-				url:  contextPath +"/"+ pathPrefix +"deleteView.jsp",
-   				type: 'GET',
-				data: {viewID:d.ViewID},
-				dataType: 'json',
-    			success: function(data2){
-    				if(data2.status=="Deleted Successfully"){
-    					that.viewList.splice(ind,1);
-						that.generateViewList();
-    				}
-    				$("#topcontrolInfo"+that.level).html(data2.status);
-    			},
-    			error: function(xhr, status, error) {
-    				console.log(error);
-    				$("#topcontrolInfo"+that.level).html("There was an error deleting this view.");
-    			},
-    			async:   true
-			});
+		if(d.Source=="db"){
+			$.ajax({
+					url:  contextPath +"/"+ pathPrefix +"deleteView.jsp",
+	   				type: 'GET',
+					data: {viewID:d.ViewID},
+					dataType: 'json',
+	    			success: function(data2){
+	    				if(data2.status=="Deleted Successfully"){
+	    					that.viewList.splice(ind,1);
+							that.generateViewList();
+	    				}
+	    				$("#topcontrolInfo"+that.level).html(data2.status);
+	    			},
+	    			error: function(xhr, status, error) {
+	    				console.log(error);
+	    				$("#topcontrolInfo"+that.level).html("There was an error deleting this view.");
+	    			},
+	    			async:   true
+				});
+		}else{
+			var cookieStr="";
+			var newCookie="";
+			
+			if(isLocalStorage() === true){
+				var cur=localStorage.getItem("phenogenCustomViews");
+				if(cur!=undefined){
+					cookieStr=cur;
+				}
+			}else{
+				if($.cookie("phenogenCustomViews")!=null){
+					cookieStr=$.cookie("phenogenCustomViews");
+				}
+			}
+			var cookieList=cookieStr.split("<///>");
+			for(var l=0;l<cookieList.length;l++){
+				if(cookieList[l].indexOf("ViewID="+d.ViewID)>-1){
+
+				}else{
+					newCookie=newCookie+cookieList+"<///>";
+				}
+			}
+			if(isLocalStorage() === true){
+				localStorage.setItem("phenogenCustomViews",newCookie);
+			}else{
+				$.cookie("phenogenCustomViews",newCookie);
+			}
+		}
 		$("#confirmDeleteView"+that.level).hide();
 		$("div#selection"+that.level).show();
 	};

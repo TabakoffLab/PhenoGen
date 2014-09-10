@@ -173,6 +173,7 @@ function TrackMenu(level){
 		}
 		return ret;
 	};
+
 	that.getTrackTableHeight=function (btData){
 		var ret="300px";
 		if(btData.length==0){
@@ -210,8 +211,19 @@ function TrackMenu(level){
 	};
 
 	that.readCookieTracks=function(){
-		if($.cookie("phenogenCustomTracks")!=null){
-			var trackStrings=$.cookie("phenogenCustomTracks").split("<;>");
+		var trackString="";
+		if(isLocalStorage() === true){
+			var cur=localStorage.getItem("phenogenCustomTracks");
+			if(cur!=undefined){
+				trackString=cur;
+			}
+		}else{
+			if($.cookie("phenogenCustomTracks")!=null){
+				trackString=$.cookie("phenogenCustomTracks");
+			}
+		}
+		if(trackString!=null && trackString.indexOf("<;>")>-1){
+			var trackStrings=trackString.split("<;>");
 			for(var j=0;j<trackStrings.length;j++){
 				var params=trackStrings[j].split("<->");
 				var obj={};
@@ -298,11 +310,22 @@ function TrackMenu(level){
 		if(d.Source=="local"){
 			//remove from the cookie
 			var toDelete="TrackClass="+d.TrackClass+"<->";
-			if($.cookie("phenogenCustomTracks")!=null){
+			var trackString="";
+			if(isLocalStorage() === true){
+				var cur=localStorage.getItem("phenogenCustomTracks");
+				if(cur!=undefined){
+					trackString=cur;
+				}
+			}else{
+				if($.cookie("phenogenCustomTracks")!=null){
+					trackString=$.cookie("phenogenCustomTracks");
+				}
+			}
+			if(trackString!=null && trackString.indexOf("<;>")>-1){
 				var newTrackString="";
-				var trackStrings=$.cookie("phenogenCustomTracks").split("<;>");
+				var trackStrings=trackString.split("<;>");
 				for(var j=0;j<trackStrings.length;j++){
-					console.log(trackStrings[j]);
+					//console.log(trackStrings[j]);
 					if(trackStrings[j].indexOf(toDelete)==-1){
 						newTrackString=newTrackString+trackStrings[j]+"<;>";
 					}
@@ -313,7 +336,11 @@ function TrackMenu(level){
 					data: {trackID:d.TrackID},
 					dataType: 'json',
 	    			success: function(data2){
-	    				$.cookie("phenogenCustomTracks",newTrackString);
+	    				if(isLocalStorage() === true){
+	    					localStorage.setItem("phenogenCustomTracks",newTrackString);
+	    				}else{
+	    					$.cookie("phenogenCustomTracks",newTrackString);
+	    				}
 	    			},
 	    			error: function(xhr, status, error) {
 	    				console.log(error);
@@ -491,10 +518,19 @@ function TrackMenu(level){
 			customTrackStr=customTrackStr+"<->Location="+loc;
 
 			customTrackStr=customTrackStr+"<;>";
-			if($.cookie("phenogenCustomTracks")!=null){
-				customTrackStr=$.cookie("phenogenCustomTracks")+customTrackStr;
+			if(isLocalStorage() === true){
+				var cur=localStorage.getItem("phenogenCustomTracks");
+				if(cur!=undefined){
+					customTrackStr=cur+customTrackStr;
+				}
+				localStorage.setItem("phenogenCustomTracks",customTrackStr);
+			}else{
+				if($.cookie("phenogenCustomTracks")!=null){
+					customTrackStr=$.cookie("phenogenCustomTracks")+customTrackStr;
+				}
+				$.cookie("phenogenCustomTracks",customTrackStr);
 			}
-			$.cookie("phenogenCustomTracks",customTrackStr);
+			$(".uploadStatus").html("<B>Track Setup Successfully</B>");
 		}
 		
 		//reset some of the inputs
