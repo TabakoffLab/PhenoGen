@@ -4343,10 +4343,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else if(that.trackClass=="liverTotal"){
 			color=d3.rgb("#bbbedd");
 		}else if(that.trackClass=="heartTotal"){
-			color=d3.rgb("#FC9272");
+			color=d3.rgb("#DC7252");
 		}
 		else if(that.trackClass=="brainTotal"){
 			color=d3.rgb("#7EB5D6");
+		}else if(that.trackClass=="liversmallnc"){
+			color=d3.rgb("#8b8ead");
+		}else if(that.trackClass=="heartsmallnc"){
+			color=d3.rgb("#BC5232");
 		}
 		return color;
 	};
@@ -4356,7 +4360,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.getDisplayID=function(id){
-		if(that.trackClass=="smallnc"){
+		if(that.trackClass.indexOf("smallnc")>-1){
 			if(id.indexOf("ENS")==-1){
 				var prefix="smRNA_";
 				id=id.substr(id.indexOf("_")+1);
@@ -4889,7 +4893,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		var dispDataCount=0;
 		if(that.drawnAs=="Gene"){
 			var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene");
-			that.counts=that.counts=[{value:0,names:"Ensembl"},{value:0,names:"Brain RNA-Seq"},{value:0,names:"Liver RNA-Seq"}];
+			that.counts=that.counts=[{value:0,names:"Ensembl"},{value:0,names:"Brain RNA-Seq"},{value:0,names:"Liver RNA-Seq"},{value:0,names:"Heart RNA-Seq"}];
 			var tmpDat=dataElem[0];
 			//console.log(dataElem);
 			if (!(typeof tmpDat === 'undefined')) {
@@ -4906,6 +4910,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 									that.counts[1].value++;
 								}else if((new String(tmpDat[l].childNodes[0].id)).indexOf("Liver")>-1){
 									that.counts[2].value++;
+								}else if((new String(tmpDat[l].childNodes[0].id)).indexOf("Heart")>-1){
+									that.counts[3].value++;
 								}
 							}
 							dispData[dispDataCount]=tmpDat[l].__data__;
@@ -4918,7 +4924,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}
 		}else if(that.drawnAs=="Trx"){
 			var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber);
-			that.counts=that.counts=[{value:0,names:"Ensembl"},{value:0,names:"Brain RNA-Seq"},{value:0,names:"Liver RNA-Seq"}];
+			that.counts=that.counts=[{value:0,names:"Ensembl"},{value:0,names:"Brain RNA-Seq"},{value:0,names:"Liver RNA-Seq"},{value:0,names:"Heart RNA-Seq"}];
 			var tmpDat=dataElem[0];
 			if (!(typeof tmpDat === 'undefined')) {
 				for(var l=0;l<tmpDat.length;l++){
@@ -4939,6 +4945,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 									that.counts[1].value++;
 								}else if((new String(tmpDat[l].id)).indexOf("Liver")>-1){
 									that.counts[2].value++;
+								}else if((new String(tmpDat[l].id)).indexOf("Heart")>-1){
+									that.counts[3].value++;
 								}
 							}
 							dispData[dispDataCount]=tmpDat[l].__data__;
@@ -5234,7 +5242,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			lbl="Long Non-Coding";
 			lbltxSuffix=" / Non-PolyA+"
 		}else if(that.trackClass.indexOf("smallnc")>-1){
-			lbl="Small RNA";
+			var lblTissue="Brain";
+			if(that.trackClass.indexOf("liver")>-1){
+				lblTissue="Liver";
+			}else if(that.trackClass.indexOf("heart")>-1){
+				lblTissue="Heart";
+			}
+			lbl=lblTissue+" Small RNA";
 			lbltxSuffix="";
 		}else if(that.trackClass=="liverTotal"){
 			lbl="Liver RNA-Seq Reconstruction ";
@@ -5248,7 +5262,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}
 		if(that.trackClass.indexOf("ensembl")>-1){
 			lbl="Ensembl "+lbl+" "+type;
-		}else if(that.trackClass!="liverTotal"){
+		}else if(that.trackClass!="liverTotal"&&that.trackClass!="heartTotal"){
 			lbl="Brain RNA-Seq Reconstruction "+lbl+lbltxSuffix+" "+type;
 		}else{
 			lbl=lbl+lbltxSuffix+" "+type;
