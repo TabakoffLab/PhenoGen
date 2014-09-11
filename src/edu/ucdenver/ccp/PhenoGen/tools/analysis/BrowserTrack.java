@@ -66,7 +66,7 @@ public class BrowserTrack{
         ArrayList<BrowserTrack> ret=new ArrayList<BrowserTrack>();
         
         String query="select * from BROWSER_TRACKS "+
-                        "where user_id="+userid;
+                        "where user_id="+userid+" and visible=1";
             Connection conn=null;
             PreparedStatement ps=null;
             try {

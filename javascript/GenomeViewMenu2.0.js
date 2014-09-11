@@ -609,7 +609,13 @@ function ViewMenu(level){
 						if(d.UserID==0){
 							ret=ret+"      (Predefined)";
 						}else{
-							ret=ret+"     (Custom)";
+							var local=""
+							if(d.Source="local"){
+								local=" local";
+							}else{
+								local=" server";
+							}
+							ret=ret+"     (Custom"+local+")";
 						}
 						ret=ret+"     ("+d.orgCount+" tracks)";
 

@@ -1420,7 +1420,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}
 					}
 				});
-		}else if(track=="helicos"||track.indexOf("illuminaTotal")>-1||track=="illuminaSmall"||track=="illuminaPolyA"){
+		}else if(track=="helicos"||track.indexOf("illuminaTotal")>-1||track.indexOf("illuminaSmall")||track=="illuminaPolyA"){
 				var tmpMin=that.xScale.domain()[0];
 				var tmpMax=that.xScale.domain()[1];
 				var len=tmpMax-tmpMin;
@@ -1483,7 +1483,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								}else if(track=="brainilluminaTotalPlus"){
 									newTrack= BrainIlluminaTotalPlusTrack(that,data,track,1);
 								}else if(track=="brainilluminaTotalMinus"){
-										newTrack= BrainIlluminaTotalMinusTrack(that,data,track,1);
+									newTrack= BrainIlluminaTotalMinusTrack(that,data,track,1);
+								}else if(track=="liverilluminaSmall"){
+									newTrack= LiverIlluminaSmallTrack(that,data,track,1);
+								}else if(track=="heartilluminaSmall"){
+									newTrack= HeartIlluminaSmallTrack(that,data,track,1);
 								}
 								that.addTrackList(newTrack);
 							}else{
@@ -1514,7 +1518,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 									newTrack= BrainIlluminaTotalPlusTrack(that,data,track,1);
 							}else if(track=="brainilluminaTotalMinus"){
 									newTrack= BrainIlluminaTotalMinusTrack(that,data,track,1);
-							}
+							}else if(track=="liverilluminaSmall"){
+									newTrack= LiverIlluminaSmallTrack(that,data,track,1);
+								}else if(track=="heartilluminaSmall"){
+									newTrack= HeartIlluminaSmallTrack(that,data,track,1);
+								}
 							that.addTrackList(newTrack);
 							//success=1;
 						}
@@ -8451,9 +8459,19 @@ function LiverIlluminaTotalMinusTrack(gsvg,data,trackClass,density){
 	that.redraw();
 	return that;
 }
+function LiverIlluminaSmallTrack(gsvg,data,trackClass,density){
+	var that= CountTrack(gsvg,data,trackClass,density);
+	that.graphColorText="#7b7e9d";
+	var lbl="Liver Small-RNA Read Counts";
+	that.updateLabel(lbl);
+	that.redrawLegend();
+	that.redraw();
+	return that;
+}
+
 function HeartIlluminaTotalPlusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
-	that.graphColorText="#FC9272";
+	that.graphColorText="#CC6242";
 	var lbl="Heart + Strand Total-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
@@ -8462,8 +8480,17 @@ function HeartIlluminaTotalPlusTrack(gsvg,data,trackClass,density){
 }
 function HeartIlluminaTotalMinusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
-	that.graphColorText="#CC6242";
+	that.graphColorText="#FC9272";
 	var lbl="Heart - Strand Total-RNA Read Counts";
+	that.updateLabel(lbl);
+	that.redrawLegend();
+	that.redraw();
+	return that;
+}
+function HeartIlluminaSmallTrack(gsvg,data,trackClass,density){
+	var that= CountTrack(gsvg,data,trackClass,density);
+	that.graphColorText="#9C3212";
+	var lbl="Heart Small-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
