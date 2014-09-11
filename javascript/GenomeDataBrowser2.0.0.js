@@ -6383,6 +6383,12 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 			that.tissues=["Brain","BrownAdipose","Heart","Liver"];
 		}
 	}
+
+	that.tissuesAll=["Brain"];
+	if(organism=="Rn"){
+		that.tissuesAll=["Brain","BrownAdipose","Heart","Liver"];
+	}
+
 	that.curColor=that.colorSelect;
 	
 	that.ttTrackList=new Array();
@@ -6442,18 +6448,39 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		}
 		var len=d.getAttribute("stop")-d.getAttribute("start");
 		var tooltiptext="<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;\"></div><BR>Affy Probe Set ID: "+d.getAttribute("ID")+"<BR>Strand: "+strand+"<BR>Location: "+d.getAttribute("chromosome")+":"+numberWithCommas(d.getAttribute("start"))+"-"+numberWithCommas(d.getAttribute("stop"))+" ("+len+"bp)<BR>";
-		tooltiptext=tooltiptext+"Type: "+d.getAttribute("type")+"<BR><BR><table class=\"tooltipTable\" width=\"100%\" colSpace=\"0\"><tr><TH>Tissue</TH><TH>Heritability</TH><TH>DABG</TH></TR>";
+		tooltiptext=tooltiptext+"Type: "+d.getAttribute("type")+"<BR><BR>";
 		//var tissues=$(".settingsLevel"+that.gsvg.levelNumber+" input[name=\"tissuecbx\"]:checked");
 		var herit=getFirstChildByName(d,"herit");
 		var dabg=getFirstChildByName(d,"dabg");
+		tooltiptext=tooltiptext+"<table class=\"tooltipTable\" width=\"100%\" colSpace=\"0\"><tr><TH>Tissue</TH><TH>Heritability</TH><TH>DABG</TH></TR><TR><TD colspan=\"3\">Displayed Tissues:</TD></TR>";
+		var displayed={};
 		for(var t=0;t<that.tissues.length;t++){
-			var tissue=new String(that.tissues[t].id);
-			tissue=tissue.substr(0,tissue.indexOf("Affy"));
+			var tissue=new String(that.tissues[t]);
+			if(tissue.indexOf("Affy")>-1){
+				tissue=tissue.substr(0,tissue.indexOf("Affy"));
+			}
+			displayed[tissue]=1;
 			var hval=Math.floor(herit.getAttribute(tissue)*255);
 			var hcol=d3.rgb(hval,0,0);
 			var dval=Math.floor(dabg.getAttribute(tissue)*2.55);
 			var dcol=d3.rgb(0,dval,0);
 			tooltiptext=tooltiptext+"<TR><TD>"+tissue+"</TD><TD style=\"background:"+hcol+";color:white;\">"+herit.getAttribute(tissue)+"</TD><TD style=\"background:"+dcol+";color:white;\">"+dabg.getAttribute(tissue)+"%</TD></TR>";
+		}
+		if(that.tissues.length<that.tissuesAll.length){
+			tooltiptext=tooltiptext+"<TR><TD colspan=\"3\">Other Tissues:</TD></TR>";
+			for(var t=0;t<that.tissuesAll.length;t++){
+				var tissue=new String(that.tissuesAll[t]);
+				if(tissue.indexOf("Affy")>-1){
+					tissue=tissue.substr(0,tissue.indexOf("Affy"));
+				}
+				if(displayed[tissue]!=1){
+					var hval=Math.floor(herit.getAttribute(tissue)*255);
+					var hcol=d3.rgb(hval,0,0);
+					var dval=Math.floor(dabg.getAttribute(tissue)*2.55);
+					var dcol=d3.rgb(0,dval,0);
+					tooltiptext=tooltiptext+"<TR><TD>"+tissue+"</TD><TD style=\"background:"+hcol+";color:white;\">"+herit.getAttribute(tissue)+"</TD><TD style=\"background:"+dcol+";color:white;\">"+dabg.getAttribute(tissue)+"%</TD></TR>";
+				}
+			}
 		}
 		tooltiptext=tooltiptext+"</table>";
 		return tooltiptext;
