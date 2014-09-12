@@ -952,6 +952,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			return tr;
 	};
 	that.addTrack=function (track,density,additionalOptions,retry){
+		console.log("Add Track:"+track);
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -1420,7 +1421,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}
 					}
 				});
-		}else if(track=="helicos"||track.indexOf("illuminaTotal")>-1||track.indexOf("illuminaSmall")||track=="illuminaPolyA"){
+		}else if(track=="helicos"||track.indexOf("illuminaTotal")>-1||track.indexOf("illuminaSmall")>-1||track=="illuminaPolyA"){
 				var tmpMin=that.xScale.domain()[0];
 				var tmpMax=that.xScale.domain()[1];
 				var len=tmpMax-tmpMin;
@@ -1939,7 +1940,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     			async:   false
 			});
 
-};
+	};
 
 	that.setupFunctionBar=function(){
 		d3.select(div).select("#functLevel"+that.levelNumber).remove();
@@ -2649,7 +2650,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}else if(track=="polyASite"){
 				var newTrack= PolyATrack(that,data,track,"Predicted PolyA Sites",additionalOptions);
 				that.addTrackList(newTrack);
-		}else if(track=="helicos"||track.indexOf("illuminaTotal")>-1||track=="illuminaSmall"||track=="illuminaPolyA"){
+		}else if(track=="helicos"||track.indexOf("illuminaTotal")>-1||track.indexOf("illuminaSmall")>-1||track=="illuminaPolyA"){
 			var newTrack;
 			if(track=="helicos"){
 				newTrack= HelicosTrack(that,data,track,2);
@@ -2671,6 +2672,10 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				newTrack= BrainIlluminaTotalPlusTrack(that,data,track,1);
 			}else if(track=="brainilluminaTotalMinus"){
 				newTrack= BrainIlluminaTotalMinusTrack(that,data,track,1);
+			}else if(track=="liverilluminaSmall"){
+				newTrack= LiverIlluminaSmallTrack(that,data,track,1);
+			}else if(track=="heartilluminaSmall"){
+				newTrack= HeartIlluminaSmallTrack(that,data,track,1);
 			}
 			if(that.levelNumber==99){
 				if(that.updateTimeoutHandle!=0){
@@ -3462,6 +3467,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	};
 
 	that.generateSettingsDiv=function(topLevelSelector){
+		that.savePrevious();
 		var d=trackInfo[that.trackClass];
 		//console.log(trackInfo);
 		//console.log(d);
@@ -3522,6 +3528,8 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				that.gsvg.setCurrentViewModified();
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				that.revertPrevious();
+				that.draw(that.data);
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}else{
@@ -3546,6 +3554,16 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
 		}
 	};
+
+	that.savePrevious=function(){
+		that.prevSetting={};
+		that.prevSetting.density=that.density;
+	};
+	
+	that.revertPrevious=function(){
+		that.density=that.prevSetting.density;
+	};
+
 	//update current settings from a view setting string
 	that.updateSettings=function(setting){
 
@@ -4297,23 +4315,27 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.ttTrackList=[];
 	if(that.trackClass.indexOf("smallnc")==-1){	
-		that.ttTrackList[0]="ensemblcoding";
-		that.ttTrackList[1]="braincoding";
-		that.ttTrackList[2]="liverTotal";
-		that.ttTrackList[3]="heartTotal";
-		that.ttTrackList[4]="refSeq";
-		that.ttTrackList[5]="ensemblnoncoding";
-		that.ttTrackList[6]="brainnoncoding";
-		that.ttTrackList[7]="ensemblsmallnc";
-		that.ttTrackList[8]="brainsmallnc";
+		that.ttTrackList.push("ensemblcoding");
+		that.ttTrackList.push("braincoding");
+		that.ttTrackList.push("liverTotal");
+		that.ttTrackList.push("heartTotal");
+		that.ttTrackList.push("refSeq");
+		that.ttTrackList.push("ensemblnoncoding");
+		that.ttTrackList.push("brainnoncoding");
+		that.ttTrackList.push("snpSHRH");
+		that.ttTrackList.push("snpBNLX");
+		that.ttTrackList.push("snpF344");
+		that.ttTrackList.push("snpSHRJ");
 	}else{
-		that.ttTrackList[0]="ensemblsmallnc";
-		that.ttTrackList[1]="brainsmallnc";
-		that.ttTrackList[2]="refSeq";
-		that.ttTrackList[3]="snpSHRH";
-		that.ttTrackList[4]="snpBNLX";
-		that.ttTrackList[5]="snpF344";
-		that.ttTrackList[6]="snpSHRJ";
+		that.ttTrackList.push("ensemblsmallnc");
+		that.ttTrackList.push("brainsmallnc");
+		that.ttTrackList.push("liversmallnc");
+		that.ttTrackList.push("heartsmallnc");
+		that.ttTrackList.push("refSeq");
+		that.ttTrackList.push("snpSHRH");
+		that.ttTrackList.push("snpBNLX");
+		that.ttTrackList.push("snpF344");
+		that.ttTrackList.push("snpSHRJ");
 	}
 
 
@@ -4617,7 +4639,40 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 									rectW=rectW-7.9;
 								}
 							}
-							d3This.select("text").text(fullChar);
+							d3This.select("text#strandTxt").text(fullChar);
+							var dThis=d;
+							if(that.density==2){
+								var curLbl=dThis.getAttribute("ID");
+								if(dThis.getAttribute("geneSymbol")!=undefined && dThis.getAttribute("geneSymbol").length>0){
+									curLbl=curLbl+" ("+dThis.getAttribute("geneSymbol")+")";
+								}
+								if(d3This.select("text#lblTxt").size()==0){
+									d3This.append("svg:text").attr("dx",function(){
+											var xpos=that.xScale(dThis.getAttribute("start"));
+											if(xpos<($(window).width()/2)){
+												xpos=that.xScale(dThis.getAttribute("stop"))-that.xScale(dThis.getAttribute("start"))+5;
+											}else{
+												xpos=-1*curLbl.length*9;
+											}
+											return xpos;
+										})
+									.attr("dy",10)
+									.attr("id","lblTxt")
+									.text(curLbl);
+								}else{
+									d3This.select("text#lblTxt").attr("dx",function(){
+											var xpos=that.xScale(dThis.getAttribute("start"));
+											if(xpos<($(window).width()/2)){
+												xpos=that.xScale(dThis.getAttribute("stop"))-that.xScale(dThis.getAttribute("start"))+5;
+											}else{
+												xpos=-1*curLbl.length*9;
+											}
+											return xpos;
+										});
+								}
+							}else{
+								d3This.select("text#lblTxt").remove();
+							}
 						});
 					}
 					if(that.density==1){
@@ -4705,6 +4760,39 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 										.attr("dx",intStart+1).text(fullChar);
 								}
 							}
+							var dThis=d;
+							if(that.density==2){
+								var curLbl=dThis.getAttribute("ID");
+								if(dThis.getAttribute("geneSymbol")!=undefined && dThis.getAttribute("geneSymbol").length>0){
+									curLbl=curLbl+" ("+dThis.getAttribute("geneSymbol")+")";
+								}
+								if(d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" text#lblTxt").size()==0){
+									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber).append("svg:text").attr("dx",function(){
+											var xpos=that.xScale(dThis.parent.getAttribute("start"));
+											if(xpos<($(window).width()/2)){
+												xpos=that.xScale(dThis.parent.getAttribute("stop"))-that.xScale(dThis.parent.getAttribute("start"))+5;
+											}else{
+												xpos=-1*curLbl.length*9;;
+											}
+											return xpos;
+										})
+									.attr("dy",10)
+									.attr("id","lblTxt")
+									.text(curLbl);
+								}else{
+									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" text#lblTxt").attr("dx",function(){
+											var xpos=that.xScale(dThis.getAttribute("start"));
+											if(xpos<($(window).width()/2)){
+												xpos=that.xScale(dThis.getAttribute("stop"))-that.xScale(dThis.getAttribute("start"))+5;
+											}else{
+												xpos=-1*curLbl.length*9;;
+											}
+											return xpos;
+										});
+								}
+							}else{
+								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" text#lblTxt").remove();
+							}	
 						});
 						if(that.density==1){
 							that.svg.attr("height", 30);
@@ -5138,7 +5226,27 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				
 			}
 		}
-		
+		var dThis=d;
+		if(that.density==2){
+			var curLbl=dThis.getAttribute("ID");
+			if(dThis.getAttribute("geneSymbol")!=undefined && dThis.getAttribute("geneSymbol").length>0){
+				curLbl=curLbl+" ("+dThis.getAttribute("geneSymbol")+")";
+			}
+			txG.append("svg:text").attr("dx",function(){
+					var xpos=that.xScale(dThis.getAttribute("start"));
+					if(xpos<($(window).width()/2)){
+						xpos=that.xScale(dThis.getAttribute("stop"))-that.xScale(dThis.getAttribute("start"))+5;
+					}else{
+						xpos=-1*curLbl.length*9;;
+					}
+					return xpos;
+				})
+			.attr("dy",10)
+			.attr("id","lblTxt")
+			.text(curLbl);
+		}else{
+			txG.select("text#lblTxt").remove();
+		}
 	};
 
 	that.setupToolTipSVG=function(d,perc){
@@ -5368,27 +5476,50 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		        });
 			
 			gene.exit().remove();
+
 			
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").each( function(d){
 				if(d!=undefined){
-				var d3This=d3.select(this);
-				var strChar=">";
-				if(d.getAttribute("strand")=="-1"){
-					strChar="<";
-				}
-				var fullChar=strChar;
-				var rectW=d3This.select("rect").attr("width");
-				if(rectW<7.9){
-					fullChar="";
-				}else{
-					rectW=rectW-7.9;
-					fullChar=strChar;
-					while(rectW>8.5){
-						fullChar=fullChar+strChar;
-						rectW=rectW-7.9;
+					var d3This=d3.select(this);
+					var strChar=">";
+					if(d.getAttribute("strand")=="-1"){
+						strChar="<";
 					}
-				}
-				d3This.append("svg:text").attr("dx","1").attr("dy","10").style("pointer-events","none").text(fullChar);
+					var fullChar=strChar;
+					var rectW=d3This.select("rect").attr("width");
+					if(rectW<7.9){
+						fullChar="";
+					}else{
+						rectW=rectW-7.9;
+						fullChar=strChar;
+						while(rectW>8.5){
+							fullChar=fullChar+strChar;
+							rectW=rectW-7.9;
+						}
+					}
+
+					d3This.append("svg:text").attr("dx","1").attr("dy","10").attr("id","strandTxt").style("pointer-events","none").text(fullChar);
+					var dThis=d;
+					if(that.density==2){
+						var curLbl=dThis.getAttribute("ID");
+						if(dThis.getAttribute("geneSymbol")!=undefined && dThis.getAttribute("geneSymbol").length>0){
+							curLbl=curLbl+" ("+dThis.getAttribute("geneSymbol")+")";
+						}
+						d3This.append("svg:text").attr("dx",function(){
+								var xpos=that.xScale(dThis.getAttribute("start"));
+								if(xpos<($(window).width()/2)){
+									xpos=that.xScale(dThis.getAttribute("stop"))-that.xScale(dThis.getAttribute("start"))+5;
+								}else{
+									xpos=-1*curLbl.length*9;;
+								}
+								return xpos;
+							})
+						.attr("dy",10)
+						.attr("id","lblTxt")
+						.text(curLbl);
+					}else{
+						d3This.select("text#lblTxt").remove();
+					}
 				}
 			});
 
@@ -5594,11 +5725,12 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	}
 
 	that.ttTrackList=[];	
-	that.ttTrackList[0]="ensemblcoding";
-	that.ttTrackList[1]="braincoding";
-	that.ttTrackList[2]="liverTotal";
-	that.ttTrackList[3]="ensemblnoncoding";
-	that.ttTrackList[4]="brainnoncoding";
+	that.ttTrackList.push("ensemblcoding");
+	that.ttTrackList.push("braincoding");
+	that.ttTrackList.push("liverTotal");
+	that.ttTrackList.push("heartTotal");
+	that.ttTrackList.push("ensemblnoncoding");
+	that.ttTrackList.push("brainnoncoding");
 
 	that.color =function(d){
 		var color=d3.rgb("#000000");
@@ -6392,13 +6524,14 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.curColor=that.colorSelect;
 	
 	that.ttTrackList=new Array();
-	that.ttTrackList[0]="ensemblcoding";
-	that.ttTrackList[1]="braincoding";
-	that.ttTrackList[2]="liverTotal";
-	that.ttTrackList[3]="ensemblnoncoding";
-	that.ttTrackList[4]="brainnoncoding";
-	that.ttTrackList[5]="ensemblsmallnc";
-	that.ttTrackList[6]="brainsmallnc";
+	that.ttTrackList.push("ensemblcoding");
+	that.ttTrackList.push("braincoding");
+	that.ttTrackList.push("liverTotal");
+	that.ttTrackList.push("heartTotal");
+	that.ttTrackList.push("ensemblnoncoding");
+	that.ttTrackList.push("brainnoncoding");
+	//that.ttTrackList.push("ensemblsmallnc");
+	//that.ttTrackList.push("brainsmallnc");
 
 	that.color =function(d,tissue){
 		var color=d3.rgb("#000000");
@@ -6452,7 +6585,10 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		//var tissues=$(".settingsLevel"+that.gsvg.levelNumber+" input[name=\"tissuecbx\"]:checked");
 		var herit=getFirstChildByName(d,"herit");
 		var dabg=getFirstChildByName(d,"dabg");
-		tooltiptext=tooltiptext+"<table class=\"tooltipTable\" width=\"100%\" colSpace=\"0\"><tr><TH>Tissue</TH><TH>Heritability</TH><TH>DABG</TH></TR><TR><TD colspan=\"3\">Displayed Tissues:</TD></TR>";
+		tooltiptext=tooltiptext+"<table class=\"tooltipTable\" width=\"100%\" colSpace=\"0\"><tr><TH>Tissue</TH><TH>Heritability</TH><TH>DABG</TH></TR>";
+		if(that.tissues.length<that.tissuesAll.length){
+			tooltiptext=tooltiptext+"<TR><TD colspan=\"3\">Displayed Tissues:</TD></TR>";
+		}
 		var displayed={};
 		for(var t=0;t<that.tissues.length;t++){
 			var tissue=new String(that.tissues[t]);
@@ -6505,6 +6641,19 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 					count++;
 			}
 		}
+	};
+
+	that.savePrevious=function(){
+		that.prevSetting={};
+		that.prevSetting.density=that.density;
+		that.prevSetting.curColor=that.curColor;
+		that.prevSetting.tissues=that.tissues;
+	};
+	
+	that.revertPrevious=function(){
+		that.density=that.prevSetting.density;
+		that.curColor=that.prevSetting.curColor;
+		that.tissues=that.prevSetting.tissues;
 	};
 
 	that.redraw=function(){
@@ -7071,6 +7220,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
+		that.savePrevious();
 		//console.log(trackInfo);
 		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
@@ -7151,9 +7301,11 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.gsvg.removeTrack(that.trackClass);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
-
+				$('#trackSettingDialog').fadeOut("fast");
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				that.revertPrevious();
+				that.draw(that.data);
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}else{
@@ -7220,15 +7372,16 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 	that.strain=strain;
 
 	that.ttTrackList=new Array();
-	that.ttTrackList[0]="ensemblcoding";
-	that.ttTrackList[1]="braincoding";
-	that.ttTrackList[2]="liverTotal";
-	that.ttTrackList[3]="refSeq";
-	that.ttTrackList[4]="ensemblnoncoding";
-	that.ttTrackList[5]="brainnoncoding";
-	that.ttTrackList[6]="ensemblsmallnc";
-	that.ttTrackList[7]="brainsmallnc";
-	that.ttTrackList[8]="probe";
+	that.ttTrackList.push("ensemblcoding");
+	that.ttTrackList.push("braincoding");
+	that.ttTrackList.push("liverTotal");
+	that.ttTrackList.push("heartTotal");
+	that.ttTrackList.push("refSeq");
+	that.ttTrackList.push("ensemblnoncoding");
+	that.ttTrackList.push("brainnoncoding");
+	that.ttTrackList.push("ensemblsmallnc");
+	that.ttTrackList.push("brainsmallnc");
+	that.ttTrackList.push("probe");
 
 	that.updateSettingsFromUI=function(){
 		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
@@ -7238,12 +7391,25 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 			that.include=$("#"+that.trackClass+that.level+"Select").val();
 		}
 	};
+
+	that.savePrevious=function(){
+		that.prevSetting={};
+		that.prevSetting.density=that.density;
+		that.prevSetting.include=that.include;
+	};
+	
+	that.revertPrevious=function(){
+		that.density=that.prevSetting.density;
+		that.include=that.prevSetting.include;
+	};
+
 	that.generateTrackSettingString=function(){
 		return that.trackClass+","+that.density+","+that.include+";";
 	};
 
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
+		that.savePrevious();
 		//console.log(trackInfo);
 		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
@@ -7303,6 +7469,8 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				that.revertPrevious();
+				that.draw(that.data);
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}else{
@@ -8106,6 +8274,8 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 			}
 		}else if(that.gsvg.txType=="liverTotal"){
 			color=d3.rgb("#bbbedd");
+		}else if(that.gsvg.txType=="heartTotal"){
+			color=d3.rgb("#DC7252");
 		}
 		return color;
 	};
@@ -8591,6 +8761,7 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 	that.legendLbl="Read Depth";
 	that.density=3;
 	
+	console.log("Splice Junction TRACK:"+that.trackClass);
 
 	that.getDisplayID=function(d){
 		return	d.getAttribute("name");
@@ -8755,18 +8926,26 @@ function CountTrack(gsvg,data,trackClass,density){
 	that.ttSVG=1;
 
 	that.ttTrackList=[];
-	that.ttTrackList[0]="ensemblcoding";
-	that.ttTrackList[1]="braincoding";
-	that.ttTrackList[2]="liverTotal";
-	that.ttTrackList[3]="refSeq";
-	that.ttTrackList[4]="ensemblnoncoding";
-	that.ttTrackList[5]="brainnoncoding";
-	that.ttTrackList[6]="ensemblsmallnc";
-	that.ttTrackList[7]="brainsmallnc";
-	that.ttTrackList[8]="probe";
-	that.ttTrackList[9]="polyASite";
-	that.ttTrackList[10]="spliceJnct";
-	that.ttTrackList[11]="liverspliceJnct";
+	if(trackClass.indexOf("illuminaSmall")>-1){
+		that.ttTrackList.push("ensemblsmallnc");
+		that.ttTrackList.push("brainsmallnc");
+		that.ttTrackList.push("liversmallnc");
+		that.ttTrackList.push("heartsmallnc");
+	}else{
+		that.ttTrackList.push("ensemblcoding");
+		that.ttTrackList.push("braincoding");
+		that.ttTrackList.push("liverTotal");
+		that.ttTrackList.push("heartTotal");
+		that.ttTrackList.push("refSeq");
+		that.ttTrackList.push("ensemblnoncoding");
+		that.ttTrackList.push("brainnoncoding");
+		that.ttTrackList.push("probe");
+		that.ttTrackList.push("polyASite");
+		that.ttTrackList.push("spliceJnct");
+		that.ttTrackList.push("liverspliceJnct");
+		that.ttTrackList.push("heartspliceJnct");
+	}
+	
 
 
 	that.calculateBin= function(len){
@@ -9398,6 +9577,7 @@ function CountTrack(gsvg,data,trackClass,density){
 
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
+		that.savePrevious();
 		//console.log(trackInfo);
 		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
@@ -9489,9 +9669,11 @@ function CountTrack(gsvg,data,trackClass,density){
 				that.gsvg.removeTrack(that.trackClass);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
-
+				$('#trackSettingDialog').fadeOut("fast");
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				that.revertPrevious();
+				that.draw(that.data);
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}else{
@@ -9544,10 +9726,11 @@ function PolyATrack(gsvg,data,trackClass,label,density,additionalOptions){
 	that.colorBy="Color";
 	that.ttSVG=1;
 	that.ttTrackList=[];
-	that.ttTrackList[0]="ensemblcoding";
-	that.ttTrackList[1]="braincoding";
-	that.ttTrackList[2]="liverTotal";
-	that.ttTrackList[3]="refSeq";
+	that.ttTrackList.push("ensemblcoding");
+	that.ttTrackList.push("braincoding");
+	that.ttTrackList.push("liverTotal");
+	that.ttTrackList.push("heartTotal");
+	that.ttTrackList.push("refSeq");
 	that.ttSVGMinWidth=200;
 	
 
@@ -9717,6 +9900,7 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
+		that.savePrevious();
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
 		if(d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
@@ -9796,9 +9980,11 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 				that.gsvg.removeTrack(that.trackClass);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
-
+				$('#trackSettingDialog').fadeOut("fast");
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Cancel").style("float","right").style("margin-left","5px").on("click",function(){
+				that.revertPrevious();
+				that.draw(that.data);
 				$('#trackSettingDialog').fadeOut("fast");
 			});
 		}else{
@@ -10014,6 +10200,27 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 			}
 		}
 		return color;
+	};
+
+	that.savePrevious=function(){
+		that.prevSetting={};
+		that.prevSetting.density=that.density;
+		that.prevSetting.colorValueField=that.colorValueField;
+		that.prevSetting.colorBy=that.colorBy;
+		that.prevSetting.minValue=that.minValue;
+		that.prevSetting.maxValue=that.maxValue;
+		that.prevSetting.minColor=that.minColor;
+		that.prevSetting.maxColor=that.maxColor;
+	};
+	
+	that.revertPrevious=function(){
+		that.density=that.prevSetting.density;
+		that.colorValueField=that.prevSetting.colorValueField;
+		that.colorBy=that.prevSetting.colorBy;
+		that.minValue=that.prevSetting.minValue;
+		that.maxValue=that.prevSetting.maxValue;
+		that.minColor=that.prevSetting.minColor;
+		that.maxColor=that.prevSetting.maxColor;
 	};
 
 	that.drawTrx=function (d,i){
@@ -10269,7 +10476,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	that.draw=function(data){
 		
 		that.data=data;
-		that.setDensity();
+		//that.setDensity();
 		that.trackYMax=0;
 		that.yArr=new Array();
 		that.yArr[0]=new Array();

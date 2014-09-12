@@ -326,7 +326,9 @@
 						if(curGene.getLength()<200){
 							if(
 								(source.equals("ensembl")&&curGene.getGeneID().startsWith("ENS")) ||
-								(source.equals("brain")&&curGene.containsTranscripts("smrna"))
+								(source.equals("brain")&&curGene.containsTranscripts("smrna")) ||
+								(source.equals("liver")&&curGene.containsTranscripts("smrna")) ||
+								(source.equals("heart")&&curGene.containsTranscripts("smrna")) ||
 							){
                         %>
                         <TR class="
@@ -335,6 +337,10 @@
                             	smallnc
                         <%if(curGene.getGeneID().startsWith("ENS")){%>
                         	ensembl
+                        <%}else if(curGene.getGeneID().startsWith("Liver")){%>
+                        	liver
+                        <%}else if(curGene.getGeneID().startsWith("Heart")){%>
+                        	heart
                         <%}%>
                         ">
                         	<TD>
