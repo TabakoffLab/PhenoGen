@@ -426,20 +426,24 @@ function animationStart(){
 }
 
 
-setTimeout(function(){
-		displayOverride=1;
-		//set selected node to announcements
-		var mn=svg.selectAll('g#d28')[0];
-		console.log(mn);
-		var d=mn[0].__data__;
-		hoverClickNode(d);
-		var dn=svg.selectAll('g#d31')[0];
-		console.log(dn);
-		var d2=dn[0].__data__;
-		hoverClickNode(d2);
-		displayOverride=0;
-	},200);
-
+function setupDisplay(){
+	console.log("setupDisplay");
+	var mn=svg.selectAll('g#d28')[0];
+	if(mn[0]!=undefined && mn[0].__data__!=undefined){
+			displayOverride=1;
+			//set selected node to announcements
+			var d=mn[0].__data__;
+			hoverClickNode(d);
+			var dn=svg.selectAll('g#d31')[0];
+			//console.log(dn);
+			var d2=dn[0].__data__;
+			hoverClickNode(d2);
+			displayOverride=0;
+	}else{
+		setTimeout(setupDisplay,50);
+	}
+}
+setupDisplay();
 //start rotating through.
 var mainCount=Math.floor((Math.random() * 5));;
 var featCount=0;
