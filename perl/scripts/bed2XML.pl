@@ -123,21 +123,8 @@ sub bed2XML
 	close IN;
 	
 	##output XML file
-	my $xmlOutputFileName=">$outputFile";
+	my $xmlOutputFileName="$outputFile";
 	createGenericXMLTrack(\%featureHOH,$xmlOutputFileName);
-	#my $xml = new XML::Simple (RootName=>'FeatureList');
-	#my $data = $xml->XMLout(\%featureHOH);
-	## open xml file
-	#
-	#open XMLFILE, $xmlOutputFileName or die " Could not open XML file $xmlOutputFileName for writing $!\n\n";
-	## write the header 
-	#print XMLFILE '<?xml version="1.0" encoding="UTF-8"?>';
-	#print XMLFILE "\n";
-	## Write the xml data
-	#print XMLFILE $data;
-	#close XMLFILE;
-	
-	
 }
 #
 #	

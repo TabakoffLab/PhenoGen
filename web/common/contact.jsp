@@ -72,7 +72,12 @@
 pageDescription="Contact Us, provide feedback or ask questions";
 %>
 	<%@ include file="/web/common/header.jsp" %>
-
+			<script type="text/javascript">
+			 var RecaptchaOptions = {
+				theme : 'clean',
+				custom_theme_widget: 'recaptcha_widget'
+			 };
+ 			</script>
         	<div id="welcome" style="height:625px; width:946px;">
 			<h2>Contact PhenoGen </h2>
                         <p> The quality, functionality, and continued maintenance of the PhenoGen Informatics 

@@ -52,7 +52,7 @@ table.tooltipTable TD{
 	/*div#collapsableReport td.layout {
 		border:1px solid #CECECE;
 	}*/
-	span.detailMenu,span.selectdetailMenu,span.viewMenu{
+	span.detailMenu,span.selectdetailMenu,span.viewMenu,span.viewDetailTab{
 		border-color:#CCCCCC;
 		border:solid;
 		border-width: 1px 1px 0px 1px;
@@ -63,7 +63,7 @@ table.tooltipTable TD{
 		padding-right:15px;
 		cursor:pointer;
 	}
-	span.viewMenu{
+	span.viewMenu,span.viewDetailTab{
 		border-color:#000000;
 	}
 	span.detailMenu{
@@ -94,15 +94,15 @@ table.tooltipTable TD{
 		background:#47c647;
 	}
 	
-	span.viewMenu{
+	span.viewMenu,span.viewDetailTab{
 		background:#AEAEAE;
 		color:#000000;
 	}
-	span.viewMenu.selected{
+	span.viewMenu.selected, span.viewDetailTab.selected{
 		background:#DEDEDE;
 		color:#000000;
 	}
-	span.viewMenu:hover{
+	span.viewMenu:hover,span.viewDetailTab:hover{
 		background:#DEDEDE;
 		color:#000000;
 	}
@@ -183,4 +183,61 @@ table.tooltipTable TD{
 		border-color:#000000;
 	}
 	
+	table.trkSelList tr.odd:hover td,table.trkSelList tr.even:hover td
+	{
+  		background: #bbbbee;
+	}
+	
+	table.trkSelList tr.odd.selected td,table.trkSelList tr.even.selected td
+	{
+  		background: #9b9bce;
+	}
+	
+	span.control0,span.control1{
+		cursor:pointer;
+		border-style:solid;
+		border-width:1px;
+		border-color:#777777;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		height:48px;
+		width:48px;
+	}
+	span.control0:hover, span.control1:hover{
+		background:#b8b8b8;
+		border-color:#575757;
+	}
+	div#trackSettingDialog{
+		position:absolute;
+		display:none;
+		background-color:#EEEEEE;
+		border: 2px solid;
+    	border-radius: 25px;
+		
+		max-height:400px;
+		width:300px;
+	}
+	div#trackSettingContent{
+		background-color:#EEEEEE;
+		overflow:auto;
+		width:93%;
+		height:93%;
+		margin:3%;
+	}
+	div#trackSettingContent table{
+		width:100%;
+	}
+	div#trackSettingContent td {
+	background-color:#EEEEEE;
+	}
+	.ui-menu { position: absolute; width: 100px; }
+	
+	button.viewSelectMenu{
+		height:2.3em;
+		/*height:26px;
+		position:relative;
+		top:8px;*/
+	}
 </style>

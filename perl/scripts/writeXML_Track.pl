@@ -7,7 +7,7 @@ use DBI;
 
 use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
-require 'readRNAIsoformDataFromDB.pl';
+require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
 require 'readSpliceJunctFromDB.pl';
@@ -150,6 +150,12 @@ sub createXMLFile
 	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd)=@_;
 	
 	my $scriptStart=time();
+	
+	my $panel="ILS/ISS";
+	if($species eq 'Rat' or $species eq 'Rn' ){
+		$panel="BNLX/SHRH";
+	}
+	
 	if(index($type,"illumina")>-1 or index($type,"helicos")>-1 ){
 		unlink $outputDir."bincount.".$binSize.".".$type.".xml";
 		my $rnaCountStart=time();
@@ -163,7 +169,20 @@ sub createXMLFile
 		#	$roundMax=$maxCoord+($binSize-($maxCoord % $binSize));
 		#}
 		#print ("min:$minCoord\nmax:$maxCoord\nroundMin:$roundMin\nroundMax:$roundMax\n");
-		my $rnaCountRef=readRNACountsDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
+		
+		my $rnaCountRef;
+		#if(index($type,"liver")>-1){
+		#	my $dsid="10";
+		#	if(index($type,"plus")>-1){
+		#		$dsid="11";
+		#	}elsif(index($type,"minus")>-1){
+		#		$dsid="10";
+		#	}
+		#	print "readRNACountsDataFromMongo($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsid)\n";
+			$rnaCountRef=readRNACountsDataFromMongo($chromosome,$species,$publicID,$panel,$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
+		#}else{
+		#	$rnaCountRef=readRNACountsDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
+		#}
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
@@ -226,7 +245,8 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-		my $spliceRef=readSpliceJunctFromDB($chromosome,$species,$minCoord,$maxCoord,$publicID,'BNLX/SHRH',$tissue,$dsn,$usr,$passwd);
+		
+		my $spliceRef=readSpliceJunctFromDB($chromosome,$species,$minCoord,$maxCoord,$publicID,$panel,$tissue,$dsn,$usr,$passwd);
 		my %spliceHOH=%$spliceRef;
 		my $rnaCountEnd=time();
 		print "Splice Junction completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	

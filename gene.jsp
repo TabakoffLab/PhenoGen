@@ -5,9 +5,10 @@
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
+	//extrasList.add("jscolor/jscolor.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("d3.v3.min.js");
-	extrasList.add("smoothness/jquery-ui-1.10.4.min.css");
+	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("jquery.fancybox.css");
@@ -17,7 +18,7 @@
 <%
 String myGene="";
 String myDisplayGene="";
-String defView="viewGenome";
+String defView="1";
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
 		myGene=request.getParameter("geneTxt").trim();
@@ -42,13 +43,16 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 <%}%>
 
 <jsp:useBean id="myIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
-
+<jsp:useBean id="bt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 
 <% 
 	
 	//GeneDataTools gdt=new GeneDataTools();
     gdt.setSession(session);
+	bt.setSession(session);
+	
+	ArrayList<BrowserView> views=bt.getBrowserViews();
 	
 	String myOrganism="";
 	ObjectHandler oh=new ObjectHandler();
@@ -313,10 +317,10 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 					part=Integer.parseInt(chrName);
 				}catch(NumberFormatException e){
 				}
-				if(chrName.toLowerCase().equals("x")||(part>0 && part<22)){
+				if(chrName.toLowerCase().equals("x")||chrName.toLowerCase().equals("y")||chrName.toLowerCase().equals("m")||(part>0 && part<22)){
 					
 				}else{
-					regionError="You have entered an invalid chromosome name.  For the supported species the chromosome should be 1-20 or 21 or X.  Example: chr1:50000-1000000";
+					regionError="You have entered an invalid chromosome name.  For the supported species the chromosome should be 1-20 or 21 or X or M.  Example: chr1:50000-1000000";
 				}
 			}
 			
@@ -463,17 +467,30 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
        
   <label>Species:
   <select name="speciesCB" id="speciesCB">
-  	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus</option>
-    <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
+  	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus (mm10)</option>
+    <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus (rn5)</option>
   </select>
   </label>
   
   <label>Initial View:
   <select name="defaultView" id="defaultView">
+  	<%for(int i=0;i<views.size();i++){
+    	if(views.get(i).getOrganism().toUpperCase().equals("AA") || myOrganism.toUpperCase().equals(views.get(i).getOrganism().toUpperCase())){
+			String display=views.get(i).getName();
+			if(views.get(i).getUserID()==0){
+				display=display+"   (Predefined)";
+			}else{
+				display=display+"   (Custom)";
+			}%>
+        	<option value="<%=views.get(i).getID()%>" <%if(defView.equals(Integer.toString(views.get(i).getID()))){%>selected<%}%>><%=display%></option>
+        <%}%>
+    <%}%>
+  </select>
+  <!--<select name="defaultView" id="defaultView">
   	<option value="viewGenome" <%if(defView.equals("viewGenome")){%>selected<%}%>>Genome</option>
     <option value="viewTrxome" <%if(defView.equals("viewTrxome")){%>selected<%}%>>Transcriptome</option>
     <option value="viewAll" <%if(defView.equals("viewAll")){%>selected<%}%>>Both</option>
-  </select>
+  </select>-->
   </label>
   <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" onClick="return displayWorking()">
  <!--<span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
@@ -506,6 +523,13 @@ Or
 </div>
 
 <script type="text/javascript">
+	var organism="<%=myOrganism%>";
+	var pathPrefix="web/GeneCentric/";
+	<%if(userLoggedIn.getUser_name().equals("anon")){%>
+		var uid=0;
+	<%}else{%>
+		var uid=<%=userLoggedIn.getUser_id()%>;
+	<%}%>
 	document.getElementById("wait1").style.display = 'none';
 	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
 	function openTranslateRegion(){
@@ -527,6 +551,65 @@ Or
 			$("#oldIE").show();
 		}
 	}
+	
+	
+	//Setup View Menu
+	var defviewList=[];
+	var filterViewList=[];
+	
+	function getViewData(){
+		var tmpContext=contextPath +"/"+ pathPrefix;
+		if(pathPrefix==""){
+			tmpContext="";
+		}
+		
+		d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
+			if(error){
+				setTimeout(getViewData,2000);
+				d3.select("#defaultView").html("<option>Error: reloading</option>");
+			}else{
+				defviewList=d;
+				//setupDefaultView();
+			}
+		});
+	};
+	
+	
+	function setupDefaultView(){
+		d3.select("#defaultView").html("");
+		filterViewList=[];
+		for(var i=0;i<defviewList.length;i++){
+			if(defviewList[i].Organism=="AA"||defviewList[i].Organism.toLowerCase()==$('#speciesCB').val().toLowerCase()){
+				filterViewList.push(defviewList[i]);
+			}
+		}
+		var opt=d3.select("#defaultView").selectAll('option').data(filterViewList);
+		opt.enter().append("option")
+					.attr("value",function(d){return d.ViewID;})
+					.text(function(d){
+						var ret=d.Name;
+						if(d.UserID==0){
+							ret=ret+"    (Predefined)";
+						}else{
+							ret=ret+"   (Custom)";
+						}
+						if(d.Organism!="AA"){
+							if(d.Organism=="RN"){
+								ret=ret+"      (Rat Only)";
+							}else if(d.Organism=="MM"){
+								ret=ret+"     (Mouse Only)";
+							}
+						}
+						
+						return ret;
+					});
+		opt.exit().remove();
+	}
+	
+	getViewData();
+	
+	$("#speciesCB").on("change",setupDefaultView);
+	
 </script>
 
 

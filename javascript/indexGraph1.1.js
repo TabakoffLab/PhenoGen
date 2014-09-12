@@ -123,7 +123,7 @@ d3.json("top.json", function(error, graph) {
 
   var inst=svg.append("g").attr("transform","translate(5,5)").attr("id","instructBox");
   inst.append("rect")
-      					.attr("width",250).attr("height",120)
+      					.attr("width",250).attr("height",160)
       					.attr("rx",5).attr("ry",5)
       					.style("fill","#FFFFFF");
 
@@ -140,8 +140,14 @@ d3.json("top.json", function(error, graph) {
     inst.append("text").style("color","#000000")
     					.attr("x",10).attr("y",80).style("font-size","18px")
     					.text("site.");
-    inst.append("text").style("stroke","#688eb3").style("fill","#688eb3").style("text-decoration","underline").style("cursor","pointer")
+    inst.append("text").style("stroke","#2d7a32")
     					.attr("x",10).attr("y",100).style("font-size","18px")
+    					.text("Green no login required.");
+    inst.append("text").style("stroke","#3e698c")
+    					.attr("x",10).attr("y",120).style("font-size","18px")
+    					.text("Blue sections require a login.");
+    inst.append("text").style("stroke","#688eb3").style("fill","#688eb3").style("text-decoration","underline").style("cursor","pointer")
+    					.attr("x",10).attr("y",140).style("font-size","18px")
     					.attr("id","pauseTxt")
     					.on("click",animationToggle)
     					.text("Pause");
@@ -202,7 +208,15 @@ d3.json("top.json", function(error, graph) {
 		  
 	node.append("circle")
       .attr("r",function(d,i) { var r=radius; if(i==0){r=r*1.3;} return r; })
-      .style("fill", function(d) { return color(d.group); })
+      .style("fill", function(d) {
+      		var col=color(d.group);
+      		if(d.group==2 || d.group==3|| d.group==7){ 
+      			col=d3.rgb("#2d7a32");
+      		}else if(d.group>3){
+      			col=d3.rgb("#3e698c");
+      		}
+      		return col; 
+      })
 	  .style("stroke",d3.rgb("#999999"));
 
 	node.each( function(d,i){

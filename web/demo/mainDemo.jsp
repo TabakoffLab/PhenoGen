@@ -11,7 +11,7 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
 <% 	//extrasList.add("jquery-ui-1.8.23.min.js");
-	extrasList.add("/smoothness/jquery-ui-1.9.1.custom.css");
+	extrasList.add("/smoothness/jquery-ui.1.11.1.min.css");
 	extrasList.add("normalize.css");
 	extrasList.add("index.css"); %>
 <%pageTitle="Demonstrations";%>

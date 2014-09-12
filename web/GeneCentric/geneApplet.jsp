@@ -1,10 +1,10 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <%
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("d3.v3.min.js");
-	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
+	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tooltipster.css");
 	
@@ -75,7 +75,9 @@ if(request.getParameter("arrayTypeID")!=null){
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
-
+<style>
+	.ui-widget { font-size:0.8em;}
+</style>
 <script type="text/javascript">
 	$('#wait1').hide();
 	var urlprefix="<%=host+contextRoot%>";
@@ -104,7 +106,8 @@ if(request.getParameter("arrayTypeID")!=null){
 	var dataPrefix="../../";
 </script>
 <div id="imageMenu"></div>
-    <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
+<div id="viewMenu"></div>
+    <!--<div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:
     		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
     		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageTranscriptomeView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
@@ -115,11 +118,34 @@ if(request.getParameter("arrayTypeID")!=null){
                 		<option value="0" >------Login to use saved views------</option>
                 </select>
             </span>-->
-    </div>
+    <!--</div>-->
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
-    		<span class="trigger less" name="collapsableImage" >Transcripts Image</span>
+    		<table style="width:100%;" cellpadding="0" cellspacing="0">
+            <tbody>
+            <!--<TR>
+            	<TD colspan="2" style="text-align:center; width:100%;">
+                <span style="background-color:#DEDEDE;font-size:18px; font-weight:bold;padding:2px 15px 2px 15px;">
+                    	<span id="viewLbl0"   >View:</span><span id="viewModifiedCtl">(Modified) <img src="../web/images/icons/save_flat.png" /></span>
+                </span>
+                </TD>
+            </TR>-->
+            	<TR>
+                	<TD style="background-color:#DEDEDE;font-size:18px; font-weight:bold;">
+                        <span class="trigger less" name="collapsableImage" >Transcripts Image</span>
+                        <div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div>
+                  	</TD>
+                    <TD style="background-color:#DEDEDE; text-align:center; width:50%;font-size:18px; font-weight:bold; vertical-align: middle;">
+                        <span id="viewLbl0">View:</span><span id="viewModifiedCtl0" style="display:none;">(Modified <span class="Imagetooltip" title="This view has been modified.  To save this change you should use the arrow next to Select/Edit Views to Save or Save As..  Otherwise your change will persist only while this window is not refreshed and not left inactive for more than 59 minutes."><img src="<%=imagesDir%>icons/info.gif" />)</span>
+                    </TD>
+                    <TD style="background-color:#DEDEDE;">
+                        <div id="imageHeader" style=" font-size:12px; float:right;"></div>
+            		</TD>
+               </TR>
+               </tbody>
+            </table>
+    		<!--<span class="trigger less" name="collapsableImage" >Transcripts Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div>
-            <div id="imageHeader" style=" font-size:12px; float:right;"></div>
+            <div id="imageHeader" style=" font-size:12px; float:right;"></div>-->
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">
@@ -133,13 +159,15 @@ if(request.getParameter("arrayTypeID")!=null){
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser1.3.1.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeReport1.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.2.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeReport2.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
 				
             <script type="text/javascript">
                     var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
 					gs.forceDrawAs("Trx");
-					loadState(0);
+					loadStateFromCookie(0);
 					gs.xMax=maxCoord;
 					gs.xMin=minCoord;
 					

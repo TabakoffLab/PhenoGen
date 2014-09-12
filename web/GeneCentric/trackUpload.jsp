@@ -3,16 +3,25 @@ import="org.json.*" %>
 
 
 
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <%
 	String sessionid="";
 	sessionid=session.getId();
 	java.util.Date d=new java.util.Date();
-	BufferedReader in=request.getReader();
 	String content="";
 	boolean htmlCreated=false;
+	BufferedReader in=request.getReader();
+	String fileName=applicationRoot+contextRoot+"tmpData/trackUpload/"+sessionid+"_"+d.getTime();
+	File test=new File(fileName);
+	int counter=0;
+	String tmpfileName=fileName;
+	while(test.exists()){
+		fileName=tmpfileName+"_"+counter;
+		test=new File(fileName);
+		counter++;
+	}
 	try{
-			BufferedWriter output=new BufferedWriter(new FileWriter(applicationRoot+contextRoot+"tmpData/trackUpload/"+sessionid+"_"+d.getTime()+".bed"));
+			BufferedWriter output=new BufferedWriter(new FileWriter(fileName));
 			boolean cont=true;
 			while(cont){
 				String tmpc=in.readLine();
@@ -33,7 +42,7 @@ import="org.json.*" %>
 <% 
 	JSONObject genejson;
 	genejson = new JSONObject();
-    genejson.put("trackFile" , sessionid+"_"+d.getTime()+".bed");
+    genejson.put("trackFile" , sessionid+"_"+d.getTime());
 	response.setContentType("application/json");
 	response.getWriter().write(genejson.toString());
 %>
