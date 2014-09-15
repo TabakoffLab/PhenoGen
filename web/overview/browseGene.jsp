@@ -47,6 +47,18 @@
                              <a class="fancybox" rel="fancybox-thumb" href="web/images/multimir.png" title="multiMiR results for a selected gene."><img src="web/images/multimir.png"  style="width:150px;" /></a>
                              </span>
                         	</TD>
+                            <TD>
+                            	<span class="tooltip"  title="Image showing an overview of the basic controls.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Image showing an overview of the basic controls."><img src="web/GeneCentric/help1.jpg"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            	<span class="tooltip"  title="Image showing an overview of the controls for selecting and editing views.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Image showing an overview of the controls for selecting and editing views."><img src="web/GeneCentric/help2.jpg"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            	<span class="tooltip"  title="Image showing an overview of the controls for selecting and editing tracks.  <BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Image showing an overview of the controls for selecting and editing tracks."><img src="web/GeneCentric/help3.jpg"  style="width:150px;" /></a></span>
+                            </TD>
                             </TR>
                             </table>
                         </div>
@@ -98,10 +110,10 @@
                         Interactively explore Genomic Data/Transcriptomic Data (including RNA-Seq and Microarray Data) along the genome or around a gene of interest.
                         <ul>
                         	<li>View Rat Brain and Liver Isoforms from RNA-Seq transcriptome reconstruction</li>
-                            <li>View Rat SNPs/Short Indels for BN-Lx/CubPrin, SHR/OlaPrin, F344, and SHR/NCrlPrin with more coming soon</li>
+                            <li>View Rat SNPs/Short Indels for BN-Lx/CubPrin, SHR/OlaPrin, F344*, and SHR/NCrlPrin with more coming soon</li>
                             <li>View Ensembl and RefSeq Isoforms</li>
-                            <li>View Affymetrix Microarray Probe set locations</li>
-                            <li>View eQTLs for the gene</li>
+                            <li>View Affymetrix Microarray Probe set locations, along with Heritability and Detection Above Background in various datasets.</li>
+                            <li>View eQTLs for a gene</li>
                             <li>View validated/predicted miRNAs targeting the selected gene. Further you can view additional detail and view all genes targeted by a particular miRNA.</li>
                             <li>Import your own tracks currently support for small &lt;20MB bed files is available.</li>
                             <li>Access detailed Affy Exon 1.0 ST data</li>

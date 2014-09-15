@@ -5,6 +5,7 @@
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
+	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
 	//extrasList.add("jscolor/jscolor.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("d3.v3.min.js");
@@ -12,6 +13,7 @@
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("jquery.fancybox.css");
+	extrasList.add("jquery.fancybox-thumbs.css");
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
@@ -658,9 +660,50 @@ Or
                         </video>
        </TD>
        </TR>
+       <TR>
+       	<TD colspan="2">
+        	<H2>Navigation Help</H2>
+        </TD>
+       </TR>
+       <TR>
+       		<TD colspan="2" style="text-align:center;">
+                <table style="width:98%">
+                <TR>
+                                <TD style="text-align:center;">
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Basic Controls on the main image."><img src="web/GeneCentric/help1.jpg"  style="width:300px;" /></a>
+                                </TD>
+                                <TD style="text-align:center;">
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."><img src="web/GeneCentric/help2.jpg"  style="width:300px;" /></a>
+                                </TD>
+                                <TD style="text-align:center;">
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit tracks."><img src="web/GeneCentric/help3.jpg"  style="width:300px;" /></a>
+                                </TD>
+                </TR>
+                </table>
+            </TD>
+       </TR>
        </table>
+       <BR /><BR /><BR /><BR />
 	</div>
+    
 <%}%>
+
+	<script type="text/javascript">
+		$('.fancybox').fancybox({
+						helpers : {
+										title: {
+											type: 'inside',
+											position: 'top'
+										},
+										thumbs	: {
+												width	: 200,
+												height	: 100
+											}
+									},
+						nextEffect: 'fade',
+						prevEffect: 'fade'
+		});
+	</script>
 
 <%if(popup){%>
 	<div style="text-align:center;">
