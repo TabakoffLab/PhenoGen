@@ -117,10 +117,9 @@ var dataPrefix="";
 			$('#legendDialog').dialog("open");
 		});
     </script>
-    <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
 <div id="page" style="min-height:1050px;text-align:center;">
 	<div style="width:100%;text-align:left;">
-	Not sure where to start: <a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">watch a quick navigation demonstration</a> or <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Basic Controls on the main image."> view the help images again</a><a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."></a>
+	Not sure where to start: <a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">watch a quick navigation demonstration</a> or <a id="fbhelp1" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Basic Controls on the main image."> view the help images again</a><a id="fbhelp2" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."></a><a id="fbhelp3" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit views."></a>
     </div>
     
     <div id="imageMenu"></div>
@@ -193,46 +192,6 @@ var dataPrefix="";
         </div>
 
     </div><!--end Border Div -->
-
-    
-<script type="text/javascript">
-  $('#legendDialog').dialog({
-		autoOpen: false,
-		dialogClass: "legendDialog",
-		width: 350,
-		height: 380,
-		zIndex: 999
-	});
-  	
-	
-	/*$('.legendBtn').click( function(){
-		$('#legendDialog').dialog( "option", "position",{ my: "left top", at: "left bottom", of: $(this) });
-		$('#legendDialog').dialog("open");
-	});*/
-	
-	/*$('.Imagetooltip').tooltipster({
-		position: 'top-right',
-		maxWidth: 250,
-		offsetX: 24,
-		offsetY: 5,
-		//arrow: false,
-		interactive: true,
-   		interactiveTolerance: 350
-	});*/
-	
-	
-	/*$('.helpImage').click( function(event){
-		var id=$(this).attr('id');
-		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
-		$('#'+id+'Content').dialog("open").css({'font-size':12});
-	});*/
-</script>    
-     
-
-<div id="legendDialog"  title="UCSC Image/Table Rows Color Code Key" class="legendDialog" style="display:none">
-                <%@ include file="/web/GeneCentric/legendBox.jsp" %>
-    </div>
-    
     
     
     <div id="regionDiv">
@@ -349,58 +308,14 @@ var dataPrefix="";
 	//Setup Fancy box for example
      $('.fancybox').fancybox({
                 width:"800px",
-                height:$(document).height(),
+                //height:$(document).height(),
                 scrollOutside:false
                 /*afterClose: function(){
                         $('body.noPrint').css("margin","5px auto 60px");
                         return;
                 }*/
   	});
-	displayHelpFirstTime();
 	
-	/*$('#saveBtn').click( function(){
-		var content=$("div#Level0").html();
-		content+"\n";
-		$.ajax({
-				url: pathPrefix+"saveBrowserImage.jsp",
-   				type: 'POST',
-				contentType: 'text/html',
-				data: content,
-				processData: false,
-				dataType: 'json',
-    			success: function(data2){ 
-        			console.log(data2.imageFile);
-					var url="http://<%=host+contextRoot%>/tmpData/download/"+data2.imageFile;
-					 var filename = data2.imageFile;
-					  var xhr = new XMLHttpRequest();
-					  xhr.responseType = 'blob';
-					  xhr.onload = function() {
-						var a = document.createElement('a');
-						a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
-						a.download = filename; // Set the file name.
-						a.style.display = 'none';
-						document.body.appendChild(a);
-						a.click();
-						delete a;
-					  };
-					  xhr.open('GET', url);
-					  xhr.send();
-    			},
-    			error: function(xhr, status, error) {
-        			console.log(error);
-    			}
-			});
-	});*/
-	
-	/*$('#saveBtn').click( function(){
-		html2canvas($('div#Level0'), {
-			background: "#ffffff",
-			timeout: 15000,
-  			onrendered: function(canvas) {
-    		document.body.appendChild(canvas);
-  		}
-		});
-	});*/
 	
 </script>
 

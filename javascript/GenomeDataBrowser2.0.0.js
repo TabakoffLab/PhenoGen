@@ -364,6 +364,7 @@ $(document).on("click",".viewSelect",function(){
 						console.log(p);
 						$(".viewsLevel"+level).css("top",250).css("left",$(window).width()-610);
 						$(".viewsLevel"+level).fadeIn("fast");
+						$("#trackSettingDialog").hide();
 						//var tmpStr=new String(setting);
 						//setupSettingUI(tmpStr.substr(tmpStr.length-1));
 					}else{
@@ -410,7 +411,7 @@ $(document).on("click",".reset",function(){
 	}else if(id.indexOf("resetTracks")==0){
 		svgList[level].removeAllTracks();
 		setupDefaultView(level);
-		saveToCookie(level);
+		//saveToCookie(level);
 	}
 });
 
@@ -430,18 +431,18 @@ function numberWithCommas(x) {
 }
 
 function displayHelpFirstTime(){
-	/*if($.cookie("genomeBrowserHelp")!=null){
+	if($.cookie("genomeBrowserHelp")!=null){
     	var trackListObj=$.cookie("genomeBrowserHelp");
     	if(trackListObj==siteVer){
 
     	}else{
-    		$("a#helpExampleNav").click();
+    		$("a#fbhelp1").click();
     		$.cookie("genomeBrowserHelp",siteVer);
     	}
-    }else{*/
-    //	$("a#helpExampleNav").click();
-    /*	$.cookie("genomeBrowserHelp",siteVer);
-    }*/
+    }else{
+		$("a#fbhelp1").click();
+		$.cookie("genomeBrowserHelp",siteVer);
+    }
 }
 
 function removeTrack(level,track){
@@ -534,33 +535,11 @@ function loadStateFromString(state,imgState,levelInd,svg){
 	}*/
 	//console.log(state);
 	//TODO MAKE SURE TO LOAD CUSTOM TRACKS ON LOADING TRACK EDITOR
-	//loadCustomTracks(state);
-	loadCustomTracksCookie();//also loading any that might be setup in a cookie
-	//setupSettingUI(state,levelInd);
-	//setupTrackSettingUI(state,levelInd);
 	loadSavedConfigTracks(state,levelInd,svg);
-	//setupImageSettingUI(imgState,levelInd);
 	loadImageState(imgState,levelInd);
 }
 
-//loading data from cookie
-function loadStateFromCookie(levelInd){
-	/*if($.cookie("state"+defaultView+levelInd+"trackList")!=null){
-    	var trackListObj=$.cookie("state"+defaultView+levelInd+"trackList");
-		loadCustomTracksCookie();
-		//setupSettingUI(trackListObj,levelInd);
-		//setupTrackSettingUI(trackListObj,levelInd);
-		loadSavedConfigTracks(trackListObj,levelInd,"");
-	}else{
-		setupDefaultView(levelInd);
-    	saveToCookie(levelInd);
-    }
-	if($.cookie("imgstate"+defaultView+levelInd)!=null){
-    	var trackListObj=$.cookie("imgstate"+defaultView+levelInd);
-    	//setupImageSettingUI(trackListObj,levelInd);
-		loadImageState(trackListObj,levelInd);
-	}*/
-}
+
 
 function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
 	var hasOldTrackValues=false;
@@ -614,15 +593,15 @@ function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
 	}
 	if(addedCount==0){
 		setupDefaultView(levelInd);
-		saveToCookie(levelInd);
+		//saveToCookie(levelInd);
 	}
 	/*}else{
 		setupDefaultView(levelInd);
     	saveToCookie(levelInd);
 	}*/
-	if(hasOldTrackValues){
+	/*if(hasOldTrackValues){
 		saveToCookie(levelInd);
-	}
+	}*/
 }
 
 function loadImageState(trackListObj,levelInd){
@@ -724,173 +703,6 @@ function setupDefaultView(levelInd){
 	}
 }
 
-function saveToCookie(curLevel){
-	var cookieStr="";
-	$( "#sortable"+curLevel+" li svg").each(function() {
-	        var id = (new String ($(this).attr("id"))).substr(6);
-	        cookieStr=cookieStr+id;
-	        if($("#"+id+"Dense"+curLevel+"Select").length > 0){
-	          	cookieStr=cookieStr+","+$("#"+id+"Dense"+curLevel+"Select").val();
-	        }
-	        if($("#"+id+curLevel+"Select").length > 0){
-	          	cookieStr=cookieStr+","+$("#"+id+curLevel+"Select").val();
-	        }
-	        /*if($("#"+id+"CBXg"+curLevel).length>0){
-	        		var curAnnot="";
-		          	if($("#"+id+"CBXg"+curLevel).is(":checked")
-						&&
-						$("#"+id+"CBXt"+curLevel).is(":checked")){
-						curAnnot="all";
-					}else if($("#"+id+"CBXg"+curLevel).is(":checked")){
-						curAnnot="annotOnly";
-					}else if($("#"+id+"CBXt"+curLevel).is(":checked")){
-						curAnnot="trxOnly";
-					}
-					cookieStr=cookieStr+","+curAnnot;
-	        }*/
-          cookieStr=cookieStr+";";
-        });
-	//Need to preserve Rat or Mouse Only tracks and custom tracks while other species is viewed
-	if($.cookie("state"+defaultView+curLevel+"trackList")!=null){
-    	var trackListObj=$.cookie("state"+defaultView+curLevel+"trackList");
-    	var trackArray=trackListObj.split(";");
-    	for(var m=0;m<trackArray.length;m++){
-    		var trackVars=trackArray[m].split(",");
-    		if((organism=="Rn" && mouseOnly[trackVars[0]]!= undefined) || (organism=="Mm" && ratOnly[trackVars[0]]!= undefined)){
-	    		cookieStr=cookieStr+trackArray[m]+";";
-    		}else if(trackVars[0].indexOf("custom")==0){//Supports preserving custom tracks.  Will add any of the opposite species to the new cookieStr
-    			var trackStr=loadCustomTrackCookie(trackVars[0]);
-    			var trkOrg=trackStr.substr(trackStr.indexOf("organism=")+9,2);
-    			if(organism!=trkOrg){
-    				cookieStr=cookieStr+trackStr+";";
-    			}
-    		}
-    	}
-    }
-	$.cookie("state"+defaultView+curLevel+"trackList",cookieStr);
-}
-
-
-function loadCustomTracksCookie(){
-	/*var existingCookieStr="";
-	if($.cookie("customTrackList")!=null){
-    	existingCookieStr=$.cookie("customTrackList");
-		loadCustomTrack(existingCookieStr);
-	}*/
-}
-
-function saveCustomTrackCookie(newTrack){
-	/*var existingCookieStr="";
-	if($.cookie("customTrackList")!=null){
-    	existingCookieStr=$.cookie("customTrackList");
-    }
-    existingCookieStr=existingCookieStr+newTrack;
-    $.cookie("customTrackList",existingCookieStr);*/
-}
-
-function removeCustomTrackCookie(removeTrack){
-	var existingCookieStr="";
-	var newCookieStr="";
-	if($.cookie("customTrackList")!=null){
-    	existingCookieStr=$.cookie("customTrackList");
-    	var trackArray=existingCookieStr.split(";");
-    	for(var m=0;m<trackArray.length;m++){
-    		if(trackArray[m].indexOf(removeTrack)==0){
-    			//console.log("removed track from cookie:"+trackArray[m]);
-    		}else{
-    				newCookieStr=newCookieStr+trackArray[m]+";";
-    		}
-    	}
-    }
-    $.cookie("customTrackList",newCookieStr);
-}
-
-function loadCustomTracks(trackStr){
-	/*var existingCookieStr="";
-	if($.cookie("customTrackList")!=null){
-    	existingCookieStr=$.cookie("customTrackList");*/
-    	var trackArray=trackStr.split(";");
-    	var addedCount=0;
-    	for(var m=0;m<trackArray.length;m++){
-    		if(trackArray[m].indexOf("custom")==0 && trackArray[m].indexOf("organism="+organism)>0){
-    			addCustomTrackUI(trackArray[m],0);
-    		}
-    	}
-    //}
-}
-
-/*function showCustomColor(id,level){
-	if($("div#"+id+"Scale"+level).is(':visible')){
-		$("div#"+id+"Scale"+level).hide();
-		$("#"+id+"ColorBtn"+level).prop("value","Edit Color");
-	}else{
-		$("div#"+id+"Scale"+level).show();
-		$("#"+id+"ColorBtn"+level).prop("value","Hide Edit Color");
-	    var track=svgList[level].getTrack(id);
-	    $("#"+id+"ColorSelect"+level).val(track.colorBy);
-	    if(track.colorBy=="Score"){
-	    	$("div#"+id+"ScaleSetting"+level).show();
-	    }else{
-	    	$("div#"+id+"ScaleSetting"+level).hide();
-	    }
-	    if(track!=undefined && track.minColor!=undefined&&track.maxColor!=undefined){
-	        $("#"+id+"minData"+level).val(track.minValue);
-	        $("#"+id+"maxData"+level).val(track.maxValue);
-	        document.getElementById(id+"minColor"+level).color.fromString(track.minColor);
-	        document.getElementById(id+"maxColor"+level).color.fromString(track.maxColor);
-	    }
-	}
-	
-}*/
-
-function deleteCustomTrack(track){
-	//console.log("remove custom track:"+track);
-	//delete from cookie
-	removeCustomTrackCookie(track);
-	//console.log("after delete from cookie");
-	//remove track from image
-	removeTrack(0,track);
-	//console.log("after remove from level0");
-	removeTrack(1,track);
-	//console.log("after remove from level 1");
-	//remove track from UI
-	$("div.custTrack"+track).each(function(){$(this).remove();});
-	//console.log("after remove from settings");
-	saveToCookie(0);
-	//console.log("after save to cookie");
-	//remove track from server
-	$.ajax({
-			url: contextPath +"/"+ pathPrefix +"removeCustomTrack.jsp",
-			type: 'GET',
-			data: {id: track},
-								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
-			dataType: 'json',
-			success: function(data2){
-				    				
-			},
-			error: function(xhr, status, error) {
-					        			
-			}
-	});
-	//console.log("end of remove");
-}
-
-function loadCustomTrackCookie(track){
-	var existingCookieStr="";
-	var customTrack="";
-	/*if($.cookie("customTrackList")!=null){
-    	existingCookieStr=$.cookie("customTrackList");
-    	var trackArray=existingCookieStr.split(";");
-    	var addedCount=0;
-    	for(var m=0;m<trackArray.length;m++){
-    		//console.log(trackArray[m]);
-    		if(trackArray[m].indexOf(track)==0){
-    			customTrack=trackArray[m];
-    		}
-    	}
-    }*/
-    return customTrack;
-}
 
 function calculateBin(len,width){
 		var bpPerPixel=len/width;
@@ -952,7 +764,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			return tr;
 	};
 	that.addTrack=function (track,density,additionalOptions,retry){
-		console.log("Add Track:"+track);
+		//console.log("Add Track:"+track);
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -1633,23 +1445,6 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				var newTrack=CustomCountTrack(that,data,track,3,additionalOptions);
 				that.addTrackList(newTrack);
 			}
-				/*var trackDetails=loadCustomTrackCookie(track);
-				if(trackDetails.indexOf("organism="+organism)>0){
-					//console.log("loadedFromCookie:"+trackDetails);
-					var details=trackDetails.split(",");
-					var dispName="";
-					for(var m=0;m<details.length;m++){
-						if(details[m].indexOf("dispTrackName=")==0){
-							dispName=details[m].substr(details[m].indexOf("=")+1);
-						}
-					}
-					var data=new Array();
-					var newTrack=CustomTranscriptTrack(that,data,track,dispName,3,trackDetails);
-					that.addTrackList(newTrack);
-					newTrack.updateFullData(0,0);
-				}else{
-					d3.select("#Level"+that.levelNumber+track).remove();
-				}*/
 		}
 		$(".sortable"+that.levelNumber).sortable( "refresh" );	
 	};
@@ -1672,14 +1467,15 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		};
 
 	that.removeAllTracks=function(){
-			for(var l=0;l<that.trackList.length;l++){
+		d3.selectAll("li.draggable"+that.levelNumber).remove();
+			/*for(var l=0;l<that.trackList.length;l++){
 				if(that.trackList[l]!=undefined&& that.trackList[l].trackClass!="genomeSeq"){
 					d3.select("#Level"+that.levelNumber+that.trackList[l].trackClass).remove();
 					d3.select("li.draggable"+that.levelNumber+"#li"+that.trackList[l].trackClass).remove();
 				}
-			}
-			that.trackList=[];
-			DisplayRegionReport();
+			}*/
+		that.trackList=[];
+		DisplayRegionReport();
 	};
 
 	that.removeTrack=function (track){
@@ -2524,7 +2320,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 											  containment: "parent",
 											  //helper: "original",
 											  stop: function() {
-										        saveToCookie(levelNumber);
+										        //saveToCookie(levelNumber);
 										      }
 										    }).disableSelection();
 	
@@ -10549,5 +10345,4 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 }
 
 window['GenomeSVG']=GenomeSVG;
-window['loadStateFromCookie']=loadStateFromCookie;
 

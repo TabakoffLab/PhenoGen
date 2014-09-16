@@ -42,7 +42,9 @@
                     	<TD style="vertical-align:middle">
                             <span class="control<%=level%>" style="display:inline-block;" id="addCustomTrack<%=level%>" title="Create a new custom track."><img src="<%=imagesDir%>icons/add_flat.png"style="position:relative;top:-3px;left:-2px;" ></span>
                             <span class="control<%=level%>" style="display:inline-block;" id="deleteCustomTrack<%=level%>" title="Delete a custom track."><img src="<%=imagesDir%>icons/del_flat_48.png"style="position:relative;top:-3px;left:-2px;" ></span>
-                            <span class="addTrack<%=level%> button" style="float:right;">Add Track</span>
+                            <span style="float:right;position:relative;top:-5px;"><a class="fancybox" rel="fancybox-thumbtrack" href="web/GeneCentric/help3.jpg" title="Controls to select and edit tracks."><img src="<%=imagesDir%>icons/help.png" /></a></span>
+                            <span class="addTrack<%=level%> button" style="float:right; position:relative; top:25px;left:15;">Add Track</span>
+                            
                         </TD>
                         
                     </TR>

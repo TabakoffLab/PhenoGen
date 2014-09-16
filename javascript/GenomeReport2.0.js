@@ -181,6 +181,7 @@ function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
 				dataType: 'html',
     			success: function(data2){ 
         			$(divSelector).html(data2);
+        			setTimeout(displayHelpFirstTime,200);
     			},
     			error: function(xhr, status, error) {
         			$(divSelector).html("<span style=\"color:#FF0000;\">An error occurred generating this page.  Please try back later.</span>");
