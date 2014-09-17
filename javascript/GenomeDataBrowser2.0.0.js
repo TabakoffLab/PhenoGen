@@ -186,7 +186,7 @@ function mup() {
 	var i=0,p,start,width,minx,maxx;
 	for (i=0; i<svgList.length; i++){
 		if(svgList[i]!==null){
-			if(!isNaN(svgList[i].downx)|| !isNaN(svgList[i].downPanx)){
+			if(svgList[i].overSettings==0 &&(!isNaN(svgList[i].downx) || !isNaN(svgList[i].downPanx)) ){
 				if(i===0){
 					updatePage(svgList[i]);
 				}
@@ -203,7 +203,7 @@ function mup() {
 					tmp.stop=svgList[i].xScale.domain()[1];
 					history[i].push(tmp);
 				}
-			}else if(!isNaN(svgList[i].downZoomx)){
+			}else if(svgList[i].overSettings==0 &&!isNaN(svgList[i].downZoomx)){
 				start=svgList[i].downZoomx;
 				p = d3.mouse(svgList[i].vis[0][0]);
 				svgList[i].downZoomxEnd=p[0];
@@ -246,7 +246,7 @@ function mup() {
 function mmove(){
 	var i,p,minx,maxx,dist,scaleDist,start,width;
 	for (i=0; i<svgList.length; i++){
-		if(svgList[i]!==null){
+		if(svgList[i]!==null && svgList[i].overSettings==0){
 			if (!isNaN(svgList[i].downx)) {
 	          p = d3.mouse(svgList[i].vis[0][0]), rupx = p[0];
 	          if (rupx !== 0) {
@@ -803,7 +803,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					.attr("height", 30)
 					.attr("class", "track")
 					.attr("id","Level"+that.levelNumber+track)
-					.attr("pointer-events", "all")
+					//.attr("pointer-events", "all")
 					.style("cursor", "move")
 					
 					.on("mouseover", function(){
@@ -864,6 +864,21 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					var settings=svg.append("g").attr("class","settings")
 											.attr("id",track+"_"+that.levelNumber)
 											.attr("transform", "translate("+(that.width-40)+",0)")
+											;
+					settings.append("image").attr("width","16px")
+										.attr("height","16px")
+										.attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAA"+
+												"AEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAAGASURBVCjPlZGxaxNhAMV/9128JF/u"+
+												"LsndaVoPhEopFW2RGAXpKOpQHNwEHXTVf0Chm6OL4OhccFHoYKGFQgMOLoIUEQfBSZCUBtI2yaVt"+
+												"8hwarI6+5cF7v+HBg/+RH1U3q2/+zdxjK0znO0EhWgru20t2J/fZnXInjrYBHAD/ut30OkW3FBUR"+
+												"fXrtLDroduf2f4ABaARlLzkdRwFFLCFxFBMdPezDGLj5PT/yMChLNqLm6MDFI2eSvT9Dzj2/qLqu"+
+												"7q4+0mXVlx83BnVdUPrC9wEor6Sa0awW38oCKLy1NqsZpap8AgP5BTgk41fP6QE4u60s4xCwCQAr"+
+												"DxofUk2q1i5NAJSmantnlWphvXkXABXf3U6GsSrytwsvC6+CTlWxat2v1+SNR96ZLA9ChSrJyspX"+
+												"qFDlwfkUIAfwcbrvGRwEwAgzEjLDlJ9joPXl6VK639h5cm9rEebfv14emOaZZ9+ck0uUKJTXnret"+
+												"fHvrik7JU+W4+QsCOdzAsOEMT7LfaTGJVMIWBCwAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTAtMDIt"+
+												"MTFUMDA6NTM6MDItMDY6MDDZzrlFAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDA5LTA4LTE4VDAyOjI2"+
+												"OjEwLTA1OjAw2ytpkgAAAABJRU5ErkJggg==")
+										.attr("pointer-events", "all")
 											.style("cursor","pointer")
 											.on("click",function(d){
 												if(track!=that.selectedTrackSetting){
@@ -877,26 +892,16 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 													that.selectedTrackSetting="";
 													$('#trackSettingDialog').fadeOut("fast");
 												}
+												return false;
 											})
 											.on("mouseover",function(){
+												that.overSettings=1;
 												$("#mouseHelp").html("Track Settings: Click to access track settings or quickly remove the track from the current view.");
 											})
 											.on("mouseout",function(){
+												that.overSettings=0;
 												$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 											});
-					settings.append("image").attr("width","16px")
-										.attr("height","16px")
-										.attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAA"+
-												"AEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAAGASURBVCjPlZGxaxNhAMV/9128JF/u"+
-												"LsndaVoPhEopFW2RGAXpKOpQHNwEHXTVf0Chm6OL4OhccFHoYKGFQgMOLoIUEQfBSZCUBtI2yaVt"+
-												"8hwarI6+5cF7v+HBg/+RH1U3q2/+zdxjK0znO0EhWgru20t2J/fZnXInjrYBHAD/ut30OkW3FBUR"+
-												"fXrtLDroduf2f4ABaARlLzkdRwFFLCFxFBMdPezDGLj5PT/yMChLNqLm6MDFI2eSvT9Dzj2/qLqu"+
-												"7q4+0mXVlx83BnVdUPrC9wEor6Sa0awW38oCKLy1NqsZpap8AgP5BTgk41fP6QE4u60s4xCwCQAr"+
-												"DxofUk2q1i5NAJSmantnlWphvXkXABXf3U6GsSrytwsvC6+CTlWxat2v1+SNR96ZLA9ChSrJyspX"+
-												"qFDlwfkUIAfwcbrvGRwEwAgzEjLDlJ9joPXl6VK639h5cm9rEebfv14emOaZZ9+ck0uUKJTXnret"+
-												"fHvrik7JU+W4+QsCOdzAsOEMT7LfaTGJVMIWBCwAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTAtMDIt"+
-												"MTFUMDA6NTM6MDItMDY6MDDZzrlFAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDA5LTA4LTE4VDAyOjI2"+
-												"OjEwLTA1OjAw2ytpkgAAAABJRU5ErkJggg==");
 
 		}
 		//end of track div setup
@@ -1580,28 +1585,30 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.mdown=function() {
-		if((that.defaultMouseFunct!="dragzoom" && d3.event.altKey ) || (that.defaultMouseFunct=="dragzoom" && !d3.event.altKey )){
-				var p = d3.mouse(that.vis[0][0]);
-				that.downZoomx=p[0];
-				that.scaleSVG.append("rect")
-						.attr("class","zoomRect")
-						.attr("x",p[0])
-						.attr("y",0)
-		    			.attr("height",that.scaleSVG.attr("height"))
-						.attr("width",1)
-						.attr("fill","#CECECE")
-						.attr("opacity",0.3);
-				that.scaleSVG.append("text").attr("id","zoomTextStart").attr("x",that.downZoomx).attr("y",15).text(numberWithCommas(Math.round(that.xScale.invert(that.downZoomx))));
-				that.scaleSVG.append("text").attr("id","zoomTextEnd").attr("x",that.downZoomx).attr("y",50).text(numberWithCommas(Math.round(that.xScale.invert(that.downZoomx))));
-		}else{ 
-			if(processAjax==0){
-				that.prevMinCoord=that.xScale.domain()[0];
-				that.prevMaxCoord=that.xScale.domain()[1];
-		        var p = d3.mouse(that.vis[0][0]);
-		        that.downx = that.xScale.invert(p[0]);
-		        that.downscalex = that.xScale;
-	    	}
-	    }
+		if(that.overSettings==0){
+			if((that.defaultMouseFunct!="dragzoom" && d3.event.altKey ) || (that.defaultMouseFunct=="dragzoom" && !d3.event.altKey )){
+					var p = d3.mouse(that.vis[0][0]);
+					that.downZoomx=p[0];
+					that.scaleSVG.append("rect")
+							.attr("class","zoomRect")
+							.attr("x",p[0])
+							.attr("y",0)
+			    			.attr("height",that.scaleSVG.attr("height"))
+							.attr("width",1)
+							.attr("fill","#CECECE")
+							.attr("opacity",0.3);
+					that.scaleSVG.append("text").attr("id","zoomTextStart").attr("x",that.downZoomx).attr("y",15).text(numberWithCommas(Math.round(that.xScale.invert(that.downZoomx))));
+					that.scaleSVG.append("text").attr("id","zoomTextEnd").attr("x",that.downZoomx).attr("y",50).text(numberWithCommas(Math.round(that.xScale.invert(that.downZoomx))));
+			}else{ 
+				if(processAjax==0){
+					that.prevMinCoord=that.xScale.domain()[0];
+					that.prevMaxCoord=that.xScale.domain()[1];
+			        var p = d3.mouse(that.vis[0][0]);
+			        that.downx = that.xScale.invert(p[0]);
+			        that.downscalex = that.xScale;
+		    	}
+		    }
+		}
 	};
 
 	that.forceDrawAs=function(value){
@@ -2870,7 +2877,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	that.ttSVGMinWidth=20;
 
 	that.panDown=function(){
-		if(that.gsvg.defaultMouseFunct=="dragzoom" && overSelectable==0){
+		if(that.gsvg.overSettings==0 && that.gsvg.defaultMouseFunct=="dragzoom" && overSelectable==0){
 			var p = d3.mouse(that.gsvg.vis[0][0]);
 				that.gsvg.downZoomx=p[0];
 				that.svg.append("rect")
@@ -2891,13 +2898,13 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 						.attr("opacity",0.3);
 				that.scaleSVG.append("text").attr("id","zoomTextStart").attr("x",that.gsvg.downZoomx).attr("y",15).text(numberWithCommas(Math.round(that.xScale.invert(that.gsvg.downZoomx))));
 				that.scaleSVG.append("text").attr("id","zoomTextEnd").attr("x",that.gsvg.downZoomx).attr("y",50).text(numberWithCommas(Math.round(that.xScale.invert(that.gsvg.downZoomx))));
-		}else if(that.gsvg.defaultMouseFunct=="pan" && overSelectable==0){
+		}else if(that.gsvg.overSettings==0 && that.gsvg.defaultMouseFunct=="pan" && overSelectable==0){
 			if(processAjax==0){
 				var p = d3.mouse(that.gsvg.vis[0][0]);
 	        	that.gsvg.downPanx = p[0];
 	        	that.gsvg.downscalex = that.xScale;
         	}
-		}else if(that.gsvg.defaultMouseFunct=="reorder"){
+		}else if(that.gsvg.overSettings==0 && that.gsvg.defaultMouseFunct=="reorder"){
 
 		}
 	};
@@ -3418,7 +3425,8 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 	that.aaDispCutoff=2900;
 	that.seqRegionSize=4000;
 	that.strands="both";
-	that.willDraw=1;
+	that.includeAA=1;
+
 	that.labelBase=label;
 	that.lastUpdate=0;
 	that.color=function(d){
@@ -3555,12 +3563,8 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 	}
 	that.redraw=function(){
 		that.redrawSelectedArea();
-		var tmpStrands=$("#"+that.trackClass+that.gsvg.levelNumber+"Select").val();
-		var tmpAA=0;
-		if($("#"+that.trackClass+"CBX"+that.gsvg.levelNumber+"dispAA").is(":checked")){
-			tmpAA=1;
-		}
-		if(that.strands!=tmpStrands||tmpAA!=that.includeAA){
+
+		if(that.prevStrand!=that.strands||that.prevIncldAA!=that.includeAA){
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.base").each(function(d){d3.select(this).remove();});
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.aa0").each(function(d){d3.select(this).remove();});
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.aa1").each(function(d){d3.select(this).remove();});
@@ -3570,11 +3574,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.aarev2").each(function(d){d3.select(this).remove();});
 			that.draw(that.data);
 		}else{
-			if($("#"+that.trackClass+"CBX"+that.gsvg.levelNumber).is(":checked")){
-				that.willDraw=1;
-			}else{
-				that.willDraw=0;
-			}
+
 			var tmpMin=that.xScale.domain()[0];
 			var tmpMax=that.xScale.domain()[1];
 			var len=tmpMax-tmpMin;
@@ -3582,7 +3582,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			if(len>200){
 				aaFont="10px";
 			}
-			if(that.willDraw==1&&((len<=that.aaDispCutoff&&that.includeAA==1)||(len<=that.dispCutoff))){
+			if( (len<=that.aaDispCutoff&&that.includeAA==1) || (len<=that.dispCutoff) ){
 				if(!(that.seqRegionMin<=tmpMin && tmpMin<=that.seqRegionMax
 					&& that.seqRegionMin<=tmpMax && tmpMax<=that.seqRegionMax)){
 					that.updateData(0);
@@ -3791,19 +3791,12 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 	};
 	that.draw=function(data){
 		that.redrawSelectedArea();
-		that.strands=$("#"+that.trackClass+that.gsvg.levelNumber+"Select").val();
-		if($("#"+that.trackClass+"CBX"+that.gsvg.levelNumber).is(":checked")){
-			that.willDraw=1;
-		}else{
-			that.willDraw=0;
-		}
+		
 		var aaLabel="";
-		if($("#"+that.trackClass+"CBX"+that.gsvg.levelNumber+"dispAA").is(":checked")){
-			that.includeAA=1;
+		if(that.includeAA==1){
 			aaLabel=" and Amino Acids"
-		}else{
-			that.includeAA=0;
 		}
+
 		if(that.strands=="both"){
 			that.label=that.labelBase+aaLabel+" on +/- strands";
 		}else if(that.strands=="+"){
@@ -3811,9 +3804,12 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		}else if(that.strands=="-"){
 			that.label=that.labelBase+aaLabel+" on - strand";
 		}
-		if(that.willDraw==0){//Only needed to Fix IE Bug which still displays the label
+
+		if((len<=that.aaDispCutoff&&that.includeAA==1) || (len<=that.dispCutoff)){
+		}else{//Only needed to Fix IE Bug which still displays the label
 			that.label="";
 		}
+		
 		that.updateLabel(that.label);
 		that.data=data;
 		var tmpMin=that.xScale.domain()[0];
@@ -3823,19 +3819,19 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		if(len>200){
 			aaFont="8px";
 		}
-		if(that.willDraw==1&&((len<=that.aaDispCutoff&&that.includeAA==1)||(len<=that.dispCutoff))){
+		if((len<=that.aaDispCutoff&&that.includeAA==1) || (len<=that.dispCutoff)){
 			that.svg.selectAll("text.dir").remove();
 			if(that.strands=="both"){
 				that.svg.append("text").attr("class","dir").attr("x",5).attr("y",15).text("-->");
 				that.svg.append("text").attr("class","dir").attr("x",5).attr("y",120).text("<--");
-				that.svg.append("text").attr("class","dir").attr("x",that.gsvg.width-40).attr("y",15).text("-->");
+				that.svg.append("text").attr("class","dir").attr("x",that.gsvg.width-60).attr("y",15).text("-->");
 				that.svg.append("text").attr("class","dir").attr("x",that.gsvg.width-20).attr("y",120).text("<--");
 			}else if(that.strands=="+"){
 				that.svg.append("text").attr("class","dir").attr("x",5).attr("y",15).text("-->");
-				that.svg.append("text").attr("class","dir").attr("x",that.gsvg.width-40).attr("y",15).text("-->");
+				that.svg.append("text").attr("class","dir").attr("x",that.gsvg.width-60).attr("y",15).text("-->");
 			}else if(that.strands=="-"){
 				that.svg.append("text").attr("class","dir").attr("x",5).attr("y",15).text("<--");
-				that.svg.append("text").attr("class","dir").attr("x",that.gsvg.width-40).attr("y",15).text("<--");
+				that.svg.append("text").attr("class","dir").attr("x",that.gsvg.width-60).attr("y",15).text("<--");
 			}
 			
 			if(len<that.dispCutoff){
@@ -3985,6 +3981,8 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					that.svg.attr("height", 30);
 				}
 			}
+			that.prevStrand=that.strands;
+			that.prevIncldAA=that.includeAA;
 			$("li.draggable"+that.gsvg.levelNumber+"#li"+that.trackClass).show();
 		}else{
 			that.svg.attr("height", 0);
