@@ -534,6 +534,18 @@ Or
 	<%}%>
 	document.getElementById("wait1").style.display = 'none';
 	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
+	
+	function isLocalStorage(){
+		var test = 'test';
+		try {
+			localStorage.setItem(test, test);
+			localStorage.removeItem(test);
+			return true;
+		} catch(e) {
+			return false;
+		}
+	}
+	
 	function openTranslateRegion(){
 		$('.demo').hide();
 		var region=$('#geneTxt').val();
@@ -559,7 +571,7 @@ Or
 	var defviewList=[];
 	var filterViewList=[];
 	
-	function getViewData(){
+	function getViewData(shouldUpdate){
 		var tmpContext=contextPath +"/"+ pathPrefix;
 		if(pathPrefix==""){
 			tmpContext="";
@@ -571,10 +583,63 @@ Or
 				d3.select("#defaultView").html("<option>Error: reloading</option>");
 			}else{
 				defviewList=d;
-				//setupDefaultView();
+				readCookieViews();
+				if(shouldUpdate==1){
+					setupDefaultView();
+				}
 			}
 		});
 	};
+	
+	function readCookieViews(){
+		var viewString="";
+		if(isLocalStorage() === true){
+			var cur=localStorage.getItem("phenogenCustomViews");
+			if(cur!=undefined){
+				viewString=cur;
+			}
+		}else{
+			if($.cookie("phenogenCustomViews")!=null){
+				viewString=$.cookie("phenogenCustomViews");
+			}
+		}
+		if(viewString!=null&&viewString.indexOf("<///>")>-1){
+			var viewStrings=viewString.split("<///>");
+			for(var j=0;j<viewStrings.length;j++){
+				var params=viewStrings[j].split("</>");
+				var obj={};
+				for(k=0;k<params.length;k++){
+					var values=params[k].split("=");
+					if(values[0]=="TrackSettingList"){
+						var trList=values[1].split(";");
+						obj.TrackList=[];
+						for(var m=0;m<trList.length;m++){
+							if(trList[m].length>0){
+								var tc=trList[m].substr(0,trList[m].indexOf(","));
+								var set=trList[m].substr(trList[m].indexOf(",")+1);
+								var track={};
+								track.TrackClass=tc;
+								track.Settings=set;
+								track.Order=m;
+								obj.TrackList.push(track);
+							}
+						}
+					}else if(values.length<=2){
+						obj[values[0]]=values[1];
+					}else if(values.length>2){
+						var name=params[k].substr(0,params[k].indexOf("="));
+						var value=params[k].substr(params[k].indexOf("=")+1);
+						obj[name]=value;
+					}
+				}
+				obj.Source="local";
+				if(params.length>3){					
+					obj.orgCount=obj.TrackList.length;
+					defviewList.push(obj);
+				}
+			}
+		}
+	}
 	
 	
 	function setupDefaultView(){
@@ -608,7 +673,7 @@ Or
 		opt.exit().remove();
 	}
 	
-	getViewData();
+	getViewData(0);
 	
 	$("#speciesCB").on("change",setupDefaultView);
 	

@@ -644,6 +644,8 @@ function ViewMenu(level){
 		that.generatePreview(view);
 		that.generateViewList();
 		$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
+		//update main menu on the browser form
+		getViewData(1);
 	};
 
 	that.createNewView = function(){
@@ -768,6 +770,10 @@ function ViewMenu(level){
 			$("div#selection"+that.level).show();
 			$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
 		}
+		$("input#viewNameTxt"+that.level).val("");
+		$("#viewDescTxt"+that.level).val("");
+		$("input#createType"+that.level).val("blank");
+		getViewData(1);
 	};
 
 	that.saveView= function(viewID,svgImage,async){
@@ -819,6 +825,7 @@ function ViewMenu(level){
 				$.cookie("phenogenCustomViews",newCookie);
 			}
 		}
+		getViewData(1);
 	};
 
 	that.saveAsView=function(viewCopy){
@@ -885,21 +892,37 @@ function ViewMenu(level){
 				}
 			}
 			var cookieList=cookieStr.split("<///>");
+			console.log("before delete");
+			console.log(cookieStr);
 			for(var l=0;l<cookieList.length;l++){
 				if(cookieList[l].indexOf("ViewID="+d.ViewID)>-1){
 
 				}else{
-					newCookie=newCookie+cookieList+"<///>";
+					newCookie=newCookie+cookieList[l];
 				}
 			}
+			console.log("after delete");
+			console.log(newCookie);
 			if(isLocalStorage() === true){
 				localStorage.setItem("phenogenCustomViews",newCookie);
 			}else{
 				$.cookie("phenogenCustomViews",newCookie);
 			}
+			that.viewList.splice(ind,1);
+			that.generateViewList();
 		}
 		$("#confirmDeleteView"+that.level).hide();
 		$("div#selection"+that.level).show();
+
+		$("#viewSelect"+that.level).prop("selectedIndex",0);
+		that.selectChange();
+		if(svgList[that.level].currentView.ViewID==d.ViewID){
+			that.applyView();
+		}
+
+		//update main menu on the browser form
+		getViewData(1);
+
 	};
 
 	that.getViewData();
