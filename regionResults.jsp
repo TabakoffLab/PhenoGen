@@ -119,7 +119,7 @@ var dataPrefix="";
     </script>
 <div id="page" style="min-height:1050px;text-align:center;">
 	<div style="width:100%;text-align:left;">
-	Not sure where to start: <a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">watch a quick navigation demonstration</a> or <a id="fbhelp1" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Basic Controls on the main image."> view the help images again</a><a id="fbhelp2" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."></a><a id="fbhelp3" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit views."></a>
+	Not sure where to start: <a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">watch a quick navigation demonstration</a> or <a id="fbhelp1" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Navigation Help<BR>Basic Controls on the main image."> view the help images again</a><a id="fbhelp2" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."></a><a id="fbhelp3" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit views."></a>
     </div>
     
     <div id="imageMenu"></div>

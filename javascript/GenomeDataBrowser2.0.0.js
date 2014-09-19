@@ -365,6 +365,7 @@ $(document).on("click",".viewSelect",function(){
 						$(".viewsLevel"+level).css("top",250).css("left",$(window).width()-610);
 						$(".viewsLevel"+level).fadeIn("fast");
 						$("#trackSettingDialog").hide();
+						$(".testToolTip").hide();
 						//var tmpStr=new String(setting);
 						//setupSettingUI(tmpStr.substr(tmpStr.length-1));
 					}else{
@@ -1431,6 +1432,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				});
 		}else if(track.indexOf("custom")==0){
 			var trackDetails=trackInfo[track];
+			additionalOptions=additionalOptions+",Name="+trackDetails.Name;
 			additionalOptions="DataFile="+trackDetails.Location+","+additionalOptions;
 			if(trackDetails.Type=="bed"||trackDetails.Type=="bb"){
 				var data=new Array();
@@ -2064,169 +2066,171 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 		});*/
 
-	var viewDivTop=that.vis.append("div")
-	.style("float","right")
-	.style("display","inline-block")
-	.style("margin-right","5px");
-	var viewBtnSpan=viewDivTop.append("div");
-	viewBtnSpan.append("button").attr("id","viewSelect"+that.levelNumber).attr("class","viewSelect").text("Select/Edit Views");
-	viewBtnSpan.append("button").attr("id","viewMenuSelect"+that.levelNumber).attr("class","viewSelectMenu");
-	var testChrome=/chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
-	var testSafari=/safari/.test(navigator.userAgent.toLowerCase());
-	var testFireFox=/firefox/.test(navigator.userAgent.toLowerCase());
-	var testIE=/(wow|.net)/.test(navigator.userAgent.toLowerCase());
-	if(testChrome){
-		viewDivTop.style("position","relative").style("top","-7px");
-		d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","7px");
-	}else if(testSafari){
-		viewDivTop.style("position","relative").style("top","-2px");
-		d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","-1px");
-	}else if(testFireFox){
-		//nothing
-	}else if(testIE){
-		d3.select("#viewSelect"+that.levelNumber).style("position","relative").style("top","-8px").style("height","2.3em");
+	if($("#viewSelect"+that.levelNumber).length==0){
+		var viewDivTop=that.vis.append("div")
+		.style("float","right")
+		.style("display","inline-block")
+		.style("margin-right","5px");
+		var viewBtnSpan=viewDivTop.append("div");
+		viewBtnSpan.append("button").attr("id","viewSelect"+that.levelNumber).attr("class","viewSelect").text("Select/Edit Views");
+		viewBtnSpan.append("button").attr("id","viewMenuSelect"+that.levelNumber).attr("class","viewSelectMenu");
+		var testChrome=/chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+		var testSafari=/safari/.test(navigator.userAgent.toLowerCase());
+		var testFireFox=/firefox/.test(navigator.userAgent.toLowerCase());
+		var testIE=/(wow|.net)/.test(navigator.userAgent.toLowerCase());
+		if(testChrome){
+			viewDivTop.style("position","relative").style("top","-7px");
+			d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","7px");
+		}else if(testSafari){
+			viewDivTop.style("position","relative").style("top","-2px");
+			d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","-1px");
+		}else if(testFireFox){
+			//nothing
+		}else if(testIE){
+			d3.select("#viewSelect"+that.levelNumber).style("position","relative").style("top","-8px").style("height","2.3em");
+		}
+		var viewDivMenu=viewDivTop.append("ul").attr("id","viewSelectMenu"+that.levelNumber);
+		viewDivMenu.append("li").attr("id","menusaveView"+that.levelNumber)
+			.on("click",function(){
+				viewMenu[that.levelNumber].saveView(that.currentView.ViewID,that,false);
+				//remove modified labels
+				$("#viewModifiedCtl"+that.level).hide();
+			})
+			.text("Save");
+		viewDivMenu.append("li").attr("id","menusaveAsView"+that.levelNumber)
+			.on("click",function(){
+				viewMenu[that.levelNumber].saveAsView(that.currentView);
+				$(".viewsLevel"+that.levelNumber).css("top",250).css("left",$(window).width()-610);
+				$(".viewsLevel"+that.levelNumber).fadeIn("fast");
+				$("#viewModifiedCtl"+that.level).hide();
+				//TODO: still need to make it load the new view instead of using the old view.
+			})
+			.text("Save As");
+		viewDivMenu.append("li").attr("id","menudeleteView"+that.levelNumber)
+			.on("click",function(){
+				//viewMenu[that.levelNumber].setSelectedView(that.currentView.ViewID);
+				viewMenu[that.levelNumber].confirmDeleteView(that.currentView);
+				$(".viewsLevel"+that.levelNumber).css("top",250).css("left",$(window).width()-610);
+				$(".viewsLevel"+that.levelNumber).fadeIn("fast");
+			})
+			.text("Delete");
+		//viewDivMenu.append("li").attr("id","menuresetView"+that.levelNumber).text("Reset");
+
+		$("#viewSelect"+that.levelNumber )
+	      	.button()
+		      .click(function() {
+		        
+		      })
+	      	.next()
+	        	.button({
+		          text: false,
+		          icons: {
+		            primary: "ui-icon-triangle-1-s"
+		          }
+		        })
+		        .click(function() {
+		          var menu = $( this ).parent().next().show().position({
+		            my: "left top",
+		            at: "left bottom",
+		            of: this
+		          });
+		          $( document ).one( "click", function() {
+		            menu.hide();
+		          });
+		          return false;
+		        })
+	        .parent()
+	          .buttonset()
+	          .next()
+	            .hide()
+	            .menu();
+
+		var imgCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
+
+		imgCtrl.append("input")
+			.attr("type","checkbox")
+			.attr("name","imgCBX")
+			.attr("id","forceTrxCBX"+that.levelNumber);
+		imgCtrl.append("label")
+				.attr("for","forceTrxCBX"+that.levelNumber)
+				.text("Draw Genes as Transcripts");
+		$("input#forceTrxCBX"+that.levelNumber).button();
+
+		var scrollCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
+		
+
+		var scrollSize=scrollCtrl.append("div").attr("class","defaultMouse")
+			.style("width","64px")
+			.attr("id","scrollSize"+that.levelNumber);
+			scrollSize.append("span")
+				.attr("id","scrollIncr"+that.levelNumber)
+				.style("height","24px")
+				.style("display","inline-block")
+				.style("cursor","pointer")
+				.append("img").attr("class","mouseOpt ")
+				.attr("src","/web/images/icons/scroll_smaller.png")
+				.attr("pointer-events","all")
+				.on("click",function(){
+					that.scrollSize=that.scrollSize-100;
+					if(that.scrollSize<100){
+						that.scrollSize=100;
+					}
+					changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
+				})
+				.on("mouseout",function(){
+					$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+				})
+				.on("mouseover",function(){
+					$("#mouseHelp").html("Decrease the vertical length of the scrollable browser image on the page.");
+				});
+			scrollSize.append("span")
+				.attr("id","pan"+that.levelNumber)
+				.style("height","24px")
+				.style("display","inline-block")
+				.style("cursor","pointer")
+				.append("img")
+				.attr("class","mouseOpt pan")
+				.attr("src","/web/images/icons/scroll_larger.png")
+				.attr("pointer-events","all")
+				.on("click",function(){
+					if(that.scrollSize<$("#ScrollLevel"+that.levelNumber)[0].scrollHeight){
+						that.scrollSize=that.scrollSize+100;
+						changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
+					}
+				})
+				.on("mouseout",function(){
+					$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+				})
+				.on("mouseover",function(){
+					$("#mouseHelp").html("Increase the vertical length of the scrollable browser image on the page.");
+				});
+		scrollCtrl.append("span").attr("class","scrollBtn control").style("display","inline-block")
+				.attr("id","scrollImage"+that.levelNumber)
+				.style("cursor","pointer")
+				.append("img")//.attr("class","mouseOpt dragzoom")
+				.attr("src","/web/images/icons/scroll.png")
+				.attr("pointer-events","all")
+				.attr("cursor","pointer")
+				.on("click",function(){
+					if(d3.select(this).attr("src")=="/web/images/icons/no_scroll.png"){
+						d3.select(this).attr("src","/web/images/icons/scroll.png");
+						d3.select("span#reset"+that.levelNumber).style("background","#989898");
+						$("#scrollSize"+that.levelNumber).show();
+						changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
+					}else{
+						d3.select(this).attr("src","/web/images/icons/no_scroll.png");
+						d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
+						$("#scrollSize"+that.levelNumber).hide();
+						changeTrackHeight("Level"+that.levelNumber,0);
+					}
+				})
+				.on("mouseover",function(){
+					$("#mouseHelp").html("Click to toggle browser image scrolling on/off.  <b>Off</b> the image takes as much space as needed. <b>On</b> you can adjust the maximum length of the image.");
+				})
+				.on("mouseout",function(){
+					$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+				});
 	}
-	var viewDivMenu=viewDivTop.append("ul").attr("id","viewSelectMenu"+that.levelNumber);
-	viewDivMenu.append("li").attr("id","menusaveView"+that.levelNumber)
-		.on("click",function(){
-			viewMenu[that.levelNumber].saveView(that.currentView.ViewID,that,false);
-			//remove modified labels
-			$("#viewModifiedCtl"+that.level).hide();
-		})
-		.text("Save");
-	viewDivMenu.append("li").attr("id","menusaveAsView"+that.levelNumber)
-		.on("click",function(){
-			viewMenu[that.levelNumber].saveAsView(that.currentView);
-			$(".viewsLevel"+that.levelNumber).css("top",250).css("left",$(window).width()-610);
-			$(".viewsLevel"+that.levelNumber).fadeIn("fast");
-			$("#viewModifiedCtl"+that.level).hide();
-			//TODO: still need to make it load the new view instead of using the old view.
-		})
-		.text("Save As");
-	viewDivMenu.append("li").attr("id","menudeleteView"+that.levelNumber)
-		.on("click",function(){
-			//viewMenu[that.levelNumber].setSelectedView(that.currentView.ViewID);
-			viewMenu[that.levelNumber].confirmDeleteView(that.currentView);
-			$(".viewsLevel"+that.levelNumber).css("top",250).css("left",$(window).width()-610);
-			$(".viewsLevel"+that.levelNumber).fadeIn("fast");
-		})
-		.text("Delete");
-	//viewDivMenu.append("li").attr("id","menuresetView"+that.levelNumber).text("Reset");
-
-	$("#viewSelect"+that.levelNumber )
-      	.button()
-	      .click(function() {
-	        
-	      })
-      	.next()
-        	.button({
-	          text: false,
-	          icons: {
-	            primary: "ui-icon-triangle-1-s"
-	          }
-	        })
-	        .click(function() {
-	          var menu = $( this ).parent().next().show().position({
-	            my: "left top",
-	            at: "left bottom",
-	            of: this
-	          });
-	          $( document ).one( "click", function() {
-	            menu.hide();
-	          });
-	          return false;
-	        })
-        .parent()
-          .buttonset()
-          .next()
-            .hide()
-            .menu();
-
-	var imgCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
-
-	imgCtrl.append("input")
-		.attr("type","checkbox")
-		.attr("name","imgCBX")
-		.attr("id","forceTrxCBX"+that.levelNumber);
-	imgCtrl.append("label")
-			.attr("for","forceTrxCBX"+that.levelNumber)
-			.text("Draw Genes as Transcripts");
-	$("input#forceTrxCBX"+that.levelNumber).button();
-
-	var scrollCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
-	
-
-	var scrollSize=scrollCtrl.append("div").attr("class","defaultMouse")
-		.style("width","64px")
-		.attr("id","scrollSize"+that.levelNumber);
-		scrollSize.append("span")
-			.attr("id","scrollIncr"+that.levelNumber)
-			.style("height","24px")
-			.style("display","inline-block")
-			.style("cursor","pointer")
-			.append("img").attr("class","mouseOpt ")
-			.attr("src","/web/images/icons/scroll_smaller.png")
-			.attr("pointer-events","all")
-			.on("click",function(){
-				that.scrollSize=that.scrollSize-100;
-				if(that.scrollSize<100){
-					that.scrollSize=100;
-				}
-				changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
-			})
-			.on("mouseout",function(){
-				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-			})
-			.on("mouseover",function(){
-				$("#mouseHelp").html("Decrease the vertical length of the scrollable browser image on the page.");
-			});
-		scrollSize.append("span")
-			.attr("id","pan"+that.levelNumber)
-			.style("height","24px")
-			.style("display","inline-block")
-			.style("cursor","pointer")
-			.append("img")
-			.attr("class","mouseOpt pan")
-			.attr("src","/web/images/icons/scroll_larger.png")
-			.attr("pointer-events","all")
-			.on("click",function(){
-				if(that.scrollSize<$("#ScrollLevel"+that.levelNumber)[0].scrollHeight){
-					that.scrollSize=that.scrollSize+100;
-					changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
-				}
-			})
-			.on("mouseout",function(){
-				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-			})
-			.on("mouseover",function(){
-				$("#mouseHelp").html("Increase the vertical length of the scrollable browser image on the page.");
-			});
-	scrollCtrl.append("span").attr("class","scrollBtn control").style("display","inline-block")
-			.attr("id","scrollImage"+that.levelNumber)
-			.style("cursor","pointer")
-			.append("img")//.attr("class","mouseOpt dragzoom")
-			.attr("src","/web/images/icons/scroll.png")
-			.attr("pointer-events","all")
-			.attr("cursor","pointer")
-			.on("click",function(){
-				if(d3.select(this).attr("src")=="/web/images/icons/no_scroll.png"){
-					d3.select(this).attr("src","/web/images/icons/scroll.png");
-					d3.select("span#reset"+that.levelNumber).style("background","#989898");
-					$("#scrollSize"+that.levelNumber).show();
-					changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
-				}else{
-					d3.select(this).attr("src","/web/images/icons/no_scroll.png");
-					d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
-					$("#scrollSize"+that.levelNumber).hide();
-					changeTrackHeight("Level"+that.levelNumber,0);
-				}
-			})
-			.on("mouseover",function(){
-				$("#mouseHelp").html("Click to toggle browser image scrolling on/off.  <b>Off</b> the image takes as much space as needed. <b>On</b> you can adjust the maximum length of the image.");
-			})
-			.on("mouseout",function(){
-				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-			});
 
 	that.topDiv=that.vis.append("div")
 		.attr("id","Level"+levelNumber)
@@ -2630,7 +2634,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		        that.downx = that.xScale.invert(p[0]);
 		        that.downscalex = that.xScale;
 	    	}
-		};
+	};
 
 	that.forceDrawAs=function(value){
 		for(var i=0;i<that.trackList.length;i++){
@@ -2650,7 +2654,16 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}
 		}
 		return ret;
-	}
+	};
+
+	that.setCurrentViewModified=function(){
+		that.currentView.modified=1;
+		$("span#viewModifiedCtl"+that.levelNumber).show();
+	};
+	that.clearCurrentView=function(){
+		that.currentView.modified=0;
+		$("span#viewModifiedCtl"+that.levelNumber).hide();
+	};
 
 	that.type=type;
 	that.div=div;
@@ -8732,13 +8745,20 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 }
 function CustomCountTrack(gsvg,data,trackClass,density,additionalOptions){
 	var that= CountTrack(gsvg,data,trackClass,density);
-	var opts=additionalOptions.split(",");
-	if(opts.length>0){
-		that.dataFileName=opts[0].substr(9);
-	}
 	that.graphColorText="#4E85A6";
 	that.updateControl=0;
 	var lbl="Custom Count Track";
+	var opts=additionalOptions.split(",");
+	if(opts.length>0){
+		for(var j=0;j<opts.length;j++){
+			if(j==0){
+				that.dataFileName=opts[j].substr(9);
+			}else if(opts[j].indexOf("Name=")){
+				lbl=opts[j].substr(5);
+			}
+		}
+	}
+	
 
 	that.updateFullData = function(retry,force){
 		if(that.updateControl==retry){
@@ -9725,7 +9745,7 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 	}
 	//that.dataFileName=trackClass.substr(6)+".bed";
 	that.density=3;
-	that.colorValueField="Score";
+	that.colorValueField="score";
 	that.minFeatureWidth=1;
 	that.updateControl=0;
 
@@ -9808,6 +9828,22 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 		}
 	};
 
+	that.updateSettingsFromUI=function(){
+		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
+			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
+		}
+		if($("#"+that.trackClass+that.level+"colorSelect").length>0){
+			that.colorBy=$("#"+that.trackClass+that.level+"colorSelect").val();
+		}
+		if(that.colorBy=="Score"){
+			that.minValue=$("#"+that.trackClass+"minData"+that.level).val();
+			that.maxValue=$("#"+that.trackClass+"maxData"+that.level).val();
+			that.minColor=$("#"+that.trackClass+"minColor"+that.level).val();
+			that.maxColor=$("#"+that.trackClass+"maxColor"+that.level).val();
+			that.createColorScale();
+		}
+	};
+
 	that.generateSettingsDiv=function(topLevelSelector){
 		var d=trackInfo[that.trackClass];
 		that.savePrevious();
@@ -9825,8 +9861,6 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 					if(params.length>3  && params[3].indexOf("Default=")==0){
 						def=params[3].substr(8);
 					}
-					//console.log("Params:"+params[1]);
-					//console.log("full line:"+controls[c]);
 					if(params[1].toLowerCase().indexOf("select")==0){
 						div.append("text").text(lbl+": ");
 						var selClass=params[1].split(":");
@@ -9841,48 +9875,69 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 							var option=opts[o].substr(1).split(":");
 							if(option.length==2){
 								var tmpOpt=sel.append("option").attr("value",option[1]).text(option[0]);
-								if(option[1]==def){
+								if((id.indexOf("Dense")>-1 && option[1]==that.density)|| (id.indexOf("colorSelect")>-1&&option[1]==that.colorBy)){
 									tmpOpt.attr("selected","selected");
 								}
 							}
 						}
 						d3.select("select#"+id).on("change", function(){
-							if($(this).val()=="dabg"||$(this).val()=="herit"){
-								$("div#affyTissues"+that.level).show();
-							}else{
-								$("div#affyTissues"+that.level).hide();
+							if($(this).val()=="Score"){
+								$("div."+that.trackClass+"Scale"+that.level).show();
+							}else if($(this).val()=="Color"){
+								$("div."+that.trackClass+"Scale"+that.level).hide();
 							}
 							that.updateSettingsFromUI();
-							that.redraw();
+							that.draw(that.data);
 						});
 					}else if(params[1].toLowerCase().indexOf("txt")==0){
 						if($("#colorTrack"+that.level).size()==0){
-							div=div.append("div").attr("id",that.trackClass+"Scale"+that.level).style("display","none");
+							div=div.append("div").attr("class",that.trackClass+"Scale"+that.level).style("display","none");
 						}else{
 							div=d3.select("#"+that.trackClass+"Scale"+that.level);
 						}						
-						div.append("text").text("<BR><BR>"+lbl+": ");
+						div.append("text").text(lbl+": ");
 						var selClass=params[1].split(":");
 						var opts=params[2].split("}");
 						var txtType="Data";
+						var inputType="text";
+						var inputMin=that.minValue;
+						var inputMax=that.maxValue;
 						if(selClass[1]=="color"){
 							txtType="Color";
+							inputType="Color";
+							inputMin=that.minColor;
+							inputMax=that.maxColor;
 						}
-						div.append("input").attr("type","text").attr("id",option[1]+"min"+txtType+that.level)
+						//if(){//Change for IE and Safari
+
+						//}
+						div.append("input").attr("type",inputType).attr("id",that.trackClass+"min"+txtType+that.level)
 									.attr("class",selClass[1])
-									.style("margin-left","5px");
-						div.append("input").attr("type","text").attr("id",option[1]+"max"+txtType+that.level)
+									.style("margin-left","5px")
+									.attr("value",inputMin);
+						div.append("text").text(" - ");
+						div.append("input").attr("type",inputType).attr("id",that.trackClass+"max"+txtType+that.level)
 									.attr("class",selClass[1])
-									.style("margin-left","5px");
-								
-						d3.select("input#"+option[1]+"CBX"+that.level).on("change", function(){
+									.style("margin-left","5px")
+									.attr("value",inputMax);
+
+						$("input#"+that.trackClass+"min"+txtType+that.level).on("change",function(){
 							that.updateSettingsFromUI();
-							that.redraw();
+							that.draw(that.data);
 						});
-		
+
+						$("input#"+that.trackClass+"max"+txtType+that.level).on("change",function(){
+							that.updateSettingsFromUI();
+							that.draw(that.data);
+						});
 						
 					}
 				}
+			}
+			if($("#"+that.trackClass+that.level+"colorSelect").val()=="Score"){
+				$("div."+that.trackClass+"Scale"+that.level).show();
+			}else if($("#"+that.trackClass+that.level+"colorSelect").val()=="Color"){
+				$("div."+that.trackClass+"Scale"+that.level).hide();
 			}
 			var buttonDiv=table.append("tr").append("td");
 			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
@@ -9927,7 +9982,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	that.idPrefix="genTrx";
 	that.ttSVG=0;
 	that.ttTrackList=new Array();
-	that.colorValueField="Score";
+	that.colorValueField="score";
 	that.colorBy="Score";
 	that.minValue=1;
 	that.maxValue=1000;
@@ -10221,8 +10276,6 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 	that.redraw = function (){
-		
-		var tmpDen=that.checkDensity();
 		if(tmpDen!=that.density){
 			that.draw(that.data);
 		}else{
@@ -10368,7 +10421,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 
-	that.checkDensity=function(){
+	/*that.checkDensity=function(){
 		var den=-1;
 		if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
 			den=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
@@ -10381,7 +10434,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 			that.density=tmpDen;
 		}
 
-	};
+	};*/
 
 	that.draw=function(data){
 		

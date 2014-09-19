@@ -602,7 +602,7 @@ Add report here.
             </div>
    	<div style="display:none;" id="geneMIrna">
     </div>
-
+	<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
      <script type="text/javascript">
 				var bug=0;
 				var jre=deployJava.getJREs();
