@@ -104,6 +104,7 @@ if(request.getParameter("arrayTypeID")!=null){
 	var folderName="<%=folderName%>";
 	var pathPrefix="";
 	var dataPrefix="../../";
+	var regionfolderName="<%=folderName%>";
 </script>
 <div id="imageMenu"></div>
 <div id="viewMenu"></div>

@@ -176,7 +176,7 @@
                         	Scale Definition:<BR />
                         	Data(min-max)*:<input type="text" name="usrtrkScoreMinTxt" id="usrtrkScoreMinTxt<%=level%>" size="5" value="0"> - <input type="text" name="usrtrkScoreMaxTxt" id="usrtrkScoreMaxTxt<%=level%>" size="5" value="1000">
                             <BR />
-                            Gradient(min-max):<input class="color" id="usrtrkColorMin<%=level%>" size="5" value="#FFFFFF"> - <input class="color" id="usrtrkColorMax<%=level%>" size="5" value="#000000">
+                            Gradient(min-max):<input type="Color" class="color" id="usrtrkColorMin<%=level%>" size="5" value="#FFFFFF"> - <input type="Color" class="color" id="usrtrkColorMax<%=level%>" size="5" value="#000000">
                             <BR />
                             *Data outside this range will be assigned to the corresponding min or max color.<BR /><BR />
                         </div>
@@ -231,13 +231,16 @@
                         <BR />
                         <BR />
            </div>
-    <script type="text/javascript" src="<%=mainURL.substring(0,mainURL.length()-10)%>/javascript/jscolor/jscolor.js"></script>
+
     <script type="text/javascript">
 		trackMenu[<%=level%>]=TrackMenu(<%=level%>);
 		$("span#deleteCustomTrack<%=level%>").hide();
 		$("span.addTrack<%=level%>").on("click",function(){
-			viewMenu[<%=level%>].addTrackToView(trackMenu[<%=level%>].findSelectedTrack());
-			trackMenu[<%=level%>].removeTrack(trackMenu[<%=level%>].findSelectedTrack());
+			var tmpTrack=trackMenu[<%=level%>].findSelectedTrack();
+			tmpTrack.Settings=trackMenu[<%=level%>].previewSVG.getTrack(tmpTrack.TrackClass).generateTrackSettingString();
+			tmpTrack.Settings=tmpTrack.Settings.substr(tmpTrack.Settings.indexOf(",")+1);
+			viewMenu[<%=level%>].addTrackToView(tmpTrack);
+			trackMenu[<%=level%>].removeTrack(tmpTrack);
 		});
 		$("span#deleteCustomTrack<%=level%>").on("click",function(){
 			trackMenu[<%=level%>].confirmdeleteCustomTrack();

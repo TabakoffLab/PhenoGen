@@ -35,6 +35,7 @@ function ViewMenu(level){
 			$("div#ScrollLevel"+that.previewLevel).css("overflow","auto").css("max-height","430px");
 			var trackString=that.generateSettingsString(d);
 			if(trackString!=""){
+					console.log(trackString);
 					loadStateFromString(trackString,"",that.previewLevel,that.previewSVG);
 					that.previewSVG.updateData();
 					that.previewSVG.updateFullData();
@@ -189,15 +190,17 @@ function ViewMenu(level){
 		that.setupImage(settingStr,d);
 		$("div.viewsLevel"+that.level).hide();
 		$("div.trackLevel"+that.level).hide();
-		$.ajax({
-				url:  contextPath +"/"+ pathPrefix +"addBrowserCount.jsp",
-   				type: 'GET',
-				data: {viewID:d.ViewID},
-				dataType: 'json',
-    			success: function(data2){},
-    			error: function(xhr, status, error) {},
-    			async: true
-			});	
+		if(d.Source=="db"){
+			$.ajax({
+					url:  contextPath +"/"+ pathPrefix +"addBrowserCount.jsp",
+	   				type: 'GET',
+					data: {viewID:d.ViewID},
+					dataType: 'json',
+	    			success: function(data2){},
+	    			error: function(xhr, status, error) {},
+	    			async: true
+				});	
+		}
 	};
 	that.applySelectedView=function(viewID){
 		var d=NaN;
@@ -547,7 +550,7 @@ function ViewMenu(level){
 					var d=that.findSelectedView();
 					if(d.UserID==0){//if predefined prompt to save as
 						$("#predefinedSaveAs"+that.level).show();
-						that.saveAsView(d);
+						that.saveAsView(d,that.previewSVG);
 					}else{//else save
 						that.saveView(d.ViewID,that.previewSVG,false);
 					}
@@ -638,14 +641,13 @@ function ViewMenu(level){
 		var view=that.findSelectedView();
 		var viewInd=that.findSelectedViewIndex();
 		//Add Data if needed
-
 		view.TrackList.push(trackData);
 		that.generateTrackList(view);
 		that.generatePreview(view);
 		that.generateViewList();
 		$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
 		//update main menu on the browser form
-		getViewData(1);
+		//getMainViewData(1);
 	};
 
 	that.createNewView = function(){
@@ -688,7 +690,8 @@ function ViewMenu(level){
 		    			success: function(data2){
 		    				var newViewID=data2.viewID;
 		    				//save tracks/settings
-		    				that.saveView(newViewID,svgList[that.level],false);
+		    				//that.saveView(newViewID,svgList[that.level],false);
+		    				that.saveView(newViewID,that.saveAsImg,false);
 		    				$("div#nameView"+that.level).hide();
 							$("div#selection"+that.level).show();
 							$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
@@ -731,7 +734,8 @@ function ViewMenu(level){
 			newView="ViewID="+viewID+"</>UserID=-999</>Name="+name+"</>Description="+desc+"</>Organism="+organism.toUpperCase()+"</>imgSettings=displaySelect0=700;</>TrackSettingList=";
 			
 			if($("#function"+that.level).val()=="saveAs"){//save tracks to new view or copy
-				var trackList=svgList[that.level].generateSettingsString();
+				var trackList=that.saveAsImg.generateSettingsString();
+				//var trackList=svgList[that.level].generateSettingsString();
 				newView=newView+trackList;
 				console.log("tracklist part:"+trackList);
 			}else if(type=="copy"){
@@ -773,7 +777,7 @@ function ViewMenu(level){
 		$("input#viewNameTxt"+that.level).val("");
 		$("#viewDescTxt"+that.level).val("");
 		$("input#createType"+that.level).val("blank");
-		getViewData(1);
+		getMainViewData(1);
 	};
 
 	that.saveView= function(viewID,svgImage,async){
@@ -809,27 +813,37 @@ function ViewMenu(level){
 					cookieStr=$.cookie("phenogenCustomViews");
 				}
 			}
+			console.log("saving:");
+			console.log(cookieStr);
 			var cookieList=cookieStr.split("<///>");
 			for(var l=0;l<cookieList.length;l++){
-				if(cookieList[l].indexOf("ViewID="+viewID)>-1){
-					var begining=cookieList[l].substr(0,cookieList[l].indexOf("</>TrackSettingList="));
-					var list=svgImage.generateSettingsString();
-					newCookie=newCookie+begining+"</>TrackSettingList="+list+"<///>";
-				}else{
-					newCookie=newCookie+cookieList+"<///>";
+				if(cookieList[l].length>10){
+					console.log("Save View["+l+"]");
+					console.log(cookieList[l]);
+					if(cookieList[l].indexOf("ViewID="+viewID)>-1){
+						var begining=cookieList[l].substr(0,cookieList[l].indexOf("</>TrackSettingList="));
+						var list=svgImage.generateSettingsString();
+						newCookie=newCookie+begining+"</>TrackSettingList="+list+"<///>";
+					}else{
+						newCookie=newCookie+cookieList+"<///>";
+					}
 				}
 			}
+			console.log("to save:");
+			console.log(newCookie);
 			if(isLocalStorage() === true){
 				localStorage.setItem("phenogenCustomViews",newCookie);
 			}else{
 				$.cookie("phenogenCustomViews",newCookie);
 			}
+			that.getViewData();
 		}
-		getViewData(1);
+		getMainViewData(1);
 	};
 
-	that.saveAsView=function(viewCopy){
+	that.saveAsView=function(viewCopy,img){
 		that.saveAs=viewCopy;
+		that.saveAsImg=img;
 		$("div#nameView"+that.level).show();
 		$("div#selection"+that.level).hide();
 		$("span#viewMenuLbl"+that.level).text("Save As...");
@@ -898,7 +912,9 @@ function ViewMenu(level){
 				if(cookieList[l].indexOf("ViewID="+d.ViewID)>-1){
 
 				}else{
-					newCookie=newCookie+cookieList[l];
+					if(cookieList[l].length>10){
+						newCookie=newCookie+cookieList[l]+"<///>";
+					}
 				}
 			}
 			console.log("after delete");
@@ -921,7 +937,7 @@ function ViewMenu(level){
 		}
 
 		//update main menu on the browser form
-		getViewData(1);
+		getMainViewData(1);
 
 	};
 

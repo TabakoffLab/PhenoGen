@@ -479,14 +479,38 @@ function TrackMenu(level){
 		if(type=="bed"||type=="bg"){
 			prevFile=$("input#customUploadFile"+that.level)[0].files[0].name;
 		}
+		var colorSel="Color";
+		if($("#usrtrkColorSelect"+that.level).length>0){
+			colorSel=$("#usrtrkColorSelect"+that.level).val();
+		}
+		if(colorSel=="Score"){
+			var minCol="000000";
+			var maxCol="FFFFFF";
+			var minVal=1;
+			var maxVal=1000;
+			if(testIE||testSafari){
+				minCol=$("#urstrkColorMin"+that.level).spectrum("get").toHexString();
+				maxCol=$("#urstrkColorMax"+that.level).spectrum("get").toHexString();
+				minCol=minCol.substr(1);
+				maxCol=maxCol.substr(1);
+			}else{
+				minCol=$("#urstrkColorMin"+that.level).val();
+				maxCol=$("#urstrkColorMax"+that.level).val();
+				minCol=minCol.substr(1);
+				maxCol=maxCol.substr(1);
+			}
+			minVal=$("#urstrkScoreMinTxt"+that.level).val();
+			maxVal=$("#urstrkScoreMaxTxt"+that.level).val();
+			
+		}
 		if(type=="bed"){
-			control="Name=View Density;Select:trackSelect:Dense:Select;{Dense:1}{Pack:3}{Full:2};Default=3,Name=Color by;Select:colorSelect::colorSelect;{Feature Defined:Color}{Score based scale:Score};Default=Color,Name=Scale Range;Txt:tissuecbx;{min:1}{max:1000};Default=1:1000,Name=Color Range;Txt:color;{min:FFFFFF}{max:000000};Default=FFFFFF:000000";
+			control="Name=View Density;Select:trackSelect:Dense:Select;{Dense:1}{Pack:3}{Full:2};Default=3,Name=Color by;Select:colorSelect::colorSelect;{Feature Defined:Color}{Score based scale:Score};Default="+colorSel+",Name=Scale Range;Txt:tissuecbx;{min:1}{max:1000};Default="+minVal+":"+maxVal+",Name=Color Range;Txt:color;{min:FFFFFF}{max:000000};Default="+minCol+":"+maxCol;
 		}else if(type=="bg"){
 			control="Name=View Density;Select:trackSelect:Dense:Select;{Dense:1}{Full:2};Default=1,Name=Scale Range;Slider:rangeslider;{min:1-1000}{max:1000-20000};Default=1:5000";
 		}else if(type=="bw"){
 			control="Name=View Density;Select:trackSelect:Dense:Select;{Dense:1}{Full:2};Default=1,Name=Scale Range;Slider:rangeslider;{min:1-1000}{max:1000-20000};Default=1:5000";
 		}else if(type=="bb"){
-			control="Name=View Density;Select:trackSelect:Dense:Select;{Dense:1}{Pack:3}{Full:2};Default=3,Name=Color by;Select:colorSelect::colorSelect;{Feature Defined:Color}{Score based scale:Score};Default=Color,Name=Scale Range;Txt:tissuecbx;{min:1}{max:1000};Default=1:1000,Name=Color Range;Txt:color;{min:FFFFFF}{max:000000};Default=FFFFFF:000000";
+			control="Name=View Density;Select:trackSelect:Dense:Select;{Dense:1}{Pack:3}{Full:2};Default=3,Name=Color by;Select:colorSelect::colorSelect;{Feature Defined:Color}{Score based scale:Score};Default="+colorSel+",Name=Scale Range;Txt:tissuecbx;{min:1}{max:1000};Default="+minVal+":"+maxVal+",Name=Color Range;Txt:color;{min:FFFFFF}{max:000000};Default="+minCol+":"+maxCol;
 		}
 		trackClass="custom"+trackClass;
 		if(uid>0){

@@ -6,6 +6,7 @@
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
+	extrasList.add("spectrum.js");
 	//extrasList.add("jscolor/jscolor.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("d3.v3.min.js");
@@ -14,6 +15,7 @@
 	extrasList.add("tsmsselect.css");
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("jquery.fancybox-thumbs.css");
+	extrasList.add("spectrum.css");
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
@@ -571,7 +573,7 @@ Or
 	var defviewList=[];
 	var filterViewList=[];
 	
-	function getViewData(shouldUpdate){
+	function getMainViewData(shouldUpdate){
 		var tmpContext=contextPath +"/"+ pathPrefix;
 		if(pathPrefix==""){
 			tmpContext="";
@@ -579,12 +581,13 @@ Or
 		
 		d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
 			if(error){
-				setTimeout(getViewData,2000);
+				setTimeout(function(){getMainViewData(shouldUpdate);},2000);
 				d3.select("#defaultView").html("<option>Error: reloading</option>");
 			}else{
+				console.log("getViewData()");
 				defviewList=d;
-				readCookieViews();
-				if(shouldUpdate==1){
+				//readCookieViews();
+				if(shouldUpdate===1){
 					setupDefaultView();
 				}
 			}
@@ -592,6 +595,7 @@ Or
 	};
 	
 	function readCookieViews(){
+		console.log("readCookieViews()");
 		var viewString="";
 		if(isLocalStorage() === true){
 			var cur=localStorage.getItem("phenogenCustomViews");
@@ -643,6 +647,7 @@ Or
 	
 	
 	function setupDefaultView(){
+		console.log("setupDefaultView()");
 		d3.select("#defaultView").html("");
 		filterViewList=[];
 		for(var i=0;i<defviewList.length;i++){
@@ -672,8 +677,7 @@ Or
 					});
 		opt.exit().remove();
 	}
-	
-	getViewData(0);
+
 	
 	$("#speciesCB").on("change",setupDefaultView);
 	
@@ -754,6 +758,7 @@ Or
 <%}%>
 
 	<script type="text/javascript">
+		
 		$('.fancybox').fancybox({
 						helpers : {
 										title: {
@@ -767,6 +772,9 @@ Or
 									},
 						nextEffect: 'fade',
 						prevEffect: 'fade'
+		});
+		$(window).ready(function(){
+			getMainViewData(1);
 		});
 	</script>
 
