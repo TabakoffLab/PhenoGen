@@ -130,6 +130,11 @@
 		}
 	}
 </style>
+
+
+
+
+
 <!--<a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>" target="_blank">View Affy Probe Set Details</a>
 <BR /><BR />
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
@@ -602,7 +607,7 @@ Add report here.
             </div>
    	<div style="display:none;" id="geneMIrna">
     </div>
-	<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
+	
      <script type="text/javascript">
 				var bug=0;
 				var jre=deployJava.getJREs();

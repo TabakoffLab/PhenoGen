@@ -720,11 +720,11 @@ Or
             </video>
         </TD>
         <TD style="text-align:center;">
-                        <h2>Detailed Transcription Information Demonstration</h2><BR />
-						<video width="400" height="325" controls="controls">
-                    		<source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
-                            <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                          <object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="400" height="325">
+                        <h2>Custom View/Custom Track Demonstration</h2><BR />
+						<video width="400" height="270" controls="controls">
+                    		<source src="<%=contextRoot%>web/demo/customTrackDemo.mp4" type="video/mp4">
+                            <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
+                          <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="400" height="270">
                           </object>
                         </video>
        </TD>

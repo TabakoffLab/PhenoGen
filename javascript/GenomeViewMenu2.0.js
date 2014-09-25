@@ -506,6 +506,7 @@ function ViewMenu(level){
 							var d=that.findSelectedView();
 							$(".trackLevel"+that.level+" span#selectedViewName").html(d.Name);
 							$(".trackLevel"+that.level).fadeIn("fast");
+							console.log(trackMenu);
 							trackMenu[that.level].generateTrackTable();
 					}else{
 							$(".trackLevel"+that.level).fadeOut("fast");

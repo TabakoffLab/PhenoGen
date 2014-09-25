@@ -327,4 +327,12 @@
 			$(".uploadStatus").hide();
 			$("#finished<%=level%>").hide();
 		}
+		
+		
+		if(testIE||testSafari){//Change for IE and Safari
+			$("#usrtrkColorMin<%=level%>").spectrum();
+			$("#usrtrkColorMax<%=level%>").spectrum();
+		}
+		
+		
 	</script>

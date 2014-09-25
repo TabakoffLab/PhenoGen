@@ -779,7 +779,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 											that.overSettings=0;
 											$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 										});
-	}
+	};
+
 	that.addTrack=function (track,density,additionalOptions,retry){
 		//console.log("Add Track:"+track);
 		if(that.forceDrawAsValue=="Trx"){
@@ -1743,17 +1744,18 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				data: {level: that.levelNumber, organism: organism},
 				dataType: 'html',
     			success: function(data2){
-    				$("#trackMenu"+that.level).remove();
-    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.level);
-    				$("#trackMenu"+that.level).html(data2);
+    				$("#trackMenu"+that.levelNumber).remove();
+    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.levelNumber);
+    				$("#trackMenu"+that.levelNumber).html(data2);
     			},
     			error: function(xhr, status, error) {
-    				$("#trackMenu"+that.level).remove();
-    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.level);
-        			$('#trackMenu'+that.level).append("<div class=\"viewsLevel"+that.level+"\">An error occurred generating this menu.  Please try back later.</div>");
+    				$("#trackMenu"+that.levelNumber).remove();
+    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.levelNumber);
+        			$('#trackMenu'+that.levelNumber).append("<div class=\"viewsLevel"+that.levelNumber+"\">An error occurred generating this menu.  Please try back later.</div>");
     			},
     			async:   false
 			});
+
 		$.ajax({
 				url:  tmpContext+"viewMenu.jsp",
    				type: 'GET',
