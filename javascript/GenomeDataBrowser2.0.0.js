@@ -14,6 +14,7 @@ $.cookie.defaults.expires=365;
 
 //global varaiable to store a list of GenomeSVG images representing each level.
 var svgList=[];
+var svgViewIDList=[];
 var processAjax=0;
 var ajaxList=[];
 var trackInfo=[];
@@ -1495,7 +1496,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.updateLinks=function(){
-		if(that.levelNumber==1 && d3.select("#probeSetDetailLink"+that.levelNumber).length>0){
+
+		if(that.levelNumber==1 && d3.select("#probeSetDetailLink"+that.levelNumber)[0][0]!=undefined){
 			var url=new String(d3.select("#probeSetDetailLink"+that.levelNumber).attr("href"));
 			url=url.substr(0,url.lastIndexOf("=")+1);
 			url=url+that.currentView.ViewID;
@@ -4966,6 +4968,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 						min=d.getAttribute("extStart");
 						max=d.getAttribute("extStop");
 					}
+
+					if(svgViewIDList[newLevel]==undefined){
+						svgViewIDList[newLevel]=that.gsvg.currentView.ViewID;
+					}
 					var newSvg= GenomeSVG("div#selectedImage",that.gsvg.width,min,max,newLevel,displayID,"transcript");
 					newSvg.xMin=min-(max-min)*0.05;
 					newSvg.xMax=(max*1)+(max-min)*0.05;
@@ -4974,8 +4980,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					svgList[newLevel]=newSvg;
 					svgList[newLevel].txType=localTxType;
 					svgList[newLevel].selectedData=d;
-					svgList[newLevel].addTrack("trx",2,"",0);
-					loadStateFromString(that.gsvg.generateSettingsString(),"",newLevel,newSvg);
+					//svgList[newLevel].addTrack("trx",2,"",0);
+					
+					//viewMenu[newLevel].applySelectedView(tmpViewID);
+					
+					//loadStateFromString(that.gsvg.generateSettingsString(),"",newLevel,newSvg);
 					//loadState(newLevel);
 
 				selectedGeneSymbol=d.getAttribute("geneSymbol");
@@ -5428,16 +5437,16 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				var newCount=0;
 				for(var l=0;l<data.length;l++){
 					if(data[l]!=undefined ){
-						if(that.gsvg.levelNumber!=1 ||
-							(that.gsvg.levelNumber==1 && that.gsvg.selectedData!=undefined  && data[l].getAttribute("ID")!=that.gsvg.selectedData.getAttribute("ID") )
-							){
+						/*if(that.gsvg.levelNumber!=1 
+							|| (that.gsvg.levelNumber==1 && that.gsvg.selectedData!=undefined  && data[l].getAttribute("ID")!=that.gsvg.selectedData.getAttribute("ID") )
+							){*/
 								var tmpTxList=getAllChildrenByName(getFirstChildByName(data[l],"TranscriptList"),"Transcript");
 								for(var k=0;k<tmpTxList.length;k++){
 									filterData[newCount]=tmpTxList[k];
 									filterData[newCount].parent=data[l];
 									newCount++;
 								}
-						}
+						//}
 					}
 				}
 			}

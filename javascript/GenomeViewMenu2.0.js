@@ -225,6 +225,7 @@ function ViewMenu(level){
 	that.setupImage=function(settingString,d){
 		svgList[that.level].removeAllTracks();
 		svgList[that.level].currentView=d;
+		svgViewIDList[that.level]=d.ViewID;
 		svgList[that.level].updateLinks();
 		loadStateFromString(settingString,d.imgSettings,that.level,svgList[that.level]); 
 		$("span#viewLbl"+that.level).html("View: "+d.Name);
@@ -303,6 +304,9 @@ function ViewMenu(level){
 				if(that.initialized==0 && that.level==0){
 					that.initialized=1;
 					that.applySelectedView($("#defaultView").val());
+				}else if(that.level==1){
+					that.initialized=1;
+					that.applySelectedView(svgViewIDList[that.level]);
 				}
 			}
 		});
