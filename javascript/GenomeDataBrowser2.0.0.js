@@ -365,10 +365,10 @@ $(document).on("click",".viewSelect",function(){
 					var setting=$(this).attr("id");
 					var level=setting.substr(setting.length-1);
 					if(!$(".viewsLevel"+level).is(":visible")){
-						var p=$(this).position();
-						//console.log("button pos:");
-						//console.log(p);
-						$(".viewsLevel"+level).css("top",250).css("left",$(window).width()-610);
+						var p=$(this).parent().parent().position();
+						console.log(p);
+						var top=p.top+5;
+						$(".viewsLevel"+level).css("top",top).css("left",$(window).width()-610);
 						$(".viewsLevel"+level).fadeIn("fast");
 						$("#trackSettingDialog").hide();
 						tt.transition()        
@@ -553,8 +553,8 @@ function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
 	}
 	for(var m=0;m<trackArray.length;m++){
 		var trackVars=trackArray[m].split(",");
-		console.log("loadingSavedTrack");
-		console.log(trackVars);
+		//console.log("loadingSavedTrack");
+		//console.log(trackVars);
 		if( (organism=="Rn" && mouseOnly[trackVars[0]]==undefined) || (organism=="Mm" && ratOnly[trackVars[0]]== undefined)) {
     		if(trackVars[0]!="") {
     			addedCount++;
@@ -1494,6 +1494,15 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}
 	};
 
+	that.updateLinks=function(){
+		if(that.levelNumber==1 && d3.select("#probeSetDetailLink"+that.levelNumber).length>0){
+			var url=new String(d3.select("#probeSetDetailLink"+that.levelNumber).attr("href"));
+			url=url.substr(0,url.lastIndexOf("=")+1);
+			url=url+that.currentView.ViewID;
+			d3.select("#probeSetDetailLink"+that.levelNumber).attr("href",url);
+		}
+	};
+
 	that.changeTrackHeight = function (level,val){
 			if(val>0){
 				d3.select("#"+level+"Scroll").style("max-height",val+"px").style("overflow","auto");
@@ -1538,7 +1547,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.redraw=function (){
 		for(var l=0;l<that.trackList.length;l++){
 			if(that.trackList[l]!=undefined && that.trackList[l].redraw!=undefined){
-				//console.log("redraw trackList"+l+":"+that.trackList[l].trackClass);
+				//flog("redraw trackList"+l+":"+that.trackList[l].trackClass);
 				that.trackList[l].redraw();
 			}
 		}
@@ -2405,7 +2414,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.addTrack=function (track,density,additionalOptions,data){
-		console.log("addTrack():"+additionalOptions);
+		//console.log("addTrack():"+additionalOptions);
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -2429,7 +2438,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			currentSettings=svgList[that.forLevel].getTrack(track).generateTrackSettingString();
 			currentSettings=currentSettings.substr(currentSettings.indexOf(",")+1);
 			additionalOptions=currentSettings;
-			console.log("current Settings:"+currentSettings);
+			//console.log("current Settings:"+currentSettings);
 		}
 		if(track=="genomeSeq"){
 			var newTrack= SequenceTrack(that,track,"Reference Genomic Sequence",additionalOptions);
@@ -4418,7 +4427,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.createToolTip=function(d){
-		console.log("createToolTip:GeneTrack");
+		//console.log("createToolTip:GeneTrack");
 		var tooltip="";
 		var txListStr="";
 		if(that.trackClass.indexOf("smallnc")>-1){
@@ -5281,7 +5290,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.setupToolTipSVG=function(d,perc){
-		console.log("setupToolTipSVG:GeneTrack");
+		//console.log("setupToolTipSVG:GeneTrack");
 		var tmpMin=0;
     	var tmpMax=0;
     	if(d.getAttribute("extStart")!=undefined){
@@ -5468,9 +5477,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				.on("dblclick", that.zoomToFeature)
 				.on("mouseover", function(d) { 
 						//if(mouseTTOver==0){
-						console.log("MouseOver");
+						//console.log("MouseOver");
 						if(that.gsvg.isToolTip==0){
-							console.log("not tooltip"); 
+							//console.log("not tooltip"); 
 							overSelectable=1;
 							$("#mouseHelp").html("<B>Click</B> to see additional details. <B>Double Click</B> to zoom in on this feature.");
 							d3.select(this).style("fill","green");
@@ -5487,7 +5496,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					            if(that.trackClass.indexOf("smallnc")==-1){
 					            	that.setupToolTipSVG(d,0.05);
 								}else{
-									console.log("display tooltip svg");
+									//console.log("display tooltip svg");
 									var newSvg=toolTipSVG("div#ttSVG",450,((d.getAttribute("start")*1)-10),((d.getAttribute("stop")*1)+10),99,that.getDisplayID(d.getAttribute("ID")),"");
 									newSvg.xMin=d.getAttribute("start")-20;
 									newSvg.xMax=d.getAttribute("stop")+20;
@@ -6526,7 +6535,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	var that= Track(gsvg,data,trackClass,label);
 
-	console.log("creating probe track options:"+additionalOptions);
+	//console.log("creating probe track options:"+additionalOptions);
 	var opts=new String(additionalOptions).split(",");
 	if(opts.length>0){
 		that.density=opts[0];
@@ -6559,11 +6568,11 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	}
 
 	that.curColor=that.colorSelect;
-	console.log("start Probes");
-	console.log("density:"+that.density);
-	console.log("colorSelect:"+that.colorSelect);
-	console.log("curColor:"+that.curColor);
-	console.log(that.tissues);
+	//console.log("start Probes");
+	//console.log("density:"+that.density);
+	//console.log("colorSelect:"+that.colorSelect);
+	//console.log("curColor:"+that.curColor);
+	//console.log(that.tissues);
 
 	that.ttTrackList=new Array();
 	that.ttTrackList.push("ensemblcoding");
@@ -6958,7 +6967,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 						totalYMax++;
 						that.svg.append("text").attr("class","tissueLbl "+tissue).attr("x",that.gsvg.width/2-(tisLbl.length/2)*7.5).attr("y",totalYMax*15).text(tisLbl);
 						
-						console.log(";.probe."+tissue+";");
+						//console.log(";.probe."+tissue+";");
 						//update
 						var probes=that.svg.selectAll(".probe."+tissue)
 				   			.data(data,function(d){return keyTissue(d,tissue);})
@@ -10597,14 +10606,14 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 						//if(that.gsvg.isToolTip==0){ 
 							/*mouseTTOver=0;
 							console.log("FEATURE MOUSEOUT");*/
-								var tmpThis=this;
-								ttHideHandle=setTimeout(function(){
+								//var tmpThis=this;
+								//ttHideHandle=setTimeout(function(){
 												
 												//if(mouseTTOver==0){
 												//	console.log("MOUSE STILL NOT OVER TT");
-													d3.select(tmpThis).selectAll("line").style("stroke",that.color);
-													d3.select(tmpThis).selectAll("rect").style("fill",that.color);
-													d3.select(tmpThis).selectAll("text").style("opacity","0.6").style("fill",that.color);  
+													d3.select(this).selectAll("line").style("stroke",that.color);
+													d3.select(this).selectAll("rect").style("fill",that.color);
+													d3.select(this).selectAll("text").style("opacity","0.6").style("fill",that.color);  
 													tt.transition()
 														 .delay(100)       
 														.duration(200)      
@@ -10612,7 +10621,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 												/*}else{
 													console.log("MOUSE IS NOW OVER TT")
 												}*/
-											},2000);
+								//			},2000);
 						//}
 	        		})
 				.each(that.drawTrx);

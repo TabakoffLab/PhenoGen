@@ -1,5 +1,3 @@
-<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
-
 <script type="text/javascript">
 //Bugsense.addExtraData( 'gene', '<%=selectedEnsemblID%>' );
 //Bugsense.addExtraData( 'region', '<%=chromosome+":"+min+"-"+max%>' );
@@ -32,7 +30,7 @@ var selectGene="<%=selectedEnsemblID%>";
 <%}%>
 
 var dataPrefix="";
-
+var skipSetSelection=0;
 </script>
 
 <style>
