@@ -186,6 +186,9 @@ function ViewMenu(level){
 	//automatically closes the popup windows.
 	that.applyView=function(){
 		var d=that.findSelectedView();
+		/*if(isNaN(d)){
+			d=that.viewList[0];
+		}*/
 		var settingStr=that.generateSettingStringFromUI();
 		that.setupImage(settingStr,d);
 		$("div.viewsLevel"+that.level).hide();
@@ -211,6 +214,9 @@ function ViewMenu(level){
 				ind=i;
 			}
 		}
+		/*if(isNaN(d)){
+			d=that.filterList[0];
+		}*/
 		var settingString=that.generateSettingStringFromView(d);
 		that.setupImage(settingString,d);
 		$("#viewSelect"+that.level).prop("selectedIndex",ind);
@@ -370,8 +376,10 @@ function ViewMenu(level){
 	};
 
 	that.generateSettingStringFromView=function(view){
-		var ret=""
+		var ret="";
+		console.log(view);
 		var tracks=view.TrackList;
+		console.log(tracks);
 		for(var j=0;j<tracks.length;j++){
 			ret=ret+tracks[j].TrackClass+","+tracks[j].Settings+";";
 		}

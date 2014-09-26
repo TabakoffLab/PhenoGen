@@ -154,24 +154,146 @@ if(request.getParameter("arrayTypeID")!=null){
                 </select>
             </span>-->
     </div>
+    <script type="text/javascript">
+	//Setup View Menu
+	var defviewList=[];
+	var filterViewList=[];
+	
+	function getMainViewData(shouldUpdate){
+		var tmpContext=contextPath +"/"+ pathPrefix;
+		if(pathPrefix==""){
+			tmpContext="";
+		}
+		
+		d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
+			if(error){
+				setTimeout(function(){getMainViewData(shouldUpdate);},2000);
+				d3.select("#defaultView").html("<option>Error: reloading</option>");
+			}else{
+				console.log("getViewData()");
+				defviewList=d;
+				//readCookieViews();
+				if(shouldUpdate===1){
+					setupDefaultView();
+				}
+			}
+		});
+	};
+	
+	function readCookieViews(){
+		console.log("readCookieViews()");
+		var viewString="";
+		if(isLocalStorage() === true){
+			var cur=localStorage.getItem("phenogenCustomViews");
+			if(cur!=undefined){
+				viewString=cur;
+			}
+		}else{
+			if($.cookie("phenogenCustomViews")!=null){
+				viewString=$.cookie("phenogenCustomViews");
+			}
+		}
+		if(viewString!=null&&viewString.indexOf("<///>")>-1){
+			var viewStrings=viewString.split("<///>");
+			for(var j=0;j<viewStrings.length;j++){
+				var params=viewStrings[j].split("</>");
+				var obj={};
+				for(k=0;k<params.length;k++){
+					var values=params[k].split("=");
+					if(values[0]=="TrackSettingList"){
+						var trList=values[1].split(";");
+						obj.TrackList=[];
+						for(var m=0;m<trList.length;m++){
+							if(trList[m].length>0){
+								var tc=trList[m].substr(0,trList[m].indexOf(","));
+								var set=trList[m].substr(trList[m].indexOf(",")+1);
+								var track={};
+								track.TrackClass=tc;
+								track.Settings=set;
+								track.Order=m;
+								obj.TrackList.push(track);
+							}
+						}
+					}else if(values.length<=2){
+						obj[values[0]]=values[1];
+					}else if(values.length>2){
+						var name=params[k].substr(0,params[k].indexOf("="));
+						var value=params[k].substr(params[k].indexOf("=")+1);
+						obj[name]=value;
+					}
+				}
+				obj.Source="local";
+				if(params.length>3){					
+					obj.orgCount=obj.TrackList.length;
+					defviewList.push(obj);
+				}
+			}
+		}
+	}
+	
+	
+	function setupDefaultView(){
+		console.log("setupDefaultView()");
+		d3.select("#defaultView").html("");
+		filterViewList=[];
+		for(var i=0;i<defviewList.length;i++){
+			if(defviewList[i].Organism=="AA"||defviewList[i].Organism.toLowerCase()==$('#speciesCB').val().toLowerCase()){
+				filterViewList.push(defviewList[i]);
+			}
+		}
+		var opt=d3.select("#defaultView").selectAll('option').data(filterViewList);
+		opt.enter().append("option")
+					.attr("value",function(d){return d.ViewID;})
+					.text(function(d){
+						var ret=d.Name;
+						if(d.UserID==0){
+							ret=ret+"    (Predefined)";
+						}else{
+							ret=ret+"   (Custom)";
+						}
+						if(d.Organism!="AA"){
+							if(d.Organism=="RN"){
+								ret=ret+"      (Rat Only)";
+							}else if(d.Organism=="MM"){
+								ret=ret+"     (Mouse Only)";
+							}
+						}
+						
+						return ret;
+					});
+		opt.exit().remove();
+	}
+	</script>
 <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
     	<span id="mouseHelp">Navigation Hints: Hold mouse over areas of the image for available actions.</span>    
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.2.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.0.0.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport2.0.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
 				
             <script type="text/javascript">
+				function isLocalStorage(){
+					var test = 'test';
+					try {
+						localStorage.setItem(test, test);
+						localStorage.removeItem(test);
+						return true;
+					} catch(e) {
+						return false;
+					}
+				}
+			
+			
                     var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
 					gs.forceDrawAs("Trx");
-					loadStateFromCookie(0);
+					//loadStateFromCookie(0);
 					gs.xMax=maxCoord;
 					gs.xMin=minCoord;
-					
+					//trackMenu[0].applyView();
 					
 					
 					$("span[name='"+defaultView+"']").addClass("selected");
