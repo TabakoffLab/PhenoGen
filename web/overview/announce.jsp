@@ -12,6 +12,10 @@
     
 					<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                    	<H2>v2.13 of PhenoGen 9/27/2014</H2>
+                        <div style="margin-left:5px;">
+                        	We've updated PhenoGen.  Look at what's new for a summary of changes.
+                        </div>
                     	<H2>Added multiMiR</H2>
                         <div style=" margin-left:5px;">
                         	<img src="<%=imagesDir%>multimir.png" width="300px"/><BR />
