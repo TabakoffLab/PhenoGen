@@ -32,7 +32,7 @@
                                     
                                         <%@ include file="/web/common/whats_new_content.jsp" %>
                         </div>
-                    <div style="display:inline-block;width:43%;float:right;">
+                    <div style="display:inline-block;width:42%;float:right;">
                     	Example Region View:
                         <a class="fancybox" rel="fancybox-thumb" href="<%=webDir%>overview/browser_region.jpg" title="Example Region View">
                       		<img src="<%=webDir%>overview/browser_region.jpg" alt="Detailed Region Example"  style="width:95%;">

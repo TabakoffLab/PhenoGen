@@ -35,7 +35,7 @@ function ViewMenu(level){
 			$("div#ScrollLevel"+that.previewLevel).css("overflow","auto").css("max-height","430px");
 			var trackString=that.generateSettingsString(d);
 			if(trackString!=""){
-					console.log(trackString);
+					//console.log(trackString);
 					loadStateFromString(trackString,"",that.previewLevel,that.previewSVG);
 					that.previewSVG.updateData();
 					that.previewSVG.updateFullData();
@@ -225,6 +225,8 @@ function ViewMenu(level){
 	that.setupImage=function(settingString,d){
 		svgList[that.level].removeAllTracks();
 		svgList[that.level].currentView=d;
+		svgViewIDList[that.level]=d.ViewID;
+		svgList[that.level].updateLinks();
 		loadStateFromString(settingString,d.imgSettings,that.level,svgList[that.level]); 
 		$("span#viewLbl"+that.level).html("View: "+d.Name);
 		if(d.UserID==0){
@@ -302,13 +304,16 @@ function ViewMenu(level){
 				if(that.initialized==0 && that.level==0){
 					that.initialized=1;
 					that.applySelectedView($("#defaultView").val());
+				}else if(that.level==1){
+					that.initialized=1;
+					that.applySelectedView(svgViewIDList[that.level]);
 				}
 			}
 		});
 	};
 
 	that.readCookieViews=function(){
-		console.log(trackInfo);
+		//console.log(trackInfo);
 		var viewString="";
 		if(isLocalStorage() === true){
 			var cur=localStorage.getItem("phenogenCustomViews");
@@ -353,7 +358,7 @@ function ViewMenu(level){
 				if(params.length>3){
 					var orgCount=0;
 					for(var k=0;k<obj.TrackList.length;k++){
-						console.log(obj.TrackList[k].TrackClass);
+						//console.log(obj.TrackList[k].TrackClass);
 						var sourceTrack=trackInfo[obj.TrackList[k].TrackClass];
 						obj.TrackList[k].TrackID=sourceTrack.TrackID;
 						obj.TrackList[k].UserID=sourceTrack.UserID;
@@ -367,8 +372,8 @@ function ViewMenu(level){
 						}
 					}
 					obj.orgCount=orgCount;
-					console.log("pushed object");
-					console.log(obj);
+					//console.log("pushed object");
+					//console.log(obj);
 					that.viewList.push(obj);
 				}
 			}
@@ -505,7 +510,7 @@ function ViewMenu(level){
 					if(!$(".trackLevel"+that.level).is(":visible")){
 							var p=$("div.viewsLevel"+that.level).position();
 							//console.log($("div.trackLevel"+that.level)[0].getBoundingClientRect());
-							console.log(p);
+							//console.log(p);
 							var left=0;
 							if($(window).width()>=1200){
 								left=-601;
@@ -514,7 +519,7 @@ function ViewMenu(level){
 							var d=that.findSelectedView();
 							$(".trackLevel"+that.level+" span#selectedViewName").html(d.Name);
 							$(".trackLevel"+that.level).fadeIn("fast");
-							console.log(trackMenu);
+							//console.log(trackMenu);
 							trackMenu[that.level].generateTrackTable();
 					}else{
 							$(".trackLevel"+that.level).fadeOut("fast");
@@ -746,7 +751,7 @@ function ViewMenu(level){
 				var trackList=that.saveAsImg.generateSettingsString();
 				//var trackList=svgList[that.level].generateSettingsString();
 				newView=newView+trackList;
-				console.log("tracklist part:"+trackList);
+				//console.log("tracklist part:"+trackList);
 			}else if(type=="copy"){
 				var trackList="";
 				var sourceTracks=that.findSelectedView().TrackList;
@@ -754,12 +759,12 @@ function ViewMenu(level){
 					trackList=trackList+sourceTracks[k].TrackClass+","+sourceTracks[k].Settings+";";
 				}
 				newView=newView+trackList;
-				console.log("tracklist part:"+trackList);
+				//console.log("tracklist part:"+trackList);
 			}
 			
 			newView=newView+"<///>";
 
-			console.log("Saving View:"+newView);
+			//console.log("Saving View:"+newView);
 
 			if(isLocalStorage() === true){
 				var cur=localStorage.getItem("phenogenCustomViews");

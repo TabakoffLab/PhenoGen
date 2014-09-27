@@ -40,13 +40,13 @@ span.control{
                                     <li>Save vies/tracks to the server for portability.(See below for more information)</li>
                                 </ul>
                             </li>
-                            <li><span class="highlight-dark">We've added/updated data:</span>
-                            	<ul>
+                            <li><span class="highlight-dark">We've added support for new/updated Rat RNA-Seq data (Brain,Liver,Heart) that will be coming soon.</span>
+                            	<!--<ul>
                                 	<li><span class="highlight-dark">Heart Transcriptome Reconstruction</span> - Added BN-Lx,SHR transcriptome reconstruction, splice junctions, and stranded read depth tracks. </li>
                                     <li><span class="highlight-dark">Updated Brain and Liver Transcriptome Reconstructions</span> - Added updated versions of the Brain and Liver reconstructions and splice junctions.  Count tracks are updated Liver is stranded while Brain is seperated into Total or PolyA+, but not stranded.</li>
                                     <li><span class="highlight-dark">Heart and Liver Small RNA</span> - Added small RNA features, and read depth tracks.</li>
                                     <li><span class="highlight-dark">Updated Brain Small RNA</span> - Updated the previous brain small RNA features, and read depth tracks.</li>
-                                </ul>
+                                </ul>-->
                             </li>
                             <li><span class="highlight-dark">New custom track file support:</span>
                             	<ul>

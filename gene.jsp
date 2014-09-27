@@ -706,36 +706,40 @@ Or
 	<div class="demo" style="width:100%;text-align:center;">
     	<table style="width:100%;text-align:center;">
         <TR>
-        	<TD colspan="2" style="text-align:center;"><h2>Demonstrations</h2></TD>
+        	<TD colspan="3" style="text-align:center;"><h2>Demonstrations</h2></TD>
         </TR>
         <TR>
         <TD style="text-align:center;">
         	<h2>Quick Navigation Demonstration</h2>
             <BR />
-            <video width="400" height="270" controls="controls">
+            <video width="350" height="250" controls="controls">
             <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
             <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
-            <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="400" height="270">
+            <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="350" height="250">
                           </object>
             </video>
         </TD>
         <TD style="text-align:center;">
                         <h2>Custom View/Custom Track Demonstration</h2><BR />
-						<video width="400" height="270" controls="controls">
+						<video width="350" height="250" controls="controls">
                     		<source src="<%=contextRoot%>web/demo/customTrackDemo.mp4" type="video/mp4">
                             <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
-                          <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="400" height="270">
+                          <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="350" height="250">
                           </object>
                         </video>
        </TD>
+       <TD style="text-align:center;">
+                        <h2>Available Tools Demo</h2><BR />
+						Coming Soon
+       </TD>
        </TR>
        <TR>
-       	<TD colspan="2">
+       	<TD colspan="3">
         	<H2>Navigation Help</H2>
         </TD>
        </TR>
        <TR>
-       		<TD colspan="2" style="text-align:center;">
+       		<TD colspan="3" style="text-align:center;">
                 <table style="width:98%">
                 <TR>
                                 <TD style="text-align:center;">

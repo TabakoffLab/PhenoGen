@@ -17,13 +17,33 @@
                         	<table>
                             <TR>
                             <TD>
-                            	<video id="demoVideo" width="210px" controls="controls">
-                                <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                                <source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
-                              <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%">
-                              </object>
-                            </video>
-                            </TD>
+                            		General Overview of Tools
+                                    <video id="demoVideo" width="210px"  controls="controls">
+                                        <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
+                                        <source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
+                                      <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%" >
+                                      </object>
+                                    </video>
+                                
+                                </TD>
+                                <TD>
+                                	Basic Browser Navigation
+                                <video width="210px" controls="controls">
+                                    <source src="web/demo/BrowserNavDemo.mp4" type="video/mp4">
+                                    <source src="web/demo/BrowserNavDemo.webm" type="video/webm">
+                                    <object data="web/demo/BrowserNavDemo.mp4" width="100%" >
+                                                  </object>
+                                </video>
+                                </TD>
+                                <TD>
+                                	Setting up Custom Tracks/Views
+                                <video width="210px" controls="controls">
+                                    <source src="web/demo/customTrackDemo.mp4" type="video/mp4">
+                                    <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
+                                  <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="100%" >
+                                  </object>
+                                </video>
+                                </TD>
                             <TD>
                             <span class="tooltip"  title="An interactive SVG image of the region entered.  You have the option to zoom in/out, reorder tracks, add/customize tracks, click on features for more detailed data, and view the tables of all the features(see following screen shots).<BR>Click to view a larger image.">
                         	<a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion1.jpg" title="A interactive SVG image that includes the tracks selected below."><img src="web/overview/browseRegion1.jpg"  style="width:150px;" /></a></span>
