@@ -19,7 +19,7 @@ var filterExpanded=0;
 var tblBQTLAdjust=false;
 var tblFromAdjust=false;
 
-var organism="<%=myOrganism%>";
+
 var ucsctype="region";
 var ucscgeneID="";
 var defaultView="<%=defView%>";
@@ -28,8 +28,9 @@ var selectGene="";
 <%}else{%>
 var selectGene="<%=selectedEnsemblID%>";
 <%}%>
-var pathPrefix="web/GeneCentric/";
+
 var dataPrefix="";
+var skipSetSelection=0;
 </script>
 
 <style>
@@ -69,7 +70,10 @@ var dataPrefix="";
   	}
   }
 
-	
+.ui-widget { font-size:0.8em;}
+	ul#viewSelectMenu0 li,ul#viewSelectMenu1 li{
+		cursor:pointer;
+	}
 </style>
 
 
@@ -113,14 +117,15 @@ var dataPrefix="";
 			$('#legendDialog').dialog("open");
 		});
     </script>
-    <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
 <div id="page" style="min-height:1050px;text-align:center;">
 	<div style="width:100%;text-align:left;">
-	<a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">Not sure where to start? Watch a quick navigation demonstration</a>
+	Not sure where to start: <a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">watch a quick navigation demonstration</a> or <a id="fbhelp1" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Navigation Help<BR>Basic Controls on the main image."> view the help images again</a><a id="fbhelp2" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."></a><a id="fbhelp3" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit views."></a>
     </div>
     
     <div id="imageMenu"></div>
-    <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
+    <div id="viewMenu"></div>
+    <div id="trackMenu"></div>
+    <!--<div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:
     		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
     		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageTranscriptomeView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
@@ -131,11 +136,31 @@ var dataPrefix="";
                 		<option value="0" >------Login to use saved views------</option>
                 </select>
             </span>-->
-    </div>
-    <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
-    		<span class="trigger less" name="collapsableImage" >Region Image</span>
-    		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="../web/images/icons/help.png" /></div>
-            <div id="imageHeader" style=" font-size:12px; float:right;"></div>
+    <!--</div>-->
+    <div style=" background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
+    		<table style="width:100%;" cellpadding="0" cellspacing="0">
+            <tbody>
+            <!--<TR>
+            	<TD colspan="2" style="text-align:center; width:100%;">
+                <span style="background-color:#DEDEDE;font-size:18px; font-weight:bold;padding:2px 15px 2px 15px;">
+                    	<span id="viewLbl0"   >View:</span><span id="viewModifiedCtl">(Modified) <img src="../web/images/icons/save_flat.png" /></span>
+                </span>
+                </TD>
+            </TR>-->
+            	<TR>
+                	<TD style="background-color:#DEDEDE;font-size:18px; font-weight:bold;">
+                        <span class="trigger less" name="collapsableImage" >Region Image</span>
+                        <div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+                  	</TD>
+                    <TD style="background-color:#DEDEDE; text-align:center; width:50%;font-size:18px; font-weight:bold; vertical-align: middle;">
+                        <span id="viewLbl0">View:</span><span id="viewModifiedCtl0" style="display:none;">(Modified <span class="Imagetooltip" title="This view has been modified.  To save this change you should use the arrow next to Select/Edit Views to Save or Save As..  Otherwise your change will persist only while this window is not refreshed and not left inactive for more than 59 minutes."><img src="../web/images/icons/info.gif" />)</span>
+                    </TD>
+                    <TD style="background-color:#DEDEDE;">
+                        <div id="imageHeader" style=" font-size:12px; float:right;"></div>
+            		</TD>
+               </TR>
+               </tbody>
+            </table>
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">
@@ -151,59 +176,22 @@ var dataPrefix="";
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser1.3.1.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport1.1.js" type="text/javascript"></script>
-				
+            <script src="javascript/GenomeDataBrowser2.0.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport2.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
+            
+            
                 <script type="text/javascript">
                     var gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
-					loadState(0);
 					
+					//loadStateFromCookie(0);		
                     //$( "ul, li" ).disableSelection();
                 </script>
            </div>
         </div>
 
     </div><!--end Border Div -->
-
-    
-<script type="text/javascript">
-  $('#legendDialog').dialog({
-		autoOpen: false,
-		dialogClass: "legendDialog",
-		width: 350,
-		height: 380,
-		zIndex: 999
-	});
-  	
-	
-	/*$('.legendBtn').click( function(){
-		$('#legendDialog').dialog( "option", "position",{ my: "left top", at: "left bottom", of: $(this) });
-		$('#legendDialog').dialog("open");
-	});*/
-	
-	/*$('.Imagetooltip').tooltipster({
-		position: 'top-right',
-		maxWidth: 250,
-		offsetX: 24,
-		offsetY: 5,
-		//arrow: false,
-		interactive: true,
-   		interactiveTolerance: 350
-	});*/
-	
-	
-	/*$('.helpImage').click( function(event){
-		var id=$(this).attr('id');
-		$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
-		$('#'+id+'Content').dialog("open").css({'font-size':12});
-	});*/
-</script>    
-     
-
-<div id="legendDialog"  title="UCSC Image/Table Rows Color Code Key" class="legendDialog" style="display:none">
-                <%@ include file="/web/GeneCentric/legendBox.jsp" %>
-    </div>
-    
     
     
     <div id="regionDiv">
@@ -320,58 +308,14 @@ var dataPrefix="";
 	//Setup Fancy box for example
      $('.fancybox').fancybox({
                 width:"800px",
-                height:$(document).height(),
+                //height:$(document).height(),
                 scrollOutside:false
                 /*afterClose: function(){
                         $('body.noPrint').css("margin","5px auto 60px");
                         return;
                 }*/
   	});
-	displayHelpFirstTime();
 	
-	/*$('#saveBtn').click( function(){
-		var content=$("div#Level0").html();
-		content+"\n";
-		$.ajax({
-				url: pathPrefix+"saveBrowserImage.jsp",
-   				type: 'POST',
-				contentType: 'text/html',
-				data: content,
-				processData: false,
-				dataType: 'json',
-    			success: function(data2){ 
-        			console.log(data2.imageFile);
-					var url="http://<%=host+contextRoot%>/tmpData/download/"+data2.imageFile;
-					 var filename = data2.imageFile;
-					  var xhr = new XMLHttpRequest();
-					  xhr.responseType = 'blob';
-					  xhr.onload = function() {
-						var a = document.createElement('a');
-						a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
-						a.download = filename; // Set the file name.
-						a.style.display = 'none';
-						document.body.appendChild(a);
-						a.click();
-						delete a;
-					  };
-					  xhr.open('GET', url);
-					  xhr.send();
-    			},
-    			error: function(xhr, status, error) {
-        			console.log(error);
-    			}
-			});
-	});*/
-	
-	/*$('#saveBtn').click( function(){
-		html2canvas($('div#Level0'), {
-			background: "#ffffff",
-			timeout: 15000,
-  			onrendered: function(canvas) {
-    		document.body.appendChild(canvas);
-  		}
-		});
-	});*/
 	
 </script>
 

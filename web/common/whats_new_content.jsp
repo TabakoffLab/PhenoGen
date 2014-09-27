@@ -28,6 +28,41 @@ span.control{
 		background:#989898;
 	}
 </style>
+<div class="whats_new version"><p><h3>Version: v2.13.0</h3><BR /> Updated:9/27/2014</p></div>
+				<ul>
+					<li> <span class="highlight-dark">Genome/Transcriptome Data Browser</span>
+                    	<ul>
+                        	<li><span class="highlight-dark">Views have been completely updated</span> to allow us to offer multiple views that change based on the species viewed, and now you can <span class="highlight-dark">build your own view</span>.
+                            	<ul>
+                                	<li>Easily view different types of data in the same region by switching between views with only 3 clicks.</li>
+                                    <li>Build your own view by from a blank view or copy a view and modify it.  You can control the included tracks, track settings, and track order.</li>
+                                    <li>Bring in your own data and include custom tracks in views.  Now supporting Bed, BedGraph, BigBed, and BigWig files.</li>
+                                    <li>Save vies/tracks to the server for portability.(See below for more information)</li>
+                                </ul>
+                            </li>
+                            <li><span class="highlight-dark">We've added support for new/updated Rat RNA-Seq data (Brain,Liver,Heart) that will be coming soon.</span>
+                            	<!--<ul>
+                                	<li><span class="highlight-dark">Heart Transcriptome Reconstruction</span> - Added BN-Lx,SHR transcriptome reconstruction, splice junctions, and stranded read depth tracks. </li>
+                                    <li><span class="highlight-dark">Updated Brain and Liver Transcriptome Reconstructions</span> - Added updated versions of the Brain and Liver reconstructions and splice junctions.  Count tracks are updated Liver is stranded while Brain is seperated into Total or PolyA+, but not stranded.</li>
+                                    <li><span class="highlight-dark">Heart and Liver Small RNA</span> - Added small RNA features, and read depth tracks.</li>
+                                    <li><span class="highlight-dark">Updated Brain Small RNA</span> - Updated the previous brain small RNA features, and read depth tracks.</li>
+                                </ul>-->
+                            </li>
+                            <li><span class="highlight-dark">New custom track file support:</span>
+                            	<ul>
+                                	<li><span class="highlight-dark">bedGraph</span> - uploaded 20MB size limit</li>
+                                    <li><span class="highlight-dark">bigBed</span> - remotely hosted, no size limit</li>
+                                    <li><span class="highlight-dark">bigWig</span> - remotely hosted, no size limit</li>
+                                    <li>bed - we still support bed files, uploaded, 20MB size limit</li>
+                                </ul>
+                            </li>
+                            <li><span class="highlight-dark">Custom View/Tracks will save to the server</span> if you login to the site before creating them.  If you have logged into the site any views or tracks will save to the server so you can view them on any device that you login from and can reduce the risk of loosing them.</li>
+                            <li><span class="highlight-dark">Don't want to register or login, don't worry everything will still work</span>, custom tracks and views are saved locally via one of two mechanisms, either local storage or cookies in older browsers.  If you clear these you will loose your custom views or tracks.</li>
+                            
+                    	</ul>
+                	</li>         
+				</ul>
+				<hr/>
 <div class="whats_new version"><p><h3>Version: v2.12.3</h3><BR /> Updated:7/17/2014</p></div>
 				<ul>
 					<li> <span class="highlight-dark">Genome/Transcriptome Data Browser</span>

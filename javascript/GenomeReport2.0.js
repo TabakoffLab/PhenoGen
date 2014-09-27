@@ -103,10 +103,15 @@ function loadTrackTable(){
 			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
 				params.source="brain";
 			}
-		}else if(reportSelectedTrack.trackClass=="liverTotal"){
+		}else if(reportSelectedTrack.trackClass=="liverTotal"||reportSelectedTrack.trackClass=="heartTotal"||reportSelectedTrack.trackClass=="brainTotal"){
 			jspPage="web/GeneCentric/geneTable.jsp";
 			params.type="all";
 			params.source="liver";
+			if(reportSelectedTrack.trackClass=="heartTotal"){
+				params.source="heart";
+			}else if(reportSelectedTrack.trackClass=="brainTotal"){
+				params.source="brain";
+			}
 		}else if(reportSelectedTrack.trackClass.indexOf("smallnc")>-1){
 			params.source="ensembl";
 			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
@@ -176,6 +181,7 @@ function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
 				dataType: 'html',
     			success: function(data2){ 
         			$(divSelector).html(data2);
+        			setTimeout(displayHelpFirstTime,200);
     			},
     			error: function(xhr, status, error) {
         			$(divSelector).html("<span style=\"color:#FF0000;\">An error occurred generating this page.  Please try back later.</span>");
@@ -248,7 +254,8 @@ function displayDetailedView(track){
 		track.displayBreakDown("div#collapsableReport div#trackGraph");
 	}
 	var tc=new String(track.trackClass);
-	if(tc.indexOf("coding")>-1 || tc.indexOf("noncoding")>-1 || tc.indexOf("smallnc")>-1 || tc.indexOf("liverTotal")>-1 || tc=="qtl"){
+	if(tc.indexOf("coding")>-1 || tc.indexOf("noncoding")>-1 || tc.indexOf("smallnc")>-1 ||
+		 tc.indexOf("liverTotal")>-1 ||tc.indexOf("heartTotal")>-1 ||tc.indexOf("brainTotal")>-1 || tc=="qtl"){
 		$("#regionTableSubHeader").show();
 		$("#regionTable").show();
 	}else{

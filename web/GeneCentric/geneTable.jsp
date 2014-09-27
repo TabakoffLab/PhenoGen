@@ -1,4 +1,4 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 <%
@@ -301,7 +301,8 @@
 						
 							if( (source.equals("ensembl")&&curGene.getGeneID().startsWith("ENS")) ||	//ensembl track
 								(source.equals("brain")&&(curGene.getGeneID().toLowerCase().startsWith("brain")||curGene.containsTranscripts("brain")))||	//Brain track
-								(source.equals("liver")&&(curGene.getGeneID().toLowerCase().startsWith("liver")||curGene.containsTranscripts("liver")))	//Liver track
+								(source.equals("liver")&&(curGene.getGeneID().toLowerCase().startsWith("liver")||curGene.containsTranscripts("liver")))||	//Liver track
+								(source.equals("heart")&&(curGene.getGeneID().toLowerCase().startsWith("heart")||curGene.containsTranscripts("heart")))
 							){%>
                         
                             <TR class="
@@ -317,6 +318,8 @@
                             <%}else if(!curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200){
 									if(curGene.getGeneID().toLowerCase().startsWith("liver")){%>
 										liver
+									<%}else if(curGene.getGeneID().toLowerCase().startsWith("heart")){%>
+										heart
 									<%}else{
                                     	viewClass="longRNA";%>
                                     	noncoding

@@ -3,7 +3,7 @@ import="org.json.*" %>
 
 
 
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <%
 	String sessionid="";
 	sessionid=session.getId();
@@ -11,7 +11,7 @@ import="org.json.*" %>
 	BufferedReader in=request.getReader();
 	String content="";
 	String htmlHead="<HTML><head><script type=\"text/javascript\" src=\""+applicationRoot+contextRoot+"javascript/d3.v3.min.js\"></script></head><BODY style=\"background:#FFFFFF;margin:0px;\"><style>ul{list-style-type:none;padding:0px;} .axis path{fill:none;stroke:black;shape-rendering: crispEdges;} .tick{fill:black;stroke: black;} .grid .tick { stroke: lightgrey; opacity: 0.7;}</style><div style=\"font-family: Arial,Verdana,sans-serif;font-size: 14px;\">";
-	String htmlEnd="</div><script>d3.selectAll(\".infoIcon\").remove();d3.selectAll(\".scroll\").style(\"overflow\",\"\").style(\"max-height\",\"\");</script></BODY></HTML>";
+	String htmlEnd="</div><script>d3.selectAll(\".infoIcon\").remove();d3.selectAll(\".settings\").remove();d3.selectAll(\".scroll\").style(\"overflow\",\"\").style(\"max-height\",\"\");</script></BODY></HTML>";
 	
 	boolean htmlCreated=false;
 	try{

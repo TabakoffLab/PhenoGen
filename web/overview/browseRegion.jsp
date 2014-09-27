@@ -17,16 +17,40 @@
                         	<table>
                             <TR>
                             <TD>
-                            	<video id="demoVideo" width="210px" controls="controls">
-                                <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                                <source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
-                              <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%">
-                              </object>
-                            </video>
-                            </TD>
+                            		General Overview of Tools
+                                    <video id="demoVideo" width="210px"  controls="controls">
+                                        <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
+                                        <source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
+                                      <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%" >
+                                      </object>
+                                    </video>
+                                
+                                </TD>
+                                <TD>
+                                	Basic Browser Navigation
+                                <video width="210px" controls="controls">
+                                    <source src="web/demo/BrowserNavDemo.mp4" type="video/mp4">
+                                    <source src="web/demo/BrowserNavDemo.webm" type="video/webm">
+                                    <object data="web/demo/BrowserNavDemo.mp4" width="100%" >
+                                                  </object>
+                                </video>
+                                </TD>
+                                <TD>
+                                	Setting up Custom Tracks/Views
+                                <video width="210px" controls="controls">
+                                    <source src="web/demo/customTrackDemo.mp4" type="video/mp4">
+                                    <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
+                                  <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="100%" >
+                                  </object>
+                                </video>
+                                </TD>
                             <TD>
                             <span class="tooltip"  title="An interactive SVG image of the region entered.  You have the option to zoom in/out, reorder tracks, add/customize tracks, click on features for more detailed data, and view the tables of all the features(see following screen shots).<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion1.jpg" title="A UCSC Genome Browser image that includes the tracks selected below."><img src="web/overview/browseRegion1.jpg"  style="width:150px;" /></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion1.jpg" title="A interactive SVG image that includes the tracks selected below."><img src="web/overview/browseRegion1.jpg"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            <span class="tooltip"  title="Another view of the interactive SVG image of the region entered.  You have the option to zoom in/out, reorder tracks, add/customize tracks, click on features for more detailed data, and view the tables of all the features(see following screen shots).<BR>Click to view a larger image.">
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/browser_region.jpg" title="A interactive SVG image that includes the tracks selected below."><img src="web/overview/browser_region.jpg"  style="width:150px;" /></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="The far left side of the table of features in the region.  This includes any annotation available from ensembl, and links to various databases for the given gene.  For rats this also includes any RNA-Seq reconstructed transcripts along with a description of how closely they match an Ensembl annotated transcript.<BR>Click to view a larger image.">
@@ -43,6 +67,18 @@
                             <TD>
                             	<span class="tooltip"  title="A Circos plot that shows the locations of the genes with an eQTL in the region.  Below this image a table summarizes the data available for each gene.<BR>Click to view a larger image.">
                             <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion5.jpg" title="A Circos plot that shows the locations of the genes with an eQTL in the region.  Below this image a table sumarizes the data available for each gene."><img src="web/overview/browseRegion5.jpg"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            	<span class="tooltip"  title="Image showing an overview of the basic controls.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Image showing an overview of the basic controls."><img src="web/GeneCentric/help1.jpg"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            	<span class="tooltip"  title="Image showing an overview of the controls for selecting and editing views.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Image showing an overview of the controls for selecting and editing views."><img src="web/GeneCentric/help2.jpg"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            	<span class="tooltip"  title="Image showing an overview of the controls for selecting and editing tracks.  <BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Image showing an overview of the controls for selecting and editing tracks."><img src="web/GeneCentric/help3.jpg"  style="width:150px;" /></a></span>
                             </TD>
                             </TR>
                             </table>

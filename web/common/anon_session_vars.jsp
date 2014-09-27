@@ -250,6 +250,7 @@
 			}
 		   	
 		}
+		//userLoggedIn= (User) session.getAttribute("userLoggedIn");
 	}
 	
 	GeneList[] geneListsForUser = ((GeneList[]) session.getAttribute("geneListsForUser") == null ? 

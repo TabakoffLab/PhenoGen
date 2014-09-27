@@ -1,10 +1,10 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <%
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("d3.v3.min.js");
-	extrasList.add("smoothness/jquery-ui-1.10.3.min.css");
+	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tooltipster.css");
 	
@@ -17,7 +17,7 @@
 
 
 <%
-String chromosome="",panel="",myOrganism="Rn";
+String chromosome="",panel="",myOrganism="Rn",viewID="1";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 
 String selectedID="";
@@ -25,7 +25,9 @@ String selectedID="";
 	if(request.getParameter("selectedID")!=null){
 		selectedID=request.getParameter("selectedID");
 	}
-
+	if(request.getParameter("viewID")!=null){
+		viewID=request.getParameter("viewID");
+	}
 
 if(request.getParameter("panel")!=null){
 		panel=request.getParameter("panel").trim();
@@ -75,7 +77,9 @@ if(request.getParameter("arrayTypeID")!=null){
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
-
+<style>
+	.ui-widget { font-size:0.8em;}
+</style>
 <script type="text/javascript">
 	$('#wait1').hide();
 	var urlprefix="<%=host+contextRoot%>";
@@ -98,13 +102,16 @@ if(request.getParameter("arrayTypeID")!=null){
 	var ucsctype="region";
 	var ucscgeneID="";
 	var defaultView="viewAll";
-	var selectGene="<%=selectedID%>";
+	var selectGene="";
 	var folderName="<%=folderName%>";
 	var pathPrefix="";
 	var dataPrefix="../../";
+	var regionfolderName="<%=folderName%>";
+	var skipSetSelection=1;
 </script>
 <div id="imageMenu"></div>
-    <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
+<div id="viewMenu"></div>
+    <!--<div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
     		View:
     		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
     		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageTranscriptomeView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
@@ -115,11 +122,37 @@ if(request.getParameter("arrayTypeID")!=null){
                 		<option value="0" >------Login to use saved views------</option>
                 </select>
             </span>-->
-    </div>
+    <!--</div>-->
+    
+    
+    <input type="hidden" id="defaultView" value="<%=viewID%>" />
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
-    		<span class="trigger less" name="collapsableImage" >Transcripts Image</span>
+    		<table style="width:100%;" cellpadding="0" cellspacing="0">
+            <tbody>
+            <!--<TR>
+            	<TD colspan="2" style="text-align:center; width:100%;">
+                <span style="background-color:#DEDEDE;font-size:18px; font-weight:bold;padding:2px 15px 2px 15px;">
+                    	<span id="viewLbl0"   >View:</span><span id="viewModifiedCtl">(Modified) <img src="../web/images/icons/save_flat.png" /></span>
+                </span>
+                </TD>
+            </TR>-->
+            	<TR>
+                	<TD style="background-color:#DEDEDE;font-size:18px; font-weight:bold;">
+                        <span class="trigger less" name="collapsableImage" >Transcripts Image</span>
+                        <div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div>
+                  	</TD>
+                    <TD style="background-color:#DEDEDE; text-align:center; width:50%;font-size:18px; font-weight:bold; vertical-align: middle;">
+                        <span id="viewLbl0">View:</span><span id="viewModifiedCtl0" style="display:none;">(Modified <span class="Imagetooltip" title="This view has been modified.  To save this change you should use the arrow next to Select/Edit Views to Save or Save As..  Otherwise your change will persist only while this window is not refreshed and not left inactive for more than 59 minutes."><img src="<%=imagesDir%>icons/info.gif" />)</span>
+                    </TD>
+                    <TD style="background-color:#DEDEDE;">
+                        <div id="imageHeader" style=" font-size:12px; float:right;"></div>
+            		</TD>
+               </TR>
+               </tbody>
+            </table>
+    		<!--<span class="trigger less" name="collapsableImage" >Transcripts Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div>
-            <div id="imageHeader" style=" font-size:12px; float:right;"></div>
+            <div id="imageHeader" style=" font-size:12px; float:right;"></div>-->
             <!--<span style="font-size:12px; font-weight:normal; float:right;">
             	Saved Views:
                 <select name="viewSelect" id="viewSelect">
@@ -127,22 +160,146 @@ if(request.getParameter("arrayTypeID")!=null){
                 </select>
             </span>-->
     </div>
+    <script type="text/javascript">
+	//Setup View Menu
+	var defviewList=[];
+	var filterViewList=[];
+	
+	function getMainViewData(shouldUpdate){
+		var tmpContext=contextPath +"/"+ pathPrefix;
+		if(pathPrefix==""){
+			tmpContext="";
+		}
+		
+		d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
+			if(error){
+				setTimeout(function(){getMainViewData(shouldUpdate);},2000);
+				d3.select("#defaultView").html("<option>Error: reloading</option>");
+			}else{
+				console.log("getViewData()");
+				defviewList=d;
+				//readCookieViews();
+				if(shouldUpdate===1){
+					setupDefaultView();
+				}
+			}
+		});
+	};
+	
+	function readCookieViews(){
+		console.log("readCookieViews()");
+		var viewString="";
+		if(isLocalStorage() === true){
+			var cur=localStorage.getItem("phenogenCustomViews");
+			if(cur!=undefined){
+				viewString=cur;
+			}
+		}else{
+			if($.cookie("phenogenCustomViews")!=null){
+				viewString=$.cookie("phenogenCustomViews");
+			}
+		}
+		if(viewString!=null&&viewString.indexOf("<///>")>-1){
+			var viewStrings=viewString.split("<///>");
+			for(var j=0;j<viewStrings.length;j++){
+				var params=viewStrings[j].split("</>");
+				var obj={};
+				for(k=0;k<params.length;k++){
+					var values=params[k].split("=");
+					if(values[0]=="TrackSettingList"){
+						var trList=values[1].split(";");
+						obj.TrackList=[];
+						for(var m=0;m<trList.length;m++){
+							if(trList[m].length>0){
+								var tc=trList[m].substr(0,trList[m].indexOf(","));
+								var set=trList[m].substr(trList[m].indexOf(",")+1);
+								var track={};
+								track.TrackClass=tc;
+								track.Settings=set;
+								track.Order=m;
+								obj.TrackList.push(track);
+							}
+						}
+					}else if(values.length<=2){
+						obj[values[0]]=values[1];
+					}else if(values.length>2){
+						var name=params[k].substr(0,params[k].indexOf("="));
+						var value=params[k].substr(params[k].indexOf("=")+1);
+						obj[name]=value;
+					}
+				}
+				obj.Source="local";
+				if(params.length>3){					
+					obj.orgCount=obj.TrackList.length;
+					defviewList.push(obj);
+				}
+			}
+		}
+	}
+	
+	
+	function setupDefaultView(){
+		console.log("setupDefaultView()");
+		d3.select("#defaultView").html("");
+		filterViewList=[];
+		for(var i=0;i<defviewList.length;i++){
+			if(defviewList[i].Organism=="AA"||defviewList[i].Organism.toLowerCase()==$('#speciesCB').val().toLowerCase()){
+				filterViewList.push(defviewList[i]);
+			}
+		}
+		var opt=d3.select("#defaultView").selectAll('option').data(filterViewList);
+		opt.enter().append("option")
+					.attr("value",function(d){return d.ViewID;})
+					.text(function(d){
+						var ret=d.Name;
+						if(d.UserID==0){
+							ret=ret+"    (Predefined)";
+						}else{
+							ret=ret+"   (Custom)";
+						}
+						if(d.Organism!="AA"){
+							if(d.Organism=="RN"){
+								ret=ret+"      (Rat Only)";
+							}else if(d.Organism=="MM"){
+								ret=ret+"     (Mouse Only)";
+							}
+						}
+						
+						return ret;
+					});
+		opt.exit().remove();
+	}
+	</script>
 <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
     	<span id="mouseHelp">Navigation Hints: Hold mouse over areas of the image for available actions.</span>    
         <div id="collapsableImage" class="geneimage" >
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser1.3.1.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeReport1.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.0.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeReport2.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
 				
             <script type="text/javascript">
+				function isLocalStorage(){
+					var test = 'test';
+					try {
+						localStorage.setItem(test, test);
+						localStorage.removeItem(test);
+						return true;
+					} catch(e) {
+						return false;
+					}
+				}
+			
+			
                     var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
 					gs.forceDrawAs("Trx");
-					loadState(0);
+					//loadStateFromCookie(0);
 					gs.xMax=maxCoord;
 					gs.xMin=minCoord;
-					
+					//trackMenu[0].applyView();
 					
 					
 					$("span[name='"+defaultView+"']").addClass("selected");
@@ -171,11 +328,27 @@ if(request.getParameter("arrayTypeID")!=null){
 
 </div><!--end Border Div -->
     <BR />
-
-<div id="unsupportedChrome" style="display:none;color:#FF0000;">A Java plug in is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  
+    
+    
+    <div id="unsupportedChrome" style="display:none;color:#FF0000;"><BR /><BR />A Java plug in is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  
             	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.</div>
+                
+                
+			<span id="disabledJava" style="display:none;margin-left:40px;"><BR /><BR />
+                <span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
+                            To enable Java in your browser or operating system, see:<BR><BR> 
+                            Firefox: <a href="http://support.mozilla.org/en-US/kb/unblocking-java-plugin" target="_blank">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
+                            Internet Explorer: <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
+                            Safari: <a href="http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html" target="_blank">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
+                            Chrome: <a href="http://java.com/en/download/faq/chrome.xml" target="_blank">http://java.com/en/download/faq/chrome.xml</a><BR /><BR />
+            </span>
+            <span id="noJava" style="color:#FF0000;display:none;"><BR /><BR /> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
+            <span id="oldJava" style="color:#00AA00;display:none;"><BR /><BR />A newer Java version may be available click the Install button for the latest version.(You may still use all functions even if you see this message.)<BR /></span>
+            <span id="installJava" style="display:none;" class="button">Install Java</span>
+                            
 
-<div id="macBugDesc" style="display:none;color:#FF0000;">The applet below is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  This bug has been fixed if you update to Java plug-in version 1.7.0_51 or higher the display will be improved.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
+
+<div id="macBugDesc" style="display:none;color:#FF0000;"><BR /><BR />The applet below is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  This bug has been fixed if you update to Java plug-in version 1.7.0_51 or higher the display will be improved.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
         <BR /><BR /><BR />
         <div style="margin-left:10px;margin-right:10px;"><p><span style="color:#FF0000">Note:</span>If you don't see the applet below try adjusting security settings as directed <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">here</a>. You will be asked if you want to allow the applet to run, please select "Run" or "Yes" if prompted.  We are now providing a signed applet that will say it is being  We are also working to provide similar expression data that is not dependent on Java at some point in the future.</p></div>
         <BR /><BR />
@@ -189,7 +362,28 @@ if(request.getParameter("arrayTypeID")!=null){
 			var bug=0;
 			var bugString='false';
 			var unsupportedChrome=0;
-	
+			if(!navigator.javaEnabled()){
+                        $('#javaError').css("display","inline-block");
+                        $('#disabledJava').css("display","inline-block");
+           	}else if (deployJava.versionCheck('1.6.0+') == false) {
+                     $('#javaError').css("display","inline-block");
+                    $('#noJava').css("display","inline-block");                  
+                    $('#installJava').css("display","inline-block");
+          	}else{
+                    if (deployJava.versionCheck('1.7.0+') == false) {                   
+                        $('#oldJava').css("display","inline-block");
+                        $('#installJava').html("Update Java");
+                        $('#installJava').css("display","inline-block");
+                    }
+           }
+           $('#installJava').click(function (){
+                    // Set deployJava.returnPage to make sure user comes back to 
+                    // your web site after installing the JRE
+                    deployJava.returnPage = location.href;
+                            
+                    // Install latest JRE or redirect user to another page to get JRE
+                    deployJava.installLatestJRE(); 
+           });	
 			//alert("Initial:"+jre+":"+navigator.userAgent);
 			if (/Mac OS X[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
  					//var macVersion=new Number(RegExp.$1); // capture x.x portion and store as a number

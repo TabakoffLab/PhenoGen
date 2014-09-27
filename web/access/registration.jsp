@@ -202,6 +202,11 @@
 <%@ include file="/web/common/basicHeader.jsp" %>
 
 <script language="JAVASCRIPT" type="text/javascript">
+	var RecaptchaOptions = {
+				theme : 'clean',
+				custom_theme_widget: 'recaptcha_widget'
+			 };
+
 	function codeOfEthicsMsg() {
         	var answer = confirm("Please read the terms associated with using this website for " +
 					"research." + "\n" +

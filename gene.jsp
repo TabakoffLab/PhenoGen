@@ -5,19 +5,24 @@
 	extrasList.add("jquery.dataTables.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
+	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
+	extrasList.add("spectrum.js");
+	//extrasList.add("jscolor/jscolor.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("d3.v3.min.js");
-	extrasList.add("smoothness/jquery-ui-1.10.4.min.css");
+	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("jquery.fancybox.css");
+	extrasList.add("jquery.fancybox-thumbs.css");
+	extrasList.add("spectrum.css");
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
 <%
 String myGene="";
 String myDisplayGene="";
-String defView="viewGenome";
+String defView="1";
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
 		myGene=request.getParameter("geneTxt").trim();
@@ -42,13 +47,16 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 <%}%>
 
 <jsp:useBean id="myIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
-
+<jsp:useBean id="bt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 
 <% 
 	
 	//GeneDataTools gdt=new GeneDataTools();
     gdt.setSession(session);
+	bt.setSession(session);
+	
+	ArrayList<BrowserView> views=bt.getBrowserViews();
 	
 	String myOrganism="";
 	ObjectHandler oh=new ObjectHandler();
@@ -313,10 +321,10 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 					part=Integer.parseInt(chrName);
 				}catch(NumberFormatException e){
 				}
-				if(chrName.toLowerCase().equals("x")||(part>0 && part<22)){
+				if(chrName.toLowerCase().equals("x")||chrName.toLowerCase().equals("y")||chrName.toLowerCase().equals("m")||(part>0 && part<22)){
 					
 				}else{
-					regionError="You have entered an invalid chromosome name.  For the supported species the chromosome should be 1-20 or 21 or X.  Example: chr1:50000-1000000";
+					regionError="You have entered an invalid chromosome name.  For the supported species the chromosome should be 1-20 or 21 or X or M.  Example: chr1:50000-1000000";
 				}
 			}
 			
@@ -463,17 +471,30 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
        
   <label>Species:
   <select name="speciesCB" id="speciesCB">
-  	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus</option>
-    <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
+  	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus (mm10)</option>
+    <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus (rn5)</option>
   </select>
   </label>
   
   <label>Initial View:
   <select name="defaultView" id="defaultView">
+  	<%for(int i=0;i<views.size();i++){
+    	if(views.get(i).getOrganism().toUpperCase().equals("AA") || myOrganism.toUpperCase().equals(views.get(i).getOrganism().toUpperCase())){
+			String display=views.get(i).getName();
+			if(views.get(i).getUserID()==0){
+				display=display+"   (Predefined)";
+			}else{
+				display=display+"   (Custom)";
+			}%>
+        	<option value="<%=views.get(i).getID()%>" <%if(defView.equals(Integer.toString(views.get(i).getID()))){%>selected<%}%>><%=display%></option>
+        <%}%>
+    <%}%>
+  </select>
+  <!--<select name="defaultView" id="defaultView">
   	<option value="viewGenome" <%if(defView.equals("viewGenome")){%>selected<%}%>>Genome</option>
     <option value="viewTrxome" <%if(defView.equals("viewTrxome")){%>selected<%}%>>Transcriptome</option>
     <option value="viewAll" <%if(defView.equals("viewAll")){%>selected<%}%>>Both</option>
-  </select>
+  </select>-->
   </label>
   <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" onClick="return displayWorking()">
  <!--<span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
@@ -506,8 +527,27 @@ Or
 </div>
 
 <script type="text/javascript">
+	var organism="<%=myOrganism%>";
+	var pathPrefix="web/GeneCentric/";
+	<%if(userLoggedIn.getUser_name().equals("anon")){%>
+		var uid=0;
+	<%}else{%>
+		var uid=<%=userLoggedIn.getUser_id()%>;
+	<%}%>
 	document.getElementById("wait1").style.display = 'none';
 	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
+	
+	function isLocalStorage(){
+		var test = 'test';
+		try {
+			localStorage.setItem(test, test);
+			localStorage.removeItem(test);
+			return true;
+		} catch(e) {
+			return false;
+		}
+	}
+	
 	function openTranslateRegion(){
 		$('.demo').hide();
 		var region=$('#geneTxt').val();
@@ -527,6 +567,120 @@ Or
 			$("#oldIE").show();
 		}
 	}
+	
+	
+	//Setup View Menu
+	var defviewList=[];
+	var filterViewList=[];
+	
+	function getMainViewData(shouldUpdate){
+		var tmpContext=contextPath +"/"+ pathPrefix;
+		if(pathPrefix==""){
+			tmpContext="";
+		}
+		
+		d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
+			if(error){
+				setTimeout(function(){getMainViewData(shouldUpdate);},2000);
+				d3.select("#defaultView").html("<option>Error: reloading</option>");
+			}else{
+				console.log("getViewData()");
+				defviewList=d;
+				//readCookieViews();
+				if(shouldUpdate===1){
+					setupDefaultView();
+				}
+			}
+		});
+	};
+	
+	function readCookieViews(){
+		console.log("readCookieViews()");
+		var viewString="";
+		if(isLocalStorage() === true){
+			var cur=localStorage.getItem("phenogenCustomViews");
+			if(cur!=undefined){
+				viewString=cur;
+			}
+		}else{
+			if($.cookie("phenogenCustomViews")!=null){
+				viewString=$.cookie("phenogenCustomViews");
+			}
+		}
+		if(viewString!=null&&viewString.indexOf("<///>")>-1){
+			var viewStrings=viewString.split("<///>");
+			for(var j=0;j<viewStrings.length;j++){
+				var params=viewStrings[j].split("</>");
+				var obj={};
+				for(k=0;k<params.length;k++){
+					var values=params[k].split("=");
+					if(values[0]=="TrackSettingList"){
+						var trList=values[1].split(";");
+						obj.TrackList=[];
+						for(var m=0;m<trList.length;m++){
+							if(trList[m].length>0){
+								var tc=trList[m].substr(0,trList[m].indexOf(","));
+								var set=trList[m].substr(trList[m].indexOf(",")+1);
+								var track={};
+								track.TrackClass=tc;
+								track.Settings=set;
+								track.Order=m;
+								obj.TrackList.push(track);
+							}
+						}
+					}else if(values.length<=2){
+						obj[values[0]]=values[1];
+					}else if(values.length>2){
+						var name=params[k].substr(0,params[k].indexOf("="));
+						var value=params[k].substr(params[k].indexOf("=")+1);
+						obj[name]=value;
+					}
+				}
+				obj.Source="local";
+				if(params.length>3){					
+					obj.orgCount=obj.TrackList.length;
+					defviewList.push(obj);
+				}
+			}
+		}
+	}
+	
+	
+	function setupDefaultView(){
+		console.log("setupDefaultView()");
+		d3.select("#defaultView").html("");
+		filterViewList=[];
+		for(var i=0;i<defviewList.length;i++){
+			if(defviewList[i].Organism=="AA"||defviewList[i].Organism.toLowerCase()==$('#speciesCB').val().toLowerCase()){
+				filterViewList.push(defviewList[i]);
+			}
+		}
+		var opt=d3.select("#defaultView").selectAll('option').data(filterViewList);
+		opt.enter().append("option")
+					.attr("value",function(d){return d.ViewID;})
+					.text(function(d){
+						var ret=d.Name;
+						if(d.UserID==0){
+							ret=ret+"    (Predefined)";
+						}else{
+							ret=ret+"   (Custom)";
+						}
+						if(d.Organism!="AA"){
+							if(d.Organism=="RN"){
+								ret=ret+"      (Rat Only)";
+							}else if(d.Organism=="MM"){
+								ret=ret+"     (Mouse Only)";
+							}
+						}
+						
+						return ret;
+					});
+		opt.exit().remove();
+	}
+
+	
+	$("#speciesCB").on("change",setupDefaultView);
+	
 </script>
 
 
@@ -552,32 +706,81 @@ Or
 	<div class="demo" style="width:100%;text-align:center;">
     	<table style="width:100%;text-align:center;">
         <TR>
-        	<TD colspan="2" style="text-align:center;"><h2>Demonstrations</h2></TD>
+        	<TD colspan="3" style="text-align:center;"><h2>Demonstrations</h2></TD>
         </TR>
         <TR>
         <TD style="text-align:center;">
         	<h2>Quick Navigation Demonstration</h2>
             <BR />
-            <video width="400" height="270" controls="controls">
+            <video width="350" height="250" controls="controls">
             <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
             <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
-            <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="400" height="270">
+            <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="350" height="250">
                           </object>
             </video>
         </TD>
         <TD style="text-align:center;">
-                        <h2>Detailed Transcription Information Demonstration</h2><BR />
-						<video width="400" height="325" controls="controls">
-                    		<source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
-                            <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
-                          <object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="400" height="325">
+                        <h2>Custom View/Custom Track Demonstration</h2><BR />
+						<video width="350" height="250" controls="controls">
+                    		<source src="<%=contextRoot%>web/demo/customTrackDemo.mp4" type="video/mp4">
+                            <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
+                          <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="350" height="250">
                           </object>
                         </video>
        </TD>
+       <TD style="text-align:center;">
+                        <h2>Available Tools Demo</h2><BR />
+						Coming Soon
+       </TD>
+       </TR>
+       <TR>
+       	<TD colspan="3">
+        	<H2>Navigation Help</H2>
+        </TD>
+       </TR>
+       <TR>
+       		<TD colspan="3" style="text-align:center;">
+                <table style="width:98%">
+                <TR>
+                                <TD style="text-align:center;">
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Basic Controls on the main image."><img src="web/GeneCentric/help1.jpg"  style="width:300px;" /></a>
+                                </TD>
+                                <TD style="text-align:center;">
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."><img src="web/GeneCentric/help2.jpg"  style="width:300px;" /></a>
+                                </TD>
+                                <TD style="text-align:center;">
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit tracks."><img src="web/GeneCentric/help3.jpg"  style="width:300px;" /></a>
+                                </TD>
+                </TR>
+                </table>
+            </TD>
        </TR>
        </table>
+       <BR /><BR /><BR /><BR />
 	</div>
+    
 <%}%>
+
+	<script type="text/javascript">
+		
+		$('.fancybox').fancybox({
+						helpers : {
+										title: {
+											type: 'inside',
+											position: 'top'
+										},
+										thumbs	: {
+												width	: 200,
+												height	: 100
+											}
+									},
+						nextEffect: 'fade',
+						prevEffect: 'fade'
+		});
+		$(window).ready(function(){
+			getMainViewData(1);
+		});
+	</script>
 
 <%if(popup){%>
 	<div style="text-align:center;">

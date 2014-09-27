@@ -24,13 +24,19 @@ pageDescription="Browser and Software Requirements for PhenoGen";
         <div id="welcome" style="height:735px; width:946px;">
 
                 <h2>Supported Browsers</h2>
+                	We recommend the most current version of any browser.  Most of the javascript libraries used on the site are tested with the current and current-1 versions of popular browsers.  We have attempted to make sure all the features work as expected in current browser versions of Firefox, Safari, Chrome, and Internet Explorer.  Please let us know if you experience problems and please include your browser and version in any correspondence.  If you experience sluggish performance with the Genome/Transcriptome Browser we have found that Chrome seems to handle the grpahics better than most other browsers.
+                    <BR />
+                    <BR />
                 <p>
-                	Firefox 23.0+<BR />
-                    Safari 6.0+<BR />
-                    Chrome 25+<BR />
-                    IE 10+ (Most features will still work with IE 9, but the Genome/Transcriptome Data Browser will NOT work)<BR />
+                	Firefox 23.0+ (31+ is recommended)<BR />
+                    Safari 6.0+ (6.1+ is recommended)<BR />
+                    Chrome 25+ (36+ is recommeded)<BR />
+                    IE 10+ (Most features will still work with IE 9, but the Genome/Transcriptome Data Browser will NOT work)  (11+ is recommeded)<BR />
 				</p>
                 <BR /><BR />
+        <h2>System requirements</h2>
+        	The Genome/Transcriptome Data Browser section of the site does require a higher amount of RAM than most websites.  Depending on your view/track settings the RAM required may approach 1GB for your browser.  Multicore processors are recommended.  This is due to rendering most of the data on your computer instead of generating graphics on the server and loading them over the network.  This provides a faster and more interactive experience, but does place more load on your computer than most other websites.
+            <BR /><BR />
 		<h2>Additional Software Required</h2>
         <BR />
         <ul>

@@ -1,4 +1,4 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 <%
@@ -130,6 +130,11 @@
 		}
 	}
 </style>
+
+
+
+
+
 <!--<a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>" target="_blank">View Affy Probe Set Details</a>
 <BR /><BR />
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
@@ -577,98 +582,13 @@ Add report here.
     </div>
     <div style="display:none;" id="geneApp">
     		<div style="text-align:center;">
-            This feature requires Java which will open in a seperate window, when you click the button below.  If any problems were detected with your version of Java instructions would appear further below.  Please correct any errors you may see below before proceeding.<BR /><BR />
-            
-            <span class="button" style="width:200px;"><a href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>" target="_blank">View Affy Probe Set Details</a></span><BR />
-                <div id="javaError" style="display:none;">
-                    <BR /><BR /><br />
-                    <span style="color:#FF0000;">Error:</span>Java is required for the Detailed Transcription Information results for this page.  Please correct the error listed below.  <BR />
-                    <BR />
-                </div>
-        		<div id="unsupportedChrome" style="display:none;color:#FF0000;">A Java plug in is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  
-            	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.</div>
-                <span id="disabledJava" style="display:none;margin-left:40px;">
-                <span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
-                            To enable Java in your browser or operating system, see:<BR><BR> 
-                            Firefox: <a href="http://support.mozilla.org/en-US/kb/unblocking-java-plugin" target="_blank">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
-                            Internet Explorer: <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">http://java.com/en/download/help/enable_browser.xml</a><BR><BR>
-                            Safari: <a href="http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html" target="_blank">http://docs.info.apple.com/article.html?path=Safari/5.0/en/9279.html</a><BR><BR>
-                            Chrome: <a href="http://java.com/en/download/faq/chrome.xml" target="_blank">http://java.com/en/download/faq/chrome.xml</a><BR /><BR /></span>
+                This feature requires Java which will open in a seperate window, when you click the button below.  Java will be automatically detected and directions will be displayed on the next page if there are any issues to correct before proceding.<BR /><BR />
                 
-                <span id="noJava" style="color:#FF0000;display:none;"> No Java Plug-in is installed or a newer version is required click the Install button for the latest version.<BR /></span>
-                <span id="oldJava" style="color:#00AA00;display:none;">A newer Java version may be available click the Install button for the latest version.(You may still use all functions even if you see this message.)<BR /></span>
-                <span id="installJava" style="display:none;" class="button">Install Java</span>
+                <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&viewID=1" target="_blank">View Affy Probe Set Details</a></span><BR />       		
 			</div>
-            </div>
+    </div>
    	<div style="display:none;" id="geneMIrna">
     </div>
-
-     <script type="text/javascript">
-				var bug=0;
-				var jre=deployJava.getJREs();
-				var unsupportedChrome=0;
-				// check if current JRE version is greater than 1.6.0 
-                if(!navigator.javaEnabled()){
-                        $('#javaError').css("display","inline-block");
-                        $('#disabledJava').css("display","inline-block");
-                }else if (deployJava.versionCheck('1.6.0+') == false) {
-                     $('#javaError').css("display","inline-block");
-                    $('#noJava').css("display","inline-block");                  
-                    $('#installJava').css("display","inline-block");
-                }else{
-                    if (deployJava.versionCheck('1.7.0+') == false) {                   
-                        $('#oldJava').css("display","inline-block");
-                        $('#installJava').html("Update Java");
-                        $('#installJava').css("display","inline-block");
-                    }
-                }
-                $('#installJava').click(function (){
-                    // Set deployJava.returnPage to make sure user comes back to 
-                    // your web site after installing the JRE
-                    deployJava.returnPage = location.href;
-                            
-                    // Install latest JRE or redirect user to another page to get JRE
-                    deployJava.installLatestJRE(); 
-                });	
-				//alert("Initial:"+jre+":"+navigator.userAgent);
-				if (/Mac OS X[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
-						//var macVersion=new Number(RegExp.$1); // capture x.x portion and store as a number
-						var tmpAgent=new String(navigator.userAgent);
-						//alert("Detected Mac OS X:"+tmpAgent);
-						if(/Chrome/.test(tmpAgent) && /10[_\.][789]/.test(tmpAgent)){
-							var update=new String(jre);
-							//alert("chrome update:"+update);
-							if(update.length==0){
-								//alert("unsupported");
-								unsupportedChrome=1;
-							}
-						}
-						else if (/10[_\.][789]/.test(tmpAgent)){
-							//alert("Mac Ver >=10.7:");
-							var tmpUp=new String(jre);
-							var update=tmpUp.substr((tmpUp.indexOf("_")+1));
-							if(update>=10){
-								if(deployJava.versionCheck('1.7.0_51+')){//This version no longer has the bug so if newer mac OS X and JRE update 51 or higher don't actually change the applet
-								
-								}else{
-									bug=1;
-								}
-							}
-						}
-				}
-				if(unsupportedChrome==0){
-					
-				}else{
-					$('#unsupportedChrome').show();
-				}
-				if(bug==1){
-					$('div#macBugDesc').show();
-				}
-				</script>
-        <div >
-                        
-                        
-        </div>
  	</div>
  </div>
             

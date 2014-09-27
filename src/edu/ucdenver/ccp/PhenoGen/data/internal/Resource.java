@@ -831,8 +831,8 @@ public class Resource {
                 resourceList.add(new Resource(62, "Rat", "SHR/NCrlPrin","Illumina HiSeq2000", shrjFileList ));
                 
                  SAMDataFile[] f344FileList = new SAMDataFile[1];
-                f344FileList[0]=new SAMDataFile("F344 Genome Fasta File",seqFilePath+"F344_rn5_Genome.fa.zip");
-                resourceList.add(new Resource(63, "Rat", "F344","Illumina HiSeq2000", f344FileList ));
+                f344FileList[0]=new SAMDataFile("presumptive F344* Genome Fasta File",seqFilePath+"F344_rn5_Genome.fa.zip");
+                resourceList.add(new Resource(63, "Rat", "presumptive F344*","Illumina HiSeq2000", f344FileList ));
                 
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
 		return resourceArray;
