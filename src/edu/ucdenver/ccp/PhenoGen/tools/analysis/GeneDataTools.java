@@ -1438,15 +1438,17 @@ public class GeneDataTools {
             String ensPort=myENSProperties.getProperty("PORT");
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
-            String refSeqDB="Rn_refseq_2";
+            String refSeqDB="Rn_refseq_3";
             if(organism.equals("Mm")){
-                refSeqDB="Mm_refseq_2";
+                refSeqDB="Mm_refseq_3";
             }
             String ensDsn="DBI:mysql:database="+refSeqDB+";host="+ensHost+";port="+ensPort+";";
             
             String tissue="Brain";
             if(track.startsWith("liver")){
                 tissue="Liver";
+            }else if(track.startsWith("heart")){
+                tissue="Heart";
             }
             
             //construct perl Args
