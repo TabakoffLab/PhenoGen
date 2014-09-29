@@ -43,8 +43,12 @@ function TrackMenu(level){
 				}
 			}
 		}
-		if($.fn.DataTable.isDataTable( 'table#trkSelList'+that.level )){
-			trackDataTable.destroy();
+		try{
+			if($.fn.DataTable.isDataTable( 'table#trkSelList'+that.level )){
+				trackDataTable.destroy();
+			}
+		}catch(error){
+
 		}
 
 		if(filter=="custom"&&btData.length==0){

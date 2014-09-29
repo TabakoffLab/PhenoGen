@@ -392,13 +392,6 @@ $(document).on("change","input[name='optioncbx']",function(){
 	redrawTrack(level,prefix);
 });
 
-/*$(document).on("change","select[name='imgSelect']", function(){
-				var id=new String($(this).attr("id"));
-				var len=id.length-1;
-				var curlvl=id.substr(len);
-	 			changeTrackHeight("Level"+curlvl,$(this).val());
-	 			$.cookie("imgstate"+defaultView+curlvl,"displaySelect"+curlvl+"="+$(this).val()+";");
-	 		});*/
 
 $(document).on("change","input[name='imgCBX']", function(){
 	var idStr=new String($(this).attr("id"));
@@ -943,7 +936,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else if(success!=1){
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -980,7 +973,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -1017,7 +1010,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -1061,7 +1054,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -1117,7 +1110,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -1170,7 +1163,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -1204,7 +1197,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -1244,7 +1237,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -1303,7 +1296,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						//console.log(d);
@@ -1413,7 +1406,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -1447,7 +1440,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
-							that.addTrackErrorRemove(svg,"#Level"+that.levelNumber+track);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
 						}
 					}else{
 						if(d==null){
@@ -4161,6 +4154,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 									that.hideLoading();
 									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
+									that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 									that.lastUpdate=0;
 						}
 					}else{
@@ -5113,6 +5107,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}else{
 							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
+							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 				}
 			}else{
 				var data=d.documentElement.getElementsByTagName(tag);
@@ -6210,6 +6205,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 						}else{
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 						}
 			}else{
 				var data=d.documentElement.getElementsByTagName(tag);
@@ -6899,6 +6895,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 					}else if(retry>=3){
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 					}
 				}else{
 						var probe=d.documentElement.getElementsByTagName(tag);
@@ -7699,6 +7696,7 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 					}else if(retry>=3){
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 					}
 				}else{
 						var snp=d.documentElement.getElementsByTagName(tag);
@@ -8102,7 +8100,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 	that.updateData= function(retry){
 		d3.xml(dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/qtl.xml",function (error,d){
 					if(error){
-						if(success!=1 && retry<3){//wait before trying again
+						if(retry<3){//wait before trying again
 							var time=10000;
 							if(retry==1){
 								time=15000;
@@ -8110,9 +8108,10 @@ function QTLTrack(gsvg,data,trackClass,density){
 							setTimeout(function (){
 								that.updateDate(retry+1);
 							},time);
-						}else if(success!=1){
+						}else {
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 						}
 					}else{
 						var qtl=d.documentElement.getElementsByTagName("QTL");
@@ -8912,6 +8911,7 @@ function CustomCountTrack(gsvg,data,trackClass,density,additionalOptions){
 							}else{
 								d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 								d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+								that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 								that.hideLoading();
 								that.fullDataTimeOutHandle=setTimeout(function (){
 										that.updateFullData(retry+1,0);
@@ -9275,6 +9275,7 @@ function CountTrack(gsvg,data,trackClass,density){
 						}else{
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 							that.hideLoading();
 							that.fullDataTimeOutHandle=setTimeout(function (){
 									that.updateFullData(retry+1,0);
@@ -9785,6 +9786,7 @@ function PolyATrack(gsvg,data,trackClass,label,density,additionalOptions){
 					}else if(retry>=3){
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
+							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 					}
 				}else{
 						var feature=d.documentElement.getElementsByTagName(that.xmlTag);
@@ -9906,6 +9908,7 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 							}else{
 								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
+								that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 								that.hideLoading();
 							}
 						}else{
@@ -10520,6 +10523,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 						}else{
 							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
+							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 							that.hideLoading();
 						}
 					}else{

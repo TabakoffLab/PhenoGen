@@ -243,6 +243,10 @@ public class Email  {
     			this.subject = Email.DEFAULT_SUBJECT;
         	}
 	}
+        
+        public String getSubject(){
+            return this.subject;
+        }
     
 	private boolean check(String value){
         	if(value == null || value.equals("")) {

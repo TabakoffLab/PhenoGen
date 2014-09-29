@@ -343,7 +343,13 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                       
+                        //throw new RuntimeException();
+                    
+                    }
                 }
             }
         }else{
@@ -600,7 +606,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }
         if(error){
@@ -759,7 +769,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }
         if(error){
@@ -1226,7 +1240,11 @@ public class GeneDataTools {
                 myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
-                throw new RuntimeException();
+                try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
             }
         }
         
@@ -1245,7 +1263,11 @@ public class GeneDataTools {
                 myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
             } catch (Exception mailException) {
                 log.error("error sending message", mailException);
-                throw new RuntimeException();
+                try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
             }
         }
    	return completedSuccessfully;
@@ -1371,7 +1393,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }
 
@@ -1388,7 +1414,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }else{
                 completedSuccessfully=true;
@@ -1410,7 +1440,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
         }
         }
@@ -1505,7 +1539,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }
 
@@ -1522,7 +1560,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }
         }catch(Exception e){
@@ -1540,7 +1582,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
         }
         return status;
@@ -1605,7 +1651,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
 
@@ -1621,7 +1671,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }else{
 
@@ -1642,7 +1696,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
         }
         return status;
@@ -1695,7 +1753,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
 
@@ -1711,7 +1773,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }else{
 
@@ -1732,7 +1798,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
         }
         return status;
@@ -1797,7 +1867,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
 
@@ -1813,7 +1887,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }else{
 
@@ -1834,7 +1912,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
         }
         return status;
@@ -1923,7 +2005,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }
 
@@ -1939,7 +2025,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }else{
                 completedSuccessfully=true;
@@ -1958,7 +2048,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
         }
         return completedSuccessfully;
@@ -2303,7 +2397,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }
 
@@ -2318,7 +2416,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }else{
                 completedSuccessfully=true;
@@ -2337,7 +2439,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
         }
         return completedSuccessfully;
@@ -2475,7 +2581,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
 
@@ -2491,7 +2601,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
             }
@@ -2510,7 +2624,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
         }
         return completedSuccessfully;
@@ -3423,6 +3541,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
             
@@ -3448,6 +3571,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
 
@@ -3500,7 +3628,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
 
@@ -3517,7 +3649,11 @@ public class GeneDataTools {
                         myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                     } catch (Exception mailException) {
                         log.error("error sending message", mailException);
-                        throw new RuntimeException();
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
                 if(!error){
@@ -3735,7 +3871,11 @@ public class GeneDataTools {
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
-                    throw new RuntimeException();
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
                 }
             }
         }
