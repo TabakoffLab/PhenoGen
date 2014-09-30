@@ -426,18 +426,20 @@ function numberWithCommas(x) {
 }
 
 function displayHelpFirstTime(){
-	if($.cookie("genomeBrowserHelp")!=null){
-    	var trackListObj=$.cookie("genomeBrowserHelp");
-    	if(trackListObj==siteVer){
+	if(navigator.userAgent.toLowerCase().indexOf("phantomjs")==-1){
+		if($.cookie("genomeBrowserHelp")!=null){
+	    	var trackListObj=$.cookie("genomeBrowserHelp");
+	    	if(trackListObj==siteVer){
 
-    	}else{
-    		$("a#fbhelp1").click();
-    		$.cookie("genomeBrowserHelp",siteVer);
-    	}
-    }else{
-		$("a#fbhelp1").click();
-		$.cookie("genomeBrowserHelp",siteVer);
-    }
+	    	}else{
+	    		$("a#fbhelp1").click();
+	    		$.cookie("genomeBrowserHelp",siteVer);
+	    	}
+	    }else{
+			$("a#fbhelp1").click();
+			$.cookie("genomeBrowserHelp",siteVer);
+	    }
+	}
 }
 
 function removeTrack(level,track){
