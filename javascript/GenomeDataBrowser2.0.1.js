@@ -2232,9 +2232,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				.attr("src","/web/images/icons/scroll_larger.png")
 				.attr("pointer-events","all")
 				.on("click",function(){
-					if(that.scrollSize<$("#ScrollLevel"+that.levelNumber)[0].scrollHeight){
-						that.scrollSize=that.scrollSize+100;
-						changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
+					if($("#ScrollLevel"+that.levelNumber).length>0&&$("#ScrollLevel"+that.levelNumber)[0]!=undefined){
+						if(that.scrollSize<$("#ScrollLevel"+that.levelNumber)[0].scrollHeight){
+							that.scrollSize=that.scrollSize+100;
+							changeTrackHeight("Level"+that.levelNumber,that.scrollSize);
+						}
 					}
 				})
 				.on("mouseout",function(){
@@ -5107,7 +5109,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 								that.updateData(retry+1);
 							},time);
 				}else{
-							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 				}
@@ -6895,7 +6897,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 								that.updateData(retry+1);
 							},time);
 					}else if(retry>=3){
-							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 					}
@@ -7696,7 +7698,7 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 								that.updateData(retry+1);
 							},time);
 					}else if(retry>=3){
-							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 					}
@@ -8111,7 +8113,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 								that.updateDate(retry+1);
 							},time);
 						}else {
-							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 						}
@@ -9786,7 +9788,7 @@ function PolyATrack(gsvg,data,trackClass,label,density,additionalOptions){
 								that.updateData(retry+1);
 							},time);
 					}else if(retry>=3){
-							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 					}
