@@ -98,7 +98,12 @@
 	<div class="page-intro"><%=msg%></div>
 
 <% if (!msg.equals("Your website password has been sent to your email address.")) { %> 
-
+	<script type="text/javascript">
+			var RecaptchaOptions = {
+				theme : 'clean',
+				custom_theme_widget: 'recaptcha_widget'
+			 };
+	</script>
 	<div id="emailPassword">
 	<form   method="post"
         action="<%=accessDir%>emailPassword.jsp"

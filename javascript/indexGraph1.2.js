@@ -79,7 +79,7 @@ var middle=height/2-50;
 var mouseEnter=NaN;
 
 var graphData;
-
+var touchEventTimer=new Date().getTime();
 
 
 
@@ -203,8 +203,22 @@ d3.json("top.json", function(error, graph) {
 	.on("mouseexit",function(d){
 							 mouseEnter=NaN;
 							 })
+	.on("touchstart",function(d){
+		d3.event.preventDefault();
+		mouseEnter=new Date().getTime()-100;
+		animationStop();
+		displayOverride=1;
+		hoverClickNode(d);
+		mouseEnter=NaN;
+	})
 	.on("mouseover",hoverClickNode)
 	.on("click",hoverClickNode);
+	/*.on("touchstart",function(d){
+		alert(touchEventTimer);
+		animationStop();
+		displayOverride=1;
+		hoverClickNode(d);
+	});*/
 		  
 	node.append("circle")
       .attr("r",function(d,i) { var r=radius; if(i==0){r=r*1.3;} return r; })
@@ -260,51 +274,51 @@ d3.json("top.json", function(error, graph) {
 
 function hoverClickNode(d){
 	var curTime=new Date().getTime();
-							 if( (displayOverride==1 && d.level==1) //For programatic click through
-							 	|| (mouseEnter!=NaN && (curTime-mouseEnter>40 && d.level==1)) ){//for user interaction
-									 showDetailNodes(d);
-									if(displayOverride!=1){
-										animationStop();
-									}
-							 }
-							 if(d.level==2){
-								 if(displayOverride==1 || (mouseEnter!=NaN && curTime-mouseEnter>60)){
-									 if(displayOverride==1 || d3.select(this).style("opacity")==1){
-									 	if(displayOverride==1 || d.id!=curSelectedID){
-									 		boxLineTop.transition().duration(250)
-														.attr("x2", descLineX+radius).attr("y2", descLineY);
-											boxLineBottom.transition().duration(250)
-														.attr("x2", descLineX+radius).attr("y2", descLineY);
-										 	d3.selectAll("circle").style("stroke",d3.rgb("#999999")).style("stroke-width","1px");
-											d3.select("g#d"+d.id).select("circle").transition().duration(350).style("stroke",d3.rgb("#FFFF66")).style("stroke-width","4px");
-											showDiv(d.descPage);
-											var tmpX=d.x;
-											var tmpY=d.y;
-											descLineX=tmpX;
-											descLineY=tmpY;
-											boxLineTop.transition().delay(250).duration(5).attr("x1", tmpX+radius).attr("y1", tmpY)
-														.attr("x2", tmpX+radius).attr("y2", tmpY);
-											boxLineBottom.transition().delay(250).duration(5).attr("x1", tmpX+radius).attr("y1", tmpY)
-														.attr("x2", tmpX+radius).attr("y2", tmpY);
-											boxLineTop.transition().delay(500).duration(250)
-															.attr("x1", tmpX+radius)
-														  .attr("y1", tmpY)
-														  .attr("x2", width).attr("y2", 89).style("stroke-width",2);
-											boxLineBottom.transition().delay(500).duration(250)
-															.attr("x1", tmpX+radius).attr("y1", tmpY)
-														  .attr("x2", width).attr("y2",height-87).style("stroke-width",2);
-											curSelectedID=d.id;
-											if(displayOverride!=1){
-												animationStop();
-											}
-										}
-									 }
-								 }
-							 }else if((displayOverride==1 && d.level==0) || (d.level==0 && curTime-mouseEnter>80)){
-								 hideDiv();
-								 boxLineTop.transition().duration(5).style("stroke-width",0);
-								 boxLineBottom.transition().duration(5).style("stroke-width",0);
-							 }
+	if( (displayOverride==1 && d.level==1) //For programatic click through
+	 	|| (mouseEnter!=NaN && (curTime-mouseEnter>40 && d.level==1)) ){//for user interaction
+			 showDetailNodes(d);
+			if(displayOverride!=1){
+				animationStop();
+			}
+	}
+	if(d.level==2){
+		 if(displayOverride==1 || (mouseEnter!=NaN && curTime-mouseEnter>60)){
+			 if(displayOverride==1 || d3.select(this).style("opacity")==1){
+			 	if(displayOverride==1 || d.id!=curSelectedID){
+			 		boxLineTop.transition().duration(250)
+								.attr("x2", descLineX+radius).attr("y2", descLineY);
+					boxLineBottom.transition().duration(250)
+								.attr("x2", descLineX+radius).attr("y2", descLineY);
+				 	d3.selectAll("circle").style("stroke",d3.rgb("#999999")).style("stroke-width","1px");
+					d3.select("g#d"+d.id).select("circle").transition().duration(350).style("stroke",d3.rgb("#FFFF66")).style("stroke-width","4px");
+					showDiv(d.descPage);
+					var tmpX=d.x;
+					var tmpY=d.y;
+					descLineX=tmpX;
+					descLineY=tmpY;
+					boxLineTop.transition().delay(250).duration(5).attr("x1", tmpX+radius).attr("y1", tmpY)
+								.attr("x2", tmpX+radius).attr("y2", tmpY);
+					boxLineBottom.transition().delay(250).duration(5).attr("x1", tmpX+radius).attr("y1", tmpY)
+								.attr("x2", tmpX+radius).attr("y2", tmpY);
+					boxLineTop.transition().delay(500).duration(250)
+									.attr("x1", tmpX+radius)
+								  .attr("y1", tmpY)
+								  .attr("x2", width).attr("y2", 89).style("stroke-width",2);
+					boxLineBottom.transition().delay(500).duration(250)
+									.attr("x1", tmpX+radius).attr("y1", tmpY)
+								  .attr("x2", width).attr("y2",height-87).style("stroke-width",2);
+					curSelectedID=d.id;
+					if(displayOverride!=1){
+						animationStop();
+					}
+				}
+			 }
+		 }
+	}else if((displayOverride==1 && d.level==0) || (d.level==0 && curTime-mouseEnter>80)){
+		 hideDiv();
+		 boxLineTop.transition().duration(5).style("stroke-width",0);
+		 boxLineBottom.transition().duration(5).style("stroke-width",0);
+	}
 }
 
 function showDetailNodes(d){
