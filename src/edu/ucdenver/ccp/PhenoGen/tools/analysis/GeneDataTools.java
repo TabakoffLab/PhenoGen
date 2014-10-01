@@ -1454,7 +1454,9 @@ public class GeneDataTools {
         String status="";
         try{
             //Connection tmpConn=pool.getConnection();
-            int publicUserID=new User().getUser_id("public",pool);
+            log.debug("before get public user id");
+            int publicUserID=(new User()).getUser_id("public",pool);
+            log.debug("PUBLIC USER ID:"+publicUserID);
             //tmpConn.close();
             String tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
             Properties myProperties = new Properties();
