@@ -16,13 +16,7 @@
 
 
 <%
-	Dataset myDataset = new Dataset();
-	Dataset[] allDatasets = myDataset.getAllDatasetsForUser(userLoggedIn, pool);
-	if (publicDatasets == null) {
-            log.debug("publicDatasets not set, so setting it now");
-            publicDatasets = myDataset.getDatasetsForUser(allDatasets, "public");
-			session.setAttribute("publicDatasets", publicDatasets);
-    }
+
 
         //log.info("in sysBioHeader.jsp. user = " + user);
 	request.setAttribute( "selectedMain", "sysbio" );
