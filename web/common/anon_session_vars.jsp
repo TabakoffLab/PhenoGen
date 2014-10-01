@@ -272,6 +272,15 @@
 	String lab_name = (String) session.getAttribute("lab_name");
 	String user = userID + "-"+ userName;
 
+
+	log.debug("user:"+userLoggedIn.getUser_id());
+	Dataset myDataset = new Dataset();
+	Dataset[] allDatasets = myDataset.getAllDatasetsForUser(userLoggedIn, pool);
+	if (publicDatasets == null) {
+            log.debug("publicDatasets not set, so setting it now");
+            publicDatasets = myDataset.getDatasetsForUser(allDatasets, "public");
+			session.setAttribute("publicDatasets", publicDatasets);
+    }
     /*    if (publicDatasets == null || privateDatasetsForUser == null) {
 		Dataset myDataset = new Dataset();
 		Dataset[] allDatasets = myDataset.getAllDatasetsForUser(userLoggedIn, dbConn);

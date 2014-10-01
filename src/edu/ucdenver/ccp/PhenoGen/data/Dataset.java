@@ -2413,6 +2413,35 @@ public class Dataset {
                 return datasetArray;
 	}
 
+        public Dataset[] getAllDatasetsForUser(User userLoggedIn, DataSource pool) throws SQLException {
+            Connection conn=null;
+            Dataset[] datasetArray = null;
+            try{
+                conn=pool.getConnection();
+                datasetArray=this.getAllDatasetsForUser(userLoggedIn, conn);
+                conn.close();
+            }catch(Exception e){
+                if(conn!=null && !conn.isClosed()){
+                    try{
+                        conn.close();
+                        conn=null;
+                    }catch(Exception er){
+                        log.error("Error closing connection",er);
+                    }
+                }
+            }finally{
+                if(conn!=null && !conn.isClosed()){
+                    try{
+                        conn.close();
+                        conn=null;
+                    }catch(Exception er){
+                        log.error("Error closing connection",er);
+                    }
+                }
+            }
+            return datasetArray;
+        }
+        
 	/**
 	 * Retrieves all the datasets and dataset versions created by a user, whether they are visible or not.  
 	 * It is ordered by the dataset name and dataset version.

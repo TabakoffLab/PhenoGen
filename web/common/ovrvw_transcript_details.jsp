@@ -103,20 +103,29 @@ pageDescription="Overview of features and data available in the new Genome/Trans
                 
                 <div class="demoVideo" style="display:inline-block;float:right;position:relative;top:-600px; padding-right:10px;">
                 			<span style="text-align:center;"><h3>New! Browser Navigation Demo</h3></span>
-                        	<video id="demoVid1" width="400" height="270" controls="controls">
+                        	<video id="demoVid1" width="375"  controls="controls">
                                 <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
                                 <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
                             
-                              	<object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="400" height="270">
+                              	<object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="375" >
                               	</object>
                         	</video><BR />
                             <div id="showOpenLargeVideo" style="display:none;text-align:center; width:100%;"><a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" class="button" style="width:180px;" target="_blank" >View larger version</a></div>
-                        	<span style="text-align:center;"><h3>Detail Transcription Information Demo</h3></span>
-                        	<video id="demoVid" width="400" height="300" controls="controls">
+                            <span style="text-align:center;"><h3>New! Custom Track/View Demo</h3></span>
+                        	<video id="demoVid1" width="375"  controls="controls">
+                                <source src="<%=contextRoot%>web/demo/customTrackDemo.mp4" type="video/mp4">
+                                <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
+                            
+                              	<object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="375" >
+                              	</object>
+                        	</video><BR />
+                            <div id="showOpenLargeVideo" style="display:none;text-align:center; width:100%;"><a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/customTrackDemo" class="button" style="width:180px;" target="_blank" >View larger version</a></div>
+                        	<span style="text-align:center;"><h3>Previous overview of tools available<BR />(all the tools are available navigation to them has changed,<BR /> an update will be available soon)</h3></span>
+                        	<video id="demoVid" width="375"  controls="controls">
                                 <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
                                 <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
                             
-                              	<object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="400" height="280">
+                              	<object data="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" width="375">
                               	</object>
                         	</video><BR />
                             <div id="showOpenLargeVideo" style="display:none;text-align:center; width:100%;"><a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/detailed_transcript_fullv3" class="button" style="width:180px;" target="_blank" >View larger version</a></div>
