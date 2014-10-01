@@ -750,31 +750,37 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.addTrackErrorRemove=function(svg,selector){
-		var remove=svg.append("g").attr("class","removeErrorTrack")
-											.attr("id",track+"_"+that.levelNumber)
-											.attr("transform", "translate("+(that.width-40)+",0)");
-		remove.append("image").attr("width","16px")
-										.attr("height","16px")
-										.attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJ"
-															+"bWFnZVJlYWR5ccllPAAAARBJREFUeNpi/P//PwMlgBHZgNNajGCO6bX/jNgUY5UHGQDCpzSB1Jn/"
-															+"YAxmQ8UJyaNKNitAMJoifPJMIFecvA4ktitCnPT7DwPDJlkG08X/wU4GYRAbJAaWY4CoBetBDoMp"
-															+"jIz/c4rlIKI/v0HohNcQeoEohGbngqjtfcSQ8x8SDiiBCDYkAar41zfUEGSDal7wGq4ZwwC4IT48"
-															+"WKNsypYvKJpBgAVdkbkmkHj3DasBYDk0wIQez+AA+/kPK4YFLNaEBNccC3QhF45kB3IYyBCgGnhi"
-															+"QolnEA3CxhA8mQGCYXwwhqqFpQOwAWBFWDTDEhKGIUjy8KQ6mwG7ZmyGIMtjpAMQjR5V+OQZKc3O"
-															+"AAEGAInHQgT+/r+xAAAAAElFTkSuQmCC")
-										.attr("pointer-events", "all")
-										.style("cursor","pointer")
-										.on("click",function(d){
-											d3.select(selector).remove();
-										})
-										.on("mouseover",function(){
-											that.overSettings=1;
-											$("#mouseHelp").html("");
-										})
-										.on("mouseout",function(){
-											that.overSettings=0;
-											$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-										});
+		if(svg!=undefined){
+			var track=selector.substr(7);
+			svg.select(".infoIcon").style("opacity",0);
+			svg.select(".settings").style("opacity",0);
+
+			var rem=svg.append("g").attr("class","removeErrorTrack")
+												.attr("id","remove"+track+that.levelNumber)
+												.attr("transform", "translate("+(that.width-40)+",0)");
+			rem.append("image").attr("width","16px")
+											.attr("height","16px")
+											.attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJ"
+																+"bWFnZVJlYWR5ccllPAAAARBJREFUeNpi/P//PwMlgBHZgNNajGCO6bX/jNgUY5UHGQDCpzSB1Jn/"
+																+"YAxmQ8UJyaNKNitAMJoifPJMIFecvA4ktitCnPT7DwPDJlkG08X/wU4GYRAbJAaWY4CoBetBDoMp"
+																+"jIz/c4rlIKI/v0HohNcQeoEohGbngqjtfcSQ8x8SDiiBCDYkAar41zfUEGSDal7wGq4ZwwC4IT48"
+																+"WKNsypYvKJpBgAVdkbkmkHj3DasBYDk0wIQez+AA+/kPK4YFLNaEBNccC3QhF45kB3IYyBCgGnhi"
+																+"QolnEA3CxhA8mQGCYXwwhqqFpQOwAWBFWDTDEhKGIUjy8KQ6mwG7ZmyGIMtjpAMQjR5V+OQZKc3O"
+																+"AAEGAInHQgT+/r+xAAAAAElFTkSuQmCC")
+											.attr("pointer-events", "all")
+											.style("cursor","pointer")
+											.on("click",function(d){
+												d3.select(selector).remove();
+											})
+											.on("mouseover",function(){
+												that.overSettings=1;
+												$("#mouseHelp").html("");
+											})
+											.on("mouseout",function(){
+												that.overSettings=0;
+												$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+											});
+		}
 	};
 
 	that.addTrack=function (track,density,additionalOptions,retry){
@@ -6212,26 +6218,30 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 						}
 			}else{
-				var data=d.documentElement.getElementsByTagName(tag);
-				var mergeddata=new Array();
-				var checkName=new Array();
-				var curInd=0;
-					for(var l=0;l<data.length;l++){
-						if(data[l]!=undefined ){
-							mergeddata[curInd]=data[l];
-							checkName[data[l].getAttribute("ID")]=1;
-							curInd++;
+				if(!(d===null)){
+					var data=d.documentElement.getElementsByTagName(tag);
+					var mergeddata=new Array();
+					var checkName=new Array();
+					var curInd=0;
+						for(var l=0;l<data.length;l++){
+							if(data[l]!=undefined ){
+								mergeddata[curInd]=data[l];
+								checkName[data[l].getAttribute("ID")]=1;
+								curInd++;
+							}
 						}
-					}
-					for(var l=0;l<that.data.length;l++){
-						if(that.data[l]!=undefined && checkName[that.data[l].getAttribute("ID")]==undefined){
-							mergeddata[curInd]=that.data[l];
-							curInd++;
+						for(var l=0;l<that.data.length;l++){
+							if(that.data[l]!=undefined && checkName[that.data[l].getAttribute("ID")]==undefined){
+								mergeddata[curInd]=that.data[l];
+								curInd++;
+							}
 						}
-					}
-				that.draw(mergeddata);
-				that.hideLoading();
-				DisplayRegionReport();
+					that.draw(mergeddata);
+					that.hideLoading();
+					DisplayRegionReport();
+				}else{
+					that.updateData(retry+1);
+				}
 			}
 		});
 	};
