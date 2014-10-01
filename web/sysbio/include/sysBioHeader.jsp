@@ -9,7 +9,6 @@
 --%>
 <%@ include file="/web/common/anon_session_vars.jsp"  %>
 
-<jsp:useBean id="myDataset" class="edu.ucdenver.ccp.PhenoGen.data.Dataset"> </jsp:useBean>
 <jsp:useBean id="myResource" class="edu.ucdenver.ccp.PhenoGen.data.internal.Resource">
         <jsp:setProperty name="myResource" property="session" value="<%=session%>" />
 </jsp:useBean>
