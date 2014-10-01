@@ -120,6 +120,10 @@ sub createBinnedData{
 			$valInd++;
 		}
 		my $binVal=$sortVal[$valInd-1];
+		if ($binVal eq "") {
+			$binVal=0;
+		}
+		
 		#print "$binInd\t$curStart\t$binVal\n";
 		if($binInd>0 and $binHOH{Count}[$binInd-1]{count}==$binVal){
 			#skip since its the same value.
