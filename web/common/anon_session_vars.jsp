@@ -272,7 +272,7 @@
 	String lab_name = (String) session.getAttribute("lab_name");
 	String user = userID + "-"+ userName;
 	
-    /*    if (publicDatasets == null || privateDatasetsForUser == null) {
+    if (publicDatasets == null || privateDatasetsForUser == null) {
 		Dataset myDataset = new Dataset();
 		Dataset[] allDatasets = myDataset.getAllDatasetsForUser(userLoggedIn, dbConn);
         	if (publicDatasets == null) {
@@ -285,6 +285,6 @@
                 	privateDatasetsForUser = myDataset.getDatasetsForUser(allDatasets, "private");
 			session.setAttribute("privateDatasetsForUser", privateDatasetsForUser);
 		}
-	}*/
+	}
 %>
 
