@@ -863,19 +863,19 @@ public class User{
 	 */
 	public int getUser_id(String user_name, Connection conn) throws SQLException {
 
-		//log.debug("in getUser_id from user_name");
+		log.debug("in getUser_id from user_name");
 
 		String query = 
 			"select user_id "+
 			"from users "+
 			"where user_name = ?";
 
-		//log.debug("query = " + query);
+		log.debug("query = " + query);
 
                 Results myResults = new Results(query, user_name, conn);
 
                 int user_id = myResults.getIntValueFromFirstRow();
-
+                log.debug(" user id="+user_id);
 		myResults.close();
 
     		return user_id;
@@ -883,19 +883,23 @@ public class User{
         
         public int getUser_id(String user_name, DataSource pool) throws SQLException {
 
-		//log.debug("in getUser_id from user_name");
+                log.debug("in getUser_id from user_name");
 
 		String query = 
 			"select user_id "+
 			"from users "+
 			"where user_name = ?";
 
-		//log.debug("query = " + query);
+		log.debug("query = " + query);
                 Connection conn=pool.getConnection();
+                log.debug("got connection");
                 Results myResults = new Results(query, user_name, conn);
                 int user_id = myResults.getIntValueFromFirstRow();
+                log.debug("user_id="+user_id);
 		myResults.close();
+                log.debug("close myresults");
                 conn.close();
+                log.debug("close");
                 
     		return user_id;
 	}

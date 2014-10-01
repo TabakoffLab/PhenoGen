@@ -274,7 +274,7 @@
 	
     if (publicDatasets == null || privateDatasetsForUser == null) {
 		Dataset myDataset = new Dataset();
-		Dataset[] allDatasets = myDataset.getAllDatasetsForUser(userLoggedIn, dbConn);
+		Dataset[] allDatasets = myDataset.getAllDatasetsForUser(userLoggedIn, pool);
         	if (publicDatasets == null) {
                 	log.debug("publicDatasets not set, so setting it now");
                 	publicDatasets = myDataset.getDatasetsForUser(allDatasets, "public");
