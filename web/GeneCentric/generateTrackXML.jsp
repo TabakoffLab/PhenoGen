@@ -20,6 +20,7 @@ import="org.json.*" %>
 
 
 <%
+    gdt.setSession(session);
 String chromosome="",panel="",myOrganism="",track="",folderName="",bedFile="",outputFile="",web="",type="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0,binSize=0;
 double forwardPValueCutoff=0;
