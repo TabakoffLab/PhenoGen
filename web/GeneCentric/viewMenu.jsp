@@ -172,8 +172,9 @@
 </div>-->
 
           <script type="text/javascript">
+		  		var iconPath="<%=imagesDir%>icons/";
 		  		viewMenu[<%=level%>]=ViewMenu(<%=level%>);
-				var iconPath="<%=imagesDir%>icons/";
+				
 		  		
 				/*if(<%=level%>==0){
 					viewMenu[<%=level%>].applySelectedView($("#defaultView").val());
