@@ -33,6 +33,7 @@ import edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient;
 
 import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler; 
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -393,6 +394,22 @@ public class GeneList{
     this.sortOrder = inString;
   }
 
+  
+        public GeneList getGeneList(int geneListID,DataSource pool)throws SQLException {
+            Connection conn=null;
+            GeneList tmp=null;
+            try{
+                conn=pool.getConnection();
+                tmp=getGeneList(geneListID,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+            return tmp;
+        }
 
   	/** 
 	 * Retrieves a GeneList object, including it's associated Dataset object if applicable

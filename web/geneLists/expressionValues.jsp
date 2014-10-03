@@ -35,11 +35,13 @@
 	HashMap<String,String> geneSymbolsHM=new HashMap<String,String>();
 	for (int i=0; i<myGeneArray.length; i++) {
 					String geneSymbolList="";
-					Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 			
+					Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet);
+					if(thisIdentifier ==null){
+						thisIdentifier = myIdentifier.getIdentifierFromSetIgnoreCase(myGeneArray[i].getGene_id(), iDecoderSet);
+					} 			
 					if (thisIdentifier != null) {
 						myIDecoderClient.setNum_iterations(3);
-						Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
-												new String[] {"Gene Symbol"});
+						Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), new String[] {"Gene Symbol"});
 						if (geneSymbols.size() > 0) { 						
 							for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 
 								Identifier symbol = (Identifier) symbolItr.next();                					
@@ -49,6 +51,7 @@
 					}
 					geneSymbolsHM.put(myGeneArray[i].getGene_id(),geneSymbolList);            
 	}
+	myIDecoderClient.setNum_iterations(1);
 %>
 
 	<%@ include file="/web/common/expressionValuesLogic.jsp"%>
@@ -455,7 +458,8 @@
 							offsetY: 5,
 							//arrow: false,
 							interactive: true,
-							interactiveTolerance: 350
+							interactiveTolerance: 350,
+							contentAsHTML:true
 						});
     });
   </script>

@@ -56,17 +56,50 @@
 	try {
 		log.debug("calling iDecoderClient");
 		iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), 
-							targets, dbConn);
-		//log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
-		Iterator itr = iDecoderSet.iterator();
-		while (itr.hasNext()) {
-			Identifier thisIdentifier = (Identifier) itr.next();
-			if (thisIdentifier.getRelatedIdentifiers().size() == 0) {
-				noIDecoderList.add(thisIdentifier.getIdentifier());
+							targets, pool);
+		log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
+		if(iDecoderSet.size()>0){
+			Iterator itr = iDecoderSet.iterator();
+			ArrayList<Identifier> altDecoderList=new ArrayList<Identifier>();
+			while (itr.hasNext()) {
+				Identifier thisIdentifier = (Identifier) itr.next();
+				if (thisIdentifier.getRelatedIdentifiers().size() == 0) {
+					Set tmp=myIDecoderClient.getIdentifiersByInputID(thisIdentifier.getIdentifier(),selectedGeneList.getOrganism(),targets, dbConn);
+					Iterator tmpItr=tmp.iterator();
+					while (tmpItr.hasNext()){
+						Identifier thisId = (Identifier) tmpItr.next();
+						if (thisId.getRelatedIdentifiers().size() != 0) {
+							//thisId.setLowerCaseIdentifier();
+							altDecoderList.add(thisId);
+						}
+					}
+					noIDecoderList.add(thisIdentifier.getIdentifier());
+				}
 			}
-		}
-		for (int i=0; i<noIDecoderList.size(); i++) {
-			iDecoderSet.remove(new Identifier((String) noIDecoderList.get(i)));
+			for (int i=0; i<noIDecoderList.size(); i++) {
+				iDecoderSet.remove(new Identifier((String) noIDecoderList.get(i)));
+			}
+			for (int i=0; i<altDecoderList.size(); i++) {
+				iDecoderSet.add(altDecoderList.get(i));
+			}
+		}else{
+			iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTargetCaseInsensitive(selectedGeneList.getGene_list_id(), targets, pool);
+			log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
+			if(iDecoderSet.size()>0){
+				Iterator itr = iDecoderSet.iterator();
+				while (itr.hasNext()) {
+					Identifier thisIdentifier = (Identifier) itr.next();
+					//thisIdentifier.setLowerCaseIdentifier();
+					log.debug("******ID"+thisIdentifier.getIdentifier());
+					if (thisIdentifier.getRelatedIdentifiers().size() == 0) {
+						log.debug("remove id:"+thisIdentifier.getIdentifier());
+						noIDecoderList.add(thisIdentifier.getIdentifier());
+					}
+				}
+				for (int i=0; i<noIDecoderList.size(); i++) {
+					iDecoderSet.remove(new Identifier((String) noIDecoderList.get(i)));
+				}
+			}
 		}
 		log.debug("finished calling iDecoderClient");
 		session.setAttribute("iDecoderSet", iDecoderSet);
@@ -77,4 +110,5 @@
 		session.setAttribute("errorMsg", "GLT-001");
 		response.sendRedirect(commonDir + "errorMsg.jsp");
 	}
+	myIDecoderClient.setNum_iterations(1);
 %>

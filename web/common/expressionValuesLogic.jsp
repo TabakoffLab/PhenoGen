@@ -94,6 +94,14 @@
 				targets[0] = "CodeLink ID";
 			}
 			thisIDecoderSet = thisIDecoderClient.getIdentifiers(selectedGeneList.getGene_list_id(), targets, geneChipName, dbConn);
+			
+			Set caseIgnoreSet=thisIDecoderClient.getIdentifiersIgnoreCase(selectedGeneList.getGene_list_id(), targets, geneChipName, pool);
+			for(Iterator itr=caseIgnoreSet.iterator();itr.hasNext();){
+				Identifier tmpID=(Identifier) itr.next();
+				if(!thisIDecoderSet.contains(tmpID)){
+					thisIDecoderSet.add(tmpID);
+				}
+			}
 			//log.debug("thisIDecoderSet = "); myDebugger.print(thisIDecoderSet);
 
 			setOfIdentifiers = thisIDecoderClient.getValues(thisIDecoderSet);

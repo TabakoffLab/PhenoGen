@@ -4676,12 +4676,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							}
 							var fullChar="";
 							var rectW=d3This.select("rect").attr("width");
-							if(rectW>=7.9 && rectW<=15.8){
+							if(rectW>=8.3 && rectW<=15.8){
 								fullChar=strChar;
 							}else{
-								while(rectW>8.5){
+								while(rectW>8.7){
 									fullChar=fullChar+strChar;
-									rectW=rectW-7.9;
+									rectW=rectW-8.5;
 								}
 							}
 							d3This.select("text#strandTxt").text(fullChar);
@@ -4781,7 +4781,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 									var intStop=that.xScale(exList[m].getAttribute("start"));
 									var rectW=intStop-intStart;
 									var alt=0;
-									var charW=6.5;
+									var charW=7.0;
 									if(rectW<charW){
 											fullChar="";
 									}else{
@@ -5253,7 +5253,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				var intStop=that.xScale(exList[m].getAttribute("start"));
 				var rectW=intStop-intStart;
 				var alt=0;
-				var charW=6.5;
+				var charW=7.0;
 				if(rectW<charW){
 						fullChar="";
 				}else{
@@ -5549,14 +5549,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 					var fullChar=strChar;
 					var rectW=d3This.select("rect").attr("width");
-					if(rectW<7.9){
+					if(rectW<8.5){
 						fullChar="";
 					}else{
-						rectW=rectW-7.9;
+						rectW=rectW-8.5;
 						fullChar=strChar;
-						while(rectW>8.5){
+						while(rectW>8.7){
 							fullChar=fullChar+strChar;
-							rectW=rectW-7.9;
+							rectW=rectW-8.5;
 						}
 					}
 
@@ -6081,12 +6081,12 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 							}
 							var fullChar="";
 							var rectW=d3This.select("rect").attr("width");
-							if(rectW>=7.9 && rectW<=15.8){
+							if(rectW>=8.5 && rectW<=15.8){
 								fullChar=strChar;
 							}else{
-								while(rectW>8.5){
+								while(rectW>8.7){
 									fullChar=fullChar+strChar;
-									rectW=rectW-7.9;
+									rectW=rectW-8.5;
 								}
 							}
 							d3This.select("text").text(fullChar);
@@ -6145,7 +6145,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 								var intStop=that.xScale(exList[m].getAttribute("start"));
 								var rectW=intStop-intStart;
 								var alt=0;
-								var charW=6.5;
+								var charW=7.0;
 								if(rectW<charW){
 										fullChar="";
 								}else{
@@ -6328,7 +6328,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				var intStop=that.xScale(exList[m].getAttribute("start"));
 				var rectW=intStop-intStart;
 				var alt=0;
-				var charW=6.5;
+				var charW=7.0;
 				if(rectW<charW){
 						fullChar="";
 				}else{
@@ -6448,14 +6448,14 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 				var fullChar=strChar;
 				var rectW=d3This.select("rect").attr("width");
-				if(rectW<7.9){
+				if(rectW<8.5){
 					fullChar="";
 				}else{
-					rectW=rectW-7.9;
+					rectW=rectW-8.5;
 					fullChar=strChar;
-					while(rectW>8.5){
+					while(rectW>8.7){
 						fullChar=fullChar+strChar;
-						rectW=rectW-7.9;
+						rectW=rectW-8.5;
 					}
 				}
 				d3This.append("svg:text").attr("dx","1").attr("dy","10").style("pointer-events","none").text(fullChar);
@@ -8413,7 +8413,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 				var intStop=that.xScale(exList[m].getAttribute("start"));
 				var rectW=intStop-intStart;
 				var alt=0;
-				var charW=6.5;
+				var charW=7.0;
 				if(rectW<charW){
 						fullChar="";
 				}else{
@@ -8489,7 +8489,7 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 						var intStop=that.xScale(exList[m].getAttribute("start"));
 						var rectW=intStop-intStart;
 						var alt=0;
-						var charW=6.5;
+						var charW=7.0;
 						if(rectW<charW){
 								fullChar="";
 						}else{
@@ -10390,7 +10390,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 				
 				var rectW=intStop-intStart;
 				var alt=0;
-				var charW=6.5;
+				var charW=7.0;
 				if(rectW<charW){
 						fullChar="";
 				}else{
@@ -10460,7 +10460,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 							var intStop=that.xScale(exList[m].getAttribute("start")) -that.xScale(d.getAttribute("start"));
 							var rectW=intStop-intStart;
 							var alt=0;
-							var charW=6.5;
+							var charW=7.0;
 							if(rectW<charW){
 									fullChar="";
 							}else{
