@@ -112,7 +112,11 @@ public class Identifier implements Comparable {
         public String getIdentifier() {
             return identifier;
         }
-
+        
+        public void setLowerCaseIdentifier() {
+            identifier=identifier.toLowerCase();
+        }
+        
         public void setIdentifierTypeName(String inString) {
             identifierTypeName = inString;
         }
@@ -289,6 +293,26 @@ public class Identifier implements Comparable {
 				}
 			}
 		}
+            }
+            return null;
+        }
+        
+        /**
+	 * Gets an Identifier from a set of Identifiers.
+	 * @param identifier a String that is the id
+	 * @param identifierSet a Set of Identifier objects
+	 * @return	An Identifier object
+	*/
+        public Identifier getIdentifierFromSetIgnoreCase(String identifier, Set identifierSet) {
+            if(identifierSet!=null){
+		//if (identifierSet.contains(new Identifier(identifier))) {
+			for (Iterator itr = identifierSet.iterator(); itr.hasNext();) { 
+				Identifier thisIdentifier = (Identifier) itr.next();
+				if (thisIdentifier.getIdentifier().toLowerCase().equals(identifier.toLowerCase())) {
+					return thisIdentifier;
+				}
+			}
+		//}
             }
             return null;
         }

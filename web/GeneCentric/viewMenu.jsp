@@ -46,7 +46,7 @@
                         <!--<span class="control" style="display:inline-block;height:38px;"><img src="<%=imagesDir%>icons/disk.png"></span>-->
                         <span class="control<%=level%>" style="display:inline-block;" id="deleteView<%=level%>"  ><img src="<%=imagesDir%>icons/del_flat_48.png" style="position:relative;top:-3px;left:-2px;"></span>
                         
-                        <span style="float:right;position:relative;top:-15px;"><a class="fancybox" rel="fancybox-thumbview" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."><img src="<%=imagesDir%>icons/help.png" /></a></span>
+                        <span style="float:right;position:relative;top:-5px;"><a class="fancybox" rel="fancybox-thumbview" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."><img src="<%=imagesDir%>icons/help.png" /></a></span>
                         <span id="topcontrolInfo<%=level%>" style="float:right;position:relative;top:20px;"></span>
                         </TD>
                         
