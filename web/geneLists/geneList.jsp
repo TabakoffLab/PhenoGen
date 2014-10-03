@@ -110,10 +110,15 @@
                 	for (int i=0; i<myGeneArray.length; i++) {
 				%>
                         	<tr><td><%=myGeneArray[i].getGene_id()%></td><%
-							Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet); 
+							Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i].getGene_id(), iDecoderSet);
+							if(thisIdentifier ==null){
+								thisIdentifier = myIdentifier.getIdentifierFromSetIgnoreCase(myGeneArray[i].getGene_id(), iDecoderSet);
+							}
 							if (thisIdentifier != null) {
-								Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), 
-													new String[] {"Gene Symbol"});
+								Set geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(),new String[] {"Gene Symbol"});
+								/*if(geneSymbols == null ||  geneSymbols.size()== 0){
+									geneSymbols = myIDecoderClient.getIdentifiersForTargetForOneIDIgnoreCase(thisIdentifier.getTargetHashMap(),new String[] {"Gene Symbol"});
+								}*/
 								if (geneSymbols != null && geneSymbols.size() > 0) { 
 									%><td><%
 											for (Iterator symbolItr = geneSymbols.iterator(); symbolItr.hasNext();) { 

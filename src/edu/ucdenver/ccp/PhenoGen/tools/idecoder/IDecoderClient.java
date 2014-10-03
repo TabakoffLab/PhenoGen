@@ -159,6 +159,77 @@ public class IDecoderClient {
             return doSearch(organism,conn);
         }
         
+        private HashMap<Identifier, Set<Identifier>> doSearchCaseInsensitive(int geneListID, DataSource pool) throws SQLException {
+            log.debug("in doSearch passing gene list ID");
+            
+            GeneList thisGL = new GeneList().getGeneList(geneListID, pool);
+            String organism = thisGL.getOrganism();
+            log.debug("geneList = "+thisGL.getGene_list_name());
+            String countQuery2 = 
+			"select count(*) from geneListGraph";
+            //
+		// Insert the identifiers from the original gene list 
+		//
+		String query = 
+			"insert into geneListGraph "+
+			"(start_id_number, "+
+			"start_identifier, "+
+			"ident_type_id, "+
+			"name, "+
+			"id_number, "+
+			"identifier, "+
+			"chromosome, "+
+			"map_location, "+
+			"cM, "+
+			"start_bp, "+
+			"category, "+
+			"organism, "+
+			"array_name, "+
+			"from_id_number, "+
+			"from_identifier, "+
+			"link_source_name) "+
+			"select "+
+			"id.id_number, "+
+			"id.identifier, "+
+			"id.ident_type_id, "+
+			"type.name, "+
+			"id.id_number, "+
+			"id.identifier, "+
+			"id.chromosome, "+
+			"id.map_location, "+
+			"id.cM, "+
+			"id.start_bp, "+
+			"type.category, "+
+			"id.organism, "+
+			"'', "+
+			"id.id_number, "+
+			"id.identifier, "+
+			"'Start' "+
+			"from identifiers id, "+
+			"identifier_types type, "+ 
+			"genes g, "+ 
+			"gene_lists gl "+
+			"where LOWER(id.identifier) = LOWER(g.gene_id) "+
+			"and id.ident_type_id = type.ident_type_id  "+
+			"and id.organism = gl.organism  "+
+			"and g.gene_list_id = gl.gene_list_id "+
+			"and g.gene_list_id = ?";
+                Connection conn=pool.getConnection();
+                conn.setAutoCommit(false);
+                PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.setInt(1, geneListID);
+		pstmt.executeQuery();
+		pstmt.close();
+
+		//Results myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 1 = "+ myResults.getIntValueFromFirstRow());
+		
+                //myResults.close();
+                HashMap<Identifier, Set<Identifier>> ret=doSearch(organism,conn);
+                conn.close();
+            return ret;
+        }
+        
         private HashMap<Identifier, Set<Identifier>> doSearch(String gene,String organism, Connection conn) throws SQLException {
             log.debug("in doSearch passing gene ID");
             log.debug("geneID = "+gene);
@@ -1271,7 +1342,528 @@ public class IDecoderClient {
 		return resultsHashMap;
 	}
 
+        /**
+         * Returns the main HashMap that is used by other methods
+         *
+         * @param conn          database connection
+         *
+         * @return              HashMap of results that contains the original Identifier and points to a Set of Identifiers.
+         *                      The set of Identifiers contains ALL the Identifiers that were discovered during breadth-first-search
+         *                      of graph.
+         *                      To obtain the subset of Identifiers for a list of particular targets, see
+	 *			{@link #getIdentifiersByInputIDAndTarget(int geneListID, String[] targets, Connection conn) getIdentifiersByInputIDAndTarget}
+         * <br><pre>
+         *
+         *      ------------------       -------------------------------------------------------------------
+         *      | Identifier CDX4 | -------->  | Affy Identifier 15112_at | Entrez Gene Identifier 10329  |...    |
+         *      ------------------|       -------------------------------------------------------------------
+         *      | Identifier CDX3 | ...|     
+         *      ------------------    
+         * </pre>
+         * @throws Exception    from any other method calls
+         */
+        private HashMap<Identifier, Set<Identifier>> doSearchCaseInsensitive(String organism, Connection conn) throws SQLException {
+                
+		HashMap<Identifier, Set<Identifier>> resultsHashMap = new HashMap<Identifier, Set<Identifier>>();
+		log.debug("in doSearchCI");
+		String targetString = "(" + new ObjectHandler().getAsSeparatedString(targetsList, ",", "'") + ")";
+		//
+		// Match on organism if the target is not 'Homologene ID'
+		//
+		String organismString = "and 1=1 ";
 
+		if (!targetsList.contains("Homologene ID")) {
+			organismString = "and id.organism = '"+organism + "' ";
+		} 
+		
+
+		String countQuery2 = 
+			"select count(*) from geneListGraph";
+		String glgContents = 
+			"select * from geneListGraph";
+		
+
+		conn.setAutoCommit(false);
+                //conn.setAutoCommit(true);
+		//log.debug("query1 = "+query);
+
+		
+
+		//Results myGLGResults = new Results(glgContents, conn);
+		//myGLGResults.print();
+
+		//
+		// Then insert the identifiers that have a row in the identifier_arrays table
+		// but don't have any links from them
+		//
+		String query  ="insert into geneListGraph "+ 
+			"(start_id_number, "+
+			"start_identifier, "+
+			"ident_type_id, "+
+			"name, "+
+			"id_number, "+
+			"identifier, "+
+			"chromosome, "+
+			"map_location, "+
+			"cM, "+
+			"start_bp, "+
+			"category, "+
+			"organism, "+
+			"array_name, "+
+			"from_id_number, "+
+			"from_identifier, "+
+			"link_source_name) "+
+			"select distinct /*+ index (id identifiers_pk) */ glg.id_number start_id_number, "+
+ 			"glg.start_identifier, "+
+			"id.ident_type_id, "+
+ 			"type.name, "+
+ 			"id.id_number, "+
+ 			"id.identifier, "+
+ 			"id.chromosome, "+
+ 			"id.map_location, "+
+ 			"id.cM, "+
+ 			"id.start_bp, "+
+ 			"type.category, "+
+ 			"id.organism, "+
+ 			"ia.array_name, "+
+			"glg.id_number, "+
+			"glg.identifier, "+
+ 			"decode(type.name, 'CodeLink ID', 'CodeLink', 'Affymetrix ID', 'Affymetrix', '') "+
+			"from identifiers id, "+
+ 			"identifier_arrays ia, "+
+ 			"identifier_types type, "+
+			"geneListGraph glg "+
+			"where glg.id_number = id.id_number "+ 
+			"and ia.id_number = id.id_number "+ 
+			"and id.ident_type_id = type.ident_type_id "+ 
+			"and exists "+
+			"	(select 'x' "+ 
+			"	from identifier_types it2 "+  
+			"	where it2.name in ('Affymetrix ID', 'CodeLink ID') "+ 
+			"	and type.ident_type_id = it2.ident_type_id) "+ 
+			organismString + 
+			//"and id.organism = ?";
+			"and not exists "+
+			"	(select 'x' "+
+			"	from identifier_links3 il3 "+
+			"	where il3.id_number1 = id.id_number)";
+
+		log.debug("These are identifiers that have a row in the identifier_arrays table but don't have any links from them");
+		//log.debug("query1.5 = "+query);
+		PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.executeQuery();
+		pstmt.close();
+
+		//Results myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 2 = "+ myResults.getIntValueFromFirstRow());
+
+		//myGLGResults = new Results(glgContents, conn);
+		//myGLGResults.print();
+		//
+		// Then insert the identifiers that are one link from the original list
+		//
+		query  ="insert into geneListGraph "+ 
+			"(start_id_number, "+
+			"start_identifier, "+
+			"ident_type_id, "+
+			"name, "+
+			"id_number, "+
+			"identifier, "+
+			"chromosome, "+
+			"map_location, "+
+			"cM, "+
+			"start_bp, "+
+			"category, "+
+			"organism, "+
+			"array_name, "+
+			"from_id_number, "+
+			"from_identifier, "+
+			"link_source_name) "+
+			"select distinct /*+ index (id identifiers_pk) */ glg.id_number start_id_number, "+
+ 			"glg.start_identifier, "+
+			"id.ident_type_id, "+
+	 		"type.name, "+
+	 		"id.id_number, "+
+ 			"id.identifier, "+
+ 			"id.chromosome, "+
+ 			"id.map_location, "+
+ 			"id.cM, "+
+ 			"id.start_bp, "+
+ 			"type.category, "+
+ 			"id.organism, "+
+ 			"'' array_name, "+
+			"glg.id_number, "+
+			"glg.identifier, "+
+ 			"link.link_source_name "+
+			"from identifier_links3 link, "+
+ 			"identifiers id, "+
+ 			"identifier_types type, "+
+			"geneListGraph glg "+
+			"where glg.id_number = link.id_number1  "+
+			"and link.id_number2 = id.id_number  "+
+			"and id.ident_type_id = type.ident_type_id  "+
+			"and exists "+
+			"	(select 'x' "+
+			"	from identifier_types it2 "+
+			"	where it2.name not in ('Affymetrix ID', 'CodeLink ID') "+
+			"	and type.ident_type_id = it2.ident_type_id) "+ 
+			organismString + 
+			//"and id.organism = ? "+ 
+			"union "+ 
+			"select distinct /*+ index (id identifiers_pk) */ glg.id_number start_id_number, "+
+ 			"glg.start_identifier, "+
+			"id.ident_type_id, "+
+ 			"type.name, "+
+ 			"id.id_number, "+
+ 			"id.identifier, "+
+ 			"id.chromosome, "+
+ 			"id.map_location, "+
+ 			"id.cM, "+
+ 			"id.start_bp, "+
+ 			"type.category, "+
+ 			"id.organism, "+
+ 			"ia.array_name, "+
+			"glg.id_number, "+
+			"glg.identifier, "+
+ 			"link.link_source_name "+
+			"from identifier_links3 link, "+
+ 			"identifiers id, "+
+ 			"identifier_arrays ia, "+
+ 			"identifier_types type, "+
+			"geneListGraph glg "+
+			"where glg.id_number = link.id_number1 "+ 
+			"and link.id_number2 = id.id_number "+   
+			"and ia.id_number = id.id_number "+ 
+			"and id.ident_type_id = type.ident_type_id "+ 
+			"and exists "+
+			"	(select 'x' "+ 
+			"	from identifier_types it2 "+  
+			"	where it2.name in ('Affymetrix ID', 'CodeLink ID') "+ 
+			"	and type.ident_type_id = it2.ident_type_id) "+ 
+			organismString; 
+			//"and id.organism = ?";
+
+		log.debug("These are identifiers that are one link from the original list");
+		//log.debug("query2 = "+query);
+		pstmt = conn.prepareStatement(query);
+		//pstmt.setString(1, organism);
+		//pstmt.setString(2, organism);
+		pstmt.executeQuery();
+		pstmt.close();
+
+		//myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 3 = "+ myResults.getIntValueFromFirstRow());
+
+		//myGLGResults = new Results(glgContents, conn);
+		//myGLGResults.print();
+
+		for (int i=0; i<num_iterations; i++) {	
+			//
+			// Then insert the identifiers that are 2 or more links from the original list
+			//
+			query = "insert into geneListGraph "+
+				"(start_id_number, "+
+				"start_identifier, "+
+				"ident_type_id, "+
+				"name, "+
+				"id_number, "+
+				"identifier, "+
+				"chromosome, "+
+				"map_location, "+
+				"cM, "+
+				"start_bp, "+
+				"category, "+
+				"organism, "+
+				"array_name, "+
+				"from_id_number, "+
+				"from_identifier, "+
+				"link_source_name) "+
+				"select distinct "+ 
+/// * + index (id identifiers_pk) * / "+
+				"glg.start_id_number start_id_number, "+
+ 				"glg.start_identifier, "+
+				"id.ident_type_id, "+
+ 				"type.name, "+
+ 				"id.id_number, "+
+ 				"id.identifier, "+
+ 				"id.chromosome, "+
+ 				"id.map_location, "+
+ 				"id.cM, "+
+ 				"id.start_bp, "+
+ 				"type.category, "+
+ 				"id.organism, "+
+ 				"'' array_name, "+
+				"glg.id_number, "+
+				"glg.identifier, "+
+ 				"link.link_source_name "+
+				"from identifier_links3 link, "+
+ 				"identifiers id, "+
+ 				"identifier_types type, "+
+ 				"identifier_types type2, "+
+				"geneListGraph glg "+
+				"where glg.id_number = link.id_number1  "+
+				"and glg.ident_type_id = type2.ident_type_id "+
+				// don't follow links from probe set
+				"and type2.category != 'Probe Set' "+
+				"and link.id_number2 = id.id_number  "+
+				"and id.ident_type_id = type.ident_type_id  "+
+				"and exists "+
+				"	(select 'x' "+
+				"	from identifier_types it2    "+
+				"	where it2.name not in ('Affymetrix ID', 'CodeLink ID') "+
+				"	and type.ident_type_id = it2.ident_type_id) "+
+				organismString +
+				//"and id.organism = ? "+
+				"and not exists "+
+				"	(select 'x' "+
+				"	from geneListGraph glg2 "+
+				"	where glg2.id_number = id.id_number "+
+				"	and glg2.start_id_number = glg.start_id_number) "+
+				"union  "+
+				"select distinct "+
+/// * + index (id identifiers_pk) * / "+
+				"glg.start_id_number start_id_number, "+
+ 				"glg.start_identifier, "+
+				"id.ident_type_id, "+
+ 				"type.name, "+
+ 				"id.id_number, "+
+ 				"id.identifier, "+
+ 				"id.chromosome, "+
+ 				"id.map_location, "+
+ 				"id.cM, "+
+ 				"id.start_bp, "+
+ 				"type.category, "+
+ 				"id.organism, "+
+ 				"ia.array_name, "+
+				"glg.id_number, "+
+				"glg.identifier, "+
+ 				"link.link_source_name "+
+				"from identifier_links3 link, "+
+ 				"identifiers id, "+
+ 				"identifier_arrays ia, "+
+ 				"identifier_types type, "+
+ 				"identifier_types type2, "+
+				"geneListGraph glg "+
+				"where glg.id_number = link.id_number1  "+
+				"and glg.ident_type_id = type2.ident_type_id "+
+				// don't follow links from probe set
+				"and type2.category != 'Probe Set' "+
+				"and link.id_number2 = id.id_number    "+
+				"and ia.id_number = id.id_number  "+
+				"and id.ident_type_id = type.ident_type_id  "+
+				"and exists "+
+				"	(select 'x'  "+
+				"	from identifier_types it2 "+
+				"	where it2.name in ('Affymetrix ID', 'CodeLink ID') "+
+				"	and type.ident_type_id = it2.ident_type_id) "+
+				organismString + 
+				//"and id.organism = ? "+
+				"and not exists "+
+				"	(select 'x' "+
+				"	from geneListGraph glg2 "+
+				"	where glg2.id_number = id.id_number "+
+				"	and nvl(glg2.array_name, 'None') = nvl(ia.array_name, 'None') "+
+				"	and glg2.start_id_number = glg.start_id_number)";
+
+			log.debug("These are 2 or more links from the original list");
+			//log.debug("query3 = "+query);
+
+			pstmt = conn.prepareStatement(query);
+			//pstmt.setString(1, organism);
+			//pstmt.setString(2, organism);
+			pstmt.executeQuery();
+
+			//myResults = new Results(countQuery2, conn);
+			//log.debug("count of geneListGraph in iteration [" + i + "] = " + myResults.getIntValueFromFirstRow());
+
+			//myGLGResults = new Results(glgContents, conn);
+			//myGLGResults.print();
+
+			pstmt.close();
+		}
+
+		//myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 4 = " + myResults.getIntValueFromFirstRow());
+
+		//myResults.close();
+
+       		query =  
+                	"select ident_type_id, "+
+			"name, "+
+			"id_number, "+
+			"identifier, "+
+			"chromosome, "+
+			"map_location, "+
+			"cM, " +
+			"start_bp, " +
+			"category, "+
+			"organism, " +
+			"'' "+
+                	"from geneListGraph "+ 
+			"where start_id_number = id_number "+
+			"and array_name is null "+
+			"order by id_number";
+
+       		String query2 =  
+                	"select glg.ident_type_id, "+
+			"glg.name, "+
+			"glg.id_number, "+
+			"glg.identifier, "+
+			"glg.chromosome, "+
+			"glg.map_location, "+
+			"glg.cM, " +
+			"glg.start_bp, " +
+			"glg.category, "+
+			"glg.organism, " +
+			"glg.array_name, "+
+			"glg.from_id_number, "+
+			"glg.from_identifier, "+
+			"glg.link_source_name, "+
+			"glg.start_id_number, "+
+			"glg.start_identifier "+
+                	"from geneListGraph glg "; 
+			//
+			// Only include the identifier if it's type is in the targetList
+			// targetsList is set in setTargets prior to calling this method
+			//
+			if (targetsList != null && !targetsList.contains("Location")) { 
+				query2 = query2 + "where glg.name in " + targetString + " ";
+			}
+			query2 = query2 + "order by glg.start_id_number, glg.ident_type_id, glg.identifier";
+/*
+			", id.identifier, "+
+			"idtype.name "+
+			", identifiers id, "+
+			"identifier_types idtype "+
+			"where glg.start_id_number = id.id_number "+
+			"and id.ident_type_id = idtype.ident_type_id "+
+*/
+
+       		/*String query3 =  
+                	"select start_id_number, "+
+			"start_identifier, "+
+			"fromID.ident_type_id, "+
+			"from_types.name, "+
+			"fromID.id_number, "+
+			"fromID.identifier, "+
+			"fromID.chromosome, "+
+			"fromID.map_location, "+
+			"fromID.cM, " +
+			"fromID.start_bp, " +
+			"from_types.category, " +
+			"fromID.organism, " +
+			"from_arrays.array_name, "+
+                	"toID.ident_type_id, "+
+			"to_types.name, "+
+			"toID.id_number, "+
+			"toID.identifier, "+
+			"toID.chromosome, "+
+			"toID.map_location, "+
+			"toID.cM, " +
+			"toID.start_bp, " +
+			"to_types.category, " +
+			"toID.organism, " +
+			"to_arrays.array_name, "+
+			"link_source_name "+
+                	"from geneListGraph glg, "+ 
+                	"identifiers fromID left join identifier_arrays from_arrays on fromID.id_number = from_arrays.id_number, "+
+                	"identifiers toID left join identifier_arrays to_arrays on toID.id_number = to_arrays.id_number, "+
+                	"identifier_types from_types, "+ 
+                	"identifier_types to_types "+ 
+			"where glg.from_id_number = fromID.id_number "+
+			"and glg.id_number = toID.id_number "+
+			"and fromID.ident_type_id = from_types.ident_type_id "+
+			"and toID.ident_type_id = to_types.ident_type_id "+
+			"order by start_id_number, fromID.ident_type_id, fromID.identifier, toID.ident_type_id, toID.identifier";
+                */
+		log.debug("in getRecords");
+		//log.debug("getTab1 query = "+query);
+		//log.debug("getTab2 query = "+query2);
+		//log.debug("getTab3 query = "+query3);
+
+		pstmt.close();
+		pstmt = conn.prepareStatement(query);
+		//PreparedStatement pstmt2 = null;
+		ResultSet rs = pstmt.executeQuery();
+
+        	while (rs.next()){
+            		Identifier foundID = new Identifier(rs.getString(4)); 
+                        //log.debug("query1: org:"+foundID.getIdentifier()+":"+foundID.getIdentifierTypeName()+":"+foundID.getOrganism());
+            		//Identifier foundID = new Identifier(rs.getInt(1), rs.getString(2), 
+			//	rs.getLong(3), rs.getString(4), rs.getString(5),
+			//	rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), "");
+			resultsHashMap.put(foundID, new LinkedHashSet<Identifier>());
+			//linkGraph.put(foundID, new LinkedHashSet<IdentifierLink>());
+		}
+		//log.debug("linkGraph contains "+linkGraph.size() + " entries");
+                //pstmt.close();
+		pstmt = conn.prepareStatement(query2);
+		rs = pstmt.executeQuery();
+        	while (rs.next()){
+            		//Identifier foundID = new Identifier(rs.getString(16), rs.getString(17), rs.getString(10), ""); 
+            		Identifier foundID = new Identifier(rs.getString(16)); 
+                        //log.debug("query2: org:"+foundID.getIdentifier()+":"+foundID.getIdentifierTypeName()+":"+foundID.getOrganism());
+			LinkedHashSet<Identifier> resultIDSet = (LinkedHashSet<Identifier>) resultsHashMap.get(foundID);
+
+            		Identifier relatedID = new Identifier(rs.getInt(1), rs.getString(2), 
+				rs.getLong(3), rs.getString(4), rs.getString(5),
+				rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
+				rs.getString(11));
+			resultIDSet.add(relatedID);
+			resultsHashMap.put(foundID, resultIDSet);
+
+			/*
+			LinkedHashSet<IdentifierLink> identifierLinkSet = (LinkedHashSet) linkGraph.get(foundID);
+			Identifier fromID = new Identifier(rs.getInt(12), rs.getString(13));
+			Identifier toID = new Identifier(rs.getInt(3), rs.getString(4));
+			String linkSource = (rs.getString(14) != null ? rs.getString(14) : "Unknown");
+		
+			IdentifierLink thisIdentifierLink = new IdentifierLink(fromID, toID, linkSource); 	
+			identifierLinkSet.add(thisIdentifierLink);
+			linkGraph.put(foundID, identifierLinkSet);
+			*/
+        	}
+                
+		log.debug("resultsHashMap contains "+resultsHashMap.size() + " entries");
+		/*
+		//
+		// This is commented out because it takes too much memory.  Only place linkGraph is used is in DrawGraph
+		//
+		pstmt = conn.prepareStatement(query3);
+		rs = pstmt.executeQuery();
+        	while (rs.next()){
+            		Identifier foundID = new Identifier(rs.getString(2)); 
+			LinkedHashSet<IdentifierLink> identifierLinkSet = (LinkedHashSet<IdentifierLink>) linkGraph.get(foundID);
+            		Identifier fromID = new Identifier(rs.getInt(3), rs.getString(4), 
+				rs.getLong(5), rs.getString(6), rs.getString(7),
+				rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12),
+				rs.getString(13));
+            		Identifier toID = new Identifier(rs.getInt(14), rs.getString(15), 
+				rs.getLong(16), rs.getString(17), rs.getString(18),
+				rs.getString(19), rs.getString(20), rs.getString(21), rs.getString(22), rs.getString(23),
+				rs.getString(24));
+
+			//Identifier fromID = new Identifier(rs.getInt(12), rs.getString(13));
+			//Identifier toID = new Identifier(rs.getInt(3), rs.getString(4));
+			String linkSource = (rs.getString(25) != null ? rs.getString(25) : "Unknown");
+		
+			IdentifierLink thisIdentifierLink = new IdentifierLink(fromID, toID, linkSource); 	
+			identifierLinkSet.add(thisIdentifierLink);
+			linkGraph.put(foundID, identifierLinkSet);
+        	}
+		
+		log.debug("Now 2 linkGraph contains "+linkGraph.size() + " entries");
+		*/
+		pstmt.close();
+
+		conn.commit();
+		conn.setAutoCommit(true);
+                
+		//myGLGResults.close();
+		//log.debug("linkGraph = "); myDebugger.print(linkGraph);
+		return resultsHashMap;
+	}
+        
 	/** 
 	 * Get a Set of Identifiers for a particular list of targets, although it is not organized by target.
 	 * Useful if you want a list of all possible target values by gene ID, as is needed
@@ -1336,6 +1928,70 @@ public class IDecoderClient {
 		}
 		return setOfInputIdentifiers;
 	}
+        /** 
+	 * Get a Set of Identifiers for a particular list of targets, although it is not organized by target.
+	 * Useful if you want a list of all possible target values by gene ID, as is needed
+	 * when calling the Literature module.
+	 * <p>
+	 * This starts by calling doSearch() 
+	 * which returns a HashMap of ALL Identifiers found in the search.  This method then
+	 * restricts the Identifiers to those in a list of targets.
+	 * </p>
+	 *
+	 * @param geneListID	the identifier of the gene list
+	 * @param targets	names of databases to which the values should be translated
+	 * @param conn		database connection
+	 * @return		a Set of Identifier objects, each containing a Set of Identifiers for a particular list of targets
+	 *<br><pre>
+	 *      ------------------     ------------------------------------------------------------------------------------------------|
+	 *      | Identifier CDX4 |--> | Gene Symbol Identifier CDX4 |SwissProt Identifier P18111 | SwissProt Identifier Q8VCF7 |...   |
+	 *      ------------------|    ------------------------------------------------------------------------------------------------|
+	 *      | Identifier CDX3 | ...|      
+	 *      ------------------      
+	 * </pre>
+	 * @throws	SQLException if there is a problem accessing the database
+	 *                      
+	 */
+	public Set<Identifier> getIdentifiersByInputID(int geneListID, String[] targets, DataSource pool) throws SQLException {
+
+		log.debug("in getIdentifiersByInputID passing in geneListID");
+
+		setTargets(targets);
+		//log.debug("targetsList = "+targetsList);
+
+		HashMap<Identifier, Set<Identifier>> startHashMap = doSearchCaseInsensitive(geneListID, pool);
+		//log.debug("startHashMap = "); myDebugger.print(startHashMap);
+		Set<Identifier> setOfInputIdentifiers = new HashSet<Identifier>();
+		for (Iterator inputIDitr = startHashMap.keySet().iterator(); inputIDitr.hasNext();) {
+			Identifier inputID = (Identifier) inputIDitr.next();
+			Set<Identifier> allRelatedIdentifiers = (Set<Identifier>) startHashMap.get(inputID);
+			//log.debug("allRelatedIdentifiers = "); myDebugger.print(allRelatedIdentifiers);
+
+			//Identifier thisInputIdentifier = new Identifier(inputID);
+			Set<Identifier> setOfRelatedIdentifiers = new LinkedHashSet<Identifier>();
+			Set<Identifier> setOfLocationIdentifiers = new LinkedHashSet<Identifier>();
+
+			for (Iterator identifierItr = allRelatedIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier nextIdentifier = (Identifier) identifierItr.next();
+				String identifierType = nextIdentifier.getIdentifierTypeName();
+
+				if (targetsList.contains(identifierType)) { 
+					setOfRelatedIdentifiers.add(nextIdentifier);
+				} 
+				if (targetsList.contains("Location") && 
+						((nextIdentifier.getChromosome() != null &&
+						!nextIdentifier.getChromosome().equals("")) ||
+					(nextIdentifier.getMapLocation() != null && 
+					!nextIdentifier.getMapLocation().equals("")))) {
+					setOfLocationIdentifiers.add(nextIdentifier);
+				} 
+			}
+			inputID.setRelatedIdentifiers(setOfRelatedIdentifiers);
+			inputID.setLocationIdentifiers(setOfLocationIdentifiers);
+			setOfInputIdentifiers.add(inputID);
+		}
+		return setOfInputIdentifiers;
+	}
         
         /** 
 	 * Get a Set of Identifiers for a particular list of targets, although it is not organized by target.
@@ -1361,6 +2017,7 @@ public class IDecoderClient {
 	 * @throws	SQLException if there is a problem accessing the database
 	 *                      
 	 */
+
 	public Set<Identifier> getIdentifiersByInputID(String geneID,String organism, String[] targets, Connection conn) throws SQLException {
 
 		log.debug("in getIdentifiersByInputID passing in gene ID");
@@ -1402,7 +2059,8 @@ public class IDecoderClient {
 		return setOfInputIdentifiers;
 	}
 
-	/** 
+        
+        /** 
 	 * Get a Set of Identifiers for a particular list of targets, although it is not organized by target.  Also restrict the
 	 * list by geneChipName.
 	 * <p>
@@ -1432,6 +2090,78 @@ public class IDecoderClient {
 		//log.debug("geneChipName = "+geneChipName);
 
 		Set<Identifier> startSet = getIdentifiersByInputID(geneListID, targets, conn);
+		for (Iterator inputIDitr = startSet.iterator(); inputIDitr.hasNext();) {
+			Identifier inputID = (Identifier) inputIDitr.next();
+			Set<Identifier> allRelatedIdentifiers = inputID.getRelatedIdentifiers();
+			//log.debug("here are all the RelatedIDs for "+inputID.getIdentifier()+": "); myDebugger.print(allRelatedIdentifiers);
+			//log.debug("before parsing out identifiers by genechip, there are "+inputID.getRelatedIdentifiers().size()+" related identifiers for "+inputID.getIdentifier()); 
+
+			Set<Identifier> setOfRelatedIdentifiers = new LinkedHashSet<Identifier>();
+
+			for (Iterator identifierItr = allRelatedIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier relatedIdentifier = (Identifier) identifierItr.next();
+				//
+				// If there is an Affy or CodeLink related identifier, only return it if 
+				// it's from the desired chip.  If the related identifier is not Affy 
+				// or CodeLink, return it anyway. 
+				//
+				if (relatedIdentifier.getIdentifierTypeName().equals("Affymetrix ID") ||
+					relatedIdentifier.getIdentifierTypeName().equals("CodeLink ID")) {
+					//log.debug("here related identifier type IS affy or cl, so gene chip= "+relatedIdentifier.getGene_chip_name());
+					// For Exon arrays, the relatedIdentifier.getGene_chip_name() will end in either .probeset or .transcript,
+					// and the geneChipName will not
+					//log.debug("inputID = "+inputID.getIdentifier());
+					//log.debug("relatedId = "+relatedIdentifier.getIdentifier());
+					
+					if (relatedIdentifier.getGene_chip_name() == null) {
+						//log.debug("geneChipName is null ");
+					} else {
+						//log.debug("geneChipName is not null. it is " + relatedIdentifier.getGene_chip_name());
+						if (relatedIdentifier.getGene_chip_name().startsWith(geneChipName)) {
+							setOfRelatedIdentifiers.add(relatedIdentifier);
+						}
+					}
+				} else {
+					//log.debug("here related identifier type is NOT affy or cl, so type = "+relatedIdentifier.getIdentifierTypeName());
+					setOfRelatedIdentifiers.add(relatedIdentifier);
+				}
+			}
+			inputID.setRelatedIdentifiers(setOfRelatedIdentifiers);
+			//log.debug("after parsing out identifiers by genechip, there are "+(inputID.getRelatedIdentifiers() != null ? inputID.getRelatedIdentifiers().size() : "0")+" related identifiers for "+inputID.getIdentifier()); 
+		}
+		return startSet;
+	}
+        
+	/** 
+	 * Get a Set of Identifiers for a particular list of targets, although it is not organized by target.  Also restrict the
+	 * list by geneChipName.
+	 * <p>
+	 * This starts by calling {@link #getIdentifiersByInputID(int geneListID, String[] targets, Connection conn) getIdentifiersByInputID} which returns 
+	 * a Set of Identifiers for the given list of targets.
+	 * This then further restricts the Identifiers by geneChipName. 
+	 * </p>
+	 *
+	 * @param geneListID	identifier of the gene list
+	 * @param targets	names of databases to which the values should be translated
+	 * @param geneChipName	name of the array from which this Identifier comes
+	 * @param conn		database connection
+	 * @return		a Set of Identifiers which maps to a Set of related Identifiers for a particular list of targets and gene_chip
+	 *<br><pre>
+	 *      ------------------       ------------------------------------------------------------------------------------------------|
+	 *      |Identifier CDX4 |---->  | Affy MOE430v2 Identifier 154_at |Affy MOE430v2 Identifier 15592_at | ...                      |
+	 *      -----------------|       ------------------------------------------------------------------------------------------------|
+	 *      |Identifier CDX3 | ...|      
+	 *      ------------------      
+	 * </pre>
+	 * @throws	SQLException if there is a problem accessing the database
+	 *                      
+	 */
+	public Set<Identifier> getIdentifiersByInputID(int geneListID, String[] targets, String geneChipName, DataSource pool) throws SQLException {
+
+		log.debug("in getIdentifiersByInputID passing in geneChipName also");
+		//log.debug("geneChipName = "+geneChipName);
+
+		Set<Identifier> startSet = getIdentifiersByInputID(geneListID, targets, pool);
 		for (Iterator inputIDitr = startSet.iterator(); inputIDitr.hasNext();) {
 			Identifier inputID = (Identifier) inputIDitr.next();
 			Set<Identifier> allRelatedIdentifiers = inputID.getRelatedIdentifiers();
@@ -1633,6 +2363,51 @@ public class IDecoderClient {
 		return endSet;
 	}
         
+        /** 
+	 * Get a Set of Identifiers for all input IDs for a particular list of targets and gene chip, 
+	 * although it is not organized by target.
+	 * Useful if you want a list of all possible target values, as is needed
+	 * when translating an entire gene list into a particular identifier type.
+	 * <p>
+	 * This starts by calling {@link #getIdentifiersByInputID(int geneListID, String[] targets, Connection conn) getIdentifiersByInputID()} which returns a 
+	 * which returns a Set of input Identifiers pointing to 
+	 * a Set of Identifiers for a list of 
+	 * targets.  This method then creates the middle HashMap and organizes the Identifiers by target.
+	 * During this process, it also restricts by geneChipName
+	 * </p>
+	 *
+	 * @param geneListID	the identifier of the list
+	 * @param targets	names of databases to which the values should be translated
+	 * @param geneChipName	name of gene_chip that should be matched 
+	 * @param pool		database connection
+	 *
+	 * @return		a Set of Identifiers for a particular list of targets
+	 *<br><pre>
+	 *      ------------------------------------------------------------------------------------------------|
+	 *      | Gene Symbol Identifier CDX4 |SwissProt Identifier P18111 | SwissProt Identifier Q8VCF7 |...   |
+	 *      ------------------------------------------------------------------------------------------------|
+	 * </pre>
+	 * @throws	SQLException if there is a problem accessing the database
+	 *                      
+	 */
+	public Set<Identifier> getIdentifiersIgnoreCase(int geneListID, String[] targets, String geneChipName, DataSource pool) throws SQLException {
+
+		log.debug("in getIdentifiers passing in geneListID, targets, geneChipName, and conn");
+
+		Set<Identifier> startSet = getIdentifiersByInputID(geneListID, targets, geneChipName, pool);
+		//log.debug("startSet = "); myDebugger.print(startSet);
+		Set<Identifier> endSet = new LinkedHashSet<Identifier>();
+		for (Iterator inputIDitr = startSet.iterator(); inputIDitr.hasNext();) {
+			Identifier inputID = (Identifier) inputIDitr.next();
+			Set<Identifier> identifierSet = inputID.getRelatedIdentifiers();
+			for (Iterator itr = identifierSet.iterator(); itr.hasNext();) {
+                        	((Identifier) itr.next()).setOriginatingIdentifier(inputID);
+			}
+			endSet.addAll(identifierSet);
+		}
+		return endSet;
+	}
+        
 	/**
 	 * Get a Set of Identifiers for all input IDs for a particular list of targets and set of geneChips, 
 	 * organized by input ID and target.
@@ -1733,6 +2508,7 @@ public class IDecoderClient {
                 conn.close();
 		return startSet;
         }
+        
 	/** Get a Set of Identifiers for all input IDs for a particular list of targets, organized by input ID and target.
 
         /**
@@ -1800,7 +2576,73 @@ public class IDecoderClient {
 		//log.debug("startSet now = "); myDebugger.print(startSet);
 		return startSet;
 	}
-        
+        /** Get a Set of Identifiers for all input IDs for a particular list of targets, organized by input ID and target.
+
+        /**
+	 * Get a Set of Identifiers for all input IDs for a particular list of targets, organized by input ID and target.
+	 * <p>
+	 * This starts by calling {@link #getIdentifiersByInputID(int geneListID, String[] targets, Connection conn) getIdentifiersByInputID()} which returns a * a Set of Identifiers pointing to
+	 * targets.  This method then creates the middle HashMap and organizes the Identifiers by target.
+	 * </p>
+	 * @param geneListID	the identifier of the list
+	 * @param targets	names of databases to which the values should be translated
+	 * @param conn		database connection
+	 *
+	 * @return		a Set of Identifiers, each having a defined Hashtable of identifier types which 
+	 *			point to a Set of Identifiers 
+	 *<br><pre>
+	 *      ------------------       -----------------------|            ----------------------------------------------------|
+	 *      | Identifier CDX4 |--->  | Affymetrix ID        | ----->     | Identifier 15026_at | Identifier 15296_at |...    |
+	 *      ------------------|       -----------------------|            ----------------------------------------------------|
+	 *      | Identifier CDX3 | ...| | SwissProt ID         | ----\      ----------------------------------------------------|
+	 *      ------------------       -----------------------|      \-->  | Identifier P18111 | Identifier Q8VCF7 | ...  |    |
+	 *                               |  ...                 |            ----------------------------------------------------|
+	 *                               -----------------------|
+	 * </pre>
+	 * @throws	SQLException if there is a problem accessing the database
+	 */ 
+	public Set<Identifier> getIdentifiersByInputIDAndTargetCaseInsensitive(int geneListID, String[] targets, DataSource pool) throws SQLException {
+
+		log.debug("in getIdentifiersByInputIDAndTarget passing in geneListID");
+
+		Set<Identifier> startSet = getIdentifiersByInputID(geneListID, targets, pool);
+		//log.debug("startSet here = "); myDebugger.print(startSet);
+		for (Iterator inputIDitr = startSet.iterator(); inputIDitr.hasNext();) {
+			Identifier thisIdentifier = (Identifier) inputIDitr.next();
+			Set<Identifier> relatedIdentifiers = thisIdentifier.getRelatedIdentifiers();
+			Set<Identifier> locationIdentifiers = thisIdentifier.getLocationIdentifiers();
+			thisIdentifier.setTargetHashMap(new HashMap<String, Set<Identifier>>());
+			for (Iterator identifierItr = relatedIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier relatedIdentifier = (Identifier) identifierItr.next();
+				String identifierType = relatedIdentifier.getIdentifierTypeName();
+                                //log.debug("looking for targets = "+identifierType +"::"+targetsList.contains(identifierType)+":::"+thisIdentifier.getTargetHashMap().containsKey(identifierType));
+				if (targetsList.contains(identifierType)) {
+					if (thisIdentifier.getTargetHashMap().containsKey(identifierType)) {
+                                                //log.debug("Added Target to Existing:");myDebugger.print(relatedIdentifier);
+						((Set<Identifier>) thisIdentifier.getTargetHashMap().get(identifierType)).add(relatedIdentifier);
+					} else {
+                                            //log.debug("Added Target:");myDebugger.print(relatedIdentifier);
+						Set<Identifier> newIdentifierSet = new LinkedHashSet<Identifier>();
+						newIdentifierSet.add(relatedIdentifier);
+						thisIdentifier.getTargetHashMap().put(identifierType, newIdentifierSet);
+                                                //log.debug("print related");myDebugger.print(relatedIdentifier.getRelatedIdentifiers());
+					}
+				}
+			}
+			for (Iterator identifierItr = locationIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier locationIdentifier = (Identifier) identifierItr.next();
+				if (thisIdentifier.getTargetHashMap().containsKey("Location")) {
+					((Set<Identifier>) thisIdentifier.getTargetHashMap().get("Location")).add(locationIdentifier);
+				} else {
+					Set<Identifier> newIdentifierSet = new LinkedHashSet<Identifier>();
+					newIdentifierSet.add(locationIdentifier);
+					thisIdentifier.getTargetHashMap().put("Location", newIdentifierSet);
+				}
+			}
+		}
+		//log.debug("startSet now = "); myDebugger.print(startSet);
+		return startSet;
+	}
         /**
 	 * Get a Set of Identifiers for all input IDs for a particular list of targets, organized by input ID and target.
 	 * <p>
