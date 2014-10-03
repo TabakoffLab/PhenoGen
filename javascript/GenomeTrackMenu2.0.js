@@ -48,7 +48,7 @@ function TrackMenu(level){
 				trackDataTable.destroy();
 			}
 		}catch(error){
-
+			 Bugsense.notify( error, { datatables: "not initialized" } );
 		}
 
 		if(filter=="custom"&&btData.length==0){

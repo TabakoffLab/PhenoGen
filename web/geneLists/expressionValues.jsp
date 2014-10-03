@@ -49,6 +49,7 @@
 					}
 					geneSymbolsHM.put(myGeneArray[i].getGene_id(),geneSymbolList);            
 	}
+	myIDecoderClient.setNum_iterations(1);
 %>
 
 	<%@ include file="/web/common/expressionValuesLogic.jsp"%>
@@ -455,7 +456,8 @@
 							offsetY: 5,
 							//arrow: false,
 							interactive: true,
-							interactiveTolerance: 350
+							interactiveTolerance: 350,
+							contentAsHTML:true
 						});
     });
   </script>
