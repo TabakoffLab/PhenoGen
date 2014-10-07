@@ -3928,7 +3928,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 				that.svg.append("text").attr("class","dir").attr("x",that.gsvg.width-60).attr("y",15).text("<--");
 			}
 			
-			if(len<that.dispCutoff){
+			if(len<that.dispCutoff && data.length>1){
 				var dataLen=data.length;
 				var startInd=tmpMin-that.seqRegionMin;
 				var stopInd=len+startInd;

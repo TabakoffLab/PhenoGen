@@ -172,7 +172,6 @@
 </div>-->
 
           <script type="text/javascript">
-		  		var iconPath="<%=imagesDir%>icons/";
 		  		viewMenu[<%=level%>]=ViewMenu(<%=level%>);
 				
 		  		
