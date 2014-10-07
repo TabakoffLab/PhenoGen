@@ -22,7 +22,7 @@ function showDiv(jspPage){
 	//$('#announcementSmall').show();
 	selectedSection= $( "#accordion" ).accordion( "option", "active" );
 	$('#indexDesc').slideUp("250");
-	$('div#indexDescContent').html("<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
+	$('div#indexDescContent').html("<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 	d3.html("web/overview/"+jspPage,function(error,html){
 							 if(error==null){
 								 $('div#indexDescContent').html(html);
