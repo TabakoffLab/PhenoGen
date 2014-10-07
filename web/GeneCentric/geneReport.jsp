@@ -179,8 +179,12 @@ Add report here.
             <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
     		<span class="selectdetailMenu" name="geneEQTL">Gene eQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
     		<span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-            <%if(myOrganism.equals("Mm")){%>
-            	<span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+            <%if(myOrganism.equals("Mm")){
+            	if(curGene.getGeneSymbol().toLowerCase().startsWith("mir")||curGene.getDescription().toLowerCase().startsWith("microRNA")){%>
+            		<span class="selectdetailMenu" name="miGenerna">Genes Targeted by this miRNA(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                <%}else{%>
+                	<span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                <%}%>
             <%}%>
 </div>
 
@@ -578,8 +582,11 @@ Add report here.
                   
                                 
     </div>
+    </div>
+    
     <div style="display:none;" id="geneEQTL">
     </div>
+    
     <div style="display:none;" id="geneApp">
     		<div style="text-align:center;">
                 This feature requires Java which will open in a seperate window, when you click the button below.  Java will be automatically detected and directions will be displayed on the next page if there are any issues to correct before proceding.<BR /><BR />
@@ -587,9 +594,14 @@ Add report here.
                 <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&viewID=1" target="_blank">View Affy Probe Set Details</a></span><BR />       		
 			</div>
     </div>
-   	<div style="display:none;" id="geneMIrna">
+   	
+    <div style="display:none;" id="geneMIrna">
     </div>
- 	</div>
+    
+    <div style="display:none;" id="miGenerna">
+    </div>
+ 	
+
  </div>
             
 
@@ -598,6 +610,7 @@ Add report here.
 
 <script type="text/javascript">
 	var idStr="<%=id%>";
+	var geneSymStr="<%=curGene.getGeneSymbol()%>";
 	
 	var rows=$("table#tblGeneDabg tr");
 	stripeTable(rows);
@@ -638,6 +651,14 @@ Add report here.
 				id:selectedID
 			};
 			loadDivWithPage("div#geneMIrna",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+		}else if(id=="miGenerna"){
+			var jspPage="web/GeneCentric/miGeneRnaAjax.jsp";
+			var params={
+				species: organism,
+				id:geneSymStr
+			};
+			loadDivWithPage("div#miGenerna",jspPage,params,
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		}
 		

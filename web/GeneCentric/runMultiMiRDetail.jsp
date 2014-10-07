@@ -96,7 +96,6 @@
 	}
 	
 	mirList=miRT.getMirTargetingGene(myOrganism,id,table,predType,cutoff);
-	targetList=miRT.getGenesTargetedByMir(myOrganism,selectedID,table,predType,cutoff);
 %>
 <BR /><BR />
 <div style="text-align:center;">	
@@ -215,102 +214,9 @@
         </div>
     
     	<BR /><BR />
-        <div><div style="text-align:left;font-size:18px; font-weight:bold;width:100%;"> All Genes Targeted by <%=selectedID%></div><BR />
-              <table id="mirGeneTbl" name="items" class="list_base" style="text-align:center;width:100%;">
-					<%if(targetList.size()>0){
-                        Set sourceKey=targetList.get(0).getSourceCount().keySet();
-                        %>
-                        <thead>
-                            <TR class="col_title">
-                                <TH colspan="3"></TH>
-                                <TH colspan="3" style="color:#000000;">Validated</TH>
-                                <TH colspan="8" style="color:#000000;">Predicted</TH>
-                                <TH colspan="3" style="color:#000000;">Total</TH>
-                            </TR>
-                            <TR class="col_title">
-                            <!--<TH style="color:#000000;">Mature miRNA Accession</TH>
-                            <TH style="color:#000000;">Mature miRNA ID</TH>-->
-                            <TH style="color:#000000;">Target Gene Symbol</TH>
-                            <TH style="color:#000000;">Target Entrez ID</TH>
-                            <TH style="color:#000000;">Target Ensembl ID</TH>
-                            
-                            <%for(int i=0;i<validated.length;i++){         
-                            %>
-                                        <TH><a href="<%=validated[i][2]%>" target="_blank"><%=validated[i][1]%></a></TH>
-                                
-                            <%}%>
-                            <%	for(int i=0;i<predicted.length;i++){
-                            %>
-                                        <TH><a href="<%=predicted[i][2]%>" target="_blank"><%=predicted[i][1]%></a></TH>
-                                
-                            <%}%>
-                             <%	for(int i=0;i<total.length;i++){
-                             %>
-                                		<TH style="color:#000000;"><%=total[i][1]%></TH>
-                                
-                            <%}%>
-                            </TR>
-                        </thead>
-                        
-                        <tbody>
-                        <%for (int i=0;i<targetList.size();i++){
-                            MiRResult tmp=targetList.get(i);
-                            HashMap tmpSC=tmp.getSourceCount();
-                            %>
-                            <TR>
-                            <!--<TD><a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a></TD>
-                            <TD><%=tmp.getId()%></TD>-->
-                            <TD><%=tmp.getTargetSym()%></TD>
-                            <TD><a href="http://www.ncbi.nlm.nih.gov/gene/?term=<%=tmp.getTargetEntrez()%>" target="_blank"><%=tmp.getTargetEntrez()%></a></TD>
-                            <TD><a href="<%=LinkGenerator.getEnsemblLinkEnsemblID(tmp.getTargetEnsembl(),fullOrg)%>" target="_blank" title="View Ensembl Gene Details"><%=tmp.getTargetEnsembl()%></a></TD>
-                            <%	for(int j=0;j<validated.length;j++){
-                                    if(sourceKey.contains(validated[j][0])){
-                                        String x="-";
-                                        int count=Integer.parseInt((String) tmpSC.get(validated[j][0]));
-                                        if(count>0){
-                                            x="X";
-                                        }
-                            %>
-                                        <TD><%=x%></TD>
-                                
-                            <%		}else{%>
-                            			<TD>-</TD>
-                            		<%}%>
-                            <% 	}%>
-                            <%	for(int j=0;j<predicted.length;j++){
-                                    if(sourceKey.contains(predicted[j][0])){
-                                        String x="-";
-                                        int count=Integer.parseInt((String) tmpSC.get(predicted[j][0]));
-                                        if(count>0){
-                                            x="X";
-                                        }
-                            %>
-                                        <TD><%=x%></TD>
-                                
-                            <%		}else{%>
-                            			<TD>-</TD>
-                            		<%}%>
-                            <%    }%>
-                             <%	for(int j=0;j<total.length;j++){
-                                    if(sourceKey.contains(total[j][0])){
-                                        
-                            %>
-                                        <TD><%=tmpSC.get(total[j][0])%></TD>
-                                
-                            <%		}else{%>
-                            			<TD>0</TD>
-                            		<%}%>
-                            <%    }%>
-                            </TR>
-                        <%}%>
-                        </tbody>
-                    <%}else{%>
-                        <tbody>
-                        <TR><TD>No results to display for this gene.</TD>
-                        </TR>
-                        </tbody>
-                    <%}%>
-                </table>
+        <div id="miTargetGenerna"><div style="text-align:left;font-size:18px; font-weight:bold;width:100%;"> All Genes Targeted by <%=selectedID%></div><BR />
+              <div id="wait3" align="center" style="position:relative;top:0px;"><img src="<%=imagesDir%>wait.gif" alt="Working..." text-align="center" >
+				<BR />Running multiMiR...</div>
        </div>
     
     
@@ -329,7 +235,7 @@
 	/*rows=$("table#mirGeneTbl tr");
 	stripeTable(rows);*/
 	
-		$(".mirtooltip3").tooltipster({
+	$(".mirtooltip3").tooltipster({
 				position: 'top-right',
 				maxWidth: 250,
 				offsetX: 10,
@@ -340,13 +246,32 @@
 				interactiveTolerance: 350
 			});
 	
+	function runMultiMirTargets(){
+			var species="<%=myOrganism%>";
+			var id="<%=id%>";
+			var table=$('select#table').val();
+			var predType=$('select#predType').val();
+			var cutoff=$('input#cutoff').val();
+			var selectID="<%=selectedID%>";
+			$.ajax({
+				url: contextPath + "/web/GeneCentric/runMultiMiRGeneTargets.jsp",
+   				type: 'GET',
+				data: {species:species,id:id,table:table,predType:predType,cutoff:cutoff,selectedID:selectID},
+				dataType: 'html',
+				complete: function(){
+					//$('#imgLoad').hide();
+					$('#wait3').hide();
+					$('#miTargetGenerna').show();
+				},
+    			success: function(data2){ 
+        			$('#miTargetGenerna').html(data2);
+    			},
+    			error: function(xhr, status, error) {
+        			$('#miTargetGenerna').html("<div>An error occurred generating this image.  Please try back later.</div>");
+    			}
+			});
+		}
 	
-	var tblMirGene=$('#mirGeneTbl').dataTable({
-			"bPaginate": false,
-			//"sScrollX": "100%",
-			//"sScrollY": "350px",
-			"bDeferRender": true,
-			"aaSorting": [[ 16, "desc" ]],
-			"sDom": '<"leftSearch"fr><t><i>'
-	});
+	runMultiMirTargets();
+	
 </script>

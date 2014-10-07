@@ -215,8 +215,15 @@ public class MiRTools {
             if(org.equals("Rn")){
                 rOrg="rno";
             }
+            if(mirID.toLowerCase().startsWith("mir")&& !(mirID.toLowerCase().endsWith("5p")||mirID.toLowerCase().endsWith("3p"))){
+                mirID=mirID.substring(3);
+                mirID=rOrg+"-mir-"+mirID;
+                mirID="c('"+mirID+"-5p','"+mirID+"-3p','"+mirID+"')";
+            }else{
+                mirID= "'"+mirID+"'";
+            }
             String[] functionArgs=new String[7];
-            functionArgs[0] = "mirID= '" + mirID + "'";
+            functionArgs[0] = "mirID= "+ mirID;
             functionArgs[1] = "organism = '" + rOrg + "'";
             functionArgs[2] = "outputDir = '" + outputPath +"'";
             functionArgs[3] = "outputPrefix = '" + prefix +"'";

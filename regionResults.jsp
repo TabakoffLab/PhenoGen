@@ -31,6 +31,7 @@ var selectGene="<%=selectedEnsemblID%>";
 
 var dataPrefix="";
 var skipSetSelection=0;
+var iconPath="<%=imagesDir%>icons/";
 </script>
 
 <style>
@@ -176,7 +177,7 @@ var skipSetSelection=0;
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.0.3.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.0.4.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
