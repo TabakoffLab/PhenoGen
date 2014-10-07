@@ -30,7 +30,7 @@ pageDescription="Links to related resources";%>
 
 	<li><a href="http://www.genenetwork.org/" target="_blank">The GeneNetwork </a>
 
-	<li><a href="http://www.longhornarraydatabase.org/index.html" target="_blank">The Longhorn Array Database </a>
+	<!--<li><a href="http://www.longhornarraydatabase.org/index.html" target="_blank">The Longhorn Array Database </a>-->
 	<li><a href="http://www.geneimprint.com/index.html" target="_blank">The Genomic Imprinting </a>
 	<li><a href="http://www.ebi.ac.uk/arrayexpress/" target="_blank">ArrayExpress </a>
 
@@ -62,7 +62,7 @@ pageDescription="Links to related resources";%>
 	<li><a href="http://www.mged.org/" target="_blank">The Microarray Gene Expression Data (MGED) Society </a>
 	<li><a href="http://www.tm4.org/mev.html" target="_blank">TIGR TM4 Microarray Software Suite</a>
 	<li><a href="http://linus.nci.nih.gov/BRB-ArrayTools.html" target="_blank">BRB ArrayTools</a>
-	<li><a href="http://ihome.cuhk.edu.hk/~b400559/arraysoft_rpackages.html" target="_blank">A summary of microarray analysis packages in the R language</a>
+	<!--<li><a href="http://ihome.cuhk.edu.hk/~b400559/arraysoft_rpackages.html" target="_blank">A summary of microarray analysis packages in the R language</a>-->
 
 	</ul>
 
