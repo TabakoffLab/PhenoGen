@@ -4125,7 +4125,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			}
 			if((that.xScale.domain()[1]-that.xScale.domain()[0])<that.aaDispCutoff){
 				that.lastUpdate=curTime;
-				if(that.svg.attr("height")<30){
+				if(that.svg!=undefined && that.svg.attr("height")<30){
 					that.svg.attr("height", 30);
 				}
 				if(retry==0){
