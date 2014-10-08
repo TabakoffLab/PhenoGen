@@ -109,6 +109,7 @@ if(request.getParameter("arrayTypeID")!=null){
 	var dataPrefix="../../";
 	var regionfolderName="<%=folderName%>";
 	var skipSetSelection=1;
+	var iconPath="<%=imagesDir%>icons/";
 </script>
 <div id="imageMenu"></div>
 <div id="viewMenu"></div>

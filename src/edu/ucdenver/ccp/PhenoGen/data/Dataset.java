@@ -2421,6 +2421,21 @@ public class Dataset {
                 datasetArray=this.getAllDatasetsForUser(userLoggedIn, conn);
                 conn.close();
             }catch(Exception e){
+                e.printStackTrace(System.err);
+                log.error("Error:getAllDatasetsForUser:",e);
+                Email myAdminEmail = new Email();
+                String fullerrmsg=e.getMessage();
+                StackTraceElement[] tmpEx=e.getStackTrace();
+                for(int i=0;i<tmpEx.length;i++){
+                            fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                }
+                myAdminEmail.setSubject("Exception thrown getAllDatasetsForUser()");
+                myAdminEmail.setContent("There was an error getAllDatasetsForUser().\n"+fullerrmsg);
+                try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                }
                 if(conn!=null && !conn.isClosed()){
                     try{
                         conn.close();
@@ -2488,12 +2503,12 @@ public class Dataset {
 		Dataset[] datasetArray = null;
 
 		Results myResults = (new Results(query, user_id, conn));
-
+                log.debug("got Dataset results.");
 		datasetArray = setupDatasetVersionValues(myResults, true);
 
 		ParameterValue[] allParameterValues = new ParameterValue().getParameterValuesForAllDatasetsForUser(user_id, conn);
 		GeneList[] allGeneLists = new GeneList().getGeneListsForAllDatasetsForUser(user_id, conn);
-
+                log.debug("got genelist results.");
 		//log.debug("allParameterValues is this long: " + allParameterValues.length);
 		//log.debug("allGeneLists is this long: " + allGeneLists.length);
 	
@@ -2522,6 +2537,7 @@ public class Dataset {
 				thisVersion.setGeneLists(glArray);
 			}
                         setupDatasetParameterValues(userLoggedIn.getUser_id(), thisDataset, conn);
+                        log.debug("setup param values");
 		}
 		
 		myResults.close();
