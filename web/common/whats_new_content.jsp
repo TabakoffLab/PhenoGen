@@ -37,7 +37,7 @@ span.control{
                                 	<li>Easily view different types of data in the same region by switching between views with only 3 clicks.</li>
                                     <li>Build your own view by from a blank view or copy a view and modify it.  You can control the included tracks, track settings, and track order.</li>
                                     <li>Bring in your own data and include custom tracks in views.  Now supporting Bed, BedGraph, BigBed, and BigWig files.</li>
-                                    <li>Save vies/tracks to the server for portability.(See below for more information)</li>
+                                    <li>Save views/tracks to the server for portability.(See below for more information)</li>
                                 </ul>
                             </li>
                             <li><span class="highlight-dark">Updated Data:</span>
