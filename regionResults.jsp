@@ -34,6 +34,9 @@ var skipSetSelection=0;
 var iconPath="<%=imagesDir%>icons/";
 var trackMenu=[];
 var viewMenu=[];
+Bugsense.clearBreadcrumbs();
+Bugsense.leaveBreadcrumb( 'gene.jsp' );
+Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');
 </script>
 
 <style>
