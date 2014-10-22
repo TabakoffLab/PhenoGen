@@ -712,20 +712,22 @@ Or
         <TD style="text-align:center;">
         	<h2>Quick Navigation Demonstration</h2>
             <BR />
-            <video width="350" height="250" controls="controls">
-            <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
-            <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
-            <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="350" height="250">
-                          </object>
+            <video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo.png">
+                <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
+                <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
+                <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="350" height="250">
+                </object>
+                Your browser is not likely to work with the Genome Browser if you are seeing this message.  Please see <a href="<%=commonDir%>siteRequirements.jsp">Browser Support/Site Requirements</a>
             </video>
         </TD>
         <TD style="text-align:center;">
                         <h2>Custom View/Custom Track Demonstration</h2><BR />
-						<video width="350" height="250" controls="controls">
+						<video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/customTrackDemo.png">
                     		<source src="<%=contextRoot%>web/demo/customTrackDemo.mp4" type="video/mp4">
                             <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
-                          <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="350" height="250">
-                          </object>
+                            <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="350" height="250">
+                          	</object>
+                            Your browser is not likely to work with the Genome Browser if you are seeing this message.  Please see <a href="<%=commonDir%>siteRequirements.jsp">Browser Support/Site Requirements</a>
                         </video>
        </TD>
        <TD style="text-align:center;">
