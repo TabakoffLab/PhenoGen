@@ -11,7 +11,7 @@
 */
 
 var trackDataTable;
-var trackMenu=[];
+
 
 
 function TrackMenu(level){
@@ -214,7 +214,8 @@ function TrackMenu(level){
 				//}
 				that.dataInitialized=1;
 				that.generateTrackTable();
-
+				trackMenu[that.level].readCookieViews();
+				trackMenu[that.level].generateViewList();
 			}
 		});
 	};

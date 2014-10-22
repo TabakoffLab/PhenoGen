@@ -110,6 +110,8 @@ if(request.getParameter("arrayTypeID")!=null){
 	var regionfolderName="<%=folderName%>";
 	var skipSetSelection=1;
 	var iconPath="<%=imagesDir%>icons/";
+	var trackMenu=[];
+	var viewMenu=[];
 </script>
 <div id="imageMenu"></div>
 <div id="viewMenu"></div>

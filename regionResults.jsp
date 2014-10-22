@@ -32,6 +32,8 @@ var selectGene="<%=selectedEnsemblID%>";
 var dataPrefix="";
 var skipSetSelection=0;
 var iconPath="<%=imagesDir%>icons/";
+var trackMenu=[];
+var viewMenu=[];
 </script>
 
 <style>
