@@ -865,7 +865,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 													interactive: true,
 											   		interactiveTolerance: 350
 												});
-												ttsr.tooltipster('content',d.Description);
+												ttsr.tooltipster('content',function(d){var ret="";if(d!=undefined && d.Description!=undefined){ret=d.Description;} return ret;});
 												ttsr.tooltipster('show');
 											})
 											.on("mouseout",function(){
