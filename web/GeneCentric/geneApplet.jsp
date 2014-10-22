@@ -112,6 +112,13 @@ if(request.getParameter("arrayTypeID")!=null){
 	var iconPath="<%=imagesDir%>icons/";
 	var trackMenu=[];
 	var viewMenu=[];
+	<%if(userLoggedIn.getUser_name().equals("anon")){%>
+		var uid=0;
+	<%}else{%>
+		var uid=<%=userLoggedIn.getUser_id()%>;
+	<%}%>
+	Bugsense.leaveBreadcrumb( 'geneApplet.jsp');
+	Bugsense.leaveBreadcrumb( '<%=selectedID+"::"+chromosome+":"+min+"-"+max%>');
 </script>
 <div id="imageMenu"></div>
 <div id="viewMenu"></div>
