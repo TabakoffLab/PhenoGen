@@ -177,10 +177,10 @@ var iconPath="<%=imagesDir%>icons/";
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.0.4.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.0.5.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.0.js" type="text/javascript"></script>
-            <script src="javascript/GenomeViewMenu2.0.js" type="text/javascript"></script>
-            <script src="javascript/GenomeTrackMenu2.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeViewMenu2.0.1.js" type="text/javascript"></script>
+            <script src="javascript/GenomeTrackMenu2.0.1.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">
@@ -266,6 +266,8 @@ var iconPath="<%=imagesDir%>icons/";
 	$(document).on('click','span.closeDetail', function(){
 			$('div#selectedDetail').hide();
 			$('div#selectedDetailHeader').hide();
+			$('div.viewsLevel1').hide();
+			$('div.trackLevel1').hide();
 			svgList[0].clearSelection();
 			if(!$('div#collapsableReport').is(':visible')){
 						$('div#collapsableReport').show();

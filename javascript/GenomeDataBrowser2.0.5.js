@@ -2416,7 +2416,8 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}
 			return tr;
 	};
-
+	that.addTrackErrorRemove=function(svg,selector){
+	};
 	that.addTrack=function (track,density,additionalOptions,data){
 		//console.log("addTrack():"+additionalOptions);
 		if(that.forceDrawAsValue=="Trx"){
