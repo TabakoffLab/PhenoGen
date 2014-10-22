@@ -11,7 +11,7 @@
 */
 
 var trackDataTable;
-var trackMenu=[];
+
 
 
 function TrackMenu(level){
@@ -66,7 +66,8 @@ function TrackMenu(level){
 		d3.select("table#trkSelList"+that.level).select("tbody").selectAll('tr').remove();
 		var tracktbl=d3.select("table#trkSelList"+that.level).select("tbody").selectAll('tr').data(btData)
 				.enter().append("tr")
-				.attr("id",function(d){return "trk"+d.TrackID;});
+				.attr("id",function(d){return "trk"+d.TrackID;})
+				.attr("class",function(d,i){var ret="odd";if(i%2==0){ret="even"} return ret;});
 		tracktbl.each(function(d,i){
 				var addtl="";
 				var local="";
@@ -128,7 +129,11 @@ function TrackMenu(level){
 	            var tblHeight=that.getTrackTableHeight(btData);
 	            //trackDataTable.settings().sScrollY =  tblHeight;
 	            trackDataTable.settings()[0].oScroll.sy=tblHeight;
-				trackDataTable.columns.adjust().draw();
+	            try{
+					trackDataTable.columns.adjust().draw();
+				}catch(error){
+			 		Bugsense.notify( error, { datatables: "error adjusting columns:132" } );
+				}
 				$('#trkSelList'+that.level+'_wrapper div.dataTables_scroll div.dataTables_scrollBody').css('height', tblHeight);
 	            $("td#selectedTrack"+that.level).show();
 	            $(".trInfotooltip"+that.level).tooltipster({
@@ -209,7 +214,10 @@ function TrackMenu(level){
 				//}
 				that.dataInitialized=1;
 				that.generateTrackTable();
-
+				if(trackMenu[that.level]!=undefined && trackMenu[that.level].readCookieViews!=undefined){
+					trackMenu[that.level].readCookieViews();
+					trackMenu[that.level].generateViewList();
+				}
 			}
 		});
 	};

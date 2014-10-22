@@ -76,9 +76,9 @@
                     <TR>
                     <TD>
                     	<div style="font-size:16px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:left; width:100%; padding-top:3px;">
-                            <span class="viewDetailTab selected" id="viewdescOuter<%=level%>" >Description</span>
-                            <span class="viewDetailTab" id="viewpreviewOuter<%=level%>" >Preview</span>
-                            <span class="viewDetailTab" id="viewtrackOuter<%=level%>" >View/Edit Track List</span>
+                            <span class="viewDetailTab<%=level%> selected" id="viewdescOuter<%=level%>" >Description</span>
+                            <span class="viewDetailTab<%=level%>" id="viewpreviewOuter<%=level%>" >Preview</span>
+                            <span class="viewDetailTab<%=level%>" id="viewtrackOuter<%=level%>" >View/Edit Track List</span>
                             
                             </div>
                          <div id="descOuter<%=level%>" style="height:500px; overflow:auto;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px; font-size:16px;width:98%; text-align:left;">
@@ -198,10 +198,10 @@
 					interactive: false
 				});*/
 				
-				$(".viewDetailTab").on("click", function(){
-							var oldID=new String($('.viewDetailTab.selected').attr("id"));
+				$(".viewDetailTab<%=level%>").on("click", function(){
+							var oldID=new String($('.viewDetailTab<%=level%>.selected').attr("id"));
 							$("#"+oldID.substr(4)).hide();
-							$('.viewDetailTab.selected').removeClass("selected");
+							$('.viewDetailTab<%=level%>.selected').removeClass("selected");
 							$(this).addClass("selected");
 							var id=new String($(this).attr("id"));
 							$("#"+id.substr(4)).show();

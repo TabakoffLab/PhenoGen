@@ -18,7 +18,7 @@
                             <TR>
                             <TD>
                             		General Overview of Tools
-                                    <video id="demoVideo" width="210px"  controls="controls">
+                                    <video id="demoVideo" width="210px"  controls="controls" poster="<%=contextRoot%>web/demo/detailed_transcript_fullv3.png">
                                         <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
                                         <source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
                                       <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%" >
@@ -28,7 +28,7 @@
                                 </TD>
                                 <TD>
                                 	Basic Browser Navigation
-                                <video width="210px" controls="controls">
+                                <video width="210px" controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo.png">
                                     <source src="web/demo/BrowserNavDemo.mp4" type="video/mp4">
                                     <source src="web/demo/BrowserNavDemo.webm" type="video/webm">
                                     <object data="web/demo/BrowserNavDemo.mp4" width="100%" >
@@ -37,7 +37,7 @@
                                 </TD>
                                 <TD>
                                 	Setting up Custom Tracks/Views
-                                <video width="210px" controls="controls">
+                                <video width="210px" controls="controls" poster="<%=contextRoot%>web/demo/customTrackDemo.png">
                                     <source src="web/demo/customTrackDemo.mp4" type="video/mp4">
                                     <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
                                   <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="100%" >

@@ -52,7 +52,7 @@ table.tooltipTable TD{
 	/*div#collapsableReport td.layout {
 		border:1px solid #CECECE;
 	}*/
-	span.detailMenu,span.selectdetailMenu,span.viewMenu,span.viewDetailTab{
+	span.detailMenu,span.selectdetailMenu,span.viewMenu,span.viewDetailTab0,span.viewDetailTab1{
 		border-color:#CCCCCC;
 		border:solid;
 		border-width: 1px 1px 0px 1px;
@@ -63,7 +63,7 @@ table.tooltipTable TD{
 		padding-right:15px;
 		cursor:pointer;
 	}
-	span.viewMenu,span.viewDetailTab{
+	span.viewMenu,span.viewDetailTab0,span.viewDetailTab1{
 		border-color:#000000;
 	}
 	span.detailMenu{
@@ -94,15 +94,15 @@ table.tooltipTable TD{
 		background:#47c647;
 	}
 	
-	span.viewMenu,span.viewDetailTab{
+	span.viewMenu,span.viewDetailTab0,span.viewDetailTab1{
 		background:#AEAEAE;
 		color:#000000;
 	}
-	span.viewMenu.selected, span.viewDetailTab.selected{
+	span.viewMenu.selected, span.viewDetailTab0.selected, span.viewDetailTab1.selected{
 		background:#DEDEDE;
 		color:#000000;
 	}
-	span.viewMenu:hover,span.viewDetailTab:hover{
+	span.viewMenu:hover,span.viewDetailTab0:hover,span.viewDetailTab1:hover{
 		background:#DEDEDE;
 		color:#000000;
 	}

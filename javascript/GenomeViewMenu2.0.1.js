@@ -12,7 +12,7 @@
 
 
 
-var viewMenu=[];
+
 
 
 function ViewMenu(level){
@@ -299,7 +299,9 @@ function ViewMenu(level){
 						that.viewList.push(d[i]);
 					}
 				}
-				that.readCookieViews();
+				if(trackInfo!=undefined){
+					that.readCookieViews();
+				}
 				that.generateViewList();
 				if(that.initialized==0 && that.level==0){
 					that.initialized=1;
@@ -360,12 +362,14 @@ function ViewMenu(level){
 					for(var k=0;k<obj.TrackList.length;k++){
 						//console.log(obj.TrackList[k].TrackClass);
 						var sourceTrack=trackInfo[obj.TrackList[k].TrackClass];
-						obj.TrackList[k].TrackID=sourceTrack.TrackID;
-						obj.TrackList[k].UserID=sourceTrack.UserID;
-						obj.TrackList[k].Name=sourceTrack.Name;
-						obj.TrackList[k].Description=sourceTrack.Description;
-						obj.TrackList[k].Organism=sourceTrack.Organism;
-						obj.TrackList[k].Controls=sourceTrack.Controls;
+						if(sourceTrack!=undefined){
+							obj.TrackList[k].TrackID=sourceTrack.TrackID;
+							obj.TrackList[k].UserID=sourceTrack.UserID;
+							obj.TrackList[k].Name=sourceTrack.Name;
+							obj.TrackList[k].Description=sourceTrack.Description;
+							obj.TrackList[k].Organism=sourceTrack.Organism;
+							obj.TrackList[k].Controls=sourceTrack.Controls;
+						}
 						var tmp=obj.TrackList[k];
 						if(tmp.Organism=="AA"||tmp.Organism==that.curOrg){
 							orgCount++;
