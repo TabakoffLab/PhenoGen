@@ -412,7 +412,7 @@ pageDescription="Genome Browser provides a vizualization of Microarray and RNA-S
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
 
-                1. Enter a gene identifier(e.g. gene symbol, probe set ID, ensembl ID, etc.) in the gene field.<BR />
+                1. Enter a gene identifier(e.g. gene symbol, probe set ID, Ensembl ID, etc.) in the gene field.<BR />
                 or<BR />
                 Enter a region such as
                 	<div style="padding-left:20px;">
@@ -741,7 +741,7 @@ Or
         </TD>
        </TR>
        <TR>
-       		<TD colspan="3" style="text-align:center;">
+       		<TD colspan="3" style="text-align:center; ">
                 <table style="width:98%">
                 <TR>
                                 <TD style="text-align:center;">

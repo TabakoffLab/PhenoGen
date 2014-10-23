@@ -82,3 +82,4 @@ web/exons/lib/
 .Trashes
 ehthumbs.db
 Thumbs.db
+/nbproject/private/
