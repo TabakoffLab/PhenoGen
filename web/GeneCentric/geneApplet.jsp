@@ -287,10 +287,10 @@ if(request.getParameter("arrayTypeID")!=null){
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.0.5.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeReport2.0.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.0.1.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.0.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.0.6.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeReport2.0.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.0.2.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.0.2.js" type="text/javascript"></script>
 				
             <script type="text/javascript">
 				function isLocalStorage(){
@@ -304,13 +304,14 @@ if(request.getParameter("arrayTypeID")!=null){
 					}
 				}
 			
-			
-                    var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
-					gs.forceDrawAs("Trx");
-					//loadStateFromCookie(0);
-					gs.xMax=maxCoord;
-					gs.xMin=minCoord;
-					//trackMenu[0].applyView();
+                    setTimeout(function(){
+                        var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
+                        gs.forceDrawAs("Trx");
+                        //loadStateFromCookie(0);
+                        gs.xMax=maxCoord;
+                        gs.xMin=minCoord;
+                        //trackMenu[0].applyView();
+                    },100);
 					
 					
 					$("span[name='"+defaultView+"']").addClass("selected");

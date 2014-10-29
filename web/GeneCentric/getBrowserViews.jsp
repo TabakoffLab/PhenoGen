@@ -32,7 +32,7 @@ response.setContentType("application/json");
 		BrowserView bv=views.get(i);%>
         <%if(i>0){%>,<%}%>
     	{
-        	"ViewID":<%=bv.getID()%>,
+        	"ViewID":"<%=bv.getID()%>",
             "UserID":<%=bv.getUserID()%>,
             "Name": "<%=bv.getName()%>",
             "Description": "<%=bv.getDescription()%>",
@@ -46,7 +46,7 @@ response.setContentType("application/json");
 						BrowserTrack btrk=btrks.get(j);%>
                         <%if(j>0){%>,<%}%>
                         {
-                        "TrackID":<%=btrk.getID()%>,
+                        "TrackID":"<%=btrk.getID()%>",
                         "UserID":<%=btrk.getUserID()%>,
                         "TrackClass": "<%=btrk.getTrackClass()%>",
                         "Name": "<%=btrk.getTrackName()%>",

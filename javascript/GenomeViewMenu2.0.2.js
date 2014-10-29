@@ -28,13 +28,13 @@ function ViewMenu(level){
 	that.generatePreview=function(d){
 		$("div#previewOuter"+that.level+" div#previewContent").html("");
 		var tmpOrg=new String(organism).toUpperCase();
-		if(d.Organism=="AA"||d.Organism==tmpOrg){
+		if(d.Organism==="AA"||d.Organism===tmpOrg){
 			var min=svgList[that.level].xScale.domain()[0];
 			var max=svgList[that.level].xScale.domain()[1];
 			that.previewSVG=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
 			$("div#ScrollLevel"+that.previewLevel).css("overflow","auto").css("max-height","430px");
 			var trackString=that.generateSettingsString(d);
-			if(trackString!=""){
+			if(trackString){
 					//console.log(trackString);
 					loadStateFromString(trackString,"",that.previewLevel,that.previewSVG);
 					that.previewSVG.updateData();
@@ -55,7 +55,7 @@ function ViewMenu(level){
 		var bvData=[];
 		//filter organism specific tracks out if they don't match current organism
 		for(var i=0;i<d.TrackList.length;i++){
-			if(d.TrackList[i].Organism=="AA"||(d.TrackList[i].Organism==that.curOrg)){
+			if(d.TrackList[i].Organism==="AA"||(d.TrackList[i].Organism===that.curOrg)){
 				bvData.push(d.TrackList[i]);
 			}
 		}
@@ -63,7 +63,7 @@ function ViewMenu(level){
 		d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').remove();
 		var tracktbl=d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').data(bvData)
 				.enter().append("tr").attr("class",function(d,i){
-				if(i%2==0){
+				if(i%2===0){
 					return "even";
 				}else{
 					return "odd";
@@ -77,11 +77,11 @@ function ViewMenu(level){
 
 			d3.select(this).append("td").html(d.Name+info);
 			var species="";
-			if(d.Organism!="AA"){
+			if(d.Organism!=="AA"){
 				var shortOrg=d.Organism;
-				if(shortOrg=="RN"){
+				if(shortOrg==="RN"){
 					shortOrg="Rat";
-				}else if(shortOrg=="MM"){
+				}else if(shortOrg==="MM"){
 					shortOrg="Mouse";
 				}
 				species=shortOrg+" only";
@@ -89,7 +89,7 @@ function ViewMenu(level){
 			d3.select(this).append("td").html(species);
 			var edit="<span class=\"moveUp"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\" ><img src=\""+iconPath+"up_flat.png\"></span>";
 			edit=edit+" <span class=\"moveDown"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"down_flat.png\"></span>";
-			if(d.Controls!=undefined && d.Controls!="null" && d.Controls!=""){
+			if(d.Controls&&d.Controls.length>5){
 				edit=edit+"&nbsp&nbsp&nbsp<span class=\"trackSetting"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"gear_flat.png\"></span>";
 			}
 			edit=edit+"&nbsp&nbsp&nbsp<span class=\"delete"+that.level+"\" name=\""+d.TrackID+"\" style=\"cursor:pointer;\"><img src=\""+iconPath+"del_flat.png\"></span>";
@@ -98,7 +98,7 @@ function ViewMenu(level){
 			d3.select("table#trackListTbl"+that.level).selectAll(".trackSetting"+that.level)
 				.on("click",function(){
 					var trackID=d3.select(this).attr("name");
-					if(trackID!=that.selectedTrackSetting){
+					if(trackID!==that.selectedTrackSetting){
 						var track=that.previewSVG.getTrack(that.findTrack(trackID).TrackClass);
 						track.generateSettingsDiv("div#trackSettingContent");
 						//that.generateSettingsDiv(that.findTrack(trackID));
@@ -193,7 +193,7 @@ function ViewMenu(level){
 		that.setupImage(settingStr,d);
 		$("div.viewsLevel"+that.level).hide();
 		$("div.trackLevel"+that.level).hide();
-		if(d.Source=="db"){
+		if(d.Source==="db"){
 			$.ajax({
 					url:  contextPath +"/"+ pathPrefix +"addBrowserCount.jsp",
 	   				type: 'GET',
@@ -209,7 +209,7 @@ function ViewMenu(level){
 		var d=NaN;
 		var ind=-1;
 		for(var i=0;i<that.filterList.length&&isNaN(d);i++){
-			if(that.filterList[i].ViewID==viewID){
+			if(that.filterList[i].ViewID===viewID){
 				d=that.filterList[i];
 				ind=i;
 			}
@@ -229,7 +229,7 @@ function ViewMenu(level){
 		svgList[that.level].updateLinks();
 		loadStateFromString(settingString,d.imgSettings,that.level,svgList[that.level]); 
 		$("span#viewLbl"+that.level).html("View: "+d.Name);
-		if(d.UserID==0){
+		if(d.UserID===0){
 			$("li#menusaveView"+that.level).addClass("ui-state-disabled");
 			$("li#menudeleteView"+that.level).addClass("ui-state-disabled");
 		}else{
@@ -246,7 +246,7 @@ function ViewMenu(level){
 			 	$(this).html(grab+(i + 1));
 		});
 		d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').attr("class",function(d,i){
-				if(i%2==0){
+				if(i%2===0){
 					return "even";
 				}else{
 					return "odd";
@@ -276,7 +276,7 @@ function ViewMenu(level){
 
 	that.getViewData=function(){
 		var tmpContext=contextPath +"/"+ pathPrefix;
-		if(pathPrefix==""){
+		if(!pathPrefix){
 			tmpContext="";
 		}
 		
@@ -287,11 +287,11 @@ function ViewMenu(level){
 				that.viewList=[];
 				//that.viewList=d;
 				for(var i=0;i<d.length;i++){
-					if(d[i].Organism=="AA"||d[i].Organism==that.curOrg){
+					if(d[i].Organism==="AA"||d[i].Organism===that.curOrg){
 						var orgCount=0;
 						for(var j=0;j<d[i].TrackList.length;j++){
 							var tmp=d[i].TrackList[j];
-							if(tmp.Organism=="AA"||tmp.Organism==that.curOrg){
+							if(tmp.Organism==="AA"||tmp.Organism===that.curOrg){
 								orgCount++;
 							}
 						}
@@ -299,14 +299,14 @@ function ViewMenu(level){
 						that.viewList.push(d[i]);
 					}
 				}
-				if(trackInfo!=undefined){
+				if(trackInfo){
 					that.readCookieViews();
 				}
 				that.generateViewList();
-				if(that.initialized==0 && that.level==0){
+				if(that.initialized===0 && that.level===0){
 					that.initialized=1;
 					that.applySelectedView($("#defaultView").val());
-				}else if(that.level==1){
+				}else if(that.level===1){
 					that.initialized=1;
 					that.applySelectedView(svgViewIDList[that.level]);
 				}
@@ -319,22 +319,22 @@ function ViewMenu(level){
 		var viewString="";
 		if(isLocalStorage() === true){
 			var cur=localStorage.getItem("phenogenCustomViews");
-			if(cur!=undefined){
+			if(cur){
 				viewString=cur;
 			}
 		}else{
-			if($.cookie("phenogenCustomViews")!=null){
+			if($.cookie("phenogenCustomViews")){
 				viewString=$.cookie("phenogenCustomViews");
 			}
 		}
-		if(viewString!=null&&viewString.indexOf("<///>")>-1){
+		if(viewString && viewString.indexOf("<///>")>-1){
 			var viewStrings=viewString.split("<///>");
 			for(var j=0;j<viewStrings.length;j++){
 				var params=viewStrings[j].split("</>");
 				var obj={};
 				for(k=0;k<params.length;k++){
 					var values=params[k].split("=");
-					if(values[0]=="TrackSettingList"){
+					if(values[0]==="TrackSettingList"){
 						var trList=values[1].split(";");
 						obj.TrackList=[];
 						for(var m=0;m<trList.length;m++){
@@ -362,7 +362,7 @@ function ViewMenu(level){
 					for(var k=0;k<obj.TrackList.length;k++){
 						//console.log(obj.TrackList[k].TrackClass);
 						var sourceTrack=trackInfo[obj.TrackList[k].TrackClass];
-						if(sourceTrack!=undefined){
+						if(sourceTrack){
 							obj.TrackList[k].TrackID=sourceTrack.TrackID;
 							obj.TrackList[k].UserID=sourceTrack.UserID;
 							obj.TrackList[k].Name=sourceTrack.Name;
@@ -371,7 +371,7 @@ function ViewMenu(level){
 							obj.TrackList[k].Controls=sourceTrack.Controls;
 						}
 						var tmp=obj.TrackList[k];
-						if(tmp.Organism=="AA"||tmp.Organism==that.curOrg){
+						if(tmp.Organism==="AA"||tmp.Organism===that.curOrg){
 							orgCount++;
 						}
 					}
@@ -398,14 +398,14 @@ function ViewMenu(level){
 	that.selectChange=function(){
 					var append="";
 					var d=that.findSelectedView();
-					if(d.Organism!="AA"){
-							if(d.Organism=="RN"){
+					if(d.Organism!=="AA"){
+							if(d.Organism==="RN"){
 								append="<BR><BR>Available for Rat Only";
-							}else if(d.Organism=="MM"){
+							}else if(d.Organism==="MM"){
 								append="<BR><BR>Available for Mouse Only";
 							}
 					}
-					if(d.UserID==0){
+					if(d.UserID===0){
 						$("#deleteView"+that.level).hide();
 					}else{
 						$("#deleteView"+that.level).show();
@@ -433,7 +433,7 @@ function ViewMenu(level){
 		var id=$("#viewSelect"+that.level).val();
 		var d=NaN;
 		for(var i=0;i<that.viewList.length&&isNaN(d);i++){
-			if(that.viewList[i].ViewID==id){
+			if(that.viewList[i].ViewID===id){
 				d=that.viewList[i];
 			}
 		}
@@ -444,7 +444,7 @@ function ViewMenu(level){
 		var id=$("#viewSelect"+that.level).val();
 		var d=NaN;
 		for(var i=0;i<that.viewList.length&&isNaN(d);i++){
-			if(that.viewList[i].ViewID==id){
+			if(that.viewList[i].ViewID===id){
 				d=i;
 			}
 		}
@@ -454,7 +454,7 @@ function ViewMenu(level){
 	that.findDisplayedIndex=function(id){
 		var ind=NaN;
 		for(var i=0;i<that.filterList.length&&isNaN(ind);i++){
-			if(that.filterList[i].ViewID==id){
+			if(that.filterList[i].ViewID===id){
 				ind=i;
 			}
 		}
@@ -466,7 +466,7 @@ function ViewMenu(level){
 		var trackList=d.TrackList;
 		var td=NaN;
 		for(var i=0;i<trackList.length&&isNaN(td);i++){
-			if(trackList[i].TrackID==id){
+			if(trackList[i].TrackID===id){
 				td=trackList[i];
 			}
 		}
@@ -478,7 +478,7 @@ function ViewMenu(level){
 		var trackList=d.TrackList;
 		var td=NaN;
 		for(var i=0;i<trackList.length&&isNaN(td);i++){
-			if(trackList[i].TrackID==id){
+			if(trackList[i].TrackID===id){
 				td=i;
 			}
 		}
@@ -566,7 +566,7 @@ function ViewMenu(level){
 
 			$(".control"+that.level+"#saveView"+that.level).on("click",function(){
 					var d=that.findSelectedView();
-					if(d.UserID==0){//if predefined prompt to save as
+					if(d.UserID===0){//if predefined prompt to save as
 						$("#predefinedSaveAs"+that.level).show();
 						that.saveAsView(d,that.previewSVG);
 					}else{//else save
@@ -609,9 +609,9 @@ function ViewMenu(level){
 		var filterValue=$("#viewTypeSelect"+that.level).val();
 
 		for(var i=0;i<that.viewList.length;i++){
-			if( filterValue=="all" ||
-				(filterValue=="predefined" && that.viewList[i].UserID==0)||
-				(filterValue=="custom" && that.viewList[i].UserID!=0)
+			if( filterValue==="all" ||
+				(filterValue==="predefined" && that.viewList[i].UserID===0)||
+				(filterValue==="custom" && that.viewList[i].UserID!==0)
 				){
 					//if(that.viewList[i].Organism=="AA"||that.viewList[i].Organism==that.curOrg){
 						that.filterList.push(that.viewList[i]);
@@ -625,11 +625,11 @@ function ViewMenu(level){
 					.selectAll('option').data(that.filterList);
 		opt.enter().append("option").attr("value",function(d){return d.ViewID;}).text(function(d){
 						var ret=d.Name;
-						if(d.UserID==0){
+						if(d.UserID===0){
 							ret=ret+"      (Predefined)";
 						}else{
-							var local=""
-							if(d.Source="local"){
+							var local="";
+							if(d.Source==="local"){
 								local=" local";
 							}else{
 								local=" server";
@@ -638,15 +638,15 @@ function ViewMenu(level){
 						}
 						ret=ret+"     ("+d.orgCount+" tracks)";
 
-						if(d.Organism!="AA"){
-							if(d.Organism=="RN"){
+						if(d.Organism!=="AA"){
+							if(d.Organism==="RN"){
 								ret=ret+"      (Rat Only)";
-							}else if(d.Organism=="MM"){
+							}else if(d.Organism==="MM"){
 								ret=ret+"     (Mouse Only)";
 							}
 						}
 
-						if(d.modified!=undefined && d.modified==1){
+						if(d.modified && d.modified===1){
 							ret=ret+"   (Modified)";
 						}
 						
@@ -671,12 +671,12 @@ function ViewMenu(level){
 	that.createNewView = function(){
 		$("#predefinedSaveAs"+that.level).hide();
 		if(uid>0){
-			if($("#function"+that.level).val()=="create"){
+			if($("#function"+that.level).val()==="create"){
 				var name=$("input#viewNameTxt"+that.level).val();
 				var desc=$("#viewDescTxt"+that.level).val();
 				var type=$("input#createType"+that.level).val();
 				var copyID=-1;
-				if(type=="copy"){
+				if(type==="copy"){
 					copyID=that.findSelectedView().ViewID;
 				}
 				$.ajax({
@@ -695,7 +695,7 @@ function ViewMenu(level){
 		    			},
 		    			async:   false
 					});
-			}else if($("#function"+that.level).val()=="saveAs"){
+			}else if($("#function"+that.level).val()==="saveAs"){
 				var name=$("input#viewNameTxt"+that.level).val();
 				var desc=$("#viewDescTxt"+that.level).val();
 				var type="blank";
@@ -751,12 +751,12 @@ function ViewMenu(level){
 			viewID=viewID+"_"+curTime;
 			newView="ViewID="+viewID+"</>UserID=-999</>Name="+name+"</>Description="+desc+"</>Organism="+organism.toUpperCase()+"</>imgSettings=displaySelect0=700;</>TrackSettingList=";
 			
-			if($("#function"+that.level).val()=="saveAs"){//save tracks to new view or copy
+			if($("#function"+that.level).val()==="saveAs"){//save tracks to new view or copy
 				var trackList=that.saveAsImg.generateSettingsString();
 				//var trackList=svgList[that.level].generateSettingsString();
 				newView=newView+trackList;
 				//console.log("tracklist part:"+trackList);
-			}else if(type=="copy"){
+			}else if(type==="copy"){
 				var trackList="";
 				var sourceTracks=that.findSelectedView().TrackList;
 				for(var k=0;k<sourceTracks.length;k++){
@@ -772,14 +772,14 @@ function ViewMenu(level){
 
 			if(isLocalStorage() === true){
 				var cur=localStorage.getItem("phenogenCustomViews");
-				if(cur!=undefined){
+				if(cur){
 					localStorage.setItem("phenogenCustomViews",cur+newView);
 				}else{
 					localStorage.setItem("phenogenCustomViews",newView);
 				}
 			}else{
 				var cookieStr="";
-				if($.cookie("phenogenCustomViews")!=null){
+				if($.cookie("phenogenCustomViews")){
 					cookieStr=$.cookie("phenogenCustomViews")+newView;
 				}else{
 					cookieStr=newView;
@@ -823,11 +823,11 @@ function ViewMenu(level){
 			var newCookie="";
 			if(isLocalStorage() === true){
 				var cur=localStorage.getItem("phenogenCustomViews");
-				if(cur!=undefined){
+				if(cur){
 					cookieStr=cur;
 				}
 			}else{
-				if($.cookie("phenogenCustomViews")!=null){
+				if($.cookie("phenogenCustomViews")){
 					cookieStr=$.cookie("phenogenCustomViews");
 				}
 			}
@@ -870,10 +870,12 @@ function ViewMenu(level){
 	};
 
 	that.confirmDeleteView = function(toDelete){
-		if(that.findSelectedView().ViewID!=toDelete.ViewID){
+                console.log("toDelete.UserID="+toDelete.UserID);
+                console.log(typeof toDelete.UserID);
+		if(that.findSelectedView().ViewID!==toDelete.ViewID){
 			that.setSelectedView(toDelete.ViewID);
 		}
-		if(toDelete.UserID>0||toDelete.UserID==-999){
+		if(toDelete.UserID>0||Number(toDelete.UserID)===-999){
 			$("div#selection"+that.level).hide();
 			$("#deleteViewName"+that.level).html(toDelete.Name+"    ("+toDelete.orgCount+ " tracks)");
 			$("#confirmDeleteView"+that.level).show();
@@ -890,14 +892,14 @@ function ViewMenu(level){
 	that.deleteView = function(){
 		var ind=that.findSelectedViewIndex();
 		var d=that.viewList[ind];
-		if(d.Source=="db"){
+		if(d.Source==="db"){
 			$.ajax({
 					url:  contextPath +"/"+ pathPrefix +"deleteView.jsp",
 	   				type: 'GET',
 					data: {viewID:d.ViewID},
 					dataType: 'json',
 	    			success: function(data2){
-	    				if(data2.status=="Deleted Successfully"){
+	    				if(data2.status==="Deleted Successfully"){
 	    					that.viewList.splice(ind,1);
 							that.generateViewList();
 	    				}
@@ -915,11 +917,11 @@ function ViewMenu(level){
 			
 			if(isLocalStorage() === true){
 				var cur=localStorage.getItem("phenogenCustomViews");
-				if(cur!=undefined){
+				if(cur){
 					cookieStr=cur;
 				}
 			}else{
-				if($.cookie("phenogenCustomViews")!=null){
+				if($.cookie("phenogenCustomViews")){
 					cookieStr=$.cookie("phenogenCustomViews");
 				}
 			}
@@ -950,7 +952,7 @@ function ViewMenu(level){
 
 		$("#viewSelect"+that.level).prop("selectedIndex",0);
 		that.selectChange();
-		if(svgList[that.level].currentView.ViewID==d.ViewID){
+		if(svgList[that.level].currentView.ViewID===d.ViewID){
 			that.applyView();
 		}
 
