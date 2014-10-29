@@ -47,32 +47,32 @@ $(document).on('click','span.detailMenu', function (event){
     $("div#"+baseName).show();
     //check if loaded load if not
     var curRptRegion=chr+":"+minCoord+"-"+maxCoord;
-    if(baseName=="regionTable"){
-		curRptRegion=curRptRegion+":"+reportSelectedTrack;
-	}
+    if(baseName==="regionTable"){
+	curRptRegion=curRptRegion+":"+reportSelectedTrack;
+    }
 
-	if(regionDetailLoaded[baseName] && regionDetailLoaded[baseName]==curRptRegion){
-				//don't have to load might reset?
-	}else{
-		if(baseName=="regionTable" && reportSelectedTrack!=null){
-					loadTrackTable();
-		}else if(baseName="regionEQTLTable"){
-					loadEQTLTable();
-		}
-		regionDetailLoaded[baseName]=curRptRegion;
-	}
-	if(baseName="regionEQTLTable"){
-		if(typeof tblFrom != 'undefined'){
-			tblFrom.fnAdjustColumnSizing();
-		}
-	}
+    if(regionDetailLoaded[baseName] && regionDetailLoaded[baseName]===curRptRegion){
+                            //don't have to load might reset?
+    }else{
+            if(baseName==="regionTable" && reportSelectedTrack){
+                                    loadTrackTable();
+            }else if(baseName==="regionEQTLTable"){
+                                    loadEQTLTable();
+            }
+            regionDetailLoaded[baseName]=curRptRegion;
+    }
+    if(baseName==="regionEQTLTable"){
+            if(tblFrom){
+                    tblFrom.fnAdjustColumnSizing();
+            }
+    }
 });
 
 function loadTrackTable(){
 	//console.log("loadTrackTable");
 	//console.log(reportSelectedTrack.trackClass);
 	var curRptRegion=chr+":"+minCoord+"-"+maxCoord+":"+reportSelectedTrack.trackClass;
-	if( loadedTrackTable!=null  && loadedTrackTable==curRptRegion){
+	if( loadedTrackTable && loadedTrackTable===curRptRegion){
 				//don't have to load might reset?
 				//console.log(curRptRegion);
 				//console.log(loadedTrackTable);
@@ -103,13 +103,13 @@ function loadTrackTable(){
 			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
 				params.source="brain";
 			}
-		}else if(reportSelectedTrack.trackClass=="liverTotal"||reportSelectedTrack.trackClass=="heartTotal"||reportSelectedTrack.trackClass=="brainTotal"){
+		}else if(reportSelectedTrack.trackClass==="liverTotal"||reportSelectedTrack.trackClass==="heartTotal"||reportSelectedTrack.trackClass==="brainTotal"){
 			jspPage="web/GeneCentric/geneTable.jsp";
 			params.type="all";
 			params.source="liver";
-			if(reportSelectedTrack.trackClass=="heartTotal"){
+			if(reportSelectedTrack.trackClass==="heartTotal"){
 				params.source="heart";
-			}else if(reportSelectedTrack.trackClass=="brainTotal"){
+			}else if(reportSelectedTrack.trackClass==="brainTotal"){
 				params.source="brain";
 			}
 		}else if(reportSelectedTrack.trackClass.indexOf("smallnc")>-1){
@@ -120,15 +120,15 @@ function loadTrackTable(){
 			jspPage="web/GeneCentric/smallGeneTable.jsp";
 		}else if((new String(reportSelectedTrack.trackClass)).indexOf("snp")>-1){
 			//jspPage="web/GeneCentric/snpTable.jsp";
-		}else if(reportSelectedTrack.trackClass=="qtl"){
+		}else if(reportSelectedTrack.trackClass==="qtl"){
 			jspPage="web/GeneCentric/bqtlTable.jsp";
-		}else if(reportSelectedTrack.trackClass=="transcript"){
+		}else if(reportSelectedTrack.trackClass==="transcript"){
 
 			//jspPage="web/GeneCentric/transcriptTable.jsp";
 		}else{
 
 		}
-		if(jspPage!=""){
+		if(jspPage){
 			loadDivWithPage("div#regionTable",jspPage,params,
 						"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		}
@@ -191,7 +191,7 @@ function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
 
 function trKey(d){
 	var key="";
-	if(d!=undefined){
+	if(d){
 		key=d.trackClass;
 	}
 	return key;
@@ -202,19 +202,19 @@ function DisplayRegionReport(){
 		//d3.select('#collaspableReportList').selectAll('li').remove();
 	if(d3.select('#collapsableReportList').size()>0){
 			var tmptrackList=svgList[0].trackList;
-			if(reportSelectedTrack==null){
-				for(var i=0;i<tmptrackList.length&&reportSelectedTrack==null;i++){
+			if(reportSelectedTrack){
+				for(var i=0;i<tmptrackList.length&&!reportSelectedTrack;i++){
 					//console.log(tmptrackList[i].trackClass);
 					//console.log(tmptrackList[i].getDisplayedData);
-					if(tmptrackList[i]!=undefined && tmptrackList[i].getDisplayedData!=undefined){
+					if(tmptrackList[i] && tmptrackList[i].getDisplayedData){
 						reportSelectedTrack=tmptrackList[i];
 					}
 				}
 			}
 			var list=d3.select('#collapsableReportList').selectAll('li.report').data(tmptrackList,trKey).html(function(d){
 					var label="";
-					if(d!=undefined){
-						if(d.getDisplayedData!=undefined){
+					if(d){
+						if(d.getDisplayedData){
 							var data=d.getDisplayedData();
 							label=d.label+": "+data.length;
 						}
@@ -223,11 +223,11 @@ function DisplayRegionReport(){
 			});
 
 			list.enter().append("li")
-				.attr("class",function (d){if(d!=undefined){return "report "+d.trackClass;}else{return "report";}})
+				.attr("class",function (d){if(d){return "report "+d.trackClass;}else{return "report";}})
 				.html(function(d){
 						var label="";
-						if(d!=undefined){
-							if(d.getDisplayedData!=undefined){
+						if(d){
+							if(d.getDisplayedData){
 								var data=d.getDisplayedData();
 								label=d.label+": "+data.length;
 							}
@@ -238,7 +238,7 @@ function DisplayRegionReport(){
 
 			list.exit().remove();
 
-			if(!$('div#collapsableReport').is(":hidden") && reportSelectedTrack!=null){
+			if(!$('div#collapsableReport').is(":hidden") && reportSelectedTrack){
 				displayDetailedView(reportSelectedTrack);
 			}
 		}
@@ -249,7 +249,7 @@ function displayDetailedView(track){
 	reportSelectedTrack=track;
 	$('li.report').removeClass("selected");
 	$("li."+track.trackClass).addClass("selected");
-	if(track.displayBreakDown!=undefined){
+	if(track.displayBreakDown){
 		$('div#trackGraph').html("");
 		track.displayBreakDown("div#collapsableReport div#trackGraph");
 	}

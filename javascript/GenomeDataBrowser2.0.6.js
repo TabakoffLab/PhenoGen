@@ -34,7 +34,16 @@ var customTrackCount=0;
 var testChrome=/chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
 var testSafari=/safari/.test(navigator.userAgent.toLowerCase());
 var testFireFox=/firefox/.test(navigator.userAgent.toLowerCase());
-var testIE=/(wow|.net)/.test(navigator.userAgent.toLowerCase());
+var testIE=/(wow|.net|ie)/.test(navigator.userAgent.toLowerCase());
+if(testChrome && testSafari){
+    testSafari=false;
+}
+/*console.log(navigator.userAgent.toLowerCase());
+console.log("chrome:"+testChrome);
+console.log("safari:"+testSafari);
+console.log("ie:"+testIE);
+console.log("firefox:"+testFireFox);*/
+
 
 //var defaultMouseFunct="pan";
 
@@ -58,12 +67,14 @@ ratOnly.brainsmallnc=1;
 ratOnly.heartTotal=1;
 ratOnly.heartilluminaTotalPlus=1;
 ratOnly.heartilluminaTotalMinus=1;
+ratOnly.probe=1;
+
 
 mouseOnly.brainTotal=1;
 mouseOnly.brainilluminaTotalPlus=1;
 mouseOnly.brainilluminaTotalMinus=1;
 mouseOnly.brainspliceJnct=1;
-
+mouseOnly.probeMouse=1;
 
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
@@ -1231,7 +1242,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				var newTrack= TranscriptTrack(that,txList,track,density);
 				that.addTrackList(newTrack);
 
-		}else if(track=="probe"){
+		}else if(track=="probe"||track=="probeMouse"){
 				d3.xml(dataPrefix+"tmpData/regionData/"+that.folderName+"/probe.xml",function (error,d){
 					if(error){
 						if(retry<3){//wait before trying again
@@ -2445,7 +2456,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			additionalOptions=currentSettings;
 			//console.log("current Settings:"+currentSettings);
 		}
-		if(track=="genomeSeq"){
+		if(track==="genomeSeq"){
 			var newTrack= SequenceTrack(that,track,"Reference Genomic Sequence",additionalOptions);
 			newTrack.seqRegionSize=10;
 			that.addTrackList(newTrack);
@@ -2455,11 +2466,11 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}else if(track.indexOf("coding")>-1){
 			var newTrack= GeneTrack(that,data,track,"Protein Coding/PolyA+ Transcripts",additionalOptions);
 			that.addTrackList(newTrack);
-		}else if(track=="liverTotal" || track=="heartTotal" || track=="brainTotal"){
+		}else if(track==="liverTotal" || track==="heartTotal" || track==="brainTotal"){
 			var lbl="Liver Total RNA Transcripts";
-			if(track=="heartTotal"){
+			if(track==="heartTotal"){
 				lbl="Heart Total RNA Transcripts";
-			}else if(track=="brainTotal"){
+			}else if(track==="brainTotal"){
 				lbl="Brain Total RNA Transcripts";
 			}
 			var newTrack= GeneTrack(that,data,track,lbl,additionalOptions);
@@ -2467,29 +2478,29 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}else if(track.indexOf("smallnc")>-1){
 			var newTrack= GeneTrack(that,data,track,"Small RNA (<200 bp) Genes",additionalOptions);
 			that.addTrackList(newTrack);
-		}else if(track.indexOf("refSeq")==0){
-			if(that.levelNumber==99){
+		}else if(track.indexOf("refSeq")===0){
+			if(that.levelNumber===99){
 				additionalOptions=additionalOptions+"DrawTrx,";
 			}
 			var newTrack= RefSeqTrack(that,data,track,"Ref Seq Genes",additionalOptions);
-			if(that.levelNumber==99){
+			if(that.levelNumber===99){
 				newTrack.density=2;
 			}else{
 				newTrack.density=density;
 			}
 			that.addTrackList(newTrack);
-		}else if(track.indexOf("snp")==0){
+		}else if(track.indexOf("snp")===0){
 			var newTrack= SNPTrack(that,data,track,1,"4");
 			that.addTrackList(newTrack);
-		}else if(track=="qtl"){
+		}else if(track==="qtl"){
 			var newTrack= QTLTrack(that,data,track,1);
 			that.addTrackList(newTrack);
-		}else if(track=="trx"){
+		}else if(track==="trx"){
 				var txList=getAllChildrenByName(getFirstChildByName(that.selectedData,"TranscriptList"),"Transcript");
 				var newTrack= TranscriptTrack(that,txList,track,density);
 				that.addTrackList(newTrack);
-		}else if(track=="probe"){
-				if(that.levelNumber!=99){
+		}else if(track==="probe"||track==="probeMouse"){
+				if(that.levelNumber!==99){
 					additionalOptions=density+","+additionalOptions;
 				}
 				var newTrack= ProbeTrack(that,data,track,"Affy Exon 1.0 ST Probe Sets",additionalOptions);
@@ -2497,56 +2508,56 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				that.addTrackList(newTrack);
 		}else if(track.indexOf("spliceJnct")>-1){
 				var lblPrefix="Brain ";
-				if(track=="liverspliceJnct"){
+				if(track==="liverspliceJnct"){
 					lblPrefix="Liver ";
-				}else if(track=="heartspliceJnct"){
+				}else if(track==="heartspliceJnct"){
 					lblPrefix="Heart ";
 				}
 				var newTrack= SpliceJunctionTrack(that,data,track,lblPrefix+"Splice Junctions",3,"");
-				if(that.levelNumber==100){
+				if(that.levelNumber===100){
 					newTrack.density=density;
 				}
 				that.addTrackList(newTrack);
-		}else if(track=="polyASite"){
+		}else if(track==="polyASite"){
 				var newTrack= PolyATrack(that,data,track,"Predicted PolyA Sites",additionalOptions);
 				that.addTrackList(newTrack);
-		}else if(track=="helicos"||track.indexOf("illuminaTotal")>-1||track.indexOf("illuminaSmall")>-1||track=="illuminaPolyA"){
-			if(that.updateTimeoutHandle[track]==undefined){
+		}else if(track==="helicos"||track.indexOf("illuminaTotal")>-1||track.indexOf("illuminaSmall")>-1||track==="illuminaPolyA"){
+			if(that.updateTimeoutHandle[track]){
 				that.updateTimeoutHandle[track]=-1;
 			}
 			var newTrack;
 			var curDensity=2;
 			var opts=currentSettings.split(",");
-			if(opts.length>1&&(opts[1]==1||opts[1]==2)){
+			if(opts.length>1&&(opts[1]===1||opts[1]===2)){
 				curDensity=opts[1];
 			}
-			if(track=="helicos"){
+			if(track==="helicos"){
 				newTrack= HelicosTrack(that,data,track,curDensity);
-			}else if(track=="illuminaTotal"){
+			}else if(track==="illuminaTotal"){
 				newTrack= IlluminaTotalTrack(that,data,track,curDensity);
-			}else if(track=="illuminaSmall"){
+			}else if(track==="illuminaSmall"){
 				newTrack= IlluminaSmallTrack(that,data,track,curDensity);
-			}else if(track=="illuminaPolyA"){
+			}else if(track==="illuminaPolyA"){
 				newTrack= IlluminaPolyATrack(that,data,track,curDensity);
-			}else if(track=="liverilluminaTotalPlus"){
+			}else if(track==="liverilluminaTotalPlus"){
 				newTrack= LiverIlluminaTotalPlusTrack(that,data,track,curDensity);
-			}else if(track=="liverilluminaTotalMinus"){
+			}else if(track==="liverilluminaTotalMinus"){
 				newTrack= LiverIlluminaTotalMinusTrack(that,data,track,curDensity);
-			}else if(track=="heartilluminaTotalPlus"){
+			}else if(track==="heartilluminaTotalPlus"){
 				newTrack= HeartIlluminaTotalPlusTrack(that,data,track,curDensity);
-			}else if(track=="heartilluminaTotalMinus"){
+			}else if(track==="heartilluminaTotalMinus"){
 				newTrack= HeartIlluminaTotalMinusTrack(that,data,track,curDensity);
-			}else if(track=="brainilluminaTotalPlus"){
+			}else if(track==="brainilluminaTotalPlus"){
 				newTrack= BrainIlluminaTotalPlusTrack(that,data,track,curDensity);
-			}else if(track=="brainilluminaTotalMinus"){
+			}else if(track==="brainilluminaTotalMinus"){
 				newTrack= BrainIlluminaTotalMinusTrack(that,data,track,curDensity);
-			}else if(track=="liverilluminaSmall"){
+			}else if(track==="liverilluminaSmall"){
 				newTrack= LiverIlluminaSmallTrack(that,data,track,curDensity);
-			}else if(track=="heartilluminaSmall"){
+			}else if(track==="heartilluminaSmall"){
 				newTrack= HeartIlluminaSmallTrack(that,data,track,curDensity);
 			}
-			if(that.levelNumber==99){
-				if(that.updateTimeoutHandle[track]!=0){
+			if(that.levelNumber===99){
+				if(that.updateTimeoutHandle[track]!==0){
 					clearTimeout(that.updateTimeoutHandle[track]);
 					try{
 						clearTimeout(that.timeoutTrack[track].fullDataTimeOutHandle);
@@ -2565,12 +2576,12 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}else if(track.indexOf("custom")>-1){
 			var trackDetails=trackInfo[track];
 			additionalOptions="DataFile="+trackDetails.Location+","+additionalOptions;
-			if(trackDetails.Type=="bed"||trackDetails.Type=="bb"){
+			if(trackDetails.Type==="bed"||trackDetails.Type==="bb"){
 				var data=new Array();
 				var newTrack=CustomTranscriptTrack(that,data,track,trackDetails.Name,3,additionalOptions);
 				that.addTrackList(newTrack);
 				//newTrack.updateFullData(0,0);
-			}else if(trackDetails.Type=="bg"||trackDetails.Type=="bw"){
+			}else if(trackDetails.Type==="bg"||trackDetails.Type==="bw"){
 				var data=new Array();
 				var newTrack=CustomCountTrack(that,data,track,3,additionalOptions);
 				that.addTrackList(newTrack);

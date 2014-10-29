@@ -33,7 +33,7 @@ response.setContentType("application/json");
         BrowserTrack btrk=tracks.get(j);%>
         <%if(j>0){%>,<%}%>
         {
-        "TrackID":<%=btrk.getID()%>,
+        "TrackID":"<%=btrk.getID()%>",
         "UserID":<%=btrk.getUserID()%>,
         "TrackClass": "<%=btrk.getTrackClass()%>",
         "Name": "<%=btrk.getTrackName()%>",
