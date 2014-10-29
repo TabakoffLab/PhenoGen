@@ -90,18 +90,18 @@ function createDialog(selector, options) {
                      modal: true,
                      autoOpen: false,
                      overlay: { opacity: .4, background: "#ccc" },
-					 open: function( event, ui ) {
-						 if(typeof interval != 'undefined' && interval!=null){
-								window.clearInterval(interval);
-						 }
-					 },
-					 close: function( event, ui ) {
-						 if(typeof intervalTime != 'undefined' && intervalTime!=null){
-							interval=window.setInterval(function(){
-								location.reload(true);
-								}, intervalTime);
-						}
-					}
+                     open: function (event, ui) {
+                            if (typeof interval != 'undefined' && interval != null) {
+                                window.clearInterval(interval);
+                            }
+                        },
+                        close: function (event, ui) {
+                            if (typeof intervalTime != 'undefined' && intervalTime != null) {
+                                interval = window.setInterval(function () {
+                                    location.reload(true);
+                                }, intervalTime);
+                            }
+                        }
                     };
     $.extend(settings, options);
     var element = $(selector);
@@ -399,7 +399,7 @@ function setupDownloadButton(url) {
  *  this function sets up the events if there is more than one DOWNLOAD button on each row
 /*/
 function setupDownloadButtonByType(url) {
-	var modalOptions = {height: 550, width: 750, position: [250,150], title: "Download Resources"};
+	var modalOptions = {height: 550, width: 750, position: { my: "center", at: "center", of: window }, title: "Download Resources"};
 	downloadModal = createDialog( ".downloadItem", modalOptions );
 
 	$("table[name='items']").find("td div.download").click(function() {

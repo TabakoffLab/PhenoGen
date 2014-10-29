@@ -17,7 +17,7 @@
 					width: <%=width%>,
 					height: <%=height%>,
 					title: "Message", 
-					position: [<%=position%>]}).dialog("open");
+					position: { my: "center", at: "center", of: window } }).dialog("open");
 				closeDialog(msgDialog);
 			});
 		</script>

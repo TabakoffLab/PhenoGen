@@ -190,9 +190,6 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');
             
                 <script type="text/javascript">
                     var gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
-					
-					//loadStateFromCookie(0);		
-                    //$( "ul, li" ).disableSelection();
                 </script>
            </div>
         </div>

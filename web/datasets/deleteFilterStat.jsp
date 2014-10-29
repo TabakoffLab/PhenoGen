@@ -11,7 +11,7 @@
 <%@ include file="/web/datasets/include/datasetHeader.jsp"  %>
 <%
 	log.debug("DELETE FILTER STAT");
-	 extrasList.add("main.js");
+	 extrasList.add("main1.0.js");
 	
 	DataSource pool=(DataSource)session.getAttribute("dbPool");
 	
