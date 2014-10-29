@@ -275,7 +275,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
    		interactiveTolerance: 350
 		});
 		setupPage();
-        setTimeout("setupMain()", 100);
+                setTimeout("setupMain()", 100);
 	});
 </script>
 

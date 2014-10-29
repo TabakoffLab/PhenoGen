@@ -16,7 +16,7 @@
 <jsp:useBean id="myEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
 <% 
 	extrasList.add("main.css");
-	extrasList.add("main.js");
+	extrasList.add("main1.0.js");
 	loggedIn = false;
 	
 	String emailAddress = "";

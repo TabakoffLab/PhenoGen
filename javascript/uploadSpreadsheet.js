@@ -12,7 +12,7 @@ function IsUploadSpreadsheetFormComplete(){
                 fileNameField.focus();
                 return false;
         } else if (fileNameValue != '' && !isExcelFile(fileNameValue)) {
-                alert('The file you are uploading should have an extension of ''.xls''.  Provide an Excel file to upload.')
+                alert('The file you are uploading should have an extension of ".xls".  Provide an Excel file to upload.');
                 fileNameField.focus();
                 return false; 
         }

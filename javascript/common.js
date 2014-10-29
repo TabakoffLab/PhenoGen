@@ -9,7 +9,7 @@ function hideLoadingBox() {
 
 function showLoadingBox() {
 	$("div[class='load']").show();
-	var loading = createDialog(".load" , {draggable: false, resizable:false, width: 100, height: 100, position:[400,400]});
+	var loading = createDialog(".load" , {draggable: false, resizable:false, width: 100, height: 100, position: { my: "center", at: "center", of: window } });
 	loading.dialog("open");
 	loading.parents(".ui-dialog").find(".ui-dialog-titlebar").remove();
 	loading.parents(".ui-dialog").find(".ui-dialog-content").css({padding:"30px 20px"});

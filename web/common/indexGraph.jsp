@@ -61,7 +61,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
                                         <li><a href="web/overview/glPromoter.jsp">Promoter Analysis</a></li>
                                         <li><a href="web/overview/glShare.jsp">Compare/Share</a></li>
                                         <li><a href="web/overview/glHomolog.jsp">Homologs</a></li>
-                                        <li><a href="web/overview/glMultiMir.jsp">multiMiR</a></li>
+                                        <li><a href="web/overview/glMultiMiR.jsp">multiMiR</a></li>
                                     </UL>
                                 <li>Microarray Analysis</li>
                                     <UL class="sub" style="margin-left:40px;">
