@@ -79,7 +79,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.13.0(9/27/2014)";
+var siteVer="PhenoGen v2.13.1(10/30/2014)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -264,7 +264,7 @@ function mup() {
 function mmove(){
 	var i,p,minx,maxx,dist,scaleDist,start,width;
 	for (i=0; i<svgList.length; i++){
-		if(svgList[i]!==null && svgList[i].overSettings==0){
+		if(svgList[i]!==null && svgList[i].overSettings===0){
 			if (!isNaN(svgList[i].downx)) {
 	          p = d3.mouse(svgList[i].vis[0][0]), rupx = p[0];
 	          if (rupx !== 0) {
@@ -272,7 +272,7 @@ function mmove(){
 			  		maxx=Math.round(svgList[i].mw * (svgList[i].downx - svgList[i].downscalex.domain()[0]) / rupx + svgList[i].downscalex.domain()[0]);
 
 					if(maxx<=svgList[i].xMax && minx>=svgList[i].xMin){
-						if(i==0){
+						if(i===0){
 							$('#geneTxt').val(chr+":"+minx+"-"+maxx);
 						}
 	            		svgList[i].xScale.domain([minx,maxx]);
@@ -337,7 +337,7 @@ d3.select('html')
 
 $(window).resize(function (){
 	for (var i=0; i<svgList.length; i++){
-		if(svgList[i]!=null){
+		if(svgList[i]){
 			svgList[i].resize($(window).width()-25);
 		}
 	}
@@ -416,14 +416,14 @@ $(document).on("change","input[name='imgCBX']", function(){
 $(document).on("click",".reset",function(){
 	var id=new String($(this).attr("id"));
 	var level=id.substr(id.length-1);
-	if(id.indexOf("resetImage")==0){
-		if(level==0){
+	if(id.indexOf("resetImage")===0){
+		if(level===0){
 			$('#geneTxt').val(chr+":"+initMin+"-"+initMax);
 	        svgList[0].xScale.domain([initMin,initMax]);
 			svgList[0].scaleSVG.select(".x.axis").call(svgList[0].xAxis);
 			svgList[0].redraw();
 		}
-	}else if(id.indexOf("resetTracks")==0){
+	}else if(id.indexOf("resetTracks")===0){
 		svgList[level].removeAllTracks();
 		setupDefaultView(level);
 		//saveToCookie(level);
@@ -437,10 +437,17 @@ function numberWithCommas(x) {
 }
 
 function displayHelpFirstTime(){
-	if(navigator.userAgent.toLowerCase().indexOf("phantomjs")==-1){
-		if($.cookie("genomeBrowserHelp")!=null){
+	if(navigator.userAgent.toLowerCase().indexOf("phantomjs")===-1){
+            if($.cookie("genomeBrowserHelp")){
 	    	var trackListObj=$.cookie("genomeBrowserHelp");
-	    	if(trackListObj==siteVer){
+                var vInd=trackListObj.indexOf("v")+1;
+                var periodInd=trackListObj.indexOf(".",trackListObj.indexOf(".")+1);
+                trackListObj=trackListObj.substr(vInd,periodInd-vInd);
+                vInd=siteVer.indexOf("v")+1;
+                periodInd=siteVer.indexOf(".",siteVer.indexOf(".")+1);
+                var curVer=siteVer.substr(vInd,periodInd-vInd);
+	    	if(trackListObj===curVer){
+                    
 
 	    	}else{
 	    		$("a#fbhelp1").click();
@@ -4111,7 +4118,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			    				size="4.8px";
 		}
 		return size;
-	}
+	};
 	that.yPosition = function (len){
 		var size=12;
 		if(len<=100){
@@ -4126,7 +4133,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			size=5;
 		}
 		return size;
-	}
+	};
 	that.updateData=function(retry){
 		var curTime=(new Date()).getTime();
 		if(curTime-that.lastUpdate>25000||retry>0){
@@ -4137,10 +4144,10 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			}
 			if((that.xScale.domain()[1]-that.xScale.domain()[0])<that.aaDispCutoff){
 				that.lastUpdate=curTime;
-				if(that.svg!=undefined && that.svg.attr("height")<30){
+				if(that.svg && that.svg.attr("height")<30){
 					that.svg.attr("height", 30);
 				}
-				if(retry==0){
+				if(retry===0){
 					that.showLoading();
 				}
 				
@@ -4148,7 +4155,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 				d3.text(path,function (error,d){
 					if(error){
 						//console.log(error);
-						if(retry==0){
+						if(retry===0){
 									$.ajax({
 										url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
 						   				type: 'GET',
@@ -4164,7 +4171,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 						}
 						if(retry<3){//wait before trying again
 								var time=10000;
-								if(retry==1){
+								if(retry===1){
 										time=15000;
 								}
 								setTimeout(function (){
@@ -4232,17 +4239,17 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
 			for(var c=0;c<controls.length;c++){
-				if(controls[c]!=undefined && controls[c]!=""){
+				if(controls[c] && controls[c]!=""){
 					var params=controls[c].split(";");
 					
 					var div=table.append("tr").append("td");
 					var lbl=params[0].substr(5);
 					
 					var def="";
-					if(params.length>3  && params[3].indexOf("Default=")==0){
+					if(params.length>3  && params[3].indexOf("Default=")===0){
 						def=params[3].substr(8);
 					}
-					if(params[1].toLowerCase().indexOf("select")==0){
+					if(params[1].toLowerCase().indexOf("select")===0){
 						div.append("text").text(lbl+": ");
 						var selClass=params[1].split(":");
 						var opts=params[2].split("}");
@@ -4265,14 +4272,14 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 							that.updateSettingsFromUI();
 							that.redraw();
 						});
-					}else if(params[1].toLowerCase().indexOf("cbx")==0){	
+					}else if(params[1].toLowerCase().indexOf("cbx")===0){	
 						div.append("text").text(lbl);
 						var selClass=params[1].split(":");
 						var opts=params[2].split("}");
 						
 						for(var o=0;o<opts.length;o++){
 							var option=opts[o].substr(1).split(":");
-							if(option.length==2){
+							if(option.length===2){
 								var span=div.append("div").style("display","inline-block");
 								var suffix="";
 								var prefix="";
@@ -4355,7 +4362,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.density=3;
 
 	that.ttTrackList=[];
-	if(that.trackClass.indexOf("smallnc")==-1){	
+	if(that.trackClass.indexOf("smallnc")===-1){	
 		that.ttTrackList.push("ensemblcoding");
 		that.ttTrackList.push("braincoding");
 		that.ttTrackList.push("liverTotal");
@@ -4379,12 +4386,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.ttTrackList.push("snpSHRJ");
 	}
 
-	if(trackClass=="braincoding"){
+	if(trackClass==="braincoding"){
 		that.ttTrackList.push("illuminaPolyA");
-	}else if(trackClass=="liverTotal"){
+	}else if(trackClass==="liverTotal"){
 		that.ttTrackList.push("liverilluminaTotalPlus");
 		that.ttTrackList.push("liverilluminaTotalMinus");
-	}else if(trackClass=="heartTotal"){
+	}else if(trackClass==="heartTotal"){
 		that.ttTrackList.push("heartilluminaTotalPlus");
 		that.ttTrackList.push("heartilluminaTotalMinus");
 	}
@@ -4400,28 +4407,28 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	
 	that.color =function(d){
 		var color=d3.rgb("#000000");
-		if(that.trackClass=="ensemblcoding"){
+		if(that.trackClass==="ensemblcoding"){
 			color=d3.rgb("#DFC184");
-		}else if(that.trackClass=="braincoding"){
+		}else if(that.trackClass==="braincoding"){
 			color=d3.rgb("#7EB5D6");
-		}else if(that.trackClass=="ensemblnoncoding"){
+		}else if(that.trackClass==="ensemblnoncoding"){
 			color=d3.rgb("#B58AA5");
-		}else if(that.trackClass=="brainnoncoding"){
+		}else if(that.trackClass==="brainnoncoding"){
 			color=d3.rgb("#CECFCE");
-		}else if(that.trackClass=="ensemblsmallnc"){
+		}else if(that.trackClass==="ensemblsmallnc"){
 			color=d3.rgb("#FFCC00");
-		}else if(that.trackClass=="brainsmallnc"){
+		}else if(that.trackClass==="brainsmallnc"){
 			color=d3.rgb("#99CC99");
-		}else if(that.trackClass=="liverTotal"){
+		}else if(that.trackClass==="liverTotal"){
 			color=d3.rgb("#bbbedd");
-		}else if(that.trackClass=="heartTotal"){
+		}else if(that.trackClass==="heartTotal"){
 			color=d3.rgb("#DC7252");
 		}
-		else if(that.trackClass=="brainTotal"){
+		else if(that.trackClass==="brainTotal"){
 			color=d3.rgb("#7EB5D6");
-		}else if(that.trackClass=="liversmallnc"){
+		}else if(that.trackClass==="liversmallnc"){
 			color=d3.rgb("#8b8ead");
-		}else if(that.trackClass=="heartsmallnc"){
+		}else if(that.trackClass==="heartsmallnc"){
 			color=d3.rgb("#BC5232");
 		}
 		return color;
@@ -4433,7 +4440,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.getDisplayID=function(id){
 		if(that.trackClass.indexOf("smallnc")>-1){
-			if(id.indexOf("ENS")==-1){
+			if(id.indexOf("ENS")===-1){
 				var prefix="smRNA_";
 				id=id.substr(id.indexOf("_")+1);
 				id=id.replace(/^0+/, '');
@@ -4461,18 +4468,18 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			var gid=d.getAttribute("ID");
 			gid=that.getDisplayID(gid);
 			var geneSym="";
-			if(d.getAttribute("geneSymbol")!=undefined){
+			if(d.getAttribute("geneSymbol")){
 				geneSym=d.getAttribute("geneSymbol");
-			}else if(d.parent!=undefined && d.parent.getAttribute("geneSymbol")!=undefined){
+			}else if(d.parent && d.parent.getAttribute("geneSymbol")){
 				geneSym=d.parent.getAttribute("geneSymbol");
 			}
 			var strand=".";
-			if(d.getAttribute("strand")==1){
+			if(d.getAttribute("strand")===1){
 				strand="+";
-			}else if(d.getAttribute("strand")==-1){
+			}else if(d.getAttribute("strand")===-1){
 				strand="-";
 			}
-			if(d.parent!=undefined){
+			if(d.parent){
 				//console.log("tt text");
 				//console.log(d.parent);
 				var txList=getAllChildrenByName(getFirstChildByName(d.parent,"TranscriptList"),"Transcript");
@@ -4529,7 +4536,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 						txListStr+="<br>";
 					}else{
 						txListStr+="<B>"+id+"</B>";
-						if(new String(txList[m].getAttribute("ID")).indexOf("ENS")==-1 ){
+						if(new String(txList[m].getAttribute("ID")).indexOf("ENS")===-1 ){
 							var annot=getFirstChildByName(getFirstChildByName(txList[m],"annotationList"),"annotation");
 							if(annot!=null){
 								txListStr+=" - "+annot.getAttribute("reason");
@@ -4537,13 +4544,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 						}
 						txListStr+="<br>";
 					}
-					if(geneSym==""){
+					if(geneSym.length===0){
 						var annotList=getAllChildrenByName(getFirstChildByName(txList[m],"annotationList"),"annotation");
-						for(var p=0;p<annotList.length&&geneSym=="";p++){
-							if(annotList[p].getAttribute("source")=="AKA"){
+						for(var p=0;p<annotList.length&&geneSym.length===0;p++){
+							if(annotList[p].getAttribute("source")==="AKA"){
 								var aka=annotList[p].getAttribute("annot_value");
 								var akaList=new String(aka).split(":");
-								if(new String(akaList[akaList.length-1]).indexOf("ENS")!=0){
+								if(new String(akaList[akaList.length-1]).indexOf("ENS")!==0){
 									geneSym=akaList[akaList.length-1];
 								}else{
 									geneSym=akaList[0];
@@ -4561,7 +4568,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.calcY = function (start,end,i){
 		var tmpY=0;
-		if(that.density==3){
+		if(that.density===3){
 			if((start>=that.xScale.domain()[0]&&start<=that.xScale.domain()[1])||
 				(end>=that.xScale.domain()[0]&&end<=that.xScale.domain()[1])||
 				(start<=that.xScale.domain()[0]&&end>=that.xScale.domain()[1])){
@@ -4604,14 +4611,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 				var prevLine=-1;
 				var stop=0;
-				for(var scanLine=startLine;scanLine<yMax&&stop==0;scanLine++){
+				for(var scanLine=startLine;scanLine<yMax&&stop===0;scanLine++){
 					var available=0;
-					for(var pix=pixStart;pix<=pixEnd&&available==0;pix++){
+					for(var pix=pixStart;pix<=pixEnd&&available===0;pix++){
 						if(that.yArr[scanLine][pix]>available){
 							available=1;
 						}
 					}
-					if(available==0){
+					if(available===0){
 						yMax=scanLine;
 						stop=1;
 					}
@@ -4629,7 +4636,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}else{
 				tmpY=15;
 			}
-		}else if(that.density==2){
+		}else if(that.density===2){
 			tmpY=(i+1)*15;
 		}else{
 			tmpY=15;
@@ -4659,15 +4666,15 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		var tmpMax=that.xScale.domain()[1];
 		var len=tmpMax-tmpMin;
 		var overrideTrx=0;
-		if((len<that.trxCutoff&&that.drawnAs=="Gene")||(len>=that.trxCutoff&&that.drawnAs=="Trx"&&that.drawAs!="Trx")||(that.drawnAs=="Gene" && $("#forceTrxCBX"+that.gsvg.levelNumber).is(":checked"))){
+		if((len<that.trxCutoff&&that.drawnAs==="Gene")||(len>=that.trxCutoff&&that.drawnAs==="Trx"&&that.drawAs!=="Trx")||(that.drawnAs==="Gene" && $("#forceTrxCBX"+that.gsvg.levelNumber).is(":checked"))){
 			that.draw(that.data);	
 		}else{
 			
-				if(len<that.trxCutoff&&that.drawnAs=="Trx"&&that.drawAs!="Trx"){
+				if(len<that.trxCutoff&&that.drawnAs==="Trx"&&that.drawAs!=="Trx"){
 					overrideTrx=1;
 				}
-				if( (that.drawAs=="Gene"  && overrideTrx==0) || that.trackClass.indexOf("smallnc")>-1){
-					if(that.svg[0][0]!=null){
+				if( (that.drawAs==="Gene"  && overrideTrx===0) || that.trackClass.indexOf("smallnc")>-1){
+					if(that.svg[0][0]){
 						d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").attr("transform",function (d,i){
 									var st=that.xScale(d.getAttribute("start"));
 									return "translate("+st+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";
@@ -4698,12 +4705,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							}
 							d3This.select("text#strandTxt").text(fullChar);
 							var dThis=d;
-							if(that.density==2){
+							if(that.density===2){
 								var curLbl=dThis.getAttribute("ID");
-								if(dThis.getAttribute("geneSymbol")!=undefined && dThis.getAttribute("geneSymbol").length>0){
+								if(dThis.getAttribute("geneSymbol") && dThis.getAttribute("geneSymbol").length>0){
 									curLbl=curLbl+" ("+dThis.getAttribute("geneSymbol")+")";
 								}
-								if(d3This.select("text#lblTxt").size()==0){
+								if(d3This.select("text#lblTxt").size()===0){
 									d3This.append("svg:text").attr("dx",function(){
 											var xpos=that.xScale(dThis.getAttribute("start"));
 											if(xpos<($(window).width()/2)){
@@ -4732,29 +4739,29 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							}
 						});
 					}
-					if(that.density==1){
+					if(that.density===1){
 						that.svg.attr("height", 30);
-					}else if(that.density==2){
+					}else if(that.density===2){
 						that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").size()+1)*15);
-					}else if(that.density==3){
+					}else if(that.density===3){
 						that.svg.attr("height", (that.trackYMax+1)*15);
 					}
-				}else if(overrideTrx==1 || that.drawAs=="Trx"){
+				}else if(overrideTrx===1 || that.drawAs==="Trx"){
 					var txG=that.svg.selectAll(".trx"+that.gsvg.levelNumber);
 					txG//.attr("transform",function(d,i){ return "translate("+txXScale(d.getAttribute("start"))+","+i*15+")";})
 						.each(function(d,i){
 							var cdsStart=d.getAttribute("start");
 							var cdsStop=d.getAttribute("stop");
-							if(d.getAttribute("cdsStart")!=undefined&&d.getAttribute("cdsStop")!=undefined){
+							if(d.getAttribute("cdsStart") && d.getAttribute("cdsStop")){
 								cdsStart=d.getAttribute("cdsStart");
 								cdsStop=d.getAttribute("cdsStop");
 							}
 
 							exList=getAllChildrenByName(getFirstChildByName(d,"exonList"),"exon");
 							var pref="";
-							if(that.gsvg.levelNumber==1){
+							if(that.gsvg.levelNumber===1){
 								pref="tx";
-							}else if(that.gsvg.levelNumber==99){
+							}else if(that.gsvg.levelNumber===99){
 								pref="ttTx";
 							}
 							for(var m=0;m<exList.length;m++){
@@ -4766,11 +4773,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 									if(exStp>cdsStop){
 										ncStrt=cdsStop;
 										ncStp=exStp;
-										exStrt=exStrt;
+										//exStrt=exStrt;
 										exStp=cdsStop;
 									}else{
 										exStrt=cdsStart;
-										exStp=exStp;
+										//exStp=exStp;
 									}
 									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" rect#ExNC"+exList[m].getAttribute("ID"))
 										.attr("x",function(d){ return that.xScale(ncStrt); })
@@ -4799,7 +4806,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 									}else{
 										rectW=rectW-charW;
 										while(rectW>(charW+1)){
-											if(alt==0){
+											if(alt===0){
 												fullChar=fullChar+" ";
 												alt=1;
 											}else{
@@ -4818,12 +4825,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 								}
 							}
 							var dThis=d;
-							if(that.density==2){
+							if(that.density===2){
 								var curLbl=dThis.getAttribute("ID");
-								if(dThis.getAttribute("geneSymbol")!=undefined && dThis.getAttribute("geneSymbol").length>0){
+								if(dThis.getAttribute("geneSymbol") && dThis.getAttribute("geneSymbol").length>0){
 									curLbl=curLbl+" ("+dThis.getAttribute("geneSymbol")+")";
 								}
-								if(d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" text#lblTxt").size()==0){
+								if(d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" text#lblTxt").size()===0){
 									d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber).append("svg:text").attr("dx",function(){
 											var xpos=that.xScale(dThis.parent.getAttribute("start"));
 											if(xpos<($(window).width()/2)){
@@ -4851,11 +4858,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 								d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g.trx"+that.gsvg.levelNumber+"#"+pref+d.getAttribute("ID")+that.gsvg.levelNumber+" text#lblTxt").remove();
 							}	
 						});
-						if(that.density==1){
+						if(that.density===1){
 							that.svg.attr("height", 30);
-						}else if(that.density==2){
+						}else if(that.density===2){
 							that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber).size()+1)*15);
-						}else if(that.density==3){
+						}else if(that.density===3){
 							//that.svg.attr("height", (that.trackYMax+2)*15);
 						}
 				}
@@ -4865,14 +4872,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.setSelected=function(geneID){
-		if(geneID !=""){
+		if(geneID){
 			if(d3.selectAll("g.gene").size()>0){
 				//console.log("setup with genes");
 				d3.selectAll("rect.selected").each(function(){
 					d3.select(this).attr("class","").style("fill",that.color);
 					});
 				var gene=d3.select("g.gene rect#"+geneID);
-				if(gene != undefined){
+				if(gene){
 					gene.attr("class","selected").style("fill","green");
 					that.setupDetailedView(gene.data()[0]);
 					selectGene="";
@@ -4891,7 +4898,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.svg.selectAll("g.gene"+str).selectAll("rect").style("fill","green");
 				that.svg.selectAll("g.gene"+str).selectAll("text").style("opacity","0.3").style("fill","green");
 				var tmp;
-				if(that.svg.selectAll("g.gene"+str)[0][0]!=undefined){
+				if(that.svg.selectAll("g.gene"+str)[0][0]){
 					tmp=that.svg.selectAll("g.gene"+str)[0][0].__data__;
 					that.setupDetailedView(tmp.parent);
 				}
@@ -4918,7 +4925,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.setupDetailedView=function(d){
-		if(d!=undefined){
+		if(d){
 			that.gsvg.clearSelection();
 			var e = jQuery.Event("keyup");
 			e.which = 32; // # Some key code value
@@ -4934,34 +4941,34 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				$('div#selectedDetail').show();
 			}
 			var localTxType="none";
-			if(that.trackClass=="liverTotal"){
+			if(that.trackClass==="liverTotal"){
 				localTxType="liverTotal";
-			}else if(that.trackClass=="heartTotal"){
+			}else if(that.trackClass==="heartTotal"){
 				localTxType="heartTotal";
-			}else if(that.trackClass=="brainTotal"){
+			}else if(that.trackClass==="brainTotal"){
 				localTxType="brainTotal";
-			}else if(d.getAttribute("biotype")=="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
+			}else if(d.getAttribute("biotype")==="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
 				localTxType="protein";
-			}else if(d.getAttribute("biotype")!="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
+			}else if(d.getAttribute("biotype")!=="protein_coding" && (d.getAttribute("stop")-d.getAttribute("start"))>=200){
 				localTxType="long";
 			}else if((d.getAttribute("stop")-d.getAttribute("start"))<200){
 				localTxType="small";
 			}
 			var newMin=0;
 			var newMax=0;
-			if(localTxType=="protein"||localTxType=="long"||localTxType=="liverTotal"||localTxType=="heartTotal"||localTxType=="brainTotal"||(localTxType=="small"&& new String(d.getAttribute("ID")).indexOf("ENS")>-1)){
+			if(localTxType==="protein"||localTxType==="long"||localTxType==="liverTotal"||localTxType==="heartTotal"||localTxType==="brainTotal"||(localTxType==="small"&& new String(d.getAttribute("ID")).indexOf("ENS")>-1)){
 					var displayID=d.getAttribute("ID");
 					var akaENS="";
 					var akaGenSym="";
-					if(d.getAttribute("geneSymbol")!=undefined&&d.getAttribute("geneSymbol")!=""){
+					if(d.getAttribute("geneSymbol") && d.getAttribute("geneSymbol").length>0){
 						displayID=displayID+" ("+d.getAttribute("geneSymbol")+")";
 					}else{
 						var txList=getAllChildrenByName(getFirstChildByName(d,"TranscriptList"),"Transcript");
-						for(var m=0;m<txList.length&&akaENS=="";m++){
-							if(akaENS==""){
+						for(var m=0;m<txList.length&&akaENS==="";m++){
+							if(akaENS===""){
 								var annotList=getAllChildrenByName(getFirstChildByName(txList[m],"annotationList"),"annotation");
-								for(var p=0;p<annotList.length&&akaENS=="";p++){
-									if(annotList[p].getAttribute("source")=="AKA"){
+								for(var p=0;p<annotList.length&&akaENS.length===0;p++){
+									if(annotList[p].getAttribute("source")==="AKA"){
 										var aka=annotList[p].getAttribute("annot_value");
 										var akaList=new String(aka).split(":");
 										if(akaList.length>=1){
@@ -4979,12 +4986,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 					var min=d.getAttribute("start");
 					var max=d.getAttribute("stop");
-					if(d.getAttribute("extStart")!=undefined&&d.getAttribute("extStop")!=undefined){
+					if(d.getAttribute("extStart") && d.getAttribute("extStop")){
 						min=d.getAttribute("extStart");
 						max=d.getAttribute("extStop");
 					}
 
-					if(svgViewIDList[newLevel]==undefined){
+					if(!svgViewIDList[newLevel]){
 						svgViewIDList[newLevel]=that.gsvg.currentView.ViewID;
 					}
 					var newSvg= GenomeSVG("div#selectedImage",that.gsvg.width,min,max,newLevel,displayID,"transcript");
@@ -5004,8 +5011,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 				selectedGeneSymbol=d.getAttribute("geneSymbol");
 				selectedID=new String(d.getAttribute("ID"));
-				if(selectedID.indexOf("ENS")==-1){
-					if(akaENS!=""){
+				if(selectedID.indexOf("ENS")===-1){
+					if(akaENS.length>0){
 						selectedID=akaENS;
 					}
 				}
@@ -5018,8 +5025,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}else{
 					$('div#selectedReport').html("<BR><BR>Detailed Gene Reports are not currently provided for RNA-Seq(Cufflinks) generated genes that are novel and have not been matched to an existing annotated gene.  In the future overlapping probesets and SNPs will be summarized in the same manner.  This feature should be added by December 2014.  Please keep checking back or let us know you'd like to see it sooner.");
 				}
-			}else if(localTxType=="small"){
-				if(new String(d.getAttribute("ID")).indexOf("ENS")==-1){
+			}else if(localTxType==="small"){
+				if(new String(d.getAttribute("ID")).indexOf("ENS")===-1){
 					$('div#selectedImage').hide();
 					$('div#selectedReport').show();
 					newMin=d.getAttribute("start");
@@ -5043,14 +5050,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.getDisplayedData= function (){
 		var dispData=new Array();
 		var dispDataCount=0;
-		if(that.drawnAs=="Gene"){
+		if(that.drawnAs==="Gene"){
 			var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene");
 			that.counts=that.counts=[{value:0,names:"Ensembl"},{value:0,names:"Brain RNA-Seq"},{value:0,names:"Liver RNA-Seq"},{value:0,names:"Heart RNA-Seq"}];
 			var tmpDat=dataElem[0];
 			//console.log(dataElem);
 			if (!(typeof tmpDat === 'undefined')) {
 				for(var l=0;l<tmpDat.length;l++){
-					if(tmpDat[l].__data__ != undefined){
+					if(tmpDat[l].__data__){
 						var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
 						var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
 						//console.log("start:"+start+":"+stop);
@@ -5074,13 +5081,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}else{
 				that.counts=[];
 			}
-		}else if(that.drawnAs=="Trx"){
+		}else if(that.drawnAs==="Trx"){
 			var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber);
 			that.counts=that.counts=[{value:0,names:"Ensembl"},{value:0,names:"Brain RNA-Seq"},{value:0,names:"Liver RNA-Seq"},{value:0,names:"Heart RNA-Seq"}];
 			var tmpDat=dataElem[0];
 			if (!(typeof tmpDat === 'undefined')) {
 				for(var l=0;l<tmpDat.length;l++){
-					if(tmpDat[l].__data__ != undefined){
+					if(tmpDat[l].__data__ ){
 						var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
 						var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
 						//console.log("start:"+start+":"+stop);
@@ -5120,7 +5127,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			if(error){
 				if(retry<3){//wait before trying again
 							var time=10000;
-							if(retry==1){
+							if(retry===1){
 								time=15000;
 							}
 							setTimeout(function (){
@@ -5137,14 +5144,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				var checkName=new Array();
 				var curInd=0;
 				for(var l=0;l<data.length;l++){
-					if(data[l]!=undefined ){
+					if(data[l] ){
 						mergeddata[curInd]=data[l];
 						checkName[data[l].getAttribute("ID")]=1;
 						curInd++;
 					}
 				}
 				for(var l=0;l<that.data.length;l++){
-					if(that.data[l]!=undefined && checkName[that.data[l].getAttribute("ID")]==undefined){
+					if(that.data[l] && !checkName[that.data[l].getAttribute("ID")]){
 						mergeddata[curInd]=that.data[l];
 						curInd++;
 					}
@@ -5159,14 +5166,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.drawTrx=function (d,i){
 		var cdsStart=d.getAttribute("start");
 		var cdsStop=d.getAttribute("stop");
-		if(d.getAttribute("cdsStart")!=undefined && d.getAttribute("cdsStop")!=undefined){
+		if(d.getAttribute("cdsStart") && d.getAttribute("cdsStop")){
 			cdsStart=d.getAttribute("cdsStart");
 			cdsStop=d.getAttribute("cdsStop");
 		}
 		var pref="";
-		if(that.gsvg.levelNumber==1){
+		if(that.gsvg.levelNumber===1){
 			pref="tx";
-		}else if(that.gsvg.levelNumber==99){
+		}else if(that.gsvg.levelNumber===99){
 			pref="ttTx";
 		}
 		//var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#"+pref+d.getAttribute("ID"));
@@ -5490,20 +5497,20 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				.style("fill",that.color)
 				.style("cursor", "pointer")
 				.on("click", function(d){
-						//that.zoomToFeature(d);
-						
-						
-						that.setupDetailedView(d);
-						/*d3.selectAll("rect.selected").each(function(){
-								d3.select(this).attr("class","").style("fill",that.color);
-							});*/
-						d3.select(this).attr("class","selected").style("fill","green");
+                                            setTimeout(function(){
+                                                    //that.zoomToFeature(d);
+                                                    that.setupDetailedView(d);
+                                                    /*d3.selectAll("rect.selected").each(function(){
+                                                                    d3.select(this).attr("class","").style("fill",that.color);
+                                                            });*/
+                                                    d3.select(this).attr("class","selected").style("fill","green");
+                                                }.bind(this),10);
 					})
 				.on("dblclick", that.zoomToFeature)
 				.on("mouseover", function(d) { 
-						//if(mouseTTOver==0){
+                                        //if(mouseTTOver==0){
 						//console.log("MouseOver");
-						if(that.gsvg.isToolTip==0){
+						if(that.gsvg.isToolTip===0){
 							//console.log("not tooltip"); 
 							overSelectable=1;
 							$("#mouseHelp").html("<B>Click</B> to see additional details. <B>Double Click</B> to zoom in on this feature.");
@@ -5516,9 +5523,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				        	tt.html(that.createToolTip(d)) 
 				                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
 								.style("top", function(){return that.positionTTTop(d3.event.pageY);});
-				            if(d!=undefined){
+				            if(d){
 					            that.triggerTableFilter(d);
-					            if(that.trackClass.indexOf("smallnc")==-1){
+					            if(that.trackClass.indexOf("smallnc")===-1){
 					            	that.setupToolTipSVG(d,0.05);
 								}else{
 									//console.log("display tooltip svg");
@@ -5531,13 +5538,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 								}
 							}
 						}
-						//}
-			            //return false;
-		            })
+					//}
+                                        //return false;
+                                    })
 				.on("mouseout", function(d) { 
 					overSelectable=0;
 						$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-						if(d3.select(this).attr("class")!="selected"){
+						if(d3.select(this).attr("class")!=="selected"){
 							d3.select(this).style("fill",that.color);
 						}
 			            //that.gsvg.get('tt').transition(
@@ -5553,7 +5560,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 			
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").each( function(d){
-				if(d!=undefined){
+				if(d){
 					var d3This=d3.select(this);
 					var strChar=">";
 					if(d.getAttribute("strand")=="-1"){
@@ -5574,9 +5581,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 					d3This.append("svg:text").attr("dx","1").attr("dy","10").attr("id","strandTxt").style("pointer-events","none").text(fullChar);
 					var dThis=d;
-					if(that.density==2){
+					if(that.density===2){
 						var curLbl=dThis.getAttribute("ID");
-						if(dThis.getAttribute("geneSymbol")!=undefined && dThis.getAttribute("geneSymbol").length>0){
+						if(dThis.getAttribute("geneSymbol") && dThis.getAttribute("geneSymbol").length>0){
 							curLbl=curLbl+" ("+dThis.getAttribute("geneSymbol")+")";
 						}
 						d3This.append("svg:text").attr("dx",function(){
@@ -5630,20 +5637,22 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					.attr("pointer-events", "all")
 					.style("cursor", "pointer")
 					.on("click", function(d){
-						if(that.gsvg.levelNumber==0){
-							var str=(new String(d.parent.getAttribute("ID"))).replace(".","_");
-							that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("line").style("stroke",that.color);
-							that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("rect").style("fill",that.color);
-							that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("text").style("opacity","0.6").style("fill",that.color);
+                                                setTimeout(function(){
+                                                    if(that.gsvg.levelNumber==0){
+                                                            var str=(new String(d.parent.getAttribute("ID"))).replace(".","_");
+                                                            that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("line").style("stroke",that.color);
+                                                            that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("rect").style("fill",that.color);
+                                                            that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").selectAll("text").style("opacity","0.6").style("fill",that.color);
 
-							that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").each(function(){var tmpCl=new String($(this).attr("class"));tmpCl=tmpCl.replace(" selected","");$(this).attr("class",tmpCl);});
-							that.svg.selectAll("g.gene"+str).each(function(){var tmpCl=$(this).attr("class")+" selected";$(this).attr("class",tmpCl);});
-							
-							that.svg.selectAll("g.gene"+str).selectAll("line").style("stroke","green");
-							that.svg.selectAll("g.gene"+str).selectAll("rect").style("fill","green");
-							that.svg.selectAll("g.gene"+str).selectAll("text").style("opacity","0.3").style("fill","green");
-							that.setupDetailedView(d.parent);
-						}
+                                                            that.svg.selectAll("g.trx"+that.gsvg.levelNumber+".selected").each(function(){var tmpCl=new String($(this).attr("class"));tmpCl=tmpCl.replace(" selected","");$(this).attr("class",tmpCl);});
+                                                            that.svg.selectAll("g.gene"+str).each(function(){var tmpCl=$(this).attr("class")+" selected";$(this).attr("class",tmpCl);});
+
+                                                            that.svg.selectAll("g.gene"+str).selectAll("line").style("stroke","green");
+                                                            that.svg.selectAll("g.gene"+str).selectAll("rect").style("fill","green");
+                                                            that.svg.selectAll("g.gene"+str).selectAll("text").style("opacity","0.3").style("fill","green");
+                                                            that.setupDetailedView(d.parent);
+                                                    }
+                                                },10);
 					})
 					.on("dblclick", that.zoomToFeature)
 					.on("mouseover", function(d) {
