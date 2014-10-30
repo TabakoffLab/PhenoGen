@@ -18,6 +18,7 @@ var pValueCutoff=<%=pValueCutoff%>;
 var filterExpanded=0;
 var tblBQTLAdjust=false;
 var tblFromAdjust=false;
+var tblFrom;
 
 
 var ucsctype="region";
@@ -182,15 +183,15 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');
        		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.0.6.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport2.0.1.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.0.7.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport2.0.2.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.0.2.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.2.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">
                     var gs;
-                    setTimeout(function(){GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");},10);
+                    setTimeout(function(){GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");displayHelpFirstTime();},10);
                 </script>
            </div>
         </div>
