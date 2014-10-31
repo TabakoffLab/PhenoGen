@@ -35,8 +35,9 @@
 #	08/24/10	Laura Saba	Modified:	Corrected error in matching group names
 #	10/29/10	Laura Saba	Modified:	Corrected grouping error when a group has no members
 #	11/3/10		Laura Saba	Modified:	Corrected error when the input GOI list doesn't completely match data
-#	3/1/12	Spencer Mahaffey Modified: Read/Write HDF5 files.
+#	3/1/12	  Spencer Mahaffey Modified: Read/Write HDF5 files.
 #	3/8/12		Spencer Mahaffey Modified: Support multiple filters/stats per version.
+# 10/30/14  Spencer Mahaffey Modified: Move from h5r to rhdf5 support since h5r has been discontinued.
 #
 ####################################################
 
@@ -78,41 +79,54 @@
   #################################################
 
 	fileLoader('tzu.NumToChar.R')
-
-	#load(InputFile)
-	
-	#vPath<-strsplit(x=VersionPath,split='/',fixed=TRUE)
 	Version<-VersionPath
-	#Day<-vPath[[1]][2]
-	#exactTime<-vPath[[1]][3]
 	
-	require(h5r)
-	h5 <- H5File(InputFile, mode = "w")
-	gVersion<-getH5Group(h5, Version)
-	#gFilters<-getH5Group(gVersion, "Filters")
-	#gDay<-getH5Group(gFilters,Day)
-	#gFVer<-getH5Group(gDay,exactTime)
-	#gMulti<-getH5Group(gFVer,"Multi")
-	
+	require(rhdf5)
+  h5 <- H5Fopen (InputFile, flags = h5default("H5F_ACC_RD"))
+  gVersion<-H5Gopen(h5, Version)
 	ins <- scan(SampleFile, list(""))
 	Snames<-ins[[1]]
 	
-	ps <- getH5Dataset(gVersion, "Probeset")
-	Gnames<-ps[]
-	
-	ds <- getH5Dataset(gVersion, "Data")
-	Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
-	Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
-	rownames(Avgdata)<-Gnames
-	colnames(Avgdata)<-Snames
+  did <- H5Dopen(gVersion, "Probeset")
+  sid <- H5Dget_space(did)
+  ps <- H5Dread(did,bit64conversion='double')
+  H5Dclose(did)
+  H5Sclose(sid)
+  Gnames<-ps[]
 
+  did <- H5Dopen(gVersion,  "Data")
+  sid <- H5Dget_space(did)
+  ds <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  
+  # transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+  # to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+  # in the future as it wastes CPU time and Memory
+  ds<-t(ds)
 
-	gs <- getH5Dataset(gVersion, "Grouping")
-	grouping<-gs[1:attr(gs,"dims")[1]]
+  Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
+  Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
+  rownames(Avgdata)<-Gnames
+  colnames(Avgdata)<-Snames
+
+  did <- H5Dopen(gVersion,  "Grouping")
+  sid <- H5Dget_space(did)
+  gs <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  
+	grouping<-gs[1:dim(gs)[1]]
 	groups <- list()
 	for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
 	
-	dabgds <- getH5Dataset(gVersion, "DABGPval")
+  did <- H5Dopen(gVersion,  "DABGPval")
+  sid <- H5Dget_space(did)
+  dabgds <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  
+  dabgds <- t(dabgds)
 	DabgVal<-array(dim=c(dim(dabgds)[1],dim(dabgds)[2]))
 	DabgVal[,]<-dabgds[1:dim(dabgds)[1],1:dim(dabgds)[2]]
 	Absdata <- (DabgVal<0.0001)*2 - 1
@@ -199,6 +213,7 @@
 
 		###  Output txt file with Group Means and Standard Errors
 		write.table(GroupSpecific,file=OutputFileGroup,sep="\t",row.names=FALSE,quote=FALSE)
-
+  H5Gclose(gVersion)
+  H5Fclose(h5)
 }
 ## END
