@@ -38,15 +38,23 @@
                     Last updated: &nbsp; <%=dbUpdateDate%> 
                 </p>
         <%}%>
+        <BR><BR>
 		<h2>Tools Used on This Website</h2>
 		<p><a href="http://www.cisreg.ca/cgi-bin/oPOSSUM/opossum" target="POSSUM Master">Promoter (oPOSSUM)</a>:&nbsp;&nbsp; version 2.0</p>
 		<p><a href="http://meme.nbcr.net/meme" target="MEME Master">Promoter (MEME)</a>:&nbsp;&nbsp; version 4.9 patch 2</p>
 		<p><a href="http://www.r-project.org/" target="R Master">R</a>:&nbsp;&nbsp;version 3.1.0</p>
-		<p><a href="http://www.bioconductor.org/" target="R Master">BioConductor</a>:&nbsp;&nbsp;version 2.13</p>
-        <p><a href="http://multimir.ucdenver.edu/" target="_blank">multiMiR</a>:&nbsp;&nbsp;version 0.9.9.7</p>
+		<p><a href="http://www.bioconductor.org/" target="R Master">BioConductor</a>:&nbsp;&nbsp;version 2.14</p>
+        <p><a href="http://multimir.ucdenver.edu/" target="_blank">multiMiR</a>:&nbsp;&nbsp;version 1.0.1</p>
 		<!-- <p><a href="http://www.atlassian.com/" target="JIRA">JIRA</a>: &nbsp;&nbsp;version 3.1.1-#81 Professional Edition</p> -->
-		<p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on Feb 3rd, 2014 with annotation data from the following sources:</p>
-		</p>
+                <BR><BR>
+                <h2>Genome/Transcriptome Data Browser Annotations</h2>        
+                <ul>
+                    <li>Ensembl v77</li>
+                    <li>RefSeq(source:UCSC Genome Browser): Downloaded 10/31/2014</li>
+                </ul>
+                <BR><BR>
+                <h2>Annotations/Gene ID Matching</h2>
+                <p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on Oct 31st, 2014 with annotation data from the following sources:</p>
         <div style="overflow:auto;height:60%;">
             <ul>
                 <li>Annotation file for Affymetrix Genechip Drosophila Genome [DrosGenome1] na32</li>
@@ -69,17 +77,16 @@
                 <li>Annotation file for Codelink Rat Whole Genome </li>
                 <li>Annotation file for Codelink Mouse Whole Genome </li>
     
-                <li>Location data from Ensembl for Mouse, Human, and Rat from Ensembl Genes v74 </li>
-                <li>FlyBase gene_map_table_fb_2013_06.tsv file and fbgn_NAseq_Uniprot_fb_2014_01.tsv </li>
-                <li>MGI database links file generated from the ACC_Accession table on 2/3/2014</li>
-                <li>MGI_Coordinate.rpt links file, downloaded 2/3/2014</li>
-                <li>NCBI gene2accession file, downloaded 2/3/2014</li>
-                <li>NCBI gene2unigene file, downloaded 2/3/2014</li>
-                <li>NCBI gene_info file, downloaded 2/3/2014</li>
-                <li>NCBI homologene.data file, downloaded 2/3/2014</li>
-                <li>RGD GENES file, last updated on 2/3/2014</li>
-                <li>SwissProt uniprot_sprot.dat file, last updated on 2/3/2014</li>
-    
+                <li>Location data from Ensembl for Mouse, Human, and Rat from Ensembl Genes v77 </li>
+                <li>FlyBase gene_map_table_fb_2014_05.tsv file and fbgn_NAseq_Uniprot_fb_2014_05.tsv </li>
+                <li>MGI database links file generated from the ACC_Accession table on 10/10/2014</li>
+                <li>MGI_Coordinate.rpt links file, downloaded 10/10/2014</li>
+                <li>NCBI gene2accession file, downloaded 10/10/2014</li>
+                <li>NCBI gene2unigene file, downloaded 10/10/2014</li>
+                <li>NCBI gene_info file, downloaded 10/10/2014</li>
+                <li>NCBI homologene.data file, downloaded 10/10/2014</li>
+                <li>RGD GENES file, last updated on 10/10/2014</li>
+                <li>SwissProt uniprot_sprot.dat file, last updated on 10/10/2014</li>
             </ul>
-		</div>
+        </div>
 
