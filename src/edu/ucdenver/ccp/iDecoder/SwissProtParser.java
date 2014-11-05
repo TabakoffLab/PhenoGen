@@ -108,7 +108,7 @@ public class SwissProtParser extends InputFileParser {
         // to trigger output, the last entry is handled after the loop.
 		while (reader.ready()) {
 			line = reader.readLine();
-            
+                        
 			if (line.startsWith("ID")) {
 				// ID marks the beginning of a new entry. So, first output the
                 // contents of the prior entry *if* the taxon ID List is not
@@ -138,59 +138,59 @@ public class SwissProtParser extends InputFileParser {
 				rgdList = new ArrayList();
 				hasLink = false;
 			} else if (line.startsWith("AC")) {
-				// This line contains accession numbers (a.k.a., SwissProt IDs)
-                // for this entry. Only the first (primary) ID from the first
-                // line is used. Once accNum is populated, the subsequent AC
-                // lines in the entry are ignored since they contain only 
-                // secondary IDs.
-				if (accNum.equals("")) {
-                    // Grab everything from the 6th char (line starts with 
-                    // "AC   ") up to the 1st semicolon.
-                    int ndx = line.indexOf(";");
-                    accNum = line.substring(5, ndx);
-                }
+                            // This line contains accession numbers (a.k.a., SwissProt IDs)
+                            // for this entry. Only the first (primary) ID from the first
+                            // line is used. Once accNum is populated, the subsequent AC
+                            // lines in the entry are ignored since they contain only 
+                            // secondary IDs.
+                            if (accNum.equals("")) {
+                                // Grab everything from the 6th char (line starts with 
+                                // "AC   ") up to the 1st semicolon.
+                                int ndx = line.indexOf(";");
+                                accNum = line.substring(5, ndx);
+                            }
 			} else if (line.startsWith("GN")) {
-				// This line contains both gene name (referred to here as
-                // "geneSymbol") and related synonyms. A GN line with both Name
-                // and Synonyms looks like:
-                //   GN   Name=GRF6; Synonyms=AFT1, RCI2;
-                // Not every gene name has associated synonyms. In these cases, 
-                // the Synonyms keyword is missing. Note that synonyms can't
-                // exist without an associated gene name.
-                // 
-                // An entry may contain Multiple GN lines, reflecting multiple
-                // gene names for a protein. It's also possible for a GN line 
-                // to contain no Name (nor Synonyms).
-				int start = line.indexOf("Name=");
+                            // This line contains both gene name (referred to here as
+                            // "geneSymbol") and related synonyms. A GN line with both Name
+                            // and Synonyms looks like:
+                            //   GN   Name=GRF6; Synonyms=AFT1, RCI2;
+                            // Not every gene name has associated synonyms. In these cases, 
+                            // the Synonyms keyword is missing. Note that synonyms can't
+                            // exist without an associated gene name.
+                            // 
+                            // An entry may contain Multiple GN lines, reflecting multiple
+                            // gene names for a protein. It's also possible for a GN line 
+                            // to contain no Name (nor Synonyms).
+                            int start = line.indexOf("Name=");
 				if (start != -1) {
-					int end = line.indexOf(";", start);
+                                    int end = line.indexOf(";", start);
                     
-                    // "start+5" because "Name=" is 5 chars long
-                    String geneSymbol = line.substring(start+5,end);
-                    
-                    // get synonyms (if any)
-                    List synonymList;
-					start = line.indexOf("Synonyms=");
-					if (start != -1) {
-						end = line.indexOf(";", start);
-                        
-                        // "start+9" because "Synonyms=" is 9 chars long;
-                        // ",\\s?" splits the entries at the commas, ignoring
-                        // the spaces.
-						String[] synonyms = line.substring(start+9,end).split(",\\s?");
-                        
-                        synonymList = Arrays.asList(synonyms);
-					} else{
-                        // If no synonyms exist, use an emtpy List to avoid nulls
-					    synonymList = new ArrayList();
-                    }
-                    
-                    // Each gene symbol has an associated synonym List, and there
-                    // may be multiple gene symbols; so, for each symbol, create 
-                    // a Map entry with symbol as key and List of synonyms as the
-                    // entry value. 
-                    geneSymbolMap.put(geneSymbol,synonymList);
-				}
+                                    // "start+5" because "Name=" is 5 chars long
+                                    String geneSymbol = line.substring(start+5,end);
+
+                                    // get synonyms (if any)
+                                    List synonymList;
+                                    start = line.indexOf("Synonyms=");
+                                    if (start != -1) {
+                                            end = line.indexOf(";", start);
+
+                                            // "start+9" because "Synonyms=" is 9 chars long;
+                                            // ",\\s?" splits the entries at the commas, ignoring
+                                            // the spaces.
+                                            String[] synonyms = line.substring(start+9,end).split(",\\s?");
+
+                                            synonymList = Arrays.asList(synonyms);
+                                    } else{
+                                        // If no synonyms exist, use an emtpy List to avoid nulls
+                                        synonymList = new ArrayList();
+                                    }
+
+                                    // Each gene symbol has an associated synonym List, and there
+                                    // may be multiple gene symbols; so, for each symbol, create 
+                                    // a Map entry with symbol as key and List of synonyms as the
+                                    // entry value. 
+                                    geneSymbolMap.put(geneSymbol,synonymList);
+                            }
 			} else if (line.startsWith("OX")) {
                 // This line contains NCBI taxonomy IDs. The line looks like:
                 //   OX   NCBI_TaxID=9606;
