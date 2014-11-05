@@ -603,7 +603,8 @@ Add report here.
     
     <div style="display:none;" id="miGenerna">
     </div>
- 	
+    <div style="display:none;" id="wgcnaGene">
+    </div>
 
  </div>
             
@@ -663,7 +664,15 @@ Add report here.
 			};
 			loadDivWithPage("div#miGenerna",jspPage,params,
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-		}
+		}else if(id=="geneWGCNA"){
+                        var jspPage="web/GeneCentric/wgcnaGene.jsp";
+			var params={
+				species: organism,
+				id:selectedID
+			};
+			loadDivWithPage("div#wgcnaGene",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+                }
 		
 	});
 </script>
