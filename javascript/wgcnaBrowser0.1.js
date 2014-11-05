@@ -11,13 +11,16 @@
 */
 
 
-function WGCNABrowser(id,disptype,viewtype){
+function WGCNABrowser(id,disptype,viewtype,tissue){
 	that={};
 	that.singleID=id;
 	that.dispType=disptype;
 	that.viewType=viewtype;
 	that.moduleList=[];
 	that.modules={};
+	that.tissue=tissue;
+	that.panel="";
+
 
 	that.setup=function(){
 		//request Module List
@@ -35,13 +38,14 @@ function WGCNABrowser(id,disptype,viewtype){
 				url:  pathPrefix +"getWGCNAModules.jsp",
 	   			type: 'GET',
 	   			async: true,
-				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,},
+				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue},
 				dataType: 'json',
 	    		success: function(data2){
-	    				that.moduleList=data2; 
-	        			for(){
-	        				that.requestModule();
-	        			}
+	        		for(var i=0;i<data2.length;i++){
+	        				that.moduleList.push(data2[i].ModuleID); 
+	        				that.requestModule(data2[i].ModuleID);
+	        		}
+	        		console.log(that.moduleList);
 	    		},
 	    		error: function(xhr, status, error) {
 	        		
@@ -50,13 +54,13 @@ function WGCNABrowser(id,disptype,viewtype){
 	};
 	that.requestModule=function(file){
 		$.ajax({
-				url:  modulePrefix +file,
+				url:  "../../tmpData/modules/ds1/" +file+".json",
 	   			type: 'GET',
 	   			async: true,
 				data: {},
 				dataType: 'json',
 	    		success: function(data2){
-	        			modules[data2.ID]=data2;
+	        			that.modules[file]=data2;
 	    		},
 	    		error: function(xhr, status, error) {
 	        		
