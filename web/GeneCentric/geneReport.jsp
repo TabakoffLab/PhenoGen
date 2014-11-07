@@ -603,7 +603,7 @@ Add report here.
     
     <div style="display:none;" id="miGenerna">
     </div>
-    <div style="display:none;" id="wgcnaGene">
+    <div style="display:none;" id="geneWGCNA">
     </div>
 
  </div>
@@ -630,6 +630,7 @@ Add report here.
 		$(this).addClass("selected");
 		var id=$(this).attr("name");
 		$("#"+id).show();
+                console.log("#"+id);
 		if(id=="geneEQTL"){
 			var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
 			var params={
@@ -670,7 +671,7 @@ Add report here.
 				species: organism,
 				id:selectedID
 			};
-			loadDivWithPage("div#wgcnaGene",jspPage,params,
+			loadDivWithPage("div#geneWGCNA",jspPage,params,
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
                 }
 		

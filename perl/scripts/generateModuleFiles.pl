@@ -207,7 +207,9 @@ foreach my $mod(@moduleList){
     }
     $query_handle2->finish();
     open OFILE, '>', $path.$mod.".json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
-    print OFILE "{\n\t\"MOD_NAME\":\"$mod\",\n";
+    my $tmpMod=$mod;
+    $tmpMod =~ s/\./_/g;
+    print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
     print OFILE "\t\"TCList\": [\n";
         my @tcKey=keys $moduleHOH{TCList};
         $tcCount=0;

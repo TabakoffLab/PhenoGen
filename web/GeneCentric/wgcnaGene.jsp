@@ -8,13 +8,18 @@
             geneID=request.getParameter("id");
     }
 %>
-<div id="wgncaImageControls">
+<div id="wgcnaImageControls" style="width:100%;">
+    
 </div>
-<div id="wgncaGeneImage">
+<div id="wgcnaMouseHelp" style="width:100%;text-align:center;">
+    Navigation Hints: Hold mouse over areas of the image for available actions.
 </div>
-<div id="wgncaViewControls" style="display:none;">
+<div id="wgcnaGeneImage" style="max-height:600px;overflow:auto;width:100%;border:1px solid;">
+    
 </div>
-<div id="wgncaDataControls" style="display:none;">
+<div id="wgcnaViewControls" >
+</div>
+<div id="wgcnaDataControls">
 </div>
 
 
