@@ -725,6 +725,12 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 		thatimg.redraw=function(){
 
 		};
+
+		thatimg.createToolTip=function(d){
+			var tt="Gene Cluster ID:"+d.ID+"<BR>Gene: "+d.Gene.ID;
+			return tt;
+		};
+
 		return thatimg;
 	};
 	//internal methods to setup each specific type
@@ -773,7 +779,28 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 					.attr("cy",function(d,i){return thatimg.height/2+(thatimg.r-30)*Math.sin(i*thatimg.angle);})
 					.attr("r",10)
 					.attr("stroke","#000000")
-					.attr("fill","#FF0000");
+					.attr("fill","#FF0000")
+					.on("click",function(){
+
+					})
+					.on("mouseover",function(){
+						$("#wgcnaMouseHelp").html("<B>Click</B> to select this gene cluster and see additional details.");
+						d3.select(this).style("fill","url(#selectGrad)");
+				        	//that.gsvg.get('tt').transition()
+				        tt.transition()        
+				                .duration(200)      
+				                .style("opacity", 1);      
+				        	//that.gsvg.get('tt').html(that.createToolTip(d)) 
+				        tt.html(thatimg.createToolTip(d3.select(this).data()[0])) 
+				                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+								.style("top", function(){return that.positionTTTop(d3.event.pageY);});
+					})
+					.on("mouseout",function(){
+						d3.select(this).style("fill","#FF0000");
+						tt.transition()        
+				                .duration(500)      
+				                .style("opacity", 0);
+					});
 		};
 		
 		return thatimg;
