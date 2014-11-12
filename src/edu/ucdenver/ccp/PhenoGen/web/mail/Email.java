@@ -20,7 +20,7 @@ public class Email  {
 	private final static String DEFAULT_SUBJECT= "Unknown subject";
 	//private static String DEFAULT_SERVER = "mail.ucdenver.pvt";
 	// This is one of the ip addresses for mail.ucdenver.pvt
-	private static String DEFAULT_SERVER = "140.226.189.75";
+	private static String DEFAULT_SERVER = "mail.ucdenver.pvt";
 	//private static String DEFAULT_SERVER = "kona.uchsc.edu";
 	private static String DEFAULT_TO = null;
 	private static String DEFAULT_FROM = "phenogen@ucdenver.edu";
