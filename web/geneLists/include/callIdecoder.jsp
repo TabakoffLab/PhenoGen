@@ -57,7 +57,7 @@
 		log.debug("calling iDecoderClient");
 		iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), 
 							targets, pool);
-		log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
+		//log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
 		if(iDecoderSet.size()>0){
 			Iterator itr = iDecoderSet.iterator();
 			ArrayList<Identifier> altDecoderList=new ArrayList<Identifier>();
@@ -84,13 +84,13 @@
 			}
 		}else{
 			iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTargetCaseInsensitive(selectedGeneList.getGene_list_id(), targets, pool);
-			log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
+			//log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
 			if(iDecoderSet.size()>0){
 				Iterator itr = iDecoderSet.iterator();
 				while (itr.hasNext()) {
 					Identifier thisIdentifier = (Identifier) itr.next();
 					//thisIdentifier.setLowerCaseIdentifier();
-					log.debug("******ID"+thisIdentifier.getIdentifier());
+					//log.debug("******ID"+thisIdentifier.getIdentifier());
 					if (thisIdentifier.getRelatedIdentifiers().size() == 0) {
 						log.debug("remove id:"+thisIdentifier.getIdentifier());
 						noIDecoderList.add(thisIdentifier.getIdentifier());
