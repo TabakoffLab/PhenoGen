@@ -229,7 +229,7 @@
                 <TD>Whole Brain</td>
                 <TD>RNA-Seq of total RNA(Illumina)</td>
                 <TD>BN-Lx and SHR</TD>
-                <TD>3/strain</TD>
+                <TD>3/strain (100M reads/sample)</TD>
             </TR>
             <TR>
                 <TD>Rat</td>
@@ -249,7 +249,7 @@
                 <TD>Whole Brain</td>
                 <TD>RNA-Seq of small RNA(Illumina)</td>
                 <TD>BN-Lx and SHR</TD>
-                <TD>3/strain (30M reads/sample)</TD>
+                <TD>3/strain</TD>
             </TR>
             <TR>
                 <TD>Rat</td>
@@ -269,7 +269,7 @@
                 <TD>Liver</td>
                 <TD>RNA-Seq of small RNA(Illumina)</td>
                 <TD>BN-Lx and SHR</TD>
-                <TD>2-3/strain (60M reads/sample)</TD>
+                <TD>2-3/strain</TD>
             </TR>
             <TR>
                 <TD>Rat</td>
