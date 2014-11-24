@@ -11,6 +11,8 @@ googleAnalytics.jsp
 bugsense.jsp
 bedSort
 bedToBigBed
+bigBedToBed
+bigWigToBedGraph
 sitemap*.xml
 GeneCentricViewer.jar
 ExonCorrelationViewer2.jar
@@ -35,6 +37,7 @@ ensembl_ucsc_old/
 mirDeep/
 web/GeneCentric/lib/
 web/exons/lib/
+nbproject/
 
 
 # Demo Files #
