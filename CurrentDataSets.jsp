@@ -4,9 +4,9 @@
     extrasList.add("jquery.dataTables.js");
 %>
 <%@ include file="/web/common/header.jsp" %>
-<div style="margin:10px;">
+<div >
     <H2>Current Datasets</h2>
-    <table id="datasets" name="items" class="list_base" cellpadding="0" cellspacing="0">
+    <table id="datasets" name="items" class="list_base"  cellpadding="0" cellspacing="0">
         <thead>
             <TR class="col_title">
                 <TH>Species</TH>
@@ -16,7 +16,7 @@
                 <TH>Tissue</TH>
                 <TH>Array</TH>
                 <TH>Number of Strains <span class="tooltip" title="Clink on the + icon to see a complete list of strains."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                <TH>Samples per Strain</TH>
+                <TH>Samples per<BR> Strain</TH>
             </TR>
         </thead>
         <tbody>
@@ -83,7 +83,7 @@
             <TR>
                 <TD>Rat</td>
                 <TD>Inbred Strains</TD>
-                <TD>Kupffer cells(fresh/cultured/MACS)</TD>
+                <TD>Kupffer cells (fresh/cultured/MACS)</TD>
                 <TD>4 Inbred Strains</td>
                 <TD>Liver (cells)</td>
                 <TD>Affymetrix Rat Exon Array</td>
@@ -377,7 +377,8 @@
                 <TD></td>
                 <TD>Whole Brain</td>
                 <TD>RNA-Seq of total RNA(Illumina)</td>
-                <TD>ILS and ISS</TD>
+                <TD><span class="trigger" name="str24"></span>2<BR>
+                    <span id="str24" style="display:none">ILS and ISS</span></TD>
                 <TD>3/strain (70M reads/sample)</TD>
             </TR>
         </tbody>
@@ -386,8 +387,12 @@
 <script type="text/javascript">
     var tblData=$('#datasets').dataTable({
         "bPaginate": false,
-	"sScrollX": "100%",
-	"sScrollY": "100%",
+        "columnDefs": [
+                        { "width": "10%", "targets": 2 },
+                        { "width": "15%", "targets": 6 }
+        ],
+	//"sScrollX": "100%",
+	//"sScrollY": "980px",
 	"sDom": '<"leftSearch"fr><t>'
 	});
         
