@@ -341,9 +341,9 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px");
 		that.viewBar.append("text").text("GO");
 		/*that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","mir").style("margin-left","7px").style("margin-right","3px");
-		that.viewBar.append("text").text("miRNA(multiMiR)");
+		that.viewBar.append("text").text("miRNA(multiMiR)");*/
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","eqtl").style("margin-left","7px").style("margin-right","3px");
-		that.viewBar.append("text").text("eQTL");*/
+		that.viewBar.append("text").text("eQTL");
 	};
 
 	that.createDataControls=function(){
@@ -352,10 +352,12 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 		var sel=that.dataBar.append("select").attr("id","wgcnaTissueSelect");
 		that.tissues=["Brain"];
 		that.dispTissues=["Whole Brain"];
-		if(organism=="Rn"){
-			that.tissues=["Brain","Heart","Liver"];
+		//We only have brain will need to update later.
+                /*if(organism=="Rn"){
+			that.tissues=["Brain","Heart","Liver"
+                        ];
 			that.dispTissues=["Whole Brain","Heart","Liver"];
-		}
+		}*/
 		for(var i=0;i<that.tissues.length;i++){
 			sel.append("option").attr("value",that.tissues[i]).text(that.dispTissues[i]);
 		}
