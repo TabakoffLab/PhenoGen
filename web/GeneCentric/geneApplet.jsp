@@ -342,8 +342,8 @@ if(request.getParameter("arrayTypeID")!=null){
     <BR />
     
     
-    <div id="unsupportedChrome" style="display:none;color:#FF0000;"><BR /><BR />A Java plug in is required to view this page.  Chrome is a 32-bit browser and requires a 32-bit plug-in which is unavailable for Mac OS X.  
-            	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.</div>
+    <div id="unsupportedChrome" style="display:none;color:#FF0000;"><BR /><BR />A Java plug in is required to view this page.  Older versions of Chrome are 32-bit applications and require a 32-bit plug-in which is unavailable for Mac OS X.  
+            	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.  Chrome 39+ is 64-bit on Mac OS X so you should be able to use chrome with the plug-in installed.</div>
                 
                 
 			<span id="disabledJava" style="display:none;margin-left:40px;"><BR /><BR />
@@ -375,19 +375,19 @@ if(request.getParameter("arrayTypeID")!=null){
 			var bugString='false';
 			var unsupportedChrome=0;
 			if(!navigator.javaEnabled()){
-                        $('#javaError').css("display","inline-block");
-                        $('#disabledJava').css("display","inline-block");
-           	}else if (deployJava.versionCheck('1.6.0+') == false) {
-                     $('#javaError').css("display","inline-block");
-                    $('#noJava').css("display","inline-block");                  
-                    $('#installJava').css("display","inline-block");
-          	}else{
-                    if (deployJava.versionCheck('1.7.0+') == false) {                   
-                        $('#oldJava').css("display","inline-block");
-                        $('#installJava').html("Update Java");
-                        $('#installJava').css("display","inline-block");
-                    }
-           }
+                            $('#javaError').css("display","inline-block");
+                            $('#disabledJava').css("display","inline-block");
+                        }else if (deployJava.versionCheck('1.6.0+') == false) {
+                            $('#javaError').css("display","inline-block");
+                            $('#noJava').css("display","inline-block");                  
+                            $('#installJava').css("display","inline-block");
+                        }else{
+                            if (deployJava.versionCheck('1.7.0+') == false) {                   
+                                $('#oldJava').css("display","inline-block");
+                                $('#installJava').html("Update Java");
+                                $('#installJava').css("display","inline-block");
+                            }
+                        }
            $('#installJava').click(function (){
                     // Set deployJava.returnPage to make sure user comes back to 
                     // your web site after installing the JRE
@@ -396,34 +396,42 @@ if(request.getParameter("arrayTypeID")!=null){
                     // Install latest JRE or redirect user to another page to get JRE
                     deployJava.installLatestJRE(); 
            });	
-			//alert("Initial:"+jre+":"+navigator.userAgent);
-			if (/Mac OS X[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
+                        //console.log(navigator.userAgent);
+			if (/Mac OS X[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){
  					//var macVersion=new Number(RegExp.$1); // capture x.x portion and store as a number
 					var tmpAgent=new String(navigator.userAgent);
 					//alert("Detected Mac OS X:"+tmpAgent);
-					if(/Chrome/.test(tmpAgent)){
+					if(/Chrome\/(\d+)/.test(tmpAgent)){
+                                                //console.log(RegExp.$1);
+                                                var chromeVer=new Number(RegExp.$1);
+                                                //alert("chrome ver:"+chromeVer);
 						var update=new String(jre);
 						//alert("chrome update:"+update);
-						if(update.length==0){
+						if(chromeVer<39 && update.length==0){
 							//alert("unsupported");
 							unsupportedChrome=1;
 						}
 					}
-					else if (/10[_\.][789]/.test(tmpAgent)){
-						//alert("Mac Ver >=10.7:");
-						var tmpUp=new String(jre);
-						var update=tmpUp.substr((tmpUp.indexOf("_")+1));
-						//alert("update:"+update);
-						if(update>=10){
-							//alert("update >10");
-							if(deployJava.versionCheck('1.7.0_51+')){//This version no longer has the bug so if newer mac OS X and JRE update 51 or higher don't actually change the applet
-							
-							}else{
-								bug=1;
-								appletHeight=700;
-								bugString='true';
-							}
-						}
+					else if (/10[_\.](d+)/.test(tmpAgent)){
+                                                var osXVer=new Number(RegExp.$1);
+						//alert("Mac Ver ="+osXVer);
+                                                if(oxXVer>=7){//if OS X 10.7 or higher
+                                                    var tmpUp=new String(jre);
+                                                    if(/^1\.7/.test(tmpUp)){//make sure we only do this for JRE 1.7_10-1.7_51
+                                                        var update=tmpUp.substr((tmpUp.indexOf("_")+1));
+                                                        //alert("update:"+update);
+                                                        if(update>=10 && update <51){//bug occurred between update 10 and 51 of the Oracle 1.7 Mac OSX JRE.
+                                                                //alert("update >10");
+                                                                /*if(deployJava.versionCheck('1.7.0_51+')){//This version no longer has the bug so if newer mac OS X and JRE update 51 or higher don't actually change the applet
+
+                                                                }else{*/
+                                                                        bug=1;
+                                                                        appletHeight=700;
+                                                                        bugString='true';
+                                                                //}
+                                                        }
+                                                    }
+                                                }
 					}
 			}
 			if(unsupportedChrome==0){
