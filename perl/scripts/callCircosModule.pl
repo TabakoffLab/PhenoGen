@@ -41,6 +41,7 @@ sub setupDirectories{
 
 sub callCircosMod{
 	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$dsn,$usr,$passwd)=@_;
+        print "in callCircosMod() path:$modulePath\n";
 	#
 	# General outline of process:
 	# First, prep circos conf and data files

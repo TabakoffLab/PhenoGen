@@ -5,7 +5,7 @@ use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/module
 #use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl-funcgen/modules/';
 
 
-#/usr/share/tomcat/webapps/PhenoGen/tmpData/modules/ 1
+#/usr/share/tomcat/webapps/PhenoGen/tmpData/modules/ 1 Mm
 
 #params
 #0-outputPath
@@ -14,6 +14,8 @@ use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/module
 
 use DBI;
 use Bio::EnsEMBL::Registry;
+
+require 'callCircosModule.pl';
 
 sub trim($)
 {
@@ -90,6 +92,15 @@ sub printGOTermJSON{
     }
 }
 
+my $path=$ARGV[0]."ds".$wgcnaDataset."/";
+my $wgcnaDataset=$ARGV[1];
+my $org=$ARGV[2];
+
+my $longOrg="Mouse";
+if($org eq "Rn"){
+    $longOrg="Rat";
+}
+
 my $registry = 'Bio::EnsEMBL::Registry';
 my $dbAdaptorNum =$registry->load_registry_from_db( 
         #-host => 'useastdb.ensembl.org', #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
@@ -101,15 +112,15 @@ my $dbAdaptorNum =$registry->load_registry_from_db(
 		-user => "ensembl",
 		-pass => "INIA_ensembl1"
 	    );
-my $slice_adaptor = $registry->get_adaptor( 'Mouse', 'Core', 'Slice' );
+my $slice_adaptor = $registry->get_adaptor( $longOrg, 'Core', 'Slice' );
 my @adaps = @{Bio::EnsEMBL::Registry->get_all_adaptors()};
 my $go_adaptor = $registry->get_adaptor( 'Multi', 'Ontology', 'OntologyTerm' );
 
 my $connect = DBI->connect("dbi:Oracle:dev.ucdenver.pvt", "INIA", "INIA_dev") or die ($DBI::errstr ."\n");
 
 
-my $wgcnaDataset=$ARGV[1];
-my $path=$ARGV[0]."ds".$wgcnaDataset."/";
+
+
 mkdir($path);
 my @moduleList=();
 my $query="select unique module from wgcna_module_info where wdsid=".$wgcnaDataset." order by module";
@@ -475,4 +486,13 @@ foreach my $mod(@moduleList){
     print OFILE "\t\]\n";
     print OFILE "}";#end module
     close OFILE;
+
+    my $chrString="mm1;mm2;mm3;mm4;mm5;mm6;mm7;mm8;mm9;mm10;mm11;mm12;mm13;mm14;mm15;mm16;mm17;mm18;mm19;mmX;";
+    if($org eq "Rn"){   
+        $chrString="rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX;";
+    }
+    my $tmpPath=$path.$mod."/";
+    print "\n\ntmp:$tmpPath\n\n";
+    my $cutoff=2;
+    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1","dbi:Oracle:dev.ucdenver.pvt","INIA", "INIA_dev");
 }
