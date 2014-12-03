@@ -479,7 +479,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                             updateFiles(id,fullID,type);
                                         });
                                         //lets user share with selected users
-                                        $(".action.sharedUsers").on("click",function(){
+                                        $(".action.sharedUsers").on("click",function(event){
                                             var fullID=$(this).attr("id");
                                             var id=fullID.substr(9);
                                             $("input#fileID").val(id);
@@ -521,7 +521,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                                         myUserDataTable=$('table#myUsers').DataTable({
                                                             "bPaginate": false,
                                                             "aaSorting": [[ 3, "asc" ]],
-                                                            "sScrollX": "460px",
+                                                            "sScrollX": "450px",
                                                             "sScrollY": "310px",
                                                             "sDom": '<"rightSearch"fr><t>'
                                                         });
