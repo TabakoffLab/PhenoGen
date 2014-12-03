@@ -521,8 +521,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                                         myUserDataTable=$('table#myUsers').DataTable({
                                                             "bPaginate": false,
                                                             "aaSorting": [[ 3, "asc" ]],
-                                                            "sScrollX": "450px",
-                                                            "sScrollY": "310px",
+                                                            "sScrollX": "460px",
+                                                            "sScrollY": "300px",
                                                             "sDom": '<"rightSearch"fr><t>'
                                                         });
                                                         $.ajax({
