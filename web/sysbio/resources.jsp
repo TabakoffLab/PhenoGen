@@ -14,9 +14,13 @@
 	log.info("in resources.jsp. user =  "+ user);
 	
 	log.debug("action = "+action);
+        extrasList.add("tooltipster.css");
+        extrasList.add("tabs.css");
 	extrasList.add("resources.js");
 	extrasList.add("jquery.tooltipster.js");
-	extrasList.add("tooltipster.css");
+        extrasList.add("d3.v3.min.js");
+        extrasList.add("jquery.dataTables.min.js");
+	
 	mySessionHandler.createSessionActivity(session.getId(), "Looked at download systems biology resources page", dbConn);
 
 	Resource[] myExpressionResources = myResource.getExpressionResources();
@@ -29,19 +33,65 @@
 	ArrayList checkedList = new ArrayList();
 	
 %>
-
+<style>
+        span.detailMenu{
+		border-color:#CCCCCC;
+		border:solid;
+		border-width: 1px 1px 0px 1px;
+		border-radius:5px 5px 0px 0px;
+		padding-top:2px;
+		padding-bottom:2px;
+		padding-left:15px;
+		padding-right:15px;
+		cursor:pointer;
+                color:#000000;
+	}
+        span.detailMenu{
+		background-color:#AEAEAE;
+		border-color:#000000;
+		
+	}
+	span.detailMenu.selected{
+		background-color:#FEFEFE;
+		/*background:#86C3E2;*/
+		color:#000000;
+	}
+	span.detailMenu:hover{
+		background-color:#FEFEFE;
+		/*background:#86C3E2;*/
+		color:#000000;
+	}
+        div#public,div#members{
+            border-color:#CCCCCC;
+            border:solid;
+            border-width: 1px 1px 1px 1px;
+            background: #FEFEFE;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        span.action{
+            cursor: pointer;
+        }
+</style>
 <%pageTitle="Download Resources";
 pageDescription="Data resources available for downloading includes Microarrays, Sequencing, and GWAS data";%>
 
-<%@ include file="/web/common/header.jsp"  %>
-
-<% if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%>
-	<h2>Select the download icon(<img src="<%=imagesDir%>icons/download_g.png" />) to download data from any of the datasets below.  For some data types multiple options may be available. For these types, a window displays that allows you to choose specific files.</h2>
-	
-	
-	
+<%@ include file="/web/common/header_noBorder.jsp"  %>
+<% if(loggedIn && !(userLoggedIn.getUser_name().equals("anon")) ){%>
+<div style="width:100%;">
+        <div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
+            <span id="detail1" class="detailMenu selected" name="public">Public Files</span>
+            
+            <span id="detail2" class="detailMenu" name="members">Members Files</span>
+            
+        </div>
+</div>
 <%}%>
-
+<script>
+    $("#wait1").hide();
+</script>
+<div id="public">
+<h2>Select the download icon(<img src="<%=imagesDir%>icons/download_g.png" />) to download data from any of the datasets below.  For some data types multiple options may be available. For these types, a window displays that allows you to choose specific files.</h2>
 
 	<form	method="post" 
 		action="resources.jsp" 
@@ -256,12 +306,73 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 			<% } %>
 			</tbody>
 		</table>
-        
+                        <BR>
         
         
 	</form>
+</div><!-- END PUBLIC DIV-->
+<div id="members" style="display:none;min-height: 780px;">
+    <H2>My Files</h2>
+    <div style="text-align: center;height: 350px;overflow:auto;">
+    <table id="myFiles" name="items" style="width:100%;text-align: center;" class="list_base"  cellpadding="0" cellspacing="0">
+        <thead>
+            <TR class="col_title">
+                <TH>File Name(click to download)</TH>
+                
+                <TH>Description</TH>
+                <TH>Date Uploaded</TH>
+                <TH>Shared<BR>(click to edit)</TH>
+                <TH>Shared with All<BR>Registered Users<BR>(click to edit)</TH>
+                <TH>Delete</TH>
+            </TR>
+        </thead>
+        <tbody>
+            <TR id="myloading"><TD colspan="6"><img src="<%=imagesDir%>/icons/busy.gif"> Loading...</TD></tr>
+        </tbody>
+    </table>
+    </div>
+    <BR><BR>
+    <H2>Files Shared with Me</h2>
+    <div style="text-align: center;height: 350px;overflow:auto;">
+    <table id="sharedFiles" name="items" style="width:100%;text-align: center;" class="list_base"  cellpadding="0" cellspacing="0">
+        <thead>
+            <TR class="col_title">
+                <TH>File Owner</TH>
+                <TH>File Name<BR>(click to download)</TH>
+                <TH>Description</TH>
+                <TH>Date Uploaded</TH>
+            </TR>
+        </thead>
+        <tbody>
+            <TR id="sharedloading"><TD colspan="4"><img src="<%=imagesDir%>/icons/busy.gif"> Loading...</TD></tr>
+        </tbody>
+    </table>
+    </div>
+</div><!-- END MEMBERS DIV-->
 
-	<div class="downloadItem"></div>
+<div class="downloadItem"></div>
+
+<div style="width:500px;height:450px;position:absolute;display:none;top:100px;left:400px;background-color: #FFFFFF;border: #000000 1px solid;" id="userList">
+    <div style="background-color: #CECECE;width:100%;height:18px;">Select Users to share file <span id="closeuserList" style="float:right; magin-top:2px;margin-right: 5px;"><img src="<%=imagesDir%>/icons/close.png"></span></div>
+    <BR>
+    <div id="userListContent" style="width:100%">
+        <span id="fileName">File Name:</span>
+        <BR><BR>
+        <table id="myUsers" name="items" class="list_base"  cellpadding="0" cellspacing="0" style="text-align: center;">
+            <thead class="col_title">
+            <TH>Check to Share file</th>
+            <TH>First Name</th>
+            <TH>Last Name</th>
+            <TH>Institution</th>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        <BR>
+        <div><input type="button" value="Apply" onclick="updateSharedList()"><input type="hidden" value="-99" id="fileID"><span id="status"></span></div>
+    </div>
+</div>
 <%@ include file="/web/common/footer.jsp"  %>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -276,6 +387,318 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		});
 		setupPage();
                 setTimeout("setupMain()", 100);
+                setTimeout(getMyFiles, 50);
+                setTimeout(getSharedFiles, 50);
+                $(".detailMenu").on("click",function(){
+                    var prev=$(".detailMenu.selected").attr("name");
+                    $(".detailMenu.selected").removeClass("selected");
+                    $("div#"+prev).hide();
+                    $(this).addClass("selected");
+                    var cur=$(this).attr("name");
+                    $("div#"+cur).show();
+                });
+                
 	});
+        
+        $("#closeuserList").on("click",function(){
+           $("div#userList").hide(); 
+        });
+        
+        
+        var myFileDataTable;
+        var myUserDataTable;
+        var shareFileDataTable;
+        
+        function key(d){return d.FileID;}
+        
+        function getMyFiles(){
+            $.ajax({
+				url: "getFiles.jsp",
+   				type: 'GET',
+				data: {type:"myFiles"},
+				dataType: 'json',
+                                success: function(data2){
+                                        try{
+                                            myFileDataTable.destroy();
+                                        }catch(err){
+                                            
+                                        }
+                                        d3.select("table#myFiles").select("tbody").select('tr#myloading').remove();
+                                        var tracktbl=d3.select("table#myFiles").select("tbody").selectAll('tr').data(data2,key);
+                                        tracktbl.enter().append("tr")
+                                                        .attr("id",function(d){return "fid"+d.FileID;})
+                                                        .attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
+                                        tracktbl.exit().remove();
+                                        tracktbl.each(function(d,i){
+                                                d3.select(this).selectAll("td").remove();
+                                                var ind=d.Path.lastIndexOf("/");
+                                                var file=d.Path.substr(ind+1);
+                                                var fileLink="<a href=\""+d.Path+"\"> "+file+ " </a>";
+                                                var timeShort=d.Time.substr(0,d.Time.lastIndexOf(":"));
+                                                var shared="<span class=\"action shared\" id=\"share"+d.FileID+"\"><img src=\"../images/success.png\"></span>"
+                                                    +"<span class=\"action sharedUsers\" id=\"shareUser"+d.FileID+"\"><img src=\"../images/icons/user_32.png\"></span>";
+                                                if(d.Shared==="false"){
+                                                    shared="<span class=\"action shared\" id=\"share"+d.FileID+"\"><img src=\"../images/error.png\"></span>"
+                                                        +"<span class=\"action sharedUsers\" style=\"display:none;\" id=\"shareUser"+d.FileID+"\"><img src=\"../images/icons/user_32.png\"></span>";
+                                                }
+                                                
+                                                var shareAll="<span class=\"action shareAll\" id=\"shareAll"+d.FileID+"\"><img src=\"../images/success.png\"></span>";
+                                                if(d.ShareAll==="false"){
+                                                    shareAll="<span class=\"action shareAll\" id=\"shareAll"+d.FileID+"\"><img src=\"../images/error.png\"></span>";
+                                                }
+                                                        d3.select(this).append("td").html(fileLink);
+                                                        d3.select(this).append("td").html(d.Description);
+                                                        d3.select(this).append("td").html(timeShort);
+                                                        d3.select(this).append("td").html(shared);
+                                                        d3.select(this).append("td").html(shareAll);
+                                                        d3.select(this).append("td").html("<span class=\"action delete\" id=\"delete"+d.FileID+"\"><img src=\"../images/icons/delete_lg.png\"></span>");
+                                        });
+                                        
+                                        myFileDataTable=$('table#myFiles').DataTable({
+                                            "bPaginate": false,
+                                            "aaSorting": [[ 2, "desc" ]],
+                                            
+                                            "sDom": '<"rightSearch"fr><t>'
+                                        });
+                                        
+                                        //setup action buttons
+                                       
+                                        //changes the sharing status
+                                        $(".action.shared").on("click",function(){
+                                            var fullID=$(this).attr("id");
+                                            var id=fullID.substr(5);
+                                            var type=fullID.substr(0,5);
+                                            updateFiles(id,fullID,type);
+                                        });
+                                        
+                                        //changes the share with all registered users
+                                        $(".action.shareAll").on("click",function(){
+                                            var fullID=$(this).attr("id");
+                                            var id=fullID.substr(8);
+                                            var type=fullID.substr(0,8);
+                                            updateFiles(id,fullID,type);
+                                        });
+                                        //lets user share with selected users
+                                        $(".action.sharedUsers").on("click",function(){
+                                            var fullID=$(this).attr("id");
+                                            var id=fullID.substr(9);
+                                            $("input#fileID").val(id);
+                                            $("div#userList").css("top",event.pageY).css("left",event.pageX-450);
+                                            var path=d3.select("table#myFiles").select("tbody").select('tr#fid'+id).data()[0].Path;
+                                            var file=path.substr(path.lastIndexOf("/")+1);
+                                            $("span#fileName").html("File Name:"+file);
+                                            $("span#status").html("");
+                                            $("div#userList").show();
+                                            
+                                            $.ajax({
+                                                    url: "getAllUsers.jsp",
+                                                    type: 'GET',
+                                                    data: {},
+                                                    dataType: 'json',
+                                                    beforeSend: function(){
+                                                        
+                                                    },
+                                                    success: function(data2){
+                                                        try{
+                                                            myUserDataTable.destroy();
+                                                        }catch(err){
+
+                                                        }
+                                                        d3.select("table#myUsers").select("tbody").selectAll('tr').remove();
+                                                        var usertbl=d3.select("table#myUsers").select("tbody").selectAll('tr').data(data2);
+                                                        usertbl.enter().append("tr")
+                                                                        .attr("id",function(d){return "uid"+d.ID;})
+                                                                        .attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
+                                                        usertbl.exit().remove();
+                                                        usertbl.each(function(d,i){
+                                                                d3.select(this).selectAll("td").remove();
+                                                                d3.select(this).append("td").html("<input class=\"inclUser\" id=\"uid"+d.ID+"\" type=\"checkbox\">");
+                                                                d3.select(this).append("td").html(d.First);
+                                                                d3.select(this).append("td").html(d.Last);
+                                                                d3.select(this).append("td").html(d.Institution);
+                                                        });
+
+                                                        myUserDataTable=$('table#myUsers').DataTable({
+                                                            "bPaginate": false,
+                                                            "aaSorting": [[ 3, "asc" ]],
+                                                            "sScrollX": "460px",
+                                                            "sScrollY": "310px",
+                                                            "sDom": '<"rightSearch"fr><t>'
+                                                        });
+                                                        $.ajax({
+                                                            url: "getSharedUsers.jsp",
+                                                            type: 'GET',
+                                                            data: {fid:id},
+                                                            dataType: 'json',
+                                                            success: function(data2){
+                                                                
+                                                                var str=data2.UIDs;
+                                                                var list=str.split(",");
+                                                                for(var i=0;i<list.length;i++){
+                                                                    var uid=list[i];
+                                                                    console.log($("input#uid"+uid));
+                                                                    $("input#uid"+uid).prop('checked', true);
+                                                                }
+                                                            }
+                                                        });
+                                                    },
+                                                    error: function(xhr, status, error) {
+                                                            console.log(error);
+
+                                                    }
+                                                });
+                                        });
+                                        //deletes the file
+                                        $(".action.delete").on("click",function(){
+                                            var fullID=$(this).attr("id");
+                                            var id=fullID.substr(6);
+                                            deleteFile(id,fullID);
+                                        });
+                                        
+                                        //run again to keep file list up to date
+                                        setTimeout(getMyFiles, 30000);
+                                },
+                                error: function(xhr, status, error) {
+                                        console.log(error);
+                                        setTimeout(getMyFiles, 240000);
+                                }
+            });
+            
+        }
+        function updateSharedList(){
+            //working
+            var idList="";
+            var fid=$("input#fileID").val();
+            $('.inclUser:checked').each(function(){
+                var id=$(this).attr("id").substr(3);
+                if(idList===""){
+                    idList=id;
+                }else{
+                    idList=idList+","+id;
+                }
+            });
+            console.log(idList);
+            $.ajax({
+                    url: "updateFiles.jsp",
+                    type: 'GET',
+                    data: {type:"updateSharedWith",idList:idList,fid:fid},
+                    dataType: 'json',
+                    beforeSend: function(){
+                         $("span#status").html("Working...Please wait");
+                    },
+                    success: function(data2){
+                        $("span#status").html(" Completed Successfully");
+                        $("div#userList").hide();
+                    },
+                    error: function(xhr, status, error) {
+                        $("span#status").html("An error occurred please try again.");
+                            console.log(error);
+                    }
+                });
+                    
+            
+        }
+        function updateFiles(id,fullID, type){
+            $.ajax({
+                    url: "updateFiles.jsp",
+                    type: 'GET',
+                    data: {type:type,fid:id},
+                    dataType: 'json',
+                    beforeSend: function(){
+                        $("span#"+fullID).html("<img src=\"../images/icons/busy.gif\">");
+                        //d3.select("span#"+fullID).append("img").attr("src","../images/icons/busy.gif");
+                    },
+                    success: function(data2){
+                        if(data2.success==="true"){
+                            var img="<img src=\"../images/success.png\">";
+                            if(data2.status==="false"){
+                                img="<img src=\"../images/error.png\">";   
+                            }
+                            $("span#"+fullID).html(img);
+                            if(type==="share"){
+                                if(data2.status==="false"){
+                                    $("span#shareUser"+id).hide();
+                                }else{
+                                    $("span#shareUser"+id).show();
+                                }
+                            }
+                        }else{
+                            d3.select("span#"+fullID).append("text").text(data2.Message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                            console.log(error);
+
+                    }
+                });
+        }
+        function deleteFile(id,fullID){
+            $.ajax({
+                    url: "updateFiles.jsp",
+                    type: 'GET',
+                    data: {type:"delete",fid:id},
+                    dataType: 'json',
+                    beforeSend: function(){
+                        $("span#"+fullID).html("<img src=\"../images/icons/busy.gif\">");
+                        //d3.select("span#"+fullID).append("img").attr("src","../images/icons/busy.gif");
+                    },
+                    success: function(data2){
+                        if(data2.success==="true"){
+                            d3.select("table#myFiles").select("tbody").select("tr#fid"+id).remove();
+                        }else{
+                            $("span#"+fullID).html("<img src=\"../images/icons/delete_lg.png\">");
+                            d3.select("span#"+fullID).append("text").text(data2.Message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                            console.log(error);
+                    }
+                });
+        }
+        function getSharedFiles(){
+            $.ajax({
+				url: "getFiles.jsp",
+   				type: 'GET',
+				data: {type:"sharedFiles"},
+				dataType: 'json',
+                                success: function(data2){
+                                        try{
+                                            shareFileDataTable.destroy();
+                                        }catch(err){
+                                            
+                                        }
+                                        d3.select("table#sharedFiles").select("tbody").select('tr#sharedloading').remove();
+                                        var tracktbl=d3.select("table#sharedFiles").select("tbody").selectAll('tr').data(data2,key);
+                                        tracktbl.enter().append("tr")
+                                                        .attr("id",function(d){return "fid"+d.FileID;})
+                                                        .attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
+                                        tracktbl.exit().remove();
+                                        tracktbl.each(function(d,i){
+                                                d3.select(this).selectAll("td").remove();
+                                                var ind=d.Path.lastIndexOf("/");
+                                                var file=d.Path.substr(ind+1);
+                                                var fileLink="<a href=\""+d.Path+"\"> "+file+ " </a>";
+                                                var timeShort=d.Time.substr(0,d.Time.lastIndexOf(":"));
+                                                        d3.select(this).append("td").html(d.Owner);
+                                                        d3.select(this).append("td").html(fileLink);
+                                                        d3.select(this).append("td").html(d.Description);
+                                                        d3.select(this).append("td").html(timeShort);
+                                                        
+                                        });
+                                        
+                                        shareFileDataTable=$('table#sharedFiles').DataTable({
+                                            "bPaginate": false,
+                                            "aaSorting": [[ 3, "desc" ]],
+                                            "sDom": '<"rightSearch"fr><t>'
+                                        });
+                                        setTimeout(getSharedFiles, 30000);
+                                },
+                                error: function(xhr, status, error) {
+                                        console.log(error);
+                                        setTimeout(getSharedFiles, 240000);
+                                }
+            });
+            
+        }
 </script>
 

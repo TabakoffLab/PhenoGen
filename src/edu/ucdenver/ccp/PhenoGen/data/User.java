@@ -541,7 +541,7 @@ public class User{
 	public User[] getAllUsers(Connection conn) throws SQLException {
 
         	String query =
-                	"select u.user_id, u.user_name, u.first_name, u.last_name "+
+                	"select u.user_id, u.user_name, u.first_name, u.last_name, u.institution "+
                 	"from users u "+
 			"order by u.last_name";
 
@@ -555,6 +555,7 @@ public class User{
 			User newUser = new User(Integer.parseInt(dataRow[0]), dataRow[1]);
 			newUser.setFirst_name(dataRow[2]);
 			newUser.setLast_name(dataRow[3]);
+                        newUser.setInstitution(dataRow[4]);
 			userList.add(newUser);
 		}
 		User[] myUsers = (User[]) userList.toArray(new User[userList.size()]);
