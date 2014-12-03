@@ -433,7 +433,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                                 d3.select(this).selectAll("td").remove();
                                                 var ind=d.Path.lastIndexOf("/");
                                                 var file=d.Path.substr(ind+1);
-                                                var fileLink="<a href=\""+d.Path+"\"> "+file+ " </a>";
+                                                var fileLink="<a href=\""+d.Path+"\" target=\"_blank\"> "+file+ " </a>";
                                                 var timeShort=d.Time.substr(0,d.Time.lastIndexOf(":"));
                                                 var shared="<span class=\"action shared\" id=\"share"+d.FileID+"\"><img src=\"../images/success.png\"></span>"
                                                     +"<span class=\"action sharedUsers\" id=\"shareUser"+d.FileID+"\"><img src=\"../images/icons/user_32.png\"></span>";
@@ -677,7 +677,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                                 d3.select(this).selectAll("td").remove();
                                                 var ind=d.Path.lastIndexOf("/");
                                                 var file=d.Path.substr(ind+1);
-                                                var fileLink="<a href=\""+d.Path+"\"> "+file+ " </a>";
+                                                var fileLink="<a href=\""+d.Path+"\" target=\"_blank\"> "+file+ " </a>";
                                                 var timeShort=d.Time.substr(0,d.Time.lastIndexOf(":"));
                                                         d3.select(this).append("td").html(d.Owner);
                                                         d3.select(this).append("td").html(fileLink);
