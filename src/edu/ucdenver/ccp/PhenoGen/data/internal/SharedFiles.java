@@ -91,7 +91,7 @@ public class SharedFiles {
             String appRoot = (String) session.getAttribute("applicationRoot");
             ArrayList<GenericSharedFile> ret=new ArrayList<GenericSharedFile>();
             if(!curUser.getUser_name().equals("anon")){
-                String query="Select f.*,u.user_id,u.first_name,u.last_name from Files f, users u  where u.user_id=f.Owner_UID and (f.file_id in (Select file_id from files_shared where user_id="+curUser.getUser_id()+") or (f.all_users=1 and f.Owner_UID<>"+curUser.getUser_id()+")) order by f.created desc";
+                String query="Select f.*,u.user_id,u.first_name,u.last_name from Files f, users u  where u.user_id=f.Owner_UID and ((f.shared=1 and f.file_id in (Select file_id from files_shared where user_id="+curUser.getUser_id()+") )or (f.all_users=1 and f.Owner_UID<>"+curUser.getUser_id()+")) order by f.created desc";
                 Connection conn=null;
                 log.debug("getSharedFiles:"+query);
                 try{
@@ -227,5 +227,153 @@ public class SharedFiles {
                 }
             }
             return status;
+        }
+        public boolean deleteFile(int fid,HttpSession session){
+            boolean success=false;
+            User curUser=(User)session.getAttribute("userLoggedIn");
+            DataSource pool=(DataSource) session.getAttribute("dbPool");
+            String userFilesRoot=(String) session.getAttribute("userFilesRoot");
+            if(!curUser.getUser_name().equals("anon")){
+                String query="Select location from files f where f.file_id = "+fid+" and f.owner_uid="+curUser.getUser_id();
+                String query1="delete from Files_Shared f where f.file_id = "+fid;
+                String query2="delete from Files f where f.file_id = "+fid+" and f.owner_uid="+curUser.getUser_id();
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    conn.setAutoCommit(false);
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ResultSet rs=ps.executeQuery();
+                    if(rs.next()){
+                        String path=rs.getString(1);
+                        //add full path before manipulating path
+                        path=userFilesRoot+path;
+                        //get path parts
+                        String fName=path.substring(path.lastIndexOf("/")+1);
+                        String newPath=path.substring(0,path.lastIndexOf("/")+1);
+                        newPath=newPath+"toDelete/";
+                        
+                        log.debug("NewPath:"+newPath);
+                        File dirs=new File(newPath);
+                        if(!dirs.exists()){
+                            dirs.mkdirs();
+                        }
+                        log.debug("src:"+path);
+                        log.debug("dest:"+newPath+fName);
+                        File src=new File(path);
+                        File dest=new File(newPath+fName);
+                        src.renameTo(dest);
+                        
+                        PreparedStatement ps2 = conn.prepareStatement(query1);
+                        ps2.executeUpdate();
+                        ps2.close();
+                        ps2 = conn.prepareStatement(query2);
+                        int delete = ps2.executeUpdate();
+                        ps2.close();
+                        conn.commit();
+                        if(delete==1){
+                            success=true;
+                        }
+                    }
+                    ps.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    log.error("ERROR:deleteFile()",e);
+                }finally{
+                    try{
+                        if(conn!=null&&!conn.isClosed()){
+                            conn.close();
+                            conn=null;
+                        }
+                    }catch(SQLException er){
+
+                    }
+                }
+            }
+            return success;
+        }
+        
+        public boolean updateSharedWith(int fid,String list,HttpSession session){
+            boolean success=false;
+            User curUser=(User)session.getAttribute("userLoggedIn");
+            DataSource pool=(DataSource) session.getAttribute("dbPool");
+            String[] idList=list.split(",");
+            if(!curUser.getUser_name().equals("anon")){
+                String query1="delete from Files_Shared f where f.file_id = "+fid;
+                String query2="Insert into Files_shared (file_id,user_id) values (?,?)";
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    conn.setAutoCommit(false);
+                    PreparedStatement ps = conn.prepareStatement(query1);
+                    int deleted=ps.executeUpdate();
+                    ps.close();
+                    
+                    for(int i=0;i<idList.length;i++){
+                        int uid=Integer.parseInt(idList[i]);
+                        PreparedStatement ps2 = conn.prepareStatement(query2);
+                        ps2.setInt(1, fid);
+                        ps2.setInt(2, uid);
+                        ps2.executeUpdate();
+                        ps2.close();
+                    }
+                    conn.commit();    
+                    success=true;
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    log.error("ERROR:updateSharedWith()",e);
+                }finally{
+                    try{
+                        if(conn!=null&&!conn.isClosed()){
+                            conn.close();
+                            conn=null;
+                        }
+                    }catch(SQLException er){
+
+                    }
+                }
+            }
+            return success;
+        }
+        
+        public String getSharedUsers(int fid,HttpSession session){
+            String ret="";
+            User curUser=(User)session.getAttribute("userLoggedIn");
+            DataSource pool=(DataSource) session.getAttribute("dbPool");
+            if(!curUser.getUser_name().equals("anon")){
+                String query1="Select user_id from Files_Shared f where f.file_id = "+fid;
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    
+                    PreparedStatement ps = conn.prepareStatement(query1);
+                    ResultSet rs=ps.executeQuery();
+                    boolean first=true;
+                    while(rs.next()){
+                        if(first){
+                            ret=Integer.toString(rs.getInt(1));
+                            first=false;
+                        }else{
+                            ret=ret+","+rs.getInt(1);
+                        }
+                    }
+                    ps.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    log.error("ERROR:getSharedWith()",e);
+                }finally{
+                    try{
+                        if(conn!=null&&!conn.isClosed()){
+                            conn.close();
+                            conn=null;
+                        }
+                    }catch(SQLException er){
+
+                    }
+                }
+            }
+            return ret;
         }
 }

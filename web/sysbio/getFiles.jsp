@@ -39,7 +39,7 @@ response.setContentType("application/json");
             for(int j=0;j<files.size();j++){
                 GenericSharedFile gsf=files.get(j);
 
-                String url=contextRoot.substring(0,contextRoot.length()-1)+gsf.getPath();%>
+                String url=contextRoot.substring(0,contextRoot.length()-1)+"/userFiles"+gsf.getPath();%>
                 <%if(j>0){%>,<%}%>
                 {
                     "FileID":"<%=gsf.getFileID()%>",

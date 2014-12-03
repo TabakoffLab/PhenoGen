@@ -25,6 +25,7 @@ boolean all=false;
 boolean success=false;
 boolean status=false;
 String message="";
+String list="";
 
 if(request.getParameter("type")!=null){
     rType=request.getParameter("type");
@@ -32,17 +33,27 @@ if(request.getParameter("type")!=null){
 if(request.getParameter("fid")!=null){
     fid=Integer.parseInt(request.getParameter("fid"));
 }
+if(request.getParameter("idList")!=null){
+    list=request.getParameter("idList");
+}
 
 if(rType.equals("share")){
     all=false;
+    success=sfiles.toggleFileShare(fid,all,session);
+    status=sfiles.getFileShareStatus(fid,all,session);
 }else if(rType.equals("shareAll")){
     all=true;
+    success=sfiles.toggleFileShare(fid,all,session);
+    status=sfiles.getFileShareStatus(fid,all,session);
+}else if(rType.equals("delete")){
+    success=sfiles.deleteFile(fid,session);
+}else if(rType.equals("updateSharedWith")){
+    success=sfiles.updateSharedWith(fid,list,session);
 }
-success=sfiles.toggleFileShare(fid,all,session);
-status=sfiles.getFileShareStatus(fid,all,session);
+
 
 if(!success){
-    message="An error occured updating the sharing status.  Please try again.";
+    message="An error occured.  Please try again.";
 }
 
 response.setContentType("application/json");

@@ -82,7 +82,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         <div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
             <span id="detail1" class="detailMenu selected" name="public">Public Files</span>
             
-            <span id="detail2" class="detailMenu" name="members">Members' Files</span>
+            <span id="detail2" class="detailMenu" name="members">Members Files</span>
             
         </div>
 </div>
@@ -351,6 +351,28 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 </div><!-- END MEMBERS DIV-->
 
 <div class="downloadItem"></div>
+
+<div style="width:500px;height:450px;position:absolute;display:none;top:100px;left:400px;background-color: #FFFFFF;border: #000000 1px solid;" id="userList">
+    <div style="background-color: #CECECE;width:100%;height:18px;">Select Users to share file <span id="closeuserList" style="float:right; magin-top:2px;margin-right: 5px;"><img src="<%=imagesDir%>/icons/close.png"></span></div>
+    <BR>
+    <div id="userListContent" style="width:100%">
+        <span id="fileName">File Name:</span>
+        <BR><BR>
+        <table id="myUsers" name="items" class="list_base"  cellpadding="0" cellspacing="0" style="text-align: center;">
+            <thead class="col_title">
+            <TH>Check to Share file</th>
+            <TH>First Name</th>
+            <TH>Last Name</th>
+            <TH>Institution</th>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        <BR>
+        <div><input type="button" value="Apply" onclick="updateSharedList()"><input type="hidden" value="-99" id="fileID"><span id="status"></span></div>
+    </div>
+</div>
 <%@ include file="/web/common/footer.jsp"  %>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -378,10 +400,13 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                 
 	});
         
-        
+        $("#closeuserList").on("click",function(){
+           $("div#userList").hide(); 
+        });
         
         
         var myFileDataTable;
+        var myUserDataTable;
         var shareFileDataTable;
         
         function key(d){return d.FileID;}
@@ -426,12 +451,13 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                                         d3.select(this).append("td").html(timeShort);
                                                         d3.select(this).append("td").html(shared);
                                                         d3.select(this).append("td").html(shareAll);
-                                                        d3.select(this).append("td").html("<span class=\"action delete\"><img src=\"../images/icons/delete_lg.png\"></span>");
+                                                        d3.select(this).append("td").html("<span class=\"action delete\" id=\"delete"+d.FileID+"\"><img src=\"../images/icons/delete_lg.png\"></span>");
                                         });
                                         
                                         myFileDataTable=$('table#myFiles').DataTable({
                                             "bPaginate": false,
                                             "aaSorting": [[ 2, "desc" ]],
+                                            
                                             "sDom": '<"rightSearch"fr><t>'
                                         });
                                         
@@ -453,12 +479,80 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                             updateFiles(id,fullID,type);
                                         });
                                         //lets user share with selected users
-                                        $(".action.shareUsers").on("click",function(){
+                                        $(".action.sharedUsers").on("click",function(){
+                                            var fullID=$(this).attr("id");
+                                            var id=fullID.substr(9);
+                                            $("input#fileID").val(id);
+                                            $("div#userList").css("top",event.pageY).css("left",event.pageX-450);
+                                            var path=d3.select("table#myFiles").select("tbody").select('tr#fid'+id).data()[0].Path;
+                                            var file=path.substr(path.lastIndexOf("/")+1);
+                                            $("span#fileName").html("File Name:"+file);
+                                            $("span#status").html("");
+                                            $("div#userList").show();
                                             
+                                            $.ajax({
+                                                    url: "getAllUsers.jsp",
+                                                    type: 'GET',
+                                                    data: {},
+                                                    dataType: 'json',
+                                                    beforeSend: function(){
+                                                        
+                                                    },
+                                                    success: function(data2){
+                                                        try{
+                                                            myUserDataTable.destroy();
+                                                        }catch(err){
+
+                                                        }
+                                                        d3.select("table#myUsers").select("tbody").selectAll('tr').remove();
+                                                        var usertbl=d3.select("table#myUsers").select("tbody").selectAll('tr').data(data2);
+                                                        usertbl.enter().append("tr")
+                                                                        .attr("id",function(d){return "uid"+d.ID;})
+                                                                        .attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
+                                                        usertbl.exit().remove();
+                                                        usertbl.each(function(d,i){
+                                                                d3.select(this).selectAll("td").remove();
+                                                                d3.select(this).append("td").html("<input class=\"inclUser\" id=\"uid"+d.ID+"\" type=\"checkbox\">");
+                                                                d3.select(this).append("td").html(d.First);
+                                                                d3.select(this).append("td").html(d.Last);
+                                                                d3.select(this).append("td").html(d.Institution);
+                                                        });
+
+                                                        myUserDataTable=$('table#myUsers').DataTable({
+                                                            "bPaginate": false,
+                                                            "aaSorting": [[ 3, "asc" ]],
+                                                            "sScrollX": "460px",
+                                                            "sScrollY": "310px",
+                                                            "sDom": '<"rightSearch"fr><t>'
+                                                        });
+                                                        $.ajax({
+                                                            url: "getSharedUsers.jsp",
+                                                            type: 'GET',
+                                                            data: {fid:id},
+                                                            dataType: 'json',
+                                                            success: function(data2){
+                                                                
+                                                                var str=data2.UIDs;
+                                                                var list=str.split(",");
+                                                                for(var i=0;i<list.length;i++){
+                                                                    var uid=list[i];
+                                                                    console.log($("input#uid"+uid));
+                                                                    $("input#uid"+uid).prop('checked', true);
+                                                                }
+                                                            }
+                                                        });
+                                                    },
+                                                    error: function(xhr, status, error) {
+                                                            console.log(error);
+
+                                                    }
+                                                });
                                         });
                                         //deletes the file
                                         $(".action.delete").on("click",function(){
-                                            alert("delete");
+                                            var fullID=$(this).attr("id");
+                                            var id=fullID.substr(6);
+                                            deleteFile(id,fullID);
                                         });
                                         
                                         //run again to keep file list up to date
@@ -469,6 +563,39 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                         setTimeout(getMyFiles, 240000);
                                 }
             });
+            
+        }
+        function updateSharedList(){
+            //working
+            var idList="";
+            var fid=$("input#fileID").val();
+            $('.inclUser:checked').each(function(){
+                var id=$(this).attr("id").substr(3);
+                if(idList===""){
+                    idList=id;
+                }else{
+                    idList=idList+","+id;
+                }
+            });
+            console.log(idList);
+            $.ajax({
+                    url: "updateFiles.jsp",
+                    type: 'GET',
+                    data: {type:"updateSharedWith",idList:idList,fid:fid},
+                    dataType: 'json',
+                    beforeSend: function(){
+                         $("span#status").html("Working...Please wait");
+                    },
+                    success: function(data2){
+                        $("span#status").html(" Completed Successfully");
+                        $("div#userList").hide();
+                    },
+                    error: function(xhr, status, error) {
+                        $("span#status").html("An error occurred please try again.");
+                            console.log(error);
+                    }
+                });
+                    
             
         }
         function updateFiles(id,fullID, type){
@@ -488,7 +615,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                 img="<img src=\"../images/error.png\">";   
                             }
                             $("span#"+fullID).html(img);
-                            if(type="share"){
+                            if(type==="share"){
                                 if(data2.status==="false"){
                                     $("span#shareUser"+id).hide();
                                 }else{
@@ -502,6 +629,29 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                     error: function(xhr, status, error) {
                             console.log(error);
 
+                    }
+                });
+        }
+        function deleteFile(id,fullID){
+            $.ajax({
+                    url: "updateFiles.jsp",
+                    type: 'GET',
+                    data: {type:"delete",fid:id},
+                    dataType: 'json',
+                    beforeSend: function(){
+                        $("span#"+fullID).html("<img src=\"../images/icons/busy.gif\">");
+                        //d3.select("span#"+fullID).append("img").attr("src","../images/icons/busy.gif");
+                    },
+                    success: function(data2){
+                        if(data2.success==="true"){
+                            d3.select("table#myFiles").select("tbody").select("tr#fid"+id).remove();
+                        }else{
+                            $("span#"+fullID).html("<img src=\"../images/icons/delete_lg.png\">");
+                            d3.select("span#"+fullID).append("text").text(data2.Message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                            console.log(error);
                     }
                 });
         }
