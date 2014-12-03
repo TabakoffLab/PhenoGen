@@ -327,7 +327,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
             </TR>
         </thead>
         <tbody>
-            <TR id="myloading"><TD colspan="6">Loading...</TD></tr>
+            <TR id="myloading"><TD colspan="6"><img src="<%=imagesDir%>/icons/busy.gif"> Loading...</TD></tr>
         </tbody>
     </table>
     </div>
@@ -344,7 +344,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
             </TR>
         </thead>
         <tbody>
-            <TR id="sharedloading"><TD colspan="4">Loading...</TD></tr>
+            <TR id="sharedloading"><TD colspan="4"><img src="<%=imagesDir%>/icons/busy.gif"> Loading...</TD></tr>
         </tbody>
     </table>
     </div>
