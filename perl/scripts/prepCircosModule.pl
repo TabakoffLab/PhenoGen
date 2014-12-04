@@ -5,13 +5,6 @@ use strict;
 #
 my $debugLevel = 2;
 
-sub trim($)
-{
-	my $string = shift;
-	$string =~ s/^\s+//;
-	$string =~ s/\s+$//;
-	return $string;
-}
 
 sub prepCircosMod
 {
@@ -180,26 +173,31 @@ sub createCircosModGenesTextConfFile{
 	print CONFFILE '<plot>'."\n";
 	
 	print CONFFILE 'type             = text'."\n";
-	print CONFFILE 'color            = black'."\n";
+	print CONFFILE 'color            = red'."\n";
 	print CONFFILE 'file = '.$dataDirectory.'genes.txt'."\n";
 	print CONFFILE 'r0 = 1.07r'."\n";
 	print CONFFILE 'r1 = 1.07r+900p'."\n";
-	print CONFFILE 'show_links     = yes'."\n";
+	print CONFFILE 'show_links     = no'."\n";
 	print CONFFILE 'link_dims      = 0p,0p,20p,0p,5p'."\n";
 	print CONFFILE 'link_thickness = 2p'."\n";
 	print CONFFILE 'link_color     = red'."\n";
-	print CONFFILE 'label_size   = 12p'."\n";
+	print CONFFILE 'label_size   = 20p'."\n";
 	#print CONFFILE 'label_font=glyph'."\n";
 	print CONFFILE 'label_font   = default'."\n";
 	print CONFFILE 'padding  = 1p'."\n";
-	print CONFFILE 'rpadding = 0p'."\n";
-	print CONFFILE 'max_snuggle_distance = 10r'."\n";
-	#print CONFFILE '<rules>'."\n";
-	#print CONFFILE '<rule>'."\n";
-	#print CONFFILE 'condition = 1'."\n";
-	#print CONFFILE 'value=M'."\n";
-	#print CONFFILE '</rule>'."\n";
-	#print CONFFILE '</rules>'."\n";
+	print CONFFILE 'rpadding = 1p'."\n";
+	print CONFFILE 'max_snuggle_distance = 2r'."\n";
+	print CONFFILE '<rules>'."\n";
+	print CONFFILE '<rule>'."\n";
+	print CONFFILE 'condition = 1'."\n";
+	print CONFFILE 'value=X'."\n";
+        print CONFFILE 'flow = continue # if this rule passes, continue testing'."\n";
+	print CONFFILE '</rule>'."\n";
+        print CONFFILE '<rule>'."\n";
+	print CONFFILE 'condition = eval(index(var(value),"ENS")+1)'."\n";
+	print CONFFILE 'color = green'."\n";
+	print CONFFILE '</rule>'."\n";
+	print CONFFILE '</rules>'."\n";
 	print CONFFILE '</plot>'."\n";
 	close(CONFFILE);
 }

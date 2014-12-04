@@ -25,7 +25,7 @@
     var disptype="<%=dispType%>";
     var viewtype="<%=viewType%>";
     var wgcnaid="<%=geneID%>";
-    var tissue="Brain";
+    var tissue="Whole Brain";
     var modulePrefix="";
     var wgcna=WGCNABrowser(wgcnaid,disptype,viewtype,tissue);
     wgcna.setup();

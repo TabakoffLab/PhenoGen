@@ -5,7 +5,7 @@ use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/module
 #use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl-funcgen/modules/';
 
 
-#/usr/share/tomcat/webapps/PhenoGen/tmpData/modules/ 1 Mm
+#/usr/share/tomcat/webapps/PhenoGen/tmpData/modules/ 1 Mm "dbi:Oracle:dev.ucdenver.pvt" INIA INIA_dev
 
 #params
 #0-outputPath
@@ -42,7 +42,7 @@ sub getParents{
             $tmp{name} = $term->name();
             $tmp{definition} = $term->definition();
         foreach my $par(@parents){
-            print "\t".$term->accession()."->".$par->accession()."|".$par->name()."\t".$par->is_root()."\n";
+            #print "\t".$term->accession()."->".$par->accession()."|".$par->name()."\t".$par->is_root()."\n";
             if(defined $moduleGOHOHRef->{$par->accession()}{ID}){
             }else{
                 if($par->is_root()==0){
@@ -70,7 +70,7 @@ sub printGOTermJSON{
     my %goHOH=%$goRef;
     if(defined $term and defined $goHOH{$term}{ID}){
         my @list=$goHOH{$term}{children};
-        print "print:$term:".$goHOH{$term}{ID}."\n";
+        #print "print:$term:".$goHOH{$term}{ID}."\n";
         print $fh "{\"ID\":\"".$goHOH{$term}{ID}."\",";
         print $fh "\t\"Name\":\"".$goHOH{$term}{name}."\",";
         print $fh "\t\"children\":[\n";
@@ -92,9 +92,15 @@ sub printGOTermJSON{
     }
 }
 
-my $path=$ARGV[0]."ds".$wgcnaDataset."/";
 my $wgcnaDataset=$ARGV[1];
+
+my $path=$ARGV[0]."ds".$wgcnaDataset."/";
+
 my $org=$ARGV[2];
+
+my $dsn=$ARGV[3];
+my $user=$ARGV[4];
+my $passwd=$ARGV[5];
 
 my $longOrg="Mouse";
 if($org eq "Rn"){
@@ -300,7 +306,7 @@ foreach my $mod(@moduleList){
                                 my $db = $xref->dbname;
                                 if(defined $dispid){
                                     my $term = $go_adaptor->fetch_by_accession($dispid);
-                                    if(not (defined $moduleHOH{TCList}{$tc}{Gene}{GOList}{$dispid})){
+                                    if(not (defined $moduleHOH{TCList}{$tc}{Gene}{GOList}{$dispid}) && defined $term){
                                         
                                         $moduleHOH{TCList}{$tc}{Gene}{GOList}{$dispid}={
                                                             ID => $dispid,
@@ -310,15 +316,15 @@ foreach my $mod(@moduleList){
                                                 };
                                     }
                                     #print $dispid."\n";
-                                    if(not (defined $moduleGOList{$dispid})){
-                                        print $dispid."\n";
-                                        #get parents and add to moduleGO
-                                        getParents(\$term,\%moduleGOList,\%moduleGOHOH,$geneName);
-                                        $moduleGOList{$term->accession()}{genes}{$geneName}=1;    
-                                        #print "end\n";
-                                    }else{
-                                        #add gene to GO
-                                    }
+                                    #if(not (defined $moduleGOList{$dispid})){
+                                    #    #print $dispid."\n";
+                                    #    #get parents and add to moduleGO
+                                    #    getParents(\$term,\%moduleGOList,\%moduleGOHOH,$geneName);
+                                    #    $moduleGOList{$term->accession()}{genes}{$geneName}=1;    
+                                    #    #print "end\n";
+                                    #}else{
+                                    #    #add gene to GO
+                                    #}
                                 }
                             }
                             $cntTranscripts = $cntTranscripts+1;
@@ -421,9 +427,9 @@ foreach my $mod(@moduleList){
                 print OFILE "\t\t\t\t\t}";#end Transcript Object
                 $trxcount++;
             }
-            print OFILE "\n\t\t\t\t]\n";#end Transcript List
+            print OFILE "\n\t\t\t\t],\n";#end Transcript List
             if(defined $moduleHOH{TCList}{$tc}{Gene}{GOList}){
-                print OFILE "\n\t\t\t\t\",GOList\":[\n";
+                print OFILE "\n\t\t\t\t\"GOList\":[\n";
                 my @goKey=keys $moduleHOH{TCList}{$tc}{Gene}{GOList};
                 my $goCount=0;
                 foreach my $go(@goKey){
@@ -440,7 +446,7 @@ foreach my $mod(@moduleList){
                     print OFILE "}";
                     $goCount++;
                 }
-                print OFILE "\n\t\t\t\t],\n";#end GO List
+                print OFILE "\n\t\t\t\t]\n";#end GO List
             }
         }else{
             print OFILE " \t\t\t\t\"ID\":\"Unannotated\"";
@@ -471,21 +477,21 @@ foreach my $mod(@moduleList){
     print OFILE "}";#end module
     close OFILE;
 
-    open OFILE, '>', $path.$mod.".GO.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
-    print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
-    print OFILE "\t\"GOList\": [\n";
-    my @r;
-    push(@r,"GO:0005575");
-    push(@r,"GO:0008150");
-    push(@r,"GO:0003674");
-    foreach my $val(@r){
-        print "TOP LEVEL\n";
-        printGOTermJSON(\*OFILE,\%moduleGOHOH,$val);
-        
-    }
-    print OFILE "\t\]\n";
-    print OFILE "}";#end module
-    close OFILE;
+    #open OFILE, '>', $path.$mod.".GO.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
+    #print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
+    #print OFILE "\t\"GOList\": [\n";
+    #my @r;
+    #push(@r,"GO:0005575");
+    #push(@r,"GO:0008150");
+    #push(@r,"GO:0003674");
+    #foreach my $val(@r){
+    #    print "TOP LEVEL\n";
+    #    printGOTermJSON(\*OFILE,\%moduleGOHOH,$val);
+    #    
+    #}
+    #print OFILE "\t\]\n";
+    #print OFILE "}";#end module
+    #close OFILE;
 
     my $chrString="mm1;mm2;mm3;mm4;mm5;mm6;mm7;mm8;mm9;mm10;mm11;mm12;mm13;mm14;mm15;mm16;mm17;mm18;mm19;mmX;";
     if($org eq "Rn"){   
@@ -494,5 +500,5 @@ foreach my $mod(@moduleList){
     my $tmpPath=$path.$mod."/";
     print "\n\ntmp:$tmpPath\n\n";
     my $cutoff=2;
-    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1","dbi:Oracle:dev.ucdenver.pvt","INIA", "INIA_dev");
+    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$dsn,$user, $passwd);
 }

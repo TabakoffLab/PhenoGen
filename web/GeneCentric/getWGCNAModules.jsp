@@ -20,12 +20,26 @@ import="org.json.*" %>
 
 <%
 String id="";
+String org="";
+String tissue="";
+String panel="";
+
 if(request.getParameter("id")!=null){
 	id=request.getParameter("id");
 }
+if(request.getParameter("organism")!=null){
+	org=request.getParameter("organism");
+}
+if(request.getParameter("panel")!=null){
+	panel=request.getParameter("panel");
+}
+if(request.getParameter("tissue")!=null){
+	tissue=request.getParameter("tissue");
+}
+
 wgt.setSession(session);
 
-ArrayList<String> modules=wgt.getWGCNAModulesForGene(id,"ILS/ISS","Brain","Mm");
+ArrayList<String> modules=wgt.getWGCNAModulesForGene(id,panel,tissue,org);
 
 response.setContentType("application/json");
 %>

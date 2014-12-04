@@ -155,17 +155,17 @@ sub callCircosMod{
 	#-- go back to original directory
 	chdir($pwd);
 }
-	my $arg1 = $ARGV[0]; # module
-	my $arg2 = $ARGV[1]; # cutoff
-	my $arg3 = $ARGV[2]; # organism
-	my $arg4 = $ARGV[3]; # chromosomes
-	my $arg5 = $ARGV[4]; # tissue
-	my $arg6 = $ARGV[5]; # module path
-	my $arg7 = $ARGV[6]; # timestamp
-	my $arg8 = $ARGV[7]; #	dsn
-	my $arg9= $ARGV[8]; # user
-	my $arg10= $ARGV[9]; # password
+	#my $arg1 = $ARGV[0]; # module
+	#my $arg2 = $ARGV[1]; # cutoff
+	#my $arg3 = $ARGV[2]; # organism
+	#my $arg4 = $ARGV[3]; # chromosomes
+	#my $arg5 = $ARGV[4]; # tissue
+	#my $arg6 = $ARGV[5]; # module path
+	#my $arg7 = $ARGV[6]; # timestamp
+	#my $arg8 = $ARGV[7]; #	dsn
+	#my $arg9= $ARGV[8]; # user
+	#my $arg10= $ARGV[9]; # password
 	
-	callCircosMod($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10);
+	#callCircosMod($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10);
 
 1;

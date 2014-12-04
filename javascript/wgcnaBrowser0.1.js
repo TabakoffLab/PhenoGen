@@ -24,7 +24,11 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	that.panel="";
 	that.requests=0;
 	that.skipGrey=1;
-
+        if(organism==="Mm"){
+            that.panel="ILS/ISS";
+        }else{
+            that.panel="BNLx/SHR";
+        }
 
 	that.setup=function(){
 		//request Module List
@@ -50,7 +54,7 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	        				//var isLast=data2.length-i;
 	        				that.requests++;
 	        				that.requestModule(data2[i].ModuleID);
-	        				console.log("after calling:"+that.requests);
+	        				//console.log("after calling:"+that.requests);
 	        		}
 	        		console.log(that.moduleList);
 	    		},
@@ -85,7 +89,8 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 		var count=0;
 		data.selectGeneTC={};
 		for(var k=0;k<list.length;k++){
-			if(list[k].Gene.ID===idlist){
+                        console.log(data.ID+":"+list[k].Gene.ID);
+			if(list[k].Gene.ID==idlist){
 				data.selectGeneTC[list[k].ID]=1;
 				count++;
 			}
@@ -812,10 +817,10 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	};
 	/*that.singleWGCNAImageMultiMiRView=function(){
 
-	};
-	that.singleWGCNAImageEQTLView=function(){
-
 	};*/
+	that.singleWGCNAImageEQTLView=function(){
+            
+	};
 
 	return that;
 }
