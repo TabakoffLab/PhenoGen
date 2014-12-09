@@ -10,7 +10,11 @@ use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/module
 #params
 #0-outputPath
 #1-WGCNA Dataset ID
-#
+#2-Organism (Mm or Rn)
+#3-dsn
+#4-user
+#5-password
+#6-path to adjMatrix files
 
 use DBI;
 use Bio::EnsEMBL::Registry;
@@ -101,6 +105,9 @@ my $org=$ARGV[2];
 my $dsn=$ARGV[3];
 my $user=$ARGV[4];
 my $passwd=$ARGV[5];
+my $adjPath=$ARGV[6];
+
+my $adjCutoff=0.01;
 
 my $longOrg="Mouse";
 if($org eq "Rn"){
@@ -142,6 +149,7 @@ $query_handle->finish();
 
 
 
+
 print "Module List: ".@moduleList."\n";
 
 foreach my $mod(@moduleList){
@@ -153,6 +161,32 @@ foreach my $mod(@moduleList){
     #$moduleGOHOH{"GO:0003674"}={};
     
     print "processing $mod\n";
+    my %adjHOH;
+
+    #GET LINKS FROM ADJ MATRIX
+    print "OPEN ADJ:".$adjPath."/".$mod.".adjMat\n";
+    open ADJ, "<",$adjPath."/".$mod.".adjMat";
+    my $header=<ADJ>;
+    my @adjTC=split("\t",$header);
+    for(my $row=0;$row<@adjTC;$row++){
+        $adjTC[$row]=trim(substr($adjTC[$row],length($mod)+1));
+        print "tcName:".$adjTC[$row]."\n";
+    }
+    my $linkCount=0;
+    for(my $row=0;$row<@adjTC;$row++){
+        my $line=<ADJ>;
+        my @columns=split("\t",$line);
+        for(my $col=0;$col<$row;$col++){#only read first part up to the 1 since its symmetrical
+            $adjHOH{$adjTC[$row]}{$adjTC[$col]}=$columns[$col];
+            $moduleHOH{LinkList}[$linkCount]={
+                                                TC1=>$adjTC[$row],
+                                                TC2=>$adjTC[$col],
+                                                cor=>$columns[$col]
+                                            };
+            $linkCount++;
+        }
+    }
+    close ADJ;
     my $query2="select probeset_id,transcript_clust_id,gene_id from wgcna_module_info where wdsid=".$wgcnaDataset." and module='".$mod."' order by transcript_clust_id";
     my $query_handle2 = $connect->prepare($query2) or die ("Module query prepare failed \n");
     $query_handle2->execute() or die ( "Module query execute failed \n");
@@ -191,6 +225,21 @@ foreach my $mod(@moduleList){
             $moduleHOH{TCList}{$tc}{PSList}{$psid}{Chr}=$pschr;
         }
         $query_handle3->finish();
+        
+        my $hohRef=$adjHOH{$tc};
+        my @linkTCList=keys %$hohRef;
+        my $linkSum=0;
+        my $linkCount=0;
+
+        foreach my $dest(@linkTCList){
+            $linkSum=$linkSum+abs($adjHOH{$tc}{$dest});
+            if(abs($adjHOH{$tc}{$dest})>$adjCutoff){
+                $linkCount++;
+            }
+        }
+        $moduleHOH{TCList}{$tc}{linkSum}=$linkSum;
+        $moduleHOH{TCList}{$tc}{linkCount}=$linkCount;
+
 
         if (not defined $moduleHOH{TCList}{$tc}{Gene}) {
             if (index($geneid,"ENS")==0) {
@@ -299,22 +348,22 @@ foreach my $mod(@moduleList){
                                     #print "finished matching probesets\n";
                             } # loop through exons
                         
-                            my @xrefs = @{ $transcript->get_all_xrefs("GO%") };
-                            foreach my $xref(@xrefs){
-                                my $primid = $xref->primary_id();
-                                my $dispid = $xref->display_id();
-                                my $db = $xref->dbname;
-                                if(defined $dispid){
-                                    my $term = $go_adaptor->fetch_by_accession($dispid);
-                                    if(not (defined $moduleHOH{TCList}{$tc}{Gene}{GOList}{$dispid}) && defined $term){
-                                        
-                                        $moduleHOH{TCList}{$tc}{Gene}{GOList}{$dispid}={
-                                                            ID => $dispid,
-                                                            name => $term->name(),
-                                                            root => $term->namespace(),
-                                                            definition => $term->definition()
-                                                };
-                                    }
+                            #my @xrefs = @{ $transcript->get_all_xrefs("GO%") };
+                            #foreach my $xref(@xrefs){
+                            #    my $primid = $xref->primary_id();
+                            #    my $dispid = $xref->display_id();
+                            #    my $db = $xref->dbname;
+                            #    if(defined $dispid){
+                            #        my $term = $go_adaptor->fetch_by_accession($dispid);
+                            #        if(not (defined $moduleHOH{TCList}{$tc}{Gene}{GOList}{$dispid}) && defined $term){
+                            #            
+                            #            $moduleHOH{TCList}{$tc}{Gene}{GOList}{$dispid}={
+                            #                                ID => $dispid,
+                            #                                name => $term->name(),
+                            #                                root => $term->namespace(),
+                            #                                definition => $term->definition()
+                            #                    };
+                            #        }
                                     #print $dispid."\n";
                                     #if(not (defined $moduleGOList{$dispid})){
                                     #    #print $dispid."\n";
@@ -325,8 +374,8 @@ foreach my $mod(@moduleList){
                                     #}else{
                                     #    #add gene to GO
                                     #}
-                                }
-                            }
+                            #    }
+                            #}
                             $cntTranscripts = $cntTranscripts+1;
                         } # loop through transcripts
                         
@@ -338,6 +387,8 @@ foreach my $mod(@moduleList){
         }
     }
     $query_handle2->finish();
+    
+
     
     
     
@@ -353,6 +404,8 @@ foreach my $mod(@moduleList){
                 print OFILE ",\n";
         }
         print OFILE "\t\t{\n\t\t\t\"ID\":\"$tc\",\n";
+        print OFILE "\t\t\t\"LinkSum\":".$moduleHOH{TCList}{$tc}{linkSum}.",\n";
+        print OFILE "\t\t\t\"LinkCount\":".$moduleHOH{TCList}{$tc}{linkCount}.",\n";
         print OFILE " \t\t\t\"Gene\":{";
         if (defined $moduleHOH{TCList}{$tc}{Gene}{ID}) {
             print OFILE " \"start\":".$moduleHOH{TCList}{$tc}{Gene}{start}.",";
@@ -369,85 +422,85 @@ foreach my $mod(@moduleList){
                 print OFILE " \"description\":\"\",";
             }
             print OFILE " \"extStart\":".$moduleHOH{TCList}{$tc}{Gene}{extStart}.",";
-            print OFILE " \"extStop\":".$moduleHOH{TCList}{$tc}{Gene}{extStop}.",";
-            print OFILE "\n\t\t\t\t\"TranscriptList\":[\n";
-            my $trxSizeRef=$moduleHOH{TCList}{$tc}{Gene}{TranscriptList}{Transcript};
-            my @trxList=@$trxSizeRef;
-            my $trxcount=0;
-            foreach my $trxRef(@trxList){
-                my %trxHOH=%$trxRef;
-                if ($trxcount>0) {
-                    print OFILE ",\n";
-                }
-                print OFILE "\t\t\t\t\t{ \"start\":".$trxHOH{start}.",";
-                print OFILE " \"stop\":".$trxHOH{stop}.",";
-                print OFILE " \"ID\":\"".$trxHOH{ID}."\",";
-                print OFILE " \"strand\":\"".$trxHOH{strand}."\",";
-                print OFILE " \"cdsStart\":\"".$trxHOH{cdsStart}."\",";
-                print OFILE " \"cdsStop\":\"".$trxHOH{cdsStop}."\",";
-                print OFILE " \n\t\t\t\t\t\t\"exonList\":[\n";
-                my $exSizeRef=$trxHOH{exonList}{exon};
-                my @exList=@$exSizeRef;
-                my $excount=0;
-                foreach my $exRef(@exList){
-                    my %exHOH=%$exRef;
-                    if ($excount>0) {
-                        print OFILE ",\n";
-                    }
-                    print OFILE "\t\t\t\t\t\t\t{ ";
-                    print OFILE " \"ID\":\"".$exHOH{ID}."\",";
-                    print OFILE " \"start\":".$exHOH{start}.",";
-                    print OFILE " \"stop\":".$exHOH{stop}.",";
-                    print OFILE " \"cdsStart\":\"".$trxHOH{cdsStart}."\",";
-                    print OFILE " \"cdsStop\":\"".$trxHOH{cdsStop}."\"";
-                    print OFILE "}";#end exon Object
-                    $excount++;
-                }
-                print OFILE "\n\t\t\t\t\t\t],\n";
-                print OFILE "\n\t\t\t\t\t\t\"intronList\":[\n";
-                my $intSizeRef=$trxHOH{intronList}{intron};
-                if (defined $intSizeRef) {
-                    my @intList=@$intSizeRef;
-                    my $intcount=0;
-                    foreach my $intRef(@intList){
-                        my %intHOH=%$intRef;
-                        if ($intcount>0) {
-                            print OFILE ",\n";
-                        }
-                        print OFILE "\t\t\t\t\t\t\t{ ";
-                        print OFILE " \"ID\":\"".$intHOH{ID}."\",";
-                        print OFILE " \"start\":".$intHOH{start}.",";
-                        print OFILE " \"stop\":".$intHOH{stop};
-                        print OFILE "}";#end exon Object
-                        $intcount++;
-                    }
-                }
+            print OFILE " \"extStop\":".$moduleHOH{TCList}{$tc}{Gene}{extStop}."";
+#            print OFILE "\n\t\t\t\t\"TranscriptList\":[\n";
+#            my $trxSizeRef=$moduleHOH{TCList}{$tc}{Gene}{TranscriptList}{Transcript};
+#            my @trxList=@$trxSizeRef;
+#            my $trxcount=0;
+#            foreach my $trxRef(@trxList){
+#                my %trxHOH=%$trxRef;
+#                if ($trxcount>0) {
+#                    print OFILE ",\n";
+#                }
+#                print OFILE "\t\t\t\t\t{ \"start\":".$trxHOH{start}.",";
+#                print OFILE " \"stop\":".$trxHOH{stop}.",";
+#                print OFILE " \"ID\":\"".$trxHOH{ID}."\",";
+#                print OFILE " \"strand\":\"".$trxHOH{strand}."\",";
+#                print OFILE " \"cdsStart\":\"".$trxHOH{cdsStart}."\",";
+#                print OFILE " \"cdsStop\":\"".$trxHOH{cdsStop}."\",";
+#                print OFILE " \n\t\t\t\t\t\t\"exonList\":[\n";
+#                my $exSizeRef=$trxHOH{exonList}{exon};
+#                my @exList=@$exSizeRef;
+#                my $excount=0;
+#                foreach my $exRef(@exList){
+#                    my %exHOH=%$exRef;
+#                    if ($excount>0) {
+#                        print OFILE ",\n";
+#                    }
+#                    print OFILE "\t\t\t\t\t\t\t{ ";
+#                    print OFILE " \"ID\":\"".$exHOH{ID}."\",";
+#                    print OFILE " \"start\":".$exHOH{start}.",";
+#                    print OFILE " \"stop\":".$exHOH{stop}.",";
+#                    print OFILE " \"cdsStart\":\"".$trxHOH{cdsStart}."\",";
+#                    print OFILE " \"cdsStop\":\"".$trxHOH{cdsStop}."\"";
+#                    print OFILE "}";#end exon Object
+#                    $excount++;
+#                }
+#                print OFILE "\n\t\t\t\t\t\t],\n";
+#                print OFILE "\n\t\t\t\t\t\t\"intronList\":[\n";
+#                my $intSizeRef=$trxHOH{intronList}{intron};
+#                if (defined $intSizeRef) {
+#                    my @intList=@$intSizeRef;
+#                    my $intcount=0;
+#                    foreach my $intRef(@intList){
+#                        my %intHOH=%$intRef;
+#                        if ($intcount>0) {
+#                            print OFILE ",\n";
+#                        }
+#                        print OFILE "\t\t\t\t\t\t\t{ ";
+#                        print OFILE " \"ID\":\"".$intHOH{ID}."\",";
+#                        print OFILE " \"start\":".$intHOH{start}.",";
+#                        print OFILE " \"stop\":".$intHOH{stop};
+#                        print OFILE "}";#end exon Object
+#                        $intcount++;
+#                    }
+#                }
 
-                print OFILE "\n\t\t\t\t\t\t]\n";
-                print OFILE "\t\t\t\t\t}";#end Transcript Object
-                $trxcount++;
-            }
-            print OFILE "\n\t\t\t\t],\n";#end Transcript List
-            if(defined $moduleHOH{TCList}{$tc}{Gene}{GOList}){
-                print OFILE "\n\t\t\t\t\"GOList\":[\n";
-                my @goKey=keys $moduleHOH{TCList}{$tc}{Gene}{GOList};
-                my $goCount=0;
-                foreach my $go(@goKey){
-                    if ($goCount>0) {
-                            print OFILE ",\n";
-                    }
+#                print OFILE "\n\t\t\t\t\t\t]\n";
+#                print OFILE "\t\t\t\t\t}";#end Transcript Object
+#                $trxcount++;
+#            }
+#            print OFILE "\n\t\t\t\t],\n";#end Transcript List
+            #if(defined $moduleHOH{TCList}{$tc}{Gene}{GOList}){
+            #    print OFILE "\n\t\t\t\t\"GOList\":[\n";
+            #    my @goKey=keys $moduleHOH{TCList}{$tc}{Gene}{GOList};
+            #    my $goCount=0;
+            #    foreach my $go(@goKey){
+            #        if ($goCount>0) {
+            #                print OFILE ",\n";
+            #        }
                     #my $def=$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{definition};
                     #my $ind=index($def,"\"",1);
                     #$def=substr($def,0,$ind+1);
-                    print OFILE "{\"ID\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{ID}."\",";
+            #        print OFILE "{\"ID\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{ID}."\",";
                     #print OFILE "\"Definition\":".$def.",";
-                    print OFILE "\"Name\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{name}."\",";
-                    print OFILE "\"domain\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{root}."\"";
-                    print OFILE "}";
-                    $goCount++;
-                }
-                print OFILE "\n\t\t\t\t]\n";#end GO List
-            }
+            #        print OFILE "\"Name\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{name}."\",";
+            #        print OFILE "\"domain\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{root}."\"";
+            #        print OFILE "}";
+            #        $goCount++;
+            #    }
+            #    print OFILE "\n\t\t\t\t]\n";#end GO List
+            #}
         }else{
             print OFILE " \t\t\t\t\"ID\":\"Unannotated\"";
         }
@@ -473,7 +526,22 @@ foreach my $mod(@moduleList){
        print OFILE "\t\t}";
        $tcCount++;
     }
-    print OFILE "\n\t]\n";#end TCList
+    print OFILE "\n\t],\n";#end TCList
+    print OFILE "\t\"LinkList\": [\n";
+    my $linklistRef=$moduleHOH{LinkList};
+    my @linklist=@$linklistRef;
+    print "output data struct size:".@linklist."\n";
+    for(my $link=0;$link<@linklist;$link++){
+        if($link>0){
+            print OFILE "\t\t,\n";
+        }
+        print OFILE "\t\t\t{\n";
+        print OFILE "\t\t\t\t\"TC1\":\"".$moduleHOH{LinkList}[$link]{TC1}."\",\n";
+        print OFILE "\t\t\t\t\"TC2\":\"".$moduleHOH{LinkList}[$link]{TC2}."\",\n";
+        print OFILE "\t\t\t\t\"Cor\":".$moduleHOH{LinkList}[$link]{cor}."\n";
+        print OFILE "\t\t\t}";
+    }
+    print OFILE "\n\t]\n";#end LinkList
     print OFILE "}";#end module
     close OFILE;
 
