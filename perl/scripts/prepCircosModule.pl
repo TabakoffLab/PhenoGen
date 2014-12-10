@@ -47,7 +47,7 @@ sub prepCircosMod
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");
 	}
-	my $karyotypeLocation = '/usr/local/circos-0.62-1/data/karyotype/';
+	my $karyotypeLocation = '/usr/local/circos-0.67-2/data/karyotype/';
 	createCircosConfFile($confDirectory,$genericConfLocation,$genericConfLocation2,$karyotypeLocation,$organism,$chromosomeListRef,$oneToCreateLinks,$oneToCreateLinks);
 	createCircosIdeogramConfFiles($confDirectory,$organism,$chromosomeListRef);
 	createCircosModGenesTextConfFile($dataDirectory,$confDirectory);
@@ -191,12 +191,12 @@ sub createCircosModGenesTextConfFile{
 	print CONFFILE '<rule>'."\n";
 	print CONFFILE 'condition = 1'."\n";
 	print CONFFILE 'value=X'."\n";
-        print CONFFILE 'flow = continue # if this rule passes, continue testing'."\n";
+        #print CONFFILE 'flow = continue # if this rule passes, continue testing'."\n";
 	print CONFFILE '</rule>'."\n";
-        print CONFFILE '<rule>'."\n";
-	print CONFFILE 'condition = eval(index(var(value),"ENS")+1)'."\n";
-	print CONFFILE 'color = green'."\n";
-	print CONFFILE '</rule>'."\n";
+        #print CONFFILE '<rule>'."\n";
+	#print CONFFILE 'condition = eval(index(var(value),"ENS")+1)'."\n";
+	#print CONFFILE 'color = green'."\n";
+	#print CONFFILE '</rule>'."\n";
 	print CONFFILE '</rules>'."\n";
 	print CONFFILE '</plot>'."\n";
 	close(CONFFILE);

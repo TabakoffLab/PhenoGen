@@ -148,6 +148,17 @@ while($query_handle->fetch()) {
 $query_handle->finish();
 
 
+my %colorHash;
+open COL,'<','/usr/local/circos-0.67-2/etc/colors.unix.txt' || die ("Can't open $toolTipFileName:$!");
+while(<COL>){
+    my $line=$_;
+    print $line;
+    my @cols=split("=",$line);
+    $cols[0]=trim($cols[0]);
+    $cols[1]=trim($cols[1]);
+    $colorHash{$cols[0]}=$cols[1];
+}
+close(COL);
 
 
 print "Module List: ".@moduleList."\n";
@@ -164,13 +175,13 @@ foreach my $mod(@moduleList){
     my %adjHOH;
 
     #GET LINKS FROM ADJ MATRIX
-    print "OPEN ADJ:".$adjPath."/".$mod.".adjMat\n";
+    #print "OPEN ADJ:".$adjPath."/".$mod.".adjMat\n";
     open ADJ, "<",$adjPath."/".$mod.".adjMat";
     my $header=<ADJ>;
     my @adjTC=split("\t",$header);
     for(my $row=0;$row<@adjTC;$row++){
         $adjTC[$row]=trim(substr($adjTC[$row],length($mod)+1));
-        print "tcName:".$adjTC[$row]."\n";
+        #print "tcName:".$adjTC[$row]."\n";
     }
     my $linkCount=0;
     for(my $row=0;$row<@adjTC;$row++){
@@ -397,6 +408,8 @@ foreach my $mod(@moduleList){
     $tmpMod =~ s/\./_/g;
     print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
     print OFILE "\t\"TCList\": [\n";
+    #my $tcRef=$moduleHOH{TCList};
+    #my %tcHOH=%{$tcRef};
     my @tcKey=keys $moduleHOH{TCList};
     $tcCount=0;
     foreach my $tc(@tcKey){
@@ -566,7 +579,7 @@ foreach my $mod(@moduleList){
         $chrString="rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX;";
     }
     my $tmpPath=$path.$mod."/";
-    print "\n\ntmp:$tmpPath\n\n";
+    #print "\n\ntmp:$tmpPath\n\n";
     my $cutoff=2;
-    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$dsn,$user, $passwd);
+    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",\%colorHash,$dsn,$user, $passwd);
 }

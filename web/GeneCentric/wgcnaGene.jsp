@@ -8,6 +8,7 @@
             geneID=request.getParameter("id");
     }
 %>
+
 <div style="text-align:center;"
     <div id="wgcnaImageControls" style="display:inline-block;width:100%;">
         <table style="width:100%;">

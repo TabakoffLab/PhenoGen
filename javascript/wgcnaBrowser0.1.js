@@ -202,6 +202,9 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.on("click",function(){
+                            if(that.viewType==="eqtl"){
+                                that.singleImage.panZoomCircos.reset();
+                            }else if(that.singleImage==undefined){
 				var id=new String($(this).parent().attr("id"));
 				var level=id.substr(id.length-1);
 				if(level==0){
@@ -214,6 +217,7 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 					svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
 					svgList[level].redraw();
 				}
+                            }
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src","/web/images/icons/reset_white.png");
@@ -244,7 +248,11 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 				"top":"-5px"
 			})
 			.on("click",function(){
+                            if(that.viewType==="eqtl"){
+                                that.singleImage.panZoomCircos.zoomIn();
+                            }else if(that.singleImage==undefined){
 				that.multiImage.zoomIn();
+                            }
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src","/web/images/icons/magPlus_light_32.png");
@@ -273,7 +281,12 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 				"top":"-5px"
 			})
 			.on("click",function(){
+                            if(that.viewType==="eqtl"){
+                                that.singleImage.panZoomCircos.zoomOut();
+                            }else if(that.singleImage==undefined){
 				that.multiImage.zoomOut();
+                            }
+				
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src","/web/images/icons/magMinus_light_32.png");
@@ -353,8 +366,8 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 		that.viewBar.append("text").text("View:");
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","gene").attr("checked","checked").style("margin-left","7px").style("margin-right","3px").on("click",function(){
                     that.viewType="gene";
-                    $("#linkCtls").show();
-                    $("#eqtlCtls").hide();
+                    //$("#linkCtls").show();
+                    //$("#eqtlCtls").hide();
                     that.createSingleWGCNAImage();
                 });;
 		that.viewBar.append("text").text("Gene");
@@ -364,8 +377,8 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 		that.viewBar.append("text").text("miRNA(multiMiR)");*/
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","eqtl").style("margin-left","7px").style("margin-right","3px").on("click",function(){
                     that.viewType="eqtl";
-                    $("#linkCtls").hide();
-                    $("#eqtlCtls").show();
+                    //$("#linkCtls").hide();
+                    //$("#eqtlCtls").show();
                     that.createSingleWGCNAImage();
                 });
 		that.viewBar.append("text").text("eQTL");
@@ -390,17 +403,17 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 			sel.append("option").attr("value",that.tissues[i]).text(that.dispTissues[i]);
 		}
                
-                var links=that.dataBar.append("td").append("div").attr("id","linkCtls");
+                var links=that.dataBar.append("td").append("div").attr("id","linkCtls").style("display","none").style("margin-left","10px");
                 links.append("text").text("Link Correlation Values");
                 var table=links.append("table");
                 var row=table.append("tr");
                 row.append("td").append("text").text("Min:");
                 row.append("td").append("div").attr("id","linkSliderMin").style("width","100px");
-                row.append("td").append("span").attr("id","minLabel").append("text").text("0.01");
+                row.append("td").append("span").attr("id","minLabel").style("margin-left","5px").append("text").text("0.01");
                 row=table.append("tr");
                 row.append("td").append("text").text("Max:");
                 row.append("td").append("div").attr("id","linkSliderMax").style("width","100px");
-                row.append("td").append("span").attr("id","maxLabel").append("text").text("1");
+                row.append("td").append("span").attr("id","maxLabel").style("margin-left","5px").append("text").text("1");
 
                 links.append("input").attr("type","checkbox").attr("id","hideLinkExceptNode").on("click",function(){
                     that.singleImage.showLinks=!($(this).is(":checked"));
@@ -433,14 +446,32 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
                         that.singleImage.draw();
                     }
                   });
-                var chr=that.dataBar.append("td").append("div").attr("id","eqtlCtls");
-                chr.append("text").text("Select Chromosomes for EQTLs");
-                sel=chr.append("select").attr("id","eqtlChr").attr("multiple","multiple").attr("size","5");
+                var chr=that.dataBar.append("td").append("div").attr("class","eqtlCtls").attr("id","eqtlCtl").style("display","none").style("margin-left","10px");
+                chr.append("text").text("Select Chromosomes");
+                chr.append("br");
+                sel=chr.append("select").attr("id","eqtlChr").attr("multiple","multiple").attr("size","4").style("width","100px");
                 for(var i=1;i<=that.chrLen;i++){
                     sel.append("option").attr("selected","selected").attr("value",organism.toLowerCase()+i).text("chr"+i);
 		}
                 sel.append("option").attr("selected","selected").attr("value",organism.toLowerCase()+"X").text("chrX");
-                chr.append("input").attr({"type":"button","value":"Run Circos"})
+                /*chr.append("text").text("Hold ctl (or command for Macs)");
+                chr.append("br");
+                chr.append("text").text("while clicking to select multiple.");*/
+                
+                
+                chr=that.dataBar.append("td").append("div").attr("class","eqtlCtls").attr("id","eqtlCtl2").style("display","none").style("margin-left","10px");
+                chr.append("text").text("P-value cutoff:");
+                sel=chr.append("select").attr("id","eqtlPval");
+                sel.append("option").attr("value","1").text("0.1");
+                sel.append("option").attr("value","2").text("0.01");
+                sel.append("option").attr("selected","selected").attr("value","3").text("0.001");
+                sel.append("option").attr("value","4").text("0.0001");
+                sel.append("option").attr("value","5").text("0.00001");
+                chr.append("br");
+                chr.append("br");
+                chr.append("br");
+                chr.append("br");
+                chr.append("input").attr({"type":"button","value":"Apply Selections"})
 	};
 	that.positionTTLeft = function(pageX){
 		var x=pageX+20;
@@ -867,7 +898,9 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	//internal methods to setup each specific type
 	that.singleWGCNAImageGeneView=function(){
 		var thatimg=that.singleWGCNAImage();
-
+                $("#linkCtls").show();
+                $(".eqtlCtls").hide();
+                
                 thatimg.drawLinks=function(d){
                     thatimg.svg.selectAll(".link").remove();
                     var links=that.selectedModule.LinkList;
@@ -1155,10 +1188,12 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	};*/
 	that.singleWGCNAImageEQTLView=function(){
             var thatimg=that.singleWGCNAImage();
+            $("#linkCtls").hide();
+            $(".eqtlCtls").show();
             thatimg.displayDefault=function(){
                 d3.select("#singleWGCNASVG").remove();
-                //d3.select("#circosIFrame").remove();
-                /*$.ajax({
+                d3.select("#circosIFrame").remove();
+                $.ajax({
                                 url:  "tmpData/modules/ds1/"+that.selectedModule.MOD_NAME+"/"+that.selectedModule.MOD_NAME+"_1/svg/circos_new.svg",
 	   			type: 'GET',
 				data: {},
@@ -1166,22 +1201,32 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
                                 success: function(data2){
                                     d3.select("#wgcnaGeneImage").append("div").attr("id","circos");
                                     var script="<script src=\"/PhenoGen/javascript/SVGPanCircos.js\"/><script src=\"/PhenoGen/javascript/helper_functions.js\" /><script src=\"/PhenoGen/javascript/textFlow.js\" />";
-                                    $("#circos").html(data2+script);
+                                    $("#circos").html(data2);
+                                    $("#circosModule").css("width","100%");
+                                    $("#circosModule").css("height",Math.floor(window.innerHeight*0.9)+"px");
+                                    thatimg.panZoomCircos = svgPanZoom('#circosModule',{
+                                            panEnabled: true
+                                          , controlIconsEnabled:false
+                                          , zoomEnabled: true
+                                          , dblClickZoomEnabled: true
+                                          , zoomScaleSensitivity: 0.2
+                                          , minZoom: 0.1
+                                          , maxZoom: 4
+                                          , fit: true
+                                          , center: true
+                                          
+                                    });
                                 }
-                });*/
-                d3.select("#wgcnaGeneImage").append("iframe")
+                });
+                /*d3.select("#wgcnaGeneImage").append("iframe")
                         .attr("width","100%")
                         .attr("height",function(){return Math.floor(window.innerHeight*0.9);})
                         .attr("id","circosIFrame")
                         .attr("scrolling","no")
                         .attr("src","tmpData/modules/ds1/"+that.selectedModule.MOD_NAME+"/"+that.selectedModule.MOD_NAME+"_1/svg/circos_new.svg")
                     .style({
-                        /*"border-style":"solid",
-                        "border-color":"rgb(139,137,137)",
-                        "border-radius":"15px",
-                        "-moz-border-radius":"15px",*/
                         "border-width":"0px"
-                    });
+                    });*/
                
             };
             thatimg.draw=function(){

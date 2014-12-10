@@ -40,8 +40,10 @@ sub setupDirectories{
 
 
 sub callCircosMod{
-	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$dsn,$usr,$passwd)=@_;
+	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$colorRef,$dsn,$usr,$passwd)=@_;
         print "in callCircosMod() path:$modulePath\n";
+
+        my %colorHash=%$colorRef;
 	#
 	# General outline of process:
 	# First, prep circos conf and data files
@@ -148,7 +150,7 @@ sub callCircosMod{
 	
 	print " Finished running Circos \n";
 	print " Ready to call postprocessCircos \n";
-	postprocessCircosMod($module,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueString);
+	postprocessCircosMod($module,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueString,\%colorHash);
 	print " Finished with Circos \n";
 	
 
