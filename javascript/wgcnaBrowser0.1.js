@@ -73,7 +73,7 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	};
 	that.requestModule=function(file){
 		$.ajax({
-				url:  "../../tmpData/modules/ds1/" +file+".json",
+				url:  "tmpData/modules/ds1/" +file+".json",
 	   			type: 'GET',
 	   			async: true,
 				data: {},
@@ -81,10 +81,14 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	    		success: function(data2){
 	    				that.requests--;
 	        			that.modules[file]=data2;
-	        			that.countGeneInstance(that.singleID,data2);
-	        			if(that.requests===0){
-	        				that.createMultiWGCNAImage();
-	        			}
+                                        setTimeout(function(){
+                                            that.countGeneInstance(that.singleID,data2);
+                                            if(that.requests===0){
+                                                setTimeout(function(){
+                                                    that.createMultiWGCNAImage();
+                                                },20);
+                                            }
+                                        },20);
 	    		},
 	    		error: function(xhr, status, error) {
 	        		that.requests--;
@@ -116,10 +120,15 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.on("click",function(){
-				var id=$(this).parent().attr("id");
-				var levelID=(new String(id)).substr(9);
-				//console.log("Level #:"+levelID);
-				var content=$("div#Level"+levelID).html();
+				var content="";
+                                //if(that.viewType==="eqtl" && that.singleImage.type==="eqtl"){
+                                    content=$("div#circos").html();
+                                //}else if(that.viewType==="gene" && that.singleImage.type==="gene"){
+                                    
+                                //}else if(that.singleImage===undefined){
+                                    
+                                //}
+                                
 				content=content+"\n";
 				$.ajax({
 						url: pathPrefix+"saveBrowserImage.jsp",
@@ -132,13 +141,8 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 		        			var d=new Date();
 		        			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
 							var url="http://"+urlprefix+"/tmpData/download/"+data2.imageFile;
-							var region=new String($('#geneTxt').val());
-							region=region.replace(/:/g,"_");
-							region=region.replace(/-/g,"_");
-							region=region.replace(/,/g,"");
-							if(levelID=="Level1"){
-								region=svgList[1].selectedData.getAttribute("geneSymbol");
-							}
+							var region=new String(that.selectedModule.MOD_NAME);
+                                                        region=region+"_"+that.viewType;
 							 var filename = region+"_"+datePart+".png";
 							  var xhr = new XMLHttpRequest();
 							  
@@ -168,7 +172,7 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 										a.click();
 									}catch(error){
 										//$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
-										$("#mouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+										$("#wgcnaMouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
 										window.open(url);
 									}	
 									delete a;
@@ -463,8 +467,8 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
                 chr.append("text").text("P-value cutoff:");
                 sel=chr.append("select").attr("id","eqtlPval");
                 sel.append("option").attr("value","1").text("0.1");
-                sel.append("option").attr("value","2").text("0.01");
-                sel.append("option").attr("selected","selected").attr("value","3").text("0.001");
+                sel.append("option").attr("selected","selected").attr("value","2").text("0.01");
+                sel.append("option").attr("value","3").text("0.001");
                 sel.append("option").attr("value","4").text("0.0001");
                 sel.append("option").attr("value","5").text("0.00001");
                 chr.append("br");
@@ -493,6 +497,7 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	//public method to create any type of WGCNA Image
 	that.createMultiWGCNAImage=function(){
 		console.log("createIMAGE");
+                $("#waitCircos").hide();
 		if(that.viewType==="gene"){
 			that.multiImage=that.multiWGCNAImageGeneView(that.modules);
 			that.multiImage.draw();
@@ -620,7 +625,30 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 			for(var j=0;j<that.moduleList.length;j++){
 				if(that.moduleList[j]!=="grey" || (that.moduleList[j]==="grey" && that.skipGrey===0 )){
 					data[dataCount]=that.modules[that.moduleList[j]];
-					//thatimg.dataList[that.moduleList[j]]=dataCount;
+                                        var rgb=data[dataCount].ModRGB.split(",");
+                                        var darkRGB="";
+                                        for(var k=0;k<rgb.length;k++){
+                                            rgb[k]=rgb[k]-70;
+                                            if(rgb[k]<0){
+                                                rgb[k]=0;
+                                            }
+                                        }
+                                        darkRGB=rgb[0]+","+rgb[1]+","+rgb[2];
+                                        var grad=thatimg.svg.append("linearGradient").attr({
+                                                "id":"grad"+data[dataCount].MOD_NAME,
+                                                "x1":"11%",
+                                                "y1":"0%",
+                                                "x2":"89%",
+                                                "y2":"100%"
+                                            });
+                                        grad.append("stop").attr({
+                                                            "offset":"0%",
+                                                            "style":"stop-color:rgb("+data[dataCount].ModRGB+");stop-opacity:1"
+                                                    });
+                                        grad.append("stop").attr({
+                                                            "offset":"100%",
+                                                            "style":"stop-color:rgb("+darkRGB+");stop-opacity:1"
+                                                    });
 					dataCount++;
 				}
 			}
@@ -660,12 +688,14 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 
 			mod.each(function(d){
 				var thisMod=d3.select("g#"+d.MOD_NAME);
+                                
+                                
 				thisMod.append("circle")
 					.attr("cx",thatimg.calcWidth/2)
 					.attr("cy",thatimg.maxWidth/2)
 					.attr("r",thatimg.sizing)
 					.attr("stroke","#FFFFFF")
-					.attr("fill","url(#lgrad)")
+					.attr("fill","url(#grad"+d.MOD_NAME+")")
 					.on("click",function(){
 						thatimg.maxWidth=50;
 						thatimg.draw();
@@ -673,22 +703,35 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 						thatimg.svg.select("g#"+d.MOD_NAME).style("background","#CECECE");
 						thatimg.svg.select("g#"+d.MOD_NAME).select("circle").attr("fill","url(#selectGrad)");
 						that.selectedModule=d;
+                                                that.selectedGene={};
+                                                for(var l=0;l<d.TCList.length;l++){
+                                                    if(typeof that.selectedGene[d.TCList[l].Gene.ID] !=='undefined'){
+                                                        that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
+                                                    }else{
+                                                        that.selectedGene[d.TCList[l].Gene.ID]={};
+                                                        that.selectedGene[d.TCList[l].Gene.ID].tcList=[];
+                                                        that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
+                                                    }
+                                                }
 						that.createSingleWGCNAImage();
 					})
 					.on("mouseover",function(){
 						$("#wgcnaMouseHelp").html("<B>Click</B> to select this module and see additional details.");
 						d3.select(this).style("fill","url(#selectGrad)");
 				        	//that.gsvg.get('tt').transition()
-				        tt.transition()        
-				                .duration(200)      
-				                .style("opacity", 1);      
+                                                tt.transition()        
+                                                        .duration(200)      
+                                                        .style("opacity", 1);      
 				        	//that.gsvg.get('tt').html(that.createToolTip(d)) 
-				        tt.html(thatimg.createToolTip(d)) 
-				                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
-								.style("top", function(){return that.positionTTTop(d3.event.pageY);});
+                                                tt.html(thatimg.createToolTip(d)) 
+                                                    .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+                                                    .style("top", function(){return that.positionTTTop(d3.event.pageY);});
 					})
 					.on("mouseout",function(){
-						d3.select(this).style("fill","url(#lgrad)");
+                                                var d=d3.select(this).data()[0];
+                                                if( typeof that.selectedModule === 'undefined' || (d.MOD_NAME!==that.selectedModule.MOD_NAME) ){
+                                                    d3.select(this).style("fill","url(#grad"+d.MOD_NAME+")");
+                                                }
 						tt.transition()        
 				                .duration(500)      
 				                .style("opacity", 0);
@@ -708,6 +751,15 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 					.attr("y",thatimg.maxWidth/2+5)
 					.attr("x",thatimg.calcWidth/2-3)
 					.attr("pointer-events","none")
+                                        .attr("fill",function(d){
+                                                var fill="#000000";
+                                                var rgb=d.ModRGB.split(",");
+                                                var sum=rgb[0]+rgb[1]+rgb[2];
+                                                if(sum<360){
+                                                    fill="#FFFFFF";
+                                                }
+                                                return fill;
+                                        })
 					.text(d.GeneCount);
 			});
 		};
@@ -761,7 +813,7 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 	//public method to create any type of WGCNA Image
 	that.createSingleWGCNAImage=function(){
                 d3.select("#singleWGCNASVG").remove();
-                d3.select("#circosIFrame").remove();
+                d3.select("#circos").remove();
 		if(that.viewType==="gene"){
                     setTimeout(function(){
 			that.singleImage=that.singleWGCNAImageGeneView(that.modules);
@@ -803,6 +855,9 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
                 thatimg.CorCutoff_max=1.0;
                 thatimg.showLinks=true;
 		thatimg.data=[];
+         
+                
+                
 
 		//setup image
 		if(d3.select("#singleWGCNASVG").size()===0){
@@ -889,7 +944,16 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 
 		thatimg.createToolTip=function(d){
 			var tt="Gene Cluster ID:"+d.ID+"<BR>Gene: "+d.Gene.ID+"<BR>Link Sum:"+d.LinkSum;
-                        tt=tt+"<BR>Link Count:"+d.LinkCount;
+                        tt=tt+"<BR>Link Count:"+d.LinkCount+"<BR><BR>Gene Clusters:<BR>";
+                        var tcList=that.selectedGene[d.Gene.ID].tcList;
+                        for(var l=0;l<tcList.length;l++){
+                            tt=tt+tcList[l].ID+"<BR>";
+                        }
+                        tt=tt+"<BR><BR>";
+                        tt=tt+d.PSList.length+" Probe Sets:  <BR>";
+                        for(var l=0;l<d.PSList.length;l++){
+                            tt=tt+d.PSList[l].ID+"("+d.PSList[l].Level+")<BR>";
+                        }
 			return tt;
 		};
 
@@ -900,6 +964,7 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
 		var thatimg=that.singleWGCNAImage();
                 $("#linkCtls").show();
                 $(".eqtlCtls").hide();
+                thatimg.type="gene";
                 
                 thatimg.drawLinks=function(d){
                     thatimg.svg.selectAll(".link").remove();
@@ -1156,6 +1221,10 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
                                 if(!thatimg.showLinks){
                                     thatimg.drawLinks(d);
                                 }
+                                var tcList=that.selectedGene[d.GeneID].tcList;
+                                for(var l=0;l<tcList.length;l++){
+                                    d3.select("#tc_"+replaceDot(tcList[l].ID)).attr("fill","#FEFF49");
+                                }
                         })
                         .on("mouseout",function(){
                                 var d=d3.select(this).data()[0];
@@ -1190,6 +1259,21 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
             var thatimg=that.singleWGCNAImage();
             $("#linkCtls").hide();
             $(".eqtlCtls").show();
+            
+            thatimg.type="eqtl";
+            
+            thatimg.createToolTip=function(geneID){
+			var tt="<BR>Gene: "+geneID;
+			return tt;
+		};
+            thatimg.colorGene=function(geneID){
+                var color="#DFC184";
+                if(geneID.indexOf("Brain")===0||geneID.indexOf("Unannotated")===0){
+                        color="#7EB5D6";
+                }
+                return color;
+            };
+            
             thatimg.displayDefault=function(){
                 d3.select("#singleWGCNASVG").remove();
                 d3.select("#circosIFrame").remove();
@@ -1215,6 +1299,24 @@ function WGCNABrowser(id,disptype,viewtype,tissue){
                                           , fit: true
                                           , center: true
                                           
+                                    });
+                                    d3.select("#circosModule").selectAll(".circosGene").style("cursor","pointer")
+                                    .on("mouseover",function(){
+                                        d3.select(this).style("fill","#000000").attr("font-size","50px");
+                                        tt.transition()        
+                                            .duration(200)      
+                                            .style("opacity", 1);      
+                                        //that.gsvg.get('tt').html(that.createToolTip(d)) 
+                                        tt.html(thatimg.createToolTip(d3.select(this).attr("id"))) 
+                                            .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+                                            .style("top", function(){return that.positionTTTop(d3.event.pageY);});
+                                    })
+                                    .on("mouseout",function(){
+                                        var color=thatimg.colorGene(d3.select(this).attr("id"));
+                                        d3.select(this).style("fill",color).attr("font-size","26px");
+                                        tt.transition()        
+                                            .duration(500)      
+                                            .style("opacity", 0);
                                     });
                                 }
                 });

@@ -136,29 +136,31 @@ my $connect = DBI->connect("dbi:Oracle:dev.ucdenver.pvt", "INIA", "INIA_dev") or
 
 mkdir($path);
 my @moduleList=();
-my $query="select unique module from wgcna_module_info where wdsid=".$wgcnaDataset." order by module";
+my $query="select unique wmi.module from wgcna_module_info wmi where wmi.wdsid=".$wgcnaDataset." order by module";
 
 my $query_handle = $connect->prepare($query) or die ("Module query prepare failed \n");
 $query_handle->execute() or die ( "Module query execute failed \n");
 my $moduleName;
 $query_handle->bind_columns(\$moduleName);
 while($query_handle->fetch()) {
-    push(@moduleList,$moduleName);
+    #if(index($moduleName,"white")==0 or index($moduleName,"yellow")==0){
+        push(@moduleList,$moduleName);
+    #}
 }
 $query_handle->finish();
 
 
-my %colorHash;
-open COL,'<','/usr/local/circos-0.67-2/etc/colors.unix.txt' || die ("Can't open $toolTipFileName:$!");
-while(<COL>){
-    my $line=$_;
-    print $line;
-    my @cols=split("=",$line);
-    $cols[0]=trim($cols[0]);
-    $cols[1]=trim($cols[1]);
-    $colorHash{$cols[0]}=$cols[1];
-}
-close(COL);
+#my %colorHash;
+#open COL,'<','/usr/local/circos-0.67-2/etc/colors.unix.txt' || die ("Can't open $toolTipFileName:$!");
+#while(<COL>){
+#    my $line=$_;
+#    print $line;
+#    my @cols=split("=",$line);
+#    $cols[0]=trim($cols[0]);
+#    $cols[1]=trim($cols[1]);
+#    $colorHash{$cols[0]}=$cols[1];
+#}
+#close(COL);
 
 
 print "Module List: ".@moduleList."\n";
@@ -198,14 +200,17 @@ foreach my $mod(@moduleList){
         }
     }
     close ADJ;
-    my $query2="select probeset_id,transcript_clust_id,gene_id from wgcna_module_info where wdsid=".$wgcnaDataset." and module='".$mod."' order by transcript_clust_id";
+    my $query2="select wmi.probeset_id,wmi.transcript_clust_id,wmi.gene_id,wmi.module_id,wmc.rgb,wmc.hex from wgcna_module_info wmi, wgcna_module_colors wmc where wdsid=".$wgcnaDataset." and wmi.module='".$mod."' and wmc.module=wmi.module  order by transcript_clust_id";
     my $query_handle2 = $connect->prepare($query2) or die ("Module query prepare failed \n");
     $query_handle2->execute() or die ( "Module query execute failed \n");
     my $psid;
     my $tc;
     my $geneid;
     my $tcCount=0;
-    $query_handle2->bind_columns(\$psid,\$tc,\$geneid);
+    my $modID;
+    my $modRGB;
+    my $modHex;
+    $query_handle2->bind_columns(\$psid,\$tc,\$geneid,\$modID,\$modRGB,\$modHex);
     while($query_handle2->fetch()) {
         $tcCount++;
         
@@ -407,6 +412,9 @@ foreach my $mod(@moduleList){
     my $tmpMod=$mod;
     $tmpMod =~ s/\./_/g;
     print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
+    print OFILE "\t\t\t\"ModID\":".$modID.",\n";
+    print OFILE "\t\t\t\"ModRGB\":\"".$modRGB."\",\n";
+    print OFILE "\t\t\t\"ModHex\":\"".$modHex."\",\n";
     print OFILE "\t\"TCList\": [\n";
     #my $tcRef=$moduleHOH{TCList};
     #my %tcHOH=%{$tcRef};
@@ -581,5 +589,20 @@ foreach my $mod(@moduleList){
     my $tmpPath=$path.$mod."/";
     #print "\n\ntmp:$tmpPath\n\n";
     my $cutoff=2;
-    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",\%colorHash,$dsn,$user, $passwd);
+    #my %colorHash=%$colorRef;
+    #my $modColor="0,0,0";
+    #if(defined $colorHash{$module}){
+    #    $modColor=$colorHash{$module};
+    #}elsif(index($module,"\.")>0){
+    #    my $tmpMod=substr($module,0,index($module,"\."));
+    #    if(defined $colorHash{$tmpMod}){
+    #        $modColor=$colorHash{$tmpMod};
+    #    }else{
+    #        print "UNDEFINED COLOR(trim)".$tmpMod."\n";
+    #    }
+    #}else{
+    #    print "UNDEFINED COLOR".$module."\n";
+    #}
+    
+    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$modRGB,$dsn,$user, $passwd);
 }

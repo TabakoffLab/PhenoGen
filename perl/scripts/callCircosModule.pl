@@ -17,22 +17,22 @@ sub setupDirectories{
 
 	unless(-d $baseDirectory)
 	{
-		print " Creating base directory $baseDirectory \n";
+		#print " Creating base directory $baseDirectory \n";
 		mkdir "$baseDirectory", 0777  || die(" Cannot create directory $baseDirectory $! \n");
 	}
 	unless(-d $confDirectory)
 	{
-		print " Creating conf directory $confDirectory \n"; 
+		#print " Creating conf directory $confDirectory \n"; 
 		mkdir "$confDirectory", 0777  || die(" Cannot create directory $confDirectory $! \n");
 	}
 	unless(-d $dataDirectory)
 	{
-		print " Creating data directory $dataDirectory \n"; 
+		#print " Creating data directory $dataDirectory \n"; 
 		mkdir "$dataDirectory", 0777  || die(" Cannot create directory $dataDirectory $! \n");
 	}
 	unless( -d $svgDirectory )
 	{
-		print " Creating svg directory $svgDirectory \n"; 
+		#print " Creating svg directory $svgDirectory \n"; 
 		mkdir "$svgDirectory", 0777 || die(" Cannot create directory $svgDirectory $! \n");
 	}
 }
@@ -40,10 +40,9 @@ sub setupDirectories{
 
 
 sub callCircosMod{
-	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$colorRef,$dsn,$usr,$passwd)=@_;
+	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$modColor,$dsn,$usr,$passwd)=@_;
         print "in callCircosMod() path:$modulePath\n";
 
-        my %colorHash=%$colorRef;
 	#
 	# General outline of process:
 	# First, prep circos conf and data files
@@ -51,32 +50,32 @@ sub callCircosMod{
 	# Third, massage the svg output file created by circos
 	#
 	my $hostname = hostname;
-	print " host name $hostname \n";
+	#print " host name $hostname \n";
 	#create mainDir
 	unless(-d $modulePath)
 	{
-		print " Creating base directory $modulePath \n";
+		#print " Creating base directory $modulePath \n";
 		mkdir "$modulePath", 0777  || die(" Cannot create directory $modulePath $! \n");
 	}
 	
 	my $baseDirectory = $modulePath.$module."_".$timeStampString.'/';
-	print " base directory $baseDirectory \n";
+	#print " base directory $baseDirectory \n";
 	my $dataDirectory = $baseDirectory.'data/';
 	my $svgDirectory = $baseDirectory.'svg/';
 	my $confDirectory = $baseDirectory.'conf/';
-	print " svg directory $svgDirectory \n";
+	#print " svg directory $svgDirectory \n";
 	
 	
-	print "Tissue String $tissueString \n";
+	#print "Tissue String $tissueString \n";
 
 	
-	print "Module:$module\n";
-	print "cutoff:$cutoff\n";
-	print "organism:$organism\n";
-	print "chrstr:$chromosomeString\n";
-	print "modulePath:$modulePath\n";
-	print "timestamp:$timeStampString\n";
-	print "tissue:$tissueString\n";
+	#print "Module:$module\n";
+	#print "cutoff:$cutoff\n";
+	#print "organism:$organism\n";
+	#print "chrstr:$chromosomeString\n";
+	#print "modulePath:$modulePath\n";
+	#print "timestamp:$timeStampString\n";
+	#print "tissue:$tissueString\n";
 	
 	#
 	# Create necessary directories if they do not already exist
@@ -92,12 +91,12 @@ sub callCircosMod{
 	#
 	#-- get current directory
 	my $pwd = getcwd();
-	print " Current directory is $pwd \n";
+	#print " Current directory is $pwd \n";
  
 	#-- change dir to svg directory
 	chdir($svgDirectory);
 	my $newpwd = getcwd();
-	print " New directory is $newpwd \n";
+	#print " New directory is $newpwd \n";
 	
 	
 	print " Calling Circos \n";
@@ -150,7 +149,7 @@ sub callCircosMod{
 	
 	print " Finished running Circos \n";
 	print " Ready to call postprocessCircos \n";
-	postprocessCircosMod($module,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueString,\%colorHash);
+	postprocessCircosMod($module,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueString,$modColor);
 	print " Finished with Circos \n";
 	
 

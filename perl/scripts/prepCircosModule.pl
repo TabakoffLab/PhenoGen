@@ -3,8 +3,13 @@ use strict;
 
 #
 #
-my $debugLevel = 2;
+my $debugLevel = 1;
 
+sub replaceDot{
+    my $text=shift;
+    $text =~ s/\./_/g;
+    return $text;
+}
 
 sub prepCircosMod
 {
@@ -191,12 +196,17 @@ sub createCircosModGenesTextConfFile{
 	print CONFFILE '<rule>'."\n";
 	print CONFFILE 'condition = 1'."\n";
 	print CONFFILE 'value=X'."\n";
-        #print CONFFILE 'flow = continue # if this rule passes, continue testing'."\n";
+        print CONFFILE 'flow = continue # if this rule passes, continue testing'."\n";
 	print CONFFILE '</rule>'."\n";
-        #print CONFFILE '<rule>'."\n";
-	#print CONFFILE 'condition = eval(index(var(value),"ENS")+1)'."\n";
-	#print CONFFILE 'color = green'."\n";
-	#print CONFFILE '</rule>'."\n";
+        print CONFFILE '<rule>'."\n";
+        print CONFFILE 'condition = var(svgclass)'."\n";
+        print CONFFILE 'svgclass  = eval(my $x = var(svgclass); $x =~ s/\./ /g; $x)'."\n";
+        print CONFFILE 'flow = continue # if this rule passes, continue testing'."\n";
+        print CONFFILE '</rule>'."\n";
+        print CONFFILE '<rule>'."\n";
+	print CONFFILE 'condition = eval(my $x=index(var(value),"ENS")+1; $x)'."\n";
+	print CONFFILE 'color = green'."\n";
+	print CONFFILE '</rule>'."\n";
 	print CONFFILE '</rules>'."\n";
 	print CONFFILE '</plot>'."\n";
 	close(CONFFILE);
@@ -252,7 +262,11 @@ sub createCircosModGenesTextDataFile{
 	open(DATAFILE,'>',$fileName) || die ("Can't open $fileName:!\n");
 	my @list=keys %geneHOH;
 	foreach my $gene(@list){
-		print DATAFILE $sp.$geneHOH{$gene}{chr}, " ",$geneHOH{$gene}{min}, " ",$geneHOH{$gene}{max}, " ",$gene, "\n";
+                my $colorGene="193,163,102";
+                if(index($gene,"ENS")==-1){
+                    $colorGene="96,151,184";
+                }
+		print DATAFILE $sp.$geneHOH{$gene}{chr}, " ",$geneHOH{$gene}{min}, " ",$geneHOH{$gene}{max}, " ",$gene," svgclass=circosGene.",replaceDot($gene),",color=",$colorGene,",svgid=",replaceDot($gene), "\n";
 	}
 	close(DATAFILE);
 }
@@ -295,12 +309,11 @@ sub createCircosPvaluesConfFile{
 	$filenameHash{'Liver'}='circosLiverPValues.txt';
 	$filenameHash{'BAT'}='circosBATPValues.txt';	
 	
-	foreach my $key (keys(%colorHash)){
-	
-		print " key $key $colorHash{$key} \n";
-	
-	}
-	
+        #if($debugLevel >= 2){}
+            foreach my $key (keys(%colorHash)){
+                    print " key $key $colorHash{$key} \n";
+            }
+	#}
 	my @innerRadiusArray = ('0.85r','0.75r','0.65r','0.55r');
 	my @outerRadiusArray = ('0.85r + 100p','0.75r + 100p','0.65r + 100p','0.55r + 100p');
 

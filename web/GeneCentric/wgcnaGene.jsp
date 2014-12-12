@@ -24,7 +24,7 @@
         Navigation Hints: Hold mouse over areas of the image for available actions.
     </div>
     <div id="wgcnaGeneImage" style="width:98%;border:1px solid;text-align: center;">
-
+        <div id="waitCircos" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Working..." text-align="center" ><BR>Loading...</div>
     </div>
 </div>
 
