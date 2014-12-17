@@ -10,11 +10,12 @@ use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/module
 #params
 #0-outputPath
 #1-WGCNA Dataset ID
-#2-Organism (Mm or Rn)
-#3-dsn
-#4-user
-#5-password
-#6-path to adjMatrix files
+#2-RNA Dataset ID
+#3-Organism (Mm or Rn)
+#4-dsn
+#5-user
+#6-password
+#7-path to adjMatrix files
 
 use DBI;
 use Bio::EnsEMBL::Registry;
@@ -100,12 +101,13 @@ my $wgcnaDataset=$ARGV[1];
 
 my $path=$ARGV[0]."ds".$wgcnaDataset."/";
 
-my $org=$ARGV[2];
+my $rnaDS=$ARGV[2];
+my $org=$ARGV[3];
 
-my $dsn=$ARGV[3];
-my $user=$ARGV[4];
-my $passwd=$ARGV[5];
-my $adjPath=$ARGV[6];
+my $dsn=$ARGV[4];
+my $user=$ARGV[5];
+my $passwd=$ARGV[6];
+my $adjPath=$ARGV[7];
 
 my $adjCutoff=0.01;
 
@@ -129,7 +131,7 @@ my $slice_adaptor = $registry->get_adaptor( $longOrg, 'Core', 'Slice' );
 my @adaps = @{Bio::EnsEMBL::Registry->get_all_adaptors()};
 my $go_adaptor = $registry->get_adaptor( 'Multi', 'Ontology', 'OntologyTerm' );
 
-my $connect = DBI->connect("dbi:Oracle:dev.ucdenver.pvt", "INIA", "INIA_dev") or die ($DBI::errstr ."\n");
+my $connect = DBI->connect($dsn, $user, $passwd) or die ($DBI::errstr ."\n");
 
 
 
@@ -183,6 +185,9 @@ foreach my $mod(@moduleList){
     my @adjTC=split("\t",$header);
     for(my $row=0;$row<@adjTC;$row++){
         $adjTC[$row]=trim(substr($adjTC[$row],length($mod)+1));
+        $adjTC[$row]=~ s/^total\./Brain_C/;
+        $adjTC[$row]=~ s/^XLOC_0+/Brain_C/;
+        $adjTC[$row]=~ s/clust//;
         #print "tcName:".$adjTC[$row]."\n";
     }
     my $linkCount=0;
@@ -398,8 +403,55 @@ foreach my $mod(@moduleList){
                     }
                 }
                 
+            }else{
+                #get rna-seq transcripts
+                my $trxQ="select c.name,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category from rna_transcripts rt, chromosomes c 
+                         where c.chromosome_id=rt.chromosome_id and rt.gene_id='".$geneid."' and rt.rna_dataset_id=".$rnaDS." order by rt.trstart,rt.trstop";
+                #print $trxQ."\n";
+                my $qh = $connect->prepare($trxQ) or die ("RNA_Transcript query prepare failed \n");
+                $qh->execute() or die ( "RNA_Transcript query execute failed \n");
+                my $gMax=-1;
+                my $gMin=999999999;
+                my $fStrand=0;
+                my $fSource="";
+                my $fCat="";
+                my $fChr="";
+
+                my $gChr;
+                my $gSource;
+                my $gStart;
+                my $gStop;
+                my $gStrand;
+                my $gCat;
+                
+                $qh->bind_columns(\$gChr,\$gSource,\$gStart,\$gStop,\$gStrand,\$gCat);
+                while($qh->fetch()) {
+                    if($gStart<$gMin){
+                        $gMin=$gStart;
+                    }
+                    if($gMax<$gStop){
+                        $gMax=$gStop;
+                    }
+                    $fStrand=$gStrand;
+                    $fSource=$gSource;
+                    $fCat=$gCat;
+                    $fChr=$gChr;
+                }
+                $qh->finish();
+                $moduleHOH{TCList}{$tc}{Gene} = {
+                                                            start => $gMin,
+                                                            stop => $gMax,
+                                                            ID => $geneid,
+                                                            strand=>$fStrand,
+                                                            chromosome=>$fChr,
+                                                            biotype => $fCat,
+                                                            #geneSymbol => $geneExternalName,
+                                                            source => $fSource,
+                                                            #description => $geneDescription,
+                                                            #extStart => $geneStart ,
+                                                            #extStop => $geneStop
+                                                        };
             }
-            #get rna-seq transcripts
         }
     }
     $query_handle2->finish();
@@ -412,9 +464,9 @@ foreach my $mod(@moduleList){
     my $tmpMod=$mod;
     $tmpMod =~ s/\./_/g;
     print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
-    print OFILE "\t\t\t\"ModID\":".$modID.",\n";
-    print OFILE "\t\t\t\"ModRGB\":\"".$modRGB."\",\n";
-    print OFILE "\t\t\t\"ModHex\":\"".$modHex."\",\n";
+    print OFILE "\t\"ModID\":".$modID.",\n";
+    print OFILE "\t\"ModRGB\":\"".$modRGB."\",\n";
+    print OFILE "\t\"ModHex\":\"".$modHex."\",\n";
     print OFILE "\t\"TCList\": [\n";
     #my $tcRef=$moduleHOH{TCList};
     #my %tcHOH=%{$tcRef};
@@ -435,15 +487,19 @@ foreach my $mod(@moduleList){
             print OFILE " \"strand\":\"".$moduleHOH{TCList}{$tc}{Gene}{strand}."\",";
             print OFILE " \"chromosome\":\"".$moduleHOH{TCList}{$tc}{Gene}{chromosome}."\",";
             print OFILE " \"biotype\":\"".$moduleHOH{TCList}{$tc}{Gene}{biotype}."\",";
-            print OFILE " \"geneSymbol\":\"".$moduleHOH{TCList}{$tc}{Gene}{geneSymbol}."\",";
-            print OFILE " \"source\":\"".$moduleHOH{TCList}{$tc}{Gene}{source}."\",";
-            if (defined $moduleHOH{TCList}{$tc}{Gene}{description}) {
-                print OFILE " \"description\":\"".$moduleHOH{TCList}{$tc}{Gene}{description}."\",";
-            }else{
-                print OFILE " \"description\":\"\",";
+            print OFILE " \"source\":\"".$moduleHOH{TCList}{$tc}{Gene}{source}."\"";
+            if(index($moduleHOH{TCList}{$tc}{Gene}{ID},"ENS")==0){
+                print OFILE ", \"geneSymbol\":\"".$moduleHOH{TCList}{$tc}{Gene}{geneSymbol}."\",";
+                if (defined $moduleHOH{TCList}{$tc}{Gene}{description}) {
+                    my $tmpDesc=$moduleHOH{TCList}{$tc}{Gene}{description};
+                    $tmpDesc=substr($tmpDesc,0,index($tmpDesc,"[")-1);
+                    print OFILE " \"description\":\"".$tmpDesc."\",";
+                }else{
+                    print OFILE " \"description\":\"\",";
+                }
+                print OFILE " \"extStart\":".$moduleHOH{TCList}{$tc}{Gene}{extStart}.",";
+                print OFILE " \"extStop\":".$moduleHOH{TCList}{$tc}{Gene}{extStop}."";
             }
-            print OFILE " \"extStart\":".$moduleHOH{TCList}{$tc}{Gene}{extStart}.",";
-            print OFILE " \"extStop\":".$moduleHOH{TCList}{$tc}{Gene}{extStop}."";
 #            print OFILE "\n\t\t\t\t\"TranscriptList\":[\n";
 #            my $trxSizeRef=$moduleHOH{TCList}{$tc}{Gene}{TranscriptList}{Transcript};
 #            my @trxList=@$trxSizeRef;
@@ -587,22 +643,7 @@ foreach my $mod(@moduleList){
         $chrString="rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX;";
     }
     my $tmpPath=$path.$mod."/";
-    #print "\n\ntmp:$tmpPath\n\n";
     my $cutoff=2;
-    #my %colorHash=%$colorRef;
-    #my $modColor="0,0,0";
-    #if(defined $colorHash{$module}){
-    #    $modColor=$colorHash{$module};
-    #}elsif(index($module,"\.")>0){
-    #    my $tmpMod=substr($module,0,index($module,"\."));
-    #    if(defined $colorHash{$tmpMod}){
-    #        $modColor=$colorHash{$tmpMod};
-    #    }else{
-    #        print "UNDEFINED COLOR(trim)".$tmpMod."\n";
-    #    }
-    #}else{
-    #    print "UNDEFINED COLOR".$module."\n";
-    #}
     
     callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$modRGB,$dsn,$user, $passwd);
 }

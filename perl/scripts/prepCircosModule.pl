@@ -35,7 +35,7 @@ sub prepCircosMod
 		print " Tissue ".$tissueString."\n";
 		
 	}
-	my $genericConfLocation = '/usr/local/circos-0.67-2/etc/';
+	
 	my $genericConfLocation2;
 	if($hostname eq 'amc-kenny.ucdenver.pvt'){
 		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
@@ -52,7 +52,8 @@ sub prepCircosMod
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");
 	}
-	my $karyotypeLocation = '/usr/local/circos-0.67-2/data/karyotype/';
+        my $genericConfLocation = '/usr/local/circos-0.67-4/etc/';
+	my $karyotypeLocation = '/usr/local/circos-0.67-4/data/karyotype/';
 	createCircosConfFile($confDirectory,$genericConfLocation,$genericConfLocation2,$karyotypeLocation,$organism,$chromosomeListRef,$oneToCreateLinks,$oneToCreateLinks);
 	createCircosIdeogramConfFiles($confDirectory,$organism,$chromosomeListRef);
 	createCircosModGenesTextConfFile($dataDirectory,$confDirectory);
@@ -445,12 +446,13 @@ sub createCircosLinksConfAndData{
 	open(TOOLTIPFILE,'>',$toolTipFileName) || die ("Can't open $toolTipFileName:!\n");
 	my $linkFileName;
 	my $linkName;
+        my $lcOrg=lc($organism);
 	for($i=0;$i<$totalLinks;$i++){
 		print TOOLTIPFILE $linkAOH[$i]{linkname}."\t".substr($linkAOH[$i]{chromosome},2)."\t".$linkAOH[$i]{location}."\n";
 		$linkFileName = $dataDirectory.$linkAOH[$i]{linkname}.".txt";
 		open(LINKFILE,'>',$linkFileName) || die ("Can't open $linkFileName:!\n");
 		print LINKFILE $linkAOH[$i]{name}." ".$linkAOH[$i]{chromosome}." ".$linkAOH[$i]{location}." ".$linkAOH[$i]{location}." radius1=0.85r\n"; # This is the SNP location
-		print LINKFILE $linkAOH[$i]{name}." mm1 1 1 radius2=0r\n"; # This is the probeset location
+		print LINKFILE $linkAOH[$i]{name}." ".$lcOrg."1 1 1 radius2=0r\n"; # This is the probeset location
 		close(LINKFILE);		
 	}
 	close(TOOLTIPFILE);

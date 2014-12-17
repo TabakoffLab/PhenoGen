@@ -50,14 +50,17 @@ $(document).on('click','span.detailMenu', function (event){
     if(baseName=="regionTable"){
 		curRptRegion=curRptRegion+":"+reportSelectedTrack;
 	}
-
+	console.log("base:"+baseName);
 	if(regionDetailLoaded[baseName] && regionDetailLoaded[baseName]==curRptRegion){
 				//don't have to load might reset?
 	}else{
 		if(baseName=="regionTable" && reportSelectedTrack!=null){
 					loadTrackTable();
-		}else if(baseName="regionEQTLTable"){
+		}else if(baseName=="regionEQTLTable"){
 					loadEQTLTable();
+		}else if(baseName=="regionWGCNAEQTL"){
+					console.log("calling.regionWGCNAEQTL");
+					loadRegionWGCNA();
 		}
 		regionDetailLoaded[baseName]=curRptRegion;
 	}
@@ -148,6 +151,15 @@ function loadEQTLTable(){
 			folderName: regionfolderName
 		};
 	loadDivWithPage("div#regionEQTLTable",jspPage,params,
+		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+}
+
+function loadRegionWGCNA(){
+	var jspPage="web/GeneCentric/wgcnaGene.jsp";
+	var params={
+			region: chr+":"+minCoord+"-"+maxCoord
+		};
+	loadDivWithPage("div#regionWGCNAEQTL",jspPage,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
 

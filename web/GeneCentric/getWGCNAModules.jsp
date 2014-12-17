@@ -23,6 +23,7 @@ String id="";
 String org="";
 String tissue="";
 String panel="";
+String region="";
 
 if(request.getParameter("id")!=null){
 	id=request.getParameter("id");
@@ -36,17 +37,35 @@ if(request.getParameter("panel")!=null){
 if(request.getParameter("tissue")!=null){
 	tissue=request.getParameter("tissue");
 }
+if(request.getParameter("region")!=null){
+	region=request.getParameter("region");
+}
 
 wgt.setSession(session);
 
-ArrayList<String> modules=wgt.getWGCNAModulesForGene(id,panel,tissue,org);
-
+ArrayList<String> modules=null;
+if(!id.equals("")){
+    modules=wgt.getWGCNAModulesForGene(id,panel,tissue,org);
+}else if(!region.equals("")){
+    modules=wgt.getWGCNAModulesForRegion(region,panel,tissue,org);
+}
 response.setContentType("application/json");
 %>
 [
 	<%for(int i=0;i<modules.size();i++){
-		String mod=modules.get(i);%>
-            <%if(i>0){%>,<%}%>{"ModuleID":"<%=mod%>"}
+            String mod=modules.get(i);%>
+            <%if(i>0){%>,<%}%>
+            {
+                <%if(mod.contains(":")){
+                    String mod1=mod.substring(0,mod.indexOf(":"));
+                    String gl=mod.substring(mod.indexOf(":")+1);
+                %>
+                "ModuleID":"<%=mod1%>",
+                ,"GeneList":"<%=gl%>"
+                <%}else{%>
+                    "ModuleID":"<%=mod%>"
+                <%}%>
+            }
         <%}%>
 ]
 

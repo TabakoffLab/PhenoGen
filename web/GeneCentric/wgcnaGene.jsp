@@ -4,8 +4,12 @@
     String org="";
     String dispType="single";
     String viewType="gene";
+    String region="";
     if(request.getParameter("id")!=null){
             geneID=request.getParameter("id");
+    }
+    if(request.getParameter("region")!=null){
+            region=request.getParameter("region");
     }
 %>
 
@@ -32,8 +36,9 @@
     var disptype="<%=dispType%>";
     var viewtype="<%=viewType%>";
     var wgcnaid="<%=geneID%>";
+    var wgcnaregion="<%=region%>";
     var tissue="Whole Brain";
     var modulePrefix="";
-    var wgcna=WGCNABrowser(wgcnaid,disptype,viewtype,tissue);
+    var wgcna=WGCNABrowser(wgcnaid,wgcnaregion,disptype,viewtype,tissue);
     wgcna.setup();
 </script>
