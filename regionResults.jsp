@@ -132,28 +132,9 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');
     <div id="imageMenu"></div>
     <div id="viewMenu"></div>
     <div id="trackMenu"></div>
-    <!--<div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
-    		View:
-    		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-    		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageTranscriptomeView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-            <span class="viewMenu" name="viewAll" >Both<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageAllView" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-            <!--<span style="font-size:12px; font-weight:normal; float:right;">
-            	Saved Views:
-                <select name="viewSelect" id="viewSelect">
-                		<option value="0" >------Login to use saved views------</option>
-                </select>
-            </span>-->
-    <!--</div>-->
     <div style=" background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
     		<table style="width:100%;" cellpadding="0" cellspacing="0">
             <tbody>
-            <!--<TR>
-            	<TD colspan="2" style="text-align:center; width:100%;">
-                <span style="background-color:#DEDEDE;font-size:18px; font-weight:bold;padding:2px 15px 2px 15px;">
-                    	<span id="viewLbl0"   >View:</span><span id="viewModifiedCtl">(Modified) <img src="../web/images/icons/save_flat.png" /></span>
-                </span>
-                </TD>
-            </TR>-->
             	<TR>
                 	<TD style="background-color:#DEDEDE;font-size:18px; font-weight:bold;">
                         <span class="trigger less" name="collapsableImage" >Region Image</span>
@@ -168,25 +149,18 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');
                </TR>
                </tbody>
             </table>
-            <!--<span style="font-size:12px; font-weight:normal; float:right;">
-            	Saved Views:
-                <select name="viewSelect" id="viewSelect">
-                		<option value="0" >------Login to use saved views------</option>
-                </select>
-            </span>-->
     </div>
     
     <div style="border-color:#CCCCCC; border-width:1px; border-style:inset; text-align:center;">
     	<span id="mouseHelp" style=" min-height:20px;">Navigation Hints: Hold mouse over areas of the image for available actions.</span> <BR />
-        <!--<span id="saveBtn" style="display:inline-block;cursor:pointer;"><img src="/web/images/icons/download_g.png"></span>-->
         <div id="collapsableImage" class="geneimage" >
-       		<!--<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>-->
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
             <script src="javascript/GenomeDataBrowser2.0.7.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.0.2.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.0.2.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.2.js" type="text/javascript"></script>
+            <script src="javascript/wgcnaBrowser0.1.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">
@@ -205,7 +179,8 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');
             	<div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
                     <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpTrackDetails" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                     <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an eQTL in this region<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-				</div>
+                    <span id="detail3" class="detailMenu" name="regionWGCNAEQTL">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                </div>
     </div>
     <div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:left; width:100%;">
     		<span class="trigger less triggerEC" name="collapsableReport" >Region Summary</span>
@@ -238,6 +213,9 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');
                </div>
           </div>
           <div style="display:none;" id="regionEQTLTable">
+         
+          </div>
+            <div style="display:none;" id="regionWGCNAEQTL">
          
           </div>
     </div><!--collapsableReport end-->

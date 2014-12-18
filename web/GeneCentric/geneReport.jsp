@@ -186,6 +186,8 @@ Add report here.
                 	<span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                 <%}%>
             <%}%>
+            <!--<span class="selectdetailMenu" name="geneGO">GO<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>-->
+            <span class="selectdetailMenu" name="geneWGCNA">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>
 </div>
 
 <div style="font-size:18px; font-weight:bold; background-color:#47c647; color:#FFFFFF; text-align:left; width:100%; ">
@@ -394,7 +396,7 @@ Add report here.
                     <%if(curGene.getProbeCount()>0){%>
                     <table id="psDABGTbl" class="geneReport" style="display:inline-block;">
                     <TR>
-                        <TD colspan="2"><B>Probe sets detected above background:</B></TD>
+                        <TD colspan="2"><B>Probe sets detected above background*:</B></TD>
                     </TR>
                     <TR>
                         <TD colspan="2">
@@ -402,8 +404,8 @@ Add report here.
                                                 <thead>
                                                 <tr class="col_title">
                                                     <TH style="color:#000000;">Tissue</TH>
-                                                    <TH style="color:#000000;">Number of probe sets detected above background in more than 1% of samples (out of <%=curGene.getProbeCount()%> probe sets for this gene)</TH>
-                                                    <TH style="color:#000000;">Avg % of samples DABG</TH>
+                                                    <TH style="color:#000000;">Number of probe sets detected above background* in more than 1% of samples (out of <%=curGene.getProbeCount()%> probe sets for this gene)</TH>
+                                                    <TH style="color:#000000;">Avg % of samples DABG*</TH>
                                                     <TH style="color:#000000;">Range</TH>
                                                     
                                                 </tr>
@@ -442,6 +444,7 @@ Add report here.
                               </table>
                         </TD>
                     </TR>
+                    <TR><TD>*DABG is based on Affymetrix software that assigns a P-value to the probe sets detection above background.  Using a comparison of RNA-Seq data probe sets that overlap a high confidence exon in the transcriptome are not detected above background roughly 5% of the time.  Increasing the P-value cutoff of 0.0001 can reduce this but only at the expense of greatly elevated false positives. </TD></TR>
                     </table>
                     <table id="psHeritTbl"  class="geneReport" style="display:inline-block;">
                      <TR>
@@ -600,7 +603,8 @@ Add report here.
     
     <div style="display:none;" id="miGenerna">
     </div>
- 	
+    <div style="display:none;" id="geneWGCNA">
+    </div>
 
  </div>
             
@@ -626,6 +630,7 @@ Add report here.
 		$(this).addClass("selected");
 		var id=$(this).attr("name");
 		$("#"+id).show();
+                console.log("#"+id);
 		if(id=="geneEQTL"){
 			var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
 			var params={
@@ -660,7 +665,15 @@ Add report here.
 			};
 			loadDivWithPage("div#miGenerna",jspPage,params,
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-		}
+		}else if(id=="geneWGCNA"){
+                        var jspPage="web/GeneCentric/wgcnaGene.jsp";
+			var params={
+				species: organism,
+				id:selectedID
+			};
+			loadDivWithPage("div#geneWGCNA",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+                }
 		
 	});
 </script>
