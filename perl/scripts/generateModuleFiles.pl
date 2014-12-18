@@ -405,8 +405,11 @@ foreach my $mod(@moduleList){
                 
             }else{
                 #get rna-seq transcripts
-                my $trxQ="select c.name,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category from rna_transcripts rt, chromosomes c 
-                         where c.chromosome_id=rt.chromosome_id and rt.gene_id='".$geneid."' and rt.rna_dataset_id=".$rnaDS." order by rt.trstart,rt.trstop";
+                my $trxQ="select c.name,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,rta.annotation 
+                         from rna_transcripts rt
+                         left outer join chromosomes c on rt.chromosome_id=c.chromosome_id
+                         left outer join rna_transcripts_annot rta on rt.rna_transcript_id=rta.rna_transcript_id and rta.source_id=13
+                         where rt.gene_id='".$geneid."' and rt.rna_dataset_id=".$rnaDS." order by rt.trstart,rt.trstop";
                 #print $trxQ."\n";
                 my $qh = $connect->prepare($trxQ) or die ("RNA_Transcript query prepare failed \n");
                 $qh->execute() or die ( "RNA_Transcript query execute failed \n");
@@ -416,6 +419,7 @@ foreach my $mod(@moduleList){
                 my $fSource="";
                 my $fCat="";
                 my $fChr="";
+                my $fAKA="Unannotated";
 
                 my $gChr;
                 my $gSource;
@@ -423,8 +427,9 @@ foreach my $mod(@moduleList){
                 my $gStop;
                 my $gStrand;
                 my $gCat;
-                
-                $qh->bind_columns(\$gChr,\$gSource,\$gStart,\$gStop,\$gStrand,\$gCat);
+                my $gAKA;
+
+                $qh->bind_columns(\$gChr,\$gSource,\$gStart,\$gStop,\$gStrand,\$gCat,\$gAKA);
                 while($qh->fetch()) {
                     if($gStart<$gMin){
                         $gMin=$gStart;
@@ -436,21 +441,21 @@ foreach my $mod(@moduleList){
                     $fSource=$gSource;
                     $fCat=$gCat;
                     $fChr=$gChr;
+                    if( (defined $gAKA) and (not ($gAKA eq "null")) and length($gAKA)>0){
+                        $fAKA=$gAKA;
+                    } 
                 }
                 $qh->finish();
                 $moduleHOH{TCList}{$tc}{Gene} = {
-                                                            start => $gMin,
-                                                            stop => $gMax,
-                                                            ID => $geneid,
-                                                            strand=>$fStrand,
-                                                            chromosome=>$fChr,
-                                                            biotype => $fCat,
-                                                            #geneSymbol => $geneExternalName,
-                                                            source => $fSource,
-                                                            #description => $geneDescription,
-                                                            #extStart => $geneStart ,
-                                                            #extStop => $geneStop
-                                                        };
+                                                start => $gMin,
+                                                stop => $gMax,
+                                                ID => $geneid,
+                                                strand=>$fStrand,
+                                                chromosome=>$fChr,
+                                                biotype => $fCat,
+                                                geneSymbol => $fAKA,
+                                                source => $fSource
+                                            };
             }
         }
     }
@@ -487,15 +492,16 @@ foreach my $mod(@moduleList){
             print OFILE " \"strand\":\"".$moduleHOH{TCList}{$tc}{Gene}{strand}."\",";
             print OFILE " \"chromosome\":\"".$moduleHOH{TCList}{$tc}{Gene}{chromosome}."\",";
             print OFILE " \"biotype\":\"".$moduleHOH{TCList}{$tc}{Gene}{biotype}."\",";
-            print OFILE " \"source\":\"".$moduleHOH{TCList}{$tc}{Gene}{source}."\"";
+            print OFILE " \"source\":\"".$moduleHOH{TCList}{$tc}{Gene}{source}."\",";
+            print OFILE " \"geneSymbol\":\"".$moduleHOH{TCList}{$tc}{Gene}{geneSymbol}."\"";
             if(index($moduleHOH{TCList}{$tc}{Gene}{ID},"ENS")==0){
-                print OFILE ", \"geneSymbol\":\"".$moduleHOH{TCList}{$tc}{Gene}{geneSymbol}."\",";
+                
                 if (defined $moduleHOH{TCList}{$tc}{Gene}{description}) {
                     my $tmpDesc=$moduleHOH{TCList}{$tc}{Gene}{description};
                     $tmpDesc=substr($tmpDesc,0,index($tmpDesc,"[")-1);
-                    print OFILE " \"description\":\"".$tmpDesc."\",";
+                    print OFILE ", \"description\":\"".$tmpDesc."\",";
                 }else{
-                    print OFILE " \"description\":\"\",";
+                    print OFILE ", \"description\":\"\",";
                 }
                 print OFILE " \"extStart\":".$moduleHOH{TCList}{$tc}{Gene}{extStart}.",";
                 print OFILE " \"extStop\":".$moduleHOH{TCList}{$tc}{Gene}{extStop}."";

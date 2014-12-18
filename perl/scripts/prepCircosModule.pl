@@ -205,7 +205,7 @@ sub createCircosModGenesTextConfFile{
         print CONFFILE 'flow = continue # if this rule passes, continue testing'."\n";
         print CONFFILE '</rule>'."\n";
         print CONFFILE '<rule>'."\n";
-	print CONFFILE 'condition = eval(my $x=index(var(value),"ENS")+1; $x)'."\n";
+	print CONFFILE 'condition = eval(my $x=index(var(value),"ENS")+1; $x==1)'."\n";
 	print CONFFILE 'color = green'."\n";
 	print CONFFILE '</rule>'."\n";
 	print CONFFILE '</rules>'."\n";

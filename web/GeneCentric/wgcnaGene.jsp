@@ -30,6 +30,9 @@
     <div id="wgcnaGeneImage" style="width:98%;border:1px solid;text-align: center;">
         <div id="waitCircos" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Working..." text-align="center" ><BR>Loading...</div>
     </div>
+    <div id="wgcnaModuleTable" style="display:none;width:98%;border:1px solid;text-align: center;">
+        <div id="waitModuleTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
+    </div>
 </div>
 
 <script type="text/javascript">
