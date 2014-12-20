@@ -30,14 +30,16 @@ var selectGene="";
 var selectGene="<%=selectedEnsemblID%>";
 <%}%>
 
+var contextRoot="<%=contextRoot%>";
 var dataPrefix="";
 var skipSetSelection=0;
 var iconPath="<%=imagesDir%>icons/";
 var trackMenu=[];
 var viewMenu=[];
-Bugsense.clearBreadcrumbs();
+var fixedWidth=-1;
+/*Bugsense.clearBreadcrumbs();
 Bugsense.leaveBreadcrumb( 'gene.jsp' );
-Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');
+Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 </script>
 
 <style>

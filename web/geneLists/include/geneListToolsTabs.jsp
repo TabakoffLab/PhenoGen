@@ -13,7 +13,7 @@
         <% if (selectedGeneList.getOrganism().equalsIgnoreCase("Mm")) { %>  
         	<div id="mir" data-landingPage="mir"><span>miRNA<BR />(multiMiR)</span> </div>
         <%}%>
-
+                <div id="wgcna" class="single" data-landingPage="wgcna"><span>WGCNA</span></div>
     <% if (!selectedGeneList.getOrganism().equalsIgnoreCase("Dm")) { %>    
         <div id="promoter" class="single" data-landingPage="promoter"><span>Promoter</span></div>
      <% } %>   
