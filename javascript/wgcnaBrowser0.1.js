@@ -944,11 +944,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		}
 		//console.log("r:"+thatimg.r);
 		
-                thatimg.maxPerLevel=200;
+                thatimg.maxPerLevel=150;
                 thatimg.CorCutoff_min=0.025;
                 thatimg.CorCutoff_max=1.0;
                 thatimg.showLinks=true;
 		thatimg.data=[];
+                
+                thatimg.maxNodeR=28;
          
                 
                 
@@ -1007,8 +1009,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 };
                 thatimg.nodeRadiusSum=function(d,i){
                     var r=3+20*d.LinkSum;
-                    if(r>28){
-                        r=28;
+                    if(r>thatimg.maxNodeR){
+                        r=thatimg.maxNodeR;
                     }
                     return r;
                 };
@@ -1065,6 +1067,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 $("#linkCtls").show();
                 $(".eqtlCtls").hide();
                 thatimg.type="gene";
+                thatimg.truncated=0;
                 
                 thatimg.drawLinks=function(d){
                     thatimg.svg.selectAll(".link").remove();
@@ -1139,6 +1142,41 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     return thatimg.height/2+(thatimg.r-ring)*(Math.sin(ii*thatimg.angle-1.57079633));
                     //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
                 };
+                
+                thatimg.nodeXLbl=function(d,i){
+                    var ring=50;
+                    var l=Math.floor(i/200)+1;
+                    if(l>1){
+                        ring=l*60;
+                    }
+                    var ii=i%thatimg.maxPerLevel;
+                    var angleRad=ii*thatimg.angle-1.57079633;
+                    var plusMinus=1;
+                    if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
+                        plusMinus=plusMinus+d.Gene.geneSymbol.length*7.5;
+                        //console.log("i="+i);
+                    }
+                    return thatimg.width/2+(thatimg.r+plusMinus)*(Math.cos(angleRad));
+                    //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
+                };
+
+                thatimg.nodeYLbl=function(d,i){
+                    var ring=50;
+                    
+                    if(i>thatimg.maxPerLevel){
+                        var l=Math.floor(i/thatimg.maxPerLevel)+1;
+                        ring=l*60;
+                    }
+
+                    var ii=i%thatimg.maxPerLevel;
+                    var angleRad=ii*thatimg.angle-1.57079633;
+                    var plusMinus=1;
+                    if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
+                        plusMinus=plusMinus+d.Gene.geneSymbol.length*7.5;
+                    }
+                    return thatimg.height/2+(thatimg.r+plusMinus)*(Math.sin(angleRad));
+                    //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
+                };
 
 		thatimg.draw=function(){
                     thatimg.width=$(window).width();
@@ -1166,18 +1204,19 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     thatimg.svg.append("text")
                             .attr("font-size","18")
                                             .attr("y",15)
-                                            .attr("x",function(){
+                                            .attr("x",5)/*function(){
                                                     var len=that.selectedModule.MOD_NAME.length;
                                                     var w=len/2;
                                                     var offset=thatimg.width/2-(w*6.5);
                                                     return offset;
-                                            })
+                                            })*/
                                             .text(that.selectedModule.MOD_NAME);
                     thatimg.data=that.selectedModule.TCList;
                     thatimg.angle=2*Math.PI/thatimg.data.length;
                     thatimg.angleDeg=360/thatimg.data.length;
                     if(thatimg.data.length>thatimg.maxPerLevel){
                         thatimg.angle=2*Math.PI/thatimg.maxPerLevel;
+                        thatimg.angleDeg=360/thatimg.maxPerLevel;
                     }
                     thatimg.data.sort(function(a,b){
                         if(a.LinkSum===b.LinkSum){
@@ -1189,6 +1228,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         }
                         return 1;
                     });
+                    if(thatimg.data.length>150){
+                        thatimg.truncated=1;
+                        thatimg.maxNodeR=15;
+                        thatimg.data=that.selectedModule.TCList.splice(0,150);
+                        thatimg.dataIndex={};
+                        for(var p=0;p<thatimg.data.length;p++){
+                            thatimg.dataIndex[thatimg.data[p].ID]=1;
+                        }
+                        thatimg.CorCutoff_min=0.3;
+                    }else{
+                        thatimg.maxNodeR=28;
+                    }
                     var tc=thatimg.svg.selectAll(".geneTC")
                                     .data(thatimg.data,thatimg.geneKey);
                     //tc.sort();
@@ -1206,8 +1257,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     var count=0;
                     for(var i=0;i<links.length;i++){
                         if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
-                            filterLinks[count]=links[i];
-                            count++;
+                            if(thatimg.truncated===0 || (typeof thatimg.dataIndex[links[i].TC1]!=='undefined' && typeof thatimg.dataIndex[links[i].TC2]!=='undefined')){
+                                filterLinks[count]=links[i];
+                                count++;
+                            }
                         }
                     }
                     links=filterLinks;
@@ -1287,10 +1340,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     if(!thatimg.showLinks){
                                         thatimg.drawLinks(d);
                                     }
+                                    d3.select("#txt_"+replaceDot(d.ID)).select("text").attr("fill","#00A347");
                                     var tcList=that.selectedGene[d.GeneID].tcList;
                                     for(var l=0;l<tcList.length;l++){
                                         d3.select("#tc_"+replaceDot(tcList[l].ID)).attr("fill","#FEFF49");
                                     }
+                                    
                             })
                             .on("mouseout",function(){
                                     var d=d3.select(this).data()[0];
@@ -1303,6 +1358,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                         d3.select("line#"+id).attr("stroke",thatimg.colorLink);
                                     });
                                     d3.select(this).style("fill",thatimg.colorCircle);//.attr("stroke","#000000");
+                                    d3.select("#txt_"+replaceDot(d.ID)).select("text").attr("fill","#000000");
                                     tt.transition()        
                                     .duration(500)      
                                     .style("opacity", 0);
@@ -1310,9 +1366,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                         thatimg.svg.selectAll(".link").remove();
                                     }
                             });
-                    var lbl=tc.append("g").attr("class","label").attr("transform", function(d,i){
-                            var x=thatimg.nodeX(d,i)+Math.cos(thatimg.nodeRadiusSum(d,i)+20);
-                            var y=thatimg.nodeY(d,i)+Math.sin(thatimg.nodeRadiusSum(d,i)+20);
+                    var lbl=tc.append("g").attr("class","label")
+                            .attr("id",function(d){return "txt_"+replaceDot(d.ID);})
+                            .attr("transform", function(d,i){
+                            var x=thatimg.nodeXLbl(d,i);//+Math.cos(thatimg.nodeRadiusSum(d,i)+20);
+                            var y=thatimg.nodeYLbl(d,i);//+Math.sin(thatimg.nodeRadiusSum(d,i)+20);
                         return "translate("+x+","+y+")";
                     });
                     /*var arc = d3.svg.arc()
