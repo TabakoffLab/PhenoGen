@@ -432,7 +432,7 @@ sub createCircosLinksConfAndData{
 			$linkAOH[$linkCount]{name} = $eqtlAOH[$i]{name};
 			$linkAOH[$linkCount]{color}=$linkColor;
 			$numberString = sprintf "%05d", $linkCount;
-			$linkAOH[$linkCount]{linkname} = "Link_".$tissue."_".$numberString;
+			$linkAOH[$linkCount]{linkname} = "Link_".$eqtlAOH[$i]{name};
 			$linkAOH[$linkCount]{linknumber} = $linkCount;
 		}
 	}

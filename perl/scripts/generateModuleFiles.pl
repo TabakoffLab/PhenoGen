@@ -21,6 +21,7 @@ use DBI;
 use Bio::EnsEMBL::Registry;
 
 require 'callCircosModule.pl';
+require 'readModuleData.pl';
 
 sub trim($)
 {
@@ -461,9 +462,14 @@ foreach my $mod(@moduleList){
     }
     $query_handle2->finish();
     
-
-    
-    
+    my $chrs="mm1;mm2;mm3;mm4;mm5;mm6;mm7;mm8;mm9;mm10;mm11;mm12;mm13;mm14;mm15;mm16;mm17;mm18;mm19;mmX;";
+    if($org eq "Rn"){   
+        $chrs="rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX;";
+    }
+    my @chrArr=split(";",$chrs);
+#Get eQTL Data from WGCNA_EQTL table
+    my $eqtlAOHRef = readLocusSpecificPvaluesModule($mod,$org,"Brain",\@chrArr,$dsn,$user,$passwd);
+    my @eqtlAOH = @{$eqtlAOHRef};
     
     open OFILE, '>', $path.$mod.".json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
     my $tmpMod=$mod;
@@ -643,6 +649,17 @@ foreach my $mod(@moduleList){
     #print OFILE "\t\]\n";
     #print OFILE "}";#end module
     #close OFILE;
+
+    open OFILE, '>', $path.$mod.".eQTL.json" or die " Could not open two track file $path$mod.eQTL.json for writing $!\n\n";
+        print OFILE "[\n";
+        for(my $i=0;$i<@eqtlAOH;$i++){
+            if($i>0){
+                print OFILE ",";
+            }
+            print OFILE "{ \"Chr\":\"chr".substr($eqtlAOH[$i]{chromosome},2)."\", \"Start\":".$eqtlAOH[$i]{location}.", \"Snp\":\"".$eqtlAOH[$i]{name}."\", \"Pval\":".$eqtlAOH[$i]{pvalue}."}\n";
+        }
+        print OFILE "]";
+    close OFILE;
 
     my $chrString="mm1;mm2;mm3;mm4;mm5;mm6;mm7;mm8;mm9;mm10;mm11;mm12;mm13;mm14;mm15;mm16;mm17;mm18;mm19;mmX;";
     if($org eq "Rn"){   

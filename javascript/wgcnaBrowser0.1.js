@@ -40,7 +40,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             that.chrLen=20;
             that.wDSID=2;
         }
-
+        that.eQTLKey=function(d){return "Link_"+d.Snp;};
 	that.setup=function(){
 		//request Module List
 		that.requestModuleList();
@@ -965,6 +965,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 		thatimg.geneKey=function(d){return d.ID;};
                 thatimg.linkKey=function(d){return d.TC1+"_"+d.TC2;};
+                
 		thatimg.calcX=function(d,i){
 			var tmp=i%thatimg.modPerLine;
 			var ret=tmp*thatimg.calcWidth;
@@ -1494,6 +1495,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 	that.singleWGCNATableGeneView=function(){
 		$('div#waitModuleTable').hide();
+                $('div#wgcnaEqtlTable').hide();
                 $('div#wgcnaModuleTable').show();
                 $('span#modTableName').html(that.selectedModule.MOD_NAME);
 		d3.select("table#moduleTable").select("tbody").selectAll('tr').remove();
@@ -1555,6 +1557,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 d3.select("#viewGene").remove();
                 d3.select("#circos").remove();
                 thatimg.update(contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+that.selectedModule.MOD_NAME+"/"+that.selectedModule.MOD_NAME+"_1/svg/circos_new.svg");
+                that.singleWGCNATableEQTLView();
                 /*d3.select("#wgcnaGeneImage").append("iframe")
                         .attr("width","100%")
                         .attr("height",function(){return Math.floor(window.innerHeight*0.9);})
@@ -1611,11 +1614,77 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                             .duration(500)      
                                             .style("opacity", 0);
                                     });
+                                    that.singleWGCNATableEQTLView();
                                 }
                 });
             };
             return thatimg;
 	};
+        
+        that.singleWGCNATableEQTLView=function(){
+		$('div#waitEqtlTable').hide();
+                $('div#wgcnaModuleTable').hide();
+                $('div#wgcnaEqtlTable').show();
+                $('span#eqtlTableName').html(that.selectedModule.MOD_NAME);
+		d3.select("table#eqtlTable").select("tbody").selectAll('tr').remove();
+                
+                $.ajax({
+                        url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +that.selectedModule.MOD_NAME+".eQTL.json",
+	   			type: 'GET',
+	   			async: true,
+				data: {},
+				dataType: 'json',
+                                beforeSend: function(){
+                                    $('div#waitEqtlTable').show();
+                                },
+	    		success: function(data2){        
+                                setTimeout(function(){
+                                    //filter data2
+                                    var fData=[];
+                                    var cutoff=$('select#eqtlPval').val();
+                                    for(var p=0;p<data2.length;p++){
+                                        if(data2[p].Pval>=cutoff){
+                                            fData.push(data2[p]);
+                                        }
+                                    }
+                                    //setup table data2
+                                    var tracktbl=d3.select("table#eqtlTable").select("tbody").selectAll('tr')
+                                                    .data(fData,that.eQTLKey)
+                                                    .enter().append("tr")
+                                                    .attr("id",function(d){return "tblLink_"+d.Snp;})
+                                                    .attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
+                                    tracktbl.each(function(d,i){
+                                                var tmp=(d.Start/1000000);
+                                                    d3.select(this).append("td").html(d.Chr);
+                                                    d3.select(this).append("td").html(tmp.toFixed(1));
+                                                    d3.select(this).append("td").html(d.Snp);
+                                                    d3.select(this).append("td").html(d.Pval.toFixed(2));
+                                    });
 
+                                    //$('table#trkSelList'+that.level).dataTable().destroy();
+                                    if($.fn.DataTable.isDataTable( 'table#eqtlTable' )){
+                                            $('table#eqtlTable').DataTable().destroy();
+                                    }
+                                    $('table#eqtlTable').DataTable({
+                                                    "bPaginate": false,
+                                                    /*"bProcessing": true,
+                                                    "bStateSave": false,
+                                                    "bAutoWidth": true,
+                                                    "bDeferRender": true,*/
+                                                    "aaSorting": [[ 3, "desc" ]],
+                                                    "sDom": '<"rightTable"i><"leftTable"f><t>'
+                                            });
+                                    //trackDataTable.draw();
+                                    $('div#waitEqtlTable').hide();
+                                },20);
+	    		},
+	    		error: function(xhr, status, error) {
+	    		}
+		});
+                
+                
+		
+	};
+        
 	return that;
 }

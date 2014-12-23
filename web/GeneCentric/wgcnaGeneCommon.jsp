@@ -62,11 +62,12 @@
     </div>
     <div id="wgcnaEqtlTable" style="display:none;width:99%;border:1px solid;text-align: center;">
         <div id="waitEqtlTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
-        
+        <H2>eQTL locations for <span id="eqtlTableName">Selected</span> Module</h2><BR>
         <table class="list_base" id="eqtlTable" width="98%">
             <thead>
                 <TR class="col_title">
-                    <TH>Location</TH>
+                    <TH>Chromosome</TH>
+                    <TH>Position (Mbp)</TH>
                     <TH>SNP ID</th>
                     <TH>-log(P-value)</th> 
                 </TR>
