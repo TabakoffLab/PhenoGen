@@ -1501,6 +1501,31 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 $('div#wgcnaEqtlTable').hide();
                 $('div#wgcnaModuleTable').show();
                 $('span#modTableName').html(that.selectedModule.MOD_NAME);
+                d3.select("div#tableExportCtl").selectAll("span").remove();
+                d3.select("div#tableExportCtl").append("span")
+                        .attr("class","button")
+                        .style("margin-right","10px")
+                        .on("click",function(){
+                            console.log("csv");
+                           $('#moduleTable').tableExport({type:'csv',escape:'false'});
+                        })
+                        .html("Export CSV");
+                /*d3.select("div#tableExportCtl").append("span")
+                        .attr("class","button")
+                        .style("margin-right","10px")
+                        .on("click",function(){
+                            console.log("txt");
+                            $('#moduleTable').tableExport({type:'txt',escape:'true',seperator:'\t'});
+                        })
+                        .html("Export TXT");
+                d3.select("div#tableExportCtl").append("span")
+                        .attr("class","button")
+                        .style("margin-right","10px")
+                        .on("click",function(){
+                            console.log("pdf");
+                            $('#moduleTable').tableExport({type:'pdf',escape:'false'});
+                        })
+                        .html("Export PDF");*/
 		d3.select("table#moduleTable").select("tbody").selectAll('tr').remove();
 		var tracktbl=d3.select("table#moduleTable").select("tbody").selectAll('tr').data(that.selectedModule.TCList,that.geneKey)
 				.enter().append("tr")
@@ -1629,6 +1654,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 $('div#wgcnaModuleTable').hide();
                 $('div#wgcnaEqtlTable').show();
                 $('span#eqtlTableName').html(that.selectedModule.MOD_NAME);
+                
+                d3.select("div#tableExportCtl").selectAll("span").remove();
+                d3.select("div#tableExportCtl").append("span")
+                        .attr("class","button")
+                        .style("margin-right","10px")
+                        .on("click",function(){
+                            console.log("csv");
+                           $('#eqtlTable').tableExport({type:'csv',escape:'false'});
+                        })
+                        .html("Export CSV");
+                
 		d3.select("table#eqtlTable").select("tbody").selectAll('tr').remove();
                 
                 $.ajax({

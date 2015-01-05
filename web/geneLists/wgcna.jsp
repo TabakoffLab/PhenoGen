@@ -14,6 +14,12 @@
         extrasList.add("d3.v3.min.js");
         extrasList.add("jquery.dataTables.js");
         extrasList.add("wgcnaBrowser0.1.js");
+        extrasList.add("svg-pan-zoom.min.js");
+        extrasList.add("tableExport/tableExport.js");
+        extrasList.add("tableExport/jquery.base64.js");
+        //extrasList.add("tableExport/jspdf/libs/sprintf.js");
+        //extrasList.add("tableExport/jspdf/jspdf.js");
+        //extrasList.add("tableExport/jspdf/libs/base64.js");
 
         extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
 
