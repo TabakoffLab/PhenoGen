@@ -87,6 +87,7 @@
     var genelist="<%=geneListID%>";
     var tissue="Whole Brain";
     var modulePrefix="";
+    
     var wgcna=WGCNABrowser(wgcnaid,wgcnaregion,genelist,disptype,viewtype,tissue);
     wgcna.setup();
 </script>

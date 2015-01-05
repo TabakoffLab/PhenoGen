@@ -159,7 +159,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("id","saveLevel"+that.levelNumber)
 			.style("cursor","pointer")
 			.append("img")//.attr("class","mouseOpt dragzoom")
-			.attr("src","/web/images/icons/savePic_dark.png")
+			.attr("src",contextRoot+"web/images/icons/savePic_dark.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.on("click",function(){
@@ -233,13 +233,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					});
 				})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/savePic_white.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/savePic_white.png");
 				d3.select("span#savePic"+that.levelNumber).style("background","#DCDCDC");
 				//$(this).css("background","#989898").html("<img src=\"/web/images/icons/savePic_white.png\">");
 				$("#wgcnaMouseHelp").html("Click to download a PNG image of the current view.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/savePic_dark.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/savePic_dark.png");
 				d3.select("span#savePic"+that.levelNumber).style("background","#989898");
 				//$(this).css("background","#DCDCDC").html("<img src=\"/web/images/icons/savePic_dark.png\">");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
@@ -249,7 +249,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("id","resetImage"+that.levelNumber)
 			.style("cursor","pointer")
 			.append("img")//.attr("class","mouseOpt dragzoom")
-			.attr("src","/web/images/icons/reset_dark.png")
+			.attr("src",contextRoot+"web/images/icons/reset_dark.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.on("click",function(){
@@ -268,15 +268,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
 					svgList[level].redraw();
 				}
+                            }else if(typeof that.singleImage !=="undefined"){
+                                that.singleImage.panZoom.reset();
                             }
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/reset_white.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/reset_white.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to reset image zoom to initial region.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/reset_dark.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/reset_dark.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -290,7 +292,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("id","zoomInImage")
 			.append("img")
 			.attr({
-				"src":"/web/images/icons/magPlus_dark_32.png",
+				"src":contextRoot+"web/images/icons/magPlus_dark_32.png",
 				"pointer-events":"all",
 				"cursor":"pointer"
 			})
@@ -303,15 +305,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 that.singleImage.panZoomCircos.zoomIn();
                             }else if(that.singleImage==undefined){
 				that.multiImage.zoomIn();
+                            }else if(typeof that.singleImage!=='undefined'){
+                                that.singleImage.panZoom.zoomIn();
                             }
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/magPlus_light_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/magPlus_light_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to zoom in.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/magPlus_dark_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/magPlus_dark_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -324,7 +328,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			})
 			.attr("id","zoomOutImage")
 			.append("img")
-			.attr("src","/web/images/icons/magMinus_dark_32.png")
+			.attr("src",contextRoot+"web/images/icons/magMinus_dark_32.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.style({
@@ -336,16 +340,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 that.singleImage.panZoomCircos.zoomOut();
                             }else if(that.singleImage==undefined){
 				that.multiImage.zoomOut();
+                            }else if(typeof that.singleImage!=='undefined'){
+                                that.singleImage.panZoom.zoomOut();
                             }
 				
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/magMinus_light_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/magMinus_light_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to zoom out.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/magMinus_dark_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/magMinus_dark_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -359,7 +365,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("id","backModule")
 			.append("img")
 			.attr({
-				"src":"/web/images/icons/back_dark_32.png",
+				"src":contextRoot+"web/images/icons/back_dark_32.png",
 				"pointer-events":"all",
 				"cursor":"pointer"
 			})
@@ -371,12 +377,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				that.multiImage.backModule();
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/back_light_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/back_light_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to move to the previous module.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/back_dark_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/back_dark_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -389,7 +395,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			})
 			.attr("id","forwardModule")
 			.append("img")
-			.attr("src","/web/images/icons/forward_dark_32.png")
+			.attr("src",contextRoot+"web/images/icons/forward_dark_32.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.style({
@@ -400,12 +406,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				that.multiImage.forwardModule();
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/forward_light_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/forward_light_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to move to the next module.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/forward_dark_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/forward_dark_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -914,6 +920,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			that.singleImage.draw();
 			that.img=that.singleImage;
 			that.singleWGCNATableGeneView();
+                        that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                            panEnabled: true
+                                          , controlIconsEnabled:false
+                                          , zoomEnabled: true
+                                          , dblClickZoomEnabled: true
+                                          , zoomScaleSensitivity: 0.2
+                                          , minZoom: 0.1
+                                          , maxZoom: 4
+                                          , fit: true
+                                          , center: true
+                                          
+                                    });
             },50);
 		}/*else if(that.viewType==="go"){
                     setTimeout(function(){
@@ -1100,7 +1118,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                     links=filterLinks;
                     if(links.length<10000){
-                        var lnk=thatimg.svg.selectAll(".link").data(links,thatimg.linkKey);
+                        var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
                         lnk.enter().append("line")
                                 .attr("class","link")
                                 .attr("pointer-events","none")
@@ -1218,13 +1236,15 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     thatimg.svg.selectAll("text").remove();
                     thatimg.svg.selectAll("line").remove();
                     thatimg.svg.selectAll(".geneTC").remove();
-
+                    thatimg.svg.selectAll(".svg-pan-zoom_viewport").remove();
                     /*thatimg.svg.append("circle")
                                     .attr("cx",thatimg.width/2)
                                     .attr("cy",thatimg.height/2)
                                     .attr("r",thatimg.r)
                                     .attr("stroke","#000000")
                                     .attr("fill","#FFFFFF");*/
+                    
+                    
                     thatimg.svg.append("text")
                             .attr("font-size","18")
                                             .attr("y",22)
@@ -1322,7 +1342,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }else{
                         thatimg.maxNodeR=28;
                     }
-                    var tc=thatimg.svg.selectAll(".geneTC")
+                    
+                    var topG=thatimg.svg.append("g").attr("class","svg-pan-zoom_viewport");
+                    
+                    var tc=topG.selectAll(".geneTC")
                                     .data(thatimg.data,thatimg.geneKey);
                     //tc.sort();
                     //add new
@@ -1347,7 +1370,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                     links=filterLinks;
                     if(thatimg.showLinks && links.length<10000){
-                        var lnk=thatimg.svg.selectAll(".link").data(links,thatimg.linkKey);
+                        var lnk=topG.selectAll(".link").data(links,thatimg.linkKey);
                         lnk.enter().append("line")
                                 .attr("class","link")
                                 .attr("id",function(d){return "ln_"+replaceDot(d.TC1)+replaceDot(d.TC2);})
@@ -1381,8 +1404,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 });
                     }
                     
-                    thatimg.svg.selectAll(".geneTC").remove();
-                    var tc=thatimg.svg.selectAll(".geneTC")
+                    topG.selectAll(".geneTC").remove();
+                    var tc=topG.selectAll(".geneTC")
 		   			.data(thatimg.data,thatimg.geneKey);
                         //tc.sort();
 			//add new
@@ -1451,32 +1474,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     var lbl=tc.append("g").attr("class","label")
                             .attr("id",function(d){return "txt_"+replaceDot(d.ID);})
                             .attr("transform", function(d,i){
-                            var x=thatimg.nodeXLbl(d,i);//+Math.cos(thatimg.nodeRadiusSum(d,i)+20);
-                            var y=thatimg.nodeYLbl(d,i);//+Math.sin(thatimg.nodeRadiusSum(d,i)+20);
+                            var x=thatimg.nodeXLbl(d,i);
+                            var y=thatimg.nodeYLbl(d,i);
                         return "translate("+x+","+y+")";
                     });
-                    /*var arc = d3.svg.arc()
-                                .innerRadius(function(d,i){return thatimg.nodeRadiusSum(d,i)+25;})
-                                .outerRadius(function(d,i){return thatimg.nodeRadiusSum(d,i)+25;})
-                                .startAngle(function(d,i){
-                                    var ii=i%thatimg.maxPerLevel; 
-                                    return (ii*thatimg.angle)-(Math.PI*0.9); 
-                                    //return 0;
-                                })
-                                .endAngle(function(d,i){
-                                    var ii=i%thatimg.maxPerLevel; 
-                                    return (ii*thatimg.angle)-(Math.PI*0.9)+(Math.PI*1.25); 
-                                    //return 0;
-                                });
-                    lbl.append("path").attr("fill","white")
-                        .attr("id", function(d,i){return "lbl"+i;})
-                        .attr("d",arc);*/
+                    
                     lbl.append("text")
-                        /*.append("textPath")
-                        .attr("textLength",function(d,i){return 90-i*5 ;})
-                        .attr("xlink:href",function(d,i){return "#lbl"+i;})
-                        .attr("startOffset",function(d,i){return 3/20;})
-                        .attr("dy","-1em")*/
                         .attr("transform",function(d,i){
                             var deg=-90;
                             var ii=i%thatimg.maxPerLevel; 
