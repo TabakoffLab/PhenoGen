@@ -162,8 +162,11 @@ public class SwissProtParser extends InputFileParser {
                             // gene names for a protein. It's also possible for a GN line 
                             // to contain no Name (nor Synonyms).
                             int start = line.indexOf("Name=");
-				if (start != -1) {
+				if (start > -1) {
                                     int end = line.indexOf(";", start);
+                                    if(end<0){
+                                        end = line.indexOf(" {", start);
+                                    }
                     
                                     // "start+5" because "Name=" is 5 chars long
                                     String geneSymbol = line.substring(start+5,end);
@@ -171,7 +174,7 @@ public class SwissProtParser extends InputFileParser {
                                     // get synonyms (if any)
                                     List synonymList;
                                     start = line.indexOf("Synonyms=");
-                                    if (start != -1) {
+                                    if (start > -1) {
                                             end = line.indexOf(";", start);
 
                                             // "start+9" because "Synonyms=" is 9 chars long;
