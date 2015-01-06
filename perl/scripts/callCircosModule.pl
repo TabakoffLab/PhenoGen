@@ -109,7 +109,7 @@ sub callCircosMod{
 	my $inkscapeBinary;
 	my $inkscapeDirectory;
 
-	if($hostname eq 'phenogen.ucdenver.edu'){
+	if($hostname eq 'phenogen'){
 		$circosBinary = '/usr/local/circos-0.67-4/bin/circos';
 		$perlBinary = '/opt/phenogen/perl-5.10.1/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
