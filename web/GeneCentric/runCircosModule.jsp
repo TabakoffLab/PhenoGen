@@ -62,7 +62,7 @@
                     perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
             }
             else if(hostName.equals("phenogen.ucdenver.edu")){
-                    perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+                    perlEnvironmentVariables += ":/usr/bin/perl:/usr/local/circos-0.67-4/lib:/usr/local/circos-0.67-4/bin";
             }
             else if(hostName.equals("stan.ucdenver.pvt")){
                     perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/local/circos-0.67-4/lib:/usr/local/circos-0.67-4/bin";
@@ -75,7 +75,7 @@
             java.util.Date dNow = new java.util.Date( );
             SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMddhhmmss");
             String timeStampString = ft.format(dNow);
-            timeStampString="20141212044050";
+            //timeStampString="20141212044050";
             //
             // Get the database connection properties
             //
