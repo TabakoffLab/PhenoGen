@@ -1685,7 +1685,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	    		success: function(data2){    
                                 console.log("redraw table");
                                 setTimeout(function(){
-                                    d3.select("table#eqtlTable").select("tbody").selectAll('tr').remove();
+                                    //$('table#trkSelList'+that.level).dataTable().destroy();
+                                    if($.fn.DataTable.isDataTable( 'table#eqtlTable' )){
+                                            $('table#eqtlTable').DataTable().destroy();
+                                    }
+                                    
+                                    
                                     //filter data2
                                     var fData=[];
                                     
@@ -1697,9 +1702,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                         }
                                     }
                                     console.log(fData);
-                                    console.log(d3.select("table#eqtlTable").select("tbody").selectAll('tr'));
+                                    d3.select('#eqtlTable').select('tbody').selectAll('tr').remove();
+                                    console.log(d3.select("#eqtlTable").select("tbody").selectAll('tr'));
                                     //setup table data2
-                                    var tracktbl=d3.select("table#eqtlTable").select("tbody").selectAll('tr')
+                                    var tracktbl=d3.select("#eqtlTable").select("tbody").selectAll('tr')
                                                     .data(fData,that.eQTLKey)
                                                     .enter().append("tr")
                                                     .attr("id",function(d){return "tblLink_"+d.Snp;})
@@ -1712,11 +1718,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     d3.select(this).append("td").html(d.Pval.toFixed(2));
                                     });
 
-                                    //$('table#trkSelList'+that.level).dataTable().destroy();
-                                    if($.fn.DataTable.isDataTable( 'table#eqtlTable' )){
-                                            $('table#eqtlTable').DataTable().destroy();
-                                    }
-                                    $('table#eqtlTable').DataTable({
+                                    
+                                    $('#eqtlTable').DataTable({
                                                     "bPaginate": false,
                                                     /*"bProcessing": true,
                                                     "bStateSave": false,
