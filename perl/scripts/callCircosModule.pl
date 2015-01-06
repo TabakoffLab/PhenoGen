@@ -111,7 +111,7 @@ sub callCircosMod{
 
 	if($hostname eq 'phenogen'){
 		$circosBinary = '/usr/local/circos-0.67-4/bin/circos';
-		$perlBinary = '/opt/phenogen/perl-5.10.1/perl';
+		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
