@@ -37,15 +37,11 @@ sub prepCircosMod
 	}
 	
 	my $genericConfLocation2;
-	if($hostname eq 'amc-kenny.ucdenver.pvt'){
-		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
-	}
-	elsif($hostname eq 'compbio.ucdenver.edu'){
+	if($hostname eq 'phenogen.ucdenver.edu' and index($dsn,"test")>0){
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
-	}
-	elsif($hostname eq 'phenogen.ucdenver.edu'){
-		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
-	}
+	}elseif($hostname eq 'phenogen.ucdenver.edu' and index($dsn,"test")==-1){
+                $genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
+        }
 	elsif($hostname eq 'stan.ucdenver.pvt'){
 		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
 	}
