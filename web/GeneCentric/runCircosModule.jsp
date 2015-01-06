@@ -48,7 +48,7 @@
                     tissueString = "Brain";
             }
             
-            String modPath=fullPath+"tmpData/modules/"+dataset+"/"+module+"/";
+            String modPath=fullPath+"tmpData/circos/"+dataset+"/"+module+"/";
 		
             String perlScriptDirectory = (String)session.getAttribute("perlDir")+"scripts/";
             String perlEnvironmentVariables = (String)session.getAttribute("perlEnvVar");
@@ -108,12 +108,12 @@
 			//
 			// call perl script
 			//
-            String filePrefixWithPath=fullPath+"tmpData/modules/"+dataset+"/"+module+"/"+timeStampString;
+            String filePrefixWithPath=fullPath+"tmpData/circos/"+dataset+"/"+module+"/"+timeStampString;
             boolean circosReturnStatus = gdt.createCircosFiles(perlScriptDirectory,perlEnvironmentVariables,perlScriptArguments,filePrefixWithPath);
         	if(circosReturnStatus){
         		log.debug("Circos run completed successfully");       		
 				
-                        String svgFile = contextRoot+"tmpData/modules/"+dataset+"/"+module+"/"+module+"_"+timeStampString+"/svg/circos_new.svg";
+                        String svgFile = contextRoot+"tmpData/circos/"+dataset+"/"+module+"/"+module+"_"+timeStampString+"/svg/circos_new.svg";
                         iframeURL = svgFile;
                 }
                 else{

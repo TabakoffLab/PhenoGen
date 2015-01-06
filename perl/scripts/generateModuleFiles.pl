@@ -196,13 +196,15 @@ foreach my $mod(@moduleList){
         my $line=<ADJ>;
         my @columns=split("\t",$line);
         for(my $col=0;$col<$row;$col++){#only read first part up to the 1 since its symmetrical
-            $adjHOH{$adjTC[$row]}{$adjTC[$col]}=$columns[$col];
-            $moduleHOH{LinkList}[$linkCount]={
-                                                TC1=>$adjTC[$row],
-                                                TC2=>$adjTC[$col],
-                                                cor=>$columns[$col]
-                                            };
-            $linkCount++;
+            if(not($mod eq 'turquoise' or $mod eq 'blue' or $mod eq 'brown') or (($mod eq 'turquoise' or $mod eq 'blue' or $mod eq 'brown') and $columns[$col]>0.01)){
+                $adjHOH{$adjTC[$row]}{$adjTC[$col]}=$columns[$col];
+                $moduleHOH{LinkList}[$linkCount]={
+                                                    TC1=>$adjTC[$row],
+                                                    TC2=>$adjTC[$col],
+                                                    cor=>$columns[$col]
+                                                };
+                $linkCount++;
+            }
         }
     }
     close ADJ;
@@ -665,7 +667,10 @@ foreach my $mod(@moduleList){
     if($org eq "Rn"){   
         $chrString="rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX;";
     }
-    my $tmpPath=$path.$mod."/";
+    my $tmpP=substr($path,0,index($path,"tmpData")+7);
+    my $dsNum=substr($path,index($path,"/ds")+1,index($path,"/",index($path,"/ds")+1)-1);
+    my $tmpPath=$tmpP."/circos/".$dsNum.$mod."/";
+    print "Circos Path:".$tmpPath."\n";
     my $cutoff=2;
     
     callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$modRGB,$dsn,$user, $passwd);

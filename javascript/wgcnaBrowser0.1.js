@@ -539,18 +539,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 chr.append("br");
                 chr.append("br");
                 chr.append("input").attr({"type":"button","value":"Apply Selections"}).on("click",function(){
-                    var cutoff=$("eqtlPval").val();
+                    var cutoff=$("#eqtlPval").val();
                     var list=$("#eqtlChr").val();
                     var cList="";
                     for(var n=0;n<list.length;n++){
                         cList=cList+list[n]+";";
                     }
-                    console.log(list);
+                    console.log(cutoff);
                     $.ajax({
 				url:  pathPrefix +"runCircosModule.jsp",
 	   			type: 'GET',
 	   			async: true,
-				data: {cutoffValue:cutoff, organism:organism, module:that.selectedModule.MOD_NAME, modColor:that.selectedModule.ModRGB, chrList:cList},
+				data: { cutoffValue:cutoff, organism:organism, module:that.selectedModule.MOD_NAME, modColor:that.selectedModule.ModRGB, chrList:cList},
 				dataType: 'json',
                                 beforeSend: function(){
                                     //d3.select("#viewGene").remove();
@@ -1590,7 +1590,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.displayDefault=function(){
                 d3.select("#viewGene").remove();
                 d3.select("#circos").remove();
-                thatimg.update(contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+that.selectedModule.MOD_NAME+"/"+that.selectedModule.MOD_NAME+"_1/svg/circos_new.svg");
+                thatimg.update(contextRoot+"tmpData/circos/ds"+that.wDSID+"/"+that.selectedModule.MOD_NAME+"/"+that.selectedModule.MOD_NAME+"_1/svg/circos_new.svg");
                 that.singleWGCNATableEQTLView();
                 /*d3.select("#wgcnaGeneImage").append("iframe")
                         .attr("width","100%")
@@ -1671,7 +1671,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         })
                         .html("Export CSV");
                 
-		d3.select("table#eqtlTable").select("tbody").selectAll('tr').remove();
+		
                 
                 $.ajax({
                         url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +that.selectedModule.MOD_NAME+".eQTL.json",
@@ -1682,16 +1682,22 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 beforeSend: function(){
                                     $('div#waitEqtlTable').show();
                                 },
-	    		success: function(data2){        
+	    		success: function(data2){    
+                                console.log("redraw table");
                                 setTimeout(function(){
+                                    d3.select("table#eqtlTable").select("tbody").selectAll('tr').remove();
                                     //filter data2
                                     var fData=[];
-                                    var cutoff=$('select#eqtlPval').val();
+                                    
+                                    var cutoff=$('#eqtlPval').val()*1;
+                                    console.log("table cutoff:"+cutoff);
                                     for(var p=0;p<data2.length;p++){
                                         if(data2[p].Pval>=cutoff){
                                             fData.push(data2[p]);
                                         }
                                     }
+                                    console.log(fData);
+                                    console.log(d3.select("table#eqtlTable").select("tbody").selectAll('tr'));
                                     //setup table data2
                                     var tracktbl=d3.select("table#eqtlTable").select("tbody").selectAll('tr')
                                                     .data(fData,that.eQTLKey)

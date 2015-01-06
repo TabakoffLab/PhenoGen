@@ -58,7 +58,7 @@ sub prepCircosMod
 	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$dsn,$usr,$passwd);
 	createCircosPvaluesDataFiles($dataDirectory,$module,$organism,$eqtlAOHRef,$chromosomeListRef);
 	if($oneToCreateLinks == 1){
-		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissueString);	
+		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissueString,$chromosomeList[0]);	
 	}
 }
 
@@ -391,7 +391,7 @@ sub createCircosLinksConfAndData{
 	# Create configuration and data file for circos links
 	# This is more complicated since there will be a varying number of data files
 	# Therefore, keeping the configuration and data file creation together
-	my ($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissue) = @_;
+	my ($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissue,$firstChr) = @_;
 	my $numberOfTissues = 1;
 	my @linkAOH; # this is an array of hashes to store required data
 	my @eqtlAOH = @{$eqtlAOHRef};
@@ -442,13 +442,12 @@ sub createCircosLinksConfAndData{
 	open(TOOLTIPFILE,'>',$toolTipFileName) || die ("Can't open $toolTipFileName:!\n");
 	my $linkFileName;
 	my $linkName;
-        my $lcOrg=lc($organism);
 	for($i=0;$i<$totalLinks;$i++){
 		print TOOLTIPFILE $linkAOH[$i]{linkname}."\t".substr($linkAOH[$i]{chromosome},2)."\t".$linkAOH[$i]{location}."\n";
 		$linkFileName = $dataDirectory.$linkAOH[$i]{linkname}.".txt";
 		open(LINKFILE,'>',$linkFileName) || die ("Can't open $linkFileName:!\n");
 		print LINKFILE $linkAOH[$i]{name}." ".$linkAOH[$i]{chromosome}." ".$linkAOH[$i]{location}." ".$linkAOH[$i]{location}." radius1=0.85r\n"; # This is the SNP location
-		print LINKFILE $linkAOH[$i]{name}." ".$lcOrg."1 1 1 radius2=0r\n"; # This is the probeset location
+		print LINKFILE $linkAOH[$i]{name}." ".$firstChr." 1 1 radius2=0r\n"; # This is the probeset location
 		close(LINKFILE);		
 	}
 	close(TOOLTIPFILE);
