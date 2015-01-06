@@ -39,7 +39,7 @@ sub prepCircosMod
 	my $genericConfLocation2;
 	if($hostname eq 'phenogen.ucdenver.edu' and index($dsn,"test")>0){
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
-	}elseif($hostname eq 'phenogen.ucdenver.edu' and index($dsn,"test")==-1){
+	}elsif($hostname eq 'phenogen.ucdenver.edu' and index($dsn,"test")==-1){
                 $genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
         }
 	elsif($hostname eq 'stan.ucdenver.pvt'){

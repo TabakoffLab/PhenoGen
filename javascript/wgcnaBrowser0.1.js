@@ -10,7 +10,13 @@
 *	Builds an interactive view of WGCNA Modules.
 */
 $(window).resize(function(){
-	that.img.draw();
+    if(typeof wgcna !=='undefined'){
+        if(typeof wgcna.multiImage !=='undefined'){
+            wgcna.multiImage.draw();
+        }else if(typeof wgcna.singleImage !=='undefined'){
+            wgcna.singleImage.draw();
+        }
+    }
 });
 
 function replaceDot(str){
