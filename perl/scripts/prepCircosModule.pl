@@ -459,7 +459,7 @@ sub createCircosLinksConfAndData{
 		$linkFileName = $dataDirectory.$linkAOH[$i]{linkname}.".txt";
 		$linkName = $linkAOH[$i]{linkname};
 		$linkColor = $linkAOH[$i]{color};
-		writeLink($CONFFILEHANDLE,$linkFileName,$linkName,$linkColor,$organism,$numberOfTissues);
+		writeLink($CONFFILEHANDLE,$linkFileName,$linkName,$linkColor,$organism,$numberOfTissues,$i);
 	}
 	close(CONFFILE);
 	print " Finished with createCircosLinksConfAndData \n";
@@ -468,9 +468,9 @@ sub createCircosLinksConfAndData{
 
 
 sub writeLink{
-	my ($FILEHANDLE,$LinkFileName,$linkName,$linkColor,$organism,$numberOfTissues) = @_;
+	my ($FILEHANDLE,$LinkFileName,$linkName,$linkColor,$organism,$numberOfTissues,$i) = @_;
 	print $FILEHANDLE "<link ".$linkName.">"."\n";
-	print $FILEHANDLE  "z = 0"."\n";
+	print $FILEHANDLE  "z = ".$i."\n";
 	if($numberOfTissues == 4){
 		print $FILEHANDLE  "radius = 0.55r"."\n";
 	}

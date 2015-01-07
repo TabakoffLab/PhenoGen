@@ -51,7 +51,8 @@ sub readLocusSpecificPvaluesModule{
                         and e.module_id in 
                             (Select wi.module_id from wgcna_module_info wi where 
                                 wi.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.visible=1) 
-                        and wi.module='$module')";
+                        and wi.module='$module')
+                        order by e.pvalue";
                       
 	my $query_handle = $connect->prepare($query) or die (" Location Specific EQTL query prepare failed $!");
 

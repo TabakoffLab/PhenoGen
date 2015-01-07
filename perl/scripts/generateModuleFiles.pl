@@ -146,9 +146,7 @@ $query_handle->execute() or die ( "Module query execute failed \n");
 my $moduleName;
 $query_handle->bind_columns(\$moduleName);
 while($query_handle->fetch()) {
-    #if(index($moduleName,"white")==0 or index($moduleName,"yellow")==0){
         push(@moduleList,$moduleName);
-    #}
 }
 $query_handle->finish();
 
@@ -196,7 +194,7 @@ foreach my $mod(@moduleList){
         my $line=<ADJ>;
         my @columns=split("\t",$line);
         for(my $col=0;$col<$row;$col++){#only read first part up to the 1 since its symmetrical
-            if(not($mod eq 'turquoise' or $mod eq 'blue' or $mod eq 'brown') or (($mod eq 'turquoise' or $mod eq 'blue' or $mod eq 'brown') and $columns[$col]>0.01)){
+            if(not($mod eq 'turquoise' or $mod eq 'blue' or $mod eq 'brown') or ($mod eq 'turquoise' and $columns[$col]>0.15) or (($mod eq 'blue' or $mod eq 'brown') and $columns[$col]>0.01)){
                 $adjHOH{$adjTC[$row]}{$adjTC[$col]}=$columns[$col];
                 $moduleHOH{LinkList}[$linkCount]={
                                                     TC1=>$adjTC[$row],

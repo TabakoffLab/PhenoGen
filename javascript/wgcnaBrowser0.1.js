@@ -77,19 +77,26 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList},
 				dataType: 'json',
 	    		success: function(data2){
-	        		for(var i=0;i<data2.length;i++){
-                                    if(data2[i].ModuleID!=="grey" && data2[i].ModuleID !=="turquoise"){
-	        				that.moduleList.push(data2[i].ModuleID); 
-	        				//var isLast=data2.length-i;
-	        				that.requests++;
-	        				that.requestModule(data2[i].ModuleID);
-                                                if(typeof data2[i].GeneList !=='undefined'){
-                                                    that.moduleGenes[data2[i].ModuleID]=data2[i].GeneList;
-                                                }
-	        				//console.log("after calling:"+that.requests+":"+data2[i].ModuleID);
+                                console.log(data2);
+                                if(data2.length>0 && !(data2.length===1 && data2[0].ModuleID==="grey")){
+                                    for(var i=0;i<data2.length;i++){
+                                        if(data2[i].ModuleID!=="grey"){// && data2[i].ModuleID !=="turquoise"){
+                                                    that.moduleList.push(data2[i].ModuleID); 
+                                                    //var isLast=data2.length-i;
+                                                    that.requests++;
+                                                    that.requestModule(data2[i].ModuleID);
+                                                    if(typeof data2[i].GeneList !=='undefined'){
+                                                        that.moduleGenes[data2[i].ModuleID]=data2[i].GeneList;
+                                                    }
+                                                    //console.log("after calling:"+that.requests+":"+data2[i].ModuleID);
+                                        }
                                     }
-	        		}
-                                that.refreshRegion(1000);
+                                    that.refreshRegion(1000);
+                                }else if(data2.length===0){
+                                    that.displayMessage("There are no transcripts with Affymetrix Probesets that represent this gene.");
+                                }else if(data2.length===1 && data2[0].ModuleID==="grey"){
+                                    that.displayMessage("Only the Grey module contains transcripts for this gene.  The Grey module contains all transcripts that did not have a high enough correlation with any other transcripts to be included in another module.");
+                                }
 	        		//console.log(that.moduleList);
 	    		},
 	    		error: function(xhr, status, error) {
@@ -97,6 +104,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	    		}
 		});
 	};
+        
+        that.displayMessage=function(message){
+            $("#waitCircos").hide();
+            $('#wgcnaGeneImage').append("<BR><BR><h2>"+message+"</h2><BR><BR>");
+        };
+        
         that.refreshRegion=function(timeout){
             setTimeout(function(){
                     //console.log("calling createMultiImage"+file);
@@ -1693,17 +1706,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     
                                     //filter data2
                                     var fData=[];
-                                    
                                     var cutoff=$('#eqtlPval').val()*1;
-                                    console.log("table cutoff:"+cutoff);
+                                    var maxSnp="";
+                                    var maxVal=0;
                                     for(var p=0;p<data2.length;p++){
                                         if(data2[p].Pval>=cutoff){
+                                            if(data2[p].Pval>maxVal){
+                                                maxSnp=data2[p].Snp;
+                                                maxVal=data2[p].Pval;
+                                            }
                                             fData.push(data2[p]);
                                         }
                                     }
-                                    console.log(fData);
+                                    
                                     d3.select('#eqtlTable').select('tbody').selectAll('tr').remove();
-                                    console.log(d3.select("#eqtlTable").select("tbody").selectAll('tr'));
+                                    
                                     //setup table data2
                                     var tracktbl=d3.select("#eqtlTable").select("tbody").selectAll('tr')
                                                     .data(fData,that.eQTLKey)
@@ -1730,6 +1747,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                             });
                                     //trackDataTable.draw();
                                     $('div#waitEqtlTable').hide();
+                                    
+                                    d3.select("#circosModule").select("g#Link_"+maxSnp).select("path").style("stroke","#FFF450");
                                 },20);
 	    		},
 	    		error: function(xhr, status, error) {
