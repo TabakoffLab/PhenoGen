@@ -125,7 +125,7 @@ sub callCircosMod{
 
 
 	
-    my @systemArgs = ($perlBinary,$circosBinary,"-conf", $confDirectory."circos.conf", "-noparanoid");
+    my @systemArgs = ($perlBinary,$circosBinary,"-silent","-conf", $confDirectory."circos.conf", "-noparanoid");
     print " System call with these arguments: @systemArgs \n";
     system(@systemArgs);
     if ( $? == -1 )
