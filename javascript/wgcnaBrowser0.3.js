@@ -22,6 +22,9 @@ $(window).resize(function(){
 function replaceDot(str){
     return str.replace(/\./g, '_');
 }
+function replaceUnderscore(str){
+    return str.replace(/_/g, '.');
+}
 
 function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	that={};
@@ -955,9 +958,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 	//public method to create any type of WGCNA Image
 	that.createSingleWGCNAImage=function(){
-        d3.select("#viewGene").remove();
-        d3.select("#circos").remove();
-		if(that.viewType==="gene"){
+            d3.select("#viewGene").remove();
+            d3.select("#circos").remove();
+            if(that.viewType==="gene"){
             setTimeout(function(){
 			that.singleImage=that.singleWGCNAImageGeneView(that.modules);
 			that.singleImage.draw();
@@ -1627,7 +1630,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.displayDefault=function(){
                 d3.select("#viewGene").remove();
                 d3.select("#circos").remove();
-                thatimg.update(contextRoot+"tmpData/circos/ds"+that.wDSID+"/"+that.selectedModule.MOD_NAME+"/"+that.selectedModule.MOD_NAME+"_1/svg/circos_new.svg");
+                thatimg.update(contextRoot+"tmpData/circos/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"_1/svg/circos_new.svg");
                 that.singleWGCNATableEQTLView();
                 /*d3.select("#wgcnaGeneImage").append("iframe")
                         .attr("width","100%")
@@ -1711,7 +1714,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		
                 
                 $.ajax({
-                        url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +that.selectedModule.MOD_NAME+".eQTL.json",
+                        url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".eQTL.json",
 	   			type: 'GET',
 	   			async: true,
 				data: {},
