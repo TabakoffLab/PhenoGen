@@ -423,12 +423,16 @@ sub createCircosLinksConfAndData{
 			elsif($tissue eq "BAT"){
 				$linkColor = 'purple';
 			}
+
+                        my $tmpName=$eqtlAOH[$i]{name};
+                        $tmpName =~ s/\./_/g;
+                        
 			$linkAOH[$linkCount]{chromosome} = $eqtlAOH[$i]{chromosome};
 			$linkAOH[$linkCount]{location} = $eqtlAOH[$i]{location};
-			$linkAOH[$linkCount]{name} = $eqtlAOH[$i]{name};
+			$linkAOH[$linkCount]{name} = $tmpName;
 			$linkAOH[$linkCount]{color}=$linkColor;
 			$numberString = sprintf "%05d", $linkCount;
-			$linkAOH[$linkCount]{linkname} = "Link_".$eqtlAOH[$i]{name};
+			$linkAOH[$linkCount]{linkname} = "Link_".$tmpName;
 			$linkAOH[$linkCount]{linknumber} = $linkCount;
 		}
 	}
