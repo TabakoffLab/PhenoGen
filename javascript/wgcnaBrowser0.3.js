@@ -486,7 +486,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			sel.append("option").attr("value",that.tissues[i]).text(that.dispTissues[i]);
 		}
                
-                var links=that.dataBar.append("td").append("div").attr("id","linkCtls").style("display","none").style("margin-left","10px");
+                var links=that.dataBar.append("td").append("div").attr("id","linkCtls").attr("class","linkCTL").style("display","none").style("margin-left","10px");
                 links.append("text").text("Link Correlation Values");
                 var table=links.append("table");
                 var row=table.append("tr");
@@ -501,8 +501,42 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 links.append("input").attr("type","checkbox").attr("id","hideLinkExceptNode").on("click",function(){
                     that.singleImage.showLinks=!($(this).is(":checked"));
                     that.singleImage.draw();
+                    that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                            panEnabled: true
+                                          , controlIconsEnabled:false
+                                          , zoomEnabled: true
+                                          , dblClickZoomEnabled: true
+                                          , zoomScaleSensitivity: 0.2
+                                          , minZoom: 0.1
+                                          , maxZoom: 4
+                                          , fit: true
+                                          , center: true
+                                          
+                                    });
                 });
                 links.append("text").text("Hide Links Except Selected Node");
+                
+                var links2=that.dataBar.append("td").append("div").attr("id","linkCtl2").attr("class","linkCTL").style("display","none").style("margin-left","10px");
+                links2.append("text").text("Correlation Link Color Options:");
+                links2.append("br");
+                var sel1=links2.append("select").attr("id","linkColor").on("change",function(){
+                    that.singleImage.draw();
+                    that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                            panEnabled: true
+                                          , controlIconsEnabled:false
+                                          , zoomEnabled: true
+                                          , dblClickZoomEnabled: true
+                                          , zoomScaleSensitivity: 0.2
+                                          , minZoom: 0.1
+                                          , maxZoom: 4
+                                          , fit: true
+                                          , center: true
+                                          
+                                    });
+                });
+                sel1.append("option").attr("selected","selected").attr("value","Green_Red").text("Green(+) / Red(-)");
+                sel1.append("option").attr("value","Blue_Yellow").text("Blue(+) / Yellow(-)");
+                sel1.append("option").attr("value","Red_Green").text("Red(+) / Green(-)");
                 
                 $( "#linkSliderMin" ).slider({
                     
@@ -1017,7 +1051,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 
                 thatimg.maxNodeR=28;
          
-                
+                thatimg.negColor="#DD0000";
+                thatimg.negDarkColor="#770000";
+                thatimg.posColor="#00DD00";
+                thatimg.posDarkColor="#007700";
                 
 
 		//setup image
@@ -1059,19 +1096,42 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 };
                 
                 thatimg.colorLink=function(d){
-                    var val="#DD0000";
+                    //var val="#DD0000";
+                    var val=thatimg.negColor;
                     if(d.Cor>0){
-                        val= "#00DD00"
+                        //val= "#00DD00"
+                        val=thatimg.posColor;
                     }
                     return val;
                 };
                 
                 thatimg.colorLinkHighlight=function(d){
-                    var val="#770000";
+                    //var val="#770000";
+                    var val=thatimg.negDarkColor;
                     if(d.Cor>0){
-                        val= "#007700"
+                        //val= "#007700"
+                        val=thatimg.posDarkColor;
                     }
                     return val;
+                };
+                thatimg.updateColor=function(){
+                    var colorOpt=$("#linkColor").val();
+                    if(colorOpt==="Red_Green"){
+                        thatimg.posColor="#DD0000";
+                        thatimg.posDarkColor="#770000";
+                        thatimg.negColor="#00DD00";
+                        thatimg.negDarkColor="#007700";
+                    }else if(colorOpt==="Blue_Yellow"){
+                        thatimg.posColor="#0000DD";
+                        thatimg.posDarkColor="#000077";
+                        thatimg.negColor="#ffef16";
+                        thatimg.negDarkColor="#b7ae2a";
+                    }else{
+                        thatimg.negColor="#DD0000";
+                        thatimg.negDarkColor="#770000";
+                        thatimg.posColor="#00DD00";
+                        thatimg.posDarkColor="#007700";
+                    }
                 };
                 thatimg.nodeRadiusSum=function(d,i){
                     var r=3+20*d.LinkSum;
@@ -1131,7 +1191,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	//internal methods to setup each specific type
 	that.singleWGCNAImageGeneView=function(){
 		var thatimg=that.singleWGCNAImage();
-                $("#linkCtls").show();
+                $(".linkCTL").show();
                 $(".eqtlCtls").hide();
                 thatimg.type="gene";
                 thatimg.truncated=0;
@@ -1150,6 +1210,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     });*/
                 
                 thatimg.drawLinks=function(d){
+                    thatimg.updateColor();
                     thatimg.svg.selectAll(".link").remove();
                     var links=that.selectedModule.LinkList;
                     var filterLinks=[];
@@ -1267,6 +1328,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 };
 
 		thatimg.draw=function(){
+                    thatimg.updateColor();
                     thatimg.width=$(window).width();
                     thatimg.height=Math.floor(window.innerHeight*0.9);
                     //console.log("H:"+thatimg.height+"  W:"+thatimg.width);
@@ -1282,6 +1344,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     thatimg.svg.selectAll("text").remove();
                     thatimg.svg.selectAll("line").remove();
                     thatimg.svg.selectAll(".geneTC").remove();
+                    if(typeof thatimg.panZoom !=='undefined'){
+                        thatimg.panZoom.destroy();
+                        delete thatimg.panZoom;
+                    }
                     thatimg.svg.selectAll(".svg-pan-zoom_viewport").remove();
                     /*thatimg.svg.append("circle")
                                     .attr("cx",thatimg.width/2)
@@ -1543,6 +1609,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	};
 
 	that.singleWGCNATableGeneView=function(){
+            if(typeof that.selectedModule!=='undefined'){
 		$('div#waitModuleTable').hide();
                 $('div#wgcnaEqtlTable').hide();
                 $('div#wgcnaModuleTable').show();
@@ -1599,6 +1666,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				"sDom": '<"rightTable"i><"leftTable"f><t>'
 			});
 		//trackDataTable.draw();
+            }else{
+                $('div#waitModuleTable').hide();
+                $('div#wgcnaEqtlTable').hide();
+                $('div#wgcnaModuleTable').hide();
+            }
 	};
 
 	/*that.singleWGCNAImageGoView=function(){
@@ -1609,7 +1681,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	};*/
 	that.singleWGCNAImageEQTLView=function(){
         var thatimg=that.singleWGCNAImage();
-            $("#linkCtls").hide();
+            $(".linkCTL").hide();
             $(".eqtlCtls").show();
             
             thatimg.type="eqtl";
