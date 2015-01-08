@@ -39,12 +39,12 @@ pageDescription="Citation information for PhenoGen and additional software";%>
 	<p class="indent">oPOSSUM: Identification of over-represented transcription factor binding sites in co-expressed genes. <BR>
 		Ho-Sui SJ, Mortimer J, Arenillas DJ, Brumm J, Walsh CJ, Kennedy BP and Wasserman WW. 
 		Nucleic Acids Res. 2005 Jun 2;33(10):3154-64&nbsp;
-		<a href="http://view.ncbi.nlm.nih.gov/pubmed/15933209" target="Citation">PubMed </a>
+		<a href="http://www.ncbi.nlm.nih.gov/pubmed/15933209" target="Citation">PubMed </a>
 	</p> <BR>
 	<p class="indent">JASPAR: an open access database for eukaryotic transcription factor binding profiles. <BR>
 		Albin Sandelin, Wynand Alkema, Pär Engström, Wyeth Wasserman and Boris Lenhard
 		Nucleic Acids Res. 2004 Jan; 32(1) Database Issue&nbsp;
-		<a href="http://view.ncbi.nlm.nih.gov/pubmed/14681366" target="Citation">PubMed </a>
+		<a href="http://www.ncbi.nlm.nih.gov/pubmed/14681366" target="Citation">PubMed </a>
 	</p><BR>
 
 
@@ -52,7 +52,7 @@ pageDescription="Citation information for PhenoGen and additional software";%>
 	<p class="indent">Fitting a mixture model by expectation maximization to discover motifs in biopolymers<BR> 
 		Timothy  L. Bailey  and Charles Elkan,  Proceedings of the Second International Conference on Intelligent Systems 
 		for Molecular Biology, (28-36), AAAI Press, 1994.&nbsp;
-		<a href="http://view.ncbi.nlm.nih.gov/pubmed/7584402" target="Citation">PubMed </a>
+		<a href="http://www.ncbi.nlm.nih.gov/pubmed/7584402" target="Citation">PubMed </a>
 	</p><BR>
 
 	<p>INIA West eQTL Data:</p>
@@ -71,9 +71,17 @@ pageDescription="Citation information for PhenoGen and additional software";%>
 		Gentleman RC, Carey VJ, Bates DM, Bolstad B, Dettling M, Dudoit S, Ellis B, Gautier L, Ge Y, Gentry J, 
 		Hornik K, Hothorn T, Huber W, Iacus S, Irizarry R, Leisch F, Li C, Maechler M, Rossini AJ, Sawitzki G, Smith C, 
 		Smyth G, Tierney L, Yang JYH, and Zhang J (2004).  Genome Biology 5:R80&nbsp;
-		<a href="http://view.ncbi.nlm.nih.gov/pubmed/15461798" target="Citation">PubMed </a>
+		<a href="http://www.ncbi.nlm.nih.gov/pubmed/15461798" target="Citation">PubMed </a>
 	</p><BR>
-
+        
+        <p>CIRCOS:</p>
+        <p class="indent"> Circos: An information aesthetic for comparative genomics<BR>
+            Martin I Krzywinski, Jacqueline E Schein, Inanc Birol, Joseph Connors, Randy Gascoyne, Doug Horsman, Steven J Jones, and Marco A Marra
+Genome Res. Published in Advance June 18, 2009.&nbsp;
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/19541911" target="Citation">PubMed</a>&nbsp;&nbsp;&nbsp;
+            <a href="http://circos.ca/" target="Citation">Website</a>
+        </p><BR>
+        
 	<p>Allen Brain Atlas:</p>
 	<p class="indent"> Genome-wide atlas of gene expression in the adult mouse brain <BR> 
 		Lein ES, Hawrylycz MJ, Ao N, Ayres M, Bensinger A, Bernard A, Boe AF, Boguski MS, Brockway KS, Byrnes EJ, 
@@ -87,7 +95,7 @@ pageDescription="Citation information for PhenoGen and additional software";%>
 		Stewart NN, Stumpf KR, Sunkin SM, Sutram M, Tam A, Teemer CD, Thaller C, Thompson CL, Varnam LR, 
 		Visel A, Whitlock RM, Wohnoutka PE, Wolkey CK, Wong VY, Wood M, Yaylaoglu MB, Young RC, Youngstrom BL, Yuan XF, 
 		Zhang B, Zwingman TA, Jones AR. Nature 445: 168-176 (2007)&nbsp; 
-		<a href="http://view.ncbi.nlm.nih.gov/pubmed/17151600" target="Citation">PubMed </a>
+		<a href="http://www.ncbi.nlm.nih.gov/pubmed/17151600" target="Citation">PubMed </a>
 	</p><BR>
 
 	<p class="indent">If you download specific materials from the website, please add the following citation:</p>
