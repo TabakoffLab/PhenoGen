@@ -721,6 +721,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			return tt;
 		};
 		thatimg.draw=function(){
+                        if(typeof that.selectedModule !=='undefined'){
+                            thatimg.maxWidth=85;
+                        }
                     //console.log("multiWGCNAImageGeneView.draw()")
 			thatimg.svg.selectAll(".modules").remove();
 			thatimg.totalWidth=$(window).width();
@@ -806,15 +809,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					.attr("cx",thatimg.calcWidth/2)
 					.attr("cy",thatimg.maxWidth/2)
 					.attr("r",thatimg.sizing)
-					.attr("stroke","#FFFFFF")
-					.attr("fill","url(#grad"+d.MOD_NAME+")")
+					.attr("stroke",function(d){var val="#FFFFFF"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="#000000";}return val;})
+                                        .attr("stroke-width",function(d){var val="1px"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="3px";}return val;})
+					.attr("fill",function(d){var val="url(#grad"+d.MOD_NAME+")"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="url(#selectGrad)"} return val;})
 					.on("click",function(){
-						thatimg.maxWidth=50;
+						thatimg.maxWidth=85;
+                                                that.selectedModule=d;
 						thatimg.draw();
-						d3.select("#multiWGCNAScroll").style("max-height","70px");
+						d3.select("#multiWGCNAScroll").style("max-height","90px");
 						thatimg.svg.select("g#"+d.MOD_NAME).style("background","#CECECE");
-						thatimg.svg.select("g#"+d.MOD_NAME).select("circle").attr("fill","url(#selectGrad)");
-						that.selectedModule=d;
+						thatimg.svg.select("g#"+d.MOD_NAME).select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+                                                thatimg.svg.select("g#"+d.MOD_NAME).select("text.txtLbl").style("font-weight","bold");//.style("font-size","16px")
+						
                                                 that.selectedGene={};
                                                 for(var l=0;l<d.TCList.length;l++){
                                                     if(typeof that.selectedGene[d.TCList[l].Gene.ID] !=='undefined'){
@@ -826,7 +832,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                         that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
                                                     }
                                                 }
-						that.createSingleWGCNAImage();
+						setTimeout(that.createSingleWGCNAImage,20);
 					})
 					.on("mouseover",function(){
 						$("#wgcnaMouseHelp").html("<B>Click</B> to select this module and see additional details.");
@@ -849,8 +855,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				                .duration(500)      
 				                .style("opacity", 0);
 					});
-				if(d.MOD_NAME.length*6.5<thatimg.calcWidth){
+                                if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){
+                                        thisMod.append("text")
+                                                .attr("class","txtLbl")
+						.attr("y",thatimg.maxWidth+12)
+						.attr("x",function(d){
+							var len=d.MOD_NAME.length;
+							var w=len/2;
+							var offset=thatimg.calcWidth/2-(w*6.5);
+							return offset;
+						})
+                                                .style("font-weight","bold")
+						.text(d.MOD_NAME);
+                                }else if(d.MOD_NAME.length*6.5<thatimg.calcWidth){
 					thisMod.append("text")
+                                                .attr("class","txtLbl")
 						.attr("y",thatimg.maxWidth+12)
 						.attr("x",function(d){
 							var len=d.MOD_NAME.length;
@@ -887,12 +906,14 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
 			if(ind>0){
 				var newModule=thatimg.data[ind-1];
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).style("background","#FFFFFF");
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).select("circle").attr("fill","url(#lgrad)");
+                                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
+				prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
+                                prevG.select("text.txtLbl").style("font-weight","normal");
 				that.selectedModule=newModule;
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).style("background","#CECECE");
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).select("circle").attr("fill","url(#selectGrad)");
-				that.createSingleWGCNAImage();
+                                var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
+				newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+                                newG.select("text.txtLbl").style("font-weight","bold");
+                                setTimeout(that.createSingleWGCNAImage,20);
 			}
 		};
 
@@ -900,12 +921,15 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
 			if(ind<(thatimg.data.length-1)){
 				var newModule=thatimg.data[ind+1];
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).style("background","#FFFFFF");
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).select("circle").attr("fill","url(#lgrad)");
+                                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
+				//prevG.style("background","#FFFFFF");
+				prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
+                                prevG.select("text.txtLbl").style("font-weight","normal");
 				that.selectedModule=newModule;
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).style("background","#CECECE");
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).select("circle").attr("fill","url(#selectGrad)");
-				that.createSingleWGCNAImage();
+				var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
+				newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+                                newG.select("text.txtLbl").style("font-weight","bold");
+				setTimeout(that.createSingleWGCNAImage,20);
 			}
 		};
 
