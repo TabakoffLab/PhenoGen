@@ -443,6 +443,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//that.viewBar=d3.select("div#wgcnaImageControls").append("span").attr("id","wgcnaViewControls").style("float","right").style("margin-left","10px").style("margin-right","5px");
                 that.viewBar=d3.select("#viewControl").append("div").attr("id","wgcnaViewControls").style("float","right").style("margin-left","10px").style("margin-right","5px").style("text-align","left");
 		that.viewBar.append("text").text("Views:");
+                that.viewBar.append("span").attr("id","HelpWGCNAView")
+                        .append("img").attr("src",contextRoot+"web/images/icons/help.png");
                 that.viewBar.append("br");
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","gene").attr("checked","checked").style("margin-left","7px").style("margin-right","3px").on("click",function(){
                     that.viewType="gene";
@@ -464,8 +466,19 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     that.createSingleWGCNAImage();
                 });
 		that.viewBar.append("text").text("eQTL");
-                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plof of eQTLs for the selected module.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
-	};
+                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of eQTLs for the selected module. <BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
+	
+                $("#HelpWGCNAView").on('click', function(event){
+			var id=$(this).attr('id');
+			$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
+			$('#'+id+'Content').dialog("open").css({'font-size':12});
+			event.stopPropagation();
+			//return false;
+		}
+		);
+        };
+        
+        
 
 	that.createDataControls=function(){
 		//that.dataBar=d3.select("div#wgcnaImageControls").append("span").attr("id","wgcnaDataControls").style("float","right").style("margin-left","10px").style("margin-right","5px")
