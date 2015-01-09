@@ -488,6 +488,19 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                
                 var links=that.dataBar.append("td").append("div").attr("id","linkCtls").attr("class","linkCTL").style("display","none").style("margin-left","10px");
                 links.append("text").text("Link Correlation Values");
+                links.append("span").style("cursor","pointer")
+                        .on("click",function(){
+                            $("#linkSliderMin").slider('value',0.01);
+                            that.singleImage.CorCutoff_min=0.01;
+                            $("span#minLabel").html(0.01);
+                            
+                            $("#linkSliderMax").slider('value',1.0);
+                            that.singleImage.CorCutoff_max=1.0;
+                            $("span#maxLabel").html(1.0);
+                            
+                            that.singleImage.draw();
+                        })
+                        .append("img").attr("src",contextRoot+"/web/images/icons/reset_16.png");
                 var table=links.append("table");
                 var row=table.append("tr");
                 row.append("td").append("text").text("Min:");
