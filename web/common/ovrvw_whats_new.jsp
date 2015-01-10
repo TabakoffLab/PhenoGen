@@ -33,6 +33,18 @@
                                         <%@ include file="/web/common/whats_new_content.jsp" %>
                         </div>
                     <div style="display:inline-block;width:42%;float:right;">
+                        Example WGCNA Module View:
+                        <a class="fancybox" rel="fancybox-thumb" href="<%=webDir%>overview/browseWGCNA.png" title="Example WGCNA Module View">
+                      		<img src="<%=webDir%>overview/browseWGCNA.png" alt="Example WGCNA Module View"  style="width:95%;">
+                        </a>
+                      <BR /><BR />
+                      
+                        Example WGCNA eQTL Module View:
+                        <a class="fancybox" rel="fancybox-thumb" href="<%=webDir%>overview/browseWGCNA_eQTL.png" title="Example WGCNA eQTL Module View">
+                      		<img src="<%=webDir%>overview/browseWGCNA_eQTL.png" alt="Example WGCNA eQTL Module View"  style="width:95%;">
+                        </a>
+                      <BR /><BR />
+                      
                     	Example Region View:
                         <a class="fancybox" rel="fancybox-thumb" href="<%=webDir%>overview/browser_region.jpg" title="Example Region View">
                       		<img src="<%=webDir%>overview/browser_region.jpg" alt="Detailed Region Example"  style="width:95%;">
