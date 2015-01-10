@@ -453,7 +453,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     that.createSingleWGCNAImage();
                 });;
 		that.viewBar.append("text").text("Module");
-                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View transcripts within the selected module and their connectivity based on correlation of expression.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
+                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View transcripts within the selected module and their connectivity based on correlation of expression.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
                 that.viewBar.append("br");
 		/*that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px");
 		that.viewBar.append("text").text("GO");
@@ -466,7 +466,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     that.createSingleWGCNAImage();
                 });
 		that.viewBar.append("text").text("eQTL");
-                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of eQTLs for the selected module. <BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
+                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of eQTLs for the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
 	
                 $("#HelpWGCNAView").on('click', function(event){
 			var id=$(this).attr('id');

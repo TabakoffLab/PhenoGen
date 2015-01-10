@@ -210,21 +210,34 @@ This runs as a signed Java applet in a new window, so you need an updated JRE an
 
 <div id="HelpGeneMirTargetTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>miRNA Targeting This Gene Tab</H3>
-
+    The miRNA Targeting Gene (MultiMiR) Tab displays a summary of miRNAs that are predicted or validated to target a particular gene.  You can view detailed information on the miRNA and get a list of everything it targets or is predicted to target.
 </div></div>
 
 <div id="HelpMirTargetTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>miRNA Targets Tab</H3>
-
+    The Genes Targeted by this miRNA (multiMiR) Tab displays a summary of genes that are predicted or validated as targets of the selected miRNA.  You can view detailed information on the miRNA or genes and get a list of miRNAs that target a gene from the list.
 </div></div>
 
 <div id="HelpGeneWGCNATabContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>Gene WGCNA Tab</H3>
-
+Weighted Gene Co-expression Network Analysis provides information on transcripts that have correlated expression by grouping them into modules.  This tab provides information on the transcripts and genes grouped together into a module.  For a selected gene, any module that contains a transcript of the selected gene is displayed.  You can select each module individually and view the correlations between transcripts and get additional information on transcripts and genes.  You can also view eQTLs for the module, which indicates possible regions that may be correlated with regulation of transcripts in the module.  In this view you can also see the genes in the region that may contribute to regulation.  
+<BR><BR>
+WGCNA data is based on the Affymetrix microarray data set either HXB/BXH Recombinant Inbred Panel(Rats) or ILS/ISS Recombinant Inbred Panel(Mice).  However, grouping of probe sets into transcripts is based on the tissue specific RNA-Seq transcriptome reconstruction(accessible in a track of the genome/transcriptome browser) and correlation of microarray expression.
+<BR><BR>
+Future updates will also indicate miRNAs, transcription factors, and miRNAs validated and predicted to target genes in the module.  For Rats future updates will provide heart and liver data as well. 
 </div></div>
 
 <div id="HelpWGCNAViewContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>WGCNA Views</H3>
+There are currently three views available the module list, the module and the eQTL views.  Above both of the individual views is a list of modules.  Following is a description of each view.
+<BR><BR>
+<H3>Module List</H3>
+Initially you will be given a list of all modules that correspond to your source(region, gene, or gene list).  This includes any module containing a transcript from your source.  The modules are ordered by the number of transcripts in the module denoted by the number in the middle of the module.  They are sized relative to each other based on the number of transcripts in the module.   To allow you to start viewing data more quickly modules will be displayed as they download which is why the module list may change while the loading image is displayed if viewing a large number of modules.  You can view additional details by holding your mouse over a module and clicking on one will select it and bring up one of the following views based on your selected view.
+<BR><BR>
+<H3>Module View</H3>
+
+
+<H3>eQTL View</H3>
 
 </div></div>
 
