@@ -10,11 +10,20 @@
 *	Builds an interactive view of WGCNA Modules.
 */
 $(window).resize(function(){
-	that.img.draw();
+    if(typeof wgcna !=='undefined'){
+        if(typeof wgcna.multiImage !=='undefined'){
+            wgcna.multiImage.draw();
+        }else if(typeof wgcna.singleImage !=='undefined'){
+            wgcna.singleImage.draw();
+        }
+    }
 });
 
 function replaceDot(str){
     return str.replace(/\./g, '_');
+}
+function replaceUnderscore(str){
+    return str.replace(/_/g, '.');
 }
 
 function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
@@ -71,19 +80,26 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList},
 				dataType: 'json',
 	    		success: function(data2){
-	        		for(var i=0;i<data2.length;i++){
-                                    if(data2[i].ModuleID!=="grey" && data2[i].ModuleID !=="turquoise"){
-	        				that.moduleList.push(data2[i].ModuleID); 
-	        				//var isLast=data2.length-i;
-	        				that.requests++;
-	        				that.requestModule(data2[i].ModuleID);
-                                                if(typeof data2[i].GeneList !=='undefined'){
-                                                    that.moduleGenes[data2[i].ModuleID]=data2[i].GeneList;
-                                                }
-	        				//console.log("after calling:"+that.requests+":"+data2[i].ModuleID);
+                                console.log(data2);
+                                if(data2.length>0 && !(data2.length===1 && data2[0].ModuleID==="grey")){
+                                    for(var i=0;i<data2.length;i++){
+                                        if(data2[i].ModuleID!=="grey"){// && data2[i].ModuleID !=="turquoise"){
+                                                    that.moduleList.push(data2[i].ModuleID); 
+                                                    //var isLast=data2.length-i;
+                                                    that.requests++;
+                                                    that.requestModule(data2[i].ModuleID);
+                                                    if(typeof data2[i].GeneList !=='undefined'){
+                                                        that.moduleGenes[data2[i].ModuleID]=data2[i].GeneList;
+                                                    }
+                                                    //console.log("after calling:"+that.requests+":"+data2[i].ModuleID);
+                                        }
                                     }
-	        		}
-                                that.refreshRegion(1000);
+                                    that.refreshRegion(1000);
+                                }else if(data2.length===0){
+                                    that.displayMessage("There are no transcripts with Affymetrix Probesets that represent this gene.");
+                                }else if(data2.length===1 && data2[0].ModuleID==="grey"){
+                                    that.displayMessage("Only the Grey module contains transcripts for this gene.  The Grey module contains all transcripts that did not have a high enough correlation with any other transcripts to be included in another module.");
+                                }
 	        		//console.log(that.moduleList);
 	    		},
 	    		error: function(xhr, status, error) {
@@ -91,6 +107,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	    		}
 		});
 	};
+        
+        that.displayMessage=function(message){
+            $("#waitCircos").hide();
+            $('#wgcnaGeneImage').append("<BR><BR><h2>"+message+"</h2><BR><BR>");
+        };
+        
         that.refreshRegion=function(timeout){
             setTimeout(function(){
                     //console.log("calling createMultiImage"+file);
@@ -159,7 +181,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("id","saveLevel"+that.levelNumber)
 			.style("cursor","pointer")
 			.append("img")//.attr("class","mouseOpt dragzoom")
-			.attr("src","/web/images/icons/savePic_dark.png")
+			.attr("src",contextRoot+"web/images/icons/savePic_dark.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.on("click",function(){
@@ -233,13 +255,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					});
 				})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/savePic_white.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/savePic_white.png");
 				d3.select("span#savePic"+that.levelNumber).style("background","#DCDCDC");
 				//$(this).css("background","#989898").html("<img src=\"/web/images/icons/savePic_white.png\">");
 				$("#wgcnaMouseHelp").html("Click to download a PNG image of the current view.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/savePic_dark.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/savePic_dark.png");
 				d3.select("span#savePic"+that.levelNumber).style("background","#989898");
 				//$(this).css("background","#DCDCDC").html("<img src=\"/web/images/icons/savePic_dark.png\">");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
@@ -249,7 +271,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("id","resetImage"+that.levelNumber)
 			.style("cursor","pointer")
 			.append("img")//.attr("class","mouseOpt dragzoom")
-			.attr("src","/web/images/icons/reset_dark.png")
+			.attr("src",contextRoot+"web/images/icons/reset_dark.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.on("click",function(){
@@ -268,15 +290,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
 					svgList[level].redraw();
 				}
+                            }else if(typeof that.singleImage !=="undefined"){
+                                that.singleImage.panZoom.reset();
                             }
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/reset_white.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/reset_white.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to reset image zoom to initial region.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/reset_dark.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/reset_dark.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -290,7 +314,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("id","zoomInImage")
 			.append("img")
 			.attr({
-				"src":"/web/images/icons/magPlus_dark_32.png",
+				"src":contextRoot+"web/images/icons/magPlus_dark_32.png",
 				"pointer-events":"all",
 				"cursor":"pointer"
 			})
@@ -303,15 +327,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 that.singleImage.panZoomCircos.zoomIn();
                             }else if(that.singleImage==undefined){
 				that.multiImage.zoomIn();
+                            }else if(typeof that.singleImage!=='undefined'){
+                                that.singleImage.panZoom.zoomIn();
                             }
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/magPlus_light_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/magPlus_light_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to zoom in.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/magPlus_dark_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/magPlus_dark_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -324,7 +350,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			})
 			.attr("id","zoomOutImage")
 			.append("img")
-			.attr("src","/web/images/icons/magMinus_dark_32.png")
+			.attr("src",contextRoot+"web/images/icons/magMinus_dark_32.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.style({
@@ -336,16 +362,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 that.singleImage.panZoomCircos.zoomOut();
                             }else if(that.singleImage==undefined){
 				that.multiImage.zoomOut();
+                            }else if(typeof that.singleImage!=='undefined'){
+                                that.singleImage.panZoom.zoomOut();
                             }
 				
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/magMinus_light_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/magMinus_light_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to zoom out.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/magMinus_dark_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/magMinus_dark_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -359,7 +387,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("id","backModule")
 			.append("img")
 			.attr({
-				"src":"/web/images/icons/back_dark_32.png",
+				"src":contextRoot+"web/images/icons/back_dark_32.png",
 				"pointer-events":"all",
 				"cursor":"pointer"
 			})
@@ -371,12 +399,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				that.multiImage.backModule();
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/back_light_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/back_light_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to move to the previous module.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/back_dark_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/back_dark_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -389,7 +417,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			})
 			.attr("id","forwardModule")
 			.append("img")
-			.attr("src","/web/images/icons/forward_dark_32.png")
+			.attr("src",contextRoot+"web/images/icons/forward_dark_32.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.style({
@@ -400,12 +428,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				that.multiImage.forwardModule();
 			})
 			.on("mouseover",function(){
-				d3.select(this).attr("src","/web/images/icons/forward_light_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/forward_light_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to move to the next module.");
 			})
 			.on("mouseout",function(){
-				d3.select(this).attr("src","/web/images/icons/forward_dark_32.png");
+				d3.select(this).attr("src",contextRoot+"web/images/icons/forward_dark_32.png");
 				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
@@ -415,6 +443,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//that.viewBar=d3.select("div#wgcnaImageControls").append("span").attr("id","wgcnaViewControls").style("float","right").style("margin-left","10px").style("margin-right","5px");
                 that.viewBar=d3.select("#viewControl").append("div").attr("id","wgcnaViewControls").style("float","right").style("margin-left","10px").style("margin-right","5px").style("text-align","left");
 		that.viewBar.append("text").text("Views:");
+                that.viewBar.append("span").attr("id","HelpWGCNAView")
+                        .append("img").attr("src",contextRoot+"web/images/icons/help.png");
                 that.viewBar.append("br");
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","gene").attr("checked","checked").style("margin-left","7px").style("margin-right","3px").on("click",function(){
                     that.viewType="gene";
@@ -423,7 +453,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     that.createSingleWGCNAImage();
                 });;
 		that.viewBar.append("text").text("Module");
-                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View transcripts within the selected module and their connectivity based on correlation of expression.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
+                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View transcripts within the selected module and their connectivity based on correlation of expression.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
                 that.viewBar.append("br");
 		/*that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px");
 		that.viewBar.append("text").text("GO");
@@ -436,8 +466,19 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     that.createSingleWGCNAImage();
                 });
 		that.viewBar.append("text").text("eQTL");
-                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plof of eQTLs for the selected module.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
-	};
+                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of eQTLs for the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
+	
+                $("#HelpWGCNAView").on('click', function(event){
+			var id=$(this).attr('id');
+			$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
+			$('#'+id+'Content').dialog("open").css({'font-size':12});
+			event.stopPropagation();
+			//return false;
+		}
+		);
+        };
+        
+        
 
 	that.createDataControls=function(){
 		//that.dataBar=d3.select("div#wgcnaImageControls").append("span").attr("id","wgcnaDataControls").style("float","right").style("margin-left","10px").style("margin-right","5px")
@@ -458,8 +499,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			sel.append("option").attr("value",that.tissues[i]).text(that.dispTissues[i]);
 		}
                
-                var links=that.dataBar.append("td").append("div").attr("id","linkCtls").style("display","none").style("margin-left","10px");
+                var links=that.dataBar.append("td").append("div").attr("id","linkCtls").attr("class","linkCTL").style("display","none").style("margin-left","10px");
                 links.append("text").text("Link Correlation Values");
+                links.append("span").style("cursor","pointer")
+                        .on("click",function(){
+                            $("#linkSliderMin").slider('value',0.01);
+                            that.singleImage.CorCutoff_min=0.01;
+                            $("span#minLabel").html(0.01);
+                            
+                            $("#linkSliderMax").slider('value',1.0);
+                            that.singleImage.CorCutoff_max=1.0;
+                            $("span#maxLabel").html(1.0);
+                            
+                            that.singleImage.draw();
+                        })
+                        .append("img").attr("src",contextRoot+"/web/images/icons/reset_16.png");
                 var table=links.append("table");
                 var row=table.append("tr");
                 row.append("td").append("text").text("Min:");
@@ -473,8 +527,42 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 links.append("input").attr("type","checkbox").attr("id","hideLinkExceptNode").on("click",function(){
                     that.singleImage.showLinks=!($(this).is(":checked"));
                     that.singleImage.draw();
+                    that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                            panEnabled: true
+                                          , controlIconsEnabled:false
+                                          , zoomEnabled: true
+                                          , dblClickZoomEnabled: true
+                                          , zoomScaleSensitivity: 0.2
+                                          , minZoom: 0.1
+                                          , maxZoom: 4
+                                          , fit: true
+                                          , center: true
+                                          
+                                    });
                 });
                 links.append("text").text("Hide Links Except Selected Node");
+                
+                var links2=that.dataBar.append("td").append("div").attr("id","linkCtl2").attr("class","linkCTL").style("display","none").style("margin-left","10px");
+                links2.append("text").text("Correlation Link Color Options:");
+                links2.append("br");
+                var sel1=links2.append("select").attr("id","linkColor").on("change",function(){
+                    that.singleImage.draw();
+                    that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                            panEnabled: true
+                                          , controlIconsEnabled:false
+                                          , zoomEnabled: true
+                                          , dblClickZoomEnabled: true
+                                          , zoomScaleSensitivity: 0.2
+                                          , minZoom: 0.1
+                                          , maxZoom: 4
+                                          , fit: true
+                                          , center: true
+                                          
+                                    });
+                });
+                sel1.append("option").attr("selected","selected").attr("value","Green_Red").text("Green(+) / Red(-)");
+                sel1.append("option").attr("value","Blue_Yellow").text("Blue(+) / Yellow(-)");
+                sel1.append("option").attr("value","Red_Green").text("Red(+) / Green(-)");
                 
                 $( "#linkSliderMin" ).slider({
                     
@@ -527,18 +615,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 chr.append("br");
                 chr.append("br");
                 chr.append("input").attr({"type":"button","value":"Apply Selections"}).on("click",function(){
-                    var cutoff=$("eqtlPval").val();
+                    var cutoff=$("#eqtlPval").val();
                     var list=$("#eqtlChr").val();
                     var cList="";
                     for(var n=0;n<list.length;n++){
                         cList=cList+list[n]+";";
                     }
-                    console.log(list);
+                    console.log(cutoff);
                     $.ajax({
 				url:  pathPrefix +"runCircosModule.jsp",
 	   			type: 'GET',
 	   			async: true,
-				data: {cutoffValue:cutoff, organism:organism, module:that.selectedModule.MOD_NAME, modColor:that.selectedModule.ModRGB, chrList:cList},
+				data: { cutoffValue:cutoff, organism:organism, module:that.selectedModule.MOD_NAME, modColor:that.selectedModule.ModRGB, chrList:cList},
 				dataType: 'json',
                                 beforeSend: function(){
                                     //d3.select("#viewGene").remove();
@@ -696,6 +784,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			return tt;
 		};
 		thatimg.draw=function(){
+                        if(typeof that.selectedModule !=='undefined'){
+                            thatimg.maxWidth=85;
+                        }
                     //console.log("multiWGCNAImageGeneView.draw()")
 			thatimg.svg.selectAll(".modules").remove();
 			thatimg.totalWidth=$(window).width();
@@ -781,15 +872,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					.attr("cx",thatimg.calcWidth/2)
 					.attr("cy",thatimg.maxWidth/2)
 					.attr("r",thatimg.sizing)
-					.attr("stroke","#FFFFFF")
-					.attr("fill","url(#grad"+d.MOD_NAME+")")
+					.attr("stroke",function(d){var val="#FFFFFF"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="#000000";}return val;})
+                                        .attr("stroke-width",function(d){var val="1px"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="3px";}return val;})
+					.attr("fill",function(d){var val="url(#grad"+d.MOD_NAME+")"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="url(#selectGrad)"} return val;})
 					.on("click",function(){
-						thatimg.maxWidth=50;
+						thatimg.maxWidth=85;
+                                                that.selectedModule=d;
 						thatimg.draw();
-						d3.select("#multiWGCNAScroll").style("max-height","70px");
+						d3.select("#multiWGCNAScroll").style("max-height","90px");
 						thatimg.svg.select("g#"+d.MOD_NAME).style("background","#CECECE");
-						thatimg.svg.select("g#"+d.MOD_NAME).select("circle").attr("fill","url(#selectGrad)");
-						that.selectedModule=d;
+						thatimg.svg.select("g#"+d.MOD_NAME).select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+                                                thatimg.svg.select("g#"+d.MOD_NAME).select("text.txtLbl").style("font-weight","bold");//.style("font-size","16px")
+						
                                                 that.selectedGene={};
                                                 for(var l=0;l<d.TCList.length;l++){
                                                     if(typeof that.selectedGene[d.TCList[l].Gene.ID] !=='undefined'){
@@ -801,7 +895,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                         that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
                                                     }
                                                 }
-						that.createSingleWGCNAImage();
+						setTimeout(that.createSingleWGCNAImage,20);
 					})
 					.on("mouseover",function(){
 						$("#wgcnaMouseHelp").html("<B>Click</B> to select this module and see additional details.");
@@ -824,8 +918,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				                .duration(500)      
 				                .style("opacity", 0);
 					});
-				if(d.MOD_NAME.length*6.5<thatimg.calcWidth){
+                                if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){
+                                        thisMod.append("text")
+                                                .attr("class","txtLbl")
+						.attr("y",thatimg.maxWidth+12)
+						.attr("x",function(d){
+							var len=d.MOD_NAME.length;
+							var w=len/2;
+							var offset=thatimg.calcWidth/2-(w*6.5);
+							return offset;
+						})
+                                                .style("font-weight","bold")
+						.text(d.MOD_NAME);
+                                }else if(d.MOD_NAME.length*6.5<thatimg.calcWidth){
 					thisMod.append("text")
+                                                .attr("class","txtLbl")
 						.attr("y",thatimg.maxWidth+12)
 						.attr("x",function(d){
 							var len=d.MOD_NAME.length;
@@ -862,12 +969,14 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
 			if(ind>0){
 				var newModule=thatimg.data[ind-1];
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).style("background","#FFFFFF");
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).select("circle").attr("fill","url(#lgrad)");
+                                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
+				prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
+                                prevG.select("text.txtLbl").style("font-weight","normal");
 				that.selectedModule=newModule;
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).style("background","#CECECE");
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).select("circle").attr("fill","url(#selectGrad)");
-				that.createSingleWGCNAImage();
+                                var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
+				newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+                                newG.select("text.txtLbl").style("font-weight","bold");
+                                setTimeout(that.createSingleWGCNAImage,20);
 			}
 		};
 
@@ -875,12 +984,15 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
 			if(ind<(thatimg.data.length-1)){
 				var newModule=thatimg.data[ind+1];
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).style("background","#FFFFFF");
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).select("circle").attr("fill","url(#lgrad)");
+                                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
+				//prevG.style("background","#FFFFFF");
+				prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
+                                prevG.select("text.txtLbl").style("font-weight","normal");
 				that.selectedModule=newModule;
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).style("background","#CECECE");
-				thatimg.svg.select("g#"+that.selectedModule.MOD_NAME).select("circle").attr("fill","url(#selectGrad)");
-				that.createSingleWGCNAImage();
+				var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
+				newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+                                newG.select("text.txtLbl").style("font-weight","bold");
+				setTimeout(that.createSingleWGCNAImage,20);
 			}
 		};
 
@@ -906,14 +1018,26 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 	//public method to create any type of WGCNA Image
 	that.createSingleWGCNAImage=function(){
-        d3.select("#viewGene").remove();
-        d3.select("#circos").remove();
-		if(that.viewType==="gene"){
+            d3.select("#viewGene").remove();
+            d3.select("#circos").remove();
+            if(that.viewType==="gene"){
             setTimeout(function(){
 			that.singleImage=that.singleWGCNAImageGeneView(that.modules);
 			that.singleImage.draw();
 			that.img=that.singleImage;
 			that.singleWGCNATableGeneView();
+                        that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                            panEnabled: true
+                                          , controlIconsEnabled:false
+                                          , zoomEnabled: true
+                                          , dblClickZoomEnabled: true
+                                          , zoomScaleSensitivity: 0.2
+                                          , minZoom: 0.1
+                                          , maxZoom: 4
+                                          , fit: true
+                                          , center: true
+                                          
+                                    });
             },50);
 		}/*else if(that.viewType==="go"){
                     setTimeout(function(){
@@ -953,7 +1077,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 
                 thatimg.maxNodeR=28;
          
-                
+                thatimg.negColor="#DD0000";
+                thatimg.negDarkColor="#770000";
+                thatimg.posColor="#00DD00";
+                thatimg.posDarkColor="#007700";
                 
 
 		//setup image
@@ -995,19 +1122,42 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 };
                 
                 thatimg.colorLink=function(d){
-                    var val="#DD0000";
+                    //var val="#DD0000";
+                    var val=thatimg.negColor;
                     if(d.Cor>0){
-                        val= "#00DD00"
+                        //val= "#00DD00"
+                        val=thatimg.posColor;
                     }
                     return val;
                 };
                 
                 thatimg.colorLinkHighlight=function(d){
-                    var val="#770000";
+                    //var val="#770000";
+                    var val=thatimg.negDarkColor;
                     if(d.Cor>0){
-                        val= "#007700"
+                        //val= "#007700"
+                        val=thatimg.posDarkColor;
                     }
                     return val;
+                };
+                thatimg.updateColor=function(){
+                    var colorOpt=$("#linkColor").val();
+                    if(colorOpt==="Red_Green"){
+                        thatimg.posColor="#DD0000";
+                        thatimg.posDarkColor="#770000";
+                        thatimg.negColor="#00DD00";
+                        thatimg.negDarkColor="#007700";
+                    }else if(colorOpt==="Blue_Yellow"){
+                        thatimg.posColor="#0000DD";
+                        thatimg.posDarkColor="#000077";
+                        thatimg.negColor="#ffef16";
+                        thatimg.negDarkColor="#b7ae2a";
+                    }else{
+                        thatimg.negColor="#DD0000";
+                        thatimg.negDarkColor="#770000";
+                        thatimg.posColor="#00DD00";
+                        thatimg.posDarkColor="#007700";
+                    }
                 };
                 thatimg.nodeRadiusSum=function(d,i){
                     var r=3+20*d.LinkSum;
@@ -1067,7 +1217,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	//internal methods to setup each specific type
 	that.singleWGCNAImageGeneView=function(){
 		var thatimg=that.singleWGCNAImage();
-                $("#linkCtls").show();
+                $(".linkCTL").show();
                 $(".eqtlCtls").hide();
                 thatimg.type="gene";
                 thatimg.truncated=0;
@@ -1086,6 +1236,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     });*/
                 
                 thatimg.drawLinks=function(d){
+                    thatimg.updateColor();
                     thatimg.svg.selectAll(".link").remove();
                     var links=that.selectedModule.LinkList;
                     var filterLinks=[];
@@ -1100,7 +1251,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                     links=filterLinks;
                     if(links.length<10000){
-                        var lnk=thatimg.svg.selectAll(".link").data(links,thatimg.linkKey);
+                        var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
                         lnk.enter().append("line")
                                 .attr("class","link")
                                 .attr("pointer-events","none")
@@ -1203,6 +1354,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 };
 
 		thatimg.draw=function(){
+                    thatimg.updateColor();
                     thatimg.width=$(window).width();
                     thatimg.height=Math.floor(window.innerHeight*0.9);
                     //console.log("H:"+thatimg.height+"  W:"+thatimg.width);
@@ -1218,13 +1370,19 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     thatimg.svg.selectAll("text").remove();
                     thatimg.svg.selectAll("line").remove();
                     thatimg.svg.selectAll(".geneTC").remove();
-
+                    if(typeof thatimg.panZoom !=='undefined'){
+                        thatimg.panZoom.destroy();
+                        delete thatimg.panZoom;
+                    }
+                    thatimg.svg.selectAll(".svg-pan-zoom_viewport").remove();
                     /*thatimg.svg.append("circle")
                                     .attr("cx",thatimg.width/2)
                                     .attr("cy",thatimg.height/2)
                                     .attr("r",thatimg.r)
                                     .attr("stroke","#000000")
                                     .attr("fill","#FFFFFF");*/
+                    
+                    
                     thatimg.svg.append("text")
                             .attr("font-size","18")
                                             .attr("y",22)
@@ -1322,7 +1480,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }else{
                         thatimg.maxNodeR=28;
                     }
-                    var tc=thatimg.svg.selectAll(".geneTC")
+                    
+                    var topG=thatimg.svg.append("g").attr("class","svg-pan-zoom_viewport");
+                    
+                    var tc=topG.selectAll(".geneTC")
                                     .data(thatimg.data,thatimg.geneKey);
                     //tc.sort();
                     //add new
@@ -1347,7 +1508,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                     links=filterLinks;
                     if(thatimg.showLinks && links.length<10000){
-                        var lnk=thatimg.svg.selectAll(".link").data(links,thatimg.linkKey);
+                        var lnk=topG.selectAll(".link").data(links,thatimg.linkKey);
                         lnk.enter().append("line")
                                 .attr("class","link")
                                 .attr("id",function(d){return "ln_"+replaceDot(d.TC1)+replaceDot(d.TC2);})
@@ -1381,8 +1542,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 });
                     }
                     
-                    thatimg.svg.selectAll(".geneTC").remove();
-                    var tc=thatimg.svg.selectAll(".geneTC")
+                    topG.selectAll(".geneTC").remove();
+                    var tc=topG.selectAll(".geneTC")
 		   			.data(thatimg.data,thatimg.geneKey);
                         //tc.sort();
 			//add new
@@ -1451,32 +1612,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     var lbl=tc.append("g").attr("class","label")
                             .attr("id",function(d){return "txt_"+replaceDot(d.ID);})
                             .attr("transform", function(d,i){
-                            var x=thatimg.nodeXLbl(d,i);//+Math.cos(thatimg.nodeRadiusSum(d,i)+20);
-                            var y=thatimg.nodeYLbl(d,i);//+Math.sin(thatimg.nodeRadiusSum(d,i)+20);
+                            var x=thatimg.nodeXLbl(d,i);
+                            var y=thatimg.nodeYLbl(d,i);
                         return "translate("+x+","+y+")";
                     });
-                    /*var arc = d3.svg.arc()
-                                .innerRadius(function(d,i){return thatimg.nodeRadiusSum(d,i)+25;})
-                                .outerRadius(function(d,i){return thatimg.nodeRadiusSum(d,i)+25;})
-                                .startAngle(function(d,i){
-                                    var ii=i%thatimg.maxPerLevel; 
-                                    return (ii*thatimg.angle)-(Math.PI*0.9); 
-                                    //return 0;
-                                })
-                                .endAngle(function(d,i){
-                                    var ii=i%thatimg.maxPerLevel; 
-                                    return (ii*thatimg.angle)-(Math.PI*0.9)+(Math.PI*1.25); 
-                                    //return 0;
-                                });
-                    lbl.append("path").attr("fill","white")
-                        .attr("id", function(d,i){return "lbl"+i;})
-                        .attr("d",arc);*/
+                    
                     lbl.append("text")
-                        /*.append("textPath")
-                        .attr("textLength",function(d,i){return 90-i*5 ;})
-                        .attr("xlink:href",function(d,i){return "#lbl"+i;})
-                        .attr("startOffset",function(d,i){return 3/20;})
-                        .attr("dy","-1em")*/
                         .attr("transform",function(d,i){
                             var deg=-90;
                             var ii=i%thatimg.maxPerLevel; 
@@ -1494,10 +1635,36 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	};
 
 	that.singleWGCNATableGeneView=function(){
+            if(typeof that.selectedModule!=='undefined'){
 		$('div#waitModuleTable').hide();
                 $('div#wgcnaEqtlTable').hide();
                 $('div#wgcnaModuleTable').show();
                 $('span#modTableName').html(that.selectedModule.MOD_NAME);
+                d3.select("div#tableExportCtl").selectAll("span").remove();
+                d3.select("div#tableExportCtl").append("span")
+                        .attr("class","button")
+                        .style("margin-right","10px")
+                        .on("click",function(){
+                            console.log("csv");
+                           $('#moduleTable').tableExport({type:'csv',escape:'false'});
+                        })
+                        .html("Export CSV");
+                /*d3.select("div#tableExportCtl").append("span")
+                        .attr("class","button")
+                        .style("margin-right","10px")
+                        .on("click",function(){
+                            console.log("txt");
+                            $('#moduleTable').tableExport({type:'txt',escape:'true',seperator:'\t'});
+                        })
+                        .html("Export TXT");
+                d3.select("div#tableExportCtl").append("span")
+                        .attr("class","button")
+                        .style("margin-right","10px")
+                        .on("click",function(){
+                            console.log("pdf");
+                            $('#moduleTable').tableExport({type:'pdf',escape:'false'});
+                        })
+                        .html("Export PDF");*/
 		d3.select("table#moduleTable").select("tbody").selectAll('tr').remove();
 		var tracktbl=d3.select("table#moduleTable").select("tbody").selectAll('tr').data(that.selectedModule.TCList,that.geneKey)
 				.enter().append("tr")
@@ -1525,6 +1692,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				"sDom": '<"rightTable"i><"leftTable"f><t>'
 			});
 		//trackDataTable.draw();
+            }else{
+                $('div#waitModuleTable').hide();
+                $('div#wgcnaEqtlTable').hide();
+                $('div#wgcnaModuleTable').hide();
+            }
 	};
 
 	/*that.singleWGCNAImageGoView=function(){
@@ -1535,7 +1707,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	};*/
 	that.singleWGCNAImageEQTLView=function(){
         var thatimg=that.singleWGCNAImage();
-            $("#linkCtls").hide();
+            $(".linkCTL").hide();
             $(".eqtlCtls").show();
             
             thatimg.type="eqtl";
@@ -1556,7 +1728,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.displayDefault=function(){
                 d3.select("#viewGene").remove();
                 d3.select("#circos").remove();
-                thatimg.update(contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+that.selectedModule.MOD_NAME+"/"+that.selectedModule.MOD_NAME+"_1/svg/circos_new.svg");
+                thatimg.update(contextRoot+"tmpData/circos/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"_1/svg/circos_new.svg");
                 that.singleWGCNATableEQTLView();
                 /*d3.select("#wgcnaGeneImage").append("iframe")
                         .attr("width","100%")
@@ -1626,10 +1798,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 $('div#wgcnaModuleTable').hide();
                 $('div#wgcnaEqtlTable').show();
                 $('span#eqtlTableName').html(that.selectedModule.MOD_NAME);
-		d3.select("table#eqtlTable").select("tbody").selectAll('tr').remove();
+                
+                d3.select("div#tableExportCtl").selectAll("span").remove();
+                d3.select("div#tableExportCtl").append("span")
+                        .attr("class","button")
+                        .style("margin-right","10px")
+                        .on("click",function(){
+                            console.log("csv");
+                           $('#eqtlTable').tableExport({type:'csv',escape:'false'});
+                        })
+                        .html("Export CSV");
+                
+		
                 
                 $.ajax({
-                        url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +that.selectedModule.MOD_NAME+".eQTL.json",
+                        url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".eQTL.json",
 	   			type: 'GET',
 	   			async: true,
 				data: {},
@@ -1637,18 +1820,34 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 beforeSend: function(){
                                     $('div#waitEqtlTable').show();
                                 },
-	    		success: function(data2){        
+	    		success: function(data2){    
+                                console.log("redraw table");
                                 setTimeout(function(){
+                                    //$('table#trkSelList'+that.level).dataTable().destroy();
+                                    if($.fn.DataTable.isDataTable( 'table#eqtlTable' )){
+                                            $('table#eqtlTable').DataTable().destroy();
+                                    }
+                                    
+                                    
                                     //filter data2
                                     var fData=[];
-                                    var cutoff=$('select#eqtlPval').val();
+                                    var cutoff=$('#eqtlPval').val()*1;
+                                    var maxSnp="";
+                                    var maxVal=0;
                                     for(var p=0;p<data2.length;p++){
                                         if(data2[p].Pval>=cutoff){
+                                            if(data2[p].Pval>maxVal){
+                                                maxSnp=data2[p].Snp;
+                                                maxVal=data2[p].Pval;
+                                            }
                                             fData.push(data2[p]);
                                         }
                                     }
+                                    
+                                    d3.select('#eqtlTable').select('tbody').selectAll('tr').remove();
+                                    
                                     //setup table data2
-                                    var tracktbl=d3.select("table#eqtlTable").select("tbody").selectAll('tr')
+                                    var tracktbl=d3.select("#eqtlTable").select("tbody").selectAll('tr')
                                                     .data(fData,that.eQTLKey)
                                                     .enter().append("tr")
                                                     .attr("id",function(d){return "tblLink_"+d.Snp;})
@@ -1661,11 +1860,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     d3.select(this).append("td").html(d.Pval.toFixed(2));
                                     });
 
-                                    //$('table#trkSelList'+that.level).dataTable().destroy();
-                                    if($.fn.DataTable.isDataTable( 'table#eqtlTable' )){
-                                            $('table#eqtlTable').DataTable().destroy();
-                                    }
-                                    $('table#eqtlTable').DataTable({
+                                    
+                                    $('#eqtlTable').DataTable({
                                                     "bPaginate": false,
                                                     /*"bProcessing": true,
                                                     "bStateSave": false,
@@ -1676,6 +1872,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                             });
                                     //trackDataTable.draw();
                                     $('div#waitEqtlTable').hide();
+                                    
+                                    d3.select("#circosModule").select("g#Link_"+maxSnp).select("path").style("stroke","#FFF450");
                                 },20);
 	    		},
 	    		error: function(xhr, status, error) {

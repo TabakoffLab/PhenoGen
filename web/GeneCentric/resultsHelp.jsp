@@ -150,6 +150,16 @@ At the transcript cluster level, this is an <a href="<%=commonDir%>definitions.j
 
 </div></div>
 
+
+<div id="HelpRegionWGCNATabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>WGCNA Tab</H3>
+Weighted Gene Co-expression Network Analysis provides information on transcripts that have correlated expression by grouping them into modules.  This tab provides information on the transcripts and genes grouped together into a module.  For a region, any module that contains a transcript from the region is displayed.  You can select each module individually and view the correlations between transcripts and get additional information on transcripts and genes.  You can also view eQTLs for the module, which indicates possible regions that may be correlated with regulation of transcripts in the module.  In this view you can also see the genes in the region that may contribute to regulation.  
+<BR><BR>
+WGCNA data is based on the Affymetrix microarray data set either HXB/BXH Recombinant Inbred Panel(Rats) or ILS/ISS Recombinant Inbred Panel(Mice).  However, grouping of probe sets into transcripts is based on the tissue specific RNA-Seq transcriptome reconstruction(accessible in a track of the genome/transcriptome browser) and correlation of microarray expression.
+<BR><BR>
+Future updates will also indicate miRNAs, transcription factors, and miRNAs validated and predicted to target genes in the module.  For Rats future updates will provide heart and liver data as well.
+</div></div>
+
 <div id="HelpForwardeQTLTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>eQTL Tab</H3>
 This tab shows a Circos Plot of the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> associated with the selected Transcript Cluster(Gene).  The lines connect from the location of the gene to the region/SNP associated with expression of the gene.  Each tissue contains yellow/black lines that indicate the P-value of that association.  Yellow indicates the P-value is below the selected threshold.  The controls available under this tab let you select the p-value, chromosomes, and tissues(if applicable) to include in the image.
@@ -177,10 +187,59 @@ Currently only lists of 300 genes are less are supported.  This is a limit of th
 </div>
 </div>
 
+<div id="HelpGeneDetailTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>Gene Detail Tab</H3>
+The Gene Detail Tab provides summary information and links related to the selected gene.   There are three sections on this page.  General information includes location, gene symbol, links to other databases, Ensembl transcripts, and RNA-Seq reconstructed transcripts if available.
+<BR><BR>
+The Probe Set Information section provides a summary of probe sets across all available tissues including expression above background and heritability.  The Probe Set Level Data tab has more detailed information allowing you to look at each probe set.
+<BR><BR>
+The eQTL section provides information on the location of the minimum P-value for each available tissue.  A more complete list is provided on the eQTL Tab.
+</div></div>
+
+<div id="HelpGeneEqtlTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>Gene eQTL Tab</H3>
+The eQTL Tab provides expression Quantitative Trait Loci for a selected Affymetrix transcript cluster representing the gene selected.  It provides all the loci with a P-value below a selected cut-off.  You can change the cut-off and include/exclude chromosomes as desired.  If a gene has multiple transcript clusters assigned then they all will be available.  The highest confidence transcript cluster is selected first, for example if there was a core and a full transcript cluster the default is the core transcript cluster.
+</div></div>
+
+<div id="HelpGenePSTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>Gene Probe Set Details Tab</H3>
+The Probe Set Detail Tab allows you to view detailed probe set level data.  This includes RI panel parental differential expression, detection above background, heritability, expression, and probe set correlation.  You can view the data across panel strains and tissues where available.
+<BR><BR>
+This runs as a signed Java applet in a new window, so you need an updated JRE and must approve it to run and may require allowing the popup.  It will prompt you to install the latest JRE and will prompt you to make sure you want to run it.  There are some errors with specific JREs, browsers, and operating system combinations.  You should be notified if we have discovered a problem with your combination of browser, OS and JRE, but please try a different browser or computer if you run into issues.  If you let us know through the feedback form we will try to find a solution.
+</div></div>
+
+<div id="HelpGeneMirTargetTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>miRNA Targeting This Gene Tab</H3>
+    The miRNA Targeting Gene (MultiMiR) Tab displays a summary of miRNAs that are predicted or validated to target a particular gene.  You can view detailed information on the miRNA and get a list of everything it targets or is predicted to target.
+</div></div>
+
+<div id="HelpMirTargetTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>miRNA Targets Tab</H3>
+    The Genes Targeted by this miRNA (multiMiR) Tab displays a summary of genes that are predicted or validated as targets of the selected miRNA.  You can view detailed information on the miRNA or genes and get a list of miRNAs that target a gene from the list.
+</div></div>
+
+<div id="HelpGeneWGCNATabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>Gene WGCNA Tab</H3>
+Weighted Gene Co-expression Network Analysis provides information on transcripts that have correlated expression by grouping them into modules.  This tab provides information on the transcripts and genes grouped together into a module.  For a selected gene, any module that contains a transcript of the selected gene is displayed.  You can select each module individually and view the correlations between transcripts and get additional information on transcripts and genes.  You can also view eQTLs for the module, which indicates possible regions that may be correlated with regulation of transcripts in the module.  In this view you can also see the genes in the region that may contribute to regulation.  
+<BR><BR>
+WGCNA data is based on the Affymetrix microarray data set either HXB/BXH Recombinant Inbred Panel(Rats) or ILS/ISS Recombinant Inbred Panel(Mice).  However, grouping of probe sets into transcripts is based on the tissue specific RNA-Seq transcriptome reconstruction(accessible in a track of the genome/transcriptome browser) and correlation of microarray expression.
+<BR><BR>
+Future updates will also indicate miRNAs, transcription factors, and miRNAs validated and predicted to target genes in the module.  For Rats future updates will provide heart and liver data as well. 
+</div></div>
+
+<div id="HelpWGCNAViewContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>WGCNA Views</H3>
+There are currently three views available the module list, the module and the eQTL views.  Above both of the individual views is a list of modules.  Following is a description of each view.
+<BR><BR>
+<H3>Module List</H3>
+Initially you will be given a list of all modules that correspond to your source(region, gene, or gene list).  This includes any module containing a transcript from your source.  The modules are ordered by the number of transcripts in the module denoted by the number in the middle of the module.  They are sized relative to each other based on the number of transcripts in the module.   To allow you to start viewing data more quickly modules will be displayed as they download which is why the module list may change while the loading image is displayed if viewing a large number of modules.  You can view additional details by holding your mouse over a module and clicking on one will select it and bring up one of the following views based on your selected view.
+<BR><BR>
+<H3>Module View</H3>
 
 
+<H3>eQTL View</H3>
 
-
+</div></div>
 
 <script type="text/javascript">
 //Setup Help links

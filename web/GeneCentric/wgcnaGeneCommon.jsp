@@ -42,6 +42,7 @@
     <div id="wgcnaGeneImage" style="width:99%;border:1px solid;text-align: center;">
         <div id="waitCircos" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Working..." text-align="center" ><BR>Loading...</div>
     </div>
+    <div id="tableExportCtl" style="float:right;"></div>
     <div id="wgcnaModuleTable" style="display:none;width:99%;border:1px solid;text-align: center;">
         <div id="waitModuleTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
         <H2>Transcripts in <span id="modTableName">Selected</span> Module</h2><BR>
@@ -87,6 +88,7 @@
     var genelist="<%=geneListID%>";
     var tissue="Whole Brain";
     var modulePrefix="";
+    
     var wgcna=WGCNABrowser(wgcnaid,wgcnaregion,genelist,disptype,viewtype,tissue);
     wgcna.setup();
 </script>

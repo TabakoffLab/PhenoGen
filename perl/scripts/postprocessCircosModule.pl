@@ -55,43 +55,28 @@ sub postprocessCircosMod{
 		}
 		else{
 			if($nextLineIsLinkPath == 1){
-				# Modify the Link Path line
-				# Get rid of, at the end, for example:  style="stroke-opacity: 1.000000; stroke-width: 5.0; stroke: rgb(116,196,118); fill: none" 
-				if($_ =~ m/style=\"stroke-opacity: 1.000000; stroke-width: 5.0; stroke: (.+)\/>$/){
-					$modifiedLine = $_;
-					$modifiedLine =~ s/style="stroke-opacity: 1.000000; stroke-width: 5.0; stroke: (.+)\/>$/\/>/;
-					#print " Modified Path: ".$modifiedLine."\n";
-					print $NEWSVGFILEHANDLE $modifiedLine;#."\n";
-				}
+                            my $startEnd=index($_,"L")+1;
+                            my $start=substr($_,0,$startEnd);
+                            my $endStart=index($_,"1500.0,1500.0");
+                            my $end=substr($_,$endStart);
+                            my $modifiedLine = $start." ".$end."\n";
+                            print $NEWSVGFILEHANDLE $modifiedLine;#."\n";
+			#	# Modify the Link Path line
+			#	# Get rid of, at the end, for example:  style="stroke-opacity: 1.000000; stroke-width: 5.0; stroke: rgb(116,196,118); fill: none" 
+			#	if($_ =~ m/style=\"stroke-opacity: 1.000000; stroke-width: 5.0; stroke: (.+)\/>$/){
+			#		$modifiedLine = $_;
+			#		$modifiedLine =~ s/style="stroke-opacity: 1.000000; stroke-width: 5.0; stroke: (.+)\/>$/\/>/;
+			#		#print " Modified Path: ".$modifiedLine."\n";
+			#		print $NEWSVGFILEHANDLE $modifiedLine;#."\n";
+			#	}
 				$nextLineIsLinkPath = 0;
 			}
-			elsif($_ =~ m/^<g id=\"Link_(.+)_(.+)\">/){	
-				#Look for links, for example: <g id="Link_Brain_00001" 
-				#Replace the links lines with modifications that give tool tips
-				$toolTipHashKey = "Link_".$1."_".$2;
-				if (exists $toolTipHash{$toolTipHashKey})
-				{
-					$toolTipHashValue = $toolTipHash{$toolTipHashKey};
-					# Modified line should look like this: <g id="Link_Brain_00001" onmousemove="ShowTooltip(evt,'Link_Brain_00001')" onmouseout="HideTooltip(evt)" class="Brain">
-					$modifiedLine = '<g id="'.$toolTipHashKey;
-					$modifiedLine = $modifiedLine .'"';
-					$modifiedTissue = $1;
-					if($modifiedTissue eq 'Brown_Adipose'){
-						$modifiedTissue = 'BAT';
-					}
-					elsif($modifiedTissue eq 'Whole_Brain'){
-						$modifiedTissue = 'Brain';
-					}
-					$modifiedLine = $modifiedLine.' class="'.$modifiedTissue.'">';
-					print $NEWSVGFILEHANDLE $modifiedLine;#."\n";
-					$nextLineIsLinkPath = 1;
-				}
-				else
-				{
-					die( " Found Link but not in hash ".$1."\n");
-				}
+			elsif($_ =~ m/Link/){
+                                $nextLineIsLinkPath = 1;	
+                                print $NEWSVGFILEHANDLE $_;#."\n";
 			}
 			elsif($_ =~ m/^<\/svg>$/){
+                        #if($_ =~ m/^<\/svg>$/){
 				#Look for the bottom of the file: </svg>
 				#Add two lines before the last line
 				#print " Found Last Line \n";

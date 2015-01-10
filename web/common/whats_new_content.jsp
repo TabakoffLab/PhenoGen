@@ -28,7 +28,44 @@ span.control{
 		background:#989898;
 	}
 </style>
-<div class="whats_new version"><p><h3>Version: v2.13.0</h3><BR /> Updated:9/27/2014</p></div>
+<div class="whats_new version">
+    <p><h3>Version: v2.14.0</h3><BR /> Updated:1/11/2015</p></div>
+                                 <ul>
+                                    <li><span class="highlight-dark">Weighted Gene Co-expression Network Analysis(WGCNA) Results</span>.
+                                                    <ul>
+                                                        <li>Available for both Mouse and Rat Brain.</li>
+                                                        <li>Module View:
+                                                            <ul>
+                                                                <li>Transcripts both Ensembl Annotated and RNA-Seq reconstructed</li>
+                                                                <li>Transcripts connectedness showing positive and negative correlation of transcript expression.</li>
+                                                                <li>View graphic form and CSV exportable table form.</li>
+                                                            </ul>
+                                                        </li>
+                                                        <li>eQTL Module View:
+                                                            <ul>
+                                                                <li>View CIRCOS plot:
+                                                                    <ul>
+                                                                        <li>Genome with regions below the selected P-value cutoff highlighted.</li>
+                                                                        <li>Customizable with include/exclude chromosomes and adjust P-value cutoff.</li>
+                                                                        <li>View graphic form and CSV exportable table form.</li>
+                                                                    </ul>
+                                                                </li>
+                                                                <li>CSV exportable table form with SNP name/location and P-value.</li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                    </li>
+                                    <li><span class="highlight-dark">Where to find WGCNA Data</span>
+                                        <UL>
+                                        <li> <span class="highlight-dark">Genome/Transcriptome Data Browser</span> - Modules can be viewed for all genes in a region of interest or for a single gene.</li>
+                                        <li> <span class="highlight-dark">Gene Lists</span> - Modules can be viewed for all genes in the gene list along with a summary of modules containing the most genes from the list.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+				
+    <hr/>
+<div class="whats_new version">        
+    <p><h3>Version: v2.13.0</h3><BR /> Updated:9/27/2014</p></div>
 				<ul>
 					<li> <span class="highlight-dark">Genome/Transcriptome Data Browser</span>
                     	<ul>
@@ -45,12 +82,6 @@ span.control{
                                 <li><span class="highlight-dark">Mouse Brain RNA-Seq</span> - We've added a transcriptome reconstruction, splice junctions, and stranded RNA-Seq read depth tracks for the parental strains of the LXS panel(ILS/ISS).</li>
                                 <li><span class="highlight-dark">Rat Heart RNA-Seq</span> - Splice juctions, stranded RNA-Seq read depth tracks are available now for the parental strains of the HXB/BXH panel(BN-Lx/SHR).  The transcriptome reconstruction will be available later.</li>
                                 <li><span class="highlight-dark">Rat Brain/Liver RNA-Seq</span> -Updated splice juctions and stranded(Liver) or polyA+/total(Brain)  RNA-Seq read depth tracks are available now.  Updated transcriptome reconstructions will be available later.</li>
-                                    <!--<ul>
-                                        <li><span class="highlight-dark">Heart Transcriptome Reconstruction</span> - Added BN-Lx,SHR transcriptome reconstruction, splice junctions, and stranded read depth tracks. </li>
-                                        <li><span class="highlight-dark">Updated Brain and Liver Transcriptome Reconstructions</span> - Added updated versions of the Brain and Liver reconstructions and splice junctions.  Count tracks are updated Liver is stranded while Brain is seperated into Total or PolyA+, but not stranded.</li>
-                                        <li><span class="highlight-dark">Heart and Liver Small RNA</span> - Added small RNA features, and read depth tracks.</li>
-                                        <li><span class="highlight-dark">Updated Brain Small RNA</span> - Updated the previous brain small RNA features, and read depth tracks.</li>
-                                    </ul>-->
                                 </li>
                                 </ul>
                             </li>

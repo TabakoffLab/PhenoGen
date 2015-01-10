@@ -48,7 +48,7 @@
                     tissueString = "Brain";
             }
             
-            String modPath=fullPath+"tmpData/modules/"+dataset+"/"+module+"/";
+            String modPath=fullPath+"tmpData/circos/"+dataset+"/"+module+"/";
 		
             String perlScriptDirectory = (String)session.getAttribute("perlDir")+"scripts/";
             String perlEnvironmentVariables = (String)session.getAttribute("perlEnvVar");
@@ -62,7 +62,7 @@
                     perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
             }
             else if(hostName.equals("phenogen.ucdenver.edu")){
-                    perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+                    perlEnvironmentVariables += ":/usr/bin/perl:/usr/local/circos-0.67-4/lib:/usr/local/circos-0.67-4/bin";
             }
             else if(hostName.equals("stan.ucdenver.pvt")){
                     perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/local/circos-0.67-4/lib:/usr/local/circos-0.67-4/bin";
@@ -75,7 +75,7 @@
             java.util.Date dNow = new java.util.Date( );
             SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMddhhmmss");
             String timeStampString = ft.format(dNow);
-            timeStampString="20141212044050";
+            //timeStampString="20141212044050";
             //
             // Get the database connection properties
             //
@@ -108,12 +108,12 @@
 			//
 			// call perl script
 			//
-            String filePrefixWithPath=fullPath+"tmpData/modules/"+dataset+"/"+module+"/"+timeStampString;
+            String filePrefixWithPath=fullPath+"tmpData/circos/"+dataset+"/"+module+"/"+timeStampString;
             boolean circosReturnStatus = gdt.createCircosFiles(perlScriptDirectory,perlEnvironmentVariables,perlScriptArguments,filePrefixWithPath);
         	if(circosReturnStatus){
         		log.debug("Circos run completed successfully");       		
 				
-                        String svgFile = contextRoot+"tmpData/modules/"+dataset+"/"+module+"/"+module+"_"+timeStampString+"/svg/circos_new.svg";
+                        String svgFile = contextRoot+"tmpData/circos/"+dataset+"/"+module+"/"+module+"_"+timeStampString+"/svg/circos_new.svg";
                         iframeURL = svgFile;
                 }
                 else{

@@ -37,15 +37,11 @@ sub prepCircosMod
 	}
 	
 	my $genericConfLocation2;
-	if($hostname eq 'amc-kenny.ucdenver.pvt'){
-		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
-	}
-	elsif($hostname eq 'compbio.ucdenver.edu'){
+	if($hostname eq 'phenogen' and index($dsn,"test")>0){
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
-	}
-	elsif($hostname eq 'phenogen.ucdenver.edu'){
-		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
-	}
+	}elsif($hostname eq 'phenogen' and index($dsn,"test")==-1){
+                $genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
+        }
 	elsif($hostname eq 'stan.ucdenver.pvt'){
 		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
 	}
@@ -62,7 +58,7 @@ sub prepCircosMod
 	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$dsn,$usr,$passwd);
 	createCircosPvaluesDataFiles($dataDirectory,$module,$organism,$eqtlAOHRef,$chromosomeListRef);
 	if($oneToCreateLinks == 1){
-		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissueString);	
+		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissueString,$chromosomeList[0]);	
 	}
 }
 
@@ -395,7 +391,7 @@ sub createCircosLinksConfAndData{
 	# Create configuration and data file for circos links
 	# This is more complicated since there will be a varying number of data files
 	# Therefore, keeping the configuration and data file creation together
-	my ($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissue) = @_;
+	my ($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissue,$firstChr) = @_;
 	my $numberOfTissues = 1;
 	my @linkAOH; # this is an array of hashes to store required data
 	my @eqtlAOH = @{$eqtlAOHRef};
@@ -427,12 +423,16 @@ sub createCircosLinksConfAndData{
 			elsif($tissue eq "BAT"){
 				$linkColor = 'purple';
 			}
+
+                        my $tmpName=$eqtlAOH[$i]{name};
+                        $tmpName =~ s/\./_/g;
+                        
 			$linkAOH[$linkCount]{chromosome} = $eqtlAOH[$i]{chromosome};
 			$linkAOH[$linkCount]{location} = $eqtlAOH[$i]{location};
-			$linkAOH[$linkCount]{name} = $eqtlAOH[$i]{name};
+			$linkAOH[$linkCount]{name} = $tmpName;
 			$linkAOH[$linkCount]{color}=$linkColor;
 			$numberString = sprintf "%05d", $linkCount;
-			$linkAOH[$linkCount]{linkname} = "Link_".$eqtlAOH[$i]{name};
+			$linkAOH[$linkCount]{linkname} = "Link_".$tmpName;
 			$linkAOH[$linkCount]{linknumber} = $linkCount;
 		}
 	}
@@ -446,13 +446,12 @@ sub createCircosLinksConfAndData{
 	open(TOOLTIPFILE,'>',$toolTipFileName) || die ("Can't open $toolTipFileName:!\n");
 	my $linkFileName;
 	my $linkName;
-        my $lcOrg=lc($organism);
 	for($i=0;$i<$totalLinks;$i++){
 		print TOOLTIPFILE $linkAOH[$i]{linkname}."\t".substr($linkAOH[$i]{chromosome},2)."\t".$linkAOH[$i]{location}."\n";
 		$linkFileName = $dataDirectory.$linkAOH[$i]{linkname}.".txt";
 		open(LINKFILE,'>',$linkFileName) || die ("Can't open $linkFileName:!\n");
 		print LINKFILE $linkAOH[$i]{name}." ".$linkAOH[$i]{chromosome}." ".$linkAOH[$i]{location}." ".$linkAOH[$i]{location}." radius1=0.85r\n"; # This is the SNP location
-		print LINKFILE $linkAOH[$i]{name}." ".$lcOrg."1 1 1 radius2=0r\n"; # This is the probeset location
+		print LINKFILE $linkAOH[$i]{name}." ".$firstChr." 1 1 radius2=0r\n"; # This is the probeset location
 		close(LINKFILE);		
 	}
 	close(TOOLTIPFILE);
@@ -464,7 +463,7 @@ sub createCircosLinksConfAndData{
 		$linkFileName = $dataDirectory.$linkAOH[$i]{linkname}.".txt";
 		$linkName = $linkAOH[$i]{linkname};
 		$linkColor = $linkAOH[$i]{color};
-		writeLink($CONFFILEHANDLE,$linkFileName,$linkName,$linkColor,$organism,$numberOfTissues);
+		writeLink($CONFFILEHANDLE,$linkFileName,$linkName,$linkColor,$organism,$numberOfTissues,$i);
 	}
 	close(CONFFILE);
 	print " Finished with createCircosLinksConfAndData \n";
@@ -473,9 +472,9 @@ sub createCircosLinksConfAndData{
 
 
 sub writeLink{
-	my ($FILEHANDLE,$LinkFileName,$linkName,$linkColor,$organism,$numberOfTissues) = @_;
+	my ($FILEHANDLE,$LinkFileName,$linkName,$linkColor,$organism,$numberOfTissues,$i) = @_;
 	print $FILEHANDLE "<link ".$linkName.">"."\n";
-	print $FILEHANDLE  "z = 0"."\n";
+	print $FILEHANDLE  "z = ".$i."\n";
 	if($numberOfTissues == 4){
 		print $FILEHANDLE  "radius = 0.55r"."\n";
 	}

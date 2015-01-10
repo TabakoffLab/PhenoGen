@@ -158,11 +158,11 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
         <div id="collapsableImage" class="geneimage" >
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.0.7.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport2.0.2.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.1.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport2.1.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.0.2.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.2.js" type="text/javascript"></script>
-            <script src="javascript/wgcnaBrowser0.1.js" type="text/javascript"></script>
+            <script src="javascript/wgcnaBrowser0.3.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">
@@ -181,7 +181,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
             	<div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
                     <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpTrackDetails" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                     <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an eQTL in this region<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-                    <span id="detail3" class="detailMenu" name="regionWGCNAEQTL">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <span id="detail3" class="detailMenu" name="regionWGCNAEQTL">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionWGCNATab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                 </div>
     </div>
     <div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:left; width:100%;">

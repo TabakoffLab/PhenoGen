@@ -109,19 +109,9 @@ sub callCircosMod{
 	my $inkscapeBinary;
 	my $inkscapeDirectory;
 
-	if($hostname eq 'amc-kenny.ucdenver.pvt'){
-		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+	if($hostname eq 'phenogen'){
+		$circosBinary = '/usr/local/circos-0.67-4/bin/circos';
 		$perlBinary = '/usr/bin/perl';
-		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
-	}
-	elsif($hostname eq 'compbio.ucdenver.edu'){
-		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
-		$perlBinary = '/usr/local/bin/perl';
-		$inkscapeBinary = '/usr/bin/inkscape';
-	}
-	elsif($hostname eq 'phenogen.ucdenver.edu'){
-		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
-		$perlBinary = '/opt/phenogen/perl-5.10.1/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
@@ -135,7 +125,7 @@ sub callCircosMod{
 
 
 	
-    my @systemArgs = ($perlBinary,$circosBinary,"-conf", $confDirectory."circos.conf", "-noparanoid");
+    my @systemArgs = ($perlBinary,$circosBinary,"-silent","-conf", $confDirectory."circos.conf", "-noparanoid");
     print " System call with these arguments: @systemArgs \n";
     system(@systemArgs);
     if ( $? == -1 )

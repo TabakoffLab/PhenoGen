@@ -12,6 +12,10 @@
     
 					<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>v2.14 of PhenoGen 1/10/2015</H2>
+                        <div style="margin-left:5px;">
+                        	We've added Weighted Gene Co-expression Network Analysis.  Look at what's new for a summary of changes.
+                        </div>
                     	<H2>v2.13 of PhenoGen 9/27/2014</H2>
                         <div style="margin-left:5px;">
                         	We've updated PhenoGen.  Look at what's new for a summary of changes.
