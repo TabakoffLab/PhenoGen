@@ -231,14 +231,20 @@ Future updates will also indicate miRNAs, transcription factors, and miRNAs vali
 <H3>WGCNA Views</H3>
 There are currently three views available the module list, the module and the eQTL views.  Above both of the individual views is a list of modules.  Following is a description of each view.
 <BR><BR>
-<H3>Module List</H3>
-Initially you will be given a list of all modules that correspond to your source(region, gene, or gene list).  This includes any module containing a transcript from your source.  The modules are ordered by the number of transcripts in the module denoted by the number in the middle of the module.  They are sized relative to each other based on the number of transcripts in the module.   To allow you to start viewing data more quickly modules will be displayed as they download which is why the module list may change while the loading image is displayed if viewing a large number of modules.  You can view additional details by holding your mouse over a module and clicking on one will select it and bring up one of the following views based on your selected view.
+<h3>Module List</h3>
+Initially you will be given a list of all modules that correspond to your source(region, gene, or gene list).  This list includes any module containing a transcript from your source.  The modules are ordered by the number of transcripts in the module denoted by the number in the middle of the module.  They are sized relative to each other based on the total number of transcripts in the module.   To allow you to start viewing data more quickly modules will be displayed as they download which is why the module list may change while the loading image is displayed if viewing a large number of modules.  You can view additional details by holding your mouse over a module and clicking on a module will select it and bring up one of the following views based on your selected view.
 <BR><BR>
-<H3>Module View</H3>
-
-
-<H3>eQTL View</H3>
-
+<h3>Module View</h3>
+The module view displays up to 150 transcripts within a module.  Modules larger than that will have a warning icon indicating the graphics have cutoff the remaining transcripts.  The 10-20 largest modules in each dataset will be truncated.  The table below the graphics will display all of the transcripts even when the graphics do not.  
+<BR>
+Each node corresponds to a transcript, which is labeled with its corresponding gene symbol if available.  Nodes are order from the top center clockwise back to the top center.  Nodes are ordered by taking the sum of absolute value of all correlation links for a node.  This value is also used to size each node.  Thus the most connected node(Hub Gene) is the first node in the image.  The links between nodes are colored based on the direction of the correlation.  The default is green for a positive correlation and red for a negative correlation.  A control above the image allows for selecting of blue/yellow or the opposite red/green coloration.   Links are sized based on the absolute value of the correlation.
+<BR>
+You can use the sliders above the image to change the minimum and maximum cutoffs for the links displayed.  You also have the option to hide all links until you hover over a node at which point only links to that node are displayed.
+<BR><BR>
+<h3>eQTL View</h3>
+The eQTL view displays the calculated eQTLs along the genome for the module.  The yellow bars along the genome denote locations with a &hyphen;log(P-value) above the selected cutoff.  Links are also drawn from the module(center) to the locations above the cutoff.  The highest P-value is highlighted with a yellow link.
+<BR>
+The outer section of the image shows the genes and locations of genes for each gene with transcripts in the module.  This allows you to quickly look at overlap of eQTLs with genes that may contribute to regulation. 
 </div></div>
 
 <script type="text/javascript">
