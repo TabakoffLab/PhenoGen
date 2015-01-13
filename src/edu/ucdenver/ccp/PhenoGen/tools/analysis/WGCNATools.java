@@ -101,6 +101,7 @@ public class WGCNATools{
         if(chr.indexOf("chr")>-1){
             chr=chr.substring(3);
         }
+        chr=chr.toUpperCase();
         String startStr=region.substring(region.indexOf(":")+1,region.indexOf("-"));
         String stopStr=region.substring(region.indexOf("-")+1);
         int start=Integer.parseInt(startStr);
