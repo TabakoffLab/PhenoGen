@@ -977,11 +977,15 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Gene");
-							var newTrack= GeneTrack(that,data,track,"Long Non-Coding / Non-PolyA+ Genes",additionalOptions);
-							that.addTrackList(newTrack);
-							if(selectGene!=""){
-								newTrack.setSelected(selectGene);
-							}
+                                                        try{
+                                                            var newTrack= GeneTrack(that,data,track,"Long Non-Coding / Non-PolyA+ Genes",additionalOptions);
+                                                            that.addTrackList(newTrack);
+                                                            if(selectGene!=""){
+                                                                    newTrack.setSelected(selectGene);
+                                                            }
+                                                        }catch(er){
+                                                            
+                                                        }
 						}
 					}
 				});
@@ -1014,11 +1018,13 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Gene");
+                                                        try{
 							var newTrack= GeneTrack(that,data,track,"Protein Coding / PolyA+",additionalOptions);
 							that.addTrackList(newTrack);
 							if(selectGene!=""){
 								newTrack.setSelected(selectGene);
 							}
+                                                        }catch(er){}
 						}
 					}
 				});
@@ -1063,11 +1069,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}
 					}
 				});
-		}else if(track=="liverTotal" || track=="heartTotal" || track=="brainTotal"){
+		}else if(track==="liverTotal" || track==="heartTotal" || track==="brainTotal"){
 				var lbl="Liver Reconstructed";
-				if(track=="heartTotal"){
+				if(track==="heartTotal"){
 					lbl="Heart Reconstructed";
-				}else if(track=="brainTotal"){
+				}else if(track==="brainTotal"){
 					lbl="Whole Brain Reconstructed";
 				}
 
@@ -1099,15 +1105,17 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Gene");
+                                                        try{
 							var newTrack= GeneTrack(that,data,track,lbl,additionalOptions);
 							that.addTrackList(newTrack);
 							if(selectGene!=""){
 								newTrack.setSelected(selectGene);
 							}
+                                                        }catch(er){}
 						}
 					}
 				});
-		}else if(track.indexOf("refSeq")==0){
+		}else if(track.indexOf("refSeq")===0){
 				var include=$("#"+track+that.levelNumber+"Select").val();
 				var tmpMin=that.xScale.domain()[0];
 				var tmpMax=that.xScale.domain()[1];
@@ -1115,7 +1123,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				d3.xml(file,function (error,d){
 					if(error){
 						console.log(error);
-						if(retry==0){
+						if(retry===0){
 							$.ajax({
 								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
 				   				type: 'GET',
@@ -1131,7 +1139,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}
 						if(retry<3){//wait before trying again
 							var time=10000;
-							if(retry==1){
+							if(retry===1){
 								time=15000;
 							}
 							setTimeout(function (){
@@ -1155,8 +1163,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Gene");
+                                                        try{
 							var newTrack= RefSeqTrack(that,data,track,"Ref Seq Genes",additionalOptions);
 							that.addTrackList(newTrack);
+                                                        }catch(er){
+                                                            
+                                                        }
 						}
 					}
 				});
@@ -1208,8 +1220,10 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var snp=d.documentElement.getElementsByTagName("Snp");
+                                                        try{
 							var newTrack= SNPTrack(that,snp,track,density,additionalOptions);
 							that.addTrackList(newTrack);
+                                                        }catch(er){}
 						}
 					}
 				});
@@ -1286,8 +1300,10 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var probe=d.documentElement.getElementsByTagName("probe");
+                                                        try{
 							var newTrack= ProbeTrack(that,probe,track,"Affy Exon 1.0 ST Probe Sets",density+","+additionalOptions);
 							that.addTrackList(newTrack);
+                                                    }catch(er){}
 							//success=1;
 						}
 					}
@@ -1371,6 +1387,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
 							var data=d.documentElement.getElementsByTagName("Count");
 							var newTrack;
+                                                        try{
 							if(track=="helicos"){
 								newTrack= HelicosTrack(that,data,track,1);
 							}else if(track=="illuminaTotal"){
@@ -1397,6 +1414,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 									newTrack= HeartIlluminaSmallTrack(that,data,track,1);
 								}
 							that.addTrackList(newTrack);
+                                                        }catch(er){}
 							//success=1;
 						}
 					}
@@ -1455,8 +1473,10 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Feature");
-							var newTrack= SpliceJunctionTrack(that,data,track,lblPrefix+"Splice Junctions",3,"");
-							that.addTrackList(newTrack);
+                                                        try{
+                                                            var newTrack= SpliceJunctionTrack(that,data,track,lblPrefix+"Splice Junctions",3,"");
+                                                            that.addTrackList(newTrack);
+                                                        }catch(er){}
 						}
 					}
 				});
@@ -1489,8 +1509,10 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Feature");
-							var newTrack= PolyATrack(that,data,track,"Predicted PolyA Sites",additionalOptions);
-							that.addTrackList(newTrack);
+                                                        try{
+                                                            var newTrack= PolyATrack(that,data,track,"Predicted PolyA Sites",additionalOptions);
+                                                            that.addTrackList(newTrack);
+                                                        }catch(er){}
 						}
 					}
 				});
