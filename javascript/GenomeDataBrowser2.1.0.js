@@ -721,12 +721,12 @@ function calculateBin(len,width){
 }
 
 //D3 helper functions
-function key(d) {if(d!=undefined){return d.getAttribute("ID");}else{return "unknown"}};
-function keyName(d) {if(d!=undefined){return d.getAttribute("name");}else{return "unknown"}};
-function keyStart(d) {if(d!=undefined){return d.getAttribute("start");}else{return "unknown"}};
-function keyTissue(d,tissue){if(d!=undefined){return d.getAttribute("ID")+tissue;}else{return "unknown"}};
-function keyPos(d){if(d!=undefined){return d.pos;}else{return "unknown"}};
-function keyID(d){if(d!=undefined){return d.id;}else{return "unknown"}};
+function key(d) {if(typeof d!=='undefined'){return d.getAttribute("ID");}else{return "unknown"}};
+function keyName(d) {if(typeof d!=='undefined'){return d.getAttribute("name");}else{return "unknown"}};
+function keyStart(d) {if(typeof d!=='undefined'){return d.getAttribute("start");}else{return "unknown"}};
+function keyTissue(d,tissue){if(typeof d!=='undefined'){return d.getAttribute("ID")+tissue;}else{return "unknown"}};
+function keyPos(d){if(typeof d!=='undefined'){return d.pos;}else{return "unknown"}};
+function keyID(d){if(typeof d!=='undefined'){return d.id;}else{return "unknown"}};
 
 //SVG functions
 function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
@@ -1051,11 +1051,15 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("smnc");
-							var newTrack= GeneTrack(that,data,track,"Small RNA (<200 bp) Genes",additionalOptions);
-							that.addTrackList(newTrack);
-							if(selectGene!=""){
-								newTrack.setSelected(selectGene);
-							}
+                                                        try{
+                                                            var newTrack= GeneTrack(that,data,track,"Small RNA (<200 bp) Genes",additionalOptions);
+                                                            that.addTrackList(newTrack);
+                                                            if(selectGene!=""){
+                                                                    newTrack.setSelected(selectGene);
+                                                            }
+                                                        }catch(er){
+                                                            
+                                                        }
 						}
 					}
 				});
@@ -1238,8 +1242,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var qtl=d.documentElement.getElementsByTagName("QTL");
-							var newTrack= QTLTrack(that,qtl,track,density);
-							that.addTrackList(newTrack);
+                                                        try{
+                                                            var newTrack= QTLTrack(that,qtl,track,density);
+                                                            that.addTrackList(newTrack);
+                                                        }catch(er){
+                                                            
+                                                        }
 							//success=1;
 						}
 					}
@@ -5478,6 +5486,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		if(that.drawAs=="Gene" || that.trackClass.indexOf("smallnc")>-1){
 			that.drawnAs="Gene";
 			that.svg.selectAll(".trx0").each(function(){d3.select(this).remove();});
+                        
 			var gene=that.svg.selectAll(".gene")
 		   			.data(filterData,key)
 					.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";});
