@@ -17,9 +17,6 @@
         extrasList.add("svg-pan-zoom.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
-        //extrasList.add("tableExport/jspdf/libs/sprintf.js");
-        //extrasList.add("tableExport/jspdf/jspdf.js");
-        //extrasList.add("tableExport/jspdf/libs/base64.js");
 
         extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
 
@@ -30,6 +27,7 @@
 	request.setAttribute( "selectedTabId", "wgcna" );
 
         mySessionHandler.createGeneListActivity("Looked at WGCNA a GeneList", dbConn);
+        String myOrganism=selectedGeneList.getOrganism();
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
@@ -53,13 +51,23 @@
 	</div> <!-- // end page-intro -->
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
-    <div class="leftTitle">WGCNA</div>
+        <div class="leftTitle">WGCNA<span class="helpImage" id="HelpGeneListWGCNATab" ><img src="<%=imagesDir%>icons/help.png" </span></div>
     <div style="font-size:14px">
         <%@ include file="/web/GeneCentric/wgcnaGeneCommon.jsp" %>
     </div><!-- end primary content-->
 
     
-
+<%@ include file="/web/GeneCentric/resultsHelp.jsp" %>
+<script type="text/javascript">
+    $('.helpImage').on('click', function(event){
+			var id=$(this).attr('id');
+			$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
+			$('#'+id+'Content').dialog("open").css({'font-size':12});
+			event.stopPropagation();
+			//return false;
+		}
+		);
+</script>
 <%@ include file="/web/common/footer.jsp" %>
 
 
