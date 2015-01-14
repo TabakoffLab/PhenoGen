@@ -160,6 +160,19 @@ WGCNA data is based on the Affymetrix microarray data set either HXB/BXH Recombi
 Future updates will also indicate miRNAs, transcription factors, and miRNAs validated and predicted to target genes in the module.  For Rats future updates will provide heart and liver data as well.
 </div></div>
 
+<div id="HelpGeneListWGCNATabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<H3>Gene List - WGCNA Tab</H3>
+Weighted Gene Co-expression Network Analysis provides information on transcripts that have correlated expression by grouping them into modules.
+This tab provides information on the transcripts and genes grouped together into a module.
+For a gene list, any module that contains a transcript from the gene list is displayed.  You can select each module individually and view the correlations
+between transcripts and get additional information on transcripts and genes.  You can also view eQTLs for the module, which indicates possible regions 
+that may be correlated with regulation of transcripts in the module.  In this view you can also see the genes in the region that may contribute to regulation.  
+<BR><BR>
+WGCNA data is based on the Affymetrix microarray data set either HXB/BXH Recombinant Inbred Panel(Rats) or ILS/ISS Recombinant Inbred Panel(Mice).  However, grouping of probe sets into transcripts is based on the tissue specific RNA-Seq transcriptome reconstruction(accessible in a track of the genome/transcriptome browser) and correlation of microarray expression.
+<BR><BR>
+Future updates will also indicate miRNAs, transcription factors, and miRNAs validated and predicted to target genes in the module.  For Rats future updates will provide heart and liver data as well.
+</div></div>
+
 <div id="HelpForwardeQTLTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
 <H3>eQTL Tab</H3>
 This tab shows a Circos Plot of the <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> associated with the selected Transcript Cluster(Gene).  The lines connect from the location of the gene to the region/SNP associated with expression of the gene.  Each tissue contains yellow/black lines that indicate the P-value of that association.  Yellow indicates the P-value is below the selected threshold.  The controls available under this tab let you select the p-value, chromosomes, and tissues(if applicable) to include in the image.
