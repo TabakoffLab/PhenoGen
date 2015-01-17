@@ -455,8 +455,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.viewBar.append("text").text("Module");
                 that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View transcripts within the selected module and their connectivity based on correlation of expression.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
                 that.viewBar.append("br");
-		/*that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px");
-		that.viewBar.append("text").text("GO");
+		/*
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","mir").style("margin-left","7px").style("margin-right","3px");
 		that.viewBar.append("text").text("miRNA(multiMiR)");*/
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","eqtl").style("margin-left","7px").style("margin-right","3px").on("click",function(){
@@ -468,6 +467,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.viewBar.append("text").text("eQTL");
                 that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of eQTLs for the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
 	
+                that.viewBar.append("br");
+                that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px").on("click",function(){
+                    that.viewType="go";
+                    //$("#linkCtls").hide();
+                    //$("#eqtlCtls").show();
+                    that.createSingleWGCNAImage();
+                });
+		that.viewBar.append("text").text("Gene Ontology");
+                that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of Gene Ontology terms assigned to transcripts in the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
+                
+        
                 $("#HelpWGCNAView").on('click', function(event){
 			var id=$(this).attr('id');
 			$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
@@ -1021,7 +1031,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             d3.select("#viewGene").remove();
             d3.select("#circos").remove();
             if(that.viewType==="gene"){
-            setTimeout(function(){
+                setTimeout(function(){
 			that.singleImage=that.singleWGCNAImageGeneView(that.modules);
 			that.singleImage.draw();
 			that.img=that.singleImage;
@@ -1039,19 +1049,19 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                           
                                     });
             },50);
-		}/*else if(that.viewType==="go"){
+            }else if(that.viewType==="go"){
                     setTimeout(function(){
 			that.singleImage=that.singleWGCNAImageGoView(that.modules);
 			that.singleImage.draw();
 			that.img=that.singleImage;
                     },50);
-		}*/else if(that.viewType==="eqtl"){
+            }else if(that.viewType==="eqtl"){
                     setTimeout(function(){
 			that.singleImage=that.singleWGCNAImageEQTLView(that.modules);
 			that.singleImage.displayDefault();
 			that.img=that.singleImage;
                     },50);
-		}
+            }
 	};
 	
 	//common prototype to create generic view
@@ -1699,10 +1709,225 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             }
 	};
 
-	/*that.singleWGCNAImageGoView=function(){
+	that.singleWGCNAImageGoView=function(){
+            var thatimg=that.singleWGCNAImage();
+       
+            thatimg.selectedDepth=0;
+            thatimg.selectedNode;
+            thatimg.displayedLevel="d1";
+            thatimg.width = $(window).width();
+            thatimg.height = $(window).height()*0.85;
+            thatimg.padding = 5;
+            thatimg.radius = (Math.min(thatimg.width, thatimg.height) - 2 * thatimg.padding)/ 2,
+            thatimg.duration = 1000;
+            thatimg.xScale = d3.scale.linear().range([0, 2 * Math.PI]);
+            thatimg.yScale = d3.scale.pow().exponent(1.3).domain([0, 1]).range([0, thatimg.radius]);
 
+
+            thatimg.draw=function(){
+                /*thatimg.svg = d3.select("#graphic").append("svg")
+                       .attr("width", width)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", "translate(" + [radius + padding, radius + padding] + ")");*/
+                thatimg.initializeBreadcrumbTrail();
+                thatimg.topG=thatimg.svg.attr("width", thatimg.width)
+                        .attr("height", thatimg.height)
+                        .append("g")
+                        .attr("transform", "translate(" + [thatimg.radius + thatimg.padding, thatimg.radius + thatimg.padding] + ")");
+
+                thatimg.partition = d3.layout.partition()
+                        .size([2 * Math.PI, thatimg.radius * thatimg.radius])
+                        .value(function(d){return d.size;});
+                       //.value(function(d) { if(typeof d.children !=='undefined'){return d.children.length;}else{return 0;} });
+                       
+                var arc = d3.svg.arc()
+                        .startAngle(function(d) { return d.x; })
+                        .endAngle(function(d) { return d.x + d.dx; })
+                        .innerRadius(function(d) { return Math.sqrt(d.y); })
+                        .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+                /*var arc = d3.svg.arc()
+                        .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, thatimg.xScale(d.x))); })
+                        .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, thatimg.xScale(d.x + d.dx))); })
+                        .innerRadius(function(d) { return Math.max(0, thatimg.yScale(d.y)); })
+                        .outerRadius(function(d) { return Math.max(0, thatimg.yScale(d.y + d.dy)); });*/
+
+                d3.json(contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+".GO.json", function(error, root) {
+                    console.log(error);
+                    console.log(root);
+                    var goRoot=root.GOList[0]; 
+                    var nodes = thatimg.partition.nodes(goRoot);
+                    thatimg.vis=thatimg.topG.append("svg:circle")
+                        .attr("r", thatimg.radius)
+                        .style("opacity", 0);
+                
+                    var path = thatimg.topG.selectAll("path").data(nodes);
+                          path.enter().append("path")
+                          .attr("d", arc)
+                          .attr("fill-rule", "evenodd")
+                          .attr("fill","#009900")
+                          .on("mouseover", thatimg.mouseover);
+                    //      .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+                          /*.style("fill", function(d) { return d.color; })
+                          .on("click", click)
+                          .on("mouseover",hover)
+                          .on("mouseout",hideToolTip);*/
+
+                    var text = thatimg.topG.selectAll("text").data(nodes);
+                      var textEnter = text.enter().append("text")
+                          .style("fill-opacity", 1)
+                          .style("fill", "#000")
+                         .attr("text-anchor", function(d) {
+                            return thatimg.xScale(d.x + d.dx / 2) > Math.PI ? "end" : "start";
+                          })
+                          .attr("dy", ".2em")
+                          .attr("transform", function(d) {
+                            var multiline = (d.name || "").split(" ").length > 1,
+                                angle = thatimg.xScale(d.x + d.dx / 2) * 180 / Math.PI - 90,
+                                rotate = d.depth ? angle + (multiline ? -.5 : 0) : 0;
+                                translate = d.depth ? (thatimg.yScale(d.y) + thatimg.padding) : (thatimg.yScale(d.y) + thatimg.padding) - 35;
+                            return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
+                          }).style("opacity",function(d){
+                            return thatimg.xScale(d.dx) > 0.035  ? 1:0;
+                          });
+                          //.on("click", click);
+                      textEnter.append("tspan")
+                          .attr("x", 0)
+                        .text(function(d) { return d.depth<3 ? d.name.split(" ")[0] : d.name ; });
+                      textEnter.append("tspan")
+                          .attr("x", 0)
+                          .attr("dy", "1em")
+                         .text(function(d) { return d.depth<3 ? d.name.split(" ")[1] || "" : ""; });
+                    thatimg.totalSize = path.node().__data__.value;
+                });
+                
+             };
+             
+            thatimg.mouseover=function(d){
+                var percentage = (100 * d.value / thatimg.totalSize).toPrecision(3);
+                var percentageString = percentage + "%";
+                if (percentage < 0.1) {
+                  percentageString = "< 0.1%";
+                }
+
+                d3.select("#percentage")
+                    .text(percentageString);
+
+                d3.select("#explanation")
+                    .style("visibility", "");
+
+                var sequenceArray = thatimg.getAncestors(d);
+                thatimg.updateBreadcrumbs(sequenceArray, percentageString);
+
+                // Fade all the segments.
+                d3.selectAll("path")
+                    .style("opacity", 0.3);
+
+                // Then highlight only those that are an ancestor of the current segment.
+                thatimg.topG.selectAll("path")
+                    .filter(function(node) {
+                              return (sequenceArray.indexOf(node) >= 0);
+                            })
+                    .style("opacity", 1);
+            };
+            
+            // Given a node in a partition layout, return an array of all of its ancestor
+            // nodes, highest first, but excluding the root.
+            thatimg.getAncestors=function (node) {
+                var path = [];
+                var current = node;
+                while (current.parent) {
+                  path.unshift(current);
+                  current = current.parent;
+                }
+                return path;
+            };
+            
+            // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
+            thatimg.b = {
+              w: 250, h: 30, s: 3, t: 10
+            };
+            
+            thatimg.initializeBreadcrumbTrail=function () {
+                // Add the svg area.
+                var trail = d3.select("#viewGene").append("svg:svg")
+                    .attr("width", thatimg.width)
+                    .attr("height", 50)
+                    .attr("id", "trail");
+                // Add the label at the end, for the percentage.
+                trail.append("svg:text")
+                  .attr("id", "endlabel")
+                  .style("fill", "#000");
+              };
+
+            // Generate a string that describes the points of a breadcrumb polygon.
+            thatimg.breadcrumbPoints=function (d, i) {
+              var charNum=d.name.length;
+              var charWidth=charNum*7.5;
+              var curW=charWidth+25;
+              var points = [];
+              points.push("0,0");
+              points.push(curW + ",0");
+              points.push(curW + thatimg.b.t + "," + (thatimg.b.h / 2));
+              points.push(curW + "," + thatimg.b.h);
+              points.push("0," + thatimg.b.h);
+              if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
+                points.push(thatimg.b.t + "," + (thatimg.b.h / 2));
+              }
+              return points.join(" ");
+            };
+
+            // Update the breadcrumb trail to show the current sequence and percentage.
+            thatimg.updateBreadcrumbs=function (nodeArray, percentageString) {
+                   
+                  // Data join; key function combines name and depth (= position in sequence).
+                  var g = d3.select("#trail")
+                      .selectAll("g")
+                      .data(nodeArray, function(d) { return d.name + d.depth; });
+
+                  // Add breadcrumb and label for entering nodes.
+                  var entering = g.enter().append("svg:g");
+
+                  entering.append("svg:polygon")
+                      .attr("points", thatimg.breadcrumbPoints)
+                      .style("fill", "#009900");
+
+                  entering.append("svg:text")
+                      .attr("x", function(d){
+                           var charNum=d.name.length;
+                            var charWidth=charNum*7.5;
+                            var curW=charWidth+25;
+                            return (curW + thatimg.b.t) / 2;})
+                      .attr("y", thatimg.b.h / 2)
+                      .attr("dy", "0.35em")
+                      .attr("text-anchor", "middle")
+                      .text(function(d) { return d.name; });
+
+                  // Set position for entering and updating nodes.
+                  g.attr("transform", function(d, i) {
+                       
+                    return "translate(" + i * (thatimg.b.w + thatimg.b.s) + ", 0)";
+                  });
+
+                  // Remove exiting nodes.
+                  g.exit().remove();
+
+                  // Now move and update the percentage at the end.
+                  d3.select("#trail").select("#endlabel")
+                      .attr("x", (nodeArray.length + 0.5) * (thatimg.b.w + thatimg.b.s))
+                      .attr("y", thatimg.b.h / 2)
+                      .attr("dy", "0.35em")
+                      .attr("text-anchor", "middle")
+                      .text(percentageString);
+
+                  // Make the breadcrumb trail visible, if it's hidden.
+                  d3.select("#trail")
+                      .style("visibility", "");
+            };
+             
+            return thatimg;
 	};
-	that.singleWGCNAImageMultiMiRView=function(){
+	/*that.singleWGCNAImageMultiMiRView=function(){
 
 	};*/
 	that.singleWGCNAImageEQTLView=function(){

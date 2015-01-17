@@ -15,7 +15,7 @@ use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/module
 #4-dsn
 #5-user
 #6-password
-#7-path to adjMatrix files
+
 
 use DBI;
 use Bio::EnsEMBL::Registry;
@@ -31,38 +31,56 @@ sub trim($)
 
 sub getParents{
     my $termRef=shift;
-    my $moduleGOListRef=shift;
-    my $moduleGOHOHRef=shift;
-    my $geneID=shift;
-    
+    my $moduleGOHOHARef=shift;
     my $term=$$termRef;
-    #my %moduleGOList1=%$moduleGOListRef;
-    #my %moduleGOHOH1=%$moduleGOHOHRef;
+    #print "start getParents(".$term->accession().")\n";
 
-    #if(not (defined $moduleGOListRef->{$term->accession()})){
-        my @parents = @{ $term->parents( ) };
-            my %tmp;
-            $tmp{ID}=$term->accession();
-            $tmp{name} = $term->name();
-            $tmp{definition} = $term->definition();
+    #my @keyList=keys %moduleGOHOH1;
+    #print $term->accession()."before key List:";
+    #foreach my $tmpKey(@keyList){
+    #    print ",".$tmpKey; 
+    #}
+    #print "\n";
+    my @parents = [];
+    if($term->is_root()==0){
+        @parents = @{ $term->parents( ) };
         foreach my $par(@parents){
             #print "\t".$term->accession()."->".$par->accession()."|".$par->name()."\t".$par->is_root()."\n";
-            if(defined $moduleGOHOHRef->{$par->accession()}{ID}){
-            }else{
-                if($par->is_root()==0){
-                    getParents(\$par,\%moduleGOList1,\%moduleGOHOH1,"");
+            getParents(\$par,$moduleGOHOHARef);
+            #print "after getParents:".$par->accession()."\t:".$moduleGOHOH1{$par->accession()}{ID}.":\n";
+            my $found=0;
+            DUPLICATE:foreach my $child(@{$moduleGOHOHARef->{$par->accession()}{children}}){
+                if($child eq $term->accession()){
+                    $found=1;
+                    last DUPLICATE;
                 }
-                $moduleGOHOHRef->{$par->accession()}{ID}=$par->accession();
-                $moduleGOHOHRef->{$par->accession()}{name} = $par->name();
-                $moduleGOHOHRef->{$par->accession()}{definition} = $par->definition();
             }
-            push(@{$moduleGOHOHRef->{$par->accession()}{children}},\%tmp);
-            $moduleGOListRef->{$par->accession()}{ID}=$par->accession();
+            if($found==0){
+                push(@{$moduleGOHOHARef->{$par->accession()}{children}},$term->accession());
+            }
         }
-        $moduleGOListRef->{$term->accession()}{ID}=$term->accession();
-        $moduleGOHOHRef->{$term->accession()}{ID}=$term->accession();
-        $moduleGOHOHRef->{$term->accession()}{name} = $term->name();
-        $moduleGOHOHRef->{$term->accession()}{definition} = $term->definition();
+    }
+    
+    #setup current term before returning
+    #print "test if exists:".$term->accession()."\t:".$moduleGOHOH1{$term->accession()}{ID}.":\n";
+
+    my $id=$term->accession();
+    if(not (exists $moduleGOHOHARef->{$id}{ID})){
+        #print "add term:".$id."\n";
+        $moduleGOHOHARef->{$id}{ID}=$term->accession();
+        $moduleGOHOHARef->{$id}{name} = $term->name();
+        $moduleGOHOHARef->{$id}{definition} = $term->definition();
+        $moduleGOHOHARef->{$id}{children} = [];
+        $moduleGOHOHARef->{$id}{parents} = \@parents;
+    }
+
+    #my @keyList2=keys %{$moduleGOHOHARef};
+    #print $id." after key List:";
+    #foreach my $tmpKey(@keyList2){
+    #    print ",".$tmpKey; 
+    #}
+    #print "\n";
+    #print "test if exists AFTER:".$term->accession()."\t:".$moduleGOHOH1{$term->accession()}{ID}.":\n";
     #}
 }
 
@@ -70,29 +88,37 @@ sub printGOTermJSON{
     my $fh=shift;
     my $goRef=shift;
     my $term=shift;
-    #my $term=$termRef;
-    my %goHOH=%$goRef;
-    if(defined $term and defined $goHOH{$term}{ID}){
-        my @list=$goHOH{$term}{children};
+    
+    if(defined $term and defined $goRef->{$term}{ID}){
+        my @list=@{$goRef->{$term}{children}};
+        my $def=$goRef->{$term}{definition};
+        $def=substr($def,0,rindex($def,"\"")+1);
         #print "print:$term:".$goHOH{$term}{ID}."\n";
-        print $fh "{\"ID\":\"".$goHOH{$term}{ID}."\",";
-        print $fh "\t\"Name\":\"".$goHOH{$term}{name}."\",";
-        print $fh "\t\"children\":[\n";
+        print $fh "\t{\"id\":\"".$goRef->{$term}{ID}."\",\n";
+        print $fh "\t\t\"name\":\"".$goRef->{$term}{name}."\",\n";
+        print $fh "\t\t\"definition\":".$def.",\n";
+        #print $fh "\t\t\"size\":\"".@list."\",\n";
+        print $fh "\t\t\"children\":[\n";
+        #print "Print ID".$goRef->{$term}{ID}."\n\tChildren:";
+        my $count=0;
         foreach my $val2(@list){
-            #print "val2:\t".$val2."\n";
+            #print "\t".$val2."\n";
             if(defined $val2){
-                foreach my $val3(@$val2){
-                    #print "first val3:\t".$val3."\n";
-                    my %tmp=%$val3;
-                    #print "val3:\t".$tmp{ID}."\n";
-                    printGOTermJSON($fh,\%goHOH, $tmp{ID} );
-                    #print $fh "{\"ID\":\"$val2\"}\n";
+                if($count>0){
+                        print $fh ",";
+                }
+                if(index($val2,"GO")==0){
+                    printGOTermJSON($fh,$goRef, $val2 );
+                }else{    
+                    print $fh "{\"id\":\"".$val2."\",\"name\":\"".$val2."\",\"size\":1}";
                 }
             }
+            $count++;
         }
-        print $fh "]\n}\n";
+        #print "\n";
+        print $fh "\t\t]\t\t\n}\n";
     }else{
-        print "undefined:$term\n";
+        print "undefined:".$term."\n";
     }
 }
 
@@ -140,6 +166,7 @@ my $query_handle = $connect->prepare($query) or die ("Module query prepare faile
 $query_handle->execute() or die ( "Module query execute failed \n");
 my $moduleName;
 $query_handle->bind_columns(\$moduleName);
+#$query_handle->fetch();
 while($query_handle->fetch()) {
         push(@moduleList,$moduleName);
 }
@@ -234,20 +261,29 @@ foreach my $mod(@moduleList){
                             
                         
                             my @xrefs = @{ $transcript->get_all_xrefs("GO%") };
+                            
                             foreach my $xref(@xrefs){
-                                my $primid = $xref->primary_id();
-                                my $dispid = $xref->display_id();
-                                my $db = $xref->dbname;
-                                if(defined $dispid){
-                                    my $term = $go_adaptor->fetch_by_accession($dispid);
-                                    if(defined $term){
-                                        getParents(\$term,\%moduleGOHOHA);
-                                        my $lRef=$moduleGOHOHA{$term}{children};
-                                        my @children=@$lRef;
-                                        push(@children,$geneName);
+                                    my $primid = $xref->primary_id();
+                                    my $dispid = $xref->display_id();
+                                    my $db = $xref->dbname;
+                                    if(defined $dispid){
+                                        my $term = $go_adaptor->fetch_by_accession($dispid);
+                                        if(defined $term){
+                                            getParents(\$term,\%moduleGOHOHA);
+                                            my $found=0;
+                                            DUPLICATEGENE:foreach my $child2(@{$moduleGOHOHA{$term->accession()}{children}}){
+                                                if($child2 eq $geneName){
+                                                    $found=1;
+                                                    last DUPLICATEGENE;
+                                                }
+                                            }
+                                            if($found==0){
+                                                push(@{$moduleGOHOHA{$term->accession()}{children}},$geneName);
+                                            }
+                                            
+                                        }
+
                                     }
-                                    
-                                }
                             }
                             $cntTranscripts = $cntTranscripts+1;
                         } # loop through transcripts
@@ -263,114 +299,24 @@ foreach my $mod(@moduleList){
     $query_handle2->finish();
     
    
-    
-    open OFILE, '>', $path.$mod.".json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
-    my $tmpMod=$mod;
-    $tmpMod =~ s/\./_/g;
-    print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
-    print OFILE "\t\"ModID\":".$modID.",\n";
-    print OFILE "\t\"TCList\": [\n";
-
-    my @tcKey=keys $moduleHOH{TCList};
-    $tcCount=0;
-    foreach my $tc(@tcKey){
-        if ($tcCount>0) {
-                print OFILE ",\n";
+    open OFILE, '>', $path.$mod.".GO.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
+    print OFILE "{\n\t\"MOD_NAME\":\"$mod\",\n";
+    print OFILE "\t\"GOList\": [\n";
+    my @r;
+    push(@r,"GO:0005575");
+    push(@r,"GO:0008150");
+    push(@r,"GO:0003674");
+    my $tmpCount=0;
+    foreach my $val(@r){
+        #print "TOP LEVEL\n";
+        if($tmpCount>0){
+            print OFILE ",\n";
         }
-        print OFILE "\t\t{\n\t\t\t\"ID\":\"$tc\",\n";
-        print OFILE "\t\t\t\"LinkSum\":".$moduleHOH{TCList}{$tc}{linkSum}.",\n";
-        print OFILE "\t\t\t\"LinkCount\":".$moduleHOH{TCList}{$tc}{linkCount}.",\n";
-        print OFILE " \t\t\t\"Gene\":{";
-        if (defined $moduleHOH{TCList}{$tc}{Gene}{ID}) {
-            print OFILE " \"start\":".$moduleHOH{TCList}{$tc}{Gene}{start}.",";
-            print OFILE " \"stop\":".$moduleHOH{TCList}{$tc}{Gene}{stop}.",";
-            print OFILE " \"ID\":\"".$moduleHOH{TCList}{$tc}{Gene}{ID}."\",";
-            print OFILE " \"strand\":\"".$moduleHOH{TCList}{$tc}{Gene}{strand}."\",";
-            print OFILE " \"chromosome\":\"".$moduleHOH{TCList}{$tc}{Gene}{chromosome}."\",";
-            print OFILE " \"biotype\":\"".$moduleHOH{TCList}{$tc}{Gene}{biotype}."\",";
-            print OFILE " \"source\":\"".$moduleHOH{TCList}{$tc}{Gene}{source}."\",";
-            print OFILE " \"geneSymbol\":\"".$moduleHOH{TCList}{$tc}{Gene}{geneSymbol}."\"";
-            if(index($moduleHOH{TCList}{$tc}{Gene}{ID},"ENS")==0){
-                
-                if (defined $moduleHOH{TCList}{$tc}{Gene}{description}) {
-                    my $tmpDesc=$moduleHOH{TCList}{$tc}{Gene}{description};
-                    $tmpDesc=substr($tmpDesc,0,index($tmpDesc,"[")-1);
-                    print OFILE ", \"description\":\"".$tmpDesc."\",";
-                }else{
-                    print OFILE ", \"description\":\"\",";
-                }
-                print OFILE " \"extStart\":".$moduleHOH{TCList}{$tc}{Gene}{extStart}.",";
-                print OFILE " \"extStop\":".$moduleHOH{TCList}{$tc}{Gene}{extStop}."";
-            }
-
-            #if(defined $moduleHOH{TCList}{$tc}{Gene}{GOList}){
-            #    print OFILE "\n\t\t\t\t\"GOList\":[\n";
-            #    my @goKey=keys $moduleHOH{TCList}{$tc}{Gene}{GOList};
-            #    my $goCount=0;
-            #    foreach my $go(@goKey){
-            #        if ($goCount>0) {
-            #                print OFILE ",\n";
-            #        }
-                    #my $def=$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{definition};
-                    #my $ind=index($def,"\"",1);
-                    #$def=substr($def,0,$ind+1);
-            #        print OFILE "{\"ID\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{ID}."\",";
-                    #print OFILE "\"Definition\":".$def.",";
-            #        print OFILE "\"Name\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{name}."\",";
-            #        print OFILE "\"domain\":\"".$moduleHOH{TCList}{$tc}{Gene}{GOList}{$go}{root}."\"";
-            #        print OFILE "}";
-            #        $goCount++;
-            #    }
-            #    print OFILE "\n\t\t\t\t]\n";#end GO List
-            #}
-        }else{
-            print OFILE " \t\t\t\t\"ID\":\"Unannotated\"";
-        }
-
-       print OFILE "\t\t\t}\n";#end Gene
-       print OFILE "\t\t}";
-       $tcCount++;
+        printGOTermJSON(\*OFILE,\%moduleGOHOHA,$val);
+        $tmpCount++;
     }
-    print OFILE "\n\t]\n";#end TCList
+    print OFILE "\t\]\n";
     print OFILE "}";#end module
     close OFILE;
 
-    #open OFILE, '>', $path.$mod.".GO.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
-    #print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
-    #print OFILE "\t\"GOList\": [\n";
-    #my @r;
-    #push(@r,"GO:0005575");
-    #push(@r,"GO:0008150");
-    #push(@r,"GO:0003674");
-    #foreach my $val(@r){
-    #    print "TOP LEVEL\n";
-    #    printGOTermJSON(\*OFILE,\%moduleGOHOH,$val);
-    #    
-    #}
-    #print OFILE "\t\]\n";
-    #print OFILE "}";#end module
-    #close OFILE;
-
-    open OFILE, '>', $path.$mod.".eQTL.json" or die " Could not open two track file $path$mod.eQTL.json for writing $!\n\n";
-        print OFILE "[\n";
-        for(my $i=0;$i<@eqtlAOH;$i++){
-            if($i>0){
-                print OFILE ",";
-            }
-            print OFILE "{ \"Chr\":\"chr".substr($eqtlAOH[$i]{chromosome},2)."\", \"Start\":".$eqtlAOH[$i]{location}.", \"Snp\":\"".$eqtlAOH[$i]{name}."\", \"Pval\":".$eqtlAOH[$i]{pvalue}."}\n";
-        }
-        print OFILE "]";
-    close OFILE;
-
-    my $chrString="mm1;mm2;mm3;mm4;mm5;mm6;mm7;mm8;mm9;mm10;mm11;mm12;mm13;mm14;mm15;mm16;mm17;mm18;mm19;mmX;";
-    if($org eq "Rn"){   
-        $chrString="rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX;";
-    }
-    my $tmpP=substr($path,0,index($path,"tmpData")+7);
-    my $dsNum=substr($path,index($path,"/ds")+1,index($path,"/",index($path,"/ds")+1)-1);
-    my $tmpPath=$tmpP."/circos/".$dsNum.$mod."/";
-    print "Circos Path:".$tmpPath."\n";
-    my $cutoff=2;
-    
-    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$modRGB,$dsn,$user, $passwd);
 }
