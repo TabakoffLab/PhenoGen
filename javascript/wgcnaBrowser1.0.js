@@ -1716,67 +1716,414 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.selectedNode;
             thatimg.displayedLevel="d1";
             thatimg.width = $(window).width();
-            thatimg.height = $(window).height()*0.85;
+            thatimg.height = Math.floor(window.innerHeight*0.92);
             thatimg.padding = 5;
             thatimg.radius = (Math.min(thatimg.width, thatimg.height) - 2 * thatimg.padding)/ 2,
             thatimg.duration = 1000;
             thatimg.xScale = d3.scale.linear().range([0, 2 * Math.PI]);
             thatimg.yScale = d3.scale.pow().exponent(1.3).domain([0, 1]).range([0, thatimg.radius]);
+            thatimg.colorGO=d3.scale.category20();
+            thatimg.geneList={};
+            var tmpDat=that.selectedModule.TCList;
+            for(var i=0;i<tmpDat.length;i++){
+                thatimg.geneList[that.selectedModule.TCList[i].Gene.ID]=that.selectedModule.TCList[i].Gene.geneSymbol;
+            }
 
+            thatimg.pathColor=function(d){
+                              if(d.name.indexOf("ENS")==0){
+                                  return "#DFC184";
+                              }
+                                else{
+                                    return thatimg.colorGO(d.name);
+                                }
+            };
 
+            thatimg.redraw=function(){
+                thatimg.svg.select("#center").remove();
+                if(thatimg.selectedNode!==thatimg.data.GOList[0]){
+                    thatimg.svg.append("circle").attr("id","center").attr("cx",Math.max(thatimg.width/2,thatimg.radius) + thatimg.padding).attr("cy",Math.max(thatimg.height/2,thatimg.radius) + thatimg.padding).attr("r","20")
+                        .attr("fill-rule", "evenodd")
+                        .attr("fill",function(){return thatimg.pathColor(thatimg.selectedNode.parent);})//"#009900")
+                        .attr("pointer-events","all")
+                        .on("click",function(){
+                            thatimg.selectedNode=thatimg.selectedNode.parent;
+                            thatimg.mouseover(thatimg.selectedNode.parent);
+                            thatimg.redraw();
+                        })
+                        .on("mouseover",function(d){thatimg.mouseover(thatimg.selectedNode.parent);});
+                }
+                thatimg.arc = d3.svg.arc()
+                                .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
+                                .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
+                                .innerRadius(function(d) { 
+                                        if(d===thatimg.selectedNode && thatimg.selectedNode!==thatimg.data.GOList[0]){
+                                            return 20;
+                                        }else if(d===thatimg.selectedNode && thatimg.selectedNode===thatimg.data.GOList[0]){
+                                            return 0;
+                                        }else{
+                                            return Math.max(0, Math.sqrt(d.y)); 
+                                        }
+                                    })
+                                .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });
+                        
+                var goRoot=thatimg.selectedNode; 
+                var nodes = thatimg.partition.nodes(goRoot);
+                
+                thatimg.topG.selectAll("path").remove();
+                thatimg.topG.selectAll("text").remove();
+                var radToDeg=180/Math.PI;
+                var degToRad=Math.PI/180;
+                thatimg.path = thatimg.topG.selectAll("path").data(nodes);
+                thatimg.path.enter().append("path")
+                          .attr("d", thatimg.arc)
+                          .attr("id",function(d,i){return "ap"+i;})
+                          .attr("fill-rule", "evenodd")
+                          .attr("fill",thatimg.pathColor)//"#009900")
+                          /*.attr("stroke",function(d){
+                                    var strk="#000000";
+                                    var startA=Math.max(0, Math.min(2 * Math.PI, d.x))*radToDeg;
+                                    var endA=Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))*radToDeg;
+                                    if((endA-startA)<0.5 && d.name.indexOf("ENS")===0){
+                                        strk=thatimg.pathColor(d);
+                                    }
+                                    return strk;
+                          })*/
+                          .attr("pointer-events","all")
+                          .on("mouseover", thatimg.mouseover)
+                          .on("click", thatimg.click);
+                  
+               
+                thatimg.path.each(function(d,i){
+                    var tmpD=d;
+                    var tmpI=i;
+                    var startA=Math.max(0, Math.min(2 * Math.PI, d.x))*radToDeg;
+                    var endA=Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))*radToDeg;
+                    var midA=startA+(endA-startA)/2;
+                    if(startA===0&&endA===360){
+                        midA=90;
+                    }
+                    if(endA-startA>10){
+                        if(d!==thatimg.selectedNode.parent){
+                            if((endA-startA)>25){ 
+                                 //construct lines
+                                var init=tmpD.name;
+                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                    init=thatimg.geneList[init]+ " ("+init+")";
+                                }
+                                var max=(endA-startA)/1.9;
+                                var lines=[];
+                                var curLine=0;
+                                if(init.length>max){
+                                    var parts=init.split(" ");
+                                    var part="";
+                                    for(var j=0;j<parts.length;j++){
+                                        var tmpPart=part;
+                                        if(part.length>0){
+                                            tmpPart+=" ";
+                                        }
+                                        tmpPart+=parts[j];
+                                        if(tmpPart.length>=max){
+                                            lines[curLine]=part;
+                                            part=parts[j];
+                                            curLine++;
+                                        }else{
+                                            part=tmpPart;
+                                        }
+                                    }
+                                    if(part.length>0){
+                                        lines[curLine]=part;
+                                    }
+                                    console.log("lines");
+                                    console.log(lines);
+                                }else{
+                                    lines[curLine]=init;
+                                }
+                                                                   
+                                    var tmpText=thatimg.topG.append("text")
+                                            .style("fill-opacity", 1)
+                                            .style("fill", "#000")
+                                            .attr("pointer-events","none")
+                                            .attr("text-anchor", function(d) {
+                                                return "start";
+                                            })
+                                            .attr("dy", "1em")
+                                            .style("opacity",function(d){
+                                                return 1;
+
+                                            })
+                                            .append("textPath")
+                                            .attr("xlink:href",function(d){return "#ap"+tmpI;})
+                                            .attr("startOffset",function(d){
+                                                if(startA===0&&endA===360){
+                                                    return 270;
+                                                }
+                                                return 5 ;
+                                                //return ((endA-startA)/2);
+                                                
+                                            });
+
+                                           /* .text(function(d){
+                                                var init=tmpD.name;
+                                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                                    init=thatimg.geneList[init]+ " ("+init+")";
+                                                }
+                                                return init;
+                                            });*/
+                                            
+                                            for (var j=0;j<lines.length;j++){
+                                              tmpText.append("tspan")
+                                                  .attr("x", 0)
+                                                  .attr("dy", "1em")
+                                                  .text(lines[j]);
+                                            }
+                                }else {
+                                     //construct lines
+                                    /*var position=d.depth%3;
+                                        if(position===0){
+                                            midA=midA+(endA-startA)/4;
+                                        }else if(position===2){
+                                            midA=midA-(endA-startA)/4;
+                                        }*/
+                                    var tmpText=thatimg.topG.append("text")
+                                          .style("fill-opacity", 1)
+                                          .style("fill", "#000")
+                                          .attr("pointer-events","none")
+                                         .attr("text-anchor", function(d) {
+                                             var anch="start";
+                                             if(midA>180){
+                                                 anch="end";
+                                             }
+                                            return anch;
+                                          })
+                                          .attr("dy", ".2em")
+                                          .attr("transform", function(d) {
+                                            var multiline = (tmpD.name || "").split(" ").length > 1,
+                                                angle = startA+1,
+                                                //angle = ((tmpD.x + tmpD.dx+ tmpD.x)/2)*180/Math.PI,
+                                                rotate = angle-90;//+ (multiline ? -.5 : 0);
+                                                translate =0;// Math.max(0, Math.sqrt(tmpD.y));
+                                                /*if(startA>180){
+                                                    angle=endA-1;
+                                                }*/
+                                                if(startA===0&&endA===360){translate=20;}
+                                            return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
+                                          }).style("opacity",function(d){
+                                              return 1;
+                                          //return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))-Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)) > 0.01 ? 1:0;
+                                          });
+                                    if(typeof tmpD !=='undefined' && typeof tmpD.name !=='undefined'){
+                                            var init=tmpD.name;
+                                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                                init=thatimg.geneList[init];
+                                            }
+                                            var tmpName=init.split(" ");
+
+                                            for (var j=0;j<tmpName.length;j++){
+                                              tmpText.append("tspan")
+                                                  .attr("x", 0)
+                                                  .attr("dy", "1em")
+                                                  .text(tmpName[j]);
+                                            }
+                                    }
+                                }
+                        }
+                    }
+                          //.on("click", click);
+                });
+                
+                
+            };
+            
             thatimg.draw=function(){
-                /*thatimg.svg = d3.select("#graphic").append("svg")
-                       .attr("width", width)
-                        .attr("height", height)
-                        .append("g")
-                        .attr("transform", "translate(" + [radius + padding, radius + padding] + ")");*/
+                thatimg.svg.attr("width", thatimg.width)
+                        .attr("height", thatimg.height);
+                        
                 thatimg.initializeBreadcrumbTrail();
                 thatimg.topG=thatimg.svg.attr("width", thatimg.width)
                         .attr("height", thatimg.height)
                         .append("g")
-                        .attr("transform", "translate(" + [thatimg.radius + thatimg.padding, thatimg.radius + thatimg.padding] + ")");
+                        .attr("transform", "translate(" + [Math.max(thatimg.width/2,thatimg.radius) + thatimg.padding, Math.max(thatimg.height/2,thatimg.radius) + thatimg.padding] + ")");
 
                 thatimg.partition = d3.layout.partition()
                         .size([2 * Math.PI, thatimg.radius * thatimg.radius])
                         .value(function(d){return d.size;});
-                       //.value(function(d) { if(typeof d.children !=='undefined'){return d.children.length;}else{return 0;} });
-                       
-                var arc = d3.svg.arc()
-                        .startAngle(function(d) { return d.x; })
-                        .endAngle(function(d) { return d.x + d.dx; })
-                        .innerRadius(function(d) { return Math.sqrt(d.y); })
-                        .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
-                /*var arc = d3.svg.arc()
-                        .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, thatimg.xScale(d.x))); })
-                        .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, thatimg.xScale(d.x + d.dx))); })
-                        .innerRadius(function(d) { return Math.max(0, thatimg.yScale(d.y)); })
-                        .outerRadius(function(d) { return Math.max(0, thatimg.yScale(d.y + d.dy)); });*/
+                
+                thatimg.arc = d3.svg.arc()
+                                .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
+                                .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
+                                .innerRadius(function(d) { return Math.max(0, Math.sqrt(d.y)); })
+                                .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });
+
 
                 d3.json(contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+".GO.json", function(error, root) {
-                    console.log(error);
-                    console.log(root);
+                    thatimg.data=root;
                     var goRoot=root.GOList[0]; 
                     var nodes = thatimg.partition.nodes(goRoot);
                     thatimg.vis=thatimg.topG.append("svg:circle")
                         .attr("r", thatimg.radius)
-                        .style("opacity", 0);
-                
-                    var path = thatimg.topG.selectAll("path").data(nodes);
-                          path.enter().append("path")
-                          .attr("d", arc)
+                        .style("opacity", 0)
+                        .on("mouseover",thatimg.mouseleave);
+                    var radToDeg=180/Math.PI;
+                    var degToRad=Math.PI/180;
+                    thatimg.path = thatimg.topG.selectAll("path").data(nodes);
+                    thatimg.path.enter().append("path")
+                          .attr("d", thatimg.arc)
+                          .attr("id",function(d,i){return "ap"+i;})
                           .attr("fill-rule", "evenodd")
-                          .attr("fill","#009900")
-                          .on("mouseover", thatimg.mouseover);
-                    //      .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-                          /*.style("fill", function(d) { return d.color; })
-                          .on("click", click)
-                          .on("mouseover",hover)
+                          .attr("fill",thatimg.pathColor)//"#009900")
+                          /*.attr("stroke",function(d){
+                                    var strk="#000000";
+                                    var startA=Math.max(0, Math.min(2 * Math.PI, d.x))*radToDeg;
+                                    var endA=Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))*radToDeg;
+                                    if((endA-startA)<0.5){ //&& d.name.indexOf("ENS")===0 || ){
+                                        strk=thatimg.pathColor(d);
+                                    }
+                                    return strk;
+                          })*/
+                          .attr("pointer-events","all")
+                          .on("mouseover", thatimg.mouseover)
+                          .on("click", thatimg.click);
+                          /*.on("mouseover",hover)
                           .on("mouseout",hideToolTip);*/
+                    thatimg.path.each(function(d,i){
+                    var tmpD=d;
+                    var tmpI=i;
+                    var startA=Math.max(0, Math.min(2 * Math.PI, d.x))*radToDeg;
+                    var endA=Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))*radToDeg;
+                    var midA=startA+(endA-startA)/2;
+                    if(startA===0&&endA===360){
+                        midA=90;
+                    }
+                    if(endA-startA>10){
+                        if(typeof thatimg.selectedNode === 'undefined' || d!==thatimg.selectedNode.parent){
+                            if((endA-startA)>25){ 
+                                 //construct lines
+                                var init=tmpD.name;
+                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                    init=thatimg.geneList[init]+ " ("+init+")";
+                                }
+                                var max=(endA-startA)/1.9;
+                                var lines=[];
+                                var curLine=0;
+                                if(init.length>max){
+                                    var parts=init.split(" ");
+                                    var part="";
+                                    for(var j=0;j<parts.length;j++){
+                                        var tmpPart=part;
+                                        if(part.length>0){
+                                            tmpPart+=" ";
+                                        }
+                                        tmpPart+=parts[j];
+                                        if(tmpPart.length>=max){
+                                            lines[curLine]=part;
+                                            part=parts[j];
+                                            curLine++;
+                                        }else{
+                                            part=tmpPart;
+                                        }
+                                    }
+                                    if(part.length>0){
+                                        lines[curLine]=part;
+                                    }
+                                    console.log("lines");
+                                    console.log(lines);
+                                }else{
+                                    lines[curLine]=init;
+                                }
+                                                                   
+                                    var tmpText=thatimg.topG.append("text")
+                                            .style("fill-opacity", 1)
+                                            .style("fill", "#000")
+                                            .attr("pointer-events","none")
+                                            .attr("text-anchor", function(d) {
+                                                return "start";
+                                            })
+                                            .attr("dy", "1em")
+                                            .style("opacity",function(d){
+                                                return 1;
 
-                    var text = thatimg.topG.selectAll("text").data(nodes);
-                      var textEnter = text.enter().append("text")
+                                            })
+                                            .append("textPath")
+                                            .attr("xlink:href",function(d){return "#ap"+tmpI;})
+                                            .attr("startOffset",function(d){
+                                                if(startA===0&&endA===360){
+                                                    return -180;
+                                                }
+                                                return 5 ;
+                                                //return ((endA-startA)/2);
+                                                
+                                            });
+
+                                           /* .text(function(d){
+                                                var init=tmpD.name;
+                                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                                    init=thatimg.geneList[init]+ " ("+init+")";
+                                                }
+                                                return init;
+                                            });*/
+                                            
+                                            for (var j=0;j<lines.length;j++){
+                                              tmpText.append("tspan")
+                                                  .attr("x", 0)
+                                                  .attr("dy", "1em")
+                                                  .text(lines[j]);
+                                            }
+                                }else {
+                                     //construct lines
+                                    var position=d.depth%3;
+                                        if(position===0){
+                                            midA=midA+(endA-startA)/4;
+                                        }else if(position===2){
+                                            midA=midA-(endA-startA)/4;
+                                        }
+                                    var tmpText=thatimg.topG.append("text")
+                                          .style("fill-opacity", 1)
+                                          .style("fill", "#000")
+                                          .attr("pointer-events","none")
+                                         .attr("text-anchor", function(d) {
+                                             var anch="start";
+                                             if(midA>180){
+                                                 anch="end";
+                                             }
+                                            return anch;
+                                          })
+                                          .attr("dy", ".2em")
+                                          .attr("transform", function(d) {
+                                            var multiline = (tmpD.name || "").split(" ").length > 1,
+                                                angle = midA,
+                                                //angle = ((tmpD.x + tmpD.dx+ tmpD.x)/2)*180/Math.PI,
+                                                rotate = angle-90;//+ (multiline ? -.5 : 0);
+                                                translate = Math.max(0, Math.sqrt(tmpD.y));
+                                                if(startA===0&&endA===360){translate=20;}
+                                            return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
+                                          }).style("opacity",function(d){
+                                              return 1;
+                                          //return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))-Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)) > 0.01 ? 1:0;
+                                          });
+                                    if(typeof tmpD !=='undefined' && typeof tmpD.name !=='undefined'){
+                                            var init=tmpD.name;
+                                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                                init=thatimg.geneList[init];
+                                            }
+                                            var tmpName=init.split(" ");
+
+                                            for (var j=0;j<tmpName.length;j++){
+                                              tmpText.append("tspan")
+                                                  .attr("x", 0)
+                                                  .attr("dy", "1em")
+                                                  .text(tmpName[j]);
+                                            }
+                                    }
+                                }
+                        }
+                    }
+                          //.on("click", click);
+                });
+                    /*thatimg.text = thatimg.topG.selectAll("text").data(nodes);
+                      var textEnter = thatimg.text.enter().append("text")
                           .style("fill-opacity", 1)
                           .style("fill", "#000")
+                          .attr("pointer-events","none")
                          .attr("text-anchor", function(d) {
                             return thatimg.xScale(d.x + d.dx / 2) > Math.PI ? "end" : "start";
                           })
@@ -1784,8 +2131,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                           .attr("transform", function(d) {
                             var multiline = (d.name || "").split(" ").length > 1,
                                 angle = thatimg.xScale(d.x + d.dx / 2) * 180 / Math.PI - 90,
-                                rotate = d.depth ? angle + (multiline ? -.5 : 0) : 0;
-                                translate = d.depth ? (thatimg.yScale(d.y) + thatimg.padding) : (thatimg.yScale(d.y) + thatimg.padding) - 35;
+                                rotate = d.depth==1 ? angle + (multiline ? -.5 : 0) : 0;
+                                translate = d.depth==1 ? (thatimg.yScale(d.y) + thatimg.padding) : (thatimg.yScale(d.y) + thatimg.padding) - 35;
                             return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
                           }).style("opacity",function(d){
                             return thatimg.xScale(d.dx) > 0.035  ? 1:0;
@@ -1793,17 +2140,24 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                           //.on("click", click);
                       textEnter.append("tspan")
                           .attr("x", 0)
-                        .text(function(d) { return d.depth<3 ? d.name.split(" ")[0] : d.name ; });
+                        .text(function(d) { return d.depth<4 ? d.name.split(" ")[0] : d.name ; });
                       textEnter.append("tspan")
                           .attr("x", 0)
                           .attr("dy", "1em")
-                         .text(function(d) { return d.depth<3 ? d.name.split(" ")[1] || "" : ""; });
-                    thatimg.totalSize = path.node().__data__.value;
+                         .text(function(d) { return d.depth<4 ? d.name.split(" ")[1] || "" : ""; });*/
+                    thatimg.totalSize = thatimg.path.node().__data__.value;
                 });
                 
              };
              
+            thatimg.click=function(d){
+              thatimg.selectedDepth=d.depth;
+              thatimg.selectedNode=d;
+              thatimg.redraw();
+            };
+            
             thatimg.mouseover=function(d){
+                
                 var percentage = (100 * d.value / thatimg.totalSize).toPrecision(3);
                 var percentageString = percentage + "%";
                 if (percentage < 0.1) {
@@ -1829,7 +2183,30 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                               return (sequenceArray.indexOf(node) >= 0);
                             })
                     .style("opacity", 1);
+                d3.event.stopPropagation();
             };
+            
+            thatimg.mouseleave=function(d) {
+
+                // Hide the breadcrumb trail
+                d3.select("#trail")
+                    .style("visibility", "hidden");
+
+                // Deactivate all segments during transition.
+                d3.selectAll("path").on("mouseover", null);
+
+                // Transition each segment to full opacity and then reactivate it.
+                d3.selectAll("path")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 1)
+                    .each("end", function() {
+                            d3.select(this).on("mouseover", thatimg.mouseover);
+                          });
+
+                d3.select("#explanation")
+                    .style("visibility", "hidden");
+              }
             
             // Given a node in a partition layout, return an array of all of its ancestor
             // nodes, highest first, but excluding the root.
@@ -1843,13 +2220,24 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 return path;
             };
             
+            thatimg.isParentOf=function(p, c) {
+                if (p === c) return true;
+                if (p.children) {
+                  return p.children.some(function(d) {
+                    return thatimg.isParentOf(d, c);
+                  });
+                }
+                return false;
+            };
+            
             // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
             thatimg.b = {
-              w: 250, h: 30, s: 3, t: 10
+              w: 250, h: 30, s: 3, t: 10,runW:0
             };
             
             thatimg.initializeBreadcrumbTrail=function () {
                 // Add the svg area.
+                d3.select("#singleWGCNASVG").remove();
                 var trail = d3.select("#viewGene").append("svg:svg")
                     .attr("width", thatimg.width)
                     .attr("height", 50)
@@ -1858,6 +2246,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 trail.append("svg:text")
                   .attr("id", "endlabel")
                   .style("fill", "#000");
+                thatimg.svg=d3.select("#viewGene").append("svg").attr("id","singleWGCNASVG").attr("height",thatimg.height+"px").attr("width","100%");
               };
 
             // Generate a string that describes the points of a breadcrumb polygon.
@@ -1890,7 +2279,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
                   entering.append("svg:polygon")
                       .attr("points", thatimg.breadcrumbPoints)
-                      .style("fill", "#009900");
+                      .style("fill", thatimg.pathColor);
 
                   entering.append("svg:text")
                       .attr("x", function(d){
@@ -1901,12 +2290,25 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                       .attr("y", thatimg.b.h / 2)
                       .attr("dy", "0.35em")
                       .attr("text-anchor", "middle")
-                      .text(function(d) { return d.name; });
+                      .text(function(d) { 
+                                var tmpName=d.name;
+                                if(tmpName.indexOf("ENS")===0){
+                                    if(typeof thatimg.geneList[tmpName]!=='undefined'){
+                                        tmpName=thatimg.geneList[tmpName];
+                                    }
+                                }
+                                return tmpName; 
+                        });
 
+                  thatimg.b.runW=0;
                   // Set position for entering and updating nodes.
                   g.attr("transform", function(d, i) {
-                       
-                    return "translate(" + i * (thatimg.b.w + thatimg.b.s) + ", 0)";
+                    var charNum=d.name.length;
+                    var charWidth=charNum*7.5;
+                    var curW=charWidth+25;
+                    var toUse=thatimg.b.runW;
+                    thatimg.b.runW=thatimg.b.runW+curW+thatimg.b.s;
+                    return "translate(" + toUse + ", 0)";
                   });
 
                   // Remove exiting nodes.
@@ -1914,7 +2316,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
                   // Now move and update the percentage at the end.
                   d3.select("#trail").select("#endlabel")
-                      .attr("x", (nodeArray.length + 0.5) * (thatimg.b.w + thatimg.b.s))
+                      .attr("x", thatimg.b.runW +45)
                       .attr("y", thatimg.b.h / 2)
                       .attr("dy", "0.35em")
                       .attr("text-anchor", "middle")
