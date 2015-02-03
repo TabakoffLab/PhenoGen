@@ -508,7 +508,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		for(var i=0;i<that.tissues.length;i++){
 			sel.append("option").attr("value",that.tissues[i]).text(that.dispTissues[i]);
 		}
-               
+                
+                var go=that.dataBar.append("td").append("div").attr("id","goCtls").attr("class","goCTL").style("display","none").style("margin-left","10px");
+                go.append("text").text("GO Domain:");
+                sel=go.append("select").attr("id","goDomainSelect").on("change",function(){
+                    that.singleImage.goDomain=$("#goDomainSelect").val();
+                    that.singleImage.draw();
+                });
+                sel.append("option").attr("value","cc").text("Cellular Component");
+                sel.append("option").attr("value","bp").text("Biological Process");
+                sel.append("option").attr("selected","selected").attr("value","mf").text("Molecular Function");
+                
+                
                 var links=that.dataBar.append("td").append("div").attr("id","linkCtls").attr("class","linkCTL").style("display","none").style("margin-left","10px");
                 links.append("text").text("Link Correlation Values");
                 links.append("span").style("cursor","pointer")
@@ -1052,6 +1063,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             }else if(that.viewType==="go"){
                     setTimeout(function(){
 			that.singleImage=that.singleWGCNAImageGoView(that.modules);
+                        that.singleImage.goDomain=$("#goDomainSelect").val();
 			that.singleImage.draw();
 			that.img=that.singleImage;
                     },50);
@@ -1228,6 +1240,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	that.singleWGCNAImageGeneView=function(){
 		var thatimg=that.singleWGCNAImage();
                 $(".linkCTL").show();
+                $(".goCTL").hide();
                 $(".eqtlCtls").hide();
                 thatimg.type="gene";
                 thatimg.truncated=0;
@@ -1711,7 +1724,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 	that.singleWGCNAImageGoView=function(){
             var thatimg=that.singleWGCNAImage();
-       
+            $(".goCTL").show();
+            $(".linkCTL").hide();
+            $(".eqtlCtls").hide();
+            thatimg.goDomain="mf";
             thatimg.selectedDepth=0;
             thatimg.selectedNode;
             thatimg.displayedLevel="d1";
@@ -1802,6 +1818,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     if(startA===0&&endA===360){
                         midA=90;
                     }
+                    var curDepth=(tmpD.depth-thatimg.selectedNode.depth);
                     if(endA-startA>10){
                         if(d!==thatimg.selectedNode.parent){
                             if((endA-startA)>25){ 
@@ -1810,7 +1827,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
                                     init=thatimg.geneList[init]+ " ("+init+")";
                                 }
-                                var max=(endA-startA)/1.9;
+                                var max=(endA-startA)/(2.2-(curDepth*0.025));
                                 var lines=[];
                                 var curLine=0;
                                 if(init.length>max){
@@ -1839,7 +1856,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     lines[curLine]=init;
                                 }
                                                                    
-                                    var tmpText=thatimg.topG.append("text")
+                                var tmpText=thatimg.topG.append("text")
                                             .style("fill-opacity", 1)
                                             .style("fill", "#000")
                                             .attr("pointer-events","none")
@@ -1858,63 +1875,53 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     return 270;
                                                 }
                                                 return 5 ;
-                                                //return ((endA-startA)/2);
-                                                
                                             });
 
-                                           /* .text(function(d){
-                                                var init=tmpD.name;
-                                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                    init=thatimg.geneList[init]+ " ("+init+")";
+                                            var jMax=2;
+                                            if(curDepth<2){
+                                                jMax=3;
+                                            }
+                                            for (var j=0;j<lines.length && j<jMax;j++){
+                                                if(j<jMax){
+                                                    if(j===(jMax-1)&&lines.length>jMax){
+                                                        lines[j]+="...";
+                                                    }
+                                                    tmpText.append("tspan")
+                                                        .attr("x", 0)
+                                                        .attr("dy", "1em")
+                                                        .text(lines[j]);
                                                 }
-                                                return init;
-                                            });*/
-                                            
-                                            for (var j=0;j<lines.length;j++){
-                                              tmpText.append("tspan")
-                                                  .attr("x", 0)
-                                                  .attr("dy", "1em")
-                                                  .text(lines[j]);
                                             }
                                 }else {
                                      //construct lines
-                                    /*var position=d.depth%3;
-                                        if(position===0){
-                                            midA=midA+(endA-startA)/4;
-                                        }else if(position===2){
-                                            midA=midA-(endA-startA)/4;
-                                        }*/
-                                    var tmpText=thatimg.topG.append("text")
-                                          .style("fill-opacity", 1)
-                                          .style("fill", "#000")
-                                          .attr("pointer-events","none")
-                                         .attr("text-anchor", function(d) {
-                                             var anch="start";
-                                             if(midA>180){
-                                                 anch="end";
-                                             }
-                                            return anch;
-                                          })
-                                          .attr("dy", ".2em")
-                                          .attr("transform", function(d) {
-                                            var multiline = (tmpD.name || "").split(" ").length > 1,
-                                                angle = startA+1,
-                                                //angle = ((tmpD.x + tmpD.dx+ tmpD.x)/2)*180/Math.PI,
-                                                rotate = angle-90;//+ (multiline ? -.5 : 0);
-                                                translate =0;// Math.max(0, Math.sqrt(tmpD.y));
-                                                /*if(startA>180){
-                                                    angle=endA-1;
-                                                }*/
-                                                if(startA===0&&endA===360){translate=20;}
-                                            return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
-                                          }).style("opacity",function(d){
-                                              return 1;
-                                          //return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))-Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)) > 0.01 ? 1:0;
-                                          });
-                                    if(typeof tmpD !=='undefined' && typeof tmpD.name !=='undefined'){
+                                     if(tmpD.name.indexOf("ENS")===0){
+                                        var tmpText=thatimg.topG.append("text")
+                                              .style("fill-opacity", 1)
+                                              .style("fill", "#000")
+                                              .attr("pointer-events","none")
+                                             .attr("text-anchor", function(d) {
+                                                 var anch="start";
+                                                 if(midA>180){
+                                                     anch="end";
+                                                 }
+                                                return anch;
+                                              })
+                                              .attr("dy", ".2em")
+                                              .attr("transform", function(d) {
+                                                var angle = midA-2.5,
+                                                    rotate = angle-90;
+                                                    //translate =0;
+                                                    translate = Math.max(0, Math.sqrt(tmpD.y));
+                                                    if(startA===0&&endA===360){translate=20;}
+                                                    if(midA>180){angle=midA+2.5;}
+                                                return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
+                                              }).style("opacity",function(d){
+                                                  return 1;
+                                              });
+                                        
                                             var init=tmpD.name;
                                             if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                init=thatimg.geneList[init];
+                                                    init=thatimg.geneList[init];
                                             }
                                             var tmpName=init.split(" ");
 
@@ -1957,7 +1964,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
                 d3.json(contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+".GO.json", function(error, root) {
                     thatimg.data=root;
-                    var goRoot=root.GOList[0]; 
+                    var goRoot=root.GOList[0];
+                    if(thatimg.goDomain === "mf"){
+                        goRoot=root.GOList[2];
+                    }else if(thatimg.goDomain === "bp"){
+                        goRoot=root.GOList[1];
+                    }
                     var nodes = thatimg.partition.nodes(goRoot);
                     thatimg.vis=thatimg.topG.append("svg:circle")
                         .attr("r", thatimg.radius)
@@ -2335,6 +2347,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	that.singleWGCNAImageEQTLView=function(){
         var thatimg=that.singleWGCNAImage();
             $(".linkCTL").hide();
+            $(".goCTL").hide();
             $(".eqtlCtls").show();
             
             thatimg.type="eqtl";
