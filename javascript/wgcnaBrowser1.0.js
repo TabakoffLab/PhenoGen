@@ -25,6 +25,9 @@ function replaceDot(str){
 function replaceUnderscore(str){
     return str.replace(/_/g, '.');
 }
+function removeColon(str){
+    return str.replace(/:/g, '');
+}
 
 function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	that={};
@@ -1793,6 +1796,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 thatimg.path.enter().append("path")
                           .attr("d", thatimg.arc)
                           .attr("id",function(d,i){return "ap"+i;})
+                          .attr("class",function(d,i){return removeColon(d.id);})
                           .attr("fill-rule", "evenodd")
                           .attr("fill",thatimg.pathColor)//"#009900")
                           /*.attr("stroke",function(d){
@@ -1814,131 +1818,131 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     var tmpI=i;
                     var startA=Math.max(0, Math.min(2 * Math.PI, d.x))*radToDeg;
                     var endA=Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))*radToDeg;
-                    var midA=startA+(endA-startA)/2;
+                    var midA=startA+((endA-startA)/2);
                     if(startA===0&&endA===360){
                         midA=90;
                     }
-                    var curDepth=(tmpD.depth-thatimg.selectedNode.depth);
-                    if(endA-startA>10){
-                        if(d!==thatimg.selectedNode.parent){
-                            if((endA-startA)>25){ 
-                                 //construct lines
-                                var init=tmpD.name;
-                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                    init=thatimg.geneList[init]+ " ("+init+")";
-                                }
-                                var max=(endA-startA)/(2.2-(curDepth*0.025));
-                                var lines=[];
-                                var curLine=0;
-                                if(init.length>max){
-                                    var parts=init.split(" ");
-                                    var part="";
-                                    for(var j=0;j<parts.length;j++){
-                                        var tmpPart=part;
-                                        if(part.length>0){
-                                            tmpPart+=" ";
-                                        }
-                                        tmpPart+=parts[j];
-                                        if(tmpPart.length>=max){
-                                            lines[curLine]=part;
-                                            part=parts[j];
-                                            curLine++;
-                                        }else{
-                                            part=tmpPart;
-                                        }
-                                    }
-                                    if(part.length>0){
-                                        lines[curLine]=part;
-                                    }
-                                    console.log("lines");
-                                    console.log(lines);
-                                }else{
-                                    lines[curLine]=init;
-                                }
-                                                                   
-                                var tmpText=thatimg.topG.append("text")
-                                            .style("fill-opacity", 1)
-                                            .style("fill", "#000")
-                                            .attr("pointer-events","none")
-                                            .attr("text-anchor", function(d) {
-                                                return "start";
-                                            })
-                                            .attr("dy", "1em")
-                                            .style("opacity",function(d){
-                                                return 1;
-
-                                            })
-                                            .append("textPath")
-                                            .attr("xlink:href",function(d){return "#ap"+tmpI;})
-                                            .attr("startOffset",function(d){
-                                                if(startA===0&&endA===360){
-                                                    return 270;
-                                                }
-                                                return 5 ;
-                                            });
-
-                                            var jMax=2;
-                                            if(curDepth<2){
-                                                jMax=3;
-                                            }
-                                            for (var j=0;j<lines.length && j<jMax;j++){
-                                                if(j<jMax){
-                                                    if(j===(jMax-1)&&lines.length>jMax){
-                                                        lines[j]+="...";
-                                                    }
-                                                    tmpText.append("tspan")
-                                                        .attr("x", 0)
-                                                        .attr("dy", "1em")
-                                                        .text(lines[j]);
-                                                }
-                                            }
-                                }else {
-                                     //construct lines
-                                     if(tmpD.name.indexOf("ENS")===0){
-                                        var tmpText=thatimg.topG.append("text")
-                                              .style("fill-opacity", 1)
-                                              .style("fill", "#000")
-                                              .attr("pointer-events","none")
-                                             .attr("text-anchor", function(d) {
-                                                 var anch="start";
-                                                 if(midA>180){
-                                                     anch="end";
-                                                 }
-                                                return anch;
-                                              })
-                                              .attr("dy", ".2em")
-                                              .attr("transform", function(d) {
-                                                var angle = midA-2.5,
-                                                    rotate = angle-90;
-                                                    //translate =0;
-                                                    translate = Math.max(0, Math.sqrt(tmpD.y));
-                                                    if(startA===0&&endA===360){translate=20;}
-                                                    if(midA>180){angle=midA+2.5;}
-                                                return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
-                                              }).style("opacity",function(d){
-                                                  return 1;
-                                              });
-                                        
-                                            var init=tmpD.name;
-                                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                    init=thatimg.geneList[init];
-                                            }
-                                            var tmpName=init.split(" ");
-
-                                            for (var j=0;j<tmpName.length;j++){
-                                              tmpText.append("tspan")
-                                                  .attr("x", 0)
-                                                  .attr("dy", "1em")
-                                                  .text(tmpName[j]);
-                                            }
-                                    }
-                                }
-                        }
+                    if(endA>=180){
+                        console.log("end="+endA+" start="+startA+" mid="+midA);
                     }
+                    var curDepth=(tmpD.depth-thatimg.selectedNode.depth);
+                    if(d!==thatimg.selectedNode.parent){
+                        if((endA-startA)>15){ 
+                             //construct lines
+                            var init=tmpD.name;
+                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                init=thatimg.geneList[init];
+                                if((endA-startA)>25){
+                                    init=init+ " ("+tmpD.name+")";
+                                }
+                            }
+                            var max=(endA-startA)/(2.2-(curDepth*0.025));
+                            var lines=[];
+                            var curLine=0;
+                            if(init.length>max){
+                                var parts=init.split(" ");
+                                var part="";
+                                for(var j=0;j<parts.length;j++){
+                                    var tmpPart=part;
+                                    if(part.length>0){
+                                        tmpPart+=" ";
+                                    }
+                                    tmpPart+=parts[j];
+                                    if(tmpPart.length>=max){
+                                        lines[curLine]=part;
+                                        part=parts[j];
+                                        curLine++;
+                                    }else{
+                                        part=tmpPart;
+                                    }
+                                }
+                                if(part.length>0){
+                                    lines[curLine]=part;
+                                }
+                                
+                            }else{
+                                lines[curLine]=init;
+                            }
+
+                            var tmpText=thatimg.topG.append("text")
+                                        .style("fill-opacity", 1)
+                                        .style("fill", "#000")
+                                        .attr("pointer-events","none")
+                                        .attr("class","txt"+removeColon(d.id))
+                                        .attr("text-anchor", function(d) {
+                                            return "start";
+                                        })
+                                        .attr("dy", "1em")
+                                        .style("opacity",function(d){
+                                            return 1;
+
+                                        })
+                                        .append("textPath")
+                                        .attr("xlink:href",function(d){return "#ap"+tmpI;})
+                                        .attr("startOffset",function(d){
+                                            if(startA===0&&endA===360){
+                                                return 90;
+                                            }
+                                            return 5 ;
+                                        });
+
+                                        var jMax=2;
+                                        if(curDepth<2){
+                                            jMax=3;
+                                        }
+                                        for (var j=0;j<lines.length && j<jMax;j++){
+                                            if(j<jMax){
+                                                if(j===(jMax-1)&&lines.length>jMax){
+                                                    lines[j]+="...";
+                                                }
+                                                tmpText.append("tspan")
+                                                    .attr("x", 0)
+                                                    .attr("dy", "1em")
+                                                    .text(lines[j]);
+                                            }
+                                        }
+                            }else if((endA-startA)>6 && tmpD.name.indexOf("ENS")===0){
+                                    var tmpText=thatimg.topG.append("text")
+                                          .style("fill-opacity", 1)
+                                          .style("fill", "#000")
+                                          .attr("pointer-events","none")
+                                          .attr("class","txt"+removeColon(d.id))
+                                         .attr("text-anchor", function(d) {
+                                             var anch="start";
+                                             if(endA>=180){
+                                                 anch="end";
+                                             }
+                                            return anch;
+                                          })
+                                          .attr("dy", ".2em")
+                                          .attr("transform", function(d) {
+                                            var angle = midA-2.5;
+                                            var translate = Math.max(0, Math.sqrt(tmpD.y));
+                                            if(startA===0&&endA===360){translate=20;}
+                                            if(endA>=180){angle=midA+2.5;console.log(thatimg.geneList[tmpD.name]);console.log("midA="+midA);console.log("angle="+angle);}
+                                            var rotate = angle-90;
+                                            return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
+                                          }).style("opacity",function(d){
+                                              return 1;
+                                          });
+
+                                        var init=tmpD.name;
+                                        if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                                init=thatimg.geneList[init];
+                                        }
+                                        var tmpName=init.split(" ");
+
+                                        for (var j=0;j<tmpName.length;j++){
+                                          tmpText.append("tspan")
+                                              .attr("x", 0)
+                                              .attr("dy", "1em")
+                                              .text(tmpName[j]);
+                                        }
+                            }
+                    }
+                    
                           //.on("click", click);
                 });
-                
-                
             };
             
             thatimg.draw=function(){
@@ -1970,6 +1974,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }else if(thatimg.goDomain === "bp"){
                         goRoot=root.GOList[1];
                     }
+                    thatimg.selectedNode=goRoot;
                     var nodes = thatimg.partition.nodes(goRoot);
                     thatimg.vis=thatimg.topG.append("svg:circle")
                         .attr("r", thatimg.radius)
@@ -1997,140 +2002,141 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                           .on("click", thatimg.click);
                           /*.on("mouseover",hover)
                           .on("mouseout",hideToolTip);*/
+                    
                     thatimg.path.each(function(d,i){
                     var tmpD=d;
                     var tmpI=i;
                     var startA=Math.max(0, Math.min(2 * Math.PI, d.x))*radToDeg;
                     var endA=Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))*radToDeg;
-                    var midA=startA+(endA-startA)/2;
+                    var midA=startA+((endA-startA)/2);
                     if(startA===0&&endA===360){
                         midA=90;
                     }
-                    if(endA-startA>10){
-                        if(typeof thatimg.selectedNode === 'undefined' || d!==thatimg.selectedNode.parent){
-                            if((endA-startA)>25){ 
-                                 //construct lines
-                                var init=tmpD.name;
-                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                    init=thatimg.geneList[init]+ " ("+init+")";
+                    if(endA>=180){
+                        console.log("end="+endA+" start="+startA+" mid="+midA);
+                    }
+                    var curDepth=(tmpD.depth-thatimg.selectedNode.depth);
+                    
+                    if(d!==thatimg.selectedNode.parent){
+                        if((endA-startA)>15){ 
+                             //construct lines
+                            var init=tmpD.name;
+                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                init=thatimg.geneList[init];
+                                if((endA-startA)>25){
+                                    init=init+ " ("+tmpD.name+")";
                                 }
-                                var max=(endA-startA)/1.9;
-                                var lines=[];
-                                var curLine=0;
-                                if(init.length>max){
-                                    var parts=init.split(" ");
-                                    var part="";
-                                    for(var j=0;j<parts.length;j++){
-                                        var tmpPart=part;
-                                        if(part.length>0){
-                                            tmpPart+=" ";
-                                        }
-                                        tmpPart+=parts[j];
-                                        if(tmpPart.length>=max){
-                                            lines[curLine]=part;
-                                            part=parts[j];
-                                            curLine++;
-                                        }else{
-                                            part=tmpPart;
-                                        }
-                                    }
+                            }
+                            var max=(endA-startA)/(2.2-(curDepth*0.025));
+                            var lines=[];
+                            var curLine=0;
+                            if(init.length>max){
+                                var parts=init.split(" ");
+                                var part="";
+                                for(var j=0;j<parts.length;j++){
+                                    var tmpPart=part;
                                     if(part.length>0){
-                                        lines[curLine]=part;
+                                        tmpPart+=" ";
                                     }
-                                    console.log("lines");
-                                    console.log(lines);
-                                }else{
-                                    lines[curLine]=init;
+                                    tmpPart+=parts[j];
+                                    if(tmpPart.length>=max){
+                                        lines[curLine]=part;
+                                        part=parts[j];
+                                        curLine++;
+                                    }else{
+                                        part=tmpPart;
+                                    }
                                 }
-                                                                   
-                                    var tmpText=thatimg.topG.append("text")
-                                            .style("fill-opacity", 1)
-                                            .style("fill", "#000")
-                                            .attr("pointer-events","none")
-                                            .attr("text-anchor", function(d) {
-                                                return "start";
-                                            })
-                                            .attr("dy", "1em")
-                                            .style("opacity",function(d){
-                                                return 1;
+                                if(part.length>0){
+                                    lines[curLine]=part;
+                                }
+                                
+                            }else{
+                                lines[curLine]=init;
+                            }
 
-                                            })
-                                            .append("textPath")
-                                            .attr("xlink:href",function(d){return "#ap"+tmpI;})
-                                            .attr("startOffset",function(d){
-                                                if(startA===0&&endA===360){
-                                                    return -180;
-                                                }
-                                                return 5 ;
-                                                //return ((endA-startA)/2);
-                                                
-                                            });
+                            var tmpText=thatimg.topG.append("text")
+                                        .style("fill-opacity", 1)
+                                        .style("fill", "#000")
+                                        .attr("pointer-events","none")
+                                        .attr("class","txt"+removeColon(d.id))
+                                        .attr("text-anchor", function(d) {
+                                            return "start";
+                                        })
+                                        .attr("dy", "1em")
+                                        .style("opacity",function(d){
+                                            return 1;
 
-                                           /* .text(function(d){
-                                                var init=tmpD.name;
-                                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                    init=thatimg.geneList[init]+ " ("+init+")";
-                                                }
-                                                return init;
-                                            });*/
-                                            
-                                            for (var j=0;j<lines.length;j++){
-                                              tmpText.append("tspan")
-                                                  .attr("x", 0)
-                                                  .attr("dy", "1em")
-                                                  .text(lines[j]);
+                                        })
+                                        .append("textPath")
+                                        .attr("xlink:href",function(d){return "#ap"+tmpI;})
+                                        .attr("startOffset",function(d){
+                                            if(startA===0&&endA===360){
+                                                return 185;
                                             }
-                                }else {
-                                     //construct lines
-                                    var position=d.depth%3;
-                                        if(position===0){
-                                            midA=midA+(endA-startA)/4;
-                                        }else if(position===2){
-                                            midA=midA-(endA-startA)/4;
+                                            return 5 ;
+                                        });
+
+                                        var jMax=2;
+                                        if(curDepth<2){
+                                            jMax=3;
                                         }
+                                        for (var j=0;j<lines.length && j<jMax;j++){
+                                            if(j<jMax){
+                                                if(j===(jMax-1)&&lines.length>jMax){
+                                                    lines[j]+="...";
+                                                }
+                                                tmpText.append("tspan")
+                                                    .attr("x", 0)
+                                                    .attr("dy", "1em")
+                                                    .text(lines[j]);
+                                            }
+                                        }
+                            }else if((endA-startA)>6 && tmpD.name.indexOf("ENS")===0){
                                     var tmpText=thatimg.topG.append("text")
                                           .style("fill-opacity", 1)
                                           .style("fill", "#000")
                                           .attr("pointer-events","none")
+                                          .attr("class","txt"+removeColon(d.id))
                                          .attr("text-anchor", function(d) {
                                              var anch="start";
-                                             if(midA>180){
+                                             if(endA>=180){
                                                  anch="end";
                                              }
                                             return anch;
                                           })
                                           .attr("dy", ".2em")
                                           .attr("transform", function(d) {
-                                            var multiline = (tmpD.name || "").split(" ").length > 1,
-                                                angle = midA,
-                                                //angle = ((tmpD.x + tmpD.dx+ tmpD.x)/2)*180/Math.PI,
-                                                rotate = angle-90;//+ (multiline ? -.5 : 0);
-                                                translate = Math.max(0, Math.sqrt(tmpD.y));
-                                                if(startA===0&&endA===360){translate=20;}
+                                            var angle = midA-2.5;
+                                            var translate = Math.max(0, Math.sqrt(tmpD.y));
+                                            if(startA===0&&endA===360){translate=20;}
+                                            if(endA>=180){angle=midA+2.5;console.log(thatimg.geneList[tmpD.name]);console.log("midA="+midA);console.log("angle="+angle);}
+                                            var rotate = angle-90;
                                             return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
                                           }).style("opacity",function(d){
                                               return 1;
-                                          //return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))-Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)) > 0.01 ? 1:0;
                                           });
-                                    if(typeof tmpD !=='undefined' && typeof tmpD.name !=='undefined'){
-                                            var init=tmpD.name;
-                                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                init=thatimg.geneList[init];
-                                            }
-                                            var tmpName=init.split(" ");
 
-                                            for (var j=0;j<tmpName.length;j++){
-                                              tmpText.append("tspan")
-                                                  .attr("x", 0)
-                                                  .attr("dy", "1em")
-                                                  .text(tmpName[j]);
-                                            }
-                                    }
-                                }
-                        }
+                                        var init=tmpD.name;
+                                        if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                                init=thatimg.geneList[init];
+                                        }
+                                        var tmpName=init.split(" ");
+
+                                        for (var j=0;j<tmpName.length;j++){
+                                          tmpText.append("tspan")
+                                              .attr("x", 0)
+                                              .attr("dy", "1em")
+                                              .text(tmpName[j]);
+                                        }
+                            }
                     }
+                    
                           //.on("click", click);
                 });
+                    
+                    
+                    
                     /*thatimg.text = thatimg.topG.selectAll("text").data(nodes);
                       var textEnter = thatimg.text.enter().append("text")
                           .style("fill-opacity", 1)
@@ -2188,13 +2194,19 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 // Fade all the segments.
                 d3.selectAll("path")
                     .style("opacity", 0.3);
+                thatimg.topG.selectAll("text")
+                    .style("opacity", 0.3);
 
                 // Then highlight only those that are an ancestor of the current segment.
                 thatimg.topG.selectAll("path")
                     .filter(function(node) {
                               return (sequenceArray.indexOf(node) >= 0);
                             })
-                    .style("opacity", 1);
+                    .style("opacity", 1)
+                    .each(function(d){
+                        thatimg.topG.selectAll(".txt"+removeColon(d.id)).style("opacity",1);
+                            });
+                thatimg.topG.selectAll("."+removeColon(d.id)).style("opacity",1);
                 d3.event.stopPropagation();
             };
             
@@ -2204,6 +2216,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 d3.select("#trail")
                     .style("visibility", "hidden");
 
+                d3.selectAll("text")
+                    .style("opacity", 1);
                 // Deactivate all segments during transition.
                 d3.selectAll("path").on("mouseover", null);
 
