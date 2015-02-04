@@ -40,7 +40,7 @@
 		MAIN HOME PAGE HELP
 *****************************************************************************/						
 	/***** Home Page and Main Tab Page *****/
-	if (caller.endsWith("index.jsp") || caller.equals("http://"+host+"/") || caller.endsWith("startPage.jsp")) {
+	if (caller.endsWith("index.jsp") || caller.equals("http://"+host+"/")||caller.equals("https://"+host+"/") || caller.endsWith("startPage.jsp")) {
 		if (topic.equals("DYK1")) {
 			fileName="DYK_Home1.htm";
 		} else if (topic.equals("DYK2")) {
@@ -445,7 +445,8 @@
 		OTHER HELP PAGES
 *****************************************************************************/						
 	else if ((caller.endsWith("index.jsp")) || 
-		(caller.endsWith("http://" + host + contextRoot))) {
+		(caller.endsWith("http://" + host + contextRoot))|| 
+		(caller.endsWith("https://" + host + contextRoot))) {
 		fileName="getting_started_front.htm";
 	}	
 	else if (caller.endsWith("userUpdate.jsp")) {
