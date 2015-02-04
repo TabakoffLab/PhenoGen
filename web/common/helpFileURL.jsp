@@ -28,7 +28,7 @@
 		MAIN HOME PAGE HELP
 *****************************************************************************/						
 	/***** Home Page and Main Tab Page *****/
-	if (currentPage.endsWith("index.jsp") || currentPage.equals("http://"+host+"/") || currentPage.endsWith("startPage.jsp")) {
+	if (currentPage.endsWith("index.jsp") || currentPage.equals("http://"+host+"/") || currentPage.equals("https://"+host+"/") || currentPage.endsWith("startPage.jsp")) {
 			fileNameHelpURL="Phenogen_Overview.htm";
 
 /*****************************************************************************
@@ -354,7 +354,8 @@
 		OTHER HELP PAGES
 *****************************************************************************/						
 	else if ((currentPage.endsWith("index.jsp")) || 
-		(currentPage.endsWith("http://" + host + contextRoot))) {
+		(currentPage.endsWith("http://" + host + contextRoot))|| 
+		(currentPage.endsWith("https://" + host + contextRoot))) {
 		fileNameHelpURL="getting_started_front.htm";
 	}	
 	else if (currentPage.endsWith("userUpdate.jsp")) {

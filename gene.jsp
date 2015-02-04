@@ -38,7 +38,7 @@ if(request.getParameter("defaultView")!=null){
 	defView=request.getParameter("defaultView");
 }
 pageTitle="Genome/Trascriptome Browser "+myGene;
-pageDescription="Genome Browser provides a vizualization of Microarray and RNA-Seq data";
+pageDescription="Genome/Trascriptome Browser provides a vizualization of Microarray and RNA-Seq data along the genome as well as summarize eQTL/WGCNA data for genes and/or regions.";
 %>
 
 

@@ -209,7 +209,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		    			success: function(data2){ 
 		        			var d=new Date();
 		        			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
-							var url="http://"+urlprefix+"/tmpData/download/"+data2.imageFile;
+                                                var http="http://";
+                                                if (location.protocol === 'https:') {
+                                                    http="https://";
+                                                }
+							var url=http+urlprefix+"/tmpData/download/"+data2.imageFile;
 							var region=new String(that.selectedModule.MOD_NAME);
                                                         region=region+"_"+that.viewType;
 							 var filename = region+"_"+datePart+".png";

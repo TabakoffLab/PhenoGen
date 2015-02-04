@@ -56,8 +56,13 @@
 								//rd.download();
 								//session.setAttribute("successMsg", "DST-001");
                         		//response.sendRedirect(commonDir + "successMsg.jsp");
-								String url="http://"+request.getServerName()+request.getContextPath()+checkedList.get(0);
-								String redirurl="http://"+request.getServerName()+request.getContextPath()+"/directDownloads.jsp?url="+url;
+                                                                int port=request.getServerPort();
+                                                                String http="http://";
+                                                                if(port==443){
+                                                                    http="https://";
+                                                                }
+								String url=http+request.getServerName()+request.getContextPath()+checkedList.get(0);
+								String redirurl=http+request.getServerName()+request.getContextPath()+"/directDownloads.jsp?url="+url;
 								response.sendRedirect(redirurl);
 							}
                         	

@@ -104,17 +104,30 @@
 
                                 userLoggedIn.setUserMainDir(userFilesRoot);
                                 session.setAttribute("userLoggedIn", userLoggedIn);
-								if(redirUrl!=null && !redirUrl.equals("")  && !redirUrl.startsWith("http://" + mySessionHandler.getHost())){
+                                int port=request.getServerPort();
+								if(redirUrl!=null && !redirUrl.equals("")  && !(redirUrl.startsWith("http://" + mySessionHandler.getHost()) || redirUrl.startsWith("https://" + mySessionHandler.getHost())) ){
 									log.debug("send redir:"+"http://" + mySessionHandler.getHost() +redirUrl);
-									response.sendRedirect("http://" + mySessionHandler.getHost() + redirUrl);
+                                                                        if(port==80){
+                                                                            response.sendRedirect("http://" + mySessionHandler.getHost() + redirUrl);
+                                                                        }else if(port==443){
+                                                                            response.sendRedirect("https://" + mySessionHandler.getHost() + redirUrl);
+                                                                        }
 									return;
 
+								}else if(redirUrl!=null && !redirUrl.equals("")  && redirUrl.startsWith("https://" + mySessionHandler.getHost())){
+									response.sendRedirect(redirUrl);
+									return;
 								}else if(redirUrl!=null && !redirUrl.equals("")  && redirUrl.startsWith("http://" + mySessionHandler.getHost())){
+                                                                        //EDIT to redirect to HTTPS when ready
 									response.sendRedirect(redirUrl);
 									return;
 								}else{
 									log.debug("default redir:"+commonDir + "startPage.jsp");
-                                	response.sendRedirect(commonDir + "startPage.jsp");
+                                                                        if(port==80){
+                                                                            response.sendRedirect("http://" + mySessionHandler.getHost()+commonDir + "startPage.jsp");
+                                                                        }else if(port==443){
+                                                                            response.sendRedirect("https://" + mySessionHandler.getHost()+commonDir + "startPage.jsp");
+                                                                        }
 									return;
 								}
                         }

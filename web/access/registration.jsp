@@ -130,8 +130,12 @@
 							User requestor = myUser.getUser(newUserID, dbConn);
 							//session.setAttribute("userID", "-1");
 									//session.setAttribute("userLoggedIn", userLoggedIn);
-				
-							mainURL = "http://" + host + contextRoot + "index.jsp";
+                                                        int port=request.getServerPort();
+                                                        String http="http://";
+                                                        if(port==443){
+                                                            http="https://";
+                                                        }
+							mainURL = http + host + contextRoot + "index.jsp";
 				
 							String userDir = requestor.getUserMainDir(userFilesRoot); 
 				
