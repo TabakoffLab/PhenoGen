@@ -105,7 +105,7 @@ foreach my $mod(@moduleList){
             if(-e $geneCache){
                 open GENE,"<",$geneCache.$geneid.".summary.txt";
                 my $header=<GENE>;
-                my @cols=split('\t',$header);
+                my @cols=split('\t',trim($header));
                 my %columnHash;
                 my $count=0;
                 foreach my $col(@cols){
@@ -113,12 +113,12 @@ foreach my $mod(@moduleList){
                     $count++;
                 }
                 while (<GENE>){
-                    my @columns=split('\t',$_);
+                    my @columns=split('\t',trim($_));
                     my $miID="";
                     my $miACC="";
                     my $pred=0;
                     my $val=0;
-                    my $sum=0;
+                    
                     if(exists $columnHash{"mature_mirna_acc"}){
                         $miACC=$columns[$columnHash{"mature_mirna_acc"}];
                     }	
@@ -131,9 +131,7 @@ foreach my $mod(@moduleList){
                     if(exists $columnHash{"validated.sum"}){
                         $val=$columns[$columnHash{"validated.sum"}];
                     }	
-                    if(exists $columnHash{"all.sum"}){
-                        $sum=$columns[$columnHash{"all.sum"}];
-                    }
+                    $sum=$pred+$val;
                     if(exists $moduleHOH{miRNA}{$miACC}){
                         $moduleHOH{miRNA}{$miACC}{gene}{$geneid}={
                                                 ID => $geneid,
