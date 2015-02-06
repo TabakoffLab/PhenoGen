@@ -84,6 +84,8 @@ print "Module List: ".@moduleList."\n";
 
 foreach my $mod(@moduleList){
     my %moduleHOH;
+    $moduleHOH{id}=$mod;
+    $moduleHOH{miRNA}={};
     print "processing $mod\n";
     my $query2="select wmi.gene_id from wgcna_module_info wmi where wdsid=".$wgcnaDataset." and wmi.module='".$mod."'";
     my $query_handle2 = $connect->prepare($query2) or die ("Module query prepare failed \n");
@@ -101,7 +103,56 @@ foreach my $mod(@moduleList){
             #if a ensembl Gene multiMir File exist
             my $geneCache=$mcache.$geneid."/";
             if(-e $geneCache){
-
+                open GENE,"<",$geneCache.$geneid.".summary.txt";
+                my $header=<GENE>;
+                my @cols=split('\t',$header);
+                my %columnHash;
+                my $count=0;
+                foreach my $col(@cols){
+                    $columnHash{$col}=$count;
+                    $count++;
+                }
+                while (<GENE>){
+                    my @columns=split('\t',$_);
+                    my $miID="";
+                    my $miACC="";
+                    my $pred=0;
+                    my $val=0;
+                    my $sum=0;
+                    if(exists $columnHash{"mature_mirna_acc"}){
+                        $miACC=$columns[$columnHash{"mature_mirna_acc"}];
+                    }	
+                    if(exists $columnHash{"mature_mirna_id"}){
+                        $miID=$columns[$columnHash{"mature_mirna_id"}];
+                    }
+                    if(exists $columnHash{"predicted.sum"}){
+                        $pred=$columns[$columnHash{"predicted.sum"}];
+                    }
+                    if(exists $columnHash{"validated.sum"}){
+                        $val=$columns[$columnHash{"validated.sum"}];
+                    }	
+                    if(exists $columnHash{"all.sum"}){
+                        $sum=$columns[$columnHash{"all.sum"}];
+                    }
+                    if(exists $moduleHOH{miRNA}{$miACC}){
+                        $moduleHOH{miRNA}{$miACC}{gene}{$geneid}={
+                                                ID => $geneid,
+                                                Predicted => $pred,
+                                                Validated => $val,
+                                                Sum => $sum
+                        };
+                    }else{
+                        $moduleHOH{miRNA}{$miACC}{ID}=$miID;
+                        $moduleHOH{miRNA}{$miACC}{ACC}=$miACC;
+                        $moduleHOH{miRNA}{$miACC}{gene}{$geneid}={
+                                                ID => $geneid,
+                                                Predicted => $pred,
+                                                Validated => $val,
+                                                Sum => $sum
+                        };
+                    }
+                }
+                close GENE;
             }else{
                 mkdir $geneCache;
                 #create R call
@@ -131,12 +182,43 @@ foreach my $mod(@moduleList){
     $query_handle2->finish();
     
    
-    #open OFILE, '>', $path.$mod.".miR.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
-    #print OFILE "{\n\t\"MOD_NAME\":\"$mod\",\n";
-    #print OFILE "\t\"MIRList\": [\n";
-    
-    #print OFILE "\t\]\n";
-    #print OFILE "}";#end module
-    #close OFILE;
+    open OFILE, '>', $path.$mod.".miR.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
+    print OFILE "{\"MOD_NAME\":\"$mod\",";
+    print OFILE "\"MIRList\": [\n";
+    my @mirKey=keys $moduleHOH{miRNA};
+    $mirCount=0;
+    foreach my $mir(@mirKey){
+        my @geneKey=keys $moduleHOH{miRNA}{$mir}{gene};
+        if ($mirCount>0) {
+                print OFILE ",\n";
+        }
+        print OFILE "{ \"ID\":\"".$moduleHOH{miRNA}{$mir}{ID}."\",";
+        print OFILE "\"name\":\"".$moduleHOH{miRNA}{$mir}{ID}."\",";
+        print OFILE "\"value\":".@geneKey.",";
+        print OFILE "\"ACC\":\"".$moduleHOH{miRNA}{$mir}{ACC}."\",";
+        print OFILE "\"GeneList\": [";
+        
+        my $geneCount=0;
+        my $validCount=0;
+        foreach my $gene(@geneKey){
+            if ($geneCount>0) {
+                    print OFILE ",";
+            }
+            print OFILE "{ \"ID\":\"".$moduleHOH{miRNA}{$mir}{gene}{$gene}{ID}."\",";
+            print OFILE "\"P\":".$moduleHOH{miRNA}{$mir}{gene}{$gene}{Predicted}.",";
+            print OFILE "\"V\":".$moduleHOH{miRNA}{$mir}{gene}{$gene}{Validated}.",";
+            print OFILE "\"S\":".$moduleHOH{miRNA}{$mir}{gene}{$gene}{Sum}."}";
+            if($moduleHOH{miRNA}{$mir}{gene}{$gene}{Validated}>0){
+                $validCount++;
+            }
+            $geneCount++;
+        }
+        print OFILE "],\"vC\":".$validCount;
+        print OFILE "}";
+        $mirCount++;
+    }
+    print OFILE "]";
+    print OFILE "}";#end module
+    close OFILE;
 
 }
