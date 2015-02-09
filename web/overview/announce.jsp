@@ -12,6 +12,19 @@
     
 					<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>HTTPS support 2/9/2015</H2>
+                        <div style="margin-left:5px;">
+                        <%if(request.getServerPort()==80){%>
+                        
+                            We now support https to keep your connections more secure.  We will eventually redirect traffic all to the secure site, 
+                            but for now feel free to try it out here: <a href="https://phenogen.ucdenver.edu/PhenoGen/"> https://phenogen.ucdenver.edu/PhenoGen/</a>
+                        
+                        <%}else{%>
+                            
+                            Thank you for trying the secure site.  You can always switch back to the regular site: <a href="http://phenogen.ucdenver.edu/PhenoGen/"> http://phenogen.ucdenver.edu/PhenoGen/</a>
+                        
+                        <%}%>
+                        </div>
                         <H2>v2.14 of PhenoGen 1/10/2015</H2>
                         <div style="margin-left:5px;">
                         	We've added Weighted Gene Co-expression Network Analysis.  Look at what's new for a summary of changes.

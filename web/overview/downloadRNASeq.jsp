@@ -18,12 +18,12 @@
                             <TR>
                             <TD>
                             <span class="tooltip" title="Interactive Genome Coverage Graphic">
-                            <a href="web/graphics/genome.jsp"><img src="<%=imagesDir%>rnaseq_genome.gif" width="150px"/></a>
+                            <a href="<%=contextRoot%>web/graphics/genome.jsp"><img src="<%=imagesDir%>rnaseq_genome.gif" width="150px"/></a>
                             </span>
                             </TD>
                             <TD>
                             <span class="tooltip" title="Interactive Reconstructed Long RNA Genes(Rat Brain Transcriptome)">
-                            <a href="web/graphics/transcriptome.jsp"><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="150px"/></a>
+                            <a href="<%=contextRoot%>web/graphics/transcriptome.jsp"><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="150px"/></a>
                             </span>
                             </TD>
                             </TR>
@@ -49,8 +49,8 @@
                         <div style="text-align:center;width:100%;">
                         	<a href="<%=accessDir%>createAnnonymousSession.jsp?url=<%=sysBioDir%>resources.jsp" class="button" style="width:140px;color:#666666;">Go To Download</a><BR />
                             or View:<BR />
-                            <span class="tooltip" title="Interactive Genome Coverage Graphic"><a href="web/graphics/genome.jsp"><img src="<%=imagesDir%>rnaseq_genome.gif" width="125px"/></a></span>
-                        	<span class="tooltip" title="Interactive Reconstructed Long RNA Genes(Rat Brain Transcriptome)"><a href="web/graphics/transcriptome.jsp"><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="125px"/></a></span>
+                            <span class="tooltip" title="Interactive Genome Coverage Graphic"><a href="<%=contextRoot%>web/graphics/genome.jsp"><img src="<%=imagesDir%>rnaseq_genome.gif" width="125px"/></a></span>
+                        	<span class="tooltip" title="Interactive Reconstructed Long RNA Genes(Rat Brain Transcriptome)"><a href="<%=contextRoot%>web/graphics/transcriptome.jsp"><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="125px"/></a></span>
                         </div>
                     </div>
     

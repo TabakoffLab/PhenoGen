@@ -25,10 +25,18 @@
 String myGene="";
 String myDisplayGene="";
 String defView="1";
+boolean scriptError=false;
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
 		myGene=request.getParameter("geneTxt").trim();
 		myGene=myGene.replaceAll(",","");
+                if(myGene.indexOf("((")>-1 || myGene.indexOf("||")>-1|| myGene.indexOf("))")>-1){
+                    log.info("Script Submitted via Form: "+request.getRemoteAddr());
+                    log.info("Contents:"+myGene);
+                    myGene="";
+                    action=null;
+                    scriptError=true;
+                }
 }
 if(request.getParameter("newWindow")!=null&&request.getParameter("newWindow").equals("Y")){
 	popup=true;
@@ -685,8 +693,12 @@ Or
 	
 </script>
 
-
-<%if(genURL.size()==1){%>
+<%if(scriptError){%>
+    <div class="error">
+        Your entry does not match a valid Gene or Region.  Please try again using the examples above.  
+        The administrator has been notified, if message with a valid gene or region, they will look into and correct the issue.
+    </div>
+<%}else if(genURL.size()==1){%>
 	
 
 	<%@ include file="regionResults.jsp" %>
