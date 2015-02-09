@@ -572,8 +572,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 mir.append("text").style("font-weight","bold").text("Display Options:");
                 
                  mir.append("br");
-                mir.append("input").attr("type","checkbox").style("margin-right","5px").attr("id","").on("click",function(){
-                    if($(this).is(':checked')){
+                mir.append("input").attr("type","checkbox").attr("id","mirSortCBX").style("margin-right","5px").attr("id","").on("click",function(){
+                    if($(this).prop('checked')){
                         that.singleImage.sortMir=$("#mirSortSelect").val();
                     }else{
                         that.singleImage.sortMir=0;
@@ -583,8 +583,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 });
                 mir.append("text").style("margin-right","5px").style("margin-left","5px").text(" sort by # targeted Genes order ");
                 sel=mir.append("select").attr("id","mirSortSelect").on("change",function(){
-                    that.singleImage.sortMir=$(this).val();
-                    that.singleImage.drawMiR();
+                    if($("#mirSortCBX").prop('checked')){
+                        that.singleImage.sortMir=$(this).val();
+                        that.singleImage.drawMiR();
+                    }
                 });
                 sel.append("option").attr("value","1").text("Ascending");
                 sel.append("option").attr("value","-1").text("Descending");
