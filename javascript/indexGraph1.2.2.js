@@ -1,3 +1,5 @@
+
+
 //Fix for IE9  which is missing this function used by D3
 if (/MSIE[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){
 	if (typeof Range.prototype.createContextualFragment == "undefined") {
@@ -23,14 +25,27 @@ function showDiv(jspPage){
 	selectedSection= $( "#accordion" ).accordion( "option", "active" );
 	$('#indexDesc').slideUp("250");
 	$('div#indexDescContent').html("<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-	d3.html("web/overview/"+jspPage,function(error,html){
+        $.ajax({
+            url:  "web/overview/"+jspPage,
+            type: 'GET',
+            async: true,
+            cache: false,
+            data: {},
+            success: function(htmlPage){
+                $('div#indexDescContent').html(htmlPage);
+            },
+            error: function(xhr, status, error) {
+                $('div#indexDescContent').html("<H2>ERROR</H2><BR><BR><span style=\"text-align:center;width:100%;color:#FF0000;\">An error has occured please view another node and try this node again.</span>"+error);
+            }                
+        });
+	/*d3.html("web/overview/"+jspPage,function(error,html){
 							 if(error==null){
 								 $('div#indexDescContent').html(html);
 								 //$('div#indexDesc').show();
 							 }else{
 							 	 $('div#indexDescContent').html("<H2>ERROR</H2><BR><BR><span style=\"text-align:center;width:100%;color:#FF0000;\">An error has occured please view another node and try this node again.</span>"+error);
 							 }
-							 });
+							 });*/
 	$('#indexDesc').slideDown("250");
 }
 
@@ -476,10 +491,11 @@ setupDisplay();
 var mainCount=Math.floor((Math.random() * 5));;
 var featCount=0;
 var mainNode;
+var updatedCount=0;
 var timeoutHandle=-1;
 
 //start automatic scrolling of features
-startRunningSelection(10000);
+startRunningSelection(15000);
 function startRunningSelection(delay){
 	if(timeoutHandle==-1 ){
 		runSelection(delay);
@@ -509,7 +525,13 @@ function runSelection(delay){
 				mainCount++;
 			}
 			displayOverride=0;
-			runSelection(7500);
+                        updatedCount++;
+                        if(updatedCount<20){
+                            runSelection(15000);
+                        }else{
+   
+                            location.reload();
+                        }
 		},delay);
 }
 
