@@ -61,6 +61,44 @@
             </tbody>
         </table>
     </div>
+    <div id="wgcnaMirTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+        <div id="waitMirTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
+        <H2>Transcripts in <span id="mirTableName">Selected</span> Module</h2><BR>
+        <table class="list_base" id="mirTable" width="98%">
+            <thead>
+                <TR class="col_title">
+                    <TH>miRNA ID</TH>
+                    <TH>Mature miRNA Accession</th>
+                    <TH>Location</th>
+                    <TH>Predicted Gene Targets</th>
+                    <TH>Validated Gene Targets</th>
+                    <TH>Total Gene Targets</th>
+                </TR>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+        <div id="wgcnaMirGeneTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+        <div id="waitMirGeneTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
+        <H2>Transcripts in <span id="mirGeneTableName">Selected</span> Module</h2><BR>
+        <table class="list_base" id="mirGeneTable" width="98%">
+            <thead>
+                <TR class="col_title">
+                    <TH>Gene Symbol</th>
+                    <TH>Ensembl ID</TH>
+                    <TH>Location</th>
+                    <TH>Predicted miRNAs targeting gene</th>
+                    <TH>Validated miRNAs targeting gene</th>
+                    <TH>Total miRNAs targeting gene</th>
+                </TR>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
     <div id="wgcnaEqtlTable" style="display:none;width:99%;border:1px solid;text-align: center;">
         <div id="waitEqtlTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
         <H2>eQTL locations for <span id="eqtlTableName">Selected</span> Module</h2><BR>
