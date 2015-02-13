@@ -182,7 +182,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//that.imageBar=d3.select("div#wgcnaImageControls").append("span").style("float","left");
                 that.imageBar=d3.select("#imageControl").append("span").style("float","left");
 		that.imageBar.append("span").attr("class","saveImage control").style("display","inline-block")
-			.attr("id","saveLevel"+that.levelNumber)
+			.attr("id","saveImage")
 			.style("cursor","pointer")
 			.append("img")//.attr("class","mouseOpt dragzoom")
 			.attr("src",contextRoot+"web/images/icons/savePic_dark.png")
@@ -198,10 +198,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     //console.log("viewGene")
                                     content=$("div#viewGene").html();
                                     //console.log(content);
-                                }//else if(that.singleImage===undefined){
+                                }else if(that.viewType==="mir" && that.singleImage.type==="mir"){
+                                    //console.log("viewGene")
+                                    content=$("div#viewGene").html();
+                                    //console.log(content);
+                                }else if(that.viewType==="go" && that.singleImage.type==="go"){
+                                    console.log("saveGO");
+                                    content=$("div#viewGene").html();
+                                    
+                                }
+                                var w=$(window).width();
+                                content=content.replace("width=\"100%\"","width=\""+w+"px\"");
+                            //else if(that.singleImage===undefined){
                                     
                                 //}
-                                
+                                console.log(content);
 				content=content+"\n";
 				$.ajax({
 						url: pathPrefix+"saveBrowserImage.jsp",
@@ -506,8 +517,6 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		);
         };
         
-        
-
 	that.createDataControls=function(){
 		//that.dataBar=d3.select("div#wgcnaImageControls").append("span").attr("id","wgcnaDataControls").style("float","right").style("margin-left","10px").style("margin-right","5px")
                 that.dataBar=d3.select("#dataControl").append("span").attr("id","wgcnaDataControls").style("margin-left","10px").style("margin-right","5px")
@@ -618,13 +627,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 that.singleImage.showLinks=1;
                                 $("div#mirLinkColorSelect").hide();
                             }
+                            that.singleImage.setupLegend();
                             //that.singleImage.drawMiR();
                         });
 		mir.append("text").text("Display links to correlated transcripts");
                 var colorSel=mir.append("div").attr("id","mirLinkColorSelect").style("display","none");
                 colorSel.append("text").text("Correlation Link Color Options:");
                 //colorSel.append("br");
-                var selMir=colorSel.append("select").attr("id","mirlinkColor");
+                var selMir=colorSel.append("select").attr("id","mirlinkColor").on("change",function(){
+                    that.singleImage.updateColor("mirlinkColor");
+                    that.singleImage.setupLegend();
+                });
                 selMir.append("option").attr("selected","selected").attr("value","Green_Red").text("Green(+) / Red(-)");
                 selMir.append("option").attr("value","Blue_Yellow").text("Blue(+) / Yellow(-)");
                 selMir.append("option").attr("value","Red_Green").text("Red(+) / Green(-)");
@@ -1234,6 +1247,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 thatimg.posColor="#00DD00";
                 thatimg.posDarkColor="#007700";
                 
+                thatimg.mirVal="#FFFF00";
+                thatimg.mirPred="#0000CC";
+                
 
 		//setup image
 		if(d3.select("#singleWGCNASVG").size()===0){
@@ -1300,16 +1316,22 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         thatimg.posDarkColor="#770000";
                         thatimg.negColor="#00DD00";
                         thatimg.negDarkColor="#007700";
+                        thatimg.mirVal="#FFFF00";
+                        thatimg.mirPred="#0000CC";
                     }else if(colorOpt==="Blue_Yellow"){
                         thatimg.posColor="#0000DD";
                         thatimg.posDarkColor="#000077";
                         thatimg.negColor="#ffef16";
                         thatimg.negDarkColor="#b7ae2a";
+                        thatimg.mirVal="#FF9C2A";
+                        thatimg.mirPred="#BA49FF";
                     }else{
                         thatimg.negColor="#DD0000";
                         thatimg.negDarkColor="#770000";
                         thatimg.posColor="#00DD00";
                         thatimg.posDarkColor="#007700";
+                        thatimg.mirVal="#FFFF00";
+                        thatimg.mirPred="#0000CC";
                     }
                 };
                 thatimg.nodeRadiusSum=function(d,i){
@@ -1342,6 +1364,89 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		thatimg.redraw=function(){
 
 		};
+
+                thatimg.setupLegend=function(){
+                    thatimg.svg.select("#legend").remove();
+                    thatimg.svg.select("#legendDisp").remove();
+                    
+                    thatimg.legendG=thatimg.svg.append("g")
+                            .attr("id","legend")
+                            .attr("transform","translate(10,60)")
+                            .style("cursor","pointer")
+                            .on("mouseover",function(){
+                                thatimg.legendDispG.transition()        
+                                    .duration(300)
+                                    .style("opacity",1);
+                            })
+                            .on("mouseleave",function(){
+                                thatimg.legendDispG.transition()        
+                                    .duration(300)
+                                    .style("opacity",0);
+                            });
+                    thatimg.legendG.append("image")
+                            .attr("x",0)
+                            .attr("y",-20)
+                            .attr("width","24px")								
+                            .attr("height","24px")
+                            .attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ"+
+                                                        "I0lEQVRIDQEYCef2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAEAAAABVVVVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAq6ur/wAAAP4AAAAAAQAAAAAAAAAAAAAAAFtynWv/AgFSAP//BAEBAgAAAP8B"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/95/Plx4sH"+
+                                                        "/fPbq6ur8QQAAAAAAAAAAEBAQAT/AgOLAQEACQABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAgAJDRgG/O7xiAAAAMkEAAAAAAAAAADz"+
+                                                        "8/MB/vv1pgMEBVb///4JAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAD//Pb+/fLiJgAAAB8AAADJBAAAAAAAAAAADQ0N//nivJACAgLfAQEBOwEB"+
+                                                        "ARH///8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "/gAAAOoAAADxAAAAAAQAAAAAAAAAAMDAwPxAQEDkEhISuv///9wCAgIN////AQAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////4AAADxAAAA2AAAAAAEAAAA"+
+                                                        "AAAAAAAAAAAAFS1XJgQDAk4B//wK/gD9BQIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAD//fro+OXExvj4+O8AAAAABAAAAAAAAAAAAFVVAwUHCLcBAQES"+
+                                                        "AAAHAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAP8A/wYTKxsC79eVAAAA1QIAAAAAAAAAADPe3gIA//3Z///+/AD//v7//v7///7+///+/v//"+
+                                                        "/v7///7+///+/v///v7///7+///+/v///v7///7+///+/v///v7///7+/wH++v/+9+k6////JgAA"+
+                                                        "AAAEAAAAAAAAAAANDQ3/9+LCcwMIDGEB/vs1AAD/DgIBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+/fn9//v18wAAAAAAAAAABAAAAAAAAAAAwMDA/UZG"+
+                                                        "Rt0N/g2q/wAA0gEBAQ39AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAA/////gAAAPD////YAAAAAAQAAAAAAAAAAAAAAP8LIkUAAwT9AwD8+uoCAP/x////"+
+                                                        "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP779vD+8d3a"+
+                                                        "/f395QAAAAAEAAAAAAAAAAAAAAABCQwVtQEBADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/4+gABewTw260AAADzAgAAAAAAAAAA"+
+                                                        "M2ZmBAEA/xsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAA//8BBwD++FYBAQErAAAAAAQAAAAAAAAAAADNzQD5MRBsAwIIagD++igA"+
+                                                        "AP4K////AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH7"+
+                                                        "+PwA9+gIAAAADAAAAAAEAAAAAAAAAADNzc39FxcXzQYGBqACAgIwAgICDv///wIAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAf/////+AAAA7gICAuAAAAAABAAA"+
+                                                        "AAAAAAAAAAAA/uHh4ecfHx+8AwMDzAYGBgb+/v4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAA/f39/wMDA/j29vboAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAD/AAAA/gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                        "AAAApkUqF3zKmm8AAAAASUVORK5CYII=");
+                    thatimg.legendG.append("text").attr("x","25").style("font-size","18").text("Legend");
+                    thatimg.legendDispG=thatimg.svg.append("g")
+                            .attr("id","legendDisp")
+                            .attr("transform","translate(10,70)")
+                            .style("opacity",1);
+                    thatimg.drawLegend();
+                    setTimeout(function(){
+                         thatimg.legendDispG.transition()        
+                            .duration(750)
+                            .style("opacity",0);
+                    },8000);
+                };
+
+                thatimg.drawLegend= function(){
+                    
+                };
 
 		thatimg.createToolTip=function(d){
 			var tt="Gene: "+d.Gene.geneSymbol+" ("+d.Gene.ID+")<BR><BR>Transcript:"+d.ID+"<BR>";
@@ -1388,7 +1493,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                     thatimg.showMirLinks=1;
                 }
-                thatimg.type="gene";
+                thatimg.type=that.viewType;
                 thatimg.truncated=0;
                 thatimg.mirGeneCutoff=1;
                 thatimg.mirValid=0;
@@ -1521,12 +1626,54 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     return thatimg.height/2+(thatimg.r+plusMinus)*(Math.sin(angleRad));
                     //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
                 };
+                
+                thatimg.drawCorLegend=function(start){
+                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start).text("Positive Correlation");
+                    thatimg.legendDispG.append("rect").attr("x","0").attr("y",start-10).attr("width", "30").attr("height", "10").style("fill",thatimg.posColor);
+                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+20).text("Negative Correlation");
+                    thatimg.legendDispG.append("rect").attr("x","0").attr("y",start+10).attr("width", "30").attr("height","10").style("fill",thatimg.negColor);
+                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+40).text("Lower Correlation");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+30).attr("x2", "30").attr("y2",start+30).style("stroke","#000000").style("stroke-width","0");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+35).attr("x2", "30").attr("y2",start+35).style("stroke","#000000").style("stroke-width","0.5");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+40).attr("x2", "30").attr("y2",start+40).style("stroke","#000000").style("stroke-width","1");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+45).attr("x2", "30").attr("y2",start+45).style("stroke","#000000").style("stroke-width","2");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+55).attr("x2", "30").attr("y2",start+55).style("stroke","#000000").style("stroke-width","3");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+65).attr("x2", "30").attr("y2",start+65).style("stroke","#000000").style("stroke-width","5");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+75).attr("x2", "30").attr("y2",start+75).style("stroke","#000000").style("stroke-width","7");
+                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+80).text("Higher Correlation");
+                };
+                thatimg.drawMirSupportLegend=function(start){
+                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start).text("Validated miRNA Target");
+                    thatimg.legendDispG.append("rect").attr("x","0").attr("y",start-10).attr("width", "30").attr("height", "10").style("fill",thatimg.mirVal);
+                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+20).text("Predicted miRNA Target");
+                    thatimg.legendDispG.append("rect").attr("x","0").attr("y",start+10).attr("width", "30").attr("height", "10").style("fill",thatimg.mirPred);
+                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+40).text("Lower support of targeting");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+30).attr("x2", "30").attr("y2",start+30).style("stroke","#000000").style("stroke-width","0");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+35).attr("x2", "30").attr("y2",start+35).style("stroke","#000000").style("stroke-width","0.5");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+40).attr("x2", "30").attr("y2",start+40).style("stroke","#000000").style("stroke-width","1");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+45).attr("x2", "30").attr("y2",start+45).style("stroke","#000000").style("stroke-width","2");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+55).attr("x2", "30").attr("y2",start+55).style("stroke","#000000").style("stroke-width","3");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+65).attr("x2", "30").attr("y2",start+65).style("stroke","#000000").style("stroke-width","5");
+                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+75).attr("x2", "30").attr("y2",start+75).style("stroke","#000000").style("stroke-width","7");
+                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+80).text("Higher support of targeting");
+                };
+                
+                thatimg.drawLegend=function(){
+                    if(that.viewType==='gene'){
+                        thatimg.drawCorLegend(20);
+                    }else{
+                        thatimg.drawMirSupportLegend(20);
+                        if(!thatimg.showLinks){
+                            thatimg.drawCorLegend(130);
+                        }
+                    }
+                };
 
 		thatimg.draw=function(){
                     if(that.viewType==='mir'){
                         thatimg.requestMiR();
                         thatimg.updateColor("mirlinkColor");
-                    }else if(that.typeView==='gene'){
+                    }else if(that.viewType==='gene'){
                         thatimg.updateColor("linkColor");
                     }
                     thatimg.width=$(window).width();
@@ -1558,7 +1705,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     
                     
                     thatimg.svg.append("text")
-                            .attr("font-size","18")
+                            .style("font-size","20")
                                             .attr("y",22)
                                             .attr("x",5)/*function(){
                                                     var len=that.selectedModule.MOD_NAME.length;
@@ -1567,6 +1714,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     return offset;
                                             })*/
                                             .text(that.selectedModule.MOD_NAME);
+                    
+                    thatimg.setupLegend();
+                    
+                    
                     
                     thatimg.data=that.selectedModule.TCList;
                     thatimg.angle=2*Math.PI/thatimg.data.length;
@@ -1973,9 +2124,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     return y;
                                 })
                                 .attr("stroke",function(d){
-                                    var colr="#0000CC";
+                                    var colr=thatimg.mirPred;
                                     if(d.V>0){
-                                        colr="#FFFF00";
+                                        colr=thatimg.mirVal;
                                     }
                                     return colr;
                                 })
@@ -2062,9 +2213,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     return y;
                                 })
                                 .attr("stroke",function(d){
-                                    var colr="#0000CC";
+                                    var colr=thatimg.mirPred;
                                     if(d.V>0){
-                                        colr="#FFFF00";
+                                        colr=thatimg.mirVal;
                                     }
                                     return colr;
                                 })
@@ -2174,7 +2325,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
         that.singleWGCNATableMirView=function(){
             var thattbl={};
-            
+
             thattbl.createMirTable = function(){
                 
                     $('div#waitMirTable').hide();
@@ -2320,6 +2471,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             $(".linkCTL").hide();
             $(".mirCTL").hide();
             $(".eqtlCtls").hide();
+            thatimg.type=that.viewType;
             thatimg.goDomain="mf";
             thatimg.selectedDepth=0;
             thatimg.selectedNode;
