@@ -32,7 +32,9 @@ sub trim($)
 sub getParents{
     my $termRef=shift;
     my $moduleGOHOHARef=shift;
+    my $geneNameRef=shift;
     my $term=$$termRef;
+    my $gn=$$geneNameRef;
     #print "start getParents(".$term->accession().")\n";
 
     #my @keyList=keys %moduleGOHOH1;
@@ -46,7 +48,7 @@ sub getParents{
         @parents = @{ $term->parents( ) };
         foreach my $par(@parents){
             #print "\t".$term->accession()."->".$par->accession()."|".$par->name()."\t".$par->is_root()."\n";
-            getParents(\$par,$moduleGOHOHARef);
+            getParents(\$par,$moduleGOHOHARef,\$gn);
             #print "after getParents:".$par->accession()."\t:".$moduleGOHOH1{$par->accession()}{ID}.":\n";
             my $found=0;
             DUPLICATE:foreach my $child(@{$moduleGOHOHARef->{$par->accession()}{children}}){
@@ -66,22 +68,48 @@ sub getParents{
 
     my $id=$term->accession();
     if(not (exists $moduleGOHOHARef->{$id}{ID})){
-        #print "add term:".$id."\n";
         $moduleGOHOHARef->{$id}{ID}=$term->accession();
         $moduleGOHOHARef->{$id}{name} = $term->name();
         $moduleGOHOHARef->{$id}{definition} = $term->definition();
         $moduleGOHOHARef->{$id}{children} = [];
+        $moduleGOHOHARef->{$id}{unique} = [];
+        push(@{$moduleGOHOHARef->{$id}{unique}},$gn);
         $moduleGOHOHARef->{$id}{parents} = \@parents;
+    }else{
+        my $found=0;
+        DUPLICATEGENEPARENT:foreach my $child2(@{$moduleGOHOHARef->{$id}{unique}}){
+            if($child2 eq $gn){
+                $found=1;
+                last DUPLICATEGENEPARENT;
+            }
+        }
+        if($found==0){
+            push(@{$moduleGOHOHARef->{$id}{unique}},$gn);
+        }
     }
+}
 
-    #my @keyList2=keys %{$moduleGOHOHARef};
-    #print $id." after key List:";
-    #foreach my $tmpKey(@keyList2){
-    #    print ",".$tmpKey; 
-    #}
-    #print "\n";
-    #print "test if exists AFTER:".$term->accession()."\t:".$moduleGOHOH1{$term->accession()}{ID}.":\n";
-    #}
+
+sub isDuplicated{
+    my $childID=shift;
+    my $parentID=shift;
+    my $goHOHRef=shift;
+    my $duplicate=0;
+    if(index($childID,"ENS")>-1){
+        my @toCheck=@{$goHOHRef->{$parentID}{children}};
+        DONECHECK:foreach my $check(@toCheck){
+            if(index($check,"ENS")==-1){
+                my @uniqueL=@{$goHOHRef->{$check}{unique}};
+                foreach my $unique(@uniqueL){
+                    if($unique eq $childID){
+                        $duplicate=1;
+                        last DONECHECK;
+                    }
+                }
+            }
+        }
+    }
+    return $duplicate;
 }
 
 sub printGOTermJSON{
@@ -91,34 +119,47 @@ sub printGOTermJSON{
     
     if(defined $term and defined $goRef->{$term}{ID}){
         my @list=@{$goRef->{$term}{children}};
+        my @uniquelist=@{$goRef->{$term}{unique}};
         my $def=$goRef->{$term}{definition};
         $def=substr($def,0,rindex($def,"\"")+1);
         #print "print:$term:".$goHOH{$term}{ID}."\n";
-        print $fh "\t{\"id\":\"".$goRef->{$term}{ID}."\",\n";
-        print $fh "\t\t\"name\":\"".$goRef->{$term}{name}."\",\n";
-        print $fh "\t\t\"definition\":".$def.",\n";
-        #print $fh "\t\t\"size\":\"".@list."\",\n";
-        print $fh "\t\t\"children\":[\n";
+        print $fh "{\"id\":\"".$goRef->{$term}{ID}."\",";
+        print $fh "\"name\":\"".$goRef->{$term}{name}."\",";
+        print $fh "\"definition\":".$def.",";
+        print $fh "\"uniqueGene\":\"".@uniquelist."\",";
+        print $fh "\"uniqueGenes\":[";
+        my $uc=0;
+        foreach my $val3(@uniquelist){
+            if($uc>0){
+                print $fh ",";
+            }
+            print $fh "{\"id\":\"".$val3."\"}";
+            $uc++;
+        }
+        print $fh "],";
+        print $fh "\"children\":[";
         #print "Print ID".$goRef->{$term}{ID}."\n\tChildren:";
         my $count=0;
         foreach my $val2(@list){
             #print "\t".$val2."\n";
             if(defined $val2){
-                if($count>0){
-                        print $fh ",";
-                }
-                if(index($val2,"GO")==0){
-                    printGOTermJSON($fh,$goRef, $val2 );
-                }else{    
-                    print $fh "{\"id\":\"".$val2."\",\"name\":\"".$val2."\",\"size\":1}";
+                if(isDuplicated($val2,$term,$goRef)==0){
+                    if($count>0){
+                            print $fh ",";
+                    }
+                    if(index($val2,"GO")==0){
+                        printGOTermJSON($fh,$goRef, $val2 );
+                    }else{    
+                        print $fh "{\"id\":\"".$val2."\",\"name\":\"".$val2."\",\"size\":1}";
+                    }
+                    $count++;
                 }
             }
-            $count++;
         }
         #print "\n";
-        print $fh "\t\t]\t\t\n}\n";
+        print $fh "]}";
     }else{
-        print "undefined:".$term."\n";
+        print "undefined:".$term;
     }
 }
 
@@ -269,7 +310,7 @@ foreach my $mod(@moduleList){
                                     if(defined $dispid){
                                         my $term = $go_adaptor->fetch_by_accession($dispid);
                                         if(defined $term){
-                                            getParents(\$term,\%moduleGOHOHA);
+                                            getParents(\$term,\%moduleGOHOHA,\$geneName);
                                             my $found=0;
                                             DUPLICATEGENE:foreach my $child2(@{$moduleGOHOHA{$term->accession()}{children}}){
                                                 if($child2 eq $geneName){
@@ -300,8 +341,8 @@ foreach my $mod(@moduleList){
     
    
     open OFILE, '>', $path.$mod.".GO.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
-    print OFILE "{\n\t\"MOD_NAME\":\"$mod\",\n";
-    print OFILE "\t\"GOList\": [\n";
+    print OFILE "{\"MOD_NAME\":\"$mod\",";
+    print OFILE "\"GOList\": [";
     my @r;
     push(@r,"GO:0005575");
     push(@r,"GO:0008150");
@@ -315,7 +356,7 @@ foreach my $mod(@moduleList){
         printGOTermJSON(\*OFILE,\%moduleGOHOHA,$val);
         $tmpCount++;
     }
-    print OFILE "\t\]\n";
+    print OFILE "\]";
     print OFILE "}";#end module
     close OFILE;
 

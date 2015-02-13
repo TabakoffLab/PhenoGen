@@ -80,7 +80,7 @@
             </tbody>
         </table>
     </div>
-        <div id="wgcnaMirGeneTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+    <div id="wgcnaMirGeneTable" style="display:none;width:99%;border:1px solid;text-align: center;">
         <div id="waitMirGeneTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
         <H2>Transcripts in <span id="mirGeneTableName">Selected</span> Module</h2><BR>
         <table class="list_base" id="mirGeneTable" width="98%">
@@ -92,6 +92,22 @@
                     <TH>Predicted miRNAs targeting gene</th>
                     <TH>Validated miRNAs targeting gene</th>
                     <TH>Total miRNAs targeting gene</th>
+                </TR>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+    <div id="wgcnaGoTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+        <div id="waitGoTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
+        <H2>Transcripts in <span id="GoTableName">Selected</span> Module</h2><BR>
+        <table  id="GoTable" width="98%">
+            <thead>
+                <TR class="col_title">
+                    <TH>Name<span title="Expand All" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span></TH>
+                    <TH>Definition</th>
+                    <TH>Genes<span title="Expand All" id="goGLExpand" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" id="goGLClose" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span></th>
                 </TR>
             </thead>
             <tbody>
@@ -129,4 +145,23 @@
     
     var wgcna=WGCNABrowser(wgcnaid,wgcnaregion,genelist,disptype,viewtype,tissue);
     wgcna.setup();
+    
+    $("#goGLExpand").on("click",function(){
+        console.log("expand");
+        $("#GoTable span.triggerGL:visible").each(function(){
+            console.log($(this));
+           var name=this.getAttribute("name");
+           $(this).addClass("less");
+           $("span#"+name).show();
+        });
+    });
+    
+    $("#goGLClose").on("click",function(){
+        
+        $("#GoTable span.triggerGL:visible").each(function(){
+           var name=this.getAttribute("name");
+           $(this).removeClass("less");
+           $("span#"+name).hide();
+        });
+    });
 </script>
