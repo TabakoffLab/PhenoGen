@@ -72,7 +72,7 @@ sub readRNAIsoformDataFromDB{
 	
 	
 
-		$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,c.name as \"chromosome\",
+		$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,rt.strain,c.name as \"chromosome\",
 			re.enumber,re.estart,re.estop ,rt.rna_transcript_id 
 			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
 			where 
@@ -105,7 +105,7 @@ sub readRNAIsoformDataFromDB{
 
 # BIND TABLE COLUMNS TO VARIABLES
 
-	$query_handle->bind_columns(\$tissue ,\$gene_id,\$isoform_id,\$source,\$trstart,\$trstop,\$trstrand,\$trcategory,\$chr,\$enumber,\$estart,\$estop,\$trID);
+	$query_handle->bind_columns(\$tissue ,\$gene_id,\$isoform_id,\$source,\$trstart,\$trstop,\$trstrand,\$trcategory,\$trstrain,\$chr,\$enumber,\$estart,\$estop,\$trID);
 # Loop through results, adding to array of hashes.
 	my $continue=1;
 	my @tmpArr=();
@@ -127,6 +127,7 @@ sub readRNAIsoformDataFromDB{
 	my $trtmp_strand=0;
 	my $trtmp_chromosome=0;
 	my $trtmp_category="";
+        my $trtmp_strain="";
 	my $trtmp_trid=0;
 	my $genetmp_tissue="";
 	my $genetmp_id="";
@@ -169,6 +170,7 @@ sub readRNAIsoformDataFromDB{
 					source => $trtmp_source,
 					strand => $trtmp_strand,
 					category => $trtmp_category,
+                                        strian => $trtmp_strain,
 					chromosome => $trtmp_chromosome,
 					exonList => {exon => \@$exonArray},
 					intronList => {intron => \@$intronArray}
@@ -191,6 +193,7 @@ sub readRNAIsoformDataFromDB{
 				$trtmp_strand=$trstrand;
 				$trtmp_chromosome=$chr;
 				$trtmp_category=$trcategory;
+                                $trtmp_strain=$trstrain;
 				$trtmp_trid=$trID;
 				
 				#set gene min max
@@ -230,6 +233,7 @@ sub readRNAIsoformDataFromDB{
 					source => $trtmp_source,
 					strand => $trtmp_strand,
 					category => $trtmp_category,
+                                        strain => $trtmp_strain,
 					chromosome => $trtmp_chromosome,
 					exonList => {exon => \@$exonArray},
 					intronList => {intron => \@$intronArray}
@@ -276,6 +280,7 @@ sub readRNAIsoformDataFromDB{
 			$trtmp_strand=$trstrand;
 			$trtmp_chromosome=$chr;
 			$trtmp_category=$trcategory;
+                        $trtmp_strain=$trstrain;
 			$trtmp_trid=$trID;
 
 			$genetmp_start=$trtmp_start;
@@ -317,6 +322,7 @@ sub readRNAIsoformDataFromDB{
 						source => $trtmp_source,
 						strand => $trtmp_strand,
 						category => $trtmp_category,
+                                                strain => $trtmp_strain,
 						chromosome => $trtmp_chromosome,
 						exonList => {exon => \@$exonArray},
 						intronList => {intron => \@$intronArray}

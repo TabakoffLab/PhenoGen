@@ -70,7 +70,7 @@ ratOnly.heartilluminaTotalMinus=1;
 ratOnly.probe=1;
 
 
-mouseOnly.brainTotal=1;
+//mouseOnly.brainTotal=1;
 mouseOnly.brainilluminaTotalPlus=1;
 mouseOnly.brainilluminaTotalMinus=1;
 mouseOnly.brainspliceJnct=1;
@@ -79,7 +79,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.14.0(1/11/2015)";
+var siteVer="PhenoGen v2.15.0(2/28/2015)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -621,7 +621,7 @@ function loadImageState(trackListObj,levelInd){
 	//}	
 }
 
-function setupDefaultView(levelInd){
+/*function setupDefaultView(levelInd){
 	$("input[name='trackcbx']").each(function(){
     		if($(this).is(":checked")){
     			$(this).prop('checked', false);
@@ -703,7 +703,7 @@ function setupDefaultView(levelInd){
     		svgList[levelInd].addTrack("qtl",3,"",0);
     	}
 	}
-}
+}*/
 
 
 function calculateBin(len,width){
@@ -4395,6 +4395,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	if(that.trackClass.indexOf("smallnc")===-1){	
 		that.ttTrackList.push("ensemblcoding");
 		that.ttTrackList.push("braincoding");
+                that.ttTrackList.push("brainTotal");
 		that.ttTrackList.push("liverTotal");
 		that.ttTrackList.push("heartTotal");
 		that.ttTrackList.push("refSeq");
@@ -4416,8 +4417,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.ttTrackList.push("snpSHRJ");
 	}
 
-	if(trackClass==="braincoding"){
+	if(trackClass==="braincoding"||trackClass==="brainTotal"){
 		that.ttTrackList.push("illuminaPolyA");
+                that.ttTrackList.push("illuminaTotal");
 	}else if(trackClass==="liverTotal"){
 		that.ttTrackList.push("liverilluminaTotalPlus");
 		that.ttTrackList.push("liverilluminaTotalMinus");
@@ -4436,33 +4438,71 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}
 	
 	that.color =function(d){
-		var color=d3.rgb("#000000");
+		var color="#000000";
 		if(that.trackClass==="ensemblcoding"){
-			color=d3.rgb("#DFC184");
+			color="#DFC184";
 		}else if(that.trackClass==="braincoding"){
-			color=d3.rgb("#7EB5D6");
+			color="#7EB5D6";
 		}else if(that.trackClass==="ensemblnoncoding"){
-			color=d3.rgb("#B58AA5");
+			color="#B58AA5";
 		}else if(that.trackClass==="brainnoncoding"){
-			color=d3.rgb("#CECFCE");
+			color="#CECFCE";
 		}else if(that.trackClass==="ensemblsmallnc"){
-			color=d3.rgb("#FFCC00");
+			color="#FFCC00";
 		}else if(that.trackClass==="brainsmallnc"){
-			color=d3.rgb("#99CC99");
+			color="#99CC99";
 		}else if(that.trackClass==="liverTotal"){
-			color=d3.rgb("#bbbedd");
+			color="#bbbedd";
+                        if(d.getAttribute("strain")!==null && typeof d.getAttribute("strain") !=='undefined' && d.getAttribute("strain")!=="All"){
+                            color=that.strainSpecColor(color,d);
+                        }
 		}else if(that.trackClass==="heartTotal"){
-			color=d3.rgb("#DC7252");
+			color="#DC7252";
+                        if(d.getAttribute("strain")!==null && typeof d.getAttribute("strain") !=='undefined' && d.getAttribute("strain")!=="All"){
+                            color=that.strainSpecColor(color,d);
+                        }
 		}
 		else if(that.trackClass==="brainTotal"){
-			color=d3.rgb("#7EB5D6");
+			color="#7EB5D6";
+                        if(d.getAttribute("strain")!==null && typeof d.getAttribute("strain") !=='undefined' && d.getAttribute("strain")!=="All"){
+                            color=that.strainSpecColor(color,d);
+                        }
+                        
 		}else if(that.trackClass==="liversmallnc"){
-			color=d3.rgb("#8b8ead");
+			color="#8b8ead";
 		}else if(that.trackClass==="heartsmallnc"){
-			color=d3.rgb("#BC5232");
+			color="#BC5232";
 		}
+                color=d3.rgb(color);
 		return color;
 	};
+        
+        that.strainSpecColor=function (currentColor,d){
+            var color=currentColor;
+            var r=parseInt(currentColor.substr(1,2),16);
+            var g=parseInt(currentColor.substr(3,2),16);
+            var b=parseInt(currentColor.substr(5),16);
+            if(d.getAttribute("strain").toUpperCase()==="BNLX"){//more blue since strain specific SNPs are blue
+                b=b+64;
+                r=r-32;
+                g=g-32; 
+            }else if(d.getAttribute("strain").toUpperCase()==="SHR"||d.getAttribute("strain").toUpperCase()==="SHRH"){// more red since strain specific SNPs are red
+                r=r+64;
+                b=b-32;
+                g=g-32;
+            }
+            if(r>255){
+                r=255;
+            }
+            if(g>255){
+                g=255;
+            }
+            if(b>255){
+                b=255;
+            }
+            color="#"+r.toString(16)+g.toString(16)+b.toString(16);
+            return color;
+        };
 
 	that.pieColor =function(d,i){
 		return that.color(d);
@@ -5485,27 +5525,27 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.redrawLegend();
 		var filterData=data;
 
-			if(that.drawAs=="Trx" && that.trackClass.indexOf("smallnc")==-1){
-				filterData=[];
-				var newCount=0;
-				for(var l=0;l<data.length;l++){
-					if(data[l]!=undefined ){
-						/*if(that.gsvg.levelNumber!=1 
-							|| (that.gsvg.levelNumber==1 && that.gsvg.selectedData!=undefined  && data[l].getAttribute("ID")!=that.gsvg.selectedData.getAttribute("ID") )
-							){*/
-								var tmpTxList=getAllChildrenByName(getFirstChildByName(data[l],"TranscriptList"),"Transcript");
-								for(var k=0;k<tmpTxList.length;k++){
-									filterData[newCount]=tmpTxList[k];
-									filterData[newCount].parent=data[l];
-									newCount++;
-								}
-						//}
-					}
-				}
-			}
+                if(that.drawAs==="Trx" && that.trackClass.indexOf("smallnc")===-1){
+                        filterData=[];
+                        var newCount=0;
+                        for(var l=0;l<data.length;l++){
+                                if(data[l]!=undefined ){
+                                        /*if(that.gsvg.levelNumber!=1 
+                                                || (that.gsvg.levelNumber==1 && that.gsvg.selectedData!=undefined  && data[l].getAttribute("ID")!=that.gsvg.selectedData.getAttribute("ID") )
+                                                ){*/
+                                                        var tmpTxList=getAllChildrenByName(getFirstChildByName(data[l],"TranscriptList"),"Transcript");
+                                                        for(var k=0;k<tmpTxList.length;k++){
+                                                                filterData[newCount]=tmpTxList[k];
+                                                                filterData[newCount].parent=data[l];
+                                                                newCount++;
+                                                        }
+                                        //}
+                                }
+                        }
+                }
 
 		
-		if(that.drawAs=="Gene" || that.trackClass.indexOf("smallnc")>-1){
+		if(that.drawAs==="Gene" || that.trackClass.indexOf("smallnc")>-1){
 			that.drawnAs="Gene";
 			that.svg.selectAll(".trx0").each(function(){d3.select(this).remove();});
                         
@@ -5757,9 +5797,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.redrawLegend=function (){
-		/*var legend=[];
+		var legend=[];
 		var curPos=0;
-		if(that.trackClass!="liverTotal"){
+		/*if(that.trackClass!="liverTotal"){
 			if(that.annotType!="trxOnly"){
 				if(trackClass == "coding"){
 					legend[curPos]={color:"#DFC184",label:"Ensembl"};
@@ -5783,9 +5823,35 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}
 		}else if(that.trackClass=="liverTotal"){
 			legend[curPos]={color:"#bbbedd",label:"Liver Total RNA Sequencing"};
-		}
+		}*/
+                if(that.drawAs==="Trx"){
+                    if(that.trackClass==="brainTotal"){
+                        if(organism==="Rn"){
+                            legend[curPos]={color:"#7EB5D6",label:"All"};
+                            curPos++;
 
-		that.drawLegend(legend);*/
+                            legend[curPos]={color:"#5E95FF",label:"BN-Lx"};
+                            curPos++;
+                            legend[curPos]={color:"#BE95B6",label:"SHR"};
+                            curPos++;
+                        }
+                    }else if(that.trackClass==="liverTotal"){
+                            legend[curPos]={color:"#bbbedd",label:"All"};
+                            curPos++;
+                            legend[curPos]={color:"#9b9eFF",label:"BN-Lx"};
+                            curPos++;
+                            legend[curPos]={color:"#Fb9eBd",label:"SHR"};
+                            curPos++;
+                    }else if(that.trackClass==="heartTotal"){
+                            legend[curPos]={color:"#DC7252",label:"All"};
+                            curPos++;
+                            legend[curPos]={color:"#BC5292",label:"BN-Lx"};
+                            curPos++;
+                            legend[curPos]={color:"#FF5232",label:"SHR"};
+                            curPos++;
+                    }
+                }
+		that.drawLegend(legend);
 	};
 
 	that.triggerTableFilter=function(d){
