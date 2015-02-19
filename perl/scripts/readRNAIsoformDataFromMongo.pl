@@ -88,6 +88,7 @@ sub readRNAIsoformDataFromDB{
 				rd2.organism = '".$organism."' "."
 				and rd2.user_id= $publicUserID  
 				and rd2.visible=1
+                                and rd2.previous=0
 				and rd2.tissue = '".$tissue."'
 				and rd2.strain_panel like '".$panel."')";
 			$query=$query." and rt.rna_dataset_id=rd.rna_dataset_id ";

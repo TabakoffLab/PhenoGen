@@ -64,6 +64,7 @@ sub readTranscriptAnnotationDataFromDB{
 			and rd.user_id= $publicUserID
 			and rd.tissue = '".$tissue."'
 			and rd.visible=1 
+                        and rd.previous=0 
 			and rd.strain_panel like '".$panel."' "."
 			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))
 			and rt.rna_dataset_id=rd.rna_dataset_id";

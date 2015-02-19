@@ -493,8 +493,8 @@ sub createXMLFile
 	    createLiverTotalXMLTrack(\%heartHOH,$outputDir."heartTotal.xml");
 	    
 	    my $iTimeStart=time();
-	    #my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1," in ('PolyA+','NonPolyA+')","Brain");
-            my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"totalRNA","Brain");
+	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1," in ('PolyA+','NonPolyA+')","Brain");
+            #my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"totalRNA","Brain");
 	    %brainHOH=%$isoformHOH;
 	    #$tmpGeneArray=$$isoformHOH{Gene};
 	    my $iTimeEnd=time();
@@ -578,9 +578,9 @@ sub createXMLFile
 		    }
 		}
 	    }
-	    #createProteinCodingXMLTrack(\%brainHOH,$outputDir."braincoding.xml",$trackDB,1);
-	    #createProteinCodingXMLTrack(\%brainHOH,$outputDir."brainnoncoding.xml",$trackDB,0);
-            createLiverTotalXMLTrack(\%brainHOH,$outputDir."brainTotal.xml");
+	    createProteinCodingXMLTrack(\%brainHOH,$outputDir."braincoding.xml",$trackDB,1);
+	    createProteinCodingXMLTrack(\%brainHOH,$outputDir."brainnoncoding.xml",$trackDB,0);
+            #createLiverTotalXMLTrack(\%brainHOH,$outputDir."brainTotal.xml");
 	}elsif($shortSpecies eq 'Mm'){
 	    my $iTimeStart=time();
 	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'ILS/ISS',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"totalRNA","Brain");
