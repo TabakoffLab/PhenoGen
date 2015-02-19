@@ -88,23 +88,24 @@ sub callCircos{
 	my $inkscapeBinary;
 	my $inkscapeDirectory;
 
-	if($hostname eq 'amc-kenny.ucdenver.pvt'){
-		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+	#if($hostname eq 'amc-kenny.ucdenver.pvt'){
+	#	$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+	#	$perlBinary = '/usr/bin/perl';
+	#	$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
+	#}
+	#elsif($hostname eq 'compbio.ucdenver.edu'){
+	#	$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+	#	$perlBinary = '/usr/local/bin/perl';
+	#	$inkscapeBinary = '/usr/bin/inkscape';
+	#}
+	#
+        if($hostname eq 'phenogen'){
+		$circosBinary = '/usr/local/circos-0.67-5/bin/circos';
 		$perlBinary = '/usr/bin/perl';
-		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
-	}
-	elsif($hostname eq 'compbio.ucdenver.edu'){
-		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
-		$perlBinary = '/usr/local/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
-	elsif($hostname eq 'phenogen'){
-		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
-		$perlBinary = '/usr/bin/perl';
-		$inkscapeBinary = '/usr/bin/inkscape';
-	}
-	elsif($hostname eq 'stan.ucdenver.pvt.ucdenver.pvt'){
-		$circosBinary = '/usr/local/circos-0.62-1/bin/circos';
+	elsif($hostname eq 'stan.ucdenver.pvt'){
+		$circosBinary = '/usr/local/circos-0.67-5/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 	}
