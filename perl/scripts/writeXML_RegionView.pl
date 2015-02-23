@@ -10,7 +10,7 @@ use XML::Simple;
 
 use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
-require 'readRNAIsoformDataFromDB.pl';
+require 'readRNAIsoformDataFromMongo.pl';
 require 'readSNPDataFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'createBED.pl';
@@ -196,7 +196,7 @@ sub createXMLFile
 	my @probesetHOH = @$probesetHOHRef;
 	
 	if($shortSpecies eq 'Rn'){
-	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1);
+	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"Any","Brain",0);
 	    my $tmpGeneArray=$$isoformHOH{Gene};
 	    #process RNA genes/transcripts and assign probesets.
 	    $tmpGeneArray=$$isoformHOH{Gene};

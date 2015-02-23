@@ -5,7 +5,7 @@ use Bio::EnsEMBL::Registry;
 use XML::LibXML;
 use XML::Simple;
 
-require 'readRNAIsoformDataFromDB.pl';
+require 'readRNAIsoformDataFromMongo.pl';
 
 sub getFeatureInfo
 {
@@ -187,7 +187,7 @@ sub createXMLFile
 	}else{
 	    $shortSpecies="Mm";
 	}
-	
+	my $tissue="Brain";
 	
 	#
 	# Zero a bunch of counters
@@ -330,7 +330,7 @@ sub createXMLFile
 	if($shortSpecies eq 'Rn'){
 	    #get expanded min max
 	    if($prevMin!=$minCoord||$prevMax!=$maxCoord){
-	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,0);
+	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"Any",$tissue,0);
 		my $tmpGeneArray=$$isoformHOH{Gene};
 		foreach my $tmpgene ( @$tmpGeneArray){
 		    print "gene:".$$tmpgene{ID}."\n";

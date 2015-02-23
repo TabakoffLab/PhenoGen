@@ -79,7 +79,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.15.0(2/28/2015)";
+var siteVer="PhenoGen v2.15.0(3/7/2015)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -354,7 +354,11 @@ $(document).on("click",".closeBtn",function(){
 					$("."+setting).fadeOut("fast");
 					//}
 					if(setting.indexOf("viewsLevel")>-1){
-						$("div.trackLevel"+setting.substr(setting.length-1)).fadeOut("fast");
+                                                var tmpLevel=setting.substr(setting.length-1);
+                                                $("div#nameView"+tmpLevel).hide();
+                                                $("div#selection"+tmpLevel).show();
+                                                $("span#viewMenuLbl"+tmpLevel).html("Select/Edit Views");
+						$("div.trackLevel"+tmpLevel).fadeOut("fast");
 					}
 					return false;
 				});
@@ -977,8 +981,15 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Gene");
+                                                        var ver=0;
+                                                        var glElem=d.documentElement.getElementsByTagName("GeneList");
+                                                        if(glElem.length>0 && typeof glElem[0].getAttribute("ver") !=='undefined'){
+                                                                ver=glElem[0].getAttribute("ver");
+                                                        }
                                                         try{
+                                                            
                                                             var newTrack= GeneTrack(that,data,track,"Long Non-Coding / Non-PolyA+ Genes",additionalOptions);
+                                                            newTrack.dataVer=ver;
                                                             that.addTrackList(newTrack);
                                                             if(selectGene!=""){
                                                                     newTrack.setSelected(selectGene);
@@ -1018,12 +1029,18 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Gene");
+                                                        var ver=0;
+                                                        var glElem=d.documentElement.getElementsByTagName("GeneList");
+                                                        if(glElem.length>0 && typeof glElem[0].getAttribute("ver") !=='undefined'){
+                                                                ver=glElem[0].getAttribute("ver");
+                                                        }
                                                         try{
-							var newTrack= GeneTrack(that,data,track,"Protein Coding / PolyA+",additionalOptions);
-							that.addTrackList(newTrack);
-							if(selectGene!=""){
-								newTrack.setSelected(selectGene);
-							}
+                                                            var newTrack= GeneTrack(that,data,track,"Protein Coding / PolyA+",additionalOptions);
+                                                            newTrack.dataVer=ver;
+                                                            that.addTrackList(newTrack);
+                                                            if(selectGene!=""){
+                                                                    newTrack.setSelected(selectGene);
+                                                            }
                                                         }catch(er){}
 						}
 					}
@@ -1105,12 +1122,19 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Gene");
+                                                        var ver=0;
+                                                        var glElem=d.documentElement.getElementsByTagName("GeneList");
+                                                        if(glElem.length>0 && typeof glElem[0].getAttribute("ver") !=='undefined'){
+                                                                ver=glElem[0].getAttribute("ver");
+                                                        }
                                                         try{
-							var newTrack= GeneTrack(that,data,track,lbl,additionalOptions);
-							that.addTrackList(newTrack);
-							if(selectGene!=""){
-								newTrack.setSelected(selectGene);
-							}
+                                                            
+                                                            var newTrack= GeneTrack(that,data,track,lbl,additionalOptions);
+                                                            newTrack.dataVer=ver;
+                                                            that.addTrackList(newTrack);
+                                                            if(selectGene!=""){
+                                                                    newTrack.setSelected(selectGene);
+                                                            }
                                                         }catch(er){}
 						}
 					}
@@ -1162,9 +1186,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								},5000);
 							}
 						}else{
+                                                        
 							var data=d.documentElement.getElementsByTagName("Gene");
                                                         try{
 							var newTrack= RefSeqTrack(that,data,track,"Ref Seq Genes",additionalOptions);
+                                                        
 							that.addTrackList(newTrack);
                                                         }catch(er){
                                                             
@@ -3106,7 +3132,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			return colorRet;
 	};
 
-	that.calcY = function (start,end,i){
+	/*that.calcY = function (start,end,i){
 		var tmpY=0;
 		if(that.density==3){
 			if((start>=that.xScale.domain()[0]&&start<=that.xScale.domain()[1])||
@@ -3140,6 +3166,88 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				}
 				for(var pix=pStart;pix<=pEnd;pix++){
 					that.yArr[pix]=yMax;
+				}
+				tmpY=yMax*15;
+			}else{
+				tmpY=15;
+			}
+		}else if(that.density==2){
+			tmpY=(i+1)*15;
+		}else{
+			tmpY=15;
+		}
+		if(that.trackYMax<(tmpY/15)){
+			that.trackYMax=(tmpY/15);
+		}
+		return tmpY;
+	};*/
+        //Pack method does perform additional packing above the default method in track.  
+	//May be slightly slower but avoids the waterfall like non optimal packing that occurs with the sorted features.
+	that.calcY = function (start,end,i){
+		var tmpY=0;
+		if(that.density==3){
+			if((start>=that.xScale.domain()[0]&&start<=that.xScale.domain()[1])||
+				(end>=that.xScale.domain()[0]&&end<=that.xScale.domain()[1])||
+				(start<=that.xScale.domain()[0]&&end>=that.xScale.domain()[1])){
+				var pStart=Math.round(that.xScale(start));
+				if(pStart<0){
+					pStart=0;
+				}
+				var pEnd=Math.round(that.xScale(end));
+				if(pEnd>=that.gsvg.width){
+					pEnd=that.gsvg.width-1;
+				}
+				var pixStart=pStart-that.xPadding;
+				if(pixStart<0){
+					pixStart=0;
+				}
+				var pixEnd=pEnd+that.xPadding;
+				if(pixEnd>=that.gsvg.width){
+					pixEnd=that.gsvg.width-1;
+				}
+				//find yMax that is clear this is highest line that is clear
+				var yMax=0;
+				for(var pix=pixStart;pix<=pixEnd;pix++){
+					if(that.yMaxArr[pix]>yMax){
+						yMax=that.yMaxArr[pix];
+					}
+				}
+				yMax++;
+				//may need to extend yArr for a new line
+				var addLine=yMax;
+				if(that.yArr.length<=yMax){
+					that.yArr[addLine]=new Array();
+					for(var j=0;j<that.gsvg.width;j++){
+						that.yArr[addLine][j]=0;
+					}
+				}
+				//check a couple lines back to see if it can be squeezed in
+				var startLine=yMax-that.scanBackYLines;
+				if(startLine<1){
+					startLine=1;
+				}
+				var prevLine=-1;
+				var stop=0;
+				for(var scanLine=startLine;scanLine<yMax&&stop==0;scanLine++){
+					var available=0;
+					for(var pix=pixStart;pix<=pixEnd&&available==0;pix++){
+						if(that.yArr[scanLine][pix]>available){
+							available=1;
+						}
+					}
+					if(available==0){
+						yMax=scanLine;
+						stop=1;
+					}
+				}
+				if(yMax>that.trackYMax){
+					that.trackYMax=yMax;
+				}
+				for(var pix=pStart;pix<=pEnd;pix++){
+					if(that.yMaxArr[pix]<yMax){
+						that.yMaxArr[pix]=yMax;
+					}
+					that.yArr[yMax][pix]=1;
 				}
 				tmpY=yMax*15;
 			}else{
@@ -3539,8 +3647,8 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	that.level=that.gsvg.levelNumber;
 	that.data=dataP;
 	that.label=labelP;
-	that.density=2;
-	that.yArr=new Array();
+	that.density=3;
+	//that.yArr=new Array();
 	that.loading;
 	that.trackYMax=0;
 	that.trackClass=trackClassP;
@@ -3548,12 +3656,20 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	that.xScale=that.gsvg.get('xScale');
 	that.scaleSVG=that.gsvg.get('scaleSVG');
 	that.xAxis=that.gsvg.get('xAxis');
-	for(var j=0;j<that.gsvg.width;j++){
+	/*for(var j=0;j<that.gsvg.width;j++){
 				that.yArr[j]=0;
+	}*/
+
+	//Initialize Y Positioning Variables
+	that.yMaxArr=new Array();
+	that.yArr=new Array();
+	that.yArr[0]=new Array();
+	for(var j=0;j<that.gsvg.width;j++){
+				that.yMaxArr[j]=0;
+				that.yArr[0][j]=0;
 	}
-
-	
-
+        that.scanBackYLines=12;
+        that.xPadding=2;
 
 	that.vis=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass);
 	that.svg=d3.select("svg#Level"+that.gsvg.levelNumber+that.trackClass);
@@ -4394,7 +4510,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.drawAs="Trx";
 	}
 	that.density=3;
-
+        that.dataVer=0;
+        that.reqDataVer=0;
 	that.ttTrackList=[];
 	if(that.trackClass.indexOf("smallnc")===-1){	
 		that.ttTrackList.push("ensemblcoding");
@@ -4436,14 +4553,6 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
             that.ttTrackList.push("brainilluminaTotalMinus");
         }
 
-	//Initialize Y Positioning Variables
-	that.yMaxArr=new Array();
-	that.yArr=new Array();
-	that.yArr[0]=new Array();
-	for(var j=0;j<that.gsvg.width;j++){
-				that.yMaxArr[j]=0;
-				that.yArr[0][j]=0;
-	}
 	
 	that.color =function(d){
 		var color="#000000";
@@ -4646,7 +4755,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		return tooltip;
 	};
 
-	that.calcY = function (start,end,i){
+	/*that.calcY = function (start,end,i){
 		var tmpY=0;
 		if(that.density===3){
 			if((start>=that.xScale.domain()[0]&&start<=that.xScale.domain()[1])||
@@ -4725,14 +4834,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			that.trackYMax=(tmpY/15);
 		}
 		return tmpY;
-		};
+		};*/
 
 	that.redraw=function(){
-		
-		/*if($("#"+that.trackClass+"CBX"+that.gsvg.levelNumber).is(":checked")){
-			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		}*/
-
 		that.yMaxArr=new Array();
 		that.yArr=new Array();
 		that.yArr[0]=new Array();
@@ -4741,12 +4845,16 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			that.yArr[0][p]=0;
 		}
 		that.trackYMax=0;
-
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
 		var len=tmpMax-tmpMin;
 		var overrideTrx=0;
-		if((len<that.trxCutoff&&that.drawnAs==="Gene")||(len>=that.trxCutoff&&that.drawnAs==="Trx"&&that.drawAs!=="Trx")||(that.drawnAs==="Gene" && $("#forceTrxCBX"+that.gsvg.levelNumber).is(":checked"))){
+                
+                if(that.reqDataVer!==that.dataVer){
+                    that.updateDataVersion(that.reqDataVer,0);
+                }else if(typeof that.prevSetting!=='undefined' && that.prevSetting.density!==that.density){
+                    that.draw(that.data);
+                }else if((len<that.trxCutoff&&that.drawnAs==="Gene")||(len>=that.trxCutoff&&that.drawnAs==="Trx"&&that.drawAs!=="Trx")||(that.drawnAs==="Gene" && $("#forceTrxCBX"+that.gsvg.levelNumber).is(":checked"))){
 			that.draw(that.data);	
 		}else{
 			
@@ -4822,7 +4930,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					if(that.density===1){
 						that.svg.attr("height", 30);
 					}else if(that.density===2){
-						that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").size()+1)*15);
+						//that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene").size()+1)*15);
+                                                that.svg.attr("height", (that.trackYMax+1)*15);
 					}else if(that.density===3){
 						that.svg.attr("height", (that.trackYMax+1)*15);
 					}
@@ -4941,9 +5050,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 						if(that.density===1){
 							that.svg.attr("height", 30);
 						}else if(that.density===2){
-							that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber).size()+1)*15);
-						}else if(that.density===3){
-							//that.svg.attr("height", (that.trackYMax+2)*15);
+							//that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber).size()+1)*15);
+                                                        that.svg.attr("height", (that.trackYMax+1)*15);
+                                                }else if(that.density===3){
+							that.svg.attr("height", (that.trackYMax+1)*15);
 						}
 				}
 			
@@ -5240,6 +5350,55 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}
 		});
 	};
+        
+        that.updateDataVersion=function(ver,retry){
+		var tag="Gene";
+		var file=that.trackClass+"_"+ver;
+                var path=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/"+file+".xml";
+                
+		d3.xml(path,function (error,d){
+			if(error){
+                                if(retry===0){
+                                    $.ajax({
+                                            url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+                                            type: 'GET',
+                                            data: {chromosome: chr,minCoord:that.gsvg.xScale.domain()[0],maxCoord:that.gsvg.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: file, folder: that.gsvg.folderName},
+                                            dataType: 'json',
+                                            success: function(data2){
+
+                                            },
+                                            error: function(xhr, status, error) {
+
+                                            }
+                                        });
+                                }
+				if(retry<3){//wait before trying again
+                                    var time=10000;
+                                    if(retry===1){
+                                            time=15000;
+                                    }
+                                    setTimeout(function (){
+                                            that.updateDataVersion(retry+1);
+                                    },time);
+				}else{
+                                    d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
+                                    d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
+                                    that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
+				}
+			}else{
+				var data=d.documentElement.getElementsByTagName(tag);
+                                var ver=0;
+                                var glElem=d.documentElement.getElementsByTagName("GeneList");
+                                if(glElem.length>0 && typeof glElem[0].getAttribute("ver") !=='undefined'){
+                                        ver=parseInt(glElem[0].getAttribute("ver"));
+                                }
+                                that.dataVer=ver;
+				that.draw(data);
+				that.hideLoading();
+				DisplayRegionReport();
+			}
+		});
+	};
 
 	that.drawTrx=function (d,i){
 		var cdsStart=d.getAttribute("start");
@@ -5469,10 +5628,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.draw=function (data){
-
 		that.data=data;
-
 		that.trackYMax=0;
+                that.yMaxArr=new Array();
 		that.yArr=new Array();
 		that.yArr[0]=new Array();
 		for(var j=0;j<that.gsvg.width;j++){
@@ -5896,6 +6054,35 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else{
 			$('#tblsmGenes_filter input').val("").trigger(e);
 		}
+	};
+        
+        that.updateSettingsFromUI=function(){
+		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
+			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
+                }
+                if($("#"+that.trackClass+"Version"+that.level+"Select").length>0){
+                        console.log("Select Ver:"+$("#"+that.trackClass+"Version"+that.level+"Select").val());
+			that.reqDataVer=$("#"+that.trackClass+"Version"+that.level+"Select").val();
+		}
+	};
+        that.savePrevious=function(){
+		that.prevSetting={};
+		that.prevSetting.density=that.density;
+		that.prevSetting.dataVer=that.dataVer;
+	};
+	
+	that.revertPrevious=function(){
+		that.density=that.prevSetting.density;
+		that.dataVer=that.prevSetting.dataVer;
+	};
+
+        //update current settings from a view setting string
+	that.updateSettings=function(setting){
+            console.log("updateSettings:"+that.trackClass+":"+setting);
+	};
+	//generate the setting string for a view from current settings
+	that.generateTrackSettingString=function(){
+		return that.trackClass+","+that.density+","+that.dataVer+";";
 	};
 
 	that.redrawLegend();
@@ -6720,7 +6907,8 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	if(organism=="Rn"){
 		that.tissuesAll=["Brain","BrownAdipose","Heart","Liver"];
 	}
-
+        that.xPadding=1;
+        that.scanBackYLines=30;
 	that.curColor=that.colorSelect;
 	//console.log("start Probes");
 	//console.log("density:"+that.density);
@@ -6867,6 +7055,14 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 			that.tissueLen=tissueLen;
 			that.draw(that.data);
 		}else{
+                        that.trackYMax=0;
+                        that.yMaxArr=new Array();
+                        that.yArr=new Array();
+                        that.yArr[0]=new Array();
+                        for(var j=0;j<that.gsvg.width;j++){
+                                        that.yMaxArr[j]=0;
+                                        that.yArr[0][j]=0;
+                        }
 			that.colorSelect=that.curColor;
 			that.tissueLen=tissueLen;
 			if(that.colorSelect=="dabg"||that.colorSelect=="herit"){
@@ -6985,7 +7181,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.redrawSelectedArea();
 	};
 
-	that.calcY=function (start,end,density,i,spacing){
+	/*that.calcY=function (start,end,density,i,spacing){
 		var tmpY=-299999999;
 		var found=false;
 		if(density==1){
@@ -7023,7 +7219,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 			that.trackYMax=tmpY/15;
 		}
 		return tmpY;
-	};
+	};*/
 
 	that.update=function (d){
 		that.redraw();
@@ -7075,6 +7271,14 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.draw= function (data){
 		that.data=data;
 		that.colorSelect=that.curColor;
+                that.trackYMax=0;
+                that.yMaxArr=new Array();
+		that.yArr=new Array();
+		that.yArr[0]=new Array();
+		for(var j=0;j<that.gsvg.width;j++){
+				that.yMaxArr[j]=0;
+				that.yArr[0][j]=0;
+		}
 		if(that.colorSelect=="dabg"||that.colorSelect=="herit"){
 			if(that.colorSelect=="dabg"){
 				that.drawScaleLegend("0%","100%","of Samples DABG","#000000","#00FF00",0);
@@ -7218,11 +7422,11 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else if(that.colorSelect=="annot"){
 			var legend=[{color:"#FF0000",label:"Core"},{color:"#0000FF",label:"Extended"},{color:"#006400",label:"Full"},{color:"#000000",label:"Ambiguous"}];
 			that.drawLegend(legend);
-			that.trackYMax=0;
+			/*that.trackYMax=0;
 			that.yArr=new Array();
 			for(var j=0;j<100;j++){
 				that.yArr[j]=-299999999;
-			}
+			}*/
 			that.svg.selectAll(".probe").remove();
 			that.svg.selectAll(".tissueLbl").remove();
 			//update
@@ -7549,6 +7753,9 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 	that.ttTrackList.push("brainsmallnc");
 	that.ttTrackList.push("probe");
 
+        that.xPadding=1;
+        that.scanBackYLines=50;
+
 	that.updateSettingsFromUI=function(){
 		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
@@ -7726,20 +7933,22 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 		if(that.density==1){
 			that.svg.attr("height", 30);
 		}else if(that.density==2){
-			that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.snp").length+1)*15);
+			//that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.snp").length+1)*15);
+                        that.svg.attr("height", (that.trackYMax+1)*15);
 		}else if(that.density==3){
-			var tmpYMax=-1;
+			/*var tmpYMax=-1;
 			for(var j=0;j<that.yArr.length&&tmpYMax==-1;j++){
 				if(that.yArr[j]==-299999999){
 					that.svg.attr("height", (j+1)*15);
 					tmpYMax=j;
 				}
-			}
+			}*/
+                        that.svg.attr("height", (that.trackYMax+1)*15);
 		}
 		that.redrawSelectedArea();
 	};
 
-	that.calcY=function (start,end,i,spacing){
+	/*that.calcY=function (start,end,i,spacing){
 		var tmpY=-299999999;
 		var found=false;
 		if(that.density==1){
@@ -7774,7 +7983,7 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 			}
 		}
 		return tmpY;
-	};
+	};*/
 
 	that.color=function (d){
 		var color=d3.rgb("#000000");
@@ -7999,15 +8208,17 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 			if(that.density==1){
 				that.svg.attr("height", 30);
 			}else if(that.density==2){
-				that.svg.attr("height", (data.length+1)*15);
+				//that.svg.attr("height", (data.length+1)*15);
+                                that.svg.attr("height", (that.trackYMax+1)*15);
 			}else if(that.density==3){
-				var tmpYMax=-1;
+				/*var tmpYMax=-1;
 				for(var j=0;j<that.yArr.length&&tmpYMax==-1;j++){
 					if(that.yArr[j]==-299999999){
 						that.svg.attr("height", (j+1)*15);
 						tmpYMax=j;
 					}
-				}
+				}*/
+                            that.svg.attr("height", (that.trackYMax+1)*15);
 			};
 		snps.exit().remove();
 		that.redrawSelectedArea();
@@ -8721,33 +8932,6 @@ function TranscriptTrack(gsvg,data,trackClass,density){
 	}
 
 	that.redrawLegend=function (){
-		/*var legend=[];
-		var curPos=0;
-		if(that.gsvg.txType!="liverTotal"){
-			if(that.gsvg.txType=="protein"){
-				legend[curPos]={color:"#DFC184",label:"Ensembl"};
-			}else if(that.gsvg.txType=="long"){
-				legend[curPos]={color:"#B58AA5",label:"Ensembl"};
-			}else if(that.gsvg.txType=="small"){
-				legend[curPos]={color:"#FFCC00",label:"Ensembl"};
-			}
-			curPos++;
-
-			if(organism=="Rn"){
-				if(that.gsvg.txType=="protein"){
-					legend[curPos]={color:"#7EB5D6",label:"Brain RNA-Seq"};
-				}else if(that.gsvg.txType=="long"){
-					legend[curPos]={color:"#CECFCE",label:"Brain RNA-Seq"};
-				}else if(that.gsvg.txType=="small"){
-					legend[curPos]={color:"#99CC99",label:"Brain RNA-Seq"};
-				}
-				curPos++;
-			}
-		}else if(that.gsvg.txType=="liverTotal"){
-			legend[curPos]={color:"#bbbedd",label:"Liver RNA-Seq"};
-			curPos++;
-		}
-		that.drawLegend(legend);*/
 	};
 	if(that.gsvg.selectedData.getAttribute("extStart")!=undefined){
 		that.txMin=that.gsvg.selectedData.getAttribute("extStart");
@@ -10296,14 +10480,14 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	}
 
 
-	//Initialize Y Positioning Variables
+	/*//Initialize Y Positioning Variables
 	that.yMaxArr=new Array();
 	that.yArr=new Array();
 	that.yArr[0]=new Array();
 	for(var j=0;j<that.gsvg.width;j++){
 				that.yMaxArr[j]=0;
 				that.yArr[0][j]=0;
-	}
+	}*/
 	
 	that.createColorScale=function (){
 		if(that.minColor!=undefined && that.maxColor!=undefined){
@@ -10350,7 +10534,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 		return tooltip;
 	};
 
-	//Pack method does perform additional packing above the default method in track.  
+	/*//Pack method does perform additional packing above the default method in track.  
 	//May be slightly slower but avoids the waterfall like non optimal packing that occurs with the sorted features.
 	that.calcY = function (start,end,i){
 		var tmpY=0;
@@ -10431,7 +10615,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 			that.trackYMax=(tmpY/15);
 		}
 		return tmpY;
-	};
+	};*/
 
 	that.getColorValue=function(d){
 		return d.getAttribute(that.colorValueField);

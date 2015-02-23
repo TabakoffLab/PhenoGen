@@ -39,7 +39,7 @@ sub readTranscriptAnnotationDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName,$type,$tissue)=@_;   
+	my($geneChrom,$geneStart,$geneStop,$dsid,$type,$dsn,$usr,$passwd)=@_;   
 	#Initializing Arrays
 
 	my %annotHOH; # giant array of hashes and arrays containing annotation data
@@ -54,20 +54,13 @@ sub readTranscriptAnnotationDataFromDB{
 		where rta.source_id=ras.rna_annot_src_id
 		and rta.rna_transcript_id in
 		(Select rt.rna_transcript_id
-			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
+			from rna_transcripts rt, rna_exons re,chromosomes c 
 			where 
 			c.chromosome_id=rt.chromosome_id 
 			and c.name =  '".uc($geneChrom)."' "."
 			and re.rna_transcript_id=rt.rna_transcript_id 
-			and rt.rna_dataset_id=rd.rna_dataset_id 
-			and rd.organism = '".$organism."' 
-			and rd.user_id= $publicUserID
-			and rd.tissue = '".$tissue."'
-			and rd.visible=1 
-                        and rd.previous=0 
-			and rd.strain_panel like '".$panel."' "."
-			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))
-			and rt.rna_dataset_id=rd.rna_dataset_id";
+			and rt.rna_dataset_id=".$dsid." 
+			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))";
 		
 			if($type ne "Any"){
 				if(index($type," in (")>-1){

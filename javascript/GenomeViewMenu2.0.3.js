@@ -960,6 +960,13 @@ function ViewMenu(level){
 		getMainViewData(1);
 
 	};
+        
+        that.cancelView = function(){
+            $("div#nameView"+that.level).hide();
+            $("div#selection"+that.level).show();
+            $("#predefinedSaveAs"+that.level).hide();
+            $("span#viewMenuLbl"+that.level).html("Select/Edit Views");
+        };
 
 	that.getViewData();
 	that.setupControls();

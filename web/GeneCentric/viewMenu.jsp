@@ -134,7 +134,7 @@
                 View Description:<BR /><textarea rows="5" cols="65" name="viewDescTxt" id="viewDescTxt<%=level%>" ></textarea>
                 <div id="createViewBtn<%=level%>">
                         <span style="float:left;">
-                        <input type="button" name="cancelCreateView" id="cancelCreateView<%=level%>" value="Cancel" onClick="return cancelView(<%=level%>)">
+                        <input type="button" name="cancelCreateView" id="cancelCreateView<%=level%>" value="Cancel" onClick="return viewMenu[<%=level%>].cancelView()">
                         </span>
                         <span style="float:right;">
                         <input type="button" name="createView" id="createView<%=level%>" value="Create View" onClick="return viewMenu[<%=level%>].createNewView(<%=level%>)">
@@ -165,53 +165,25 @@
 
 </div>
 
+<script type="text/javascript">
+        viewMenu[<%=level%>]=ViewMenu(<%=level%>);
+        $(".viewtooltip<%=level%>").tooltipster({
+                position: 'top-right',
+                maxWidth: 250,
+                offsetX: 10,
+                offsetY: 5,
+                contentAsHTML:true,
+                //arrow: false,
+                interactive: true,
+                interactiveTolerance: 350
+        });
 
-<!--</div>
-            
-            
-</div>-->
-
-          <script type="text/javascript">
-		  		viewMenu[<%=level%>]=ViewMenu(<%=level%>);
-				
-		  		
-				/*if(<%=level%>==0){
-					viewMenu[<%=level%>].applySelectedView($("#defaultView").val());
-				}*/
-				
-		  		$(".viewtooltip<%=level%>").tooltipster({
-					position: 'top-right',
-					maxWidth: 250,
-					offsetX: 10,
-					offsetY: 5,
-					contentAsHTML:true,
-					//arrow: false,
-					interactive: true,
-					interactiveTolerance: 350
-				});
-				/*$(".control<%=level%>").tooltipster({
-					position: 'top-right',
-					maxWidth: 250,
-					offsetX: 10,
-					offsetY: 5,
-					//arrow: false,
-					interactive: false
-				});*/
-				
-				$(".viewDetailTab<%=level%>").on("click", function(){
-							var oldID=new String($('.viewDetailTab<%=level%>.selected').attr("id"));
-							$("#"+oldID.substr(4)).hide();
-							$('.viewDetailTab<%=level%>.selected').removeClass("selected");
-							$(this).addClass("selected");
-							var id=new String($(this).attr("id"));
-							$("#"+id.substr(4)).show();
-				});
-				
-				function cancelView(level){
-					$("div#nameView<%=level%>").hide();
-					$("div#selection<%=level%>").show();
-					$("#predefinedSaveAs<%=level%>").hide();
-					$("span#viewMenuLbl<%=level%>").html("Select/Edit Views");
-				}
-				
-		  </script>
+        $(".viewDetailTab<%=level%>").on("click", function(){
+                                var oldID=new String($('.viewDetailTab<%=level%>.selected').attr("id"));
+                                $("#"+oldID.substr(4)).hide();
+                                $('.viewDetailTab<%=level%>.selected').removeClass("selected");
+                                $(this).addClass("selected");
+                                var id=new String($(this).attr("id"));
+                                $("#"+id.substr(4)).show();
+        });
+</script>

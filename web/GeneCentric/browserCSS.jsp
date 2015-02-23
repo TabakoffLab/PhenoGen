@@ -240,7 +240,7 @@ table.tooltipTable TD{
 		position:relative;
 		top:8px;*/
 	}
-        .triggerGL{
+        .triggerGL, .triggerMiL, .triggerpL, .triggervL{
             cursor: pointer;
             background: url(../web/images/icons/add.png) center left no-repeat; 
             padding: 0 10px 0 20px;

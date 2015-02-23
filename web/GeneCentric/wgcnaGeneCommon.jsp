@@ -69,10 +69,10 @@
                 <TR class="col_title">
                     <TH>miRNA ID</TH>
                     <TH>Mature miRNA Accession</th>
-                    <TH>Location</th>
-                    <TH>Predicted Gene Targets</th>
-                    <TH>Validated Gene Targets</th>
-                    <TH>Total Gene Targets</th>
+                    <!--<TH>Location</th>-->
+                    <TH>Predicted Gene Targets<span class="mirEC" name="triggerpL" title="Expand All" id="mirPExpand" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/add.png"></span><span class="mirEC" name="triggerpL" title="Close All" id="mirPClose" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/min.png"></span></th>
+                    <TH>Validated Gene Targets<span class="mirEC" name="triggervL" title="Expand All" id="mirVExpand" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/add.png"></span><span class="mirEC" name="triggervL" title="Close All" id="mirVClose" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/min.png"></span></th>
+                    <TH>Total Gene Targets<span class="mirEC" name="triggerMiL" title="Expand All" id="mirSExpand" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/add.png"></span><span class="mirEC" name="triggerMiL" title="Close All" id="mirSClose" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/min.png"></span></th>
                 </TR>
             </thead>
             <tbody>
@@ -88,10 +88,10 @@
                 <TR class="col_title">
                     <TH>Gene Symbol</th>
                     <TH>Ensembl ID</TH>
-                    <TH>Location</th>
-                    <TH>Predicted miRNAs targeting gene</th>
-                    <TH>Validated miRNAs targeting gene</th>
-                    <TH>Total miRNAs targeting gene</th>
+                    <!--<TH>Location</th>-->
+                    <TH>Predicted miRNAs targeting gene<span class="mirGEC" name="triggerpL" title="Expand All" id="mirGPExpand" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/add.png"></span><span class="mirGEC" name="triggerpL" title="Close All" id="mirGPClose" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/min.png"></span></th>
+                    <TH>Validated miRNAs targeting gene<span class="mirGEC" name="triggervL" title="Expand All" id="mirGVExpand" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/add.png"></span><span class="mirGEC" name="triggervL" title="Close All" id="mirGVClose" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/min.png"></span></th>
+                    <TH>Total miRNAs targeting gene<span class="mirGEC" name="triggerMiL" title="Expand All" id="mirGSExpand" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/add.png"></span><span class="mirGEC" name="triggerMiL" title="Close All" id="mirGSClose" style="float:left;pointer-events:all;"><img src="<%=imagesDir%>icons/min.png"></span></th>
                 </TR>
             </thead>
             <tbody>
@@ -147,9 +147,7 @@
     wgcna.setup();
     
     $("#goGLExpand").on("click",function(){
-        console.log("expand");
         $("#GoTable span.triggerGL:visible").each(function(){
-            console.log($(this));
            var name=this.getAttribute("name");
            $(this).addClass("less");
            $("span#"+name).show();
@@ -157,11 +155,50 @@
     });
     
     $("#goGLClose").on("click",function(){
-        
         $("#GoTable span.triggerGL:visible").each(function(){
            var name=this.getAttribute("name");
            $(this).removeClass("less");
            $("span#"+name).hide();
         });
     });
+    
+    
+    $(".mirGEC").on("click",function(event){
+        var ec=$(this).attr("title");
+        var trClass=$(this).attr("name");
+        if(ec==='Expand All'){//expand
+            $("#mirGeneTable span."+trClass+":visible").each(function(){
+                var name=this.getAttribute("name");
+                $(this).addClass("less");
+                $("span#"+name).show();
+            });
+        }else{//collapse
+            $("#mirGeneTable span."+trClass+":visible").each(function(){
+                var name=this.getAttribute("name");
+                $(this).removeClass("less");
+                $("span#"+name).hide();
+            });
+        }
+        event.stopPropagation();
+    });
+    
+    $(".mirEC").on("click",function(event){
+        var ec=$(this).attr("title");
+        var trClass=$(this).attr("name");
+        if(ec==='Expand All'){//expand
+            $("#mirTable span."+trClass+":visible").each(function(){
+                var name=this.getAttribute("name");
+                $(this).addClass("less");
+                $("span#"+name).show();
+            });
+        }else{//collapse
+            $("#mirTable span."+trClass+":visible").each(function(){
+                var name=this.getAttribute("name");
+                $(this).removeClass("less");
+                $("span#"+name).hide();
+            });
+        }
+        event.stopPropagation();
+    });
+    
 </script>
