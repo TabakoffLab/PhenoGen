@@ -10,7 +10,7 @@
 	extrasList.add("d3.v3.min.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
-	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
+	//extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("jquery.fancybox-thumbs.css");
     request.setAttribute( "extras", extrasList);

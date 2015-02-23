@@ -18,7 +18,7 @@
 
 <%
 	extrasList.add("jquery.dataTables.js");
-	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
+	//extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 
 	QTL.EQTL myEQTL = myQTL.new EQTL();
 	log.info("in mir.jsp. user = " + user);

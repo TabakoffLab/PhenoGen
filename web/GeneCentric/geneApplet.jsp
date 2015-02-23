@@ -4,7 +4,7 @@
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("d3.v3.min.js");
-	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
+	//extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tooltipster.css");
 	
