@@ -478,8 +478,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             that.viewType="eqtl";
             that.createSingleWGCNAImage();
         });
-		that.viewBar.append("text").text("eQTL");
-        that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of eQTLs for the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
+		that.viewBar.append("text").text("Eigengene eQTL");
+        that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of the module Eigengene eQTLs.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
 
         that.viewBar.append("br");
         that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px").on("click",function(){
@@ -550,26 +550,33 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     max: 100,
                     step: 1,
                     change: function( event, ui ) {
-                        that.singleImage.displayDepth=ui.value;
-                        if(that.singleImage.selectedNode !==that.singleImage.data.GOList[0] &&
-                                that.singleImage.selectedNode !==that.singleImage.data.GOList[1] &&
-                                that.singleImage.selectedNode !==that.singleImage.data.GOList[2]){
-                            that.singleImage.redraw();
-                        }else{
-                            that.singleImage.draw();
-                        }
+                    	if(ui.value<=(that.singleImage.maxDepth+1)){
+	                        that.singleImage.displayDepth=ui.value;
+	                        if(that.singleImage.selectedNode !==that.singleImage.data.GOList[0] &&
+	                                that.singleImage.selectedNode !==that.singleImage.data.GOList[1] &&
+	                                that.singleImage.selectedNode !==that.singleImage.data.GOList[2]){
+	                            that.singleImage.redraw();
+	                        }else{
+	                            that.singleImage.draw();
+	                        }
+                    	}else{
+                    		event.preventDefault();
+                    	}
                     },
                     spin: function( event, ui ) {
-                        that.singleImage.displayDepth=ui.value;
-                        
-                        if(that.singleImage.selectedNode !==that.singleImage.data.GOList[0] &&
-                                that.singleImage.selectedNode !==that.singleImage.data.GOList[1] &&
-                                that.singleImage.selectedNode !==that.singleImage.data.GOList[2] 
-                                ){
-                            that.singleImage.redraw();
-                        }else{
-                            that.singleImage.draw();
-                        }
+                    	if(ui.value<=(that.singleImage.maxDepth+1)){
+	                        that.singleImage.displayDepth=ui.value;
+	                        if(that.singleImage.selectedNode !==that.singleImage.data.GOList[0] &&
+	                                that.singleImage.selectedNode !==that.singleImage.data.GOList[1] &&
+	                                that.singleImage.selectedNode !==that.singleImage.data.GOList[2] 
+	                                ){
+	                            that.singleImage.redraw();
+	                        }else{
+	                            that.singleImage.draw();
+	                        }
+                    	}else{
+                    		event.preventDefault();
+                    	}
                     }
                 }).val(3);
                 
@@ -2775,13 +2782,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             $(".eqtlCtls").hide();
             thatimg.type=that.viewType;
             thatimg.goDomain="mf";
-            thatimg.selectedDepth=0;
+            thatimg.lastDrawn="mf";
             thatimg.selectedNode;
             thatimg.displayedLevel="d1";
             thatimg.width = $(window).width();
             thatimg.height = Math.floor(window.innerHeight*0.92);
             thatimg.padding = 5;
-            thatimg.radius = (Math.min(thatimg.width, thatimg.height) - 2 * thatimg.padding)/ 2,
+            thatimg.radius = (Math.min(thatimg.width, thatimg.height) - 2 * thatimg.padding)/ 2;
             thatimg.duration = 1000;
             thatimg.xScale = d3.scale.linear().range([0, 2 * Math.PI]);
             thatimg.yScale = d3.scale.pow().exponent(1.3).domain([0, 1]).range([0, thatimg.radius]);
@@ -2803,11 +2810,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             };
 
             thatimg.redraw=function(){
-            	console.log("redraw:go");
+            	//console.log("redraw:go");
             	thatimg.svg.selectAll("path").remove();
                 thatimg.svg.select("#center").remove();
                 if(thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2]){
-                    thatimg.svg.append("circle").attr("id","center").attr("cx",Math.max(thatimg.width/2,thatimg.radius) + thatimg.padding).attr("cy",Math.max(thatimg.height/2,thatimg.radius) + thatimg.padding).attr("r","20")
+                    thatimg.svg.append("circle").attr("id","center").attr("cx",thatimg.width/2 + thatimg.padding).attr("cy",thatimg.height/2 + thatimg.padding).attr("r","20")
                         .attr("fill-rule", "evenodd")
                         .attr("fill",function(){return thatimg.pathColor(thatimg.selectedNode.parent);})
                         .attr("pointer-events","all")
@@ -2855,22 +2862,35 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		                        .style("opacity", 0);
 						});
                 }
+                var nodes = thatimg.partition.nodes(thatimg.selectedNode);
+                thatimg.maxDepth=d3.max(nodes,function(d){return d.depth;});
+                nodes=nodes.filter(thatimg.filterNodes);
+                var tmpDisplayDepth=thatimg.displayDepth;
+                if(tmpDisplayDepth>thatimg.maxDepth){
+                	tmpDisplayDepth=thatimg.maxDepth;
+                }
                 thatimg.arc = d3.svg.arc()
                                 .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
                                 .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
-                                .innerRadius(function(d) { 
+                                /*.innerRadius(function(d) { 
                                         if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
                                             return 20;
-                                        }/*else if(d===thatimg.selectedNode && (thatimg.selectedNode===thatimg.data.GOList[0]||thatimg.selectedNode===thatimg.data.GOList[1]||thatimg.selectedNode===thatimg.data.GOList[2])){
-                                            return 0;
-                                        }*/else{
+                                        }else{
                                             return Math.max(0, Math.sqrt(d.y)); 
                                         }
                                     })
-                                .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });
+                                .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });*/
+                                .innerRadius(function(d) { 
+                                        if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
+                                            return 20;
+                                        }else{
+                                            return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))); 
+                                        }
+                                })
+                                
+                                .outerRadius(function(d) { return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))); });
                         
-                var nodes = thatimg.partition.nodes(thatimg.selectedNode);
-                nodes=nodes.filter(thatimg.filterNodes);
+
                 setTimeout(function(){
                         that.singleWGCNATableGoView();
                 },50);
@@ -2884,16 +2904,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                           .attr("id",function(d,i){return "ap"+i;})
                           .attr("class",function(d,i){return removeColon(d.id);})
                           .attr("fill-rule", "evenodd")
-                          .attr("fill",thatimg.pathColor)//"#009900")
-                          /*.attr("stroke",function(d){
-                                    var strk="#000000";
-                                    var startA=Math.max(0, Math.min(2 * Math.PI, d.x))*radToDeg;
-                                    var endA=Math.max(0, Math.min(2 * Math.PI, d.x + d.dx))*radToDeg;
-                                    if((endA-startA)<0.5 && d.name.indexOf("ENS")===0){
-                                        strk=thatimg.pathColor(d);
-                                    }
-                                    return strk;
-                          })*/
+                          .attr("fill",thatimg.pathColor)
                           .attr("pointer-events","all")
                           .on("mouseover", thatimg.mouseover)
                           .on("click", thatimg.click);
@@ -3042,7 +3053,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             }
                     }
                     
-                          //.on("click", click);
+                          
                 });
             };
             
@@ -3078,31 +3089,27 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             
             
             thatimg.draw=function(){
-            	console.log("draw");
                 thatimg.svg.attr("width", thatimg.width)
                             .attr("height", thatimg.height);
                 thatimg.initializeBreadcrumbTrail();
                 thatimg.topG=thatimg.svg.attr("width", thatimg.width)
                         .attr("height", thatimg.height)
                         .append("g")
-                        .attr("transform", "translate(" + [Math.max(thatimg.width/2,thatimg.radius) + thatimg.padding, Math.max(thatimg.height/2,thatimg.radius) + thatimg.padding] + ")");
+                        .attr("transform", "translate(" + [thatimg.width/2 + thatimg.padding, thatimg.height/2 + thatimg.padding] + ")");
 
                 thatimg.partition = d3.layout.partition()
-                        .size([2 * Math.PI, thatimg.radius * thatimg.radius])
+                        //.size([2 * Math.PI, thatimg.radius * thatimg.radius])
+                        .size([2 * Math.PI, thatimg.radius])
                         .value(function(d){if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}});
                         //.value(function(d){return d.size;});
 
-                thatimg.arc = d3.svg.arc()
-                                .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
-                                .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
-                                .innerRadius(function(d) { return Math.max(0, Math.sqrt(d.y)); })
-                                .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });
+                
                         
                 if(thatimg.data.MOD_NAME !== that.selectedModule.MOD_NAME){
                     thatimg.getModuleGOFile(0);
                     thatimg.selectedNode=null;
                 }else{
-                    if(typeof thatimg.selectedNode==='undefined'||thatimg.selectedNode===null){
+                    if(thatimg.goDomain!==thatimg.lastDrawn || typeof thatimg.selectedNode==='undefined'||thatimg.selectedNode===null){
                         var goRoot=thatimg.data.GOList[0];
                         if(thatimg.goDomain === "mf"){
                             goRoot=thatimg.data.GOList[2];
@@ -3111,11 +3118,25 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         }
                         thatimg.selectedNode=goRoot;
                     }
+                    thatimg.lastDrawn=thatimg.goDomain;
                     if(thatimg.selectedNode===thatimg.data.GOList[0] || thatimg.selectedNode===thatimg.data.GOList[1]||thatimg.selectedNode===thatimg.data.GOList[2]){
                     	thatimg.totalSize=thatimg.selectedNode.uniqueGene;
                     }
                     var nodes = thatimg.partition.nodes(thatimg.selectedNode);
+                    thatimg.maxDepth=d3.max(nodes,function(d){return d.depth;});
                     nodes=nodes.filter(thatimg.filterNodes);
+                    var tmpDisplayDepth=thatimg.displayDepth;
+	                if(thatimg.displayDepth>thatimg.maxDepth){
+	                	tmpDisplayDepth=thatimg.maxDepth;
+	                }
+	                thatimg.arc = d3.svg.arc()
+                                .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
+                                .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
+                                //.innerRadius(function(d) { return Math.max(0, Math.sqrt(d.y)); })
+                                //.outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });
+                                .innerRadius(function(d) { return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))); })
+                                .outerRadius(function(d) { return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))); });
+                    //nodes=thatimg.partition.nodes(nodes);
                     setTimeout(function(){
                         that.singleWGCNATableGoView();
                     },50);
@@ -3305,9 +3326,14 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         }
             };
             thatimg.click=function(d){
-              thatimg.selectedDepth=d.depth;
-              thatimg.selectedNode=d;
-              thatimg.redraw();
+            	console.log("path.click");
+             	thatimg.selectedNode=d;
+              	if(d!==thatimg.data.GOList[0] || d!==thatimg.data.GOList[1] || d!==thatimg.data.GOList[2]){
+              		thatimg.redraw();
+          		}else{
+          			thatimg.draw();
+          		}
+          		d3.event.stopPropagation();
             };
             
             thatimg.mouseover=function(d){
@@ -3598,7 +3624,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             }
                             return val;
                         })
-                         .attr("class",function(d){return " d"+d.depth;});
+                        .style("cursor","pointer")
+                        .attr("class",function(d){return " d"+d.depth;})
+                        .on("mouseover",function(d){
+                        	d3.select(this).style("background-color","#FFFFFF");
+                        })
+                        .on("mouseleave",function(d){
+                        	d3.select(this).style("background-color",that.singleImage.pathColor(d));
+                        })
+                        .on("click",function(d){
+                        	that.singleImage.selectedNode=d;
+                        	that.singleImage.redraw();
+                        });
             
         tracktbl.each(function(d,i){
                 var tmpI=i;
