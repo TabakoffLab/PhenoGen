@@ -2202,11 +2202,13 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		viewBtnSpan.append("button").attr("id","viewSelect"+that.levelNumber).attr("class","viewSelect").text("Select/Edit Views");
 		viewBtnSpan.append("button").attr("id","viewMenuSelect"+that.levelNumber).attr("class","viewSelectMenu");
 		if(testChrome){
-			viewDivTop.style("position","relative").style("top","-7px");
-			d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","7px");
+                        d3.select("#viewSelect"+that.levelNumber).style("height","2.3em");
+			/*viewDivTop.style("position","relative").style("top","-7px");
+			d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","7px");*/
 		}else if(testSafari){
-			viewDivTop.style("position","relative").style("top","-2px");
-			d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","-1px");
+                    d3.select("#viewSelect"+that.levelNumber).style("height","2.3em");
+			/*viewDivTop.style("position","relative").style("top","-2px");
+			d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","-1px");*/
 		}else if(testFireFox){
 			//nothing
 		}else if(testIE){
@@ -9135,11 +9137,11 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 		tooltip=tooltip+"<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;\"></div><BR>ID: "+d.getAttribute("name");
 		tooltip=tooltip+"<BR>Read Counts="+numberWithCommas(d.getAttribute("readCount"));
 		tooltip=tooltip+"<BR>Splice Junction in "+d.getAttribute("sampleCount")+" of ";
-		if(that.trackClass=="liverspliceJnct"){
-			tooltip=tooltip+"3 samples(3 BN-Lx)";
-		}else{
+		if(organism==='Rn'){
 			tooltip=tooltip+"6 samples(3 BN-Lx, 3 SHR)";
-		}
+		}else if(organism==='Mm'){
+                    tooltip=tooltip+"6 samples(3 ILS, 3 ISS)";
+                }
 		var bList=getAllChildrenByName(getFirstChildByName(d,"blockList"),"block");
 		var exon1=0;
 		var exon2=1;

@@ -105,7 +105,7 @@
         <table  id="GoTable" width="98%">
             <thead>
                 <TR class="col_title">
-                    <TH>Name<span title="Expand All" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span></TH>
+                    <TH>Name<span title="Expand All" id="goExpand" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" id="goClose" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span></TH>
                     <TH>Definition</th>
                     <TH>Genes<span title="Expand All" id="goGLExpand" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" id="goGLClose" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span></th>
                 </TR>
@@ -145,6 +145,21 @@
     
     var wgcna=WGCNABrowser(wgcnaid,wgcnaregion,genelist,disptype,viewtype,tissue);
     wgcna.setup();
+    
+    $("#goExpand").on("click",function(){
+        $("#GoTable tbody tr").each(function(){
+           $(this).show();
+        });
+        $("span.trigger").addClass("less");
+    });
+    $("#goClose").on("click",function(){
+        $("#GoTable tbody tr").each(function(){
+           $(this).hide();
+        });
+        $("span.trigger").removeClass("less");
+        $("tr.d0").show();
+        $("tr.d1").show();
+    });
     
     $("#goGLExpand").on("click",function(){
         $("#GoTable span.triggerGL:visible").each(function(){
