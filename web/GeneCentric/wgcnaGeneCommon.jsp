@@ -101,11 +101,12 @@
     </div>
     <div id="wgcnaGoTable" style="display:none;width:99%;border:1px solid;text-align: center;">
         <div id="waitGoTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
-        <H2>Transcripts in <span id="GoTableName">Selected</span> Module</h2><BR>
+        <H2>Gene Ontology Terms for Genes in the <span id="GoTableName">Selected</span> Module</h2><BR>
+        Click on any row to make it the root of the table and image.
         <table  id="GoTable" width="98%">
             <thead>
                 <TR class="col_title">
-                    <TH>Name<span title="Expand All" id="goExpand" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" id="goClose" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span></TH>
+                    <TH>Name<span title="Expand All" id="goExpand" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" id="goClose" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span><span title="Go up a level (set root to the parent term)" id="goUp" style="float:left;"><img width="14" height="14" src="<%=imagesDir%>icons/up_flat.png"></span></TH>
                     <TH>Definition</th>
                     <TH>Genes<span title="Expand All" id="goGLExpand" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" id="goGLClose" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span></th>
                 </TR>
@@ -145,12 +146,19 @@
     
     var wgcna=WGCNABrowser(wgcnaid,wgcnaregion,genelist,disptype,viewtype,tissue);
     wgcna.setup();
-    
+    $("#goUp").on("click",function(){
+        var par=that.singleImage.selectedNode.parent;
+        if(typeof par !=='undefined' && typeof par.name !=='undefined'){
+            that.singleImage.selectedNode=par;
+            that.singleImage.draw();
+        }
+    });
     $("#goExpand").on("click",function(){
         $("#GoTable tbody tr").each(function(){
            $(this).show();
         });
         $("span.trigger").addClass("less");
+        event.stopPropagation();
     });
     $("#goClose").on("click",function(){
         $("#GoTable tbody tr").each(function(){
@@ -159,6 +167,7 @@
         $("span.trigger").removeClass("less");
         $("tr.d0").show();
         $("tr.d1").show();
+        event.stopPropagation();
     });
     
     $("#goGLExpand").on("click",function(){
@@ -167,6 +176,7 @@
            $(this).addClass("less");
            $("span#"+name).show();
         });
+        event.stopPropagation();
     });
     
     $("#goGLClose").on("click",function(){
@@ -175,6 +185,7 @@
            $(this).removeClass("less");
            $("span#"+name).hide();
         });
+        event.stopPropagation();
     });
     
     
