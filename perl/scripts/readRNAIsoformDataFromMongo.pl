@@ -46,13 +46,14 @@ sub getRNADatasetFromDB{
     my $connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
     my $query="select rd2.rna_dataset_id,rd2.build_version from rna_dataset rd2 where
 				rd2.organism = '".$organism."' "."
+                                and rd2.trx_recon=1
 				and rd2.user_id= $publicUserID
                                 and rd2.tissue = '".$tissue."' 
                                 and rd2.strain_panel like '".$panel."'";
     if($$version==0){
             $query=$query." and rd2.visible=1 and rd2.previous=0";
     }else{
-            $query=$query." and rd2.build_version='".$$version."' and rd2.previous=1";
+            $query=$query." and rd2.build_version='".$$version."'";
     }
 
     print $query."\n";
@@ -405,10 +406,10 @@ sub readRNACountsDataFromMongo{
 	print $query."\n";		
 	$query_handle = $connect->prepare($query) or die (" RNA Dataset Shared ID query prepare failed \n");
 
-# EXECUTE THE QUERY
+        # EXECUTE THE QUERY
 	$query_handle->execute() or die ( "RNA Dataset Shared ID query execute failed \n");
 
-# BIND TABLE COLUMNS TO VARIABLES
+        # BIND TABLE COLUMNS TO VARIABLES
 
 	$query_handle->bind_columns(\$sharedID);
 	my $listCount=0;

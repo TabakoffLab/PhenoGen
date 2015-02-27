@@ -44,16 +44,34 @@ sub readSpliceJunctFromDB{
 	# PERL DBI CONNECT
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 
+        my $queryDS="select rd2.rna_dataset_id,rd2.build_version from rna_dataset rd2 where
+				rd2.organism = '".$organism."' "."
+                                and rd2.trx_recon=1
+				and rd2.user_id= $publicUserID
+                                and rd2.tissue = '".$tissue."' 
+                                and rd2.strain_panel like '".$panel."'
+                                and rd2.visible=1 and rd2.previous=0";
+            
+        print $query."\n";
+        my $query_handle1 = $connect->prepare($queryDS) or die (" RNA Dataset query prepare failed \n");
+
+        # EXECUTE THE QUERY
+        $query_handle1->execute() or die ( "RNA Isoform query execute failed \n");
+        my $dsid=0;
+        my $ver;
+        # BIND TABLE COLUMNS TO VARIABLES
+        $query_handle1->bind_columns(\$dsid,\$ver);
+        if($query_handle1->fetch()){
+            print "DatasetID=$dsid\nver=$ver\n";
+            $ret=$dsid;
+            $$version=$ver;
+        }
+
 	$query ="Select sj.RNA_junction_id,sj.exon1_start,sj.exon1_stop,sj.exon2_start,sj.exon2_stop,sj.JNCT_NAME,sj.READ_COUNT,sj.Sample_count,sj.strand,c.name as \"chromosome\"
-			from rna_splice_junction sj,rna_dataset rd, chromosomes c 
+			from rna_splice_junction sj, chromosomes c 
 			where 
 			c.chromosome_id=sj.chromosome_id
-			and rd.user_id=$publicUserID  
-			and rd.visible=1 
-			and rd.strain_panel like '".$panel."'
-			and rd.tissue = '".$tissue."'
-			and rd.organism = '".$organism."' "."
-			and sj.rna_dataset_id=rd.rna_dataset_id
+			and sj.rna_dataset_id=$dsid
 			and c.name =  '".uc($geneChrom)."' "."
 			and ((sj.exon1_start>=$geneStart and sj.exon1_start<=$geneStop) OR (sj.exon1_Stop>=$geneStart and sj.exon1_Stop<=$geneStop) OR (sj.exon1_Start<=$geneStart and sj.exon1_Stop>=$geneStop)
 				OR (sj.exon2_start>=$geneStart and sj.exon2_start<=$geneStop) OR (sj.exon2_Stop>=$geneStart and sj.exon2_Stop<=$geneStop) OR (sj.exon2_Start<=$geneStart and sj.exon2_Stop>=$geneStop)
