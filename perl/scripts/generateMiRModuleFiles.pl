@@ -113,23 +113,23 @@ foreach my $mod(@moduleList){
                     $count++;
                 }
                 while (<GENE>){
-                    my @columns=split('\t',trim($_));
+                    my @columns=split('\t',$_);
                     my $miID="";
                     my $miACC="";
                     my $pred=0;
                     my $val=0;
                     
                     if(exists $columnHash{"mature_mirna_acc"}){
-                        $miACC=$columns[$columnHash{"mature_mirna_acc"}];
+                        $miACC=trim($columns[$columnHash{"mature_mirna_acc"}]);
                     }	
                     if(exists $columnHash{"mature_mirna_id"}){
-                        $miID=$columns[$columnHash{"mature_mirna_id"}];
+                        $miID=trim($columns[$columnHash{"mature_mirna_id"}]);
                     }
                     if(exists $columnHash{"predicted.sum"}){
-                        $pred=$columns[$columnHash{"predicted.sum"}];
+                        $pred=trim($columns[$columnHash{"predicted.sum"}]);
                     }
                     if(exists $columnHash{"validated.sum"}){
-                        $val=$columns[$columnHash{"validated.sum"}];
+                        $val=trim($columns[$columnHash{"validated.sum"}]);
                     }	
                     $sum=$pred+$val;
                     if(exists $moduleHOH{miRNA}{$miACC}){
@@ -172,54 +172,54 @@ foreach my $mod(@moduleList){
                             printf "System Call exited with value %d", $? >> 8;
                 }
                 #read output
-                open GENE,"<",$geneCache.$geneid.".summary.txt";
-                my $header=<GENE>;
-                my @cols=split('\t',trim($header));
-                my %columnHash;
-                my $count=0;
-                foreach my $col(@cols){
-                    $columnHash{$col}=$count;
-                    $count++;
-                }
-                while (<GENE>){
-                    my @columns=split('\t',trim($_));
-                    my $miID="";
-                    my $miACC="";
-                    my $pred=0;
-                    my $val=0;
+                #open GENE,"<",$geneCache.$geneid.".summary.txt";
+                #my $header=<GENE>;
+                #my @cols=split('\t',trim($header));
+                #my %columnHash;
+                #my $count=0;
+                #foreach my $col(@cols){
+                #    $columnHash{$col}=$count;
+                #    $count++;
+                #}
+                #while (<GENE>){
+                #    my @columns=split('\t',$_);
+                #    my $miID="";
+                #    my $miACC="";
+                #    my $pred=0;
+                #    my $val=0;
                     
-                    if(exists $columnHash{"mature_mirna_acc"}){
-                        $miACC=$columns[$columnHash{"mature_mirna_acc"}];
-                    }	
-                    if(exists $columnHash{"mature_mirna_id"}){
-                        $miID=$columns[$columnHash{"mature_mirna_id"}];
-                    }
-                    if(exists $columnHash{"predicted.sum"}){
-                        $pred=$columns[$columnHash{"predicted.sum"}];
-                    }
-                    if(exists $columnHash{"validated.sum"}){
-                        $val=$columns[$columnHash{"validated.sum"}];
-                    }	
-                    $sum=$pred+$val;
-                    if(exists $moduleHOH{miRNA}{$miACC}){
-                        $moduleHOH{miRNA}{$miACC}{gene}{$geneid}={
-                                                ID => $geneid,
-                                                Predicted => $pred,
-                                                Validated => $val,
-                                                Sum => $sum
-                        };
-                    }else{
-                        $moduleHOH{miRNA}{$miACC}{ID}=$miID;
-                        $moduleHOH{miRNA}{$miACC}{ACC}=$miACC;
-                        $moduleHOH{miRNA}{$miACC}{gene}{$geneid}={
-                                                ID => $geneid,
-                                                Predicted => $pred,
-                                                Validated => $val,
-                                                Sum => $sum
-                        };
-                    }
-                }
-                close GENE;
+                #    if(exists $columnHash{"mature_mirna_acc"}){
+                #        $miACC=trim($columns[$columnHash{"mature_mirna_acc"}]);
+                #    }	
+                #    if(exists $columnHash{"mature_mirna_id"}){
+                #        $miID=trim($columns[$columnHash{"mature_mirna_id"}]);
+                #    }
+                #    if(exists $columnHash{"predicted.sum"}){
+                #        $pred=trim($columns[$columnHash{"predicted.sum"}]);
+                #    }
+                #    if(exists $columnHash{"validated.sum"}){
+                #        $val=trim($columns[$columnHash{"validated.sum"}]);
+                #    }	
+                #    $sum=$pred+$val;
+                #    if(exists $moduleHOH{miRNA}{$miACC}){
+                #        $moduleHOH{miRNA}{$miACC}{gene}{$geneid}={
+                #                                ID => $geneid,
+                #                                Predicted => $pred,
+                #                                Validated => $val,
+                #                                Sum => $sum
+                #        };
+                #    }else{
+                #        $moduleHOH{miRNA}{$miACC}{ID}=$miID;
+                #        $moduleHOH{miRNA}{$miACC}{ACC}=$miACC;
+                #        $moduleHOH{miRNA}{$miACC}{gene}{$geneid}={
+                #                                ID => $geneid,
+                #                                Predicted => $pred,
+                #                                Validated => $val,
+                #                                Sum => $sum
+                #        };
+                #    }
+                #}
+                #close GENE;
             }
             
         }
