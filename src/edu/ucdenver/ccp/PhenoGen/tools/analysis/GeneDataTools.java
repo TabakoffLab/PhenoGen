@@ -1474,9 +1474,9 @@ public class GeneDataTools {
             String ensPort=myENSProperties.getProperty("PORT");
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
-            String refSeqDB="Rn_refseq_4";
+            String refSeqDB="Rn_refseq_5";
             if(organism.equals("Mm")){
-                refSeqDB="Mm_refseq_4";
+                refSeqDB="Mm_refseq_5";
             }
             String ensDsn="DBI:mysql:database="+refSeqDB+";host="+ensHost+";port="+ensPort+";";
             
