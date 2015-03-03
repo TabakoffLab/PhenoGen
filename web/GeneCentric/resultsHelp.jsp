@@ -200,7 +200,7 @@ Currently only lists of 300 genes are less are supported.  This is a limit of th
 </div>
 </div>
 
-<div id="HelpGeneDetailTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<div id="HelpGeneDetailTabContent" class="inpageHelpContent" title="Help"><div class="help-content" style="text-align:left;">
 <H3>Gene Detail Tab</H3>
 The Gene Detail Tab provides summary information and links related to the selected gene.   There are three sections on this page.  General information includes location, gene symbol, links to other databases, Ensembl transcripts, and RNA-Seq reconstructed transcripts if available.
 <BR><BR>
@@ -209,29 +209,29 @@ The Probe Set Information section provides a summary of probe sets across all av
 The eQTL section provides information on the location of the minimum P-value for each available tissue.  A more complete list is provided on the eQTL Tab.
 </div></div>
 
-<div id="HelpGeneEqtlTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<div id="HelpGeneEqtlTabContent" class="inpageHelpContent" title="Help"><div class="help-content" style="text-align:left;">
 <H3>Gene eQTL Tab</H3>
 The eQTL Tab provides expression Quantitative Trait Loci for a selected Affymetrix transcript cluster representing the gene selected.  It provides all the loci with a P-value below a selected cut-off.  You can change the cut-off and include/exclude chromosomes as desired.  If a gene has multiple transcript clusters assigned then they all will be available.  The highest confidence transcript cluster is selected first, for example if there was a core and a full transcript cluster the default is the core transcript cluster.
 </div></div>
 
-<div id="HelpGenePSTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<div id="HelpGenePSTabContent" class="inpageHelpContent" title="Help"><div class="help-content" style="text-align:left;">
 <H3>Gene Probe Set Details Tab</H3>
 The Probe Set Detail Tab allows you to view detailed probe set level data.  This includes RI panel parental differential expression, detection above background, heritability, expression, and probe set correlation.  You can view the data across panel strains and tissues where available.
 <BR><BR>
 This runs as a signed Java applet in a new window, so you need an updated JRE and must approve it to run and may require allowing the popup.  It will prompt you to install the latest JRE and will prompt you to make sure you want to run it.  There are some errors with specific JREs, browsers, and operating system combinations.  You should be notified if we have discovered a problem with your combination of browser, OS and JRE, but please try a different browser or computer if you run into issues.  If you let us know through the feedback form we will try to find a solution.
 </div></div>
 
-<div id="HelpGeneMirTargetTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<div id="HelpGeneMirTargetTabContent" class="inpageHelpContent" title="Help"><div class="help-content" style="text-align:left;">
 <H3>miRNA Targeting This Gene Tab</H3>
     The miRNA Targeting Gene (MultiMiR) Tab displays a summary of miRNAs that are predicted or validated to target a particular gene.  You can view detailed information on the miRNA and get a list of everything it targets or is predicted to target.
 </div></div>
 
-<div id="HelpMirTargetTabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<div id="HelpMirTargetTabContent" class="inpageHelpContent" title="Help"><div class="help-content" style="text-align:left;">
 <H3>miRNA Targets Tab</H3>
     The Genes Targeted by this miRNA (multiMiR) Tab displays a summary of genes that are predicted or validated as targets of the selected miRNA.  You can view detailed information on the miRNA or genes and get a list of miRNAs that target a gene from the list.
 </div></div>
 
-<div id="HelpGeneWGCNATabContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<div id="HelpGeneWGCNATabContent" class="inpageHelpContent" title="Help"><div class="help-content" style="text-align:left;">
 <H3>Gene WGCNA Tab</H3>
 Weighted Gene Co-expression Network Analysis provides information on transcripts that have correlated expression by grouping them into modules.  This tab provides information on the transcripts and genes grouped together into a module.  For a selected gene, any module that contains a transcript of the selected gene is displayed.  You can select each module individually and view the correlations between transcripts and get additional information on transcripts and genes.  You can also view eQTLs for the module, which indicates possible regions that may be correlated with regulation of transcripts in the module.  In this view you can also see the genes in the region that may contribute to regulation.  
 <BR><BR>
@@ -240,9 +240,9 @@ WGCNA data is based on the Affymetrix microarray data set either HXB/BXH Recombi
 Future updates will also indicate miRNAs, transcription factors, and miRNAs validated and predicted to target genes in the module.  For Rats future updates will provide heart and liver data as well. 
 </div></div>
 
-<div id="HelpWGCNAViewContent" class="inpageHelpContent" title="Help"><div class="help-content">
+<div id="HelpWGCNAViewContent" class="inpageHelpContent" title="Help"><div class="help-content" style="text-align:left;">
 <H3>WGCNA Views</H3>
-There are currently three views available the module list, the module and the eQTL views.  Above both of the individual views is a list of modules.  Following is a description of each view.
+There are currently five views available the module list, the module, the eQTL, the Gene Ontology, and the miRNA(MultiMiR) views.  Above both of the individual views is a list of modules.  Following is a description of each view.
 <BR><BR>
 <h3>Module List</h3>
 Initially you will be given a list of all modules that correspond to your source(region, gene, or gene list).  This list includes any module containing a transcript from your source.  The modules are ordered by the number of transcripts in the module denoted by the number in the middle of the module.  They are sized relative to each other based on the total number of transcripts in the module.   To allow you to start viewing data more quickly modules will be displayed as they download which is why the module list may change while the loading image is displayed if viewing a large number of modules.  You can view additional details by holding your mouse over a module and clicking on a module will select it and bring up one of the following views based on your selected view.
@@ -258,6 +258,52 @@ You can use the sliders above the image to change the minimum and maximum cutoff
 The eQTL view displays the calculated eQTLs along the genome for the module.  The yellow bars along the genome denote locations with a &hyphen;log(P-value) above the selected cutoff.  Links are also drawn from the module(center) to the locations above the cutoff.  The highest P-value is highlighted with a yellow link.
 <BR>
 The outer section of the image shows the genes and locations of genes for each gene with transcripts in the module.  This allows you to quickly look at overlap of eQTLs with genes that may contribute to regulation. 
+
+<BR><BR>
+<h3>Gene Ontology View</h3>
+The GO term view summarizes the GO terms assigned to all of the genes within the module that have GO terms assigned.  
+It does not reflect every gene and the number of genes may vary from GO domain to GO domain within a module.  The GO 
+term annotations are from the current version of Ensembl.  The image is arranged in a sunburst plot where the GO domain 
+term is at the center and children terms are displayed at successively lower levels moving out.  The number of levels is 
+initially limited.  You can use the controls above to change the root GO domain or increase/decrease the levels displayed.
+You also can navigate through the tree by clicking on a term to make it the root of the image and display x number of 
+levels below the newly selected term.
+
+The table below reflects this tree structure and allows you to expand it.  If you select a new root in the image the 
+root of the table changes as well and if you click on a row of the table that becomes the root of the table and image.
+
+
+<BR><BR>
+<h3>miRNA (multiMiR) View</h3>
+The miRNA view is the same as the module view with the miRNAs displayed in the center.
+
+miRNAs are displayed with different sizes and colors in the center of the image.  The size is based on the
+number of genes targeted in the module.  The color of nodes varies to make finding an miRNA easier, but is not tied to data.
+When the mouse is over a miRNA, links are drawn to targeted genes.  Yellow indicates a validated target.  Blue indicates a predicted target.
+If the option is selected green and red links will be displayed between targeted genes showing correlation between target genes or optionally 
+all correlations from a targeted gene. The width of the lines indicates the level of support or correlation for links between miRNAs and 
+Genes or Genes and other Genes respectively.  When the mouse is over a gene the miRNAs are filtered to only show miRNAs that target that gene.
+The links displayed are the same as links displayed when holding the mouse over a miRNA depending on the display options selected.
+<BR><BR>
+For transcripts around the edge of the image up to 150 transcripts within a module will be displayed.  
+Modules larger than that will have a warning icon indicating the graphics have cutoff 
+the remaining transcripts.  The 10-20 largest modules in each dataset will be truncated.  
+The table below the graphics will display all of the transcripts even when the graphics do not.
+Each node corresponds to a transcript, which is labeled with its corresponding gene symbol if 
+available.  Nodes are order from the top center clockwise back to the top center.  Nodes are 
+ordered by taking the sum of absolute value of all correlation links for a node.  This value is 
+also used to size each node.  Thus the most connected node(Hub Gene) is the first node in the 
+image.  The links between nodes are colored based on the direction of the correlation.  The 
+default is green for a positive correlation and red for a negative correlation.  A control 
+above the image allows for selecting of blue/yellow or the opposite red/green coloration.   
+Links are sized based on the absolute value of the correlation.
+<BR><BR>
+
+The table below summarizes either the miRNAs that target genes in the module.  It can be grouped by miRNA, effectively displaying a list of all miRNAs with the option to see the genes each targets or
+by gene displaying a list of each gene and the miRNAs that target that gene.  The current can be exported by using the Export CSV button.
+
+
+
 </div></div>
 
 <script type="text/javascript">
