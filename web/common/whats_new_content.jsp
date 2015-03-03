@@ -35,11 +35,13 @@ span.control{
                                                     <ul>
                                                         <li>Gene Ontology View:
                                                             <ul>
-                                                                <li>View graphic form and CSV exportable table form.</li>
+                                                                <li>View an interactive expandable sunburst plot of each GO Domain(Biological Process, Molecular Function, and Cellular Component). Provides a summary of all the GO terms assigned to genes in the module.</li>
+                                                                <li>View graphic form and CSV exportable table form.  Both are interactive and can be used to explore the GO term tree.</li>
                                                             </ul>
                                                         </li>
                                                         <li>miRNA targeting (multiMiR) View:
                                                             <ul>
+                                                                <li>View/Filter miRNAs that target genes in the module.  Visualize targets of miRNAs and the correlation between genes targeted.  Filter to look at specific miRNAs or miRNAs targeting specific genes.</li>
                                                                 <li>View graphic form and CSV exportable table form.</li>
                                                             </ul>
                                                         </li>

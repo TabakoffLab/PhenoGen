@@ -51,16 +51,16 @@
                 
 		<!-- <p><a href="http://www.atlassian.com/" target="JIRA">JIRA</a>: &nbsp;&nbsp;version 3.1.1-#81 Professional Edition</p> -->
                 <BR><BR>
-                <h2>Genome/Transcriptome Data Browser Annotations</h2>        
+                <h2>Genome Data Browser Annotations</h2>        
                 <ul>
                     <li>Ensembl v78</li>
                     <li>RefSeq(source:UCSC Genome Browser): Downloaded 2/27/2015</li>
-                    <li>RGD QTL information: Downloaded </li>
+                    <!--<li>RGD QTL information: Downloaded </li>-->
                 </ul>
                 <BR><BR>
                 <h2>Annotations/Gene ID Matching</h2>
                 <p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on Jan 4th, 2015 with annotation data from the following sources:</p>
-        <div style="overflow:auto;height:60%;">
+        <div >
             <ul>
                 <li>Annotation file for Affymetrix Genechip Drosophila Genome [DrosGenome1] na32</li>
                 <li>Annotation file for Affymetrix GeneChip Human Genome U133 Plus 2.0[HG-U133_Plus_2], na32</li>
