@@ -70,7 +70,8 @@ function setXSpacing(newSpace){
 
 
 var width = 660,
-    height = 925,
+    height = 1100,
+    //height = 925,
 	radius = 50;
 var charWidth=7.5;
 var xSpacing=240;
@@ -318,10 +319,10 @@ function hoverClickNode(d){
 					boxLineTop.transition().delay(500).duration(250)
 									.attr("x1", tmpX+radius)
 								  .attr("y1", tmpY)
-								  .attr("x2", width).attr("y2", 89).style("stroke-width",2);
+								  .attr("x2", width).attr("y2", 175).style("stroke-width",2);
 					boxLineBottom.transition().delay(500).duration(250)
 									.attr("x1", tmpX+radius).attr("y1", tmpY)
-								  .attr("x2", width).attr("y2",height-87).style("stroke-width",2);
+								  .attr("x2", width).attr("y2",height-175).style("stroke-width",2);
 					curSelectedID=d.id;
 					if(displayOverride!=1){
 						animationStop();
@@ -370,9 +371,9 @@ function showDetailNodes(d){
 					yPos[d.level]=0;
 		    	}
 		    
-			   	yPos[d.level]++;
-			    tmp=Math.floor(yPos[d.level]/2);
-			    tmp=tmp*ySpacing;
+			yPos[d.level]++;
+			tmp=Math.floor(yPos[d.level]/2);
+			tmp=tmp*ySpacing;
 			    if(yPos[d.level]%2==1){
 			    		tmp=tmp*-1;
 			    }
