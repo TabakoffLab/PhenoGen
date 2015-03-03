@@ -12,6 +12,11 @@
     
 					<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>v2.15 of PhenoGen 3/7/2015</H2>
+                        <div style="margin-left:5px;">
+                                <img src="<%=webDir%>overview/browseWGCNA_mir.png" width="150px"/><img src="<%=webDir%>overview/browseWGCNA_go.png" width="150px"/><BR />
+                        	We've added GO term summary and miRNA targeting views to the Weighted Gene Co-expression Network Analysis.  Look at what's new for a summary of changes.
+                        </div>
                         <H2>HTTPS support 2/9/2015</H2>
                         <div style="margin-left:5px;">
                         <%if(request.getServerPort()==80){%>
@@ -27,6 +32,7 @@
                         </div>
                         <H2>v2.14 of PhenoGen 1/10/2015</H2>
                         <div style="margin-left:5px;">
+                                <img src="<%=webDir%>overview/browseWGCNA.png" width="150px"/><img src="<%=webDir%>overview/browseWGCNA_eQTL.png" width="150px"/><BR />
                         	We've added Weighted Gene Co-expression Network Analysis.  Look at what's new for a summary of changes.
                         </div>
                     	<H2>v2.13 of PhenoGen 9/27/2014</H2>

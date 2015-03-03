@@ -45,8 +45,8 @@
 		<p><a href="http://www.r-project.org/" target="R Master">R</a>:&nbsp;&nbsp;version 3.1.0</p>
 		<p><a href="http://www.bioconductor.org/" target="R Master">BioConductor</a>:&nbsp;&nbsp;version 2.14</p>
                 <p><a href="http://multimir.ucdenver.edu/" target="_blank">multiMiR</a>:&nbsp;&nbsp;version 1.0.1</p>
-                <p><a href="http://circos.ca/" target="_blank">CIRCOS</a>:&nbsp;&nbsp;version 0.67-4</p>
-                <p><a href="http://d3js.org/" target="_blank">D3js</a>:&nbsp;&nbsp;version 3.4</p>
+                <p><a href="http://circos.ca/" target="_blank">CIRCOS</a>:&nbsp;&nbsp;version 0.67-5</p>
+                <p><a href="http://d3js.org/" target="_blank">D3js</a>:&nbsp;&nbsp;version 3.5.5</p>
                 <p><a href="http://jquery.com/" target="_blank">jQuery & jQuery UI</a>:&nbsp;&nbsp;version 1.11.2</p>
                 
 		<!-- <p><a href="http://www.atlassian.com/" target="JIRA">JIRA</a>: &nbsp;&nbsp;version 3.1.1-#81 Professional Edition</p> -->
@@ -54,7 +54,7 @@
                 <h2>Genome/Transcriptome Data Browser Annotations</h2>        
                 <ul>
                     <li>Ensembl v78</li>
-                    <li>RefSeq(source:UCSC Genome Browser): Downloaded 10/31/2014</li>
+                    <li>RefSeq(source:UCSC Genome Browser): Downloaded 2/27/2015</li>
                     <li>RGD QTL information: Downloaded </li>
                 </ul>
                 <BR><BR>
