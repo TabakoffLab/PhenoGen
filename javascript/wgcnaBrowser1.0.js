@@ -2877,6 +2877,144 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 }
             };
 
+            thatimg.addLabels=function(tmpD,tmpI,startA,midA,endA,curDepth,tmpDisplayDepth){
+            	var oR=tmpD.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))-12;
+            	var iR=tmpD.depth*(thatimg.radius/(tmpDisplayDepth+1));
+            	var oCirc=(Math.PI*2*oR*((endA-startA)/360));
+            	var jMax=Math.floor((oR-iR)/12);
+            	
+            	if((endA-startA)>10){ 
+                             //construct lines
+                            var init=tmpD.name;
+                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                init=thatimg.geneList[init];
+                                if((endA-startA)>25){
+                                    init=init+ " ("+tmpD.name+")";
+                                }
+                            }
+                            console.log(init);
+                            console.log("outerCir="+oCirc);
+                            console.log("outerRadius="+oR);
+                            //var max=(endA-startA)/(2.2-(curDepth*0.13));
+                            var max=Math.floor(oCirc/7.0);
+                            console.log("max char="+max);
+                            var lines=[];
+                            var curLine=0;
+                            if(init.length>max){
+                                var parts=init.split(" ");
+                                var part="";
+                                for(var j=0;j<parts.length&&max>3;j++){
+                                    var tmpPart=part;
+                                    if(part.length>0){
+                                        tmpPart+=" ";
+                                    }
+                                    tmpPart+=parts[j];
+                                    if(tmpPart.length>=max){
+                                        if(part.length===0){
+                                            part=tmpPart;
+                                        }
+                                        lines[curLine]=part;
+                                        if(part.length>=max){
+                                            lines[curLine]=part.substr(0,max);
+                                            part=part.substr(max);
+                                        }else{
+                                            part=parts[j];
+                                        }
+                                        curLine++;
+                                        max=max-2;
+                                    }else{
+                                        part=tmpPart;
+                                    }
+                                }
+                                if(max<=3){
+                                	lines[curLine]="...";
+                                }
+                                if(part.length>0){
+                                    lines[curLine]=part;
+                                }
+                                
+                            }else{
+                                lines[curLine]=init;
+                            }
+                            var tmpText=thatimg.topG.append("text")
+                                        .style("fill-opacity", 1)
+                                        .style("fill", "#000")
+                                        .attr("pointer-events","none")
+                                        .attr("class","txt"+removeColon(tmpD.id))
+                                        .attr("text-anchor", function(d) {
+                                            return "start";
+                                        })
+                                        .attr("dy", "1em")
+                                        .style("opacity",function(d){
+                                            return 1;
+
+                                        })
+                                        .append("textPath")
+                                        .attr("xlink:href",function(d){return "#ap"+tmpI;})
+                                        .attr("startOffset",function(d){
+                                            if(startA===0&&endA===360){
+                                                return 90;
+                                            }
+                                            return 5 ;
+                                        });
+	                        for (var j=0;j<lines.length && j<jMax;j++){
+	                            if(j<jMax){
+	                                if(j===(jMax-1)&&lines.length>jMax){
+	                                    lines[j]+="...";
+	                                    if(lines[j].length>max){
+	                                        lines[j]=lines[j].substr(0,max-4)+"...";
+	                                    }
+	                                }
+	                                tmpText.append("tspan")
+	                                    .attr("x", 0)
+	                                    .attr("dy", "1em")
+	                                    .text(lines[j]);
+	                            }
+	                        }
+                        }else if((endA-startA)>6 && tmpD.name.indexOf("ENS")===0){
+                            var tmpText=thatimg.topG.append("text")
+                                  	.style("fill-opacity", 1)
+                                  	.style("fill", "#000")
+                                  	.attr("pointer-events","none")
+                                  	.attr("class","txt"+removeColon(tmpD.id))
+                                	.attr("text-anchor", function(d) {
+                                    	var anch="start";
+                                    	if(endA>=180){
+                                        	anch="end";
+                                    	}
+                                    	return anch;
+                                  	})
+                                  	.attr("dy", ".2em")
+                                  	.attr("transform", function(d) {
+                                    	var angle = midA-2.5;
+                                    	//var translate = Math.max(0, tmpD.y);
+                                    	var translate = iR;
+                                    	if(startA===0&&endA===360){translate=20;}
+                                    	if(endA>=180){angle=midA+2.5;}
+                                    	var rotate = angle-90;
+                                    	return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
+                                  	}).style("opacity",function(d){
+                                      return 1;
+                                  	});
+                            var init=tmpD.name;
+                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                    init=thatimg.geneList[init];
+                            }
+                            var tmpName=init.split(" ");
+
+                            for (var j=0;j<tmpName.length;j++){
+                              tmpText.append("tspan")
+                                  .attr("x", 0)
+                                  .attr("dy", "1em")
+                                  .text(tmpName[j]);
+                            }
+                        }
+            };
+
+            thatimg.maxLineDepth=function(){
+
+            };
+
             thatimg.redraw=function(){
             	//console.log("redraw:go");
             	thatimg.svg.selectAll("path").remove();
@@ -2938,25 +3076,25 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 	tmpDisplayDepth=thatimg.maxDepth;
                 }
                 thatimg.arc = d3.svg.arc()
-                                .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
-                                .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
-                                /*.innerRadius(function(d) { 
-                                        if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
-                                            return 20;
-                                        }else{
-                                            return Math.max(0, Math.sqrt(d.y)); 
-                                        }
-                                    })
-                                .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });*/
-                                .innerRadius(function(d) { 
-                                        if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
-                                            return 20;
-                                        }else{
-                                            return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))); 
-                                        }
-                                })
-                                
-                                .outerRadius(function(d) { return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))); });
+                    .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
+                    .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
+                    /*.innerRadius(function(d) { 
+                            if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
+                                return 20;
+                            }else{
+                                return Math.max(0, Math.sqrt(d.y)); 
+                            }
+                        })
+                    .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });*/
+                    .innerRadius(function(d) { 
+                            if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
+                                return 20;
+                            }else{
+                                return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))); 
+                            }
+                    })
+                    
+                    .outerRadius(function(d) { return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))); });
                         
 
                 setTimeout(function(){
@@ -2989,136 +3127,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                     var curDepth=(tmpD.depth-thatimg.selectedNode.depth);
                     if(d!==thatimg.selectedNode.parent){
-                        if((endA-startA)>10){ 
-                             //construct lines
-                            var init=tmpD.name;
-                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                init=thatimg.geneList[init];
-                                if((endA-startA)>25){
-                                    init=init+ " ("+tmpD.name+")";
-                                }
-                            }
-                            var max=(endA-startA)/(2.2-(curDepth*0.13));
-                            var lines=[];
-                            var curLine=0;
-                            if(init.length>max){
-                                var parts=init.split(" ");
-                                var part="";
-                                for(var j=0;j<parts.length;j++){
-                                    var tmpPart=part;
-                                    if(part.length>0){
-                                        tmpPart+=" ";
-                                    }
-                                    tmpPart+=parts[j];
-                                    if(tmpPart.length>=max){
-                                        if(part.length===0){
-                                            part=tmpPart;
-                                        }
-                                        lines[curLine]=part;
-                                        if(part.length>=max){
-                                            lines[curLine]=part.substr(0,max);
-                                            part=part.substr(max);
-                                        }else{
-                                            part=parts[j];
-                                        }
-                                        curLine++;
-                                    }else{
-                                        part=tmpPart;
-                                    }
-                                }
-                                if(part.length>0){
-                                    lines[curLine]=part;
-                                }
-                                
-                            }else{
-                                lines[curLine]=init;
-                            }
-                            var tmpText=thatimg.topG.append("text")
-                                        .style("fill-opacity", 1)
-                                        .style("fill", "#000")
-                                        .attr("pointer-events","none")
-                                        .attr("class","txt"+removeColon(d.id))
-                                        .attr("text-anchor", function(d) {
-                                            return "start";
-                                        })
-                                        .attr("dy", "1em")
-                                        .style("opacity",function(d){
-                                            return 1;
-
-                                        })
-                                        .append("textPath")
-                                        .attr("xlink:href",function(d){return "#ap"+tmpI;})
-                                        .attr("startOffset",function(d){
-                                            if(startA===0&&endA===360){
-                                                return 90;
-                                            }
-                                            return 5 ;
-                                        });
-
-                                        var jMax=1;
-                                        if(curDepth<2){
-                                            jMax=4;
-                                            if((endA-startA)<15){
-                                                jMax=3;
-                                            }
-                                        }else if(curDepth<3){
-                                            jMax=3;
-                                        }else if(curDepth<5){
-                                            jMax=2;
-                                        }
-                                        for (var j=0;j<lines.length && j<jMax;j++){
-                                            if(j<jMax){
-                                                if(j===(jMax-1)&&lines.length>jMax){
-                                                    
-                                                    lines[j]+="...";
-                                                    if(lines[j].length>max){
-                                                        lines[j]=lines[j].substr(0,max-4)+"...";
-                                                    }
-                                                }
-                                                tmpText.append("tspan")
-                                                    .attr("x", 0)
-                                                    .attr("dy", "1em")
-                                                    .text(lines[j]);
-                                            }
-                                        }
-                            }else if((endA-startA)>6 && tmpD.name.indexOf("ENS")===0){
-                                    var tmpText=thatimg.topG.append("text")
-                                          .style("fill-opacity", 1)
-                                          .style("fill", "#000")
-                                          .attr("pointer-events","none")
-                                          .attr("class","txt"+removeColon(d.id))
-                                         .attr("text-anchor", function(d) {
-                                             var anch="start";
-                                             if(endA>=180){
-                                                 anch="end";
-                                             }
-                                            return anch;
-                                          })
-                                          .attr("dy", ".2em")
-                                          .attr("transform", function(d) {
-                                            var angle = midA-2.5;
-                                            var translate = Math.max(0, Math.sqrt(tmpD.y));
-                                            if(startA===0&&endA===360){translate=20;}
-                                            if(endA>=180){angle=midA+2.5;}
-                                            var rotate = angle-90;
-                                            return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
-                                          }).style("opacity",function(d){
-                                              return 1;
-                                          });
-
-                                        var init=tmpD.name;
-                                        if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                init=thatimg.geneList[init];
-                                        }
-                                        var tmpName=init.split(" ");
-
-                                        for (var j=0;j<tmpName.length;j++){
-                                          tmpText.append("tspan")
-                                              .attr("x", 0)
-                                              .attr("dy", "1em")
-                                              .text(tmpName[j]);
-                                        }
-                            }
+                        thatimg.addLabels(tmpD,tmpI,startA,midA,endA,curDepth,tmpDisplayDepth);
                     }
                     
                           
@@ -3235,7 +3244,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         var curDepth=(tmpD.depth-thatimg.selectedNode.depth);
 
                         if(d!==thatimg.selectedNode.parent){
-                            if((endA-startA)>10){ 
+                        	thatimg.addLabels(tmpD,tmpI,startA,midA,endA,curDepth,tmpDisplayDepth);
+                            /*if((endA-startA)>10){ 
                                  //construct lines
                                 var init=tmpD.name;
                                 if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
@@ -3365,7 +3375,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                   .attr("dy", "1em")
                                                   .text(tmpName[j]);
                                             }
-                                }
+                                }*/
                         }
                     });
                     
@@ -3665,7 +3675,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         }
         
         d3.select('#GoTable').select('tbody').selectAll('tr').remove();
-        
+
         var root=that.singleImage.selectedNode;
         var nodes=that.singleImage.partition.nodes(root);
         nodes=nodes.filter(function(d,i){
