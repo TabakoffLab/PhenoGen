@@ -559,7 +559,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 var row=mir.append("table").append("tr");
                 mir.append("text").style("font-weight","bold").text("Filter miRNAs:");
                 mir.append("br");
-                mir.append("input").attr("type","checkbox").style("margin-right","5px").attr("id","").on("click",function(){
+                mir.append("input").attr("type","checkbox").style("margin-right","5px").attr("id","mirValidatedCBX").on("click",function(){
                     if($(this).is(':checked')){
                         that.singleImage.mirValid=1;
                     }else{
@@ -589,7 +589,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 mir.append("text").style("font-weight","bold").text("Display Options:");
                 
                  mir.append("br");
-                mir.append("input").attr("type","checkbox").attr("id","mirSortCBX").style("margin-right","5px").attr("id","").on("click",function(){
+                mir.append("input").attr("type","checkbox").attr("id","mirSortCBX").style("margin-right","5px").on("click",function(){
                     if($(this).prop('checked')){
                         that.singleImage.sortMir=$("#mirSortSelect").val();
                     }else{
@@ -611,6 +611,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 mir.append("text").text("Hovering over a node(miR or transcript):");
                 mir.append("br");
                 mir.append("input").attr("type","checkbox")
+                		.attr("id","mirLinkCBX")
                         .attr("checked","checked")
                         .style("margin-left","12px")
                         .style("margin-right","3px")
@@ -625,6 +626,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				mir.append("text").text("Display links between miRNAs and targeted transcripts");
                 mir.append("br");
                 mir.append("input").attr("type","checkbox")
+                		.attr("id","mirgeneLinkCBX")
                         .style("margin-left","12px")
                         .style("margin-right","3px")
                         .on("click",function(){
@@ -651,7 +653,6 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 selMir.append("option").attr("value","Red_Green").text("Red(+) / Green(-)");
                 colorSel.append("br");
                 colorSel.append("input").attr("type","checkbox")
-                        
                         .style("margin-left","24px")
                         .style("margin-right","3px")
                         .on("click",function(){
@@ -665,7 +666,6 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 colorSel.append("text").text("Display all cor. transcript links from targeted transcripts.");
                 
                 $( "#minMirGeneSlider" ).slider({
-                    
                     min: 1,
                     max: 100,
                     step: 1,
@@ -768,6 +768,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         that.singleImage.draw();
                     }
                   });
+
+
                 var chr=that.dataBar.append("td").append("div").attr("class","eqtlCtls").attr("id","eqtlCtl").style("display","none").style("margin-left","10px");
                 chr.append("text").text("Select Chromosomes");
                 chr.append("br");
@@ -1179,6 +1181,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             $("#wgcnazoomInImage").show();
             $("#wgcnazoomOutImage").show();
             if(that.viewType==="gene"){
+            	$("#linkSliderMin").slider('value',0.01);
+                $("span#minLabel").html(0.01);
+                $("#linkSliderMax").slider('value',1.0);
+                $("span#maxLabel").html(1.0);
+                $("#hideLinkExceptNode").prop("checked",true);
                 setTimeout(function(){
 					that.singleImage=that.singleWGCNAImageGeneView(that.modules);
 					that.singleImage.draw();
@@ -1200,6 +1207,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             	$("#wgcnaresetImage").hide();
 	            $("#wgcnazoomInImage").hide();
 	            $("#wgcnazoomOutImage").hide();
+	            $("#goDomainSelect").val("mf");
+	            $("#goSpinner").val(3);
                 setTimeout(function(){
 					that.singleImage=that.singleWGCNAImageGoView(that.modules);
                     that.singleImage.goDomain=$("#goDomainSelect").val();
@@ -1207,12 +1216,23 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					that.img=that.singleImage;
                 },50);
             }else if(that.viewType==="eqtl"){
+            	$('#eqtlChr option').prop('selected', true);
+            	$("#eqtlPval").val(2);
                 setTimeout(function(){
 					that.singleImage=that.singleWGCNAImageEQTLView(that.modules);
 					that.singleImage.displayDefault();
 					that.img=that.singleImage;
                 },50);
             }else if(that.viewType==="mir"){
+            	$("#mirValidatedCBX").prop("checked",false);
+            	$("#minMirGeneSlider").slider('value',1);
+                $("span#minMirGeneLabel").html(1);
+                $("#mirGeneFilterTxt").val("");
+                $("#mirIDFilterTxt").val("");
+                $("#mirSortCBX").prop("checked",false);
+                $("#mirLinkCBX").prop("checked",true);
+                $("#mirgeneLinkCBX").prop("checked",false);
+                $("div#mirLinkColorSelect").hide();
                 setTimeout(function(){
 					that.singleImage=that.singleWGCNAImageGeneView(that.modules);
 					that.singleImage.draw();
@@ -2881,97 +2901,103 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             	var oR=tmpD.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))-12;
             	var iR=tmpD.depth*(thatimg.radius/(tmpDisplayDepth+1));
             	var oCirc=(Math.PI*2*oR*((endA-startA)/360));
+            	var iCirc=(Math.PI*2*iR*((endA-startA)/360));
+            	var max=Math.floor(oCirc/7.0)-1;
             	var jMax=Math.floor((oR-iR)/12);
+            	var init=tmpD.name;
+                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                    init=thatimg.geneList[init];
+                    if((endA-startA)>25){
+                        init=init+ " ("+tmpD.name+")";
+                    }
+                }
+                var first=init.split(" ")[0].split("-")[0];
             	
-            	if((endA-startA)>10){ 
-                             //construct lines
-                            var init=tmpD.name;
-                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                init=thatimg.geneList[init];
-                                if((endA-startA)>25){
-                                    init=init+ " ("+tmpD.name+")";
+            	if(first.length<=max ||(tmpD.name.indexOf("ENS")===-1 && (first.length/2)<=max && (endA-startA)>10) ){ 
+                    //construct lines                           
+                    //var max=(endA-startA)/(2.2-(curDepth*0.13));
+                    var lines=[];
+                    var curLine=0;
+                    if(init.length>max){
+                    	var left=init;
+                    	while(left.length>0){
+                    		var fbreak=left.indexOf(" ");
+                    		if(fbreak===-1){
+                    			if(left.length>max){
+                    				lines[curLine]=left.substr(0,max);
+		                    		curLine++;
+		                    		left=left.substr(max);
+                    			}else{
+                    				lines[curLine]=left;
+                    				curLine++;
+                    				left="";
+                    			}
+                    		}else{
+	                    		var stopLoop=0;
+	                    		while(fbreak<max && stopLoop<1){
+	                    			var next=left.indexOf(" ",fbreak+1);
+	                    			if(next !==-1 && next<=max){
+	                    				fbreak=next;
+	                    			}else{
+	                    				stopLoop=1;
+	                    			}
+	                    		}
+	                    		if(fbreak>max){
+	                    			if(left.indexOf("-")>-1 &&left.indexOf("-")<max){
+	                    				fbreak=left.indexOf("-");
+										lines[curLine]=left.substr(0,fbreak+1);
+		                    			curLine++;
+		                    			left=left.substr(fbreak+1);
+	                    			}else{
+	                    				lines[curLine]=left.substr(0,max);
+		                    			curLine++;
+		                    			left=left.substr(max);
+	                    			}
+	                    		}else{
+	                    			lines[curLine]=left.substr(0,fbreak);
+	                    			curLine++;
+	                    			left=left.substr(fbreak+1);
+	                    		}
+                    		}
+                    	}
+                    }else{
+                        lines[curLine]=init;
+                    }
+                    var tmpText=thatimg.topG.append("text")
+                                .style("fill-opacity", 1)
+                                .style("fill", "#000")
+                                .attr("pointer-events","none")
+                                .attr("class","txt"+removeColon(tmpD.id))
+                                .attr("text-anchor", function(d) {
+                                    return "start";
+                                })
+                                .attr("dy", "1em")
+                                .style("opacity",function(d){
+                                    return 1;
+                                })
+                                .append("textPath")
+                                .attr("xlink:href",function(d){return "#ap"+tmpI;})
+                                .attr("startOffset",function(d){
+                                    if(startA===0&&endA===360){
+                                        return 90;
+                                    }
+                                    return 5 ;
+                                });
+                    for (var j=0;j<lines.length && j<jMax;j++){
+                        if(j<jMax){
+                            if(j===(jMax-1)&&lines.length>jMax){
+                                lines[j]+="...";
+                                if(lines[j].length>max){
+                                    lines[j]=lines[j].substr(0,max-4)+"...";
                                 }
                             }
-                            console.log(init);
-                            console.log("outerCir="+oCirc);
-                            console.log("outerRadius="+oR);
-                            //var max=(endA-startA)/(2.2-(curDepth*0.13));
-                            var max=Math.floor(oCirc/7.0);
-                            console.log("max char="+max);
-                            var lines=[];
-                            var curLine=0;
-                            if(init.length>max){
-                                var parts=init.split(" ");
-                                var part="";
-                                for(var j=0;j<parts.length&&max>3;j++){
-                                    var tmpPart=part;
-                                    if(part.length>0){
-                                        tmpPart+=" ";
-                                    }
-                                    tmpPart+=parts[j];
-                                    if(tmpPart.length>=max){
-                                        if(part.length===0){
-                                            part=tmpPart;
-                                        }
-                                        lines[curLine]=part;
-                                        if(part.length>=max){
-                                            lines[curLine]=part.substr(0,max);
-                                            part=part.substr(max);
-                                        }else{
-                                            part=parts[j];
-                                        }
-                                        curLine++;
-                                        max=max-2;
-                                    }else{
-                                        part=tmpPart;
-                                    }
-                                }
-                                if(max<=3){
-                                	lines[curLine]="...";
-                                }
-                                if(part.length>0){
-                                    lines[curLine]=part;
-                                }
-                                
-                            }else{
-                                lines[curLine]=init;
-                            }
-                            var tmpText=thatimg.topG.append("text")
-                                        .style("fill-opacity", 1)
-                                        .style("fill", "#000")
-                                        .attr("pointer-events","none")
-                                        .attr("class","txt"+removeColon(tmpD.id))
-                                        .attr("text-anchor", function(d) {
-                                            return "start";
-                                        })
-                                        .attr("dy", "1em")
-                                        .style("opacity",function(d){
-                                            return 1;
-
-                                        })
-                                        .append("textPath")
-                                        .attr("xlink:href",function(d){return "#ap"+tmpI;})
-                                        .attr("startOffset",function(d){
-                                            if(startA===0&&endA===360){
-                                                return 90;
-                                            }
-                                            return 5 ;
-                                        });
-	                        for (var j=0;j<lines.length && j<jMax;j++){
-	                            if(j<jMax){
-	                                if(j===(jMax-1)&&lines.length>jMax){
-	                                    lines[j]+="...";
-	                                    if(lines[j].length>max){
-	                                        lines[j]=lines[j].substr(0,max-4)+"...";
-	                                    }
-	                                }
-	                                tmpText.append("tspan")
-	                                    .attr("x", 0)
-	                                    .attr("dy", "1em")
-	                                    .text(lines[j]);
-	                            }
-	                        }
-                        }else if((endA-startA)>6 && tmpD.name.indexOf("ENS")===0){
+                            tmpText.append("tspan")
+                                .attr("x", 0)
+                                .attr("dy", "1em")
+                                .text(lines[j]);
+                        }
+                    }
+                }else if(iCirc>=12 && tmpD.name.indexOf("ENS")===0){
                             var tmpText=thatimg.topG.append("text")
                                   	.style("fill-opacity", 1)
                                   	.style("fill", "#000")
@@ -3009,10 +3035,6 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                   .text(tmpName[j]);
                             }
                         }
-            };
-
-            thatimg.maxLineDepth=function(){
-
             };
 
             thatimg.redraw=function(){
@@ -3245,137 +3267,6 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
                         if(d!==thatimg.selectedNode.parent){
                         	thatimg.addLabels(tmpD,tmpI,startA,midA,endA,curDepth,tmpDisplayDepth);
-                            /*if((endA-startA)>10){ 
-                                 //construct lines
-                                var init=tmpD.name;
-                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                    init=thatimg.geneList[init];
-                                    if((endA-startA)>25){
-                                        init=init+ " ("+tmpD.name+")";
-                                    }
-                                }
-                                var max=(endA-startA)/(2.2-(curDepth*0.13));
-                                var lines=[];
-                                var curLine=0;
-                                if(init.length>max){
-                                    var parts=init.split(" ");
-                                    var part="";
-                                    for(var j=0;j<parts.length;j++){
-                                        var tmpPart=part;
-                                        if(part.length>0){
-                                            tmpPart+=" ";
-                                        }
-                                        tmpPart+=parts[j];
-                                        if(tmpPart.length>=max){
-                                            if(part.length===0){
-                                                part=tmpPart;
-                                            }
-                                            lines[curLine]=part;
-                                            if(part.length>=max){
-                                                lines[curLine]=part.substr(0,max);
-                                                part=part.substr(max);
-                                            }else{
-                                                part=parts[j];
-                                            }
-                                            curLine++;
-                                        }else{
-                                            part=tmpPart;
-                                        }
-                                    }
-                                    if(part.length>0){
-                                        lines[curLine]=part;
-                                    }
-
-                                }else{
-                                    lines[curLine]=init;
-                                }
-
-                                var tmpText=thatimg.topG.append("text")
-                                            .style("fill-opacity", 1)
-                                            .style("fill", "#000")
-                                            .style("font-size","0.9em")
-                                            .attr("pointer-events","none")
-                                            .attr("class","txt"+removeColon(d.id))
-                                            .attr("text-anchor", function(d) {
-                                                return "start";
-                                            })
-                                            .attr("dy", "1em")
-                                            .style("opacity",function(d){
-                                                return 1;
-
-                                            })
-                                            .append("textPath")
-                                            .attr("xlink:href",function(d){return "#ap"+tmpI;})
-                                            .attr("startOffset",function(d){
-                                                if(startA===0&&endA===360){
-                                                    return 185;
-                                                }
-                                                return 5 ;
-                                            });
-
-                                            var jMax=1;
-                                            if(curDepth<2){
-                                                jMax=4;
-                                                if((endA-startA)<15){
-                                                    jMax=3;
-                                                }
-                                            }else if(curDepth<3){
-                                                jMax=3;
-                                            }else if(curDepth<5){
-                                                jMax=2;
-                                            }
-                                            for (var j=0;j<lines.length && j<jMax;j++){
-                                                if(j<jMax){
-                                                    if(j===(jMax-1)&&lines.length>jMax){
-                                                        lines[j]+="...";
-                                                        if(lines[j].length>max){
-                                                            lines[j]=lines[j].substr(0,max-4)+"...";
-                                                        }
-                                                    }
-                                                    tmpText.append("tspan")
-                                                        .attr("x", 0)
-                                                        .attr("dy", "1em")
-                                                        .text(lines[j]);
-                                                }
-                                            }
-                                }else if((endA-startA)>6 && tmpD.name.indexOf("ENS")===0){
-                                        var tmpText=thatimg.topG.append("text")
-                                              .style("fill-opacity", 1)
-                                              .style("fill", "#000")
-                                              .attr("pointer-events","none")
-                                              .attr("class","txt"+removeColon(d.id))
-                                             .attr("text-anchor", function(d) {
-                                                 var anch="start";
-                                                 if(endA>=180){
-                                                     anch="end";
-                                                 }
-                                                return anch;
-                                              })
-                                              .attr("dy", ".2em")
-                                              .attr("transform", function(d) {
-                                                var angle = midA-2.5;
-                                                var translate = Math.max(0, Math.sqrt(tmpD.y));
-                                                if(startA===0&&endA===360){translate=20;}
-                                                if(endA>=180){angle=midA+2.5;}
-                                                var rotate = angle-90;
-                                                return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
-                                              }).style("opacity",function(d){
-                                                  return 1;
-                                              });
-
-                                            var init=tmpD.name;
-                                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                    init=thatimg.geneList[init];
-                                            }
-                                            var tmpName=init.split(" ");
-
-                                            for (var j=0;j<tmpName.length;j++){
-                                              tmpText.append("tspan")
-                                                  .attr("x", 0)
-                                                  .attr("dy", "1em")
-                                                  .text(tmpName[j]);
-                                            }
-                                }*/
                         }
                     });
                     
