@@ -375,6 +375,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 </div>
 <%@ include file="/web/common/footer.jsp"  %>
 <script type="text/javascript">
+        var curUID=<%=userLoggedIn.getUser_id()%>;
+    
 	$(document).ready(function() {
 		$('.toolTip').tooltipster({
 		position: 'top-right',
@@ -435,11 +437,15 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                                 var file=d.Path.substr(ind+1);
                                                 var fileLink="<a href=\""+d.Path+"\" target=\"_blank\"> "+file+ " </a>";
                                                 var timeShort=d.Time.substr(0,d.Time.lastIndexOf(":"));
-                                                var shared="<span class=\"action shared\" id=\"share"+d.FileID+"\"><img src=\"../images/success.png\"></span>"
-                                                    +"<span class=\"action sharedUsers\" id=\"shareUser"+d.FileID+"\"><img src=\"../images/icons/user_32.png\"></span>";
+                                                var shared="<span class=\"action shared\" id=\"share"+d.FileID+"\"><img src=\"../images/success.png\"></span>";
+                                                if(d.OwnerID===curUID){
+                                                    shared=shared+"<span class=\"action sharedUsers\" id=\"shareUser"+d.FileID+"\"><img src=\"../images/icons/user_32.png\"></span>";
+                                                }
                                                 if(d.Shared==="false"){
-                                                    shared="<span class=\"action shared\" id=\"share"+d.FileID+"\"><img src=\"../images/error.png\"></span>"
-                                                        +"<span class=\"action sharedUsers\" style=\"display:none;\" id=\"shareUser"+d.FileID+"\"><img src=\"../images/icons/user_32.png\"></span>";
+                                                    shared="<span class=\"action shared\" id=\"share"+d.FileID+"\"><img src=\"../images/error.png\"></span>";
+                                                    if(d.OwnerID===curUID){
+                                                        shared=shared+"<span class=\"action sharedUsers\" style=\"display:none;\" id=\"shareUser"+d.FileID+"\"><img src=\"../images/icons/user_32.png\"></span>";
+                                                    }
                                                 }
                                                 
                                                 var shareAll="<span class=\"action shareAll\" id=\"shareAll"+d.FileID+"\"><img src=\"../images/success.png\"></span>";
@@ -531,12 +537,11 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                                             data: {fid:id},
                                                             dataType: 'json',
                                                             success: function(data2){
-                                                                
                                                                 var str=data2.UIDs;
                                                                 var list=str.split(",");
                                                                 for(var i=0;i<list.length;i++){
                                                                     var uid=list[i];
-                                                                    console.log($("input#uid"+uid));
+                                                                    //console.log($("input#uid"+uid));
                                                                     $("input#uid"+uid).prop('checked', true);
                                                                 }
                                                             }

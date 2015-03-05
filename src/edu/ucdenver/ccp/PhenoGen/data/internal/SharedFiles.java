@@ -299,26 +299,36 @@ public class SharedFiles {
             DataSource pool=(DataSource) session.getAttribute("dbPool");
             String[] idList=list.split(",");
             if(!curUser.getUser_name().equals("anon")){
+                String queryCheck="select owner_uid from files f where f.file_id="+fid;
                 String query1="delete from Files_Shared f where f.file_id = "+fid;
                 String query2="Insert into Files_shared (file_id,user_id) values (?,?)";
                 Connection conn=null;
                 try{
                     conn=pool.getConnection();
                     conn.setAutoCommit(false);
-                    PreparedStatement ps = conn.prepareStatement(query1);
-                    int deleted=ps.executeUpdate();
-                    ps.close();
-                    
-                    for(int i=0;i<idList.length;i++){
-                        int uid=Integer.parseInt(idList[i]);
-                        PreparedStatement ps2 = conn.prepareStatement(query2);
-                        ps2.setInt(1, fid);
-                        ps2.setInt(2, uid);
-                        ps2.executeUpdate();
-                        ps2.close();
+                    PreparedStatement psTest = conn.prepareStatement(queryCheck);
+                    ResultSet rsTest=psTest.executeQuery();
+                    int ownerUID=0;
+                    if(rsTest.next()){
+                        ownerUID=rsTest.getInt(1);
                     }
-                    conn.commit();    
-                    success=true;
+                    psTest.close();
+                    if(ownerUID==curUser.getUser_id()){
+                        PreparedStatement ps = conn.prepareStatement(query1);
+                        int deleted=ps.executeUpdate();
+                        ps.close();
+
+                        for(int i=0;i<idList.length;i++){
+                            int uid=Integer.parseInt(idList[i]);
+                            PreparedStatement ps2 = conn.prepareStatement(query2);
+                            ps2.setInt(1, fid);
+                            ps2.setInt(2, uid);
+                            ps2.executeUpdate();
+                            ps2.close();
+                        }
+                        conn.commit();
+                        success=true;
+                    }
                     conn.close();
                     conn=null;
                 }catch(SQLException e){

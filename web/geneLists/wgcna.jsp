@@ -13,12 +13,12 @@
 <%
         extrasList.add("d3.v3.min.js");
         extrasList.add("jquery.dataTables.js");
-        extrasList.add("wgcnaBrowser0.3.js");
+        extrasList.add("wgcnaBrowser1.0.js");
         extrasList.add("svg-pan-zoom.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
 
-        extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
+        //extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 
         log.info("in wgcna.jsp. user =  "+ user);
         optionsList.add("geneListDetails");

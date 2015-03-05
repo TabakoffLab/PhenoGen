@@ -10,7 +10,7 @@
 	extrasList.add("d3.v3.min.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
-	extrasList.add("smoothness/jquery-ui.1.11.1.min.css");
+	//extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("jquery.fancybox-thumbs.css");
     request.setAttribute( "extras", extrasList);
@@ -79,7 +79,7 @@
     	        
 
     	<!--<div id="primary-content">-->
-        <div id="welcome" style="height:1225px; width:996px;">
+        <div id="welcome" style="height:1400px; width:996px;">
 			<h1 id="index" class="homePage">Welcome to PhenoGen Informatics</h1>    
             <H2> The site for quantitative genetics of the transcriptome.</h2>
             <div>

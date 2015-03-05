@@ -29,7 +29,36 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
-    <p><h3>Version: v2.14.0</h3><BR /> Updated:1/11/2015</p></div>
+        <p><h3>Version: v2.15.0</h3><BR /> Updated:3/7/2015</p></div>
+                                 <ul>
+                                    <li><span class="highlight-dark">New Weighted Gene Co-expression Network Analysis(WGCNA) Views</span>.
+                                                    <ul>
+                                                        <li>Gene Ontology View:
+                                                            <ul>
+                                                                <li>View an interactive expandable sunburst plot of each GO Domain(Biological Process, Molecular Function, and Cellular Component). Provides a summary of all the GO terms assigned to genes in the module.</li>
+                                                                <li>View graphic form and CSV exportable table form.  Both are interactive and can be used to explore the GO term tree.</li>
+                                                            </ul>
+                                                        </li>
+                                                        <li>miRNA targeting (multiMiR) View:
+                                                            <ul>
+                                                                <li>View/Filter miRNAs that target genes in the module.  Visualize targets of miRNAs and the correlation between genes targeted.  Filter to look at specific miRNAs or miRNAs targeting specific genes.</li>
+                                                                <li>View graphic form and CSV exportable table form.</li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                    </li>
+                                    <li><span class="highlight-dark">Rat Transcriptomes Updated Brain, Liver, and Heart(New)</span>
+                                        <UL>
+                                        <li> <span class="highlight-dark">Strain Specific Transcripts</span> - Now transcripts specific to a strain are color coded to quickly visualize splicing differences between strains.</li>
+                                        <li> <span class="highlight-dark">Updated Brian and Liver Transcriptome</span> - New versions of the brain and liver transcriptome are available.</li>
+                                        <li> <span class="highlight-dark">Added Heart Transcriptome</span> - We've added the first version of the heart transcriptome.</li>
+                                        <li> <span class="highlight-dark">Transcriptome Versioning</span> - Missing a transcript of interest in the new transcriptome?  You can view previous version of the transcriptome now by selecting a previous version in the track settings.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+				
+    <hr/>
+    <div class="whats_new version"><p><h3>Version: v2.14.0</h3><BR /> Updated:1/11/2015</p></div>
                                  <ul>
                                     <li><span class="highlight-dark">Weighted Gene Co-expression Network Analysis(WGCNA) Results</span>.
                                                     <ul>

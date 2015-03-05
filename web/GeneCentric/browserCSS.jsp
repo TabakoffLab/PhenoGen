@@ -240,4 +240,18 @@ table.tooltipTable TD{
 		position:relative;
 		top:8px;*/
 	}
+        .triggerGL, .triggerMiL, .triggerpL, .triggervL{
+            cursor: pointer;
+            background: url(../web/images/icons/add.png) center left no-repeat; 
+            padding: 0 10px 0 20px;
+        }
+        
+        table tr.col_title th {
+            vertical-align: middle;
+            text-align: center;
+            border: solid 1px #999;
+            /* background: transparent url("tablesort/bg.gif") no-repeat right 5px; */
+            padding: 2px 5px 2px 5px;
+            color: #416fbf;
+        }
 </style>

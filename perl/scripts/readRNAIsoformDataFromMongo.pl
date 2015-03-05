@@ -35,7 +35,44 @@ sub addChr{
 }
 1;
 
+sub getRNADatasetFromDB{
+    my($organism,$publicUserID,$panel,$tissue,$dsn,$usr,$passwd,$version)=@_;
+    my $ret=0;
+    if($organism eq "Rat"){
+        $organism="Rn";
+    }elsif($organism eq "Mouse"){
+        $organism="Mm";
+    }
+    my $connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
+    my $query="select rd2.rna_dataset_id,rd2.build_version from rna_dataset rd2 where
+				rd2.organism = '".$organism."' "."
+                                and rd2.trx_recon=1
+				and rd2.user_id= $publicUserID
+                                and rd2.tissue = '".$tissue."' 
+                                and rd2.strain_panel like '".$panel."'";
+    if($$version==0){
+            $query=$query." and rd2.visible=1 and rd2.previous=0";
+    }else{
+            $query=$query." and rd2.build_version='".$$version."'";
+    }
 
+    print $query."\n";
+    $query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");
+
+    # EXECUTE THE QUERY
+    $query_handle->execute() or die ( "RNA Isoform query execute failed \n");
+    my $dsid;
+    my $ver;
+    # BIND TABLE COLUMNS TO VARIABLES
+    $query_handle->bind_columns(\$dsid,\$ver);
+    if($query_handle->fetch()){
+        print "DatasetID=$dsid\nver=$ver\n";
+        $ret=$dsid;
+        $$version=$ver;
+    }
+    return $ret;
+}
+1;
 
 sub readRNAIsoformDataFromDB{
 
@@ -46,8 +83,11 @@ sub readRNAIsoformDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName, $tmpType,$tissue)=@_;   
+	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName, $tmpType,$tissue,$version)=@_;   
 	
+
+        my $dsid=getRNADatasetFromDB($organism,$publicUserID,$panel,$tissue,$dsn,$usr,$passwd,\$version);
+
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	#print "read probesets chr:$geneChrom\n";
 	#Initializing Arrays
@@ -69,12 +109,12 @@ sub readRNAIsoformDataFromDB{
 	
 	#my $geneChromNumber = addChr($geneChrom,"subtract");
 	
-	my $ref=readTranscriptAnnotationDataFromDB($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName,$type,$tissue);
+	my $ref=readTranscriptAnnotationDataFromDB($geneChrom,$geneStart,$geneStop,$dsid,$type,$dsn,$usr,$passwd);
 	my %annotHOH=%$ref;
 	
 	
 
-		$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,c.name as \"chromosome\",
+		$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,rt.strain,c.name as \"chromosome\",
 			re.enumber,re.estart,re.estop ,rt.rna_transcript_id 
 			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
 			where 
@@ -83,14 +123,8 @@ sub readRNAIsoformDataFromDB{
 			and re.rna_transcript_id=rt.rna_transcript_id
 			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))
 			
-			and rt.rna_dataset_id in 
-			(select rd2.rna_dataset_id from rna_dataset rd2 where
-				rd2.organism = '".$organism."' "."
-				and rd2.user_id= $publicUserID  
-				and rd2.visible=1
-				and rd2.tissue = '".$tissue."'
-				and rd2.strain_panel like '".$panel."')";
-			$query=$query." and rt.rna_dataset_id=rd.rna_dataset_id ";
+			and rt.rna_dataset_id=".$dsid."
+			and rt.rna_dataset_id=rd.rna_dataset_id ";
 			if($type ne "Any"){
 				if(index($type," in (")>-1){
 					$query=$query." and rt.category".$type;
@@ -108,7 +142,7 @@ sub readRNAIsoformDataFromDB{
 
 # BIND TABLE COLUMNS TO VARIABLES
 
-	$query_handle->bind_columns(\$tissue ,\$gene_id,\$isoform_id,\$source,\$trstart,\$trstop,\$trstrand,\$trcategory,\$chr,\$enumber,\$estart,\$estop,\$trID);
+	$query_handle->bind_columns(\$tissue ,\$gene_id,\$isoform_id,\$source,\$trstart,\$trstop,\$trstrand,\$trcategory,\$trstrain,\$chr,\$enumber,\$estart,\$estop,\$trID);
 # Loop through results, adding to array of hashes.
 	my $continue=1;
 	my @tmpArr=();
@@ -130,6 +164,7 @@ sub readRNAIsoformDataFromDB{
 	my $trtmp_strand=0;
 	my $trtmp_chromosome=0;
 	my $trtmp_category="";
+        my $trtmp_strain="";
 	my $trtmp_trid=0;
 	my $genetmp_tissue="";
 	my $genetmp_id="";
@@ -172,6 +207,7 @@ sub readRNAIsoformDataFromDB{
 					source => $trtmp_source,
 					strand => $trtmp_strand,
 					category => $trtmp_category,
+                                        strain => $trtmp_strain,
 					chromosome => $trtmp_chromosome,
 					exonList => {exon => \@$exonArray},
 					intronList => {intron => \@$intronArray}
@@ -194,6 +230,7 @@ sub readRNAIsoformDataFromDB{
 				$trtmp_strand=$trstrand;
 				$trtmp_chromosome=$chr;
 				$trtmp_category=$trcategory;
+                                $trtmp_strain=$trstrain;
 				$trtmp_trid=$trID;
 				
 				#set gene min max
@@ -233,6 +270,7 @@ sub readRNAIsoformDataFromDB{
 					source => $trtmp_source,
 					strand => $trtmp_strand,
 					category => $trtmp_category,
+                                        strain => $trtmp_strain,
 					chromosome => $trtmp_chromosome,
 					exonList => {exon => \@$exonArray},
 					intronList => {intron => \@$intronArray}
@@ -279,6 +317,7 @@ sub readRNAIsoformDataFromDB{
 			$trtmp_strand=$trstrand;
 			$trtmp_chromosome=$chr;
 			$trtmp_category=$trcategory;
+                        $trtmp_strain=$trstrain;
 			$trtmp_trid=$trID;
 
 			$genetmp_start=$trtmp_start;
@@ -320,6 +359,7 @@ sub readRNAIsoformDataFromDB{
 						source => $trtmp_source,
 						strand => $trtmp_strand,
 						category => $trtmp_category,
+                                                strain => $trtmp_strain,
 						chromosome => $trtmp_chromosome,
 						exonList => {exon => \@$exonArray},
 						intronList => {intron => \@$intronArray}
@@ -331,7 +371,7 @@ sub readRNAIsoformDataFromDB{
 		}
 	}
 	#close PSFILE;
-	
+	$geneHOH{ver}=$version;
 	#print "Gene".scalar(keys %geneHOH)."\n";
 	#print "gene name".$geneHOH{Gene}[0]{ID}."\n";
 	return (\%geneHOH);
@@ -366,10 +406,10 @@ sub readRNACountsDataFromMongo{
 	print $query."\n";		
 	$query_handle = $connect->prepare($query) or die (" RNA Dataset Shared ID query prepare failed \n");
 
-# EXECUTE THE QUERY
+        # EXECUTE THE QUERY
 	$query_handle->execute() or die ( "RNA Dataset Shared ID query execute failed \n");
 
-# BIND TABLE COLUMNS TO VARIABLES
+        # BIND TABLE COLUMNS TO VARIABLES
 
 	$query_handle->bind_columns(\$sharedID);
 	my $listCount=0;

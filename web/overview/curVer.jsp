@@ -11,10 +11,10 @@
 
     
 
-                	
-                   
+                    <H2>Site Version</H2>
+                    <div  style="overflow:auto;height:92%;">
                     	<%@ include file="/web/common/siteVersion_content.jsp" %>
-                        
+                    </div>
              	
 
 						

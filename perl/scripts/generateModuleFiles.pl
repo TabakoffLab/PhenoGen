@@ -185,6 +185,7 @@ foreach my $mod(@moduleList){
     for(my $row=0;$row<@adjTC;$row++){
         $adjTC[$row]=trim(substr($adjTC[$row],length($mod)+1));
         $adjTC[$row]=~ s/^total\./Brain_C/;
+        $adjTC[$row]=~ s/^GENE\./Brain_C/;
         $adjTC[$row]=~ s/^XLOC_0+/Brain_C/;
         $adjTC[$row]=~ s/clust//;
         #print "tcName:".$adjTC[$row]."\n";
@@ -474,11 +475,11 @@ foreach my $mod(@moduleList){
     open OFILE, '>', $path.$mod.".json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
     my $tmpMod=$mod;
     $tmpMod =~ s/\./_/g;
-    print OFILE "{\n\t\"MOD_NAME\":\"$tmpMod\",\n";
-    print OFILE "\t\"ModID\":".$modID.",\n";
-    print OFILE "\t\"ModRGB\":\"".$modRGB."\",\n";
-    print OFILE "\t\"ModHex\":\"".$modHex."\",\n";
-    print OFILE "\t\"TCList\": [\n";
+    print OFILE "{\"MOD_NAME\":\"$tmpMod\",";
+    print OFILE "\"ModID\":".$modID.",";
+    print OFILE "\"ModRGB\":\"".$modRGB."\",";
+    print OFILE "\"ModHex\":\"".$modHex."\",";
+    print OFILE "\"TCList\": [";
     #my $tcRef=$moduleHOH{TCList};
     #my %tcHOH=%{$tcRef};
     my @tcKey=keys $moduleHOH{TCList};
@@ -487,10 +488,10 @@ foreach my $mod(@moduleList){
         if ($tcCount>0) {
                 print OFILE ",\n";
         }
-        print OFILE "\t\t{\n\t\t\t\"ID\":\"$tc\",\n";
-        print OFILE "\t\t\t\"LinkSum\":".$moduleHOH{TCList}{$tc}{linkSum}.",\n";
-        print OFILE "\t\t\t\"LinkCount\":".$moduleHOH{TCList}{$tc}{linkCount}.",\n";
-        print OFILE " \t\t\t\"Gene\":{";
+        print OFILE "{\"ID\":\"$tc\",";
+        print OFILE "\"LinkSum\":".$moduleHOH{TCList}{$tc}{linkSum}.",";
+        print OFILE "\"LinkCount\":".$moduleHOH{TCList}{$tc}{linkCount}.",";
+        print OFILE "\"Gene\":{";
         if (defined $moduleHOH{TCList}{$tc}{Gene}{ID}) {
             print OFILE " \"start\":".$moduleHOH{TCList}{$tc}{Gene}{start}.",";
             print OFILE " \"stop\":".$moduleHOH{TCList}{$tc}{Gene}{stop}.",";
@@ -591,18 +592,18 @@ foreach my $mod(@moduleList){
             #    print OFILE "\n\t\t\t\t]\n";#end GO List
             #}
         }else{
-            print OFILE " \t\t\t\t\"ID\":\"Unannotated\"";
+            print OFILE "\"ID\":\"Unannotated\"";
         }
 
-       print OFILE "\t\t\t},\n";#end Gene
-       print OFILE "\t\t\t\"PSList\":[\n";
+       print OFILE "},";#end Gene
+       print OFILE "\"PSList\":[";
        my @psKey=keys $moduleHOH{TCList}{$tc}{PSList};
        my $pscount=0;
        foreach my $ps(@psKey){
             if ($pscount>0) {
-                print OFILE ",\n";
+                print OFILE ",";
             }
-            print OFILE "\t\t\t\t{ \"ID\":\"$ps\",";
+            print OFILE "{ \"ID\":\"$ps\",";
             print OFILE "\"Strand\":\"".$moduleHOH{TCList}{$tc}{PSList}{$ps}{Strand}."\",";
             print OFILE "\"Start\":".$moduleHOH{TCList}{$tc}{PSList}{$ps}{Start}.",";
             print OFILE "\"Stop\":".$moduleHOH{TCList}{$tc}{PSList}{$ps}{Stop}.",";
@@ -611,26 +612,26 @@ foreach my $mod(@moduleList){
             print OFILE "}";
             $pscount++;
        }
-       print OFILE "\n\t\t\t]\n";
-       print OFILE "\t\t}";
+       print OFILE "]";
+       print OFILE "}";
        $tcCount++;
     }
-    print OFILE "\n\t],\n";#end TCList
-    print OFILE "\t\"LinkList\": [\n";
+    print OFILE "],";#end TCList
+    print OFILE "\"LinkList\": [";
     my $linklistRef=$moduleHOH{LinkList};
     my @linklist=@$linklistRef;
     print "output data struct size:".@linklist."\n";
     for(my $link=0;$link<@linklist;$link++){
         if($link>0){
-            print OFILE "\t\t,\n";
+            print OFILE ",\n";
         }
-        print OFILE "\t\t\t{\n";
-        print OFILE "\t\t\t\t\"TC1\":\"".$moduleHOH{LinkList}[$link]{TC1}."\",\n";
-        print OFILE "\t\t\t\t\"TC2\":\"".$moduleHOH{LinkList}[$link]{TC2}."\",\n";
-        print OFILE "\t\t\t\t\"Cor\":".$moduleHOH{LinkList}[$link]{cor}."\n";
-        print OFILE "\t\t\t}";
+        print OFILE "{";
+        print OFILE "\"TC1\":\"".$moduleHOH{LinkList}[$link]{TC1}."\",";
+        print OFILE "\"TC2\":\"".$moduleHOH{LinkList}[$link]{TC2}."\",";
+        print OFILE "\"Cor\":".$moduleHOH{LinkList}[$link]{cor};
+        print OFILE "}";
     }
-    print OFILE "\n\t]\n";#end LinkList
+    print OFILE "]";#end LinkList
     print OFILE "}";#end module
     close OFILE;
 
@@ -651,12 +652,12 @@ foreach my $mod(@moduleList){
     #close OFILE;
 
     open OFILE, '>', $path.$mod.".eQTL.json" or die " Could not open two track file $path$mod.eQTL.json for writing $!\n\n";
-        print OFILE "[\n";
+        print OFILE "[";
         for(my $i=0;$i<@eqtlAOH;$i++){
             if($i>0){
-                print OFILE ",";
+                print OFILE ",\n";
             }
-            print OFILE "{ \"Chr\":\"chr".substr($eqtlAOH[$i]{chromosome},2)."\", \"Start\":".$eqtlAOH[$i]{location}.", \"Snp\":\"".$eqtlAOH[$i]{name}."\", \"Pval\":".$eqtlAOH[$i]{pvalue}."}\n";
+            print OFILE "{ \"Chr\":\"chr".substr($eqtlAOH[$i]{chromosome},2)."\", \"Start\":".$eqtlAOH[$i]{location}.", \"Snp\":\"".$eqtlAOH[$i]{name}."\", \"Pval\":".$eqtlAOH[$i]{pvalue}."}";
         }
         print OFILE "]";
     close OFILE;

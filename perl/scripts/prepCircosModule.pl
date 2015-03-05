@@ -48,8 +48,8 @@ sub prepCircosMod
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");
 	}
-        my $genericConfLocation = '/usr/local/circos-0.67-4/etc/';
-	my $karyotypeLocation = '/usr/local/circos-0.67-4/data/karyotype/';
+        my $genericConfLocation = '/usr/local/circos-0.67-5/etc/';
+	my $karyotypeLocation = '/usr/local/circos-0.67-5/data/karyotype/';
 	createCircosConfFile($confDirectory,$genericConfLocation,$genericConfLocation2,$karyotypeLocation,$organism,$chromosomeListRef,$oneToCreateLinks,$oneToCreateLinks);
 	createCircosIdeogramConfFiles($confDirectory,$organism,$chromosomeListRef);
 	createCircosModGenesTextConfFile($dataDirectory,$confDirectory);
