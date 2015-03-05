@@ -28,11 +28,21 @@
 		
                 <h2>What's New</h2>
                 <div id="overview-wrap"  >
-                		<div id="overview-content-wide" style="display:inline-block;">
+                    <div id="overview-content-wide" style="display:inline-block;">
                                     
                                         <%@ include file="/web/common/whats_new_content.jsp" %>
-                        </div>
-                    <div style="display:inline-block;width:42%;float:right;">
+                    </div>
+                    <div style="display:inline-block;width:40%;float:right;">
+                        Example WGCNA miRNA targeting View:
+                        <a class="fancybox" rel="fancybox-thumb" href="<%=webDir%>overview/browseWGCNA_mir.png" title="Example WGCNA miRNA targeting View">
+                      		<img src="<%=webDir%>overview/browseWGCNA_mir.png" alt="Example WGCNA miRNA targeting View"  style="width:95%;">
+                        </a>
+                      <BR /><BR />
+                      Example WGCNA Gene Ontology View:
+                        <a class="fancybox" rel="fancybox-thumb" href="<%=webDir%>overview/browseWGCNA_go.png" title="Example WGCNA Gene Ontology View">
+                      		<img src="<%=webDir%>overview/browseWGCNA_go.png" alt="Example WGCNA Gene Ontology View"  style="width:95%;">
+                        </a>
+                      <BR /><BR />
                         Example WGCNA Module View:
                         <a class="fancybox" rel="fancybox-thumb" href="<%=webDir%>overview/browseWGCNA.png" title="Example WGCNA Module View">
                       		<img src="<%=webDir%>overview/browseWGCNA.png" alt="Example WGCNA Module View"  style="width:95%;">

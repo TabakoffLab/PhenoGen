@@ -19,6 +19,7 @@
 <jsp:useBean id="myQTL" class="edu.ucdenver.ccp.PhenoGen.data.QTL"> </jsp:useBean>
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 
+
 <%
 
 	QTL.EQTL myEQTL = myQTL.new EQTL();
@@ -273,6 +274,13 @@
 								allOfficialSymbolArray, jacksonConn);
 				} catch (Exception e) {
 					log.error("got error retrieving stuff from Jackson", e);
+                                        myErrorEmail.setSubject("Jackson Lab Database Query failed.");
+                                        myErrorEmail.setContent("Jackson Lab Database PhenotypicAlleleCount Query failed.",e);
+                                        try {
+                                                myErrorEmail.sendEmailToAdministrator(adminEmail);
+                                        } catch (Exception error) {
+                                                log.error("exception while trying to send message to phenogen.help about jackson lab connection", error);
+                                        }
 				}
 				//log.debug("size of jacksonMutantsArray = "+jacksonMutantsArray.length);
 				//log.debug("jacksonMutantsArray = "); myDebugger.print(jacksonMutantsArray);

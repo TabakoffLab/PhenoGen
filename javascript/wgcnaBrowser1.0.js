@@ -182,7 +182,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	};
 	that.createImageControls=function(){
 		//that.imageBar=d3.select("div#wgcnaImageControls").append("span").style("float","left");
-                that.imageBar=d3.select("#imageControl").append("span").style("float","left");
+        that.imageBar=d3.select("#imageControl").append("span").style("float","left");
 		that.imageBar.append("span").attr("class","saveImage control").style("display","inline-block")
 			.attr("id","saveImage")
 			.style("cursor","pointer")
@@ -192,29 +192,23 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("cursor","pointer")
 			.on("click",function(){
 				var content="";
-                                console.log(that.viewType);
-                                console.log(that.singleImage.type);
-                                if(that.viewType==="eqtl" && that.singleImage.type==="eqtl"){
-                                    content=$("div#circos").html();
-                                }else if(that.viewType==="gene" && that.singleImage.type==="gene"){
-                                    //console.log("viewGene")
-                                    content=$("div#viewGene").html();
-                                    //console.log(content);
-                                }else if(that.viewType==="mir" && that.singleImage.type==="mir"){
-                                    //console.log("viewGene")
-                                    content=$("div#viewGene").html();
-                                    //console.log(content);
-                                }else if(that.viewType==="go" && that.singleImage.type==="go"){
-                                    console.log("saveGO");
-                                    content=$("div#viewGene").html();
-                                    
-                                }
-                                var w=$(window).width();
-                                content=content.replace("width=\"100%\"","width=\""+w+"px\"");
-                            //else if(that.singleImage===undefined){
-                                    
-                                //}
-                                console.log(content);
+                if(that.viewType==="eqtl" && that.singleImage.type==="eqtl"){
+                    content=$("div#circos").html();
+                }else if(that.viewType==="gene" && that.singleImage.type==="gene"){
+                    //console.log("viewGene")
+                    content=$("div#viewGene").html();
+                    //console.log(content);
+                }else if(that.viewType==="mir" && that.singleImage.type==="mir"){
+                    //console.log("viewGene")
+                    content=$("div#viewGene").html();
+                    //console.log(content);
+                }else if(that.viewType==="go" && that.singleImage.type==="go"){
+                    //console.log("saveGO");
+                    content=$("div#viewGene").html();
+                    
+                }
+                var w=$(window).width();
+                content=content.replace("width=\"100%\"","width=\""+w+"px\"");
 				content=content+"\n";
 				$.ajax({
 						url: pathPrefix+"saveBrowserImage.jsp",
@@ -226,103 +220,91 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		    			success: function(data2){ 
 		        			var d=new Date();
 		        			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
-                                                var http="http://";
-                                                if (location.protocol === 'https:') {
-                                                    http="https://";
-                                                }
+                            var http="http://";
+                            if (location.protocol === 'https:') {
+                                http="https://";
+                            }
 							var url=http+urlprefix+"/tmpData/download/"+data2.imageFile;
 							var region=new String(that.selectedModule.MOD_NAME);
-                                                        region=region+"_"+that.viewType;
-							 var filename = region+"_"+datePart+".png";
-							  var xhr = new XMLHttpRequest();
-							  
-							  xhr.open('GET', url);
-							  xhr.responseType = 'blob';
-							  xhr.send();
-							  xhr.onreadystatechange = function(){
-								    //ready?
-								    if (xhr.readyState != 4)
-								        return false;
-
-								    //get status:
-								    var status = xhr.status;
-
-								    //maybe not successful?
-								    if (status != 200) {
-								    	//console.log("xhr status:"+status);
-								        //alert("AJAX: server status " + status);
-								        return false;
-								    }
-								    var a = document.createElement('a');
-									a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
-									a.download = filename; // Set the file name.
-									a.style.display = 'none';
-									document.body.appendChild(a);
-									try{
-										a.click();
-									}catch(error){
-										//$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
-										$("#wgcnaMouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
-										window.open(url);
-									}	
-									delete a;
-								    return true;
-								}
-							  
+                            region=region+"_"+that.viewType;
+							var filename = region+"_"+datePart+".png";
+							var xhr = new XMLHttpRequest(); 
+						  	xhr.open('GET', url);
+						  	xhr.responseType = 'blob';
+						  	xhr.send();
+						  	xhr.onreadystatechange = function(){
+							    //ready?
+							    if (xhr.readyState != 4)
+							        return false;
+							    //get status:
+							    var status = xhr.status;
+							    //maybe not successful?
+							    if (status != 200) {
+							        return false;
+							    }
+							    var a = document.createElement('a');
+								a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+								a.download = filename; // Set the file name.
+								a.style.display = 'none';
+								document.body.appendChild(a);
+								try{
+									a.click();
+								}catch(error){
+									//$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+									$("#wgcnaMouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+									window.open(url);
+								}	
+								delete a;
+							    return true;
+							}
 		    			},
 		    			error: function(xhr, status, error) {
 		        			console.log(error);
 		    			}
-					});
-				})
+				});
+			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/savePic_white.png");
-				d3.select("span#savePic"+that.levelNumber).style("background","#DCDCDC");
-				//$(this).css("background","#989898").html("<img src=\"/web/images/icons/savePic_white.png\">");
 				$("#wgcnaMouseHelp").html("Click to download a PNG image of the current view.");
 			})
 			.on("mouseout",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/savePic_dark.png");
-				d3.select("span#savePic"+that.levelNumber).style("background","#989898");
-				//$(this).css("background","#DCDCDC").html("<img src=\"/web/images/icons/savePic_dark.png\">");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 
 		that.imageBar.append("span").attr("class","reset control").style("display","inline-block")
-			.attr("id","resetImage"+that.levelNumber)
+			.attr("id","wgcnaresetImage")
 			.style("cursor","pointer")
 			.append("img")//.attr("class","mouseOpt dragzoom")
 			.attr("src",contextRoot+"web/images/icons/reset_dark.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.on("click",function(){
-                            if(that.viewType==="eqtl"){
-                                that.singleImage.panZoomCircos.reset();
-                            }else if(that.singleImage==undefined){
-				var id=new String($(this).parent().attr("id"));
-				var level=id.substr(id.length-1);
-				if(level==0){
-					$('#geneTxt').val(chr+":"+initMin+"-"+initMax);
-				    svgList[0].xScale.domain([initMin,initMax]);
-					svgList[0].scaleSVG.select(".x.axis").call(svgList[0].xAxis);
-					svgList[0].redraw();
-				}else{
-				    svgList[level].xScale.domain([svgList[level].initMin,svgList[level].initMax]);
-					svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
-					svgList[level].redraw();
-				}
-                            }else if(typeof that.singleImage !=="undefined"){
-                                that.singleImage.panZoom.reset();
-                            }
+                if(that.viewType==="eqtl"){
+                    that.singleImage.panZoomCircos.reset();
+                }else if(that.singleImage==undefined){
+					var id=new String($(this).parent().attr("id"));
+					var level=id.substr(id.length-1);
+					if(level==0){
+						$('#geneTxt').val(chr+":"+initMin+"-"+initMax);
+					    svgList[0].xScale.domain([initMin,initMax]);
+						svgList[0].scaleSVG.select(".x.axis").call(svgList[0].xAxis);
+						svgList[0].redraw();
+					}else{
+					    svgList[level].xScale.domain([svgList[level].initMin,svgList[level].initMax]);
+						svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
+						svgList[level].redraw();
+					}
+                }else if(typeof that.singleImage !=="undefined"){
+                    that.singleImage.panZoom.reset();
+                }
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/reset_white.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to reset image zoom to initial region.");
 			})
 			.on("mouseout",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/reset_dark.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 		that.imageBar.append("span").attr("class","zoomIn control")
@@ -332,7 +314,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				"position":"relative",
 				"top":"7px"
 			})
-			.attr("id","zoomInImage")
+			.attr("id","wgcnazoomInImage")
 			.append("img")
 			.attr({
 				"src":contextRoot+"web/images/icons/magPlus_dark_32.png",
@@ -354,12 +336,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/magPlus_light_32.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to zoom in.");
 			})
 			.on("mouseout",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/magPlus_dark_32.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 		that.imageBar.append("span").attr("class","zoomOut control")
@@ -369,7 +349,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				"position":"relative",
 				"top":"7px"
 			})
-			.attr("id","zoomOutImage")
+			.attr("id","wgcnazoomOutImage")
 			.append("img")
 			.attr("src",contextRoot+"web/images/icons/magMinus_dark_32.png")
 			.attr("pointer-events","all")
@@ -390,12 +370,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/magMinus_light_32.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to zoom out.");
 			})
 			.on("mouseout",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/magMinus_dark_32.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 		that.imageBar.append("span").attr("class","back control")
@@ -421,12 +399,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/back_light_32.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to move to the previous module.");
 			})
 			.on("mouseout",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/back_dark_32.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 		that.imageBar.append("span").attr("class","forward control")
@@ -450,12 +426,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/forward_light_32.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#DCDCDC");
 				$("#wgcnaMouseHelp").html("Click to move to the next module.");
 			})
 			.on("mouseout",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/forward_dark_32.png");
-				d3.select("span#reset"+that.levelNumber).style("background","#989898");
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 	};
@@ -515,10 +489,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         
 	that.createDataControls=function(){
 		//that.dataBar=d3.select("div#wgcnaImageControls").append("span").attr("id","wgcnaDataControls").style("float","right").style("margin-left","10px").style("margin-right","5px")
-                that.dataBar=d3.select("#dataControl").append("span").attr("id","wgcnaDataControls").style("margin-left","10px").style("margin-right","5px")
+        that.dataBar=d3.select("#dataControl").append("span").attr("id","wgcnaDataControls").style("margin-left","10px").style("margin-right","5px")
                             .append("table").append("tr");
 		var tissue=that.dataBar.append("td");
-                tissue.append("text").text("Tissue:");
+        tissue.append("text").text("Tissue:");
 		var sel=tissue.append("select").attr("id","wgcnaTissueSelect");
 		that.tissues=["Brain"];
 		that.dispTissues=["Whole Brain"];
@@ -585,7 +559,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 var row=mir.append("table").append("tr");
                 mir.append("text").style("font-weight","bold").text("Filter miRNAs:");
                 mir.append("br");
-                mir.append("input").attr("type","checkbox").style("margin-right","5px").attr("id","").on("click",function(){
+                mir.append("input").attr("type","checkbox").style("margin-right","5px").attr("id","mirValidatedCBX").on("click",function(){
                     if($(this).is(':checked')){
                         that.singleImage.mirValid=1;
                     }else{
@@ -615,7 +589,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 mir.append("text").style("font-weight","bold").text("Display Options:");
                 
                  mir.append("br");
-                mir.append("input").attr("type","checkbox").attr("id","mirSortCBX").style("margin-right","5px").attr("id","").on("click",function(){
+                mir.append("input").attr("type","checkbox").attr("id","mirSortCBX").style("margin-right","5px").on("click",function(){
                     if($(this).prop('checked')){
                         that.singleImage.sortMir=$("#mirSortSelect").val();
                     }else{
@@ -637,6 +611,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 mir.append("text").text("Hovering over a node(miR or transcript):");
                 mir.append("br");
                 mir.append("input").attr("type","checkbox")
+                		.attr("id","mirLinkCBX")
                         .attr("checked","checked")
                         .style("margin-left","12px")
                         .style("margin-right","3px")
@@ -651,6 +626,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				mir.append("text").text("Display links between miRNAs and targeted transcripts");
                 mir.append("br");
                 mir.append("input").attr("type","checkbox")
+                		.attr("id","mirgeneLinkCBX")
                         .style("margin-left","12px")
                         .style("margin-right","3px")
                         .on("click",function(){
@@ -677,7 +653,6 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 selMir.append("option").attr("value","Red_Green").text("Red(+) / Green(-)");
                 colorSel.append("br");
                 colorSel.append("input").attr("type","checkbox")
-                        
                         .style("margin-left","24px")
                         .style("margin-right","3px")
                         .on("click",function(){
@@ -691,7 +666,6 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 colorSel.append("text").text("Display all cor. transcript links from targeted transcripts.");
                 
                 $( "#minMirGeneSlider" ).slider({
-                    
                     min: 1,
                     max: 100,
                     step: 1,
@@ -794,13 +768,15 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         that.singleImage.draw();
                     }
                   });
+
+
                 var chr=that.dataBar.append("td").append("div").attr("class","eqtlCtls").attr("id","eqtlCtl").style("display","none").style("margin-left","10px");
                 chr.append("text").text("Select Chromosomes");
                 chr.append("br");
                 sel=chr.append("select").attr("id","eqtlChr").attr("multiple","multiple").attr("size","4").style("width","100px");
                 for(var i=1;i<=that.chrLen;i++){
                     sel.append("option").attr("selected","selected").attr("value",organism.toLowerCase()+i).text("chr"+i);
-		}
+				}
                 sel.append("option").attr("selected","selected").attr("value",organism.toLowerCase()+"X").text("chrX");
                 /*chr.append("text").text("Hold ctl (or command for Macs)");
                 chr.append("br");
@@ -868,15 +844,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 	//public method to create any type of WGCNA Image
 	that.createMultiWGCNAImage=function(){
-		if(that.viewType==="gene"){
+		
 			that.multiImage=that.multiWGCNAImageGeneView(that.modules);
 			that.multiImage.draw();
 			that.img=that.multiImage;
-		}else if(that.viewType==="go"){
-			that.multiImage=that.multiWGCNAImageGoView(that.modules);
-			that.multiImage.draw();
-			that.img=that.multiImage;
-		}
+		
 	};
 
 	//common prototype to create generic view
@@ -990,11 +962,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			return tt;
 		};
 		thatimg.draw=function(){
-                        if(typeof that.selectedModule !=='undefined'){
-                            thatimg.maxWidth=85;
-                        }
-                    //console.log("multiWGCNAImageGeneView.draw()")
+            if(typeof that.selectedModule !=='undefined'){
+                thatimg.maxWidth=85;
+            }
+            //console.log("multiWGCNAImageGeneView.draw()")
 			thatimg.svg.selectAll(".modules").remove();
+			thatimg.svg.selectAll(".moduleGradient").remove();
 			thatimg.totalWidth=$(window).width();
 			thatimg.modPerLine=Math.floor($(window).width()/thatimg.maxWidth);
 			thatimg.calcWidth=Math.floor($(window).width()/thatimg.modPerLine);
@@ -1003,37 +976,35 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			var dataCount=0;
 			for(var j=0;j<that.moduleList.length;j++){
 				if(that.moduleList[j]!=="grey" || (that.moduleList[j]==="grey" && that.skipGrey===0 )){
-                                        //console.log(that.moduleList[j]);
-                                        //console.log(that.modules[that.moduleList[j]]);
-                                        if(typeof that.modules[that.moduleList[j]] !=='undefined'){
-                                            data[dataCount]=that.modules[that.moduleList[j]];
-                                            //console.log(data[dataCount]);
-                                            var rgb=data[dataCount].ModRGB.split(",");
-                                            var darkRGB="";
-                                            for(var k=0;k<rgb.length;k++){
-                                                rgb[k]=rgb[k]-70;
-                                                if(rgb[k]<0){
-                                                    rgb[k]=0;
-                                                }
-                                            }
-                                            darkRGB=rgb[0]+","+rgb[1]+","+rgb[2];
-                                            var grad=thatimg.svg.append("linearGradient").attr({
-                                                    "id":"grad"+data[dataCount].MOD_NAME,
-                                                    "x1":"11%",
-                                                    "y1":"0%",
-                                                    "x2":"89%",
-                                                    "y2":"100%"
-                                                });
-                                            grad.append("stop").attr({
-                                                                "offset":"0%",
-                                                                "style":"stop-color:rgb("+data[dataCount].ModRGB+");stop-opacity:1"
-                                                        });
-                                            grad.append("stop").attr({
-                                                                "offset":"100%",
-                                                                "style":"stop-color:rgb("+darkRGB+");stop-opacity:1"
-                                                        });
-                                            dataCount++;
-                                        }
+                    if(typeof that.modules[that.moduleList[j]] !=='undefined'){
+                        data[dataCount]=that.modules[that.moduleList[j]];
+                        var rgb=data[dataCount].ModRGB.split(",");
+                        var darkRGB="";
+                        for(var k=0;k<rgb.length;k++){
+                            rgb[k]=rgb[k]-70;
+                            if(rgb[k]<0){
+                                rgb[k]=0;
+                            }
+                        }
+                        darkRGB=rgb[0]+","+rgb[1]+","+rgb[2];
+                        var grad=thatimg.svg.append("linearGradient").attr({
+                                "id":"grad"+data[dataCount].MOD_NAME,
+                                "class":"moduleGradient",
+                                "x1":"11%",
+                                "y1":"0%",
+                                "x2":"89%",
+                                "y2":"100%"
+                            });
+                        grad.append("stop").attr({
+                                            "offset":"0%",
+                                            "style":"stop-color:rgb("+data[dataCount].ModRGB+");stop-opacity:1"
+                                    });
+                        grad.append("stop").attr({
+                                            "offset":"100%",
+                                            "style":"stop-color:rgb("+darkRGB+");stop-opacity:1"
+                                    });
+                        dataCount++;
+                    }
 				}
 			}
 			var height=thatimg.maxWidth+15;
@@ -1071,9 +1042,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 
 			mod.each(function(d){
-				var thisMod=d3.select("g#"+d.MOD_NAME);
-                                
-                                
+				var thisMod=d3.select("g#"+d.MOD_NAME);     
 				thisMod.append("circle")
 					.attr("cx",thatimg.calcWidth/2)
 					.attr("cy",thatimg.maxWidth/2)
@@ -1083,106 +1052,105 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					.attr("fill",function(d){var val="url(#grad"+d.MOD_NAME+")"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="url(#selectGrad)"} return val;})
 					.on("click",function(){
 						thatimg.maxWidth=85;
-                                                that.selectedModule=d;
+                        that.selectedModule=d;
 						thatimg.draw();
-						d3.select("#multiWGCNAScroll").style("max-height","90px");
+						d3.select("#multiWGCNAScroll").style("max-height","110px");
 						thatimg.svg.select("g#"+d.MOD_NAME).style("background","#CECECE");
 						thatimg.svg.select("g#"+d.MOD_NAME).select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
-                                                thatimg.svg.select("g#"+d.MOD_NAME).select("text.txtLbl").style("font-weight","bold");//.style("font-size","16px")
-						
-                                                that.selectedGene={};
-                                                for(var l=0;l<d.TCList.length;l++){
-                                                    if(typeof that.selectedGene[d.TCList[l].Gene.ID] !=='undefined'){
-                                                        that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
-                                                    }else{
-                                                        that.selectedGene[d.TCList[l].Gene.ID]={};
-                                                        that.selectedGene[d.TCList[l].Gene.ID].geneSymbol=d.TCList[l].Gene.geneSymbol;
-                                                        that.selectedGene[d.TCList[l].Gene.ID].tcList=[];
-                                                        that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
-                                                    }
-                                                }
+                        thatimg.svg.select("g#"+d.MOD_NAME).select("text.txtLbl").style("font-weight","bold");
+                        that.selectedGene={};
+                        for(var l=0;l<d.TCList.length;l++){
+                            if(typeof that.selectedGene[d.TCList[l].Gene.ID] !=='undefined'){
+                                that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
+                            }else{
+                                that.selectedGene[d.TCList[l].Gene.ID]={};
+                                that.selectedGene[d.TCList[l].Gene.ID].geneSymbol=d.TCList[l].Gene.geneSymbol;
+                                that.selectedGene[d.TCList[l].Gene.ID].tcList=[];
+                                that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
+                            }
+                        }
 						setTimeout(that.createSingleWGCNAImage,20);
 					})
 					.on("mouseover",function(){
 						$("#wgcnaMouseHelp").html("<B>Click</B> to select this module and see additional details.");
 						d3.select(this).style("fill","url(#selectGrad)");
 				        	//that.gsvg.get('tt').transition()
-                                                tt.transition()        
-                                                        .duration(200)      
-                                                        .style("opacity", 1);      
+                            tt.transition()        
+                                    .duration(200)      
+                                    .style("opacity", 1);      
 				        	//that.gsvg.get('tt').html(that.createToolTip(d)) 
-                                                tt.html(thatimg.createToolTip(d)) 
-                                                    .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
-                                                    .style("top", function(){return that.positionTTTop(d3.event.pageY);});
+                            tt.html(thatimg.createToolTip(d)) 
+                                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+                                .style("top", function(){return that.positionTTTop(d3.event.pageY);});
 					})
 					.on("mouseout",function(){
-                                                var d=d3.select(this).data()[0];
-                                                if( typeof that.selectedModule === 'undefined' || (d.MOD_NAME!==that.selectedModule.MOD_NAME) ){
-                                                    d3.select(this).style("fill","url(#grad"+d.MOD_NAME+")");
-                                                }
+                        var d=d3.select(this).data()[0];
+                        if( typeof that.selectedModule === 'undefined' || (d.MOD_NAME!==that.selectedModule.MOD_NAME) ){
+                            d3.select(this).style("fill","url(#grad"+d.MOD_NAME+")");
+                        }
 						tt.transition()        
 				                .duration(500)      
 				                .style("opacity", 0);
-					});
-                                if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){
-                                        thisMod.append("text")
-                                                .attr("class","txtLbl")
-						.attr("y",thatimg.maxWidth+12)
-						.attr("x",function(d){
-							var len=d.MOD_NAME.length;
-							var w=len/2;
-							var offset=thatimg.calcWidth/2-(w*6.5);
-							return offset;
-						})
-                                                .style("font-weight","bold")
-						.text(d.MOD_NAME);
-                                }else if(d.MOD_NAME.length*6.5<thatimg.calcWidth){
-					thisMod.append("text")
-                                                .attr("class","txtLbl")
-						.attr("y",thatimg.maxWidth+12)
-						.attr("x",function(d){
-							var len=d.MOD_NAME.length;
-							var w=len/2;
-							var offset=thatimg.calcWidth/2-(w*6.5);
-							return offset;
-						})
-						.text(d.MOD_NAME);
-				}
-				thisMod.append("text")
-					.attr("y",thatimg.maxWidth/2+5)
-					.attr("x",thatimg.calcWidth/2-3)
-					.attr("pointer-events","none")
-                                        .attr("fill",function(d){
-                                                var fill="#000000";
-                                                var rgb=d.ModRGB.split(",");
-                                                var sum=rgb[0]+rgb[1]+rgb[2];
-                                                if(sum<360){
-                                                    fill="#FFFFFF";
-                                                }
-                                                return fill;
-                                        })
-					.text(function (d){
-                                            var val=d.GeneCount;
-                                            if(typeof d.GroupedGenes !== 'undefined'){
-                                                val=d.GroupedGenes;
-                                            }
-                                            return val;
-                                        });
-			});
+						});
+                    	if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){
+                            thisMod.append("text")
+                                    .attr("class","txtLbl")
+									.attr("y",thatimg.maxWidth+12)
+									.attr("x",function(d){
+										var len=d.MOD_NAME.length;
+										var w=len/2;
+										var offset=thatimg.calcWidth/2-(w*6.5);
+										return offset;
+									})
+	                                .style("font-weight","bold")
+									.text(replaceUnderscore(d.MOD_NAME));
+                        }else if(d.MOD_NAME.length*6.5<thatimg.calcWidth){
+							thisMod.append("text")
+                                .attr("class","txtLbl")
+								.attr("y",thatimg.maxWidth+12)
+								.attr("x",function(d){
+									var len=d.MOD_NAME.length;
+									var w=len/2;
+									var offset=thatimg.calcWidth/2-(w*6.5);
+									return offset;
+								})
+								.text(replaceUnderscore(d.MOD_NAME));
+						}
+						thisMod.append("text")
+							.attr("y",thatimg.maxWidth/2+5)
+							.attr("x",thatimg.calcWidth/2-3)
+							.attr("pointer-events","none")
+                            .attr("fill",function(d){
+                                    var fill="#000000";
+                                    var rgb=d.ModRGB.split(",");
+                                    var sum=rgb[0]+rgb[1]+rgb[2];
+                                    if(sum<360){
+                                        fill="#FFFFFF";
+                                    }
+                                    return fill;
+                            })
+							.text(function (d){
+                                var val=d.GeneCount;
+                                if(typeof d.GroupedGenes !== 'undefined'){
+                                    val=d.GroupedGenes;
+                                }
+                                return val;
+                            });
+			} );
 		};
 
 		thatimg.backModule=function(){
 			var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
 			if(ind>0){
 				var newModule=thatimg.data[ind-1];
-                                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
+                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
 				prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
-                                prevG.select("text.txtLbl").style("font-weight","normal");
+                prevG.select("text.txtLbl").style("font-weight","normal");
 				that.selectedModule=newModule;
-                                var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
+                var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
 				newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
-                                newG.select("text.txtLbl").style("font-weight","bold");
-                                setTimeout(that.createSingleWGCNAImage,20);
+                newG.select("text.txtLbl").style("font-weight","bold");
+                setTimeout(that.createSingleWGCNAImage,20);
 			}
 		};
 
@@ -1190,14 +1158,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
 			if(ind<(thatimg.data.length-1)){
 				var newModule=thatimg.data[ind+1];
-                                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
-				//prevG.style("background","#FFFFFF");
+                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
 				prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
-                                prevG.select("text.txtLbl").style("font-weight","normal");
+                prevG.select("text.txtLbl").style("font-weight","normal");
 				that.selectedModule=newModule;
 				var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
 				newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
-                                newG.select("text.txtLbl").style("font-weight","bold");
+                newG.select("text.txtLbl").style("font-weight","bold");
 				setTimeout(that.createSingleWGCNAImage,20);
 			}
 		};
@@ -1210,7 +1177,15 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	that.createSingleWGCNAImage=function(){
             d3.select("#viewGene").remove();
             d3.select("#circos").remove();
+            $("#wgcnaresetImage").show();
+            $("#wgcnazoomInImage").show();
+            $("#wgcnazoomOutImage").show();
             if(that.viewType==="gene"){
+            	$("#linkSliderMin").slider('value',0.01);
+                $("span#minLabel").html(0.01);
+                $("#linkSliderMax").slider('value',1.0);
+                $("span#maxLabel").html(1.0);
+                $("#hideLinkExceptNode").prop("checked",true);
                 setTimeout(function(){
 					that.singleImage=that.singleWGCNAImageGeneView(that.modules);
 					that.singleImage.draw();
@@ -1225,41 +1200,55 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                           , minZoom: 0.1
                                           , maxZoom: 4
                                           , fit: true
-                                          , center: true
-                                          
+                                          , center: true   
                                     });
             	},50);
             }else if(that.viewType==="go"){
-                    setTimeout(function(){
-						that.singleImage=that.singleWGCNAImageGoView(that.modules);
-                        that.singleImage.goDomain=$("#goDomainSelect").val();
-						that.singleImage.draw();
-						that.img=that.singleImage;
-                    },50);
+            	$("#wgcnaresetImage").hide();
+	            $("#wgcnazoomInImage").hide();
+	            $("#wgcnazoomOutImage").hide();
+	            $("#goDomainSelect").val("mf");
+	            $("#goSpinner").val(3);
+                setTimeout(function(){
+					that.singleImage=that.singleWGCNAImageGoView(that.modules);
+                    that.singleImage.goDomain=$("#goDomainSelect").val();
+					that.singleImage.draw();
+					that.img=that.singleImage;
+                },50);
             }else if(that.viewType==="eqtl"){
-                    setTimeout(function(){
-						that.singleImage=that.singleWGCNAImageEQTLView(that.modules);
-						that.singleImage.displayDefault();
-						that.img=that.singleImage;
-                    },50);
+            	$('#eqtlChr option').prop('selected', true);
+            	$("#eqtlPval").val(2);
+                setTimeout(function(){
+					that.singleImage=that.singleWGCNAImageEQTLView(that.modules);
+					that.singleImage.displayDefault();
+					that.img=that.singleImage;
+                },50);
             }else if(that.viewType==="mir"){
-                    setTimeout(function(){
-						that.singleImage=that.singleWGCNAImageGeneView(that.modules);
-						that.singleImage.draw();
-						that.img=that.singleImage;
-						that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
-                                            panEnabled: true
-                                          , controlIconsEnabled:false
-                                          , zoomEnabled: true
-                                          , dblClickZoomEnabled: true
-                                          , zoomScaleSensitivity: 0.2
-                                          , minZoom: 0.1
-                                          , maxZoom: 4
-                                          , fit: true
-                                          , center: true
-                                          
-                                    });
-                    },50);
+            	$("#mirValidatedCBX").prop("checked",false);
+            	$("#minMirGeneSlider").slider('value',1);
+                $("span#minMirGeneLabel").html(1);
+                $("#mirGeneFilterTxt").val("");
+                $("#mirIDFilterTxt").val("");
+                $("#mirSortCBX").prop("checked",false);
+                $("#mirLinkCBX").prop("checked",true);
+                $("#mirgeneLinkCBX").prop("checked",false);
+                $("div#mirLinkColorSelect").hide();
+                setTimeout(function(){
+					that.singleImage=that.singleWGCNAImageGeneView(that.modules);
+					that.singleImage.draw();
+					that.img=that.singleImage;
+					that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                        panEnabled: true
+                                      , controlIconsEnabled:false
+                                      , zoomEnabled: true
+                                      , dblClickZoomEnabled: true
+                                      , zoomScaleSensitivity: 0.2
+                                      , minZoom: 0.1
+                                      , maxZoom: 4
+                                      , fit: true
+                                      , center: true
+                                });
+                },50);
             }
 	};
 	
@@ -1828,7 +1817,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     var offset=thatimg.width/2-(w*6.5);
                                                     return offset;
                                             })*/
-                                            .text(that.selectedModule.MOD_NAME);
+                                            .text(replaceUnderscore(that.selectedModule.MOD_NAME));
                     
                     thatimg.setupLegend();
                     
@@ -2031,7 +2020,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		
                 thatimg.requestMiR=function(){
                     $.ajax({
-						url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +that.selectedModule.MOD_NAME+".miR.json",
+						url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".miR.json",
 			   			type: 'GET',
 			   			async: true,
 						data: {},
@@ -2444,6 +2433,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	};
 
 	that.singleWGCNATableGeneView=function(){
+		console.log("generate Table gene view");
         if(typeof that.selectedModule!=='undefined'){
 				$('div#waitModuleTable').hide();
                 $('div#wgcnaEqtlTable').hide();
@@ -2460,70 +2450,68 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                            $('#moduleTable').tableExport({type:'csv',escape:'false'});
                         })
                         .html("Export CSV");
-                /*d3.select("div#tableExportCtl").append("span")
-                        .attr("class","button")
-                        .style("margin-right","10px")
-                        .on("click",function(){
-                            console.log("txt");
-                            $('#moduleTable').tableExport({type:'txt',escape:'true',seperator:'\t'});
-                        })
-                        .html("Export TXT");
-                d3.select("div#tableExportCtl").append("span")
-                        .attr("class","button")
-                        .style("margin-right","10px")
-                        .on("click",function(){
-                            console.log("pdf");
-                            $('#moduleTable').tableExport({type:'pdf',escape:'false'});
-                        })
-                        .html("Export PDF");*/
-		d3.select("table#moduleTable").select("tbody").selectAll('tr').remove();
-		var tracktbl=d3.select("table#moduleTable").select("tbody").selectAll('tr').data(that.selectedModule.TCList,that.geneKey)
-				.enter().append("tr")
-				.attr("id",function(d){return "modtrx"+d.ID;})
-				.attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
-		tracktbl.each(function(d,i){
-				d3.select(this).append("td").html(d.Gene.geneSymbol);
-				d3.select(this).append("td").html(d.Gene.ID);
-				d3.select(this).append("td").html(d.ID);
-				d3.select(this).append("td").html(d.PSList.length);
-                                d3.select(this).append("td").html(d.LinkSum.toFixed(2));
-		});
-		
-		//$('table#trkSelList'+that.level).dataTable().destroy();
-		if($.fn.DataTable.isDataTable( 'table#moduleTable' )){
-			$('table#moduleTable').DataTable().destroy();
-		}
-                $('table#moduleTable').DataTable({
-				"bPaginate": false,
-				/*"bProcessing": true,
-				"bStateSave": false,
-				"bAutoWidth": true,
-				"bDeferRender": true,*/
-				"aaSorting": [[ 4, "desc" ]],
-				"sDom": '<"rightTable"i><"leftTable"f><t>'
-			});
-		//trackDataTable.draw();
-            }else{
+                if($.fn.DataTable.isDataTable( 'table#moduleTable' )){
+					$('table#moduleTable').DataTable().destroy();
+				}
+				d3.select("table#moduleTable").select("tbody").selectAll('tr').remove();
+				var tracktbl=d3.select("table#moduleTable").select("tbody").selectAll('tr').data(that.selectedModule.TCList,that.geneKey)
+						.enter().append("tr")
+						.attr("id",function(d){return "modtrx"+d.ID;})
+						.attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
+
+				tracktbl.each(function(d,i){
+						d3.select(this).append("td").html(d.Gene.geneSymbol);
+						d3.select(this).append("td").html(d.Gene.ID);
+						d3.select(this).append("td").html(d.ID);
+						d3.select(this).append("td").html(d.PSList.length);
+		                                d3.select(this).append("td").html(d.LinkSum.toFixed(2));
+				});
+		        $('table#moduleTable').DataTable({
+						"bPaginate": false,
+						"aaSorting": [[ 4, "desc" ]],
+						"sDom": '<"rightTable"i><"leftTable"f><t>'
+				});
+        }else{
                 $('div#waitModuleTable').hide();
                 $('div#wgcnaEqtlTable').hide();
                 $('div#wgcnaModuleTable').hide();
                 $('div#wgcnaGoTable').hide();
-            }
+        }
 	};
 
     that.singleWGCNATableMirView=function(){
         var thattbl={};
         thattbl.orgPref="mmu-";
+
+        thattbl.runMirFilter=function(list){
+        	var newList=[];
+        	var count=0;
+        	for(var i=0;i<list.length;i++){
+        		if(list[i].filterGLSize>0 || list[i].vC>0){
+        			newList[count]=list[i];
+        			count++;
+        		}
+        	}
+        	return newList;
+        };
+
         thattbl.createMirTable = function(){
                 $('div#waitMirTable').hide();
                 $('div#wgcnaMirGeneTable').hide();
                 $('div#wgcnaMirTable').show();
-
                 $('span#mirTableName').html(that.selectedModule.MOD_NAME);
+
+                if($.fn.DataTable.isDataTable( 'table#mirTable' )){
+                        $('table#mirTable').DataTable().destroy();
+                }
                 
                 d3.select("table#mirTable").select("tbody").selectAll('tr').remove();
-                var tracktbl=d3.select("table#mirTable").select("tbody").selectAll('tr')
-                        .data(that.singleImage.mirData.MIRList,that.mirKey)
+
+                var tmpData=thattbl.runMirFilter(that.singleImage.mirData.MIRList);
+                
+                var tracktbl=d3.select("table#mirTable")
+                		.select("tbody").selectAll('tr')
+                        .data(tmpData,that.mirKey)
                                 .enter().append("tr")
                                 .attr("id",function(d){return "mirTR"+d.ID;})
                                 .attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
@@ -2539,7 +2527,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 if(gl[t].V>0){
                                     val++;
                                     vl.push(gl[t]);
-                                }else{
+                                }else if(gl[t].P>1){
                                     pred++;
                                     pl.push(gl[t]);
                                 }  
@@ -2667,9 +2655,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     event.stopPropagation();
                 });
             
-                if($.fn.DataTable.isDataTable( 'table#mirTable' )){
-                        $('table#mirTable').DataTable().destroy();
-                }
+                
                 $('table#mirTable').DataTable({
                                 "bPaginate": false,
                                 /*"bProcessing": true,
@@ -2688,13 +2674,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             $('div#wgcnaMirTable').hide();
             $('span#mirGeneTableName').html(that.selectedModule.MOD_NAME);
             d3.select("table#mirGeneTable").select("tbody").selectAll('tr').remove();
-            
-            
 			var tracktbl=d3.select("table#mirGeneTable").select("tbody").selectAll('tr').data(that.selectedModule.TCList,that.geneKey)
 					.enter().append("tr")
 					.attr("id",function(d){return "mirg"+d.ID;})
 					.attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
-	                        
 			tracktbl.each(function(d,i){
                     var tmpI=i;
                     var tmpD=d;
@@ -2712,7 +2695,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     if(gl[u].V>0){
                                         val++;
                                         vl.push(miList[t]);
-                                    }else{
+                                    }else if(gl[u].P>1){
                                         pred++;
                                         pl.push(miList[t]);
                                     }
@@ -2723,24 +2706,23 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
 					d3.select(this).append("td").html(d.Gene.geneSymbol);
 					d3.select(this).append("td").html(d.Gene.ID);
-					//d3.select(this).append("td").html("");
 					d3.select(this).append("td").html(function(d,i){
-	                                    var html="";
-	                                    if(pred>0){
-	                                        html="<span class=\"triggerpL\" name=\"pl"+tmpI+"\">"+pred+"</span><BR>";
-	                                        html=html+"<span id=\"pl"+tmpI+"\" style=\"display:none;\" >";
-	                                            for(var k=0;k<pl.length;k++){
-	                                                if(k>0){
-	                                                    html=html+", ";
-	                                                }
-	                                                var g=pl[k].ID.replace(thattbl.orgPref,"");
-	                                                html=html+g;
-	                                            }
-	                                        html=html+"</span>";
-	                                    }else{
-	                                        html=pred;
-	                                    }
-	                                    return html;
+                        var html="";
+                        if(pred>0){
+                            html="<span class=\"triggerpL\" name=\"pl"+tmpI+"\">"+pred+"</span><BR>";
+                            html=html+"<span id=\"pl"+tmpI+"\" style=\"display:none;\" >";
+                                for(var k=0;k<pl.length;k++){
+                                    if(k>0){
+                                        html=html+", ";
+                                    }
+                                    var g=pl[k].ID.replace(thattbl.orgPref,"");
+                                    html=html+g;
+                                }
+                            html=html+"</span>";
+                        }else{
+                            html=pred;
+                        }
+                        return html;
 	                });
                     d3.select(this).append("td").html(function(d,i){
                         var html="";
@@ -2761,11 +2743,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         return html;
                     });
                     d3.select(this).append("td").html(function(d,i){
-                        var len=0; 
+                        var len=val+pred; 
                         var html="";
-                        if(typeof miList !=='undefined'){
+                        /*if(typeof miList !=='undefined'){
                             len=miList.length;
-                        }
+                        }*/
                         if(len>0){
                             html="<span class=\"triggerMiL\" name=\"mil"+tmpI+"\">"+len+"</span><BR>";
                             html=html+"<span id=\"mil"+tmpI+"\" style=\"display:none;\" >";
@@ -2926,6 +2908,146 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 }
             };
 
+            thatimg.addLabels=function(tmpD,tmpI,startA,midA,endA,curDepth,tmpDisplayDepth){
+            	var oR=tmpD.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))-12;
+            	var iR=tmpD.depth*(thatimg.radius/(tmpDisplayDepth+1));
+            	var oCirc=(Math.PI*2*oR*((endA-startA)/360));
+            	var iCirc=(Math.PI*2*iR*((endA-startA)/360));
+            	var max=Math.floor(oCirc/7.0)-1;
+            	var jMax=Math.floor((oR-iR)/12);
+            	var init=tmpD.name;
+                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                    init=thatimg.geneList[init];
+                    if((endA-startA)>25){
+                        init=init+ " ("+tmpD.name+")";
+                    }
+                }
+                var first=init.split(" ")[0].split("-")[0];
+            	
+            	if(first.length<=max ||(tmpD.name.indexOf("ENS")===-1 && (first.length/2)<=max && (endA-startA)>10) ){ 
+                    //construct lines                           
+                    //var max=(endA-startA)/(2.2-(curDepth*0.13));
+                    var lines=[];
+                    var curLine=0;
+                    if(init.length>max){
+                    	var left=init;
+                    	while(left.length>0){
+                    		var fbreak=left.indexOf(" ");
+                    		if(fbreak===-1){
+                    			if(left.length>max){
+                    				lines[curLine]=left.substr(0,max);
+		                    		curLine++;
+		                    		left=left.substr(max);
+                    			}else{
+                    				lines[curLine]=left;
+                    				curLine++;
+                    				left="";
+                    			}
+                    		}else{
+	                    		var stopLoop=0;
+	                    		while(fbreak<max && stopLoop<1){
+	                    			var next=left.indexOf(" ",fbreak+1);
+	                    			if(next !==-1 && next<=max){
+	                    				fbreak=next;
+	                    			}else{
+	                    				stopLoop=1;
+	                    			}
+	                    		}
+	                    		if(fbreak>max){
+	                    			if(left.indexOf("-")>-1 &&left.indexOf("-")<max){
+	                    				fbreak=left.indexOf("-");
+										lines[curLine]=left.substr(0,fbreak+1);
+		                    			curLine++;
+		                    			left=left.substr(fbreak+1);
+	                    			}else{
+	                    				lines[curLine]=left.substr(0,max);
+		                    			curLine++;
+		                    			left=left.substr(max);
+	                    			}
+	                    		}else{
+	                    			lines[curLine]=left.substr(0,fbreak);
+	                    			curLine++;
+	                    			left=left.substr(fbreak+1);
+	                    		}
+                    		}
+                    	}
+                    }else{
+                        lines[curLine]=init;
+                    }
+                    var tmpText=thatimg.topG.append("text")
+                                .style("fill-opacity", 1)
+                                .style("fill", "#000")
+                                .attr("pointer-events","none")
+                                .attr("class","txt"+removeColon(tmpD.id))
+                                .attr("text-anchor", function(d) {
+                                    return "start";
+                                })
+                                .attr("dy", "1em")
+                                .style("opacity",function(d){
+                                    return 1;
+                                })
+                                .append("textPath")
+                                .attr("xlink:href",function(d){return "#ap"+tmpI;})
+                                .attr("startOffset",function(d){
+                                    if(startA===0&&endA===360){
+                                        return 90;
+                                    }
+                                    return 5 ;
+                                });
+                    for (var j=0;j<lines.length && j<jMax;j++){
+                        if(j<jMax){
+                            if(j===(jMax-1)&&lines.length>jMax){
+                                lines[j]+="...";
+                                if(lines[j].length>max){
+                                    lines[j]=lines[j].substr(0,max-4)+"...";
+                                }
+                            }
+                            tmpText.append("tspan")
+                                .attr("x", 0)
+                                .attr("dy", "1em")
+                                .text(lines[j]);
+                        }
+                    }
+                }else if(iCirc>=12 && tmpD.name.indexOf("ENS")===0){
+                            var tmpText=thatimg.topG.append("text")
+                                  	.style("fill-opacity", 1)
+                                  	.style("fill", "#000")
+                                  	.attr("pointer-events","none")
+                                  	.attr("class","txt"+removeColon(tmpD.id))
+                                	.attr("text-anchor", function(d) {
+                                    	var anch="start";
+                                    	if(endA>=180){
+                                        	anch="end";
+                                    	}
+                                    	return anch;
+                                  	})
+                                  	.attr("dy", ".2em")
+                                  	.attr("transform", function(d) {
+                                    	var angle = midA-2.5;
+                                    	//var translate = Math.max(0, tmpD.y);
+                                    	var translate = iR;
+                                    	if(startA===0&&endA===360){translate=20;}
+                                    	if(endA>=180){angle=midA+2.5;}
+                                    	var rotate = angle-90;
+                                    	return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
+                                  	}).style("opacity",function(d){
+                                      return 1;
+                                  	});
+                            var init=tmpD.name;
+                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
+                                    init=thatimg.geneList[init];
+                            }
+                            var tmpName=init.split(" ");
+
+                            for (var j=0;j<tmpName.length;j++){
+                              tmpText.append("tspan")
+                                  .attr("x", 0)
+                                  .attr("dy", "1em")
+                                  .text(tmpName[j]);
+                            }
+                        }
+            };
+
             thatimg.redraw=function(){
             	//console.log("redraw:go");
             	thatimg.svg.selectAll("path").remove();
@@ -2987,25 +3109,25 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 	tmpDisplayDepth=thatimg.maxDepth;
                 }
                 thatimg.arc = d3.svg.arc()
-                                .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
-                                .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
-                                /*.innerRadius(function(d) { 
-                                        if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
-                                            return 20;
-                                        }else{
-                                            return Math.max(0, Math.sqrt(d.y)); 
-                                        }
-                                    })
-                                .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });*/
-                                .innerRadius(function(d) { 
-                                        if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
-                                            return 20;
-                                        }else{
-                                            return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))); 
-                                        }
-                                })
-                                
-                                .outerRadius(function(d) { return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))); });
+                    .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x)); })
+                    .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, d.x + d.dx)); })
+                    /*.innerRadius(function(d) { 
+                            if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
+                                return 20;
+                            }else{
+                                return Math.max(0, Math.sqrt(d.y)); 
+                            }
+                        })
+                    .outerRadius(function(d) { return Math.max(0, Math.sqrt(d.y + d.dy)); });*/
+                    .innerRadius(function(d) { 
+                            if(d===thatimg.selectedNode && (thatimg.selectedNode!==thatimg.data.GOList[0]&&thatimg.selectedNode!==thatimg.data.GOList[1]&&thatimg.selectedNode!==thatimg.data.GOList[2])){
+                                return 20;
+                            }else{
+                                return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))); 
+                            }
+                    })
+                    
+                    .outerRadius(function(d) { return Math.max(0, d.depth*(thatimg.radius/(tmpDisplayDepth+1))+(thatimg.radius/(tmpDisplayDepth+1))); });
                         
 
                 setTimeout(function(){
@@ -3038,136 +3160,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                     var curDepth=(tmpD.depth-thatimg.selectedNode.depth);
                     if(d!==thatimg.selectedNode.parent){
-                        if((endA-startA)>10){ 
-                             //construct lines
-                            var init=tmpD.name;
-                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                init=thatimg.geneList[init];
-                                if((endA-startA)>25){
-                                    init=init+ " ("+tmpD.name+")";
-                                }
-                            }
-                            var max=(endA-startA)/(2.2-(curDepth*0.13));
-                            var lines=[];
-                            var curLine=0;
-                            if(init.length>max){
-                                var parts=init.split(" ");
-                                var part="";
-                                for(var j=0;j<parts.length;j++){
-                                    var tmpPart=part;
-                                    if(part.length>0){
-                                        tmpPart+=" ";
-                                    }
-                                    tmpPart+=parts[j];
-                                    if(tmpPart.length>=max){
-                                        if(part.length===0){
-                                            part=tmpPart;
-                                        }
-                                        lines[curLine]=part;
-                                        if(part.length>=max){
-                                            lines[curLine]=part.substr(0,max);
-                                            part=part.substr(max);
-                                        }else{
-                                            part=parts[j];
-                                        }
-                                        curLine++;
-                                    }else{
-                                        part=tmpPart;
-                                    }
-                                }
-                                if(part.length>0){
-                                    lines[curLine]=part;
-                                }
-                                
-                            }else{
-                                lines[curLine]=init;
-                            }
-                            var tmpText=thatimg.topG.append("text")
-                                        .style("fill-opacity", 1)
-                                        .style("fill", "#000")
-                                        .attr("pointer-events","none")
-                                        .attr("class","txt"+removeColon(d.id))
-                                        .attr("text-anchor", function(d) {
-                                            return "start";
-                                        })
-                                        .attr("dy", "1em")
-                                        .style("opacity",function(d){
-                                            return 1;
-
-                                        })
-                                        .append("textPath")
-                                        .attr("xlink:href",function(d){return "#ap"+tmpI;})
-                                        .attr("startOffset",function(d){
-                                            if(startA===0&&endA===360){
-                                                return 90;
-                                            }
-                                            return 5 ;
-                                        });
-
-                                        var jMax=1;
-                                        if(curDepth<2){
-                                            jMax=4;
-                                            if((endA-startA)<15){
-                                                jMax=3;
-                                            }
-                                        }else if(curDepth<3){
-                                            jMax=3;
-                                        }else if(curDepth<5){
-                                            jMax=2;
-                                        }
-                                        for (var j=0;j<lines.length && j<jMax;j++){
-                                            if(j<jMax){
-                                                if(j===(jMax-1)&&lines.length>jMax){
-                                                    
-                                                    lines[j]+="...";
-                                                    if(lines[j].length>max){
-                                                        lines[j]=lines[j].substr(0,max-4)+"...";
-                                                    }
-                                                }
-                                                tmpText.append("tspan")
-                                                    .attr("x", 0)
-                                                    .attr("dy", "1em")
-                                                    .text(lines[j]);
-                                            }
-                                        }
-                            }else if((endA-startA)>6 && tmpD.name.indexOf("ENS")===0){
-                                    var tmpText=thatimg.topG.append("text")
-                                          .style("fill-opacity", 1)
-                                          .style("fill", "#000")
-                                          .attr("pointer-events","none")
-                                          .attr("class","txt"+removeColon(d.id))
-                                         .attr("text-anchor", function(d) {
-                                             var anch="start";
-                                             if(endA>=180){
-                                                 anch="end";
-                                             }
-                                            return anch;
-                                          })
-                                          .attr("dy", ".2em")
-                                          .attr("transform", function(d) {
-                                            var angle = midA-2.5;
-                                            var translate = Math.max(0, Math.sqrt(tmpD.y));
-                                            if(startA===0&&endA===360){translate=20;}
-                                            if(endA>=180){angle=midA+2.5;}
-                                            var rotate = angle-90;
-                                            return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
-                                          }).style("opacity",function(d){
-                                              return 1;
-                                          });
-
-                                        var init=tmpD.name;
-                                        if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                init=thatimg.geneList[init];
-                                        }
-                                        var tmpName=init.split(" ");
-
-                                        for (var j=0;j<tmpName.length;j++){
-                                          tmpText.append("tspan")
-                                              .attr("x", 0)
-                                              .attr("dy", "1em")
-                                              .text(tmpName[j]);
-                                        }
-                            }
+                        thatimg.addLabels(tmpD,tmpI,startA,midA,endA,curDepth,tmpDisplayDepth);
                     }
                     
                           
@@ -3284,137 +3277,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         var curDepth=(tmpD.depth-thatimg.selectedNode.depth);
 
                         if(d!==thatimg.selectedNode.parent){
-                            if((endA-startA)>10){ 
-                                 //construct lines
-                                var init=tmpD.name;
-                                if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                    init=thatimg.geneList[init];
-                                    if((endA-startA)>25){
-                                        init=init+ " ("+tmpD.name+")";
-                                    }
-                                }
-                                var max=(endA-startA)/(2.2-(curDepth*0.13));
-                                var lines=[];
-                                var curLine=0;
-                                if(init.length>max){
-                                    var parts=init.split(" ");
-                                    var part="";
-                                    for(var j=0;j<parts.length;j++){
-                                        var tmpPart=part;
-                                        if(part.length>0){
-                                            tmpPart+=" ";
-                                        }
-                                        tmpPart+=parts[j];
-                                        if(tmpPart.length>=max){
-                                            if(part.length===0){
-                                                part=tmpPart;
-                                            }
-                                            lines[curLine]=part;
-                                            if(part.length>=max){
-                                                lines[curLine]=part.substr(0,max);
-                                                part=part.substr(max);
-                                            }else{
-                                                part=parts[j];
-                                            }
-                                            curLine++;
-                                        }else{
-                                            part=tmpPart;
-                                        }
-                                    }
-                                    if(part.length>0){
-                                        lines[curLine]=part;
-                                    }
-
-                                }else{
-                                    lines[curLine]=init;
-                                }
-
-                                var tmpText=thatimg.topG.append("text")
-                                            .style("fill-opacity", 1)
-                                            .style("fill", "#000")
-                                            .style("font-size","0.9em")
-                                            .attr("pointer-events","none")
-                                            .attr("class","txt"+removeColon(d.id))
-                                            .attr("text-anchor", function(d) {
-                                                return "start";
-                                            })
-                                            .attr("dy", "1em")
-                                            .style("opacity",function(d){
-                                                return 1;
-
-                                            })
-                                            .append("textPath")
-                                            .attr("xlink:href",function(d){return "#ap"+tmpI;})
-                                            .attr("startOffset",function(d){
-                                                if(startA===0&&endA===360){
-                                                    return 185;
-                                                }
-                                                return 5 ;
-                                            });
-
-                                            var jMax=1;
-                                            if(curDepth<2){
-                                                jMax=4;
-                                                if((endA-startA)<15){
-                                                    jMax=3;
-                                                }
-                                            }else if(curDepth<3){
-                                                jMax=3;
-                                            }else if(curDepth<5){
-                                                jMax=2;
-                                            }
-                                            for (var j=0;j<lines.length && j<jMax;j++){
-                                                if(j<jMax){
-                                                    if(j===(jMax-1)&&lines.length>jMax){
-                                                        lines[j]+="...";
-                                                        if(lines[j].length>max){
-                                                            lines[j]=lines[j].substr(0,max-4)+"...";
-                                                        }
-                                                    }
-                                                    tmpText.append("tspan")
-                                                        .attr("x", 0)
-                                                        .attr("dy", "1em")
-                                                        .text(lines[j]);
-                                                }
-                                            }
-                                }else if((endA-startA)>6 && tmpD.name.indexOf("ENS")===0){
-                                        var tmpText=thatimg.topG.append("text")
-                                              .style("fill-opacity", 1)
-                                              .style("fill", "#000")
-                                              .attr("pointer-events","none")
-                                              .attr("class","txt"+removeColon(d.id))
-                                             .attr("text-anchor", function(d) {
-                                                 var anch="start";
-                                                 if(endA>=180){
-                                                     anch="end";
-                                                 }
-                                                return anch;
-                                              })
-                                              .attr("dy", ".2em")
-                                              .attr("transform", function(d) {
-                                                var angle = midA-2.5;
-                                                var translate = Math.max(0, Math.sqrt(tmpD.y));
-                                                if(startA===0&&endA===360){translate=20;}
-                                                if(endA>=180){angle=midA+2.5;}
-                                                var rotate = angle-90;
-                                                return "rotate(" + rotate + ")translate(" + translate + ")rotate(" + (angle > 180 ? -180 : 0) + ")";
-                                              }).style("opacity",function(d){
-                                                  return 1;
-                                              });
-
-                                            var init=tmpD.name;
-                                            if(tmpD.name.indexOf("ENS")===0 && typeof thatimg.geneList[init]!=='undefined'){
-                                                    init=thatimg.geneList[init];
-                                            }
-                                            var tmpName=init.split(" ");
-
-                                            for (var j=0;j<tmpName.length;j++){
-                                              tmpText.append("tspan")
-                                                  .attr("x", 0)
-                                                  .attr("dy", "1em")
-                                                  .text(tmpName[j]);
-                                            }
-                                }
+                        	thatimg.addLabels(tmpD,tmpI,startA,midA,endA,curDepth,tmpDisplayDepth);
                         }
                     });
                     
@@ -3714,6 +3577,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         }
         
         d3.select('#GoTable').select('tbody').selectAll('tr').remove();
+
         var root=that.singleImage.selectedNode;
         var nodes=that.singleImage.partition.nodes(root);
         nodes=nodes.filter(function(d,i){

@@ -69,6 +69,22 @@
                             <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseRegion5.jpg" title="A Circos plot that shows the locations of the genes with an eQTL in the region.  Below this image a table sumarizes the data available for each gene."><img src="web/overview/browseRegion5.jpg"  style="width:150px;" /></a></span>
                             </TD>
                             <TD>
+                            	<span class="tooltip"  title="Example Module view showing the transcripts/genes in a module and the correlation between their expression.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA.png" title="Example Module view showing the transcripts/genes in a module and the correlation between their expression."><img src="web/overview/browseWGCNA.png"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            	<span class="tooltip"  title="Example Eigengene eQTL view showing the locci correlated with expression.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_eQTL.png" title="Example Eigengene eQTL view showing the locci correlated with expression."><img src="web/overview/browseWGCNA_eQTL.png"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            	<span class="tooltip"  title="Example Gene Ontology sunburst plot.  Showing a variable number of levels of the GO term tree for one of the three domains.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_go.png" title="Example Gene Ontology sunburst plot.  Showing a variable number of levels of the GO term tree for one of the three domains."><img src="web/overview/browseWGCNA_go.png"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
+                            	<span class="tooltip"  title="Example miRNA image summarizing multiMiR results which indicate miRNAs predicted or validated to target genes in the module.<BR>Click to view a larger image.">
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_mir.png" title="Example miRNA image summarizing multiMiR results which indicate miRNAs predicted or validated to target genes in the module."><img src="web/overview/browseWGCNA_mir.png"  style="width:150px;" /></a></span>
+                            </TD>
+                            <TD>
                             	<span class="tooltip"  title="Image showing an overview of the basic controls.<BR>Click to view a larger image.">
                             <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Image showing an overview of the basic controls."><img src="web/GeneCentric/help1.jpg"  style="width:150px;" /></a></span>
                             </TD>
@@ -130,14 +146,21 @@
                         <div>
                         Interactively explore Genomic Data/Transcriptomic Data (including RNA-Seq and Microarray Data) along a region of the genome.
                         <ul>
-                        	<li>View Rat Brain Isoforms from RNA-Seq transcriptome reconstruction</li>
+                        	<li>View Rat Brain, Liver and Heart Isoforms from RNA-Seq transcriptome reconstruction</li>
                             <li>View Rat SNPs/Short Indels for BN-Lx/CubPrin, SHR/OlaPrin, F344, and SHR/NCrlPrin with more coming soon</li>
                             <li>View Ensembl Isoforms</li>
-                            <li>View Affymetrix Exon 1.0 ST Microarray Probe set locations</li>
+                            <li>View Affymetrix Exon 1.0 ST Microarray Probe set locations, detection above background accross tissues, and heritability.</li>
                             <li>View bQTLs</li>
                             <li>View eQTLs for the genes in the region</li>
                             <li>View genes with an eQTL in the region</li>
-                            
+                            <li>View WGCNA data for genes contained in the region
+                                <ul>
+                                    <li>View transcripts/genes assigned to modules along with the correlations between them.</li>
+                                    <li>View Module Eigengene eQTLs for modules.</li>
+                                    <li>View Gene Ontology summaries for annotated genes within a module.</li>
+                                    <li>View predicted and validated miRNAs that target genes in the module.</li>
+                                </ul>
+                            </li>
                             
                         </ul>
                         </div>

@@ -79,7 +79,7 @@
     	        
 
     	<!--<div id="primary-content">-->
-        <div id="welcome" style="height:1225px; width:996px;">
+        <div id="welcome" style="height:1400px; width:996px;">
 			<h1 id="index" class="homePage">Welcome to PhenoGen Informatics</h1>    
             <H2> The site for quantitative genetics of the transcriptome.</h2>
             <div>

@@ -96,6 +96,14 @@ sub postprocessCircosMod{
 				print $NEWSVGFILEHANDLE '<line id="closeHelpLine1" class="closeHelpLine" x1="725" y1="260" x2="740" y2="275" onclick="HideHelp(evt)" visibility="hidden" />';#."\n";
 				print $NEWSVGFILEHANDLE '<line id="closeHelpLine2"  class="closeHelpLine" x1="725" y1="275" x2="740" y2="260" onclick="HideHelp(evt)" visibility="hidden"/>';#."\n";
 				print $NEWSVGFILEHANDLE '<text class="helpText" id="helpText" visibility="hidden" x="275" y="290"></text>';#."\n";
+                                print $NEWSVGFILEHANDLE '<text x="480" y="40" font-size="18px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Module</text>'."\n";
+                                print $NEWSVGFILEHANDLE '<text x="480" y="60" font-size="18px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Genes</text>'."\n";
+                                print $NEWSVGFILEHANDLE '<text x="480" y="150" font-size="18px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Brain</text>'."\n";
+
+                                print $NEWSVGFILEHANDLE '<text x="480" y="95" font-size="18px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Megabases</text>'."\n";
+				print $NEWSVGFILEHANDLE '<text x="1100" y="900" font-size="20px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >Yellow plot means</text>'."\n";
+				print $NEWSVGFILEHANDLE '<text x="1100" y="920" font-size="20px" font-family="CMUBright-Roman" style="text-anchor:end;fill:rgb(0,0,0)" >-log(p-value) >= '.$cutoff.'</text>'."\n";
+
 				print $NEWSVGFILEHANDLE '</g>';#."\n";
 				print $NEWSVGFILEHANDLE $_;#."\n";
 

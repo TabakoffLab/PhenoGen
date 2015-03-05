@@ -25,7 +25,7 @@
     }
 </style>
 
-<div style="text-align:center;"
+<div style="text-align:center;">
     <div id="wgcnaImageControls" style="display:inline-block;width:100%;">
         <table style="width:100%;">
             <TR>
@@ -39,14 +39,14 @@
     <div id="wgcnaMouseHelp" style="display:inline-block;width:100%;text-align:center;">
         Navigation Hints: Hold mouse over areas of the image for available actions.
     </div>
-    <div id="wgcnaGeneImage" style="width:99%;border:1px solid;text-align: center;">
+    <div id="wgcnaGeneImage" style="/*width:99%;*/border:1px solid;text-align: center;">
         <div id="waitCircos" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Working..." text-align="center" ><BR>Loading...</div>
     </div>
     <div id="tableExportCtl" style="float:right;"></div>
-    <div id="wgcnaModuleTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+    <div id="wgcnaModuleTable" style="display:none;/*width:99%;*/border:1px solid;text-align: center;">
         <div id="waitModuleTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
         <H2>Transcripts in <span id="modTableName">Selected</span> Module</h2><BR>
-        <table class="list_base" id="moduleTable" width="98%">
+        <table class="list_base" id="moduleTable" width="100%">
             <thead>
                 <TR class="col_title">
                     <TH>Gene Symbol</TH>
@@ -61,10 +61,10 @@
             </tbody>
         </table>
     </div>
-    <div id="wgcnaMirTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+    <div id="wgcnaMirTable" style="display:none;/*width:99%;*/border:1px solid;text-align: center;">
         <div id="waitMirTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
         <H2>Transcripts in <span id="mirTableName">Selected</span> Module</h2><BR>
-        <table class="list_base" id="mirTable" width="98%">
+        <table class="list_base" id="mirTable" width="100%">
             <thead>
                 <TR class="col_title">
                     <TH>miRNA ID</TH>
@@ -80,10 +80,10 @@
             </tbody>
         </table>
     </div>
-    <div id="wgcnaMirGeneTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+    <div id="wgcnaMirGeneTable" style="display:none;/*width:99%;*/border:1px solid;text-align: center;">
         <div id="waitMirGeneTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
         <H2>Transcripts in <span id="mirGeneTableName">Selected</span> Module</h2><BR>
-        <table class="list_base" id="mirGeneTable" width="98%">
+        <table class="list_base" id="mirGeneTable" width="100%">
             <thead>
                 <TR class="col_title">
                     <TH>Gene Symbol</th>
@@ -99,11 +99,11 @@
             </tbody>
         </table>
     </div>
-    <div id="wgcnaGoTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+    <div id="wgcnaGoTable" style="display:none;/*width:99%;*/border:1px solid;text-align: center;">
         <div id="waitGoTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
         <H2>Gene Ontology Terms for Genes in the <span id="GoTableName">Selected</span> Module</h2><BR>
         Click on any row to make it the root of the table and image.
-        <table  id="GoTable" width="98%">
+        <table  id="GoTable" width="100%">
             <thead>
                 <TR class="col_title">
                     <TH>Name<span title="Expand All" id="goExpand" style="float:left;"><img src="<%=imagesDir%>icons/add.png"></span><span title="Close All" id="goClose" style="float:left;"><img src="<%=imagesDir%>icons/min.png"></span><span title="Go up a level (set root to the parent term)" id="goUp" style="float:left;"><img width="14" height="14" src="<%=imagesDir%>icons/up_flat.png"></span></TH>
@@ -116,10 +116,10 @@
             </tbody>
         </table>
     </div>
-    <div id="wgcnaEqtlTable" style="display:none;width:99%;border:1px solid;text-align: center;">
+    <div id="wgcnaEqtlTable" style="display:none;/*width:99%;*/border:1px solid;text-align: center;">
         <div id="waitEqtlTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
         <H2>eQTL locations for <span id="eqtlTableName">Selected</span> Module</h2><BR>
-        <table class="list_base" id="eqtlTable" width="98%">
+        <table class="list_base" id="eqtlTable" width="100%">
             <thead>
                 <TR class="col_title">
                     <TH>Chromosome</TH>
