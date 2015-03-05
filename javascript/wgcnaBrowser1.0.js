@@ -2482,6 +2482,19 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
     that.singleWGCNATableMirView=function(){
         var thattbl={};
         thattbl.orgPref="mmu-";
+
+        thattbl.runMirFilter=function(list){
+        	var newList=[];
+        	var count=0;
+        	for(var i=0;i<list.length;i++){
+        		if(list[i].filterGLSize>0 || list[i].vC>0){
+        			newList[count]=list[i];
+        			count++;
+        		}
+        	}
+        	return newList;
+        };
+
         thattbl.createMirTable = function(){
                 $('div#waitMirTable').hide();
                 $('div#wgcnaMirGeneTable').hide();
@@ -2493,10 +2506,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 }
                 
                 d3.select("table#mirTable").select("tbody").selectAll('tr').remove();
+
+                var tmpData=thattbl.runMirFilter(that.singleImage.mirData.MIRList);
                 
                 var tracktbl=d3.select("table#mirTable")
                 		.select("tbody").selectAll('tr')
-                        .data(that.singleImage.mirData.MIRList,that.mirKey)
+                        .data(tmpData,that.mirKey)
                                 .enter().append("tr")
                                 .attr("id",function(d){return "mirTR"+d.ID;})
                                 .attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
@@ -2512,7 +2527,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 if(gl[t].V>0){
                                     val++;
                                     vl.push(gl[t]);
-                                }else{
+                                }else if(gl[t].P>1){
                                     pred++;
                                     pl.push(gl[t]);
                                 }  
@@ -2659,13 +2674,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             $('div#wgcnaMirTable').hide();
             $('span#mirGeneTableName').html(that.selectedModule.MOD_NAME);
             d3.select("table#mirGeneTable").select("tbody").selectAll('tr').remove();
-            
-            
 			var tracktbl=d3.select("table#mirGeneTable").select("tbody").selectAll('tr').data(that.selectedModule.TCList,that.geneKey)
 					.enter().append("tr")
 					.attr("id",function(d){return "mirg"+d.ID;})
 					.attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
-	                        
 			tracktbl.each(function(d,i){
                     var tmpI=i;
                     var tmpD=d;
@@ -2683,7 +2695,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     if(gl[u].V>0){
                                         val++;
                                         vl.push(miList[t]);
-                                    }else{
+                                    }else if(gl[u].P>1){
                                         pred++;
                                         pl.push(miList[t]);
                                     }
@@ -2694,24 +2706,23 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
 					d3.select(this).append("td").html(d.Gene.geneSymbol);
 					d3.select(this).append("td").html(d.Gene.ID);
-					//d3.select(this).append("td").html("");
 					d3.select(this).append("td").html(function(d,i){
-	                                    var html="";
-	                                    if(pred>0){
-	                                        html="<span class=\"triggerpL\" name=\"pl"+tmpI+"\">"+pred+"</span><BR>";
-	                                        html=html+"<span id=\"pl"+tmpI+"\" style=\"display:none;\" >";
-	                                            for(var k=0;k<pl.length;k++){
-	                                                if(k>0){
-	                                                    html=html+", ";
-	                                                }
-	                                                var g=pl[k].ID.replace(thattbl.orgPref,"");
-	                                                html=html+g;
-	                                            }
-	                                        html=html+"</span>";
-	                                    }else{
-	                                        html=pred;
-	                                    }
-	                                    return html;
+                        var html="";
+                        if(pred>0){
+                            html="<span class=\"triggerpL\" name=\"pl"+tmpI+"\">"+pred+"</span><BR>";
+                            html=html+"<span id=\"pl"+tmpI+"\" style=\"display:none;\" >";
+                                for(var k=0;k<pl.length;k++){
+                                    if(k>0){
+                                        html=html+", ";
+                                    }
+                                    var g=pl[k].ID.replace(thattbl.orgPref,"");
+                                    html=html+g;
+                                }
+                            html=html+"</span>";
+                        }else{
+                            html=pred;
+                        }
+                        return html;
 	                });
                     d3.select(this).append("td").html(function(d,i){
                         var html="";
@@ -2732,11 +2743,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         return html;
                     });
                     d3.select(this).append("td").html(function(d,i){
-                        var len=0; 
+                        var len=val+pred; 
                         var html="";
-                        if(typeof miList !=='undefined'){
+                        /*if(typeof miList !=='undefined'){
                             len=miList.length;
-                        }
+                        }*/
                         if(len>0){
                             html="<span class=\"triggerMiL\" name=\"mil"+tmpI+"\">"+len+"</span><BR>";
                             html=html+"<span id=\"mil"+tmpI+"\" style=\"display:none;\" >";
