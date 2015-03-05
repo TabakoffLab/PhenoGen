@@ -43,7 +43,7 @@ sub readRefSeqDataFromDB{
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
 		$query ="SELECT g.name,g.chrom,g.strand,g.txStart,g.txEnd,g.cdsStart,g.cdsEnd,g.exonStarts,g.exonEnds,g.name2,s.status
-			FROM ".$shortOrg."_refseq_3.refGene g, ".$shortOrg."_refseq_3.refSeqStatus s
+			FROM ".$shortOrg."_refseq_5.refGene g, ".$shortOrg."_refseq_5.refSeqStatus s
 			where g.chrom='".$geneChrom."'
 			and ((".$geneStart."<=g.txStart and g.txStart<=".$geneStop.") or (".$geneStart."<=g.txEnd and g.txEnd<=".$geneStop.") or (g.txStart<=".$geneStart." and ".$geneStop."<=g.txEnd))
 			and g.name=s.mrnaAcc
