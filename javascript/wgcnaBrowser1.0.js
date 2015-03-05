@@ -1103,7 +1103,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 										return offset;
 									})
 	                                .style("font-weight","bold")
-									.text(d.MOD_NAME);
+									.text(replaceUnderscore(d.MOD_NAME));
                         }else if(d.MOD_NAME.length*6.5<thatimg.calcWidth){
 							thisMod.append("text")
                                 .attr("class","txtLbl")
@@ -1114,7 +1114,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 									var offset=thatimg.calcWidth/2-(w*6.5);
 									return offset;
 								})
-								.text(d.MOD_NAME);
+								.text(replaceUnderscore(d.MOD_NAME));
 						}
 						thisMod.append("text")
 							.attr("y",thatimg.maxWidth/2+5)
@@ -1817,7 +1817,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     var offset=thatimg.width/2-(w*6.5);
                                                     return offset;
                                             })*/
-                                            .text(that.selectedModule.MOD_NAME);
+                                            .text(replaceUnderscore(that.selectedModule.MOD_NAME));
                     
                     thatimg.setupLegend();
                     
@@ -2020,7 +2020,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		
                 thatimg.requestMiR=function(){
                     $.ajax({
-						url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +that.selectedModule.MOD_NAME+".miR.json",
+						url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".miR.json",
 			   			type: 'GET',
 			   			async: true,
 						data: {},
