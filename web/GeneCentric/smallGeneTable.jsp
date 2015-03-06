@@ -328,7 +328,7 @@
 								(source.equals("ensembl")&&curGene.getGeneID().startsWith("ENS")) ||
 								(source.equals("brain")&&curGene.containsTranscripts("smrna")) ||
 								(source.equals("liver")&&curGene.containsTranscripts("smrna")) ||
-								(source.equals("heart")&&curGene.containsTranscripts("smrna")) ||
+								(source.equals("heart")&&curGene.containsTranscripts("smrna")) 
 							){
                         %>
                         <TR class="
