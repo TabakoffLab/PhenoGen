@@ -2467,8 +2467,16 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		        $('table#moduleTable').DataTable({
 						"bPaginate": false,
 						"aaSorting": [[ 4, "desc" ]],
-						"sDom": '<"rightTable"i><"leftTable"f><t>'
+						"sDom": 'fi<t>'
 				});
+				if(testFireFox){
+					/*setTimeout(function(){
+						$("div#moduleTable_filter").css("display","inline-block");
+						$("div#moduleTable_info").css("display","inline-block").css("float","right");
+						//$('.dataTables_filter').style("display","inline-block");
+						//$('.dataTables_info').style("display","inline-block");
+					},10000);*/
+				}
         }else{
                 $('div#waitModuleTable').hide();
                 $('div#wgcnaEqtlTable').hide();
@@ -2661,7 +2669,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 "bAutoWidth": true,
                                 "bDeferRender": true,*/
                                 "aaSorting": [[ 4, "desc" ]],
-                                "sDom": '<"rightTable"i><"leftTable"f><t>'
+                                "sDom": 'f<"rightTable"i><t>'
                         });
            
         };
@@ -3289,7 +3297,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             .style("opacity",function(d){
                                 return 1;
                             })
-                            .text(thatimg.selectedNode.uniqueGene+" genes in module with GO annoation");    
+                            .text(thatimg.selectedNode.uniqueGene+" genes in module with GO annotation");    
 
                     //thatimg.totalSize = thatimg.path.node().__data__.value;
                 }
@@ -3702,7 +3710,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         "bDeferRender": true,
                         "aaSorting": [[ 3, "desc" ]],*/
         
-                        "sDom": '<"leftTable"f><t>'
+                        "sDom": 'f<t>'
                 });
         
         
@@ -3872,7 +3880,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     "bAutoWidth": true,
                                                     "bDeferRender": true,*/
                                                     "aaSorting": [[ 3, "desc" ]],
-                                                    "sDom": '<"rightTable"i><"leftTable"f><t>'
+                                                    "sDom":'fi<t>'
                                             });
                                     //trackDataTable.draw();
                                     $('div#waitEqtlTable').hide();
