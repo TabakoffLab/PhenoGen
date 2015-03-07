@@ -675,7 +675,8 @@ sub writePlot{
 	print $FILEHANDLE '<rules>'."\n";
 	print $FILEHANDLE '<rule>'."\n";
 	print $FILEHANDLE 'importance = 100'."\n";
-	print $FILEHANDLE 'condition  = _VALUE_ > '.$cutoff."\n";
+	print $FILEHANDLE 'condition  = var(value) > '.$cutoff."\n";
+        #print $FILEHANDLE 'condition  = _VALUE_ > '.$cutoff."\n";
 	print $FILEHANDLE 'fill_color = yellow'."\n";
 	print $FILEHANDLE 'color = dyellow'."\n";
 	print $FILEHANDLE '</rule>'."\n";

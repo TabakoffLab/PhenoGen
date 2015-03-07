@@ -43,13 +43,7 @@ sub prepCircos
 	}
 	my $genericConfLocation = '/usr/local/circos-0.67-5/etc/';
 	my $genericConfLocation2;
-	if($hostname eq 'amc-kenny.ucdenver.pvt'){
-		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
-	}
-	elsif($hostname eq 'compbio.ucdenver.edu'){
-		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
-	}
-	elsif($hostname eq 'phenogen'){
+	if($hostname eq 'phenogen'){
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
@@ -523,7 +517,8 @@ sub writePlot{
 	print $FILEHANDLE '<rules>'."\n";
 	print $FILEHANDLE '<rule>'."\n";
 	print $FILEHANDLE 'importance = 100'."\n";
-	print $FILEHANDLE 'condition  = _VALUE_ > '.$cutoff."\n";
+        print $FILEHANDLE 'condition  = var(value) > '.$cutoff."\n";
+	#print $FILEHANDLE 'condition  = _VALUE_ > '.$cutoff."\n";
 	print $FILEHANDLE 'fill_color = yellow'."\n";
 	print $FILEHANDLE 'color = dyellow'."\n";
 	print $FILEHANDLE '</rule>'."\n";
