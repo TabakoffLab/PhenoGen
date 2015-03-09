@@ -17,8 +17,8 @@
 
         extrasList.add("expressionValues.js");
 		extrasList.add("jquery.dataTables.min.js");
-		extrasList.add("jquery.tooltipster.js");
-		extrasList.add("tooltipster.css");
+		extrasList.add("jquery.tooltipster.min.js");
+		extrasList.add("tooltipster.min.css");
 		extrasList.add("TableTools.min.js");
 		extrasList.add("TableTools.css");
 	optionsList.add("geneListDetails");

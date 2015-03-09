@@ -7,8 +7,8 @@
 	request.setAttribute( "selectedStep", "2" );
 	extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("typeOfAnalysis.js");
-	extrasList.add("jquery.tooltipster.js");
-	extrasList.add("tooltipster.css");
+	extrasList.add("jquery.tooltipster.min.js");
+	extrasList.add("tooltipster.min.css");
 	
 	optionsList.add("datasetVersionDetails");
 
