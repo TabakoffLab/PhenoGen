@@ -496,7 +496,7 @@ var updatedCount=0;
 var timeoutHandle=-1;
 
 //start automatic scrolling of features
-startRunningSelection(15000);
+startRunningSelection(10000);
 function startRunningSelection(delay){
 	if(timeoutHandle==-1 ){
 		runSelection(delay);
@@ -527,12 +527,11 @@ function runSelection(delay){
 			}
 			displayOverride=0;
                         updatedCount++;
-                        if(updatedCount<20){
-                            runSelection(15000);
-                        }else{
-   
+                        //if(updatedCount<20){
+                            runSelection(10000);
+                        /*}else{
                             location.reload();
-                        }
+                        }*/
 		},delay);
 }
 
