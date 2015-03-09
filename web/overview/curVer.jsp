@@ -18,5 +18,4 @@
              	
 
 						
-                    	<script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

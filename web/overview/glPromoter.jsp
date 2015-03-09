@@ -16,19 +16,23 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="Overview of promoter page.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_ovrvw.jpg" title="Overview of promotor page"><img src="web/overview/glPromoter_ovrvw.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_ovrvw.jpg" title="Overview of promotor page">
+                                    <img src="web/overview/glPromoter_ovrvw_150.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example of oPOSSUM output.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_opossum.jpg" title="Example of oPOSSUM output"><img src="web/overview/glPromoter_opossum.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_opossum.jpg" title="Example of oPOSSUM output">
+                                    <img src="web/overview/glPromoter_opossum_150.jpg" title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example of MEME output.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_meme.jpg" title="Example of MEME output"><img src="web/overview/glPromoter_meme.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_meme.jpg" title="Example of MEME output">
+                                    <img src="web/overview/glPromoter_meme_150.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example of upstream extraction output.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_upstream.jpg" title="Example of upstream extraction output"><img src="web/overview/glPromoter_upstream.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glPromoter_upstream.jpg" title="Example of upstream extraction output">
+                                    <img src="web/overview/glPromoter_upstream_150.jpg" title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -50,5 +54,4 @@
                         </div>
                     </div>
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

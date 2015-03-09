@@ -1,11 +1,9 @@
-
-	<!-- Line 4673 of jquery-1.5.js and jquery-1.7.js(line 5432-5444) jquery1.8.3(7069-7079) has been modified. Do not forget to change in new file -->
-    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.11.2.min.js">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.2.1.min.js"></script>
-	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-ui-1.11.3.min.js"></script> 
-    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tooltipster.js"></script>
-	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tablesorter.js"></script>
-	<script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/main1.0.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tooltipster.min.js"></script>
+    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tablesorter.js"></script>
+    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/main1.0.js"></script>
 
 	<%@ include file="/web/common/includeExtras.jsp" %>
 

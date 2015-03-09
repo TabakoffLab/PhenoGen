@@ -18,15 +18,18 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="Example gene Circos plots showing all eQTLs for a gene below a threshold.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz.jpg" title="Example gene Circos plots showing all eQTLs for a gene below a threshold."><img src="web/overview/qtlViz.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz.jpg" title="Example gene Circos plots showing all eQTLs for a gene below a threshold.">
+                                <img src="web/overview/qtlViz_200.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example region Circos plot showing all the genes(and locations) that have an eQTL in the region being viewed.(Chr 1 220mb-228mb in this case)<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz_region.jpg" title="Example region Circos plot showing all the genes that have an eQTL in the region being viewed."><img src="web/overview/qtlViz_region.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz_region.jpg" title="Example region Circos plot showing all the genes that have an eQTL in the region being viewed.">
+                                <img src="web/overview/qtlViz_region_200.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example view of gene locations with associated eQTLs from genes in a gene list.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz_list.jpg" title="Example view of gene locations with associated eQTLs from genes in a gene list."><img src="web/overview/qtlViz_list.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz_list.jpg" title="Example view of gene locations with associated eQTLs from genes in a gene list.">
+                                <img src="web/overview/qtlViz_list_200.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -50,5 +53,4 @@
                         
                    </div>
 
-<script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

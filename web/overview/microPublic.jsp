@@ -18,15 +18,18 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="Basic Array Search<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_basic.jpg" title="Basic Array Search"><img src="web/overview/microPublic_basic.jpg"  style="width:200px;"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_basic.jpg" title="Basic Array Search">
+                                <img src="web/overview/microPublic_basic_200.jpg" title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Advanced Array Search<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_advanced.jpg" title="Advanced Array Search" ><img src="web/overview/microPublic_advanced.jpg"  style="width:200px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_advanced.jpg" title="Advanced Array Search" >
+                                <img src="web/overview/microPublic_advanced_200.jpg" title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example Results for Affy Rat Exon 1.0 ST Arrays<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_results.jpg" title="Example Results for Affy Rat Exon 1.0 ST Arrays" ><img src="web/overview/microPublic_results.jpg"  style="width:200px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/microPublic_results.jpg" title="Example Results for Affy Rat Exon 1.0 ST Arrays" >
+                                <img src="web/overview/microPublic_results_200.jpg" title="Click to view a larger image" /></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -53,7 +56,6 @@
                         
                    </div>
 
-<script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>
 
     

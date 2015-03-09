@@ -17,7 +17,8 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="Example of available information on homologous genes in other species.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glHomolog.jpg" title="Example of available information on homologous genes in other species."><img src="web/overview/glHomolog.jpg"  style="width:100%;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glHomolog.jpg" title="Example of available information on homologous genes in other species.">
+                                <img src="web/overview/glHomolog_300.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -39,5 +40,4 @@
                         
                     </div>
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

@@ -19,19 +19,23 @@
                             <TR>
                                 <TD>
                             	<span class="tooltip"  title="Example Module view showing the transcripts/genes in a module and the correlation between their expression.<BR>Click to view a larger image.">
-                                <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA.png" title="Example Module view showing the transcripts/genes in a module and the correlation between their expression."><img src="web/overview/browseWGCNA.png"  style="width:150px;" /></a></span>
+                                <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA.png" title="Example Module view showing the transcripts/genes in a module and the correlation between their expression.">
+                                    <img src="web/overview/browseWGCNA_150.png" title="Click to view a larger image" /></a></span>
                                 </TD>
                                 <TD>
                                     <span class="tooltip"  title="Example Eigengene eQTL view showing the locci correlated with expression.<BR>Click to view a larger image.">
-                                <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_eQTL.png" title="Example Eigengene eQTL view showing the locci correlated with expression."><img src="web/overview/browseWGCNA_eQTL.png"  style="width:150px;" /></a></span>
+                                <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_eQTL.png" title="Example Eigengene eQTL view showing the locci correlated with expression.">
+                                    <img src="web/overview/browseWGCNA_eQTL_150.png" title="Click to view a larger image" /></a></span>
                                 </TD>
                                 <TD>
                                     <span class="tooltip"  title="Example Gene Ontology sunburst plot.  Showing a variable number of levels of the GO term tree for one of the three domains.<BR>Click to view a larger image.">
-                                <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_go.png" title="Example Gene Ontology sunburst plot.  Showing a variable number of levels of the GO term tree for one of the three domains."><img src="web/overview/browseWGCNA_go.png"  style="width:150px;" /></a></span>
+                                <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_go.png" title="Example Gene Ontology sunburst plot.  Showing a variable number of levels of the GO term tree for one of the three domains.">
+                                    <img src="web/overview/browseWGCNA_go_150.png"  title="Click to view a larger image" /></a></span>
                                 </TD>
                                 <TD>
                                     <span class="tooltip"  title="Example miRNA image summarizing multiMiR results which indicate miRNAs predicted or validated to target genes in the module.<BR>Click to view a larger image.">
-                                <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_mir.png" title="Example miRNA image summarizing multiMiR results which indicate miRNAs predicted or validated to target genes in the module."><img src="web/overview/browseWGCNA_mir.png"  style="width:150px;" /></a></span>
+                                <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_mir.png" title="Example miRNA image summarizing multiMiR results which indicate miRNAs predicted or validated to target genes in the module.">
+                                    <img src="web/overview/browseWGCNA_mir_150.png"  title="Click to view a larger image" /></a></span>
                                 </TD>
                             </TR>
                             </table>
@@ -83,5 +87,4 @@
                     </div>
 
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

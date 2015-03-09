@@ -29,7 +29,7 @@ function showDiv(jspPage){
             url:  "web/overview/"+jspPage,
             type: 'GET',
             async: true,
-            cache: false,
+            cache: true,
             data: {},
             success: function(htmlPage){
                 $('div#indexDescContent').html(htmlPage);

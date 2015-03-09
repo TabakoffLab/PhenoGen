@@ -17,7 +17,8 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="An example of how you can compare lists and save the comparison to a new list.<BR>Click to view a larger image.">
-                   			<a class="fancybox" rel="fancybox-thumb" href="web/overview/glShare_compare.jpg" title="An example of how you can compare lists and save the comparison to a new list."><img src="web/overview/glShare_compare.jpg"  style="width:100%;" title="Click to view a larger image"/></a></span>
+                   			<a class="fancybox" rel="fancybox-thumb" href="web/overview/glShare_compare.jpg" title="An example of how you can compare lists and save the comparison to a new list.">
+                                            <img src="web/overview/glShare_compare_300.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -39,5 +40,4 @@
                         </div>
                     </div>
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

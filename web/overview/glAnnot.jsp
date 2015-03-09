@@ -17,17 +17,20 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="Annotation Table for a rat gene list.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_rat.jpg" title="Annotation Table for a rat gene list"><img src="web/overview/glAnnot_rat.jpg"  style="width:150px;" title="Click to view a larger image"/></a>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_rat.jpg" title="Annotation Table for a rat gene list">
+                                    <img src="web/overview/glAnnot_rat_150.jpg" title="Click to view a larger image"/></a>
                             </span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Annotation Table for a mouse gene list.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_mouse.jpg" title="Annotation Table for a mouse gene list"><img src="web/overview/glAnnot_mouse.jpg"  style="width:150px;" title="Click to view a larger image"/></a>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_mouse.jpg" title="Annotation Table for a mouse gene list">
+                                    <img src="web/overview/glAnnot_mouse_150.jpg" title="Click to view a larger image"/></a>
                             </span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Annotation options for a longer gene list.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_list.jpg" title="Annotation options for a longer gene list"><img src="web/overview/glAnnot_list.jpg"  style="width:150px;" title="Click to view a larger image"/></a>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glAnnot_list.jpg" title="Annotation options for a longer gene list">
+                                    <img src="web/overview/glAnnot_list_150.jpg" title="Click to view a larger image"/></a>
                             </span>
                             </TD>
                             </TR>
@@ -57,6 +60,5 @@
                         
                     </div>
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-	</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>
     
