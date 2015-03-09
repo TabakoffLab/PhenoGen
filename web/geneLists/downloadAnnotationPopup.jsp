@@ -15,7 +15,7 @@
 
 <%
 
-	extrasList.add("main.css");
+	extrasList.add("main.min.css");
 	
 	String[] iDecoderTargets   = request.getParameterValues("iDecoderChoice[]");
 	String[] iDecoderTargetsPlusEnsembl = request.getParameterValues("iDecoderChoice[]");

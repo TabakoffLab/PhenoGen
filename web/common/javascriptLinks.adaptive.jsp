@@ -1,5 +1,5 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="https//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.2.1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tooltipster.adaptive.js"></script>
     <script  type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tablesorter.js"></script>

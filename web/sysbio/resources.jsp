@@ -14,10 +14,10 @@
 	log.info("in resources.jsp. user =  "+ user);
 	
 	log.debug("action = "+action);
-        extrasList.add("tooltipster.css");
+        extrasList.add("tooltipster.min.css");
         extrasList.add("tabs.css");
 	extrasList.add("resources.js");
-	extrasList.add("jquery.tooltipster.js");
+	extrasList.add("jquery.tooltipster.min.js");
         extrasList.add("d3.v3.min.js");
         extrasList.add("jquery.dataTables.min.js");
 	
