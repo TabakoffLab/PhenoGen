@@ -725,7 +725,7 @@ Or
         <TD style="text-align:center;">
         	<h2>Quick Navigation Demonstration</h2>
             <BR />
-            <video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo.png" preload="none">
+            <video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo_350.png" preload="none">
                 <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
                 <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
                 <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="350" height="250">
@@ -735,7 +735,7 @@ Or
         </TD>
         <TD style="text-align:center;">
                         <h2>Custom View/Custom Track Demonstration</h2><BR />
-						<video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/customTrackDemo.png" preload="none">
+						<video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/customTrackDemo_350.png" preload="none">
                     		<source src="<%=contextRoot%>web/demo/customTrackDemo.mp4" type="video/mp4">
                             <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
                             <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="350" height="250">
@@ -758,13 +758,13 @@ Or
                 <table style="width:98%">
                 <TR>
                                 <TD style="text-align:center;">
-                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Basic Controls on the main image."><img src="web/GeneCentric/help1.jpg"  style="width:300px;" /></a>
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Basic Controls on the main image."><img src="web/GeneCentric/help1_300.jpg"  /></a>
                                 </TD>
                                 <TD style="text-align:center;">
-                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."><img src="web/GeneCentric/help2.jpg"  style="width:300px;" /></a>
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."><img src="web/GeneCentric/help2_300.jpg" /></a>
                                 </TD>
                                 <TD style="text-align:center;">
-                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit tracks."><img src="web/GeneCentric/help3.jpg"  style="width:300px;" /></a>
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit tracks."><img src="web/GeneCentric/help3_300.jpg" /></a>
                                 </TD>
                 </TR>
                 </table>
