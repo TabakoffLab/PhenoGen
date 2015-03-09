@@ -15,7 +15,7 @@
 <%@ page import="net.tanesha.recaptcha.ReCaptchaResponse" %>
 <jsp:useBean id="myEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
 <% 
-	extrasList.add("main.css");
+	extrasList.add("main.min.css");
 	extrasList.add("main1.0.js");
 	loggedIn = false;
 	

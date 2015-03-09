@@ -22,6 +22,9 @@
 	}
 %>
 
+<style>
+    <%@ include file="/css/menu.min.css" %>
+</style>
 
 
 <div id="page_header_wide" >

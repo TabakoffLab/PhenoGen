@@ -18,7 +18,7 @@
 
         extrasList.add("geneListMain.css");
         extrasList.add("locEQTL.css");
-        extrasList.add("main.css");
+        extrasList.add("main.min.css");
         extrasList.add("eQTLResults.js");
 
 	String ensemblOrganism = new ObjectHandler().replaceBlanksWithUnderscores(

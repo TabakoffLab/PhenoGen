@@ -12,7 +12,6 @@
 	extrasList.add("d3.v3.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
-	//extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("jquery.fancybox.css");
@@ -726,7 +725,7 @@ Or
         <TD style="text-align:center;">
         	<h2>Quick Navigation Demonstration</h2>
             <BR />
-            <video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo.png">
+            <video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo.png" preload="none">
                 <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
                 <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
                 <object data="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" width="350" height="250">
@@ -736,7 +735,7 @@ Or
         </TD>
         <TD style="text-align:center;">
                         <h2>Custom View/Custom Track Demonstration</h2><BR />
-						<video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/customTrackDemo.png">
+						<video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/customTrackDemo.png" preload="none">
                     		<source src="<%=contextRoot%>web/demo/customTrackDemo.mp4" type="video/mp4">
                             <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
                             <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="350" height="250">

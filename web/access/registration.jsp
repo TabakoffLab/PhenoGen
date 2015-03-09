@@ -15,7 +15,7 @@
 <%@ page import="net.tanesha.recaptcha.ReCaptchaImpl" %>
 <%@ page import="net.tanesha.recaptcha.ReCaptchaResponse" %>
 <%
-	extrasList.add("main.css");
+	extrasList.add("main.min.css");
 	extrasList.add("userCommon.js");
 	extrasList.add("registrationPopup.js");
 	extrasList.add("registrationPopup.css");
