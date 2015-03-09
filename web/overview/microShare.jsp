@@ -18,11 +18,13 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="The approve array request link displayed to principal investigators so that you may approve requests to access private data.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/microShare_approveLink.jpg" title="The approve array request link displayed to PIs so that you may approve requests to access private data."><img src="web/overview/microShare_approveLink.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/microShare_approveLink.jpg" title="The approve array request link displayed to PIs so that you may approve requests to access private data.">
+                                    <img src="web/overview/microShare_approveLink_200.jpg" title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="The screen used to approve or deny requests.  All current requests are displayed to allow you to quickly approve or deny them.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/microShare_request.jpg" title="The screen used to approve or deny requests.  All current requests are displayed to allow you to quickly approve or deny them."><img src="web/overview/microShare_request.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/microShare_request.jpg" title="The screen used to approve or deny requests.  All current requests are displayed to allow you to quickly approve or deny them.">
+                                    <img src="web/overview/microShare_request_200.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -49,5 +51,4 @@
                         
                    </div>
 
-<script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

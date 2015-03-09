@@ -14,7 +14,7 @@
                     <div  style="overflow:auto;height:92%;">
                         <H2>v2.15 of PhenoGen 3/7/2015</H2>
                         <div style="margin-left:5px;">
-                                <img src="<%=webDir%>overview/browseWGCNA_mir.png" width="150px"/><img src="<%=webDir%>overview/browseWGCNA_go.png" width="150px"/><BR />
+                                <img src="<%=webDir%>overview/browseWGCNA_mir_150.png" /><img src="<%=webDir%>overview/browseWGCNA_go_150.png" /><BR />
                         	We've added GO term summary and miRNA targeting views to the Weighted Gene Co-expression Network Analysis.  Look at what's new for a summary of changes.
                         </div>
                         <H2>HTTPS support 2/9/2015</H2>
@@ -32,7 +32,7 @@
                         </div>
                         <H2>v2.14 of PhenoGen 1/10/2015</H2>
                         <div style="margin-left:5px;">
-                                <img src="<%=webDir%>overview/browseWGCNA.png" width="150px"/><img src="<%=webDir%>overview/browseWGCNA_eQTL.png" width="150px"/><BR />
+                                <img src="<%=webDir%>overview/browseWGCNA_150.png" /><img src="<%=webDir%>overview/browseWGCNA_eQTL_150.png"/><BR />
                         	We've added Weighted Gene Co-expression Network Analysis.  Look at what's new for a summary of changes.
                         </div>
                     	<H2>v2.13 of PhenoGen 9/27/2014</H2>
@@ -41,7 +41,7 @@
                         </div>
                     	<H2>Added multiMiR</H2>
                         <div style=" margin-left:5px;">
-                        	<img src="<%=imagesDir%>multimir.png" width="300px"/><BR />
+                        	<img src="<%=imagesDir%>multimir_300.png"/><BR />
                         	Using multiMiR(an R package available <a href="http://multimir.ucdenver.edu/" target="_blank">here</a>) you can view validated and predicted miRNAs that target specific genes.  You can also select a miRNA and view all genes targeted by the miRNA.  multiMiR is avaialble as a new tab for a selected gene in the Genome/Transcriptome Data Browser and in Gene Lists after selecting a list. It is currently available only for mouse genes, but will be available in rat soon.
                         </div>
                         <H2>Added Rat Liver Transcriptome</H2>
@@ -69,13 +69,12 @@
                         <li><a href="web/graphics/genome.jsp">View Genome Coverage</a></li>
                         <li><a href="web/graphics/transcriptome.jsp">View Reconstructed Long RNA Genes(Rat Brain Transcriptome)</a></li>
                         </ul>
-                        <a href="web/graphics/genome.jsp"><img src="<%=imagesDir%>rnaseq_genome.gif" width="100px"/></a>
-                        <a href="web/graphics/transcriptome.jsp"><img src="<%=imagesDir%>rnaseq_transcriptome.gif" width="100px"/></a>
+                        <a href="web/graphics/genome.jsp"><img src="<%=imagesDir%>rnaseq_genome_100.gif" /></a>
+                        <a href="web/graphics/transcriptome.jsp"><img src="<%=imagesDir%>rnaseq_transcriptome_100.gif" /></a>
                         </div><BR />
                         Reconstructed transcripts from this RNA-Seq data are still combined with PhenoGen array data in <a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>createAnnonymousSession.jsp?url=<%=contextRoot%>gene.jsp">Genome/Transcriptome Data Browser</a>.
                         </div>
                         
                    </div>
 
-<script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

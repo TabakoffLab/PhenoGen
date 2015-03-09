@@ -18,11 +18,13 @@
                             <TR>
                             <TD>
                              <span class="tooltip"  title="First step of calculating bQTLs.  Select the RI panel to use.  If phenotype data is already entered, select it.  If no data is available click Create New Phenotype.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlCalc_step1.jpg" title="First step of calculating bQTLs.  Select the RI panel to use.  If phenotype data is already entered, select it.  If no data is available click Create New Phenotype."><img src="web/overview/qtlCalc_step1.jpg"  style="width:200px;"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlCalc_step1.jpg" title="First step of calculating bQTLs.  Select the RI panel to use.  If phenotype data is already entered, select it.  If no data is available click Create New Phenotype.">
+                                <img src="web/overview/qtlCalc_step1_200.jpg" /></a></span>
                             </TD>
                             <TD>
                         	 <span class="tooltip"  title="Example entering phenotype data for ILSXISS RI Panel.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlCalc_enterPhen.jpg" title="Example entering phenotype data for ILSXISS RI Panel."><img src="web/overview/qtlCalc_enterPhen.jpg"  style="width:200px;"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlCalc_enterPhen.jpg" title="Example entering phenotype data for ILSXISS RI Panel.">
+                                <img src="web/overview/qtlCalc_enterPhen_200.jpg"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -55,6 +57,5 @@
                         
                    </div>
 
-<script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>
     
