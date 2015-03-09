@@ -17,23 +17,28 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="The initial form to calculate exon-exon correlations for a tissue.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_form.jpg" title="Form to calculate exon-exon correlations for a tissue:"><img src="web/overview/glCorr_form.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_form.jpg" title="Form to calculate exon-exon correlations for a tissue:">
+                                <img src="web/overview/glCorr_form_150.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example default view of a gene.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example default view of a gene:"><img src="web/overview/glCorr_gene.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example default view of a gene:">
+                                    <img src="web/overview/glCorr_gene_150.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example of comparing two different transcripts side by side.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_sidebyside.jpg" title="Example of comparing two different transcripts side by side"><img src="web/overview/glCorr_sidebyside.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_sidebyside.jpg" title="Example of comparing two different transcripts side by side">
+                                    <img src="web/overview/glCorr_sidebyside_150.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example of correlations in different tissues Heart(this image), Brown Adipose(next image).  Possibly indicating different isoforms in each tissue.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example different corelations in different tissues Heart"><img src="web/overview/glCorr_gene.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_gene.jpg" title="Example different corelations in different tissues Heart">
+                                    <img src="web/overview/glCorr_gene_150.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                              <span class="tooltip"  title="Example of correlations in different tissues Heart(previous image), Brown Adipose(this image).  Possibly indicating different isoforms in each tissue.<BR>Click to view a larger image.">
-                             <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_bat.jpg" title="Example different corelations in different tissues Brown Adipose"><img src="web/overview/glCorr_bat.jpg"  style="width:150px;" title="Click to view a larger image"/></a></span>
+                             <a class="fancybox" rel="fancybox-thumb" href="web/overview/glCorr_bat.jpg" title="Example different corelations in different tissues Brown Adipose">
+                                 <img src="web/overview/glCorr_bat_150.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -54,8 +59,7 @@
                         </div>
                     </div>
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>
 						
 
     

@@ -19,7 +19,7 @@
                             <TR>
                             	<TD>
                             		General Overview of Tools
-                                    <video id="demoVideo" width="210px"  controls="controls" poster="<%=contextRoot%>web/demo/detailed_transcript_fullv3.png">
+                                    <video id="demoVideo" width="210px"  controls="controls" poster="<%=contextRoot%>web/demo/detailed_transcript_fullv3.png" preload="none">
                                     	<source src="web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
                                         <source src="web/demo/detailed_transcript_fullv3.webm" type="video/webm">
                                           <object data="web/demo/detailed_transcript_fullv3.mp4" width="100%" >
@@ -30,7 +30,7 @@
                                 </TD>
                                 <TD>
                                 	Basic Browser Navigation
-                                <video width="210px" controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo.png">
+                                <video width="210px" controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo.png" preload="none">
                                     <source src="web/demo/BrowserNavDemo.mp4" type="video/mp4">
                                     <source src="web/demo/BrowserNavDemo.webm" type="video/webm">
                                     <object data="web/demo/BrowserNavDemo.mp4" width="100%" >
@@ -40,7 +40,7 @@
                                 </TD>
                                 <TD>
                                 	Setting up Custom Tracks/Views
-                                <video width="210px" controls="controls"  poster="<%=contextRoot%>web/demo/customTrackDemo.png">
+                                <video width="210px" controls="controls"  poster="<%=contextRoot%>web/demo/customTrackDemo.png" preload="none">
                                     <source src="web/demo/customTrackDemo.mp4" type="video/mp4">
                                     <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
                                   <object data="<%=contextRoot%>web/demo/customTrackDemo.mp4" width="100%" >
@@ -49,51 +49,62 @@
                                 </TD>
                                 <TD>
                                 <span class="tooltip"  title="An interactive SVG image of the region around the gene entered.  You have the option to zoom in/out, reorder tracks, add/customize tracks, click on features for more detailed data, and view the tables of all the features(see following screen shots).<BR>Click to view a larger image.">
-                        		<a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene.jpg" title="Region View showing the region around the gene entered."><img src="web/overview/browseGene.jpg"  style="width:150px;"/></a>
+                        		<a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene.jpg" title="Region View showing the region around the gene entered.">
+                                            <img src="web/overview/browseGene_150.jpg" title="Click to view a larger image"/></a>
                             	</span>
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="The lower part of the page when a gene is selected. Zooms in on the gene and shows all transcripts, allows you to add any other tracks including Affymetrix Probesets that can be colored based on data or annotation, and RNA-Seq read counts accross the area covered by the gene.<BR>Click to view a larger image.">
-                            	<a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene2.jpg" title="Gene View showing transcripts for the selected gene, and any other tracks that have been added."><img src="web/overview/browseGene2.jpg"  style="width:150px;"  title="Click to view a larger image"/></a></span>
+                            	<a class="fancybox" rel="fancybox-thumb" href="web/overview/browseGene2.jpg" title="Gene View showing transcripts for the selected gene, and any other tracks that have been added.">
+                                    <img src="web/overview/browseGene2_150.jpg" title="Click to view a larger image"/></a></span>
                       
                             </TD>
                             <TD>
                             <span class="tooltip"  title="eQTL view showing what regions are associated with expression in each available tissue.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz.jpg" title="eQTL view showing what regions are associated with expression in each available tissue:"><img src="web/overview/qtlViz.jpg"  style="width:150px;" /></a>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlViz.jpg" title="eQTL view showing what regions are associated with expression in each available tissue:">
+                                <img src="web/overview/qtlViz_200.jpg"  title="Click to view a larger image"/></a>
                             </span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="When a gene is selected the multiMiR tab is available which provides a list of validated/predicted miRNAs that target the gene.  You can view additional details on each miRNA/database hit and find all targets of an miRNA.<BR>Click to view a larger image.">
-                             <a class="fancybox" rel="fancybox-thumb" href="web/images/multimir.png" title="multiMiR results for a selected gene."><img src="web/images/multimir.png"  style="width:150px;" /></a>
+                             <a class="fancybox" rel="fancybox-thumb" href="web/images/multimir.png" title="multiMiR results for a selected gene.">
+                                 <img src="web/images/multimir_150.png"  title="Click to view a larger image" /></a>
                              </span>
                         	</TD>
                             <TD>
                             	<span class="tooltip"  title="Example Module view showing the transcripts/genes in a module and the correlation between their expression.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA.png" title="Example Module view showing the transcripts/genes in a module and the correlation between their expression."><img src="web/overview/browseWGCNA.png"  style="width:150px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA.png" title="Example Module view showing the transcripts/genes in a module and the correlation between their expression.">
+                                <img src="web/overview/browseWGCNA_150.png" title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="Example Eigengene eQTL view showing the locci correlated with expression.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_eQTL.png" title="Example Eigengene eQTL view showing the locci correlated with expression."><img src="web/overview/browseWGCNA_eQTL.png"  style="width:150px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_eQTL.png" title="Example Eigengene eQTL view showing the locci correlated with expression.">
+                                <img src="web/overview/browseWGCNA_eQTL_150.png" title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="Example Gene Ontology sunburst plot.  Showing a variable number of levels of the GO term tree for one of the three domains.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_go.png" title="Example Gene Ontology sunburst plot.  Showing a variable number of levels of the GO term tree for one of the three domains."><img src="web/overview/browseWGCNA_go.png"  style="width:150px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_go.png" title="Example Gene Ontology sunburst plot.  Showing a variable number of levels of the GO term tree for one of the three domains.">
+                                <img src="web/overview/browseWGCNA_go_150.png"  title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="Example miRNA image summarizing multiMiR results which indicate miRNAs predicted or validated to target genes in the module.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_mir.png" title="Example miRNA image summarizing multiMiR results which indicate miRNAs predicted or validated to target genes in the module."><img src="web/overview/browseWGCNA_mir.png"  style="width:150px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseWGCNA_mir.png" title="Example miRNA image summarizing multiMiR results which indicate miRNAs predicted or validated to target genes in the module.">
+                                <img src="web/overview/browseWGCNA_mir_150.png"  title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="Image showing an overview of the basic controls.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Image showing an overview of the basic controls."><img src="web/GeneCentric/help1.jpg"  style="width:150px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Image showing an overview of the basic controls.">
+                                <img src="web/GeneCentric/help1_150.jpg"  title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="Image showing an overview of the controls for selecting and editing views.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Image showing an overview of the controls for selecting and editing views."><img src="web/GeneCentric/help2.jpg"  style="width:150px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Image showing an overview of the controls for selecting and editing views.">
+                                <img src="web/GeneCentric/help2_150.jpg"  title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="Image showing an overview of the controls for selecting and editing tracks.  <BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Image showing an overview of the controls for selecting and editing tracks."><img src="web/GeneCentric/help3.jpg"  style="width:150px;" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Image showing an overview of the controls for selecting and editing tracks.">
+                                <img src="web/GeneCentric/help3_150.jpg"  title="Click to view a larger image" /></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -173,18 +184,4 @@
              		</div>
 
 						
-                    	<script src="javascript/indexGraphAccordion1.0.js">
-						</script>
-                        
-                        <script type="text/javascript">
-							$(".tooltip2").tooltipster({
-								position: 'top-right',
-								maxWidth: 350,
-								offsetX: 5,
-								offsetY: 5,
-								contentAsHTML:true,
-								//arrow: false,
-								interactive: true,
-								interactiveTolerance: 550
-							});
-                        </script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

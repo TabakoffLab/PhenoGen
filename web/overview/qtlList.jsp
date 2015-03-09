@@ -18,7 +18,8 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="Screen Shot of the form for entering a list of bQTLs or eQTLs.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlList.jpg" title=""><img src="web/overview/qtlList.jpg"  style="width:100%;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/qtlList.jpg" title="">
+                                <img src="web/overview/qtlList_300.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -40,5 +41,4 @@
                         </div>
                    </div>
 
-<script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

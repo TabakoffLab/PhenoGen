@@ -19,15 +19,18 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="The muliMiR tab showing how you can start a new multiMiR Analysis.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glmultimir_new.jpg" title="The muliMiR tab showing how you can start a new multiMiR Analysis."><img src="web/overview/glmultimir_new.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glmultimir_new.jpg" title="The muliMiR tab showing how you can start a new multiMiR Analysis.">
+                                <img src="web/overview/glmultimir_new_200.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="The multiMiR tab with a table of the previously run analyses and the summary table.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glmultimir_sum.jpg" title="The multiMiR tab with a table of the previously run analyses and the summary table."><img src="web/overview/glmultimir_sum.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glmultimir_sum.jpg" title="The multiMiR tab with a table of the previously run analyses and the summary table.">
+                                <img src="web/overview/glmultimir_sum_200.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="The multiMiR tab with a table of the previously run analyses and the table with a breakdown of each gene and database.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glmultimir_sumdetail.jpg" title="The multiMiR tab with a table of the previously run analyses and the table with a breakdown of each gene and database."><img src="web/overview/glmultimir_sumdetail.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glmultimir_sumdetail.jpg" title="The multiMiR tab with a table of the previously run analyses and the table with a breakdown of each gene and database.">
+                                <img src="web/overview/glmultimir_sumdetail_200.jpg"   title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -50,5 +53,4 @@
                     </div>
 
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

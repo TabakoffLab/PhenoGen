@@ -19,15 +19,18 @@
                             <TR>
                             <TD>
                             <span class="tooltip"  title="Example output for analysis statistics from analysis that generated this list.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_stats.jpg" title="Example output for analysis statistics from analysis that generated this list."><img src="web/overview/glValues_stats.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_stats.jpg" title="Example output for analysis statistics from analysis that generated this list.">
+                                <img src="web/overview/glValues_stats_200.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                    			<span class="tooltip"  title="Example of method to view expression values.   Unlike analysis statistics you may extract expression values from any dataset using the same arrays.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_dataset.jpg" title="Example of method to view expression values.   Unlike analysis statistics you may extract expression values from any dataset using the same arrays."><img src="web/overview/glValues_dataset.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_dataset.jpg" title="Example of method to view expression values.   Unlike analysis statistics you may extract expression values from any dataset using the same arrays.">
+                                    <img src="web/overview/glValues_dataset_200.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                             <span class="tooltip"  title="Example output for expression value from the selected dataset.<BR>Click to view a larger image.">
-                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_expression.jpg" title="Example output for expression value from the selected dataset."><img src="web/overview/glValues_expression.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                        	<a class="fancybox" rel="fancybox-thumb" href="web/overview/glValues_expression.jpg" title="Example output for expression value from the selected dataset.">
+                                    <img src="web/overview/glValues_expression_200.jpg"  title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -49,5 +52,4 @@
                     </div>
 
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

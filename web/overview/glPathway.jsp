@@ -16,15 +16,18 @@
                             <TR>
                             <TD>
                              <span class="tooltip"  title="Example result list that allows you to load results or start a new analysis.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_list.jpg" title="Example result list that allows you to load results or start a new analysis."><img src="web/overview/glPathway_list.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_list.jpg" title="Example result list that allows you to load results or start a new analysis.">
+                                <img src="web/overview/glPathway_list.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                                <span class="tooltip"  title="Table listing pathways found to be represented in  the gene list.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_table.jpg" title="Table listing pathways found to be represented in  the gene list."><img src="web/overview/glPathway_table.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_table.jpg" title="Table listing pathways found to be represented in  the gene list.">
+                                <img src="web/overview/glPathway_table.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
                             </TD>
                             <TD>
                              <span class="tooltip"  title="Image of pathway linked from the table above.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_pathway.jpg" title="Image of pathway linked from the table above."><img src="web/overview/glPathway_pathway.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/overview/glPathway_pathway.jpg" title="Image of pathway linked from the table above.">
+                                <img src="web/overview/glPathway_pathway.jpg"  style="width:200px;" title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -48,5 +51,4 @@
                         
                     </div>
     
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>
+<%@ include file="/web/overview/ovrvw_js.jsp" %>

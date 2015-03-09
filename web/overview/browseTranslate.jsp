@@ -18,7 +18,8 @@
                             <TR>
                             <TD>
                              <span class="tooltip"  title="The translation window showing several previous results.  Simply click a row to view the region or click the link to open in a new window allowing you to open multiple regions at once.<BR>Click to view a larger image.">
-                        <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseTranslate.jpg" title="The translation window showing several previous results.  Simply click a row to view the region or click the link to open in a new window allowing you to open multiple regions at once."><img src="web/overview/browseTranslate.jpg"  style="width:250px;" title="Click to view a larger image"/></a></span>
+                        <a class="fancybox" rel="fancybox-thumb" href="web/overview/browseTranslate.jpg" title="The translation window showing several previous results.  Simply click a row to view the region or click the link to open in a new window allowing you to open multiple regions at once.">
+                            <img src="web/overview/browseTranslate_150.jpg" title="Click to view a larger image"/></a></span>
                             </TD>
                             </TR>
                             </table>
@@ -38,8 +39,6 @@
                         </div>
                     </div>
 
-    
-    <script src="javascript/indexGraphAccordion1.0.js">
-						</script>						
+<%@ include file="/web/overview/ovrvw_js.jsp" %>						
 
     
