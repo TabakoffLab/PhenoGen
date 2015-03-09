@@ -103,7 +103,7 @@ pageDescription="Overview of features and data available in the new Genome/Trans
                 
                 <div class="demoVideo" style="display:inline-block;float:right;position:relative;top:-600px; padding-right:10px;">
                 			<span style="text-align:center;"><h3>New! Browser Navigation Demo</h3></span>
-                        	<video id="demoVid1" width="375"  controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo.png" preload="none">
+                        	<video id="demoVid1" width="375"  controls="controls" poster="<%=contextRoot%>web/demo/BrowserNavDemo_350.png" preload="none">
                                 <source src="<%=contextRoot%>web/demo/BrowserNavDemo.mp4" type="video/mp4">
                                 <source src="<%=contextRoot%>web/demo/BrowserNavDemo.webm" type="video/webm">
                             
@@ -112,7 +112,7 @@ pageDescription="Overview of features and data available in the new Genome/Trans
                         	</video><BR />
                             <div id="showOpenLargeVideo" style="display:none;text-align:center; width:100%;"><a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" class="button" style="width:180px;" target="_blank" >View larger version</a></div>
                             <span style="text-align:center;"><h3>New! Custom Track/View Demo</h3></span>
-                        	<video id="demoVid1" width="375"  controls="controls" poster="<%=contextRoot%>web/demo/customTrackDemo.png" preload="none">
+                        	<video id="demoVid1" width="375"  controls="controls" poster="<%=contextRoot%>web/demo/customTrackDemo_350.png" preload="none">
                                 <source src="<%=contextRoot%>web/demo/customTrackDemo.mp4" type="video/mp4">
                                 <source src="<%=contextRoot%>web/demo/customTrackDemo.webm" type="video/webm">
                             
@@ -121,7 +121,7 @@ pageDescription="Overview of features and data available in the new Genome/Trans
                         	</video><BR />
                             <div id="showOpenLargeVideo" style="display:none;text-align:center; width:100%;"><a href="<%=contextRoot%>web/demo/largerDemo.jsp?demoPath=web/demo/customTrackDemo" class="button" style="width:180px;" target="_blank" >View larger version</a></div>
                         	<span style="text-align:center;"><h3>Previous overview of tools available<BR />(all the tools are available navigation to them has changed,<BR /> an update will be available soon)</h3></span>
-                        	<video id="demoVid" width="375"  controls="controls" poster="<%=contextRoot%>web/demo/detailed_transcript_fullv3.png" preload="none">
+                        	<video id="demoVid" width="375"  controls="controls" poster="<%=contextRoot%>web/demo/detailed_transcript_fullv3_350.png" preload="none">
                                 <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.mp4" type="video/mp4">
                                 <source src="<%=contextRoot%>web/demo/detailed_transcript_fullv3.webm" type="video/webm">
                             
