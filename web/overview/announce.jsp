@@ -21,7 +21,7 @@
                         <div style="margin-left:5px;">
                         <%if(request.getServerPort()==80){%>
                         
-                            We now support https to keep your connections more secure.  We will eventually redirect traffic all to the secure site, 
+                            We now support https to keep your connections more secure.  We will eventually redirect all traffic to the secure site, 
                             but for now feel free to try it out here: <a href="https://phenogen.ucdenver.edu/PhenoGen/"> https://phenogen.ucdenver.edu/PhenoGen/</a>
                         
                         <%}else{%>

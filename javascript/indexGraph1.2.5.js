@@ -500,6 +500,7 @@ startRunningSelection(10000);
 function startRunningSelection(delay){
 	if(timeoutHandle==-1 ){
 		runSelection(delay);
+                updatedCount=0;
 	}
 }
 
@@ -527,9 +528,9 @@ function runSelection(delay){
 			}
 			displayOverride=0;
                         updatedCount++;
-                        //if(updatedCount<20){
+                        if(updatedCount<150){
                             runSelection(10000);
-                        /*}else{
+                        }/*else{
                             location.reload();
                         }*/
 		},delay);
