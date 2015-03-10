@@ -4405,14 +4405,18 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	}
 
 	if(trackClass==="braincoding"){
+		that.ttTrackList.push("spliceJnct");
 		that.ttTrackList.push("illuminaPolyA");
 	}else if(trackClass==="liverTotal"){
+		that.ttTrackList.push("liverspliceJnct");
 		that.ttTrackList.push("liverilluminaTotalPlus");
 		that.ttTrackList.push("liverilluminaTotalMinus");
 	}else if(trackClass==="heartTotal"){
+		that.ttTrackList.push("heartspliceJnct");
 		that.ttTrackList.push("heartilluminaTotalPlus");
 		that.ttTrackList.push("heartilluminaTotalMinus");
 	}else if(trackClass==="brainTotal"){
+		that.ttTrackList.push("brainspliceJnct");
         that.ttTrackList.push("brainilluminaTotalPlus");
         that.ttTrackList.push("brainilluminaTotalMinus");
     }
@@ -4690,7 +4694,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
         }else if(typeof that.prevSetting!=='undefined' && that.prevSetting.density!==that.density){
             that.draw(that.data);
         }else if((len<that.trxCutoff&&that.drawnAs==="Gene")||(len>=that.trxCutoff&&that.drawnAs==="Trx"&&that.drawAs!=="Trx")||(that.drawnAs==="Gene" && $("#forceTrxCBX"+that.gsvg.levelNumber).is(":checked"))){
-			that.draw(that.data);	
+			that.draw(that.data);
 		}else{
 			
 				if(len<that.trxCutoff&&that.drawnAs==="Trx"&&that.drawAs!=="Trx"){
@@ -4772,7 +4776,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 				}else if(overrideTrx===1 || that.drawAs==="Trx"){
 					var txG=that.svg.selectAll(".trx"+that.gsvg.levelNumber);
-					txG//.attr("transform",function(d,i){ return "translate("+txXScale(d.getAttribute("start"))+","+i*15+")";})
+					txG.attr("transform",function(d,i){ return "translate("+that.XScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";})
 						.each(function(d,i){
 							var cdsStart=d.getAttribute("start");
 							var cdsStop=d.getAttribute("stop");
@@ -4886,8 +4890,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							that.svg.attr("height", 30);
 						}else if(that.density===2){
 							//that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx"+that.gsvg.levelNumber).size()+1)*15);
-                                                        that.svg.attr("height", (that.trackYMax+1)*15);
-                                                }else if(that.density===3){
+                            that.svg.attr("height", (that.trackYMax+1)*15);
+                        }else if(that.density===3){
 							that.svg.attr("height", (that.trackYMax+1)*15);
 						}
 				}
@@ -8901,21 +8905,36 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 	that.xmlTag="Feature";
 	that.xmlTagBlockElem="block";
 	that.idPrefix="splcJnct";
-	if(trackClass=="liverspliceJnct"){
+	if(trackClass==="liverspliceJnct"){
 		that.idPrefix="lvrsplcJnct";
-	}else if(trackClass=="heartspliceJnct"){
+	}else if(trackClass==="heartspliceJnct"){
 		that.idPrefix="hrtsplcJnct";
 	}
 	that.ttSVG=1;
 	that.ttTrackList=new Array();
-	that.ttTrackList[0]="liverspliceJnct";
+	that.ttTrackList.push(trackClass);
+	/*that.ttTrackList[0]="liverspliceJnct";
 	if(trackClass=="spliceJnct"){
 		that.ttTrackList[0]="splcJnct";
-	}
-	that.ttTrackList[1]="ensemblcoding";
-	that.ttTrackList[2]="braincoding";
-	that.ttTrackList[3]="liverTotal";
-	that.ttTrackList[4]="refSeq";
+	}*/
+	that.ttTrackList.push("ensemblcoding");
+	that.ttTrackList.push("braincoding");
+	that.ttTrackList.push("brainTotal");
+	that.ttTrackList.push("liverTotal");
+	that.ttTrackList.push("heartTotal");
+	that.ttTrackList.push("refSeq");
+	if(trackClass==="splcJnct"){
+		that.ttTrackList.push("illuminaPolyA");
+	}else if(trackClass==="liverspliceJnct"){
+		that.ttTrackList.push("liverilluminaTotalPlus");
+		that.ttTrackList.push("liverilluminaTotalMinus");
+	}else if(trackClass==="heartspliceJnct"){
+		that.ttTrackList.push("heartilluminaTotalPlus");
+		that.ttTrackList.push("heartilluminaTotalMinus");
+	}else if(trackClass==="brainspliceJnct"){
+        that.ttTrackList.push("brainilluminaTotalPlus");
+        that.ttTrackList.push("brainilluminaTotalMinus");
+    }
 	that.colorValueField="readCount";
 	that.colorScale=d3.scale.linear().domain([1,1000]).range(["#E6E6E6","#000000"]);
 	that.legendLbl="Read Depth";
