@@ -4776,7 +4776,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 				}else if(overrideTrx===1 || that.drawAs==="Trx"){
 					var txG=that.svg.selectAll(".trx"+that.gsvg.levelNumber);
-					txG.attr("transform",function(d,i){ return "translate("+that.XScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";})
+					txG.attr("transform",function(d,i){ return "translate(0,"+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";})
 						.each(function(d,i){
 							var cdsStart=d.getAttribute("start");
 							var cdsStop=d.getAttribute("stop");
@@ -6228,7 +6228,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			}else if(overrideTrx==1 || that.drawAs=="Trx"){
 				var txG=that.svg.selectAll("g.trx"+that.gsvg.levelNumber);
 			
-				txG//.attr("transform",function(d,i){ return "translate("+txXScale(d.getAttribute("start"))+","+i*15+")";})
+				txG.attr("transform",function(d,i){ return "translate(0,"+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";})
 					.each(function(d,i){
 						var cdsStart=d.getAttribute("cdsStart");
 						var cdsStop=d.getAttribute("cdsStop");
