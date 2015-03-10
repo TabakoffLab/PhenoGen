@@ -1554,8 +1554,8 @@ public class GeneDataTools {
             if(!exception && errors!=null && !(errors.equals(""))){
                 status="Error generating track";
                 Email myAdminEmail = new Email();
-                myAdminEmail.setSubject("Exception thrown in Exec_session");
-                myAdminEmail.setContent("There was an error while running "
+                myAdminEmail.setSubject("Error is not null in Exec_session");
+                myAdminEmail.setContent("There was not an exception but error output was not empty while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
                         ")\n\n"+errors);
                 try {

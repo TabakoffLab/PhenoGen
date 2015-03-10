@@ -4424,6 +4424,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	
 	that.color =function(d){
 		var color="#000000";
+		console.log(that.trackClass);
 		if(that.trackClass==="ensemblcoding"){
 			color="#DFC184";
 		}else if(that.trackClass==="braincoding"){
@@ -4435,8 +4436,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			color="#B58AA5";
 		}else if(that.trackClass==="brainnoncoding"){
 			color="#CECFCE";
-            if(d.getAttribute("strain")!==null && typeof d.getAttribute("strain") !=='undefined' && d.getAttribute("strain")!=="All"){
-                color=that.strainSpecColor(color,d);
+            if(d.getAttribute("strain")!==null && typeof d.getAttribute("strain") !=='undefined' && d.getAttribute("strain").toUpperCase()==="BNLX"){
+            	color="#3E75FF";
+            }else if(d.getAttribute("strain")!==null && typeof d.getAttribute("strain") !=='undefined' && (d.getAttribute("strain").toUpperCase()==="SHR"||d.getAttribute("strain").toUpperCase()==="SHRH")){
+            	color="#FE7596";
             }
 		}else if(that.trackClass==="ensemblsmallnc"){
 			color="#FFCC00";
@@ -4488,6 +4491,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
                 b=255;
             }
             color="#"+r.toString(16)+g.toString(16)+b.toString(16);
+            console.log("strainSpecColor:"+color);
             return color;
     };
 
@@ -4528,7 +4532,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			color="#B58AA5";
 		}else if(that.trackClass==="brainnoncoding"){
 			color="#CECFCE";
-            color=that.pieStrainSpecColor(color,d.data.names);
+            if(d.data.names!==null && typeof d.data.names !=='undefined' && d.data.names.toUpperCase()==="BNLX"){
+            	color="#3E75FF";
+            }else if(d.data.names!==null && typeof d.data.names !=='undefined' && (d.data.names.toUpperCase()==="SHR"||d.data.names.toUpperCase()==="SHRH")){
+            	color="#FE7596";
+            }
 		}else if(that.trackClass==="ensemblsmallnc"){
 			color="#FFCC00";
 		}else if(that.trackClass==="brainsmallnc"){

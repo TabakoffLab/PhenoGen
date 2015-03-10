@@ -66,6 +66,7 @@ sub readSpliceJunctFromDB{
             $ret=$dsid;
             $$version=$ver;
         }
+        $query_handle1->finish();
 
 	$query ="Select sj.RNA_junction_id,sj.exon1_start,sj.exon1_stop,sj.exon2_start,sj.exon2_stop,sj.JNCT_NAME,sj.READ_COUNT,sj.Sample_count,sj.strand,c.name as \"chromosome\"
 			from rna_splice_junction sj, chromosomes c 

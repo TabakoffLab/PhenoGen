@@ -51,7 +51,9 @@ public class ExecHandler {
                 errorFileContents = myFileHandler.getFileContents(new File(errorFileName));
                 execErrors="";
                 for (int i=0; i<errorFileContents.length; i++) {
+                    if(errorFileContents[i]!=null && !errorFileContents[i].equals("")){
                         execErrors = execErrors + "\n" + errorFileContents[i];
+                    }
                 }
             }catch(IOException e){
                 log.error("Error reading exec_error file contents.",e);
