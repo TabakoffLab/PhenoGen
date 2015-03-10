@@ -499,11 +499,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
         <%}%>
     <%}%>
   </select>
-  <!--<select name="defaultView" id="defaultView">
-  	<option value="viewGenome" <%if(defView.equals("viewGenome")){%>selected<%}%>>Genome</option>
-    <option value="viewTrxome" <%if(defView.equals("viewTrxome")){%>selected<%}%>>Transcriptome</option>
-    <option value="viewAll" <%if(defView.equals("viewAll")){%>selected<%}%>>Both</option>
-  </select>-->
+
   </label>
   <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" onClick="return displayWorking()">
  <!--<span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
@@ -537,6 +533,7 @@ Or
 
 <script type="text/javascript">
 	var organism="<%=myOrganism%>";
+        var defaultView=<%=defView%>;
 	var pathPrefix="web/GeneCentric/";
 	<%if(userLoggedIn.getUser_name().equals("anon")){%>
 		var uid=0;
@@ -685,6 +682,7 @@ Or
 						return ret;
 					});
 		opt.exit().remove();
+                $("#defaultView").val(defaultView);
 	}
 
 	
