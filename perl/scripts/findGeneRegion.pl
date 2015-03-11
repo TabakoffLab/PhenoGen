@@ -464,4 +464,4 @@ sub createXMLFile
 	# Example call:
 	# perl writeXML.pl /Users/clemensl/TestingOutput/ /Users/clemensl/TestingOutput/ /Users/clemensl/TestingOutput/gene.xml Mouse Core ENSMUSG00000029064
 
-1;
+exit 0;

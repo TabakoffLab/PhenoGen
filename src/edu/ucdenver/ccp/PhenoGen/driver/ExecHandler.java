@@ -123,7 +123,15 @@ public class ExecHandler {
                         errorStream.close();
 
                         if (p.exitValue() != 0) {
-                                
+                            String functStr="\t"+functionArgs[0];
+                            if(functionArgs.length>3){
+                                functStr=functStr+","+functionArgs[1]+","+functionArgs[2]+"\n";
+                            }else if(functionArgs.length>2){
+                                functStr=functStr+","+functionArgs[1]+"\n";
+                            }
+                            log.info("Error Running:\n"+functStr);
+                            log.info("Exec exit value was:"+p.exitValue());
+                            
                         	/*errorFileContents = myFileHandler.getFileContents(new File(errorFileName));
                         	outputFileContents = myFileHandler.getFileContents(new File(outputFileName));
                         	for (int i=0; i<errorFileContents.length; i++) {

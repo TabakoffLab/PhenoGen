@@ -1529,6 +1529,7 @@ public class GeneDataTools {
                 status="successful";
             } catch (ExecException e) {
                 exception=true;
+                e.printStackTrace(System.err);
                 status="Error generating track";
                 log.error("In Exception of run writeXML_Track.pl Exec_session", e);
                 setError("Running Perl Script to get Gene and Transcript details/images.");
@@ -1547,6 +1548,7 @@ public class GeneDataTools {
                         //throw new RuntimeException();
                     }
                 }
+                
             }
 
             String errors=myExec_session.getErrors();
