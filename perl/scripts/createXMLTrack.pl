@@ -466,6 +466,30 @@ sub createRNACountXMLTrack{
 	close OFILE;
 	return 1;
 }
+sub createRNAFullCountXMLTrack{
+	my($helicosHOHRef, $outputFile) = @_; 
+	my %helicosHOH = %$helicosHOHRef;
+
+        my %newHOH;
+        my $listRef=$helicosHOH{Count};
+        my @list=@$listRef;
+        my $newCount=0;
+        foreach my $cnt(@list){
+            $newHOH{Count}[$newCount]=$cnt;
+            $newCount++;
+            $newHOH{Count}[$newCount]{start}=$cnt->{stop};
+            $newHOH{Count}[$newCount]{stop}=$cnt->{stop};
+            $newHOH{Count}[$newCount]{count}=$cnt->{count};
+            $newCount++;
+        }
+
+	open OFILE, '>', $outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
+	my $xml = new XML::Simple (RootName=>'RNACountList');
+	my $data = $xml->XMLout(\%newHOH);
+	print OFILE $data;
+	close OFILE;
+	return 1;
+}
 sub createRefSeqXMLTrack{
 	my($refSeqHOHRef, $outputFile) = @_; 
 	my %refSeqHOH = %$refSeqHOHRef;

@@ -17,7 +17,7 @@
 
         String datasetArrayType = "";
         log.debug("action = "+action + ", dataset_id= " + selectedDataset.getDataset_id() +" version = "+selectedDatasetVersion.getVersion());
-		log.debug("geneSymbolsHM.size()="+geneSymbolsHM.size());
+	log.debug("geneSymbolsHM.size()="+geneSymbolsHM.size());
         Dataset.Group[] groups = null;
         String previousGeneNames = "";
         Set setOfIdentifiers = null;
