@@ -19,6 +19,7 @@
 
         String[] rErrorMsg = null;
         String rExceptionErrorMsg = "";
+        HashMap<String,String> geneSymbolsHM=new HashMap<String,String>();
 
 	%><%@include file="/web/geneLists/include/selectGeneList.jsp"%><%
 

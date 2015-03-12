@@ -448,8 +448,8 @@ sub readRNACountsDataFromMongo{
 			$countHOH{Count}[$listCount]{count}=$obj->{'COUNT'};
 		}else{
 			if($listCount>0 and $countHOH{Count}[$listCount-1]{stop}<($obj->{'CHR_START'}-1)){
-				$countHOH{Count}[$listCount]{start}=$countHOH{Count}[$listCount-1]{stop}+1;
-				$countHOH{Count}[$listCount]{stop}=$obj->{'CHR_START'}-1;
+				$countHOH{Count}[$listCount]{start}=$countHOH{Count}[$listCount-1]{stop};
+				$countHOH{Count}[$listCount]{stop}=$obj->{'CHR_START'};
 				$countHOH{Count}[$listCount]{count}=0;
 				$listCount++;
 			}

@@ -9012,7 +9012,7 @@ function CustomCountTrack(gsvg,data,trackClass,density,additionalOptions){
 			that.showLoading();
 			that.bin=that.calculateBin(len);
 			var tag="Count";
-			var file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/count"+that.trackClass+".xml";
+			var file=dataPrefix+"tmpData/trackXML/"+that.gsvg.folderName+"/tmp/"+tmpMin+"_"+tmpMax+".count."+that.trackClass+".xml";
 			var bedFile=dataPrefix+"tmpData/trackUpload/"+that.trackClass.substr(6);
 			var type="bg";
 			var web="";
@@ -9385,7 +9385,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.showLoading();
 		that.bin=that.calculateBin(len);
 		var tag="Count";
-		var file=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/count"+that.trackClass+".xml";
+		var file=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/tmp/"+tmpMin+"_"+tmpMax+".count."+that.trackClass+".xml";
 		if(that.bin>0){
 			tmpMin=tmpMin-(that.bin*2);
 			tmpMin=tmpMin-(tmpMin%(that.bin*2));
