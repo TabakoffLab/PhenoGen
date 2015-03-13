@@ -28,6 +28,7 @@
 #	11/20/2007	Laura Saba	Modified: Corrected error when either no genes met significance criteria or only one gene met 
 # 					  significance criteria
 #	3/1/12		Spencer Mahaffey Modified: Read/Write HDF5 files.
+# 3/13/15   Spencer Mahaffey Modified: Changed HDF5 methods to rHDF5 methods from h5r due to dropped support of h5r
 #
 ####################################################
 
