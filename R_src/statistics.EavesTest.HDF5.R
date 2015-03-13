@@ -32,7 +32,7 @@
 ####################################################
 
 
-statistics.EavesTest.HDF5 <- function(InputFile, Version, GeneNumberFile, pvalue) {
+statistics.EavesTest.HDF5 <- function(InputFile, SampleFile, VersionPath, GeneNumberFile, pvalue) {
 
   ###################################################
   ###################################################
@@ -50,33 +50,48 @@ statistics.EavesTest.HDF5 <- function(InputFile, Version, GeneNumberFile, pvalue
   ## process data	
   ##						
 	
-	#load(InputFile)
-	require(h5r)
-	h5 <- H5File(InputFile, mode = "w")
-	version<-getH5Group(h5, Version)
-	filters<-getH5Group(version, "Filters")
-	d <- getH5Dataset(filters, "fData")
-	Avgdata<-array(dim=c(dim(d)[1],dim(d)[2]))
-	Avgdata[,]<-d[1:dim(d)[1],dim(d)[2]]
-	ps <- getH5Dataset(filters, "fProbeset")
-	Gnames<-ps[1:dim(d)[1]]
-	s <- getH5Dataset(version, "Samples")
-	Snames<-s[1:attr(s,"dims")[1]]
+  vPath<-strsplit(x=Version,split='/',fixed=TRUE)
+  Version<-vPath[[1]][1]
+  Day<-vPath[[1]][2]
+  exactTime<-vPath[[1]][3]
+  
+  require(rhdf5)
+  h5 <- H5Fopen (InputFile,flags = h5default("H5F_ACC"))
+  gVersion<-H5Gopen(h5, Version)
+  gFVer<-H5Gopen(h5, VersionPath)
+  did <- H5Dopen(gFVer,  "fData")
+  sid <- H5Dget_space(did)
+  ds <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  # transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+  # to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+  # in the future as it wastes CPU time and Memory
+  ds=t(ds)
+  Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
+  Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
+  
+  did <- H5Dopen(gFVer,  "fProbeset")
+  sid <- H5Dget_space(did)
+  ps <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  Gnames<-ps[]
+  
+  ins <- scan(SampleFile, list(""))
+  Snames<-ins[[1]]
+
 	rownames(Avgdata)<-Gnames
 	colnames(Avgdata)<-Snames
-	gr <- getH5Dataset(version, "Grouping")
-	grouping<-gr[1:attr(gr,"dims")[1]]
-	
-	#Don't need to load as it is not being used
-	groups <- list()
-	for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
-	#dabg <- getH5Dataset(version, "DABGPval")
-	#DabgVal<-array(dim=c(dim(d)[1],dim(d)[2]))
-	#DabgVal[,]<-dabg[1:dim(d)[1],dim(d)[2]]
-	#Absdata <- (DabgVal<0.0001)*2 - 1
-
-
-
+  
+  did <- H5Dopen(gVersion,  "Grouping")
+  sid <- H5Dget_space(did)
+  gs <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  grouping<-gs[1:dim(gs)[1]]  
+  groups <- list()
+  for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)  
 
 	cat('running Eaves Test ....\n\n')
 
@@ -233,20 +248,38 @@ statistics.EavesTest.HDF5 <- function(InputFile, Version, GeneNumberFile, pvalue
 
 
 	Procedure <- paste('Function=statistics.EavesTest.R',';','Stat.method = Eaves Test',';','pvalue threshold=',pvalue,sep = '')
+  cat(file = GeneNumberFile, length(Gnames))
+  
+  if(H5Aexists (gFVer, "statMethod")){
+    H5Adelete (gFVer, "statMethod")
+  }
+  gSM <- h5createAttribute (gFVer, "statMethod")
+  H5Awrite(gSM,Procedure)
+  H5Aclose(gSM)
+	#createH5Attribute(filters, "statMethod", Procedure, overwrite = TRUE)
 	
-	createH5Attribute(filters, "statMethod", Procedure, overwrite = TRUE)
-	cat(file = GeneNumberFile, length(Gnames))
-	
-	
-	createH5Dataset(filters,"fData",Avgdata,dType="double",chunkSizes=c(dim(Avgdata)[1],dim(Avgdata)[2]),overwrite=T)
-	createH5Dataset(filters,"fProbeset",Gnames,dType="integer",chunkSizes=c(length(Gnames)),overwrite=T)
-	createH5Dataset(filters,"statistics",stats,dType="double",chunkSizes=c(dim(stats)[1],dim(stats)[2]),overwrite=T)
-	createH5Dataset(filters,"pval",p,dType="double",chunkSizes=c(length(p)),overwrite=T)
+  #Did not output the following seems to be a mistake that has been missed up until now.  Need to double check with testing.
+	#createH5Dataset(filters,"fData",Avgdata,dType="double",chunkSizes=c(dim(Avgdata)[1],dim(Avgdata)[2]),overwrite=T)
+	#createH5Dataset(filters,"fProbeset",Gnames,dType="integer",chunkSizes=c(length(Gnames)),overwrite=T)
+  stats=t(stats)
+  sid <- H5Screate_simple (dim(stats)[1],dim(stats)[2] )
+  did <- H5Dcreate (gFVer,"Statistics", "H5T_IEEE_F64LE", sid)
+  H5Dwrite(did,stats)
+  H5Dclose(did)
+  H5Sclose(sid)
+	#createH5Dataset(filters,"Statistics",stats,dType="double",chunkSizes=c(dim(stats)[1],dim(stats)[2]),overwrite=T)
+  sid <- H5Screate_simple (length(p))
+  did <- H5Dcreate (gFVer,"Pval", "H5T_IEEE_F64LE", sid)
+  H5Dwrite(did,p)
+  H5Dclose(did)
+  H5Sclose(sid) 
+	#createH5Dataset(filters,"pval",p,dType="double",chunkSizes=c(length(p)),overwrite=T)
+  H5Gclose(gVersion)
+  H5Gclose(gFVer)
+  H5Fclose(h5)
+  
+  
 	#may need to output adjp but none of the others do and it is either empty or p so shouldn't need to output it.  MultipleTest.R seems to use p only
 	#createH5Dataset(multitest,"adjp",adjp,dType="double",chunkSizes=c(length(adjp)))
-
 	##save(Absdata, Avgdata, Gnames, grouping, groups, Snames, stats, p, Procedure, adjp,  file = OutputFile)
-
-
-	
 }  #### END 
