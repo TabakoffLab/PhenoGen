@@ -18,32 +18,53 @@ Affymetrix.HeatMap.output.Specific.Gene.HDF5 <- function(InputFile,VersionPath,S
 	#####################
 	#    Load Data      #
 	#####################
-
-	#load(RdataFileName)
-	require(h5r)
-	h5 <- H5File(InputFile, mode = "r")
-	gVersion<-getH5Group(h5, VersionPath)
-	ds <- getH5Dataset(gVersion, "Data")
+	require(rhdf5)
+	h5 <- H5Fopen (InputDataFile,flags = h5default("H5F_ACC"))
+	gVersion<-H5Gopen(h5, VersionPath)
+	did <- H5Dopen(gVersion,  "Data")
+	sid <- H5Dget_space(did)
+	ds <- H5Dread(did)
+	H5Dclose(did)
+	H5Sclose(sid)
+	
 	Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
 	Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
-	ps <- getH5Dataset(gVersion, "Probeset")
+	
+	did <- H5Dopen(gVersion,  "Probeset")
+	sid <- H5Dget_space(did)
+	ps <- H5Dread(did)
+	H5Dclose(did)
+	H5Sclose(sid)
 	Gnames<-ps[]
 	ins <- scan(SampleFile, list(""))
 	Snames<-ins[[1]]
 	rownames(Avgdata)<-Gnames
 	colnames(Avgdata)<-Snames
+  
 	
-	gs <- getH5Dataset(gVersion, "Grouping")
+  did <- H5Dopen(gVersion,  "Grouping")
+	sid <- H5Dget_space(did)
+	gs <- H5Dread(did)
+	H5Dclose(did)
+	H5Sclose(sid)
 	grouping<-gs[1:attr(gs,"dims")[1]]
 	groups <- list()
 	for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
-	
-	dabgds <- getH5Dataset(gVersion, "DABGPval")
+  
+	did <- H5Dopen(gVersion,  "DABGPval")
+	sid <- H5Dget_space(did)
+	dabgds <- H5Dread(did)
+	H5Dclose(did)
+	H5Sclose(sid)
 	DabgVal<-array(dim=c(dim(dabgds)[1],dim(dabgds)[2]))
 	DabgVal[,]<-dabgds[1:dim(dabgds)[1],1:dim(dabgds)[2]]
 	Absdata <- (DabgVal<0.0001)*2 - 1
 	rownames(Absdata)<-Gnames
 	colnames(Absdata)<-Snames
+  
+  
+	H5Gclose(gVersion)
+	H5Fclose(h5)
 		
 	objects()
 	dim(Avgdata)

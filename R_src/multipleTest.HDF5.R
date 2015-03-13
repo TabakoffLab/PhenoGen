@@ -130,44 +130,23 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
   gs <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-  grouping<-gs[1:attr(gs,"dims")[1]]
-  
-	#require(h5r)
-	#h5 <- H5File(InputFile, mode = "w")
-	#gVersion<-getH5Group(h5, Version)
-	#gFilters<-getH5Group(gVersion, "Filters")
-	#gDay<-getH5Group(gFilters,Day)
-	#gFVer<-getH5Group(gDay,exactTime)
-	#ds <- getH5Dataset(gFVer, "fData")
-  #Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
-  #Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
-	#ps <- getH5Dataset(gFVer, "fProbeset")
-	#Gnames<-ps[]
-	#rownames(Avgdata)<-Gnames
-	#gs <- getH5Dataset(gVersion, "Grouping")
-	#grouping<-gs[1:attr(gs,"dims")[1]]
-	
+  grouping<-gs[1:attr(gs,"dims")[1]]	
 	groups <- list()
 	for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
-	#Don't need to load as it is not being used
-	#dabg <- getH5Dataset(gVersion, "DABGPval")
-	#DabgVal<-array(dim=c(dim(d)[1],dim(d)[2]))
-	#DabgVal[,]<-dabg[1:dim(d)[1],dim(d)[2]]
-	#Absdata <- (DabgVal<0.0001)*2 - 1
 	
   did <- H5Dopen(gFVer,  "Pval")
   sid <- H5Dget_space(did)
   pvs <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-	#pvs <- getH5Dataset(gFVer, "Pval")
+	
 	p<-pvs[]
   did <- H5Dopen(gFVer,  "Statistics")
   sid <- H5Dget_space(did)
   ss <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-	#ss <- getH5Dataset(gFVer, "Statistics")
+
 	stats<-array(dim=c(dim(ss)[1],dim(ss)[2]))
 	stats[,]<-ss[1:dim(ss)[1],1:dim(ss)[2]]
 	
