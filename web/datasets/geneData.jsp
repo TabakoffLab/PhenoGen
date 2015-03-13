@@ -248,8 +248,8 @@
                 <div class="brClear"></div>
                 <div class="menuBar">
                         <div id="tabMenu">
-                                <div id="arrayValues">Array Values</div><span>|</span>
-                                <div id="groupValues">Group Means</div>
+                                <div id="arrayValues" class="left inlineButton">Array Values</div><span>|</span>
+                                <div id="groupValues" class="left inlineButton">Group Means</div>
                         </div> <!-- tabMenu -->
                 </div> <!-- menuBar -->
                 <div class="brClear"></div>

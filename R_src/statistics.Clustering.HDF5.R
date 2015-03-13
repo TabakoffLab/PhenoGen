@@ -52,6 +52,7 @@
 #	3/27/12 Spencer Mahaffey Modified: Read/Write HDF5 and support multiple filters/stats per version.
 #	3/27/13 Spencer Mahaffey added: 3/27/13 Laura Saba  Modified:	updated coding of kmeans graphic to handle situation when more than 1024 genes/samples are in one cluster (limitation due to color palette)
 #	4/5/13 Spencer Mahaffey	Modified:	Changed line 140-144 adding in Laura Saba's changes to fix a bug.
+# 3/13/15   Spencer Mahaffey Modified: Changed HDF5 methods to rHDF5 methods from h5r due to dropped support of h5r
 #
 #
 ####################################################
@@ -83,31 +84,61 @@ statistics.Clustering.HDF5 <- function(InputFile,VersionPath, SampleFile, Cluste
 	Version<-vPath[[1]][1]
 	Day<-vPath[[1]][2]
 	exactTime<-vPath[[1]][3]
-	require(h5r)
-	h5 <- H5File(InputFile, mode = "w")
-	gVersion<-getH5Group(h5, Version)
-	gFilters<-getH5Group(gVersion, "Filters")
-	gDay<-getH5Group(gFilters,Day)
-	gFVer<-getH5Group(gDay,exactTime)
-	ds <- getH5Dataset(gFVer, "fData")
-	Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
-	Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
-	ps <- getH5Dataset(gFVer, "fProbeset")
-	Gnames<-ps[]
-
+  
+  require(rhdf5)
+  h5 <- H5Fopen (InputFile,flags = h5default("H5F_ACC"))
+  gVersion<-H5Gopen(h5, Version)
+  gFVer<-H5Gopen(h5, VersionPath)
+  did <- H5Dopen(gFVer,  "fData")
+  sid <- H5Dget_space(did)
+  ds <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  # transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+  # to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+  # in the future as it wastes CPU time and Memory
+  ds=t(ds)
+  Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
+  Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
+  
+  did <- H5Dopen(gFVer,  "fProbeset")
+  sid <- H5Dget_space(did)
+  ps <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  Gnames<-ps[]
+  
 	ins <- scan(SampleFile, list(""))
 	Snames<-ins[[1]]
+  
 	rownames(Avgdata)<-Gnames
 	colnames(Avgdata)<-Snames
-	gs <- getH5Dataset(gVersion, "Grouping")
-	grouping<-gs[1:attr(gs,"dims")[1]]
-	#Don't need to load as it is not being used
-	groups <- list()
-	for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
-	dabg <- getH5Dataset(gVersion, "DABGPval")
-	DabgVal<-array(dim=c(dim(dabg)[1],dim(dabg)[2]))
-	DabgVal[,]<-dabg[1:dim(dabg)[1],1:dim(dabg)[2]]
-	Absdata <- (DabgVal<0.0001)*2 - 1
+	
+  did <- H5Dopen(gVersion,  "Grouping")
+  sid <- H5Dget_space(did)
+  gs <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  grouping<-gs[1:dim(gs)[1]]  
+  groups <- list()
+  for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
+  
+  did <- H5Dopen(gVersion,  "DABGPval")
+  sid <- H5Dget_space(did)
+  dabgds <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  dabgds=t(dabgds)
+  DabgVal<-array(dim=c(dim(dabgds)[1],dim(dabgds)[2]))
+  DabgVal[,]<-dabgds[1:dim(dabgds)[1],1:dim(dabgds)[2]]
+  Absdata <- (DabgVal<0.0001)*2 - 1
+  
+  #this was not in the original version may need to remove, but shouldn't cause problems. (?)
+  rownames(Absdata)<-Gnames
+  colnames(Absdata)<-Snames
+  H5Gclose(gVersion)
+  H5Gclose(gFVer)
+  H5Fclose(h5)
 
   ####  Update Procedure variable
   Procedure <- paste( "Function=statistics.Clustering.R",';','Clustering.method=',ClusterType,';','Cluster.object=',ClusterObject,'|',sep = '')
@@ -139,7 +170,11 @@ statistics.Clustering.HDF5 <- function(InputFile,VersionPath, SampleFile, Cluste
 
 	####  Calculate Group Means and Group Standard Deviations
 	GroupMeans<-c()
-	#	for (i in 1:length(unique.groups)) GroupMeans <- cbind(GroupMeans,rowMeans(Avgdata[,groups[[unique.groups[i]]]]))	for (i in 1:length(unique.groups)){		if(length(groups[[unique.groups[i]]])>1) GroupMeans <- cbind(GroupMeans,rowMeans(Avgdata[,groups[[unique.groups[i]]]]))		if(length(groups[[unique.groups[i]]])==1) GroupMeans <- cbind(GroupMeans,Avgdata[,groups[[unique.groups[i]]]])		}
+	#	for (i in 1:length(unique.groups)) GroupMeans <- cbind(GroupMeans,rowMeans(Avgdata[,groups[[unique.groups[i]]]]))
+	for (i in 1:length(unique.groups)){
+		if(length(groups[[unique.groups[i]]])>1) GroupMeans <- cbind(GroupMeans,rowMeans(Avgdata[,groups[[unique.groups[i]]]]))
+		if(length(groups[[unique.groups[i]]])==1) GroupMeans <- cbind(GroupMeans,Avgdata[,groups[[unique.groups[i]]]])
+		}
 	colnames(GroupMeans) <- paste(group.labels$grp.name,"Mean",sep=".")
 	GroupVars <- sqrt(t(apply(Avgdata,groups = groups, unique.groups=unique.groups,1,group.var)))
 	colnames(GroupVars) <- paste(group.labels$grp.name,"StdDev",sep=".")

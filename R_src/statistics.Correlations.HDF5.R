@@ -33,6 +33,7 @@
 #	8/24/07	Laura Saba	Modified:  updated to fit with new correlation format
 #	12/22/08	Laura Saba	Modified: added code to handle groups when no samples are assigned to a group
 #   3/1/12 Spencer Mahaffey Modified: Changed to Read/Write to HDF5 file.
+# 3/13/15   Spencer Mahaffey Modified: Changed HDF5 methods to rHDF5 methods from h5r due to dropped support of h5r
 #
 #
 ####################################################
@@ -54,38 +55,54 @@ statistics.Correlations.HDF5 <- function(InputFile,VersionPath, SampleFile, Phen
   ## process expression data	
   ##						
 	
-  	#load(InputFile)
+  #load(InputFile)
 	vPath<-strsplit(x=VersionPath,split='/',fixed=TRUE)
 	Version<-vPath[[1]][1]
 	Day<-vPath[[1]][2]
 	exactTime<-vPath[[1]][3]
 	#load(InputFile)
 	
-	require(h5r)
-	h5 <- H5File(InputFile, mode = "w")
-	gVersion<-getH5Group(h5, Version)
-	gFilters<-getH5Group(gVersion, "Filters")
-	gDay<-getH5Group(gFilters,Day)
-	gFVer<-getH5Group(gDay,exactTime)
-	ds <- getH5Dataset(gFVer, "fData")
-	Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
-	Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
-	ps <- getH5Dataset(gFVer, "fProbeset")
-	Gnames<-ps[]
+  require(rhdf5)
+  h5 <- H5Fopen (InputFile,flags = h5default("H5F_ACC"))
+  gVersion<-H5Gopen(h5, Version)
+  gFVer<-H5Gopen(h5, VersionPath)
+  did <- H5Dopen(gFVer,  "fData")
+  sid <- H5Dget_space(did)
+  ds <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  # transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+  # to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+  # in the future as it wastes CPU time and Memory
+  ds=t(ds)
+  Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
+  Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
+  
+  did <- H5Dopen(gFVer,  "fProbeset")
+  sid <- H5Dget_space(did)
+  ps <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  Gnames<-ps[]
+  
+  ins <- scan(SampleFile, list(""))
+  Snames<-ins[[1]]
+  
+  rownames(Avgdata)<-Gnames
+  colnames(Avgdata)<-Snames
+  
+  did <- H5Dopen(gVersion,  "Grouping")
+  sid <- H5Dget_space(did)
+  gs <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  grouping<-gs[1:dim(gs)[1]]  
+  groups <- list()
+  for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
 
-	ins <- scan(SampleFile, list(""))
-	Snames<-ins[[1]]
-	rownames(Avgdata)<-Gnames
-	colnames(Avgdata)<-Snames
-	gs <- getH5Dataset(gVersion, "Grouping")
-	grouping<-gs[1:attr(gs,"dims")[1]]
-	#Don't need to load as it is not being used
-	groups <- list()
-	for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
-	#dabg <- getH5Dataset(gVersion, "DABGPval")
-	#DabgVal<-array(dim=c(dim(d)[1],dim(d)[2]))
-	#DabgVal[,]<-dabg[1:dim(d)[1],dim(d)[2]]
-	#Absdata <- (DabgVal<0.0001)*2 - 1
+  H5Gclose(gVersion)
+  H5Gclose(gFVer)
+  H5Fclose(h5)
 
   # Calculate Strain Means
 
@@ -148,15 +165,46 @@ statistics.Correlations.HDF5 <- function(InputFile,VersionPath, SampleFile, Phen
 	cat(file = GeneNumberFile, length(Gnames))
 
 	Procedure <- paste('Function=statistics.Correlations.R',';','Stat.method = Correlation',';','Corr.Type = ',CorrType,sep = '')
-	createH5Attribute(gFVer, "statMethod", Procedure, overwrite = TRUE)
-	RowNames<-""
+  #save(Absdata, Avgdata, Gnames, grouping, groups, Snames, stats, p, Procedure,  file = OutputFile, compress = T)
+  
+  if(H5Aexists (gFVer, "statMethod")){
+    H5Adelete (gFVer, "statMethod")
+  }
+  gSM <- h5createAttribute (gFVer, "statMethod")
+  H5Awrite(gSM,Procedure)
+  H5Aclose(gSM)
+	#createH5Attribute(gFVer, "statMethod", Procedure, overwrite = TRUE)
+	
+  RowNames<-""
 	for( tmp in rownames(stats)){
 		RowNames<-paste(RowNames,tmp,sep=",")
 	}
-	createH5Attribute(gFVer, "statRowNames",RowNames, overwrite = TRUE)
-	#save(Absdata, Avgdata, Gnames, grouping, groups, Snames, stats, p, Procedure,  file = OutputFile, compress = T)
-	createH5Dataset(gFVer,"Statistics",stats,dType="double",chunkSizes=c(dim(stats)[1],dim(stats)[2]),overwrite=T)
-	tmpp<-p[1:length(Gnames)]
-	createH5Dataset(gFVer,"Pval",p,dType="double",overwrite=T)
+  if(H5Aexists (gFVer, "statRowNames")){
+    H5Adelete (gFVer, "statRowNames")
+  }
+  gSM <- h5createAttribute (gFVer, "statRowNames")
+  H5Awrite(gSM,RowNames)
+  H5Aclose(gSM)
+  #createH5Attribute(gFVer, "statRowNames",RowNames, overwrite = TRUE)
+
+  stats=t(stats)
+  sid <- H5Screate_simple (dim(stats)[1],dim(stats)[2] )
+  did <- H5Dcreate (gFVer,"Statistics", "H5T_IEEE_F64LE", sid)
+  H5Dwrite(did,stats)
+  H5Dclose(did)
+  H5Sclose(sid)
+	
+  #createH5Dataset(gFVer,"Statistics",stats,dType="double",chunkSizes=c(dim(stats)[1],dim(stats)[2]),overwrite=T)
+  sid <- H5Screate_simple (length(p))
+  did <- H5Dcreate (gFVer,"Pval", "H5T_IEEE_F64LE", sid)
+  H5Dwrite(did,p)
+  H5Dclose(did)
+  H5Sclose(sid) 
+
+  H5Gclose(gVersion)
+  H5Gclose(gFVer)
+  H5Fclose(h5)
+  #tmpp<-p[1:length(Gnames)]
+	#createH5Dataset(gFVer,"Pval",p,dType="double",overwrite=T)
 	
 }  #### END 
