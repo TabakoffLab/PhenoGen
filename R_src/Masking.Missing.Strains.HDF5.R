@@ -27,6 +27,8 @@
 #	8/22/07	Laura Saba	Modified:  Renamed from ExportBioC.Corr.R 
 #	9/10/07	Laura Saba	Modified:  Removed "stray" code?  
 #	8/10/09	Laura Saba	Modified:  Removed assignment of 'Correlation' to procedure variable
+# 3/13/15   Spencer Mahaffey Modified: Changed HDF5 methods to rHDF5 methods from h5r due to dropped support of h5r
+#
 #
 ####################################################
 

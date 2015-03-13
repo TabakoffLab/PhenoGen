@@ -71,6 +71,7 @@
 #	3/1/12		Spencer Mahaffey Modified: Read/Write HDF5 files
 #	3/8/12		Spencer Mahaffey Modified: Support multiple filters/stats per version.
 #	7/18/12		Spencer Mahaffey Modified: Adds an attribute to multiple test group in HDF5 file and skips trying to write datasets with no probesets.
+# 3/13/15   Spencer Mahaffey Modified: Changed HDF5 methods to rHDF5 methods from h5r due to dropped support of h5r
 #
 ####################################################
 
@@ -101,23 +102,50 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
   #load(InputFile)
  	vPath<-strsplit(x=VersionPath,split='/',fixed=TRUE)
 	Version<-vPath[[1]][1]
-	Day<-vPath[[1]][2]
-	exactTime<-vPath[[1]][3]
+	#Day<-vPath[[1]][2]
+	#exactTime<-vPath[[1]][3]
 	
-	require(h5r)
-	h5 <- H5File(InputFile, mode = "w")
-	gVersion<-getH5Group(h5, Version)
-	gFilters<-getH5Group(gVersion, "Filters")
-	gDay<-getH5Group(gFilters,Day)
-	gFVer<-getH5Group(gDay,exactTime)
-	ds <- getH5Dataset(gFVer, "fData")
-	Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
-	Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
-	ps <- getH5Dataset(gFVer, "fProbeset")
-	Gnames<-ps[]
-	rownames(Avgdata)<-Gnames
-	gs <- getH5Dataset(gVersion, "Grouping")
-	grouping<-gs[1:attr(gs,"dims")[1]]
+  require(rhdf5)
+  h5 <- H5Fopen (InputDataFile,flags = h5default("H5F_ACC"))
+  gVersion<-H5Gopen(h5, Version)
+  gFVer<-H5Gopen(h5, VersionPath)
+  did <- H5Dopen(gFVer,  "fData")
+  sid <- H5Dget_space(did)
+  ds <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  
+  Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
+  Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
+  
+  did <- H5Dopen(gFVer,  "fProbeset")
+  sid <- H5Dget_space(did)
+  ps <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  Gnames<-ps[]
+  rownames(Avgdata)<-Gnames
+  did <- H5Dopen(gVersion,  "Grouping")
+  sid <- H5Dget_space(did)
+  gs <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+  grouping<-gs[1:attr(gs,"dims")[1]]
+  
+	#require(h5r)
+	#h5 <- H5File(InputFile, mode = "w")
+	#gVersion<-getH5Group(h5, Version)
+	#gFilters<-getH5Group(gVersion, "Filters")
+	#gDay<-getH5Group(gFilters,Day)
+	#gFVer<-getH5Group(gDay,exactTime)
+	#ds <- getH5Dataset(gFVer, "fData")
+  #Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
+  #Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
+	#ps <- getH5Dataset(gFVer, "fProbeset")
+	#Gnames<-ps[]
+	#rownames(Avgdata)<-Gnames
+	#gs <- getH5Dataset(gVersion, "Grouping")
+	#grouping<-gs[1:attr(gs,"dims")[1]]
 	
 	groups <- list()
 	for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
@@ -126,11 +154,20 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
 	#DabgVal<-array(dim=c(dim(d)[1],dim(d)[2]))
 	#DabgVal[,]<-dabg[1:dim(d)[1],dim(d)[2]]
 	#Absdata <- (DabgVal<0.0001)*2 - 1
-		
-	pvs <- getH5Dataset(gFVer, "Pval")
-	p<-pvs[]
 	
-	ss <- getH5Dataset(gFVer, "Statistics")
+  did <- H5Dopen(gFVer,  "Pval")
+  sid <- H5Dget_space(did)
+  pvs <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+	#pvs <- getH5Dataset(gFVer, "Pval")
+	p<-pvs[]
+  did <- H5Dopen(gFVer,  "Statistics")
+  sid <- H5Dget_space(did)
+  ss <- H5Dread(did)
+  H5Dclose(did)
+  H5Sclose(sid)
+	#ss <- getH5Dataset(gFVer, "Statistics")
 	stats<-array(dim=c(dim(ss)[1],dim(ss)[2]))
 	stats[,]<-ss[1:dim(ss)[1],1:dim(ss)[2]]
 	
@@ -164,7 +201,7 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
 		cat('Running BioC using mt.method', mt.method, ' MCC method ....\n\n')
 	}
      
-     	if(length(Gnames)>1){
+  if(length(Gnames)>1){
 		res = mt.rawp2adjp(p, proc = mt.method)
 		adjp = res$adjp[order(res$index),]  # reset to original order
 		adjp = adjp[,2]
@@ -427,18 +464,57 @@ cat('DONE\n')
     cat('Gene numbers is ', length(Gnames), '\n')
 
 	cat(file = GeneNumberFile, length(Gnames))
-	
-	gMultitest<-createH5Group(gFVer,"Multi",overwrite=TRUE)
-	createH5Attribute(gMultitest, "multiMethod", Procedure, overwrite = TRUE)
-	createH5Attribute(gMultitest, "count",length(Gnames),overwrite=TRUE)
+  if(H5Gexists (gFVer, "Multi")){
+    H5Gdelete (gFVer, "Multi")
+  }
+  gMultitest <- H5Gcreate (gFVer, "Multi")
+	#gMultitest<-createH5Group(gFVer,"Multi",overwrite=TRUE)
+  gMM <- h5createAttribute (gMultitest, "multiMethod")
+  H5Awrite(gMM,Procedure)
+  H5Aclose(gMM)
+  gMC <- h5createAttribute (gMultitest, "count")
+  H5Awrite(gMC,length(Gnames))
+  H5Aclose(gMC)
+  #createH5Attribute(gMultitest, "multiMethod", Procedure, overwrite = TRUE)
+	#createH5Attribute(gMultitest, "count",length(Gnames),overwrite=TRUE)
 	if(length(Gnames)>0){
-		createH5Dataset(gMultitest,"mData",Avgdata,dType="double",overwrite=T, dims=c(dim(Avgdata)[1],dim(Avgdata)[2]))
-		mProbeDS<-createH5Dataset(gMultitest,"mProbeset",dType="integer",overwrite=T,dims=c(length(Gnames)))
-		createH5Dataset(gMultitest,"mStatistics",stats,dType="double",overwrite=T,dims=c(dim(stats)[1],length(Gnames)))
-		createH5Dataset(gMultitest,"mPval",p,dType="double",overwrite=T,dims=c(length(p)))
-		createH5Dataset(gMultitest,"adjp",adjp,dType="double",dims=c(length(adjp)))
-		writeH5Data(mProbeDS,Gnames,offsets=c(1),extents=c(length(Gnames)));
+	  sid <- H5Screate_simple (dim(Avgdata), dim(Avgdata) )
+	  did <- H5Dcreate (gMultitest, "mData", "H5T_IEEE_F64LE", sid)
+	  H5Dwrite(did,Avgdata)
+	  H5Dclose(did)
+	  H5Sclose(sid)
+	  sid <- H5Screate_simple (length(Gnames))
+	  did <- H5Dcreate (gMultitest, "mProbeset", "H5T_STD_I64LE", sid)
+	  H5Dwrite(did,Gnames)
+	  H5Dclose(did)
+	  H5Sclose(sid)
+	  sid <- H5Screate_simple (dim(stats)[1], length(Gnames) )
+	  did <- H5Dcreate (gMultitest, "mStatistics", "H5T_IEEE_F64LE", sid)
+	  H5Dwrite(did,stats)
+	  H5Dclose(did)
+	  H5Sclose(sid)
+	  sid <- H5Screate_simple (length(p))
+	  did <- H5Dcreate (gMultitest, "mPval", "H5T_IEEE_F64LE", sid)
+	  H5Dwrite(did,p)
+	  H5Dclose(did)
+	  H5Sclose(sid)
+	  sid <- H5Screate_simple (length(adjp))
+	  did <- H5Dcreate (gMultitest, "adjp", "H5T_IEEE_F64LE", sid)
+	  H5Dwrite(did,adjp)
+	  H5Dclose(did)
+	  H5Sclose(sid)
+		#createH5Dataset(gMultitest,"mData",Avgdata,dType="double",overwrite=T, dims=c(dim(Avgdata)[1],dim(Avgdata)[2]))
+		#mProbeDS<-createH5Dataset(gMultitest,"mProbeset",dType="integer",overwrite=T,dims=c(length(Gnames)))
+		#createH5Dataset(gMultitest,"mStatistics",stats,dType="double",overwrite=T,dims=c(dim(stats)[1],length(Gnames)))
+		#createH5Dataset(gMultitest,"mPval",p,dType="double",overwrite=T,dims=c(length(p)))
+		#createH5Dataset(gMultitest,"adjp",adjp,dType="double",dims=c(length(adjp)))
+		#writeH5Data(mProbeDS,Gnames,offsets=c(1),extents=c(length(Gnames)));
 	}
+
+  H5Gclose(gMultitest)
+  H5Gclose(gVersion)
+  H5Gclose(gFVer)
+  H5Fclose(h5)
 	#save(Absdata, Avgdata, Gnames, grouping, groups, Snames, stats, p, Procedure, adjp,  file = OutputFile)
 
 } #END 

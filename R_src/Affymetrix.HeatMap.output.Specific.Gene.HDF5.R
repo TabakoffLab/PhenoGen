@@ -4,7 +4,7 @@
 # Example Call:
 # testXML = findXMLProbes("/Users/clemensl/LaurensR/Combine/Test1XML.xml")
 #
-#
+# 3/13/15   Spencer Mahaffey Modified: Changed HDF5 methods to rHDF5 methods from h5r due to dropped support of h5r
 #
 
 Affymetrix.HeatMap.output.Specific.Gene.HDF5 <- function(InputFile,VersionPath,SampleFile, XMLFileName, plotFileName,GeneList, Platform, OutputFileIndiv, OutputFileGroup) {

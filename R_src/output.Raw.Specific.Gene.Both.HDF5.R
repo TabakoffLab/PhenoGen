@@ -37,6 +37,7 @@
 #	11/3/10		Laura Saba	Modified:	Corrected error when the input GOI list doesn't completely match data
 #	3/1/12	Spencer Mahaffey Modified: Read/Write HDF5 files.
 #	3/8/12		Spencer Mahaffey Modified: Support multiple filters/stats per version.
+# 3/13/15   Spencer Mahaffey Modified: Changed HDF5 methods to rHDF5 methods from h5r due to dropped support of h5r
 #
 ####################################################
 
