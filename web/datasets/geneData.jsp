@@ -14,6 +14,7 @@
         log.info("in geneData.jsp. user =  "+ user);
         extrasList.add("geneListMain.css");
         extrasList.add("viewingPane.css");
+        extrasList.add("main.min.css");
         extrasList.add("geneData.js");
 	optionsList.add("download");
 
