@@ -114,7 +114,10 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
   ds <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-  
+  # transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+  # to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+  # in the future as it wastes CPU time and Memory
+  ds=t(ds)
   Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
   Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
   
@@ -130,7 +133,7 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
   gs <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-  grouping<-gs[1:attr(gs,"dims")[1]]	
+  grouping<-gs[1:dim(gs)[1]]	
 	groups <- list()
 	for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
 	
@@ -139,14 +142,17 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
   pvs <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-	
 	p<-pvs[]
+  
   did <- H5Dopen(gFVer,  "Statistics")
   sid <- H5Dget_space(did)
   ss <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-
+  # transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+  # to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+  # in the future as it wastes CPU time and Memory\
+  ss=t(ss)
 	stats<-array(dim=c(dim(ss)[1],dim(ss)[2]))
 	stats[,]<-ss[1:dim(ss)[1],1:dim(ss)[2]]
 	
@@ -457,6 +463,7 @@ cat('DONE\n')
   #createH5Attribute(gMultitest, "multiMethod", Procedure, overwrite = TRUE)
 	#createH5Attribute(gMultitest, "count",length(Gnames),overwrite=TRUE)
 	if(length(Gnames)>0){
+    Avgdata=t(Avgdata)
 	  sid <- H5Screate_simple (dim(Avgdata), dim(Avgdata) )
 	  did <- H5Dcreate (gMultitest, "mData", "H5T_IEEE_F64LE", sid)
 	  H5Dwrite(did,Avgdata)
@@ -467,6 +474,7 @@ cat('DONE\n')
 	  H5Dwrite(did,Gnames)
 	  H5Dclose(did)
 	  H5Sclose(sid)
+    stats=t(stats)
 	  sid <- H5Screate_simple (dim(stats)[1], length(Gnames) )
 	  did <- H5Dcreate (gMultitest, "mStatistics", "H5T_IEEE_F64LE", sid)
 	  H5Dwrite(did,stats)

@@ -106,6 +106,10 @@
   ds <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
+  # transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+  # to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+  # in the future as it wastes CPU time and Memory
+  ds<-t(ds)
   Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
   Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
   rownames(Avgdata)<-Gnames
@@ -116,7 +120,7 @@
   gs <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-  grouping<-gs[1:attr(gs,"dims")[1]]
+  grouping<-gs[1:dim(gs)[1]]
   groups <- list()
   for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
   
@@ -125,6 +129,7 @@
   dabgds <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
+  dabgds=t(dabgds)
   DabgVal<-array(dim=c(dim(dabgds)[1],dim(dabgds)[2]))
   DabgVal[,]<-dabgds[1:dim(dabgds)[1],1:dim(dabgds)[2]]
   Absdata <- (DabgVal<0.0001)*2 - 1

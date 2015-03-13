@@ -43,7 +43,7 @@ Masking.Missing.Strains.HDF5<-function(InputDataFile,VersionPath,SampleFile, Inp
   ds <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-  
+  ds=t(ds)
   Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
   Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
   
@@ -64,7 +64,8 @@ Masking.Missing.Strains.HDF5<-function(InputDataFile,VersionPath,SampleFile, Inp
   gs <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-  grouping<-gs[1:attr(gs,"dims")[1]]
+  grouping<-gs[1:dim(gs)[1]]
+  #grouping<-gs[1:attr(gs,"dims")[1]]
   groups <- list()
   for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
   
@@ -73,6 +74,7 @@ Masking.Missing.Strains.HDF5<-function(InputDataFile,VersionPath,SampleFile, Inp
   dabgds <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
+  dabgds=t(dabgds)
   DabgVal<-array(dim=c(dim(dabgds)[1],dim(dabgds)[2]))
   DabgVal[,]<-dabgds[1:dim(dabgds)[1],1:dim(dabgds)[2]]
   Absdata <- (DabgVal<0.0001)*2 - 1
@@ -127,15 +129,22 @@ Masking.Missing.Strains.HDF5<-function(InputDataFile,VersionPath,SampleFile, Inp
 	#if (sum(index)==length(index) && exists('Discovery')){
 	#	save(chip.info, Avgdata, Discovery, Absdata, GS.call, Gnames, Snames, grouping, groups, Procedure, file = OutputFile)
 	#}
+  
+  sampFile <- file(OutputFileSamples,"w")
+  write(Snames, file=sampFile)
+  close(sampFile)
+  
 	
   h5out <- H5Fopen (OutputFileHDF,flags = h5default("H5F_ACC"))
   gVersionOut <- H5Gcreate (h5out, VersionPath)
   gFilterOut <- H5Gcreate (h5out, "Filters")
+  DabgVal=t(DabgVal)
   sid <- H5Screate_simple (dim(DabgVal)[1],dim(DabgVal)[2])
   did <- H5Dcreate (gVersionOut, "DABGPval", "H5T_IEEE_F64LE", sid)
   H5Dwrite(did,DabgVal)
   H5Dclose(did)
   H5Sclose(sid)
+  Avgdata=t(Avgdata)
   sid <- H5Screate_simple (dim(Avgdata)[1],dim(Avgdata)[2])
   did <- H5Dcreate (gVersionOut, "Data", "H5T_IEEE_F64LE", sid)
   H5Dwrite(did,Avgdata)
@@ -168,8 +177,6 @@ Masking.Missing.Strains.HDF5<-function(InputDataFile,VersionPath,SampleFile, Inp
 	#createH5Dataset(gVersionOut,"Probeset",Gnames,dType="integer",chunkSizes=c(length(Gnames)),overwrite=T)
 	#createH5Dataset(gVersionOut,"Samples",Snames,dType="character",chunkSizes=c(length(Snames)),overwrite=T)
 
-	sampFile <- file(OutputFileSamples,"w")
-	write(Snames, file=sampFile)
-	close(sampFile)
+
 
 }  ## END OF: Function block

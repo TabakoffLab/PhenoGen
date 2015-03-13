@@ -39,6 +39,7 @@
 #	3/1/12	Spencer Mahaffey Modified: Read/Write HDF5 files.
 #	3/8/12		Spencer Mahaffey Modified: Support multiple filters/stats per version.
 #	7/18/12		Spencer Mahaffey Modified: Now gets MultiTest param with gene count if <=0 skips rest of script to avoid errors.
+# 3/13/15   Spencer Mahaffey Modified: Changed HDF5 methods to rHDF5 methods from h5r due to dropped support of h5r
 #
 ####################################################
 
@@ -65,66 +66,96 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
 	Version<-vPath[[1]][1]
 	Day<-vPath[[1]][2]
 	exactTime<-vPath[[1]][3]
-	
-	require(h5r)
-	h5 <- H5File(InputFile, mode = "w")
-	gVersion<-getH5Group(h5, Version)
-	gFilters<-getH5Group(gVersion, "Filters")
-	gDay<-getH5Group(gFilters,Day)
-	gFVer<-getH5Group(gDay,exactTime)
-	gMulti<-getH5Group(gFVer,"Multi")
-	count<-getH5Attribute(gMulti,"count")
-	
+  
+  require(rhdf5)
+  h5 <- H5Fopen (InputFile,flags = h5default("H5F_ACC"))
+  gVersion<-H5Gopen(h5, Version)
+  gFVer<-H5Gopen(h5, VersionPath)
+  gMulti<-H5Gopen(gFVer, "Multi")
+  aCount<-H5Aopen(gMulti,"count")
+  count<-H5Aread(aCount, buf = NULL)
+  H5Aclose(aCount)
+  
 	# if count=0 don't need to output anything.
 	if(count[1]>0){
 		ins <- scan(SampleFile, list(""))
 		Snames<-ins[[1]]
 		
-		ps <- getH5Dataset(gMulti, "mProbeset")
+		did <- H5Dopen(gMulti,  "mProbeset")
+		sid <- H5Dget_space(did)
+		ps <- H5Dread(did)
+		H5Dclose(did)
+		H5Sclose(sid)
 		Gnames<-ps[]
 		
-		ds <- getH5Dataset(gMulti, "mData")
+		did <- H5Dopen(gMulti,  "mData")
+		sid <- H5Dget_space(did)
+		ds <- H5Dread(did)
+		H5Dclose(did)
+		H5Sclose(sid)
+		# transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+		# to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+		# in the future as it wastes CPU time and Memory
+		ds=t(ds)
 		Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
 		Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
 		rownames(Avgdata)<-Gnames
 		colnames(Avgdata)<-Snames
 	
 	
-		gs <- getH5Dataset(gVersion, "Grouping")
-		grouping<-gs[1:attr(gs,"dims")[1]]
+		did <- H5Dopen(gVersion,  "Grouping")
+		sid <- H5Dget_space(did)
+		gs <- H5Dread(did)
+		H5Dclose(did)
+		H5Sclose(sid)
+		grouping<-gs[1:dim(gs)[1]]  
 		groups <- list()
 		for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
 		
-		pvs <- getH5Dataset(gMulti, "mPval")
+		did <- H5Dopen(gMulti,  "mPval")
+		sid <- H5Dget_space(did)
+		pvs <- H5Dread(did)
+		H5Dclose(did)
+		H5Sclose(sid)
 		p<-pvs[]
 		
-		ss <- getH5Dataset(gMulti, "mStatistics")
+		did <- H5Dopen(gMulti,  "mStatistics")
+		sid <- H5Dget_space(did)
+		ss <- H5Dread(did)
+		H5Dclose(did)
+		H5Sclose(sid)
+		# transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
+		# to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
+		# in the future as it wastes CPU time and Memory\
+		ss=t(ss)
 		stats<-array(dim=c(dim(ss)[1],dim(ss)[2]))
 		stats[,]<-ss[1:dim(ss)[1],1:dim(ss)[2]]
 		
-		srn<-getH5Attribute(gFVer,"statRowNames")
+		statRowName<-H5Aopen(gFVer,"statRowNames")
+		srn<-H5Aread(statRowName, buf = NULL)
+		H5Aclose(statRowName)
 		namelist=strsplit(x=srn[1],split=',',fixed=TRUE)
 		adjnamelist<-namelist[[1]]
 		rownames(stats)<-adjnamelist[2:length(adjnamelist)]
 		colnames(stats)<-Gnames	
 		
-		adjpvs <- getH5Dataset(gMulti, "adjp")
+		did <- H5Dopen(gMulti,  "adjp")
+		sid <- H5Dget_space(did)
+		adjpvs <- H5Dread(did)
+		H5Dclose(did)
+		H5Sclose(sid)
 		adjp<-adjpvs[]
 		
-			#dabg <- getH5Dataset(version, "DABGPval")
-		#DabgVal<-array(dim=c(dim(d)[1],dim(d)[2]))
-		#DabgVal[,]<-dabg[1:dim(d)[1],dim(d)[2]]
-		#Absdata <- (DabgVal<0.0001)*2 - 1
 		
 		##*************************NEED TO REPLACE WITH STORING GROUP NAMES IN HDF5 file
 		##  Read in group names
 		group.names <- read.table(file=GroupNames,sep="\t",header=TRUE)
-		
-		
 		##  Finding statistics method
 		
-		tmp<-getH5Attribute(gFVer,"statMethod")
-	
+		#tmp<-getH5Attribute(gFVer,"statMethod")
+		aSMethod<-H5Aopen(gFVer,"statMethod")
+		tmp<-H5Aread(aSMethod, buf = NULL)
+		H5Aclose(aSMethod)
 	
 		
 	  		if (substr(tmp[1],1,32)=="Function=statistics.Clustering.R") method = "cluster"
@@ -234,7 +265,11 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
 		}
 	
 	}# END if(count>0)
-
+  
+  H5Gclose(gMulti)
+  H5Gclose(gVersion)
+  H5Gclose(gFVer)
+  H5Fclose(h5)
 	
 } ## END       
 	

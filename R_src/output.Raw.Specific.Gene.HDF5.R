@@ -103,6 +103,7 @@
   did <- H5Dopen(gVersion,  "Data")
   sid <- H5Dget_space(did)
   ds <- H5Dread(did)
+  ds=t(ds)
   H5Dclose(did)
   H5Sclose(sid)
   Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
@@ -115,13 +116,15 @@
   gs <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-  grouping<-gs[1:attr(gs,"dims")[1]]
+  grouping<-gs[1:dim(gs)[1]]
+  #grouping<-gs[1:attr(gs,"dims")[1]]
   groups <- list()
   for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
   
   did <- H5Dopen(gVersion,  "DABGPval")
   sid <- H5Dget_space(did)
   dabgds <- H5Dread(did)
+  dabgds=t(dabgds)
   H5Dclose(did)
   H5Sclose(sid)
   DabgVal<-array(dim=c(dim(dabgds)[1],dim(dabgds)[2]))
