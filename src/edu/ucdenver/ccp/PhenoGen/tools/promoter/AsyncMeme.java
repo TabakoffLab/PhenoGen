@@ -87,14 +87,14 @@ public class AsyncMeme implements Runnable{
 				"The MEME process called '"+
 				myGeneListAnalysis.getDescription() + "' that you initiated ";
 
-		String memeDir = perlDir + "MEME/meme490";
+		String memeDir = perlDir + "MEME/meme4_10_4";
 		String[] envVariables = new String[4];
 		envVariables[0] = "MEME_DIRECTORY=" + memeDir;
 		envVariables[1] = "MEME_BIN=" + memeDir + "/bin";
 		envVariables[2] = "MEME_LOGS=" + memeDir + "/LOGS";
 		envVariables[3] = "PATH=/usr/bin:/bin:$PATH:$MEME_BIN";
 
-		String functionDir = perlDir + "MEME/meme490/bin/meme";
+		String functionDir = perlDir + "MEME/meme4_10_4/bin/meme";
                 String [] functionArgs = new String[] {
                 			functionDir,
                                         sequenceFileName,
