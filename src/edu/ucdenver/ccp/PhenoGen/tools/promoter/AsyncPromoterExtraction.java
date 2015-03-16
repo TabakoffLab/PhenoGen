@@ -17,12 +17,16 @@ import javax.mail.SendFailedException;
 import javax.servlet.http.HttpSession;
 
 import edu.ucdenver.ccp.PhenoGen.web.mail.Email;
+import edu.ucdenver.ccp.PhenoGen.driver.ExecHandler;
+import edu.ucdenver.ccp.PhenoGen.driver.ExecException;
 import edu.ucdenver.ccp.PhenoGen.data.GeneList;
 import edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis;
 import edu.ucdenver.ccp.PhenoGen.data.User;
 import edu.ucdenver.ccp.util.FileHandler;
 import edu.ucdenver.ccp.util.ObjectHandler;
 import edu.ucdenver.ccp.util.sql.PropertiesConnection;
+import edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient;
+import edu.ucdenver.ccp.PhenoGen.tools.idecoder.Identifier;
 
 import org.ensembl.datamodel.Sequence;
 import org.ensembl.driver.CoreDriver;
@@ -30,6 +34,11 @@ import org.ensembl.driver.CoreDriverFactory;
 
 /* for handling exceptions in Threads */
 import au.com.forward.threads.ThreadReturn;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -42,9 +51,17 @@ public class AsyncPromoterExtraction implements Runnable{
 	private String[] geneArray = null;
 	private User userLoggedIn = null;
 	private String dbPropertiesFile = null;
+        private String ensemblDBPropertiesFile=null;
 	private GeneListAnalysis myGeneListAnalysis = null;
 	private String mainURL = "";
 	private boolean runningMeme = true;
+        private DataSource pool=null;
+        private IDecoderClient myIDecoderClient= null;
+        private Identifier myIdentifier=null;
+        private String geneFile="";
+        private String perlEnvVar=null;
+        private String perlDir=null;
+        private String geneDir=null;
 
 	public AsyncPromoterExtraction(HttpSession session,
 				String fileName,
@@ -55,18 +72,26 @@ public class AsyncPromoterExtraction implements Runnable{
 
 		this.session = session;
 		this.fileName = fileName;
+                this.userLoggedIn = (User) session.getAttribute("userLoggedIn");
+            
+                this.geneDir= fileName.substring(0, fileName.lastIndexOf("/")+1);
+                this.geneFile=geneDir+"genelist.txt";
 		this.runningMeme = runningMeme;
 		this.myGeneListAnalysis = myGeneListAnalysis;
 
 		this.geneArray = ((GeneList) session.getAttribute("selectedGeneList")).getGenes();
-	        this.userLoggedIn = (User) session.getAttribute("userLoggedIn");
+                this.perlDir = (String) session.getAttribute("perlDir") + "scripts/";
+	        this.perlEnvVar=(String)session.getAttribute("perlEnvVar");
 		this.dbPropertiesFile = (String) session.getAttribute("dbPropertiesFile");
+                this.ensemblDBPropertiesFile = (String)session.getAttribute("ensDbPropertiesFile");
         	this.mainURL = (String) session.getAttribute("mainURL");
-
+                this.pool = (DataSource) session.getAttribute("dbPool");
+                this.myIDecoderClient=new IDecoderClient();
+                this.myIdentifier = new Identifier();
         }
 
 	public void run() throws RuntimeException {
-
+                boolean atLeastOneEnsemblIDFound=false;
 	        log.debug("Starting run method of AsyncPromoterExtraction " );
 		Thread thisThread = Thread.currentThread();
 		Email myEmail = new Email();
@@ -76,120 +101,160 @@ public class AsyncPromoterExtraction implements Runnable{
 				"Thank you for using the PhenoGen Informatics website.  "+
 				"The upstream sequence extraction process called '"+
 				myGeneListAnalysis.getDescription() + "' that you initiated ";
-
+                String[] targets = new String[] {"Ensembl ID"};
+                HashMap<String,String> included=new HashMap<String,String>();
 		try {
 			String geneListOrganism = myGeneListAnalysis.getAnalysisGeneList().getOrganism();
-			log.debug("geneListOrganism = "+geneListOrganism);
-
-			CoreDriver coreDriver = null;
-
-			String propertiesDir = (new File(dbPropertiesFile)).getParent() + "/";
-			log.debug("propertiesDir = " + propertiesDir);
-			if (geneListOrganism.equals("Mm")) {
-                        	coreDriver = 
-					CoreDriverFactory.createCoreDriver(
-						propertiesDir + 
-						"ensemblMouse.properties");
-                	} else if (geneListOrganism.equals("Rn")) {
-                        	coreDriver = 
-					CoreDriverFactory.createCoreDriver(
-						propertiesDir + 
-						"ensemblRat.properties");
-                	} else if (geneListOrganism.equals("Hs")) {
-                        	coreDriver = 
-					CoreDriverFactory.createCoreDriver(
-						propertiesDir + 
-						"ensemblHuman.properties");
-                	}
-
-			int upstreamLength = Integer.parseInt(myGeneListAnalysis.getThisParameter("Sequence Length"));
-
-			log.debug("upstreamLength = "+upstreamLength);
-                	//FileWriter outFile = new FileWriter(fileName);
-                	//BufferedWriter bufferedWriter = new BufferedWriter(outFile);
-                	BufferedWriter bufferedWriter = new FileHandler().getBufferedWriter(fileName);
-
-        		boolean atLeastOneEnsemblIDFound = false;
-			log.debug("geneArray len = "+geneArray.length);
-        		for (int i = 0; i < geneArray.length; i++) {
-                		List<org.ensembl.datamodel.Gene> genes = null;
-                		//
-                		// we want genes to be a "List" of "Genes", but 
-				// if you fetch() using an Ensembl ID, you get back a "Gene",
-                		// so that's why this is structured as so
-                		//
-                                //log.debug("before getGenes("+geneArray[i]+")");
-                		if (!geneArray[i].startsWith("ENS")) {
-                        		genes = coreDriver.getGeneAdaptor().fetchBySynonym(geneArray[i]);
-                		} else {
-                        		genes = new ArrayList<org.ensembl.datamodel.Gene>(1);
-                        		genes.add(coreDriver.getGeneAdaptor().fetch(geneArray[i]));
-                		}
-                                //log.debug("after getGenes()");
-
-                		//log.debug("size of genes = " + genes.size());
-                		if (genes.size() > 0) {
-                        		atLeastOneEnsemblIDFound = true;
-                		}
-                		for (int j = 0; j < genes.size(); j++) {
-                                    if(genes.get(j)!=null){
-                        		String geneAccession = 
-						((org.ensembl.datamodel.Gene) genes.get(j)).
-							getAccessionID();
-                                        if(geneAccession!=null){
-                                            org.ensembl.datamodel.Gene gene = 
-                                                    coreDriver.getGeneAdaptor().fetch(geneAccession);
-                                            if(gene!=null){
-                                                /*log.debug("geneAccession = "+
-                                                                geneAccession + 
-                                                                ", gene= "+gene + 
-                                                                ", geneLocation= "+
-                                                                gene.getLocation());*/
-                                                if(gene.getLocation()!=null){
-                                                    //log.debug("before getSequence");
-                                                    Sequence sequence = coreDriver.getSequenceAdaptor().fetch(
-                                                                            gene.getLocation().
-                                                                            transform(upstreamLength * -1,0));
-                                                    //log.debug("after getSequence");
-                                                    //
-                                                    // Format the sequence into 80-character lines
-                                                    //
-                                                    
-                                                    String newLine = "\n";
-                                                    String promoterSequence = 
-                                                            new ObjectHandler().getAsSeparatedString(
-                                                                    sequence.getString().
-                                                                            substring(0, upstreamLength), 
-                                                                            80, newLine);
-                                                    
-                                                    bufferedWriter.write(">" + geneArray[i] + "|" + geneAccession);
-                                                    bufferedWriter.write(promoterSequence);
-                                                    //log.debug("after sequence written");
-                                                }else{
-                                                    log.debug("********************************\nERROR: NULL GENE LOCATATION\n");
+                        int id=((GeneList) session.getAttribute("selectedGeneList")).getGene_list_id();
+			Set iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(id, targets, pool);
+                        ArrayList<String> noIDecoderList = new ArrayList<String>();
+                        if(iDecoderSet.size()>0){
+                                Iterator itr = iDecoderSet.iterator();
+                                ArrayList<Identifier> altDecoderList=new ArrayList<Identifier>();
+                                while (itr.hasNext()) {
+                                        Identifier thisIdentifier = (Identifier) itr.next();
+                                        if (thisIdentifier.getRelatedIdentifiers().size() == 0) {
+                                                Set tmp=myIDecoderClient.getIdentifiersByInputID(thisIdentifier.getIdentifier(),geneListOrganism,targets, pool);
+                                                Iterator tmpItr=tmp.iterator();
+                                                while (tmpItr.hasNext()){
+                                                        Identifier thisId = (Identifier) tmpItr.next();
+                                                        if (thisId.getRelatedIdentifiers().size() != 0) {
+                                                                //thisId.setLowerCaseIdentifier();
+                                                                altDecoderList.add(thisId);
+                                                        }
                                                 }
-                                  
-                                            }else{
-                                                log.debug("********************************\nERROR: NULL GENE\n");
-                                            }
-                                            
-                                        }else{
-                                            log.debug("********************************\nERROR: NULL GENE ACCESSION\n");
+                                                noIDecoderList.add(thisIdentifier.getIdentifier());
                                         }
-                                        //bufferedWriter.newLine();
-                                     }else{
-                                         log.debug("********************************\nERROR: GENE@"+j+"\n");
-                                     }
-                                         
-                		}
-        		}
-        		if (!atLeastOneEnsemblIDFound) {
+                                }
+                                for (int i=0; i<noIDecoderList.size(); i++) {
+                                        iDecoderSet.remove(new Identifier((String) noIDecoderList.get(i)));
+                                }
+                                for (int i=0; i<altDecoderList.size(); i++) {
+                                        iDecoderSet.add(altDecoderList.get(i));
+                                }
+                        }else{
+                                iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTargetCaseInsensitive(id, targets, pool);
+                                //log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
+                                if(iDecoderSet.size()>0){
+                                        Iterator itr = iDecoderSet.iterator();
+                                        while (itr.hasNext()) {
+                                                Identifier thisIdentifier = (Identifier) itr.next();
+                                                //thisIdentifier.setLowerCaseIdentifier();
+                                                //log.debug("******ID"+thisIdentifier.getIdentifier());
+                                                if (thisIdentifier.getRelatedIdentifiers().size() == 0) {
+                                                        log.debug("remove id:"+thisIdentifier.getIdentifier());
+                                                        noIDecoderList.add(thisIdentifier.getIdentifier());
+                                                }
+                                        }
+                                        for (int i=0; i<noIDecoderList.size(); i++) {
+                                                iDecoderSet.remove(new Identifier((String) noIDecoderList.get(i)));
+                                        }
+                                }
+                        }
+                        for (int i=0; i<geneArray.length; i++) {
+                            Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(geneArray[i], iDecoderSet);
+                            if(thisIdentifier ==null){
+                                    thisIdentifier = myIdentifier.getIdentifierFromSetIgnoreCase(geneArray[i], iDecoderSet);
+                            }
+                            if (thisIdentifier != null) {
+				Set ensemblIDs = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(),new String[] {"Ensembl ID"});
+                                Iterator ite=ensemblIDs.iterator();
+                                while(ite.hasNext()){
+                                    Identifier cur=(Identifier)ite.next();
+                                    String tmpID=cur.getIdentifier();
+                                    if(tmpID.contains("ENSMUSG")||tmpID.contains("ENSRNOG")){
+                                        atLeastOneEnsemblIDFound=true;
+                                        if(included.containsKey(tmpID)){
+                                            String tmp=included.get(tmpID);
+                                            tmp=tmp+","+geneArray[i];
+                                            included.put(tmpID, tmp);
+                                        }else{
+                                            included.put(tmpID, geneArray[i]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+			int upstreamLength = Integer.parseInt(myGeneListAnalysis.getThisParameter("Sequence Length"));
+                	BufferedWriter bufferedWriter = new FileHandler().getBufferedWriter(geneFile);
+                        if(atLeastOneEnsemblIDFound){
+                            Iterator itr2=included.keySet().iterator();
+                            while(itr2.hasNext()){
+                                String ens=(String)itr2.next();
+                                String glID=included.get(ens);
+                                bufferedWriter.write(ens+";"+glID);
+                                bufferedWriter.newLine();
+                            }
+                        }
+        		bufferedWriter.close();
+                        if(atLeastOneEnsemblIDFound){
+                            File ensPropertiesFile = new File(ensemblDBPropertiesFile);
+                            Properties myENSProperties = new Properties();
+                            myENSProperties.load(new FileInputStream(ensPropertiesFile));
+                            String ensHost=myENSProperties.getProperty("HOST");
+                            String ensPort=myENSProperties.getProperty("PORT");
+                            String ensUser=myENSProperties.getProperty("USER");
+                            String ensPassword=myENSProperties.getProperty("PASSWORD");
+                            //construct perl Args
+                            String[] perlArgs = new String[10];
+                            perlArgs[0] = "perl";
+                            perlArgs[1] = perlDir + "readEnsemblUpstreamSeq.pl";
+                            perlArgs[2] = geneFile;
+                            perlArgs[3] = fileName;
+                            perlArgs[4] = "gene";
+                            perlArgs[5] = Integer.toString(upstreamLength);
+                            perlArgs[6] = ensHost;
+                            perlArgs[7] = ensPort;
+                            perlArgs[8] = ensUser;
+                            perlArgs[9] = ensPassword;
+
+
+                            //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+                            String[] envVar=perlEnvVar.split(",");
+
+                            for (int i = 0; i < envVar.length; i++) {
+                                log.debug(i + " EnvVar::" + envVar[i]);
+                                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
+                                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
+                                }*/
+                            }
+
+
+                            //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+                            ExecHandler myExec_session = new ExecHandler(perlDir, perlArgs, envVar, geneDir);
+                            boolean exception = false;
+                            try {
+
+                                myExec_session.runExec();
+
+                            } catch (ExecException e) {
+                                exception=true;
+                                log.error("In Exception of run writeXML_RegionView.pl Exec_session", e);
+
+                                Email myAdminEmail = new Email();
+                                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                                myAdminEmail.setContent("There was an error while running "
+                                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" )\n\n"+myExec_session.getErrors());
+                                try {
+                                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                                } catch (Exception mailException) {
+                                    log.error("error sending message", mailException);
+                                    try {
+                                        myAdminEmail.sendEmailToAdministrator("");
+                                    } catch (Exception mailException1) {
+                                        //throw new RuntimeException();
+                                    }
+                                }
+                            }
+                        
+                        }else{
                                 log.debug("No ensembl id found");
                                 bufferedWriter.write(">NoEnsemblIDs found for given gene list");
                                 bufferedWriter.newLine();
         		}
-        		bufferedWriter.close();
-
+                        
+                        
+                        
 			String successContent = mainContent + "has completed.  " +
 						"You may now view the results on the website at " +
 						 mainURL + ". ";
