@@ -1993,6 +1993,13 @@ public class IDecoderClient {
 		return setOfInputIdentifiers;
 	}
         
+        
+        public Set<Identifier> getIdentifiersByInputID(String geneID,String organism, String[] targets, DataSource pool) throws SQLException {
+            Connection conn=pool.getConnection();
+            Set<Identifier> setOfInputIdentifiers=this.getIdentifiersByInputID(geneID, organism, targets, conn);
+            conn.close();
+            return setOfInputIdentifiers;
+        }
         /** 
 	 * Get a Set of Identifiers for a particular list of targets, although it is not organized by target.
 	 * Useful if you want a list of all possible target values by gene ID, as is needed
