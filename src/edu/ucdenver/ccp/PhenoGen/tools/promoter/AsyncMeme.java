@@ -105,7 +105,7 @@ public class AsyncMeme implements Runnable{
                                         "-nmotifs", maxMotifs,
                                         "-minw", minWidth,
                                         "-maxw", maxWidth,
-                                        "-maxsize", "100000",
+                                        "-maxsize", "600000",
                                         "-oc", outputDir
                                 };
 		log.debug("functionArgs = "); new Debugger().print(functionArgs);

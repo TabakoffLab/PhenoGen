@@ -46,7 +46,7 @@
         	log.debug("numberOfGenes = "+ selectedGeneList.getNumber_of_genes());
         	int totalLength = upstreamLength * selectedGeneList.getNumber_of_genes(); 
         	log.debug("totalLength = "+ totalLength);
-        	if (totalLength > 200000) {
+        	if (totalLength > 300000) {
 				NumberFormat nf = NumberFormat.getInstance();
                                 //Error - "Over 200,000 characters"
 				session.setAttribute("errorMsg", "PRM-004");
@@ -176,7 +176,7 @@
 				<%
 				selectName = "upstreamLength";
 				selectedOption = "2";
-				onChange = "";
+				onChange = "checkSize()";
 				style = "";
 				optionHash = new LinkedHashMap();
                         	optionHash.put("0.5", "500 bp upstream region");
@@ -194,6 +194,11 @@
 				<%@ include file="/web/common/selectBox.jsp" %>
 			</td>
 		</tr>
+                <tr id="sizeWarning" style="display:none;">	
+			<td colspan="2">
+                            <span style="color:#FF0000;"><strong>Upstream fasta is too large<span id="warnDetail"></span> - limit is 300 Kb </strong></span>
+                        </td>
+                </tr>
                 <tr>	
 			<td>
 				<strong>Upstream sequence from:</strong>
@@ -266,7 +271,25 @@
 	</center>
 
 	</form>
-
+        <script type="text/javascript">
+            var geneNumber=<%=selectedGeneList.getNumber_of_genes()%>;
+            checkSize();
+            function checkSize(){
+                console.log($("#upstreamLength"));
+                console.log($("#upstreamLength").val());
+                var select=parseFloat($("#upstreamLength").val());
+                console.log("select size="+select);
+                console.log("gene:"+geneNumber);
+                var total=geneNumber*1000*select;
+                console.log("total:"+total);
+                if(total>300000){
+                    $("#sizeWarning").show();
+                    $("#warnDetail").html(" ("+geneNumber+" genes x "+select+" Kb = "+total+" Kb ) ");
+                }else{
+                    $("#sizeWarning").hide();
+                }
+            }
+        </script>
 <% } else { %>
         <BR>
         <center>
