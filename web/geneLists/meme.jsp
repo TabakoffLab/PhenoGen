@@ -33,7 +33,8 @@
 			String maxWidth = (String) request.getParameter("maxWidth");
 			String distribution = (String) request.getParameter("distribution");
 			String maxMotifs = (String) request.getParameter("maxMotifs");
-            String description = (String) request.getParameter("description");
+                        String description = (String) request.getParameter("description");
+                        String upstreamStart= (String) request.getParameter("upstreamSelect");
 
         	//
         	// upstreamLengthPassedIn will be 0.5, 1, or 2, so multiply it by 1000 to get kb
@@ -45,15 +46,15 @@
         	log.debug("numberOfGenes = "+ selectedGeneList.getNumber_of_genes());
         	int totalLength = upstreamLength * selectedGeneList.getNumber_of_genes(); 
         	log.debug("totalLength = "+ totalLength);
-        	if (totalLength > 60000) {
+        	if (totalLength > 200000) {
 				NumberFormat nf = NumberFormat.getInstance();
-                        //Error - "Over 60,000 characters"
+                                //Error - "Over 200,000 characters"
 				session.setAttribute("errorMsg", "PRM-004");
 				session.setAttribute("additionalInfo", "Your request contains "+selectedGeneList.getNumber_of_genes() + 
 						" genes times "+upstreamLength + " characters for each gene, which equals "+
 							nf.format(totalLength) + " total characters.");
 				response.sendRedirect(commonDir + "errorMsg.jsp");
-			} else {
+                } else {
 					String now = myObjectHandler.getNowAsMMddyyyy_HHmmss();
 					java.sql.Timestamp timeNow = myObjectHandler.getNowAsTimestamp();
 	
@@ -90,7 +91,7 @@
 							//String memeFileName = selectedGeneList.getMemeFileName(memeDir, now);
 						String memeFileName = memeDir;
 		
-						ParameterValue[] myParameterValues = new ParameterValue[6];
+						ParameterValue[] myParameterValues = new ParameterValue[7];
 						for (int i=0; i<myParameterValues.length; i++) {
 							myParameterValues[i] = new ParameterValue();
 							myParameterValues[i].setCreate_date();
@@ -109,6 +110,14 @@
 						myParameterValues[4].setValue(maxWidth);
 						myParameterValues[5].setParameter("MEME Dir");
 						myParameterValues[5].setValue(memeDir);
+                                                myParameterValues[6].setParameter("Sequence Start");
+                                                String upstart="gene start";
+                                                if(upstreamStart.equals("trx")){
+                                                    upstart="transcript start";
+                                                }else if(upstreamStart.equals("trxcds")){
+                                                    upstart="transcript cds start";
+                                                }
+						myParameterValues[6].setValue(upstart);
 	
 						myGeneListAnalysis.setParameterValues(myParameterValues);
 	
@@ -117,6 +126,7 @@
 						Thread thread = new Thread(new AsyncPromoterExtraction(
 								session,
 								sequenceFileName,
+                                                                upstreamStart,
 								true,
 								myGeneListAnalysis));
 		
@@ -184,7 +194,23 @@
 				<%@ include file="/web/common/selectBox.jsp" %>
 			</td>
 		</tr>
-
+                <tr>	
+			<td>
+				<strong>Upstream sequence from:</strong>
+			</td><td>
+				<%
+				selectName = "upstreamSelect";
+				selectedOption = "gene";
+				onChange = "";
+				style = "";
+				optionHash = new LinkedHashMap();
+                        	optionHash.put("gene", "Gene start");
+                        	optionHash.put("trx", "Each transcript start");
+                                optionHash.put("trxcds", "Each transcript coding sequence start");
+				%>
+				<%@ include file="/web/common/selectBox.jsp" %>
+			</td>
+		</tr>
 		<tr>	
 			<td>
 				<strong>Motif distribution:</strong>

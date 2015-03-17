@@ -113,192 +113,258 @@
 		%> <%=memeResultsOld[i]%> <%
 	}
 }else{%>
-	<script type="text/javascript">
+<script type="text/javascript">
     
     /* START INCLUDED FILE "motif_logo.js" */
+var _alph_red = "rgb(204,0,0)";
+var _alph_blue = "rgb(0,0,204)";
+var _alph_orange = "rgb(255,179,0)";
+var _alph_green = "rgb(0,128,0)";
+var _alph_yellow = "rgb(255,255,0)";
+var _alph_purple = "rgb(204,0,204)";
+var _alph_magenta = "rgb(255,0,255)";
+var _alph_pink = "rgb(255,204,204)";
+var _alph_turquoise = "rgb(51,230,204)";
+var DNA_colours = [_alph_red, _alph_blue, _alph_orange, _alph_green];
+var AA_colours = [_alph_blue, _alph_blue, _alph_magenta, _alph_magenta, 
+    _alph_blue, _alph_orange, _alph_pink, _alph_blue, _alph_red, _alph_blue, 
+    _alph_blue, _alph_green, _alph_yellow, _alph_green, _alph_red, _alph_green,
+    _alph_green, _alph_blue, _alph_blue, _alph_turquoise];
 //======================================================================
 // start Alphabet object
 //======================================================================
-var Alphabet = function (alphabet, bg) {
+var Alphabet = function (alphabet, freqs, colours) {
   "use strict";
-  var is_letter, is_prob, pos, letter, parts, i, freq;
-  //variable prototype
-  this.freqs = new Array();
-  this.alphabet = new Array();
-  this.letter_count = 0;
-  //construct
-  is_letter = /^\w$/;
-  is_prob = /^((1(\.0+)?)|(0(\.\d+)?))$/;
-  for (pos = 0; pos < alphabet.length; pos++) {
-    letter = alphabet.charAt(pos);
-    if (is_letter.test(letter)) {
-      this.alphabet[this.letter_count] = letter.toUpperCase();
-      this.freqs[this.letter_count] = -1;
-      this.letter_count++;
+  function has_letters(letters, lookup) {
+    "use strict";
+    var i;
+    for (i = 0; i < letters.length; i++) {
+      if (!lookup[letters.charAt(i)]) return false;
     }
+    return true;
   }
-  if (typeof bg !== "undefined") {
-    parts = bg.split(/\s+/);
-    for (i = 0, pos = 0; (i + 1) < parts.length; i += 2) {
-      letter = parts[i];
-      freq = parts[i+1];
-      if (is_letter.test(letter) && is_prob.test(freq)) {
-        letter = letter.toUpperCase();          //find the letter it matches
-        for (;pos < this.letter_count; pos++) {
-          if (this.alphabet[pos] == letter) {
-            break;
-          }
-        }
-        if (pos >= this.letter_count) {
-          throw new Error("NOT_IN_ALPHABET");
-        }
-        this.freqs[pos] = (+freq);
+  function map_colours(letters, colours, lookup) {
+    "use strict";
+    var i, map;
+    map = [];
+    for (i = 0; i < letters.length; i++) {
+      map.push(colours[lookup[letters.charAt(i)]-1]);
+    }
+    return map;
+  }
+  var is_alphabet, parts, ll, i, letter; 
+  var is_letter, is_prob, freq, freq_lookup;
+  var len, order, order_len, prob_sum, delta;
+  var hue, sat, light, step;
+  // variable prototype
+  this.alphabet = [];
+  this.freqs = [];
+  this.colours = [];
+  this.alphabet_to_index = {};
+  this.ic = 1;
+  this.is_dna_alph = false;
+  this.is_rna_alph = false;
+  this.is_aa_alph = false;
+  //construct
+  delta = 0.1;
+  // parse the alphabet string
+  if (typeof alphabet === "string") {
+    // check for acceptable letters
+    is_alphabet = /^[a-zA-Z]+$/;
+    if (!is_alphabet.test(alphabet)) {
+      throw new Error("Unacceptable letters in alphabet.");
+    }
+    // check for repeated letters
+    parts = alphabet.split("");
+    ll = {};
+    for (i = 0; i < parts.length; i++) {
+      letter = parts[i].toUpperCase();
+      if (ll[letter]) {
+        throw new Error("Repeated letter in alphabet.");
       }
+      ll[letter] = i+1;
+    }
+    // alphabet is ok
+    this.alphabet = parts;
+    // calculate information content per letter
+    this.ic = Math.log(this.alphabet.length) / Math.LN2;
+    // try to determine if DNA, RNA, AA or other
+    if (this.alphabet.length == 4) {
+      this.is_dna_alph = has_letters("ACGT", ll);
+      this.is_rna_alph = has_letters("ACGU", ll);
+    } else if (this.alphabet.length == 20) {
+      this.is_aa_alph = has_letters("ACDEFGHIKLMNPQRSTVWY",ll);
+    }
+    for (i = 0; i < this.alphabet.length; i++) {
+      this.alphabet_to_index[this.alphabet[i].toUpperCase()] = i;
     }
   } else {
-    //assume uniform background
-    freq = 1.0 / this.letter_count;
-    for (pos = 0; pos < this.letter_count; pos++) {
-      this.freqs[pos] = freq;
+    throw new Error("Expected Alphabet to be a string");
+  }
+  // parse the frequencies, may be string or array
+  if (typeof freqs === "string") {
+    is_letter = /^[a-zA-Z]$/;
+    is_prob = /^((1(\.0+)?)|(0(\.\d+)?))$/;
+    parts = trim(freqs).split(/\s+/);
+    freq_lookup = {};
+    if (parts.length % 2 !== 0) {
+      throw new Error("Expected pairs in Alphabet freqs string");
+    }
+    if (parts.length / 2 !== this.alphabet.length) {
+      throw new Error("Expected a pair for each letter in Alphabet freqs string");
+    }
+    prob_sum = 0;
+    for (i = 0; i < parts.length; i += 2) {
+      letter = parts[i].toUpperCase();
+      freq = parts[i+1];
+      if (!is_letter.test(letter)) {
+        throw new Error("Expected a letter at position " + i + 
+            " in Alphabet freqs string");
+      } 
+      if (!is_prob.test(freq)) {
+        throw new Error("Expected a probability at position " + (i + 1) +
+            " in Alphabet freqs string");
+      }
+      freq = parseFloat(freq);
+      freq_lookup[letter] = freq;
+      prob_sum += freq;
+    }
+    for (i = 0; i < this.alphabet.length; i++) {
+      letter = this.alphabet[i];
+      freq = freq_lookup[letter];
+      if (typeof freq === "undefined") {
+        throw new Error("No frequency given for letter " + letter);
+      }
+      this.freqs.push(freq);
+    }
+    if (Math.abs(prob_sum - 1.0) > delta) {
+      throw new Error("Sum of probabilities for order-" + order + 
+          " background did not equal 1.");
+    }
+  } else if (typeof freqs === "object" && freqs instanceof Array) {
+    // allow higher order backgrounds then we use (we use order-0)
+    prob_sum = 0;
+    order = 0;
+    len = this.alphabet.length;
+    order_len = this.alphabet.length;
+    for (i = 0; i < freqs.length; i++) {
+      if (i == len) {
+        if (Math.abs(prob_sum - 1.0) > delta) {
+          throw new Error("Sum of probabilities for order-" + order + " background did not equal 1.");
+        }
+        prob_sum = 0;
+        order_len *= this.alphabet.length;
+        order++;
+        len += order_len;
+      }
+      prob_sum += freqs[i];
+      if (order == 0) {
+        this.freqs.push(freqs[i]);
+      }
+    }
+    if (i !== len) {
+      throw new Error("Length of background frequencies did not match " +
+          "a complete order-" + order + " background");
+    }
+    if (Math.abs(prob_sum - 1.0) > delta) {
+      throw new Error("Sum of probabilities for order-" + order + 
+          " background did not equal 1.");
+    }
+  } else if (typeof freqs === "undefined") {
+    freq = 1.0 / this.alphabet.length;
+    for (i = 0; i < this.alphabet.length; i++) {
+      this.freqs.push(freq);
+    }
+  } else {
+    throw new Error("Expected freqs to be a string or an array");
+  }
+  if (typeof colours === "object" && colours instanceof Array) {
+    if (colours.length != this.alphabet.length) {
+      throw new Error("Length of colours array does not match letters in alphabet");
+    }
+    for (i = 0; i < colours.length; i++) {
+      this.colours.push(colours[i]);
+    }
+  } else if (typeof colours === "undefined") {
+    if (this.is_dna_alph) {
+      this.colours = map_colours("ACGT", DNA_colours, ll);
+    } else if (this.is_rna_alph) {
+      this.colours = map_colours("ACGU", DNA_colours, ll);
+    } else if (this.is_aa_alph) {
+      this.colours = map_colours("ACDEFGHIKLMNPQRSTVWY", AA_colours, ll);
+    } else {
+      // use hsl colours
+      hue = 0; //red
+      sat = 100;
+      light = 40;
+      step = 360.0 / this.alphabet.length;
+      for (i = 0; i < this.alphabet.length; i++) {
+        this.colours.push("hsl(" + ((hue + step * i) % 360) + ", " + sat + "%, " + light + "%)");
+      }
     }
   }
 };
 
-
 Alphabet.prototype.get_ic = function() {
   "use strict";
-  if (this.is_nucleotide()) {
-    return 2;
-  } else {
-    return Math.log(20) / Math.LN2;
-  }
+  return this.ic;
 };
 
 Alphabet.prototype.get_size = function() {
   "use strict";
-  return this.letter_count;
+  return this.alphabet.length;
 };
 
 Alphabet.prototype.get_letter = function(alph_index) {
   "use strict";
-  if (alph_index < 0 || alph_index >= this.letter_count) {
+  if (alph_index < 0 || alph_index >= this.alphabet.length) {
     throw new Error("BAD_ALPHABET_INDEX");
   }
   return this.alphabet[alph_index];
 };
 
+Alphabet.prototype.get_letters = function() {
+  "use strict";
+  return this.alphabet.join("");
+};
+
 Alphabet.prototype.get_bg_freq = function(alph_index) {
   "use strict";
-  if (alph_index < 0 || alph_index >= this.letter_count) {
+  if (alph_index < 0 || alph_index >= this.alphabet.length) {
     throw new Error("BAD_ALPHABET_INDEX");
-  }
-  if (this.freqs[alph_index] == -1) {
-    throw new Error("BG_FREQ_NOT_SET");
   }
   return this.freqs[alph_index];
 };
 
 Alphabet.prototype.get_colour = function(alph_index) {
   "use strict";
-  var red, blue, orange, green, yellow, purple, magenta, pink, turquoise;
-  red = "rgb(204,0,0)";
-  blue = "rgb(0,0,204)";
-  orange = "rgb(255,179,0)";
-  green = "rgb(0,128,0)";
-  yellow = "rgb(255,255,0)";
-  purple = "rgb(204,0,204)";
-  magenta = "rgb(255,0,255)";
-  pink = "rgb(255,204,204)";
-  turquoise = "rgb(51,230,204)";
-  if (alph_index < 0 || alph_index >= this.letter_count) {
+  if (alph_index == -1) {
+    return "black";
+  }
+  if (alph_index < 0 || alph_index >= this.alphabet.length) {
     throw new Error("BAD_ALPHABET_INDEX");
   }
-  if (this.is_nucleotide()) {
-    switch (this.alphabet[alph_index]) {
-      case "A":
-        return red;
-      case "C":
-        return blue;
-      case "G":
-        return orange;
-      case "T":
-        return green;
-      default:
-        throw new Error("Invalid nucleotide letter");
-    }
-  } else {
-    switch (this.alphabet[alph_index]) {
-      case "A":
-      case "C":
-      case "F":
-      case "I":
-      case "L":
-      case "V":
-      case "W":
-      case "M":
-        return blue;
-      case "N":
-      case "Q":
-      case "S":
-      case "T":
-        return green;
-      case "D":
-      case "E":
-        return magenta;
-      case "K":
-      case "R":
-        return red;
-      case "H":
-        return pink;
-      case "G":
-        return orange;
-      case "P":
-        return yellow;
-      case "Y":
-        return turquoise;
-      default:
-        throw new Error("Invalid protein letter");
-    }
-  }
-  return "black";
-};
-
-Alphabet.prototype.is_ambig = function(alph_index) {
-  "use strict";
-  if (alph_index < 0 || alph_index >= this.letter_count) {
-    throw new Error("BAD_ALPHABET_INDEX");
-  }
-  if (this.is_nucleotide()) {
-    return ("ACGT".indexOf(this.alphabet[alph_index]) == -1);
-  } else {
-    return ("ACDEFGHIKLMNPQRSTVWY".indexOf(this.alphabet[alph_index]) == -1);
-  }
+  return this.colours[alph_index];
 };
 
 Alphabet.prototype.get_index = function(letter) {
   "use strict";
   var i;
-  for (i = 0; i < this.letter_count; i++) {
-    if (this.alphabet[i] == letter.toUpperCase()) {
-      return i;
-    }
+  i = this.alphabet_to_index[letter.toUpperCase()];
+  if (typeof i === "undefined") {
+    return -1;
   }
-  throw new Error("UNKNOWN_LETTER");
+  return i;
 };
 
-Alphabet.prototype.is_nucleotide = function() {
+Alphabet.prototype.is_dna = function() {
   "use strict";
-  //TODO basic method, make better
-  if (this.letter_count < 20) {
-    return true;
-  }
-  return false;
+  return this.is_dna_alph;
 };
 
 Alphabet.prototype.toString = function() {
   "use strict";
-  return (this.is_nucleotide() ? "Nucleotide" : "Protein") + 
-    " Alphabet " + (this.alphabet.join(""));
+  return  "Alphabet " + (this.alphabet.join(""));
 };
 
 //======================================================================
@@ -477,8 +543,8 @@ Pspm.prototype.reverse_complement = function(alphabet) {
   if (this.alph_length != alphabet.get_size()) {
     throw new Error("ALPHABET_MISMATCH");
   }
-  if (!alphabet.is_nucleotide()) {
-    throw new Error("NO_PROTEIN_RC");
+  if (!alphabet.is_dna()) {
+    throw new Error("Only DNA motifs may be reverse complemented");
   }
   //reverse
   x = 0;
@@ -525,9 +591,6 @@ Pspm.prototype.get_stack = function(position, alphabet) {
   alphabet_ic = alphabet.get_ic();
   stack = [];
   for (i = 0; i < this.alph_length; i++) {
-    if (alphabet.is_ambig(i)) {
-      continue;
-    }
     sym = new Symbol(i, row[i]*stack_ic/alphabet_ic, alphabet);
     if (sym.get_scale() <= 0) {
       continue;
@@ -547,9 +610,6 @@ Pspm.prototype.get_stack_ic = function(position, alphabet) {
   row = this.pspm[position];
   H = 0;
   for (i = 0; i < this.alph_length; i++) {
-    if (alphabet.is_ambig(i)) {
-      continue;
-    }
     if (row[i] === 0) {
       continue;
     }
@@ -560,16 +620,10 @@ Pspm.prototype.get_stack_ic = function(position, alphabet) {
 
 Pspm.prototype.get_error = function(alphabet) {
   "use strict";
-  var asize;
   if (this.nsites === 0) {
     return 0;
   }
-  if (alphabet.is_nucleotide()) {
-    asize = 4;
-  } else {
-    asize = 20;
-  }
-  return (asize-1) / (2 * Math.log(2)*this.nsites);
+  return (alphabet.get_size()-1) / (2 * Math.log(2)*this.nsites);
 };
 
 Pspm.prototype.get_motif_length = function() {
@@ -592,28 +646,63 @@ Pspm.prototype.get_right_trim = function() {
   return this.rtrim;
 };
 
+Pspm.prototype.as_count_matrix = function() {
+  "use strict";
+  var count, count_text, text;
+  var i, j;
+  text = "";
+  for (i = 0; i < this.motif_length; i++) {
+    if (i !== 0) {
+      text += "\n";
+    }
+    for (j = 0; j < this.alph_length; j++) {
+      if (j !== 0) {
+        text += " ";
+      }
+      count = Math.round(this.nsites * this.pspm[i][j]);
+      count_text = "" + count;
+      // pad up to length of 4
+      if (count_text.length < 4) {
+        text += (new Array(5 - count_text.length)).join(" ") + count_text;
+      } else {
+        text += count_text;
+      }
+    }
+  }
+  return text; 
+};
+
+Pspm.prototype.as_probability_matrix = function() {
+  "use strict";
+  var text;
+  var i, j;
+  text = "";
+  for (i = 0; i < this.motif_length; i++) {
+    if (i !== 0) {
+      text += "\n";
+    }
+    for (j = 0; j < this.alph_length; j++) {
+      if (j !== 0) {
+        text += " ";
+      }
+      text += this.pspm[i][j].toFixed(6);
+    }
+  }
+  return text; 
+};
+
 Pspm.prototype.as_pspm = function() {
   "use strict";
-  var out, row, col;
-  out = "letter-probability matrix: alength= " + this.alph_length + 
+  return "letter-probability matrix: alength= " + this.alph_length + 
       " w= " + this.motif_length + " nsites= " + this.nsites + 
       " E= " + (typeof this.evalue === "number" ? 
-          this.evalue.toExponential() : this.evalue) + "\n";
-  for (row = 0; row < this.motif_length; row++) {
-    for (col = 0; col < this.alph_length; col++) {
-      if (col !== 0) {
-        out += " ";
-      }
-      out += this.pspm[row][col].toFixed(6);
-    }
-    out += "\n";
-  }
-  return out;
+          this.evalue.toExponential() : this.evalue) + "\n" +
+      this.as_probability_matrix();
 };
 
 Pspm.prototype.as_pssm = function(alphabet, pseudo) {
   "use strict";
-  var out, log2, total, row, col, p, bg, p2, score;
+  var out, total, row, col, p, bg, p2, score, score_text;
   if (typeof pseudo === "undefined") {
     pseudo = 0.1;
   } else if (typeof pseudo !== "number") {
@@ -623,7 +712,6 @@ Pspm.prototype.as_pssm = function(alphabet, pseudo) {
       " w= " + this.motif_length + 
       " E= " + (typeof this.evalue == "number" ? 
           this.evalue.toExponential() : this.evalue) + "\n";
-  log2 = Math.log(2);
   total = this.nsites + pseudo;
   for (row = 0; row < this.motif_length; row++) {
     for (col = 0; col < this.alph_length; col++) {
@@ -637,14 +725,153 @@ Pspm.prototype.as_pssm = function(alphabet, pseudo) {
       // now calculate the score
       score = -10000;
       if (p2 > 0) {
-        score = Math.round((Math.log(p2 / bg) / log2) * 100);
+        score = Math.round((Math.log(p2 / bg) / Math.LN2) * 100);
       }
-      out += score;
+      score_text = "" + score;
+      // pad out to 6 characters
+      if (score_text.length < 6) {
+        out += (new Array(7 - score_text.length)).join(" ") + score_text;
+      } else {
+        out += score_text;
+      }
     }
     out += "\n";
   }
   return out;
 };
+
+Pspm.prototype.as_meme = function(options) {
+  var with_header, with_pspm, with_pssm, version, alphabet, bg_source, pseudocount, strands;
+  var out, alen, i;
+  // get the options
+  if (typeof options !== "object" || options === null) {
+    options = {};
+  }
+  with_header = (typeof options["with_header"] === "boolean" ? options["with_header"] : false);
+  with_pspm = (typeof options["with_pspm"] === "boolean" ? options["with_pspm"] : false);
+  with_pssm = (typeof options["with_pssm"] === "boolean" ? options["with_pssm"] : false);
+  if (!with_pspm && !with_pssm) with_pspm = true;
+  if (with_header) {
+    if (typeof options["version"] === "string" && /^\d+(?:\.\d+){0,2}$/.test(options["version"])) {
+      version = options["version"];
+    } else if (typeof options["version"] === "number") {
+      version = options["version"].toFixed(0);
+    } else {
+      version = "4";
+    }
+    if (typeof options["strands"] === "number" && options["strands"] === 1) {
+      strands = 1;
+    } else {
+      strands = 2;
+    }
+    if (typeof options["bg_source"] === "string") {
+      bg_source = options["bg_source"];
+    } else {
+      bg_source = "unknown source";
+    }
+  }
+  if (with_header || with_pssm) {
+    if (typeof options["alphabet"] === "object" && options["alphabet"] != null
+        && options["alphabet"] instanceof Alphabet) {
+      alphabet = options["alphabet"];
+    } else {
+      alphabet = (this.get_alph_length() == 4 ? 
+          new Alphabet("ACGT") : new Alphabet("ACDEFGHIKLMNPQRSTVWY"));
+      bg_source = "uniform distribution";
+    }
+  }
+  if (with_pssm) {
+    if (typeof options["pseudocount"] === "number") {
+      pseudocount = options["pseudocount"];
+    } else {
+      pseudocount = 0.01; // used by MEME to generate PSSMs from PSPMs
+    }
+  }
+  // now create the output
+  out = "";
+  if (with_header) {
+    out = "MEME version " + version + "\n\n";
+    out += "ALPHABET= " + alphabet.get_letters().toUpperCase() + "\n\n";
+    if (alphabet.is_dna()) { // assume DNA has both strands unless otherwise specified
+      out += "strands: " + (strands === 1 ? "+" : "+ -") + "\n\n";
+    }
+    out += "Background letter frequencies (from " + bg_source + "):\n";
+    alen = alphabet.get_size();
+    for (i = 0; i < alen; i++) {
+      if (i !== 0) {
+        if (i % 9 === 0) { // maximum of nine entries per line
+          out += "\n";
+        } else {
+          out += " ";
+        }
+      }
+      out += alphabet.get_letter(i) + " " + alphabet.get_bg_freq(i).toFixed(3);
+    }
+  }
+  out += "\n\n";
+  out += "MOTIF " + this.name;
+  if (with_pspm) {
+    out += "\n\n";
+    out += this.as_pspm();
+  }
+  if (with_pssm) {
+    out += "\n\n";
+    out += this.as_pssm(alphabet, pseudocount);
+  }
+  return out;
+}
+
+Pspm.prototype.as_minimal_meme = function(version, alphabet, options) {
+  "use strict";
+  function format_matrix(matrix, pad) {
+    "use strict";
+    var row, col, col_text, out;
+    out = "";
+    for (row = 0; row < matrix.length; row++) {
+      if (row !== 0) {
+        out += "\n";
+      }
+      for (col = 0; col < matrix[row].length; col++) {
+        if (col !== 0) {
+          out += " ";
+        }
+        col_text = "" + matrix[row][col];
+        if (col_text.length < pad) {
+          out += (new Array(pad + 1 - col_text.length)).join(" ") + col_text;
+        } else {
+          out += col_text;
+        }
+      }
+    }
+    return out;
+  }
+  var out, alen, i;
+  out = "MEME version " + version + "\n\n";
+  out += "ALPHABET= " + alphabet.get_letters().toUpperCase() + "\n\n";
+  if (alphabet.is_dna()) { // assume DNA has both strands unless otherwise specified
+    out += "strands: " + (options["strands"] === 1 ? "+" : "+ -") + "\n\n";
+  }
+  out += "Background letter frequencies (from " + (options["bg_source"] || "unknown source") + "):\n";
+  alen = alphabet.get_size();
+  for (i = 0; i < alen; i++) {
+    if (i !== 0) {
+      if (i % 9 === 0) { // maximum of nine entries per line
+        out += "\n";
+      } else {
+        out += " ";
+      }
+    }
+    out += alphabet.get_letter(i) + " " + alphabet.get_bg_freq(i).toFixed(3);
+  }
+  out += "\n\n";
+  out += "MOTIF " + this.name + "\n\n";
+  out += this.as_pspm();
+  if (typeof options["scores"] === "object") {
+    out += "\n\nlog-odds matrix: alength= " + alen + " w= " + this.pspm.length + " E= " + this.evalue + "\n";
+    out += format_matrix(options["scores"], 6);
+  }
+  return out;
+}
 
 Pspm.prototype.toString = function() {
   "use strict";
@@ -915,9 +1142,6 @@ var RasterizedAlphabet = function(alphabet, font, target_width) {
   letters = [];
   //now measure each letter in the alphabet
   for (i = 0; i < alphabet.get_size(); ++i) {
-    if (alphabet.is_ambig(i)) {
-      continue; //skip ambigs as they're never rendered
-    }
     letter = alphabet.get_letter(i);
     letters.push(letter);
     this.lookup[letter] = count;
@@ -1413,14 +1637,16 @@ function draw_logo_on_canvas(logo, canvas, show_names, scale) {
     }
   }
   // cache the raster based on the assumption that we will be drawing a lot
-  // of logos the same size
+  // of logos the same size and alphabet
   if (typeof draw_logo_on_canvas.raster_scale === "number" && 
-      Math.abs(draw_logo_on_canvas.raster_scale - scale) < 0.1) {
+      Math.abs(draw_logo_on_canvas.raster_scale - scale) < 0.1 &&
+      logo.alphabet == draw_logo_on_canvas.raster_alphabet) {
     raster = draw_logo_on_canvas.raster_cache;
   } else {
     raster = new RasterizedAlphabet(logo.alphabet, metrics.stack_font, metrics.stack_width * scale * 2);
     draw_logo_on_canvas.raster_cache = raster;
     draw_logo_on_canvas.raster_scale = scale;
+    draw_logo_on_canvas.raster_alphabet = logo.alphabet;
   }
   ctx = canvas.getContext('2d');
   ctx.save();//s1
@@ -1607,169 +1833,7 @@ function trim (str) {
   while (ws.test(str.charAt(--i)));
   return str.slice(0, i + 1);
 }
-    /* END INCLUDED FILE "motif_logo.js" */
-    
-  
-        function setup() {
-          var motif_count = 4;
-          //create canvas logos
-          var alphabet = new Alphabet(document.getElementById("alphabet").value, document.getElementById("bgfreq").value);
-          for (var i = 1; i <= motif_count; i++) {
-            var pspm = new Pspm(document.getElementById("pspm" + i).value);
-            var logo = logo_1(alphabet, "MEME", pspm);
-            alternate_logo(logo, "thumbnail_logo_" + i, 0.5);
-            alternate_logo(logo, "logo_img_" + i, 1);
-          
-          }
-          
-          //ensure radio buttons have data generated for them by fireing events
-          var allInputs = document.getElementsByTagName("input");
-          for (var i = 0; i < allInputs.length; i++) {
-            var input = allInputs[i];
-            if (input.type == "radio" && input.checked) {
-              var evt = document.createEvent("MouseEvents");
-              evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-              input.dispatchEvent(evt);
-            }
-          }
-          
-          var tbl = document.getElementById("tbl_blocks_combined");
-          wireUpTable(tbl, true);
-          
-          for (var i = 1; i <= motif_count; i++) {
-            tbl = document.getElementById("tbl_sites_" + i);
-            wireUpTable(tbl, false);
-            tbl = document.getElementById("tbl_blocks_" + i);
-            wireUpTable(tbl, true);
-          }
-        }
-        function showDesc(source, targetid) {
-          document.getElementById(targetid).childNodes[0].nodeValue = source.title;
-        }
-        function hideDesc(targetid) {
-          document.getElementById(targetid).childNodes[0].nodeValue = "Mouse-over buttons for more information.";
-        }
-        function showEmbededFormat(motifnum, format) {
-          var source = document.getElementById(format + motifnum);
-          var txtarea = document.getElementById("format_display_area_" + motifnum);
-          txtarea.value = source.value;
-          txtarea.style.display = 'block';
-        }
-        function hideFormat(motifnum) {
-          var txtarea = document.getElementById("format_display_area_" + motifnum);
-          txtarea.style.display = 'none';
-        }
-        function block2raw(block) {
-          var raw = "";
-          var endpat = /\/\//;
-          var wordpat = /\S+/gi;
-          var lines = block.split("\n");
-          for (i = 2; i < lines.length; ++i) {
-            if (lines[i].match(endpat) != null) break;
-            var words = lines[i].match(wordpat);
-            raw += words[3] + "\n";
-          }
-          return raw;
-        }
-        function block2fasta(block) {
-          var fasta = "";
-          var endpat = /\/\//;
-          var wordpat = /\S+/gi;
-          var lines = block.split("\n");
-          for (i = 2; i < lines.length; ++i) {
-            if (lines[i].match(endpat) != null) break;
-            var words = lines[i].match(wordpat);
-            var start = words[2].substring(0, words[2].length - 1);
-            fasta += ">" + words[0] + " ( start= " + start + " )\n" + words[3] + "\n";
-          }
-          return fasta;
-        }
-        function showRaw(motifnum) {
-          var source = document.getElementById('blocks' + motifnum);
-          var txtarea = document.getElementById("format_display_area_" + motifnum);
-          txtarea.value = block2raw(source.value);
-          txtarea.style.display = 'block';
-        }
-        function showFasta(motifnum) {
-          var source = document.getElementById('blocks' + motifnum);
-          var txtarea = document.getElementById("format_display_area_" + motifnum);
-          txtarea.value = block2fasta(source.value);
-          txtarea.style.display = 'block';
-        }
-        function showHidden(prefix) {
-          document.getElementById(prefix + '_activator').style.display = 'none';
-          document.getElementById(prefix + '_deactivator').style.display = 'block';
-          document.getElementById(prefix + '_data').style.display = 'block';
-        }
-        function hideShown(prefix) {
-          document.getElementById(prefix + '_activator').style.display = 'block';
-          document.getElementById(prefix + '_deactivator').style.display = 'none';
-          document.getElementById(prefix + '_data').style.display = 'none';
-        }
-        function wireUpTable(table, skiplast) {
-          if (table && table.rows) {
-            var nRows = table.rows.length;
-            if (skiplast) {nRows--;}
-            for (var i = 1; i < nRows; i++) {
-              var row = table.rows[i];
-              row.style.cursor = 'pointer';
-              row.onclick = function()
-              {
-                processHighlight(this);
-              }
-            }
-          } else {
-            alert(table);
-          }
-        }
-        function processHighlight(sourceRow) {
-          var name = sourceRow.cells[0].firstChild.nodeValue;
-          
-          var tbl = document.getElementById("tbl_blocks_combined");
-          highlightTable(name, tbl);
-          
-          for (var i = 1; i <= 4; i++) {
-            tbl = document.getElementById("tbl_sites_" + i);
-            highlightTable(name, tbl);
-            tbl = document.getElementById("tbl_blocks_" + i);
-            highlightTable(name, tbl);
-          }
-        }
-        function highlightTable(name, table) {
-          if (table == null) return;
-          nRows = table.rows.length;
-          for (var i = 0; i < nRows; i++) {
-            var row = table.rows[i];
-            if(row.cells[0].firstChild.nodeValue == name) {
-              row.style.backgroundColor = "#aaffaa";
-            } else {
-              row.style.backgroundColor = "white";
-            }
-          }
-        }
-        function warnExternal() {
-          if (confirm("Using BLOCKS requires the data to be sent to an external webservice even if you have setup your own meme installation. Continue?")) {
-            return true;
-          }
-          return false;
-        }
-        function clickLogoTab(is_rc, num) {
-          var stdTab = document.getElementById("logo_tab_std_" + num);
-          var rcTab = document.getElementById("logo_tab_rc_" + num);
-          var logoImg = document.getElementById("logo_img_" + num);
-          var logoRcImg = document.getElementById("logo_rc_img_" + num);
-          if (is_rc) {
-            logoImg.style.display = 'none';
-            logoRcImg.style.display = 'block';
-            rcTab.setAttribute("class", "tab activeTab");
-            stdTab.setAttribute("class", "tab");
-          } else {
-            logoRcImg.style.display = 'none';
-            logoImg.style.display = 'block';
-            rcTab.setAttribute("class", "tab");
-            stdTab.setAttribute("class", "tab activeTab");
-          }
-        }
+
       </script>
 
 	<%=memeResults%>
