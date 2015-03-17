@@ -87,6 +87,9 @@ public class AsyncMeme implements Runnable{
 				"The MEME process called '"+
 				myGeneListAnalysis.getDescription() + "' that you initiated ";
 
+                
+                String outputDir=sequenceFileName.substring(0,sequenceFileName.lastIndexOf("/")+1);
+                
 		String memeDir = perlDir + "MEME/meme4_10_4";
 		String[] envVariables = new String[4];
 		envVariables[0] = "MEME_DIRECTORY=" + memeDir;
@@ -102,7 +105,8 @@ public class AsyncMeme implements Runnable{
                                         "-nmotifs", maxMotifs,
                                         "-minw", minWidth,
                                         "-maxw", maxWidth,
-                                        "-maxsize", "100000"
+                                        "-maxsize", "100000",
+                                        "--o", outputDir
                                 };
 		log.debug("functionArgs = "); new Debugger().print(functionArgs);
 
@@ -129,10 +133,13 @@ public class AsyncMeme implements Runnable{
 			}
 			myExecHandler.runExec();
 			//new FileHandler().copyFile(new File(memeDir + "/bin/meme_out/meme.html"), new File(memeFileName + ".html"));
-                        File src=new File(memeDir+"/bin/meme_out/");
+                        
+                        
+                        //Not needed unless meme --o doesn't output to the right location
+                        /*File src=new File(memeDir+"/bin/meme_out/");
                         File dest=new File(memeFileName);
                         
-                        new FileHandler().copyDir(src,dest);
+                        new FileHandler().copyDir(src,dest);*/
                         
 			String successContent = mainContent + "has completed.  " +
 						"You may now view the results on the website at " + mainURL + ". ";
