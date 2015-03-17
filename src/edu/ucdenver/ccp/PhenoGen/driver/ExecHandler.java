@@ -48,11 +48,14 @@ public class ExecHandler {
             String[] errorFileContents=new String[0];
             execErrors="";
             try{
-                errorFileContents = myFileHandler.getFileContents(new File(errorFileName));
-                execErrors="";
-                for (int i=0; i<errorFileContents.length; i++) {
-                    if(errorFileContents[i]!=null && !errorFileContents[i].equals("")){
-                        execErrors = execErrors + "\n" + errorFileContents[i];
+                File err=new File(errorFileName);
+                if(err.exists()){
+                    errorFileContents = myFileHandler.getFileContents(new File(errorFileName));
+                    execErrors="";
+                    for (int i=0; i<errorFileContents.length; i++) {
+                        if(errorFileContents[i]!=null && !errorFileContents[i].equals("")){
+                            execErrors = execErrors + "\n" + errorFileContents[i];
+                        }
                     }
                 }
             }catch(IOException e){
