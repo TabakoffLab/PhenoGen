@@ -428,14 +428,14 @@ public class GeneListAnalysis {
                 newGeneListAnalysis.setName(dataRow[8]);
                 newGeneListAnalysis.setStatus(dataRow[9]);
                 newGeneListAnalysis.setPath(dataRow[10]);
-		if (dataRow[11] != null && !dataRow[11].equals("")) {
+		if (dataRow.length>11 && dataRow[11] != null && !dataRow[11].equals("")) {
 			newGeneListAnalysis.setParameter_group_id(Integer.parseInt(dataRow[11]));
 		} else {
 			newGeneListAnalysis.setParameter_group_id(-99);
 		}
                 
                 //check for long running probably an error
-                if(newGeneListAnalysis.getStatus().equals("Running")){
+                if(newGeneListAnalysis.getStatus()!=null && newGeneListAnalysis.getStatus().equals("Running")){
                     java.util.Date cur=new java.util.Date();
                     long diff=cur.getTime()-newGeneListAnalysis.getCreate_date().getTime();
                     if(diff>excessiveTimeLimit){
