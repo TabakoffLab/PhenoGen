@@ -25,7 +25,13 @@
         if ((action != null) && action.equals("Run Upstream Sequence Extraction")) {
 
 		String upstreamLengthPassedIn = (String) request.getParameter("upstreamLength");
-
+                String upstreamStart= (String) request.getParameter("upstreamSelect");
+                String upstart="gene start";
+                if(upstreamStart.equals("trx")){
+                    upstart="transcript start";
+                }else if(upstreamStart.equals("trxcds")){
+                    upstart="transcript cds start";
+                }
         	//
         	// upstreamLengthPassedIn will be 0.5, 1, or 2, so multiply it by 1000 to get kb
         	//
@@ -61,17 +67,21 @@
                 	myGeneListAnalysis.setAnalysis_type("Upstream");
                 	myGeneListAnalysis.setDescription(selectedGeneList.getGene_list_name() + 
 							"_" + upstreamLength + 
-							" bp Upstream Sequence Extraction");
+							" bp Upstream Sequence Extraction from "+upstart);
                 	myGeneListAnalysis.setAnalysisGeneList(myGeneList.getGeneList(selectedGeneList.getGene_list_id(), dbConn));
 			myGeneListAnalysis.setParameter_group_id(parameter_group_id);
 		
-			ParameterValue[] myParameterValues = new ParameterValue[1];
-			myParameterValues[0] = new ParameterValue();
-			myParameterValues[0].setCreate_date();
-			myParameterValues[0].setParameter_group_id(parameter_group_id);
-			myParameterValues[0].setCategory("Upstream Extraction");
+			ParameterValue[] myParameterValues = new ParameterValue[2];
+                        for (int i=0; i<myParameterValues.length; i++) {
+                            myParameterValues[i] = new ParameterValue();
+                            myParameterValues[i].setCreate_date();
+                            myParameterValues[i].setParameter_group_id(parameter_group_id);
+                            myParameterValues[i].setCategory("Upstream Extraction");
+                        }
                 	myParameterValues[0].setParameter("Sequence Length");
                 	myParameterValues[0].setValue(Integer.toString(upstreamLength));
+                        myParameterValues[1].setParameter("Sequence Start");
+                        myParameterValues[1].setValue(upstart);
 			myGeneListAnalysis.setParameterValues(myParameterValues);
 
 			mySessionHandler.createGeneListActivity("Ran Upstream Sequence Extraction on Gene List", dbConn);
@@ -79,6 +89,7 @@
 			Thread thread = new Thread(new AsyncPromoterExtraction(
 						session,
 						upstreamFileName,
+                                                upstreamStart,
 						false,
                                 		myGeneListAnalysis));
 
@@ -129,6 +140,23 @@
 			<%@ include file="/web/common/selectBox.jsp" %>
 		</td>
 	</tr>
+        <tr>	
+			<td>
+				<strong>Upstream sequence from:</strong>
+			</td><td>
+				<%
+				selectName = "upstreamSelect";
+				selectedOption = "gene";
+				onChange = "";
+				style = "";
+				optionHash = new LinkedHashMap();
+                        	optionHash.put("gene", "Gene start");
+                        	optionHash.put("trx", "Each transcript start");
+                                optionHash.put("trxcds", "Each transcript coding sequence start");
+				%>
+				<%@ include file="/web/common/selectBox.jsp" %>
+			</td>
+        </tr>
 	</table>
 	
 	<BR>

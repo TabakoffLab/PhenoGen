@@ -62,9 +62,11 @@ public class AsyncPromoterExtraction implements Runnable{
         private String perlEnvVar=null;
         private String perlDir=null;
         private String geneDir=null;
+        private String upstreamStart=null;
 
 	public AsyncPromoterExtraction(HttpSession session,
 				String fileName,
+                                String upstreamStart,
 				boolean runningMeme,
 				GeneListAnalysis myGeneListAnalysis) {
 
@@ -72,6 +74,7 @@ public class AsyncPromoterExtraction implements Runnable{
 
 		this.session = session;
 		this.fileName = fileName;
+                this.upstreamStart= upstreamStart;
                 this.userLoggedIn = (User) session.getAttribute("userLoggedIn");
             
                 this.geneDir= fileName.substring(0, fileName.lastIndexOf("/")+1);
@@ -201,7 +204,7 @@ public class AsyncPromoterExtraction implements Runnable{
                             perlArgs[1] = perlDir + "readEnsemblUpstreamSeq.pl";
                             perlArgs[2] = geneFile;
                             perlArgs[3] = fileName;
-                            perlArgs[4] = "gene";
+                            perlArgs[4] = upstreamStart;
                             perlArgs[5] = Integer.toString(upstreamLength);
                             perlArgs[6] = ensHost;
                             perlArgs[7] = ensPort;
