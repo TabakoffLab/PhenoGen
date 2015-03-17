@@ -88,7 +88,7 @@ public class AsyncMeme implements Runnable{
 				myGeneListAnalysis.getDescription() + "' that you initiated ";
 
                 
-                String outputDir=sequenceFileName.substring(0,sequenceFileName.lastIndexOf("/")+1);
+                String outputDir=sequenceFileName.substring(0,sequenceFileName.lastIndexOf("/"));
                 
 		String memeDir = perlDir + "MEME/meme4_10_4";
 		String[] envVariables = new String[4];
@@ -106,7 +106,7 @@ public class AsyncMeme implements Runnable{
                                         "-minw", minWidth,
                                         "-maxw", maxWidth,
                                         "-maxsize", "100000",
-                                        "--o", outputDir
+                                        "-oc", outputDir
                                 };
 		log.debug("functionArgs = "); new Debugger().print(functionArgs);
 
