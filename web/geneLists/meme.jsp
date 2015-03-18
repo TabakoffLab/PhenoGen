@@ -275,14 +275,9 @@
             var geneNumber=<%=selectedGeneList.getNumber_of_genes()%>;
             checkSize();
             function checkSize(){
-                console.log($("#upstreamLength"));
-                console.log($("#upstreamLength").val());
                 var select=parseFloat($("#upstreamLength").val());
-                console.log("select size="+select);
-                console.log("gene:"+geneNumber);
-                var total=geneNumber*1000*select;
-                console.log("total:"+total);
-                if(total>300000){
+                var total=geneNumber*select;
+                if(total>300){
                     $("#sizeWarning").show();
                     $("#warnDetail").html(" ("+geneNumber+" genes x "+select+" Kb = "+total+" Kb ) ");
                 }else{
