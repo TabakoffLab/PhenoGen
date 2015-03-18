@@ -80,7 +80,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
   }
 
 .ui-widget { font-size:0.8em;}
-	ul#viewSelectMenu0 li,ul#viewSelectMenu1 li{
+	ul#viewSelectMenu0 li,ul#viewSelectMenu1 li,ul#zoomSelectMenu0 li,ul#zoomSelectMenu1 li{
 		cursor:pointer;
 	}
 </style>
@@ -158,7 +158,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
         <div id="collapsableImage" class="geneimage" >
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.1.4.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.1.5.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.1.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.0.3.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.2.js" type="text/javascript"></script>

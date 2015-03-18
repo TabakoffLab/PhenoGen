@@ -158,7 +158,17 @@ table.tooltipTable TD{
 		padding-right:3px;
 		height:100%;
 	}
-	
+        span.controlGroup{
+            height:24px;
+            display:inline-block;
+            border-style:solid;
+            border-width:1px;
+            border-color:#777777;
+            -webkit-border-radius: 5px;
+            -khtml-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
 	span.control{
 		background:#DCDCDC;
 		margin-left:2px;
@@ -234,12 +244,17 @@ table.tooltipTable TD{
 	}
 	.ui-menu { position: absolute; width: 100px; }
 	
-	button.viewSelectMenu{
+	button.viewSelectMenu, button.zoomSelectMenu{
 		height:2.3em;
 		/*height:26px;
 		position:relative;
 		top:8px;*/
 	}
+        
+        .ui-buttonset button.zoomIn span.ui-button-text,.ui-buttonset button.zoomOut span.ui-button-text{
+            padding: 0.1em 0.2em;
+        }
+        
         .triggerGL, .triggerMiL, .triggerpL, .triggervL{
             cursor: pointer;
             background: url(../web/images/icons/add.png) center left no-repeat; 
