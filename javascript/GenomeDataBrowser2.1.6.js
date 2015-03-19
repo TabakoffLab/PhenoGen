@@ -846,7 +846,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 											.attr("title",track)
 											.on("mouseover",function(){
 												var tmpTrack=$(this).attr("track");
-												var d=trackInfo[tmpTrack];
+												var trackObj=trackInfo[tmpTrack];
 												var ttsr=$(this).tooltipster({
 													position: 'top-right',
 													maxWidth: 250,
@@ -857,7 +857,14 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 													interactive: true,
 											   		interactiveTolerance: 350
 												});
-												ttsr.tooltipster('content',function(d){var ret="";if(d!=undefined && d.Description!=undefined){ret=d.Description;} return ret;});
+												ttsr.tooltipster('content',
+													function(){
+														var ret="";
+														if(typeof trackObj!=='undefined' && typeof trackObj.Description!=='undefined'){
+															ret=trackObj.Description;
+														} 
+														return ret;
+													});
 												ttsr.tooltipster('show');
 											})
 											.on("mouseout",function(){
