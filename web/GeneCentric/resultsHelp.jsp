@@ -308,7 +308,7 @@ by gene displaying a list of each gene and the miRNAs that target that gene.  Th
 
 <script type="text/javascript">
 //Setup Help links
-	$('.inpageHelpContent').hide();
+	//$('.inpageHelpContent').hide();
 	
 	$('.inpageHelpContent').dialog({ 
   		autoOpen: false,

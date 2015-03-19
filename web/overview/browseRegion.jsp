@@ -96,8 +96,8 @@
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="Image showing an overview of the basic controls.<BR>Click to view a larger image.">
-                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Image showing an overview of the basic controls.">
-                                <img src="web/GeneCentric/help1_150.jpg"  title="Click to view a larger image" /></a></span>
+                            <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.1.jpg" title="Image showing an overview of the basic controls.">
+                                <img src="web/GeneCentric/help1.1_150.jpg"  title="Click to view a larger image" /></a></span>
                             </TD>
                             <TD>
                             	<span class="tooltip"  title="Image showing an overview of the controls for selecting and editing views.<BR>Click to view a larger image.">

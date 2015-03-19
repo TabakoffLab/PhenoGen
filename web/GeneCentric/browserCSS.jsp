@@ -269,4 +269,8 @@ table.tooltipTable TD{
             padding: 2px 5px 2px 5px;
             color: #416fbf;
         }
+        
+        .inpageHelpContent {
+            display:none;
+        }
 </style>

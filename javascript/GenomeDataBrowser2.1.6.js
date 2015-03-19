@@ -80,7 +80,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.15.0(3/7/2015)";
+var siteVer="PhenoGen v2.15.1(3/19/2015)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -387,15 +387,6 @@ d3.select('html')
       .on("mousemove", mmove)
 	  .on("mouseup", mup);
 
-/*$(document).on('click','span.viewMenu', function (event){
-	var baseName = $(this).attr("name");
-    $('span.viewMenu.selected').removeClass("selected");
-    $("span[name='"+baseName+"']").addClass("selected");
-    //load default view
-    defaultView=baseName;
-    svgList[0].removeAllTracks();
-    loadState(0);
-});*/
 
 $(window).resize(function (){
 	for (var i=0; i<svgList.length; i++){
@@ -408,36 +399,18 @@ $(window).resize(function (){
 $(document).on("click",".closeBtn",function(){
 					var setting=new String($(this).attr("id"));
 					setting=setting.substr(6);
-					
-					//if($("."+setting).is(":visible")){
-						//alert("visible fading out");
-					//console.log(setting);
-					//console.log($("."+setting));
 					$("."+setting).fadeOut("fast");
-					//}
 					if(setting.indexOf("viewsLevel")>-1){
-                                                var tmpLevel=setting.substr(setting.length-1);
-                                                $("div#nameView"+tmpLevel).hide();
-                                                $("div#selection"+tmpLevel).show();
-                                                $("span#viewMenuLbl"+tmpLevel).html("Select/Edit Views");
+                        var tmpLevel=setting.substr(setting.length-1);
+                        $("div#nameView"+tmpLevel).hide();
+                        $("div#selection"+tmpLevel).show();
+                        $("span#viewMenuLbl"+tmpLevel).html("Select/Edit Views");
 						$("div.trackLevel"+tmpLevel).fadeOut("fast");
 					}
 					return false;
 				});
 
-/*$(document).on("click",".settings",function(){
-					var setting=$(this).attr("id");
-					if(!$("."+setting).is(":visible")){
-						var p=$(this).position();
-						$("."+setting).css("top",p.top-3).css("left",p.left-267);
-						$("."+setting).fadeIn("fast");
-						//var tmpStr=new String(setting);
-						//setupSettingUI(tmpStr.substr(tmpStr.length-1));
-					}else{
-						$("."+setting).fadeOut("fast");
-					}
-					return false;
-				});*/
+
 
 $(document).on("click",".viewSelect",function(){
 					var setting=$(this).attr("id");
@@ -516,11 +489,11 @@ function displayHelpFirstTime(){
                     
 
 	    	}else{
-	    		$("a#fbhelp1").click();
+	    		setTimeout(function(){$("a#fbhelp1").click();},1000);
 	    		$.cookie("genomeBrowserHelp",siteVer);
 	    	}
 	    }else{
-			$("a#fbhelp1").click();
+			setTimeout(function(){$("a#fbhelp1").click();},1000);
 			$.cookie("genomeBrowserHelp",siteVer);
 	    }
 	}
@@ -873,7 +846,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 											.attr("title",track)
 											.on("mouseover",function(){
 												var tmpTrack=$(this).attr("track");
-												var d=trackInfo[tmpTrack];
+												var trackObj=trackInfo[tmpTrack];
 												var ttsr=$(this).tooltipster({
 													position: 'top-right',
 													maxWidth: 250,
@@ -884,7 +857,14 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 													interactive: true,
 											   		interactiveTolerance: 350
 												});
-												ttsr.tooltipster('content',function(d){var ret="";if(d!=undefined && d.Description!=undefined){ret=d.Description;} return ret;});
+												ttsr.tooltipster('content',
+													function(){
+														var ret="";
+														if(typeof trackObj!=='undefined' && typeof trackObj.Description!=='undefined'){
+															ret=trackObj.Description;
+														} 
+														return ret;
+													});
 												ttsr.tooltipster('show');
 											})
 											.on("mouseout",function(){
