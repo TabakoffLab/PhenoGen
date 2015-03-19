@@ -756,7 +756,7 @@ Or
                 <table style="width:98%">
                 <TR>
                                 <TD style="text-align:center;">
-                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Basic Controls on the main image."><img src="web/GeneCentric/help1_300.jpg"  /></a>
+                                    <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.1.jpg" title="Basic Controls on the main image."><img src="web/GeneCentric/help1.1_300.jpg"  /></a>
                                 </TD>
                                 <TD style="text-align:center;">
                                     <a class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."><img src="web/GeneCentric/help2_300.jpg" /></a>
