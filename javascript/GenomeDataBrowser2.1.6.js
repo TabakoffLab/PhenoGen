@@ -40,7 +40,7 @@ if(testChrome && testSafari){
     testSafari=false;
 }
 if(testIE){
-	
+	$("#IEproblem").show();
 }
 /*console.log(navigator.userAgent.toLowerCase());
 console.log("chrome:"+testChrome);
