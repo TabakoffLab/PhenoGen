@@ -419,6 +419,10 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 </div>
 <%}%>
 
+<div id="IEproblem" style="display:none;color:#FF0000;">
+    Internet Explorer is not currently recommended.  Please use Firefox or Chrome.  We are working to fix issues with using the genome browser in Internet Explorer.  We are sorry for any inconvenience.
+</div>
+
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
 
                 1. Enter a gene identifier(e.g. gene symbol, probe set ID, Ensembl ID, etc.) in the gene field.<BR />
@@ -774,8 +778,7 @@ Or
     
 <%}%>
 
-	<script type="text/javascript">
-		
+	<script type="text/javascript">	
 		$('.fancybox').fancybox({
 						helpers : {
 										title: {
