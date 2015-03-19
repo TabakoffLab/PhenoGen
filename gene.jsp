@@ -420,7 +420,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 <%}%>
 
 <div id="IEproblem" style="display:none;color:#FF0000;">
-    Internet Explorer is not currently recommended.  Please use Firefox or Chrome.  We are working to fix issues with using the Genome/Transcriptome Browser in Internet Explorer.  We are sorry for any inconvenience.
+    Internet Explorer is not currently recommended.  Please use Firefox or Chrome.  We are working on fixing issues with using the Genome/Transcriptome Browser in Internet Explorer.  We are sorry for any inconvenience.
 </div>
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
