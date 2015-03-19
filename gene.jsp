@@ -546,8 +546,11 @@ Or
 	<%}%>
 	document.getElementById("wait1").style.display = 'none';
 	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
+        var initChrome=/chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+        var initSafari=/safari/.test(navigator.userAgent.toLowerCase());
+        var initFireFox=/firefox/.test(navigator.userAgent.toLowerCase());
 	var inittestIE=/(wow|.net|ie)/.test(navigator.userAgent.toLowerCase());
-        if(inittestIE){
+        if(!initChrome && !initFireFox && !initSafari && inittestIE){
             $("#IEproblem").show();
         }
 	function isLocalStorage(){
