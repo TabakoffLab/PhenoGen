@@ -420,7 +420,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 <%}%>
 
 <div id="IEproblem" style="display:none;color:#FF0000;">
-    Internet Explorer is not currently recommended.  Please use Firefox or Chrome.  We are working to fix issues with using the Genome/Transcriptome Browser in Internet Explorer.  We are sorry for any inconvenience.
+    Internet Explorer is not currently recommended.  Please use Firefox or Chrome.  We are working on fixing issues with using the Genome/Transcriptome Browser in Internet Explorer.  We are sorry for any inconvenience.
 </div>
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
@@ -546,8 +546,11 @@ Or
 	<%}%>
 	document.getElementById("wait1").style.display = 'none';
 	var translateDialog = createDialog(".translate" , {width: 700, height: 820, title: "Translate Region", zIndex: 500});
+        var initChrome=/chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+        var initSafari=/safari/.test(navigator.userAgent.toLowerCase());
+        var initFireFox=/firefox/.test(navigator.userAgent.toLowerCase());
 	var inittestIE=/(wow|.net|ie)/.test(navigator.userAgent.toLowerCase());
-        if(inittestIE){
+        if(!initChrome && !initFireFox && !initSafari && inittestIE){
             $("#IEproblem").show();
         }
 	function isLocalStorage(){
