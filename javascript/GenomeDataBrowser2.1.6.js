@@ -39,6 +39,9 @@ var testIE=/(wow|.net|ie)/.test(navigator.userAgent.toLowerCase());
 if(testChrome && testSafari){
     testSafari=false;
 }
+if(testIE){
+	
+}
 /*console.log(navigator.userAgent.toLowerCase());
 console.log("chrome:"+testChrome);
 console.log("safari:"+testSafari);
@@ -8496,7 +8499,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 								time=15000;
 							}
 							setTimeout(function (){
-								that.updateDate(retry+1);
+								that.updateData(retry+1);
 							},time);
 						}else {
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
