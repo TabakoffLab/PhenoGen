@@ -46,31 +46,39 @@ $(document).on('click','span.detailMenu', function (event){
     $("span[name='"+baseName+"']").addClass("selected");
     $("div#"+baseName).show();
     //check if loaded load if not
-    var curRptRegion=chr+":"+minCoord+"-"+maxCoord;
-    if(baseName==="regionTable"){
-	curRptRegion=curRptRegion+":"+reportSelectedTrack;
+    var min=svgList[0].xScale.domain()[0];
+    var max=svgList[0].xScale.domain()[1];
+    loadRegionReport(baseName,chr,min,max);
+
+});
+
+function loadRegionReport(reportName,chromosome,rptmin,rptmax){
+	var curRptRegion=chromosome+":"+rptmin+"-"+rptmax;
+    if(reportName==="regionTable"){
+		curRptRegion=curRptRegion+":"+reportSelectedTrack;
     }
 
-    if(regionDetailLoaded[baseName] && regionDetailLoaded[baseName]===curRptRegion){
-                            //don't have to load might reset?
+    if(regionDetailLoaded[reportName] && regionDetailLoaded[reportName]===curRptRegion){
+        //don't have to load might reset?
+        if(reportName==="regionWGCNAEQTL" && $("div#regionWGCNAEQTL").html()===""){
+					loadRegionWGCNA();
+        }
     }else{
-            if(baseName=="regionTable" && reportSelectedTrack!=null){
+            if(reportName=="regionTable" && reportSelectedTrack!=null){
 					loadTrackTable();
-            }else if(baseName=="regionEQTLTable"){
+            }else if(reportName=="regionEQTLTable"){
 					loadEQTLTable();
-            }else if(baseName=="regionWGCNAEQTL"){
-					console.log("calling.regionWGCNAEQTL");
+            }else if(reportName=="regionWGCNAEQTL"){
 					loadRegionWGCNA();
             }
-            regionDetailLoaded[baseName]=curRptRegion;
+            regionDetailLoaded[reportName]=curRptRegion;
     }
-    if(baseName==="regionEQTLTable"){
+    if(reportName==="regionEQTLTable"){
             if(tblFrom){
                     tblFrom.fnAdjustColumnSizing();
             }
     }
-
-});
+}
 
 function loadTrackTable(){
 	//console.log("loadTrackTable");
@@ -156,9 +164,12 @@ function loadEQTLTable(){
 }
 
 function loadRegionWGCNA(){
+	$("div#geneWGCNA").html("");
 	var jspPage="web/GeneCentric/wgcnaGene.jsp";
+	var curmin=svgList[0].xScale.domain()[0];
+    var curmax=svgList[0].xScale.domain()[1];
 	var params={
-			region: chr+":"+minCoord+"-"+maxCoord
+			region: chr+":"+curmin+"-"+curmax
 		};
 	loadDivWithPage("div#regionWGCNAEQTL",jspPage,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
@@ -254,7 +265,11 @@ function DisplayRegionReport(){
 			if(!$('div#collapsableReport').is(":hidden") && reportSelectedTrack){
 				displayDetailedView(reportSelectedTrack);
 			}
-		}
+	}
+	var selectedTab=$('span.detailMenu.selected').attr("name");
+	var curmin=svgList[0].xScale.domain()[0];
+    var curmax=svgList[0].xScale.domain()[1];
+    loadRegionReport(selectedTab,chr,curmin,curmax);
 }
 
 function displayDetailedView(track){

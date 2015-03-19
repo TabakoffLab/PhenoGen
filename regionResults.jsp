@@ -128,7 +128,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
     </script>
 <div id="page" style="min-height:1050px;text-align:center;">
 	<div style="width:100%;text-align:left;">
-	Not sure where to start: <a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">watch a quick navigation demonstration</a> or <a id="fbhelp1" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.jpg" title="Navigation Help<BR>Basic Controls on the main image."> view the help images again</a><a id="fbhelp2" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."></a><a id="fbhelp3" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit views."></a>
+	Not sure where to start: <a href="web/demo/largerDemo.jsp?demoPath=web/demo/BrowserNavDemo" target="_blank">watch a quick navigation demonstration</a> or <a id="fbhelp1" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help1.1.jpg" title="Navigation Help<BR>Basic Controls on the main image."> view the help images again</a><a id="fbhelp2" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help2.jpg" title="Controls to select and edit views."></a><a id="fbhelp3" class="fancybox" rel="fancybox-thumb" href="web/GeneCentric/help3.jpg" title="Controls to select and edit views."></a>
     </div>
     
     <div id="imageMenu"></div>
@@ -158,8 +158,8 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
         <div id="collapsableImage" class="geneimage" >
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.1.5.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport2.1.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.1.6.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport2.1.1.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.0.3.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.2.js" type="text/javascript"></script>
             <script src="javascript/wgcnaBrowser1.0.js" type="text/javascript"></script>
@@ -217,7 +217,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
           <div style="display:none;" id="regionEQTLTable">
          
           </div>
-            <div style="display:none;" id="regionWGCNAEQTL">
+          <div style="display:none;" id="regionWGCNAEQTL">
          
           </div>
     </div><!--collapsableReport end-->
@@ -257,16 +257,23 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 						$('div#collapsableReport').show();
 						$("span[name='collapsableReport']").addClass("less");
 			}
+                        //check for selected region tab , some need to be reloaded (WGCNA for example)
+                        if($('span.detailMenu.selected').size()>0){
+                            var name=$('span.detailMenu.selected').attr("name");
+                            if(name==="regionWGCNAEQTL"){
+                                loadRegionWGCNA();
+                            }
+                        }
 		});
 		
-	$('.regionDetailMenu').click(function (){
+	/*$('.regionDetailMenu').click(function (){
 		var oldID=$('.regionDetailMenu.selected').attr("name");
 		$("#"+oldID).hide();
 		$('.regionDetailMenu.selected').removeClass("selected");
 		$(this).addClass("selected");
 		var id=$(this).attr("name");
 		$("#"+id).show();
-		if(id=="geneEQTL"){
+		if(id==="geneEQTL"){
 			var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
 			var params={
 				species: organism,
@@ -278,7 +285,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		}
 		
-	});
+	});*/
 	
 	$(".Imagetooltip").tooltipster({
 		position: 'top-right',
