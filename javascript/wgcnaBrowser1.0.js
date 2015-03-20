@@ -3622,44 +3622,46 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             
         tracktbl.each(function(d,i){
                 var tmpI=i;
-                        d3.select(this).append("td")
-                                .style("padding-left",function(d){return d.depth*20;})
-                                .html(function(d){
-                                    var col=d.name+" ("+d.id+")";
-                                    if(d.name.indexOf("ENS")>-1){
-                                        col=that.singleImage.geneList[d.name]+" ("+d.id+")";
+                var tmpD=d;
+                var row=d3.select(this);
+                row.append("td")
+                                .style("padding-left",function(){return tmpD.depth*20+"px";})
+                                .html(function(){
+                                    var col=tmpD.name+" ("+tmpD.id+")";
+                                    if(tmpD.name.indexOf("ENS")>-1){
+                                        col=that.singleImage.geneList[tmpD.name]+" ("+tmpD.id+")";
                                     }
                                     var html=col;
-                                    if(typeof d.children !=='undefined'&& d.children.length>0){
+                                    if(typeof tmpD.children !=='undefined'&& tmpD.children.length>0){
                                         var trState="";
-                                        if(d.depth<=that.singleImage.selectedNode.depth){
+                                        if(tmpD.depth<=that.singleImage.selectedNode.depth){
                                             trState=" less";
                                         }
                                         var found=0;
-                                        for(var v=0;v<d.children.length&&found===0;v++){
-                                        	if(d.children[v].name.indexOf("ENS")===-1){
+                                        for(var v=0;v<tmpD.children.length&&found===0;v++){
+                                        	if(tmpD.children[v].name.indexOf("ENS")===-1){
                                         		found=1;
                                         	}
                                         }
                                         if(found===1){
-                                        	html="<span class=\"trigger"+trState+"\" name=\"d"+(d.depth+1)+"\">"+col+"</span>";
+                                        	html="<span class=\"trigger"+trState+"\" name=\"d"+(tmpD.depth+1)+"\">"+col+"</span>";
                                     	}else{
                                     		html=col;
                                     	}
                                     }
                                     return html;
                                 });
-                        d3.select(this).append("td").html(d.definition);
-                        d3.select(this).append("td").html(function(d,i){
+                row.append("td").html(d.definition);
+               	row.append("td").html(function(){
                             var html="";
-                            if(d.uniqueGene>0){
-                                html="<span class=\"triggerGL\" name=\"gl"+tmpI+"\">"+d.uniqueGene+"</span>";
+                            if(tmpD.uniqueGene>0){
+                                html="<span class=\"triggerGL\" name=\"gl"+tmpI+"\">"+tmpD.uniqueGene+"</span><BR>";
                                 html=html+"<span id=\"gl"+tmpI+"\" style=\"display:none;\" >";
-                                for(var k=0;k<d.uniqueGenes.length;k++){
+                                for(var k=0;k<tmpD.uniqueGenes.length;k++){
                                     if(k>0){
                                         html=html+", ";
                                     }
-                                    var g=d.uniqueGenes[k].id;
+                                    var g=tmpD.uniqueGenes[k].id;
                                     if(typeof that.singleImage.geneList[g] !=='undefined'){
                                             g=that.singleImage.geneList[g];
                                     }
