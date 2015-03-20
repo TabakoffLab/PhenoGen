@@ -143,7 +143,13 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
                         <div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionImage" class="helpImage" src="../web/images/icons/help.png" /></div>
                   	</TD>
                     <TD style="background-color:#DEDEDE; text-align:center; width:50%;font-size:18px; font-weight:bold; vertical-align: middle;">
-                        <span id="viewLbl0">View:</span><span id="viewModifiedCtl0" style="display:none;">(Modified <span class="Imagetooltip" title="This view has been modified.  To save this change you should use the arrow next to Select/Edit Views to Save or Save As..  Otherwise your change will persist only while this window is not refreshed and not left inactive for more than 59 minutes."><img src="../web/images/icons/info.gif" />)</span>
+                        <span id="viewLbl0">View:</span>
+                        <span id="viewModifiedCtl0" style="display:none;">
+                            (Modified <span class="Imagetooltip" 
+                                            title="This view has been modified.  To save this change you should use the arrow next to Select/Edit Views to Save or Save As..  Otherwise your change will persist only while this window is not refreshed and not left inactive for more than 59 minutes.">
+                                        <img src="../web/images/icons/info.gif" />)
+                                       </span>
+                        </span>    
                     </TD>
                     <TD style="background-color:#DEDEDE;">
                         <div id="imageHeader" style=" font-size:12px; float:right;"></div>
@@ -158,7 +164,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
         <div id="collapsableImage" class="geneimage" >
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.1.6.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.1.7.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.1.1.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.0.3.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.0.2.js" type="text/javascript"></script>
