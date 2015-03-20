@@ -19,7 +19,7 @@
 	extrasList.add("spectrum.css");
 %>
 
-<%@ include file="/web/GeneCentric/browserCSS.jsp" %>
+
 <%
 String myGene="";
 String myDisplayGene="";
@@ -54,6 +54,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 <%}else{%>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <%}%>
+<%@ include file="/web/GeneCentric/browserCSS.jsp" %>
 
 <jsp:useBean id="myIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
 <jsp:useBean id="bt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.BrowserTools" scope="session"> </jsp:useBean>
@@ -419,8 +420,9 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 </div>
 <%}%>
 
-<div id="IEproblem" style="display:none;color:#FF0000;">
-    Internet Explorer is not currently recommended.  Please use Firefox or Chrome.  We are working on fixing issues with using the Genome/Transcriptome Browser in Internet Explorer.  We are sorry for any inconvenience.
+<div id="IEproblem" style="display:none;color:#FF0000;text-align:center;">
+    Internet Explorer is not currently recommended, while most features will work, you may encounter issues and poor performance.  Please use FireFox or Chrome.<BR>
+    We are working on fixing issues with using the Genome/Transcriptome Browser in Internet Explorer and we are sorry for any inconvenience.
 </div>
 
 <div id="inst" style="text-align:left;color:#000000;margin-left:30px;">
@@ -505,22 +507,18 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
   </select>
 
   </label>
-  <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" onClick="return displayWorking()">
- <!--<span style="padding-left:40px;"> <input type="submit" name="genomeBTN" id="getGenomeBTN" value="View Genome Features" onClick="return displayWorking('viewGenome')"></span>
- <span style="padding-left:40px;"> <input type="submit" name="transcriptomeBTN" id="getTrxBTN" value="View Transcriptome Features" onClick="return displayWorking('viewTrxome')"></span>-->
- 
- 	<input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
+  <span style="padding-left:10px;"> <input type="submit" name="goBTN" id="goBTN" value="Go" onClick="return displayWorking()"></span>
+    <input type="hidden" name="pvalueCutoffInput" id="pvalueCutoffInput" value="<%=pValueCutoff%>" />
     <input type="hidden" name="forwardPvalueCutoffInput" id="forwardPvalueCutoffInput" value="<%=forwardPValueCutoff%>" />
     <input type="hidden" name="tissues" id="tissues" value="" />
     <input type="hidden" name="chromosomes" id="chromosomes" value="" />
     <input type="hidden" name="levels" id="levels" value="" />
     <input type="hidden" name="action" id="action" value="Get Transcription Details" />
-  	<input type="hidden" name="genURLArray" id="genURLArray" value="<%=genURLString%>" />
+    <input type="hidden" name="genURLArray" id="genURLArray" value="<%=genURLString%>" />
     <input type="hidden" name="geneSymArray" id="geneSymArray" value="<%=geneSymString%>" />
     <input type="hidden" name="ucscURLArray" id="ucscURLArray" value="<%=ucscURLString%>" />
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
     <input type="hidden" name="geneSelect" id="geneSelect" value="<%=selectedGene%>" />
-    <!--<input type="hidden" name="defaultView" id="defaultView" value="<%=defView%>" />-->
 </form>
 <BR />
 Or
