@@ -1551,7 +1551,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	that.updateLinks=function(){
 		
-		if(that.levelNumber==1 && d3.select("#probeSetDetailLink"+that.levelNumber)[0][0] !==null){
+		if(that.levelNumber==1 && d3.select("#probeSetDetailLink"+that.levelNumber)[0][0] !==null && d3.select("#probeSetDetailLink"+that.levelNumber).attr("href") !== null ){
 			var url=new String(d3.select("#probeSetDetailLink"+that.levelNumber).attr("href"));
 			url=url.substr(0,url.lastIndexOf("=")+1);
 			url=url+that.currentView.ViewID;
