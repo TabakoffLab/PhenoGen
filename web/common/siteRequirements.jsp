@@ -31,7 +31,8 @@ pageDescription="Browser and Software Requirements for PhenoGen";
                 	Firefox 23.0+ (31+ is recommended)<BR />
                     Safari 6.0+ (6.1+ is recommended)<BR />
                     Chrome 25+ (36+ is recommeded)<BR />
-                    IE 10+ (Most features will still work with IE 9, but the Genome/Transcriptome Data Browser will NOT work)  (11+ is recommeded)<BR />
+                    IE 10+ (11+ is recommeded) NOTE: IE is not recommended for the Genome/Transcriptome Data Browser.  Please use one of the other recommended browsers.<BR>
+                    IE 9 - Most features will still work with IE 9, but the Genome/Transcriptome Data Browser will NOT work)  <BR>
 				</p>
                 <BR /><BR />
         <h2>System requirements</h2>

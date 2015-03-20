@@ -11,10 +11,10 @@ Columns:<BR />
 	<li>Number detected above background (DABG) (Avg % of samples DABG)</li><BR />
 	<li>Transcript Cluster ID corresponding to the gene with Annotation level</li><BR />
 	<li>Circos Plot to show all <a href="<%=commonDir%>definitions.jsp#eQTLs" target="_blank">eQTLs</a> across tissues.</li><BR />
-	<li>eQTL for the transcript cluster in each tissue</li>
+	<li>eQTL for the transcript cluster in each tissue
     	<ul style="padding-left:35px; list-style-type:disc;">
-    	<li>minimum P-value and location</li>
-		<li>total locations with a P-value < cut-off</li>
+            <li>minimum P-value and location</li>
+            <li>total locations with a P-value < cut-off</li>
         </ul>
         </li>
 </ul>
