@@ -52,7 +52,7 @@ statistics.OneWay.ANOVA.HDF5 <- function(InputFile, VersionPath, SampleFile, pva
   # set up libraries and R functions needed
 	library(limma)
 	library(MASS)
-      fileLoader('CreateContrasts.R')
+  fileLoader('CreateContrasts.R')
 
   #################################################
   ## process data	
@@ -62,9 +62,11 @@ statistics.OneWay.ANOVA.HDF5 <- function(InputFile, VersionPath, SampleFile, pva
 	Day<-vPath[[1]][2]
 	exactTime<-vPath[[1]][3]
   require(rhdf5)
-  h5 <- H5Fopen (InputFile,flags = h5default("H5F_ACC_RDWR"))
+  h5 <- H5Fopen (InputFile,flags= "H5F_ACC_RDWR")
   gVersion<-H5Gopen(h5, Version)
-  gFVer<-H5Gopen(h5, VersionPath)
+  gFilter<-H5Gopen(gVersion,"Filters")
+  gDay<-H5Gopen(gFilter,Day)
+  gFVer<-H5Gopen(gDay, exactTime)
   did <- H5Dopen(gFVer,  "fData")
   sid <- H5Dget_space(did)
   ds <- H5Dread(did)
@@ -232,12 +234,16 @@ statistics.OneWay.ANOVA.HDF5 <- function(InputFile, VersionPath, SampleFile, pva
     RowNames<-paste(RowNames,tmp,sep=",")
   }
   cat(file = GeneNumberFile, length(Gnames))
+  
   if(H5Aexists (gFVer, "statMethod")){
     H5Adelete (gFVer, "statMethod")
   }
-  gSM <- h5createAttribute (gFVer, "statMethod")
-  H5Awrite(gSM,Procedure)
-  H5Aclose(gSM)
+  #sid <- H5Screate_simple (nchar(Procedure))
+  #tid <- H5Tcopy("H5T_STRING")
+  #H5Tset_size(tid, nchar(Procedure))
+  #gSM <- H5Acreate (gFVer, "statMethod",tid,sid)
+  #H5Awrite(gSM,Procedure)
+  #H5Aclose(gSM)
 	#createH5Attribute(gFVer, "statMethod", Procedure, overwrite = TRUE)
   if(H5Aexists (gFVer, "statRowNames")){
     H5Adelete (gFVer, "statRowNames")
@@ -259,8 +265,10 @@ statistics.OneWay.ANOVA.HDF5 <- function(InputFile, VersionPath, SampleFile, pva
   H5Dclose(did)
   H5Sclose(sid)
 	#createH5Dataset(gFVer,"Pval",p,dType="double",chunkSizes=c(length(p)),overwrite=T)
-  H5Gclose(gVersion)
   H5Gclose(gFVer)
+  H5Gclose(gDay)
+  H5Gclose(gFilter)
+  H5Gclose(gVersion)  
   H5Fclose(h5)
 	#save(Absdata, Avgdata, Gnames, grouping, groups, Snames, stats, p, Procedure,  file = OutputFile, compress = T)
 	

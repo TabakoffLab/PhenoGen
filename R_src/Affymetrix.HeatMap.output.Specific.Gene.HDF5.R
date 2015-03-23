@@ -19,7 +19,7 @@ Affymetrix.HeatMap.output.Specific.Gene.HDF5 <- function(InputFile,VersionPath,S
 	#    Load Data      #
 	#####################
 	require(rhdf5)
-	h5 <- H5Fopen (InputDataFile,flags = h5default("H5F_ACC"))
+	h5 <- H5Fopen (InputFile)
 	gVersion<-H5Gopen(h5, VersionPath)
 	did <- H5Dopen(gVersion,  "Data")
 	sid <- H5Dget_space(did)

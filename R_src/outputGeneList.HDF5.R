@@ -68,7 +68,7 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
 	exactTime<-vPath[[1]][3]
   
   require(rhdf5)
-  h5 <- H5Fopen (InputFile,flags = h5default("H5F_ACC"))
+  h5 <- H5Fopen (InputFile)
   gVersion<-H5Gopen(h5, Version)
   gFVer<-H5Gopen(h5, VersionPath)
   gMulti<-H5Gopen(gFVer, "Multi")
