@@ -58,6 +58,8 @@ if(type.equals("blank")){
 }
 
 response.setContentType("application/json");
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+response.setDateHeader("Expires", 0);
 %>
 {"viewID": <%=newID%> }
 
