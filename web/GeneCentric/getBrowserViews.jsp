@@ -26,6 +26,8 @@ bt.setSession(session);
 ArrayList<BrowserView> views=bt.getBrowserViews();
 
 response.setContentType("application/json");
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+response.setDateHeader("Expires", 0);
 %>
 [
 	<%for(int i=0;i<views.size();i++){

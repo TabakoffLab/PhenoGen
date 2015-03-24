@@ -47,6 +47,8 @@ import="org.json.*" %>
 	genejson = new JSONObject();
     genejson.put("imageFile" , sessionid+"_"+d.getTime()+".png");
 	response.setContentType("application/json");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setDateHeader("Expires", 0);
 	response.getWriter().write(genejson.toString());
 %>
 

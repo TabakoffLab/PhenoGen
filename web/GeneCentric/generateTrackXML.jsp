@@ -133,6 +133,8 @@ if(request.getParameter("type")!=null){
 	genejson = new JSONObject();
     genejson.put("status" , status);
 	response.setContentType("application/json");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setDateHeader("Expires", 0);
 	response.getWriter().write(genejson.toString());
 %>
 
