@@ -29,6 +29,8 @@ import="org.json.*" %>
 	genejson = new JSONObject();
     genejson.put("result" , status);
 	response.setContentType("application/json");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setDateHeader("Expires", 0);
 	response.getWriter().write(genejson.toString());
 %>
 

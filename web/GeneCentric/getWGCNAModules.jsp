@@ -56,6 +56,8 @@ if(!id.equals("")){
     modules=wgt.getWGCNAModulesForGeneList(geneList,panel,tissue);
 }
 response.setContentType("application/json");
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+response.setDateHeader("Expires", 0);
 %>
 [
 	<%for(int i=0;i<modules.size();i++){

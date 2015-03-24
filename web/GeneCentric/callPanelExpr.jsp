@@ -69,6 +69,8 @@ if(request.getParameter("organism")!=null){
 	genejson = new JSONObject();
     genejson.put("success" , error1&&error2);
 	response.setContentType("application/json");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setDateHeader("Expires", 0);
 	response.getWriter().write(genejson.toString());
 %>
 

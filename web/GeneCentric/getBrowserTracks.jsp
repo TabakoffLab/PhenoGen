@@ -27,6 +27,8 @@ bt.setSession(session);
 ArrayList<BrowserTrack> tracks=bt.getBrowserTracks();
 
 response.setContentType("application/json");
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+response.setDateHeader("Expires", 0);
 %>
 [
 	<%for(int j=0;j<tracks.size();j++){

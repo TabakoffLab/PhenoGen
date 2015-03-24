@@ -79,6 +79,8 @@ if(request.getParameter("forwardPValueCutoff")!=null){
 	genejson = new JSONObject();
     genejson.put("folderName" , foldername);
 	response.setContentType("application/json");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setDateHeader("Expires", 0);
 	response.getWriter().write(genejson.toString());
 %>
 

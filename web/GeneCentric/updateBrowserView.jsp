@@ -40,6 +40,8 @@ if(id>0){
 }
 
 response.setContentType("application/json");
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+response.setDateHeader("Expires", 0);
 %>
 {"msg":"<%=msg%>"}
 

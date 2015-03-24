@@ -2551,7 +2551,8 @@ public class GeneDataTools {
                 } catch (ExecException e) {
                     exception=true;
                     completedSuccessfully=false;
-                    log.error("In Exception of run findGeneRegion.pl Exec_session", e);
+                    e.printStackTrace(System.err);
+                    log.error("In Exception of run callWriteXML:writeXML_RNA.pl Exec_session", e);
 
                     String errorList=myExec_session.getErrors();
                     boolean missingDB=false;
