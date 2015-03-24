@@ -14,7 +14,8 @@ use XML::Simple;
 #use strict;
 
 require 'ReadAffyProbesetDataFromDB.pl';
-require 'readRNAIsoformDataFromDB.pl';
+#require 'readRNAIsoformDataFromDB.pl';
+require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
@@ -361,40 +362,40 @@ sub createXMLFile
 	my %snpHOH;
 	my @snpList=();
 	
-	if($shortSpecies eq 'Rn'){
-	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
-	    %snpHOH=%$snpRef;
-	    my $snpListRef=$snpHOH{Snp};
-	    eval{
-		@snpList=@$snpListRef;
-	    }or do{
-		@snpList=();
-	    };
-	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
+	#if($shortSpecies eq 'Rn'){
+	#    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	#    %snpHOH=%$snpRef;
+	#    my $snpListRef=$snpHOH{Snp};
+	#    eval{
+	#	@snpList=@$snpListRef;
+	#    }or do{
+	#	@snpList=();
+	#    };
+	#    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,1,,0);
 	    #find global min,max
 	    #print "gene size ".$$isoformHOH{Gene}[0]."\n";
-	    my $tmpGeneArray=$$isoformHOH{Gene};
-	    foreach my $tmpgene ( @$tmpGeneArray){
-		print "gene:".$$tmpgene{ID}."\n";
-		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
-		foreach my $tmptranscript (@$tmpTransArray){
-		    print $$tmptranscript{ID}."\n";
-		    if($$tmptranscript{start}<$minCoord){
-			$minCoord=$$tmptranscript{start};
-		    }elsif($$tmptranscript{start}>$maxCoord){
-			$maxCoord=$$tmptranscript{start};
-		    }
-		    if($$tmptranscript{stop}<$minCoord){
-			$minCoord=$$tmptranscript{stop};
-		    }elsif($$tmptranscript{stop}>$maxCoord){
-			$maxCoord=$$tmptranscript{stop};
-		    }
-		}
-	    }
-	    #extend global Min Max by 1000bp
-	    $minCoord=$minCoord-1000;
-	    $maxCoord=$maxCoord+1000;
-	}
+	#    my $tmpGeneArray=$$isoformHOH{Gene};
+	#    foreach my $tmpgene ( @$tmpGeneArray){
+	#	print "gene:".$$tmpgene{ID}."\n";
+	#	my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
+	#	foreach my $tmptranscript (@$tmpTransArray){
+	#	    print $$tmptranscript{ID}."\n";
+	#	    if($$tmptranscript{start}<$minCoord){
+	#		$minCoord=$$tmptranscript{start};
+	#	    }elsif($$tmptranscript{start}>$maxCoord){
+	#		$maxCoord=$$tmptranscript{start};
+	#	    }
+	#	    if($$tmptranscript{stop}<$minCoord){
+	#		$minCoord=$$tmptranscript{stop};
+	#	    }elsif($$tmptranscript{stop}>$maxCoord){
+	#		$maxCoord=$$tmptranscript{stop};
+	#	    }
+	#	}
+	#    }
+	#    #extend global Min Max by 1000bp
+	#    $minCoord=$minCoord;
+	#    $maxCoord=$maxCoord;
+	#}
 	
 
 	
@@ -426,96 +427,364 @@ sub createXMLFile
 	}
 	
 	
-	if($shortSpecies eq 'Rn'){
+	#if($shortSpecies eq 'Rn'){
 	    #get expanded min max
-	    if($prevMin!=$minCoord||$prevMax!=$maxCoord){
-	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
-	    }
-	}
+	#    if($prevMin!=$minCoord||$prevMax!=$maxCoord){
+	#        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord-1000,$maxCoord+1000,$dsn,$usr,$passwd,0);
+	#    }
+	#}
 	
 	# Get all of the probesets for this gene by reading from Affy Probeset Tables in database
 	# We just have to read the probesets once   
 	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoHeritDABG("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
 	
-	
-	
-	#process RNA genes/transcripts and assign probesets.
-	$tmpGeneArray=$$isoformHOH{Gene};
-	foreach my $tmpgene ( @$tmpGeneArray){
-	    print "gene:".$$tmpgene{ID}."\n";
-	    $GeneHOH{Gene}[$cntGenes]=$tmpgene;
-	    $cntGenes++;
-	    my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
-	    foreach my $tmptranscript (@$tmpTransArray){
-		my $tmpExonArray=$$tmptranscript{exonList}{exon};
-		my $cntIntron=-1;
-		foreach my $tmpexon (@$tmpExonArray){
-		    my $exonStart=$$tmpexon{start};
-		    my $exonStop=$$tmpexon{stop};
-		    $$tmpexon{coding_start}=$exonStart;
-		    $$tmpexon{coding_stop}=$exonStop;
-		    my $intronStart=-1;
-		    my $intronStop=-1;
-		    if($cntIntron>-1){
-			$intronStart=$$tmptranscript{intronList}{intron}[$cntIntron]{start};
-			$intronStop=$$tmptranscript{intronList}{intron}[$cntIntron]{stop};
 
-		    }
-				$cntProbesets=0;
-				$cntMatchingProbesets=0;
-				$cntMatchingIntronProbesets=0;
-				foreach(@probesetHOH){
-					if($exonStart<$exonStop){# if gene is in the forward direction
-					    if(($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or 
+        if($shortSpecies eq 'Rn'){
+	    #read SNPs/Indels
+	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    %snpHOH=%$snpRef;
+	    @snpStrain=("BNLX","SHRH","SHRJ","F344");
+
+	    
+	    
+	    my $refliverHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"totalRNA","Liver",0);
+	    %liverHOH=%$refliverHOH;
+	    
+
+	    #process RNA genes/transcripts and assign probesets.
+	    my $tmpGeneArray=$liverHOH{Gene};
+	    foreach my $tmpgene ( @$tmpGeneArray){
+		# "gene:".$$tmpgene{ID}."\n";
+		$GeneHOH{Gene}[$cntGenes]=$tmpgene;
+		$GeneHOH{Gene}[$cntGenes]{extStart}=$GeneHOH{Gene}[$cntGenes]{start};
+		$GeneHOH{Gene}[$cntGenes]{extStop}=$GeneHOH{Gene}[$cntGenes]{stop};
+		$cntGenes++;
+		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
+		foreach my $tmptranscript (@$tmpTransArray){
+		    my $tmpExonArray=$$tmptranscript{exonList}{exon};
+		    my $tmpStrand=$$tmptranscript{strand};
+		    my $cntIntron=-1;
+		    foreach my $tmpexon (@$tmpExonArray){
+			my $exonStart=$$tmpexon{start};
+			my $exonStop=$$tmpexon{stop};
+			$$tmpexon{coding_start}=$exonStart;
+			$$tmpexon{coding_stop}=$exonStop;
+			my $intronStart=-1;
+			my $intronStop=-1;
+			if($cntIntron>-1){
+			    $intronStart=$$tmptranscript{intronList}{intron}[$cntIntron]{start};
+			    $intronStop=$$tmptranscript{intronList}{intron}[$cntIntron]{stop};
+			}
+			$cntProbesets=0;
+			my $cntMatchingProbesets=0;
+			my $cntMatchingIntronProbesets=0;
+			foreach(@probesetHOH){				
+				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
 					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
-					    {
-						    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
-						    $cntMatchingProbesets=$cntMatchingProbesets+1;
-					    }elsif(($probesetHOH[$cntProbesets]{start} >= $intronStart) and ($probesetHOH[$cntProbesets]{start} <= $intronStop) or 
-					    ($probesetHOH[$cntProbesets]{stop} >= $intronStart) and ($probesetHOH[$cntProbesets]{stop} <= $intronStop)){
-						    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-							    $probesetHOH[$cntProbesets];
-						    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-					    }
-					}else{# gene is in reverse direction
-					    if(($probesetHOH[$cntProbesets]{start} <= $exonStart) and ($probesetHOH[$cntProbesets]{start} >= $exonStop) or 
-					    ($probesetHOH[$cntProbesets]{stop} <= $exonStart) and ($probesetHOH[$cntProbesets]{stop} >= $exonStop))
-					    {
-						    #This is a probeset overlapping the current exon
-						    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
-						    $cntMatchingProbesets=$cntMatchingProbesets+1;
-					    }elsif(($probesetHOH[$cntProbesets]{start} <= $intronStart) and ($probesetHOH[$cntProbesets]{start} >= $intronStop) or 
-					    ($probesetHOH[$cntProbesets]{stop} <= $intronStart) and ($probesetHOH[$cntProbesets]{stop} >= $intronStop)){
-						    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
-							    $probesetHOH[$cntProbesets];
-						    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
-					    }
-					}
-					$cntProbesets = $cntProbesets+1;
-				} # loop through probesets
-				
+				       and
+					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
+					    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
+					    $cntMatchingProbesets=$cntMatchingProbesets+1;
+				    }elsif((($probesetHOH[$cntProbesets]{start} >= $intronStart) and ($probesetHOH[$cntProbesets]{start} <= $intronStop) or 
+					    ($probesetHOH[$cntProbesets]{stop} >= $intronStart) and ($probesetHOH[$cntProbesets]{stop} <= $intronStop))
+					and
+					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
+					    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
+						    $probesetHOH[$cntProbesets];
+					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
+				    }
+				$cntProbesets = $cntProbesets+1;
+			} # loop through probesets
+			
+			if($regionSize<5000000){
+			    foreach my $strain(@snpStrain){
+				#print "match snp strains:".$strain;
+				my $snpListRef=$snpHOH{$strain}{Snp};
+				eval{
+				    @snpList=@$snpListRef;
+				}or do{
+				    @snpList=();
+				};
 				#match snps/indels to exons
 				my $cntSnps=0;
 				my $cntMatchingSnps=0;
 				foreach(@snpList){
-					
-					    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
-						($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
+					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
 					    ){
-						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
+						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
 						    $cntMatchingSnps++;
-						    print "Exon Variant";
 					    }
-					
 					$cntSnps++;
 				} # loop through snps/indels
-		    $cntIntron++;
+			    }
+			}
+			$cntIntron++;
+		    }
 		}
 	    }
-	    #create gene image for ExonCorrelationViewer
 	    
+	    my $refheartHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"totalRNA","Heart",0);
+	    %heartHOH=%$refheartHOH;
+
+	    #process RNA genes/transcripts and assign probesets.
+	    my $tmpGeneArray=$heartHOH{Gene};
+	    foreach my $tmpgene ( @$tmpGeneArray){
+		# "gene:".$$tmpgene{ID}."\n";
+		$GeneHOH{Gene}[$cntGenes]=$tmpgene;
+		$GeneHOH{Gene}[$cntGenes]{extStart}=$GeneHOH{Gene}[$cntGenes]{start};
+		$GeneHOH{Gene}[$cntGenes]{extStop}=$GeneHOH{Gene}[$cntGenes]{stop};
+		$cntGenes++;
+		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
+		foreach my $tmptranscript (@$tmpTransArray){
+		    my $tmpExonArray=$$tmptranscript{exonList}{exon};
+		    my $tmpStrand=$$tmptranscript{strand};
+		    my $cntIntron=-1;
+		    foreach my $tmpexon (@$tmpExonArray){
+			my $exonStart=$$tmpexon{start};
+			my $exonStop=$$tmpexon{stop};
+			$$tmpexon{coding_start}=$exonStart;
+			$$tmpexon{coding_stop}=$exonStop;
+			my $intronStart=-1;
+			my $intronStop=-1;
+			if($cntIntron>-1){
+			    $intronStart=$$tmptranscript{intronList}{intron}[$cntIntron]{start};
+			    $intronStop=$$tmptranscript{intronList}{intron}[$cntIntron]{stop};
+			}
+			$cntProbesets=0;
+			my $cntMatchingProbesets=0;
+			my $cntMatchingIntronProbesets=0;
+			foreach(@probesetHOH){				
+				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
+					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
+				       and
+					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
+					    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
+					    $cntMatchingProbesets=$cntMatchingProbesets+1;
+				    }elsif((($probesetHOH[$cntProbesets]{start} >= $intronStart) and ($probesetHOH[$cntProbesets]{start} <= $intronStop) or 
+					    ($probesetHOH[$cntProbesets]{stop} >= $intronStart) and ($probesetHOH[$cntProbesets]{stop} <= $intronStop))
+					and
+					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
+					    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
+						    $probesetHOH[$cntProbesets];
+					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
+				    }
+				$cntProbesets = $cntProbesets+1;
+			} # loop through probesets
+			
+			if($regionSize<5000000){
+			    foreach my $strain(@snpStrain){
+				#print "match snp strains:".$strain;
+				my $snpListRef=$snpHOH{$strain}{Snp};
+				eval{
+				    @snpList=@$snpListRef;
+				}or do{
+				    @snpList=();
+				};
+				#match snps/indels to exons
+				my $cntSnps=0;
+				my $cntMatchingSnps=0;
+				foreach(@snpList){
+					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+					    ){
+						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+						    $cntMatchingSnps++;
+					    }
+					$cntSnps++;
+				} # loop through snps/indels
+			    }
+			}
+			$cntIntron++;
+		    }
+		}
+	    }
+	    
+	    my $iTimeStart=time();
+	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1," in ('PolyA+','NonPolyA+')","Brain",0);
+            #my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"totalRNA","Brain");
+	    %brainHOH=%$isoformHOH;
+	    #$tmpGeneArray=$$isoformHOH{Gene};
+	    my $iTimeEnd=time();
+	    print "Isoform Time=".($iTimeEnd-$iTimeStart)."sec\n";
+	    
+	    #process RNA genes/transcripts and assign probesets.
+	    $tmpGeneArray=$$isoformHOH{Gene};
+	    foreach my $tmpgene ( @$tmpGeneArray){
+		# "gene:".$$tmpgene{ID}."\n";
+		$GeneHOH{Gene}[$cntGenes]=$tmpgene;
+		$GeneHOH{Gene}[$cntGenes]{extStart}=$GeneHOH{Gene}[$cntGenes]{start};
+		$GeneHOH{Gene}[$cntGenes]{extStop}=$GeneHOH{Gene}[$cntGenes]{stop};
+		$cntGenes++;
+		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
+		foreach my $tmptranscript (@$tmpTransArray){
+		    my $tmpExonArray=$$tmptranscript{exonList}{exon};
+		    my $tmpStrand=$$tmptranscript{strand};
+		    my $cntIntron=-1;
+		    foreach my $tmpexon (@$tmpExonArray){
+			my $exonStart=$$tmpexon{start};
+			my $exonStop=$$tmpexon{stop};
+			$$tmpexon{coding_start}=$exonStart;
+			$$tmpexon{coding_stop}=$exonStop;
+			my $intronStart=-1;
+			my $intronStop=-1;
+			if($cntIntron>-1){
+			    $intronStart=$$tmptranscript{intronList}{intron}[$cntIntron]{start};
+			    $intronStop=$$tmptranscript{intronList}{intron}[$cntIntron]{stop};
+			}
+			$cntProbesets=0;
+			my $cntMatchingProbesets=0;
+			my $cntMatchingIntronProbesets=0;
+			foreach(@probesetHOH){				
+				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
+					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
+				       and
+					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
+					    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
+					    $cntMatchingProbesets=$cntMatchingProbesets+1;
+				    }elsif((($probesetHOH[$cntProbesets]{start} >= $intronStart) and ($probesetHOH[$cntProbesets]{start} <= $intronStop) or 
+					    ($probesetHOH[$cntProbesets]{stop} >= $intronStart) and ($probesetHOH[$cntProbesets]{stop} <= $intronStop))
+					and
+					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
+					    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
+						    $probesetHOH[$cntProbesets];
+					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
+				    }
+				$cntProbesets = $cntProbesets+1;
+			} # loop through probesets
+			
+			if($regionSize<5000000){
+			    foreach my $strain(@snpStrain){
+				#print "match snp strains:".$strain;
+				my $snpListRef=$snpHOH{$strain}{Snp};
+				eval{
+				    @snpList=@$snpListRef;
+				}or do{
+				    @snpList=();
+				};
+				#match snps/indels to exons
+				my $cntSnps=0;
+				my $cntMatchingSnps=0;
+				foreach(@snpList){
+					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+					    ){
+						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+						    $cntMatchingSnps++;
+					    }
+					$cntSnps++;
+				} # loop through snps/indels
+			    }
+			}
+			$cntIntron++;
+		    }
+		}
+	    }
+	    createProteinCodingXMLTrack(\%brainHOH,$outputDir."braincoding.xml",$trackDB,1);
+	    createProteinCodingXMLTrack(\%brainHOH,$outputDir."brainnoncoding.xml",$trackDB,0);
+            #createLiverTotalXMLTrack(\%brainHOH,$outputDir."brainTotal.xml");
+	}elsif($shortSpecies eq 'Mm'){
+	    my $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'ILS/ISS',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"totalRNA","Brain",0);
+	    %brainHOH=%$isoformHOH;  
+	    #process RNA genes/transcripts and assign probesets.
+	    my $tmpGeneArray=$$isoformHOH{Gene};
+	    foreach my $tmpgene ( @$tmpGeneArray){
+		# "gene:".$$tmpgene{ID}."\n";
+		$GeneHOH{Gene}[$cntGenes]=$tmpgene;
+		$GeneHOH{Gene}[$cntGenes]{extStart}=$GeneHOH{Gene}[$cntGenes]{start};
+		$GeneHOH{Gene}[$cntGenes]{extStop}=$GeneHOH{Gene}[$cntGenes]{stop};
+		$cntGenes++;
+		my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
+		foreach my $tmptranscript (@$tmpTransArray){
+		    my $tmpExonArray=$$tmptranscript{exonList}{exon};
+		    my $tmpStrand=$$tmptranscript{strand};
+		    my $cntIntron=-1;
+		    foreach my $tmpexon (@$tmpExonArray){
+			my $exonStart=$$tmpexon{start};
+			my $exonStop=$$tmpexon{stop};
+			$$tmpexon{coding_start}=$exonStart;
+			$$tmpexon{coding_stop}=$exonStop;
+			my $intronStart=-1;
+			my $intronStop=-1;
+			if($cntIntron>-1){
+			    $intronStart=$$tmptranscript{intronList}{intron}[$cntIntron]{start};
+			    $intronStop=$$tmptranscript{intronList}{intron}[$cntIntron]{stop};
+			}
+			$cntProbesets=0;
+			my $cntMatchingProbesets=0;
+			my $cntMatchingIntronProbesets=0;
+			foreach(@probesetHOH){				
+				    if((($probesetHOH[$cntProbesets]{start} >= $exonStart) and ($probesetHOH[$cntProbesets]{start} <= $exonStop) or
+					    ($probesetHOH[$cntProbesets]{stop} >= $exonStart) and ($probesetHOH[$cntProbesets]{stop} <= $exonStop))
+				       and
+					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
+					    $$tmpexon{ProbesetList}{Probeset}[$cntMatchingProbesets] = $probesetHOH[$cntProbesets];
+					    $cntMatchingProbesets=$cntMatchingProbesets+1;
+				    }elsif((($probesetHOH[$cntProbesets]{start} >= $intronStart) and ($probesetHOH[$cntProbesets]{start} <= $intronStop) or 
+					    ($probesetHOH[$cntProbesets]{stop} >= $intronStart) and ($probesetHOH[$cntProbesets]{stop} <= $intronStop))
+					and
+					$probesetHOH[$cntProbesets]{strand}==$tmpStrand
+				    ){
+					    delete $probesetHOH[$cntProbesets]{herit};
+					    delete $probesetHOH[$cntProbesets]{dabg};
+					    $$tmptranscript{intronList}{intron}[$cntIntron]{ProbesetList}{Probeset}[$cntMatchingIntronProbesets] = 
+						    $probesetHOH[$cntProbesets];
+					    $cntMatchingIntronProbesets=$cntMatchingIntronProbesets+1;
+				    }
+				$cntProbesets = $cntProbesets+1;
+			} # loop through probesets
+			
+			if($regionSize<5000000){
+			    foreach my $strain(@snpStrain){
+				#print "match snp strains:".$strain;
+				my $snpListRef=$snpHOH{$strain}{Snp};
+				eval{
+				    @snpList=@$snpListRef;
+				}or do{
+				    @snpList=();
+				};
+				#match snps/indels to exons
+				my $cntSnps=0;
+				my $cntMatchingSnps=0;
+				foreach(@snpList){
+					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+					    ){
+						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+						    $cntMatchingSnps++;
+					    }
+					$cntSnps++;
+				} # loop through snps/indels
+			    }
+			}
+			$cntIntron++;
+		    }
+		}
+	    }
 	}
+	
 	
 	my $geneListFile=$outputDir."geneList.txt";
 	open GLFILE, ">".$geneListFile;
