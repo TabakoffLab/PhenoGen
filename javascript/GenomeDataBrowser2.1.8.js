@@ -532,7 +532,7 @@ registerKeyboardHandler = function(callback) {
 function getAllChildrenByName(parentNode,name){
 	var list=[];
 	var listCount=0;
-	if(typeof parentNode !=='undefined' && typeof parentNode.childNodes!== 'undefined'){
+	if(typeof parentNode !=='undefined' && parentNode!==null && typeof parentNode.childNodes!== 'undefined'){
 		var listInit=parentNode.childNodes;
 		for(var k=0;k<listInit.length;k++){
 			if(listInit.item(k).nodeName==name){
@@ -1550,13 +1550,20 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.updateLinks=function(){
-		
-		if(that.levelNumber==1 && d3.select("#probeSetDetailLink"+that.levelNumber)[0][0] !==null && d3.select("#probeSetDetailLink"+that.levelNumber).attr("href") !== null ){
+		if(that.levelNumber===1){
+			d3.select("#probeSetDetailLink1").each(function(){
+				var url=new String(d3.select(this).attr("href"));
+				url=url.substr(0,url.lastIndexOf("=")+1);
+				url=url+that.currentView.ViewID;
+				d3.select(this).attr("href",url);
+			});
+		}
+		/*if(that.levelNumber==1 && d3.select("#probeSetDetailLink"+that.levelNumber) !==null && d3.select("#probeSetDetailLink"+that.levelNumber).attr("href") !== null ){
 			var url=new String(d3.select("#probeSetDetailLink"+that.levelNumber).attr("href"));
 			url=url.substr(0,url.lastIndexOf("=")+1);
 			url=url+that.currentView.ViewID;
 			d3.select("#probeSetDetailLink"+that.levelNumber).attr("href",url);
-		}
+		}*/
 	};
 
 	that.changeTrackHeight = function (level,val){
@@ -3578,7 +3585,6 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				tmpStop=stop+(that.ttSVGMinWidth/2);
 			}
 		}
-		console.log("setup tooltip:"+tmpStart+"-"+tmpStop);
 		var newSvg=toolTipSVG("div#ttSVG",450,tmpStart,tmpStop,99,that.getDisplayID(d),"transcript");
 		newSvg.forLevel=that.gsvg.levelNumber;
 		//Setup Track for current feature
@@ -3593,7 +3599,6 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			//console.log(that.gsvg.getTrackData);
 			var tData=that.gsvg.getTrackData(that.ttTrackList[r]);
 			var fData=new Array();
-			console.log(tData);
 			if(typeof tData !=='undefined' && tData.length>0){
 				var fCount=0;
 				for(var s=0;s<tData.length;s++){
@@ -5664,8 +5669,6 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			if(that.ttTrackList[r]!=that.trackClass){
 				var tData=that.gsvg.getTrackData(that.ttTrackList[r]);
 				var fData=new Array();
-				console.log(tData);
-				console.log(tData.length);
 				if(typeof tData!=='undefined' && tData.length>0){
 					var fCount=0;
 					for(var s=0;s<tData.length;s++){
@@ -6289,8 +6292,6 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.createToolTip=function(d){
 		var tooltip="";
-		console.log("refSeq.createToolTip():drawnAs="+that.drawnAs);
-		console.log(d);
 		if(that.drawnAs==="Gene"){
 			var txListStr="";
 			var txList=getAllChildrenByName(getFirstChildByName(d,"TranscriptList"),"Transcript");
@@ -6329,7 +6330,6 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 				tmpStop=stop+(that.ttSVGMinWidth/2);
 			}
 		}
-		console.log("setup tooltip:"+tmpStart+"-"+tmpStop);
 		var newSvg=toolTipSVG("div#ttSVG",450,tmpStart,tmpStop,99,that.getDisplayID(d),"transcript");
 		newSvg.forLevel=that.gsvg.levelNumber;
 		//Setup Track for current feature
@@ -6344,7 +6344,6 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			//console.log(that.gsvg.getTrackData);
 			var tData=that.gsvg.getTrackData(that.ttTrackList[r]);
 			var fData=new Array();
-			console.log(tData);
 			if(typeof tData !=='undefined' && tData.length>0){
 				var fCount=0;
 				for(var s=0;s<tData.length;s++){

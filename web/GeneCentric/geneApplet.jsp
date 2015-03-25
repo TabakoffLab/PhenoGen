@@ -25,8 +25,8 @@ String selectedID="";
 	if(request.getParameter("selectedID")!=null){
 		selectedID=request.getParameter("selectedID");
 	}
-	if(request.getParameter("viewID")!=null){
-		viewID=request.getParameter("viewID");
+	if(request.getParameter("defaultView")!=null){
+		viewID=request.getParameter("defaultView");
 	}
 
 if(request.getParameter("panel")!=null){
@@ -286,9 +286,9 @@ if(request.getParameter("arrayTypeID")!=null){
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.1.7.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.1.8.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport2.1.1.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.0.3.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.0.4.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.0.2.js" type="text/javascript"></script>
 				
             <script type="text/javascript">
