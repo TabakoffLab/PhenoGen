@@ -3339,7 +3339,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	                if (percentage < 0.1) {
 	                  percentageString = "< 0.1%";
 	                }
-	                if(d.name.indexOf("ENS")==-1){
+	                if(typeof d.name !=='undefined' && d.name.indexOf("ENS")===-1){
 	                    percentageString= d.uniqueGene +" genes ("+percentageString+")";
 	                }
 
