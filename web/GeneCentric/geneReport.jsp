@@ -594,8 +594,8 @@ Add report here.
     		<div style="text-align:center;">
                 This feature requires Java which will open in a seperate window, when you click the button below.  Java will be automatically detected and directions will be displayed on the next page if there are any issues to correct before proceding.<BR /><BR />
                 
-                <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&viewID=1" target="_blank">View Affy Probe Set Details</a></span><BR />       		
-			</div>
+                <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&defaultView=1" target="_blank">View Affy Probe Set Details</a></span><BR />       		
+                </div>
     </div>
    	
     <div style="display:none;" id="geneMIrna">
@@ -685,5 +685,6 @@ Add report here.
 			//return false;
 		}
 	);
+        svgList[1].updateLinks();
 </script>
 
