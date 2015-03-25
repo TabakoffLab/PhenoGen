@@ -3175,8 +3175,44 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             
             
             thatimg.getModuleGOFile=function (retry){
-                d3.json(contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+".GO.json", function(error, root) {
+            	$.ajax({
+					url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+".GO.json",
+		   			type: 'GET',
+		   			async: true,
+					data: {},
+					dataType: 'json',
+		    		success: function(root){
+		    			thatimg.data=root;
+	                    var nodes = thatimg.partition.nodes(thatimg.data.GOList[0]);
+	                    var uniqueID=0;
+	                    for(var z=0;z<nodes.length;z++){
+	                    	nodes[z].UnqID=uniqueID;
+	                    	uniqueID++;
+	                    }
+	                    nodes = thatimg.partition.nodes(thatimg.data.GOList[1]);
+	                    for(var z=0;z<nodes.length;z++){
+	                    	nodes[z].UnqID=uniqueID;
+	                    	uniqueID++;
+	                    }
+	                     nodes = thatimg.partition.nodes(thatimg.data.GOList[2]);
+	                    for(var z=0;z<nodes.length;z++){
+	                    	nodes[z].UnqID=uniqueID;
+	                    	uniqueID++;
+	                    }
+	                    thatimg.draw();
+		    		},
+		    		error: function(xhr, status, error){
+		    			console.log(error);
+		    			if(retry<25){
+                			setTimeout(function(){
+                				thatimg.getModuleGOFile(retry+1);
+                			},1000);
+                		}
+		    		}
+		    	});
+                /*d3.json(contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+".GO.json", function(error, root) {
                 	if(error){
+                		console.log(error);
                 		setTimeout(function(){
                 			thatimg.getModuleGOFile(retry+1);
                 		},1000);
@@ -3200,7 +3236,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	                    }
 	                    thatimg.draw();
                 	}
-                });
+                });*/
             };
             
             
@@ -3219,7 +3255,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
                 
                         
-                if(thatimg.data.MOD_NAME !== that.selectedModule.MOD_NAME){
+                if( typeof thatimg.data.MOD_NAME ==='undefined' || (typeof that.selectedModule.MOD_NAME !=='undefined' &&  replaceUnderscore(thatimg.data.MOD_NAME) !== replaceUnderscore(that.selectedModule.MOD_NAME)) ) {
                     thatimg.getModuleGOFile(0);
                     thatimg.selectedNode=null;
                 }else{
