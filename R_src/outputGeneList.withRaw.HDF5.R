@@ -59,10 +59,12 @@
   require(rhdf5)
   h5 <- H5Fopen (InputFile)
   gVersion<-H5Gopen(h5, Version)
-  gFVer<-H5Gopen(h5, VersionPath)
+  gFilter<-H5Gopen(gVersion,"Filters")
+  gDay<-H5Gopen(gFilter,Day)
+  gFVer<-H5Gopen(gDay, exactTime)
   gMulti<-H5Gopen(gFVer, "Multi")
   aCount<-H5Aopen(gMulti,"count")
-  count<-H5Aread(aCount, buf = NULL)
+  count<-H5Aread(aCount)
   H5Aclose(aCount)
   
 	if(count[1]>0){
@@ -120,7 +122,7 @@
 		stats[,]<-ss[1:dim(ss)[1],1:dim(ss)[2]]
 		
 		statRowName<-H5Aopen(gFVer,"statRowNames")
-		srn<-H5Aread(statRowName, buf = NULL)
+		srn<-H5Aread(statRowName)
 		H5Aclose(statRowName)
     
 		#srn<-getH5Attribute(gFVer,"statRowNames")
@@ -170,8 +172,10 @@
   
   
   H5Gclose(gMulti)
-  H5Gclose(gVersion)
   H5Gclose(gFVer)
+  H5Gclose(gDay)
+  H5Gclose(gFilter)
+  H5Gclose(gVersion)  
   H5Fclose(h5)
 	
 } ## END       

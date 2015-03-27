@@ -116,7 +116,7 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
   ds <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
-  AvgdataMax=dim(ds)
+
   # transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
   # to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
   # in the future as it wastes CPU time and Memory
@@ -149,19 +149,16 @@ multipleTest.HDF5 <- function(InputFile, VersionPath, mt.method, MCC.parameter1 
   H5Dclose(did)
   H5Sclose(sid)
 	p<-pvs[]
-  pMax=dim(p)
   
   did <- H5Dopen(gFVer,  "Statistics")
   sid <- H5Dget_space(did)
   ss <- H5Dread(did)
   H5Dclose(did)
   H5Sclose(sid)
+  ss=t(ss)
 	stats<-array(dim=c(dim(ss)[1],dim(ss)[2]))
 	stats[,]<-ss[1:dim(ss)[1],1:dim(ss)[2]]
-  statsMax=dim(ss)
-  tmp=statsMax[1]
-  statsMax[1]=statsMax[2]
-  statsMax[2]=tmp
+
 	
   ###  No multiple testing correction applied  ###
   cat('Begin Processing\n\n')
@@ -435,87 +432,50 @@ cat('Begining Remove Genes\n\n')
 cat('DONE\n')
 			
 	Procedure <- paste('Function=multipleTest.R;','mt.method=',mt.method,';','MCC.method=',mt.method,';','MCC.parameter1=',MCC.parameter1,';','MCC.parameter2=',MCC.parameter2,sep = '')
-	
-	
-	
-######################################
-##  Eliminating Duplicate Genes (Needed for CodeLink Data Only)
-###################################### 
-
-#if (sum(gene.index)>1){
-
-#	Avgdata = Avgdata[!duplicated(Gnames),]
-#	Absdata = Absdata[!duplicated(Gnames),]
-#	p = p[!duplicated(Gnames)]
-#	adjp = adjp[!duplicated(Gnames)]
-#	stats = stats[,!duplicated(Gnames)]
-#
-#      Gnames<-Gnames[!duplicated(Gnames)]
-#}
 
     cat('Gene numbers is ', length(Gnames), '\n')
 
 	cat(file = GeneNumberFile, length(Gnames))
   
-  #gMultitest <- H5Gcreate (gFVer, "Multi")
-  gMultitest <- h5createGroup(gFVer,"Multi")
-  if(!gMultitest){
-    gMultitest <- H5Gopen (gFVer, "Multi")
-  }
-  #if(H5Gexists (gFVer, "Multi")){
-  #  H5Gdelete (gFVer, "Multi")
-  #}
-  
-	#gMultitest<-createH5Group(gFVer,"Multi",overwrite=TRUE)
+  gMultitest <- H5Gcreate (gFVer, "Multi")
 
   h5writeAttribute(attr = Procedure, h5obj = gMultitest, name = "multiMethod")
   h5writeAttribute(attr = length(Gnames), h5obj = gMultitest, name = "count")
-  #createH5Attribute(gMultitest, "multiMethod", Procedure, overwrite = TRUE)
-	#createH5Attribute(gMultitest, "count",length(Gnames),overwrite=TRUE)
 
   if(length(Gnames)>0){
-    Avgdata=t(Avgdata)
-	  sid <- H5Screate_simple (dim(Avgdata),AvgdataMax )
+    #Avgdata=t(Avgdata)
+    sid <- H5Screate_simple (dim(Avgdata))
 	  did <- H5Dcreate (gMultitest, "mData", "H5T_IEEE_F64LE", sid)
-    if(!did){
-      did <- H5Dopen (gMultitest, "mData")
-    }
 	  H5Dwrite(did,Avgdata)
 	  H5Dclose(did)
 	  H5Sclose(sid)
-	  sid <- H5Screate_simple (length(Gnames),GnamesMax)
+
+    sid <- H5Screate_simple (length(Gnames))
 	  did <- H5Dcreate (gMultitest, "mProbeset", "H5T_STD_I64LE", sid)
-    if(!did){
-      did <- H5Dopen (gMultitest, "mProbeset")
-    }
 	  H5Dwrite(did,Gnames)
 	  H5Dclose(did)
 	  H5Sclose(sid)
-    stats=t(stats)
-	  sid <- H5Screate_simple (c(dim(stats)[1], length(Gnames)),c(statsMax[1],GnamesMax) )
+
+    #stats=t(stats)
+    sid <- H5Screate_simple (dim(stats) )
+    cat(dim(stats))
 	  did <- H5Dcreate (gMultitest, "mStatistics", "H5T_IEEE_F64LE", sid)
-    if(!did){
-      did <- H5Dopen (gMultitest, "mStatistics")
-    }
 	  H5Dwrite(did,stats)
 	  H5Dclose(did)
 	  H5Sclose(sid)
-	  sid <- H5Screate_simple (length(p),pMax)
+
+    sid <- H5Screate_simple (length(p))
 	  did <- H5Dcreate (gMultitest, "mPval", "H5T_IEEE_F64LE", sid)
-    if(!did){
-      did <- H5Dopen (gMultitest,"mPval")
-    }
 	  H5Dwrite(did,p)
 	  H5Dclose(did)
 	  H5Sclose(sid)
-	  sid <- H5Screate_simple (length(adjp),pMax)
+    
+    sid <- H5Screate_simple (length(adjp))
 	  did <- H5Dcreate (gMultitest, "adjp", "H5T_IEEE_F64LE", sid)
-    if(!did){
-      did <- H5Dopen (gMultitest,"adjp")
-    }
 	  H5Dwrite(did,adjp)
 	  H5Dclose(did)
 	  H5Sclose(sid)
+    cat("adjp")
 		#createH5Dataset(gMultitest,"mData",Avgdata,dType="double",overwrite=T, dims=c(dim(Avgdata)[1],dim(Avgdata)[2]))
 		#mProbeDS<-createH5Dataset(gMultitest,"mProbeset",dType="integer",overwrite=T,dims=c(length(Gnames)))
 		#createH5Dataset(gMultitest,"mStatistics",stats,dType="double",overwrite=T,dims=c(dim(stats)[1],length(Gnames)))

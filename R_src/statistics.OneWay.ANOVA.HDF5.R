@@ -254,7 +254,7 @@ statistics.OneWay.ANOVA.HDF5 <- function(InputFile, VersionPath, SampleFile, pva
   #H5Awrite(gSM,RowNames)
   #H5Aclose(gSM)
 	#createH5Attribute(gFVer, "statRowNames",RowNames, overwrite = TRUE)
-  stats=t(stats)
+  #stats=t(stats)
   sid <- H5Screate_simple (c(dim(stats)[1],dim(stats)[2]) )
   did <- H5Dcreate (gFVer,"Statistics", "H5T_IEEE_F64LE", sid)
   H5Dwrite(did,stats)

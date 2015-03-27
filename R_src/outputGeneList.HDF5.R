@@ -70,10 +70,12 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
   require(rhdf5)
   h5 <- H5Fopen (InputFile)
   gVersion<-H5Gopen(h5, Version)
-  gFVer<-H5Gopen(h5, VersionPath)
+  gFilter<-H5Gopen(gVersion,"Filters")
+  gDay<-H5Gopen(gFilter,Day)
+  gFVer<-H5Gopen(gDay, exactTime)
   gMulti<-H5Gopen(gFVer, "Multi")
   aCount<-H5Aopen(gMulti,"count")
-  count<-H5Aread(aCount, buf = NULL)
+  count<-H5Aread(aCount)
   H5Aclose(aCount)
   
 	# if count=0 don't need to output anything.
@@ -82,48 +84,48 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
 		Snames<-ins[[1]]
 		
 		did <- H5Dopen(gMulti,  "mProbeset")
-		sid <- H5Dget_space(did)
+		#sid <- H5Dget_space(did)
 		ps <- H5Dread(did)
 		H5Dclose(did)
-		H5Sclose(sid)
+		#H5Sclose(sid)
 		Gnames<-ps[]
 		
-		did <- H5Dopen(gMulti,  "mData")
-		sid <- H5Dget_space(did)
-		ds <- H5Dread(did)
-		H5Dclose(did)
-		H5Sclose(sid)
+		#did <- H5Dopen(gMulti,  "mData")
+		#sid <- H5Dget_space(did)
+		#ds <- H5Dread(did)
+		#H5Dclose(did)
+		#H5Sclose(sid)
 		# transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
 		# to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
 		# in the future as it wastes CPU time and Memory
-		ds=t(ds)
-		Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
-		Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
-		rownames(Avgdata)<-Gnames
-		colnames(Avgdata)<-Snames
+		#ds=t(ds)
+		#Avgdata<-array(dim=c(dim(ds)[1],dim(ds)[2]))
+		#Avgdata[,]<-ds[1:dim(ds)[1],1:dim(ds)[2]]
+		#rownames(Avgdata)<-Gnames
+		#colnames(Avgdata)<-Snames
 	
 	
 		did <- H5Dopen(gVersion,  "Grouping")
-		sid <- H5Dget_space(did)
+		#sid <- H5Dget_space(did)
 		gs <- H5Dread(did)
 		H5Dclose(did)
-		H5Sclose(sid)
+		#H5Sclose(sid)
 		grouping<-gs[1:dim(gs)[1]]  
 		groups <- list()
 		for(i in 1:max(grouping)) groups[[i]]<-which(grouping==i)
 		
 		did <- H5Dopen(gMulti,  "mPval")
-		sid <- H5Dget_space(did)
+		#sid <- H5Dget_space(did)
 		pvs <- H5Dread(did)
 		H5Dclose(did)
-		H5Sclose(sid)
+		#H5Sclose(sid)
 		p<-pvs[]
 		
 		did <- H5Dopen(gMulti,  "mStatistics")
-		sid <- H5Dget_space(did)
+		#sid <- H5Dget_space(did)
 		ss <- H5Dread(did)
 		H5Dclose(did)
-		H5Sclose(sid)
+		#H5Sclose(sid)
 		# transpose matrix as rhdf5 reads in datasets in the opposite orientation from h5r.  This prevents needing 
 		# to change the rest of the code to use columns as probesets and rows as samples.  But this should be fixed
 		# in the future as it wastes CPU time and Memory\
@@ -132,7 +134,7 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
 		stats[,]<-ss[1:dim(ss)[1],1:dim(ss)[2]]
 		
 		statRowName<-H5Aopen(gFVer,"statRowNames")
-		srn<-H5Aread(statRowName, buf = NULL)
+		srn<-H5Aread(statRowName)
 		H5Aclose(statRowName)
 		namelist=strsplit(x=srn[1],split=',',fixed=TRUE)
 		adjnamelist<-namelist[[1]]
@@ -140,10 +142,10 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
 		colnames(stats)<-Gnames	
 		
 		did <- H5Dopen(gMulti,  "adjp")
-		sid <- H5Dget_space(did)
+		#sid <- H5Dget_space(did)
 		adjpvs <- H5Dread(did)
 		H5Dclose(did)
-		H5Sclose(sid)
+		#H5Sclose(sid)
 		adjp<-adjpvs[]
 		
 		
@@ -154,7 +156,7 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
 		
 		#tmp<-getH5Attribute(gFVer,"statMethod")
 		aSMethod<-H5Aopen(gFVer,"statMethod")
-		tmp<-H5Aread(aSMethod, buf = NULL)
+		tmp<-H5Aread(aSMethod)
 		H5Aclose(aSMethod)
 	
 		
@@ -267,8 +269,10 @@ outputGeneList.HDF5 <- function(InputFile, VersionPath, SampleFile, GroupNames, 
 	}# END if(count>0)
   
   H5Gclose(gMulti)
-  H5Gclose(gVersion)
   H5Gclose(gFVer)
+  H5Gclose(gDay)
+  H5Gclose(gFilter)
+  H5Gclose(gVersion)  
   H5Fclose(h5)
 	
 } ## END       

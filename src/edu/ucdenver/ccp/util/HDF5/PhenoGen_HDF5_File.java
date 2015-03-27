@@ -111,6 +111,22 @@ public class PhenoGen_HDF5_File{
         }
         return ret;
     }
+    public Group openMulti(String curDay,String curTime) throws Exception{
+        Group ret=null;
+        this.openFilterTime(curDay,curTime);
+        if(gMulti==null){
+            if(this.groupExists(gFTime, "Multi")){
+                ret=h5FFile.openGroup("Multi", this.getPathGroup(gFTime),gFTime);
+                gMulti=ret;
+            }else{
+                gMulti=h5FFile.createGroup("Multi", gFTime);
+                ret=gMulti;
+            }
+        }else{
+            ret=gMulti;
+        }
+        return ret;
+    }
     public void createVersion(String ver) throws Exception{
         gCurVer = h5FFile.createGroup(ver, root);
         gFilters = h5FFile.createGroup(GROUP_FILTER, gCurVer);
@@ -140,6 +156,16 @@ public class PhenoGen_HDF5_File{
         String ret="/";
         ret=g.getPath()+g.getName()+"/";
         return ret;
+    }
+    
+    public void deleteGroup(Group g) throws Exception{
+        String gName=g.getName();
+        h5FFile.deleteGroup(g);
+        if(gName.equals(PhenoGen_HDF5_File.GROUP_MULTI)){
+            gMulti=null;
+        }else if(gName.equals(PhenoGen_HDF5_File.GROUP_FILTER)){
+            gFilters=null;
+        }
     }
     public void deleteFilter(String ver) throws Exception{
         if(version.equals(ver)){
@@ -203,6 +229,62 @@ public class PhenoGen_HDF5_File{
         }
     }
     
+    public void deleteMultiData(String ver,String curDate,String curTime) throws Exception{
+        if(version.equals(ver)){
+            h5FFile.clearMemory();
+            Group ct=this.openMulti(curDate, curTime);
+            if(this.datasetExists(this.DATASET_MULTI_DATA, ct)){
+                this.deleteDataset(this.DATASET_MULTI_DATA,ct);
+            }
+        }else{
+            throw new Exception();
+        }
+    }
+    public void deleteMultiProbeset(String ver,String curDate,String curTime) throws Exception{
+        if(version.equals(ver)){
+            h5FFile.clearMemory();
+            Group ct=this.openMulti(curDate, curTime);
+            if(this.datasetExists(this.DATASET_MULTI_PROBESET, ct)){
+                this.deleteDataset(this.DATASET_MULTI_PROBESET,ct);
+            }
+        }else{
+            throw new Exception();
+        }
+    }
+    public void deleteMultiStats(String ver,String curDate,String curTime) throws Exception{
+        if(version.equals(ver)){
+            h5FFile.clearMemory();
+            Group ct=this.openMulti(curDate, curTime);
+            if(this.datasetExists(this.DATASET_MULTI_STATS, ct)){
+                this.deleteDataset(this.DATASET_MULTI_STATS,ct);
+            }
+        }else{
+            throw new Exception();
+        }
+    }
+    public void deleteMultiPval(String ver,String curDate,String curTime) throws Exception{
+        if(version.equals(ver)){
+            h5FFile.clearMemory();
+            Group ct=this.openMulti(curDate, curTime);
+            if(this.datasetExists(this.DATASET_MULTI_PVAL, ct)){
+                this.deleteDataset(this.DATASET_MULTI_PVAL,ct);
+            }
+        }else{
+            throw new Exception();
+        }
+    }
+    
+    public void deleteMultiAdjPval(String ver,String curDate,String curTime) throws Exception{
+        if(version.equals(ver)){
+            h5FFile.clearMemory();
+            Group ct=this.openMulti(curDate, curTime);
+            if(this.datasetExists(this.DATASET_MULTI_ADJPVAL, ct)){
+                this.deleteDataset(this.DATASET_MULTI_ADJPVAL,ct);
+            }
+        }else{
+            throw new Exception();
+        }
+    }
     public void deleteVersion(String ver) throws Exception{
         if(version.equals(ver)){
             h5FFile.clearMemory();
@@ -482,7 +564,7 @@ public class PhenoGen_HDF5_File{
     }
     
     
-    private Group getGroupFromLevel(String level_constant) throws Exception{
+    public Group getGroupFromLevel(String level_constant) throws Exception{
         Group curGroup=null;
         if(level_constant.equals(LEVEL_VERSION)){
             if(gCurVer==null){

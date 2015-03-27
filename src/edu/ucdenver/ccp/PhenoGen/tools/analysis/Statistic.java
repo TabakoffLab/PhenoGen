@@ -1280,9 +1280,28 @@ public class Statistic {
                             DSFilterStat tmp=new DSFilterStat();
                             User userLoggedIn=(User)session.getAttribute("userLoggedIn");
                             dsfs=tmp.getFilterStatFromDB(datasetID,v,userLoggedIn.getUser_id(),verFDate,verFTime,pool);
-                            //System.out.println("final ID:"+dsfs.getDSFilterStatID());
-                            
                             dsfs.addStatsStep("Multiple Testing:"+mtMethodName,param,-1,2,0,pool);
+                            PhenoGen_HDF5_File file=null;
+                            try{
+                                file = new PhenoGen_HDF5_File(inputFileName);
+                                file.deleteMultiData("v"+v,verFDate,verFTime);
+                                file.deleteMultiProbeset("v"+v,verFDate,verFTime);
+                                file.deleteMultiStats("v"+v,verFDate,verFTime);
+                                file.deleteMultiPval("v"+v,verFDate,verFTime);
+                                file.deleteMultiAdjPval("v"+v,verFDate,verFTime);
+                                file.deleteGroup(file.getGroupFromLevel(PhenoGen_HDF5_File.LEVEL_MULTITEST));
+                                file.close();
+                            }catch(Exception e){
+                                try{
+                                file.close();
+                                }catch(Exception er){
+                                    log.error("Error Statistic.callStatistic() HDF5 File error",er);
+                                }
+                                log.error("Error Statistic.callStatistic() HDF5 File error",e);
+                            }
+                            
+                            
+                            
                 }
                 //log.debug("after .h5 specific");
 		log.debug("functionArgs = "); myDebugger.print(functionArgs);
