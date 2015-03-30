@@ -3283,7 +3283,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	//May be slightly slower but avoids the waterfall like non optimal packing that occurs with the sorted features.
 	that.calcY = function (start,end,i){
 		var tmpY=0;
-		if(that.density==3){
+		if(that.density===3 || that.density==='3'){
 			if((start>=that.xScale.domain()[0]&&start<=that.xScale.domain()[1])||
 				(end>=that.xScale.domain()[0]&&end<=that.xScale.domain()[1])||
 				(start<=that.xScale.domain()[0]&&end>=that.xScale.domain()[1])){
@@ -3351,7 +3351,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 			}else{
 				tmpY=15;
 			}
-		}else if(that.density==2){
+		}else if(that.density===2 || that.density==='2'){
 			tmpY=(i+1)*15;
 		}else{
 			tmpY=15;
@@ -6089,6 +6089,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
     that.updateSettingsFromUI=function(){
 		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
+			if(typeof that.density==='string'){
+				that.density=parseInt(that.density);
+			}
         }
         if($("#"+that.trackClass+"Version"+that.level+"Select").length>0){
             //console.log("Select Ver:"+$("#"+that.trackClass+"Version"+that.level+"Select").val());
@@ -6966,6 +6969,9 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	var opts=new String(additionalOptions).split(",");
 	if(opts.length>0){
 		that.density=opts[0];
+		if(typeof that.density==='string'){
+			that.density=parseInt(that.density);
+		}
 		if(opts.length>1){
 			that.colorSelect=opts[1];
 		}else{
@@ -7137,18 +7143,18 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.redraw=function(){
 		var tissueLen=that.tissues.length;
-		if(that.curColor!=that.colorSelect || ((that.colorSelect=="herit" || that.colorSelect=="dabg") && tissueLen!=that.tissueLen)){
+		if(that.curColor!=that.colorSelect || ((that.colorSelect==="herit" || that.colorSelect==="dabg") && tissueLen!=that.tissueLen)){
 			that.tissueLen=tissueLen;
 			that.draw(that.data);
 		}else{
-                        that.trackYMax=0;
-                        that.yMaxArr=new Array();
-                        that.yArr=new Array();
-                        that.yArr[0]=new Array();
-                        for(var j=0;j<that.gsvg.width;j++){
-                                        that.yMaxArr[j]=0;
-                                        that.yArr[0][j]=0;
-                        }
+            that.trackYMax=0;
+            that.yMaxArr=new Array();
+            that.yArr=new Array();
+            that.yArr[0]=new Array();
+            for(var j=0;j<that.gsvg.width;j++){
+                            that.yMaxArr[j]=0;
+                            that.yArr[0][j]=0;
+            }
 			that.colorSelect=that.curColor;
 			that.tissueLen=tissueLen;
 			if(that.colorSelect=="dabg"||that.colorSelect=="herit"){
@@ -7157,7 +7163,8 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 				}else if(that.colorSelect=="herit"){
 					that.drawScaleLegend("0","1.0","Probeset Heritability","#000000","#FF0000",0);
 				}
-				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe").each( function(d){
+				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe")
+					.each( function(d){
 									var d3This=d3.select(this);
 									var strChar=">";
 									if(d.getAttribute("strand")=="-1"){
@@ -7175,22 +7182,30 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 										}
 									}
 									d3This.select("text").text(fullChar);
-								});
+					});
 				var totalYMax=1;
 				for(var t=0;t<that.tissues.length;t++){
 					var tissue=new String(that.tissues[t]);
 					//tissue=tissue.substr(0,tissue.indexOf("Affy"));
-					
-						that.trackYMax=0;
+					that.trackYMax=0;
+                        that.yMaxArr=new Array();
+                        that.yArr=new Array();
+                        that.yArr[0]=new Array();
+                        for(var j=0;j<that.gsvg.width;j++){
+                                        that.yMaxArr[j]=0;
+                                        that.yArr[0][j]=0;
+                        }
+						/*that.trackYMax=0;
 						that.yArr=new Array();
 						for(var j=0;j<100;j++){
 									that.yArr[j]=-299999999;
-						}
+						}*/
 						totalYMax++;
 						d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("text."+tissue).attr("y",totalYMax*15);
 						d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe."+tissue).attr("transform",function (d,i){
 																			   var st=that.xScale(d.getAttribute("start"));
-																			   var y=that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+totalYMax*15-10;
+																			   //var y=that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+totalYMax*15-10;
+																			   var y=that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+totalYMax*15-10;
 																				return "translate("+st+","+y+")";
 																			});
 						
@@ -7211,27 +7226,64 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 				that.trackYMax=totalYMax*15;
 				that.svg.attr("height", that.trackYMax);
-							
-			}else if(that.colorSelect=="annot"){
+				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe").each( function(d){
+							var d3This=d3.select(this);
+							if(that.density==2){
+								var curLbl=d.getAttribute("ID");
+								if(d3This.select("text#lblTxt").size()===0){
+										d3This.append("svg:text").attr("dx",function(){
+												var xpos=that.xScale(d.getAttribute("start"));
+												if(xpos<($(window).width()/2)){
+													xpos=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))+5;
+												}else{
+													xpos=-1*curLbl.length*9;
+												}
+												return xpos;
+											})
+										.attr("dy",10)
+										.attr("id","lblTxt")
+										.text(curLbl);
+								}else{
+									d3This.select("text#lblTxt").attr("dx",function(){
+												var xpos=that.xScale(d.getAttribute("start"));
+												if(xpos<($(window).width()/2)){
+													xpos=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))+5;
+												}else{
+													xpos=-1*curLbl.length*9;
+												}
+												return xpos;
+											});
+								}
+							}else{
+									d3This.select("text#lblTxt").remove();
+							}
+						});
+			}else if(that.colorSelect==="annot"){
 				var legend=[{color:"#FF0000",label:"Core"},{color:"#0000FF",label:"Extended"},{color:"#006400",label:"Full"},{color:"#000000",label:"Ambiguous"}];
 				that.drawLegend(legend);
 				that.trackYMax=0;
-				that.yArr=new Array();
-				for(var j=0;j<100;j++){
-					that.yArr[j]=-299999999;
-				}
+	            that.yMaxArr=new Array();
+	            that.yArr=new Array();
+	            that.yArr[0]=new Array();
+	            for(var j=0;j<that.gsvg.width;j++){
+	                            that.yMaxArr[j]=0;
+	                            that.yArr[0][j]=0;
+	            }
 				
-				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe").attr("transform",function (d,i){
-																	   var st=that.xScale(d.getAttribute("start"));
-																		return "translate("+st+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+")";
-																	});
+				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass)
+					.selectAll("g.probe")
+					.attr("transform",function (d,i){
+						var st=that.xScale(d.getAttribute("start"));
+						return "translate("+st+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";
+						//return "translate("+st+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+")";
+					});
 				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.probe rect")
 																.attr("width",function(d) {
-																												   var wX=1;
-																												   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
-																													   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
-																												   }
-																												   return wX;
+																   var wX=1;
+																   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
+																	   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
+																   }
+																   return wX;
 										   						})
 																.attr("fill",function(d){
 																	return that.color(d,"");
@@ -7254,6 +7306,35 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 								}
 							}
 							d3This.select("text").text(fullChar);
+							if(that.density==2){
+								var curLbl=d.getAttribute("ID");
+								if(d3This.select("text#lblTxt").size()===0){
+										d3This.append("svg:text").attr("dx",function(){
+												var xpos=that.xScale(d.getAttribute("start"));
+												if(xpos<($(window).width()/2)){
+													xpos=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))+5;
+												}else{
+													xpos=-1*curLbl.length*9;
+												}
+												return xpos;
+											})
+										.attr("dy",10)
+										.attr("id","lblTxt")
+										.text(curLbl);
+								}else{
+									d3This.select("text#lblTxt").attr("dx",function(){
+												var xpos=that.xScale(dThis.getAttribute("start"));
+												if(xpos<($(window).width()/2)){
+													xpos=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))+5;
+												}else{
+													xpos=-1*curLbl.length*9;
+												}
+												return xpos;
+											});
+								}
+							}else{
+									d3This.select("text#lblTxt").remove();
+							}
 						});
 				if(that.density==1){
 					that.svg.attr("height", 30);
@@ -7356,9 +7437,10 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 
 	that.draw= function (data){
 		that.data=data;
+
 		that.colorSelect=that.curColor;
-                that.trackYMax=0;
-                that.yMaxArr=new Array();
+        that.trackYMax=0;
+        that.yMaxArr=new Array();
 		that.yArr=new Array();
 		that.yArr[0]=new Array();
 		for(var j=0;j<that.gsvg.width;j++){
@@ -7398,10 +7480,13 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 						}
 						//tissue=tissue.substr(0,tissue.indexOf("Affy"));
 						that.trackYMax=0;
-						that.yArr=new Array();
-						for(var j=0;j<100;j++){
-							that.yArr[j]=-299999999;
-						}
+			            that.yMaxArr=new Array();
+			            that.yArr=new Array();
+			            that.yArr[0]=new Array();
+			            for(var j=0;j<that.gsvg.width;j++){
+			                            that.yMaxArr[j]=0;
+			                            that.yArr[0][j]=0;
+			            }
 						var dispTissue=tissue;
 						if(dispTissue=="BrownAdipose"){
 							dispTissue="Brown Adipose";
@@ -7416,12 +7501,12 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 						//update
 						var probes=that.svg.selectAll(".probe."+tissue)
 				   			.data(data,function(d){return keyTissue(d,tissue);})
-							.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+totalYMax*15-10)+")";})
-										
+							//.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+totalYMax*15-10)+")";})
+							.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+totalYMax*15-10)+")";});			
 						//add new
 						probes.enter().append("g")
 							.attr("class","probe "+tissue)
-							.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+totalYMax*15-10)+")";})
+							.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+(that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+totalYMax*15-10)+")";})
 							.append("rect")
 							//.attr("class",tissue)
 					    	.attr("height",10)
@@ -7499,6 +7584,24 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 									}
 								}
 								d3This.append("svg:text").attr("dx","1").attr("dy","10").style("pointer-events","none").style("fill","white").text(fullChar);
+								if(that.density==2){
+										var curLbl=d.getAttribute("ID");
+										d3This.append("svg:text").attr("dx",function(){
+												var xpos=that.xScale(d.getAttribute("start"));
+												if(xpos<($(window).width()/2)){
+													xpos=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))+5;
+												}else{
+													xpos=-1*curLbl.length*9;;
+												}
+												return xpos;
+											})
+										.attr("dy",10)
+										.attr("id","lblTxt")
+										.text(curLbl);
+										
+								}else{
+										d3This.select("text#lblTxt").remove();
+								}
 							});
 							totalYMax=totalYMax+that.trackYMax+1;
 			}
@@ -7508,6 +7611,14 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else if(that.colorSelect=="annot"){
 			var legend=[{color:"#FF0000",label:"Core"},{color:"#0000FF",label:"Extended"},{color:"#006400",label:"Full"},{color:"#000000",label:"Ambiguous"}];
 			that.drawLegend(legend);
+			that.trackYMax=0;
+            that.yMaxArr=new Array();
+            that.yArr=new Array();
+            that.yArr[0]=new Array();
+            for(var j=0;j<that.gsvg.width;j++){
+                            that.yMaxArr[j]=0;
+                            that.yArr[0][j]=0;
+            }
 			/*that.trackYMax=0;
 			that.yArr=new Array();
 			for(var j=0;j<100;j++){
@@ -7518,12 +7629,14 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 			//update
 			var probes=that.svg.selectAll(".probe.annot")
 	   			.data(data,key)
-				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+")";})
+				//.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+")";})
+				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";});
 					
 			//add new
 			probes.enter().append("g")
 				.attr("class","probe annot")
-				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+")";})
+				//.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),that.density,i,2)+")";})
+				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";})
 				.append("rect")
 		    	.attr("height",10)
 				.attr("rx",1)
@@ -7617,6 +7730,25 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 				}
 				d3This.append("svg:text").attr("dx","1").attr("dy","10").style("pointer-events","none").style("fill","white").text(fullChar);
+				
+				if(that.density==2){
+						var curLbl=d.getAttribute("ID");
+						d3This.append("svg:text").attr("dx",function(){
+								var xpos=that.xScale(d.getAttribute("start"));
+								if(xpos<($(window).width()/2)){
+									xpos=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))+5;
+								}else{
+									xpos=-1*curLbl.length*9;;
+								}
+								return xpos;
+							})
+						.attr("dy",10)
+						.attr("id","lblTxt")
+						.text(curLbl);
+						
+				}else{
+						d3This.select("text#lblTxt").remove();
+				}
 			});
 			
 		
