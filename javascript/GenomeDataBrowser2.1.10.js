@@ -1318,7 +1318,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				var tmpMax=that.xScale.domain()[1];
 				var len=tmpMax-tmpMin;
 				var tmpBin=calculateBin(len,that.width);
-				var file=dataPrefix+"tmpData/regionData/"+that.folderName+"/count"+track+".xml";
+				//var file=dataPrefix+"tmpData/regionData/"+that.folderName+"/count"+track+".xml";
+				var file=dataPrefix+"tmpData/regionData/"+that.folderName+"/tmp/"+tmpMin+"_"+tmpMax+".count."+track+".xml";
 				if(tmpBin>0){
 					tmpMin=tmpMin-(tmpMin%tmpBin);
 					tmpMax=tmpMax+(tmpBin-(tmpMax%tmpBin));
