@@ -61,9 +61,11 @@ statistics.TwoWay.ANOVA.HDF5 <- function(InputFile, VersionPath, SampleFile, Fac
 	exactTime<-vPath[[1]][3]
 	
   require(rhdf5)
-  h5 <- H5Fopen (InputFile,flags = h5default("H5F_ACC"))
+  h5 <- H5Fopen (InputFile,flags= "H5F_ACC_RDWR")
   gVersion<-H5Gopen(h5, Version)
-  gFVer<-H5Gopen(h5, VersionPath)
+  gFilter<-H5Gopen(gVersion,"Filters")
+  gDay<-H5Gopen(gFilter,Day)
+  gFVer<-H5Gopen(gDay, exactTime)
   did <- H5Dopen(gFVer,  "fData")
   sid <- H5Dget_space(did)
   ds <- H5Dread(did)
@@ -212,33 +214,33 @@ statistics.TwoWay.ANOVA.HDF5 <- function(InputFile, VersionPath, SampleFile, Fac
     RowNames<-paste(RowNames,tmp,sep=",")
   }
   cat(file = GeneNumberFile, length(Gnames))
-  
-  gSM <- h5createAttribute (gFVer, "statMethod")
-  H5Awrite(gSM,Procedure)
-  H5Aclose(gSM)
-  #createH5Attribute(gFVer, "statMethod", Procedure, overwrite = TRUE)
+  if(H5Aexists (gFVer, "statMethod")){
+    H5Adelete (gFVer, "statMethod")
+  }
+  h5writeAttribute(attr = Procedure, h5obj = gFVer, name = "statMethod")
   if(H5Aexists (gFVer, "statRowNames")){
     H5Adelete (gFVer, "statRowNames")
   }
-  gSM <- h5createAttribute (gFVer, "statRowNames")
-  H5Awrite(gSM,RowNames)
-  H5Aclose(gSM)
+  h5writeAttribute(attr = RowNames, h5obj = gFVer, name = "statRowNames")
+  #createH5Attribute(gFVer, "statMethod", Procedure, overwrite = TRUE)
   #createH5Attribute(gFVer, "statRowNames",RowNames, overwrite = TRUE)
-  stats=t(stats)
-  sid <- H5Screate_simple (dim(stats)[1],dim(stats)[2] )
+  
+  sid <- H5Screate_simple (c(dim(stats)[1],dim(stats)[2]) )
   did <- H5Dcreate (gFVer,"Statistics", "H5T_IEEE_F64LE", sid)
   H5Dwrite(did,stats)
   H5Dclose(did)
   H5Sclose(sid)
   #createH5Dataset(gFVer,"Statistics",stats,dType="double",chunkSizes=c(dim(stats)[1],dim(stats)[2]),dim=c(dim(stats)[1],dim(stats)[2]),overwrite=T)
-  sid <- H5Screate_simple (length(p))
+  sid <- H5Screate_simple (c(length(p)))
   did <- H5Dcreate (gFVer,"Pval", "H5T_IEEE_F64LE", sid)
   H5Dwrite(did,p)
   H5Dclose(did)
   H5Sclose(sid)
   #createH5Dataset(gFVer,"Pval",p,dType="double",chunkSizes=c(length(p)),overwrite=T)
-  H5Gclose(gVersion)
   H5Gclose(gFVer)
+  H5Gclose(gDay)
+  H5Gclose(gFilter)
+  H5Gclose(gVersion)  
   H5Fclose(h5)
 	#save(Absdata, Avgdata, Gnames, grouping, groups, Snames, stats, p, Procedure,  file = OutputFile, compress = T)
 
