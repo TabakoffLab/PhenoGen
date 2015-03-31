@@ -24,6 +24,7 @@ public class R_session {
 	String [] rErrorMsg = null;
 	String [] functionArgs = null;
 	String rFunction = "";
+        String [] envVar=new String[0];
 
 	private Logger log = null;
 	private Debugger myDebugger = new Debugger();
@@ -40,7 +41,24 @@ public class R_session {
 		return rFunctionDir; 
 	}
 
-        
+        public void setREnvVar(String inString) {
+		this.envVar = new String[0];
+                if(!inString.isEmpty()){
+                    File renv=new File(inString+"rEnv.txt");
+                    if(renv.exists()){
+                        String[] contents;
+                        FileHandler fh=new FileHandler();
+                        try{
+                            contents=fh.getFileContents(renv);
+                            if(contents.length>0){
+                                this.envVar=contents;
+                            }
+                        }catch(IOException e){
+                            
+                        }
+                    }
+                }
+	}
 
         /**
          * Creates a file to call R.
@@ -62,6 +80,8 @@ public class R_session {
 				rFunctionPath + 
 				functionName + 
 				".R'"; 
+                
+                this.setREnvVar(rFunctionPath);
 
 		String tempRFilename = sessionPath + "call_" + functionName;
 		//log.debug("tempRFilename = "+tempRFilename);
@@ -174,12 +194,17 @@ public class R_session {
                         String[] argtmp=null;
                         argtmp=new String[]{"R", "CMD", "BATCH", "--no-save", "--no-restore", callRFileName};
                         
-                        String[] envVar=new String[1];
-                        envVar[0]="R_PROFILE_USER="+rFunctionPath+".Rprofile";
+                        int envLen=0;
+                        if(this.envVar.length>0){
+                            envLen=this.envVar.length;
+                        }
+                        String[] finalEnvVar=new String[envLen+1];
+                        finalEnvVar[0]="R_PROFILE_USER="+rFunctionPath+".Rprofile";
+                        for(int i=1;i<=envLen;i++){
+                            finalEnvVar[i]=this.envVar[i-1];
+                        }
                         
-			Process p = Runtime.getRuntime().exec(argtmp, 
-					envVar,
-					new File(sessionPath));
+			Process p = Runtime.getRuntime().exec(argtmp, finalEnvVar, new File(sessionPath));
 	
 			int wait = p.waitFor();
 			log.debug("in runR.  process completed. exit value is "+wait);

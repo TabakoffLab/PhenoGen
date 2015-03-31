@@ -1389,12 +1389,13 @@ public class GeneDataTools {
                                         
                 }
                 
-                
+                String errors=myExec_session.getErrors();
                 
                 myAdminEmail.setContent("There was an error while running "
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+
-                        ")\n\n"+myExec_session.getErrors());
+                        ")\n\n"+errors);
                 try {
+                    if(!missingDB && errors!=null &&errors.length()>0)
                     myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
@@ -1408,7 +1409,7 @@ public class GeneDataTools {
 
             String errors=myExec_session.getErrors();
             log.debug("after read Exec Errors");
-            if(!exception && errors!=null && !(errors.equals(""))){
+            if(errors!=null && !(errors.equals(""))){
                 completedSuccessfully=false;
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
@@ -1537,23 +1538,25 @@ public class GeneDataTools {
                 e.printStackTrace(System.err);
                 status="Error generating track";
                 log.error("In Exception of run writeXML_Track.pl Exec_session", e);
-                setError("Running Perl Script to get Gene and Transcript details/images.");
-                Email myAdminEmail = new Email();
-                myAdminEmail.setSubject("Exception thrown in Exec_session");
-                myAdminEmail.setContent("There was an error while running "
-                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+
-                        ")\n\n"+myExec_session.getErrors());
-                try {
-                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-                } catch (Exception mailException) {
-                    log.error("error sending message", mailException);
+                String errors=myExec_session.getErrors();
+                if(errors!=null && errors.length()>0 ){
+                    setError("Running Perl Script to get Gene and Transcript details/images.");
+                    Email myAdminEmail = new Email();
+                    myAdminEmail.setSubject("Exception thrown in Exec_session");
+                    myAdminEmail.setContent("There was an error while running "
+                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+
+                            ")\n\n"+errors);
                     try {
-                        myAdminEmail.sendEmailToAdministrator("");
-                    } catch (Exception mailException1) {
-                        //throw new RuntimeException();
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    } catch (Exception mailException) {
+                        log.error("error sending message", mailException);
+                        try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
                     }
                 }
-                
             }
 
             String errors=myExec_session.getErrors();
