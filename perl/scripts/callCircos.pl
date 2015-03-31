@@ -124,7 +124,10 @@ sub callCircos{
 	}
 	else
 	{
+                my $exitVal=$?;
+                print "exited with $exitVal\n";
   		printf "System Call exited with value %d", $? >> 8;
+                exit($exitVal);
 	}
 
 	#-- go back to original directory
@@ -143,18 +146,18 @@ sub callCircos{
 	@systemArgs=($inkscapeBinary,'-z','-f',$svgDirectory."circos_new.svg",'-A',$svgDirectory."circos_new.pdf",'-b','rgb(255,255,255)','-i','notooltips','-j','-C');
 	print " System call with these arguments: @systemArgs \n";
 	
-    system(@systemArgs);
-    if ( $? == -1 )
-	{
-  		print "System Call failed: $!\n";
-	}
-	else
-	{
-  		printf "System Call exited with value %d", $? >> 8;
-	}
-	#-- go back to original directory
-	chdir($pwd);
-}
+        system(@systemArgs);
+        if ( $? == -1 )
+            {
+                    print "System Call failed: $!\n";
+            }
+            else
+            {
+                    printf "System Call exited with value %d", $? >> 8;
+            }
+            #-- go back to original directory
+            chdir($pwd);
+        }
 	my $arg1 = $ARGV[0]; # Ensembl Gene Name
 	my $arg2 = $ARGV[1]; # Gene Symbol
 	my $arg3 = $ARGV[2]; # Transcript Cluster ID

@@ -309,21 +309,14 @@
 			String perlEnvironmentVariables = (String)session.getAttribute("perlEnvVar");
 
  			String hostName=request.getServerName();
-
-			if(hostName.equals("amc-kenny.ucdenver.pvt")){
-				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/lib:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/bin";
-			}
-			else if(hostName.equals("compbio.ucdenver.edu")){
-				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
-			}
-			else if(hostName.equals("phenogen.ucdenver.edu")){
-				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+			if(hostName.equals("phenogen.ucdenver.edu")){
+				perlEnvironmentVariables += ":/usr/bin/perl5.10.1:/usr/local/circos-0.67-5/lib:/usr/local/circos-0.67-5/bin";
 			}
 			else if(hostName.equals("stan.ucdenver.pvt")){
-				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/local/circos-0.67-5/lib:/usr/local/circos-0.67-5/bin";
 			}
 			else{
-				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+				perlEnvironmentVariables += ":/usr/bin/perl5.10.1:/usr/local/circos-0.67-5/lib:/usr/local/circos-0.67-5/bin";
 			}
 			log.debug("Host Name "+hostName);
 			String filePrefixWithPath="";			
@@ -387,13 +380,13 @@
 				svgPdfFile = shortGeneCentricPath+transcriptClusterID+"_"+timeStampString+"/svg/circos_new.pdf";
 				iframeURL = svgFile;
 			}
-			else{
+		else{
 				log.debug("Circos run failed");
 				// be sure iframeURL is still null
 				iframeURL = null;
-			} // end of if(circosReturnStatus)
+                } // end of if(circosReturnStatus)
 			
-		} // end of if((!selectedChromosomeError)&&(!selectedTissueError)){
+	} // end of if((!selectedChromosomeError)&&(!selectedTissueError)){
 	
 	// This is the end of the first big scriptlet
 %>
