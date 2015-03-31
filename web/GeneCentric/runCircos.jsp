@@ -397,7 +397,7 @@
 <%
 if((circosReturnStatus!=null)&&(!circosReturnStatus)){
 %>
-	<div style="color:#FF0000;">There was an error running Circos.  The website administrator has been informed.</div>=
+	<div style="color:#FF0000;">There was an error running Circos.  The web site administrator has been informed.  Occasionally these errors can be fixed by running Circos a second time.</div>
 <%
    } // end of checking circosReturnStatus 
 %>

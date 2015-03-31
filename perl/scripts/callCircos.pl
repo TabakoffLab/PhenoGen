@@ -127,7 +127,9 @@ sub callCircos{
                 my $exitVal=$?;
                 print "exited with $exitVal\n";
   		printf "System Call exited with value %d", $? >> 8;
-                exit($exitVal);
+                if($exitVal != 0){
+                    exit($exitVal);
+                }
 	}
 
 	#-- go back to original directory
