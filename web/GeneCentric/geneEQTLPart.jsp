@@ -38,42 +38,36 @@
 		function runCircos(){
 			$('#wait2').show();
 			var chrList = "";
-          	$("#chromosomesMS option").each(function () {
-                chrList += $(this).val() + ";";
-              });
-			//$('#chromosomes').val(chrList);
+                        $("#chromosomesMS option").each(function () {
+                            chrList += $(this).val() + ";";
+                        });
+
 			var tisList = "";
-          	$("#tissuesMS option").each(function () {
-                tisList += $(this).val() + ";";
-              });
-			//$('#tissues').val(tisList);
+                        $("#tissuesMS option").each(function () {
+                            tisList += $(this).val() + ";";
+                        });
 			
 			var pval=$('#cutoffValue').val();
 			var tcID=$('#transcriptClusterID').val();
 			var path="<%=gcPath%>";
 			var geneSymbol="<%=geneSymbol.get(selectedGene)%>";
-			//alert(chrList);
-			//alert(tisList);
 			$.ajax({
 				url: contextPath + "/web/GeneCentric/runCircos.jsp",
    				type: 'GET',
 				data: {cutoffValue:pval,transcriptClusterID:tcID,tissues:tisList,chromosomes:chrList,geneCentricPath:path,hiddenGeneSymbol:geneSymbol},
 				dataType: 'html',
 				beforeSend: function(){
-					//$('#forIframe').hide();
-					//$('#imgLoad').show();
 				},
 				complete: function(){
-					//$('#imgLoad').hide();
 					$('#wait2').hide();
 					$('#forIframe').show();
 				},
-    			success: function(data2){ 
-        			$('#forIframe').html(data2);
-    			},
-    			error: function(xhr, status, error) {
-        			$('#forIframe').html("<div>An error occurred generating this image.  Please try back later.</div>");
-    			}
+                                success: function(data2){ 
+                                        $('#forIframe').html(data2);
+                                },
+                                error: function(xhr, status, error) {
+                                        $('#forIframe').html("<div>An error occurred generating this image.  Please try back later.</div>");
+                                }
 			});
 			//$('.allowChromSelection').show();
 		}
@@ -522,15 +516,15 @@ The chromosome where the gene is physically located MUST be included in the Circ
 	});*/
 		
 		$('.eQTLtooltip').tooltipster({
-										position: 'top-right',
-										maxWidth: 350,
-										offsetX: 8,
-										offsetY: 5,
-										contentAsHTML:true,
-										//arrow: false,
-										interactive: true,
-										interactiveTolerance: 350
-									});
+                        position: 'top-right',
+                        maxWidth: 350,
+                        offsetX: 8,
+                        offsetY: 5,
+                        contentAsHTML:true,
+                        //arrow: false,
+                        interactive: true,
+                        interactiveTolerance: 350
+                });
 		if($('#transcriptClusterID').length==1){
 			runCircos();
 		}

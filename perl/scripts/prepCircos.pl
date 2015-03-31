@@ -205,6 +205,10 @@ sub createCircosProbesetTextDataFile{
 	# Example of data in this file:  rn12	34947771	34947875	P2rx4-5731411
 	# Probably do away with the P2rx4- since that information will appear elsewhere on the page??
 	#print DATAFILE $probeChromosome, " ",$probeStart, " ",$probeStop, " ",$probeID, "\n";
+        my $id=$geneSymbol;
+        if($id eq "" or length($id)==0){
+            $id=$probeID;
+        }
 	print DATAFILE $probeChromosome, " ",$probeStart, " ",$probeStop, " ",$geneSymbol, "\n";
 	close(DATAFILE);
 }
