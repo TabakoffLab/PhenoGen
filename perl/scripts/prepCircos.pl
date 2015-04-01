@@ -207,9 +207,12 @@ sub createCircosProbesetTextDataFile{
 	#print DATAFILE $probeChromosome, " ",$probeStart, " ",$probeStop, " ",$probeID, "\n";
         my $id=$geneSymbol;
         if($id eq "" or length($id)==0){
+            $id=$geneName;
+        }
+        if($id eq "" or length($id)==0){
             $id=$probeID;
         }
-	print DATAFILE $probeChromosome, " ",$probeStart, " ",$probeStop, " ",$geneSymbol, "\n";
+	print DATAFILE $probeChromosome, " ",$probeStart, " ",$probeStop, " ",$id, "\n";
 	close(DATAFILE);
 }
 
