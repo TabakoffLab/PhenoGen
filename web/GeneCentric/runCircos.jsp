@@ -389,6 +389,7 @@
 	} // end of if((!selectedChromosomeError)&&(!selectedTissueError)){
 	
 	// This is the end of the first big scriptlet
+        response.setDateHeader("Expires", 0);
 %>
 
 
