@@ -1354,6 +1354,7 @@ public class GeneDataTools {
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
             myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/geneData/"+ensemblID1+"/");
             boolean exception=false;
+            boolean missingDB=false;
             log.debug("setup exec");
             try {
 
@@ -1365,7 +1366,7 @@ public class GeneDataTools {
                 log.error("In Exception of run findGeneRegion.pl Exec_session", e);
                 
                 String errorList=myExec_session.getErrors();
-                boolean missingDB=false;
+                
                 String apiVer="";
                 
                     if(errorList.contains("does not exist in DB.")){
@@ -1395,8 +1396,9 @@ public class GeneDataTools {
                         + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+
                         ")\n\n"+errors);
                 try {
-                    if(!missingDB && errors!=null &&errors.length()>0)
-                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    if(!missingDB && errors!=null &&errors.length()>0){
+                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                    }
                 } catch (Exception mailException) {
                     log.error("error sending message", mailException);
                     try {
@@ -1409,7 +1411,7 @@ public class GeneDataTools {
 
             String errors=myExec_session.getErrors();
             log.debug("after read Exec Errors");
-            if(errors!=null && !(errors.equals(""))){
+            if(!missingDB && errors!=null && !(errors.equals(""))){
                 completedSuccessfully=false;
                 Email myAdminEmail = new Email();
                 myAdminEmail.setSubject("Exception thrown in Exec_session");
