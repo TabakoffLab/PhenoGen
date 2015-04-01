@@ -86,6 +86,10 @@
 							}
 	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID,true);
 	log.debug("OPENED GENE:"+id);
+
+        //response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        //response.setDateHeader("Expires", 0);
+
         %>
 <BR />
 
