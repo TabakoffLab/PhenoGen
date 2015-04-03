@@ -198,6 +198,10 @@ function back(level){
 		svgList[level].xScale.domain([tmp.start,tmp.stop]);
 		svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
 		svgList[level].redraw();
+		if(level===0){
+			updatePage(svgList[level]);
+		}
+		svgList[level].updateFullData();
 	}else{//reload
 
 	}
@@ -224,6 +228,16 @@ function zoomIn(level,zoomScale){
 	history[level].push(tmp);
 	svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
 	svgList[level].redraw();
+	if(!isNaN(zoomUpdateHandle)){
+		clearTimeout(zoomUpdateHandle);
+		zoomUpdateHandle=Math.NaN;
+	}
+	zoomUpdateHandle=setTimeout(function(){
+		if(level===0){
+			updatePage(svgList[level]);
+		}
+		svgList[level].updateFullData();
+	},300);
 	if(level===0){
 		DisplayRegionReport();
 		$('#geneTxt').val(chr+":"+tmp.start+"-"+tmp.stop);
@@ -2044,10 +2058,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				    svgList[0].xScale.domain([initMin,initMax]);
 					svgList[0].scaleSVG.select(".x.axis").call(svgList[0].xAxis);
 					svgList[0].redraw();
+					svgList[0].updateFullData();
 				}else{
 				    svgList[level].xScale.domain([svgList[level].initMin,svgList[level].initMax]);
 					svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
 					svgList[level].redraw();
+					svgList[0].updateFullData();
 				}
 			})
 			.on("mouseover",function(){
@@ -7802,7 +7818,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 		//console.log(trackInfo);
 		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
-		if(d.Controls.length>0 && d.Controls!="null"){
+		if(typeof d !=='undefined' && typeof d.Controls!=='undefined' && d.Controls!="null" && d.Controls.length>0){
 			var controls=new String(d.Controls).split(",");
 			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
@@ -9588,7 +9604,7 @@ function CountTrack(gsvg,data,trackClass,density){
 	};
 
 	that.redraw= function (){
-		
+		console.log("count.redraw()");
 		/*if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		}*/
@@ -9598,11 +9614,12 @@ function CountTrack(gsvg,data,trackClass,density){
 		//var len=tmpMax-tmpMin;
 		var tmpBin=that.bin;
 		var tmpW=that.xScale(tmpMin+tmpBin)-that.xScale(tmpMin);
-		/*if(tmpW>2||tmpW<0.5){
+		/*if(that.gsvg.levelNumber<10 && (tmpW>2||tmpW<0.5)) {
 			that.updateFullData(0,1);
 		}*//*else if(tmpMin<that.prevMinCoord||tmpMax>that.prevMaxCoord){
 			that.updateFullData(0,1);
-		}*///else{
+		}*/
+		//else{
 		
 			that.prevMinCoord=tmpMin;
 			that.prevMaxCoord=tmpMax;
@@ -9787,6 +9804,7 @@ function CountTrack(gsvg,data,trackClass,density){
 	};
 
 	that.updateFullData = function(retry,force){
+		console.log("count.updateFullData("+retry+","+force+")");
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
 
@@ -9828,17 +9846,17 @@ function CountTrack(gsvg,data,trackClass,density){
 								time=10000;
 							}*/
 							that.fullDataTimeOutHandle=setTimeout(function (){
-								that.updateFullData(retry+1);
+								that.updateFullData(retry+1,0);
 							},time);
 						}else if(retry<30){
 							var time=1000;
 							that.fullDataTimeOutHandle=setTimeout(function (){
-								that.updateFullData(retry+1);
+								that.updateFullData(retry+1,0);
 							},time);
 						}else if(retry<32){
 							var time=10000;
 							that.fullDataTimeOutHandle=setTimeout(function (){
-								that.updateFullData(retry+1);
+								that.updateFullData(retry+1,0);
 							},time);
 						}else{
 							d3.select("#Level"+that.levelNumber+that.trackClass).select("#trkLbl").text("An errror occurred loading Track:"+that.trackClass);
@@ -9934,18 +9952,28 @@ function CountTrack(gsvg,data,trackClass,density){
 	}
 
 	that.draw=function(data){
-		
+		console.log("count.draw()");
+		console.log(data);
 		that.hideLoading();
+
 		//d3.selectAll("."+that.trackClass).remove();
 		//data.sort(function(a, b){return a.getAttribute("start")-b.getAttribute("start")});
 		that.data=data;
 		/*if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
 		}*/
-		
+		var tmpMin=that.gsvg.xScale.domain()[0];
+		var tmpMax=that.gsvg.xScale.domain()[1];
+		//var len=tmpMax-tmpMin;
+		var tmpBin=that.bin;
+		var tmpW=that.xScale(tmpMin+tmpBin)-that.xScale(tmpMin);
+		/*if(that.gsvg.levelNumber<10 && (tmpW>2||tmpW<0.5)) {
+			that.updateFullData(0,1);
+		}else{
+		*/
 		that.redrawLegend();
-		var tmpMin=that.xScale.domain()[0];
-		var tmpMax=that.xScale.domain()[1];
+		//var tmpMin=that.xScale.domain()[0];
+		//var tmpMax=that.xScale.domain()[1];
 		var newData=[];
 		var newCount=0;
 		var tmpYMax=0;
@@ -10085,6 +10113,7 @@ function CountTrack(gsvg,data,trackClass,density){
 			that.svg.attr("height", 140);
 		}
 		that.redrawSelectedArea();
+		//}
 	};
 
 	that.redrawLegend=function (){
@@ -10141,7 +10170,6 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.prevSetting.density=that.density;
 		that.prevSetting.scaleMin=that.scaleMin;
 		that.prevSetting.scaleMax=that.scaleMax;
-
 	};
 	
 	that.revertPrevious=function(){
@@ -10237,12 +10265,8 @@ function CountTrack(gsvg,data,trackClass,density){
 							  value: that.scaleMax ,
 							  slide: that.processSlider
 							});
-						
 							that.updateSettingsFromUI();
 							that.redraw();
-						
-							
-						
 					}
 				}
 			}
@@ -10289,21 +10313,20 @@ function CountTrack(gsvg,data,trackClass,density){
 	that.yScale = d3.scale.linear()
 				.range([140, 20])
 				.domain([0, d3.max(data, function(d) { return d.getAttribute("count"); })]);
-    /*that.colorDomain=[0,1,5,10,25,50,75,100,200,300,400,500,600,700,800,900,1000];
-    that.colorRange=["#FFFFFF","#EEEEEE","#DDDDDD","#CCCCCC","#BBBBBB","#AAAAAA","#999999","#888888","#777777","#666666","#555555","#444444","#333333","#222222","#111111","#000000"];
-   	that.colorScale= d3.scale.threshold()
-   						.domain(that.colorDomain)
-   						.range(that.colorRange);*/
+
     that.area = d3.svg.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
 				    .y0(140)
 				    .y1(function(d) { return d.getAttribute("count"); });
+
     that.yAxis = d3.svg.axis()
     				.scale(that.yScale)
     				.orient("left")
     				.ticks(5);
+
    	that.redrawLegend();
     that.draw(data);
+
 	return that;
 }
 
@@ -11126,21 +11149,6 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 		
 	};
 
-
-	/*that.checkDensity=function(){
-		var den=-1;
-		if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
-			den=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		}
-		return den;
-	}
-	that.setDensity=function(){
-		var tmpDen=that.checkDensity();
-		if(tmpDen>0){
-			that.density=tmpDen;
-		}
-
-	};*/
 
 	that.draw=function(data){
 		

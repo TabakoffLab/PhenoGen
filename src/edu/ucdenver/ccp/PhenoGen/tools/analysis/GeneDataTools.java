@@ -2677,7 +2677,7 @@ public class GeneDataTools {
                 long groupLM=groupf.lastModified();
                 indLM=curTime-indLM;
                 groupLM=curTime-groupLM;
-                long twoHours=1000*60*60*2;
+                long twoHours=1000*60*10;
                 if(!indivf.exists() || !groupf.exists()||((groupf.length()==0 && groupLM>twoHours) || (indivf.length()==0 && indLM>twoHours))){
                     BufferedWriter outGroup=new BufferedWriter(new FileWriter(groupf));
                     BufferedWriter outIndiv=new BufferedWriter(new FileWriter(indivf));
