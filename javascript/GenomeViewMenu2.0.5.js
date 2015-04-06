@@ -193,9 +193,13 @@ function ViewMenu(level){
 		that.setupImage(settingStr,d);
 		$("div.viewsLevel"+that.level).hide();
 		$("div.trackLevel"+that.level).hide();
+		var tmpContext=contextPath +"/"+ pathPrefix;
 		if(d.Source==="db"){
+			if(!pathPrefix){
+				tmpContext="";
+			}
 			$.ajax({
-					url:  contextPath +"/"+ pathPrefix +"addBrowserCount.jsp",
+					url:  tmpContext +"addBrowserCount.jsp",
 	   				type: 'GET',
 					data: {viewID:d.ViewID},
 					dataType: 'json',
@@ -386,9 +390,7 @@ function ViewMenu(level){
 
 	that.generateSettingStringFromView=function(view){
 		var ret="";
-		console.log(view);
 		var tracks=view.TrackList;
-		console.log(tracks);
 		for(var j=0;j<tracks.length;j++){
 			ret=ret+tracks[j].TrackClass+","+tracks[j].Settings+";";
 		}
@@ -679,8 +681,12 @@ function ViewMenu(level){
 				if(type==="copy"){
 					copyID=that.findSelectedView().ViewID;
 				}
+				var tmpContext=contextPath +"/"+ pathPrefix;
+				if(!pathPrefix){
+					tmpContext="";
+				}
 				$.ajax({
-						url:  contextPath +"/"+ pathPrefix +"createBrowserViews.jsp",
+						url:  tmpContext +"createBrowserViews.jsp",
 		   				type: 'GET',
 						data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
 						dataType: 'json',
@@ -700,8 +706,12 @@ function ViewMenu(level){
 				var desc=$("#viewDescTxt"+that.level).val();
 				var type="blank";
 				var copyID=-1;
+				var tmpContext=contextPath +"/"+ pathPrefix;
+				if(!pathPrefix){
+					tmpContext="";
+				}
 				$.ajax({
-						url:  contextPath +"/"+ pathPrefix +"createBrowserViews.jsp",
+						url:  tmpContext +"createBrowserViews.jsp",
 		   				type: 'GET',
 						data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
 						dataType: 'json',
@@ -802,9 +812,13 @@ function ViewMenu(level){
 		if(uid>0){
 			//save tracks/settings
 			var trackList=svgImage.generateSettingsString();
+			var tmpContext=contextPath +"/"+ pathPrefix;
+			if(!pathPrefix){
+				tmpContext="";
+			}
 			if(viewID>0){
 				$.ajax({
-					url:  contextPath +"/"+ pathPrefix +"updateBrowserView.jsp",
+					url:  tmpContext +"updateBrowserView.jsp",
 	   				type: 'GET',
 					data: {viewID:viewID,trackList:trackList},
 					dataType: 'json',
@@ -831,13 +845,9 @@ function ViewMenu(level){
 					cookieStr=$.cookie("phenogenCustomViews");
 				}
 			}
-			console.log("saving:");
-			console.log(cookieStr);
 			var cookieList=cookieStr.split("<///>");
 			for(var l=0;l<cookieList.length;l++){
 				if(cookieList[l].length>10){
-					console.log("Save View["+l+"]");
-					console.log(cookieList[l]);
 					if(cookieList[l].indexOf("ViewID="+viewID)>-1){
 						var begining=cookieList[l].substr(0,cookieList[l].indexOf("</>TrackSettingList="));
 						var list=svgImage.generateSettingsString();
@@ -847,8 +857,6 @@ function ViewMenu(level){
 					}
 				}
 			}
-			console.log("to save:");
-			console.log(newCookie);
 			if(isLocalStorage() === true){
 				localStorage.setItem("phenogenCustomViews",newCookie);
 			}else{
@@ -870,8 +878,6 @@ function ViewMenu(level){
 	};
 
 	that.confirmDeleteView = function(toDelete){
-                console.log("toDelete.UserID="+toDelete.UserID);
-                console.log(typeof toDelete.UserID);
 		if(that.findSelectedView().ViewID!==toDelete.ViewID){
 			that.setSelectedView(toDelete.ViewID);
 		}
@@ -893,8 +899,12 @@ function ViewMenu(level){
 		var ind=that.findSelectedViewIndex();
 		var d=that.viewList[ind];
 		if(d.Source==="db"){
+			var tmpContext=contextPath +"/"+ pathPrefix;
+			if(!pathPrefix){
+				tmpContext="";
+			}
 			$.ajax({
-					url:  contextPath +"/"+ pathPrefix +"deleteView.jsp",
+					url:  tmpContext +"deleteView.jsp",
 	   				type: 'GET',
 					data: {viewID:d.ViewID},
 					dataType: 'json',
@@ -926,8 +936,6 @@ function ViewMenu(level){
 				}
 			}
 			var cookieList=cookieStr.split("<///>");
-			console.log("before delete");
-			console.log(cookieStr);
 			for(var l=0;l<cookieList.length;l++){
 				if(cookieList[l].indexOf("ViewID="+d.ViewID)>-1){
 
@@ -937,8 +945,6 @@ function ViewMenu(level){
 					}
 				}
 			}
-			console.log("after delete");
-			console.log(newCookie);
 			if(isLocalStorage() === true){
 				localStorage.setItem("phenogenCustomViews",newCookie);
 			}else{

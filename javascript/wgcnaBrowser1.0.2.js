@@ -2458,11 +2458,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 						.attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
 
 				tracktbl.each(function(d,i){
+						var tmpI=i;
 						d3.select(this).append("td").html(d.Gene.geneSymbol);
 						d3.select(this).append("td").html(d.Gene.ID);
 						d3.select(this).append("td").html(d.ID);
 						d3.select(this).append("td").html(d.PSList.length);
-		                                d3.select(this).append("td").html(d.LinkSum.toFixed(2));
+		                d3.select(this).append("td").html(d.LinkSum.toFixed(2));
+		                d3.select(this).append("td").html(function(){return tmpI+1;});
 				});
 		        $('table#moduleTable').DataTable({
 						"bPaginate": false,
