@@ -48,7 +48,7 @@ function TrackMenu(level){
 				trackDataTable.destroy();
 			}
 		}catch(error){
-			 Bugsense.notify( error, { datatables: "not initialized" } );
+			//Bugsense.notify( error, { datatables: "not initialized" } );
 		}
 
 		if(filter==="custom"&&btData.length===0){
@@ -132,7 +132,7 @@ function TrackMenu(level){
                             try{
                                     trackDataTable.columns.adjust().draw();
                             }catch(error){
-                                    Bugsense.notify( error, { datatables: "error adjusting columns:132" } );
+                                //Bugsense.notify( error, { datatables: "error adjusting columns:132" } );
                             }
                             $('#trkSelList'+that.level+'_wrapper div.dataTables_scroll div.dataTables_scrollBody').css('height', tblHeight);
                             $("td#selectedTrack"+that.level).show();
@@ -341,8 +341,12 @@ function TrackMenu(level){
 						newTrackString=newTrackString+trackStrings[j]+"<;>";
 					}
 				}
+				var tmpContext=contextPath +"/"+ pathPrefix;
+				if(!pathPrefix){
+					tmpContext="";
+				}
 				$.ajax({
-					url:  contextPath +"/"+ pathPrefix +"removeCustomTrack.jsp",
+					url:  tmpContext +"removeCustomTrack.jsp",
 	   				type: 'GET',
 					data: {trackID:d.TrackID},
 					dataType: 'json',
@@ -361,8 +365,12 @@ function TrackMenu(level){
 			}
 		}else if(d.Source==="db"){
 			//remove from the database
+			var tmpContext=contextPath +"/"+ pathPrefix;
+			if(!pathPrefix){
+				tmpContext="";
+			}
 			$.ajax({
-				url:  contextPath +"/"+ pathPrefix +"deleteTrack.jsp",
+				url:  tmpContext +"deleteTrack.jsp",
    				type: 'GET',
 				data: {trackID:d.TrackID},
 				dataType: 'json',
@@ -525,9 +533,13 @@ function TrackMenu(level){
 		}
 		trackClass="custom"+trackClass;
 		if(uid>0){
+			var tmpContext=contextPath +"/"+ pathPrefix;
+			if(!pathPrefix){
+				tmpContext="";
+			}
 			//console.log("saving track to db");
 			$.ajax({
-				url:  contextPath +"/"+ pathPrefix +"addTrack.jsp",
+				url:  tmpContext +"addTrack.jsp",
    				type: 'GET',
 				data: {trackClass: trackClass,trackName: trackName, trackDesc:desc,trackOrg:org,genericCategory:genCat,category:cat,controls:control,location:loc,type:type,file:prevFile},
 				dataType: 'json',

@@ -351,21 +351,17 @@ Add report here.
    			<TR>
             	<TD style="width:20%;">Exonic Variants:</TD>
                 <TD style="width:78%;">
-                                    <%if(curGene.getSnpCount("common","SNP")>0 || curGene.getSnpCount("common","Indel")>0 ){%>
+                                    
                                         <B>Common:</B> <%=curGene.getSnpCount("common","SNP")%> (SNPs) / <%=curGene.getSnpCount("common","Indel")%>(Insertions/Deletions)<BR />
-                                    <%}%>
-                                    <%if(curGene.getSnpCount("BNLX","SNP")>0 || curGene.getSnpCount("BNLX","Indel")>0 ){%>
-                                        <B>BN-Lx:</B> <%=curGene.getSnpCount("BNLX","SNP")%> (SNPs) / <%=curGene.getSnpCount("BNLX","Indel")%>(Insertions/Deletions)<BR />
-                                    <%}%>
-                                    <%if(curGene.getSnpCount("SHRH","SNP")>0 || curGene.getSnpCount("SHRH","Indel")>0){%>
-                                        <B>SHR:</B> <%=curGene.getSnpCount("SHRH","SNP")%> (SNPs) / <%=curGene.getSnpCount("SHRH","Indel")%> (Insertions/Deletions)<BR />
-                                    <%}%>
-                                    <%if(curGene.getSnpCount("SHRJ","SNP")>0 || curGene.getSnpCount("SHRJ","Indel")>0){%>
-                                        <B>SHRJ:</B> <%=curGene.getSnpCount("SHRJ","SNP")%> (SNPs) / <%=curGene.getSnpCount("SHRJ","Indel")%> (Insertions/Deletions)<BR />
-                                    <%}%>
-                                    <%if(curGene.getSnpCount("F344","SNP")>0 || curGene.getSnpCount("F344","Indel")>0){%>
+                                    
+                                        <B>BN-Lx/CubPrin:</B> <%=curGene.getSnpCount("BNLX","SNP")%> (SNPs) / <%=curGene.getSnpCount("BNLX","Indel")%>(Insertions/Deletions)<BR />
+                                   
+                                        <B>SHR/OlaPrin:</B> <%=curGene.getSnpCount("SHRH","SNP")%> (SNPs) / <%=curGene.getSnpCount("SHRH","Indel")%> (Insertions/Deletions)<BR />
+                                    
+                                        <B>SHR/NCrlPrin:</B> <%=curGene.getSnpCount("SHRJ","SNP")%> (SNPs) / <%=curGene.getSnpCount("SHRJ","Indel")%> (Insertions/Deletions)<BR />
+                                    
                                         <B>F344:</B> <%=curGene.getSnpCount("F344","SNP")%> (SNPs) / <%=curGene.getSnpCount("F344","Indel")%> (Insertions/Deletions)<BR />
-                                    <%}%>
+                                    
                                 </TD>
                                 
             </TR>

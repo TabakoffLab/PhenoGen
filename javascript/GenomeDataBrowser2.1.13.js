@@ -1141,8 +1141,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					if(error){
 						console.log(error);
 						if(retry===0){
+							var tmpContext=contextPath +"/"+ pathPrefix;
+							if(!pathPrefix){
+								tmpContext="";
+							}
 							$.ajax({
-								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+								url: tmpContext +"generateTrackXML.jsp",
 				   				type: 'GET',
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName},
 								dataType: 'json',
@@ -1200,8 +1204,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					if(error){
 						console.log(error);
 						if(retry==0){
+							var tmpContext=contextPath +"/"+ pathPrefix;
+							if(!pathPrefix){
+								tmpContext="";
+							}
 							$.ajax({
-								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+								url: tmpContext +"generateTrackXML.jsp",
 				   				type: 'GET',
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName},
 								dataType: 'json',
@@ -1342,8 +1350,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				d3.xml(file,function (error,d){
 					if(error){
 						if(retry==0){
+							var tmpContext=contextPath +"/"+ pathPrefix;
+							if(!pathPrefix){
+								tmpContext="";
+							}
 							$.ajax({
-								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+								url: tmpContext +"generateTrackXML.jsp",
 				   				type: 'GET',
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName,binSize:tmpBin},
 								dataType: 'json',
@@ -1454,8 +1466,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					if(error){
 						console.log(error);
 						if(retry==0){
+							var tmpContext=contextPath +"/"+ pathPrefix;
+							if(!pathPrefix){
+								tmpContext="";
+							}
 							$.ajax({
-								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+								url: tmpContext +"generateTrackXML.jsp",
 				   				type: 'GET',
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName},
 								dataType: 'json',
@@ -1655,6 +1671,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.updateFullData=function(){
 		var chkStr=new String(that.folderName);
 		if(chkStr.indexOf("img")>-1){
+
 			$.ajax({
 					url:  pathPrefix +"getFullPath.jsp",
 	   				type: 'GET',
@@ -3639,7 +3656,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 		//console.log(trackInfo);
 		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
-		if(d.Controls.length>0 && d.Controls!="null"){
+		if(typeof d!=='undefined'&&d.Controls.length>0 && d.Controls!="null"){
 			var controls=new String(d.Controls).split(",");
 			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
@@ -4420,8 +4437,12 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					if(error){
 						//console.log(error);
 						if(retry===0){
+								var tmpContext=contextPath +"/"+ pathPrefix;
+								if(!pathPrefix){
+									tmpContext="";
+								}
 									$.ajax({
-										url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+										url: tmpContext +"generateTrackXML.jsp",
 						   				type: 'GET',
 										data: {chromosome: chr,minCoord:tmpseqRegionMin,maxCoord:tmpseqRegionMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: that.gsvg.folderName},
 										dataType: 'json',
@@ -5449,8 +5470,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		d3.xml(path,function (error,d){
 			if(error){
                 if(retry===0){
+                	var tmpContext=contextPath +"/"+ pathPrefix;
+					if(!pathPrefix){
+						tmpContext="";
+					}
                     $.ajax({
-                            url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+                            url: tmpContext +"generateTrackXML.jsp",
                             type: 'GET',
                             data: {chromosome: chr,minCoord:that.gsvg.xScale.domain()[0],maxCoord:that.gsvg.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: file, folder: that.gsvg.folderName},
                             dataType: 'json',
@@ -6617,8 +6642,12 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 			if(error){
 				//console.log(error);
 				if(retry==0){
+					var tmpContext=contextPath +"/"+ pathPrefix;
+					if(!pathPrefix){
+						tmpContext="";
+					}
 							$.ajax({
-								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+								url: tmpContext +"generateTrackXML.jsp",
 				   				type: 'GET',
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: that.gsvg.folderName,panel:panel},
 								dataType: 'json',
@@ -9459,8 +9488,12 @@ function CustomCountTrack(gsvg,data,trackClass,density,additionalOptions){
 			d3.xml(file,function (error,d){
 						if(error){
 							if(retry==0||force==1){
+								var tmpContext=contextPath +"/"+ pathPrefix;
+								if(!pathPrefix){
+									tmpContext="";
+								}
 								$.ajax({
-													url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+													url: tmpContext +"generateTrackXML.jsp",
 									   				type: 'GET',
 													data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax, myOrganism: organism, track: that.trackClass,bedFile: bedFile,outFile:file, folder: that.gsvg.folderName,binSize:that.bin,type:type,web:web},
 													//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
@@ -9604,10 +9637,6 @@ function CountTrack(gsvg,data,trackClass,density){
 	};
 
 	that.redraw= function (){
-		console.log("count.redraw()");
-		/*if($("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").length>0){
-			that.density=$("#"+that.trackClass+"Dense"+that.gsvg.levelNumber+"Select").val();
-		}*/
 		
 		var tmpMin=that.gsvg.xScale.domain()[0];
 		var tmpMax=that.gsvg.xScale.domain()[1];
@@ -9804,7 +9833,6 @@ function CountTrack(gsvg,data,trackClass,density){
 	};
 
 	that.updateFullData = function(retry,force){
-		console.log("count.updateFullData("+retry+","+force+")");
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
 
@@ -9825,8 +9853,12 @@ function CountTrack(gsvg,data,trackClass,density){
 		d3.xml(file,function (error,d){
 					if(error){
 						if(retry==0||force==1){
+							var tmpContext=contextPath +"/"+ pathPrefix;
+							if(!pathPrefix){
+								tmpContext="";
+							}
 							$.ajax({
-												url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+												url: tmpContext +"generateTrackXML.jsp",
 								   				type: 'GET',
 												data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: that.gsvg.folderName,binSize:that.bin},
 												//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
@@ -9952,8 +9984,6 @@ function CountTrack(gsvg,data,trackClass,density){
 	}
 
 	that.draw=function(data){
-		console.log("count.draw()");
-		console.log(data);
 		that.hideLoading();
 
 		//d3.selectAll("."+that.trackClass).remove();
@@ -10474,8 +10504,12 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 							//console.log("ERROR******");
 							console.log(error);
 							if(retry==0 || force==1){
+								var tmpContext=contextPath +"/"+ pathPrefix;
+								if(!pathPrefix){
+									tmpContext="";
+								}
 								$.ajax({
-									url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+									url: tmpContext +"generateTrackXML.jsp",
 					   				type: 'GET',
 									data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,folder:that.gsvg.folderName,bedFile: bedFile,outFile:file,track:that.trackClass,web:http,type:type},
 									//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
@@ -11015,8 +11049,12 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 					if(error){
 						//console.log(error);
 						if(retry==0 || force==1){
+							var tmpContext=contextPath +"/"+ pathPrefix;
+							if(!pathPrefix){
+								tmpContext="";
+							}
 							$.ajax({
-								url: contextPath +"/"+ pathPrefix +"generateTrackXML.jsp",
+								url: tmpContext +"generateTrackXML.jsp",
 				   				type: 'GET',
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: that.gsvg.folderName},
 								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
