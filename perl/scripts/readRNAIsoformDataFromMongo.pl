@@ -459,7 +459,11 @@ sub readRNACountsDataFromMongo{
 		}
 		$listCount++;
 	}
-
+        if($listCount==0){
+            $countHOH{Count}[$listCount]{start}=$geneStart;
+            $countHOH{Count}[$listCount]{stop}=$geneStop;
+            $countHOH{Count}[$listCount]{count}=0;
+        }
 	return (\%countHOH);
 }
 
