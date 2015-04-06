@@ -115,7 +115,7 @@ public class MiRWorker extends Thread {
 	validated[1]="mirtarbase";
 	validated[2]="tarbase";
         predicted[0]="diana_microt";
-	predicted[1]="eimmo";
+	predicted[1]="elmmo";
 	predicted[2]="microcosm";
 	predicted[3]="miranda";
 	predicted[4]="mirdb";

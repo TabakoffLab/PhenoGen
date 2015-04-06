@@ -10791,88 +10791,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 		return tooltip;
 	};
 
-	/*//Pack method does perform additional packing above the default method in track.  
-	//May be slightly slower but avoids the waterfall like non optimal packing that occurs with the sorted features.
-	that.calcY = function (start,end,i){
-		var tmpY=0;
-		if(that.density==3){
-			if((start>=that.xScale.domain()[0]&&start<=that.xScale.domain()[1])||
-				(end>=that.xScale.domain()[0]&&end<=that.xScale.domain()[1])||
-				(start<=that.xScale.domain()[0]&&end>=that.xScale.domain()[1])){
-				var pStart=Math.round(that.xScale(start));
-				if(pStart<0){
-					pStart=0;
-				}
-				var pEnd=Math.round(that.xScale(end));
-				if(pEnd>=that.gsvg.width){
-					pEnd=that.gsvg.width-1;
-				}
-				var pixStart=pStart-2;
-				if(pixStart<0){
-					pixStart=0;
-				}
-				var pixEnd=pEnd+2;
-				if(pixEnd>=that.gsvg.width){
-					pixEnd=that.gsvg.width-1;
-				}
-				//find yMax that is clear this is highest line that is clear
-				var yMax=0;
-				for(var pix=pixStart;pix<=pixEnd;pix++){
-					if(that.yMaxArr[pix]>yMax){
-						yMax=that.yMaxArr[pix];
-					}
-				}
-				yMax++;
-				//may need to extend yArr for a new line
-				var addLine=yMax;
-				if(that.yArr.length<=yMax){
-					that.yArr[addLine]=new Array();
-					for(var j=0;j<that.gsvg.width;j++){
-						that.yArr[addLine][j]=0;
-					}
-				}
-				//check a couple lines back to see if it can be squeezed in
-				var startLine=yMax-12;
-				if(startLine<1){
-					startLine=1;
-				}
-				var prevLine=-1;
-				var stop=0;
-				for(var scanLine=startLine;scanLine<yMax&&stop==0;scanLine++){
-					var available=0;
-					for(var pix=pixStart;pix<=pixEnd&&available==0;pix++){
-						if(that.yArr[scanLine][pix]>available){
-							available=1;
-						}
-					}
-					if(available==0){
-						yMax=scanLine;
-						stop=1;
-					}
-				}
-				if(yMax>that.trackYMax){
-					that.trackYMax=yMax;
-				}
-				for(var pix=pStart;pix<=pEnd;pix++){
-					if(that.yMaxArr[pix]<yMax){
-						that.yMaxArr[pix]=yMax;
-					}
-					that.yArr[yMax][pix]=1;
-				}
-				tmpY=yMax*15;
-			}else{
-				tmpY=15;
-			}
-		}else if(that.density==2){
-			tmpY=(i+1)*15;
-		}else{
-			tmpY=15;
-		}
-		if(that.trackYMax<(tmpY/15)){
-			that.trackYMax=(tmpY/15);
-		}
-		return tmpY;
-	};*/
+	
 
 	that.getColorValue=function(d){
 		return d.getAttribute(that.colorValueField);
@@ -11011,30 +10930,37 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 			that.yArr=new Array();
 			that.yArr[0]=new Array();
 			for(var p=0;p<that.gsvg.width;p++){
-					that.yMaxArr[p]=0;
-					that.yArr[0][p]=0;
+				that.yMaxArr[p]=0;
+				that.yArr[0][p]=0;
 			}
 			that.trackYMax=0;
-			var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g."+that.idPrefix+"trx"+that.gsvg.levelNumber)
+			var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass)
+				.selectAll("g."+that.idPrefix+"trx"+that.gsvg.levelNumber)
 				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i)+")";});
+
 			txG.each(function(d,i){
-					exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
+					var tmpD=d;
+					var tmpI=i;
+					var exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
 					for(var m=0;m<exList.length;m++){
 						var id=that.idPrefix+"Ex"+exList[m].getAttribute("ID");
 						if(exList[m].getAttribute("ID")==null){
-							id=that.idPrefix+"Ex"+d.getAttribute("ID")+"_"+m;
+							id=that.idPrefix+"Ex"+tmpD.getAttribute("ID")+"_"+m;
 						}
-						d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" rect#"+id)
-							.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")) -that.xScale(d.getAttribute("start")); })
+
+						//d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#"+that.idPrefix+"tx"+tmpD.getAttribute("ID")+" rect#"+id)
+						that.svg.select("g#"+that.idPrefix+"tx"+tmpD.getAttribute("ID")+" rect#"+id)
+							.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")) -that.xScale(tmpD.getAttribute("start")); })
 							.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); });
+
 						if(m>0){
 							var strChar=">";
 							if(d.getAttribute("strand")=="-1"){
 								strChar="<";
 							}
 							var fullChar=strChar;
-							var intStart=that.xScale(exList[m-1].getAttribute("stop")) -that.xScale(d.getAttribute("start"));
-							var intStop=that.xScale(exList[m].getAttribute("start")) -that.xScale(d.getAttribute("start"));
+							var intStart=that.xScale(exList[m-1].getAttribute("stop")) -that.xScale(tmpD.getAttribute("start"));
+							var intStop=that.xScale(exList[m].getAttribute("start")) -that.xScale(tmpD.getAttribute("start"));
 							var rectW=intStop-intStart;
 							var alt=0;
 							var charW=7.0;
@@ -11055,13 +10981,13 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 							}
 							var id=exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID");
 							if(exList[m].getAttribute("ID")==null){
-								id=d.getAttribute("ID")+"_"+(m-1)+"_"+m;
+								id=tmpD.getAttribute("ID")+"_"+(m-1)+"_"+m;
 							}
-							d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" line#"+that.idPrefix+"Int"+id)
+							that.svg.select("g#"+that.idPrefix+"tx"+tmpD.getAttribute("ID")+" line#"+that.idPrefix+"Int"+id)
 								.attr("x1",intStart)
 								.attr("x2",intStop);
 
-							d3.select("g#"+that.idPrefix+"tx"+d.getAttribute("ID")+" #"+that.idPrefix+"IntTxt"+id)
+							that.svg.select("g#"+that.idPrefix+"tx"+tmpD.getAttribute("ID")+" #"+that.idPrefix+"IntTxt"+id)
 								.attr("dx",intStart+1).text(fullChar);
 						}
 					}
