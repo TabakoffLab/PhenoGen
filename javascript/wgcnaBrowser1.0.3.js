@@ -682,9 +682,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 links.append("text").text("Link Correlation Values");
                 links.append("span").style("cursor","pointer")
                         .on("click",function(){
-                            $("#linkSliderMin").slider('value',0.01);
-                            that.singleImage.CorCutoff_min=0.01;
-                            $("span#minLabel").html(0.01);
+                            $("#linkSliderMin").slider('value',0.75);
+                            that.singleImage.CorCutoff_min=0.75;
+                            $("span#minLabel").html(0.75);
                             
                             $("#linkSliderMax").slider('value',1.0);
                             that.singleImage.CorCutoff_max=1.0;
@@ -697,7 +697,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 var row=table.append("tr");
                 row.append("td").append("text").text("Min:");
                 row.append("td").append("div").attr("id","linkSliderMin").style("width","100px");
-                row.append("td").append("span").attr("id","minLabel").style("margin-left","5px").append("text").text("0.01");
+                row.append("td").append("span").attr("id","minLabel").style("margin-left","5px").append("text").text("0.75");
                 row=table.append("tr");
                 row.append("td").append("text").text("Max:");
                 row.append("td").append("div").attr("id","linkSliderMax").style("width","100px");
@@ -745,10 +745,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 
                 $( "#linkSliderMin" ).slider({
                     
-                    min: 0.001,
-                    max: 0.2,
-                    step: 0.001,
-                    value:0.01,
+                    min: 0.05,
+                    max: 0.95,
+                    step: 0.05,
+                    value:0.75,
                     slide: function( event, ui ) {
                         that.singleImage.CorCutoff_min=ui.value;
                         $("span#minLabel").html(ui.value);
@@ -757,7 +757,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                   });
                 $( "#linkSliderMax" ).slider({
-                    min: 0.01,
+                    min: 0.1,
                     max: 1,
                     step: 0.05,
                     value:1,
@@ -1266,7 +1266,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//console.log("r:"+thatimg.r);
 		
                 thatimg.maxPerLevel=150;
-                thatimg.CorCutoff_min=0.025;
+                thatimg.CorCutoff_min=0.75;
                 thatimg.CorCutoff_max=1.0;
                 thatimg.showLinks=true;
 		thatimg.data=[];
@@ -1525,7 +1525,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     thatimg.showMirLinks=1;
                     thatimg.showAllFromTarget=0;
                 }
-                thatimg.CorCutoff_min=0.01;
+                thatimg.CorCutoff_min=0.75;
                 thatimg.CorCutoff_max=1;
                 thatimg.type=that.viewType;
                 thatimg.truncated=0;
@@ -1536,6 +1536,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 thatimg.mirID="";
                 thatimg.miRcolor = d3.scale.category20b();
                 thatimg.sortMir=0;
+                thatimg.maxCorWidth=5;
                 
                 thatimg.drawLinks=function(d){
                     //console.log("draw links");
@@ -1587,7 +1588,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 })
                                 .attr("stroke",thatimg.colorLink)
                                 .attr("stroke-width",function(d){
-                                    var val=Math.abs(d.Cor)*20;
+                                    var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
                                     /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
                                         val=0;
                                     }*/
@@ -1654,7 +1655,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 })
                                 .attr("stroke",thatimg.colorLink)
                                 .attr("stroke-width",function(d){
-                                    var val=Math.abs(d.Cor)*20;
+                                    var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
                                     /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
                                         val=0;
                                     }*/
@@ -1850,7 +1851,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         for(var p=0;p<thatimg.data.length;p++){
                             thatimg.dataIndex[thatimg.data[p].ID]=1;
                         }
-                        thatimg.CorCutoff_min=0.3;
+                        thatimg.CorCutoff_min=0.85;
+                        $("#linkSliderMin").slider('value',0.85);
+                        $("span#minLabel").html(0.85);
+
                         thatimg.svg.append("image").attr("x",that.selectedModule.MOD_NAME.length*7.8+20).attr("y",1).attr("width","24px")								
                             .attr("height","24px")
                             .attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ"+
@@ -1962,7 +1966,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     })
                                     .attr("stroke",thatimg.colorLink)
                                     .attr("stroke-width",function(d){
-                                        var val=Math.abs(d.Cor)*20;
+                                        var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
                                         /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
                                             val=0;
                                         }*/
@@ -3293,7 +3297,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         that.singleWGCNATableGoView();
                     },50);
                     thatimg.vis=thatimg.topG.append("svg:circle")
-                        .attr("r", thatimg.radius)
+                        .attr("r", thatimg.radius+30)
                         .style("opacity", 0)
                         .on("mouseover",thatimg.mouseleave);
                     var radToDeg=180/Math.PI;
@@ -3447,16 +3451,16 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 d3.selectAll("text")
                     .style("opacity", 1);
                 // Deactivate all segments during transition.
-                d3.selectAll("path").on("mouseover", null);
+                //d3.selectAll("path").on("mouseover", null);
 
                 // Transition each segment to full opacity and then reactivate it.
                 d3.selectAll("path")
                     .transition()
                     .duration(500)
-                    .style("opacity", 1)
-                    .each("end", function() {
+                    .style("opacity", 1);
+                    /*.each("end", function() {
                             d3.select(this).on("mouseover", thatimg.mouseover);
-                          });
+                          });*/
 
                 d3.select("#explanation")
                     .style("visibility", "hidden");
