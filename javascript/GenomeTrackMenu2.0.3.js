@@ -48,7 +48,7 @@ function TrackMenu(level){
 				trackDataTable.destroy();
 			}
 		}catch(error){
-			//Bugsense.notify( error, { datatables: "not initialized" } );
+			Bugsense.notify( error, { datatables: "not initialized" } );
 		}
 
 		if(filter==="custom"&&btData.length===0){
@@ -132,7 +132,7 @@ function TrackMenu(level){
                             try{
                                     trackDataTable.columns.adjust().draw();
                             }catch(error){
-                                //Bugsense.notify( error, { datatables: "error adjusting columns:132" } );
+                                Bugsense.notify( error, { datatables: "error adjusting columns:132" } );
                             }
                             $('#trkSelList'+that.level+'_wrapper div.dataTables_scroll div.dataTables_scrollBody').css('height', tblHeight);
                             $("td#selectedTrack"+that.level).show();
