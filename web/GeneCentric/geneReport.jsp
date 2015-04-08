@@ -386,8 +386,11 @@ Add report here.
             </TR>
             </table>
             <div>
-            		<div class="geneReport header" style="width:100%;">
-                    Affy Probe Set Data: Overlapping Probe Set Count:<%=curGene.getProbeCount()%>
+                    <div class="geneReport header" style="width:100%;">
+                        Affy Probe Set Data: Overlapping Probe Set Count:<%=curGene.getProbeCount()%> 
+                            <span class="reporttooltip" 
+                                  title="Summary of probe sets that overlap with an exon or intron of any Ensembl or RNA-Seq transcript for this gene and probe the same strand as the transcript.<BR>Note: The probe set track if displayed shows all non-masked probe sets in the region including the opposite strand.">
+                                <img src="../web/images/icons/info.gif" /></span>
                     </div>
                     <%if(curGene.getProbeCount()>0){%>
                     <table id="psDABGTbl" class="geneReport" style="display:inline-block;">
@@ -590,7 +593,7 @@ Add report here.
     		<div style="text-align:center;">
                 This feature requires Java which will open in a seperate window, when you click the button below.  Java will be automatically detected and directions will be displayed on the next page if there are any issues to correct before proceding.<BR /><BR />
                 
-                <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&defaultView=1" target="_blank">View Affy Probe Set Details</a></span><BR />       		
+                <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&defaultView=10" target="_blank">View Affy Probe Set Details</a></span><BR />       		
                 </div>
     </div>
    	
@@ -619,6 +622,17 @@ Add report here.
 	rows=$("table#tblGeneEQTL tr");
 	stripeTable(rows);
 	
+        $(".reporttooltip").tooltipster({
+                position: 'top-right',
+                maxWidth: 250,
+                offsetX: 0,
+                offsetY: 5,
+                contentAsHTML:true,
+                //arrow: false,
+                interactive: true,
+                interactiveTolerance: 350
+        });
+        
 	$('.selectdetailMenu').click(function (){
 		var oldID=$('.selectdetailMenu.selected').attr("name");
 		$("#"+oldID).hide();

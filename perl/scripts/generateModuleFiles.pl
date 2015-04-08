@@ -468,9 +468,8 @@ foreach my $mod(@moduleList){
         $chrs="rn1;rn2;rn3;rn4;rn5;rn6;rn7;rn8;rn9;rn10;rn11;rn12;rn13;rn14;rn15;rn16;rn17;rn18;rn19;rn20;rnX;";
     }
     my @chrArr=split(";",$chrs);
-#Get eQTL Data from WGCNA_EQTL table
-    my $eqtlAOHRef = readLocusSpecificPvaluesModule($mod,$org,"Brain",\@chrArr,$dsn,$user,$passwd);
-    my @eqtlAOH = @{$eqtlAOHRef};
+
+
     
     open OFILE, '>', $path.$mod.".json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
     my $tmpMod=$mod;
@@ -620,7 +619,7 @@ foreach my $mod(@moduleList){
     print OFILE "\"LinkList\": [";
     my $linklistRef=$moduleHOH{LinkList};
     my @linklist=@$linklistRef;
-    print "output data struct size:".@linklist."\n";
+    #print "output data struct size:".@linklist."\n";
     for(my $link=0;$link<@linklist;$link++){
         if($link>0){
             print OFILE ",\n";
@@ -650,7 +649,9 @@ foreach my $mod(@moduleList){
     #print OFILE "\t\]\n";
     #print OFILE "}";#end module
     #close OFILE;
-
+    #Get eQTL Data from WGCNA_EQTL table
+    my $eqtlAOHRef = readLocusSpecificPvaluesModule($mod,$org,"Brain",\@chrArr,$dsn,$user,$passwd);
+    my @eqtlAOH = @{$eqtlAOHRef};
     open OFILE, '>', $path.$mod.".eQTL.json" or die " Could not open two track file $path$mod.eQTL.json for writing $!\n\n";
         print OFILE "[";
         for(my $i=0;$i<@eqtlAOH;$i++){
@@ -669,7 +670,7 @@ foreach my $mod(@moduleList){
     my $tmpP=substr($path,0,index($path,"tmpData")+7);
     my $dsNum=substr($path,index($path,"/ds")+1,index($path,"/",index($path,"/ds")+1)-1);
     my $tmpPath=$tmpP."/circos/".$dsNum.$mod."/";
-    print "Circos Path:".$tmpPath."\n";
+    #print "Circos Path:".$tmpPath."\n";
     my $cutoff=2;
     
     callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$modRGB,$dsn,$user, $passwd);

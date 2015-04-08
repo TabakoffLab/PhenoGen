@@ -47,9 +47,11 @@ sub getRNADatasetFromDB{
     my $query="select rd2.rna_dataset_id,rd2.build_version from rna_dataset rd2 where
 				rd2.organism = '".$organism."' "."
                                 and rd2.trx_recon=1
-				and rd2.user_id= $publicUserID
-                                and rd2.tissue = '".$tissue."' 
-                                and rd2.strain_panel like '".$panel."'";
+				and rd2.user_id= $publicUserID ";
+    if(!($tissue eq "Any")){
+        $query=$query."and rd2.tissue = '".$tissue."' "; 
+    }
+    $query=$query." and rd2.strain_panel like '".$panel."' ";
     if($$version==0){
             $query=$query." and rd2.visible=1 and rd2.previous=0";
     }else{
@@ -65,10 +67,16 @@ sub getRNADatasetFromDB{
     my $ver;
     # BIND TABLE COLUMNS TO VARIABLES
     $query_handle->bind_columns(\$dsid,\$ver);
-    if($query_handle->fetch()){
+    my $c=0;
+    while($query_handle->fetch()){
         print "DatasetID=$dsid\nver=$ver\n";
-        $ret=$dsid;
-        $$version=$ver;
+        if($c==0){
+            $ret=$dsid;
+            $$version=$ver;
+        }else{
+            $ret=$ret.",".$dsid;
+        }
+        $c++;
     }
     return $ret;
 }
@@ -121,18 +129,21 @@ sub readRNAIsoformDataFromDB{
 			c.chromosome_id=rt.chromosome_id 
 			and c.name =  '".uc($geneChrom)."' "."
 			and re.rna_transcript_id=rt.rna_transcript_id
-			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))
-			
-			and rt.rna_dataset_id=".$dsid."
-			and rt.rna_dataset_id=rd.rna_dataset_id ";
-			if($type ne "Any"){
-				if(index($type," in (")>-1){
-					$query=$query." and rt.category".$type;
-				}else{
-					$query=$query." and rt.category='".$type."'";
-				}
-			}
-			$query=$query." order by rt.trstart,rt.gene_id,rt.isoform_id,re.estart";
+			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop)) ";
+                if(index($dsid,",")>-1){
+                    $query=$query." and rt.rna_dataset_id in (".$dsid.")";
+                }else{
+                    $query=$query." and rt.rna_dataset_id=".$dsid;
+                }
+                $query=$query." and rt.rna_dataset_id=rd.rna_dataset_id ";
+                if($type ne "Any"){
+                        if(index($type," in (")>-1){
+                                $query=$query." and rt.category".$type;
+                        }else{
+                                $query=$query." and rt.category='".$type."'";
+                        }
+                }
+                $query=$query." order by rt.trstart,rt.gene_id,rt.isoform_id,re.estart";
 	
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" RNA Isoform query prepare failed \n");

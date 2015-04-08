@@ -187,7 +187,7 @@ sub createXMLFile
 	}else{
 	    $shortSpecies="Mm";
 	}
-	my $tissue="Brain";
+	my $tissue="Any";
 	
 	#
 	# Zero a bunch of counters
@@ -279,7 +279,7 @@ sub createXMLFile
 	
 	#fill genelist and slicelist for each Ensembl gene found and determine the min and max coordinates to find overlapping RNA isoforms.
 	while ( my $geneName1 = shift @geneNamesList ) {
-	    if(index($geneName1,"XLOC")==-1){
+	    if(index($geneName1,"ENS")==0){
 		#print "Get:$geneName1\n";
 		my $tmpslice = $slice_adaptor->fetch_by_gene_stable_id( $geneName1, 50 ); # the 50 just returns a little more on the chromosome. shortened from 5000 since this returns too much.
 		# Get all the genes.  Theoretically there should only be one, but possibly there might be more????
@@ -329,7 +329,7 @@ sub createXMLFile
 	
 	if($shortSpecies eq 'Rn'){
 	    #get expanded min max
-	    if($prevMin!=$minCoord||$prevMax!=$maxCoord){
+	    if($prevMin!=$minCoord or $prevMax!=$maxCoord){
 	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"Any",$tissue,0);
 		my $tmpGeneArray=$$isoformHOH{Gene};
 		foreach my $tmpgene ( @$tmpGeneArray){
@@ -348,47 +348,37 @@ sub createXMLFile
 			    $maxCoord=$$tmptranscript{stop};
 			}
 		    }
+                    print "min".$minCoord."\tmax:".$maxCoord."\n";
 		}
-		#extend global Min Max by 1000bp
-		#$minCoord=$minCoord-1000;
-		#$maxCoord=$maxCoord+1000;
-		#my $diff=$maxCoord-$minCoord;
-		#$diff=$diff*0.03;
-		#$diff=POSIX::floor($diff);
-		
-		#$minCoord=$minCoord-$diff;
-		#$maxCoord=$maxCoord+$diff;
 	    }
-	}
-	
-	
-	
-	#process RNA genes/transcripts and assign probesets.
-	$tmpGeneArray=$$isoformHOH{Gene};
-	foreach my $tmpgene ( @$tmpGeneArray){
-	    print "gene:".$$tmpgene{ID}."\n";
-	    $GeneHOH{Gene}[$cntGenes]=$tmpgene;
-	    $cntGenes++;
-	    my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
-	    foreach my $tmptranscript (@$tmpTransArray){
-		my $tmpExonArray=$$tmptranscript{exonList}{exon};
-		my $cntIntron=-1;
-		foreach my $tmpexon (@$tmpExonArray){
-		    my $exonStart=$$tmpexon{start};
-		    my $exonStop=$$tmpexon{stop};
-		    $$tmpexon{coding_start}=$exonStart;
-		    $$tmpexon{coding_stop}=$exonStop;
-		    my $intronStart=-1;
-		    my $intronStop=-1;
-		    if($cntIntron>-1){
-			$intronStart=$$tmptranscript{intronList}{intron}[$cntIntron]{start};
-			$intronStop=$$tmptranscript{intronList}{intron}[$cntIntron]{stop};
-
+	}else{
+            if($prevMin!=$minCoord or $prevMax!=$maxCoord){
+	        $isoformHOH = readRNAIsoformDataFromDB($chr,$shortSpecies,$publicID,'ILS/ISS',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,"Any",$tissue,0);
+		my $tmpGeneArray=$$isoformHOH{Gene};
+		foreach my $tmpgene ( @$tmpGeneArray){
+		    print "gene:".$$tmpgene{ID}."\n";
+		    my $tmpTransArray=$$tmpgene{TranscriptList}{Transcript};
+		    foreach my $tmptranscript (@$tmpTransArray){
+			print $$tmptranscript{ID}."\n";
+			if($$tmptranscript{start}<$minCoord){
+			    $minCoord=$$tmptranscript{start};
+			}elsif($$tmptranscript{start}>$maxCoord){
+			    $maxCoord=$$tmptranscript{start};
+			}
+			if($$tmptranscript{stop}<$minCoord){
+			    $minCoord=$$tmptranscript{stop};
+			}elsif($$tmptranscript{stop}>$maxCoord){
+			    $maxCoord=$$tmptranscript{stop};
+			}
 		    }
-		    $cntIntron++;
+                    print "min".$minCoord."\tmax:".$maxCoord."\n";
 		}
 	    }
-	}
+        }
+	
+	
+	
+
 	
 	my $geneListFile=$outputDir."geneList.txt";
 	open GLFILE, ">".$geneListFile;
