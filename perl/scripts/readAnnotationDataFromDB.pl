@@ -58,18 +58,22 @@ sub readTranscriptAnnotationDataFromDB{
 			where 
 			c.chromosome_id=rt.chromosome_id 
 			and c.name =  '".uc($geneChrom)."' "."
-			and re.rna_transcript_id=rt.rna_transcript_id 
-			and rt.rna_dataset_id=".$dsid." 
-			and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))";
+			and re.rna_transcript_id=rt.rna_transcript_id ";
+                 if(index($dsid,",")>-1){
+                    $query=$query." and rt.rna_dataset_id in (".$dsid.")";
+                }else{
+                    $query=$query." and rt.rna_dataset_id=".$dsid;
+                }
+                $query=$query." and ((trstart>=$geneStart and trstart<=$geneStop) OR (trstop>=$geneStart and trstop<=$geneStop) OR (trstart<=$geneStart and trstop>=$geneStop))";
 		
-			if($type ne "Any"){
-				if(index($type," in (")>-1){
-					$query=$query." and rt.category".$type;
-				}else{
-					$query=$query." and rt.category='".$type."'";
-				}
-			}
-			$query=$query.") order by rta.rna_transcript_id";
+                if($type ne "Any"){
+                        if(index($type," in (")>-1){
+                                $query=$query." and rt.category".$type;
+                        }else{
+                                $query=$query." and rt.category='".$type."'";
+                        }
+                }
+                $query=$query.") order by rta.rna_transcript_id";
 	
 	my $query_handle = $connect->prepare($query) or die (" RNA annotation query prepare failed \n");
 

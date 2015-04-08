@@ -18,7 +18,7 @@
 
 <%
 gdt.setSession(session);
-String chromosome="",panel="",myOrganism="Rn",viewID="1";
+String chromosome="",panel="",myOrganism="Rn",viewID="10";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 
 String selectedID="";
