@@ -230,7 +230,7 @@ function ViewMenu(level){
 		svgList[that.level].removeAllTracks();
 		svgList[that.level].currentView=d;
 		svgViewIDList[that.level]=d.ViewID;
-		svgList[that.level].updateLinks();
+		//svgList[that.level].updateLinks();
 		loadStateFromString(settingString,d.imgSettings,that.level,svgList[that.level]); 
 		$("span#viewLbl"+that.level).html("View: "+d.Name);
 		if(d.UserID===0){
