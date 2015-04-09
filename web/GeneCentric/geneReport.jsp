@@ -695,6 +695,6 @@ Add report here.
 			//return false;
 		}
 	);
-        svgList[1].updateLinks();
+        //svgList[1].updateLinks();
 </script>
 
