@@ -273,4 +273,16 @@ table.tooltipTable TD{
         .inpageHelpContent {
             display:none;
         }
+        div.adapt2Col{
+            -webkit-column-count: 2; /* Chrome, Safari, Opera */
+            -moz-column-count: 2; /* Firefox */
+            column-count: 2;
+        }
+        @media screen and (max-width:1000px){
+            div.adapt2Col{
+                -webkit-column-count: 1; /* Chrome, Safari, Opera */
+            -moz-column-count:1; /* Firefox */
+            column-count: 1;
+            }
+        }
 </style>

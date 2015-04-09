@@ -103,32 +103,18 @@
 %>
 
 <style>
-	#psHeritTbl{
-		width:42%;
-	}
-	#psDABGTbl{
-		width:57%;
-	}
-	#genePart1Tbl{
-		width:45%;
-	}
-	#genePart2Tbl{
-		width:53%;
-	}
-	@media screen and (max-width:1200px){
-		#psHeritTbl{
-			width:100%;
-		}
-		#psDABGTbl{
-			width:100%;
-		}
-		#genePart1Tbl{
-			width:100%;
-		}
-		#genePart2Tbl{
-			width:100%;
-		}
-	}
+    #psHeritTbl{
+            width:100%;
+    }
+    #psDABGTbl{
+            width:100%;
+    }
+    #genePart1Tbl{
+            width:100%;
+    }
+    #genePart2Tbl{
+            width:100%;
+    }
 </style>
 
 
@@ -219,6 +205,7 @@ Add report here.
 				chr="chr"+chr;
 			}
             %>
+            <div class="adapt2Col">
             <table id="genePart1Tbl" class="geneReport" style="display:inline-block;">
             <TR>
             <TD style="width:20%;">
@@ -385,6 +372,7 @@ Add report here.
             </TD>
             </TR>
             </table>
+            </div>
             <div>
                     <div class="geneReport header" style="width:100%;">
                         Affy Probe Set Data: Overlapping Probe Set Count:<%=curGene.getProbeCount()%> 
@@ -393,6 +381,7 @@ Add report here.
                                 <img src="../web/images/icons/info.gif" /></span>
                     </div>
                     <%if(curGene.getProbeCount()>0){%>
+                    <div class='adapt2Col'>
                     <table id="psDABGTbl" class="geneReport" style="display:inline-block;">
                     <TR>
                         <TD colspan="2"><B>Probe sets detected above background*:</B></TD>
@@ -443,7 +432,7 @@ Add report here.
                               </table>
                         </TD>
                     </TR>
-                    <TR><TD>*DABG is based on Affymetrix software that assigns a P-value to the probe sets detection above background.  Using a comparison of RNA-Seq data probe sets that overlap a high confidence exon in the transcriptome are not detected above background roughly 5% of the time.  Increasing the P-value cutoff of 0.0001 can reduce this but only at the expense of greatly elevated false positives. </TD></TR>
+                    <TR><TD colspan="2">*DABG is based on Affymetrix software that assigns a P-value to the probe sets detection above background.  Using a comparison of RNA-Seq data probe sets that overlap a high confidence exon in the transcriptome are not detected above background roughly 5% of the time.  Increasing the P-value cutoff of 0.0001 can reduce this but only at the expense of greatly elevated false positives. </TD></TR>
                     </table>
                     <table id="psHeritTbl"  class="geneReport" style="display:inline-block;">
                      <TR>

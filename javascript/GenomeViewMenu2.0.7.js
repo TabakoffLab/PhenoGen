@@ -31,8 +31,8 @@ function ViewMenu(level){
 		if(d.Organism==="AA"||d.Organism===tmpOrg){
 			var min=svgList[that.level].xScale.domain()[0];
 			var max=svgList[that.level].xScale.domain()[1];
-			that.previewSVG=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
-			$("div#ScrollLevel"+that.previewLevel).css("overflow","auto").css("max-height","430px");
+			that.previewSVG=toolTipSVG("div#previewOuter"+that.level+" div#previewContent",555,min,max,that.previewLevel,chr,svgList[that.level].type);
+			$("div#ScrollLevel"+that.previewLevel).css("overflow","auto").css("max-height","360px");
 			var trackString=that.generateSettingsString(d);
 			if(trackString){
 					//console.log(trackString);
