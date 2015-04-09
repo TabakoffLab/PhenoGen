@@ -777,7 +777,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
-				additionalOptions=additionalOptions+"DrawTrx,";
+				if(additionalOptions.substr(additionalOptions.length-1)===","){
+					additionalOptions=additionalOptions+"DrawTrx,";
+				}else{
+					additionalOptions=additionalOptions+",DrawTrx,";
+				}
+				
 			}
 		}
 		var folderStr=new String(that.folderName);
