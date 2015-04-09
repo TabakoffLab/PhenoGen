@@ -76,21 +76,25 @@
                     <TR>
                     <TD>
                     	<div style="font-size:16px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:left; width:100%; padding-top:3px;">
-                            <span class="viewDetailTab<%=level%> selected" id="viewdescOuter<%=level%>" >Description</span>
-                            <span class="viewDetailTab<%=level%>" id="viewpreviewOuter<%=level%>" >Preview</span>
+                            <span class="viewDetailTab<%=level%> selected" id="viewdescOuter<%=level%>" >Description/Preview</span>
+                            <!--<span class="viewDetailTab<%=level%>" id="viewpreviewOuter<%=level%>" >Preview</span>-->
                             <span class="viewDetailTab<%=level%>" id="viewtrackOuter<%=level%>" >View/Edit Track List</span>
                             
                             </div>
-                         <div id="descOuter<%=level%>" style="height:500px; overflow:auto;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px; font-size:16px;width:98%; text-align:left;">
-                         	<div id="descContent" style="margin:5px 5px 5px 5px;width:98%;">
+                         <div id="descOuter<%=level%>" style="border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px; font-size:16px;width:98%; text-align:left;">
+                            <div id="descContent" style="margin:5px 5px 5px 5px;width:98%;">
                             	Select a view above to see details.  Click Apply to change the browser view to the selected view.
                             </div>
+                            <H2>Preview</h2>
+                            <div id="previewOuter<%=level%>" style="overflow:auto;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:100%;text-align:left;">
+                                <div id="previewContent" style="margin:5px 5px 5px 5px;width:98%;"></div>
+                            </div>
                          </div>
-                         <div id="previewOuter<%=level%>" style="height:500px;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:100%;text-align:left;">
+                         <!--<div id="previewOuter<%=level%>" style="height:500px;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:100%;text-align:left;">
                          	<div id="previewContent" style="margin:5px 5px 5px 5px;width:98%;">
                             	
                             </div>
-                         </div>
+                         </div>-->
                          <div id="trackOuter<%=level%>" style="height:500px; overflow:auto;display:none;border-color:#DEDEDE;border:solid;border-width: 2px 1px 1px 1px;font-size:16px;width:98%;">
                          	<div>
                             	<span class="control<%=level%>" id="addTrack<%=level%>" style="display:inline-block;"><img src="<%=imagesDir%>icons/add_track_flat.png"></span>
