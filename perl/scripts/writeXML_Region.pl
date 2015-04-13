@@ -380,6 +380,7 @@ sub createXMLFile
 			} # loop through probesets
 			
 			if($regionSize<5000000){
+                            my $cntMatchingSnps=0;
 			    foreach my $strain(@snpStrain){
 				#print "match snp strains:".$strain;
 				my $snpListRef=$snpHOH{$strain}{Snp};
@@ -390,7 +391,7 @@ sub createXMLFile
 				};
 				#match snps/indels to exons
 				my $cntSnps=0;
-				my $cntMatchingSnps=0;
+				
 				foreach(@snpList){
 					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
 						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
@@ -464,6 +465,7 @@ sub createXMLFile
 			} # loop through probesets
 			
 			if($regionSize<5000000){
+                            my $cntMatchingSnps=0;
 			    foreach my $strain(@snpStrain){
 				#print "match snp strains:".$strain;
 				my $snpListRef=$snpHOH{$strain}{Snp};
@@ -474,7 +476,7 @@ sub createXMLFile
 				};
 				#match snps/indels to exons
 				my $cntSnps=0;
-				my $cntMatchingSnps=0;
+				
 				foreach(@snpList){
 					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
 						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
@@ -552,6 +554,7 @@ sub createXMLFile
 			} # loop through probesets
 			
 			if($regionSize<5000000){
+                            my $cntMatchingSnps=0;
 			    foreach my $strain(@snpStrain){
 				#print "match snp strains:".$strain;
 				my $snpListRef=$snpHOH{$strain}{Snp};
@@ -562,7 +565,7 @@ sub createXMLFile
 				};
 				#match snps/indels to exons
 				my $cntSnps=0;
-				my $cntMatchingSnps=0;
+				
 				foreach(@snpList){
 					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
 						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
@@ -641,6 +644,7 @@ sub createXMLFile
 			} # loop through probesets
 			
 			if($regionSize<5000000){
+                            my $cntMatchingSnps=0;
 			    foreach my $strain(@snpStrain){
 				#print "match snp strains:".$strain;
 				my $snpListRef=$snpHOH{$strain}{Snp};
@@ -651,7 +655,7 @@ sub createXMLFile
 				};
 				#match snps/indels to exons
 				my $cntSnps=0;
-				my $cntMatchingSnps=0;
+				
 				foreach(@snpList){
 					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
 						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
@@ -807,6 +811,7 @@ sub createXMLFile
 				
 				
 				if($regionSize<5000000){
+                                    my $cntMatchingSnps=0;
 				    foreach my $strain(@snpStrain){
 					#print "match snp strains:".$strain;
 					my $snpListRef=$snpHOH{$strain}{Snp};
@@ -817,7 +822,6 @@ sub createXMLFile
 					};
 					    #match snps/indels to exons
 					    my $cntSnps=0;
-					    my $cntMatchingSnps=0;
 					    foreach(@snpList){
 						#print "check snp".$snpHOH{Snp}[$cntSnps]{start}."-".$snpHOH{Snp}[$cntSnps]{stop};
 						    #if($exonStart<$exonStop){# if gene is in the forward direction
