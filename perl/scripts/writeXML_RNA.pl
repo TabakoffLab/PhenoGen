@@ -452,29 +452,29 @@ sub createXMLFile
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
-			if($regionSize<5000000){
-			    foreach my $strain(@snpStrain){
-				#print "match snp strains:".$strain;
-				my $snpListRef=$snpHOH{$strain}{Snp};
-				eval{
-				    @snpList=@$snpListRef;
-				}or do{
-				    @snpList=();
-				};
-				#match snps/indels to exons
-				my $cntSnps=0;
-				my $cntMatchingSnps=0;
-				foreach(@snpList){
-					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
-						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
-					    ){
-						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
-						    $cntMatchingSnps++;
-					    }
-					$cntSnps++;
-				} # loop through snps/indels
-			    }
-			}
+			my $cntMatchingSnps=0;
+                        foreach my $strain(@snpStrain){
+                            print "liver match snp strains:".$strain;
+                            my $snpListRef=$snpHOH{$strain}{Snp};
+                            eval{
+                                @snpList=@$snpListRef;
+                            }or do{
+                                @snpList=();
+                            };
+                            #match snps/indels to exons
+                            my $cntSnps=0;
+                            
+                            foreach(@snpList){
+                                        if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+                                            ($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+                                        ){
+                                                $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+                                                $cntMatchingSnps++;
+                                        }
+                                    $cntSnps++;
+                            } # loop through snps/indels
+                        }
+			
 			$cntIntron++;
 		    }
 		}
@@ -530,29 +530,28 @@ sub createXMLFile
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
-			if($regionSize<5000000){
-			    foreach my $strain(@snpStrain){
-				#print "match snp strains:".$strain;
-				my $snpListRef=$snpHOH{$strain}{Snp};
-				eval{
-				    @snpList=@$snpListRef;
-				}or do{
-				    @snpList=();
-				};
-				#match snps/indels to exons
-				my $cntSnps=0;
-				my $cntMatchingSnps=0;
-				foreach(@snpList){
-					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
-						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
-					    ){
-						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
-						    $cntMatchingSnps++;
-					    }
-					$cntSnps++;
-				} # loop through snps/indels
-			    }
-			}
+			my $cntMatchingSnps=0;
+                        foreach my $strain(@snpStrain){
+                            #print "match snp strains:".$strain;
+                            my $snpListRef=$snpHOH{$strain}{Snp};
+                            eval{
+                                @snpList=@$snpListRef;
+                            }or do{
+                                @snpList=();
+                            };
+                            #match snps/indels to exons
+                            my $cntSnps=0;
+                            foreach(@snpList){
+                                        if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+                                            ($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+                                        ){
+                                                $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+                                                $cntMatchingSnps++;
+                                        }
+                                    $cntSnps++;
+                            } # loop through snps/indels
+                        }
+			
 			$cntIntron++;
 		    }
 		}
@@ -613,29 +612,29 @@ sub createXMLFile
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
-			if($regionSize<5000000){
-			    foreach my $strain(@snpStrain){
-				#print "match snp strains:".$strain;
-				my $snpListRef=$snpHOH{$strain}{Snp};
-				eval{
-				    @snpList=@$snpListRef;
-				}or do{
-				    @snpList=();
-				};
-				#match snps/indels to exons
-				my $cntSnps=0;
-				my $cntMatchingSnps=0;
-				foreach(@snpList){
-					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
-						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
-					    ){
-						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
-						    $cntMatchingSnps++;
-					    }
-					$cntSnps++;
-				} # loop through snps/indels
-			    }
-			}
+			my $cntMatchingSnps=0;
+                        foreach my $strain(@snpStrain){
+                            #print "match snp strains:".$strain;
+                            my $snpListRef=$snpHOH{$strain}{Snp};
+                            eval{
+                                @snpList=@$snpListRef;
+                            }or do{
+                                @snpList=();
+                            };
+                            #match snps/indels to exons
+                            my $cntSnps=0;
+                            
+                            foreach(@snpList){
+                                        if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+                                            ($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+                                        ){
+                                                $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+                                                $cntMatchingSnps++;
+                                        }
+                                    $cntSnps++;
+                            } # loop through snps/indels
+                        }
+			
 			$cntIntron++;
 		    }
 		}
@@ -690,29 +689,29 @@ sub createXMLFile
 				$cntProbesets = $cntProbesets+1;
 			} # loop through probesets
 			
-			if($regionSize<5000000){
-			    foreach my $strain(@snpStrain){
-				#print "match snp strains:".$strain;
-				my $snpListRef=$snpHOH{$strain}{Snp};
-				eval{
-				    @snpList=@$snpListRef;
-				}or do{
-				    @snpList=();
-				};
-				#match snps/indels to exons
-				my $cntSnps=0;
-				my $cntMatchingSnps=0;
-				foreach(@snpList){
-					    if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
-						($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
-					    ){
-						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
-						    $cntMatchingSnps++;
-					    }
-					$cntSnps++;
-				} # loop through snps/indels
-			    }
-			}
+			my $cntMatchingSnps=0;
+                        foreach my $strain(@snpStrain){
+                            #print "match snp strains:".$strain;
+                            my $snpListRef=$snpHOH{$strain}{Snp};
+                            eval{
+                                @snpList=@$snpListRef;
+                            }or do{
+                                @snpList=();
+                            };
+                            #match snps/indels to exons
+                            my $cntSnps=0;
+                            
+                            foreach(@snpList){
+                                        if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+                                            ($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+                                        ){
+                                                $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+                                                $cntMatchingSnps++;
+                                        }
+                                    $cntSnps++;
+                            } # loop through snps/indels
+                        }
+			
 			$cntIntron++;
 		    }
 		}
@@ -850,21 +849,30 @@ sub createXMLFile
 					}
 					$cntProbesets = $cntProbesets+1;
 				} # loop through probesets
+
 				#match snps/indels to exons
-				my $cntSnps=0;
-				my $cntMatchingSnps=0;
-				foreach(@snpList){
-					
-					    if((($snpHOH{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{start} <= $exonStop) or
-						($snpHOH{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{Snp}[$cntSnps]{stop} <= $exonStop))
-					    ){
-						    $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{Snp}[$cntSnps];
-						    $cntMatchingSnps++;
-						    print "Exon Variant";
-					    }
-					
-					$cntSnps++;
-				} # loop through snps/indels
+                                my $cntMatchingSnps=0;
+                                foreach my $strain(@snpStrain){
+                                    #print "match snp strains:".$strain;
+                                    my $snpListRef=$snpHOH{$strain}{Snp};
+                                    eval{
+                                        @snpList=@$snpListRef;
+                                    }or do{
+                                        @snpList=();
+                                    };
+                                    #match snps/indels to exons
+                                    my $cntSnps=0;
+
+                                    foreach(@snpList){
+                                                if((($snpHOH{$strain}{Snp}[$cntSnps]{start} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{start} <= $exonStop) or
+                                                    ($snpHOH{$strain}{Snp}[$cntSnps]{stop} >= $exonStart) and ($snpHOH{$strain}{Snp}[$cntSnps]{stop} <= $exonStop))
+                                                ){
+                                                        $$tmpexon{VariantList}{Variant}[$cntMatchingSnps] = $snpHOH{$strain}{Snp}[$cntSnps];
+                                                        $cntMatchingSnps++;
+                                                }
+                                            $cntSnps++;
+                                    } # loop through snps/indels
+                                }
 				$cntExons=$cntExons+1;
 				#print "finished matching probesets\n";
 		    } # loop through exons
