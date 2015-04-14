@@ -270,7 +270,7 @@
 	//}
 			
 	time=new java.util.Date();
-	log.debug("Setup after finging Path:"+(time.getTime()-startDate.getTime()));
+	log.debug("Setup after Path:"+(time.getTime()-startDate.getTime()));
 %>
 
 <style>
@@ -303,25 +303,7 @@
 <div id="eQTLListFromRegion"  style="width:100%;">
 		
         
-		<!--<table class="geneFilter">
-                	<thead>
-                    	<TH style="width:65%;"><span class="trigger triggerEC regionSubHeader" id="fromListFilter1" name="fromListFilter" style="position:relative;text-align:left;">Filter List and Circos Plot</span><span class="eQTLListToolTip" title="Click the + icon to view filter options."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                        <TH><span class="trigger triggerEC regionSubHeader" id="fromListFilter2" name="fromListFilter" style="position:relative;text-align:left;">View Columns</span><span class="eQTLListToolTip" title="Click the + icon to view columns available to show/hide."><img src="<%=imagesDir%>icons/info.gif"></span></TH>
-                    </thead>
-                	<tbody id="fromListFilter" style="display:none;">
-                    	<TR>
-                        	<td>
-                            	
-                            
-                            </td>
-                            	
-                            <TD>
-                            	
-                            </TD>
-                        
-                        </TR>
-                        </tbody>
-                  </table>-->
+
 <% log.debug("before eQTL table constr");
 ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
 	time=new java.util.Date();
@@ -399,7 +381,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
             
     
               <div id="iframe_parent" align="center" style="width:100%">
-                   <iframe id="circosIFrame" src=<%=iframeURL%> height=950   position=absolute scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
+                   <iframe id="circosIFrame" src="<%=iframeURL%>" height="950"   position="absolute" scrolling="no" style="border-style:solid; border-color:rgb(139,137,137); border-radius:15px; -moz-border-radius: 15px; border-width:1px">
                    </iframe>
               </div>
               <a href="http://genome.cshlp.org/content/early/2009/06/15/gr.092759.109.abstract" target="_blank" style="text-decoration: none">Circos: an Information Aesthetic for Comparative Genomics.</a>
@@ -769,7 +751,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 </div><!-- end eQTL List-->
 
 
-<div id="filterdivEQTL" class="filterdivEQTL" style=" background-color:F8F8F8;display:none;position:absolute;z-index:999; border:solid;border-color:#000000;border-width:1px;">
+<div id="filterdivEQTL" class="filterdivEQTL" style="background-color:#F8F8F8;display:none;position:absolute;z-index:999; border:solid;border-color:#000000;border-width:1px;">
 	<span style="color:#000000;">Filter Settings</span>
    	<span class="closeBtn" id="close_filterdivEQTL" style="position:relative;top:1px;left:215px;"><img src="<%=imagesDir%>icons/close.png"></span>
 	<table style="width:100%;">

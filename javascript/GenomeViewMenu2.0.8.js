@@ -201,6 +201,7 @@ function ViewMenu(level){
 			$.ajax({
 					url:  tmpContext +"addBrowserCount.jsp",
 	   				type: 'GET',
+	   				cache: false,
 					data: {viewID:d.ViewID},
 					dataType: 'json',
 	    			success: function(data2){},
@@ -490,29 +491,6 @@ function ViewMenu(level){
 	that.setupControls=function(){
 		if(level>-1){
 			$(".control"+that.level+"#addTrack"+that.level).on("click",function(){
-				/*if($(".trackList"+that.level).length==0){
-						var tmpContext=contextPath +"/"+ pathPrefix;
-						if(pathPrefix==""){
-							tmpContext="";
-						}
-						$.ajax({
-								url:  tmpContext+"trackMenu.jsp",
-				   				type: 'GET',
-								data: {level: that.level, organism: organism},
-								dataType: 'html',
-				    			success: function(data2){
-				    				$("#trackMenu"+that.level).remove();
-				    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.level);
-				    				$("#trackMenu"+that.level).html(data2);
-				    			},
-				    			error: function(xhr, status, error) {
-				    				$("#trackMenu"+that.level).remove();
-				    				d3.select("div#trackMenu").append("div").attr("id","trackMenu"+that.level);
-				        			$('#trackMenu'+that.level).append("<div class=\"viewsLevel"+that.level+"\">An error occurred generating this menu.  Please try back later.</div>");
-				    			},
-				    			async:   false
-							});
-					}*/
 					if(!$(".trackLevel"+that.level).is(":visible")){
 							var p=$("div.viewsLevel"+that.level).position();
 							//console.log($("div.trackLevel"+that.level)[0].getBoundingClientRect());
@@ -688,6 +666,7 @@ function ViewMenu(level){
 				$.ajax({
 						url:  tmpContext +"createBrowserViews.jsp",
 		   				type: 'GET',
+		   				cache: false,
 						data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
 						dataType: 'json',
 		    			success: function(data2){
@@ -713,6 +692,7 @@ function ViewMenu(level){
 				$.ajax({
 						url:  tmpContext +"createBrowserViews.jsp",
 		   				type: 'GET',
+		   				cache: false,
 						data: {name:name,description:desc,type:type,copyFrom:copyID,organism:organism},
 						dataType: 'json',
 		    			success: function(data2){
@@ -723,25 +703,6 @@ function ViewMenu(level){
 		    				$("div#nameView"+that.level).hide();
 							$("div#selection"+that.level).show();
 							$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
-		    				/*var trackList=svgList[that.level].generateSettingsString();
-		    				if(newViewID>0){
-			    				$.ajax({
-									url:  contextPath +"/"+ pathPrefix +"updateBrowserView.jsp",
-					   				type: 'GET',
-									data: {viewID:newViewID,trackList:trackList},
-									dataType: 'json',
-					    			success: function(data3){
-					    				that.getViewData();
-					    				$("div#nameView"+that.level).hide();
-										$("div#selection"+that.level).show();
-										$("span#viewMenuLbl"+that.level).html("Select/Edit Views");
-					    			},
-					    			error: function(xhr, status, error) {
-					    				console.log(error);
-					    			},
-					    			async:   false
-								});
-		    				}*/
 		    			},
 		    			error: function(xhr, status, error) {
 		    				console.log(error);
@@ -820,6 +781,7 @@ function ViewMenu(level){
 				$.ajax({
 					url:  tmpContext +"updateBrowserView.jsp",
 	   				type: 'GET',
+	   				cache: false,
 					data: {viewID:viewID,trackList:trackList},
 					dataType: 'json',
 	    			success: function(data3){
@@ -908,6 +870,7 @@ function ViewMenu(level){
 	   				type: 'GET',
 					data: {viewID:d.ViewID},
 					dataType: 'json',
+					cache: false,
 	    			success: function(data2){
 	    				if(data2.status==="Deleted Successfully"){
 	    					that.viewList.splice(ind,1);
