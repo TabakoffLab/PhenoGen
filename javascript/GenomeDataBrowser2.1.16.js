@@ -1190,13 +1190,13 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						}else{
                                                         
 							var data=d.documentElement.getElementsByTagName("Gene");
-                                                        try{
-							var newTrack= RefSeqTrack(that,data,track,"Ref Seq Genes",additionalOptions);
-                                                        
-							that.addTrackList(newTrack);
-                                                        }catch(er){
-                                                            
-                                                        }
+                           	try{
+								var newTrack= RefSeqTrack(that,data,track,"Ref Seq Genes",additionalOptions);                     
+								that.addTrackList(newTrack);
+								//newTrack.getDisplayedData();
+                            }catch(er){
+                                console.log(er);                         
+                            }
 						}
 					}
 				});
@@ -6264,66 +6264,95 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		return color;
 	};
 
-	that.getDisplayedData= function (){
-		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".gene");
-		that.counts=new Array();
-		var countsInd=0;
-		var tmpDat=dataElem[0];
+	that.getDisplayedData = function (){
 		var dispData=new Array();
 		var dispDataCount=0;
 		var total=0;
-		if(typeof tmpDat!=='undefined'){
-			for(var l=0;l<tmpDat.length;l++){
-				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
-				var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+		if(that.drawnAs=="Gene"){
+			var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".gene");
+			that.counts=new Array();
+			var countsInd=0;
+			var tmpDat=dataElem[0];
+			if(typeof tmpDat!=='undefined'){
+				for(var l=0;l<tmpDat.length;l++){
+					var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+					var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+					if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)||(start<=0&&stop>=that.gsvg.width)){
+						//var nameStr=new String(tmpDat[l].__data__.getAttribute("name"));
+						var txList=getAllChildrenByName(getFirstChildByName(tmpDat[l].__data__,"TranscriptList"),"Transcript");
+						var mostValid=-1;
+						for(var m=0;m<txList.length;m++){
+							var cat=new String(txList[m].getAttribute("category"));
+							var val=-1;
+							if(cat=="Reviewed"){
+								val=4;
+							}else if(cat=="Validated"){
+								val=3;
+							}else if(cat=="Provisional"){
+								val=2;
+							}else if(cat=="Inferred"){
+								val=1;
+							}else if(cat=="Predicted"){
+								val=0;
+							}
+							if(mostValid<val){
+								mostValid=val;
+							}
+						}
+						var name="Unknown";
+						if(mostValid==4){
+							name="Reviewed";
+						}else if(mostValid==3){
+							name="Validated";
+						}else if(mostValid==2){
+							name="Provisional";
+						}else if(mostValid==1){
+							name="Inferred";
+						}else if(mostValid==0){
+							name="Predicted";
+						}
+						if(typeof that.counts[name]==='undefined'){
+							that.counts[name]=new Object();
+							that.counts[countsInd]=that.counts[name];
+							countsInd++;
+							that.counts[name].value=1;
+							that.counts[name].names=name;
+						}else{
+							that.counts[name].value++;
+						}
+						dispData[dispDataCount]=tmpDat[l].__data__;
+						dispDataCount++;
+						total++;
+					}
+				}
+			}
+		}else{
+			that.counts=new Array();
+			var countsInd=0;
+			console.log("drawTRX");
+			console.log(that.svg.selectAll("g.trx"+that.gsvg.levelNumber));
+			that.svg.selectAll("g.trx"+that.gsvg.levelNumber).each(function(d){
+				console.log(d);
+				var start=that.xScale(d.getAttribute("start"));
+				var stop=that.xScale(d.getAttribute("stop"));
 				if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)||(start<=0&&stop>=that.gsvg.width)){
-					//var nameStr=new String(tmpDat[l].__data__.getAttribute("name"));
-					var txList=getAllChildrenByName(getFirstChildByName(tmpDat[l].__data__,"TranscriptList"),"Transcript");
-					var mostValid=-1;
-					for(var m=0;m<txList.length;m++){
-						var cat=new String(txList[m].getAttribute("category"));
-						var val=-1;
-						if(cat=="Reviewed"){
-							val=4;
-						}else if(cat=="Validated"){
-							val=3;
-						}else if(cat=="Provisional"){
-							val=2;
-						}else if(cat=="Inferred"){
-							val=1;
-						}else if(cat=="Predicted"){
-							val=0;
-						}
-						if(mostValid<val){
-							mostValid=val;
-						}
-					}
-					var name="Unknown";
-					if(mostValid==4){
-						name="Reviewed";
-					}else if(mostValid==3){
-						name="Validated";
-					}else if(mostValid==2){
-						name="Provisional";
-					}else if(mostValid==1){
-						name="Inferred";
-					}else if(mostValid==0){
-						name="Predicted";
-					}
-					if(typeof that.counts[name]==='undefined'){
-						that.counts[name]=new Object();
-						that.counts[countsInd]=that.counts[name];
+					var cat=new String(d.getAttribute("category"));
+					if(typeof that.counts[cat]==='undefined'){
+						that.counts[cat]=new Object();
+						that.counts[countsInd]=that.counts[cat];
 						countsInd++;
-						that.counts[name].value=1;
-						that.counts[name].names=name;
+						that.counts[cat].value=1;
+						that.counts[cat].names=cat;
 					}else{
-						that.counts[name].value++;
+						that.counts[cat].value++;
 					}
-					dispData[dispDataCount]=tmpDat[l].__data__;
+					dispData[dispDataCount]=d;
 					dispDataCount++;
 					total++;
 				}
-			}
+			});
+			console.log(that.counts);
+			console.log(dispData);
 		}
 		return dispData;
 	};
@@ -6686,6 +6715,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 						}
 					that.draw(mergeddata);
 					that.hideLoading();
+					that.getDisplayedData();
 					DisplayRegionReport();
 				}else{
 					that.updateData(retry+1);
@@ -6997,7 +7027,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	
 	that.redrawLegend();
 	that.draw(data);
-	
+	DisplayRegionReport();
 	return that;
 }
 /*Track for displaying Probesets*/
