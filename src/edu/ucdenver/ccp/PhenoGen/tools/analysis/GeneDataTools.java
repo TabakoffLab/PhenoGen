@@ -3347,27 +3347,7 @@ public class GeneDataTools {
             }
         }
         if(run){
-            //log.debug("\ngenerating new-controlling\n");
-        //if(curParams.equals(this.controlledRegionParams)){
-        //    transcriptClusters=this.controlledRegion;
-        //}else{
             HashMap tmpHM=new HashMap();
-            /*String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end,eq.LOD_SCORE "+
-                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep, expression_qtls eq "+
-                                "where s.snp_id=lse.snp_id "+
-                                "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
-                                "and substr(c.name,1,2)='"+chr+"' "+
-                                "and ((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
-                                "and lse.probe_id=aep.probeset_id "+
-                                "and aep.pslevel='"+level+"' "+
-                                "and aep.psannotation='transcript' "+
-                                "and aep.array_type_id="+arrayTypeID+" "+
-                                "and TO_CHAR(aep.probeset_id) = eq.identifier (+) "+
-                                "and (s.tissue=eq.tissue or eq.tissue is null) "+
-                                "and s.chromosome_id=c.chromosome_id "+
-                                "and c2.chromosome_id=aep.chromosome_id "+
-                                "order by aep.transcript_cluster_id,s.tissue,aep.chromosome_id,aep.psstart";*/
-
             String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+
                                 "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+
                                 "where s.snp_id=lse.snp_id "+
@@ -3817,7 +3797,9 @@ public class GeneDataTools {
                 run=false;
             }
         }
-        if(run){
+        
+        File test=new File(outputDir.substring(0,outputDir.length()-1)+"/circos"+Double.toString(-Math.log10(pvalue)));
+        if(!test.exists()){
             log.debug("\ngenerating new-circos\n");
             
             //run circos scripts

@@ -201,6 +201,7 @@ function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
 	$.ajax({
 				url: jspPage,
    				type: 'GET',
+   				cache: false,
 				data: params,
 				dataType: 'html',
     			success: function(data2){ 
