@@ -10,7 +10,6 @@
 *	In conjunction with trackMenu.jsp builds the Track Menu for the Genome/Transcriptome Data Browser
 */
 
-var trackDataTable;
 
 
 
@@ -21,6 +20,7 @@ function TrackMenu(level){
 	that.previewLevel=101;
 	that.previewSVG=NaN;
 	that.dataInitialized=0;
+	that.trackDataTable;
 
 	that.generateTrackTable=function(){
 		var filter=$("#trackTypeSelect"+that.level).val();
@@ -45,7 +45,7 @@ function TrackMenu(level){
 		}
 		try{
 			if($.fn.DataTable.isDataTable( 'table#trkSelList'+that.level )){
-				trackDataTable.destroy();
+				that.trackDataTable.destroy();
 			}
 		}catch(error){
 			Bugsense.notify( error, { datatables: "not initialized" } );
@@ -104,8 +104,9 @@ function TrackMenu(level){
 		//$('table#trkSelList'+that.level).dataTable().destroy();
 		if(!$.fn.DataTable.isDataTable( 'table#trkSelList'+that.level )){
 			var tmpHeight=that.getInitTrackTableHeight(btData);
-			trackDataTable=$('table#trkSelList'+that.level).DataTable({
+			that.trackDataTable=$('table#trkSelList'+that.level).DataTable({
 				"bPaginate": false,
+
 				/*"bProcessing": true,
 				"bStateSave": false,
 				"bAutoWidth": true,
@@ -115,7 +116,7 @@ function TrackMenu(level){
 				"sDom": '<"rightSearch"fr><t>'
 			});
 		}
-		trackDataTable.draw();
+		that.trackDataTable.draw();
 		$("td#selectedTrack"+that.level).hide();
 
 		$('table#trkSelList'+that.level+' tbody').on( 'click', 'tr', function () {
@@ -128,9 +129,9 @@ function TrackMenu(level){
                             $("div#trackHeaderOuter"+that.level+" #trackHeaderContent").html(data);
                             var tblHeight=that.getTrackTableHeight(btData);
                             //trackDataTable.settings().sScrollY =  tblHeight;
-                            trackDataTable.settings()[0].oScroll.sy=tblHeight;
+                            that.trackDataTable.settings()[0].oScroll.sy=tblHeight;
                             try{
-                                    trackDataTable.columns.adjust().draw();
+                                    that.trackDataTable.columns.adjust().draw();
                             }catch(error){
                                 Bugsense.notify( error, { datatables: "error adjusting columns:132" } );
                             }
