@@ -40,7 +40,7 @@
                     <%}%>
                     <TR>
                     	<TD style="vertical-align:middle">
-                            <span class="control<%=level%>" style="display:inline-block;" id="addCustomTrack<%=level%>" title="Create a new custom track."><img src="<%=imagesDir%>icons/add_flat.png"style="position:relative;top:-3px;left:-2px;" ></span>
+                            <span class="control<%=level%>" style="float:left;display:inline-block;" id="addCustomTrack<%=level%>" title="Create a new custom track."><img src="<%=imagesDir%>icons/add_flat.png"style="position:relative;top:-3px;left:-2px;" ></span>
                             <span class="control<%=level%>" style="display:inline-block;" id="deleteCustomTrack<%=level%>" title="Delete a custom track."><img src="<%=imagesDir%>icons/del_flat_48.png"style="position:relative;top:-3px;left:-2px;" ></span>
                             <span style="float:right;position:relative;top:0px;"><a class="fancybox" rel="fancybox-thumbtrack" href="web/GeneCentric/help3.jpg" title="Controls to select and edit tracks."><img src="<%=imagesDir%>icons/help.png" /></a></span>
                             <span class="addTrack<%=level%> button" style="float:right; position:relative; top:25px;left:15;">Add Track</span>
@@ -184,7 +184,7 @@
                         <div style="width:100%;">
                         	<div id="uploadBtn<%=level%>">
                             	<span style="float:left;">
-                        		<input type="button" name="cancelCreateTrack" id="cancelCreateTrack<%=level%>" value="Cancel" onClick="return cancel(<%=level%>)">
+                        		<input type="button" name="cancelCreateTrack" id="cancelCreateTrack<%=level%>" value="Cancel" >
                                 </span>
                             	<span style="float:right;">
                             	<input type="button" name="uploadTrack" id="uploadTrack<%=level%>" value="Create Track" onClick="return trackMenu[<%=level%>].confirmUpload(<%=level%>)">
@@ -235,6 +235,10 @@
     <script type="text/javascript">
 		trackMenu[<%=level%>]=TrackMenu(<%=level%>);
 		$("span#deleteCustomTrack<%=level%>").hide();
+                $("#cancelCreateTrack<%=level%>").on("click",function(){
+                    $("div#selectTrack<%=level%>").show();
+                    $("div#addUsrTrack<%=level%>").hide();
+                });
 		$("span.addTrack<%=level%>").on("click",function(){
 			var tmpTrack=trackMenu[<%=level%>].findSelectedTrack();
 			tmpTrack.Settings=trackMenu[<%=level%>].previewSVG.getTrack(tmpTrack.TrackClass).generateTrackSettingString();

@@ -223,7 +223,7 @@ function trKey(d){
 }
 
 function DisplayRegionReport(){
-	console.log("DisplayRegionReport");
+	//console.log("DisplayRegionReport");
 		//d3.select('#collaspableReportList').selectAll('li').remove();
 	if(d3.select('#collapsableReportList').size()>0){
 			var tmptrackList=svgList[0].trackList;
@@ -241,8 +241,8 @@ function DisplayRegionReport(){
 					if(d){
 						if(d.getDisplayedData){
 							var data=d.getDisplayedData();
-							console.log(data);
-							console.log(d.label+": "+data.length);
+							//console.log(data);
+							//console.log(d.label+": "+data.length);
 							label=d.label+": "+data.length;
 						}
 					}
@@ -256,8 +256,8 @@ function DisplayRegionReport(){
 						if(d){
 							if(d.getDisplayedData){
 								var data=d.getDisplayedData();
-								console.log(data);
-								console.log(d.label+": "+data.length);
+								//console.log(data);
+								//console.log(d.label+": "+data.length);
 								label=d.label+": "+data.length;
 							}
 						}

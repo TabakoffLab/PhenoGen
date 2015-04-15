@@ -6339,10 +6339,10 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 		}else{
 			that.counts=new Array();
 			var countsInd=0;
-			console.log("drawTRX");
-			console.log(that.svg.selectAll("g.trx"+that.gsvg.levelNumber));
+			//console.log("drawTRX");
+			//console.log(that.svg.selectAll("g.trx"+that.gsvg.levelNumber));
 			that.svg.selectAll("g.trx"+that.gsvg.levelNumber).each(function(d){
-				console.log(d);
+				//console.log(d);
 				var start=that.xScale(d.getAttribute("start"));
 				var stop=that.xScale(d.getAttribute("stop"));
 				if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)||(start<=0&&stop>=that.gsvg.width)){
@@ -6361,8 +6361,8 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 					total++;
 				}
 			});
-			console.log(that.counts);
-			console.log(dispData);
+			//console.log(that.counts);
+			//console.log(dispData);
 		}
 		return dispData;
 	};
@@ -7405,7 +7405,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 														})
 														.attr("dy",10)
 														.attr("id","lblTxt")
-														.attr("fill",that.colorAnnotation(d))
+														//.attr("fill",that.colorAnnotation(d))
 														.text(curLbl);
 											}else{
 
@@ -7486,7 +7486,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 											})
 										.attr("dy",10)
 										.attr("id","lblTxt")
-										.attr("fill",that.colorAnnotation(d))
+										//.attr("fill",that.colorAnnotation(d))
 										.text(curLbl);
 								}else{
 									d3This.select("text#lblTxt").attr("dx",function(){
@@ -7697,7 +7697,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 											})
 										.attr("dy",10)
 										.attr("id","lblTxt")
-										.attr("fill",that.colorAnnotation(d))
+										//.attr("fill",that.colorAnnotation(d))
 										.text(curLbl);
 										
 								}else{
@@ -7816,7 +7816,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 							})
 						.attr("dy",10)
 						.attr("id","lblTxt")
-						.attr("fill",that.colorAnnotation(d))
+						//.attr("fill",that.colorAnnotation(d))
 						.text(curLbl);
 						
 				}else{
