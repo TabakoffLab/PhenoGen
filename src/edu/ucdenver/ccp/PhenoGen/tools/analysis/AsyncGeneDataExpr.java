@@ -377,6 +377,7 @@ public class AsyncGeneDataExpr extends Thread {
             }
             doneThread=true;
             
+            threadList.remove(thisThread);
         /*}catch(IOException e){
             sac.done(this, "AsyncGeneDataExpr had errors:"+e.getMessage());
             Date end=new Date();
