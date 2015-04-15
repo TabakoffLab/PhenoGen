@@ -503,9 +503,15 @@ function ViewMenu(level){
 							var d=that.findSelectedView();
 							$(".trackLevel"+that.level+" span#selectedViewName").html(d.Name);
 							$(".trackLevel"+that.level).fadeIn("fast");
+							$("div#selectTrack"+that.level).show();
+                    		$("div#addUsrTrack"+that.level).hide();
+                    		$("div#addUsrTrack"+that.level).hide();
+                    		$("div#deleteUsrTrack"+that.level).hide();
 							//console.log(trackMenu);
-							trackMenu[that.level].generateTrackTable();
-					}else{
+							setTimeout(function(){
+								trackMenu[that.level].generateTrackTable();
+							},250);
+					} else{
 							$(".trackLevel"+that.level).fadeOut("fast");
 					}
 			})
