@@ -53,7 +53,7 @@ import javax.sql.DataSource;
 
 
 public class GeneDataTools {
-    private ArrayList<Thread> threadList=new ArrayList<Thread>();
+    private ArrayList<Thread> threadList;
     private String[] rErrorMsg = null;
     private R_session myR_session = new R_session();
     //private PerlHandler myPerl_session=null;
@@ -2964,6 +2964,7 @@ public class GeneDataTools {
             this.userFilesRoot = (String) session.getAttribute("userFilesRoot");
             //log.debug("userFilesRoot");
         }
+        threadList=(ArrayList<Thread>)session.getServletContext().getAttribute("threadList");
     }
     
     public ArrayList<Gene> mergeOverlapping(ArrayList<Gene> initialList){
