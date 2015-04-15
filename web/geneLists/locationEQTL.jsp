@@ -5,6 +5,8 @@
 <jsp:useBean id="thisIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
 
 <%
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setDateHeader("Expires", 0);
 	QTL.EQTL myEQTL = myQTL.new EQTL();
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
