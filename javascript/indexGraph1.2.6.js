@@ -496,7 +496,7 @@ var updatedCount=0;
 var timeoutHandle=-1;
 
 //start automatic scrolling of features
-startRunningSelection(10000);
+startRunningSelection(15000);
 function startRunningSelection(delay){
 	if(timeoutHandle==-1 ){
 		runSelection(delay);

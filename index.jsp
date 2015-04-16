@@ -73,7 +73,9 @@
         	%>
 			
 			
-
+        <div style="text-align:center;">
+                 Download the slides from the Informatics Workshop <a href="<%=webDir%>overview/PhenoGen.workshop.16Apr15.pdf">here</A>.   
+        </div>
 	
 	<div id="index">
     	        
