@@ -10,8 +10,13 @@
 --%>
 
     
-					<H2>Announcements</H2>
+		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>Informatics Workshop Slides 4/16/2015</H2>
+                        <div style="margin-left:5px;text-align: center;">
+                            <a href="<%=webDir%>overview/PhenoGen.workshop.16Apr15.pdf"><img src="<%=webDir%>overview/slides_150.png" /></a><BR>
+                            Download the slides from the Informatics Workshop <a href="<%=webDir%>overview/PhenoGen.workshop.16Apr15.pdf">here</A>.
+                        </div>
                         <H2>v2.15 of PhenoGen 3/7/2015</H2>
                         <div style="margin-left:5px;">
                                 <img src="<%=webDir%>overview/browseWGCNA_mir_150.png" /><img src="<%=webDir%>overview/browseWGCNA_go_150.png" /><BR />
