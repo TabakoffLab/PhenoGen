@@ -342,10 +342,12 @@ if(request.getParameter("arrayTypeID")!=null){
 
 </div><!--end Border Div -->
     <BR />
-    
+    <div id="newunsupportedChrome" style="display:none;color:#FF0000;">
+        New versions of Chrome 42+ may not work for now with the Java Plugin.  Please use Firefox or Safari.
+    </div>
     
     <div id="unsupportedChrome" style="display:none;color:#FF0000;"><BR /><BR />A Java plug in is required to view this page.  Older versions of Chrome are 32-bit applications and require a 32-bit plug-in which is unavailable for Mac OS X.  
-            	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.  Chrome 39+ is 64-bit on Mac OS X so you should be able to use chrome with the plug-in installed.</div>
+            	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.  Chrome 39-41 is 64-bit on Mac OS X so you should be able to use chrome with the plug-in installed.</div>
                 
                 
 			<span id="disabledJava" style="display:none;margin-left:40px;"><BR /><BR />
@@ -364,7 +366,7 @@ if(request.getParameter("arrayTypeID")!=null){
 
 <div id="macBugDesc" style="display:none;color:#FF0000;"><BR /><BR />The applet below is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  This bug has been fixed if you update to Java plug-in version 1.7.0_51 or higher the display will be improved.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
         <BR /><BR /><BR />
-        <div style="margin-left:10px;margin-right:10px;"><p><span style="color:#FF0000">Note:</span>If you don't see the applet below try adjusting security settings as directed <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">here</a>. You will be asked if you want to allow the applet to run, please select "Run" or "Yes" if prompted.  We are now providing a signed applet that will say it is being  We are also working to provide similar expression data that is not dependent on Java at some point in the future.</p></div>
+        <div style="margin-left:10px;margin-right:10px;"><p><span style="color:#FF0000">Note:</span>If you don't see the applet below try adjusting security settings as directed <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">here</a>. You will be asked if you want to allow the applet to run, please select "Run" or "Yes" if prompted.  We are now providing a signed applet that will say it has been signed by the University of Colorado Denver.  We are also working to provide similar expression data that is not dependent on Java at some point in the future.</p></div>
         <BR /><BR />
         <div style="text-align:center;">
         <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
@@ -376,6 +378,7 @@ if(request.getParameter("arrayTypeID")!=null){
 			var bug=0;
 			var bugString='false';
 			var unsupportedChrome=0;
+                        var newUnsupportedChrome=0;
 			if(!navigator.javaEnabled()){
                             $('#javaError').css("display","inline-block");
                             $('#disabledJava').css("display","inline-block");
@@ -398,6 +401,8 @@ if(request.getParameter("arrayTypeID")!=null){
                     // Install latest JRE or redirect user to another page to get JRE
                     deployJava.installLatestJRE(); 
            });	
+           
+                    
                         //console.log(navigator.userAgent);
 			if (/Mac OS X[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){
  					//var macVersion=new Number(RegExp.$1); // capture x.x portion and store as a number
