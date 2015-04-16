@@ -179,7 +179,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
 						var selectedSection=0;
                     </script>
                 <div id="indexImage" >
-                    <script src="javascript/indexGraph1.2.5.js"></script>
+                    <script src="javascript/indexGraph1.2.6.js"></script>
                 </div>
                     
                     </TD>
