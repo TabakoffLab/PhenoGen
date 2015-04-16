@@ -343,7 +343,7 @@ if(request.getParameter("arrayTypeID")!=null){
 </div><!--end Border Div -->
     <BR />
     <div id="newunsupportedChrome" style="display:none;color:#FF0000;">
-        New versions of Chrome 42+ may not work for now with the Java Plugin.  Please use Firefox or Safari.
+        New versions of Chrome 42+ may not work for now with the Java Plugin.  If you can setup and activate the plugin it should work but the current Java version 1.8.0_45 does not seem to work.  Please use Firefox or Safari.
     </div>
     
     <div id="unsupportedChrome" style="display:none;color:#FF0000;"><BR /><BR />A Java plug in is required to view this page.  Older versions of Chrome are 32-bit applications and require a 32-bit plug-in which is unavailable for Mac OS X.  
@@ -402,7 +402,14 @@ if(request.getParameter("arrayTypeID")!=null){
                     deployJava.installLatestJRE(); 
            });	
            
-                    
+                        if(/Chrome\/(\d+)/.test(navigator.userAgent)){
+                            //console.log(RegExp.$1);
+                            var chromeVer=new Number(RegExp.$1);
+                            if(chromeVer>=42){
+                                    newUnsupportedChrome=1;
+                                    $('#newunsupportedChrome').show();
+                            }
+			}
                         //console.log(navigator.userAgent);
 			if (/Mac OS X[\/\s](\d+[_\.]\d+)/.test(navigator.userAgent)){
  					//var macVersion=new Number(RegExp.$1); // capture x.x portion and store as a number
@@ -441,7 +448,7 @@ if(request.getParameter("arrayTypeID")!=null){
                                                 }
 					}
 			}
-			if(unsupportedChrome==0){
+			if(unsupportedChrome===0 && newUnsupportedChrome===0){
 				var attributes = {
 					id:			'geneApplet',
 					code:       "genecentricviewer.GeneCentricViewer",
@@ -458,11 +465,11 @@ if(request.getParameter("arrayTypeID")!=null){
 					macBug:bugString
 				}; 
 				var version = "1.6"; 
-            	deployJava.runApplet(attributes, parameters, version);
-			}else{
+                                deployJava.runApplet(attributes, parameters, version);
+			}else if(unsupportedChrome===1){
 				$('#unsupportedChrome').show();
 			}
-			if(bug==1){
+			if(bug===1){
 				$('div#macBugDesc').show();
 			}
        
