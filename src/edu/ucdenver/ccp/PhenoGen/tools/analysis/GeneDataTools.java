@@ -1010,7 +1010,7 @@ public class GeneDataTools {
         return createdXML;
     }
     
-    public boolean generateRegionViewFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID,String defaultTrack) {
+    /*public boolean generateRegionViewFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID,String defaultTrack) {
         log.debug("generate files");
         boolean completedSuccessfully = false;
         log.debug("outputDir:"+outputDir);
@@ -1037,7 +1037,7 @@ public class GeneDataTools {
             //}
         }
         return completedSuccessfully;
-    }
+    }*/
     
     private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         if(chr.toLowerCase().startsWith("chr")){
@@ -2327,7 +2327,7 @@ public class GeneDataTools {
     }
 */
     
-    public boolean createRegionViewImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
+    /*public boolean createRegionViewImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
         boolean completedSuccessfully=false;
         try{
             //Connection tmpConn=pool.getConnection();
@@ -2388,7 +2388,7 @@ public class GeneDataTools {
                 /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
                     envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
                 }*/
-            }
+    /*        }
 
 
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
@@ -2462,7 +2462,7 @@ public class GeneDataTools {
         }
         return completedSuccessfully;
     }
-    
+    */
     
     public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         AsyncGeneDataTools agdt;         
