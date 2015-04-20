@@ -13,6 +13,7 @@ require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
+require 'readRefSeqDataFromDB.pl';
 #require 'createBED.pl';
 require 'createXMLTrack.pl';
 require 'PolyA2XML.pl';
@@ -902,7 +903,7 @@ sub createXMLFile
 	#my $rnaCountEnd=time();
 	#print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
 	
-	
+
 	
 	#create bed files in region folder
 	createQTLXMLTrack(\%qtlHOH,$outputDir."qtl.xml",$trackDB,$chr);
@@ -912,7 +913,15 @@ sub createXMLFile
 	#createProteinCodingXMLTrack(\%GeneHOH,$outputDir."combinedcoding.xml",$trackDB,1);
 	#createProteinCodingXMLTrack(\%GeneHOH,$outputDir."combinednoncoding.xml",$trackDB,0);
 	createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."combinedsmallnc.xml",$outputDir."brainsmallnc.xml",$outputDir."ensemblsmallnc.xml",$trackDB,$chr);
-	
+
+
+        print "start read RefSeq\n";
+	my $ensDsn="DBI:mysql:database=".$shortSpecies."_refseq_5;host=".$ensHost.";port=".$ensPort.";";
+        my $refSeqRef=readRefSeqDataFromDB($chr,$species,$minCoord,$maxCoord,$ensDsn,$ensUsr,$ensPasswd);
+        my %refSeqHOH=%$refSeqRef;
+        createRefSeqXMLTrack(\%refSeqHOH,$outputDir."refSeq.xml",$trackDB);
+        print "end read RefSeq\n";
+
 	#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."helicos.xml");
 	my $scriptEnd=time();
 	print " script completed in ".($scriptEnd-$scriptStart)." sec.\n";
