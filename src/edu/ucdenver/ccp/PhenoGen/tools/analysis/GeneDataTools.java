@@ -3300,16 +3300,65 @@ public class GeneDataTools {
         return transcriptClusters;
     }
     
-    public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,double pvalue,String level,String organism,String circosTissue,String circosChr){
-        //session.removeAttribute("get");
-        ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
-        ArrayList<TranscriptCluster> beforeFilter=null;
-        
-        circosTissue=circosTissue.replaceAll(";;", ";");
-        circosChr=circosChr.replaceAll(";;", ";");
+    public String getFolder(int min,int max,String chr,String organism){
+        String folder="";
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
+        log.debug("getFolderName:"+organism+"chr"+chr+"_"+min+"_"+max+"_");
+        RegionDirFilter rdf=new RegionDirFilter(organism+"chr"+chr+"_"+min+"_"+max+"_");
+        log.debug(fullPath + "tmpData/regionData");
+        File mainDir=new File(fullPath + "tmpData/regionData");
+        File[] list=mainDir.listFiles(rdf);    
+        if(list.length>0){
+            log.debug("length>0");
+            String tmpOutputDir=list[0].getAbsolutePath()+"/";
+            int second=tmpOutputDir.lastIndexOf("/",tmpOutputDir.length()-2);
+            folder=tmpOutputDir.substring(second+1,tmpOutputDir.length()-1);
+                        
+        }
+        log.debug(folder);
+        return folder;
+    }
+    
+    
+    public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,int RNADatasetID,double pvalue,String level,String organism,String circosTissue,String circosChr){
+        //session.removeAttribute("get");
+        ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
+        ArrayList<TranscriptCluster> beforeFilter=null;
+        if(chr.startsWith("chr")){
+            chr=chr.substring(3);
+        }
+        String tmpOutputDir="";
+        String folderName="";
+        RegionDirFilter rdf=new RegionDirFilter(organism+"chr"+chr+"_"+min+"_"+max+"_");
+        File mainDir=new File(fullPath + "tmpData/regionData");
+        File[] list=mainDir.listFiles(rdf);    
+        if(list.length>0){
+                    tmpOutputDir=list[0].getAbsolutePath()+"/";
+                    int second=tmpOutputDir.lastIndexOf("/",tmpOutputDir.length()-2);
+                    folderName=tmpOutputDir.substring(second+1,tmpOutputDir.length()-1);
+                    tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
+        }else{
+                String panel="BNLX/SHRH";
+                if(organism.equals("Mm")){
+                    panel="ILS/ISS";
+                }
+                this.getRegionData(chr, min, max, panel, organism, RNADatasetID, arrayTypeID, pvalue, false);
+                list=mainDir.listFiles(rdf);    
+                if(list.length>0){
+                            tmpOutputDir=list[0].getAbsolutePath()+"/";
+                            int second=tmpOutputDir.lastIndexOf("/",tmpOutputDir.length()-2);
+                            folderName=tmpOutputDir.substring(second+1,tmpOutputDir.length()-1);
+                            tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
+                }
+        }
+        
+        
+        
+        circosTissue=circosTissue.replaceAll(";;", ";");
+        circosChr=circosChr.replaceAll(";;", ";");
+        
         
         String[] levels=level.split(";");
         String tmpRegion=chr+":"+min+"-"+max;
@@ -3345,6 +3394,11 @@ public class GeneDataTools {
                     run=false;
                     beforeFilter=(ArrayList<TranscriptCluster>)regionHM.get("controlledRegion");
                 }
+            }
+            
+            File testF=new File(tmpOutputDir+"TranscriptClusterDetails.txt");
+            if(!testF.exists()){
+                run=true;
             }
         }
         if(run){
@@ -3513,7 +3567,7 @@ public class GeneDataTools {
                 Set keys=tmpHM.keySet();
                 Iterator itr=keys.iterator();
                 try{
-                    BufferedWriter out=new BufferedWriter(new FileWriter(new File(outputDir+"transcluster.txt")));
+                    BufferedWriter out=new BufferedWriter(new FileWriter(new File(tmpOutputDir+"transcluster.txt")));
                     while(itr.hasNext()){
                         TranscriptCluster tmpC=(TranscriptCluster)tmpHM.get(itr.next().toString());
                         if(tmpC!=null){
@@ -3579,8 +3633,8 @@ public class GeneDataTools {
                 String[] perlArgs = new String[9];
                 perlArgs[0] = "perl";
                 perlArgs[1] = perlDir + "writeGeneIDs.pl";
-                perlArgs[2] = outputDir+"transcluster.txt";
-                perlArgs[3] = outputDir+"TC_to_Gene.txt";
+                perlArgs[2] = tmpOutputDir+"transcluster.txt";
+                perlArgs[3] = tmpOutputDir+"TC_to_Gene.txt";
                 if (organism.equals("Rn")) {
                     perlArgs[4] = "Rat";
                 } else if (organism.equals("Mm")) {
@@ -3604,7 +3658,7 @@ public class GeneDataTools {
 
 
                 //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+"toGeneID");
+                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, tmpOutputDir+"toGeneID");
                 boolean exception=false;
                 try {
 
@@ -3655,7 +3709,7 @@ public class GeneDataTools {
                 if(!error){
                     try{
                         log.debug("Read TC_to_Gene");
-                        BufferedReader in = new BufferedReader(new FileReader(new File(outputDir+"TC_to_Gene.txt")));
+                        BufferedReader in = new BufferedReader(new FileReader(new File(tmpOutputDir+"TC_to_Gene.txt")));
                         while(in.ready()){
                             String line=in.readLine();
                             String[] tabs=line.split("\t");
@@ -3677,7 +3731,7 @@ public class GeneDataTools {
                         }
                         in.close();
                         log.debug("write transcriptclusterdetails.txt");
-                        BufferedWriter out= new BufferedWriter(new FileWriter(new File(outputDir+"TranscriptClusterDetails.txt")));
+                        BufferedWriter out= new BufferedWriter(new FileWriter(new File(tmpOutputDir+"TranscriptClusterDetails.txt")));
                         for(int i=0;i<transcriptClusters.size();i++){
                             TranscriptCluster tc=transcriptClusters.get(i);
                             HashMap hm=tc.getTissueRegionEQTLs();
@@ -3799,7 +3853,8 @@ public class GeneDataTools {
             }
         }
         
-        File test=new File(outputDir.substring(0,outputDir.length()-1)+"/circos"+Double.toString(-Math.log10(pvalue)));
+        //File test=new File(tmpOutputDir.substring(0,tmpOutputDir.length()-1)+"/circos"+Double.toString(-Math.log10(pvalue)));
+        File test=new File(tmpOutputDir.substring(0,tmpOutputDir.length()-1)+"/circos"+pvalue);
         if(!test.exists()){
             log.debug("\ngenerating new-circos\n");
             
@@ -3810,7 +3865,7 @@ public class GeneDataTools {
             perlArgs[1] = perlDir + "callCircosReverse.pl";
             perlArgs[2] = Double.toString(-Math.log10(pvalue));
             perlArgs[3] = organism;
-            perlArgs[4] = outputDir.substring(0,outputDir.length()-1);
+            perlArgs[4] = tmpOutputDir.substring(0,tmpOutputDir.length()-1);
             perlArgs[5] = circosTissue;
             perlArgs[6] = circosChr;
 
@@ -3818,8 +3873,8 @@ public class GeneDataTools {
 
 
             //remove old circos directory
-            int cutoff=(int)-Math.log10(pvalue)*10;
-            String circosDir=outputDir+"circos"+cutoff;
+            double cutoff=pvalue;
+            String circosDir=tmpOutputDir+"circos"+cutoff;
             File circosFile=new File(circosDir);
             if(circosFile.exists()){
                 try{
@@ -3841,7 +3896,7 @@ public class GeneDataTools {
 
 
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+"circos_"+pvalue);
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, tmpOutputDir+"circos_"+pvalue);
             
             try {
 
@@ -3858,7 +3913,7 @@ public class GeneDataTools {
                 //this.controlledCircosRegionParams=curCircosParams;
             } catch (ExecException e) {
                 //error=true;
-                log.error("In Exception of run callCircosReverse.pl Exec_session", e);
+                /*log.error("In Exception of run callCircosReverse.pl Exec_session", e);
                 session.setAttribute("getTransControllingEQTLCircos","Error running Circos.  Unable to generate Circos image.  Please try again later.  The administrator has been notified of the problem.");
                 setError("Running Perl Script to match create circos plot.");
                 Email myAdminEmail = new Email();
@@ -3874,7 +3929,7 @@ public class GeneDataTools {
                     } catch (Exception mailException1) {
                         //throw new RuntimeException();
                     }
-                }
+                }*/
             }
         }
         

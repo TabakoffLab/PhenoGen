@@ -305,12 +305,13 @@
         
 
 <% log.debug("before eQTL table constr");
-ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
+log.debug("loc:"+chromosome+":"+min+"-"+max+"::"+folderName);
+ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,rnaDatasetID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
 	time=new java.util.Date();
-	log.debug("Setup after getcontrolling eqtls:"+(time.getTime()-startDate.getTime()));
+	//log.debug("Setup after getcontrolling eqtls:"+(time.getTime()-startDate.getTime()));
 	ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
 	time=new java.util.Date();
-	log.debug("Setup after get eqtls regions:"+(time.getTime()-startDate.getTime()));
+	//log.debug("Setup after get eqtls regions:"+(time.getTime()-startDate.getTime()));
   if(session.getAttribute("getTransControllingEQTL")==null){
   	if(transOutQTLs!=null && transOutQTLs.size()>0){%>
             
@@ -338,7 +339,10 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 			int tmp=(int)tmpD;
 			cutoffTimesTen=Integer.toString(tmp);		
 		}
-		String regionCentricPath= applicationRoot+contextRoot+"tmpData/regionData/"+folderName;
+
+                String tmpFolder=gdt.getFolder(min,max,chromosome,myOrganism);
+                log.debug(tmpFolder);
+		String regionCentricPath= applicationRoot+contextRoot+"tmpData/regionData/"+tmpFolder;
 		//String regionCentricPath = "/usr/share/tomcat/webapps/PhenoGen/tmpData/regionData/Rnchr19_54000000_55000000_10242012_175139";
 		if(regionCentricPath.indexOf("/PhenoGen/") > 0){
 			shortRegionCentricPath = regionCentricPath.substring(regionCentricPath.indexOf("/PhenoGen/"));
@@ -392,7 +396,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
             </div><!-- end CircosPlot -->
         <%}
         
-        log.debug("end circos");%>
+        //log.debug("end circos");%>
     </div>
     <div id="qtlTableDiv" style="display:inline-block;">
     	<div class="regionSubHeader" style="font-size:18px; font-weight:bold; text-align:center; width:100%;">
@@ -401,11 +405,11 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
         </div> 
 			<%String idList="";
 			int idListCount=0;
-			log.debug("before outer");
+			//log.debug("before outer");
 			for(int i=0;i<transOutQTLs.size();i++){
 				TranscriptCluster tc=transOutQTLs.get(i);
 				String tcChr=myOrganism.toLowerCase()+tc.getChromosome();
-				log.debug("after chr outer");
+				//log.debug("after chr outer");
 				boolean include=false;
 				boolean tissueInclude=false;
 				for(int z=0;z<selectedChromosomes.length&&!include;z++){
@@ -413,12 +417,12 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 						include=true;
 					}
 				}
-				log.debug("after chr loop");
+				//log.debug("after chr loop");
 				for(int j=0;j<tissuesList2.length&&include&&!tissueInclude;j++){
-					log.debug("jTis:"+tissueNameArray[j]);
+					//log.debug("jTis:"+tissueNameArray[j]);
 					boolean isTissueSelected=false;
 					for(int k=0;k<selectedTissues.length;k++){
-						log.debug("ktis:"+selectedTissues[k]);
+						//log.debug("ktis:"+selectedTissues[k]);
 						if(selectedTissues[k].equals(tissueNameArray[j])){
 							isTissueSelected=true;
 						}
@@ -433,7 +437,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 						}
 					}
 				}
-				log.debug("after tissue loop");
+				//log.debug("after tissue loop");
 				if(include&&tissueInclude){
 					if(i==0){
 						idList=tc.getTranscriptClusterID();
@@ -443,14 +447,14 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 					idListCount++;
 				}
 			}
-			log.debug("after outer for loop");%>
+			//log.debug("after outer for loop");%>
 			<div style=" float:right; ">
 			<%if(idListCount<=300){%>
        			<a href="http://david.abcc.ncifcrf.gov/api.jsp?type=AFFYMETRIX_EXON_GENE_ID&ids=<%=idList%>&tool=summary" target="_blank">View DAVID Functional Annotation</a><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div>
         	<%}else{%>
             	Too many genes to submit to DAVID automatically. Filter or copy and submit on your own <a href="http://david.abcc.ncifcrf.gov/" target="_blank">here</a>.<span class="eQTLListToolTip" title=""><img src="<%=imagesDir%>icons/info.gif"></span><div class="inpageHelp" style="display:inline-block;"><img id="HelpDAVID" class="helpImage" src="../web/images/icons/help.png" /></div>
             <%}
-			log.debug("end DAVID setup");
+			//log.debug("end DAVID setup");
 			time=new java.util.Date();
 			log.debug("before setting up tables:"+(time.getTime()-startDate.getTime()));
 			%>	
@@ -965,7 +969,7 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 		
 		var pW=$('#iframe_parent').width();
 		$('#circosIFrame').attr('width',pW-25);
-		console.log("parent size(init):"+pW);
+		//console.log("parent size(init):"+pW);
 		$(window).resize(function (){
 			var pW=$('#iframe_parent').width();
 			$('#circosIFrame').attr('width',pW-25);
