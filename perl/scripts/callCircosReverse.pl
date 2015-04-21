@@ -176,7 +176,7 @@ sub callCircosReverse{
 	#-- go back to original directory
 	chdir($pwd);
 	
-	
+    exit 0;
 }
 
 	my $arg1 = $ARGV[0]; # Cutoff

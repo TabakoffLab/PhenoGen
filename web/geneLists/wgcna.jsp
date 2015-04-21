@@ -13,7 +13,7 @@
 <%
         extrasList.add("d3.v3.min.js");
         extrasList.add("jquery.dataTables.js");
-        extrasList.add("wgcnaBrowser1.0.js");
+        extrasList.add("wgcnaBrowser1.0.3.js");
         extrasList.add("svg-pan-zoom.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
@@ -44,6 +44,13 @@
 	    	.attr("pointer-events", "all")              
 	    	.style("opacity", 0);
         var fixedWidth=1000;
+        var testChrome=/chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+        var testSafari=/safari/.test(navigator.userAgent.toLowerCase());
+        var testFireFox=/firefox/.test(navigator.userAgent.toLowerCase());
+        var testIE=/(wow|.net|ie)/.test(navigator.userAgent.toLowerCase());
+        if(testChrome && testSafari){
+            testSafari=false;
+        }
 </script>
 
 	<div class="page-intro">

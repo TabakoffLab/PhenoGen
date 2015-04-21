@@ -67,7 +67,10 @@ function loadRegionReport(reportName,chromosome,rptmin,rptmax){
             if(reportName=="regionTable" && reportSelectedTrack!=null){
 					loadTrackTable();
             }else if(reportName=="regionEQTLTable"){
-					loadEQTLTable();
+            		$("div#regionEQTLTable").html("<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+					setTimeout(function(){
+						loadEQTLTable();
+					},750);
             }else if(reportName=="regionWGCNAEQTL"){
 					loadRegionWGCNA();
             }
@@ -149,10 +152,12 @@ function loadTrackTable(){
 
 function loadEQTLTable(){
 	var jspPage="web/GeneCentric/regionEQTLTable.jsp";
+	var min=svgList[0].xScale.domain()[0];
+    var max=svgList[0].xScale.domain()[1];
 	var params={
 			species: organism,
-			minCoord: minCoord,
-			maxCoord: maxCoord,
+			minCoord: min,
+			maxCoord: max,
 			chromosome: chr,
 			rnaDatasetID: rnaDatasetID,
 			arrayTypeID: arrayTypeID,
