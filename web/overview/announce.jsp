@@ -12,9 +12,18 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
-                        <H2>Informatics Workshop Slides 4/16/2015</H2>
+                        <H2>Workshop Video/Slides 4/16/2015</H2>
                         <div style="margin-left:5px;text-align: center;">
-                            <a href="<%=webDir%>overview/PhenoGen.workshop.16Apr15.pdf"><img src="<%=webDir%>overview/slides_150.png" /></a><BR>
+                            Watch the workshop:<BR><BR>
+                            <video id="demoVideo" width="250px"  controls="controls" poster="<%=webDir%>overview/slides2_150.png" preload="none">
+                                    	<source src="<%=webDir%>demo/workshop.mp4" type="video/mp4">
+                                        <source src="<%=webDir%>demo/workshop.webm" type="video/webm">
+                                          <object data="<%=webDir%>demo/workshop.mp4" width="100%" >
+                                          </object>
+                                          Your browser is not likely to work with the Genome Browser if you are seeing this message.  Please see <a href="<%=commonDir%>siteRequirements.jsp">Browser Support/Site Requirements</a>
+                                    </video>
+                            <!--<a href="<%=webDir%>overview/PhenoGen.workshop.16Apr15.pdf"><img src="<%=webDir%>overview/slides_150.png" /></a>--><BR>
+                                          OR<BR>
                             Download the slides from the Informatics Workshop <a href="<%=webDir%>overview/PhenoGen.workshop.16Apr15.pdf">here</A>.
                         </div>
                         <H2>v2.15 of PhenoGen 3/7/2015</H2>

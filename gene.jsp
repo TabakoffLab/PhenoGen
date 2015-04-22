@@ -566,13 +566,21 @@ Or
 		$('.demo').hide();
 		var region=$('#geneTxt').val();
 		var species=$('#speciesCB').val();
-		$.get(	contextPath + "/web/GeneCentric/translateRegion.jsp", 
-				{region:region, species: species},
-				function(data){
-                    				translateDialog.dialog("open").html(data);
-									closeDialog(translateDialog);
-                				}
-			);
+                setTimeout(function(){
+                    $.ajax({
+				url: contextPath + "/web/GeneCentric/translateRegion.jsp",
+   				type: 'GET',
+				data: {region:region, species: species},
+				dataType: 'html',
+    			success: function(data2){ 
+        			translateDialog.dialog("open").html(data2);
+				closeDialog(translateDialog);
+    			},
+    			error: function(xhr, status, error) {
+        			console.log(error);
+    			}
+			});
+                },50);
 	}
 	
 	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
@@ -750,8 +758,14 @@ Or
                         </video>
        </TD>
        <TD style="text-align:center;">
-                        <h2>Available Tools Demo</h2><BR />
-						Coming Soon
+                        <h2>PhenoGen Overview</h2><BR />
+			<video width="350" height="250" controls="controls" poster="<%=contextRoot%>web/demo/slides2_350.png" preload="none">
+                    		<source src="<%=contextRoot%>web/demo/workshop.mp4" type="video/mp4">
+                            <source src="<%=contextRoot%>web/demo/workshop.webm" type="video/webm">
+                            <object data="<%=contextRoot%>web/demo/workshop.mp4" width="350" height="250">
+                          	</object>
+                            Your browser is not likely to work with the Genome Browser if you are seeing this message.  Please see <a href="<%=commonDir%>siteRequirements.jsp">Browser Support/Site Requirements</a>
+                        </video>
        </TD>
        </TR>
        <TR>
