@@ -19,9 +19,7 @@
 	boolean exception=false;
 	String sourceVersion="hg19";
 	String fullSourceSpecies="Human";
-	
 	String targetSpecies="Mm10";
-	
 	String fullSpecies="Mouse";
 	String targetChainFile="hg19ToMm10.over.chain";
 	String srcRegion="";
@@ -77,11 +75,11 @@
 	}
 	if(request.getParameter("sourceSpecies")!=null){
 		sourceVersion=request.getParameter("sourceSpecies");
-		if(sourceVersion.equals("mm10")){
+		if(sourceVersion.startsWith("mm")){
 			fullSourceSpecies="Mouse";
-		}else if(sourceVersion.equals("rn4")){
+		}else if(sourceVersion.startsWith("rn")){
 			fullSourceSpecies="Rat";
-		}else if(sourceVersion.equals("hg19")){
+		}else if(sourceVersion.startsWith("hg")){
 			fullSourceSpecies="Human";
 		}
 	}

@@ -33,6 +33,15 @@
                                         <%@ include file="/web/common/whats_new_content.jsp" %>
                     </div>
                     <div style="display:inline-block;width:40%;float:right;">
+                        Informatics Workshop Overview:<BR>
+                        <video id="demoVideo" width="95%"  controls="controls" poster="<%=webDir%>demo/slides2_350.png" preload="none">
+                                    	<source src="<%=webDir%>demo/workshop.mp4" type="video/mp4">
+                                        <source src="<%=webDir%>demo/workshop.webm" type="video/webm">
+                                          <object data="<%=webDir%>demo/workshop.mp4" width="100%" >
+                                          </object>
+                                          Your browser is not likely to work with the Genome Browser if you are seeing this message.  Please see <a href="<%=commonDir%>siteRequirements.jsp">Browser Support/Site Requirements</a>
+                        </video>
+                        <BR><BR>
                         Example WGCNA miRNA targeting View:
                         <a class="fancybox" rel="fancybox-thumb" href="<%=webDir%>overview/browseWGCNA_mir.png" title="Example WGCNA miRNA targeting View">
                       		<img src="<%=webDir%>overview/browseWGCNA_mir.png" alt="Example WGCNA miRNA targeting View"  style="width:95%;">
