@@ -109,7 +109,7 @@
                     <%}%>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=request.getContextPath()%>/helpdocs/PhenoGen_Overview_CSH.htm#Phenogen_Overview.htm#Overview" target="_blank"><span>Help Overview</span></a></li>
                 	<li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>PhenoGen.pdf" target="_blank"><span>Download Manual</span></a></li>
-                    <!--<li><a href="<%=webDir%>demo/mainDemo.jsp" target="_blank"><span>Demos</span></a></li>-->
+                    <li><a href="<%=webDir%>demo/mainDemo.jsp" ><span>Demonstration Videos</span></a></li>
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>siteRequirements.jsp"><span>Browser Support/Software Requirments</span></a></li>
                     <!--<li><a href="<%=commonDir%>how_do_i.jsp"><span>How do I?</span></a></li>-->
                     <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=commonDir%>contact.jsp"><span>Contact Us</span></a></li>
