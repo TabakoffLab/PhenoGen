@@ -566,13 +566,21 @@ Or
 		$('.demo').hide();
 		var region=$('#geneTxt').val();
 		var species=$('#speciesCB').val();
-		$.get(	contextPath + "/web/GeneCentric/translateRegion.jsp", 
-				{region:region, species: species},
-				function(data){
-                    				translateDialog.dialog("open").html(data);
-									closeDialog(translateDialog);
-                				}
-			);
+                setTimeout(function(){
+                    $.ajax({
+				url: contextPath + "/web/GeneCentric/translateRegion.jsp",
+   				type: 'GET',
+				data: {region:region, species: species},
+				dataType: 'html',
+    			success: function(data2){ 
+        			translateDialog.dialog("open").html(data2);
+				closeDialog(translateDialog);
+    			},
+    			error: function(xhr, status, error) {
+        			console.log(error);
+    			}
+			});
+                },50);
 	}
 	
 	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;

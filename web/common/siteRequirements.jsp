@@ -28,11 +28,11 @@ pageDescription="Browser and Software Requirements for PhenoGen";
                     <BR />
                     <BR />
                 <p>
-                	Firefox 23.0+ (31+ is recommended)<BR />
-                    Safari 6.0+ (6.1+ is recommended)<BR />
-                    Chrome 25+ (36+ is recommeded)<BR />
-                    IE 10+ (11+ is recommeded) NOTE: IE is not recommended for the Genome/Transcriptome Data Browser.  Please use one of the other recommended browsers.<BR>
-                    IE 9 - Most features will still work with IE 9, but the Genome/Transcriptome Data Browser will NOT work)  <BR>
+                    <span style="font-weight: bold;">Firefox 23.0+ (31+ is recommended)</span><BR /><BR>
+                    <span style="font-weight: bold;">Safari 6.0+ (7+ is recommended)</span><BR /><BR>
+                    <span style="font-weight: bold;">Chrome 25+ (36-41 is recommended)</span> NOTE: ver. 42(+) may not work with the Java plugin(see below for a message).  For Detailed Affy Probe Set Data please use Firefox or Safari.<BR /><BR>
+                    <span style="font-weight: bold;">IE 10+ (11+ is recommended)</span> NOTE: IE is not recommended for the Genome/Transcriptome Data Browser.  Please use one of the other recommended browsers.<BR><BR>
+                    <span style="font-weight: bold;">IE 9</span> - Most features will still work with IE 9, but the Genome/Transcriptome Data Browser will NOT work. <BR><BR>
 				</p>
                 <BR /><BR />
         <h2>System requirements</h2>
@@ -50,11 +50,14 @@ pageDescription="Browser and Software Requirements for PhenoGen";
 				$('#noJSsite').hide();
 			</script>
         
-            <li>Java Plugin JRE 1.6+ is required for part of the Gene View in the Detailed Genome/Transcription Information feature.<BR />
+            <li>Java Plugin JRE 1.7+ is required for part of the Gene View in the Detailed Genome/Transcription Information feature.<BR />
                 (<span id="minJava" style="color:#009900;display:none;" >Java plugin meets the minimum requirements. <BR /></span>
                 <span id="oldJava" style="color:#FF0000;display:none;">A new version may be available click the Install button for the latest version.</span>
                 <span id="noJava" style="color:#FF0000;display:none;"> A newer version is required click the Install button for the latest version.</span><span id="installJava" class="button">Install Java</span>)
             </li><BR /><BR />
+                <div id="newunsupportedChrome" style="display:none;color:#FF0000;">
+                    New versions of Chrome 42+ may not work for now with the Java Plugin.  If you can setup and activate the plugin it should work but the current Java version 1.8.0_45 does not seem to work.  Please use Firefox or Safari.
+                </div>
         	<span id="disabledJava" style="display:none;margin-left:40px;"><span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
             To enable Java in your browser or operating system, see:<BR><BR> 
             Firefox: <a href=\"http://support.mozilla.org/en-US/kb/unblocking-java-plugin\">http://support.mozilla.org/en-US/kb/unblocking-java-plugin</a><BR><BR>
@@ -64,24 +67,31 @@ pageDescription="Browser and Software Requirements for PhenoGen";
         
 		
 		
-		<script src="http://www.java.com/js/deployJava.js"></script>
+		<script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
 		<script type="text/javascript">
-            // check if current JRE version is greater than 1.5.0 
-            if (deployJava.versionCheck('1.5.0+') == false) { 
-				$('#noJava').css("display","inline-block");                  
-                $('#installJava').css("display","inline-block");
-            }else{
-				$('#minJava').css("display","inline-block");
-				if (deployJava.versionCheck('1.7.0+') == false) {                   
-                	$('#oldJava').css("display","inline-block");
+                        if(/Chrome\/(\d+)/.test(navigator.userAgent)){
+                            //console.log(RegExp.$1);
+                            var chromeVer=new Number(RegExp.$1);
+                            if(chromeVer>=42){
+                                    $('#newunsupportedChrome').show();
+                            }
+			}
+                        // check if current JRE version is greater than 1.5.0 
+                        if (deployJava.versionCheck('1.5.0+') == false) { 
+                            $('#noJava').css("display","inline-block");                  
+                            $('#installJava').css("display","inline-block");
+                        }else{
+                            $('#minJava').css("display","inline-block");
+                            if (deployJava.versionCheck('1.7.0+') == false) {                   
+                                        $('#oldJava').css("display","inline-block");
 					$('#installJava').html("Update Java");
 					$('#installJava').css("display","inline-block");
-            	}else{
+                            }else{
 					$('#installJava').css("display","none");
-				}
-				if(!navigator.javaEnabled()){
+                            }
+                            if(!navigator.javaEnabled()){
 					$('#disabledJava').css("display","inline-block");
-				}
+                            }
 			}
 			
         </script>

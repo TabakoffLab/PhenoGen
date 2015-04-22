@@ -160,15 +160,21 @@ This filters the results based on length of the target sequence and qeury sequen
 			$('#clearResults').hide();
 		}
 		function runTranslation(){
-			$('#waitTranslate').show();
+			
 			$('#clearResults').show();
 			var regionTxt=$('#transGeneTxt').val();
 			var minLen=$('#transLengthCB').val();
 			var minRatio=$('#transRatioCB').val();
 			var species=$('#transSpeciesCB').val();
 			var srcSpecies=$('#transSourceSpeciesCB').val();
-			
-			$.get(	contextPath + "/web/GeneCentric/runTranslation.jsp", 
+			if(species.toLowerCase()==srcSpecies.toLowerCase()){
+				alert("Please change the destination or source species/genome version so they are not equal.");
+			}else if((srcSpecies.toLowerCase()=='rn4' && species.toLowerCase()=='mm10')){
+				alert("Rn4 -> Mm10 is not supported.  Please use Rn5 -> Mm10.  We are sorry for any inconvenience.");
+			}else{
+                            $('#waitTranslate').show();
+                            setTimeout(function(){
+                            $.get(	contextPath + "/web/GeneCentric/runTranslation.jsp", 
 				{region: regionTxt, minLen: minLen, minRatio: minRatio, targetSpecies: species, sourceSpecies: srcSpecies},
 				function(data){ 
 									var prevData="<BR><BR>"+$('#translateResults').html();
@@ -204,6 +210,8 @@ This filters the results based on length of the target sequence and qeury sequen
 									});
 					}
 			);
+                        },100);
+                    }
 			
 			
 		}
