@@ -195,6 +195,11 @@ sub createXMLFile
 			}
 			createRNACountXMLTrack(\%rnaBinned,$outputDir."tmp/".$roundMin."_".$roundMax.".bincount.".$binSize.".".$type.".xml");
 		}else{
+                    if(-d $outputDir."tmp"){
+				
+                    }else{
+                            mkdir $outputDir."tmp";
+                    }
                     createRNAFullCountXMLTrack(\%rnaCountHOH,$outputDir."tmp/".$roundMin."_".$roundMax.".count.".$type.".xml");
                 }
 		#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."count".$type.".xml");

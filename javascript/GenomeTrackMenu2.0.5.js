@@ -263,12 +263,15 @@ function TrackMenu(level){
 
 
 	that.findSelectedTrack=function (){
-		var id=$('table#trkSelList'+that.level+' tbody tr.selected').attr("id");
-		id=id.substr(3);
+		var id="";
 		var d=NaN;
-		for(var i=0;i<that.trackList.length&&isNaN(d);i++){
-			if(that.trackList[i].TrackID===id){
-				d=that.trackList[i];
+		if($('table#trkSelList'+that.level+' tbody tr.selected').length>0){
+			id=$('table#trkSelList'+that.level+' tbody tr.selected').attr("id");
+			id=id.substr(3);
+			for(var i=0;i<that.trackList.length&&isNaN(d);i++){
+				if(that.trackList[i].TrackID===id){
+					d=that.trackList[i];
+				}
 			}
 		}
 		return d;
