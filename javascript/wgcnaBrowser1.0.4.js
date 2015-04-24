@@ -192,76 +192,81 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("cursor","pointer")
 			.on("click",function(){
 				var content="";
-                if(that.viewType==="eqtl" && that.singleImage.type==="eqtl"){
-                    content=$("div#circos").html();
-                }else if(that.viewType==="gene" && that.singleImage.type==="gene"){
-                    //console.log("viewGene")
-                    content=$("div#viewGene").html();
-                    //console.log(content);
-                }else if(that.viewType==="mir" && that.singleImage.type==="mir"){
-                    //console.log("viewGene")
-                    content=$("div#viewGene").html();
-                    //console.log(content);
-                }else if(that.viewType==="go" && that.singleImage.type==="go"){
-                    //console.log("saveGO");
-                    content=$("div#viewGene").html();
-                    
-                }
-                var w=$(window).width();
-                content=content.replace("width=\"100%\"","width=\""+w+"px\"");
-				content=content+"\n";
-				$.ajax({
-						url: pathPrefix+"saveBrowserImage.jsp",
-		   				type: 'POST',
-						contentType: 'text/html',
-						data: content,
-						processData: false,
-						dataType: 'json',
-		    			success: function(data2){ 
-		        			var d=new Date();
-		        			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
-                            var http="http://";
-                            if (location.protocol === 'https:') {
-                                http="https://";
-                            }
-							var url=http+urlprefix+"/tmpData/download/"+data2.imageFile;
-							var region=new String(that.selectedModule.MOD_NAME);
-                            region=region+"_"+that.viewType;
-							var filename = region+"_"+datePart+".png";
-							var xhr = new XMLHttpRequest(); 
-						  	xhr.open('GET', url);
-						  	xhr.responseType = 'blob';
-						  	xhr.send();
-						  	xhr.onreadystatechange = function(){
-							    //ready?
-							    if (xhr.readyState != 4)
-							        return false;
-							    //get status:
-							    var status = xhr.status;
-							    //maybe not successful?
-							    if (status != 200) {
-							        return false;
-							    }
-							    var a = document.createElement('a');
-								a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
-								a.download = filename; // Set the file name.
-								a.style.display = 'none';
-								document.body.appendChild(a);
-								try{
-									a.click();
-								}catch(error){
-									//$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
-									$("#wgcnaMouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
-									window.open(url);
-								}	
-								delete a;
-							    return true;
-							}
-		    			},
-		    			error: function(xhr, status, error) {
-		        			console.log(error);
-		    			}
-				});
+				if(that.singleImage){
+	                if(that.viewType==="eqtl" && that.singleImage.type==="eqtl"){
+	                    content=$("div#circos").html();
+	                }else if(that.viewType==="gene" && that.singleImage.type==="gene"){
+	                    //console.log("viewGene")
+	                    content=$("div#viewGene").html();
+	                    //console.log(content);
+	                }else if(that.viewType==="mir" && that.singleImage.type==="mir"){
+	                    //console.log("viewGene")
+	                    content=$("div#viewGene").html();
+	                    //console.log(content);
+	                }else if(that.viewType==="go" && that.singleImage.type==="go"){
+	                    //console.log("saveGO");
+	                    content=$("div#viewGene").html();
+	                    
+	                }
+	                var w=$(window).width();
+	                content=content.replace("width=\"100%\"","width=\""+w+"px\"");
+					content=content+"\n";
+					$.ajax({
+							url: pathPrefix+"saveBrowserImage.jsp",
+			   				type: 'POST',
+							contentType: 'text/html',
+							data: content,
+							processData: false,
+							dataType: 'json',
+			    			success: function(data2){ 
+			        			var d=new Date();
+			        			var datePart=(d.getMonth()+1)+"_"+d.getDate()+"_"+d.getFullYear();
+	                            var http="http://";
+	                            if (location.protocol === 'https:') {
+	                                http="https://";
+	                            }
+								var url=http+urlprefix+"/tmpData/download/"+data2.imageFile;
+								var region="";
+								if(that.selectedModule){
+									region=new String(that.selectedModule.MOD_NAME);
+								}
+	                            region=region+"_"+that.viewType;
+								var filename = region+"_"+datePart+".png";
+								var xhr = new XMLHttpRequest(); 
+							  	xhr.open('GET', url);
+							  	xhr.responseType = 'blob';
+							  	xhr.send();
+							  	xhr.onreadystatechange = function(){
+								    //ready?
+								    if (xhr.readyState != 4)
+								        return false;
+								    //get status:
+								    var status = xhr.status;
+								    //maybe not successful?
+								    if (status != 200) {
+								        return false;
+								    }
+								    var a = document.createElement('a');
+									a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+									a.download = filename; // Set the file name.
+									a.style.display = 'none';
+									document.body.appendChild(a);
+									try{
+										a.click();
+									}catch(error){
+										//$("#"+id).append("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+										$("#wgcnaMouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
+										window.open(url);
+									}	
+									delete a;
+								    return true;
+								}
+			    			},
+			    			error: function(xhr, status, error) {
+			        			console.log(error);
+			    			}
+					});
+				}
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/savePic_white.png");
@@ -280,24 +285,27 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
 			.on("click",function(){
-                if(that.viewType==="eqtl"){
-                    that.singleImage.panZoomCircos.reset();
-                }else if(that.singleImage==undefined){
-					var id=new String($(this).parent().attr("id"));
-					var level=id.substr(id.length-1);
-					if(level==0){
-						$('#geneTxt').val(chr+":"+initMin+"-"+initMax);
-					    svgList[0].xScale.domain([initMin,initMax]);
-						svgList[0].scaleSVG.select(".x.axis").call(svgList[0].xAxis);
-						svgList[0].redraw();
-					}else{
-					    svgList[level].xScale.domain([svgList[level].initMin,svgList[level].initMax]);
-						svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
-						svgList[level].redraw();
-					}
-                }else if(typeof that.singleImage !=="undefined"){
-                    that.singleImage.panZoom.reset();
-                }
+				if(that.singleImage){
+	                if(that.viewType==="eqtl"){
+	                    that.singleImage.panZoomCircos.reset();
+	                }/*else if(that.singleImage==undefined){
+						var id=new String($(this).parent().attr("id"));
+
+						var level=id.substr(id.length-1);
+						if(level==0){
+							$('#geneTxt').val(chr+":"+initMin+"-"+initMax);
+						    svgList[0].xScale.domain([initMin,initMax]);
+							svgList[0].scaleSVG.select(".x.axis").call(svgList[0].xAxis);
+							svgList[0].redraw();
+						}else{
+						    svgList[level].xScale.domain([svgList[level].initMin,svgList[level].initMax]);
+							svgList[level].scaleSVG.select(".x.axis").call(svgList[level].xAxis);
+							svgList[level].redraw();
+						}
+	                }*/else if(typeof that.singleImage !=="undefined"){
+	                    that.singleImage.panZoom.reset();
+	                }
+            	}
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/reset_white.png");
@@ -326,11 +334,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				"top":"-5px"
 			})
 			.on("click",function(){
-                            if(that.viewType==="eqtl"){
+                            if(that.viewType==="eqtl" && that.singleImage ){
                                 that.singleImage.panZoomCircos.zoomIn();
-                            }else if(that.singleImage==undefined){
-				that.multiImage.zoomIn();
-                            }else if(typeof that.singleImage!=='undefined'){
+                            }else if(that.singleImage==undefined && that.multiImage){
+								that.multiImage.zoomIn();
+                            }else if(typeof that.singleImage!=='undefined' && that.singleImage ){
                                 that.singleImage.panZoom.zoomIn();
                             }
 			})
@@ -359,11 +367,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				"top":"-5px"
 			})
 			.on("click",function(){
-                            if(that.viewType==="eqtl"){
+                            if(that.viewType==="eqtl" && that.singleImage){
                                 that.singleImage.panZoomCircos.zoomOut();
-                            }else if(that.singleImage==undefined){
-				that.multiImage.zoomOut();
-                            }else if(typeof that.singleImage!=='undefined'){
+                            }else if(that.singleImage==undefined && that.multiImage){
+								that.multiImage.zoomOut();
+                            }else if(typeof that.singleImage!=='undefined' && that.singleImage ){
                                 that.singleImage.panZoom.zoomOut();
                             }
 				
@@ -1138,32 +1146,36 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		};
 
 		thatimg.backModule=function(){
-			var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
-			if(ind>0){
-				var newModule=thatimg.data[ind-1];
-                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
-				prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
-                prevG.select("text.txtLbl").style("font-weight","normal");
-				that.selectedModule=newModule;
-                var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
-				newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
-                newG.select("text.txtLbl").style("font-weight","bold");
-                setTimeout(that.createSingleWGCNAImage,20);
+			if(that.selectedModule){
+				var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
+				if(ind>0){
+					var newModule=thatimg.data[ind-1];
+	                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
+					prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
+	                prevG.select("text.txtLbl").style("font-weight","normal");
+					that.selectedModule=newModule;
+	                var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
+					newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+	                newG.select("text.txtLbl").style("font-weight","bold");
+	                setTimeout(that.createSingleWGCNAImage,20);
+				}
 			}
 		};
 
 		thatimg.forwardModule=function(){
-			var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
-			if(ind<(thatimg.data.length-1)){
-				var newModule=thatimg.data[ind+1];
-                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
-				prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
-                prevG.select("text.txtLbl").style("font-weight","normal");
-				that.selectedModule=newModule;
-				var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
-				newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
-                newG.select("text.txtLbl").style("font-weight","bold");
-				setTimeout(that.createSingleWGCNAImage,20);
+			if(that.selectedModule){
+				var ind=thatimg.dataList[that.selectedModule.MOD_NAME];
+				if(ind<(thatimg.data.length-1)){
+					var newModule=thatimg.data[ind+1];
+	                var prevG=thatimg.svg.select("g#"+that.selectedModule.MOD_NAME);
+					prevG.select("circle").attr("fill","url(#grad"+that.selectedModule.MOD_NAME+")").attr("stroke","#FFFFFF").attr("stroke-width","1px");
+	                prevG.select("text.txtLbl").style("font-weight","normal");
+					that.selectedModule=newModule;
+					var newG=thatimg.svg.select("g#"+newModule.MOD_NAME);
+					newG.select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+	                newG.select("text.txtLbl").style("font-weight","bold");
+					setTimeout(that.createSingleWGCNAImage,20);
+				}
 			}
 		};
 
@@ -1816,7 +1828,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     var offset=thatimg.width/2-(w*6.5);
                                                     return offset;
                                             })*/
-                                            .text(replaceUnderscore(that.selectedModule.MOD_NAME));
+                                            .text(function(){
+                                            	if(that.selectedModule){
+                                            		return replaceUnderscore(that.selectedModule.MOD_NAME);
+                                            	}else{
+                                            		return "";
+                                            	}
+                                        	});
                     
                     thatimg.setupLegend();
                     
@@ -2906,10 +2924,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.colorGO=d3.scale.category20();
             thatimg.displayDepth=3;
             thatimg.geneList={};
-            var tmpDat=that.selectedModule.TCList;
-            for(var i=0;i<tmpDat.length;i++){
-                thatimg.geneList[that.selectedModule.TCList[i].Gene.ID]=that.selectedModule.TCList[i].Gene.geneSymbol;
-            }
+            var tmpDat=[];
+            if(that.selectedModule){
+	            tmpDat=that.selectedModule.TCList;
+	            for(var i=0;i<tmpDat.length;i++){
+	                thatimg.geneList[that.selectedModule.TCList[i].Gene.ID]=that.selectedModule.TCList[i].Gene.geneSymbol;
+	            }
+        	}
 
             thatimg.pathColor=function(d){
                               if(d.name.indexOf("ENS")==0){
@@ -3786,18 +3807,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.displayDefault=function(){
                 d3.select("#viewGene").remove();
                 d3.select("#circos").remove();
-                thatimg.update(contextRoot+"tmpData/circos/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"_1/svg/circos_new.svg");
-                that.singleWGCNATableEQTLView();
-                /*d3.select("#wgcnaGeneImage").append("iframe")
-                        .attr("width","100%")
-                        .attr("height",function(){return Math.floor(window.innerHeight*0.9);})
-                        .attr("id","circosIFrame")
-                        .attr("scrolling","no")
-                        .attr("src","tmpData/modules/ds1/"+that.selectedModule.MOD_NAME+"/"+that.selectedModule.MOD_NAME+"_1/svg/circos_new.svg")
-                    .style({
-                        "border-width":"0px"
-                    });*/
-               
+                if(that.selectedModule){
+                	thatimg.update(contextRoot+"tmpData/circos/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"_1/svg/circos_new.svg");
+                	that.singleWGCNATableEQTLView(); 
+                }  
             };
             thatimg.draw=function(){
                 

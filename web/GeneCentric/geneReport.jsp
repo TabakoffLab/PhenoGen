@@ -420,11 +420,13 @@ Add report here.
                                                                     <%}else{%>
                                                                         <TD>0</TD>
                                                                         <TD></TD>
-                                                                        <TD></TD>
                                                                     <%}%>
                                                                    
                                                                 <%}else{%>
-                                                                    <TD><%=tissuesList1[j]%></TD><TD></TD><TD></TD><TD></TD><TD></TD>
+                                                                    <TD><%=tissuesList1[j]%></TD>
+                                                                    <TD></TD>
+                                                                    <TD></TD>
+                                                                    <TD></TD>
                                                                 <%}%>
                                                                 </TR>
                                                <%}%>
@@ -476,7 +478,10 @@ Add report here.
                                                                         
                                                                      <%}%>
                                                                 <%}else{%>
-                                                                    <TD><%=tissuesList1[j]%></TD><TD></TD><TD></TD><TD></TD>
+                                                                    <TD><%=tissuesList1[j]%></TD>
+                                                                    <TD></TD>
+                                                                    <TD></TD>
+                                                                    <TD></TD>
                                                                 <%}%>
                                                                 </TR>
                                                <%}%>
