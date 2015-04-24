@@ -3927,22 +3927,24 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		var aaSeq=new Array();
 		var aaCount=0;
 		var minus=0;
-		if(start>stop){//minus strand
-			minus=1;
-			var tmpstart=start;
-			start=stop;
-			stop=tmpstart;
-		}
-		for(var i=start;i<=stop;i=i+3){
-				var seq=that.data.substring(i,i+3);
-				if(minus==1){
-					seq=that.reverseCompliment(seq);
-				}
-				aaSeq[aaCount]=[];
-				aaSeq[aaCount].aa=that.translate(seq);
-				aaSeq[aaCount].pos=offset+(i-start);
-				aaSeq[aaCount].id=aaLevel+":"+i+":"+that.translate(seq);
-				aaCount++;
+		if(that.data){
+			if(start>stop){//minus strand
+				minus=1;
+				var tmpstart=start;
+				start=stop;
+				stop=tmpstart;
+			}
+			for(var i=start;i<=stop;i=i+3){
+					var seq=that.data.substring(i,i+3);
+					if(minus==1){
+						seq=that.reverseCompliment(seq);
+					}
+					aaSeq[aaCount]=[];
+					aaSeq[aaCount].aa=that.translate(seq);
+					aaSeq[aaCount].pos=offset+(i-start);
+					aaSeq[aaCount].id=aaLevel+":"+i+":"+that.translate(seq);
+					aaCount++;
+			}
 		}
 		return aaSeq;
 	}
@@ -3967,9 +3969,9 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		return comp;
 	}
 	that.redraw=function(){
-		console.log("redraw SeqTrack");
 		that.redrawSelectedArea();
-
+		var tmpMin=that.xScale.domain()[0];
+		var tmpMax=that.xScale.domain()[1];
 		if(that.prevStrand!=that.strands||that.prevIncldAA!=that.includeAA){
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.base").each(function(d){d3.select(this).remove();});
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.aa0").each(function(d){d3.select(this).remove();});
@@ -3978,10 +3980,14 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.aarev0").each(function(d){d3.select(this).remove();});
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.aarev1").each(function(d){d3.select(this).remove();});
 			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.aarev2").each(function(d){d3.select(this).remove();});
-			that.draw(that.data);
+			if(tmpMin<that.seqRegionMin || tmpMax>that.seqRegionMax){
+				that.updateData(0);
+			}else{
+				that.draw(that.data);
+			}
+		}else if(tmpMin<that.seqRegionMin || tmpMax>that.seqRegionMax){
+			that.updateData(0);
 		}else{
-			var tmpMin=that.xScale.domain()[0];
-			var tmpMax=that.xScale.domain()[1];
 			var len=tmpMax-tmpMin;
 			var aaFont="12px";
 			if(len>200){
@@ -4057,10 +4063,6 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					}
 					if(that.includeAA==1){
 						var aaCharW=charWidth*3;
-						/*var offsetAA=charWidth/2;
-						if(offsetAA<5){
-							offsetAA=0;
-						}*/
 						var aaXLoc=aaCharW/2-4;
 						var tmpLineAt=25;
 						if(that.strands=="both"||that.strands=="+"){
@@ -4195,11 +4197,10 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		}
 	};
 	that.draw=function(data){
-		console.log("draw SeqTrack");
 		that.redrawSelectedArea();
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
-
+		
 		var len=tmpMax-tmpMin;
 		var aaLabel="";
 		if(that.includeAA==1){
@@ -4218,16 +4219,18 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		}else{//Only needed to Fix IE Bug which still displays the label
 			that.label="";
 		}
-		
 		that.updateLabel(that.label);
-		that.data=data;
-		
+		that.data=new String(data);
 		var aaFont="10px";
 		if(len>200){
 			aaFont="8px";
 		}
-		if((len<=that.aaDispCutoff&&that.includeAA==1) || (len<=that.dispCutoff)){
-			console.log("display");
+		if(that.data && (len<=that.aaDispCutoff&&that.includeAA==1) || (len<=that.dispCutoff)){
+			var dataLen=data.length;
+			var startInd=tmpMin-that.seqRegionMin;
+			var stopInd=len+startInd;
+			var charWidth=that.gsvg.width/len;
+			var offsetNA=charWidth/2;
 			that.svg.selectAll("text.dir").remove();
 			if(that.strands=="both"){
 				that.svg.append("text").attr("class","dir").attr("x",5).attr("y",15).text("-->");
@@ -4243,10 +4246,6 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			}
 			
 			if(len<that.dispCutoff && data.length>1){
-				console.log("display Seq")
-				var dataLen=data.length;
-				var startInd=tmpMin-that.seqRegionMin;
-				var stopInd=len+startInd;
 				var dArr=new Array();
 				for(var j=startInd;j<stopInd;j++){
 					dArr[j-startInd]=[];
@@ -4260,8 +4259,6 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 				if(that.includeAA==1&&that.strands!="-"){
 					seqYPos=seqYPos+30;
 				}
-
-				var charWidth=that.gsvg.width/len;
 				var base=that.svg.selectAll(".base")
 			   			.data(dArr,keyID)
 						.attr("transform",function(d,i){ return "translate("+((d.pos)*charWidth)+","+seqYPos+")";});
@@ -4269,13 +4266,14 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 				var appended=base.enter().append("g")
 						.attr("class","base")
 						.attr("transform",function(d,i){ return "translate("+((d.pos)*charWidth)+","+seqYPos+")";});
-				appended.each( function (d){		
+				appended.each( function (d){
+						var tmpD=d;		
 						d3.select(this).append("text")
 			    		.text(function(d){
 			    			if(that.strands!="-"){
-			    				return d.base;
+			    				return tmpD.base;
 			    			}else{
-			    				return that.complement(d.base);
+			    				return that.complement(tmpD.base);
 			    			}
 			    		});
 			    		if(that.strands=="both"){
@@ -4283,7 +4281,7 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			    				.attr("class","comp")
 								.attr("y",yPosComp)
 					    		.text(function(d){
-					    				return that.complement(d.base);
+					    				return that.complement(tmpD.base);
 					    		});
 			    		}
 			    	});
@@ -4291,7 +4289,6 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 				base.exit().remove();
 				base.selectAll("text").attr("font-size",textSizeVar);
 			}else{
-				console.log("display line");
 				that.svg.append("g")
 					.attr("class","base")
 					.append("line")
@@ -4301,14 +4298,12 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					.attr("x2",that.gsvg.width)
 					.attr("y2",57);
 			}
-			if(that.includeAA==1){
-				console.log("display AA");
+			if(that.data && that.includeAA==1){
 				var aaCharW=charWidth*3;
 				//var offsetAA=charWidth/2;
 				var aaXLoc=aaCharW/2-4;
 				var tmpLineAt=25;
 				if(that.strands=="both"||that.strands=="+"){
-					console.log("displayBoth or +");
 					var modStart=tmpMin%3;
 					var zeroStart=startInd-modStart;
 					var aaList=new Array();
@@ -4321,21 +4316,22 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			   				.data(aaList[j],keyID)
 							.attr("transform",function(d,i){ return "translate("+that.xScale(d.pos)+","+tmpLineAt+")";})
 							.each(function(d){
-										d3.select(this).select("rect").attr("width",aaCharW);
-										if(len<that.dispCutoff){
-											if(d3.select(this).select("text").size()==0){
-												d3.select(this).append("text")
-												.attr("x",aaXLoc)
-												.attr("font-size",aaFont)
-							    				.text(function(d){
-							    					return d.aa;
-							    				});
-											}else{
-												d3.select(this).select("text").attr("x",aaXLoc).attr("font-size",aaFont);
-											}
+									var tmpD=d;
+									d3.select(this).select("rect").attr("width",aaCharW);
+									if(len<that.dispCutoff){
+										if(d3.select(this).select("text").size()==0){
+											d3.select(this).append("text")
+											.attr("x",aaXLoc)
+											.attr("font-size",aaFont)
+						    				.text(function(d){
+						    					return tmpD.aa;
+						    				});
 										}else{
-											d3.select(this).select("text").remove();
+											d3.select(this).select("text").attr("x",aaXLoc).attr("font-size",aaFont);
 										}
+									}else{
+										d3.select(this).select("text").remove();
+									}
 							});
 						//add new
 						aa.enter().append("g")
@@ -4390,7 +4386,6 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 					tmpLineAt=45;
 				}
 				if(that.strands=="both"||that.strands=="-"){
-					console.log("display both or -");
 					var modStart=tmpMin%3;
 					var zeroStart=startInd-modStart;
 					var aaList=new Array();
@@ -4406,18 +4401,21 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 								.attr("class","aarev"+j)
 								.attr("transform",function(d,i){ return "translate("+that.xScale(d.pos)+","+tmpLineAt+")";});
 						appended.each( function (d){
+								var tmpD=d;
 								d3.select(this).append("rect")
 									.attr("y",-10)
 									.attr("height",10)
 									.attr("width",aaCharW)
-									.attr("stroke",that.colorAA)
-									.attr("fill",that.colorAA);	
-								d3.select(this).append("text")
-									.attr("x",aaXLoc)
-									.attr("font-size",aaFont)
-					    			.text(function(d){
-					    				return d.aa;
-					    			});
+									.attr("stroke",that.colorAA(tmpD))
+									.attr("fill",that.colorAA(tmpD));
+								if(len<that.dispCutoff){	
+									d3.select(this).append("text")
+										.attr("x",aaXLoc)
+										.attr("font-size",aaFont)
+						    			.text(function(d){
+						    				return tmpD.aa;
+						    			});
+					    		}
 					    	});
 						aa.exit().remove();
 						tmpLineAt=tmpLineAt+11;
@@ -4476,7 +4474,6 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 		return size;
 	};
 	that.updateData=function(retry){
-		console.log("updateData("+retry+")");
 		var curTime=(new Date()).getTime();
 		if(curTime-that.lastUpdate>25000||retry>0){
 			if(retry===0 && (that.lastUpdate===0 || curTime-that.lastUpdate<25000)){
@@ -4496,7 +4493,6 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 				}
 				
 				var path=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/"+that.tmpseqRegionMin+"_"+that.tmpseqRegionMax+".seq";
-				console.log("path="+path);
 				d3.text(path,function (error,d){
 					if(error){
 						//console.log(error);
@@ -4505,7 +4501,6 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 								if(!pathPrefix){
 									tmpContext="";
 								}
-								console.log("min="+that.tmpseqRegionMin+", max="+that.tmpseqRegionMax);
 									$.ajax({
 										url: tmpContext +"generateTrackXML.jsp",
 						   				type: 'GET',
@@ -6933,8 +6928,6 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	};
 
 	that.draw=function (data){
-
-
 		that.data=data;
 		
 		that.trackYMax=0;
