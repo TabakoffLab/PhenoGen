@@ -238,8 +238,8 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
+                open OUT,">".$outputDir.$minCoord."_".$maxCoord.".seq";
 		my $seq=readEnsemblSeqFromDB($chromosome,$species,$minCoord,$maxCoord,$ensDsn,$ensUsr,$ensPasswd);
-		open OUT,">".$outputDir.$minCoord."_".$maxCoord.".seq";
 		print OUT $seq;
 		close OUT;
 	}elsif(index($type,"spliceJnct")>-1){
