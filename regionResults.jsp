@@ -164,11 +164,11 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
         <div id="collapsableImage" class="geneimage" >
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.1.20.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.1.21.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.1.5.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.0.9.js" type="text/javascript"></script>
-            <script src="javascript/GenomeTrackMenu2.0.4.js" type="text/javascript"></script>
-            <script src="javascript/wgcnaBrowser1.0.3.js" type="text/javascript"></script>
+            <script src="javascript/GenomeTrackMenu2.0.5.js" type="text/javascript"></script>
+            <script src="javascript/wgcnaBrowser1.0.4.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">
@@ -324,10 +324,3 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
     	<div class="error"><%=genURL.get(selectedGene)%><BR />The administrator has been notified of the problem and will investigate the error.  We apologize for any inconvenience.</div><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR />
 <%}%>
     
-  
-
-
-
-
-
-

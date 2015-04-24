@@ -195,6 +195,11 @@ sub createXMLFile
 			}
 			createRNACountXMLTrack(\%rnaBinned,$outputDir."tmp/".$roundMin."_".$roundMax.".bincount.".$binSize.".".$type.".xml");
 		}else{
+                    if(-d $outputDir."tmp"){
+				
+                    }else{
+                            mkdir $outputDir."tmp";
+                    }
                     createRNAFullCountXMLTrack(\%rnaCountHOH,$outputDir."tmp/".$roundMin."_".$roundMax.".count.".$type.".xml");
                 }
 		#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."count".$type.".xml");
@@ -233,8 +238,8 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
+                open OUT,">".$outputDir.$minCoord."_".$maxCoord.".seq";
 		my $seq=readEnsemblSeqFromDB($chromosome,$species,$minCoord,$maxCoord,$ensDsn,$ensUsr,$ensPasswd);
-		open OUT,">".$outputDir.$minCoord."_".$maxCoord.".seq";
 		print OUT $seq;
 		close OUT;
 	}elsif(index($type,"spliceJnct")>-1){
