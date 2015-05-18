@@ -369,7 +369,11 @@ if(request.getParameter("arrayTypeID")!=null){
 
 <div id="macBugDesc" style="display:none;color:#FF0000;"><BR /><BR />The applet below is fully functional.  However, with your current combination of Mac OS X and Java plug-in the display is not optimal due to a bug.  This bug has been fixed if you update to Java plug-in version 1.7.0_51 or higher the display will be improved.  We are very sorry for any inconvenience.  This bug is not found in Windows, Linux, Mac OS X 10.6 or lower if you have any of them available.</div>
         <BR /><BR /><BR />
-        <div style="margin-left:10px;margin-right:10px;"><p><span style="color:#FF0000">Note:</span>If you don't see the applet below try adjusting security settings as directed <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">here</a>. You will be asked if you want to allow the applet to run, please select "Run" or "Yes" if prompted.  We are now providing a signed applet that will say it has been signed by the University of Colorado Denver.  We are also working to provide similar expression data that is not dependent on Java at some point in the future.</p></div>
+        <div style="margin-left:10px;margin-right:10px;"><p><span style="color:#FF0000">Note:</span>If you don't see the applet below try adjusting security settings as directed <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">here</a>. You will be asked if you want to allow the applet to run, please select "Run" or "Yes" if prompted.  We are now providing a signed applet that will say it has been signed by the University of Colorado Denver.  We are also working to provide similar expression data that is not dependent on Java at some point in the future.</p>
+            <%if(request.getServerPort()!=80){%>
+            <BR><BR><p style="color:#FF0000;">Using the secure site(https), you may first be prompted with a message stating that the server cannot be verified and is not trusted.  This is due to differences between how Java and browsers handle the validation of SSL certificates used to verify the server.  If you see in your browser that the site is trusted and connection is encrypted you should click Continue.  If your browser indicates a problem then you should be very careful about clicking continue.  We are trying to find a way to prevent the additional warning and will update the page as soon as an option exists.</p>
+            <%}%>
+        </div>
         <BR /><BR />
         <div style="text-align:center;">
         <%if(request.getServerPort()==80){%>
