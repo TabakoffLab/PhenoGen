@@ -369,7 +369,11 @@ if(request.getParameter("arrayTypeID")!=null){
         <div style="margin-left:10px;margin-right:10px;"><p><span style="color:#FF0000">Note:</span>If you don't see the applet below try adjusting security settings as directed <a href="http://java.com/en/download/help/enable_browser.xml" target="_blank">here</a>. You will be asked if you want to allow the applet to run, please select "Run" or "Yes" if prompted.  We are now providing a signed applet that will say it has been signed by the University of Colorado Denver.  We are also working to provide similar expression data that is not dependent on Java at some point in the future.</p></div>
         <BR /><BR />
         <div style="text-align:center;">
-        <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
+        <%if(request.getServerPort()==80){%>
+            <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
+        <%}else{%>
+            <script type="text/javascript" src="https://www.java.com/js/deployJava.js"></script>
+        <%}%>
         <script type="text/javascript">
 			var ensembl=selectedID;
 			var appletWidth=1000;
