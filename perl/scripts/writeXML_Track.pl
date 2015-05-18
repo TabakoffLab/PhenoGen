@@ -257,7 +257,19 @@ sub createXMLFile
 			$trackDB="rn5";
 		}
 		createGenericXMLTrack(\%spliceHOH,$outputDir.$type.".xml");
-	}elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
+	}elsif(index($type,"repeatMask")>-1){
+                my $rnaCountStart=time();
+		if(index($chromosome,"chr")>-1){
+			$chromosome=substr($chromosome,3);
+		}
+		my $repeatMaskRef=readRepeatMaskFromDB($chromosome,$species,$minCoord,$maxCoord,$ensDsn,$ensUsr,$ensPasswd);
+		my %$repeatMaskHOH=%$repeatMaskRef;
+		my $rnaCountEnd=time();
+		print "RepeatMask completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
+		createRepeatMaskXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
+        }elsif(index($type,"chainNet")>-1){
+
+        }elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
                 my $ver=substr($type,index($type,"_")+1);
                 print "Type:$type\n";
                 print "Ver:$ver\n";
