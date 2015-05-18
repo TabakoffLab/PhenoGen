@@ -74,8 +74,8 @@ if(request.getParameter("arrayTypeID")!=null){
         if(urlPrefix.endsWith(".jsp")){
              urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
         }
-        if(request.getServerPort()==443 && urlPrefix.indexOf("https")!=0){
-            urlPrefix.replace("http","https");
+        if(request.getServerPort()!=80 && urlPrefix.indexOf("https")<0){
+            urlPrefix=urlPrefix.replace("http","https");
         }
 	genURL=urlPrefix+ "tmpData/geneData/" +selectedID+"/";
 	String regionURL=urlPrefix+"tmpData/regionData/"+folderName+"/";
