@@ -457,21 +457,21 @@ if(request.getParameter("arrayTypeID")!=null){
 			}
 			if(unsupportedChrome===0 && newUnsupportedChrome===0){
 				var attributes = {
-					id:			'geneApplet',
+					id:	'geneApplet',
 					code:       "genecentricviewer.GeneCentricViewer",
-					archive:    "/web/GeneCentric/GeneCentricViewer.jar",
+					archive:    "<%=contextRoot%>web/GeneCentric/GeneCentricViewer.jar",
 					width:      appletWidth,
 					height:     appletHeight
 				};
 				var parameters = {
 					java_status_events: 'true',
-					jnlp_href:"/web/GeneCentric/launch.jnlp",
+					jnlp_href:"<%=contextRoot%>web/GeneCentric/launch.jnlp",
 					main_ensembl_id:ensembl,
 					genURL:genURL,
 					regionURL:regionURL,
 					macBug:bugString
 				}; 
-				var version = "1.6"; 
+				var version = "1.7"; 
                                 deployJava.runApplet(attributes, parameters, version);
 			}else if(unsupportedChrome===1){
 				$('#unsupportedChrome').show();
