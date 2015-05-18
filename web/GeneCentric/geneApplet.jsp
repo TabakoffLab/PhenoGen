@@ -71,9 +71,12 @@ if(request.getParameter("arrayTypeID")!=null){
 	
 	String genURL="";
 	String urlPrefix=(String)session.getAttribute("mainURL");
-    if(urlPrefix.endsWith(".jsp")){
-         urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
-    }
+        if(urlPrefix.endsWith(".jsp")){
+             urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
+        }
+        if(request.getServerPort()==443 && urlPrefix.indexOf("https")!=0){
+            urlPrefix.replace("http","https");
+        }
 	genURL=urlPrefix+ "tmpData/geneData/" +selectedID+"/";
 	String regionURL=urlPrefix+"tmpData/regionData/"+folderName+"/";
 	
