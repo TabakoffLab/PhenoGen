@@ -12,7 +12,7 @@
     <update check="always"/>
     
     <resources>
-        <j2se version="1.6.0+"/>
+        <j2se version="1.7.0+"/>
         <jar href="GeneCentricViewer.jar" main="true"/>
 </resources>
     <applet-desc height="1200" main-class="genecentricviewer.GeneCentricViewer" name="GeneCentricViewer" width="1000">
