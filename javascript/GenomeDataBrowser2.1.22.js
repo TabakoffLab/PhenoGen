@@ -83,7 +83,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.15.3(4/24/2015)";
+var siteVer="PhenoGen v2.15.4(5/22/2015)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -622,6 +622,8 @@ function loadStateFromString(state,imgState,levelInd,svg){
 
 function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
 	var trackArray=trackListObj.split(";");
+	console.log("loadSavedConfigTracks");
+	console.log(trackArray);
 	var addedCount=0;
 	var tmpSvg=NaN;
 	if(levelInd<90){
@@ -782,7 +784,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.addTrack=function (track,density,additionalOptions,retry){
-		//console.log("Add Track:"+track);
+		console.log("Genome Add Track:"+track);
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -1568,6 +1570,71 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
                                                             var newTrack= PolyATrack(that,data,track,"Predicted PolyA Sites",additionalOptions);
                                                             that.addTrackList(newTrack);
                                                         }catch(er){}
+						}
+					}
+				});
+		}else if(track.indexOf("repeatMask")===0){
+			console.log("repeatMask");
+				var include=$("#"+track+that.levelNumber+"Select").val();
+				var tmpMin=that.xScale.domain()[0];
+				var tmpMax=that.xScale.domain()[1];
+				var file=dataPrefix+"tmpData/regionData/"+that.folderName+"/"+track+".xml";
+				d3.xml(file,function (error,d){
+					if(error){
+						console.log(error);
+						if(retry===0){
+							var tmpContext=contextPath +"/"+ pathPrefix;
+							if(!pathPrefix){
+								tmpContext="";
+							}
+							$.ajax({
+								url: tmpContext +"generateTrackXML.jsp",
+				   				type: 'GET',
+				   				cache: false,
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName},
+								dataType: 'json',
+				    			success: function(data2){
+				    				
+				    			},
+				    			error: function(xhr, status, error) {
+				        			
+				    			}
+							});
+						}
+						if(retry<10){//wait before trying again
+							var time=2500;
+							if(retry===1){
+								time=10000;
+							}
+							setTimeout(function (){
+								that.addTrack(track,density,additionalOptions,retry+1);
+							},time);
+						}else{
+							d3.select("#Level"+that.levelNumber+track).select("#trkLbl").text("An errror occurred loading Track:"+track);
+							d3.select("#Level"+that.levelNumber+track).attr("height", 15);
+							that.addTrackErrorRemove(d3.select("#Level"+that.levelNumber+track),"#Level"+that.levelNumber+track);
+						}
+					}else{
+						if(d==null){
+							if(retry>=11){
+								var data=new Array();
+								var newTrack= RepeatMaskTrack(that,data,track,"Repeat Masker",additionalOptions);
+								that.addTrackList(newTrack);
+							}else{
+								setTimeout(function (){
+									that.addTrack(track,density,additionalOptions,11);
+								},5000);
+							}
+						}else{
+                                                        
+							var data=d.documentElement.getElementsByTagName("Feature");
+                           	try{
+								var newTrack= RepeatMaskTrack(that,data,track,"Repeat Masker",additionalOptions);                     
+								that.addTrackList(newTrack);
+								//newTrack.getDisplayedData();
+                            }catch(er){
+                                console.log(er);                         
+                            }
 						}
 					}
 				});
@@ -2688,7 +2755,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.addTrackErrorRemove=function(svg,selector){
 	};
 	that.addTrack=function (track,density,additionalOptions,data){
-		//console.log("addTrack():"+additionalOptions);
+		console.log("toolTip addTrack("+track+","+density+","+additionalOptions+"  "+data+")");
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -2831,6 +2898,12 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				},300);
 			}
 			that.addTrackList(newTrack);
+		}else if(track.indexOf("repeatMask")===0){
+			
+			var newTrack=RepeatMaskTrack(that,data,track,"Repeat Masker",1,additionalOptions);                   
+			that.addTrackList(newTrack);
+			console.log("added repeatMask");
+			console.log(newTrack);
 		}else if(track.indexOf("custom")>-1){
 			var trackDetails=trackInfo[track];
 			additionalOptions="DataFile="+trackDetails.Location+","+additionalOptions;
@@ -10798,6 +10871,74 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 	return that;
 }
 
+function RepeatMaskTrack(gsvg,data,trackClass,label,density,additionalOptions){
+	var that=GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOptions);
+	that.dataFileName="repeatMask.xml";
+	that.density=1;
+	that.xmlTag="Feature";
+	that.xmlTagBlockElem="Block";
+	that.minFeatureWidth=1;
+	that.ttSVG=1;
+	that.ttTrackList=[];
+	that.ttTrackList.push("ensemblcoding");
+	that.ttTrackList.push("braincoding");
+	that.ttTrackList.push("liverTotal");
+	that.ttTrackList.push("heartTotal");
+	that.ttTrackList.push("refSeq");
+	that.ttSVGMinWidth=200;
+
+	that.color= function (d){
+		var color=d3.rgb("#000000");	
+		return color;
+	};
+
+	that.drawTrx=function (d,i){
+		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#"+that.idPrefix+"tx"+d.getAttribute("ID"));
+		exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
+		if(exList.length===1){
+			var curR=txG.append("rect")
+			.attr("x",function(d){ return that.xScale(exList[0].getAttribute("start"))-that.xScale(d.getAttribute("start")); })
+			.attr("rx",1)
+			.attr("ry",1)
+	    	.attr("height",10)
+			.attr("width",function(d){ 
+					var tmpW=that.xScale(exList[0].getAttribute("stop")) - that.xScale(exList[0].getAttribute("start"));
+					if(that.minFeatureWidth>0&&tmpW<that.minFeatureWidth){
+						tmpW=that.minFeatureWidth;
+					}
+					return  tmpW;
+				})
+			.attr("id",function(d,i){
+					var id=that.idPrefix+"Ex"+exList[0].getAttribute("ID");
+					if(exList[0].getAttribute("ID")==null){
+						id=that.idPrefix+"Ex"+d.getAttribute("ID")+"_"+0;
+					}
+					return id;
+				})
+			.style("fill",that.color)
+			.style("cursor", "pointer");
+		}
+	};
+
+	that.redrawLegend=function (){
+		var legend=[];
+		legend[0]={color:"#FFFFFF",label:"SINE"};
+		legend[1]={color:"#FFFFFF",label:"LINE"};
+		legend[2]={color:"#FFFFFF",label:"LTR"};
+		legend[3]={color:"#FFFFFF",label:"DNA"};
+		legend[4]={color:"#FFFFFF",label:"Simple"};
+		legend[5]={color:"#FFFFFF",label:"Low Comp."};
+		legend[6]={color:"#FFFFFF",label:"Sat."};
+		legend[7]={color:"#FFFFFF",label:"RNA"};
+		legend[8]={color:"#FFFFFF",label:"Other"};
+		legend[9]={color:"#FFFFFF",label:"Unkwn"};
+		that.drawLegend(legend);
+	};
+
+
+	return that;
+}
+
 function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOptions){
 	var that= Track(gsvg,data,trackClass,label);
 	//Set Defaults
@@ -10835,16 +10976,6 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 			}
 		}
 	}
-
-
-	/*//Initialize Y Positioning Variables
-	that.yMaxArr=new Array();
-	that.yArr=new Array();
-	that.yArr[0]=new Array();
-	for(var j=0;j<that.gsvg.width;j++){
-				that.yMaxArr[j]=0;
-				that.yArr[0][j]=0;
-	}*/
 	
 	that.createColorScale=function (){
 		if(typeof that.minColor!=='undefined' && typeof that.maxColor!=='undefined'){
@@ -11108,10 +11239,14 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 	that.updateFullData = function(retry,force){
+		console.log("calling updateFullData()"+that.dataFileName);
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
 		var file=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/"+that.dataFileName;
 		d3.xml(file,function (error,d){
+					console.log("d3.xml()");
+					console.log(error);
+					console.log(d);
 					if(error){
 						//console.log(error);
 						if(retry==0 || force==1){
@@ -11149,7 +11284,11 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 							that.hideLoading();
 						}
 					}else{
+						console.log("no error");
+						console.log(d);
 						if(d==null){
+							console.log("d null");
+							
 							if(retry>=4){
 								data=new Array();
 								that.draw(data);
@@ -11160,6 +11299,8 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 								},5000);
 							}
 						}else{
+							console.log("d not null");
+							
 							var data=d.documentElement.getElementsByTagName(that.xmlTag);
 							that.draw(data);
 							that.hideLoading();
@@ -11184,6 +11325,8 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	that.draw=function(data){
 		
 		that.data=data;
+		console.log("draw");
+		console.log(data);
 		that.prevDensity=that.density;
 		//that.setDensity();
 		that.trackYMax=0;
@@ -11256,6 +11399,8 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 	return that;
 }
+
+
 
 window['GenomeSVG']=GenomeSVG;
 

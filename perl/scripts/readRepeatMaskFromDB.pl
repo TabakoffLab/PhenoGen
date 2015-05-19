@@ -38,7 +38,7 @@ sub readRepeatMaskFromDB{
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
 		$query ="SELECT m.milliDiv,m.milliDel,m.milliIns,m.genoName,m.genoStart,m.genoEnd,m.repName,m.repClass,m.repFamily
-			FROM ucsc_".$shortOrg."_5_2015.rmsk m
+			FROM rmsk m
 			where m.genoName='".$geneChrom."'
 			and ((".$geneStart."<=m.genoStart and m.genoStart<=".$geneStop.") or (".$geneStart."<=m.genoEnd and m.genoEnd<=".$geneStop.") or (m.genoStart<=".$geneStart." and ".$geneStop."<=m.genoEnd))
 			order by m.genoStart,m.repName";
@@ -57,7 +57,7 @@ sub readRepeatMaskFromDB{
         my $cntRepeat=0;
 	
 	while($query_handle->fetch()) {
-			$repeatHOH{Repeat}[$cntRepeat] = {
+			$repeatHOH{Feature}[$cntRepeat] = {
 				start => $start,
 				stop => $stop,
 				ID => $cntRepeat+1,
@@ -69,11 +69,16 @@ sub readRepeatMaskFromDB{
                                 ins => $insertion,
                                 del => $deletion
 				};
+                        $repeatHOH{Feature}[$cntRepeat]{BlockList}{Block}[0] ={
+                                                                        start => $start,
+                                                                        stop => $stop
+                                                                    };
+                        $cntRepeat++;
 	}
 	$query_handle->finish();
 	$connect->disconnect();
 	
-	return (\%geneHOH);
+	return (\%repeatHOH);
 }
 
 1;

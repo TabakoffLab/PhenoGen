@@ -82,6 +82,7 @@ public class GeneDataTools {
     private String chrom="";
     private String dbPropertiesFile="";
     private String ensemblDBPropertiesFile="";
+    private String ucscDBVerPropertiesFile="";
     private int minCoord=0;
     private int maxCoord=0;
     FileHandler myFH=new FileHandler();
@@ -1467,6 +1468,8 @@ public class GeneDataTools {
             log.debug("PUBLIC USER ID:"+publicUserID);
             //tmpConn.close();
             String tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
+            
+            
             Properties myProperties = new Properties();
             File myPropertiesFile = new File(dbPropertiesFile);
             myProperties.load(new FileInputStream(myPropertiesFile));
@@ -1475,6 +1478,18 @@ public class GeneDataTools {
             String dbUser=myProperties.getProperty("USER");
             String dbPassword=myProperties.getProperty("PASSWORD");
             
+            Properties myVerProperties = new Properties();
+            log.debug("UCSC file:"+ucscDBVerPropertiesFile);
+            File myVerPropertiesFile = new File(ucscDBVerPropertiesFile);
+            myVerProperties.load(new FileInputStream(myVerPropertiesFile));
+            
+            String dbVer=myVerProperties.getProperty("UCSCDATE");
+            String refSeqDB=organism+"_"+myVerProperties.getProperty("REFSEQVER");
+            String ucscHost=myVerProperties.getProperty("HOST");
+            String ucscPort=myVerProperties.getProperty("PORT");
+            String ucscUser=myVerProperties.getProperty("USER");
+            String ucscPassword=myVerProperties.getProperty("PASSWORD");
+            
             File ensPropertiesFile = new File(ensemblDBPropertiesFile);
             Properties myENSProperties = new Properties();
             myENSProperties.load(new FileInputStream(ensPropertiesFile));
@@ -1482,11 +1497,16 @@ public class GeneDataTools {
             String ensPort=myENSProperties.getProperty("PORT");
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
-            String refSeqDB="Rn_refseq_5";
+            /*String refSeqDB="Rn_refseq_5";
             if(organism.equals("Mm")){
                 refSeqDB="Mm_refseq_5";
+            }*/
+            String genome="rn5";
+            if(organism.equals("Mm")){
+                genome="mm10";
             }
-            String ensDsn="DBI:mysql:database="+refSeqDB+";host="+ensHost+";port="+ensPort+";";
+            String ensDsn="DBI:mysql:database="+refSeqDB+";host="+ucscHost+";port="+ucscPort+";";
+            String ucscDsn="DBI:mysql:database=ucsc_"+genome+"_"+dbVer+";host="+ucscHost+";port="+ucscPort+";";
             
             String tissue="Brain";
             if(track.startsWith("liver")){
@@ -1496,7 +1516,7 @@ public class GeneDataTools {
             }
             
             //construct perl Args
-            String[] perlArgs = new String[17];
+            String[] perlArgs = new String[20];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Track.pl";
             perlArgs[2] = tmpOutputDir;
@@ -1518,7 +1538,9 @@ public class GeneDataTools {
             perlArgs[14] = ensDsn;
             perlArgs[15] = ensUser;
             perlArgs[16] = ensPassword;
-
+            perlArgs[17] = ucscDsn;
+            perlArgs[18] = ucscUser;
+            perlArgs[19] = ucscPassword;
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
             String[] envVar=perlEnvVar.split(",");
@@ -2957,6 +2979,8 @@ public class GeneDataTools {
         
         this.dbPropertiesFile = (String)session.getAttribute("dbPropertiesFile");
         this.ensemblDBPropertiesFile = (String)session.getAttribute("ensDbPropertiesFile");
+        this.ucscDBVerPropertiesFile = (String)session.getAttribute("ucscDbPropertiesFile");
+        log.debug("UCSC File:"+ucscDBVerPropertiesFile);
         if(session.getAttribute("maxRThreadCount")!=null){
             this.maxThreadRunning = Integer.parseInt((String)session.getAttribute("maxRThreadCount"));
         }
