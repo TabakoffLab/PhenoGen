@@ -15,6 +15,7 @@ require 'readSmallNCDataFromDB.pl';
 require 'readRefSeqDataFromDB.pl';
 require 'readEnsemblSeqFromDB.pl';
 require 'createXMLTrack.pl';
+require 'readRepeatMaskFromDB.pl';
 
 sub createBinnedData{
 	my($refRNA,$bin,$start,$stop)=@_;
@@ -151,7 +152,7 @@ sub createBinnedData{
 sub createXMLFile
 {
 	# Read in the arguments for the subroutine	
-	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd)=@_;
+	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd,$ucscDsn,$ucscUsr,$ucscPasswd)=@_;
 	
 	my $scriptStart=time();
 	
@@ -224,7 +225,7 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-		my $refSeqRef=readRefSeqDataFromDB($chromosome,$species,$minCoord,$maxCoord,$ensDsn,$ensUsr,$ensPasswd);
+		my $refSeqRef=readRefSeqDataFromDB($chromosome,$species,$minCoord,$maxCoord,$ucscDsn,$ucscUsr,$ucscPasswd);
 		my %refSeqHOH=%$refSeqRef;
 		my $rnaCountEnd=time();
 		print "Ref Seq completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
@@ -257,7 +258,19 @@ sub createXMLFile
 			$trackDB="rn5";
 		}
 		createGenericXMLTrack(\%spliceHOH,$outputDir.$type.".xml");
-	}elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
+	}elsif(index($type,"repeatMask")>-1){
+                my $rnaCountStart=time();
+		if(index($chromosome,"chr")>-1){
+			$chromosome=substr($chromosome,3);
+		}
+		my $repeatMaskRef=readRepeatMaskFromDB($chromosome,$species,$minCoord,$maxCoord,$ucscDsn,$ucscUsr,$ucscPasswd);
+		my %repeatMaskHOH=%$repeatMaskRef;
+		my $rnaCountEnd=time();
+		print "RepeatMask completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
+                createGenericXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
+        }elsif(index($type,"chainNet")>-1){
+
+        }elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
                 my $ver=substr($type,index($type,"_")+1);
                 print "Type:$type\n";
                 print "Ver:$ver\n";
@@ -399,7 +412,10 @@ sub createXMLFile
 	my $arg13=$ARGV[12];
 	my $arg14=$ARGV[13];
 	my $arg15=$ARGV[14];
+        my $arg16=$ARGV[15];
+        my $arg17=$ARGV[16];
+        my $arg18=$ARGV[17];
 
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15);
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18);
 
 exit 0;
