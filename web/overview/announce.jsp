@@ -12,10 +12,14 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>UCSC Repeat Mask Available 5/20/2015</H2>
+                        <div style="margin-left:5px;">
+                            We've made the UCSC Repeat Mask track available.  See it by adding the track to any existing view.
+                        </div>
                         <H2>Workshop Video/Slides 4/16/2015</H2>
                         <div style="margin-left:5px;text-align: center;">
                             Watch the workshop:<BR><BR>
-                            <video id="demoVideo" width="250px"  controls="controls" poster="<%=webDir%>overview/slides2_150.png" preload="none">
+                            <video id="demoVideo" width="250px"  controls="controls" poster="<%=webDir%>demo/slides2_350.png" preload="none">
                                     	<source src="<%=webDir%>demo/workshop.mp4" type="video/mp4">
                                         <source src="<%=webDir%>demo/workshop.webm" type="video/webm">
                                           <object data="<%=webDir%>demo/workshop.mp4" width="100%" >
