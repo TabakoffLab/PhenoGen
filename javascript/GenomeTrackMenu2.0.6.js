@@ -125,8 +125,6 @@ function TrackMenu(level){
                             $(this).addClass('selected');
                             var id=$(this).attr("id");
                             var d=that.findSelectedTrack();
-                            console.log("selected Track");
-                            console.log(d);
                             var data="Selected Track Name: "+d.Name+"  <span class=\"trInfotooltip"+that.level+"\" title= \""+d.Description+"\"><img src=\""+iconPath+"info.gif\"></span>";
                             $("div#trackHeaderOuter"+that.level+" #trackHeaderContent").html(data);
                             var tblHeight=that.getTrackTableHeight(btData);
@@ -286,7 +284,6 @@ function TrackMenu(level){
 	};
 
 	that.generatePreview=function(d){
-		console.log("generateTrackPreviewImage");
 		$("div#trackPreviewOuter"+that.level+" div#trackPreviewContent").html("");
 		var tmpOrg=new String(organism).toUpperCase();
 		if(d.Organism==="AA"||d.Organism===tmpOrg){
@@ -295,7 +292,6 @@ function TrackMenu(level){
 			that.previewSVG=toolTipSVG("div#trackPreviewOuter"+that.level+" div#trackPreviewContent",565,min,max,that.previewLevel,chr,svgList[that.level].type);
 			that.previewSVG.folderName=svgList[that.level].folderName;
 			var trackString=that.generateSettingsString(d);
-			console.log("trackString:"+trackString);
 			loadStateFromString(trackString,"",that.previewLevel,that.previewSVG);
 			that.previewSVG.updateData();
 			that.previewSVG.updateFullData();

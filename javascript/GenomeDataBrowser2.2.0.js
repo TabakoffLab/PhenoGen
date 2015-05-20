@@ -83,7 +83,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(rn5) Strain:BN";
-var siteVer="PhenoGen v2.15.4(5/22/2015)";
+var siteVer="PhenoGen v2.15.4(5/20/2015)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -622,8 +622,6 @@ function loadStateFromString(state,imgState,levelInd,svg){
 
 function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
 	var trackArray=trackListObj.split(";");
-	console.log("loadSavedConfigTracks");
-	console.log(trackArray);
 	var addedCount=0;
 	var tmpSvg=NaN;
 	if(levelInd<90){
@@ -784,7 +782,6 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	};
 
 	that.addTrack=function (track,density,additionalOptions,retry){
-		console.log("Genome Add Track:"+track);
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -1574,7 +1571,6 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					}
 				});
 		}else if(track.indexOf("repeatMask")===0){
-			console.log("repeatMask");
 				var include=$("#"+track+that.levelNumber+"Select").val();
 				var tmpMin=that.xScale.domain()[0];
 				var tmpMax=that.xScale.domain()[1];
@@ -1618,7 +1614,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 						if(d==null){
 							if(retry>=11){
 								var data=new Array();
-								var newTrack= RepeatMaskTrack(that,data,track,"Repeat Masker",additionalOptions);
+								var newTrack= RepeatMaskTrack(that,data,track,"Repeat Masker",density,additionalOptions);
 								that.addTrackList(newTrack);
 							}else{
 								setTimeout(function (){
@@ -1629,7 +1625,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
                                                         
 							var data=d.documentElement.getElementsByTagName("Feature");
                            	try{
-								var newTrack= RepeatMaskTrack(that,data,track,"Repeat Masker",additionalOptions);                     
+								var newTrack= RepeatMaskTrack(that,data,track,"Repeat Masker",density,additionalOptions);                     
 								that.addTrackList(newTrack);
 								//newTrack.getDisplayedData();
                             }catch(er){
@@ -1775,9 +1771,10 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	that.setLoading=function (){
 		for(var i=0;i<that.trackList.length;i++){
-			if(typeof that.trackList[i]!=='undefined' && 
-				(typeof that.trackList[i].updateData!=='undefined' || typeof that.trackList[i].updateFullData!=='undefined')){
-				that.trackList[i].showLoading();
+			if(typeof that.trackList[i]!=='undefined'){
+				if( typeof that.trackList[i].updateData !=='undefined' || typeof that.trackList[i].updateFullData!=='undefined' ) {
+					that.trackList[i].showLoading();
+				}
 			}
 		}
 	};
@@ -2755,7 +2752,6 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.addTrackErrorRemove=function(svg,selector){
 	};
 	that.addTrack=function (track,density,additionalOptions,data){
-		console.log("toolTip addTrack("+track+","+density+","+additionalOptions+"  "+data+")");
 		if(that.forceDrawAsValue=="Trx"){
 			var additionalOptionsStr=new String(additionalOptions);
 			if(additionalOptionsStr.indexOf("DrawTrx")==-1){
@@ -2899,11 +2895,8 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}
 			that.addTrackList(newTrack);
 		}else if(track.indexOf("repeatMask")===0){
-			
 			var newTrack=RepeatMaskTrack(that,data,track,"Repeat Masker",1,additionalOptions);                   
 			that.addTrackList(newTrack);
-			console.log("added repeatMask");
-			console.log(newTrack);
 		}else if(track.indexOf("custom")>-1){
 			var trackDetails=trackInfo[track];
 			additionalOptions="DataFile="+trackDetails.Location+","+additionalOptions;
@@ -3401,7 +3394,21 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	that.calcY = function (start,end,i){
 		var tmpY=0;
 		if(that.density===3 || that.density==='3'){
-			if((start>=that.xScale.domain()[0]&&start<=that.xScale.domain()[1])||
+			tmpY=that.calcYPack(start,end,i);
+		}else if(that.density===2 || that.density==='2'){
+			tmpY=that.calcYFull(i);
+		}else{
+			tmpY=that.calcYDense();
+		}
+		if(that.trackYMax<(tmpY/15)){
+			that.trackYMax=(tmpY/15);
+		}
+		return tmpY;
+	};
+
+	that.calcYPack = function(start, end, i){
+		var tmpY=0;
+		if((start>=that.xScale.domain()[0]&&start<=that.xScale.domain()[1])||
 				(end>=that.xScale.domain()[0]&&end<=that.xScale.domain()[1])||
 				(start<=that.xScale.domain()[0]&&end>=that.xScale.domain()[1])){
 				var pStart=Math.round(that.xScale(start));
@@ -3465,18 +3472,18 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 					that.yArr[yMax][pix]=1;
 				}
 				tmpY=yMax*15;
-			}else{
-				tmpY=15;
-			}
-		}else if(that.density===2 || that.density==='2'){
-			tmpY=(i+1)*15;
 		}else{
 			tmpY=15;
 		}
-		if(that.trackYMax<(tmpY/15)){
-			that.trackYMax=(tmpY/15);
-		}
 		return tmpY;
+	};
+
+	that.calcYDense = function(){
+		return 15;
+	};
+
+	that.calcYFull = function(i){
+		return (i+1)*15;
 	};
 
 	that.positionTTLeft = function(pageX){
@@ -4790,6 +4797,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.ttTrackList.push("refSeq");
 		that.ttTrackList.push("ensemblnoncoding");
 		that.ttTrackList.push("brainnoncoding");
+		that.ttTrackList.push("repeatMask");
 		that.ttTrackList.push("snpSHRH");
 		that.ttTrackList.push("snpBNLX");
 		that.ttTrackList.push("snpF344");
@@ -4800,6 +4808,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.ttTrackList.push("liversmallnc");
 		that.ttTrackList.push("heartsmallnc");
 		that.ttTrackList.push("refSeq");
+		that.ttTrackList.push("repeatMask");
 		that.ttTrackList.push("snpSHRH");
 		that.ttTrackList.push("snpBNLX");
 		that.ttTrackList.push("snpF344");
@@ -6329,6 +6338,7 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.ttTrackList.push("heartTotal");
 	that.ttTrackList.push("ensemblnoncoding");
 	that.ttTrackList.push("brainnoncoding");
+	that.ttTrackList.push("repeatMask");
 	that.ttTrackList.push("snpSHRH");
 	that.ttTrackList.push("snpBNLX");
 	that.ttTrackList.push("snpF344");
@@ -7247,6 +7257,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.ttTrackList.push("heartTotal");
 	that.ttTrackList.push("ensemblnoncoding");
 	that.ttTrackList.push("brainnoncoding");
+	that.ttTrackList.push("repeatMask");
 	//that.ttTrackList.push("ensemblsmallnc");
 	//that.ttTrackList.push("brainsmallnc");
 
@@ -8195,6 +8206,7 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 	that.ttTrackList.push("ensemblsmallnc");
 	that.ttTrackList.push("brainsmallnc");
 	that.ttTrackList.push("probe");
+	that.ttTrackList.push("repeatMask");
 
     that.xPadding=1;
     that.scanBackYLines=50;
@@ -9515,6 +9527,7 @@ function SpliceJunctionTrack(gsvg,data,trackClass,label,density,additionalOption
 	that.ttTrackList.push("liverTotal");
 	that.ttTrackList.push("heartTotal");
 	that.ttTrackList.push("refSeq");
+	that.ttTrackList.push("repeatMask");
 	if(trackClass==="splcJnct"){
 		that.ttTrackList.push("illuminaPolyA");
 	}else if(trackClass==="liverspliceJnct"){
@@ -9717,6 +9730,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.ttTrackList.push("brainsmallnc");
 		that.ttTrackList.push("liversmallnc");
 		that.ttTrackList.push("heartsmallnc");
+		that.ttTrackList.push("repeatMask");
 	}else{
 		that.ttTrackList.push("ensemblcoding");
 		that.ttTrackList.push("braincoding");
@@ -9730,6 +9744,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.ttTrackList.push("spliceJnct");
 		that.ttTrackList.push("liverspliceJnct");
 		that.ttTrackList.push("heartspliceJnct");
+		that.ttTrackList.push("repeatMask");
 	}
 	
 
@@ -10511,6 +10526,7 @@ function PolyATrack(gsvg,data,trackClass,label,density,additionalOptions){
 	that.ttTrackList.push("liverTotal");
 	that.ttTrackList.push("heartTotal");
 	that.ttTrackList.push("refSeq");
+	that.ttTrackList.push("repeatMask");
 	that.ttSVGMinWidth=200;
 	
 
@@ -10885,11 +10901,170 @@ function RepeatMaskTrack(gsvg,data,trackClass,label,density,additionalOptions){
 	that.ttTrackList.push("liverTotal");
 	that.ttTrackList.push("heartTotal");
 	that.ttTrackList.push("refSeq");
-	that.ttSVGMinWidth=200;
+	that.ttTrackList.push("spliceJnct");
+	that.ttTrackList.push("liverspliceJnct");
+	that.ttTrackList.push("heartspliceJnct");
+	that.ttTrackList.push("brainspliceJnct");
+	that.ttTrackList.push("illuminaPolyA");
+	that.ttTrackList.push("liverilluminaTotalPlus");
+	that.ttTrackList.push("liverilluminaTotalMinus");
+	that.ttTrackList.push("heartilluminaTotalPlus");
+	that.ttTrackList.push("heartilluminaTotalMinus");
+    that.ttTrackList.push("brainilluminaTotalPlus");
+    that.ttTrackList.push("brainilluminaTotalMinus");
 
-	that.color= function (d){
-		var color=d3.rgb("#000000");	
+
+	that.ttSVGMinWidth=200;
+	that.legendLbl="Smith-Waterman Alignment Score";
+
+	that.typeList=[];
+	that.typeList[0]={name:"SINE",clss:"SINE"};
+	that.typeList[1]={name:"LINE",clss:"LINE"};
+	that.typeList[2]={name:"LTR",clss:"LTR"};
+	that.typeList[3]={name:"DNA",clss:"DNA"};
+	that.typeList[4]={name:"Simple",clss:"Simple_repeat"};
+	that.typeList[5]={name:"Low Comp.",clss:"Low_complexity"};
+	that.typeList[6]={name:"Satellite",clss:"Satellite"};
+	that.typeList[7]={name:"RNA",clss:"RNA"};
+	that.typeList[8]={name:"Other",clss:"Other"};
+	that.typeList[9]={name:"Unknown",clss:"Unknown"};
+
+	that.yList={};
+	for(var i=0;i<that.typeList.length;i++){
+		that.yList[that.typeList[i].clss]=15+i*15;
+	}
+
+
+	that.createToolTip=function(d){
+		var tooltip="";
+		tooltip="<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;\"></div><BR>Name: "+d.getAttribute("name")+"&nbsp&nbsp&nbsp&nbsp&nbspClass: "+d.getAttribute("class");
+		tooltip=tooltip+"&nbsp&nbsp&nbsp&nbsp&nbspFamily: "+d.getAttribute("family")+"<BR><BR>Location: "+d.getAttribute("chromosome")+":"+d.getAttribute("start")+"-"+d.getAttribute("stop");
+		tooltip=tooltip+"<BR><BR>Alignment Score: "+d.getAttribute("score")+"<BR>Mismatches(parts/thousand): "+d.getAttribute("mis")+"<BR>Insertions(parts/thousand): "+d.getAttribute("ins");
+		tooltip=tooltip+"<BR>Deletions(parts/thousand): "+d.getAttribute("del");
+		return tooltip;
+	};
+
+	/*that.color= function (d){
+		var color=d3.rgb("#222222");
+		/*var dClass=d.getAttribute("class");
+		if(dClass==='LINE'){
+			color=d3.rgb("#0C4A4A");
+		}else if(dClass==='SINE'){
+			color=d3.rgb("#7B4214");
+		}else if(dClass==='LTR'){
+			color=d3.rgb("#106210");
+		}else if(dClass==='DNA'){
+			color=d3.rgb("#7B1414");
+		}else if(dClass==='Simple_repeat'){
+			color=d3.rgb("#6B0C4C");
+		}else if(dClass==='Low_complexity'){
+			color=d3.rgb("#3C105E");
+		}
 		return color;
+	};*/
+
+	that.calcY = function(start, end, i,d){
+		var tmpY=0;
+		if(that.density===3 || that.density==='3'){
+			tmpY=that.calcYPack(start,end,i);
+		}else if(that.density===2 || that.density==='2'){
+			tmpY=that.calcYFull(d);
+		}else{
+			tmpY=that.calcYDense();
+		}
+		if(that.trackYMax<(tmpY/15)){
+			that.trackYMax=(tmpY/15);
+		}
+		return tmpY;
+	};
+
+	that.calcYFull = function(d){
+		var clss=d.getAttribute("class");
+		if(clss.indexOf("RNA")>-1){
+			clss="RNA";
+		}
+		return that.yList[clss];
+	};
+
+	that.redraw = function (){
+		if(that.prevDensity!=that.density){
+			that.draw(that.data);
+		}else{
+			that.yMaxArr=new Array();
+			that.yArr=new Array();
+			that.yArr[0]=new Array();
+			for(var p=0;p<that.gsvg.width;p++){
+				that.yMaxArr[p]=0;
+				that.yArr[0][p]=0;
+			}
+			that.trackYMax=0;
+			var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass)
+				.selectAll("g."+that.idPrefix+"trx"+that.gsvg.levelNumber)
+				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i,d)+")";});
+
+			txG.each(function(d,i){
+					var tmpD=d;
+					var tmpI=i;
+					var exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
+					for(var m=0;m<exList.length;m++){
+						var id=that.idPrefix+"Ex"+exList[m].getAttribute("ID");
+						if(exList[m].getAttribute("ID")==null){
+							id=that.idPrefix+"Ex"+tmpD.getAttribute("ID")+"_"+m;
+						}
+
+						//d3.select("#Level"+that.gsvg.levelNumber+that.trackClass+" g#"+that.idPrefix+"tx"+tmpD.getAttribute("ID")+" rect#"+id)
+						that.svg.select("g#"+that.idPrefix+"tx"+tmpD.getAttribute("ID")+" rect#"+id)
+							.attr("x",function(d){ return that.xScale(exList[m].getAttribute("start")) -that.xScale(tmpD.getAttribute("start")); })
+							.attr("width",function(d){ return that.xScale(exList[m].getAttribute("stop")) - that.xScale(exList[m].getAttribute("start")); });
+
+						if(m>0){
+							var strChar=">";
+							if(d.getAttribute("strand")=="-1"){
+								strChar="<";
+							}
+							var fullChar=strChar;
+							var intStart=that.xScale(exList[m-1].getAttribute("stop")) -that.xScale(tmpD.getAttribute("start"));
+							var intStop=that.xScale(exList[m].getAttribute("start")) -that.xScale(tmpD.getAttribute("start"));
+							var rectW=intStop-intStart;
+							var alt=0;
+							var charW=7.0;
+							if(rectW<charW){
+									fullChar="";
+							}else{
+								rectW=rectW-charW;
+								while(rectW>(charW+1)){
+									if(alt==0){
+										fullChar=fullChar+" ";
+										alt=1;
+									}else{
+										fullChar=fullChar+strChar;
+										alt=0;
+									}
+									rectW=rectW-charW;
+								}
+							}
+							var id=exList[m-1].getAttribute("ID")+"_"+exList[m].getAttribute("ID");
+							if(exList[m].getAttribute("ID")==null){
+								id=tmpD.getAttribute("ID")+"_"+(m-1)+"_"+m;
+							}
+							that.svg.select("g#"+that.idPrefix+"tx"+tmpD.getAttribute("ID")+" line#"+that.idPrefix+"Int"+id)
+								.attr("x1",intStart)
+								.attr("x2",intStop);
+
+							that.svg.select("g#"+that.idPrefix+"tx"+tmpD.getAttribute("ID")+" #"+that.idPrefix+"IntTxt"+id)
+								.attr("dx",intStart+1).text(fullChar);
+						}
+					}
+				});
+			if(that.density==1){
+								that.svg.attr("height", 30);
+			}else if(that.density==2){
+								that.svg.attr("height", (d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g."+that.idPrefix+"trx"+that.gsvg.levelNumber).size()+1)*15);
+			}else if(that.density==3){
+								that.svg.attr("height", (that.trackYMax+1)*15);
+			}
+			that.redrawSelectedArea();
+		}
 	};
 
 	that.drawTrx=function (d,i){
@@ -10920,22 +11095,127 @@ function RepeatMaskTrack(gsvg,data,trackClass,label,density,additionalOptions){
 		}
 	};
 
-	that.redrawLegend=function (){
-		var legend=[];
-		legend[0]={color:"#FFFFFF",label:"SINE"};
-		legend[1]={color:"#FFFFFF",label:"LINE"};
-		legend[2]={color:"#FFFFFF",label:"LTR"};
-		legend[3]={color:"#FFFFFF",label:"DNA"};
-		legend[4]={color:"#FFFFFF",label:"Simple"};
-		legend[5]={color:"#FFFFFF",label:"Low Comp."};
-		legend[6]={color:"#FFFFFF",label:"Sat."};
-		legend[7]={color:"#FFFFFF",label:"RNA"};
-		legend[8]={color:"#FFFFFF",label:"Other"};
-		legend[9]={color:"#FFFFFF",label:"Unkwn"};
-		that.drawLegend(legend);
+	that.draw=function(data){
+		that.data=data;
+		that.prevDensity=that.density;
+		//that.setDensity();
+		that.trackYMax=0;
+		that.yArr=new Array();
+		that.yArr[0]=new Array();
+		for(var j=0;j<that.gsvg.width;j++){
+				that.yMaxArr[j]=0;
+				that.yArr[0][j]=0;
+		}
+		that.svg.selectAll(".repeatLine"+that.gsvg.levelNumber).remove();
+		that.svg.selectAll(".repeatLbl"+that.gsvg.levelNumber).remove();
+		if(that.density==2){
+			for(var i=0;i<that.typeList.length;i++){
+				that.svg.append("line")
+					.attr("class","repeatLine"+that.gsvg.levelNumber)
+					.attr("x1",0)
+					.attr("x2",that.gsvg.width)
+					.attr("y1",12+15*(i+1))
+					.attr("y2",12+15*(i+1))
+					.attr("stroke","#000000")
+					.attr("stroke-width","1px");
+				that.svg.append("text").attr("x",5)
+					.attr("class","repeatLbl"+that.gsvg.levelNumber)
+					.attr("y",10+15*(i+1))
+					.style("pointer-events","none")
+					.style("opacity","0.5")
+					.style("fill","#000000")
+					.style("font-size","11px")
+					.text(that.typeList[i].name);
+				that.svg.append("text")
+					.attr("class","repeatLbl"+that.gsvg.levelNumber)
+					.attr("x",that.gsvg.width-5)
+					.attr("y",10+15*(i+1))
+					.style("text-anchor", "end")
+					.style("pointer-events","none")
+					.style("opacity","0.5")
+					.style("fill","#000000")
+					.style("font-size","11px")
+					.text(that.typeList[i].name);;
+			}
+		}
+
+		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber).remove();
+		that.redrawLegend();
+		var tx=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber)
+	   			.data(data,key)
+				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i,d)+")";});
+	  	tx.enter().append("g")
+				.attr("class",that.idPrefix+"trx"+that.gsvg.levelNumber)
+				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d.getAttribute("start"),d.getAttribute("stop"),i,d)+")";})
+				.attr("id",function(d){return that.idPrefix+"tx"+d.getAttribute("ID");})
+				.attr("pointer-events", "all")
+				.style("cursor", "move")
+				.on("mouseover", function(d) {
+						if(that.gsvg.isToolTip==0&&that.trackClass.indexOf("custom")!=0){ 
+							d3.select(this).selectAll("line").style("stroke","green");
+							d3.select(this).selectAll("rect").style("fill","green");
+							d3.select(this).selectAll("text").style("opacity","0.3").style("fill","green");
+	            			tt.transition()        
+								.duration(200)      
+								.style("opacity", 1);      
+							tt.html(that.createToolTip(d))  
+								.style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+								.style("top", function(){return that.positionTTTop(d3.event.pageY);});
+							if(that.ttSVG==1){
+								that.setupToolTipSVG(d,0.05);
+							}
+						}
+	            	})
+				.on("mouseout", function(d) {
+						//if(that.gsvg.isToolTip==0){ 
+							/*mouseTTOver=0;
+							console.log("FEATURE MOUSEOUT");*/
+								//var tmpThis=this;
+								//ttHideHandle=setTimeout(function(){
+												
+												//if(mouseTTOver==0){
+												//	console.log("MOUSE STILL NOT OVER TT");
+													d3.select(this).selectAll("line").style("stroke",that.color);
+													d3.select(this).selectAll("rect").style("fill",that.color);
+													d3.select(this).selectAll("text").style("opacity","0.6").style("fill",that.color);  
+													tt.transition()
+														 .delay(100)       
+														.duration(200)      
+														.style("opacity", 0);
+												/*}else{
+													console.log("MOUSE IS NOW OVER TT")
+												}*/
+								//			},2000);
+						//}
+	        		})
+				.each(that.drawTrx);
+		tx.exit().remove();
+		if(that.density==1){
+							that.svg.attr("height", 30);
+		}else if(that.density==2){
+							that.svg.attr("height", that.typeList.length*15+15);
+		}else if(that.density==3){
+							that.svg.attr("height", (that.trackYMax+2)*15);
+		}
+		that.redrawSelectedArea();
 	};
 
+	/*that.redrawLegend=function (){
+		var legend=[];
+		legend[0]={color:"#7B4214",label:"SINE"};
+		legend[1]={color:"#0C4A4A",label:"LINE"};
+		legend[2]={color:"#106210",label:"LTR"};
+		legend[3]={color:"#7B1414",label:"DNA"};
+		legend[4]={color:"#6B0C4C",label:"Simple"};
+		legend[5]={color:"#3C105E",label:"Low Comp."};
+		legend[6]={color:"#64840F",label:"Sat."};
+		legend[7]={color:"#8C8810",label:"RNA"};
+		legend[8]={color:"#104466",label:"Other"};
+		legend[9]={color:"#9F6011",label:"Unkwn"};
+		that.drawLegend(legend);
+	};*/
 
+	that.draw(data);
 	return that;
 }
 
@@ -11239,14 +11519,11 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 	that.updateFullData = function(retry,force){
-		console.log("calling updateFullData()"+that.dataFileName);
 		var tmpMin=that.xScale.domain()[0];
 		var tmpMax=that.xScale.domain()[1];
+		that.showLoading();
 		var file=dataPrefix+"tmpData/regionData/"+that.gsvg.folderName+"/"+that.dataFileName;
 		d3.xml(file,function (error,d){
-					console.log("d3.xml()");
-					console.log(error);
-					console.log(d);
 					if(error){
 						//console.log(error);
 						if(retry==0 || force==1){
@@ -11284,11 +11561,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 							that.hideLoading();
 						}
 					}else{
-						console.log("no error");
-						console.log(d);
 						if(d==null){
-							console.log("d null");
-							
 							if(retry>=4){
 								data=new Array();
 								that.draw(data);
@@ -11299,8 +11572,6 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 								},5000);
 							}
 						}else{
-							console.log("d not null");
-							
 							var data=d.documentElement.getElementsByTagName(that.xmlTag);
 							that.draw(data);
 							that.hideLoading();
@@ -11325,8 +11596,6 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	that.draw=function(data){
 		
 		that.data=data;
-		console.log("draw");
-		console.log(data);
 		that.prevDensity=that.density;
 		//that.setDensity();
 		that.trackYMax=0;

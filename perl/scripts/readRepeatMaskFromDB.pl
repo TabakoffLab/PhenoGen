@@ -37,7 +37,7 @@ sub readRepeatMaskFromDB{
 	# PERL DBI CONNECT
 	$connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
 	
-		$query ="SELECT m.milliDiv,m.milliDel,m.milliIns,m.genoName,m.genoStart,m.genoEnd,m.repName,m.repClass,m.repFamily
+		$query ="SELECT m.milliDiv,m.milliDel,m.milliIns,m.swScore,m.genoName,m.genoStart,m.genoEnd,m.repName,m.repClass,m.repFamily
 			FROM rmsk m
 			where m.genoName='".$geneChrom."'
 			and ((".$geneStart."<=m.genoStart and m.genoStart<=".$geneStop.") or (".$geneStart."<=m.genoEnd and m.genoEnd<=".$geneStop.") or (m.genoStart<=".$geneStart." and ".$geneStop."<=m.genoEnd))
@@ -51,7 +51,7 @@ sub readRepeatMaskFromDB{
 
 # BIND TABLE COLUMNS TO VARIABLES
 
-	$query_handle->bind_columns(\$mismatch ,\$deletion,\$insertion,\$chr,\$start,\$stop,\$name,\$class,\$family);
+	$query_handle->bind_columns(\$mismatch ,\$deletion,\$insertion,\$swScore,\$chr,\$start,\$stop,\$name,\$class,\$family);
 # Loop through results, adding to array of hashes.
 
         my $cntRepeat=0;
@@ -67,7 +67,8 @@ sub readRepeatMaskFromDB{
 				family => $family,
                                 mis => $mismatch,
                                 ins => $insertion,
-                                del => $deletion
+                                del => $deletion,
+                                score => $swScore
 				};
                         $repeatHOH{Feature}[$cntRepeat]{BlockList}{Block}[0] ={
                                                                         start => $start,
