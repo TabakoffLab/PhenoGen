@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<jnlp codebase="" href="launch.jnlp" spec="1.5.0+">
+<jnlp codebase="" href="launch.jnlp" spec="6.0+">
     <information>
-        <title>ExonCorrelationViewer2</title>
+        <title>ExonCorrelationViewer</title>
         <vendor>Tabakoff Lab/University of Colorado Denver AMC</vendor>
         <homepage href="http://phenogen.ucdenver.edu/PhenoGen/"/>
-        <description>ExonCorrelationViewer2</description>
-        <description kind="short">ExonCorrelationViewer2</description>
+        <description>ExonCorrelationViewer</description>
+        <description kind="short">ExonCorrelationViewer</description>
+        
+        
     </information>
     <update check="always"/>
-    
+   
     <resources>
-        
-        <j2se version="1.5+"  java-vm-args="-Djava.security.policy=applet.policy" />
-        <jar href="ExonCorrelationViewer2.jar" main="true"/>
-        <jar href="lib/swing-layout-1.0.4.jar"/>
+        <j2se java-vm-args="-Djava.security.policy=applet.policy" version="1.7+"/> 
+        <jar href="/PhenoGen/web/exons/ExonCorrelationViewer2.jar" main="true"/>
+        <jar href="/PhenoGen/web/exons/lib/swing-layout-1.0.4.jar"/>
+		<jar href="/PhenoGen/web/exons/lib/AppletSharedDataLibrary.jar"/>
 </resources>
-
-    <applet-desc height="1200" main-class="edu.ucdenver.ccp.phenogen.applets.exonviewer.ExonCorrelationView" name="ExonCorrelationViewer2" width="960">
+    <applet-desc height="1200" main-class="edu.ucdenver.ccp.phenogen.applets.exonviewer.ExonCorrelationView" name="ExonCorrelationViewer" width="960">
         
-</applet-desc>
+    </applet-desc>
 </jnlp>

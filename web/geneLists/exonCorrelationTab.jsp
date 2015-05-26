@@ -11,30 +11,33 @@
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %>
 
 <jsp:useBean id="myDataset" class="edu.ucdenver.ccp.PhenoGen.data.Dataset"> </jsp:useBean>
+<jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
+<jsp:useBean id="myFH" class="edu.ucdenver.ccp.util.FileHandler"/>
 
 <%
         log.info("in exonCorrelationTab.jsp. user =  "+ user);
 
         extrasList.add("exonCorrelationTab.js");
-		//extrasList.add("progressBar.js");
-		optionsList.add("geneListDetails");
-		optionsList.add("chooseNewGeneList");
-        //if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) {
-		//optionsList.add("download");
-	//}
-
+        extrasList.add("jquery.dataTables.js");
+	extrasList.add("jquery.cookie.js");
+	extrasList.add("d3.v3.min.js");
+        extrasList.add("spectrum.js");
+	extrasList.add("tabs.css");
+	extrasList.add("tooltipster.min.css");
+        extrasList.add("spectrum.css");
+        optionsList.add("geneListDetails");
+        optionsList.add("chooseNewGeneList");
 	request.setAttribute( "selectedTabId", "exonCorrelationTab" );
-
         mySessionHandler.createGeneListActivity("Looked at exon Correlation Values for a gene", dbConn);
 %>
 
 <%@ include file="/web/common/header.jsp" %>
 
-    <script language="JAVASCRIPT" type="text/javascript"><%
+    <!--<script language="JAVASCRIPT" type="text/javascript"><%
                 String program = "exonCor";
                 int duration = 120;
                         %>durationArray[0] = new durationRow('<%=program%>', <%=duration%>);
-       </script>
+       </script>-->
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 
 	<div class="page-intro">
