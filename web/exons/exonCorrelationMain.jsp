@@ -17,7 +17,7 @@
         int min=0;
 	int max=0;
         int selectedGene=0;
-        int viewID=1;
+        int viewID=10;
 
         iDecoderAnswer = (Set) session.getAttribute("iDecoderAnswer");
         ExonDataTools edt=new ExonDataTools();
