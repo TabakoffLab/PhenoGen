@@ -9,10 +9,7 @@
  *      
 --%>
 <%@ include file="/web/access/include/login_vars.jsp" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptcha" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaFactory" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaImpl" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaResponse" %>
+
 <jsp:useBean id="myEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
 <% 
 	extrasList.add("main.min.css");
@@ -34,8 +31,8 @@
 	
 	
 	Properties myProperties = new Properties();
-    File myPropertiesFile = new File(captchaPropertiesFile);
-    myProperties.load(new FileInputStream(myPropertiesFile));
+        File myPropertiesFile = new File(captchaPropertiesFile);
+        myProperties.load(new FileInputStream(myPropertiesFile));
 	String errorMsg="";
 	String pub="";
 	String secret="";
@@ -49,14 +46,13 @@
 
 	if (action != null && action.equals("Send Password")) {
 		String remoteAddr = request.getRemoteAddr();
-		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-		reCaptcha.setPrivateKey(secret);
-	
-		String challenge = request.getParameter("recaptcha_challenge_field");
-		String uresponse = request.getParameter("recaptcha_response_field");
-		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
-	
-		if (reCaptchaResponse.isValid()) {
+		reCaptcha re=new reCaptcha();
+                String gResponse="";
+                if(request.getParameter("g-recaptcha-response")!=null){
+                    gResponse=request.getParameter("g-recaptcha-response");
+                }
+
+		if (re.checkResponse(secret,gResponse,remoteAddr)) {
 
 			String password = "";
 			if (emailAddress != null && !emailAddress.equals("")) {
@@ -93,17 +89,12 @@
 
 %>
 <%@ include file="/web/common/basicHeader.jsp" %>
-
+<script src='https://www.google.com/recaptcha/api.js'></script>
 	<div id="main_body" class="body_border">
 	<div class="page-intro"><%=msg%></div>
 
 <% if (!msg.equals("Your website password has been sent to your email address.")) { %> 
-	<script type="text/javascript">
-			var RecaptchaOptions = {
-				theme : 'clean',
-				custom_theme_widget: 'recaptcha_widget'
-			 };
-	</script>
+	
 	<div id="emailPassword">
 	<form   method="post"
         action="<%=accessDir%>emailPassword.jsp"
@@ -130,12 +121,11 @@
 		<tr><td colspan="100%">&nbsp;</td></tr>
         <TR>
                     <TD colspan="100%" >
-                    	<div style="text-align:center;width:100%">
-                    <%
-                      ReCaptcha c = ReCaptchaFactory.newReCaptcha(pub, secret, false);
-                      out.print(c.createRecaptchaHtml(null, null));
-                    %>
-                	</div>
+                    	
+                           <div style="text-align:center;width:100%">
+                                <div class="g-recaptcha" data-sitekey="<%=pub%>"></div>
+                            </div>
+                	
                     </TD>
                 </TR>
          <tr><td colspan="100%">&nbsp;</td></tr>
