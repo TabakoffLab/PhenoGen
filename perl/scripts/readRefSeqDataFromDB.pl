@@ -71,6 +71,18 @@ sub readRefSeqDataFromDB{
 
 	
 	while($query_handle->fetch()) {
+                # convert to 1 based coordinates from 0 based in UCSC data tables.
+                $txStart=$txStart+1;
+                $txStop=$txStop+1;
+                $cdsStart=$cdsStart+1;
+                $cdsStop=$cdsStop+1;
+                if($strand eq '-'){
+                    $strand=-1;
+                }elsif($strand eq '+'){
+                    $strand=1;
+                }else{
+                    $strand=0;
+                }
 		#print "$txID\n$exonStarts\n";
 		if($geneSym eq $previousGeneSym){		
 			$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
@@ -92,7 +104,8 @@ sub readRefSeqDataFromDB{
 			my $cntIntron=0;
 			for(my $i=0;$i<@startList;$i++){
 				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i]{ID}=$i+1;
-				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i]{start}=$startList[$i];
+                                #converting again to 1 based coordinates
+				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i]{start}=$startList[$i]+1;
 				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i]{stop}=$stopList[$i];
 				if($i>0){
 					my $intStart=$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i-1]{stop}+1;
@@ -152,7 +165,8 @@ sub readRefSeqDataFromDB{
 			my $cntIntron=0;
 			for(my $i=0;$i<@startList;$i++){
 				$geneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i]{ID}=$i+1;
-				$geneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i]{start}=$startList[$i];
+                                #converting again to 1 based coordinates
+				$geneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i]{start}=$startList[$i]+1;
 				$geneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i]{stop}=$stopList[$i];
 				if($i>0){
 					my $intStart=$geneHOH{Gene}[$cntGene]{TranscriptList}{Transcript}[$cntTranscript]{exonList}{exon}[$i-1]{stop}+1;
