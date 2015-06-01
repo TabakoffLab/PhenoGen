@@ -76,6 +76,13 @@ sub readRefSeqDataFromDB{
                 $txStop=$txStop+1;
                 $cdsStart=$cdsStart+1;
                 $cdsStop=$cdsStop+1;
+                if($strand eq '-'){
+                    $strand=-1;
+                }elsif($strand eq '+'){
+                    $strand=1;
+                }else{
+                    $strand=0;
+                }
 		#print "$txID\n$exonStarts\n";
 		if($geneSym eq $previousGeneSym){		
 			$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
