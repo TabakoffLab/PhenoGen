@@ -10,17 +10,12 @@
 --%>
 
 <%@ include file="/web/access/include/login_vars.jsp" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptcha" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaFactory" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaImpl" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaResponse" %>
 <%
 	extrasList.add("main.min.css");
 	extrasList.add("userCommon.js");
 	extrasList.add("registrationPopup.js");
 	extrasList.add("registrationPopup.css");
 	pageDescription="Sign up for a free account to analyze data";
-	
 %>
 
 <%@ page session="true" %>
@@ -33,8 +28,8 @@
 
 <%
 	Properties myProperties = new Properties();
-    File myPropertiesFile = new File(captchaPropertiesFile);
-    myProperties.load(new FileInputStream(myPropertiesFile));
+        File myPropertiesFile = new File(captchaPropertiesFile);
+        myProperties.load(new FileInputStream(myPropertiesFile));
 	String pub="";
 	String secret="";
 	pub=myProperties.getProperty("PUBLIC");
@@ -79,7 +74,12 @@
 	log.debug("first_name = "+newUser.getFirst_name());
 
         if ((action != null) && action.equals("Register")) {
-
+                        String remoteIP=request.getRemoteAddr();
+                        String gResponse="";
+                        if(request.getParameter("g-recaptcha-response")!=null){
+                            gResponse=request.getParameter("g-recaptcha-response");
+                        }
+                        reCaptcha re=new reCaptcha();
 			session.setAttribute("contextRoot", contextRoot);
 			session.setAttribute("webDir", webDir);
 			session.setAttribute("commonDir", commonDir);
@@ -89,15 +89,9 @@
 			log.debug("full_name = "+full_name);
 			log.debug("user_name = "+newUser.getUser_name());
 			log.debug("contextRoot = "+contextRoot);
-			String remoteAddr = request.getRemoteAddr();
-			ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-			reCaptcha.setPrivateKey(secret);
+
 	
-			String challenge = request.getParameter("recaptcha_challenge_field");
-			String uresponse = request.getParameter("recaptcha_response_field");
-			ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
-	
-			if (reCaptchaResponse.isValid()) {
+			if (re.checkResponse(secret,gResponse,remoteIP)) {
 				thisUser_id = myUser.checkUserExists(newUser, dbConn);
 				log.debug("user_id = "+thisUser_id);
 				if (thisUser_id != -1) {
@@ -204,12 +198,8 @@
 %>
 
 <%@ include file="/web/common/basicHeader.jsp" %>
-
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <script language="JAVASCRIPT" type="text/javascript">
-	var RecaptchaOptions = {
-				theme : 'clean',
-				custom_theme_widget: 'recaptcha_widget'
-			 };
 
 	function codeOfEthicsMsg() {
         	var answer = confirm("Please read the terms associated with using this website for " +
@@ -445,10 +435,7 @@
 			<TR>
                     <TD colspan="4" >
                     	<div style="text-align:center;width:100%">
-                    <%
-                      ReCaptcha c = ReCaptchaFactory.newReCaptcha(pub, secret, false);
-                      out.print(c.createRecaptchaHtml(null, null));
-                    %>
+                            <div class="g-recaptcha" data-sitekey="<%=pub%>"></div>
                 	</div>
                     </TD>
                 </TR>
