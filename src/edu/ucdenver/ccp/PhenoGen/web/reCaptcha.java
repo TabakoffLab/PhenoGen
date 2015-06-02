@@ -47,40 +47,8 @@ public class reCaptcha {
             HttpEntity entity = response.getEntity();
             String jsonResult="None";
             if (entity != null) {
-                //long len = entity.getContentLength();
-                //if (len != -1 && len < 8192) {
-                    jsonResult=EntityUtils.toString(entity);
-                    log.debug(jsonResult);
-                /*} else {
-                    // Stream content out
-                    log.debug("entity len="+len);
-                }*/
-                //InputStream instream = entity.getContent();
-//                try {
-//                    if
-////                    byte[] b=new byte[256];
-////                    Date start=new Date();
-////                    // do something useful
-////                    while(instream.available()==0){
-////                        Date now=new Date();
-////                        if(now.getTime()-start.getTime()>15000){
-////                            break;
-////                        }
-////                    }
-//                    while(instream.available()>0){
-//                        sb.append(EntityUtils.toString(entity))
-//                        /*int read=instream.read(b);
-//                        String tmp="";
-//                        if(read>0){
-//                            tmp=new String(b,0,read);
-//                            sb.append(tmp);
-//                        }*/
-//                    }
-//                } finally {
-//                    instream.close();
-//                }
-                
-                log.debug("jsonResult:\n"+jsonResult);
+                jsonResult=EntityUtils.toString(entity);
+
                 if(jsonResult.indexOf("\"success\":")>-1){
                     int start=jsonResult.indexOf("\"success\":")+10;
                     int end=jsonResult.indexOf(",",start);
