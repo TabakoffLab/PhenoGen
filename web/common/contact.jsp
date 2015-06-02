@@ -8,11 +8,6 @@
  *      
 --%>
 
-<%@ page import="net.tanesha.recaptcha.ReCaptcha" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaFactory" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaImpl" %>
-<%@ page import="net.tanesha.recaptcha.ReCaptchaResponse" %>
-
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
 <jsp:useBean id="myEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
@@ -30,41 +25,44 @@
 	secret=myProperties.getProperty("SECRET");
 	
 	String msg = "";
+        String msgColor="#FF0000";
 	String emailAddress="";
 	String subject="";
 	String feedback="";
 	if (action != null && action.equals("Submit")) {
-        emailAddress = (String) request.getParameter("emailAddress");
-        subject = (String) request.getParameter("subject");
-        feedback = (String) request.getParameter("feedback").trim();
-		String remoteAddr = request.getRemoteAddr();
-        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-        reCaptcha.setPrivateKey(secret);
+            emailAddress = (String) request.getParameter("emailAddress");
+            subject = (String) request.getParameter("subject");
+            feedback = (String) request.getParameter("feedback").trim();
+            String remoteAddr = request.getRemoteAddr();
+            reCaptcha re=new reCaptcha();
+            String gResponse="";
+            if(request.getParameter("g-recaptcha-response")!=null){
+                gResponse=request.getParameter("g-recaptcha-response");
+            }
 
-        String challenge = request.getParameter("recaptcha_challenge_field");
-        String uresponse = request.getParameter("recaptcha_response_field");
-        ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
-
-        if (reCaptchaResponse.isValid()) {
+            if (re.checkResponse(secret,gResponse,remoteAddr)) {
 
 			myEmail.setSubject("PhenoGen "+subject);
 			myEmail.setContent("Feedback from "+ emailAddress + " :" + "\n\n" + feedback);
-            try {
-				myEmail.sendEmailToAdministrator(adminEmail);
-				//mySessionHandler.createSessionActivity(session.getId(), "Sent an email from contact page", dbConn);
-            } catch (Exception e) {
-				log.error("exception while trying to send feedback to administrator", e);
-            }
-			if(dbConn!=null){
+                        try {
+                            myEmail.sendEmailToAdministrator(adminEmail);
+                            //mySessionHandler.createSessionActivity(session.getId(), "Sent an email from contact page", dbConn);
+                            msg="The following message has been successfully sent.";
+                            msgColor="#00CC00";
+                        } catch (Exception e) {
+                                            log.error("exception while trying to send feedback to administrator", e);
+                            msg="The message has NOT been sent.  Please try again.  If the form is not working you can email Spencer.Mahaffey@ucdenver.edu directly.";
+                        }
+			/*if(dbConn!=null){
 				String msgNum = "ADM-003";
 				session.setAttribute("successMsg", msgNum);
-				response.sendRedirect(commonDir + "startPage.jsp");
+				//response.sendRedirect(commonDir + "startPage.jsp");
 			}else{
-				response.sendRedirect(commonDir + "startPage.jsp");
-			}
-		}else{
-			msg="The text entered for the image doesn't match.  Please try again.";
-		}
+				//response.sendRedirect(commonDir + "startPage.jsp");
+			}*/
+            }else{
+			msg="Please make sure that there is a check mark by the \"I'm not a robot\" field below and try again.";
+            }
 	}
 	//mySessionHandler.createSessionActivity(session.getId(), "Looked at contact page", dbConn);
 %>
@@ -72,12 +70,7 @@
 pageDescription="Contact Us, provide feedback or ask questions";
 %>
 	<%@ include file="/web/common/header.jsp" %>
-			<script type="text/javascript">
-			 var RecaptchaOptions = {
-				theme : 'clean',
-				custom_theme_widget: 'recaptcha_widget'
-			 };
- 			</script>
+	<script src='https://www.google.com/recaptcha/api.js'></script>		
         	<div id="welcome" style="height:625px; width:946px;">
 			<h2>Contact PhenoGen </h2>
                         <p> The quality, functionality, and continued maintenance of the PhenoGen Informatics 
@@ -90,7 +83,7 @@ pageDescription="Contact Us, provide feedback or ask questions";
 			<BR>
 			<BR>
             <div style="width:100%;">
-                <div style="background:#FFFFFF;text-align:center;font-size:14px;color:#FF0000; font-weight:bold; width:800px;"><%=msg%></div>
+                <div style="background:#FFFFFF;text-align:center;font-size:14px;font-weight:bold; width:800px;color:<%=msgColor%>;"><%=msg%></div>
                 
                     <form   method="post"
                         action="contact.jsp"
@@ -124,12 +117,9 @@ pageDescription="Contact Us, provide feedback or ask questions";
                 <tr><td colspan="4">&nbsp;</td></tr>
                 <TR>
                     <TD colspan="4" >
-                    	<div style="text-align:center;width:100%">
-                    <%
-                      ReCaptcha c = ReCaptchaFactory.newReCaptcha(pub, secret, false);
-                      out.print(c.createRecaptchaHtml(null, null));
-                    %>
-                	</div>
+                    	 <div style="text-align:center;width:100%">
+                                <div class="g-recaptcha" data-sitekey="<%=pub%>"></div>
+                         </div>
                     </TD>
                 </TR>
                 <tr>
