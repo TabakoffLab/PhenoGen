@@ -25,6 +25,7 @@
 	secret=myProperties.getProperty("SECRET");
 	
 	String msg = "";
+        String msgColor="#FF0000";
 	String emailAddress="";
 	String subject="";
 	String feedback="";
@@ -44,20 +45,23 @@
 			myEmail.setSubject("PhenoGen "+subject);
 			myEmail.setContent("Feedback from "+ emailAddress + " :" + "\n\n" + feedback);
                         try {
-                                            myEmail.sendEmailToAdministrator(adminEmail);
-                                            //mySessionHandler.createSessionActivity(session.getId(), "Sent an email from contact page", dbConn);
+                            myEmail.sendEmailToAdministrator(adminEmail);
+                            //mySessionHandler.createSessionActivity(session.getId(), "Sent an email from contact page", dbConn);
+                            msg="The following message has been successfully sent.";
+                            msgColor="#00CC00";
                         } catch (Exception e) {
                                             log.error("exception while trying to send feedback to administrator", e);
+                            msg="The message has NOT been sent.  Please try again.  If the form is not working you can email Spencer.Mahaffey@ucdenver.edu directly.";
                         }
-			if(dbConn!=null){
+			/*if(dbConn!=null){
 				String msgNum = "ADM-003";
 				session.setAttribute("successMsg", msgNum);
-				response.sendRedirect(commonDir + "startPage.jsp");
+				//response.sendRedirect(commonDir + "startPage.jsp");
 			}else{
-				response.sendRedirect(commonDir + "startPage.jsp");
-			}
+				//response.sendRedirect(commonDir + "startPage.jsp");
+			}*/
             }else{
-			msg="The text entered for the image doesn't match.  Please try again.";
+			msg="Please make sure that there is a check mark by the \"I'm not a robot\" field below and try again.";
             }
 	}
 	//mySessionHandler.createSessionActivity(session.getId(), "Looked at contact page", dbConn);
@@ -79,7 +83,7 @@ pageDescription="Contact Us, provide feedback or ask questions";
 			<BR>
 			<BR>
             <div style="width:100%;">
-                <div style="background:#FFFFFF;text-align:center;font-size:14px;color:#FF0000; font-weight:bold; width:800px;"><%=msg%></div>
+                <div style="background:#FFFFFF;text-align:center;font-size:14px;font-weight:bold; width:800px;color:<%=msgColor%>;"><%=msg%></div>
                 
                     <form   method="post"
                         action="contact.jsp"
