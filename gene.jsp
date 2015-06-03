@@ -25,11 +25,13 @@ String myGene="";
 String myDisplayGene="";
 String defView="1";
 boolean scriptError=false;
+boolean organismError=false;
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
 		myGene=request.getParameter("geneTxt").trim();
 		myGene=myGene.replaceAll(",","");
-                if(myGene.indexOf("((")>-1 || myGene.indexOf("||")>-1|| myGene.indexOf("))")>-1){
+                String lcmyGene=myGene.toLowerCase();
+                if(myGene.length()>150 || lcmyGene.contains("((") || lcmyGene.contains("||") || lcmyGene.contains("))")|| lcmyGene.contains("select")|| lcmyGene.contains("delete")|| lcmyGene.contains("union") || lcmyGene.contains("join") || lcmyGene.contains("from")|| lcmyGene.contains("char") ){
                     log.info("Script Submitted via Form: "+request.getRemoteAddr());
                     log.info("Contents:"+myGene);
                     myGene="";
@@ -113,13 +115,18 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 	}
 	if(request.getParameter("speciesCB")!=null){
 		myOrganism=request.getParameter("speciesCB").trim();
+                if(myOrganism.length()>2){
+                    myOrganism=myOrganism.substring(0,2);
+                }
 		if(myOrganism.equals("Rn")){
 			panel="BNLX/SHRH";
 			fullOrg="Rattus_norvegicus";
-		}else{
+		}else if(myOrganism.equals("Mm")){
 			panel="ILS/ISS";
 			fullOrg="Mus_musculus";
-		}
+		}else{
+                    organismError=true;
+                }
 	}
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
@@ -710,6 +717,12 @@ Or
     <div class="error">
         Your entry does not match a valid Gene or Region.  Please try again using the examples above.  
         The administrator has been notified, if message with a valid gene or region, they will look into and correct the issue.
+    </div>
+<%}else if(organismError){%>
+    <div class="error">
+        The submitted organism does not match a valid entry.  The only valid options are 'Rn' or 'Mm' for Rat or Mouse respectively.  
+        If you followed a link and received this message there is a problem with the url, but please enter your gene symbol or other 
+        identifier and submit the form again.  Using the form will ensure the species submitted is correct.
     </div>
 <%}else if(genURL.size()==1){%>
 	
