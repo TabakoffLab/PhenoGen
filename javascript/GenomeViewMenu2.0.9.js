@@ -443,6 +443,16 @@ function ViewMenu(level){
 		return d;
 	};
 
+	that.findSelectedViewWithID=function (id){
+		var d=NaN;
+		for(var i=0;i<that.viewList.length&&isNaN(d);i++){
+			if(that.viewList[i].ViewID===id){
+				d=that.viewList[i];
+			}
+		}
+		return d;
+	};
+
 	that.findSelectedViewIndex=function(){
 		var id=$("#viewSelect"+that.level).val();
 		var d=NaN;
@@ -499,6 +509,7 @@ function ViewMenu(level){
 							if($(window).width()>=1200){
 								left=-601;
 							}
+							trackMenu[that.level].standalone=false;
 							$(".trackLevel"+that.level).css("top",p.top).css("left",p.left+left);
 							var d=that.findSelectedView();
 							$(".trackLevel"+that.level+" span#selectedViewName").html(d.Name);
@@ -514,7 +525,7 @@ function ViewMenu(level){
 					} else{
 							$(".trackLevel"+that.level).fadeOut("fast");
 					}
-			})
+				})
 				.on("mouseover",function(){
 					$("#controlInfo"+that.level).html("Click to add a track to the current view.");
 				})
@@ -528,7 +539,7 @@ function ViewMenu(level){
 					$("span#viewMenuLbl"+that.level).text("Create View");
 					$("input#createType"+that.level).val("blank");
 					$("input#function"+that.level).val("create");
-			})
+				})
 				.on("mouseover",function(){
 					$("#topcontrolInfo"+that.level).html("Click to create a new view with no tracks.");
 				})
@@ -652,6 +663,10 @@ function ViewMenu(level){
 		$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
 		//update main menu on the browser form
 		//getMainViewData(1);
+	};
+	that.addTrackToViewWithID=function(id,trackData){
+		var view=that.findSelectedViewWithID(id);
+		view.TrackList.push(trackData);
 	};
 
 	that.createNewView = function(){
@@ -936,12 +951,12 @@ function ViewMenu(level){
 
 	};
         
-        that.cancelView = function(){
-            $("div#nameView"+that.level).hide();
-            $("div#selection"+that.level).show();
-            $("#predefinedSaveAs"+that.level).hide();
-            $("span#viewMenuLbl"+that.level).html("Select/Edit Views");
-        };
+    that.cancelView = function(){
+        $("div#nameView"+that.level).hide();
+        $("div#selection"+that.level).show();
+        $("#predefinedSaveAs"+that.level).hide();
+        $("span#viewMenuLbl"+that.level).html("Select/Edit Views");
+    };
 
 	that.getViewData();
 	that.setupControls();

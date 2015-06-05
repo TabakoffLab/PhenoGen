@@ -502,7 +502,7 @@
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.2.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.3.0.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport2.1.5.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeViewMenu2.0.9.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.0.6.js" type="text/javascript"></script>

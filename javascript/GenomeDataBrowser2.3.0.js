@@ -24,6 +24,7 @@ var trackSettings=[];
 var overSelectable=0;
 var zoomUpdateHandle=Math.NaN;
 
+
 var ratOnly=[];
 var mouseOnly=[];
 var history=[];
@@ -442,7 +443,7 @@ $(document).on("click",".viewSelect",function(){
 					if(!$(".viewsLevel"+level).is(":visible")){
 						var p=$(this).parent().parent().position();
 						//console.log(p);
-						var top=p.top+5;
+						var top=p.top;
 						$(".viewsLevel"+level).css("top",top).css("left",$(window).width()-610);
 						$(".viewsLevel"+level).fadeIn("fast");
 						$("#trackSettingDialog").hide();
@@ -2432,18 +2433,6 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 
 	that.setupFunctionBar();
 
-	/*that.vis.append("span").attr("class","views button")
-		.attr("id","viewsLevel"+levelNumber)
-		.style("float","right")
-		.style("width","80px")
-		.style("margin-right","5px")
-		.text("Views")
-		.on("mouseover",function(){
-			$("#mouseHelp").html("Click to change views or save the current view.");
-		})
-		.on("mouseout",function(){
-			$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-		});*/
 
 	if($("#viewSelect"+that.levelNumber).length==0){
 		var viewDivTop=that.vis.append("div")
@@ -2451,16 +2440,24 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		.style("display","inline-block")
 		.style("margin-right","5px");
 		var viewBtnSpan=viewDivTop.append("div");
-		viewBtnSpan.append("button").attr("id","viewSelect"+that.levelNumber).attr("class","viewSelect").text("Select/Edit Views");
-		viewBtnSpan.append("button").attr("id","viewMenuSelect"+that.levelNumber).attr("class","viewSelectMenu");
+		viewBtnSpan.append("button").attr("id","viewSelect"+that.levelNumber).attr("class","viewSelect").text("Select/Edit Views")
+			.on("mouseout",function(){
+				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+			})
+			.on("mouseover",function(){
+				$("#mouseHelp").html("Click to select another view or edit the current view.");
+			});
+		viewBtnSpan.append("button").attr("id","viewMenuSelect"+that.levelNumber).attr("class","viewSelectMenu")
+			.on("mouseout",function(){
+				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+			})
+			.on("mouseover",function(){
+				$("#mouseHelp").html("Click for options to quickly save and delete your current view.");
+			});
 		if(testChrome){
-                        d3.select("#viewSelect"+that.levelNumber).style("height","2.3em");
-			/*viewDivTop.style("position","relative").style("top","-7px");
-			d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","7px");*/
+            d3.select("#viewSelect"+that.levelNumber).style("height","2.3em");
 		}else if(testSafari){
-                    d3.select("#viewSelect"+that.levelNumber).style("height","2.3em");
-			/*viewDivTop.style("position","relative").style("top","-2px");
-			d3.select("#viewMenuSelect"+that.levelNumber).style("position","relative").style("top","-1px");*/
+            d3.select("#viewSelect"+that.levelNumber).style("height","2.3em");
 		}else if(testFireFox){
 			//nothing
 		}else if(testIE){
@@ -2511,7 +2508,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		            at: "left bottom",
 		            of: this
 		          });
-		          $( document ).one( "click", function() {
+		          $( document ).on( "click", function() {
 		            menu.hide();
 		          });
 		          return false;
@@ -2522,6 +2519,55 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	            .hide()
 	            .menu();
 
+	    var addTrackCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
+	    addTrackCtrl.append("span").attr("id","mainAddTrack"+that.levelNumber)
+	    	.attr("class","control")
+	    	.style("height","24px")
+	    	.style("display","inline-block")
+			.style("cursor","pointer")
+			.append("img").attr("class","mainAddTrack")
+			.attr("src","/web/images/icons/addTrack_dark_32.png")
+			.attr("pointer-events","all")
+			.style("height","37px")
+			.style("position","relative")
+			.style("top","-8px")
+			.on("click",function(){
+				if(!$(".trackLevel"+that.levelNumber).is(":visible")){
+					//var p=$("div.viewsLevel"+that.level).position();
+					var p=$(this).parent().parent().position();
+					//console.log($("div.trackLevel"+that.level)[0].getBoundingClientRect());
+					//console.log(p);
+					var left=-561;
+					/*if($(window).width()>=1200){
+						left=-601;
+					}*/
+					trackMenu[that.levelNumber].standalone=true;
+					$(".trackLevel"+that.levelNumber).css("top",p.top).css("left",p.left+left);
+					$(".trackLevel"+that.levelNumber+" span#selectedViewName").html(that.currentView.Name);
+					$(".trackLevel"+that.levelNumber).fadeIn("fast");
+					$("div#selectTrack"+that.levelNumber).show();
+            		$("div#addUsrTrack"+that.levelNumber).hide();
+            		$("div#addUsrTrack"+that.levelNumber).hide();
+            		$("div#deleteUsrTrack"+that.levelNumber).hide();
+					setTimeout(function(){
+						trackMenu[that.levelNumber].generateTrackTable();
+					},250);
+				} else{
+					$(".trackLevel"+that.levelNumber).fadeOut("fast");
+				}
+			})
+			.on("mouseout",function(){
+				d3.select(this).attr("src","/web/images/icons/addTrack_dark_32.png");
+				d3.select("span#mainAddTrack"+that.levelNumber).style("background","#DCDCDC");
+				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+			})
+			.on("mouseover",function(){
+				d3.select(this).attr("src","/web/images/icons/addTrack_light_32.png");
+				d3.select("span#mainAddTrack"+that.levelNumber).style("background","#989898");
+				$("#mouseHelp").html("Click to quickly add other tracks to the current view.");
+				
+			});
+
 		var imgCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
 
 		imgCtrl.append("input")
@@ -2530,7 +2576,14 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			.attr("id","forceTrxCBX"+that.levelNumber);
 		imgCtrl.append("label")
 				.attr("for","forceTrxCBX"+that.levelNumber)
-				.text("Draw Genes as Transcripts");
+				.text("Draw Genes as Transcripts")
+				.on("mouseout",function(){
+					$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+				})
+				.on("mouseover",function(){
+					$("#mouseHelp").html("Click to display Gene Tracks as Transcripts. Note: in smaller regions this occurs automatically.");
+					
+				});
 		$("input#forceTrxCBX"+that.levelNumber).button();
 
 		var scrollCtrl=that.vis.append("span").style("float","right").style("margin-right","5px");
@@ -2696,12 +2749,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	svgList[levelNumber]=that;
 	
 	 $( "#sortable"+levelNumber ).sortable({
-										      ///revert: true,
-										      //snap: "li",
-											  //axis: "y",
 											  appendTo: "parent",
 											  containment: "parent",
-											  //helper: "original",
 											  stop: function() {
 										        //saveToCookie(levelNumber);
 										      }
@@ -2710,7 +2759,6 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     $( ".draggable"+levelNumber ).draggable({
 										      connectToSortable: "#sortable"+levelNumber,
 										      scroll: true,
-										      //helper: "original",
 										      revert: "invalid",
 											  axis: "y"
 										    });
@@ -2722,9 +2770,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     var header=d3.select("div#imageHeader").html("Organism: "+orgVer+"&nbsp&nbsp&nbsp&nbsp"+siteVer);
     //Add Sequence Track
     that.addTrack("genomeSeq",3,"both",0);
-
     that.selectSvg= selectionSVG('#Level'+that.levelNumber,that.width,that.levelNumber,that);
-    //trackMenu[that.levelNumber]=TrackMenu(that.levelNumber);
+
     return that;
 }
 
@@ -3151,7 +3198,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	d3.select("#Level"+that.levelNumber).select(".x.axis")
 					.append("text")
 					.text(title)
-					.attr("x", ((that.width-(that.margin*2))/2)- (title.length*6.5)/2)
+					.attr("x", ((that.width-(that.margin*2))/2))
 					.attr("y",-40)
 					.attr("class","axisLbl");
 	
