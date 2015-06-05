@@ -3151,7 +3151,13 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	d3.select("#Level"+that.levelNumber).select(".x.axis")
 					.append("text")
 					.text(title)
-					.attr("x", ((that.width-(that.margin*2))/2)- (title.length*6.5)/2)
+					.attr("x", function(){
+							var x=(that.width-(that.margin*2))/2;
+							if(title && title.length>2){
+								x=x-((title.length*6.5)/2);
+							}
+							return x;
+						}) 
 					.attr("y",-40)
 					.attr("class","axisLbl");
 	
