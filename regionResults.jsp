@@ -164,10 +164,10 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
         <div id="collapsableImage" class="geneimage" >
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.2.2.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.3.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.1.5.js" type="text/javascript"></script>
-            <script src="javascript/GenomeViewMenu2.0.9.js" type="text/javascript"></script>
-            <script src="javascript/GenomeTrackMenu2.0.6.js" type="text/javascript"></script>
+            <script src="javascript/GenomeViewMenu2.1.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeTrackMenu2.1.0.js" type="text/javascript"></script>
             <script src="javascript/wgcnaBrowser1.0.4.js" type="text/javascript"></script>
             
             
