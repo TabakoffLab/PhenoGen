@@ -113,7 +113,8 @@ function TrackMenu(level){
 				"bDeferRender": true,*/
 				"aaSorting": [[ 3, "asc" ]],
 				"sScrollY": tmpHeight ,
-				"sDom": '<"rightSearch"fr><t>'
+				"sDom": '<"rightSearch"fr><t>',
+				"columnDefs": [{ "width": "45%", "targets": 0 }]
 			});
 		}
 		that.trackDataTable.draw();
@@ -133,7 +134,7 @@ function TrackMenu(level){
                             try{
                                     that.trackDataTable.columns.adjust().draw();
                             }catch(error){
-                                Bugsense.notify( error, { datatables: "error adjusting columns:132" } );
+                                Bugsense.notify( error, { datatables: "error adjusting columns:136" } );
                             }
                             $('#trkSelList'+that.level+'_wrapper div.dataTables_scroll div.dataTables_scrollBody').css('height', tblHeight);
                             $("td#selectedTrack"+that.level).show();
@@ -151,14 +152,16 @@ function TrackMenu(level){
                                 var track=that.previewSVG.getTrack(d.TrackClass);
                                 if(track && track.generateSettingsDiv){
                                                 track.generateSettingsDiv("td#selectedTrack"+that.level);
-                                        }
-                                        $("td#selectedTrack"+that.level+" #trackListTbl"+that.level+" tbody tr:first").remove();
-                                        $("td#selectedTrack"+that.level+" #trackListTbl"+that.level+" tbody tr:last").remove();
-                                        if(d.UserID!==0){
-                                                $("span#deleteCustomTrack"+that.level).show();
-                                        }else{
-                                                $("span#deleteCustomTrack"+that.level).hide();
-                                        }
+                                }
+                                $("td#selectedTrack"+that.level+" #trackListTbl"+that.level+" tbody tr:first").remove();
+                                $("td#selectedTrack"+that.level+" #trackListTbl"+that.level+" tbody tr:last").remove();
+                                if(d.UserID!==0){
+                                        $("span#deleteCustomTrack"+that.level).show();
+                                }else{
+                                        $("span#deleteCustomTrack"+that.level).hide();
+                                }
+                                track.updateSettingsFromUI();
+                                
                         }
                 } );
 

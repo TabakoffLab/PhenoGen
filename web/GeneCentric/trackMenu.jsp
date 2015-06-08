@@ -240,11 +240,32 @@
                     $("div#addUsrTrack<%=level%>").hide();
                 });
 		$("span.addTrack<%=level%>").on("click",function(){
+                    if(!trackMenu[<%=level%>].standalone){
 			var tmpTrack=trackMenu[<%=level%>].findSelectedTrack();
 			tmpTrack.Settings=trackMenu[<%=level%>].previewSVG.getTrack(tmpTrack.TrackClass).generateTrackSettingString();
 			tmpTrack.Settings=tmpTrack.Settings.substr(tmpTrack.Settings.indexOf(",")+1);
 			viewMenu[<%=level%>].addTrackToView(tmpTrack);
 			trackMenu[<%=level%>].removeTrack(tmpTrack);
+                        $("td#selectedTrack<%=level%> table tbody tr").remove();
+                    }else{
+                        var tmpTrack=trackMenu[<%=level%>].findSelectedTrack();
+                        trackMenu[<%=level%>].previewSVG.getTrack(tmpTrack.TrackClass).updateSettingsFromUI();
+			tmpTrack.Settings=trackMenu[<%=level%>].previewSVG.getTrack(tmpTrack.TrackClass).generateTrackSettingString();
+			tmpTrack.Settings=tmpTrack.Settings.substr(tmpTrack.Settings.indexOf(",")+1);
+                        console.log(tmpTrack.Settings);
+                        var tmp=tmpTrack.Settings.replace(/;/g,"");
+                        var tmp2=tmp.split(",");
+                        var additional="";
+                        if(tmpTrack.Settings.indexOf(",")>-1){
+                            additional=tmpTrack.Settings.substr(tmpTrack.Settings.indexOf(",")+1);
+                        }
+                        var id=svgList[<%=level%>].currentView.ViewID;
+			viewMenu[<%=level%>].addTrackToViewWithID(id,tmpTrack);
+                        
+                        svgList[<%=level%>].addTrack(tmpTrack.TrackClass,tmp2[0],additional,0);
+                        $(".trackLevel<%=level%>").fadeOut("fast");
+                        $("td#selectedTrack<%=level%> table tbody tr").remove();
+                    }
 		});
 		$("span#deleteCustomTrack<%=level%>").on("click",function(){
 			trackMenu[<%=level%>].confirmdeleteCustomTrack();
