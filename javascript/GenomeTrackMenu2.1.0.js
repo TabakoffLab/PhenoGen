@@ -113,7 +113,8 @@ function TrackMenu(level){
 				"bDeferRender": true,*/
 				"aaSorting": [[ 3, "asc" ]],
 				"sScrollY": tmpHeight ,
-				"sDom": '<"rightSearch"fr><t>'
+				"sDom": '<"rightSearch"fr><t>',
+				"columnDefs": [{ "width": "45%", "targets": 0 }]
 			});
 		}
 		that.trackDataTable.draw();

@@ -12,9 +12,15 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
-                        <H2>UCSC Repeat Mask Available 5/20/2015</H2>
+                        <H2>Minor Updates 6/8/2015</H2>
                         <div style="margin-left:5px;">
-                            We've made the UCSC Repeat Mask track available.  See it by adding the track to any existing view.
+                            We've made a couple of minor updates since the last release. 
+                            <ul>
+                                <li>The UCSC Repeat Mask track is now available.</li>
+                                <li>You now have the ability to add tracks without going into the edit view option.</li>
+                                <li>We've also fixed a number of bugs and made general functionality improvements.</li>
+                            </ul>   
+                              
                         </div>
                         <H2>Workshop Video/Slides 4/16/2015</H2>
                         <div style="margin-left:5px;text-align: center;">

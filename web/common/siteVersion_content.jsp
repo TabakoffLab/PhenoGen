@@ -47,13 +47,13 @@
                 <p><a href="http://multimir.ucdenver.edu/" target="_blank">multiMiR</a>:&nbsp;&nbsp;version 1.0.1</p>
                 <p><a href="http://circos.ca/" target="_blank">CIRCOS</a>:&nbsp;&nbsp;version 0.67-5</p>
                 <p><a href="http://d3js.org/" target="_blank">D3js</a>:&nbsp;&nbsp;version 3.5.5</p>
-                <p><a href="http://jquery.com/" target="_blank">jQuery & jQuery UI</a>:&nbsp;&nbsp;version 1.11.2</p>
+                <p><a href="http://jquery.com/" target="_blank">jQuery & jQuery UI</a>:&nbsp;&nbsp;version 1.11.4</p>
                 
 		<!-- <p><a href="http://www.atlassian.com/" target="JIRA">JIRA</a>: &nbsp;&nbsp;version 3.1.1-#81 Professional Edition</p> -->
                 <BR><BR>
                 <h2>Genome Data Browser Annotations</h2>        
                 <ul>
-                    <li>Ensembl v78</li>
+                    <li>Ensembl v79</li>
                     <li>RefSeq(source:UCSC Genome Browser): Downloaded 2/27/2015</li>
                     <!--<li>RGD QTL information: Downloaded </li>-->
                 </ul>
