@@ -2930,7 +2930,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 					try{
 						clearTimeout(that.timeoutTrack[track].fullDataTimeOutHandle);
 					}catch(error){
-						console.log(error);
+						//console.log(error);
 					}
 					that.updateTimeoutHandle[track]=0;
 				}
@@ -3848,6 +3848,10 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				$('#trackSettingDialog').fadeOut("fast");
 				that.gsvg.setCurrentViewModified();
 				that.gsvg.removeTrack(that.trackClass);
+				var viewID=svgList[that.gsvg.levelNumber].currentView.ViewID;
+				var track=viewMenu[that.gsvg.levelNumber].findTrackByClass(that.trackClass,viewID);
+				var indx=viewMenu[that.gsvg.levelNumber].findTrackIndexWithViewID(track.TrackID,viewID);
+				viewMenu[that.gsvg.levelNumber].removeTrackWithIDIdx(indx,viewID);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
@@ -4786,6 +4790,11 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
 				that.gsvg.removeTrack(that.trackClass);
+				that.gsvg.setCurrentViewModified();
+				var viewID=svgList[that.gsvg.levelNumber].currentView.ViewID;
+				var track=viewMenu[that.gsvg.levelNumber].findTrackByClass(that.trackClass,viewID);
+				var indx=viewMenu[that.gsvg.levelNumber].findTrackIndexWithViewID(track.TrackID,viewID);
+				viewMenu[that.gsvg.levelNumber].removeTrackWithIDIdx(indx,viewID);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
@@ -7439,10 +7448,14 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.updateSettingsFromUI=function(){
 		if($("#"+that.trackClass+"Dense"+that.level+"Select").length>0){
 			that.density=$("#"+that.trackClass+"Dense"+that.level+"Select").val();
+		}else if(!that.density){
+			that.density=1;
 		}
 		that.curColor=that.colorSelect;
 		if($("#"+that.trackClass+that.level+"colorSelect").length>0){
 			that.curColor=$("#"+that.trackClass+that.level+"colorSelect").val();
+		}else if(!that.curColor){
+			that.curColor="annot";
 		}
 		var count=0;
 		if($("#affyTissues"+that.level+" input[name=\"tissuecbx\"]").length>0){
@@ -8200,6 +8213,10 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
 				that.gsvg.removeTrack(that.trackClass);
+				var viewID=svgList[that.gsvg.levelNumber].currentView.ViewID;
+				var track=viewMenu[that.gsvg.levelNumber].findTrackByClass(that.trackClass,viewID);
+				var indx=viewMenu[that.gsvg.levelNumber].findTrackIndexWithViewID(track.TrackID,viewID);
+				viewMenu[that.gsvg.levelNumber].removeTrackWithIDIdx(indx,viewID);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
@@ -8372,6 +8389,10 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
 				that.gsvg.removeTrack(that.trackClass);
+				var viewID=svgList[that.gsvg.levelNumber].currentView.ViewID;
+				var track=viewMenu[that.gsvg.levelNumber].findTrackByClass(that.trackClass,viewID);
+				var indx=viewMenu[that.gsvg.levelNumber].findTrackIndexWithViewID(track.TrackID,viewID);
+				viewMenu[that.gsvg.levelNumber].removeTrackWithIDIdx(indx,viewID);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
@@ -10510,9 +10531,17 @@ function CountTrack(gsvg,data,trackClass,density){
 						var opts=params[2].split("}");
 						
 						div=div.append("div");
-						div.append("text").text("Min:").append("div").attr("id","min-"+selClass[1]).style("width","85%").style("display","inline-block").style("float","right");
+						div.append("text").text("Min:");
+						div.append("div").attr("id","min-"+selClass[1])
+							.style("width","60%")
+							.style("display","inline-block")
+							.style("float","right");
 						div.append("br");
-						div.append("text").text("Max:").append("div").attr("id","max-"+selClass[1]).style("width","85%").style("display","inline-block").style("float","right");
+						div.append("text").text("Max:");
+						div.append("div").attr("id","max-"+selClass[1])
+							.style("width","60%")
+							.style("display","inline-block")
+							.style("float","right");
 
 						$( "#min-"+selClass[1] ).slider({
 							  min: 1,
@@ -10528,8 +10557,8 @@ function CountTrack(gsvg,data,trackClass,density){
 							  value: that.scaleMax ,
 							  slide: that.processSlider
 							});
-							that.updateSettingsFromUI();
-							that.redraw();
+						that.updateSettingsFromUI();
+						that.redraw();
 					}
 				}
 			}
@@ -10538,6 +10567,10 @@ function CountTrack(gsvg,data,trackClass,density){
 				$('#trackSettingDialog').fadeOut("fast");
 				that.gsvg.setCurrentViewModified();
 				that.gsvg.removeTrack(that.trackClass);
+				var viewID=svgList[that.gsvg.levelNumber].currentView.ViewID;
+				var track=viewMenu[that.gsvg.levelNumber].findTrackByClass(that.trackClass,viewID);
+				var indx=viewMenu[that.gsvg.levelNumber].findTrackIndexWithViewID(track.TrackID,viewID);
+				viewMenu[that.gsvg.levelNumber].removeTrackWithIDIdx(indx,viewID);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
@@ -10937,6 +10970,10 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 			buttonDiv.append("input").attr("type","button").attr("value","Remove Track").style("float","left").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");
 				that.gsvg.removeTrack(that.trackClass);
+				var viewID=svgList[that.gsvg.levelNumber].currentView.ViewID;
+				var track=viewMenu[that.gsvg.levelNumber].findTrackByClass(that.trackClass,viewID);
+				var indx=viewMenu[that.gsvg.levelNumber].findTrackIndexWithViewID(track.TrackID,viewID);
+				viewMenu[that.gsvg.levelNumber].removeTrackWithIDIdx(indx,viewID);
 			});
 			buttonDiv.append("input").attr("type","button").attr("value","Apply").style("float","right").style("margin-left","5px").on("click",function(){
 				$('#trackSettingDialog').fadeOut("fast");

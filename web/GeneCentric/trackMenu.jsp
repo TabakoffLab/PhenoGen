@@ -246,8 +246,10 @@
 			tmpTrack.Settings=tmpTrack.Settings.substr(tmpTrack.Settings.indexOf(",")+1);
 			viewMenu[<%=level%>].addTrackToView(tmpTrack);
 			trackMenu[<%=level%>].removeTrack(tmpTrack);
+                        $("td#selectedTrack<%=level%> table tbody tr").remove();
                     }else{
                         var tmpTrack=trackMenu[<%=level%>].findSelectedTrack();
+                        trackMenu[<%=level%>].previewSVG.getTrack(tmpTrack.TrackClass).updateSettingsFromUI();
 			tmpTrack.Settings=trackMenu[<%=level%>].previewSVG.getTrack(tmpTrack.TrackClass).generateTrackSettingString();
 			tmpTrack.Settings=tmpTrack.Settings.substr(tmpTrack.Settings.indexOf(",")+1);
                         console.log(tmpTrack.Settings);
@@ -259,11 +261,10 @@
                         }
                         var id=svgList[<%=level%>].currentView.ViewID;
 			viewMenu[<%=level%>].addTrackToViewWithID(id,tmpTrack);
-                        console.log(tmpTrack);
-                        console.log("addTrack("+tmpTrack.TrackClass+","+tmp2[0]+","+additional+",0)");
                         
                         svgList[<%=level%>].addTrack(tmpTrack.TrackClass,tmp2[0],additional,0);
                         $(".trackLevel<%=level%>").fadeOut("fast");
+                        $("td#selectedTrack<%=level%> table tbody tr").remove();
                     }
 		});
 		$("span#deleteCustomTrack<%=level%>").on("click",function(){

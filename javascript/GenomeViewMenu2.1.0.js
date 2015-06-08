@@ -46,7 +46,21 @@ function ViewMenu(level){
 		
 	};
 
-
+	that.removeTrackWithID=function(id){
+		var index=that.findTrackIndex(id);
+		var viewID=that.findSelectedView().ViewID;
+		that.removeTrackWithIDIdx(index,viewID);
+	};
+	that.removeTrackWithIDIdx=function(indx,vwID){
+		var d=that.findViewWithID(vwID);
+		var vwIndx=that.findViewIndexByID(vwID);
+		d.TrackList.splice(indx,1);
+		that.generateTrackList(d);
+		that.findSelectedView().modified=1;
+		that.generateViewList();
+		that.generatePreview(d);
+		$("#viewSelect"+that.level).prop("selectedIndex",vwIndx);
+	};
 	//called to generate the rows of the track list table 
 	//creates the dragging/sorting behavior
 	//creates the controls in each row
@@ -146,15 +160,7 @@ function ViewMenu(level){
 			d3.select("table#trackListTbl"+that.level).selectAll(".delete"+that.level)
 				.on("click",function(){
 					var trackID=d3.select(this).attr("name");
-					var index=that.findTrackIndex(trackID);
-					var viewInd=that.findSelectedViewIndex();
-					var d=that.findSelectedView();
-					d.TrackList.splice(index,1);
-					that.generateTrackList(d);
-					that.findSelectedView().modified=1;
-					that.generateViewList();
-					that.generatePreview(d);
-					$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
+					that.removeTrackWithID(trackID);
 				})
 				.on("mouseover",function(){
 					$("#controlInfo"+that.level).html("Click to remove the track from the view.");
@@ -443,11 +449,20 @@ function ViewMenu(level){
 		return d;
 	};
 
-	that.findSelectedViewWithID=function (id){
+	that.findViewWithID=function (id){
 		var d=NaN;
 		for(var i=0;i<that.viewList.length&&isNaN(d);i++){
 			if(that.viewList[i].ViewID===id){
 				d=that.viewList[i];
+			}
+		}
+		return d;
+	};
+	that.findViewIndexByID=function(id){
+		var d=NaN;
+		for(var i=0;i<that.viewList.length&&isNaN(d);i++){
+			if(that.viewList[i].ViewID===id){
+				d=i;
 			}
 		}
 		return d;
@@ -464,6 +479,8 @@ function ViewMenu(level){
 		return d;
 	};
 
+	
+
 	that.findDisplayedIndex=function(id){
 		var ind=NaN;
 		for(var i=0;i<that.filterList.length&&isNaN(ind);i++){
@@ -473,6 +490,18 @@ function ViewMenu(level){
 		}
 		return ind;
 	};
+
+	that.findTrackByClass=function(trackClass,viewID){
+		var d=that.findViewWithID(viewID);
+		var trackList=d.TrackList;
+		var td=NaN;
+		for(var i=0;i<trackList.length&&isNaN(td);i++){
+			if(trackList[i].TrackClass===trackClass){
+				td=trackList[i];
+			}
+		}
+		return td;
+	}
 
 	that.findTrack=function(id){
 		var d=that.findSelectedView();
@@ -497,6 +526,18 @@ function ViewMenu(level){
 		}
 		return td;
 	};
+
+	that.findTrackIndexWithViewID=function(id,viewID){
+		var d=that.findViewWithID(viewID);
+		var trackList=d.TrackList;
+		var td=NaN;
+		for(var i=0;i<trackList.length&&isNaN(td);i++){
+			if(trackList[i].TrackID===id){
+				td=i;
+			}
+		}
+		return td;
+	}
 
 	that.setupControls=function(){
 		if(level>-1){
@@ -665,8 +706,12 @@ function ViewMenu(level){
 		//getMainViewData(1);
 	};
 	that.addTrackToViewWithID=function(id,trackData){
-		var view=that.findSelectedViewWithID(id);
+		var view=that.findViewWithID(id);
 		view.TrackList.push(trackData);
+		that.generateTrackList(view);
+		that.generatePreview(view);
+		that.generateViewList();
+		//$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
 	};
 
 	that.createNewView = function(){
