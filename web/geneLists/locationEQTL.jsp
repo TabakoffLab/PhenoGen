@@ -388,7 +388,7 @@ log.debug("after call");
 	request.getSession().setAttribute("dbConn", dbConn);
 
 	%>
-<%@ include file="/web/common/header.jsp" %> 
+<%@ include file="/web/common/header_adaptive_menu.jsp" %> 
 	<script type="text/javascript">
 		var ctrlMode = "<%= mode %>";
 		var qtlListID = "<%= qtlListID %>";
@@ -405,7 +405,7 @@ log.debug("after call");
 	
     
     
-	  <div class="dataContainer">
+	  <div class="dataContainer" style="padding-bottom:70px;">
 	   <div class="menuBar">
             <div id="tabMenu">
                  <div class="inlineButton" id="btnSaveGenes"><a href="#" >Save displayed genes</a><span class="info" title="Save the genes (triangular markers) that are displayed on the chromosomal map.">
@@ -637,5 +637,5 @@ log.debug("after call");
 
 <!--  <div class="load">Loading...</div> -->
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 

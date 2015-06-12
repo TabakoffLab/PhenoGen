@@ -50,7 +50,7 @@
 	mySessionHandler.createGeneListActivity("On promoter tab", dbConn);
 
 %>
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -90,6 +90,7 @@
 	<div class="createOpossum"></div>
 	<div class="createMeme"></div>
 	<div class="createUpstream"></div>
+        <BR><BR><BR><BR><BR>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			setupPage();
@@ -97,7 +98,7 @@
 	</script>
 
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
   <script type="text/javascript">
     $(document).ready(function() {
 	setTimeout("setupMain()", 100); 

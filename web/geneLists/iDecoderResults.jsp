@@ -89,13 +89,26 @@
 
 
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 	
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 	<div class="page-intro"> Shown below are the links to other databases </div>
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
-
-	<div class="dataContainer">
+ <style>
+                    tr.evenEven td{
+                        background: #FFFFFF;
+                    }
+                    tr.evenOdd td{
+                        background: #F5F5F5;
+                    }
+                    tr.oddEven td{
+                        background: #DEDEDE;
+                    }
+                    tr.oddOdd td{
+                        background: #BEBEBE;
+                    }
+</style>
+	<div class="dataContainer" style="padding-bottom:70px;">
 
 	<form   method="post"
 		name="annotation"
@@ -114,6 +127,8 @@
 			<th width="25%" class="noSort">Database</th>
 			<th width="65%" class="noSort">Links</th>
 		</tr>
+                
+               
 
 <% 	
 
@@ -133,7 +148,14 @@
 	// go through the original gene list, in sorted order
 	//
 	String msg = "No identifiers found for selected targets";
+        String topOE="odd";
+        int geneCnt=0;
         while (sortedIterator.hasNext()) {
+                if(geneCnt%2==0){
+                    topOE="even";
+                }else{
+                    topOE="odd";
+                }
 		List identifiersWithLocationInfo = new ArrayList();
 		List geneSymbolsForMapViewer = new ArrayList();
                 Identifier thisIdentifier = (Identifier) sortedIterator.next();
@@ -259,11 +281,15 @@
 
 			List linkList = myObjectHandler.getAsList((Set) linksHash.get(thisKey));
 			myIdentifier.sortIdentifiers(linkList, "identifier");
-
+                        String oddEven=topOE+"Odd";
+                        if(i%2==0){
+                            oddEven=topOE+"Even";
+                        }
+                        
 			if (i==0) {
-	                        %><tr><td><%=thisIdentifier.getIdentifier()%></td><%
+	                        %><tr class="<%=oddEven%>"><td><%=thisIdentifier.getIdentifier()%></td><%
 			} else {
-	                        %><tr><td>&nbsp;</td><%
+	                        %><tr class="<%=oddEven%>"><td>&nbsp;</td><%
 			}
 			
 			if (!thisKey.equals("Location")) {
@@ -354,6 +380,7 @@
 			msg = "";
 			%><tr><td colspan=3><hr class=annotation></td></tr> <%
 		}
+            geneCnt++;
 	}
 	if (!msg.equals("")) {
 		%><tr><td colspan=3><h1> <%=msg%></h1></td></tr><%
@@ -398,5 +425,5 @@ if (hiddenCheckBoxcodeLinkChipTargets != null) {
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 

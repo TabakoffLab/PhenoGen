@@ -50,7 +50,7 @@
 
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -62,7 +62,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer" >
+	<div class="dataContainer" style="padding-bottom: 70px;" >
 
 	<div id="related_links">
 		<div class="action" title="Return to select a different literature search">
@@ -244,4 +244,4 @@
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

@@ -57,8 +57,8 @@
 	predicted[0][0]="diana_microt";
 	predicted[0][1]="DIANA-microT-CDS";
 	predicted[0][2]="http://diana.cslab.ece.ntua.gr/data/public/";
-	predicted[1][0]="eimmo";
-	predicted[1][1]="EIMMo";
+	predicted[1][0]="elmmo";
+	predicted[1][1]="ElMMo";
 	predicted[1][2]="http://www.mirz.unibas.ch/miRNAtargetPredictionBulk.php";
 	predicted[2][0]="microcosm";
 	predicted[2][1]="MicroCosm";
@@ -108,8 +108,9 @@
 <TD>Tables Searched: <%=tables%></TD></TR><TR><TD>Predicted Cutoff Type/Value: <%=cutoffStr%></TD></TR><TR><TD>Disease/Drug Terms: <%=disease%></TD></TR>
 </TR>
 </table>-->
-<span style="font-size:16px; font-weight:bold;">miRNAs Targeting Genes in Gene List</span> <span id="btnresultSummary" class="button resultViewBTN" style="display:none;width:175px;">View Short Summary</span><span id="btnresultDetail" class="button resultViewBTN" style="width:175px;">View Detailed Summary</span>
-<div id="resultSummary" class="resultMainTable">
+<span style="font-size:16px; font-weight:bold;">miRNAs Targeting Genes in Gene List</span> <span id="btnresultSummary" class="button resultViewBTN" style="display:none;width:175px;float:right;">View Short Summary</span><span id="btnresultDetail" class="button resultViewBTN" style="width:175px;float:right;">View Detailed Summary</span>
+<BR><BR><BR>
+<div id="resultSummary" class="resultMainTable" style="width:100%;">
 Short Summary Table
 <table id="resultSummaryMirGeneTbl" name="items" class="list_base" style="text-align:center;width:100%;">
 	<thead>
@@ -127,33 +128,34 @@ Short Summary Table
         </thead>
         <tbody>
         	<%for (int i=0;i<summaryList.size();i++){
-				MiRResultSummary tmp=summaryList.get(i);
-				String rowID=tmp.getAccession();
-				if(tmp.getAccession().equals("")){
-					rowID=tmp.getId();
-				}
-				%>
-            	<TR class="<%=rowID.replace("*","")%>">
-                	<TD>
-                    	<%if(tmp.getAccession().equals("")){%>
-                            <a href="http://www.mirbase.org/cgi-bin/query.pl?terms=<%=tmp.getId().replace("*","")%>" target="_blank" title="Link to miRBase.">Accession # Missing</a>
-                        <%}else{%>
-                            <a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
-                        <%}%>
-                    	
-                    </TD>
-            		<TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:#688eb3;"><%=tmp.getId()%></span></TD>
-                    <TD><span class="<%if(tmp.getValidCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getValidListHTML()%>"><%=tmp.getValidCount()%></span></TD>
-                    <TD><span class="<%if(tmp.getPredictedCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getPredictedListHTML()%>"><%=tmp.getPredictedCount()%></span></TD>
-                    <TD><span class="hoverDetail" title="<%=tmp.getTotalListHTML()%>"><%=tmp.getTotalCount()%></span></TD>
-                </TR>
-            <%}%>
+                    MiRResultSummary tmp=summaryList.get(i);
+                    String rowID=tmp.getAccession();
+                    if(tmp.getAccession().equals("")){
+                            rowID=tmp.getId();
+                    }
+                    if(tmp.getValidCount()>0 || tmp.getPredictedCount()>0 ){%>
+                        <TR class="<%=rowID.replace("*","")%>">
+                                <TD>
+                                <%if(tmp.getAccession().equals("")){%>
+                                    <a href="http://www.mirbase.org/cgi-bin/query.pl?terms=<%=tmp.getId().replace("*","")%>" target="_blank" title="Link to miRBase.">Accession # Missing</a>
+                                <%}else{%>
+                                    <a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
+                                <%}%>
+
+                            </TD>
+                                <TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:#688eb3;"><%=tmp.getId()%></span></TD>
+                            <TD><span class="<%if(tmp.getValidCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getValidListHTML()%>"><%=tmp.getValidCount()%></span></TD>
+                            <TD><span class="<%if(tmp.getPredictedCount()>0){%>hoverDetail<%}%>" title="<%=tmp.getPredictedListHTML()%>"><%=tmp.getPredictedCount()%></span></TD>
+                            <TD><span class="hoverDetail" title="<%=tmp.getTotalListHTML()%>"><%=tmp.getTotalCount()%></span></TD>
+                        </TR>
+                <%}
+            }%>
         </tbody>
 </table>
 </div>
-<div id="resultDetail" class="resultMainTable">
+<div id="resultDetail" class="resultMainTable" style="width:100%;">
 Detailed Summary Table
-<table id="resultDetailMirGeneTbl" name="items" class="list_base" style="text-align:center;">
+<table id="resultDetailMirGeneTbl" name="items" class="list_base" style="text-align:center;width:100%;" >
 	<%if(mirList.size()>0){
 		Set sourceKey=mirList.get(0).getSourceCount().keySet();
 		%>
@@ -271,8 +273,8 @@ Detailed Summary Table
 	var tblMirSummaryResult=$('#resultSummaryMirGeneTbl').dataTable({
 			"bPaginate": false,
 			"bDeferRender": true,
-			"sScrollX": "650px",
-			"sScrollY": "450px",
+			"sScrollX": "100%",
+			"sScrollY": "420px",
 			"aaSorting": [[ 0, "desc" ]],
 			"sDom": '<fr><t><i>'
 	});
@@ -280,8 +282,8 @@ Detailed Summary Table
 	var tblMirDetailResult=$('#resultDetailMirGeneTbl').dataTable({
 			"bPaginate": false,
 			"bDeferRender": true,
-			"sScrollX": "650px",
-			"sScrollY": "450px",
+			"sScrollX": "100%",
+			"sScrollY": "420px",
 			"aaSorting": [[ 0, "desc" ]],
 			"sDom": '<fr><t><i>'
 	});

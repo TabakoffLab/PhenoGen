@@ -17,6 +17,8 @@
 	request.setAttribute( "selectedTabId", "share" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        extrasList.add("jquery.dataTables.min.js");
+
 
         if (userLoggedIn.getUser_name().equals("guest")) {
                 //Error - "Feature not allowed for guests"
@@ -64,11 +66,11 @@
 	formName = "geneListUsers.jsp";
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
-
+        
 	<div class="page-intro">
 		<p>Listed below are the users of this website.  To share your genelist with other user(s), click the checkbox next to their name(s).
 		</p>
@@ -97,9 +99,9 @@
 	%>
 
 
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom: 70px;">
 	<div class="title"> Users who can view the selected gene list </div>
-      	<table class="list_base tablesorter" name="items" id="items" cellpadding="0" cellspacing="3" width="25%">
+      	<table class="list_base tablesorter" name="items" id="items" cellpadding="0" cellspacing="3" width="100%">
 		<thead>
 		<tr class="col_title">
 			<% if (owner.equals("Y")) { %>
@@ -165,12 +167,22 @@
 	</div>
 <% } %>
 <script type="text/javascript">
-        $(document).ready(function() {
+        /*$(document).ready(function() {
                 var tablesorterSettings = { widgets: ['zebra'] };
                 $("table[id='items']").tablesorter(tablesorterSettings);
         	$("table[id='items']").tablesorter({headers:{0:{sorter:false}}});
         	$("table[id='items']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");
-	});
+	});*/
+        $(document).ready(function() {
+            $("table#items").dataTable({
+					"bPaginate": false,
+					"bAutoWidth": true,
+					"sScrollX": "100%",
+					"sScrollY": "600px",
+					"aaSorting": [[ 1, "asc" ]],
+					"sDom": 'fti'
+			});
+        });
 </script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

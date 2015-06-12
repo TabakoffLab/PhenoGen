@@ -316,7 +316,7 @@
 
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -328,7 +328,7 @@
 
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
-		  <div class="dataContainer">
+		  <div class="dataContainer" style="padding-bottom:70px;">
 			<form 	method="POST"
 				name="annotation"
 				action="annotation.jsp"
@@ -362,4 +362,4 @@
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

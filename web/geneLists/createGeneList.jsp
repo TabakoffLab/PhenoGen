@@ -34,7 +34,7 @@
 	
 	<% if (fromMain) { %>
     	<%pageTitle="Create gene list";%>
-		<%@ include file="/web/common/header.jsp" %>
+		<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 	<% } else { %>
 		<%@ include file="/web/common/includeExtras.jsp" %>
 	<% } %>
@@ -165,7 +165,7 @@
 	<input type="hidden" name="fromMain" value="<%=fromMain%>">
 </form>
 	<% if (fromMain) { %>
-		<%@ include file="/web/common/footer.jsp" %>
+		<%@ include file="/web/common/footer_adaptive.jsp" %>
 	<% } %>
 	<script type="text/javascript">
 		$(document).ready(function() {

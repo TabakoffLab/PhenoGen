@@ -520,7 +520,7 @@
 				}
 			
                     setTimeout(function(){
-                        var gs=new GenomeSVG(".ucscImage",948,minCoord,maxCoord,0,chr,"gene");
+                        var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
                         gs.forceDrawAs("Trx");
                         //loadStateFromCookie(0);
                         gs.xMax=maxCoord;
@@ -585,7 +585,7 @@
             <%}%>
         </div>
         <BR /><BR />
-        <div style="text-align:center;">
+        <div style="text-align:center; padding-bottom: 70px;">
         <%if(request.getServerPort()==80){%>
             <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
         <%}else{%>

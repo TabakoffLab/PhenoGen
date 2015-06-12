@@ -18,7 +18,7 @@
 	mySessionHandler.createGeneListActivity("Looked at compare genelists tab", dbConn);
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -49,6 +49,6 @@
 	});
 </script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 

@@ -89,9 +89,10 @@
 			"sDom": '<r><t>'
 	});
 	
+        
 	$(".mirResultInfo").tooltipster({
 				position: 'top-left',
-				maxWidth: 350,
+				maxWidth: 450,
 				offsetX: -10,
 				offsetY: 5,
 				contentAsHTML:true,

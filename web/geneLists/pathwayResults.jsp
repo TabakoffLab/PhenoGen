@@ -18,6 +18,9 @@
 	
 	log.debug("in pathwayResults. itemID = " + itemID);
 	extrasList.add("pathwayResults.js");
+        extrasList.add("jquery.dataTables.min.js");
+        extrasList.add("tableExport/tableExport.js");
+        extrasList.add("tableExport/jquery.base64.js");
 
 	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn);
 			
@@ -57,7 +60,7 @@
 
 
 %>
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -67,9 +70,9 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer" >
+	<div class="dataContainer" style="padding-bottom: 70px;width: 100%;" >
 		<div id="related_links">
-			<div class="action" title="Return to select a different pathway analysis">
+			<div class="action" title="Return to select a different pathway analysis" style="margin-left: 10px;">
 				<a class="linkedImg return" href="pathwayTab.jsp">
 				<%=fiveSpaces%>
 				Select Another Pathway Analysis 
@@ -92,10 +95,13 @@
 
 		<BR>
 
-        <div class="other_actions" >
-            <span id="PathwayPlotLink"><a href="#">Pathway Plot</a></span>
-        </div>			
-		<table name="items" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="95%">
+        <!--<div class="other_actions" >
+            <span class="button" id="PathwayPlotLink"><a href="#">Pathway Plot</a></span>
+        </div>-->			
+                <span class="button" id="PathwayPlotLink" style="float:right; margin-left: 5px;margin-right: 10px;"><a href="#" style="color:rgba(0, 0, 0, 0.55);">Pathway Plot</a></span>
+                <span class="button" id="exportBtn" style="float:right;margin-left: 5px;margin-right: 5px;">Export CSV</span>
+                
+		<table name="items" id="items" class="list_base tablesorter" cellpadding="0" cellspacing="3" style="width:100%;">
 			<thead>
 			<tr class="col_title">
 			<th>Path Name</th>
@@ -117,20 +123,23 @@
 			for (int i=1; i<outputTable.length; i++) {
 				%> <tr> <%
 				String[] columns = outputTable[i].split("\t");
+                                String pathwayName="";
 				for (int j=0; j<columns.length-1; j++) {
 					String value = columns[j].replaceAll("\"", "");
 					String pathwayLink = columns[columns.length-1].replaceAll("\"", "");
 					String pathwayID = columns[1].replaceAll("\"", "");
 					if (j>0) {
 						if (j==4) {
-							%><td><a href="<%=geneListsDir%>pathwayResultsDetails.jsp?itemID=<%=itemID%>&pathwayID=<%=pathwayID%>"> <%=value%></td><%
+							%><td><a href="<%=geneListsDir%>pathwayResultsDetails.jsp?itemID=<%=itemID%>&pathwayID=<%=pathwayID%>&pathwayName=<%=pathwayName%>"> <%=value%></td><%
 						} else {
 							%><td> <%=value%></td><%
 						}
 					} else {
 					     if (value.equalsIgnoreCase("No Pathways Found")) {%>
 						      <td><%=value%></td>
-					   <%} else {%>
+					   <%} else {
+                                                    pathwayName=value;
+                                            %>
 						     <td><a href="<%=pathwayLink%>" target="KEGG Window"><%=value%></a></td><%
 					     }
 					}
@@ -158,6 +167,17 @@
 		/*/
 		$(document).ready(function() {
 			setupPage();
+                        $("span#exportBtn").on("click",function(){
+                            $('table#items').tableExport({type:'csv',escape:'false'});
+                        });
+                        $("table#items").dataTable({
+					"bPaginate": false,
+					"bAutoWidth": false,
+					"sScrollX": "100%",
+					"sScrollY": "600px",
+					"aaSorting": [[ 1, "asc" ]],
+					"sDom": 'fti'
+			});
 		});
 	</script>
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

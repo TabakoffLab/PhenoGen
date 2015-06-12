@@ -146,7 +146,7 @@
 
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 
@@ -159,7 +159,7 @@
 
 <% if (selectedGeneList.getGene_list_id() != -99) { %>
 
-	<div class="dataContainer" >
+	<div class="dataContainer" style="padding-bottom: 70px;" >
 		<form 	method="POST"
 			action="homologs.jsp"
 			name="homologs"
@@ -187,4 +187,4 @@
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

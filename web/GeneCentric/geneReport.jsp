@@ -165,13 +165,13 @@ Add report here.
             <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneDetailTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
     		<span class="selectdetailMenu" name="geneEQTL">Gene eQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneEqtlTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
     		<span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpGenePSTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
-            <%if(myOrganism.equals("Mm")){
-            	if(curGene.getGeneSymbol().toLowerCase().startsWith("mir")||curGene.getDescription().toLowerCase().startsWith("microRNA")){%>
+            
+            	<%if(curGene.getGeneSymbol().toLowerCase().startsWith("mir")||curGene.getDescription().toLowerCase().startsWith("microRNA")){%>
             		<span class="selectdetailMenu" name="miGenerna">Genes Targeted by this miRNA(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneMirTargetTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
                 <%}else{%>
                 	<span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpMirTargetTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
                 <%}%>
-            <%}%>
+            
             <!--<span class="selectdetailMenu" name="geneGO">GO<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>-->
             <span class="selectdetailMenu" name="geneWGCNA">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneWGCNATab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
 </div>

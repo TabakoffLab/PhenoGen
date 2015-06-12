@@ -10,10 +10,8 @@
         <div id="annotation" class="single" data-landingPage="annotation"><span>Annotation</span></div>
         <div id="loc_eQTL"  data-landingPage="locationEQTL"><span>Location<BR />(eQTL)</span> </div>
         <div id="literature" class="single" data-landingPage="litSearch"><span>Literature </span></div>
-        <% if (selectedGeneList.getOrganism().equalsIgnoreCase("Mm")) { %>  
-        	<div id="mir" data-landingPage="mir"><span>miRNA<BR />(multiMiR)</span> </div>
-        <%}%>
-                <div id="wgcna" class="single" data-landingPage="wgcna"><span>WGCNA</span></div>
+        <div id="mir" data-landingPage="mir"><span>miRNA<BR />(multiMiR)</span> </div>
+        <div id="wgcna" class="single" data-landingPage="wgcna"><span>WGCNA</span></div>
     <% if (!selectedGeneList.getOrganism().equalsIgnoreCase("Dm")) { %>    
         <div id="promoter" class="single" data-landingPage="promoter"><span>Promoter</span></div>
      <% } %>   

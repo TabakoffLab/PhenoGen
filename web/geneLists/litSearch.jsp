@@ -30,7 +30,7 @@
 	}
 
 %>
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -43,9 +43,9 @@
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
 	
-	<div class="dataContainer" >
-    <B>Unfortunately a hardware failure has made it difficult to continue to provide the Literature Search Option.  Any previous results will still be available, but we will no longer support new searches.  We are very sorry for any inconvenience this may cause.</B>
-<%
+	<div class="dataContainer" style="padding-bottom: 70px;" >
+    <B>This feature is no longer supported. Any previous results will still be available, but we will no longer support new searches.</B>
+    <%
         	String header = "";
         	String columnHeader = "";
         	String msg = "";
@@ -57,7 +57,7 @@
 		GeneListAnalysis [] myAnalysisResults = 
 			myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "LitSearch", dbConn);
 
-%>
+    %>
 		<%@ include file="/web/geneLists/include/formatAnalysisResults.jsp" %>
 	</div> <!-- dataContainer -->
 	<div class="deleteItem"></div>
@@ -69,7 +69,7 @@
 	</script>
 
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
   <script type="text/javascript">
     $(document).ready(function() {
 	setTimeout("setupMain()", 100); 

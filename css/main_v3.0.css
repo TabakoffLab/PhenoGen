@@ -3,7 +3,7 @@ body{
 	    color: #666666;
 	    font-family: Arial,Verdana,sans-serif;
 	    font-size: 14px;
-	    margin: 5px auto 60px;
+	    margin: 5px auto 0px;
 	    padding: 5px 0 10px;
 	    position: relative;
 	    text-align: left;
@@ -33,10 +33,189 @@ body{
     div.body_border {
 	margin: 0 10px;
     }
+    
 /*
  *          END SECTION DEFINITIONS
  *****************************************************************************************/
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          TOOLBAR ICONS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div#iconsDiv {
+        padding: 0 0 10px 0;
+        margin: 0 4px;
+	position:relative;
+        width: 500px;
+	float:right;
+	clear: both;
+	height: 0px;
+    }
+    div.optionIcons {
+        padding: 5px;
+	float:right;
+	clear:both;
+        background:#CECECE;
+        border-color:#333333;
+		border:solid;
+		border-width: 1px 1px 1px 1px;
+		border-radius:5px 5px 5px 5px;
+		padding-top:2px;
+		padding-bottom:2px;
+		padding-left:2px;
+		padding-right:2px;
+    }
+    .toolbarImg:hover {
+	background: white;
+        border: solid 4px #aaa;
+        padding: 2px;
+    }
+    .toolbarImg {
+        cursor: pointer;
+        float:left;
+        margin: 7px;
+    }
+
+   /* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          DOWNLOAD & DELETE
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    .linkedImg {
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
+    }
+    div.linkedImg.edit {
+        margin-left: auto;
+        margin-right: auto;
+        background: transparent url("../web/images/icons/edit.png") no-repeat left bottom;
+    }
+    div.linkedImg.delete {
+        margin-left: auto;
+        margin-right: auto;
+        background: transparent url("../web/images/icons/delete.png") no-repeat left bottom;
+    }
+    div.linkedImg.download {
+        background: transparent url("../web/images/icons/download_g.png") no-repeat left bottom;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .linkedImg.return {
+        margin-left: auto;
+        margin-right: auto;
+        background: transparent url("../web/images/icons/prev.png") no-repeat left center;
+    }
+    div.linkedImg.more {
+	height: 80px;
+	width: 80px;
+        background: transparent url("../web/images/icons/arrow.gif") no-repeat left bottom;
+    }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          MAIN TABS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    #main_tab_bar {
+        border-bottom: solid 1px #777;
+        padding: 5px 0 0 20px;
+        height: 33px;
+        z-index: 0;
+        margin: 0 5px;
+    position: relative;
+    clear: both;
+	font-size: 13px;
+    }
+    #main_tab_bar div.tab {
+    left: 2px;
+        line-height: 16px;
+        font-size: 12px;
+        float: left;
+        cursor: pointer;
+        font-weight: bold;
+        text-align: center;
+        color: #aaa;
+        width: 140px;
+        margin: 1px 0 0 0;
+        padding: 9px 0 7px 0;
+        background: transparent url("../web/images/bg/nav-btn-lg3-off.jpg") no-repeat;
+    }
+
+    #main_tab_bar a {
+	font-size: 11px;
+	text-decoration:none;
+	font-weight: bold;
+    }
+    #main_tab_bar div.selected {
+        /*color: #000;
+        background-color: #ddd;*/
+        background: transparent url("../web/images/bg/nav-btn-lg3-on.gif") no-repeat;
+        border-bottom: solid 1px #ccc;
+    }
+
+    #main_tab_bar div.main_tab_help {
+        float: right;
+        margin: 10px 10px 0 0;
+    }
+
+    #main_tab_bar div.main_tab_help a {
+        background: transparent url("../web/images/icons/help.png") no-repeat top right;
+        padding: 3px 20px 0 0;
+	font-size: 12px;
+    }
+
+    #main_tab_bar div.main_tab_help a:hover span {
+        border-bottom: dotted 1px #476087;
+    }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *          GENERIC TABS
+ * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+    div.action_tabs, div.ma_action_tabs {
+        position: relative;
+        clear: both;
+        display: block;
+        border-bottom: solid 1px #24618e;
+        margin: 0 8px 0 10px;
+        padding: 8px 0 0 5px;
+        height: 35px;
+    }
+    div.action_tabs div, div.ma_action_tabs div {
+        cursor: pointer;
+        float: left;
+        position: relative;
+        background: transparent url("../web/images/tableftJ.gif") no-repeat left top;
+        padding: 0 0 0 5px;
+        border: solid 0px green;
+        line-height: 16px;
+    }
+	
+	div.action_tabs div.single, div.ma_action_tabs div.single {
+		line-height:35px;
+	}
+	
+    div.action_tabs div span, div.ma_action_tabs div span {
+        font-weight: bold;
+		font-size:12px;
+		text-align:center;
+        height: 35px;
+        overflow: visible;
+        background:url("../web/images/tabrightJ2.gif") no-repeat right top;
+        display: block;
+        color: #24618e;
+        float:left;
+        padding: 0 9px 0 3px;
+    }
+    div.action_tabs div.selected, div.ma_action_tabs div.selected {
+        background-position: 0% -42px;
+    }
+    div.action_tabs div.selected span, div.ma_action_tabs div.selected span {
+        background-position: 100% -42px;
+        color: #fff;
+    }
+    .action_tabs div:hover, .ma_action_tabs div:hover {
+        background-position: 0% -42px;
+    }
+    .action_tabs div:hover span, .ma_action_tabs div:hover span {
+        color: #6fb4cc;
+        background-position: 100% -42px;
+    }
 .itemDetails, .arrayDetails, div.object_details, div.downloadItem, div.scrollable {
     overflow: auto;
 }

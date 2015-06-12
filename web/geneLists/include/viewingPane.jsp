@@ -23,6 +23,7 @@
 -->
 	</div>
   </div>
+<BR><BR><BR>
 	<div class="object_details"></div>
 
 	<script type="text/javascript">

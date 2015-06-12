@@ -147,7 +147,7 @@
 	formName = "saveAs.jsp";
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 
@@ -159,7 +159,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom: 70px;">
 
 	<form   name="saveAs"
         	method=POST
@@ -192,6 +192,6 @@
 
 	</div>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 

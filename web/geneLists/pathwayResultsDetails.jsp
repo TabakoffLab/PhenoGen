@@ -10,9 +10,11 @@
 
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %> 
 <% 	
+        request.setAttribute( "selectedTabId", "pathway" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	String pathwayID = (String) request.getParameter("pathwayID");
+        String pathwayName = (String) request.getParameter("pathwayName");
 	int itemID = Integer.parseInt((String) request.getParameter("itemID"));
 	
 	log.debug("in pathwayResultsDetails. itemID = " + itemID + " pathwayID = " + pathwayID);
@@ -32,24 +34,25 @@
 
 
 %>
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer" >
+	<div class="dataContainer" style="padding-bottom: 70px;" >
 		<div id="related_links">
-			<div class="action" title="Return to select a different pathway analysis">
+			<div class="action" title="Return to select a different pathway analysis" style="margin-left: 10px;">
 				<a class="linkedImg return" href="pathwayResults.jsp?itemID=<%=itemID%>">
 				<%=fiveSpaces%>
-				Back
+				Back to Pathway Results
 				</a>
 			</div>
 		</div>
 
 		<BR><BR>
+                <div style="text-align: center; font-weight: bold; font-size:16px;">Gene List Entries for Pathway: <%=pathwayName%></div>
 		<BR><BR>
 		<table name="items" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="70%">
 			<thead>
@@ -84,4 +87,4 @@
 		<input type="hidden" name="pathwayID" value="<%=pathwayID%>">
 	</div>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

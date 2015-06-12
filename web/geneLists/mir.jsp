@@ -82,7 +82,7 @@
 
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -96,7 +96,7 @@
 	</style>
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
-    <table style="width:100%;">
+    <table style="width:98%; padding-bottom: 70px;">
     <TR><TD style="width:30%;vertical-align:top;height:100%; min-height:600px;">
     	<div style="display:inline-block;height:100%;min-height:600px;">
 		  <div id="mirAccord" style="height:100%; text-align:left;">
@@ -140,14 +140,14 @@
 
          <!-- END Side bar controls-->
          </TD>
-         <TD  style="width:68%; vertical-align:top;">
+         <TD  style="width:67%; vertical-align:top;">
          <!--data section-->
-         <div style="display:inline-block;">
+         <div style="display:inline-block;width:100%;">
          	<div>
             	<div id="resultLoading" style="display:none;width:100%;text-align:center;">
                 	<img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
                 </div>
-            	<div id="mirResult" style="width:662px;">
+            	<div id="mirResult" style="width:95%;text-align: left;">
                     <H2>Results</H2>
                    Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
 				</div>
@@ -270,4 +270,4 @@
 		
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

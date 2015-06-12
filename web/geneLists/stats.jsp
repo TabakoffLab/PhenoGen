@@ -5,6 +5,10 @@
 
 	request.setAttribute( "selectedTabId", "stats" );
 	extrasList.add("stats.js");
+        extrasList.add("jquery.dataTables.min.js");
+        extrasList.add("tableExport/tableExport.js");
+        extrasList.add("tableExport/jquery.base64.js");
+
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsListModal.add("download");
@@ -103,7 +107,7 @@
 	mySessionHandler.createGeneListActivity("Looked at analysis statistics for gene list", dbConn);
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 
@@ -116,13 +120,14 @@
 
 <%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom: 70px;">
 	<form 	method="POST"
 		name="stats"
 		action="stats.jsp"
 		enctype="application/x-www-form-urlencoded">
 	<% if (selectedGeneList.getDataset_id() != -99) { %>
 		<div class="title">  Statistics Values  </div>
+                <span class="button" id="exportBtn" style="float:right;">Export CSV</span>
 		<table name="items" id="items" class="list_base tablesorter" cellpadding="0" cellspacing="3">
 			<thead>
 			<tr class="col_title">
@@ -205,7 +210,18 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			setupPage();
+                        $("span#exportBtn").on("click",function(){
+                            $('table#items').tableExport({type:'csv',escape:'false'});
+                        });
+                        $("table#items").dataTable({
+					"bPaginate": false,
+					"bAutoWidth": true,
+					"sScrollX": "100%",
+					"sScrollY": "600px",
+					"aaSorting": [[ 1, "asc" ]],
+					"sDom": 'fti'
+			});
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

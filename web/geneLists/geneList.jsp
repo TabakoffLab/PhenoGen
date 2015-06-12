@@ -67,7 +67,7 @@
         mySessionHandler.createGeneListActivity("Viewed geneList contents", dbConn);
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 <style>
 	.rightControl{
@@ -93,7 +93,7 @@
 		name="geneList"
 		action="geneList.jsp"
 		enctype="application/x-www-form-urlencoded">
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom:70px;">
 		<div class="title">  Gene List Contents </div>
 
 		<table name="items" id="list" class="list_base" cellpadding="0" cellspacing="3" width="100%">			 
@@ -144,7 +144,6 @@
 	</form>
 	</div>
 	<div class="brClear"> </div>
-
 	<script type="text/javascript">
 		var geneListLen=<%=myGeneArray.length%>;
 		var defaultLen=100;
@@ -204,4 +203,4 @@
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
