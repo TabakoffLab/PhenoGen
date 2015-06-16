@@ -159,7 +159,7 @@ public class AsyncPromoterExtraction implements Runnable{
                             if(thisIdentifier ==null){
                                     thisIdentifier = myIdentifier.getIdentifierFromSetIgnoreCase(geneArray[i], iDecoderSet);
                             }
-                            if (thisIdentifier != null) {
+                            if (thisIdentifier != null  && thisIdentifier.getTargetHashMap()!=null) {
 				Set ensemblIDs = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(),new String[] {"Ensembl ID"});
                                 Iterator ite=ensemblIDs.iterator();
                                 while(ite.hasNext()){
