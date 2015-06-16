@@ -12,6 +12,7 @@
         <div id="literature" class="single" data-landingPage="litSearch"><span>Literature </span></div>
         <div id="mir" data-landingPage="mir"><span>miRNA<BR />(multiMiR)</span> </div>
         <div id="wgcna" class="single" data-landingPage="wgcna"><span>WGCNA</span></div>
+        <div id="go" class="single" data-landingPage="go"><span>GO</span></div>
     <% if (!selectedGeneList.getOrganism().equalsIgnoreCase("Dm")) { %>    
         <div id="promoter" class="single" data-landingPage="promoter"><span>Promoter</span></div>
      <% } %>   

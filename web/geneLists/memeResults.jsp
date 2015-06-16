@@ -76,7 +76,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer" >
+	<div class="dataContainer" style="padding-bottom: 70px;">
         <div id="related_links">
             <div class="action" title="Return to select a different promoter analysis">
                 <a class="linkedImg return" href="promoter.jsp">
@@ -1842,4 +1842,4 @@ function trim (str) {
 		setup();
 	</script>
 <%}%>
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
