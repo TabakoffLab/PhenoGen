@@ -696,10 +696,10 @@ public class FileHandler{
 		}
 
 		String result=lines.toString();
-                    result=result.substring(result.indexOf("<style"));
+                    result=result.substring(result.indexOf("</title>")+8);
                     result=result.replaceFirst("</head>","");
-                    result=result.replaceFirst("<body onload=\"javascript:setup()\">","");
-                    result=result.replaceFirst("</body>","");
+                    result=result.replaceFirst("<body","<div");
+                    result=result.replaceFirst("</body>","</div>");
                     result=result.replaceFirst("</html>","");
 		return result;
 	}
