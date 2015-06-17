@@ -162,7 +162,7 @@ public class GOWorker extends Thread {
         if(!dirs.exists()&& dirs.mkdirs()){
         }
         try{
-            BufferedWriter fout=new BufferedWriter(new FileWriter(new File(fullPath+"inputGeneList.txt")));
+            BufferedWriter fout=new BufferedWriter(new FileWriter(new File(fullPath+"/inputGeneList.txt")));
             Set iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(geneList.getGene_list_id(),targets, pool);
             for (int i=0; i<myGeneArray.length; i++) {
                 Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i], iDecoderSet); 			
@@ -195,7 +195,7 @@ public class GOWorker extends Thread {
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "GOFilesForGeneList.pl";
             perlArgs[2] = organism;
-            perlArgs[3] = fullPath;
+            perlArgs[3] = fullPath+"/";
             perlArgs[4] = "inputGeneList.txt";
             perlArgs[5] = "output.json";
             perlArgs[6] = ensHost;

@@ -48,7 +48,7 @@
                 <TD><%=results[i].getStatus()%></TD>
                 <TD>
                 	<%if(complete){%>
-                	<span class="mirResultDetail" id="<%=results[i].getAnalysis_id()%>" style="cursor:pointer;text-decoration:underline;">View Results</span>
+                	<span class="goResultDetail" id="<%=results[i].getAnalysis_id()%>" style="cursor:pointer;text-decoration:underline;">View Results</span>
                     <%}%>
                 </TD>
             </TR>
@@ -84,25 +84,25 @@
 			startRefresh();
 	<%}%>
 	
-	$(".mirResultDetail").on("click",function (){
+	$(".goResultDetail").on("click",function (){
 		var id=$(this).attr('id');
 		$.ajax({
-				url: contextPath + "/web/geneLists/include/getMultiMiRResult.jsp",
+				url: contextPath + "/web/geneLists/include/getGOResult.jsp",
    				type: 'GET',
-				data: {geneListAnalysisID:id},
+				data: {geneListAnalysisID:id,geneListID:id},
 				dataType: 'html',
 				beforeSend: function(){
 					$('#resultLoading').show();
-					$('#mirresultDetail').html("");
+					$('#goresultDetail').html("");
 					$('table#resultTbl tr.selected').removeClass("selected");
 					$('table#resultTbl tr.arid'+id).addClass("selected");
 				},
     			success: function(data2){ 
         			
-					$('#mirResult').html(data2);
+					$('#goResult').html(data2);
 					$('#resultLoading').hide();
-					if($('div#mirAccord' ).data( "accordion" )){
-						$( 'div#mirAccord').accordion( "refresh" );
+					if($('div#goAccord' ).data( "accordion" )){
+						$( 'div#goAccord').accordion( "refresh" );
 					}
     			},
     			error: function(xhr, status, error) {

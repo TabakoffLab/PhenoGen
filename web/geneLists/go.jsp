@@ -15,21 +15,19 @@
 
 <%
 	extrasList.add("jquery.dataTables.min.js");
-	log.info("in mir.jsp. user = " + user);
+        extrasList.add("d3.v3.min.js");
+	log.info("in go.jsp. user = " + user);
 	log.debug("action = " +action);
 	request.setAttribute( "selectedTabId", "go" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
-	
-	//multiMiR Defaults
-	String table="all";
-	String predType="p";
-	int cutoff=20;
 	String myOrganism=selectedGeneList.getOrganism();
-	//end multiMiR Defaults
 
-	QTL.EQTL[] eQTLList = null;
-
+        String id="";
+	
+	if(request.getParameter("geneListID")!=null){
+		id=request.getParameter("geneListID");
+	}
 
 
         String [] officialSymbolTargets = {"Gene Symbol"};
@@ -42,35 +40,10 @@
 	HashMap arrayInfo = null;
 	Hashtable ensemblHash = new Hashtable();
 
-	int numRows = 0;
-	HashMap currentIDs = new HashMap();
-	
-        String [] entrezTargets = {
-                "RefSeq RNA ID",
-                "Gene Symbol",
-                "Entrez Gene ID",
-                "RefSeq Protein ID"};
 
-        String [] mgiTargets = {"MGI ID"};
-        String [] rgdTargets = {"RGD ID"};
-
-        String [] ensemblTargets = {
-                "Ensembl ID"};
+	formName = "go.jsp";
 
 
-	formName = "mir.jsp";
-
-       	if ((action != null) && action.equals("Download")) {
-			log.debug("action is Download");
-			String downloadPath = userLoggedIn.getUserGeneListsDownloadDir();
-			String fullFileName = downloadPath + 
-					selectedGeneList.getGene_list_name_no_spaces() + 
-					"_BasicAnnotation.txt";
-	
-			
-       	} else {
-			
-		}
 	
 
 %>
@@ -119,7 +92,7 @@
             	<div id="resultLoading" style="display:none;width:100%;text-align:center;">
                 	<img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
                 </div>
-            	<div id="mirResult" style="width:95%;text-align: left;">
+            	<div id="goResult" style="width:95%;text-align: left;">
                     <H2>Results</H2>
                    Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
 				</div>
@@ -129,8 +102,6 @@
          </TD>
          </TR>
          </table>
-         <div id="mirresultDetail">
-         </div>
 	<% } %>
  
 	
@@ -201,7 +172,7 @@
 				dataType: 'html',
                                 success: function(data2){ 
                                                 mirAutoRefreshHandle=setTimeout(function (){
-                                                        runGetMultiMiRResults();
+                                                        runGetGOResults();
                                                 },20000);
                                                 $('#resultList').html(data2);
                                 },
@@ -220,11 +191,12 @@
 			if(!goAutoRefreshHandle){
                             goAutoRefreshHandle=setTimeout(
                                                         function (){
-                                                            runGetMultiMiRResults();
+                                                            runGetGOResults();
                                                         }
                                                         ,20000);
                         }
 		}
 </script>
 
+<script src="<%=contextRoot%>javascript/goBrowser1.0.0.js" type="text/javascript"></script>
 <%@ include file="/web/common/footer_adaptive.jsp" %>

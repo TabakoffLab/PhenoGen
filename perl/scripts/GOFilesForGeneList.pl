@@ -222,7 +222,7 @@ sub getGO{
     }
     
    
-    open OFILE, '>', $workingDir.$outputFile.".json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
+    open OFILE, '>', $workingDir.$outputFile or die " Could not open two track file $path$mod.json for writing $!\n\n";
     print OFILE "{\"MOD_NAME\":\"$mod\",";
     print OFILE "\"GOList\": [";
     my @r;
