@@ -26,7 +26,7 @@
 
 	request.setAttribute( "selectedTabId", "wgcna" );
 
-        mySessionHandler.createGeneListActivity("Looked at WGCNA a GeneList", dbConn);
+        mySessionHandler.createGeneListActivity("Looked at WGCNA a GeneList", pool);
         String myOrganism=selectedGeneList.getOrganism();
 %>
 

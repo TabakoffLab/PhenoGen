@@ -14,7 +14,7 @@
 
 	boolean fromMain = (request.getParameter("fromMain") != null ? true : false);
 	extrasList.add("createGeneList.js");
-	GeneList[] myGeneLists = myGeneList.getGeneLists(userID, "All", "All", dbConn);
+	GeneList[] myGeneLists = myGeneList.getGeneLists(userID, "All", "All", pool);
 	
 	myGeneLists = myGeneList.sortGeneLists(myGeneLists, "geneListName", "A");
 
@@ -29,7 +29,7 @@
         fieldNames.add("inputGeneList");
         fieldNames.add("filename");
 
-	mySessionHandler.createSessionActivity(session.getId(), "On create genelist page", dbConn);
+	mySessionHandler.createSessionActivity(session.getId(), "On create genelist page", pool);
 %>
 	
 	<% if (fromMain) { %>

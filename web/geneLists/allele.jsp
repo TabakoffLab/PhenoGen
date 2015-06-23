@@ -33,7 +33,7 @@
 		geneSymbolArray[idx] = tokens.nextToken(); 	
 		idx++;
 	}
-	mySessionHandler.createGeneListActivity("Viewed knockout information", dbConn);
+	mySessionHandler.createGeneListActivity("Viewed knockout information", pool);
 
 %>
 

@@ -143,7 +143,7 @@
 	log.debug("size of iDecoderValues is " +iDecoderValues.size());
 	//log.debug("is location included?"+Arrays.binarySearch(iDecoderTargets, "Location"));
 
-	mySessionHandler.createGeneListActivity("Looked at Advanced Annotation results", dbConn);
+	mySessionHandler.createGeneListActivity("Looked at Advanced Annotation results", pool);
 	//
 	// go through the original gene list, in sorted order
 	//

@@ -22,7 +22,7 @@
 	optionsList.add("chooseNewGeneList");
 	//optionsListModal.add("createNewLitSearch");
 
-	mySessionHandler.createGeneListActivity("Looked at literature searches", dbConn);
+	mySessionHandler.createGeneListActivity("Looked at literature searches", pool);
 	int itemID = (request.getParameter("itemID") != null ? Integer.parseInt((String) request.getParameter("itemID")) : -99);
 	if (itemID != -99) {
 		log.debug("itemID = "+itemID);
@@ -55,7 +55,7 @@
 
 		String type = "litSearch";
 		GeneListAnalysis [] myAnalysisResults = 
-			myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "LitSearch", dbConn);
+			myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "LitSearch", pool);
 
     %>
 		<%@ include file="/web/geneLists/include/formatAnalysisResults.jsp" %>

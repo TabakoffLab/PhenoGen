@@ -48,3 +48,42 @@
         setupTabs( '<%=selectedTabId%>' );
     });
   </script>
+  
+  <style>
+        .hoverDetail{ text-decoration:underline;}
+
+        #toolsAccord{
+            height:45em;
+            display:inline-block; 
+            width:25%;
+            vertical-align: top;
+            /*position:relative;*/
+        }
+        #toolsAccord.tall{
+            height:<%=tall%>;
+        }
+        #topResultData{
+            display:inline-block;
+            width:73%;
+            overflow:auto;
+            vertical-align: top;
+            height:100%;
+        }
+        
+        @media screen and (max-width:1000px){
+            #toolsAccord{
+                height: 15em;
+                width:100%;
+                display:inline-block;
+                vertical-align: auto;
+            }
+            #topResultData{
+                width:100%;
+                display:inline-block;
+                vertical-align: auto;
+                position: relative;
+                top:50px;
+                padding-bottom: 120px;
+            }
+        }
+</style>

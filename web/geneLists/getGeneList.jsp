@@ -32,9 +32,9 @@
 			-99);
 	log.info("in getGeneList.jsp. geneListID = " + geneListID);
 
-	new SessionHandler().createGeneListActivity(session.getId(), geneListID, "Copied gene list to create a new one", dbConn);
-	edu.ucdenver.ccp.PhenoGen.data.GeneList thisGeneList = new edu.ucdenver.ccp.PhenoGen.data.GeneList().getGeneList(geneListID, dbConn);
-	edu.ucdenver.ccp.PhenoGen.data.GeneList.Gene[] myGenes = thisGeneList.getGenesAsGeneArray(dbConn);
+	new SessionHandler().createGeneListActivity(session.getId(), geneListID, "Copied gene list to create a new one", pool);
+	edu.ucdenver.ccp.PhenoGen.data.GeneList thisGeneList = new edu.ucdenver.ccp.PhenoGen.data.GeneList().getGeneList(geneListID, pool);
+	edu.ucdenver.ccp.PhenoGen.data.GeneList.Gene[] myGenes = thisGeneList.getGenesAsGeneArray(pool);
 	
 	for (int i=0; i<myGenes.length; i++) {
 

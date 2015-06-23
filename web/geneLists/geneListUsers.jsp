@@ -31,12 +31,12 @@
 	User[] myGeneListUsers = null;
 	
 	if (selectedGeneList.getGene_list_id() != -99) {
-		myGeneListUsers = myGeneList.getGeneListUsers(selectedGeneList.getGene_list_id(), dbConn);
+		myGeneListUsers = myGeneList.getGeneListUsers(selectedGeneList.getGene_list_id(), pool);
 
 		numRows = myGeneListUsers.length;
 		owner = selectedGeneList.getUserIsOwner();
 		log.debug("owner = " + owner);
-		mySessionHandler.createGeneListActivity("Viewed user access for gene list", dbConn);
+		mySessionHandler.createGeneListActivity("Viewed user access for gene list", pool);
 	}
 
 	
@@ -46,7 +46,7 @@
 		// delete the users that were there before, and 
 		// then insert any users that are checked now
 		//
-		selectedGeneList.deleteGeneListUsers(dbConn);
+		selectedGeneList.deleteGeneListUsers(pool);
 
 		if (request.getParameter("userList") != null) {
 			List userList = Arrays.asList(request.getParameterValues("userList")); 
@@ -54,9 +54,9 @@
 
 			myGeneList.setGene_list_users(userList);
 			myGeneList.setGene_list_id(selectedGeneList.getGene_list_id());
-			myGeneList.createGeneListUsers(dbConn);
+			myGeneList.createGeneListUsers(pool);
 		}
-		mySessionHandler.createGeneListActivity("Updated User Access for Gene List", dbConn);
+		mySessionHandler.createGeneListActivity("Updated User Access for Gene List", pool);
 
 		//Success - "Gene list users updated"
 		session.setAttribute("successMsg", "GL-015");

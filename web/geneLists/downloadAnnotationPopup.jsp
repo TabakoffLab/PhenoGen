@@ -24,7 +24,7 @@
 			
 	Set iDecoderValues = null;
 			
-	mySessionHandler.createGeneListActivity("Chose format for downloading advanced annotation", dbConn);
+	mySessionHandler.createGeneListActivity("Chose format for downloading advanced annotation", pool);
 	
        	List arrayNames = new ArrayList();
 			
@@ -57,7 +57,7 @@
 	//log.debug("iDecoderPlusEnsemble targetSize = "+iDecoderTargetsPlusEnsembl.length); myDebugger.print(iDecoderTargetsPlusEnsembl);
 	try {
 		iDecoderValues = thisIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), 
-									iDecoderTargetsPlusEnsembl, arrayTargets, dbConn);
+									iDecoderTargetsPlusEnsembl, arrayTargets, pool);
 	} catch (Exception e) {
 		log.error("iDecoder timed out");
 		//Error - "No iDecoder"

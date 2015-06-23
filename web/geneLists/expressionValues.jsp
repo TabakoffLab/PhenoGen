@@ -27,11 +27,11 @@
 
 	request.setAttribute( "selectedTabId", "expressionValues" );
 
-        mySessionHandler.createGeneListActivity("Looked at expression values for gene list", dbConn);
+        mySessionHandler.createGeneListActivity("Looked at expression values for gene list", pool);
 		
 	boolean isExpandedFilterable=false;
 		
-	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
+	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 	HashMap<String,String> geneSymbolsHM=new HashMap<String,String>();
 	for (int i=0; i<myGeneArray.length; i++) {
 					String geneSymbolList="";

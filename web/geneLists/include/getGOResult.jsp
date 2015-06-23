@@ -38,8 +38,8 @@
         <table style="width:100%;">
             <TR>
                 <TD style="text-align: left;" id="imageControl"></TD>
-                <TD style="text-align: center;" id="dataControl"></TD>
-                <TD style="text-align: right;" id="viewControl"></TD>
+                <TD style="text-align: right;" id="dataControl"></TD>
+
             </TR>
         </table>
     </div>

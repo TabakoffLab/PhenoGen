@@ -19,7 +19,7 @@
 	
 	log.debug("in pathwayResultsDetails. itemID = " + itemID + " pathwayID = " + pathwayID);
 
-	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn);
+	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
 			
 	GeneList thisGeneList = thisGeneListAnalysis.getAnalysisGeneList();
         String pathwayDir = thisGeneList.getPathwayDir(thisGeneList.getGeneListAnalysisDir(userLoggedIn.getUserMainDir()));
@@ -30,7 +30,7 @@
 
 	String[] auxTable = myFileHandler.getFileContents(new File(auxFileName), "withSpaces");
 
-	mySessionHandler.createGeneListActivity("Viewed details of pathway results ", dbConn);
+	mySessionHandler.createGeneListActivity("Viewed details of pathway results ", pool);
 
 
 %>

@@ -38,7 +38,7 @@
 	int pageNum = 0;
 	sortOrder = "A";
 
-	mySessionHandler.createGeneListActivity("Viewed abstracts for category '" + category +  "' and gene '" + gene + "'", dbConn);
+	mySessionHandler.createGeneListActivity("Viewed abstracts for category '" + category +  "' and gene '" + gene + "'", pool);
 	th = new TableHandler("abstractsNext.jsp");
 
 %> 

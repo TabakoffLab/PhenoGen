@@ -162,6 +162,17 @@ sub getGO{
     		-user => $user,
     		-pass => $passwd
     	    );
+
+    my $mca =$registry->get_adaptor( $longOrg, 'Core',"MetaContainer" );
+
+    my $database_version = 0;
+    if ( defined($mca) ) {
+            $database_version = $mca->get_schema_version();
+    }
+    open VER, ">",$workingDir."ver.txt";
+    print VER $database_version."\n";
+    close VER;
+
     my $slice_adaptor = $registry->get_adaptor( $longOrg, 'Core', 'Slice' );
     my $go_adaptor = $registry->get_adaptor( 'Multi', 'Ontology', 'OntologyTerm' );
 

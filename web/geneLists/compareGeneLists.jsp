@@ -15,7 +15,7 @@
 	request.setAttribute( "selectedTabId", "compare" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
-	mySessionHandler.createGeneListActivity("Looked at compare genelists tab", dbConn);
+	mySessionHandler.createGeneListActivity("Looked at compare genelists tab", pool);
 %>
 
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>

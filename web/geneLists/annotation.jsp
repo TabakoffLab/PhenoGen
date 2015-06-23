@@ -120,7 +120,7 @@
 		out.clear();
 		out = pageContext.pushBody(); 
 
-		mySessionHandler.createGeneListActivity("Downloaded Basic Annotation for Gene List", dbConn);
+		mySessionHandler.createGeneListActivity("Downloaded Basic Annotation for Gene List", pool);
        	} else {
 		if (selectedGeneList.getNumber_of_genes() > 400) { 
 			response.sendRedirect("advancedAnnotation.jsp");
@@ -134,7 +134,7 @@
 			ucscOrganism = selectedGeneList.getOrganism();
 			snpOrganism = selectedGeneList.getOrganism();
 			snpOrganism = new ObjectHandler().replaceBlanksWithUnderscores(
-						new Organism().getOrganism_name(organism, dbConn));
+			new Organism().getOrganism_name(organism, dbConn));
 			ucscOrganism = new Organism().getCommon_name_for_abbreviation(organism, dbConn);
 
 			Iterator itr = iDecoderSet.iterator();
@@ -172,7 +172,7 @@
 			//myDebugger.print(allEQTLChipIDs);
 
 			List allIdentifiers = new ArrayList();
-			List allGenesStrings = myObjectHandler.getAsSeparatedStrings(selectedGeneList.getGenesAsSet("Original", dbConn), ", ", "'", 999);
+			List allGenesStrings = myObjectHandler.getAsSeparatedStrings(selectedGeneList.getGenesAsSet("Original", pool), ", ", "'", 999);
 			//log.debug("allGenesStrings = " +allGenesStrings);
 			allIdentifiers.addAll(allGenesStrings);
 			if (allEQTLGeneSymbols.size() > 0 && allEQTLChipIDs.size() > 0) {
@@ -310,7 +310,7 @@
 
 			Results myAffyResults = null;
 					
-			mySessionHandler.createGeneListActivity("Ran Basic Annotation on gene list", dbConn);
+			mySessionHandler.createGeneListActivity("Ran Basic Annotation on gene list", pool);
 		}
 	}
 

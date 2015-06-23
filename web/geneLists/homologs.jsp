@@ -59,7 +59,7 @@
 		out.clear();
 		out = pageContext.pushBody(); 
 
-		mySessionHandler.createGeneListActivity("Downloaded Homologenes for Gene List", dbConn);
+		mySessionHandler.createGeneListActivity("Downloaded Homologenes for Gene List", pool);
        	} else {
 		/*
 		if (selectedGeneList.getNumber_of_genes() > 200) {
@@ -72,7 +72,7 @@
                 	// 
                         // perform these steps every time this module is called
                         //
-                        GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
+                        GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 
                         numRows = myGeneArray.length;
                         if (numRows == 0) {
@@ -103,7 +103,7 @@
                                 }
                                 try {
 									myIDecoderClient.setNum_iterations(2);//Required to get Human results
-                                	iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), targets, dbConn);
+                                	iDecoderAnswer = myIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), targets, pool);
 
                                         session.setAttribute("iDecoderAnswer", iDecoderAnswer);
                                 } catch (Exception e) {
@@ -132,9 +132,9 @@
 
                                         log.debug("noHomologList now contains " + noHomologList.size() + " elements");
 
-					mySessionHandler.createGeneListActivity("Got Homologenes for gene list", dbConn);
+					mySessionHandler.createGeneListActivity("Got Homologenes for gene list", pool);
 				} else {
-					mySessionHandler.createGeneListActivity("Ran Homologenes on gene list but got no results", dbConn);
+					mySessionHandler.createGeneListActivity("Ran Homologenes on gene list but got no results", pool);
                                         log.debug("iDecoderAnswer is null");
                                         //Error - "No iDecoder"
                                         session.setAttribute("errorMsg", "GLT-001");

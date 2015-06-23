@@ -21,7 +21,7 @@
 	log.debug("in memeResults. itemID = " + itemID);
 
 	GeneListAnalysis thisGeneListAnalysis = 
-			myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn);
+			myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
 	ParameterValue[] myParameterValues = thisGeneListAnalysis.getParameterValues();
 	int upstreamLength = Integer.parseInt(thisGeneListAnalysis.getThisParameter("Sequence Length"));
 			
@@ -48,7 +48,7 @@
 	}else{
 		memeResultsOld=myFileHandler.getFileContents(new File(memeFileName), "withSpaces");
 	}
-    mySessionHandler.createGeneListActivity("Viewed MEME Results for gene list", dbConn);
+    mySessionHandler.createGeneListActivity("Viewed MEME Results for gene list", pool);
 /*
 
 

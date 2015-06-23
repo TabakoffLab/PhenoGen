@@ -68,7 +68,7 @@
 	//
 	// make sure the gene list name is unique
 	//
-	if (myGeneList.geneListNameExists(gene_list_name, userID, dbConn)) {
+	if (myGeneList.geneListNameExists(gene_list_name, userID, pool)) {
 		//Error - "gene list name exists"
 		session.setAttribute("errorMsg", "GL-006");
 		session.setAttribute("gene_list_name", gene_list_name);
@@ -100,16 +100,16 @@
 
                         ArrayList resultGeneList = new ArrayList(geneListSet);
 
-                        geneListID = newGeneList.createGeneList(dbConn);
+                        geneListID = newGeneList.createGeneList(pool);
                         log.debug("geneListID = "+ geneListID);
 
-                        myGeneList.loadGeneListFromList(resultGeneList, geneListID, dbConn);
+                        myGeneList.loadGeneListFromList(resultGeneList, geneListID, pool);
 			additionalInfo = "";
 
                         mySessionHandler.createGeneListActivity(session.getId(), 
                                 geneListID,
                                 "Created Gene List by typing it in",
-                                dbConn);
+                                pool);
 
                         log.debug("just loaded gene list into genes table");
 			session.setAttribute("successMsg", "GL-013");
@@ -143,14 +143,14 @@
 					} else {
 						log.debug("geneListOrigFileName = "+nextFileName);
 						try {
-							geneListID = newGeneList.loadFromFile(0, geneListFileName, dbConn); 
+							geneListID = newGeneList.loadFromFile(0, geneListFileName, pool); 
 							log.debug("successfully uploaded gene list");
 							additionalInfo = "The file "+
 								nextFileName + 
 								" has been <strong>successfully</strong> uploaded.<br>";
 			                		mySessionHandler.createGeneListActivity(session.getId(), geneListID, 
-												"Uploaded Gene List", dbConn);
-							String genesNotFound = myGeneList.checkGenes(geneListID, dbConn);
+												"Uploaded Gene List", pool);
+							String genesNotFound = myGeneList.checkGenes(geneListID, pool);
 							if (genesNotFound.length() > 0) {
 								additionalInfo = additionalInfo + 
 									"<BR>However, the following genes were not recognized in our database "+
@@ -185,7 +185,7 @@
 						} catch (SQLException e) {
 							log.error("did not successfully upload gene list. e.getErrorCode() = " + e.getErrorCode());
 			                		mySessionHandler.createGeneListActivity(session.getId(), geneListID, 
-												"Got error uploading Gene List", dbConn);
+												"Got error uploading Gene List", pool);
 							if (e.getErrorCode() == 1) {
 			                        		log.debug("got duplicate entry error trying to insert genes record.");
 								//Error - "Duplicate gene identifiers"

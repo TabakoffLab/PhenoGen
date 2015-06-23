@@ -10,13 +10,13 @@
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsListModal.add("download");
-	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
+	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 	session.setAttribute("geneListOrganism",selectedGeneList.getOrganism());
 	log.debug("geneListOrganism="+selectedGeneList.getOrganism());
 	//log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
        	if ((action != null) && action.equals("Download")) {
 			log.debug("action is Download");
-			mySessionHandler.createGeneListActivity("Downloaded Gene List", dbConn);
+			mySessionHandler.createGeneListActivity("Downloaded Gene List", pool);
 			String fileName = userLoggedIn.getUserGeneListsDir() + "downloads/" + selectedGeneList.getGene_list_name() + "Gene_List_Contents.csv";
 			try{
 				BufferedWriter outF=new BufferedWriter(new FileWriter(new File(fileName)));
@@ -64,7 +64,7 @@
 					}
 			}
 		}
-        mySessionHandler.createGeneListActivity("Viewed geneList contents", dbConn);
+        mySessionHandler.createGeneListActivity("Viewed geneList contents", pool);
 %>
 
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>

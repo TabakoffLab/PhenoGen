@@ -47,7 +47,7 @@
 	String title="";
 	String createNew="";
 	String button="";
-	mySessionHandler.createGeneListActivity("On promoter tab", dbConn);
+	mySessionHandler.createGeneListActivity("On promoter tab", pool);
 
 %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
@@ -64,14 +64,14 @@
 	<div class="dataContainer" >
 <% if(!selectedGeneList.getOrganism().equals("Rn")){
 		myAnalysisResults = 
-        		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "oPOSSUM", dbConn);
+        		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "oPOSSUM", pool);
 		type = "oPOSSUM";
 %>
 		<%@ include file="/web/geneLists/include/formatAnalysisResults.jsp" %>
 		<BR><BR>
 <% 	}
 		myAnalysisResults = 
-        		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "MEME", dbConn);
+        		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "MEME", pool);
 		type = "MEME";
 %>
 		<%@ include file="/web/geneLists/include/formatAnalysisResults.jsp" %>
@@ -79,7 +79,7 @@
 
 <% 
 		myAnalysisResults = 
-        		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "Upstream", dbConn);
+        		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "Upstream", pool);
 
 		type = "Upstream";
 %>

@@ -3,6 +3,7 @@
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
+<jsp:useBean id="myFH" class="edu.ucdenver.ccp.util.FileHandler"/>
 <%
 	goT.setup(pool,session);
 	
@@ -23,13 +24,15 @@
 	}
 </style>
 <BR />
-<table id="resultTbl" name="items" class="list_base" style="text-align:center;width:100%;">
+<table id="resultTbl" name="items" class="list_base" style="text-align:center;width:96%;">
 	<thead>
     	<TR class="col_title">
         	<TH>Name</TH>
             <TH>Date</TH>
             <TH>Status</TH>
+            <TH>Ensembl Ver.</TH>
             <TH>View Results</TH>
+            <TH>Delete</TH>
         </TR>
     </thead>
     <tbody>
@@ -40,17 +43,25 @@
 			}else if(results[i].getStatus().equals("Complete")){
 					complete=true;
 			}
-
+                    String[] ver=new String[1];
+                    ver[0]="?";
+                    String verPath=userLoggedIn.getUserGeneListsDir()+ results[i].getAnalysisGeneList().getGene_list_name_no_spaces() +"/GO/"+results[i].getPath()+"/ver.txt";
+                    File verFile=new File(verPath);
+                    if(verFile.exists()){
+                        ver=myFH.getFileContents(verFile);
+                    }
 		%>
         	<TR class="arid<%=results[i].getAnalysis_id()%>">
             	<TD><%=results[i].getName()%></TD>
                 <TD><%=results[i].getCreate_date_as_string()%></TD>
                 <TD><%=results[i].getStatus()%></TD>
+                <TD>v<%=ver[0]%></TD>
                 <TD>
                 	<%if(complete){%>
                 	<span class="goResultDetail" id="<%=results[i].getAnalysis_id()%>" style="cursor:pointer;text-decoration:underline;">View Results</span>
                     <%}%>
                 </TD>
+                <TD><span class="delete" id="del<%=results[i].getAnalysis_id()%>"><img src="<%=imagesDir%>icons/delete.png"></span></TD>
             </TR>
         <%}%>
     </tbody>
@@ -101,6 +112,35 @@
         			
 					$('#goResult').html(data2);
 					$('#resultLoading').hide();
+                                        afterDisplayResults();
+					/*if($('div#goAccord' ).data( "accordion" )){
+						$( 'div#goAccord').accordion( "refresh" );
+					}*/
+    			},
+    			error: function(xhr, status, error) {
+        			$('#mirResult').html("Error retreiving result.  Please try again.");
+					$('#resultLoading').hide();
+    			}
+			});
+	});
+	$(".delete").on("click",function(){
+            var id=$(this).attr("id").substr(3);
+            console.log(id);
+            $.ajax({
+				url: contextPath + "/web/geneLists/include/deleteGOResult.jsp",
+   				type: 'GET',
+				data: {geneListAnalysisID:id,geneListID:id},
+				dataType: 'html',
+				beforeSend: function(){
+					$('#resultLoading').show();
+					$('#goresultDetail').html("");
+					$('table#resultTbl tr.selected').removeClass("selected");
+					$('table#resultTbl tr.arid'+id).addClass("selected");
+				},
+    			success: function(data2){ 
+        			
+					$('#goResult').html(data2);
+					$('#resultLoading').hide();
 					if($('div#goAccord' ).data( "accordion" )){
 						$( 'div#goAccord').accordion( "refresh" );
 					}
@@ -110,6 +150,5 @@
 					$('#resultLoading').hide();
     			}
 			});
-	});
-	
+        });
 </script>

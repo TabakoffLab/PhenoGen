@@ -274,7 +274,7 @@ Detailed Summary Table
 			"bPaginate": false,
 			"bDeferRender": true,
 			"sScrollX": "100%",
-			"sScrollY": "420px",
+			"sScrollY": "580px",
 			"aaSorting": [[ 0, "desc" ]],
 			"sDom": '<fr><t><i>'
 	});
@@ -283,7 +283,7 @@ Detailed Summary Table
 			"bPaginate": false,
 			"bDeferRender": true,
 			"sScrollX": "100%",
-			"sScrollY": "420px",
+			"sScrollY": "580px",
 			"aaSorting": [[ 0, "desc" ]],
 			"sDom": '<fr><t><i>'
 	});
@@ -343,7 +343,7 @@ Detailed Summary Table
 				},
     			success: function(data2){
         			//clearTimeout(loadingTimer);
-					$('div#mirresultDetail').html(data2);
+                                $('div#mirresultDetail').html(data2);
     			},
     			error: function(xhr, status, error) {
         			$('div#mirresultDetail').html("<div>An error occurred generating this image.  Please try back later.</div>");

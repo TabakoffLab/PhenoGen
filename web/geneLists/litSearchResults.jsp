@@ -20,7 +20,7 @@
         optionsList.add("download");
 	int itemID = (request.getParameter("itemID") != null ? Integer.parseInt((String) request.getParameter("itemID")) : -99);
 	log.debug("itemID = "+itemID);
-	GeneListAnalysis thisLitSearch = myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn); 
+	GeneListAnalysis thisLitSearch = myGeneListAnalysis.getGeneListAnalysis(itemID, pool); 
 	java.sql.Timestamp pubMedTime = myObjectHandler.subtractOneDay(thisLitSearch.getCreate_date());
 	java.util.Date pubMedDate = new java.util.Date(pubMedTime.getTime());
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -43,7 +43,7 @@
 
         Results myCoReferenceResults = myLitSearch.getCoReferences(itemID, dbConn);
 
-	mySessionHandler.createGeneListActivity("Viewed Literature Search Results for Search ID: " + itemID, dbConn);
+	mySessionHandler.createGeneListActivity("Viewed Literature Search Results for Search ID: " + itemID, pool);
 
 	session.setAttribute("createDate", thisLitSearch.getCreate_date_as_string());
 

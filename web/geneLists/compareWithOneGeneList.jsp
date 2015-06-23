@@ -20,7 +20,7 @@
 
         if (geneListsForUser == null) {
                 log.debug("geneListsForUser not set");
-                geneListsForUser = myGeneList.getGeneLists(userID, "All", "All", dbConn);
+                geneListsForUser = myGeneList.getGeneLists(userID, "All", "All", pool);
         }
 
 	log.debug("action = "+action);
@@ -34,7 +34,7 @@
                         -99);
 
 	if (geneListID2 != -99) {
-		selectedGeneList2 = myGeneList.getGeneList(geneListID2, dbConn);
+		selectedGeneList2 = myGeneList.getGeneList(geneListID2, pool);
 	} else {
 		selectedGeneList2 = new GeneList(-99);
 	}
@@ -52,8 +52,8 @@
 
 	if ((action != null) && action.equals("Select Gene List")) {
 
-	        Set geneSet = new TreeSet(selectedGeneList.getGenesAsSet("Original", dbConn));
-	        Set geneSet2 = new TreeSet(selectedGeneList2.getGenesAsSet("Original", dbConn));
+	        Set geneSet = new TreeSet(selectedGeneList.getGenesAsSet("Original", pool));
+	        Set geneSet2 = new TreeSet(selectedGeneList2.getGenesAsSet("Original", pool));
 
 	        geneList = myObjectHandler.getAsSeparatedString(geneSet, "\n");
 	        geneList2 = myObjectHandler.getAsSeparatedString(geneSet2, "\n");
@@ -76,7 +76,7 @@
 
 	        mySessionHandler.createSessionActivity(session.getId(), 
 			"Compared two gene lists: '"+selectedGeneList.getGene_list_name() + "' and '" + selectedGeneList2.getGene_list_name() + "'",
-	                dbConn);
+	                pool);
 
 		session.setAttribute("intersectTempGeneSet", intersectTempGeneSet);
 		session.setAttribute("unionTempGeneSet", unionTempGeneSet);
@@ -134,7 +134,7 @@
 	        	mySessionHandler.createSessionActivity(session.getId(), 
 				"Saved results from comparing two gene lists: '"+
 				selectedGeneList.getGene_list_name() + "' and '" + selectedGeneList2.getGene_list_name() + "'",
-	                	dbConn);
+	                	pool);
 
 	                response.sendRedirect(geneListsDir + "nameGeneList.jsp?geneListSource=compare");
 		}

@@ -3,7 +3,7 @@
 	extrasList.add("normalize.css");
 	extrasList.add("index.css");
 	request.setAttribute( "selectedMain", "geneListTools" );
-	mySessionHandler.createActivity("On Research Genes Main Page", dbConn);
+	mySessionHandler.createActivity("On Research Genes Main Page", pool);
 
 %>
 

@@ -16,8 +16,8 @@
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 
-	GeneList.Gene[] myGenes = selectedGeneList.findContainingGeneLists(userID, dbConn);
-	mySessionHandler.createGeneListActivity("Compared '" + selectedGeneList.getGene_list_name() + "' with all gene lists", dbConn);
+	GeneList.Gene[] myGenes = selectedGeneList.findContainingGeneLists(userID, pool);
+	mySessionHandler.createGeneListActivity("Compared '" + selectedGeneList.getGene_list_name() + "' with all gene lists", pool);
 
 %>
 

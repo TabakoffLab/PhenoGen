@@ -241,8 +241,10 @@ public class GOWorker extends Thread {
                     }
                 }
             }
-            
+            //FileHandler myFH=new FileHandler();
+            //String ver=myFH.getContents(fullPath+"/ver.txt");
             this.gla.updateStatus(pool,"Complete");
+            //this.gla.updateVersion(pool,ver);
         }catch(Exception er){
             try{
                 this.gla.updateStatus(pool,"Error");

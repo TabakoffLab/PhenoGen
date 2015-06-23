@@ -12,7 +12,7 @@
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsListModal.add("download");
-	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
+	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 	String[] columnHeadings = selectedGeneList.getColumnHeadings();
 	Hashtable<String, Integer> indexHash = selectedGeneList.getSortingColumnIdxHash();
 //	log.debug("indexHash ="); myDebugger.print(indexHash);
@@ -78,7 +78,7 @@
 			}
 			outF.flush();
 			outF.close();
-			mySessionHandler.createGeneListActivity("Downloaded Gene List With Statistics", dbConn);
+			mySessionHandler.createGeneListActivity("Downloaded Gene List With Statistics", pool);
 			//myFileHandler.writeFile(output, fileName);
 			request.setAttribute("fullFileName", fileName);
 			myFileHandler.downloadFile(request, response);
@@ -104,7 +104,7 @@
 		}
 		
 	}
-	mySessionHandler.createGeneListActivity("Looked at analysis statistics for gene list", dbConn);
+	mySessionHandler.createGeneListActivity("Looked at analysis statistics for gene list", pool);
 %>
 
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>

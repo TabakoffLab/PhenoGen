@@ -56,9 +56,9 @@
 	myParameterValues[0].setParameter("Name");
 	myParameterValues[0].setValue(name);
 	myGeneListAnalysis.setParameterValues(myParameterValues);
-	int glaID=myGeneListAnalysis.createGeneListAnalysis(dbConn);
+	int glaID=myGeneListAnalysis.createGeneListAnalysis(pool);
 	
-	mySessionHandler.createGeneListActivity("Ran GO on Gene List", dbConn);
+	mySessionHandler.createGeneListActivity("Ran GO on Gene List", pool);
 	
 	
 	

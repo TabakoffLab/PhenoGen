@@ -20,7 +20,7 @@
 
                 String method = (String) request.getParameter("method");
 		try {
-                        mySessionHandler.createGeneListActivity("Ran Pathway Analysis on Gene List", dbConn);
+                        mySessionHandler.createGeneListActivity("Ran Pathway Analysis on Gene List", pool);
 
 			Thread thread = new Thread(new AsyncPathway(
 						session,
@@ -38,7 +38,7 @@
 			log.debug("got exception creating geneListAnalysisDir or pathway directory in pathway.jsp");
 			mySessionHandler.createGeneListActivity(
                                        	"got error creating geneListAnalysisDir or pathwayDir directory in pathway.jsp for " +
-                                       	selectedGeneList.getGene_list_name(), dbConn);
+                                       	selectedGeneList.getGene_list_name(), pool);
                 	session.setAttribute("errorMsg", "SYS-001");
                 	response.sendRedirect(commonDir + "errorMsg.jsp");
 		}

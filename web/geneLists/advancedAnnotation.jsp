@@ -25,15 +25,15 @@
 	optionsList.add("chooseNewGeneList");
 	optionsList.add("basicAnnotation");
 
-	String[] identifierTypes = thisIDecoderClient.getIdentifierTypes(dbConn);
-	String[] affyBoxes = thisIDecoderClient.getArraysForPlatform(new Dataset().AFFYMETRIX_PLATFORM, dbConn);
-	String[] codeLinkBoxes = thisIDecoderClient.getArraysForPlatform(new Dataset().CODELINK_PLATFORM, dbConn);
+	String[] identifierTypes = thisIDecoderClient.getIdentifierTypes(pool);
+	String[] affyBoxes = thisIDecoderClient.getArraysForPlatform(new Dataset().AFFYMETRIX_PLATFORM, pool);
+	String[] codeLinkBoxes = thisIDecoderClient.getArraysForPlatform(new Dataset().CODELINK_PLATFORM, pool);
 
 	Set iDecoderValues = null;
 
 	log.debug("action in advancedAnnotation = "+action);
 	
-	mySessionHandler.createGeneListActivity("Looked at advanced annotation page", dbConn);
+	mySessionHandler.createGeneListActivity("Looked at advanced annotation page", pool);
 	if ((action != null) && (action.equals("Run") )) {
 
 		//if (selectedGeneList.getNumber_of_genes() > 200) {
@@ -76,7 +76,7 @@
 			//log.debug("iDecoderPlusEnsemble targetSize = "+iDecoderTargetsPlusEnsembl.length); myDebugger.print(iDecoderTargetsPlusEnsembl);
 			try {
 				iDecoderValues = thisIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), 
-									iDecoderTargetsPlusEnsembl, arrayTargets, dbConn);
+									iDecoderTargetsPlusEnsembl, arrayTargets, pool);
 			} catch (Exception e) {
 				log.error("iDecoder timed out");
 				//Error - "No iDecoder"
@@ -123,7 +123,7 @@
                 		session.setAttribute("errorMsg", "GLT-002");
                 		response.sendRedirect(commonDir + "errorMsg.jsp");
 			}
-			mySessionHandler.createGeneListActivity("Ran advanced annotation on gene list", dbConn);
+			mySessionHandler.createGeneListActivity("Ran advanced annotation on gene list", pool);
 
 		//}
         } 

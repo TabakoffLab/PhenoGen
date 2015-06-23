@@ -57,66 +57,85 @@
                 <p> This page allows you to retrieve all GO terms assigned to gene in the selected gene list.  You can retrieve results from previous runs.</p>
         </div> <!-- // end page-intro -->
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
-	<style>
-		.hoverDetail{ text-decoration:underline;}
-	</style>
+	
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
-            <table style="width:98%; padding-bottom: 70px;">
-                <TR><TD style="width:30%;vertical-align:top;height:100%; min-height:600px;">
-                    <div style="display:inline-block;height:100%;min-height:600px;">
-                        <div id="goAccord" style="height:100%; text-align:left;">
-                        <H2>Run New GO Analysis on Gene List</H2>
-                        <div style="font-size:12px;">
-                            Save Results as: <BR><input id="name" type="text" size="30"/>
+            <div id="toolsAccord" style="text-align:left;">
+                            <H2>Run New GO Analysis on Gene List</H2>
+                            <div id="newAnalysis" style="font-size:12px;">
+                                Save Results as: <BR><input id="name" type="text" size="30"/>
                                 <HR />
                                 <input type="button" id="runBtn"  value="Run GO" onclick="runGO()"/><span id="runStatus"></span>
-                </div>
+                            </div>
+                            <H2>GO Results</H2>
+                            <div id="resultsTable">
+                                <span style="font-size:10px;">Select a row below to view full results</span>
+                                <div id="resultList">
+                                </div>
+                            </div>
                 
-                <H2>GO Results</H2>
-                <div>
-                    <span style="font-size:10px;">Select a row below to view full results</span>
-                    <div id="resultList">
-                    </div>
-                </div>
-                
-         	</div>
-         </div>
+            </div>
+            <div id="topResultData">
 
-         <!-- END Side bar controls-->
-         </TD>
-         <TD  style="width:67%; vertical-align:top;">
-         <!--data section-->
-         <div style="display:inline-block;width:100%;">
-         	<div>
-            	<div id="resultLoading" style="display:none;width:100%;text-align:center;">
-                	<img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
-                </div>
-            	<div id="goResult" style="width:95%;text-align: left;">
-                    <H2>Results</H2>
-                   Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
-				</div>
-         	</div>
-         </div>
-         <!--END data section-->
-         </TD>
-         </TR>
-         </table>
+                               <div id="resultLoading" style="display:none;width:100%;text-align:center;">
+                                       <img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
+                               </div>
+                               <div id="goResult" style="width:100%;text-align: left;">
+                                   <H2>Results</H2>
+                                  Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
+                               </div>
+
+            </div>
+            <!--<table style="width:100%; padding-bottom: 70px;">
+                <TR><TD style="vertical-align:top;height:100%; min-height:600px;">
+                    <div style="display:inline-block;height:100%;min-height:600px;width:100%">
+                        <div id="goAccord" style="height:100%; text-align:left;">
+                            <H2>Run New GO Analysis on Gene List</H2>
+                            <div style="font-size:12px;">
+                                Save Results as: <BR><input id="name" type="text" size="30"/>
+                                <HR />
+                                <input type="button" id="runBtn"  value="Run GO" onclick="runGO()"/><span id="runStatus"></span>
+                            </div>
+                
+                            <H2>GO Results</H2>
+                            <div>
+                                <span style="font-size:10px;">Select a row below to view full results</span>
+                                <div id="resultList">
+                                </div>
+                            </div>
+                
+                        </div>
+                    </div>
+
+                    <!-- END Side bar controls-->
+            <!--        </TD>
+                    <TD  style="width:67%; vertical-align:top;">
+                        <!--data section-->
+            <!--            <div style="display:inline-block;width:100%;">
+
+                               <div id="resultLoading" style="display:none;width:100%;text-align:center;">
+                                       <img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
+                               </div>
+                               <div id="goResult" style="width:100%;text-align: left;">
+                                   <H2>Results</H2>
+                                  Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
+                               </div>
+
+                        </div>
+                        <!--END data section-->
+            <!--        </TD>
+                </TR>
+            </table>-->
 	<% } %>
  
-	
+	<%@ include file="/web/geneLists/include/setupJS.jsp" %>
 	<script type="text/javascript">
-		var goAutoRefreshHandle=0;
-		
+                var goBrwsr=0;
+                var goAutoRefreshHandle=0;
 		$(document).ready(function() {
-			$( 'div#goAccord' ).accordion({ heightStyle: "fill"  });
-			
-			//setupPage();
 			setTimeout("setupMain()", 100); 
 			setupExpandCollapse();
 			runGetGOResults();
-			$( 'div#goAccord' ).accordion({'active':1});
-			
 			$(".gotooltip").tooltipster({
 				position: 'top-left',
 				maxWidth: 350,

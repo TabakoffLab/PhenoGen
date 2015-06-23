@@ -22,7 +22,7 @@
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
 
-	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn);
+	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
 			
 	GeneList thisGeneList = thisGeneListAnalysis.getAnalysisGeneList();
 	String pValueUsed = thisGeneListAnalysis.getThisParameter("P-value Used");
@@ -53,9 +53,9 @@
 		out.clear();
 		out = pageContext.pushBody(); 
 
-		mySessionHandler.createGeneListActivity("Downloaded Pathway Results", dbConn);
+		mySessionHandler.createGeneListActivity("Downloaded Pathway Results", pool);
 	} else {
-		mySessionHandler.createGeneListActivity("Viewed all pathway results", dbConn);
+		mySessionHandler.createGeneListActivity("Viewed all pathway results", pool);
 	}
 
 

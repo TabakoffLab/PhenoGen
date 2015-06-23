@@ -17,9 +17,9 @@
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 
 <%
-	extrasList.add("jquery.dataTables.js");
-	//extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
-
+	extrasList.add("jquery.dataTables.min.js");
+	
+        tall="53em";
 	QTL.EQTL myEQTL = myQTL.new EQTL();
 	log.info("in mir.jsp. user = " + user);
 	log.debug("action = " +action);
@@ -96,83 +96,71 @@
 	</style>
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
-    <table style="width:98%; padding-bottom: 70px;">
-    <TR><TD style="width:30%;vertical-align:top;height:100%; min-height:600px;">
-    	<div style="display:inline-block;height:100%;min-height:600px;">
-		  <div id="mirAccord" style="height:100%; text-align:left;">
-            	<H2>Run New Analysis on Gene List</H2>
-                <div style="font-size:12px;">
-                	Save Results as: <input id="name" type="text" size="15"/>
-                    <HR />
-                	Validation Level: 
-                            <select name="table" id="table">
-                                <option value="all" <%if(table.equals("all")){%>selected<%}%>>All</option>
-                                <option value="validated" <%if(table.equals("validated")){%>selected<%}%>>Validated Only</option>
-                                <option value="predicted" <%if(table.equals("predicted")){%>selected<%}%>>Predicted Only</option>
-                                <option value="disease" <%if(table.equals("predicted")){%>selected<%}%>>Disease/Drug Only</option>
-                            </select>
-                            <span class="mirtooltip"  title="Limit results returned to those with any hits(All), or only validated hits(Validated Only) , or only predicted hits(Predicted Only)"><img src="<%=imagesDir%>icons/info.gif"></span>
-                            <HR />
-                   Predicted Cutoff Type:
-                            <select name="predType" id="predType">
-                                <option value="p" <%if(predType.equals("p")){%>selected<%}%>>Top percentage of miRNA targets</option>
-                                <option value="n" <%if(predType.equals("n")){%>selected<%}%>>Top number of miRNA targets</option>
-                            </select>
-                            <span class="mirtooltip"  title="Limit predicted search to only the top ___% or # of predicted miRNA targets.  The default will only search the top 20% of all predicted results by default."><img src="<%=imagesDir%>icons/info.gif"></span>
-                            <HR />
-                   Predicted Cutoff: Top <input id="cutoff" type="text" size="5" value="<%=cutoff%>" /><span id="lblPerc">% of </span> miRNAs 
-                            <span class="mirtooltip"  title="Set the cutoff for the predicted cutoff type.  Ex. If Top percentage of miRNA targets is selected and 10 is entered you are searching the top 10% of predicted targets.  If Top number of miRNA targets is selected and 30000 is entered you are searching only the top 30,000 predicted targets."><img src="<%=imagesDir%>icons/info.gif"></span>
-                            <HR />
-                   <!--Disease/Drug Association: --><input id="disease" type="hidden" value="" />
-                            <!--<HR />-->
-                   <input type="button" id="runBtn"  value="Run MultiMiR" onclick="runMultiMir()"/><span id="runStatus"></span>
-                </div>
-                
-                <H2>multiMiR Results</H2>
-                <div>
-                	<span style="font-size:10px;">Select a row below to view full results</span>
-                    <div id="resultList">
-                    </div>
-                </div>
-                
-         	</div>
-         </div>
 
-         <!-- END Side bar controls-->
-         </TD>
-         <TD  style="width:67%; vertical-align:top;">
-         <!--data section-->
-         <div style="display:inline-block;width:100%;">
-         	<div>
-            	<div id="resultLoading" style="display:none;width:100%;text-align:center;">
-                	<img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
-                </div>
-            	<div id="mirResult" style="width:95%;text-align: left;">
-                    <H2>Results</H2>
-                   Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
-				</div>
-         	</div>
-         </div>
-         <!--END data section-->
-         </TD>
-         </TR>
-         </table>
+        <div id="toolsAccord" style="text-align:left;">
+                        <H2>Run New Analysis on Gene List</H2>
+                        <div style="font-size:12px;">
+                                Save Results as: <input id="name" type="text" size="15"/>
+                            <HR />
+                                Validation Level: 
+                                    <select name="table" id="table">
+                                        <option value="all" <%if(table.equals("all")){%>selected<%}%>>All</option>
+                                        <option value="validated" <%if(table.equals("validated")){%>selected<%}%>>Validated Only</option>
+                                        <option value="predicted" <%if(table.equals("predicted")){%>selected<%}%>>Predicted Only</option>
+                                        <option value="disease" <%if(table.equals("predicted")){%>selected<%}%>>Disease/Drug Only</option>
+                                    </select>
+                                    <span class="mirtooltip"  title="Limit results returned to those with any hits(All), or only validated hits(Validated Only) , or only predicted hits(Predicted Only)"><img src="<%=imagesDir%>icons/info.gif"></span>
+                                    <HR />
+                           Predicted Cutoff Type:
+                                    <select name="predType" id="predType">
+                                        <option value="p" <%if(predType.equals("p")){%>selected<%}%>>Top percentage of miRNA targets</option>
+                                        <option value="n" <%if(predType.equals("n")){%>selected<%}%>>Top number of miRNA targets</option>
+                                    </select>
+                                    <span class="mirtooltip"  title="Limit predicted search to only the top ___% or # of predicted miRNA targets.  The default will only search the top 20% of all predicted results by default."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                    <HR />
+                           Predicted Cutoff: Top <input id="cutoff" type="text" size="5" value="<%=cutoff%>" /><span id="lblPerc">% of </span> miRNAs 
+                                    <span class="mirtooltip"  title="Set the cutoff for the predicted cutoff type.  Ex. If Top percentage of miRNA targets is selected and 10 is entered you are searching the top 10% of predicted targets.  If Top number of miRNA targets is selected and 30000 is entered you are searching only the top 30,000 predicted targets."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                    <HR />
+                           <!--Disease/Drug Association: --><input id="disease" type="hidden" value="" />
+                                    <!--<HR />-->
+                           <input type="button" id="runBtn"  value="Run MultiMiR" onclick="runMultiMir()"/><span id="runStatus"></span>
+                        </div>
+
+                        <H2>multiMiR Results</H2>
+                        <div>
+                                <span style="font-size:10px;">Select a row below to view full results</span>
+                            <div id="resultList">
+                            </div>
+                        </div>
+
+                        </div>
+        <div id="topResultData">
+                       <div id="resultLoading" style="display:none;width:100%;text-align:center;">
+                               <img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
+                       </div>
+                       <div id="mirResult" style="width:95%;text-align: left;">
+                           <H2>Results</H2>
+                          Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
+                                       </div>
+        </div>
+
+                       
          <div id="mirresultDetail">
          </div>
 	<% } %>
  
-	
+	<%@ include file="/web/geneLists/include/setupJS.jsp" %>
 	<script type="text/javascript">
 		var mirAutoRefreshHandle=0;
 		
 		$(document).ready(function() {
-			$( 'div#mirAccord' ).accordion({ heightStyle: "fill"  });
+			//$( 'div#mirAccord' ).accordion({ heightStyle: "fill"  });
 			
 			//setupPage();
 			setTimeout("setupMain()", 100); 
 			setupExpandCollapse();
 			runGetMultiMiRResults();
-			$( 'div#mirAccord' ).accordion({'active':1});
+			//$( 'div#mirAccord' ).accordion({'active':1});
 			
 			$(".mirtooltip").tooltipster({
 				position: 'top-left',

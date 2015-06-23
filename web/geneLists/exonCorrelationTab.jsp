@@ -28,7 +28,7 @@
         optionsList.add("geneListDetails");
         optionsList.add("chooseNewGeneList");
 	request.setAttribute( "selectedTabId", "exonCorrelationTab" );
-        mySessionHandler.createGeneListActivity("Looked at exon Correlation Values for a gene", dbConn);
+        mySessionHandler.createGeneListActivity("Looked at exon Correlation Values for a gene", pool);
 %>
 
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
