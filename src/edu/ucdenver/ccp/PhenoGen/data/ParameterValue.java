@@ -1049,6 +1049,30 @@ public class ParameterValue implements Comparable{
 		return myParameterValueArray;
 	}
   
+        
+        /**
+	 * Gets the method used for statistical analysis.
+	 * @param parameterGroupID     the identifier of the parameter group
+	 * @param conn     the database connection 
+	 * @return	a string containing the method used
+	 * @throws	SQLException if a database error occurs
+	 */
+	public String getStatisticalMethod (int parameterGroupID, DataSource pool) throws SQLException {
+            Connection conn=null;
+            String tmp=null;
+            try{
+                conn=pool.getConnection();
+                tmp=getStatisticalMethod(parameterGroupID,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+            return tmp;
+	}
+        
 	/**
 	 * Gets the method used for statistical analysis.
 	 * @param parameterGroupID     the identifier of the parameter group
@@ -1078,6 +1102,30 @@ public class ParameterValue implements Comparable{
 		return statMethod;
 	}
 
+        /**
+	 * Gets the p-value used for this ANOVA test.
+	 * @param parameterGroupID     the identifier of the parameter group
+	 * @param conn     the database connection 
+	 * @return	a string containing the p-value
+	 * @throws	SQLException if a database error occurs
+	 */
+	public String getAnovaPValue (int parameterGroupID, DataSource pool) throws SQLException {
+            Connection conn=null;
+            String tmp=null;
+            try{
+                conn=pool.getConnection();
+                tmp=getAnovaPValue(parameterGroupID,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+            return tmp;
+  		
+	}
+        
 	/**
 	 * Gets the p-value used for this ANOVA test.
 	 * @param parameterGroupID     the identifier of the parameter group

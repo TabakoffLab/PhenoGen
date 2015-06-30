@@ -6,23 +6,13 @@
 <jsp:useBean id="myFH" class="edu.ucdenver.ccp.util.FileHandler"/>
 <%
 	goT.setup(pool,session);
-	
 	String id="";
-	
 	if(request.getParameter("geneListID")!=null){
 		id=request.getParameter("geneListID");
 	}
-	
 	GeneListAnalysis[] results=myGeneListAnalysis.getGeneListAnalysisResults(userLoggedIn.getUser_id(), Integer.parseInt(id), "GO", pool);
-	
 	boolean running=false;
-	
 %>
-<style>
-	table#resultTbl tr.selected td{
-		background:	#bed9ba;
-	}
-</style>
 <BR />
 <table id="resultTbl" name="items" class="list_base" style="text-align:center;width:96%;">
 	<thead>
@@ -109,13 +99,8 @@
 					$('table#resultTbl tr.arid'+id).addClass("selected");
 				},
     			success: function(data2){ 
-        			
 					$('#goResult').html(data2);
-					$('#resultLoading').hide();
-                                        afterDisplayResults();
-					/*if($('div#goAccord' ).data( "accordion" )){
-						$( 'div#goAccord').accordion( "refresh" );
-					}*/
+					$('#resultLoading').hide();        
     			},
     			error: function(xhr, status, error) {
         			$('#mirResult').html("Error retreiving result.  Please try again.");
@@ -123,7 +108,7 @@
     			}
 			});
 	});
-	$(".delete").on("click",function(){
+	/*$(".delete").on("click",function(){
             var id=$(this).attr("id").substr(3);
             console.log(id);
             $.ajax({
@@ -151,4 +136,5 @@
     			}
 			});
         });
+        */
 </script>

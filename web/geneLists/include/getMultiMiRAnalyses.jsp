@@ -124,7 +124,7 @@
         			
 					$('#mirResult').html(data2);
 					$('#resultLoading').hide();
-                                        afterDisplayResults();
+                                        
     			},
     			error: function(xhr, status, error) {
         			$('#mirResult').html("Error retreiving result.  Please try again.");

@@ -397,18 +397,47 @@ public class GeneList{
   
         public GeneList getGeneList(int geneListID,DataSource pool)throws SQLException {
             Connection conn=null;
-            GeneList tmp=null;
+            GeneList myGeneList=null;
             try{
                 conn=pool.getConnection();
-                tmp=getGeneList(geneListID,conn);
+                log.info("in getGeneList as a GeneList object. geneListID = " + geneListID);
+
+  		String query = 
+			geneListSelectClause + 
+			geneListFromClause + 
+			"where gl.gene_list_id = ? "+
+			geneListGroupByClause; 
+
+        	Results myResults = new Results(query, geneListID, conn);
+                log.debug("before first call");
+        	String[] dataRow = myResults.getNextRow();
+		//log.debug("calling setupGeneListValues");
+        	myGeneList = setupGeneListValues(dataRow);
+
+		if (myGeneList.getParameter_group_id() != -99) {
+                    log.debug("before parameter group calls");
+			myGeneList.setAnovaPValue(
+				new ParameterValue().getAnovaPValue(
+				myGeneList.getParameter_group_id(), pool));
+	        	myGeneList.setStatisticalMethod(
+				new ParameterValue().getStatisticalMethod(
+				myGeneList.getParameter_group_id(), pool));
+		}
+		log.debug("before column heading call");
+		myGeneList.setColumnHeadings(getColumnHeadings(geneListID, pool));	
+                log.debug("after all calls before closing");
+        	myResults.close();
+                log.debug("after closing results.");
                 conn.close();
+                log.debug("after closing connection");
             }catch(SQLException e){
+                log.debug("getGeneList ERROR:",e);
                 if(conn!=null && !conn.isClosed()){
                     conn.close();
                 }
                 throw new SQLException();
             }
-            return tmp;
+            return myGeneList;
         }
 
   	/** 

@@ -96,7 +96,7 @@
 	</style>
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
-
+        <div id="container">
         <div id="toolsAccord" style="text-align:left;">
                         <H2>Run New Analysis on Gene List</H2>
                         <div style="font-size:12px;">
@@ -143,7 +143,7 @@
                           Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
                                        </div>
         </div>
-
+        </div>
                        
          <div id="mirresultDetail">
          </div>

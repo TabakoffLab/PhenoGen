@@ -51,39 +51,43 @@
   
   <style>
         .hoverDetail{ text-decoration:underline;}
-
-        #toolsAccord{
-            height:45em;
-            display:inline-block; 
-            width:25%;
-            vertical-align: top;
-            /*position:relative;*/
+        #container{
+            min-height:45em;
         }
-        #toolsAccord.tall{
-            height:<%=tall%>;
+        #toolsAccord{
+            float:left;
+            height:55em;
+            width:400px;
+            vertical-align: top;
+            padding-bottom:9em;
+            padding-right:10px;
         }
         #topResultData{
-            display:inline-block;
-            width:73%;
-            overflow:auto;
-            vertical-align: top;
             height:100%;
-        }
+            vertical-align: top;
+            overflow:hidden;
+            padding-bottom:6em;
+        }        
+        table#resultTbl tr.selected td{
+		background:	#bed9ba;
+	}
         
+        .delete{
+            cursor:pointer;
+        }
         @media screen and (max-width:1000px){
             #toolsAccord{
                 height: 15em;
                 width:100%;
-                display:inline-block;
                 vertical-align: auto;
+                float:none;
             }
             #topResultData{
                 width:100%;
-                display:inline-block;
                 vertical-align: auto;
                 position: relative;
-                top:50px;
-                padding-bottom: 120px;
+                top:70px;
+                padding-bottom: 150px;
             }
         }
 </style>

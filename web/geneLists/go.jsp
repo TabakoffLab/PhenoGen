@@ -43,7 +43,7 @@
 
 	formName = "go.jsp";
 
-
+        tall="100em";
 	
 
 %>
@@ -60,7 +60,8 @@
 	
 
 	<% if (selectedGeneList.getGene_list_id() != -99) { %>
-            <div id="toolsAccord" style="text-align:left;">
+        <div id="container">
+        <div id="toolsAccord" style="text-align:left;">
                             <H2>Run New GO Analysis on Gene List</H2>
                             <div id="newAnalysis" style="font-size:12px;">
                                 Save Results as: <BR><input id="name" type="text" size="30"/>
@@ -82,10 +83,11 @@
                                </div>
                                <div id="goResult" style="width:100%;text-align: left;">
                                    <H2>Results</H2>
-                                  Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
+                                  Select previous results from the GO Results section at the left or enter new parameters on the left or top to run a GO analysis.<BR />
                                </div>
 
             </div>
+        </div>
             <!--<table style="width:100%; padding-bottom: 70px;">
                 <TR><TD style="vertical-align:top;height:100%; min-height:600px;">
                     <div style="display:inline-block;height:100%;min-height:600px;width:100%">
@@ -190,7 +192,7 @@
 				data: {geneListID:id},
 				dataType: 'html',
                                 success: function(data2){ 
-                                                mirAutoRefreshHandle=setTimeout(function (){
+                                                goAutoRefreshHandle=setTimeout(function (){
                                                         runGetGOResults();
                                                 },20000);
                                                 $('#resultList').html(data2);
