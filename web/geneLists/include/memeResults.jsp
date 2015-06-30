@@ -7,8 +7,8 @@
  *  Modification Log:
  *      
 --%>
-
-<%@ include file="/web/geneLists/include/geneListHeader.jsp"  %> 
+<%@ include file="/web/common/session_vars.jsp" %>
+<jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 
 <% 	formName = "promoter.jsp";
 	request.setAttribute( "selectedTabId", "promoter" );
@@ -52,15 +52,6 @@
 %>
 
 	<div class="dataContainer" style="padding-bottom: 70px;">
-        <div id="related_links">
-            <div class="action" title="Return to select a different promoter analysis">
-                <a class="linkedImg return" href="promoter.jsp">
-                <%=fiveSpaces%>
-                Select Another Promoter Analysis
-                </a>
-            </div>
-        </div>
-        <div class="brClear"></div>
 
         <div class="title"> Parameters Used:</div>
         <table class="list_base" cellpadding="0" cellspacing="3">
@@ -88,7 +79,7 @@
 		%> <%=memeResultsOld[i]%> <%
 	}
 }else{%>
-    <%=memeResults%>
+<%=memeResults%>
     <script type="text/javascript">
 	post_load_setup();
     </script>

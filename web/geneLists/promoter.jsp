@@ -23,31 +23,11 @@
 	optionsList.add("chooseNewGeneList");
 	if(!selectedGeneList.getOrganism().equals("Rn")){
 		extrasList.add("createOpossum.js");
-		//optionsListModal.add("createNewOpossum");
 	}
-	//optionsListModal.add("createNewMeme");
-	//optionsListModal.add("createNewUpstream");
+
 
 	int itemID = (request.getParameter("itemID") != null ? Integer.parseInt((String) request.getParameter("itemID")) : -99);
-        /*String type = ((String)request.getParameter("type") != null ? (String) request.getParameter("type") : "");
-	if (itemID != -99) {
-		if (type.equals("oPOSSUM")) {
-			response.sendRedirect("promoterResults.jsp?itemID="+itemID);
-		} else if (type.equals("Upstream")) {
-			response.sendRedirect("upstreamExtractionResults.jsp?itemID="+itemID);
-		} else {
-			response.sendRedirect("memeResults.jsp?itemID="+itemID);
-		}
-	}
 
-	GeneListAnalysis [] myAnalysisResults = null;
-        String header = "";
-        String columnHeader = "";
-        String msg = "";
-	String all="N";
-	String title="";
-	String createNew="";
-	String button="";*/
 	mySessionHandler.createGeneListActivity("On promoter tab", pool);
 
 %>
@@ -98,6 +78,7 @@
 
 <%@ include file="/web/geneLists/include/setupJS.jsp" %>
 <script type="text/javascript">
+    
 		$(document).ready(function() {
 			setupPage();
 		});
@@ -111,37 +92,37 @@
         });
         
         function runGetPromoterResults(){
-			var id=<%=selectedGeneList.getGene_list_id()%>;
-			$('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\"<%=imagesDir%>wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
-			$.ajax({
-				url: contextPath + "/web/geneLists/include/getPromoterAnalyses.jsp",
-   				type: 'GET',
-				data: {geneListID:id},
-				dataType: 'html',
-                                success: function(data2){ 
-                                                goAutoRefreshHandle=setTimeout(function (){
-                                                        runGetPromoterResults();
-                                                },20000);
-                                                $('#resultList').html(data2);
-                                },
-                                error: function(xhr, status, error) {
-                                        $('#resultList').html("Error retreiving results.  Please try again.");
-                                }
-			});
+            var id=<%=selectedGeneList.getGene_list_id()%>;
+            $('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\"<%=imagesDir%>wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
+            $.ajax({
+                    url: contextPath + "/web/geneLists/include/getPromoterAnalyses.jsp",
+                    type: 'GET',
+                    data: {geneListID:id},
+                    dataType: 'html',
+                    success: function(data2){ 
+                                    goAutoRefreshHandle=setTimeout(function (){
+                                            runGetPromoterResults();
+                                    },20000);
+                                    $('#resultList').html(data2);
+                    },
+                    error: function(xhr, status, error) {
+                            $('#resultList').html("Error retreiving results.  Please try again.");
+                    }
+            });
         }
         function stopRefresh(){
-                if(goAutoRefreshHandle){
-                        clearTimeout(goAutoRefreshHandle);
-                        goAutoRefreshHandle=0;
-                }
+            if(goAutoRefreshHandle){
+                    clearTimeout(goAutoRefreshHandle);
+                    goAutoRefreshHandle=0;
+            }
         }
         function startRefresh(){
-                if(!goAutoRefreshHandle){
-                    goAutoRefreshHandle=setTimeout(
-                                                function (){
-                                                    runGetPromoterResults();
-                                                }
-                                                ,20000);
-                }
+            if(!goAutoRefreshHandle){
+                goAutoRefreshHandle=setTimeout(
+                                            function (){
+                                                runGetPromoterResults();
+                                            }
+                                            ,20000);
+            }
         }
   </script>

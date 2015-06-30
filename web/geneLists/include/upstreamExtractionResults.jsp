@@ -9,6 +9,7 @@
 --%>
 
 <%@ include file="/web/common/session_vars.jsp" %>
+<jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 
 <% 	
 	optionsList.add("geneListDetails");
@@ -53,16 +54,7 @@
 %>
 
 
-	<div class="dataContainer" >
-		<div id="related_links">
-			<div class="action" title="Return to select a different upstream extraction">
-				<a class="linkedImg return" href="promoter.jsp">
-				<%=fiveSpaces%>
-				Select Another Upstream Extraction
-				</a>
-			</div>
-		</div>
-		<div class="brClear"></div>
+	<div class="dataContainer" style="overflow:auto;" >
 
 		<div class="title">Parameters Used:</div> 
                 <div class="other_actions" id="download"><img src="<%=imagesDir%>/icons/download_g.png" /><br/>Download</div>

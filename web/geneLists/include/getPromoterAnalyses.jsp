@@ -141,34 +141,42 @@
 	<%}else if(running){%>
 			startRefresh();
 	<%}%>
-	
-	$(".promoterResultDetail").on("click",function (){
-		var id=$(this).attr('id');
-                var type=$(this).attr('type')
-		$.ajax({
-				url: contextPath + "/web/geneLists/include/getPromoterResult1.jsp",
-   				type: 'GET',
-				data: {geneListAnalysisID:id,type:type},
-				dataType: 'html',
-				beforeSend: function(){
-					$('#resultLoading').show();
-					//$('#mirresultDetail').html("");
-					$('table#resultTbl tr.selected').removeClass("selected");
-					$('table#resultTbl tr.arid'+id).addClass("selected");
-				},
-    			success: function(data2){ 
-					$('#promoterResult').html(data2);
-					$('#resultLoading').hide();
-                                        
-    			},
-    			error: function(xhr, status, error) {
-        			$('#promoterResult').html("Error retreiving result.  Please try again.");
-					$('#resultLoading').hide();
-    			}
-			});
-	});
+        (function($){
+            $(".promoterResultDetail").on("click",function (){
+                    var id=this.getAttribute('id');
+                    var type=this.getAttribute('type');
+                    
+                    $.ajax({
+                                    url: contextPath + "/web/geneLists/include/getPromoterResult.jsp",
+                                    type: 'GET',
+                                    data: {geneListAnalysisID:id,type:type},
+                                    dataType: 'html',
+                                    beforeSend: function(){
+                                            $('#resultLoading').show();
+                                            //$('#mirresultDetail').html("");
+                                            $('table#resultTbl tr.selected').removeClass("selected");
+                                            $('table#resultTbl tr.arid'+id).addClass("selected");
+                                    },
+                            success: function(data2){ 
+                                
+                                $('#resultLoading').hide();
+                                $('#promoterResult').html(data2);
+                                
+                                //$("div").css("border", "3px solid red");
+                                
+                            },
+                            error: function(xhr, status, error) {
+                                    $('#promoterResult').html("Error retreiving result.  Please try again.");
+                                            $('#resultLoading').hide();
+                            }
+                            });
+            });
+            $(".delete").on("click",function(){
+                console.log("delete clicked");
+            });
+        })(jQuery);
         
-        $(".delete").on("click",function(){
-            
-        });
+        
+        
+
 </script>

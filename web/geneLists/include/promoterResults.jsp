@@ -74,15 +74,6 @@ function popUpJaspar(url) {
 
 
 	<div class="dataContainer" >
-	<div id="related_links">
-		<div class="action" title="Return to select a different promoter analysis">
-			<a class="linkedImg return" href="promoter.jsp">
-			<%=fiveSpaces%>
-			Select Another Promoter Analysis
-			</a>
-		</div>
-	</div>
-	<div class="brClear"></div>
 
 	<div class="title">Parameters Used</div> 
 	<table class="list_base" cellpadding="0" cellspacing="3" width="70%">
