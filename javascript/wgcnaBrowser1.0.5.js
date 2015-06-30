@@ -471,7 +471,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.viewBar.append("text").text("Gene Ontology");
         that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of Gene Ontology terms assigned to transcripts in the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
         
-        if(organism==="Mm"){
+        //if(organism==="Mm"){
             that.viewBar.append("br");
             that.viewBar.append("input").attr("type","radio")
                     .attr("name","wgcnaViewRB")
@@ -484,7 +484,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     });
             that.viewBar.append("text").text("miRNA Targets");
             that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of miRNAs that target genes in this module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
-        }
+        //}
         
         $("#HelpWGCNAView").on('click', function(event){
 			var id=$(this).attr('id');

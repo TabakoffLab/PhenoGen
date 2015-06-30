@@ -14,7 +14,7 @@
 <%
 	//log.debug("in chooseGeneList");
 	
-	mySessionHandler.createGeneListActivity(session.getId(), selectedGeneList.getGene_list_id(), "Chose genelist", dbConn);
+	mySessionHandler.createGeneListActivity(session.getId(), selectedGeneList.getGene_list_id(), "Chose genelist", pool);
 	if (fromQTL.equals("")) {
 		response.sendRedirect("geneList.jsp");
 	} else {

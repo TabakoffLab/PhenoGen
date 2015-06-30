@@ -15,9 +15,9 @@
 	log.debug("in selectGeneList. geneListID = " + geneListID);
 
 	if (geneListID != -99) {
-		selectedGeneList = new GeneList().getGeneList(geneListID, dbConn);
+		selectedGeneList = new GeneList().getGeneList(geneListID, pool);
 		selectedGeneList.setUserIsOwner(selectedGeneList.getCreated_by_user_id() == userID ? "Y" : "N"); 
-		selectedGeneList.setGenes(selectedGeneList.getGenesAsArray("Original", dbConn));
+		selectedGeneList.setGenes(selectedGeneList.getGenesAsArray("Original", pool));
 		if (selectedGeneList.getGene_list_source().indexOf("_v") > -1) {
 			selectedGeneList.setDatasetVersion(new Dataset().getDataset(selectedGeneList.getDataset_id(), dbConn,userFilesRoot).getDatasetVersion(selectedGeneList.getVersion()));
 			log.debug("this gene list's dataset version= "+selectedGeneList.getDatasetVersion());

@@ -19,7 +19,7 @@
                 session.setAttribute("errorMsg", "GST-005");
                 response.sendRedirect(commonDir + "errorMsg.jsp");
         }
-	GeneListAnalysis thisGLA = new GeneListAnalysis().getGeneListAnalysis(itemID, dbConn);
+	GeneListAnalysis thisGLA = new GeneListAnalysis().getGeneListAnalysis(itemID, pool);
 	String analysisType = thisGLA.getAnalysis_type();
 	log.debug("analysisType = "+analysisType);
 
@@ -41,7 +41,7 @@
         	try {
                         new LitSearch().deleteLitSearch(itemID, dbConn);
 
-			mySessionHandler.createGeneListActivity("Deleted Lit Search : " + itemID, dbConn);
+			mySessionHandler.createGeneListActivity("Deleted Lit Search : " + itemID, pool);
 			session.setAttribute("successMsg", "GLT-008");
 			response.sendRedirect(geneListsDir + "litSearch.jsp?geneListID="+selectedGeneList.getGene_list_id());
         	} catch( Exception e ) {
@@ -49,10 +49,10 @@
         	}
 	} else if (action != null && action.equals("Delete Upstream Sequence Extraction")) {
         	try {
-			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, dbConn);
-			myGeneListAnalysis.deleteGeneListAnalysisResult(itemID, dbConn);
+			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, pool);
+			myGeneListAnalysis.deleteGeneListAnalysisResult(itemID, pool);
 
-			mySessionHandler.createGeneListActivity("Deleted Upstream Sequence Extraction: " + itemID, dbConn);
+			mySessionHandler.createGeneListActivity("Deleted Upstream Sequence Extraction: " + itemID, pool);
 
 			session.setAttribute("successMsg", "GLT-006");
 			response.sendRedirect(geneListsDir + "promoter.jsp");
@@ -61,10 +61,10 @@
         	}
 	} else if (action != null && action.equals("Delete Pathway Analysis")) {
         	try {
-			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, dbConn);
-			myGeneListAnalysis.deleteGeneListAnalysisResult(itemID, dbConn);
+			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, pool);
+			myGeneListAnalysis.deleteGeneListAnalysisResult(itemID, pool);
 
-			mySessionHandler.createGeneListActivity("Deleted Pathway Analysis: " + itemID, dbConn);
+			mySessionHandler.createGeneListActivity("Deleted Pathway Analysis: " + itemID, pool);
 
 			session.setAttribute("successMsg", "GLT-017");
 			response.sendRedirect(geneListsDir + "pathwayTab.jsp");
@@ -73,10 +73,10 @@
         	}
 	} else if (action != null && action.equals("Delete MEME Analysis")) {
         	try {
-			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, dbConn);
-			myGeneListAnalysis.deleteGeneListAnalysisResult(itemID, dbConn);
+			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID,pool);
+			myGeneListAnalysis.deleteGeneListAnalysisResult(itemID, pool);
 
-			mySessionHandler.createGeneListActivity("Deleted MEME Analysis: " + itemID, dbConn);
+			mySessionHandler.createGeneListActivity("Deleted MEME Analysis: " + itemID, pool);
 
 			session.setAttribute("successMsg", "GLT-007");
 			response.sendRedirect(geneListsDir + "promoter.jsp");
@@ -85,10 +85,10 @@
         	}
 	} else if (action != null && action.equals("Delete oPOSSUM Analysis")) {
         	try {
-			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, dbConn);
+			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, pool);
 			new Promoter().deletePromoterResult(itemID, dbConn);
 
-			mySessionHandler.createGeneListActivity("Deleted oPOSSUM Analysis: " + itemID, dbConn);
+			mySessionHandler.createGeneListActivity("Deleted oPOSSUM Analysis: " + itemID, pool);
 
 			session.setAttribute("successMsg", "GLT-011");
 			response.sendRedirect(geneListsDir + "promoter.jsp");

@@ -9,19 +9,19 @@
 	int datasetID = ((String) request.getParameter("datasetID") != null ? Integer.parseInt((String) request.getParameter("datasetID")) : -99);
 	int datasetVersion = ((String) request.getParameter("datasetVersion") != null ? Integer.parseInt((String) request.getParameter("datasetVersion")) : -99);
 
-        mySessionHandler.createSessionActivity(session.getId(), "Viewed all genelists", dbConn);
+        mySessionHandler.createSessionActivity(session.getId(), "Viewed all genelists", pool);
 	//
         // Get the gene lists which are stored in PhenoGen
         //
         if (datasetID == -99) {
         	if (geneListsForUser == null) {
         		log.debug("getting new geneListsForUser");
-                	geneListsForUser = myGeneList.getGeneLists(userID, "All", "All", dbConn); 
+                	geneListsForUser = myGeneList.getGeneLists(userID, "All", "All", pool); 
         	} else {
                 	log.debug("geneListsForUser already set");
         	}
 	} else {
-                geneListsForUser = myGeneList.getGeneListsForDataset(userID, datasetID, datasetVersion, dbConn); 
+                geneListsForUser = myGeneList.getGeneListsForDataset(userID, datasetID, datasetVersion, pool); 
 	}
 
 %>

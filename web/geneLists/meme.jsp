@@ -70,7 +70,7 @@
 						mySessionHandler.createGeneListActivity(
 							"got error creating geneListAnalysisDir or memeDir directory in meme.jsp for " +
 							selectedGeneList.getGene_list_name(),
-							dbConn);
+							pool);
 						session.setAttribute("errorMsg", "SYS-001");
 									response.sendRedirect(commonDir + "errorMsg.jsp");
 					} else {
@@ -84,7 +84,7 @@
 						myGeneListAnalysis.setCreate_date(timeNow);
 						myGeneListAnalysis.setAnalysis_type("MEME");
 						myGeneListAnalysis.setDescription(description);
-						myGeneListAnalysis.setAnalysisGeneList(myGeneList.getGeneList(selectedGeneList.getGene_list_id(), dbConn));
+						myGeneListAnalysis.setAnalysisGeneList(myGeneList.getGeneList(selectedGeneList.getGene_list_id(), pool));
 						myGeneListAnalysis.setParameter_group_id(parameter_group_id);
 				
 						log.debug("now = "+now);
@@ -121,7 +121,7 @@
 	
 						myGeneListAnalysis.setParameterValues(myParameterValues);
 	
-						mySessionHandler.createGeneListActivity("Ran MEME on Gene List", dbConn);
+						mySessionHandler.createGeneListActivity("Ran MEME on Gene List", pool);
 			
 						Thread thread = new Thread(new AsyncPromoterExtraction(
 								session,

@@ -28,10 +28,10 @@
         optionsList.add("geneListDetails");
         optionsList.add("chooseNewGeneList");
 	request.setAttribute( "selectedTabId", "exonCorrelationTab" );
-        mySessionHandler.createGeneListActivity("Looked at exon Correlation Values for a gene", dbConn);
+        mySessionHandler.createGeneListActivity("Looked at exon Correlation Values for a gene", pool);
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
     <!--<script language="JAVASCRIPT" type="text/javascript"><%
                 String program = "exonCor";
@@ -59,6 +59,6 @@
 		document.getElementById("wait1").style.display = 'none';
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 

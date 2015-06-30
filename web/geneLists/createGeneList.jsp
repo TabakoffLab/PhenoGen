@@ -14,7 +14,7 @@
 
 	boolean fromMain = (request.getParameter("fromMain") != null ? true : false);
 	extrasList.add("createGeneList.js");
-	GeneList[] myGeneLists = myGeneList.getGeneLists(userID, "All", "All", dbConn);
+	GeneList[] myGeneLists = myGeneList.getGeneLists(userID, "All", "All", pool);
 	
 	myGeneLists = myGeneList.sortGeneLists(myGeneLists, "geneListName", "A");
 
@@ -29,12 +29,12 @@
         fieldNames.add("inputGeneList");
         fieldNames.add("filename");
 
-	mySessionHandler.createSessionActivity(session.getId(), "On create genelist page", dbConn);
+	mySessionHandler.createSessionActivity(session.getId(), "On create genelist page", pool);
 %>
 	
 	<% if (fromMain) { %>
     	<%pageTitle="Create gene list";%>
-		<%@ include file="/web/common/header.jsp" %>
+		<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 	<% } else { %>
 		<%@ include file="/web/common/includeExtras.jsp" %>
 	<% } %>
@@ -165,7 +165,7 @@
 	<input type="hidden" name="fromMain" value="<%=fromMain%>">
 </form>
 	<% if (fromMain) { %>
-		<%@ include file="/web/common/footer.jsp" %>
+		<%@ include file="/web/common/footer_adaptive.jsp" %>
 	<% } %>
 	<script type="text/javascript">
 		$(document).ready(function() {

@@ -20,7 +20,7 @@
         optionsList.add("download");
 	int itemID = (request.getParameter("itemID") != null ? Integer.parseInt((String) request.getParameter("itemID")) : -99);
 	log.debug("itemID = "+itemID);
-	GeneListAnalysis thisLitSearch = myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn); 
+	GeneListAnalysis thisLitSearch = myGeneListAnalysis.getGeneListAnalysis(itemID, pool); 
 	java.sql.Timestamp pubMedTime = myObjectHandler.subtractOneDay(thisLitSearch.getCreate_date());
 	java.util.Date pubMedDate = new java.util.Date(pubMedTime.getTime());
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -43,14 +43,14 @@
 
         Results myCoReferenceResults = myLitSearch.getCoReferences(itemID, dbConn);
 
-	mySessionHandler.createGeneListActivity("Viewed Literature Search Results for Search ID: " + itemID, dbConn);
+	mySessionHandler.createGeneListActivity("Viewed Literature Search Results for Search ID: " + itemID, pool);
 
 	session.setAttribute("createDate", thisLitSearch.getCreate_date_as_string());
 
 
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -62,7 +62,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer" >
+	<div class="dataContainer" style="padding-bottom: 70px;" >
 
 	<div id="related_links">
 		<div class="action" title="Return to select a different literature search">
@@ -244,4 +244,4 @@
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

@@ -258,6 +258,23 @@ public class GeneListAnalysis {
   		return analysis_id;
 	}
 
+        
+        public GeneListAnalysis[] getAllGeneListAnalysisResults(int gene_list_id,DataSource pool)throws SQLException {
+            Connection conn=null;
+            GeneListAnalysis[] tmp=null;
+            try{
+                conn=pool.getConnection();
+                tmp=getAllGeneListAnalysisResults(gene_list_id,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+            return tmp;
+        }
+        
 	/**
 	 * Returns all of the gene list analysis results for this gene_list_id
 	 * @param gene_list_id	the identifier of the gene_list 
@@ -324,8 +341,54 @@ public class GeneListAnalysis {
             GeneListAnalysis[] ret=new GeneListAnalysis[0];
             try{
                 conn=pool.getConnection();
-                ret=getGeneListAnalysisResults(user_id,gene_list_id,analysis_type,conn);
+                String query =
+                	"select ga.analysis_id, "+
+			"ga.description, "+
+			"gl.gene_list_id, "+
+			"to_char(ga.create_date, 'mm/dd/yyyy hh12:mi AM'), "+ 
+			"ga.user_id, "+
+			"to_char(ga.create_date, 'MMddyyyy_hh24miss'), "+ 
+			"ga.analysis_type, "+
+			"ga.visible, "+
+                        "ga.name, "+
+                        "ga.status, "+
+                        "ga.path, "+
+			"ga.parameter_group_id "+
+                	"from gene_list_analyses ga, gene_lists gl "+ 
+                	"where ga.user_id = ? "+ 
+			"and ga.gene_list_id = gl.gene_list_id "+
+			"and ga.visible = 1 "+
+			"and ga.analysis_type = ? ";
+			if (gene_list_id != -99) {
+				query = query + "and gl.gene_list_id = ? ";
+			}
+			query = query + 
+			"order by ga.create_date desc";
+
+		log.debug("in getGeneListAnalysisResults");
+		//log.debug("query = " + query);
+		List<GeneListAnalysis> myGeneListAnalysisResults = new ArrayList<GeneListAnalysis>();
+
+		Object[] parameters = new Object[3];
+		parameters[0] = user_id;
+		parameters[1] = analysis_type;
+		if (gene_list_id != -99) {
+			parameters[2] = gene_list_id;
+		}
+		Results myResults = new Results(query, parameters, conn);
+                String[] dataRow;
+                GeneList curGeneList=new GeneList().getGeneList(gene_list_id, pool);
+                while ((dataRow = myResults.getNextRow()) != null) {
+                        GeneListAnalysis newGeneListAnalysis = setupGeneListAnalysisValues(dataRow);
+			newGeneListAnalysis.setAnalysisGeneList(curGeneList);
+                        myGeneListAnalysisResults.add(newGeneListAnalysis);
+                }
+		myResults.close();
+
+		ret =  myGeneListAnalysisResults.toArray(new GeneListAnalysis[myGeneListAnalysisResults.size()]);
                 conn.close();
+                conn=null;
+                log.debug("finished getGeneListAnalysisResults");
             }catch(SQLException e){
                 err=e;
             }finally{
@@ -336,6 +399,7 @@ public class GeneListAnalysis {
                                      throw(err);
                                  }
                 }
+                log.debug("end FINALLY");
             }
             return ret;
         }
@@ -533,6 +597,21 @@ public class GeneListAnalysis {
 		return parameterValue;
 	}
 
+        
+        public void updateVisible(DataSource pool)throws SQLException {
+            Connection conn=null;
+            try{
+                conn=pool.getConnection();
+                updateVisible(conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Updates the visible flag to '1'.
 	 * @param conn	the database connection
@@ -552,7 +631,7 @@ public class GeneListAnalysis {
 		pstmt.setInt(1, this.getAnalysis_id());	
 		pstmt.executeUpdate();
 	}
-
+        
         /**
 	 * Updates the status text.
 	 * @param conn	the database connection
@@ -651,6 +730,21 @@ public class GeneListAnalysis {
                 }
 	}
   
+        
+        public void deleteGeneListAnalysisResult(int analysis_id,DataSource pool)throws SQLException {
+            Connection conn=null;
+            try{
+                conn=pool.getConnection();
+                deleteGeneListAnalysisResult(analysis_id,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Deletes a record from the gene_list_analyses table, and all associated records.
 	 * @param analysis_id	the identifier of the analysis record to be deleted
@@ -719,6 +813,21 @@ public class GeneListAnalysis {
 		conn.setAutoCommit(true);
 	}
 
+        
+        public void deleteGeneListAnalysisFiles(String userMainDir,int analysis_id,DataSource pool)throws SQLException {
+            Connection conn=null;
+            try{
+                conn=pool.getConnection();
+                deleteGeneListAnalysisFiles(userMainDir,analysis_id,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Deletes files associated with a gene list analysis.
 	 * @param userMainDir	the users's top directory
@@ -758,6 +867,21 @@ public class GeneListAnalysis {
 		}
 	}
 
+        
+        public void deleteAllGeneListAnalysisResultsForGeneList(int gene_list_id,DataSource pool)throws SQLException {
+            Connection conn=null;
+            try{
+                conn=pool.getConnection();
+                deleteAllGeneListAnalysisResultsForGeneList(gene_list_id,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Deletes all gene list analyses records for a gene list
 	 * @param gene_list_id	the identifier of the genelist

@@ -73,7 +73,7 @@
 		myLitSearch.createLitSearch(myLitSearch, dbConn);
 		myLitSearch.setLitSearchGeneList(selectedGeneList);
 
-		mySessionHandler.createGeneListActivity("Created Literature Search: " + description, dbConn);
+		mySessionHandler.createGeneListActivity("Created Literature Search: " + description, pool);
 
         	thread = new Thread(new AsyncLitSearch(
                 	myLitSearch,

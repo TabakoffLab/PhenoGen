@@ -20,9 +20,9 @@
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 
-	String[] identifierTypes = thisIDecoderClient.getIdentifierTypes(dbConn);
-	String[] affyBoxes = thisIDecoderClient.getArraysForPlatform(new Dataset().AFFYMETRIX_PLATFORM, dbConn);
-	String[] codeLinkBoxes = thisIDecoderClient.getArraysForPlatform(new Dataset().CODELINK_PLATFORM, dbConn);
+	String[] identifierTypes = thisIDecoderClient.getIdentifierTypes(pool);
+	String[] affyBoxes = thisIDecoderClient.getArraysForPlatform(new Dataset().AFFYMETRIX_PLATFORM,pool);
+	String[] codeLinkBoxes = thisIDecoderClient.getArraysForPlatform(new Dataset().CODELINK_PLATFORM, pool);
 
 	log.debug("action in saveAs = "+action);
 	
@@ -34,7 +34,7 @@
         	} else {
                 	String gene_list_name = (String) request.getParameter("gene_list_name");
                 	String description = (String) request.getParameter("description").trim();
-                	if (selectedGeneList.geneListNameExists(gene_list_name, userID, dbConn)) {
+                	if (selectedGeneList.geneListNameExists(gene_list_name, userID, pool)) {
                         	//Error - "Gene list name exists"
                         	session.setAttribute("errorMsg", "GL-006");
                         	response.sendRedirect(commonDir + "errorMsg.jsp");
@@ -88,7 +88,7 @@
 				//log.debug("iDecoderPlusEnsemble targetSize = "+iDecoderTargetsPlusEnsembl.length); myDebugger.print(iDecoderTargetsPlusEnsembl);
 				try {
 					iDecoderValues = thisIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), 
-										iDecoderTargetsPlusEnsembl, arrayTargets, dbConn);
+										iDecoderTargetsPlusEnsembl, arrayTargets, pool);
 				} catch (Exception e) {
 					log.error("iDecoder timed out", e);
 					//Error - "No iDecoder"
@@ -122,11 +122,11 @@
 					newGeneList.setAlternateIdentifierSourceID(-99);        
 					newGeneList.setGene_list_source("Copied Gene List");        
 
-					int gene_list_id = newGeneList.createGeneList(dbConn);
+					int gene_list_id = newGeneList.createGeneList(pool);
 
-					newGeneList.loadGeneListFromList(new ArrayList(allIdentifierValues), gene_list_id, dbConn);
+					newGeneList.loadGeneListFromList(new ArrayList(allIdentifierValues), gene_list_id, pool);
 		
-					mySessionHandler.createGeneListActivity("Ran Save As on gene list", dbConn);
+					mySessionHandler.createGeneListActivity("Ran Save As on gene list", pool);
 
 					/*
                         		if (selectedGeneList.getGeneList(gene_list_id, dbConn).getNumber_of_genes() > 200) {
@@ -147,7 +147,7 @@
 	formName = "saveAs.jsp";
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 
@@ -159,7 +159,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom: 70px;">
 
 	<form   name="saveAs"
         	method=POST
@@ -192,6 +192,6 @@
 
 	</div>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 
