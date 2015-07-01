@@ -264,12 +264,13 @@ public class AsyncPromoterExtraction implements Runnable{
 			myEmail.setSubject("Upstream extraction process has completed"); 
                 	myEmail.setContent(successContent);
 
-		        Connection conn = new PropertiesConnection().getConnection(dbPropertiesFile);
+		        //Connection conn = new PropertiesConnection().getConnection(dbPropertiesFile);
 
 			try {
 				if (!runningMeme) {
-					myGeneListAnalysis.createGeneListAnalysis(conn);
-					myGeneListAnalysis.updateVisible(conn);
+					//myGeneListAnalysis.createGeneListAnalysis(pool);
+                                        myGeneListAnalysis.updateStatus(pool,"Complete");
+					//myGeneListAnalysis.updateVisible(conn);
        	                		myEmail.sendEmail();
 				}
 			} catch (SendFailedException e) {
@@ -278,7 +279,7 @@ public class AsyncPromoterExtraction implements Runnable{
 				log.error("in exception of AsyncPromoterExtraction while getting promoter id", e);
 			}
 
-			conn.close();
+			//conn.close();
 		} catch (Exception e) {
 			log.error("in Exception of AsyncPromoterExtraction", e);
 			String errorContent = mainContent + "was not completed successfully.  "+

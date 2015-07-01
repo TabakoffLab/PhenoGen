@@ -9,6 +9,7 @@ import edu.ucdenver.ccp.PhenoGen.data.GeneList;
 import edu.ucdenver.ccp.PhenoGen.data.ParameterValue;
 
 import edu.ucdenver.ccp.util.Debugger;
+import javax.sql.DataSource;
 /* for logging messages */
 import org.apache.log4j.Logger;
 
@@ -145,6 +146,23 @@ public class Promoter{
     this.promoterGeneList = inGeneList;
   }
 
+  
+  
+        public int createPromoterResult(DataSource pool)throws SQLException {
+            Connection conn=null;
+            int tmp=0;
+            try{
+                conn=pool.getConnection();
+                tmp=createPromoterResult(conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+            return tmp;
+        }
    
 	/**
 	 * Create a record in the gene_list_analyses table with an analysis_type of 'oPOSSUM'.
@@ -167,6 +185,8 @@ public class Promoter{
 		myGeneListAnalysis.setAnalysis_type("oPOSSUM");
 		myGeneListAnalysis.setCreate_date(this.getCreate_date());
 		myGeneListAnalysis.setDescription(this.getDescription());
+                myGeneListAnalysis.setStatus("Running");
+                myGeneListAnalysis.setVisible(1);
 		ParameterValue[] myParameterValues = new ParameterValue[3];
 	
 		for (int i=0; i<myParameterValues.length; i++) {

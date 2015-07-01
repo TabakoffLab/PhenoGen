@@ -10,115 +10,156 @@
 var deleteModal; 
 
 function setupPage() {
-
-	var oPOSSUMRows = getRowsFromNamedTable($("table[id='itemsoPOSSUM']"));
-	var MEMERows = getRowsFromNamedTable($("table[id='itemsMEME']"));
-	var upstreamRows = getRowsFromNamedTable($("table[id='itemsUpstream']"));
-
-	//---> set default sort column
-        $("table[id='itemsoPOSSUM']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
-        $("table[id='itemsMEME']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
-        $("table[id='itemsUpstream']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
-	stripeAndHoverTable(oPOSSUMRows);
-	stripeAndHoverTable(MEMERows);
-	stripeAndHoverTable(upstreamRows);
-
-	// setup click for row item
-	oPOSSUMRows.each(function(){
-		//---> click functionality
-		$(this).find("td").slice(0,2).click( function() {
-			var itemID = $(this).parent("tr").attr("id");
-			var geneListID = $(this).parent("tr").attr("geneListID");
-			var type = $(this).parent("tr").attr("type");
-			$("input[name='itemID']").val( itemID );
-			$("input[name='geneListID']").val( geneListID );
-			document.chooseAnalysisoPOSSUM.submit();
-		});
+	$("select#promoterType").on("change",function(){
+		var value=$("#promoterType").val();
+		$("#createOpossum").hide();
+		$("#createMeme").hide();
+		$("#createUpstream").hide();
+		if(value==='oPOSSUM'){
+			$("#createOpossum").show();
+		}else if(value==='MEME'){
+			$("#createMeme").show();
+		}else if(value==='Upstream'){
+			$("#createUpstream").show();
+		}
 	});
-	MEMERows.each(function(){
-		//---> click functionality
-		$(this).find("td").slice(0,2).click( function() {
-			var itemID = $(this).parent("tr").attr("id");
-			var geneListID = $(this).parent("tr").attr("geneListID");
-			var type = $(this).parent("tr").attr("type");
-			$("input[name='itemID']").val( itemID );
-			$("input[name='geneListID']").val( geneListID );
-			document.chooseAnalysisMEME.submit();
-		});
-	});
-	upstreamRows.each(function(){
-		//---> click functionality
-		$(this).find("td").slice(0,2).click( function() {
-			var itemID = $(this).parent("tr").attr("id");
-			var geneListID = $(this).parent("tr").attr("geneListID");
-			var type = $(this).parent("tr").attr("type");
-			$("input[name='itemID']").val( itemID );
-			$("input[name='geneListID']").val( geneListID );
-			document.chooseAnalysisUpstream.submit();
-		});
-	});
-	setupCreateNewOpossumButton();
-	setupCreateNewMEMEButton();
-	setupCreateNewUpstreamButton();
+
+	$("#memeForm #upstreamLength").on("change",checkSize);
+	checkSize();
+	runGetPromoterResults();
 	setupDeleteButton(contextPath + "/web/geneLists/deleteGeneListAnalysis.jsp"); 
 }
-
-
-
-/* * *
- *  sets up the create new oPOSSUM modal
-/*/
-function setupCreateNewOpossumButton() {
-    var newItem;
-    $("div[name='createNewOpossum']").click(function(){
-        if (newItem == undefined) {
-            newItem = createDialog("div.createOpossum", 
-				{position:[250,150], width: 600, height: 350, 
-				title: "Create New Opossum Analysis"});
-	}
-        $.get("createOpossum.jsp", function(data){
-            newItem.dialog("open").html(data);
-		closeDialog(newItem);
-        });
-    });
+function runGetPromoterResults(){
+            $('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\""+pathImage+"wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
+            $.ajax({
+                    url: contextPath + "/web/geneLists/include/getPromoterAnalyses.jsp",
+                    type: 'GET',
+                    data: {geneListID:id},
+                    dataType: 'html',
+                    success: function(data2){ 
+                                    goAutoRefreshHandle=setTimeout(function (){
+                                            runGetPromoterResults();
+                                    },20000);
+                                    $('#resultList').html(data2);
+                    },
+                    error: function(xhr, status, error) {
+                            $('#resultList').html("Error retreiving results.  Please try again.");
+                    }
+            });
 }
 
-/* * *
- *  sets up the create new MEME modal
-/*/
-function setupCreateNewMEMEButton() {
-    var newItem;
-    // setup create new promoter button
-    $("div[name='createNewMeme']").click(function(){
-
-        if (newItem == undefined) {
-            newItem = createDialog("div.createMeme", 
-				{position:[250,150], width: 600, height: 350, 
-				title: "Create New MEME Analysis"});
-	}
-        $.get("meme.jsp", function(data){
-            newItem.dialog("open").html(data);
-		closeDialog(newItem);
-        });
-    });
+function stopRefresh(){
+    if(goAutoRefreshHandle){
+            clearTimeout(goAutoRefreshHandle);
+            goAutoRefreshHandle=0;
+    }
 }
 
-/* * *
- *  sets up the create new Upstream modal
-/*/
-function setupCreateNewUpstreamButton() {
-    var newItem;
-    // setup create new promoter button
-    $("div[name='createNewUpstream']").click(function(){
+function startRefresh(){
+    if(!goAutoRefreshHandle){
+        goAutoRefreshHandle=setTimeout(
+                                    function (){
+                                        runGetPromoterResults();
+                                    }
+                                    ,20000);
+    }
+}
 
-        if ( newItem == undefined )
-            newItem = createDialog("div.createUpstream", 
-					{position:[250,150], width: 600, height: 350, 
-					title: "Create New Upstream Extraction"});
+function runPromoter(){
+	var type=$("#promoterType").val();
+	$('#wait2').show();
+	$('#runStatus').html("");
+	var params={};
+	params.type=type;
+	params.geneListID=id;
+	if(type==='oPOSSUM'){
+		params.searchRegionLevel=$("#oPOSSUMForm #searchRegionLevel").val();
+		params.conservationLevel=$("#oPOSSUMForm #conservationLevel").val();
+		params.thresholdLevel=$("#oPOSSUMForm #thresholdLevel").val();
+		params.description=$("#oPOSSUMForm #description").val();
+	}else if(type==='MEME'){
+		params.upstreamLength=$("#memeForm #upstreamLength").val();
+		params.upstreamSelect=$("#memeForm #upstreamSelect").val();
+		params.distribution=$("#memeForm #distribution").val();
+		params.minWidth=$("#memeForm #minWidth").val();
+		params.maxWidth=$("#memeForm #maxWidth").val();
+		params.maxMotifs=$("#memeForm #maxMotifs").val();
+		params.description=$("#memeForm #description").val();
+	}else if(type==='Upstream'){
+		params.upstreamLength=$("#upstreamForm #upstreamLength").val();
+		params.upstreamSelect=$("#upstreamForm #upstreamSelect").val();
+	}
+	$.ajax({
+            url: contextPath + "/web/geneLists/include/runPromoter.jsp",
+            type: 'GET',
+            data: params,
+            dataType: 'html',
+            beforeSend: function(){
+                    $('#runStatus').html("Submitting...");
+            },
+            success: function(data2){ 
+                $('#runStatus').html(data2);
+            },
+            error: function(xhr, status, error) {
+                $('#runStatus').html("An error occurred Try submitting again. Error:"+error);
+            },
+            complete: function(){
+					$('#runStatus').show();
+					setTimeout(function (){
+						$('#runStatus').html("");
+					},20000);
+					runGetPromoterResults();
+					resetForm();
+			}
+            });
 
-        $.get("upstream.jsp", function(data){
-            newItem.dialog("open").html(data);
-		closeDialog(newItem);
-        });
-    });
+}
+
+function resetForm(){
+
+}
+
+
+function checkSize(){
+                var select=parseFloat($("#upstreamLength").val());
+                var total=geneNumber*select;
+                if(total>300){
+                    $("#sizeWarning").show();
+                    $("#warnDetail").html(" ("+geneNumber+" genes x "+select+" Kb = "+total+" Kb ) ");
+                }else{
+                    $("#sizeWarning").hide();
+                }
+}
+
+function IsMeMeFormComplete(formName) {
+   
+	if ( (jQuery.trim(formName.minWidth.value) == '') || (parseInt(formName.minWidth.value) <= 1) ) { 
+		alert('You must enter a minimum width that is greater than or equal to two.')
+	        formName.minWidth.focus();
+		return false; 
+	}
+   
+	if ( (jQuery.trim(formName.maxWidth.value) == '') || (parseInt(formName.maxWidth.value) >= 301) ) { 
+		alert('You must enter a maximum width that is less than or equal to 300.')
+	        formName.maxWidth.focus();
+		return false; 
+	}
+   
+	if (jQuery.trim(formName.maxMotifs.value) == '') { 
+		alert('You must enter the Maximun number of motifs.')
+	        formName.maxMotifs.focus();
+		return false; 
+	}
+   
+	if (jQuery.trim(formName.description.value) == '') { 
+		alert('You must enter a description.')
+	        formName.description.focus();
+		return false; 
+	}
+
+	if (jQuery.trim(formName.numberOfGenes.value) <= 1) { 
+            alert('MEME Analysis cannot be performed for a gene list with only ' + formName.numberOfGenes.value + ' gene(s).');
+            return false; 
+	}
+	return true;
 }

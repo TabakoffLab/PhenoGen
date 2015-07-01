@@ -143,8 +143,8 @@
 	<%}%>
         (function($){
             $(".promoterResultDetail").on("click",function (){
-                    var id=this.getAttribute('id');
-                    var type=this.getAttribute('type');
+                    var id=$(this).attr('id');
+                    var type=$(this).attr('type');
                     
                     $.ajax({
                                     url: contextPath + "/web/geneLists/include/getPromoterResult.jsp",
