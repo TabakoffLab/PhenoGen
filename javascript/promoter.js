@@ -7,7 +7,8 @@
  *  this function sets up all the functionality for this page
 /*/
 
-var deleteModal; 
+var idToDelete=-99; 
+
 
 function setupPage() {
 	$("select#promoterType").on("change",function(){
@@ -25,9 +26,38 @@ function setupPage() {
 	});
 
 	$("#memeForm #upstreamLength").on("change",checkSize);
+
+	$( "#dialog-delete-confirm" ).dialog({
+		  autoOpen: false,
+	      resizable: false,
+	      height:175,
+	      width:"40%",
+	      modal: true,
+	      buttons: {
+	        "Delete analysis": function() {
+	          $( this ).dialog( "close" );
+	          runDeleteGeneListAnalysis(idToDelete);
+	          idToDelete=-99;
+	        },
+	        Cancel: function() {
+	          $( this ).dialog( "close" );
+	          idToDelete=-99;
+	        }
+	      }
+    });
+    $( "#dialog-delete-error" ).dialog({
+      autoOpen: false,
+      modal: true,
+      width:"40%",
+      buttons: {
+        Ok: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
 	checkSize();
 	runGetPromoterResults();
-	setupDeleteButton(contextPath + "/web/geneLists/deleteGeneListAnalysis.jsp"); 
+	//setupDeleteButton(contextPath + "/web/geneLists/deleteGeneListAnalysis.jsp"); 
 }
 function runGetPromoterResults(){
             $('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\""+pathImage+"wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());

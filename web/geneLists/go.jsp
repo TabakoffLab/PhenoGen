@@ -88,52 +88,24 @@
 
             </div>
         </div>
-            <!--<table style="width:100%; padding-bottom: 70px;">
-                <TR><TD style="vertical-align:top;height:100%; min-height:600px;">
-                    <div style="display:inline-block;height:100%;min-height:600px;width:100%">
-                        <div id="goAccord" style="height:100%; text-align:left;">
-                            <H2>Run New GO Analysis on Gene List</H2>
-                            <div style="font-size:12px;">
-                                Save Results as: <BR><input id="name" type="text" size="30"/>
-                                <HR />
-                                <input type="button" id="runBtn"  value="Run GO" onclick="runGO()"/><span id="runStatus"></span>
-                            </div>
-                
-                            <H2>GO Results</H2>
-                            <div>
-                                <span style="font-size:10px;">Select a row below to view full results</span>
-                                <div id="resultList">
-                                </div>
-                            </div>
-                
-                        </div>
-                    </div>
-
-                    <!-- END Side bar controls-->
-            <!--        </TD>
-                    <TD  style="width:67%; vertical-align:top;">
-                        <!--data section-->
-            <!--            <div style="display:inline-block;width:100%;">
-
-                               <div id="resultLoading" style="display:none;width:100%;text-align:center;">
-                                       <img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
-                               </div>
-                               <div id="goResult" style="width:100%;text-align: left;">
-                                   <H2>Results</H2>
-                                  Select previous results from the multiMiR Results section at the left or enter new parameters on the left to run a multiMiR analysis.<BR />
-                               </div>
-
-                        </div>
-                        <!--END data section-->
-            <!--        </TD>
-                </TR>
-            </table>-->
+          <div id="dialog-delete-confirm" title="Permanently Delete this analysis?">
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>This analysis will be permanently deleted and cannot be recovered. Are you sure?</p>
+        </div>
+        <div id="dialog-delete-error" title="Error">
+            <p>
+                The analysis was not deleted see error below.
+            </p>
+            <p>
+                <span id="delete-errmsg" style="color:#FF0000;"></span>
+            </p>
+        </div>
 	<% } %>
  
 	<%@ include file="/web/geneLists/include/setupJS.jsp" %>
 	<script type="text/javascript">
                 var goBrwsr=0;
                 var goAutoRefreshHandle=0;
+                var idToDelete=-99;
 		$(document).ready(function() {
 			setTimeout("setupMain()", 100); 
 			setupExpandCollapse();
@@ -148,6 +120,34 @@
 				interactive: true,
 				interactiveTolerance: 350
 			});
+                        $( "#dialog-delete-confirm" ).dialog({
+                                  autoOpen: false,
+                                  resizable: false,
+                                  height:175,
+                                  width:"40%",
+                                  modal: true,
+                                  buttons: {
+                                    "Delete analysis": function() {
+                                      $( this ).dialog( "close" );
+                                      runDeleteGeneListAnalysis(idToDelete);
+                                      idToDelete=-99;
+                                    },
+                                    Cancel: function() {
+                                      $( this ).dialog( "close" );
+                                      idToDelete=-99;
+                                    }
+                                  }
+                        });
+                        $( "#dialog-delete-error" ).dialog({
+                          autoOpen: false,
+                          modal: true,
+                          width:"40%",
+                          buttons: {
+                            Ok: function() {
+                              $( this ).dialog( "close" );
+                            }
+                          }
+                        });
 		});
 		
 		

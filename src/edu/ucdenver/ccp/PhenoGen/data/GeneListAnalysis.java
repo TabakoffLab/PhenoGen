@@ -854,8 +854,10 @@ public class GeneListAnalysis {
 		} else if (thisGLA.getAnalysis_type().equals("Pathway")) {
 			dirToDelete = thisGeneList.getPathwayDir(glaDir);	
 		} else if (thisGLA.getAnalysis_type().equals("multiMiR")){
-                    dirToDelete=thisGeneList.getMultiMiRDir(glaDir)+this.getPath();
-                }
+                        dirToDelete=thisGeneList.getMultiMiRDir(glaDir)+this.getPath();
+                } else if (thisGLA.getAnalysis_type().equals("GO")){
+                        dirToDelete=thisGeneList.getGODir(glaDir)+this.getPath();
+                } 
 		log.debug("glaDir="+glaDir);
 		log.debug("dirToDelete="+dirToDelete);
 		File[] filesInDir = new File(dirToDelete).listFiles();

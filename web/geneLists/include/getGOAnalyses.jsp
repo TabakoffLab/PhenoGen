@@ -108,6 +108,10 @@
     			}
 			});
 	});
+        $(".delete").on("click",function(){
+                idToDelete=$(this).attr("id").substr(3);
+                $( "#dialog-delete-confirm" ).dialog("open");
+        });
 	/*$(".delete").on("click",function(){
             var id=$(this).attr("id").substr(3);
             console.log(id);

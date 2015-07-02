@@ -59,7 +59,7 @@
 			log.debug("no problems creating geneListAnalysisDir or upstreamDir directory in upstream.jsp"); 
 
 			myGeneListAnalysis.setGene_list_id(selectedGeneList.getGene_list_id());
-                	myGeneListAnalysis.setUser_id(userID);
+                	myGeneListAnalysis.setUser_id(userLoggedIn.getUser_id());
                 	myGeneListAnalysis.setCreate_date(timeNow);
                 	myGeneListAnalysis.setAnalysis_type("Upstream");
                 	myGeneListAnalysis.setDescription(selectedGeneList.getGene_list_name() + 
@@ -143,7 +143,7 @@
                             log.debug("no problems creating geneListAnalysisDir or memeDir directory in meme.jsp"); 
 
                             myGeneListAnalysis.setGene_list_id(selectedGeneList.getGene_list_id());
-                            myGeneListAnalysis.setUser_id(userID);
+                            myGeneListAnalysis.setUser_id(userLoggedIn.getUser_id());
                             myGeneListAnalysis.setCreate_date(timeNow);
                             myGeneListAnalysis.setAnalysis_type("MEME");
                             myGeneListAnalysis.setDescription(description);
@@ -304,7 +304,7 @@
 				log.debug("searchRegionLevel = "+searchRegionLevel);
 
 				myPromoter.setGene_list_id(selectedGeneList.getGene_list_id());
-				myPromoter.setUser_id(userID);
+				myPromoter.setUser_id(userLoggedIn.getUser_id());
 				myPromoter.setCreate_date(timeNow);
 
                 		Iterator itr = iDecoderSet.iterator();

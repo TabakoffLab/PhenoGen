@@ -1466,6 +1466,10 @@ public class GeneList{
   	public String getMultiMiRDir(String geneListAnalysisDir) {
 		return geneListAnalysisDir + "multiMir" + "/"; 
   	}
+        
+        public String getGODir(String geneListAnalysisDir) {
+		return geneListAnalysisDir + "GO" + "/"; 
+  	}
 
   	/** Retrieves the prefix for the files created during a MEME execution.  The prefix is the location of the userFiles directory +
 	 * the gene list name + "_" + the createDate + "_" + "MEME". 

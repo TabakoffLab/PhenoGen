@@ -1,3 +1,13 @@
+<%--
+ *  Author: Spencer Mahaffey
+ *  Created: June, 2015
+ *  Description:  This file retreives the Promotor Analyses for a gene list and is setup to be called from an ajax request not as a standalone page.
+ *
+ *  Todo: 
+ *  Modification Log:
+ *      
+--%>
+
 <%@ include file="/web/common/session_vars.jsp" %>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
@@ -120,7 +130,7 @@
                 	<span class="promoterResultDetail" id="<%=results[i].getAnalysis_id()%>" type="Upstream" style="cursor:pointer;text-decoration:underline;">View Results</span>
                     <%}%>
                 </TD>
-                <TD class="actionIcons"><span class="delete" id="del<%=results[i].getAnalysis_id()%>"><img src="<%=imagesDir%>icons/delete.png"></span></td>
+                <TD class="actionIcons"><span class="delete"  id="del<%=results[i].getAnalysis_id()%>"><img src="<%=imagesDir%>icons/delete.png"></span></td>
             </TR>
         <%  }
         }%>
@@ -172,7 +182,8 @@
                             });
             });
             $(".delete").on("click",function(){
-                console.log("delete clicked");
+                idToDelete=$(this).attr("id").substr(3);
+                $( "#dialog-delete-confirm" ).dialog("open");
             });
         })(jQuery);
         

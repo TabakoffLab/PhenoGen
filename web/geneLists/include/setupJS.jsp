@@ -42,5 +42,26 @@
             },100);
     });
     
+    /*
+     * Generic method to delete any GeneList Analysis
+    */
+    function runDeleteGeneListAnalysis(id,type){
+        $.ajax({
+                    url: contextPath + "/web/geneLists/include/deleteAjaxGLA.jsp",
+                    type: 'GET',
+                    data: {geneListAnalysisID:id},
+                    dataType: 'html',
+                    success: function(data2){
+                            if(data2.indexOf("Success")===-1){
+                                $("#delete-errmsg").html(data2);
+                                $( "#dialog-delete-error" ).dialog("open");
+                            }
+                    },
+                    error: function(xhr, status, error) {
+                           $("#delete-errmsg").html(error);
+                           $( "#dialog-delete-error" ).dialog("open");
+                    }
+            });
+    }
     
 </script>

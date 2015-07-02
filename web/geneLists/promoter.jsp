@@ -356,9 +356,17 @@
 
             </div>
         </div>
-	<div class="deleteItem"></div>
-
-        <BR><BR><BR><BR><BR>
+	<div id="dialog-delete-confirm" title="Permanently Delete this analysis?">
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>This analysis will be permanently deleted and cannot be recovered. Are you sure?</p>
+        </div>
+        <div id="dialog-delete-error" title="Error">
+            <p>
+                The analysis was not deleted see error below.
+            </p>
+            <p>
+                <span id="delete-errmsg" style="color:#FF0000;"></span>
+            </p>
+        </div>
 	
 
 <%@ include file="/web/geneLists/include/setupJS.jsp" %>
