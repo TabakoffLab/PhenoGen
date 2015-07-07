@@ -56,10 +56,10 @@ function setupPage() {
       }
     });
 	checkSize();
-	runGetPromoterResults();
+	runGetResults(-1);
 	//setupDeleteButton(contextPath + "/web/geneLists/deleteGeneListAnalysis.jsp"); 
 }
-function runGetPromoterResults(){
+/*function runGetPromoterResults(){
             $('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\""+pathImage+"wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
             $.ajax({
                     url: contextPath + "/web/geneLists/include/getPromoterAnalyses.jsp",
@@ -93,7 +93,7 @@ function startRefresh(){
                                     }
                                     ,20000);
     }
-}
+}*/
 
 function runPromoter(){
 	var type=$("#promoterType").val();
@@ -138,7 +138,7 @@ function runPromoter(){
 					setTimeout(function (){
 						$('#runStatus').html("");
 					},20000);
-					runGetPromoterResults();
+					runGetResults();
 					resetForm();
 			}
             });

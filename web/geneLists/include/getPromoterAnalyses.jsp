@@ -163,21 +163,16 @@
                                     dataType: 'html',
                                     beforeSend: function(){
                                             $('#resultLoading').show();
-                                            //$('#mirresultDetail').html("");
                                             $('table#resultTbl tr.selected').removeClass("selected");
                                             $('table#resultTbl tr.arid'+id).addClass("selected");
                                     },
                             success: function(data2){ 
-                                
                                 $('#resultLoading').hide();
                                 $('#promoterResult').html(data2);
-                                
-                                //$("div").css("border", "3px solid red");
-                                
                             },
                             error: function(xhr, status, error) {
                                     $('#promoterResult').html("Error retreiving result.  Please try again.");
-                                            $('#resultLoading').hide();
+                                    $('#resultLoading').hide();
                             }
                             });
             });

@@ -234,7 +234,7 @@ sub getGO{
     
    
     open OFILE, '>', $workingDir.$outputFile or die " Could not open two track file $path$mod.json for writing $!\n\n";
-    print OFILE "{\"MOD_NAME\":\"$mod\",";
+    print OFILE "{\"MOD_NAME\":\"GeneList\",";
     print OFILE "\"GOList\": [";
     my @r;
     push(@r,"GO:0005575");

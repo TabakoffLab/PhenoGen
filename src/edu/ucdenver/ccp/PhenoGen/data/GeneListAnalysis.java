@@ -854,19 +854,38 @@ public class GeneListAnalysis {
 		} else if (thisGLA.getAnalysis_type().equals("Pathway")) {
 			dirToDelete = thisGeneList.getPathwayDir(glaDir);	
 		} else if (thisGLA.getAnalysis_type().equals("multiMiR")){
-                        dirToDelete=thisGeneList.getMultiMiRDir(glaDir)+this.getPath();
+                        dirToDelete=thisGeneList.getMultiMiRDir(glaDir)+thisGLA.getPath();
                 } else if (thisGLA.getAnalysis_type().equals("GO")){
-                        dirToDelete=thisGeneList.getGODir(glaDir)+this.getPath();
+                        dirToDelete=thisGeneList.getGODir(glaDir)+thisGLA.getPath();
                 } 
 		log.debug("glaDir="+glaDir);
 		log.debug("dirToDelete="+dirToDelete);
-		File[] filesInDir = new File(dirToDelete).listFiles();
+                File dir=new File(dirToDelete);
+		File[] filesInDir = dir.listFiles();
+                boolean emptyFolder=true;
 		for (int i=0; i<filesInDir.length; i++) {
+                        log.debug("files"+i+"="+filesInDir[i].getAbsolutePath());
 			if (filesInDir[i].getName().indexOf(thisGLA.getCreate_date_as_string()) > -1 ||
-				filesInDir[i].getName().indexOf(thisGLA.getCreate_date_for_filename()) > -1) {
-				filesInDir[i].delete();
+				filesInDir[i].getName().indexOf(thisGLA.getCreate_date_for_filename()) > -1 || 
+                                 thisGLA.getAnalysis_type().equals("GO") || thisGLA.getAnalysis_type().equals("multiMiR")
+                                ) {
+				try{
+                                    if(!filesInDir[i].delete()){
+                                        emptyFolder=false;
+                                    }
+                                }catch(Exception e){
+                                    log.error("error deleteing Gene List Analysis File:"+filesInDir[i].getAbsolutePath(),e);
+                                }
+                                
 			}
 		}
+                if(emptyFolder){
+                    try{
+                        dir.delete();
+                    }catch(Exception e){
+                        log.error("error deleteing Gene List Analysis Folder",e);
+                    }
+                }
 	}
 
         

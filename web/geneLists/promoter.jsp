@@ -15,7 +15,7 @@
 
 	formName = "promoter.jsp";
 	request.setAttribute( "selectedTabId", "promoter" );
-        extrasList.add("promoter.js");
+        extrasList.add("promoter1.0.js");
         //extrasList.add("meme.js");
         extrasList.add("jquery.dataTables.min.js");
     
@@ -67,6 +67,7 @@
                                     <option value="MEME" selected="selected">MEME</option>
                                     <option value="Upstream">Upstream Sequence Extraction</option>
                                 </select>
+                                    <BR>
                                 <div id="createOpossum" style="display:none;">
                                     <form	id="oPOSSUMForm" name="promoter" 
                                             method="post" 
@@ -81,7 +82,7 @@
                                                             <span class="info" title="Size of the region around the transcription start site which is analyzed for transcription factor binding sites.">
                                                             <img src="<%=imagesDir%>icons/info.gif" alt="Help">
                                                             </span>
-                                                    </td><td>
+                                                            <BR>
                                                             <%
                                                             selectName = "searchRegionLevel";
                                                             selectedOption = "6";
@@ -104,7 +105,7 @@
                                                             <span class="info" title="Conservation with the aligned orthologous mouse sequences is used as a filter such that only sites which fall within these non-coding conserved regions are kept; the most stringent level of conservation is the default.">
                                                             <img src="<%=imagesDir%>icons/info.gif" alt="Help">
                                                             </span>
-                                                    </td><td>
+                                                            <BR>
                                                             <%
                                                             selectName = "conservationLevel";
                                                             selectedOption = "3";
@@ -123,7 +124,7 @@
                                                             <span class="info" title="The minimum relative score used to report the position as a putative binding site.">
                                                             <img src="<%=imagesDir%>icons/info.gif" alt="Help">
                                                             </span>
-                                                    </td><td>
+                                                            <BR>
                                                             <%
                                                             selectName = "thresholdLevel";
                                                             selectedOption = "2";
@@ -142,7 +143,7 @@
                                                             <span class="info" title="A descriptive name for this analysis.">
                                                             <img src="<%=imagesDir%>icons/info.gif" alt="Help">
                                                             </span>
-                                                    </td><td>
+                                                            <BR>
                                                              <input id="description" type="text" size=50 name="description" value="<%=selectedGeneList.getGene_list_name()%> oPOSSUM Analysis on <%=displayNow%>">
 
                                                     </td>
@@ -163,11 +164,11 @@
                                                     enctype="application/x-www-form-urlencoded" onSubmit="return IsMeMeFormComplete(this)"> 
                                             <BR>
                                             <div class="title">MEME Parameters</div>
-                                            <table class="form"  >
+                                            <table class="form"  style="width:100%;">
                                                     <tr>	
                                                             <td>
                                                                     <strong>Upstream sequence length:</strong>
-                                                            </td><td>
+                                                                    <BR>
                                                                     <%
                                                                     selectName = "upstreamLength";
                                                                     selectedOption = "2";
@@ -190,14 +191,14 @@
                                                             </td>
                                                     </tr>
                                                     <tr id="sizeWarning" style="display:none;">	
-                                                            <td colspan="2">
+                                                            <td colspan="1">
                                                                 <span style="color:#FF0000;"><strong>Upstream fasta is too large<span id="warnDetail"></span> - limit is 300 Kb </strong></span>
                                                             </td>
                                                     </tr>
                                                     <tr>	
                                                             <td>
                                                                     <strong>Upstream sequence from:</strong>
-                                                            </td><td>
+                                                                    <BR>
                                                                     <%
                                                                     selectName = "upstreamSelect";
                                                                     selectedOption = "gene";
@@ -212,9 +213,9 @@
                                                             </td>
                                                     </tr>
                                                     <tr>	
-                                                            <td>
+                                                            <td class="bottom">
                                                                     <strong>Motif distribution:</strong>
-                                                            </td><td class=bottom>
+                                                                    <BR>
                                                                     <%
                                                                     selectName = "distribution";
                                                                     selectedOption = "";
@@ -229,9 +230,9 @@
                                                             </td>
                                                     </tr>
                                                     <tr>	
-                                                            <td>
+                                                            <td class="bottom">
                                                                     <strong>Optimum width of each motif: </strong>
-                                                            </td><td class=bottom>
+                                                                    <BR>
                                                                 Min Width (>=2) <input id="minWidth" type="text" size=3 name="minWidth" value=6><BR>
                                                                 Max Width (<= 300) <input id="maxWidth" type="text" size=3 name="maxWidth" value=20>
                                                             </td>
@@ -239,14 +240,14 @@
                                                     <tr>	
                                                             <td>
                                                                     <strong>Maximum number of motifs to find: </strong>
-                                                            </td><td>
+                                                                    <BR>
                                                                             <input type="text" size=3 name="maxMotifs" value=3>
                                                             </td>
                                                     </tr>
                                                     <tr>
                                                                 <td>
                                                                     <strong>Description:</strong>
-                                                            </td><td>
+                                                                    <BR>
                                                                      <input type="text" size=30 name="description" id="description" value="<%=selectedGeneList.getGene_list_name()%> MEME Analysis on <%=displayNow%>">
 
                                                             </td>
@@ -272,11 +273,11 @@
                                                 enctype="application/x-www-form-urlencoded"> 
 
                                         <div class="title">Upstream Sequence Extraction Parameters</div>
-                                        <table class="form"  >
+                                        <table class="form" style="width:100%;" >
                                         <tr>
                                                 <td>
                                                         <strong>Upstream sequence length:</strong>
-                                                </td><td>
+                                                        <BR>
                                                         <%
                                                         selectName = "upstreamLength";
                                                         selectedOption = "2";
@@ -301,7 +302,7 @@
                                         <tr>	
                                                         <td>
                                                                 <strong>Upstream sequence from:</strong>
-                                                        </td><td>
+                                                                <BR>
                                                                 <%
                                                                 selectName = "upstreamSelect";
                                                                 selectedOption = "gene";
@@ -372,10 +373,10 @@
 <%@ include file="/web/geneLists/include/setupJS.jsp" %>
 <%@ include file="/web/common/footer_adaptive.jsp" %>
   <script type="text/javascript">
-    var goAutoRefreshHandle=0;
     var geneNumber=<%=selectedGeneList.getNumber_of_genes()%>;
     var id=<%=selectedGeneList.getGene_list_id()%>;
     var pathImage="<%=imagesDir%>";
+    var analysisPath="<%=contextRoot%>/web/geneLists/include/getPromoterAnalyses.jsp";
     $(document).ready(function() {
             setTimeout(function(){
                 setupPage();

@@ -147,21 +147,30 @@
                        
          <div id="mirresultDetail">
          </div>
+        <div id="dialog-delete-confirm" title="Permanently Delete this analysis?">
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>This analysis will be permanently deleted and cannot be recovered. Are you sure?</p>
+        </div>
+        <div id="dialog-delete-error" title="Error">
+            <p>
+                The analysis was not deleted see error below.
+            </p>
+            <p>
+                <span id="delete-errmsg" style="color:#FF0000;"></span>
+            </p>
+        </div>
 	<% } %>
  
 	<%@ include file="/web/geneLists/include/setupJS.jsp" %>
 	<script type="text/javascript">
 		var mirAutoRefreshHandle=0;
-		
+		var analysisPath="<%=contextRoot%>/web/geneLists/include/getMultiMiRAnalyses.jsp";
 		$(document).ready(function() {
 			//$( 'div#mirAccord' ).accordion({ heightStyle: "fill"  });
 			
 			//setupPage();
 			setTimeout("setupMain()", 100); 
 			setupExpandCollapse();
-			runGetMultiMiRResults();
-			//$( 'div#mirAccord' ).accordion({'active':1});
-			
+			runGetResults(-1);
 			$(".mirtooltip").tooltipster({
 				position: 'top-left',
 				maxWidth: 350,
@@ -172,6 +181,34 @@
 				interactive: true,
 				interactiveTolerance: 350
 			});
+                        $( "#dialog-delete-confirm" ).dialog({
+                                  autoOpen: false,
+                                  resizable: false,
+                                  height:175,
+                                  width:"40%",
+                                  modal: true,
+                                  buttons: {
+                                    "Delete analysis": function() {
+                                      $( this ).dialog( "close" );
+                                      runDeleteGeneListAnalysis(idToDelete);
+                                      idToDelete=-99;
+                                    },
+                                    Cancel: function() {
+                                      $( this ).dialog( "close" );
+                                      idToDelete=-99;
+                                    }
+                                  }
+                        });
+                        $( "#dialog-delete-error" ).dialog({
+                              autoOpen: false,
+                              modal: true,
+                              width:"40%",
+                              buttons: {
+                                Ok: function() {
+                                  $( this ).dialog( "close" );
+                                }
+                              }
+                        });
 		});
 		
 		
@@ -199,7 +236,7 @@
 					setTimeout(function (){
 						$('#runStatus').html("");
 					},20000);
-					runGetMultiMiRResults();
+					runGetResults(0);
 					$('select#table').val("all");
 					$('select#predType').val("p");
 					$('input#cutoff').val("20");
@@ -215,46 +252,7 @@
 			});
 		}
 		
-		function runGetMultiMiRResults(){
-			var id=<%=selectedGeneList.getGene_list_id()%>;
-			$('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\"<%=imagesDir%>wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
-			$.ajax({
-				url: contextPath + "/web/geneLists/include/getMultiMiRAnalyses.jsp",
-   				type: 'GET',
-				data: {geneListID:id},
-				dataType: 'html',
-				/*beforeSend: function(){
-					
-				},
-				complete: function(){
-					
-				},*/
-    			success: function(data2){ 
-					mirAutoRefreshHandle=setTimeout(function (){
-						runGetMultiMiRResults();
-					},20000);
-					$('#resultList').html(data2);
-					
-    			},
-    			error: function(xhr, status, error) {
-        			$('#resultList').html("Error retreiving results.  Please try again.");
-    			}
-			});
-		}
-		function stopRefresh(){
-			if(mirAutoRefreshHandle){
-				clearTimeout(mirAutoRefreshHandle);
-				mirAutoRefreshHandle=0;
-			}
-		}
-		function startRefresh(){
-			if(!mirAutoRefreshHandle){
-				mirAutoRefreshHandle=setTimeout(
-												function (){
-													runGetMultiMiRResults();
-												},20000);
-			}
-		}
+		
 		
 	</script>
 

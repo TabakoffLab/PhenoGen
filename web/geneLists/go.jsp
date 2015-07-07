@@ -104,12 +104,12 @@
 	<%@ include file="/web/geneLists/include/setupJS.jsp" %>
 	<script type="text/javascript">
                 var goBrwsr=0;
-                var goAutoRefreshHandle=0;
                 var idToDelete=-99;
+                var analysisPath="<%=contextRoot%>/web/geneLists/include/getGOAnalyses.jsp";
 		$(document).ready(function() {
 			setTimeout("setupMain()", 100); 
 			setupExpandCollapse();
-			runGetGOResults();
+			runGetResults(-1);
 			$(".gotooltip").tooltipster({
 				position: 'top-left',
 				maxWidth: 350,
@@ -171,7 +171,7 @@
 					setTimeout(function (){
 						$('#runStatus').html("");
 					},20000);
-					runGetGOResults();
+					runGetResults(0);
 					$('input#name').val("");
 				},
     			success: function(data2){ 
@@ -183,40 +183,7 @@
 			});
 		}
 		
-		function runGetGOResults(){
-			var id=<%=selectedGeneList.getGene_list_id()%>;
-			$('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\"<%=imagesDir%>wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
-			$.ajax({
-				url: contextPath + "/web/geneLists/include/getGOAnalyses.jsp",
-   				type: 'GET',
-				data: {geneListID:id},
-				dataType: 'html',
-                                success: function(data2){ 
-                                                goAutoRefreshHandle=setTimeout(function (){
-                                                        runGetGOResults();
-                                                },20000);
-                                                $('#resultList').html(data2);
-                                },
-                                error: function(xhr, status, error) {
-                                        $('#resultList').html("Error retreiving results.  Please try again.");
-                                }
-			});
-		}
-		function stopRefresh(){
-			if(goAutoRefreshHandle){
-				clearTimeout(goAutoRefreshHandle);
-				goAutoRefreshHandle=0;
-			}
-		}
-		function startRefresh(){
-			if(!goAutoRefreshHandle){
-                            goAutoRefreshHandle=setTimeout(
-                                                        function (){
-                                                            runGetGOResults();
-                                                        }
-                                                        ,20000);
-                        }
-		}
+		
 </script>
 
 <script src="<%=contextRoot%>javascript/goBrowser1.0.0.js" type="text/javascript"></script>

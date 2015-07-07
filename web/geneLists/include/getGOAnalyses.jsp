@@ -112,33 +112,4 @@
                 idToDelete=$(this).attr("id").substr(3);
                 $( "#dialog-delete-confirm" ).dialog("open");
         });
-	/*$(".delete").on("click",function(){
-            var id=$(this).attr("id").substr(3);
-            console.log(id);
-            $.ajax({
-				url: contextPath + "/web/geneLists/include/deleteGOResult.jsp",
-   				type: 'GET',
-				data: {geneListAnalysisID:id,geneListID:id},
-				dataType: 'html',
-				beforeSend: function(){
-					$('#resultLoading').show();
-					$('#goresultDetail').html("");
-					$('table#resultTbl tr.selected').removeClass("selected");
-					$('table#resultTbl tr.arid'+id).addClass("selected");
-				},
-    			success: function(data2){ 
-        			
-					$('#goResult').html(data2);
-					$('#resultLoading').hide();
-					if($('div#goAccord' ).data( "accordion" )){
-						$( 'div#goAccord').accordion( "refresh" );
-					}
-    			},
-    			error: function(xhr, status, error) {
-        			$('#mirResult').html("Error retreiving result.  Please try again.");
-					$('#resultLoading').hide();
-    			}
-			});
-        });
-        */
 </script>

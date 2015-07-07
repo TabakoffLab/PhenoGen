@@ -30,6 +30,7 @@
             <TH>Date</TH>
             <TH>Status</TH>
             <TH>View Results</TH>
+            <TH>Delete</TH>
         </TR>
     </thead>
     <tbody>
@@ -74,6 +75,7 @@
                 	<span class="mirResultDetail" id="<%=results[i].getAnalysis_id()%>" style="cursor:pointer;text-decoration:underline;">View Results</span>
                     <%}%>
                 </TD>
+                <TD class="actionIcons"><span class="delete" id="del<%=results[i].getAnalysis_id()%>"><img src="<%=imagesDir%>icons/delete.png"></span></td>
             </TR>
         <%}%>
     </tbody>
@@ -132,5 +134,9 @@
     			}
 			});
 	});
+        $(".delete").on("click",function(){
+                idToDelete=$(this).attr("id").substr(3);
+                $( "#dialog-delete-confirm" ).dialog("open");
+        });
 	
 </script>

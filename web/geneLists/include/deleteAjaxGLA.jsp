@@ -76,6 +76,15 @@
                     } catch( Exception e ) {
                             throw e;
                     }
+            } else if (analysisType.equals("multiMiR")) {
+                    try {
+                            myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, pool);
+                            myGeneListAnalysis.deleteGeneListAnalysisResult(itemID, pool);
+                            mySessionHandler.createGeneListActivity("Deleted MultiMiR Analysis: " + itemID, pool);
+                            result="Success";
+                    } catch( Exception e ) {
+                            throw e;
+                    }
             }else {
                 result="Error couldn't delete analysis unrecognized analysis type.";
             }
