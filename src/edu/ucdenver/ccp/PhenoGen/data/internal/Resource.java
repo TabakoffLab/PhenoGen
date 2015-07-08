@@ -36,6 +36,7 @@ public class Resource {
 	public EQTLDataFile[] eQTLDataFiles = null;
 	public HeritabilityDataFile[] heritabilityDataFiles = null;
         public MaskDataFile[] maskDataFiles=null;
+        public PublicationFile[] publicationFiles=null;
         private Dataset[] publicDatasets = null;
 	private HttpSession session ;
 	private edu.ucdenver.ccp.PhenoGen.data.Array myArray = new edu.ucdenver.ccp.PhenoGen.data.Array();
@@ -46,7 +47,7 @@ public class Resource {
 
         private int id;
         private String organism;
-        private String source;
+        private String source="";
         private String panel;
         private String tissue;
         private String arrayName;
@@ -57,6 +58,8 @@ public class Resource {
         private Dataset dataset;
         private String population;
         private String ancestry;
+        private String description;
+        
         //private String context="";
 
 
@@ -140,6 +143,15 @@ public class Resource {
 		setOrganism(organism);
 		setPanel(panel);
 	}
+        
+        public Resource(int id, String organism, String panel,String description,PublicationFile[] files) {
+		log = Logger.getRootLogger();
+		setID(id);
+		setOrganism(organism);
+		setPanel(panel);
+                setDescription(description);
+                setPublicationFiles(files);
+	}
 
         public Resource(HttpSession session) {
                 log = Logger.getRootLogger();
@@ -161,6 +173,14 @@ public class Resource {
 
         public String getOrganism() {
                 return this.organism;
+        }
+        
+        public void setDescription(String inString) {
+                this.description = inString;
+        }
+
+        public String getDescription() {
+                return this.description;
         }
 
         public void setSource(String inString) {
@@ -289,6 +309,14 @@ public class Resource {
                 return this.maskDataFiles;
         }
         
+        public void setPublicationFiles(PublicationFile[] inPubFiles) {
+                this.publicationFiles = inPubFiles;
+        }
+
+        public PublicationFile[] getPublicationFiles() {
+                return this.publicationFiles;
+        }
+        
         public String getPopulation() {
             return population;
         }
@@ -332,11 +360,13 @@ public class Resource {
                 List<Resource> rnaResources = Arrays.asList(getRNASeqResources());
                 List<Resource> dnaResources = Arrays.asList(getDNASeqResources());
                 List<Resource> genotypingResources = Arrays.asList(getGenotypingResources());
+                List<Resource> pubResources = Arrays.asList(getPublicationResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
                 allResources.addAll(rnaResources);
                 allResources.addAll(dnaResources);
                 allResources.addAll(genotypingResources);
+                allResources.addAll(pubResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
 	}
@@ -861,6 +891,54 @@ public class Resource {
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
 		return resourceArray;
 	}
+        
+        public Resource[] getPublicationResources() {
+            log.debug("in getPublicationResources");
+            String pubFilePath="/userFiles/public/Publication/";
+            List<Resource> resourceList = new ArrayList<Resource>();
+                
+                PublicationFile[] fileList = new PublicationFile[2];
+                fileList[0]=new PublicationFile("Reconstructed PolyA Transcriptome",pubFilePath+"reconPolyA.13Feb14.gtf.zip");
+                fileList[1]=new PublicationFile("Reconstructed NonPolyA Transcriptome",pubFilePath+"reconNonPolyA.13Feb14.gtf.zip");
+                resourceList.add(new Resource(90, "Rat", "BN-Lx/SHR","Reconstructed Brain Transcriptome",fileList));
+                
+                fileList = new PublicationFile[1];
+                fileList[0]=new PublicationFile("SNPs for bQTL",pubFilePath+"SDPsforbQTL.csv.zip");
+                resourceList.add(new Resource(91, "Rat", "HXB/BXH","SNPs used for alcohol consumption QTL",fileList));
+                
+                fileList = new PublicationFile[1];
+                fileList[0]=new PublicationFile("Strain Mean Alcohol Consumption Week 2",pubFilePath+"StrainMeans_ConsumpWk2.txt.zip");
+                resourceList.add(new Resource(92, "Rat","HXB/BXH", "Alcohol Consumption (2 bottle choice, 10% ethanol, week 2)",fileList));
+                
+                fileList = new PublicationFile[2];
+                fileList[0]=new PublicationFile("Detection Above Background - Gene Level",pubFilePath+"dabg.brain.reconTrans.geneLevel.txt.zip");
+                fileList[1]=new PublicationFile("Normalized Expression values - Gene Level",pubFilePath+"Adjusted_rma.brain.reconTrans.geneLevel.txt.zip");
+                resourceList.add(new Resource(93, "Rat","HXB/BXH", "Normalized exon array data - gene level",fileList));
+                
+                fileList = new PublicationFile[2];
+                fileList[0]=new PublicationFile("Detection Above Background - Isoform Level",pubFilePath+"dabg.brain.reconTrans.isoformLevel.txt.zip");
+                fileList[1]=new PublicationFile("Normalized Expression values - Isoform Level",pubFilePath+"Adjusted_rma.brain.reconTrans.isoformLevel.txt.zip");
+                resourceList.add(new Resource(94, "Rat","HXB/BXH", "Normalized exon array data - isoform level",fileList));
+                
+                fileList = new PublicationFile[2];
+                fileList[0]=new PublicationFile("Detection Above Background - Gene Level",pubFilePath+"dabg.brain.reconTrans.geneLevel.selectedLines.txt.zip");
+                fileList[1]=new PublicationFile("Normalized Expression values - Gene Level",pubFilePath+"rma.brain.reconTrans.geneLevel.selectedLines.txt.zip");
+                resourceList.add(new Resource(95, "Rat","Selected Lines", "Normalized exon array data - gene level",fileList));
+                
+                fileList = new PublicationFile[2];
+                fileList[0]=new PublicationFile("Detection Above Background - Isoform Level",pubFilePath+"dabg.brain.reconTrans.isoformLevel.selectedLines.txt.zip");
+                fileList[1]=new PublicationFile("Normalized Expression values - Isoform Level",pubFilePath+"rma.brain.reconTrans.isoformLevel.selectedLines.txt.zip");
+                resourceList.add(new Resource(96, "Rat","Selected Lines", "Normalized exon array data - isoform level",fileList));
+                
+                fileList = new PublicationFile[3];
+                fileList[0]=new PublicationFile("Masked MPS file by gene",pubFilePath+"RaEx-1_0-st-v1.r2.dt1.rn5.reconstruction.withStrand.byGene.MASKED.mps.zip");
+                fileList[1]=new PublicationFile("Masked MPS file",pubFilePath+"RaEx-1_0-st-v1.r2.dt1.rn5.reconstruction.withStrand.MASKED.mps.zip");
+                fileList[2]=new PublicationFile("Masked PGF File",pubFilePath+"RaEx-1_0-st-v1.r2.rn5masked.pgf.zip");
+                resourceList.add(new Resource(97, "Rat","N/A", "Array Masks",fileList));
+        	
+            Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
+            return resourceArray;
+        }
 
 	/**
 	 * Returns one Resource object from an array of Resource objects

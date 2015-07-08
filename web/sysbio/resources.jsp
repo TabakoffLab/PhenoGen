@@ -28,6 +28,7 @@
 	Resource[] myRNASeqResources = myResource.getRNASeqResources();
 	Resource[] myDNASeqResources = myResource.getDNASeqResources();
 	Resource[] myGenotypeResources = myResource.getGenotypingResources();
+        Resource[] myPublicationResources= myResource.getPublicationResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
 	ArrayList checkedList = new ArrayList();
@@ -274,11 +275,37 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         Links to Reference Rat Genome(Strain BN) Rn5: <a href="ftp://ftp.ncbi.nlm.nih.gov/genomes/R_norvegicus/" target="_blank">FTP NCBI</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a href="ftp://ftp.ensembl.org/pub/release-71/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl</a>
        	</div>
+        <BR><BR>
+        <div class="title">Data Files used in "The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption"<BR>(Saba et. al. 2015, FEBS)
+                <a href="http://onlinelibrary.wiley.com/doi/10.1111/febs.13358/abstract">Abstract</a></div>
+		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
+                        <thead>
+                            <tr class="col_title">
+					<th>Population</th>
+					<th>Data</th>
+                                        <TH>Files</TH>
+                            </tr>
+			</thead>
+			<tbody>
+			<% for (Resource resource: myPublicationResources) { %> 
+				<tr id="<%=resource.getID()%>">  
+                                    <TD><%=resource.getPanel()%></TD>
+                                    <TD><%=resource.getDescription()%></TD>
+                                    <td class="actionIcons">
+						<div class="linkedImg download" type="pub"><div>
+                                    </td>
+				</tr> 
+			<% } %>
+			</tbody>
+		</table>
+                        <BR>
         
+        
+	</form>
         <BR>
 		<BR>
 		<div class="title">Human Genotype Data Files</div>
-		      <table id="genotypingFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="98%">
+		      <table id="genotypingFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
             	<thead>
                     <tr class="col_title">
 					<th >Organism</th>

@@ -30,47 +30,9 @@
 				(type.equals("rnaseq") ? thisResource.getSAMDataFiles() :
 				(type.equals("genotype") ? thisResource.getGenotypeDataFiles() :
 				(type.equals("mask") ? thisResource.getMaskDataFiles() :
-				null)))))));
-
-	/*log.debug("dataFiles = "); myDebugger.print(dataFiles);
-	
-        if ((action != null) && action.equals("Download")) {
-
-        	if (request.getParameterValues("fileList") != null) {
-			//
-			// checkedList will contain the values of the check boxes that were
-			// actually selected by the user
-			//
-		
-            		checkedList.addAll(Arrays.asList(request.getParameterValues("fileList")));
-
-                	if (checkedList != null && checkedList.size() > 0){
-							log.debug("setting up AsyncResourceDownload:type:"+type);
-							if(!type.equals("rnaseq")||!type.equals("marker")){
-                        		Thread thread = new Thread(new AsyncResourceDownload(request, thisResource, type,  checkedList));
-                        		thread.start();
-								log.debug("AsyncResourceDownload started");
-								session.setAttribute("successMsg", "DST-001");
-                        		response.sendRedirect(commonDir + "successMsg.jsp");
-							}else{
-								//ResourceDownload rd=new ResourceDownload(request, thisResource, type,  checkedList);
-								//rd.download();
-								//session.setAttribute("successMsg", "DST-001");
-                        		//response.sendRedirect(commonDir + "successMsg.jsp");
-								String url="http://"+request.getServerName()+request.getContextPath()+checkedList.get(0);
-								String redirurl="http://"+request.getServerName()+request.getContextPath()+"/directDownloads.jsp?url="+url;
-								response.sendRedirect(redirurl);
-							}
-                        	
-                        	// This is required to avoid the getOutputStream() has already been called for this response error
-                        	// Still necessary?
-                        	//out.clear();
-                        	//out = pageContext.pushBody(); 
-		
-				mySessionHandler.createActivity("Downloaded files starting with this one: " + checkedList.get(0), dbConn);
-			}
-        	}
-	}*/
+                                (type.equals("pub") ? thisResource.getPublicationFiles() :
+				null))))))));
+        log.debug("array size="+dataFiles.length);
 %>
 
 	<BR>
@@ -88,7 +50,9 @@
 			</tr>
 			</thead>
 			<tbody>
-				<% for (DataFile dataFile : dataFiles) { %>
+				<% for (DataFile dataFile : dataFiles) { 
+                                    log.debug("inside For loop:"+dataFile.getFileName());
+                                    %>
 				<tr>  
 					<td> 
 					<center>
