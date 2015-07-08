@@ -241,7 +241,7 @@
                                                             <td>
                                                                     <strong>Maximum number of motifs to find: </strong>
                                                                     <BR>
-                                                                            <input type="text" size=3 name="maxMotifs" value=3>
+                                                                            <input id="maxMotifs" type="text" size=3 name="maxMotifs" value=3>
                                                             </td>
                                                     </tr>
                                                     <tr>
