@@ -168,7 +168,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
             <script src="javascript/GenomeReport2.1.5.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.1.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.1.0.js" type="text/javascript"></script>
-            <script src="javascript/wgcnaBrowser1.0.5.js" type="text/javascript"></script>
+            <script src="javascript/wgcnaBrowser1.0.6.js" type="text/javascript"></script>
             
             
                 <script type="text/javascript">
