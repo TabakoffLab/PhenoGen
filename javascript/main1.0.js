@@ -599,24 +599,26 @@ function AreYouSure(form){
 
 // Setup the options bar icons
 function setupIcons( chosenOption ) {
-	// set selected icon
-	if (chosenOption != "") {
-		$("div.optionIcons").find("div#" + chosenOption).addClass("selected");
-	}
+    if($(".optionIcons").length>0){
+    	// set selected icon
+    	if (chosenOption != "") {
+    		$("div.optionIcons").find("div#" + chosenOption).addClass("selected");
+    	}
 
-	// set click action for tabs
-	$(".optionIcons").find("div:not('.selected')").click(function(){
-	//$(".optionIcons").click(function(){
-		var landingPage = $(this).attr("data-landingPage");
-		//$("input[name='tab']").val( this.id );
+    	// set click action for tabs
+    	$(".optionIcons").find("div:not('.selected')").click(function(){
+    	//$(".optionIcons").click(function(){
+    		var landingPage = $(this).attr("data-landingPage");
+    		//$("input[name='tab']").val( this.id );
 
-		if ( landingPage != undefined ) {
-			landingPage += ".jsp";
-			if ( landingPage == "expressionValues.jsp" ) {
-				landingPage += "?itemID=-99";
-			}
-			$("form[name='iconLink']").attr({action: landingPage});
-			document.iconLink.submit();
-		}
-	});
+    		if ( landingPage != undefined ) {
+    			landingPage += ".jsp";
+    			if ( landingPage == "expressionValues.jsp" ) {
+    				landingPage += "?itemID=-99";
+    			}
+    			$("form[name='iconLink']").attr({action: landingPage});
+    			document.iconLink.submit();
+    		}
+    	});
+    }
 }
