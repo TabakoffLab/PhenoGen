@@ -46,9 +46,11 @@ $(document).on('click','span.detailMenu', function (event){
     $("span[name='"+baseName+"']").addClass("selected");
     $("div#"+baseName).show();
     //check if loaded load if not
-    var min=svgList[0].xScale.domain()[0];
-    var max=svgList[0].xScale.domain()[1];
-    loadRegionReport(baseName,chr,min,max);
+    if(typeof svgList[0]!=='undefined'){
+    	var min=svgList[0].xScale.domain()[0];
+    	var max=svgList[0].xScale.domain()[1];
+    	loadRegionReport(baseName,chr,min,max);
+	}
 
 });
 
