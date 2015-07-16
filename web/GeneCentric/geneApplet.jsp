@@ -2,13 +2,14 @@
 
 <%
 	extrasList.add("detailedTranscriptInfo.js");
-        extrasList.add("jquery.dataTables.js");
+        extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("d3.v3.min.js");
         extrasList.add("spectrum.js");
 	extrasList.add("tabs.css");
 	extrasList.add("tooltipster.min.css");
         extrasList.add("spectrum.css");
+        extrasList.add("jquery.dataTables.min.css");
 	
 %>
 
