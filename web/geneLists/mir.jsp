@@ -17,7 +17,8 @@
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 
 <%
-	extrasList.add("jquery.dataTables.js");
+	extrasList.add("jquery.dataTables.min.js");
+        extrasList.add("jquery.dataTables.min.css");
 	//extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 
 	QTL.EQTL myEQTL = myQTL.new EQTL();

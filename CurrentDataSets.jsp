@@ -1,7 +1,7 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 <%  pageTitle="Current Datasets";
     pageDescription="A list of public datasets available for download or analysis";
-    extrasList.add("jquery.dataTables.js");
+    extrasList.add("jquery.dataTables.min.js");
     extrasList.add("jquery.dataTables.min.css");
 %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>

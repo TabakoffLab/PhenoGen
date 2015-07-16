@@ -28,7 +28,8 @@
 	extrasList.add("arrayTabs.js");
 	extrasList.add("selectArrays.js");
 	//extrasList.add("jquery.tablesorter.pager.js");
-	extrasList.add("jquery.dataTables.js");
+	extrasList.add("jquery.dataTables.min.js");
+        extrasList.add("jquery.dataTables.min.css");
 	//extrasList.add("jquery.ColumnFilterWidgets.js");
 	optionsListModal.add("addToDataset");
 	optionsListModal.add("viewFinalizeDataset");
