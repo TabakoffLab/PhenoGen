@@ -519,9 +519,11 @@ function ViewMenu(level){
 		var d=that.findSelectedView();
 		var trackList=d.TrackList;
 		var td=NaN;
-		for(var i=0;i<trackList.length&&isNaN(td);i++){
-			if(trackList[i].TrackID===id){
-				td=i;
+		if(typeof trackList!=='undefined'){
+			for(var i=0;i<trackList.length&&isNaN(td);i++){
+				if(trackList[i].TrackID===id){
+					td=i;
+				}
 			}
 		}
 		return td;

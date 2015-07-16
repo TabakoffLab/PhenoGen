@@ -3,7 +3,7 @@
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-ui-1.11.4.min.js"></script>
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tooltipster.adaptive.js"></script>
     <script  type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tablesorter.js"></script>
-    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/main1.0.js"></script>
+    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/main1.0.1.js"></script>
 
 	<%@ include file="/web/common/includeExtras.jsp" %>
 
