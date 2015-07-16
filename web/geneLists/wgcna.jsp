@@ -17,6 +17,7 @@
         extrasList.add("svg-pan-zoom.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
+        extrasList.add("jquery.dataTables.min.css");
 
         //extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 

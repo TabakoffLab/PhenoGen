@@ -18,8 +18,10 @@
 
 <%
 	extrasList.add("jquery.dataTables.min.js");
-	
+        extrasList.add("jquery.dataTables.min.css");
+
         tall="53em";
+        
 	QTL.EQTL myEQTL = myQTL.new EQTL();
 	log.info("in mir.jsp. user = " + user);
 	log.debug("action = " +action);

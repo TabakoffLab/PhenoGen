@@ -2,7 +2,7 @@
 
 <%
 	extrasList.add("detailedTranscriptInfo.js");
-	extrasList.add("jquery.dataTables.js");
+	extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
@@ -17,6 +17,7 @@
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("jquery.fancybox-thumbs.css");
 	extrasList.add("spectrum.css");
+        extrasList.add("jquery.dataTables.min.css");
 %>
 
 

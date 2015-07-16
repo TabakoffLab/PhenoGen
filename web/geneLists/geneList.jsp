@@ -3,8 +3,9 @@
 <%
 	request.setAttribute( "selectedTabId", "list" );
 	extrasList.add("geneList.js");
-	extrasList.add("jquery.dataTables.js");
+	extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("dataTables.paging.css");
+        extrasList.add("jquery.dataTables.min.css");
 	
 
 	optionsList.add("geneListDetails");
