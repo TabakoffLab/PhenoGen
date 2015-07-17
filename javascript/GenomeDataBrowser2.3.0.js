@@ -11080,6 +11080,32 @@ function RepeatMaskTrack(gsvg,data,trackClass,label,density,additionalOptions){
 		return color;
 	};*/
 
+	that.pieColor =function(d,i){
+		var color=d3.rgb("#000000");
+		var dClass=d.data.names;
+		console.log(dClass);
+		if(dClass==='LINE'){
+			color=d3.rgb("#27e5e5");
+		}else if(dClass==='SINE'){
+			color=d3.rgb("#e57927");
+		}else if(dClass==='LTR'){
+			color=d3.rgb("#27e527");
+		}else if(dClass==='DNA'){
+			color=d3.rgb("#e52727");
+		}else if(dClass==='Simple_repeat'){
+			color=d3.rgb("#e51ba2");
+		}else if(dClass==='Low_complexity'){
+			color=d3.rgb("#9029e5");
+		}else if(dClass==='RNA'){
+			color=d3.rgb("#005be5");
+		}else if(dClass==='Satellite'){
+			color=d3.rgb("#cccc00");
+		}else if(dClass==='Other'){
+			color=d3.rgb("#007f24");
+		}
+		return color;
+	};
+
 	that.calcY = function(start, end, i,d){
 		var tmpY=0;
 		if(that.density===3 || that.density==='3'){
@@ -11315,6 +11341,39 @@ function RepeatMaskTrack(gsvg,data,trackClass,label,density,additionalOptions){
 							that.svg.attr("height", (that.trackYMax+2)*15);
 		}
 		that.redrawSelectedArea();
+	};
+
+	that.getDisplayedData= function (){
+		var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber);
+		that.counts=new Array();
+		var tmp={};
+		var tmpDat=dataElem[0];
+		var dispData=new Array();
+		var dispDataCount=0;
+		if (!(typeof tmpDat === 'undefined')) {
+			for(var l=0;l<tmpDat.length;l++){
+				var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+				var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+				if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)){
+					if(typeof tmp[tmpDat[l].__data__.getAttribute("class")]==="undefined"){
+						tmp[tmpDat[l].__data__.getAttribute("class")]={};
+						tmp[tmpDat[l].__data__.getAttribute("class")].value=1;
+						tmp[tmpDat[l].__data__.getAttribute("class")].names=tmpDat[l].__data__.getAttribute("class");
+					}else{
+						tmp[tmpDat[l].__data__.getAttribute("class")].value=tmp[tmpDat[l].__data__.getAttribute("class")].value+1;
+					}
+					dispData[dispDataCount]=tmpDat[l].__data__;
+					dispDataCount++;
+				}
+			}
+			that.counts=new Array();
+			for (x in tmp){
+				that.counts.push(tmp[x]);
+			}
+		}else{
+			that.counts=new Array();
+		}
+		return dispData;
 	};
 
 	/*that.redrawLegend=function (){

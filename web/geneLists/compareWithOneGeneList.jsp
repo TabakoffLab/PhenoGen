@@ -155,7 +155,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer" style="height:580px; overflow:auto">
+	<div class="dataContainer" style="height:580px; overflow:auto;padding-bottom:70px;">
 		<div class="menuBar">
         		<div id="tabMenu">
                         	<div class="left inlineButton"><a href="compareWithAllGeneLists.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With All Gene Lists</a></div>
