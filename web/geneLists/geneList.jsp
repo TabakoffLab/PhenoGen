@@ -5,7 +5,7 @@
 	extrasList.add("geneList.js");
 	extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("dataTables.paging.css");
-        extrasList.add("jquery.dataTables.min.css");
+        //extrasList.add("jquery.dataTables.min.css");
 	
 
 	optionsList.add("geneListDetails");

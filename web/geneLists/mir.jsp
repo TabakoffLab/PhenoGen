@@ -18,7 +18,7 @@
 
 <%
 	extrasList.add("jquery.dataTables.min.js");
-        extrasList.add("jquery.dataTables.min.css");
+        //extrasList.add("jquery.dataTables.min.css");
 
         tall="53em";
         

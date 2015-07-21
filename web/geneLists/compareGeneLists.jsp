@@ -28,7 +28,7 @@
 	</div> <!-- // end page-intro -->
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom:70px;">
 
 	<BR>
 	<div class="menuBar">

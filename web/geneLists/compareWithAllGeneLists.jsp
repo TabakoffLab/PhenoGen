@@ -33,7 +33,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom:70px;">
 		<div class="menuBar">
         		<div id="tabMenu">
                         	<div class="left inlineButton"><a href="compareWithOneGeneList.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With One Gene List</a></div>

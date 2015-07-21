@@ -29,7 +29,7 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
-       <div class="whats_new version"><p><h3>Version: v2.16.0</h3><BR /> Updated:7/27/2015</p></div>
+       <div class="whats_new version"><p><h3>Version: v2.16.0</h3><BR /> Updated:7/21/2015</p></div>
        <ul>
                                     <li><span class="highlight-dark">Gene Lists</span>
                                         <UL>

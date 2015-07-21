@@ -9,7 +9,7 @@
 	extrasList.add("tabs.css");
 	extrasList.add("tooltipster.min.css");
         extrasList.add("spectrum.css");
-        extrasList.add("jquery.dataTables.min.css");
+        //extrasList.add("jquery.dataTables.min.css");
 	
 %>
 
