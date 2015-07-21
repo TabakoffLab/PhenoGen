@@ -29,7 +29,7 @@
 	}
 	log.debug("pageNum = "+pageNum);
 	th = new TableHandler("abstractsNext.jsp");
-	mySessionHandler.createGeneListActivity("Viewed next set of abstracts for category '" + category, dbConn);
+	mySessionHandler.createGeneListActivity("Viewed next set of abstracts for category '" + category, pool);
 
 %>
 

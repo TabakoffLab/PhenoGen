@@ -17,7 +17,7 @@
 
         	try {
 			new QTL().deleteQtlList(itemID, dbConn);
-			mySessionHandler.createSessionActivity(session.getId(), "Deleted QTL list:" + itemID, dbConn);
+			mySessionHandler.createSessionActivity(session.getId(), "Deleted QTL list:" + itemID, pool);
         	} catch( Exception e ) {
             		throw e;
         	}

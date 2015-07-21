@@ -21,7 +21,7 @@
 	log.debug("in memeResults. itemID = " + itemID);
 
 	GeneListAnalysis thisGeneListAnalysis = 
-			myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn);
+			myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
 	ParameterValue[] myParameterValues = thisGeneListAnalysis.getParameterValues();
 	int upstreamLength = Integer.parseInt(thisGeneListAnalysis.getThisParameter("Sequence Length"));
 			
@@ -48,7 +48,7 @@
 	}else{
 		memeResultsOld=myFileHandler.getFileContents(new File(memeFileName), "withSpaces");
 	}
-    mySessionHandler.createGeneListActivity("Viewed MEME Results for gene list", dbConn);
+    mySessionHandler.createGeneListActivity("Viewed MEME Results for gene list", pool);
 /*
 
 
@@ -76,7 +76,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer" >
+	<div class="dataContainer" style="padding-bottom: 70px;">
         <div id="related_links">
             <div class="action" title="Return to select a different promoter analysis">
                 <a class="linkedImg return" href="promoter.jsp">
@@ -118,4 +118,4 @@
 	post_load_setup();
     </script>
 <%}%>
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

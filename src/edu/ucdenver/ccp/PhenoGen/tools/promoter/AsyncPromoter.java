@@ -20,6 +20,7 @@ import edu.ucdenver.ccp.PhenoGen.driver.PerlException;
 import edu.ucdenver.ccp.PhenoGen.driver.PerlHandler;
 import edu.ucdenver.ccp.util.ObjectHandler;
 import edu.ucdenver.ccp.util.sql.PropertiesConnection;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -39,12 +40,15 @@ public class AsyncPromoter implements Runnable{
 	private GeneList selectedGeneList = null;
 	private String mainURL = null;
         private String idType=null;
+        private DataSource pool=null;
+        private GeneListAnalysis myGeneListAnalysis=null;
 
 	public AsyncPromoter(HttpSession session,
 				String conservationLevel,
 				String thresholdLevel,
 				String searchRegionLevel,
 				Promoter myPromoter,
+                                GeneListAnalysis myGeneListAnalysis,
 				String filePrefix,
                                 String idType) {
 
@@ -62,7 +66,8 @@ public class AsyncPromoter implements Runnable{
 	        this.userLoggedIn = (User) session.getAttribute("userLoggedIn");
 	        this.selectedGeneList = (GeneList) session.getAttribute("selectedGeneList");
 		this.perlDir = (String) session.getAttribute("perlDir") + "scripts/";
-                
+                this.pool = (DataSource) session.getAttribute("dbPool");
+                this.myGeneListAnalysis = myGeneListAnalysis;
 
         }
 
@@ -110,9 +115,10 @@ public class AsyncPromoter implements Runnable{
 		        Connection conn = new PropertiesConnection().getConnection(dbPropertiesFile);
 
 			try {
-				int promoter_id = myPromoter.createPromoterResult(conn);
-				GeneListAnalysis thisGeneListAnalysis = new GeneListAnalysis(promoter_id);
-				thisGeneListAnalysis.updateVisible(conn);
+                                myGeneListAnalysis.updateStatus(pool,"Complete");
+				/*int promoter_id = myPromoter.createPromoterResult(conn);
+				GeneListAnalysis thisGeneListAnalysis = new GeneListAnalysis(promoter_id);*/
+				//thisGeneListAnalysis.updateVisible(conn);
        	                	myEmail.sendEmail();
 			} catch (MessagingException e) {
 				log.error("in exception of AsyncPromoter while sending email", e);

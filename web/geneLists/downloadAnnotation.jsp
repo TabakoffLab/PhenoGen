@@ -22,5 +22,5 @@
 	out.clear();
 	out = pageContext.pushBody(); 
 
-	mySessionHandler.createGeneListActivity("Downloaded Advanced Annotation for Gene List in format " + fileFormat, dbConn);
+	mySessionHandler.createGeneListActivity("Downloaded Advanced Annotation for Gene List in format " + fileFormat, pool);
 %>

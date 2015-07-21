@@ -87,9 +87,9 @@
 	}
 	
 	myGeneListAnalysis.setParameterValues(myParameterValues);
-	int glaID=myGeneListAnalysis.createGeneListAnalysis(dbConn);
+	int glaID=myGeneListAnalysis.createGeneListAnalysis(pool);
 	
-	mySessionHandler.createGeneListActivity("Ran multiMiR on Gene List", dbConn);
+	mySessionHandler.createGeneListActivity("Ran multiMiR on Gene List", pool);
 	
 	
 	

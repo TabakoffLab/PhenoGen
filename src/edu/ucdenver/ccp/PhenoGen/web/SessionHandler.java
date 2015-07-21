@@ -580,6 +580,21 @@ public class SessionHandler {
                 session.setAttribute("dbPool",this.pool);
 	}
 
+        public void createSession(SessionHandler mySessionHandler,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createSession(mySessionHandler,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
   public void createSession(SessionHandler mySessionHandler, Connection conn) throws SQLException {
 
         String query =
@@ -611,6 +626,22 @@ public class SessionHandler {
         }
   }
 	
+  
+        public void logoutSession(DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                logoutSession(conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+  
 	/** Update the sessions table indicating the user has logged out.
 	 * @param conn	the database connection
          * @throws            SQLException if a database error occurs
@@ -637,6 +668,21 @@ public class SessionHandler {
 		}
 	}
         
+        public void updateLoginSession(SessionHandler mySessionHandler,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                updateLoginSession(mySessionHandler,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
         /** Update the sessions table indicating the user has logged in from a previously anonymous session.
 	 * @param conn	the database connection
          * @throws            SQLException if a database error occurs
@@ -662,6 +708,22 @@ public class SessionHandler {
 		}
 	}
 
+        
+        public void createActivity(String activityName,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createActivity(activityName,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Creates a record in the session_activities table.  Gets the variables from the session object.
 	 * @param activityName	the activity
@@ -685,7 +747,7 @@ public class SessionHandler {
 			createSessionActivity(mySessionHandler, conn);
 		}
 	}
-
+      
 	/**
 	 * Creates a record in the session_activities table.  Assumes the variables have been set explicitly.
 	 * @param mySessionHandler	the SessionHandler object containing the previously set values.
@@ -730,6 +792,9 @@ public class SessionHandler {
 		}
 
 	}
+        
+        
+        
         
         /**
 	 * Creates a record in the session_activities table.  Assumes the variables have been set explicitly.
@@ -786,6 +851,23 @@ public class SessionHandler {
 	}
         
   
+        public void createSessionActivity(String sessionID, 
+				int exp_id, int dataset_id, int version, int geneListID, 
+				String activityName,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createSessionActivity(sessionID,exp_id,dataset_id,version,geneListID,activityName,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Creates a record in the session_activities table. 
 	 * Used for creating an experiment-related, dataset-related or a gene-list-related activity. 
@@ -848,6 +930,22 @@ public class SessionHandler {
 		createSessionActivity(mySessionHandler, conn);
 	}
   
+        
+        public void createExperimentActivity(String sessionID, int expID, String activityName,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createExperimentActivity(sessionID,expID,activityName,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Creates a record in the session_activities table. Used for creating an experiment-related activity. 
 	 * @param sessionID	the identifier of the session
@@ -867,6 +965,22 @@ public class SessionHandler {
 		createSessionActivity(mySessionHandler, conn);
 	 }
 
+         
+         public void createExperimentActivity(String activityName,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createExperimentActivity(activityName,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+         
 	/**
 	 * Creates a record in the session_activities table. Used for creating an experiment-related activity. 
 	 * @param activityName	the activity
@@ -885,6 +999,22 @@ public class SessionHandler {
 		createSessionActivity(mySessionHandler, conn);
 	 }
 
+         
+         public void createDatasetActivity(String sessionID, int dataset_id, int version, String activityName,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createDatasetActivity(sessionID,dataset_id,version,activityName,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+         
 	/**
 	 * Creates a record in the session_activities table. Used for creating a dataset-related activity 
 	 * where the selectedDataset and selectedDatasetVersion are not used. 
@@ -906,6 +1036,22 @@ public class SessionHandler {
 		createSessionActivity(mySessionHandler, conn);
 	}
 
+        
+        public void createDatasetActivity( String activityName,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createDatasetActivity(activityName,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Creates a record in the session_activities table. Used for creating a dataset-related activity. 
 	 * @param activityName	the activity
@@ -925,6 +1071,21 @@ public class SessionHandler {
 		createSessionActivity(mySessionHandler, conn);
 	}
   
+        public void createGeneListActivity(String sessionID, int geneListID, String activityName,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createGeneListActivity(sessionID,geneListID,activityName,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+        
 	/**
 	 * Creates a record in the session_activities table. Used for creating a gene-list-related activity. 
 	 * @param sessionID	the identifier of the session
@@ -944,6 +1105,21 @@ public class SessionHandler {
 		createSessionActivity(mySessionHandler, conn);
 	 }
 
+        public void createGeneListActivity(String activityName,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                createGeneListActivity(activityName,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        }
+         
 	/**
 	 * Creates a record in the session_activities table. Used for creating a gene-list-related activity. 
 	 * @param activityName	the activity
@@ -961,6 +1137,23 @@ public class SessionHandler {
 		createSessionActivity(mySessionHandler, conn);
 	 }
   
+         
+        
+         public void deleteSessionActivitiesForDatasetVersion (Dataset.DatasetVersion thisVersion,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                deleteSessionActivitiesForDatasetVersion(thisVersion,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        } 
+         
 	/**
 	 * Removes the session_activities records for a dataset version. Not actually deleting them so we
 	 * can see them in the future?
@@ -994,6 +1187,21 @@ public class SessionHandler {
 		pstmt.close();
 	}
   
+        public void deleteSessionActivitiesForGeneList (int gene_list_id,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                deleteSessionActivitiesForGeneList(gene_list_id,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        } 
+        
 	/**
 	 * Removes the session_activities records for a gene list. Not actually deleting them so we
 	 * can see them in the future?
@@ -1022,6 +1230,23 @@ public class SessionHandler {
 		pstmt.close();
 	}
 
+        
+        
+        public void deleteSessionActivitiesForExperiment (int exp_id,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                deleteSessionActivitiesForExperiment(exp_id,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        } 
+        
 	/**
 	 * Removes the session_activities records for an experiment. Not actually deleting them so we
 	 * can see them in the future?
@@ -1050,6 +1275,21 @@ public class SessionHandler {
 		pstmt.close();
 	}
 
+        public void deleteOldSessions(DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                deleteOldSessions(conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        } 
+        
 	/**
 	 * Deletes records from the session_activities table that are over 90 days old.  
 	 * Also deletes records from the sessions table that have no activities.  
@@ -1119,6 +1359,23 @@ public class SessionHandler {
 	return query;
   }
 
+  
+  public List<List<String[]>> getSessionsForUser(int userID,DataSource pool)throws SQLException {
+            Connection conn=null;
+            List<List<String[]>> tmp=null;
+            try{
+                conn=pool.getConnection();
+                tmp=getSessionsForUser(userID,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+            return tmp;
+        } 
+  
   public List<List<String[]>> getSessionsForUser (int userID, Connection conn) throws SQLException {
   	
 	log.debug("in getSessionsForUser. userID = "+userID);
@@ -1137,6 +1394,21 @@ public class SessionHandler {
 	log.debug("returning allResults.length = "+allResults.size());
 	return allResults;
   }
+  
+    public void deleteSessionsForUser (int userID,DataSource pool)throws SQLException {
+            Connection conn=null;
+            
+            try{
+                conn=pool.getConnection();
+                deleteSessionsForUser(userID,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+        } 
 
 	/**
 	 * Removes the session_activities records for a user.

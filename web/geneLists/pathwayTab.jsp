@@ -34,9 +34,9 @@
 	String type="";
 	String createNew="";
 
-        mySessionHandler.createGeneListActivity("On pathway tab ", dbConn);
+        mySessionHandler.createGeneListActivity("On pathway tab ", pool);
 %>
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 
@@ -48,10 +48,10 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer" >
+	<div class="dataContainer" style="padding-bottom: 70px;">
 <%
 		myAnalysisResults = 
-        		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "Pathway", dbConn);
+        		myGeneListAnalysis.getGeneListAnalysisResults(userID, selectedGeneList.getGene_list_id(), "Pathway", pool);
 		type = "Pathway";
 %>
 		<%@ include file="/web/geneLists/include/formatAnalysisResults.jsp" %>
@@ -66,4 +66,4 @@
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

@@ -20,7 +20,7 @@
 	userName = "";
 	int itemID = Integer.parseInt((String) request.getParameter("itemID"));
 
-	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn);
+	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
 
 	String searchRegionLevelText = thisGeneListAnalysis.getThisParameter("Search Region Level");
 	String conservationLevelText = thisGeneListAnalysis.getThisParameter("Conservation Level");
@@ -59,7 +59,7 @@
         mySessionHandler.createGeneListActivity(session.getId(), 
 		promoterGeneList.getGene_list_id(),
                 "Viewed Promoter Results",
-		dbConn);
+		pool);
 
 %>
 

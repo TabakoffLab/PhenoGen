@@ -17,6 +17,8 @@
 	request.setAttribute( "selectedTabId", "share" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        extrasList.add("jquery.dataTables.min.js");
+
 
         if (userLoggedIn.getUser_name().equals("guest")) {
                 //Error - "Feature not allowed for guests"
@@ -29,12 +31,12 @@
 	User[] myGeneListUsers = null;
 	
 	if (selectedGeneList.getGene_list_id() != -99) {
-		myGeneListUsers = myGeneList.getGeneListUsers(selectedGeneList.getGene_list_id(), dbConn);
+		myGeneListUsers = myGeneList.getGeneListUsers(selectedGeneList.getGene_list_id(), pool);
 
 		numRows = myGeneListUsers.length;
 		owner = selectedGeneList.getUserIsOwner();
 		log.debug("owner = " + owner);
-		mySessionHandler.createGeneListActivity("Viewed user access for gene list", dbConn);
+		mySessionHandler.createGeneListActivity("Viewed user access for gene list", pool);
 	}
 
 	
@@ -44,7 +46,7 @@
 		// delete the users that were there before, and 
 		// then insert any users that are checked now
 		//
-		selectedGeneList.deleteGeneListUsers(dbConn);
+		selectedGeneList.deleteGeneListUsers(pool);
 
 		if (request.getParameter("userList") != null) {
 			List userList = Arrays.asList(request.getParameterValues("userList")); 
@@ -52,9 +54,9 @@
 
 			myGeneList.setGene_list_users(userList);
 			myGeneList.setGene_list_id(selectedGeneList.getGene_list_id());
-			myGeneList.createGeneListUsers(dbConn);
+			myGeneList.createGeneListUsers(pool);
 		}
-		mySessionHandler.createGeneListActivity("Updated User Access for Gene List", dbConn);
+		mySessionHandler.createGeneListActivity("Updated User Access for Gene List", pool);
 
 		//Success - "Gene list users updated"
 		session.setAttribute("successMsg", "GL-015");
@@ -64,11 +66,11 @@
 	formName = "geneListUsers.jsp";
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
-
+        
 	<div class="page-intro">
 		<p>Listed below are the users of this website.  To share your genelist with other user(s), click the checkbox next to their name(s).
 		</p>
@@ -97,9 +99,9 @@
 	%>
 
 
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom: 70px;">
 	<div class="title"> Users who can view the selected gene list </div>
-      	<table class="list_base tablesorter" name="items" id="items" cellpadding="0" cellspacing="3" width="25%">
+      	<table class="list_base tablesorter" name="items" id="items" cellpadding="0" cellspacing="3" width="100%">
 		<thead>
 		<tr class="col_title">
 			<% if (owner.equals("Y")) { %>
@@ -165,12 +167,22 @@
 	</div>
 <% } %>
 <script type="text/javascript">
-        $(document).ready(function() {
+        /*$(document).ready(function() {
                 var tablesorterSettings = { widgets: ['zebra'] };
                 $("table[id='items']").tablesorter(tablesorterSettings);
         	$("table[id='items']").tablesorter({headers:{0:{sorter:false}}});
         	$("table[id='items']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");
-	});
+	});*/
+        $(document).ready(function() {
+            $("table#items").dataTable({
+					"bPaginate": false,
+					"bAutoWidth": true,
+					"sScrollX": "100%",
+					"sScrollY": "600px",
+					"aaSorting": [[ 1, "asc" ]],
+					"sDom": 'fti'
+			});
+        });
 </script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>

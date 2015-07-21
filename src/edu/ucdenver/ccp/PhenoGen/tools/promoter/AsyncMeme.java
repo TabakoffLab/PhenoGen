@@ -24,6 +24,7 @@ import edu.ucdenver.ccp.util.FileHandler;
 import edu.ucdenver.ccp.util.sql.PropertiesConnection;
 
 import edu.ucdenver.ccp.util.Debugger;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -44,6 +45,7 @@ public class AsyncMeme implements Runnable{
 	private GeneListAnalysis myGeneListAnalysis = null;
 	private String mainURL = null;
 	private Thread waitThread = null;
+        private DataSource pool=null;
 
 	public AsyncMeme(HttpSession session,
 				String memeFileName,
@@ -68,6 +70,7 @@ public class AsyncMeme implements Runnable{
 	        this.userLoggedIn = (User) session.getAttribute("userLoggedIn");
 		this.dbPropertiesFile = (String) session.getAttribute("dbPropertiesFile");
 		this.perlDir = (String) session.getAttribute("perlDir");
+                this.pool = (DataSource) session.getAttribute("dbPool");
 		this.myGeneListAnalysis = myGeneListAnalysis;
         	this.mainURL = (String) session.getAttribute("mainURL");
                 this.waitThread = waitThread;
@@ -146,17 +149,18 @@ public class AsyncMeme implements Runnable{
 			myEmail.setSubject("MEME process has completed"); 
                 	myEmail.setContent(successContent);
 
-		        Connection conn = new PropertiesConnection().getConnection(dbPropertiesFile);
+		        //Connection conn = new PropertiesConnection().getConnection(dbPropertiesFile);
 
 			try {
-				myGeneListAnalysis.createGeneListAnalysis(conn);
-				myGeneListAnalysis.updateVisible(conn);
+				//myGeneListAnalysis.createGeneListAnalysis(pool);
+                                myGeneListAnalysis.updateStatus(pool,"Complete");
+				//myGeneListAnalysis.updateVisible(conn);
        	                	myEmail.sendEmail();
 			} catch (SendFailedException e) {
 				log.error("in exception of AsyncMeme while sending email", e);
 			}
 
-			conn.close();
+			//conn.close();
 		} catch (Exception e) {
 			log.error("in exception of AsyncMeme", e);
 			myEmail.setSubject("MEME process had errors"); 

@@ -35,7 +35,7 @@
 		String searchRegionLevel = (String) request.getParameter("searchRegionLevel");
 		String description = (String) request.getParameter("description");
 
-		mySessionHandler.createGeneListActivity("Ran oPOSSUM Process ", dbConn);
+		mySessionHandler.createGeneListActivity("Ran oPOSSUM Process ", pool);
 	
 		HashMap ids = new HashMap();
 
@@ -44,7 +44,7 @@
 			//String targets[] = {"Ensembl ID"};
 			thisIDecoderClient.setNum_iterations(1);
         	//Set refseqSet = thisIDecoderClient.getValues(thisIDecoderClient.getIdentifiersForTarget(iDecoderSet, targets));
-			Set refseqSet = thisIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), targets,dbConn);
+			Set refseqSet = thisIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), targets,pool);
 			//Set refseqSet = thisIDecoderClient.getValues(thisIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), targets,dbConn));
         	//thisIDecoderClient.setNum_iterations(1);
         	String genesToFile = "";
@@ -96,7 +96,7 @@
 					
 				mySessionHandler.createGeneListActivity("got error creating promoterDir directory in promoter.jsp for " +
 					selectedGeneList.getGene_list_name(),
-					dbConn);
+					pool);
 				session.setAttribute("errorMsg", "SYS-001");
                         	response.sendRedirect(commonDir + "errorMsg.jsp");
 			} else {
@@ -174,6 +174,7 @@
 					thresholdLevel,
 					searchRegionLevel,
 					myPromoter,
+                                        
 					filePrefix,
 					"Entrez Gene"));
 

@@ -15,10 +15,10 @@
 	request.setAttribute( "selectedTabId", "compare" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
-	mySessionHandler.createGeneListActivity("Looked at compare genelists tab", dbConn);
+	mySessionHandler.createGeneListActivity("Looked at compare genelists tab", pool);
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -28,7 +28,7 @@
 	</div> <!-- // end page-intro -->
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom:70px;">
 
 	<BR>
 	<div class="menuBar">
@@ -49,6 +49,6 @@
 	});
 </script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 

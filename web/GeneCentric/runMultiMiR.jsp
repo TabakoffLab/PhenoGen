@@ -30,8 +30,8 @@
 	predicted[0][0]="diana_microt";
 	predicted[0][1]="DIANA-microT-CDS";
 	predicted[0][2]="http://diana.cslab.ece.ntua.gr/data/public/";
-	predicted[1][0]="eimmo";
-	predicted[1][1]="EIMMo";
+	predicted[1][0]="elmmo";
+	predicted[1][1]="ElMMo";
 	predicted[1][2]="http://www.mirz.unibas.ch/miRNAtargetPredictionBulk.php";
 	predicted[2][0]="microcosm";
 	predicted[2][1]="MicroCosm";
@@ -160,62 +160,62 @@
         
         <tbody>
         <%for (int i=0;i<mirList.size();i++){
-			MiRResult tmp=mirList.get(i);
-			HashMap tmpSC=tmp.getSourceCount();
-			String rowID=tmp.getAccession();
-			if(tmp.getAccession().equals("")){
-				rowID=tmp.getId();
-			}
+            MiRResult tmp=mirList.get(i);
+            HashMap tmpSC=tmp.getSourceCount();
+            String rowID=tmp.getAccession();
+            if(tmp.getAccession().equals("")){
+                    rowID=tmp.getId();
+            }
 			%>
-            <TR class="<%=rowID.replace("*","")%>">
-            <TD>
-            	<%if(tmp.getAccession().equals("")){%>
-                	<a href="http://www.mirbase.org/cgi-bin/query.pl?terms=<%=tmp.getId().replace("*","")%>" target="_blank" title="Link to miRBase.">Accession # Missing</a>
-				<%}else{%>
-                	<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
-                <%}%>
-            </TD>
-            <TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
-            <%	for(int j=0;j<validated.length;j++){
-					if(sourceKey.contains(validated[j][0])){
-						String x="-";
-						int count=Integer.parseInt((String) tmpSC.get(validated[j][0]));
-						if(count>0){
-							x="X";
-						}
-			%>
-            			<TD><%=x%></TD>
-                
-            <%		}else{%>
-            			<TD>-</TD>
-            		<%}%>
-			<%	}%>
-            <%	for(int j=0;j<predicted.length;j++){
-					if(sourceKey.contains(predicted[j][0])){
-						String x="-";
-						int count=Integer.parseInt((String) tmpSC.get(predicted[j][0]));
-						if(count>0){
-							x="X";
-						}
-			%>
-            			<TD><%=x%></TD>
-                
-            <%		}else{%>
-            			<TD>-</TD>
-            		<%}%>
-			<%	}%>
-             <%	for(int j=0;j<total.length;j++){
-					if(sourceKey.contains(total[j][0])){
-						
-			%>
-            			<TD><%=tmpSC.get(total[j][0])%></TD>
-                
-            <%		}else{%>
-            		<TD>0</TD>
-            		<%}%>
-			<%	}%>
-            </TR>
-        <%}%>
+                <TR class="<%=rowID.replace("*","")%>">
+                <TD>
+                    <%if(tmp.getAccession().equals("")){%>
+                            <a href="http://www.mirbase.org/cgi-bin/query.pl?terms=<%=tmp.getId().replace("*","")%>" target="_blank" title="Link to miRBase.">Accession # Missing</a>
+                                    <%}else{%>
+                            <a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=<%=tmp.getAccession()%>" target="_blank" title="Link to miRBase."><%=tmp.getAccession()%></a>
+                    <%}%>
+                </TD>
+                <TD><span id="mirDetail<%=rowID%>" class="mirViewDetail" style="cursor:pointer; text-decoration:underline; color:688eb3;"><%=tmp.getId()%></span></TD>
+                <%	for(int j=0;j<validated.length;j++){
+                                            if(sourceKey.contains(validated[j][0])){
+                                                    String x="-";
+                                                    int count=Integer.parseInt((String) tmpSC.get(validated[j][0]));
+                                                    if(count>0){
+                                                            x="X";
+                                                    }
+                            %>
+                                    <TD><%=x%></TD>
+
+                <%		}else{%>
+                                    <TD>-</TD>
+                            <%}%>
+                            <%	}%>
+                <%	for(int j=0;j<predicted.length;j++){
+                                            if(sourceKey.contains(predicted[j][0])){
+                                                    String x="-";
+                                                    int count=Integer.parseInt((String) tmpSC.get(predicted[j][0]));
+                                                    if(count>0){
+                                                            x="X";
+                                                    }
+                            %>
+                                    <TD><%=x%></TD>
+
+                <%		}else{%>
+                                    <TD>-</TD>
+                            <%}%>
+                            <%	}%>
+                 <%	for(int j=0;j<total.length;j++){
+                                            if(sourceKey.contains(total[j][0])){
+
+                            %>
+                                    <TD><%=tmpSC.get(total[j][0])%></TD>
+
+                <%		}else{%>
+                            <TD>0</TD>
+                            <%}%>
+                            <%	}%>
+                </TR>
+            <%}%>
         </tbody>
 	<%}else{%>
     	<tbody>

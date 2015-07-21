@@ -16,12 +16,12 @@
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 
-	GeneList.Gene[] myGenes = selectedGeneList.findContainingGeneLists(userID, dbConn);
-	mySessionHandler.createGeneListActivity("Compared '" + selectedGeneList.getGene_list_name() + "' with all gene lists", dbConn);
+	GeneList.Gene[] myGenes = selectedGeneList.findContainingGeneLists(userID, pool);
+	mySessionHandler.createGeneListActivity("Compared '" + selectedGeneList.getGene_list_name() + "' with all gene lists", pool);
 
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 
@@ -33,7 +33,7 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom:70px;">
 		<div class="menuBar">
         		<div id="tabMenu">
                         	<div class="left inlineButton"><a href="compareWithOneGeneList.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With One Gene List</a></div>
@@ -95,6 +95,6 @@
     });
   </script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 

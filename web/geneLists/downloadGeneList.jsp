@@ -12,7 +12,7 @@
 <%
 	int itemID = (request.getParameter("itemID") == null ? -99 : Integer.parseInt((String) request.getParameter("itemID")));
 	String from = (request.getParameter("from") == null ? "" : (String) request.getParameter("from"));
-	selectedGeneList = new GeneList().getGeneList(itemID, dbConn);
+	selectedGeneList = new GeneList().getGeneList(itemID, pool);
 	selectedGeneList.setUserIsOwner(selectedGeneList.getCreated_by_user_id() == userID ? "Y" : "N"); 
 
 	extrasList.add("listGeneList.js");
@@ -55,10 +55,10 @@
 				for (int i=0; i<checkedList.length; i++) {
 					if (checkedList[i].equals(originalGeneListFullFileName)) {
 						if (selectedGeneList.getNumber_of_genes() < 1000) {
-							String originalGenes = selectedGeneList.getGenesAsString("\r\n", "Original", dbConn);
+							String originalGenes = selectedGeneList.getGenesAsString("\r\n", "Original", pool);
 							myFileHandler.writeFile(originalGenes, originalGeneListFullFileName);
 						} else {
-							List originalGenes = selectedGeneList.getGenesAsListOfStrings("\r\n", "Original", dbConn);
+							List originalGenes = selectedGeneList.getGenesAsListOfStrings("\r\n", "Original", pool);
 							log.debug("originalGenes contains "+originalGenes.size() + " lists of 1000 genes");
 							myFileHandler.writeFile(originalGenes, originalGeneListFullFileName);
 							log.debug("after writing file");
@@ -66,10 +66,10 @@
 					}
 					if (checkedList[i].equals(genesPlusValuesFullFileName)) {
 						if (selectedGeneList.getNumber_of_genes() < 1000) {
-							String genesPlusValues = selectedGeneList.getGenesPlusValuesAsString("\r\n", "Original", dbConn);
+							String genesPlusValues = selectedGeneList.getGenesPlusValuesAsString("\r\n", "Original", pool);
 							myFileHandler.writeFile(genesPlusValues, genesPlusValuesFullFileName);
 						} else {
-							List genesPlusValues = selectedGeneList.getGenesPlusValuesAsListOfStrings("\r\n", "Original", dbConn);
+							List genesPlusValues = selectedGeneList.getGenesPlusValuesAsListOfStrings("\r\n", "Original", pool);
 							myFileHandler.writeFile(genesPlusValues, genesPlusValuesFullFileName);
 						}
 					}
@@ -84,10 +84,10 @@
 					}
 					if (checkedList[i].equals(genesPlusStatsFullFileName)) {
 						if (selectedGeneList.getNumber_of_genes() < 1000) {
-							String genesPlusStats = selectedGeneList.getGenesPlusStatsAsString("\r\n", "Original", dbConn);
+							String genesPlusStats = selectedGeneList.getGenesPlusStatsAsString("\r\n", "Original", pool);
 							myFileHandler.writeFile(genesPlusStats, genesPlusStatsFullFileName);
 						} else {
-							List genesPlusStats = selectedGeneList.getGenesPlusStatsAsListOfStrings("\r\n", "Original", dbConn);
+							List genesPlusStats = selectedGeneList.getGenesPlusStatsAsListOfStrings("\r\n", "Original", pool);
 							myFileHandler.writeFile(genesPlusStats, genesPlusStatsFullFileName);
 						}
 					}
@@ -110,7 +110,7 @@
 				out.clear();
 				out = pageContext.pushBody(); 
 
-				mySessionHandler.createGeneListActivity("Downloaded Gene List", dbConn);
+				mySessionHandler.createGeneListActivity("Downloaded Gene List", pool);
         		}
 		}
 	}

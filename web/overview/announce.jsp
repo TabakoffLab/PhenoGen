@@ -12,6 +12,15 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>PhenoGen v2.16 7/21/2015</H2>
+                        <div style="margin-left:5px;">
+                            <ul>
+                                <li>Gene List tabs have been reformatted so you can submit submit new analyses and view results and running analyses status from a single page.</LI> 
+                                <li>GO term summaries are available for Gene Lists.</li>
+                                <li>MuliMiR results are available for Rat both in Gene Lists and the browser(individual genes, WGCNA modules).</li>
+                            </ul>   
+                              
+                        </div>
                         <H2>Minor Updates 6/8/2015</H2>
                         <div style="margin-left:5px;">
                             We've made a couple of minor updates since the last release. 

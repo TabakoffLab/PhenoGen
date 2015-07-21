@@ -15,7 +15,7 @@
 	if (selectedGeneList.getNumber_of_genes() > 200) {
 		log.debug("trying to do annotation on list with more than 200 genes");
 		//Error - "Cannot do annotation on list with more than 200 genes"
-		mySessionHandler.createGeneListActivity("Running tools with a gene list containing more than 200 genes", dbConn);
+		mySessionHandler.createGeneListActivity("Running tools with a gene list containing more than 200 genes", pool);
 		//session.setAttribute("successMsg", "GLT-014");
 			
 		targets = new String[] {
@@ -64,7 +64,7 @@
 			while (itr.hasNext()) {
 				Identifier thisIdentifier = (Identifier) itr.next();
 				if (thisIdentifier.getRelatedIdentifiers().size() == 0) {
-					Set tmp=myIDecoderClient.getIdentifiersByInputID(thisIdentifier.getIdentifier(),selectedGeneList.getOrganism(),targets, dbConn);
+					Set tmp=myIDecoderClient.getIdentifiersByInputID(thisIdentifier.getIdentifier(),selectedGeneList.getOrganism(),targets, pool);
 					Iterator tmpItr=tmp.iterator();
 					while (tmpItr.hasNext()){
 						Identifier thisId = (Identifier) tmpItr.next();

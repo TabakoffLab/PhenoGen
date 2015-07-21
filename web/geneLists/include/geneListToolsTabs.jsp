@@ -10,10 +10,9 @@
         <div id="annotation" class="single" data-landingPage="annotation"><span>Annotation</span></div>
         <div id="loc_eQTL"  data-landingPage="locationEQTL"><span>Location<BR />(eQTL)</span> </div>
         <div id="literature" class="single" data-landingPage="litSearch"><span>Literature </span></div>
-        <% if (selectedGeneList.getOrganism().equalsIgnoreCase("Mm")) { %>  
-        	<div id="mir" data-landingPage="mir"><span>miRNA<BR />(multiMiR)</span> </div>
-        <%}%>
-                <div id="wgcna" class="single" data-landingPage="wgcna"><span>WGCNA</span></div>
+        <div id="mir" data-landingPage="mir"><span>miRNA<BR />(multiMiR)</span> </div>
+        <div id="wgcna" class="single" data-landingPage="wgcna"><span>WGCNA</span></div>
+        <div id="go" class="single" data-landingPage="go"><span>GO</span></div>
     <% if (!selectedGeneList.getOrganism().equalsIgnoreCase("Dm")) { %>    
         <div id="promoter" class="single" data-landingPage="promoter"><span>Promoter</span></div>
      <% } %>   
@@ -49,3 +48,46 @@
         setupTabs( '<%=selectedTabId%>' );
     });
   </script>
+  
+  <style>
+        .hoverDetail{ text-decoration:underline;}
+        #container{
+            min-height:45em;
+        }
+        #toolsAccord{
+            float:left;
+            height:55em;
+            width:400px;
+            vertical-align: top;
+            padding-bottom:9em;
+            padding-right:10px;
+        }
+        #topResultData{
+            height:100%;
+            vertical-align: top;
+            overflow:hidden;
+            padding-bottom:6em;
+        }        
+        table#resultTbl tr.selected td{
+		background:	#bed9ba;
+	}
+        
+        .delete{
+            cursor:pointer;
+        }
+        @media screen and (max-width:1000px){
+            #toolsAccord{
+                height: 15em;
+                width:100%;
+                vertical-align: auto;
+                float:none;
+            }
+            #topResultData{
+                width:100%;
+                vertical-align: auto;
+                position: relative;
+                top:70px;
+                padding-bottom: 150px;
+            }
+        }
+</style>

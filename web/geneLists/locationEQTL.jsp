@@ -96,7 +96,7 @@
 	if (!qtl_list_name.equals("")) {
 		geneListParameters = geneListParameters + "within QTLs from '" + qtl_list_name + "' QTL list ";
 	}
-	mySessionHandler.createGeneListActivity("Looked at Location tab with these parameters: " + geneListParameters, dbConn);
+	mySessionHandler.createGeneListActivity("Looked at Location tab with these parameters: " + geneListParameters, pool);
 	session.setAttribute("geneListParameters", geneListParameters); 
 
 	request.setAttribute( "selectedTabId", "loc_eQTL" );
@@ -127,7 +127,7 @@
 
 	if (selectedGeneList.getOrganism().equals("Mm") || selectedGeneList.getOrganism().equals("Rn")) {
 		log.debug("before getGeneSymbolsForProbeIDs");
-		Hashtable probeToGeneSymbolHash = selectedGeneList.getGeneSymbolsForProbeIDs(dbConn);
+		Hashtable probeToGeneSymbolHash = selectedGeneList.getGeneSymbolsForProbeIDs(pool);
 		// This is a collection of Lists
 		Collection useEQTLGeneSymbolCollection = probeToGeneSymbolHash.values();
 		Set useEQTLGeneSymbolSet = new TreeSet();
@@ -137,14 +137,14 @@
 		}
 		List useEQTLGeneSymbolList = myObjectHandler.getAsSeparatedStrings(useEQTLGeneSymbolSet, ",", "'", 999); 
 
-		Set useProbeIDSet = selectedGeneList.getProbeIDsWithNoGeneSymbols(dbConn);
+		Set useProbeIDSet = selectedGeneList.getProbeIDsWithNoGeneSymbols(pool);
 		List useProbeIDList = myObjectHandler.getAsSeparatedStrings(useProbeIDSet, ",", "'", 999); 
-		Set useProbeIDSetWithNoPhysicalLocation = selectedGeneList.getProbeIDsWithNoGeneSymbolsOrPhysicalLocation(dbConn);
+		Set useProbeIDSetWithNoPhysicalLocation = selectedGeneList.getProbeIDsWithNoGeneSymbolsOrPhysicalLocation(pool);
 		List useProbeIDListWithNoPhysicalLocation = myObjectHandler.getAsSeparatedStrings(useProbeIDSetWithNoPhysicalLocation, ",", "'", 999); 
 
 		Set nonProbeIDSet = new TreeSet(); 
 
-		Set nonProbeIDs = selectedGeneList.getNonProbeIDs(dbConn);
+		Set nonProbeIDs = selectedGeneList.getNonProbeIDs(pool);
 
 		for (Iterator itr=iDecoderSetForGenes.iterator(); itr.hasNext();) {
 			Identifier id = (Identifier) itr.next();
@@ -388,7 +388,7 @@ log.debug("after call");
 	request.getSession().setAttribute("dbConn", dbConn);
 
 	%>
-<%@ include file="/web/common/header.jsp" %> 
+<%@ include file="/web/common/header_adaptive_menu.jsp" %> 
 	<script type="text/javascript">
 		var ctrlMode = "<%= mode %>";
 		var qtlListID = "<%= qtlListID %>";
@@ -405,7 +405,7 @@ log.debug("after call");
 	
     
     
-	  <div class="dataContainer">
+	  <div class="dataContainer" style="padding-bottom:70px;">
 	   <div class="menuBar">
             <div id="tabMenu">
                  <div class="inlineButton" id="btnSaveGenes"><a href="#" >Save displayed genes</a><span class="info" title="Save the genes (triangular markers) that are displayed on the chromosomal map.">
@@ -637,5 +637,5 @@ log.debug("after call");
 
 <!--  <div class="load">Loading...</div> -->
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 

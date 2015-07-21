@@ -3,11 +3,11 @@
 	extrasList.add("normalize.css");
 	extrasList.add("index.css");
 	request.setAttribute( "selectedMain", "geneListTools" );
-	mySessionHandler.createActivity("On Research Genes Main Page", dbConn);
+	mySessionHandler.createActivity("On Research Genes Main Page", pool);
 
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
     <div id="primary-content">
@@ -112,7 +112,7 @@
         </div> <!-- // end how-do-i for genelist_tools -->
     </div> <!-- // end secondary-content -->
 	<div class="brClear"></div>
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 <script type="text/javascript">
 	$(document).ready(function(){
 		setTimeout("setupMain()", 100); 

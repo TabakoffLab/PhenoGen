@@ -13,11 +13,11 @@
 <%
         extrasList.add("d3.v3.min.js");
         extrasList.add("jquery.dataTables.js");
-        extrasList.add("wgcnaBrowser1.0.4.js");
+        extrasList.add("wgcnaBrowser1.0.6.js");
         extrasList.add("svg-pan-zoom.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
-        extrasList.add("jquery.dataTables.min.css");
+        //extrasList.add("jquery.dataTables.min.css");
 
         //extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
 
@@ -27,12 +27,12 @@
 
 	request.setAttribute( "selectedTabId", "wgcna" );
 
-        mySessionHandler.createGeneListActivity("Looked at WGCNA a GeneList", dbConn);
+        mySessionHandler.createGeneListActivity("Looked at WGCNA a GeneList", pool);
         String myOrganism=selectedGeneList.getOrganism();
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 
 <script>
@@ -76,6 +76,7 @@
 		}
 		);
 </script>
-<%@ include file="/web/common/footer.jsp" %>
+
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 

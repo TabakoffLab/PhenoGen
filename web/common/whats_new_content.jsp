@@ -29,7 +29,23 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
-        <p><h3>Version: v2.15.0</h3><BR /> Updated:3/7/2015</p></div>
+       <div class="whats_new version"><p><h3>Version: v2.16.0</h3><BR /> Updated:7/21/2015</p></div>
+       <ul>
+                                    <li><span class="highlight-dark">Gene Lists</span>
+                                        <UL>
+                                            <li><span class="highlight-dark">Updated tab format</span> - the new format allows you to submit a new analysis, view previous results, and see the current status of running analyses.</li>
+                                            <li><span class="highlight-dark">Gene Ontology Summaries</span> - summaries similar to the WGCNA module summaries can now be run on a Gene List.</li>
+                                            <li><span class="highlight-dark">MultiMiR</span> - MultiMiR supports rat miRNAs now so you can view miRNAs predicted and validated to target a gene.</li>
+                                        </ul>
+                                    </li>
+                                    <li><span class="highlight-dark">Genome/Transcriptome Data Browser</span>
+                                        <UL>
+                                        <li> <span class="highlight-dark">MultiMiR</span> - you can now view a summary for selected Rat genes.</li>         
+                                        </ul>
+                                    </li>
+        </ul>
+        <hr/>
+    <div class="whats_new version"><p><h3>Version: v2.15.0</h3><BR /> Updated:3/7/2015</p></div>
                                  <ul>
                                     <li><span class="highlight-dark">New Weighted Gene Co-expression Network Analysis(WGCNA) Views</span>.
                                                     <ul>

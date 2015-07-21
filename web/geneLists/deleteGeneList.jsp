@@ -12,7 +12,7 @@
 
 <%
 	int itemID = (request.getParameter("itemID") == null ? -99 : Integer.parseInt((String) request.getParameter("itemID")));
-	selectedGeneList = new GeneList().getGeneList(itemID, dbConn);
+	selectedGeneList = new GeneList().getGeneList(itemID, pool);
 	selectedGeneList.setUserIsOwner(selectedGeneList.getCreated_by_user_id() == userID ? "Y" : "N"); 
 
 	extrasList.add("listGeneList.js");
@@ -39,11 +39,11 @@
 			mySessionHandler.createSessionActivity(session.getId(), 
 				"Deleted Gene List # " + selectedGeneList.getGene_list_id() + 
 					" called '" + selectedGeneList.getGene_list_name() + "'",
-                		dbConn);
+                		pool);
 
 			log.debug("now deleting selectedGeneListID = "+selectedGeneList.getGene_list_id());
 
-			selectedGeneList.deleteGeneList(dbConn);
+			selectedGeneList.deleteGeneList(pool);
 			log.debug("just  deleted genelist ");
 
 			//Success - "Gene List deleted"
@@ -68,7 +68,7 @@
         	<center><h2> Data Linked to Gene List&nbsp;'<%=selectedGeneList.getGene_list_name()%>': </h2></center>
 		<BR>
 			<%
-			User[] myGeneListUsers = selectedGeneList.getGeneListUsers(selectedGeneList.getGene_list_id(), dbConn);
+			User[] myGeneListUsers = selectedGeneList.getGeneListUsers(selectedGeneList.getGene_list_id(), pool);
 			int userCount = 0;
 			for (int i=0; i<myGeneListUsers.length; i++) {
 				if (myGeneListUsers[i].getChecked() == 1 && 
@@ -79,7 +79,7 @@
 			GeneListAnalysis[] myGeneListAnalyses =
                 				myGeneListAnalysis.getAllGeneListAnalysisResults(
                                         		selectedGeneList.getGene_list_id(),
-                                                	dbConn);
+                                                	pool);
 			%>
 				<% if (userCount > 0) { %> 
 					<center><h3><%=userCount%> other users have access to this gene list:</h3></center>

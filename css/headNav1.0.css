@@ -8,9 +8,9 @@
         
     }
 	
-	#page_header{ background-position: 5px 0; height: 75px;}
+    #page_header{ background-position: 5px 0; height: 75px;}
 	
-	#page_header_wide{height: 70px;background-color: #1e354f;}
+    #page_header_wide{height: 70px;background-color: #1e354f;}
 
     #page_header #header_link_container {
         float: right;
@@ -63,7 +63,9 @@
 
     #page_header .header_nav a,
     #page_footer .footer_nav a,
+    #footer_adapt .footer_nav a,
     #page_footer p,
+    #footer_adapt p,
     #page_header .header_messages a,
     #page_header .header_messages div {
         font-family: Arial;
@@ -107,25 +109,34 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - -
  *          FOOTERS
  * - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-    #page_footer p {
+    #page_footer p, #footer_adapt p {
 	font-size: 9px;
         float: left;
 	text-align: left;
         margin: 20px 30px 0 0;
 	padding: 0;
     }
-    #page_footer {
+    
+    #footer_adapt  {
+        position:absolute;
+        bottom:0;
+        width:100%;
+        height:60px;   /* Height of the footer */
+        background-color:#365473;
+        text-align: right;
+    }
+    #page_footer  {
 	position: relative;
 	height: 1px;
 	text-align: right;
     }
 
-    #page_footer #footer_link_container {
+    #page_footer #footer_link_container, #footer_adapt #footer_link_container {
         float: right;
         margin: 20px 10px 0 0;
     }
 
-    #page_footer .footer_nav {
+    #page_footer .footer_nav, #footer_adapt .footer_nav {
         color: #467087;
         border: solid 0px #ccc;
     }

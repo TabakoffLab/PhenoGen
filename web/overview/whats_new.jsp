@@ -20,10 +20,10 @@
 
                 	
                    <H2>What's New</H2>
-                    <div  style="overflow:auto;height:92%;">
+                    <div  style="overflow: auto;height:92%;">
                     	<%@ include file="/web/common/whats_new_content.jsp" %>
                         
-             		</div>
+             	    </div>
 
 						
 <%@ include file="/web/overview/ovrvw_js.jsp" %>

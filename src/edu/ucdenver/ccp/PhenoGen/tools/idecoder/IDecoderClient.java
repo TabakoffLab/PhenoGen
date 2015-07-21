@@ -2415,6 +2415,22 @@ public class IDecoderClient {
 		return endSet;
 	}
         
+        public Set<Identifier> getIdentifiersByInputIDAndTarget(int geneListID, String[] targets, String[] geneChipNames,DataSource pool)throws SQLException {
+            Connection conn=null;
+            Set<Identifier> tmp=null;
+            try{
+                conn=pool.getConnection();
+                tmp=getIdentifiersByInputIDAndTarget(geneListID,targets,geneChipNames,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+            return tmp;
+        }
+        
 	/**
 	 * Get a Set of Identifiers for all input IDs for a particular list of targets and set of geneChips, 
 	 * organized by input ID and target.
@@ -3161,6 +3177,46 @@ public class IDecoderClient {
 		writer.close();
 	}
 
+        /**
+	 * Get all of the possible iDecoder Identifier Types in a String array. 
+	 * @param conn	the database connection
+	 * @return an array of identifier types
+	 * @throws	SQLException if there is a problem accessing the database
+	 */
+	public String[] getIdentifierTypes(DataSource pool) throws SQLException {
+            Connection conn=null;
+            conn=pool.getConnection();
+		log.debug("in getIdentifierTypes");
+        	String query =
+                	"select distinct name "+
+                	"from identifier_types "+ 
+			"union "+
+			"select 'Location' "+
+			"from dual "+
+			"union "+
+			"select 'Genetic Variations' "+
+			"from dual "+
+			"order by 1";
+
+		Results myResults = new Results(query, conn);
+		String[] strings = new String[myResults.getNumRows()];
+		
+                String [] dataRow;
+		int i=0;
+                while ((dataRow = myResults.getNextRow()) != null) {
+			strings[i] = dataRow[0];
+			i++;
+                }
+		myResults.close();
+                if(conn!=null && !conn.isClosed()){
+                    try{
+                        conn.close();
+                        conn=null;
+                    }catch(SQLException e){}
+                }
+        	return strings;
+  	}
+        
 	/**
 	 * Get all of the possible iDecoder Identifier Types in a String array. 
 	 * @param conn	the database connection
@@ -3195,6 +3251,23 @@ public class IDecoderClient {
         	return strings;
   	}
 
+        
+        public String[] getArraysForPlatform(String platform,DataSource pool)throws SQLException {
+            Connection conn=null;
+            String[] tmp=null;
+            try{
+                conn=pool.getConnection();
+                tmp=getArraysForPlatform( platform,conn);
+                conn.close();
+            }catch(SQLException e){
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+                throw new SQLException();
+            }
+            return tmp;
+        }
+        
 	/**
 	 * Get all of the possible arrays for a particular platform in a String array. 
 	 * @param platform	either 'Affymetrix' or 'CodeLink'

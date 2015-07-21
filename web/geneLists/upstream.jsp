@@ -53,7 +53,7 @@
 			mySessionHandler.createGeneListActivity(
 				"got error creating geneListAnalysisDir or upstreamDir directory in upstream.jsp for " +
 				selectedGeneList.getGene_list_name(),
-				dbConn);
+				pool);
 			session.setAttribute("errorMsg", "SYS-001");
                         response.sendRedirect(commonDir + "errorMsg.jsp");
 		} else {
@@ -68,7 +68,7 @@
                 	myGeneListAnalysis.setDescription(selectedGeneList.getGene_list_name() + 
 							"_" + upstreamLength + 
 							" bp Upstream Sequence Extraction from "+upstart);
-                	myGeneListAnalysis.setAnalysisGeneList(myGeneList.getGeneList(selectedGeneList.getGene_list_id(), dbConn));
+                	myGeneListAnalysis.setAnalysisGeneList(myGeneList.getGeneList(selectedGeneList.getGene_list_id(), pool));
 			myGeneListAnalysis.setParameter_group_id(parameter_group_id);
 		
 			ParameterValue[] myParameterValues = new ParameterValue[2];
@@ -84,7 +84,7 @@
                         myParameterValues[1].setValue(upstart);
 			myGeneListAnalysis.setParameterValues(myParameterValues);
 
-			mySessionHandler.createGeneListActivity("Ran Upstream Sequence Extraction on Gene List", dbConn);
+			mySessionHandler.createGeneListActivity("Ran Upstream Sequence Extraction on Gene List", pool);
 	
 			Thread thread = new Thread(new AsyncPromoterExtraction(
 						session,

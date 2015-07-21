@@ -459,7 +459,7 @@
     </table>
 </div>
 <script type="text/javascript">
-    $("#wait1").hide();
+ 
     var tblData=$('#datasets').dataTable({
         "bPaginate": false,
         /*"columnDefs": [
@@ -491,4 +491,4 @@
    		interactiveTolerance: 350
 	});
 </script>
-	<%@ include file="/web/common/basicFooter.jsp" %>
+	<%@ include file="/web/common/footer_adaptive.jsp" %>

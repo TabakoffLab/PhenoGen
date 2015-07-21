@@ -18,7 +18,7 @@
 	
 	log.debug("in upstreamExtractionResults. itemID = " + itemID);
 
-	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, dbConn);
+	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
 	int upstreamLength = Integer.parseInt(thisGeneListAnalysis.getThisParameter("Sequence Length"));
 			
 	GeneList thisGeneList = thisGeneListAnalysis.getAnalysisGeneList();
@@ -44,9 +44,9 @@
 		out.clear();
 		out = pageContext.pushBody(); 
 
-		mySessionHandler.createGeneListActivity("Downloaded Upstream Results", dbConn);
+		mySessionHandler.createGeneListActivity("Downloaded Upstream Results", pool);
 	} else {
-		mySessionHandler.createGeneListActivity("Viewed Upstream Results", dbConn);
+		mySessionHandler.createGeneListActivity("Viewed Upstream Results", pool);
 	}
 
 

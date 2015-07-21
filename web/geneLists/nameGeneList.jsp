@@ -52,7 +52,7 @@
 		}
 
 		description = description.substring(0, Math.min(description.length(), 3998)).trim();
-		if (myGeneList.geneListNameExists(gene_list_name, userID, dbConn)) { 
+		if (myGeneList.geneListNameExists(gene_list_name, userID, pool)) { 
 			//Error - "Gene list name exists"
 			session.setAttribute("errorMsg", "GL-006");
                         response.sendRedirect(commonDir + "errorMsg.jsp");
@@ -87,14 +87,14 @@
                                 	myParameterValue.setValue(comparisonType);
                                 	myParameterValue.createParameterValue(dbConn);
 
-                        		geneListID = newGeneList.createGeneList(dbConn);
+                        		geneListID = newGeneList.createGeneList(pool);
 
-                        		myGeneList.loadGeneListFromList(resultGeneList, geneListID, dbConn);
+                        		myGeneList.loadGeneListFromList(resultGeneList, geneListID, pool);
 
                         		mySessionHandler.createGeneListActivity(session.getId(), 
                                 		geneListID,
                                 		"Created Gene List from comparison of 2 gene lists",
-                                		dbConn);
+                                		pool);
 
 					/*
 					if (myGeneList.getGeneList(geneListID, dbConn).getNumber_of_genes() > 200) {
@@ -119,14 +119,14 @@
                                 	myParameterValue.setValue(geneListParameters);
                                 	myParameterValue.createParameterValue(dbConn);
 
-                        		geneListID = newGeneList.createGeneList(dbConn);
+                        		geneListID = newGeneList.createGeneList(pool);
 
-                        		myGeneList.loadGeneListFromList(resultGeneList, geneListID, dbConn);
+                        		myGeneList.loadGeneListFromList(resultGeneList, geneListID, pool);
 
                         		mySessionHandler.createGeneListActivity(session.getId(), 
                                 		geneListID,
                                 		"Created Gene List from QTL Analysis",
-                                		dbConn);
+                                		pool);
 
 					/*
 					if (myGeneList.getGeneList(geneListID, dbConn).getNumber_of_genes() > 200) {

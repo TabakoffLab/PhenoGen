@@ -27,11 +27,11 @@
 
 	request.setAttribute( "selectedTabId", "expressionValues" );
 
-        mySessionHandler.createGeneListActivity("Looked at expression values for gene list", dbConn);
+        mySessionHandler.createGeneListActivity("Looked at expression values for gene list", pool);
 		
 	boolean isExpandedFilterable=false;
 		
-	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
+	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 	HashMap<String,String> geneSymbolsHM=new HashMap<String,String>();
 	for (int i=0; i<myGeneArray.length; i++) {
 					String geneSymbolList="";
@@ -61,7 +61,7 @@
 	}%>
 
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 
@@ -80,7 +80,7 @@
 
 	<% if (selectedDataset.getDataset_id() == -99) { %> 
 	
-  		<div class="dataContainer" style="height:480px; overflow:auto">
+  		<div class="dataContainer" style="height:480px; overflow:auto; padding-bottom: 70px;">
 		<form name="tableList" action="expressionValues.jsp" method="post">
         		<div class="brClear"> </div>
                 	<div class="title">  Normalized Datasets
@@ -138,7 +138,7 @@
         	<input type="hidden" name="geneListID" value="<%=selectedGeneList.getGene_list_id()%>"/>
 	</form>
 	<% } else if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() == -99) { %>
-        	<div class="dataContainer">
+        	<div class="dataContainer" style="padding-bottom: 70px;">
 		<div id="related_links">
 			<div class="action" title="Return to select a different dataset">
 				<a class="linkedImg return" href="expressionValues.jsp?itemIDString=-99">
@@ -199,39 +199,41 @@
 	</form>
         <% } else if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) {
 	 %>
-        	<div class="dataContainer">
-		<div id="related_links">
-			<div class="action" title="Return to select a different dataset">
-				<a class="linkedImg return" href="expressionValues.jsp?itemIDString=-99">
-				<%=fiveSpaces%>
-				Select Different Dataset
-				</a>
-			</div>
-		</div>
-		<div class="viewingPane">
-			<div class="viewingTitle">You have selected:</div>
-			<div class="listName"><%=selectedDataset.getName()%> v<%=selectedDatasetVersion.getVersion()%></div>
-		</div>
-		<div class="brClear"></div>
-		<div class="menuBar">
-        		<div id="tabMenu">
-                        	<div id="arrayValues" class="left inlineButton"><a href="#">Array Values</a></div><span>|</span>
-                        	<div id="groupValues" class="left inlineButton"><a href="#">Group Means</a></div>
-                            <div id="expandedMenu" class="left" style="display:none; color:#000000;">
-                				<span>|</span> Select View:
-                                <input type="radio" name="expandedGroup" value="original" id="noexpandRB" /> Original List Only
-                				<input type="radio" name="expandedGroup" value="expanded" id="expandRB" checked /> View Expanded List
-                			</div>
-				</div> <!-- tabMenu -->
-                
-		</div> <!-- menuBar -->
-		<div class="brClear"></div>
+        	<div class="dataContainer" style="padding-bottom: 70px;">
+                    <div style="background: #DEDEDE;">
+                    <div id="related_links">
+                            <div class="action" title="Return to select a different dataset">
+                                    <a class="linkedImg return" href="expressionValues.jsp?itemIDString=-99">
+                                    <%=fiveSpaces%>
+                                    Select Different Dataset
+                                    </a>
+                            </div>
+                    </div>
+                    <div class="viewingPane">
+                            <div class="viewingTitle">You have selected:</div>
+                            <div class="listName"><%=selectedDataset.getName()%> v<%=selectedDatasetVersion.getVersion()%></div>
+                    </div>
+                    <div class="brClear"></div>
+                    <div class="menuBar">
+                            <div id="tabMenu">
+                                    <div id="arrayValues" class="left inlineButton"><a href="#">Array Values</a></div><span>|</span>
+                                    <div id="groupValues" class="left inlineButton"><a href="#">Group Means</a></div>
+                                <div id="expandedMenu" class="left" style="display:none; color:#000000;">
+                                                    <span>|</span> Select View:
+                                    <input type="radio" name="expandedGroup" value="original" id="noexpandRB" /> Original List Only
+                                                    <input type="radio" name="expandedGroup" value="expanded" id="expandRB" checked /> View Expanded List
+                                            </div>
+                                    </div> <!-- tabMenu -->
+
+                    </div> <!-- menuBar -->
+                    <div class="brClear"></div>
+                    </div>
 		<% if (action != null && action.equals("View") && setOfIdentifiers.size() > 0) { 
 			%>
-			<div class="scrollable">
+			<div class="scrollable" style="padding-bottom: 70px;width:100%;">
 				<div id="displayGroupMeans">
 					<div class="title">Group Mean Values<BR><span style="font-size:small"><i>Note: The values are log2 transformed gene expression values</i></span></div>
-                	<table name="items" id="groupMeans" class="list_base" cellpadding="0" cellspacing="3" width="95%">
+                	<table name="items" id="groupMeans" class="list_base" cellpadding="0" cellspacing="3" style="width:100%;" >
 					<thead>
 					<tr class="col_title">
                     	<TH>Gene List Status<span class="toolTip" title="By default the list is expanded to include all probesets related to genes in the list.  This column idicates if the current row is from the original list or expanded results.  <B>You may view only the original list results by selecting the button above Original List Only.</b>"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
@@ -297,7 +299,7 @@
 				</div> <!-- displayGroupMeans -->
 				<div id="displayArrayValues" style="display:none">
 					<div class="title">Individual Array Values</div>
-                			<table name="items" id="arrayValues" class="list_base" cellpadding="0" cellspacing="3" width="95%">
+                			<table name="items" id="arrayValues" class="list_base" cellpadding="0" cellspacing="3" >
 					<thead>
 					<tr class="col_title">
                     	<TH>Gene List Status<span class="toolTip" title="By default the list is expanded to include all probesets related to genes in the list.  This column idicates if the current row is from the original list or expanded results.  <B>You may view only the original list results by selecting the button above Original List Only.</b>"><img src="<%=imagesDir%>icons/info.gif"></span></TH>
@@ -418,8 +420,8 @@
 					"bPaginate": false,
 					"bProcessing": true,
 					"bStateSave": false,
-					"bAutoWidth": true,
-					"sScrollX": "950px",
+					"bAutoWidth": false,
+					"sScrollX": "100%",
 					"sScrollY": "550px",
 					"aaSorting": [[ 1, "asc" ]],
 					"aoColumnDefs": [
@@ -432,12 +434,13 @@
 							}
 	
 			});
+                        
 			arrayV=$("table[id='arrayValues']").dataTable({
 					"bPaginate": false,
 					"bProcessing": true,
 					"bStateSave": false,
-					"bAutoWidth": true,
-					"sScrollX": "950px",
+					"bAutoWidth": false,
+					"sScrollX": "100%",
 					"sScrollY": "550px",
 					"aaSorting": [[ 1, "asc" ]],
 					"aoColumnDefs": [
@@ -450,6 +453,8 @@
 						}
 	
 			});
+                        groupM.columns.adjust().draw();
+                        arrayV.columns.adjust().draw();
 			
 			$('.toolTip').tooltipster({
 							position: 'top-right',
@@ -464,6 +469,6 @@
     });
   </script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 

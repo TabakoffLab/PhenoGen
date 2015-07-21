@@ -41,5 +41,6 @@
         String[] rErrorMsg = null;
         String rExceptionErrorMsg = "";
 
-%>
+        String tall="100em";
 
+%>

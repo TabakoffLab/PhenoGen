@@ -39,8 +39,8 @@
 	predicted[0][0]="diana_microt";
 	predicted[0][1]="DIANA-microT-CDS";
 	predicted[0][2]="http://diana.cslab.ece.ntua.gr/data/public/";
-	predicted[1][0]="eimmo";
-	predicted[1][1]="EIMMo";
+	predicted[1][0]="elmmo";
+	predicted[1][1]="ElMMo";
 	predicted[1][2]="http://www.mirz.unibas.ch/miRNAtargetPredictionBulk.php";
 	predicted[2][0]="microcosm";
 	predicted[2][1]="MicroCosm";
@@ -174,6 +174,7 @@
            
         </table>
         </div>
+        <BR><BR><BR>
         <%}%>
 
 <script type="text/javascript">

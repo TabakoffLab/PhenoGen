@@ -17,7 +17,7 @@
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("jquery.fancybox-thumbs.css");
 	extrasList.add("spectrum.css");
-        extrasList.add("jquery.dataTables.min.css");
+        //extrasList.add("jquery.dataTables.min.css");
 %>
 
 
@@ -53,9 +53,11 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 
 
 <%if(popup){%>
-<%@ include file="/web/common/header_adaptive_noMenu.jsp" %>
+    <div id="wait1"  style="background:#FFFFFF;position:absolute; top:175px;height:50px;"><img src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Working...Genes should load within 10-20 seconds. Regions depend on the size(ex. 5 Megabases may take ~1 minute).</div>
+    <%@ include file="/web/common/header_adaptive_noMenu.jsp" %>
 <%}else{%>
-<%@ include file="/web/common/header_adaptive_menu.jsp" %>
+    <div id="wait1"  style="background:#FFFFFF;position:absolute; top:175px;height:50px;"><img src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Working...Genes should load within 10-20 seconds. Regions depend on the size(ex. 5 Megabases may take ~1 minute).</div>
+    <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <%}%>
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
 
@@ -838,7 +840,7 @@ Or
 </div>
 </div>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
 
 
 

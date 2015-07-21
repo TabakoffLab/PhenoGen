@@ -5,19 +5,19 @@
 	extrasList.add("geneList.js");
 	extrasList.add("jquery.dataTables.min.js");
 	extrasList.add("dataTables.paging.css");
-        extrasList.add("jquery.dataTables.min.css");
+        //extrasList.add("jquery.dataTables.min.css");
 	
 
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsListModal.add("download");
-	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
+	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 	session.setAttribute("geneListOrganism",selectedGeneList.getOrganism());
 	log.debug("geneListOrganism="+selectedGeneList.getOrganism());
 	//log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
        	if ((action != null) && action.equals("Download")) {
 			log.debug("action is Download");
-			mySessionHandler.createGeneListActivity("Downloaded Gene List", dbConn);
+			mySessionHandler.createGeneListActivity("Downloaded Gene List", pool);
 			String fileName = userLoggedIn.getUserGeneListsDir() + "downloads/" + selectedGeneList.getGene_list_name() + "Gene_List_Contents.csv";
 			try{
 				BufferedWriter outF=new BufferedWriter(new FileWriter(new File(fileName)));
@@ -65,10 +65,10 @@
 					}
 			}
 		}
-        mySessionHandler.createGeneListActivity("Viewed geneList contents", dbConn);
+        mySessionHandler.createGeneListActivity("Viewed geneList contents", pool);
 %>
 
-<%@ include file="/web/common/header.jsp" %>
+<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 <style>
 	.rightControl{
@@ -94,7 +94,7 @@
 		name="geneList"
 		action="geneList.jsp"
 		enctype="application/x-www-form-urlencoded">
-	<div class="dataContainer">
+	<div class="dataContainer" style="padding-bottom:70px;">
 		<div class="title">  Gene List Contents </div>
 
 		<table name="items" id="list" class="list_base" cellpadding="0" cellspacing="3" width="100%">			 
@@ -145,7 +145,6 @@
 	</form>
 	</div>
 	<div class="brClear"> </div>
-
 	<script type="text/javascript">
 		var geneListLen=<%=myGeneArray.length%>;
 		var defaultLen=100;
@@ -205,4 +204,4 @@
 		});
 	</script>
 
-<%@ include file="/web/common/footer.jsp" %>
+<%@ include file="/web/common/footer_adaptive.jsp" %>
