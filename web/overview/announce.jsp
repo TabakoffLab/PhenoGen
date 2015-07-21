@@ -12,7 +12,7 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
-                        <H2>PhenoGen v2.16 7/27/2015</H2>
+                        <H2>PhenoGen v2.16 7/21/2015</H2>
                         <div style="margin-left:5px;">
                             <ul>
                                 <li>Gene List tabs have been reformatted so you can submit submit new analyses and view results and running analyses status from a single page.</LI> 
