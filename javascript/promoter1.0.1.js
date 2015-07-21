@@ -9,25 +9,24 @@
 
 var idToDelete=-99; 
 
-
 function setupPage() {
-	$("select#promoterType").on("change",function(){
-		var value=$("#promoterType").val();
-		$("#createOpossum").hide();
-		$("#createMeme").hide();
-		$("#createUpstream").hide();
+	jQuery("select#promoterType").on("change",function(){
+		var value=jQuery("#promoterType").val();
+		jQuery("#createOpossum").hide();
+		jQuery("#createMeme").hide();
+		jQuery("#createUpstream").hide();
 		if(value==='oPOSSUM'){
-			$("#createOpossum").show();
+			jQuery("#createOpossum").show();
 		}else if(value==='MEME'){
-			$("#createMeme").show();
+			jQuery("#createMeme").show();
 		}else if(value==='Upstream'){
-			$("#createUpstream").show();
+			jQuery("#createUpstream").show();
 		}
 	});
 
-	$("#memeForm #upstreamLength").on("change",checkSize);
+	jQuery("#memeForm #upstreamLength").on("change",checkSize);
 
-	$( "#dialog-delete-confirm" ).dialog({
+	jQuery( "#dialog-delete-confirm" ).dialog({
 		  autoOpen: false,
 	      resizable: false,
 	      height:175,
@@ -35,23 +34,23 @@ function setupPage() {
 	      modal: true,
 	      buttons: {
 	        "Delete analysis": function() {
-	          $( this ).dialog( "close" );
+	          jQuery( this ).dialog( "close" );
 	          runDeleteGeneListAnalysis(idToDelete);
 	          idToDelete=-99;
 	        },
 	        Cancel: function() {
-	          $( this ).dialog( "close" );
+	          jQuery( this ).dialog( "close" );
 	          idToDelete=-99;
 	        }
 	      }
     });
-    $( "#dialog-delete-error" ).dialog({
+    jQuery( "#dialog-delete-error" ).dialog({
       autoOpen: false,
       modal: true,
       width:"40%",
       buttons: {
         Ok: function() {
-          $( this ).dialog( "close" );
+          jQuery( this ).dialog( "close" );
         }
       }
     });
@@ -96,47 +95,47 @@ function startRefresh(){
 }*/
 
 function runPromoter(){
-	var type=$("#promoterType").val();
-	$('#wait2').show();
-	$('#runStatus').html("");
+	var type=jQuery("#promoterType").val();
+	jQuery('#wait2').show();
+	jQuery('#runStatus').html("");
 	var params={};
 	params.type=type;
 	params.geneListID=id;
 	if(type==='oPOSSUM'){
-		params.searchRegionLevel=$("#oPOSSUMForm #searchRegionLevel").val();
-		params.conservationLevel=$("#oPOSSUMForm #conservationLevel").val();
-		params.thresholdLevel=$("#oPOSSUMForm #thresholdLevel").val();
-		params.description=$("#oPOSSUMForm #description").val();
+		params.searchRegionLevel=jQuery("#oPOSSUMForm #searchRegionLevel").val();
+		params.conservationLevel=jQuery("#oPOSSUMForm #conservationLevel").val();
+		params.thresholdLevel=jQuery("#oPOSSUMForm #thresholdLevel").val();
+		params.description=jQuery("#oPOSSUMForm #description").val();
 	}else if(type==='MEME'){
-		params.upstreamLength=$("#memeForm #upstreamLength").val();
-		params.upstreamSelect=$("#memeForm #upstreamSelect").val();
-		params.distribution=$("#memeForm #distribution").val();
-		params.minWidth=$("#memeForm #minWidth").val();
-		params.maxWidth=$("#memeForm #maxWidth").val();
-		params.maxMotifs=$("#memeForm #maxMotifs").val();
-		params.description=$("#memeForm #description").val();
+		params.upstreamLength=jQuery("#memeForm #upstreamLength").val();
+		params.upstreamSelect=jQuery("#memeForm #upstreamSelect").val();
+		params.distribution=jQuery("#memeForm #distribution").val();
+		params.minWidth=jQuery("#memeForm #minWidth").val();
+		params.maxWidth=jQuery("#memeForm #maxWidth").val();
+		params.maxMotifs=jQuery("#memeForm #maxMotifs").val();
+		params.description=jQuery("#memeForm #description").val();
 	}else if(type==='Upstream'){
-		params.upstreamLength=$("#upstreamForm #upstreamLength").val();
-		params.upstreamSelect=$("#upstreamForm #upstreamSelect").val();
+		params.upstreamLength=jQuery("#upstreamForm #upstreamLength").val();
+		params.upstreamSelect=jQuery("#upstreamForm #upstreamSelect").val();
 	}
-	$.ajax({
+	jQuery.ajax({
             url: contextPath + "/web/geneLists/include/runPromoter.jsp",
             type: 'GET',
             data: params,
             dataType: 'html',
             beforeSend: function(){
-                    $('#runStatus').html("Submitting...");
+                    jQuery('#runStatus').html("Submitting...");
             },
             success: function(data2){ 
-                $('#runStatus').html(data2);
+                jQuery('#runStatus').html(data2);
             },
             error: function(xhr, status, error) {
-                $('#runStatus').html("An error occurred Try submitting again. Error:"+error);
+                jQuery('#runStatus').html("An error occurred Try submitting again. Error:"+error);
             },
             complete: function(){
-					$('#runStatus').show();
+					jQuery('#runStatus').show();
 					setTimeout(function (){
-						$('#runStatus').html("");
+						jQuery('#runStatus').html("");
 					},20000);
 					runGetResults();
 					resetForm();
@@ -151,13 +150,13 @@ function resetForm(){
 
 
 function checkSize(){
-                var select=parseFloat($("#upstreamLength").val());
+                var select=parseFloat(jQuery("#upstreamLength").val());
                 var total=geneNumber*select;
                 if(total>300){
-                    $("#sizeWarning").show();
-                    $("#warnDetail").html(" ("+geneNumber+" genes x "+select+" Kb = "+total+" Kb ) ");
+                    jQuery("#sizeWarning").show();
+                    jQuery("#warnDetail").html(" ("+geneNumber+" genes x "+select+" Kb = "+total+" Kb ) ");
                 }else{
-                    $("#sizeWarning").hide();
+                    jQuery("#sizeWarning").hide();
                 }
 }
 
@@ -193,3 +192,4 @@ function IsMeMeFormComplete(formName) {
 	}
 	return true;
 }
+
