@@ -31,6 +31,7 @@ function removeColon(str){
     return str.replace(/:/g, '');
 }
 
+
 function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	that={};
 	that.singleID=id;
@@ -63,6 +64,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
     	}
     	if(newID.indexOf(" ")>-1){
     		newID=newID.replace(/\s/g,"_");
+    	}
+    	if(newID.indexOf(".")>-1){
+    		newID=newID.replace(/\./g,"_");
     	}
     	return newID;
     }
@@ -1587,24 +1591,24 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         lnk.enter().append("line")
                                 .attr("class","link")
                                 .attr("pointer-events","none")
-                                .attr("id",function(d){return "ln_"+replaceDot(d.TC1)+replaceDot(d.TC2);})
+                                .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
                                 .attr("x1",function(d){
-                                    var x=d3.select("#tc_"+replaceDot(d.TC1)).attr("cx");
+                                    var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
                                     //console.log(d.TC1+":x1:"+x);
                                     return x;
                                 })
                                 .attr("y1",function(d){
-                                    var y=d3.select("#tc_"+replaceDot(d.TC1)).attr("cy");
+                                    var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
                                     //console.log(d.TC1+":y1:"+y);
                                     return y;
                                 })
                                 .attr("x2",function(d){
-                                    var x=d3.select("#tc_"+replaceDot(d.TC2)).attr("cx");
+                                    var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
                                     //console.log(d.TC2+":x2:"+x);
                                     return x;
                                 })
                                 .attr("y2",function(d){
-                                    var y=d3.select("#tc_"+replaceDot(d.TC2)).attr("cy");
+                                    var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
                                     //console.log(d.TC2+":y2:"+y);
                                     return y;
                                 })
@@ -1654,24 +1658,24 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         lnk.enter().append("line")
                                 .attr("class","link")
                                 .attr("pointer-events","none")
-                                .attr("id",function(d){return "ln_"+replaceDot(d.TC1)+replaceDot(d.TC2);})
+                                .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
                                 .attr("x1",function(d){
-                                    var x=d3.select("#tc_"+replaceDot(d.TC1)).attr("cx");
+                                    var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
                                     //console.log(d.TC1+":x1:"+x);
                                     return x;
                                 })
                                 .attr("y1",function(d){
-                                    var y=d3.select("#tc_"+replaceDot(d.TC1)).attr("cy");
+                                    var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
                                     //console.log(d.TC1+":y1:"+y);
                                     return y;
                                 })
                                 .attr("x2",function(d){
-                                    var x=d3.select("#tc_"+replaceDot(d.TC2)).attr("cx");
+                                    var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
                                     //console.log(d.TC2+":x2:"+x);
                                     return x;
                                 })
                                 .attr("y2",function(d){
-                                    var y=d3.select("#tc_"+replaceDot(d.TC2)).attr("cy");
+                                    var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
                                     //console.log(d.TC2+":y2:"+y);
                                     return y;
                                 })
@@ -1948,7 +1952,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         //add new
                         tc.enter().append("circle")
                                         .attr("class","geneTC")
-                                        .attr("id",function(d){return "tc_"+replaceDot(d.ID);})
+                                        .attr("id",function(d){return "tc_"+that.removeInvalidIDChars(d.ID);})
                                         .attr("cx", thatimg.nodeX)
                                         .attr("cy",thatimg.nodeY)
                                         .attr("r",3)
@@ -1971,24 +1975,24 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             var lnk=thatimg.topG.selectAll(".link").data(links,thatimg.linkKey);
                             lnk.enter().append("line")
                                     .attr("class","link")
-                                    .attr("id",function(d){return "ln_"+replaceDot(d.TC1)+replaceDot(d.TC2);})
+                                    .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
                                     .attr("x1",function(d){
-                                        var x=d3.select("#tc_"+replaceDot(d.TC1)).attr("cx");
+                                        var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
                                         //console.log(d.TC1+":x1:"+x);
                                         return x;
                                     })
                                     .attr("y1",function(d){
-                                        var y=d3.select("#tc_"+replaceDot(d.TC1)).attr("cy");
+                                        var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
                                         //console.log(d.TC1+":y1:"+y);
                                         return y;
                                     })
                                     .attr("x2",function(d){
-                                        var x=d3.select("#tc_"+replaceDot(d.TC2)).attr("cx");
+                                        var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
                                         //console.log(d.TC2+":x2:"+x);
                                         return x;
                                     })
                                     .attr("y2",function(d){
-                                        var y=d3.select("#tc_"+replaceDot(d.TC2)).attr("cy");
+                                        var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
                                         //console.log(d.TC2+":y2:"+y);
                                         return y;
                                     })
@@ -2011,7 +2015,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     tc.enter().append("g")
                             .append("circle")
                             .attr("class",function(d){return "geneTC "+d.Gene.ID;})
-                            .attr("id",function(d){return "tc_"+replaceDot(d.ID);})
+                            .attr("id",function(d){return "tc_"+that.removeInvalidIDChars(d.ID);})
                             .attr("cx", thatimg.nodeX)
                             .attr("cy",thatimg.nodeY)
                             //.attr("r",function(d,i){return 3+d.LinkCount;})
@@ -2024,7 +2028,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             .on("mouseover",thatimg.mouseoverGene)
                             .on("mouseout",thatimg.mouseleaveGene);
                     var lbl=tc.append("g").attr("class","label")
-                            .attr("id",function(d){return "txt_"+replaceDot(d.ID);})
+                            .attr("id",function(d){return "txt_"+that.removeInvalidIDChars(d.ID);})
                             .attr("transform", function(d,i){
                             var x=thatimg.nodeXLbl(d,i);
                             var y=thatimg.nodeYLbl(d,i);
@@ -2124,7 +2128,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                         .data(thatimg.miRbubble.nodes(root),that.mirKey)
                                         .enter().append("g")
                                         .attr("class", "node")
-                                        .attr("id", function(d){return replaceDot(d.ID);})
+                                        .attr("id", function(d){return that.removeInvalidIDChars(d.ID);})
                                         .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
                                         .on("mouseover",thatimg.mouseoverMir)
                                         .on("mouseleave",thatimg.mouseleaveMir);
@@ -2370,11 +2374,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             thatimg.drawLinks(d);
                         }
                     }else{
-                        $("[id^=ln_"+replaceDot(d.ID)+"]").each(function(){
+                        $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
                             var id=$(this).attr("id");
                             d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
                         });
-                        $("[id$="+replaceDot(d.ID)+"]").each(function(){
+                        $("[id$="+that.removeInvalidIDChars(d.ID)+"]").each(function(){
                             var id=$(this).attr("id");
                             d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
                         });
@@ -2382,10 +2386,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             thatimg.drawLinks(d);
                         }
                     }
-                    d3.select("#txt_"+replaceDot(d.ID)).select("text").attr("fill","#00A347");
+                    d3.select("#txt_"+that.removeInvalidIDChars(d.ID)).select("text").attr("fill","#00A347");
                     var tcList=that.selectedGene[d.Gene.ID].tcList;
                     for(var l=0;l<tcList.length;l++){
-                        d3.select("#tc_"+replaceDot(tcList[l].ID)).attr("fill","#FEFF49");
+                        d3.select("#tc_"+that.removeInvalidIDChars(tcList[l].ID)).attr("fill","#FEFF49");
                     }
                     
                     if(that.viewType==='mir'  && thatimg.showMirLinks){
@@ -2401,15 +2405,15 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 .attr("id",function(d){return "ln_"+d.ID;})
                                 .attr("x1",function(d){
                                     var x=d3.select("."+geneID).attr("cx");
-                                    if(d3.select("#"+replaceDot(d.ID)).size()>0){
-                                    	x=d3.select("#"+replaceDot(d.ID))[0][0].__data__.x+thatimg.width/2-thatimg.miRdiameter/2;
+                                    if(d3.select("#"+that.removeInvalidIDChars(d.ID)).size()>0){
+                                    	x=d3.select("#"+that.removeInvalidIDChars(d.ID))[0][0].__data__.x+thatimg.width/2-thatimg.miRdiameter/2;
                                 	}
                                     return x;
                                 })
                                 .attr("y1",function(d){
                                     var y=d3.select("."+geneID).attr("cy");
-                                    if(d3.select("#"+replaceDot(d.ID)).size()>0){
-                                    	y=d3.select("#"+replaceDot(d.ID))[0][0].__data__.y+thatimg.height/2-thatimg.miRdiameter/2;
+                                    if(d3.select("#"+that.removeInvalidIDChars(d.ID)).size()>0){
+                                    	y=d3.select("#"+that.removeInvalidIDChars(d.ID))[0][0].__data__.y+thatimg.height/2-thatimg.miRdiameter/2;
                                 	}
                                     return y;
                                 })
@@ -2440,16 +2444,16 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 
                 thatimg.mouseleaveGene=function(){
                     var d=d3.select(this).data()[0];
-                    $("[id^=ln_"+replaceDot(d.ID)+"]").each(function(){
+                    $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
                         var id=$(this).attr("id");
                         d3.select("line#"+id).attr("stroke",thatimg.colorLink);
                     });
-                    $("[id$="+replaceDot(d.ID)+"]").each(function(){
+                    $("[id$="+that.removeInvalidIDChars(d.ID)+"]").each(function(){
                         var id=$(this).attr("id");
                         d3.select("line#"+id).attr("stroke",thatimg.colorLink);
                     });
                     d3.select(this).style("fill",thatimg.colorCircle);//.attr("stroke","#000000");
-                    d3.select("#txt_"+replaceDot(d.ID)).select("text").attr("fill","#000000");
+                    d3.select("#txt_"+that.removeInvalidIDChars(d.ID)).select("text").attr("fill","#000000");
                     tt.transition()        
                     .duration(500)      
                     .style("opacity", 0);
@@ -2557,7 +2561,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 		.select("tbody").selectAll('tr')
                         .data(tmpData,that.mirKey)
                                 .enter().append("tr")
-                                .attr("id",function(d){return "mirTR"+d.ID;})
+                                .attr("id",function(d){return "mirTR"+that.removeInvalidIDChars(d.ID);})
                                 .attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
                 tracktbl.each(function(d,i){
                             var tmpD=d;
@@ -2720,7 +2724,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             d3.select("table#mirGeneTable").select("tbody").selectAll('tr').remove();
 			var tracktbl=d3.select("table#mirGeneTable").select("tbody").selectAll('tr').data(that.selectedModule.TCList,that.geneKey)
 					.enter().append("tr")
-					.attr("id",function(d){return "mirg"+d.ID;})
+					.attr("id",function(d){return "mirg"+that.removeInvalidIDChars(d.ID);})
 					.attr("class",function(d,i){var ret="odd";if(i%2===0){ret="even";} return ret;});
 			tracktbl.each(function(d,i){
                     var tmpI=i;
