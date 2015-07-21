@@ -15,7 +15,7 @@
 
 	formName = "promoter.jsp";
 	request.setAttribute( "selectedTabId", "promoter" );
-        extrasList.add("promoter1.0.js");
+        extrasList.add("promoter1.0.1.js");
         //extrasList.add("meme.js");
         extrasList.add("jquery.dataTables.min.js");
     
