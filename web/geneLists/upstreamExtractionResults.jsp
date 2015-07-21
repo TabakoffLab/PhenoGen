@@ -106,10 +106,10 @@
 		/* * *
 		 *  Sets up the "Download" link click
 		/*/
-		$(document).ready(function() {
-			$("div#download").click(function(){
-				$("input[name='action']").val("Download");
-				$("form[name='upstreamExtractionResults']").submit();
+		jQuery(document).ready(function() {
+			jQuery("div#download").click(function(){
+				jQuery("input[name='action']").val("Download");
+				jQuery("form[name='upstreamExtractionResults']").submit();
 			});
 		});
 	</script>
