@@ -8,12 +8,12 @@
  *      
 --%>
 <script>
-    var wWidth=$(window).width();
+    var wWidth=jQuery(window).width();
     var accord=0;
     var autoRefreshHandle=0;
-    $(window).resize(function(){
+    jQuery(window).resize(function(){
         
-                var newW=$(window).width();
+                var newW=jQuery(window).width();
                 
                 var tmpInd=1;
                 if(accord!==0){
@@ -23,23 +23,23 @@
                         accord.accordion("destroy");
                         accord=0;
                         setTimeout(function(){
-                            accord=$( 'div#toolsAccord' ).accordion({heightStyle: "fill"});
-                            $( 'div#toolsAccord' ).accordion({'active':tmpInd});
+                            accord=jQuery( 'div#toolsAccord' ).accordion({heightStyle: "fill"});
+                            jQuery( 'div#toolsAccord' ).accordion({'active':tmpInd});
                         },200);
                 }else if(newW>1000 && wWidth<=1000){
                         accord.accordion("destroy");
                         accord=0;
                         setTimeout(function(){
-                            accord=$( 'div#toolsAccord' ).accordion({heightStyle: "fill"});
-                            $( 'div#toolsAccord' ).accordion({'active':tmpInd});
+                            accord=jQuery( 'div#toolsAccord' ).accordion({heightStyle: "fill"});
+                            jQuery( 'div#toolsAccord' ).accordion({'active':tmpInd});
                         },200);
                 }
                 wWidth=newW;
             });
-    $(document).ready(function() {
+    jQuery(document).ready(function() {
         setTimeout(function(){
-                accord=$( 'div#toolsAccord' ).accordion({heightStyle: "fill"});
-                $( 'div#toolsAccord' ).accordion({'active':1});
+                accord=jQuery( 'div#toolsAccord' ).accordion({heightStyle: "fill"});
+                jQuery( 'div#toolsAccord' ).accordion({'active':1});
             },100);
     });
     
@@ -47,29 +47,29 @@
      * Generic method to delete any GeneList Analysis
     */
     function runDeleteGeneListAnalysis(id,type){
-        $.ajax({
+        jQuery.ajax({
                     url: contextPath + "/web/geneLists/include/deleteAjaxGLA.jsp",
                     type: 'GET',
                     data: {geneListAnalysisID:id},
                     dataType: 'html',
                     success: function(data2){
                             if(data2.indexOf("Success")===-1){
-                                $("#delete-errmsg").html(data2);
-                                $( "#dialog-delete-error" ).dialog("open");
+                                jQuery("#delete-errmsg").html(data2);
+                                jQuery( "#dialog-delete-error" ).dialog("open");
                             }
                             runGetResults(-1);
                     },
                     error: function(xhr, status, error) {
-                           $("#delete-errmsg").html(error);
-                           $( "#dialog-delete-error" ).dialog("open");
+                           jQuery("#delete-errmsg").html(error);
+                           jQuery( "#dialog-delete-error" ).dialog("open");
                     }
             });
     }
     
     function runGetResults(retry){
 			var id=<%=selectedGeneList.getGene_list_id()%>;
-			$('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\"<%=imagesDir%>wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
-			$.ajax({
+			jQuery('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\"<%=imagesDir%>wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+jQuery('#resultList').html());
+			jQuery.ajax({
 				url: analysisPath,
    				type: 'GET',
 				data: {geneListID:id},
@@ -88,10 +88,10 @@
                                                         runGetResults(retry+1);
                                                 },20000);
                                             }
-                                                $('#resultList').html(data2);
+                                                jQuery('#resultList').html(data2);
                                 },
                                 error: function(xhr, status, error) {
-                                        $('#resultList').html("Error retreiving results.  Please try again.");
+                                        jQuery('#resultList').html("Error retreiving results.  Please try again.");
                                 }
 			});
 		}
