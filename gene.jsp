@@ -17,7 +17,7 @@
 	extrasList.add("jquery.fancybox.css");
 	extrasList.add("jquery.fancybox-thumbs.css");
 	extrasList.add("spectrum.css");
-        extrasList.add("jquery.dataTables.min.css");
+        //extrasList.add("jquery.dataTables.min.css");
 %>
 
 
