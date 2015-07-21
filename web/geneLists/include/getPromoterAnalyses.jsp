@@ -138,13 +138,7 @@
     </tbody>
 </table>
 <script type="text/javascript">
-        $('#resultTbl').dataTable({
-            
-			"bPaginate": false,
-			"bDeferRender": true,
-			"aaSorting": [[ 2, "desc" ]],
-			"sDom": '<r><t>'
-	});
+        
 	
 	<%if(!running){%>
 			stopRefresh();
@@ -152,6 +146,13 @@
 			startRefresh();
 	<%}%>
         (function($){
+            $('#resultTbl').dataTable({
+            
+			"bPaginate": false,
+			"bDeferRender": true,
+			"aaSorting": [[ 2, "desc" ]],
+			"sDom": '<r><t>'
+            });
             $(".promoterResultDetail").on("click",function (){
                     var id=$(this).attr('id');
                     var type=$(this).attr('type');
