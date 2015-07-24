@@ -32,13 +32,21 @@
     <div style=" font-size:12px;">The site for quantitative genetics of the transcriptome.</div>
     </div>
     <div class="header_status">
-    	<%if(!mainFunction.equals("")){%>
-        	<%=mainFunction%><BR />
-        <%}%>
-        <%if(!mainStep.equals("")){%>
-        	<span class="header_step"><%=mainStep%></span>
-        <%}%>
-       
+        <div class="search" style="width:350px;float:right;position:relative;top:-14px">
+                        <script>
+                        (function() {
+                          var cx = '002251072100941693273:nciuczz1ipg';
+                          var gcse = document.createElement('script');
+                          gcse.type = 'text/javascript';
+                          gcse.async = true;
+                          gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+                              '//cse.google.com/cse.js?cx=' + cx;
+                          var s = document.getElementsByTagName('script')[0];
+                          s.parentNode.insertBefore(gcse, s);
+                        })();
+                      </script>
+                      <gcse:search></gcse:search>
+        </div>
     </div>
     	
   </div> <!-- page_header -->

@@ -9,7 +9,7 @@ use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
-require 'readSNPDataFromDB.pl';
+require 'readSNPDataFromMongo.pl';
 require 'readSpliceJunctFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'readRefSeqDataFromDB.pl';
@@ -209,7 +209,7 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-		my $rnaCountRef=readSNPDataFromDB($chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		my $rnaCountRef=readSNPDataFromDB('rn5',$chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
@@ -282,7 +282,7 @@ sub createXMLFile
                 my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chromosome,$minCoord,$maxCoord,22,$dsn,$usr,$passwd);
                 my @probesetHOH = @$probesetHOHRef;
 
-                my $snpRef=readSNPDataFromDB($chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+                my $snpRef=readSNPDataFromDB('rn5',$chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
                 my %snpHOH=%$snpRef;
                 my @snpStrain=("BNLX","SHRH","SHRJ","F344");
                 my $rnaType="totalRNA";

@@ -11,7 +11,7 @@ use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
-require 'readSNPDataFromDB.pl';
+require 'readSNPDataFromMongo.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'readRefSeqDataFromDB.pl';
 #require 'createBED.pl';
@@ -318,7 +318,7 @@ sub createXMLFile
 	    
 	    #read SNPs/Indels
 	    my $sTimeStart=time();
-	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    my $snpRef=readSNPDataFromDB('rn5',$chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	    %snpHOH=%$snpRef;
 	    @snpStrain=("BNLX","SHRH","SHRJ","F344");
 	    my $sTimeEnd=time();

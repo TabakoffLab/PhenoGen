@@ -2,7 +2,6 @@ function displayWorking(){
 	$('#wait1').show();
 	$('#inst').hide();
 	$('input#action').val("Get Transcription Details");
-	//$('input#defaultView').val(defaultView);
 	return true;
 }
 

@@ -104,6 +104,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 	int max=0;
 	String selectedEnsemblID="";
 	String regionError="";
+        String genomeVer="mm10";
 	
 	Set iDecoderAnswer;
 	
@@ -124,13 +125,18 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 		if(myOrganism.equals("Rn")){
 			panel="BNLX/SHRH";
 			fullOrg="Rattus_norvegicus";
+                        genomeVer="rn6";
 		}else if(myOrganism.equals("Mm")){
 			panel="ILS/ISS";
 			fullOrg="Mus_musculus";
+                        genomeVer="mm10";
 		}else{
                     organismError=true;
                 }
 	}
+        if(request.getParameter("genomeVer")!=null){
+            genomeVer=request.getParameter("genomeVer").trim();
+        }
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
 	if(myOrganism.equals("Rn")){
@@ -496,8 +502,8 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
        
   <label>Species:
   <select name="speciesCB" id="speciesCB">
-  	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus (mm10)</option>
-    <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus (rn5)</option>
+  	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus</option>
+        <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
   </select>
   </label>
   
@@ -529,6 +535,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
     <input type="hidden" name="ucscURLArray" id="ucscURLArray" value="<%=ucscURLString%>" />
     <input type="hidden" name="firstENSArray" id="firstENSArray" value="<%=firstENSString%>" />
     <input type="hidden" name="geneSelect" id="geneSelect" value="<%=selectedGene%>" />
+    <input type="hidden" name="genomeVer" id="genomeVer" value="<%=genomeVer%>" />
 </form>
 <BR />
 Or
@@ -679,7 +686,7 @@ Or
 	
 	
 	function setupDefaultView(){
-		console.log("setupDefaultView()");
+		//console.log("setupDefaultView()");
 		d3.select("#defaultView").html("");
 		filterViewList=[];
 		for(var i=0;i<defviewList.length;i++){
@@ -709,6 +716,13 @@ Or
 					});
 		opt.exit().remove();
                 $("#defaultView").val(defaultView);
+                var tmp=$("#speciesCB").val();
+                if(tmp==="Rn"){
+                    $('input#genomeVer').attr("value","rn6");
+                    
+                }else if(tmp==="Mm"){
+                    $('input#genomeVer').attr("value","mm10");
+                }
 	}
 
 	

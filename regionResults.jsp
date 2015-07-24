@@ -37,6 +37,7 @@ var iconPath="<%=imagesDir%>icons/";
 var trackMenu=[];
 var viewMenu=[];
 var fixedWidth=-1;
+var genomeVer="<%=genomeVer%>";
 /*Bugsense.clearBreadcrumbs();
 Bugsense.leaveBreadcrumb( 'gene.jsp' );
 Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
