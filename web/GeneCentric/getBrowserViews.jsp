@@ -22,8 +22,12 @@ import="org.json.*" %>
 <%
 
 bt.setSession(session);
+String genomeVer="";
+if(request.getParameter("genomeVer")!=null){
+    genomeVer=request.getParameter("genomeVer");
+}
 
-ArrayList<BrowserView> views=bt.getBrowserViews();
+ArrayList<BrowserView> views=bt.getBrowserViews(genomeVer);
 
 response.setContentType("application/json");
 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

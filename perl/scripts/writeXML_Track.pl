@@ -267,10 +267,10 @@ sub createXMLFile
 		my %repeatMaskHOH=%$repeatMaskRef;
 		my $rnaCountEnd=time();
 		print "RepeatMask completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
-                createGenericXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
-        }elsif(index($type,"chainNet")>-1){
+        createGenericXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
+    }elsif(index($type,"chainNet")>-1){
 
-        }elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
+    }elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
                 my $ver=substr($type,index($type,"_")+1);
                 print "Type:$type\n";
                 print "Ver:$ver\n";
@@ -405,16 +405,16 @@ sub createXMLFile
 	my $arg6 = $ARGV[5]; 
 	my $arg7 = $ARGV[6]; 
 	my $arg8 = $ARGV[7]; 
-	my $arg9= $ARGV[8]; 
-	my $arg10=$ARGV[9];
+	my $arg9 = $ARGV[8]; 
+	my $arg10= $ARGV[9];
 	my $arg11=$ARGV[10];
 	my $arg12=$ARGV[11];
 	my $arg13=$ARGV[12];
 	my $arg14=$ARGV[13];
 	my $arg15=$ARGV[14];
-        my $arg16=$ARGV[15];
-        my $arg17=$ARGV[16];
-        my $arg18=$ARGV[17];
+    my $arg16=$ARGV[15];
+    my $arg17=$ARGV[16];
+    my $arg18=$ARGV[17];
 
 	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18);
 

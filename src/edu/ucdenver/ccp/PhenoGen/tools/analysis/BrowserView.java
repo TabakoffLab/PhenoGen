@@ -41,18 +41,33 @@ public class BrowserView{
         this.imageSettings=imgsetting;
     }
     
-    public ArrayList<BrowserView> getBrowserViews(int userid,DataSource pool){
+    public ArrayList<BrowserView> getBrowserViews(int userid,String genomeVer,DataSource pool){
         Logger log=Logger.getRootLogger();
         ArrayList<BrowserView> ret=new ArrayList<BrowserView>();
         
         HashMap<Integer,BrowserView> hm=new HashMap<Integer,BrowserView>();
         
-        String query="select * from BROWSER_VIEWS "+
-                        "where user_id="+userid+" and visible=1";
+        String query="select bv.* ";
+        String queryP2="from BROWSER_VIEWS bv, BROWSER_GV2VIEW gbv "+
+                        "where bv.user_id="+userid+" and ";
+        if(genomeVer.indexOf(",")>-1){
+            String[] genomes=genomeVer.split(",");
+            queryP2=queryP2+" ( gbv.genome_id = '"+genomes[0]+"' or "+
+                        " gbv.genome_id = '"+genomes[1]+"' ) "+
+                        " and gbv.BVID=bv.BVID"+
+                        " and bv.visible=1";
+        }else{
+            queryP2=queryP2+" gbv.genome_id = '"+genomeVer+"' "+
+                        " and gbv.BVID=bv.BVID"+
+                        " and bv.visible=1";
+        }
+        query=query+queryP2;
+        log.debug("genome view query:\n"+query+"\n");
+                        
         String trackquery="select bvt.bvid,bt.*,bts.settings,bvt.ordering from BROWSER_VIEWS_TRACKS bvt,BROWSER_TRACKS bt, BROWSER_TRACK_SETTINGS bts where "+
                         " bvt.trackid=bt.trackid and bvt.tracksettingid=bts.tracksettingid "+
                         " and bt.visible=1 "+
-                        " and bvt.bvid in (select bvid from browser_views where user_id="+userid+" and visible=1) "+
+                        " and bvt.bvid in (select bv.bvid "+queryP2+" ) "+
                         " order by bvt.bvid,bvt.ordering";
             Connection conn=null;
             PreparedStatement ps=null;
@@ -63,15 +78,17 @@ public class BrowserView{
                 //int count=0;
                 while(rs.next()){
                     int id=rs.getInt(1);
-                    int uid=rs.getInt(2);
-                    String name=rs.getString(3);
-                    String desc=rs.getString(4);
-                    String org=rs.getString(5);
-                    boolean vis=rs.getBoolean(6);
-                    String imgsetting=rs.getString(7);
-                    BrowserView tmpBV=new BrowserView(id,uid,name,desc,org,vis,imgsetting);
-                    ret.add(tmpBV);
-                    hm.put(id,tmpBV);
+                    if(!hm.containsKey(id)){
+                        int uid=rs.getInt(2);
+                        String name=rs.getString(3);
+                        String desc=rs.getString(4);
+                        String org=rs.getString(5);
+                        boolean vis=rs.getBoolean(6);
+                        String imgsetting=rs.getString(7);
+                        BrowserView tmpBV=new BrowserView(id,uid,name,desc,org,vis,imgsetting);
+                        ret.add(tmpBV);
+                        hm.put(id,tmpBV);
+                    }
                     //count++;
                 }
                 ps.close();
@@ -384,8 +401,9 @@ public class BrowserView{
         return id;
     }
     
-    public boolean saveToDB(DataSource pool){
+    public boolean saveToDB(String genomeVer,DataSource pool){
         boolean success=false;
+        String insertVersion="insert into browser_GV2VIEW (GENOME_ID,BVID) values(?,?)";
         String insertUsage="insert into browser_views ("
                 + "BVID,USER_ID,NAME,DESCRIPTION,ORGANISM,"
                 + "VISIBLE,IMAGE_SETTINGS) values (?,?,?,?,?,?,?)";
@@ -393,7 +411,14 @@ public class BrowserView{
         Connection conn=null;
         try{
             conn=pool.getConnection();
-            PreparedStatement ps=conn.prepareStatement(insertUsage, 
+            PreparedStatement ps=conn.prepareStatement(insertVersion, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+            ps.setString(1, genomeVer);
+            ps.setInt(2, this.id);
+            ps.execute();
+            ps.close();
+            ps=conn.prepareStatement(insertUsage, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
 						ResultSet.CONCUR_UPDATABLE);
             ps.setInt(1, this.id);

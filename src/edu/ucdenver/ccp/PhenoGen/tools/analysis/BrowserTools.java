@@ -42,58 +42,58 @@ public class BrowserTools{
         this.fullPath = appRoot + contextRoot;
     }
     
-    public ArrayList<BrowserView> getBrowserViews(){
+    public ArrayList<BrowserView> getBrowserViews(String genomeVer){
         BrowserView bv=new BrowserView();
-        ArrayList<BrowserView> ret=bv.getBrowserViews(0,pool);
+        ArrayList<BrowserView> ret=bv.getBrowserViews(0,genomeVer,pool);
         int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
         if(userID>0){
-            ArrayList<BrowserView> tmp=bv.getBrowserViews(userID,pool);
+            ArrayList<BrowserView> tmp=bv.getBrowserViews(userID,genomeVer,pool);
             if(tmp.size()>0){
                 ret.addAll(tmp);
             }
         }
         return ret;
     }
-    public ArrayList<BrowserTrack> getBrowserTracks(){
+    public ArrayList<BrowserTrack> getBrowserTracks(String genomeVer){
         BrowserTrack bv=new BrowserTrack();
-        ArrayList<BrowserTrack> ret=bv.getBrowserTracks(0,pool);
+        ArrayList<BrowserTrack> ret=bv.getBrowserTracks(0,genomeVer,pool);
         int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
         log.debug("getBROWSERTRACK():uid:"+userID);
         if(userID>0){
-            ArrayList<BrowserTrack> tmp=bv.getBrowserTracks(userID,pool);
+            ArrayList<BrowserTrack> tmp=bv.getBrowserTracks(userID,genomeVer,pool);
             if(tmp.size()>0){
                 ret.addAll(tmp);
             }
         }
         return ret;
     }
-    public boolean createCustomTrack(int uid,String trackclass, String trackname, String description, String organism,String settings, int order,String genCat,String category,String controls,Boolean vis,String location,String fileName,String type){
+    public boolean createCustomTrack(int uid,String trackclass, String trackname, String description, String organism,String genomeVer,String settings, int order,String genCat,String category,String controls,Boolean vis,String location,String fileName,String type){
         BrowserTrack bt=new BrowserTrack();
         int trackID=bt.getNextID(pool);
         BrowserTrack newTrack=new BrowserTrack(trackID, uid, trackclass, trackname, description, organism,settings, order,genCat,category,controls,vis,location,fileName,type,new Timestamp((new Date()).getTime()));
-        boolean success=newTrack.saveToDB(pool);
+        boolean success=newTrack.saveToDB(genomeVer,pool);
         return success;
     }
     
-    public int createBlankView(String name,String description,String organism,String imgDisp){
+    public int createBlankView(String name,String description,String organism,String genomeVer,String imgDisp){
         BrowserView bv= new BrowserView();
         int ret=-1;
         int viewID=bv.getNextID(pool);
         int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
         BrowserView newView=new BrowserView(viewID,userID,name,description,organism.toUpperCase(),true,imgDisp);
-        boolean success=newView.saveToDB(pool);
+        boolean success=newView.saveToDB(genomeVer,pool);
         if(success){
             ret=viewID;
         }
         return ret;
     }
-    public int createCopiedView(String name,String description,String organism,String imgDisp,int copyFrom){
+    public int createCopiedView(String name,String description,String organism,String genomeVer,String imgDisp,int copyFrom){
         BrowserView bv= new BrowserView();
         int ret=-1;
         int viewID=bv.getNextID(pool);
         int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
         BrowserView newView=new BrowserView(viewID,userID,name,description,organism.toUpperCase(),true,imgDisp);
-        boolean success=newView.saveToDB(pool);
+        boolean success=newView.saveToDB(genomeVer,pool);
         //copy tracks and settings
         if(success){
            success=bv.copyTracksInView(copyFrom,newView.getID(),pool);

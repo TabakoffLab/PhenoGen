@@ -290,8 +290,44 @@ function ViewMenu(level){
 		if(!pathPrefix){
 			tmpContext="";
 		}
-		
-		d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
+		$.ajax({
+				url: tmpContext+"getBrowserViews.jsp",
+   				type: 'GET',
+				data: {genomeVer: genomeVer  },
+				dataType: 'json',
+                success: function(d){ 
+                    that.viewList=[];
+					//that.viewList=d;
+					for(var i=0;i<d.length;i++){
+						if(d[i].Organism==="AA"||d[i].Organism===that.curOrg){
+							var orgCount=0;
+							for(var j=0;j<d[i].TrackList.length;j++){
+								var tmp=d[i].TrackList[j];
+								if(tmp.Organism==="AA"||tmp.Organism===that.curOrg){
+									orgCount++;
+								}
+							}
+							d[i].orgCount=orgCount;
+							that.viewList.push(d[i]);
+						}
+					}
+					if(trackInfo){
+						that.readCookieViews();
+					}
+					that.generateViewList();
+					if(that.initialized===0 && that.level===0){
+						that.initialized=1;
+						that.applySelectedView($("#defaultView").val());
+					}else if(that.level===1){
+						that.initialized=1;
+						that.applySelectedView(svgViewIDList[that.level]);
+					}
+                },
+                error: function(xhr, status, error) {
+                        
+                }
+        });
+		/*d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
 			if(error){
 				
 			}else{
@@ -322,7 +358,7 @@ function ViewMenu(level){
 					that.applySelectedView(svgViewIDList[that.level]);
 				}
 			}
-		});
+		});*/
 	};
 
 	that.readCookieViews=function(){

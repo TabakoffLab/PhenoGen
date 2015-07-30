@@ -21,7 +21,7 @@ import="org.json.*" %>
 
 <%
     gdt.setSession(session);
-String chromosome="",panel="",myOrganism="",track="",folderName="",bedFile="",outputFile="",web="",type="";
+String chromosome="",panel="",myOrganism="",track="",folderName="",bedFile="",outputFile="",web="",type="",genomeVer="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0,binSize=0;
 double forwardPValueCutoff=0;
 if(request.getParameter("chromosome")!=null){
@@ -99,14 +99,16 @@ if(request.getParameter("web")!=null){
 if(request.getParameter("type")!=null){
 	type=request.getParameter("type");
 }
-
+if(request.getParameter("genomeVer")!=null){
+    genomeVer=request.getParameter("genomeVer");
+}
 %>
 
 
 <% 
 	String status="";
 	if(!track.startsWith("custom")&&bedFile.equals("") && outputFile.equals("") ){
-		status=gdt.generateXMLTrack(chromosome,min,max,panel,track,myOrganism,rnaDatasetID,arrayTypeID,folderName,binSize);
+		status=gdt.generateXMLTrack(chromosome,min,max,panel,track,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,folderName,binSize);
 	}else if(track.startsWith("custom")){
 		log.debug("Generating custom xml track");
 		if(web.startsWith("http")){

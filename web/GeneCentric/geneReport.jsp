@@ -14,6 +14,7 @@
 	String fullOrg="";
 		String panel="";
 	String gcPath="";
+        String genomeVer="";
 	int selectedGene=0;
 	ArrayList<String>geneSymbol=new ArrayList<String>();
 	LinkGenerator lg=new LinkGenerator(session);
@@ -57,8 +58,10 @@
 	if(request.getParameter("id")!=null){
 		id=request.getParameter("id");
 	}
-	
-	gcPath=applicationRoot + contextRoot+"tmpData/geneData/" +id+"/";
+	if(request.getParameter("genomeVer")!=null){
+		genomeVer=request.getParameter("genomeVer");
+	}
+	gcPath=applicationRoot + contextRoot+"tmpData/browserCache/"+genomeVer+"/geneData/" +id+"/";
 	
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
@@ -91,7 +94,7 @@
          urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
     }
 	genURL=urlPrefix+ "tmpData/geneData/" +id+"/";
-	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID,true);
+	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,true);
 	edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=null;
 	for(int i=0;i<tmpGeneList.size();i++){
 		log.debug("check:"+tmpGeneList.get(i).getGeneID()+":"+id);
