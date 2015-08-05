@@ -543,7 +543,7 @@ public class GeneDataTools {
                             
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionFiles(organism,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
+                            generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                             
                             //error=true;
                             //this.setError(errors);
@@ -561,13 +561,13 @@ public class GeneDataTools {
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionFiles(organism,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
+                            generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                             
                             //error=true;
                             //this.setError(errors);
                         }
                     }else{
-                        generateRegionFiles(organism,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
+                        generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                         result="New Region generated successfully";
                     }
                 }
@@ -606,7 +606,7 @@ public class GeneDataTools {
 
 
         if(withEQTL){
-            this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID);
+            this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID,genomeVer);
             ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chromosome,arrayTypeID,pValue,"All");
             HashMap<String,TranscriptCluster> transInQTLsCore=new HashMap<String,TranscriptCluster>();
             HashMap<String,TranscriptCluster> transInQTLsExtended=new HashMap<String,TranscriptCluster>();
@@ -704,7 +704,7 @@ public class GeneDataTools {
                             
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionFiles(organism,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
+                            generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                         }
                 }else{
                     if(list.length>0){
@@ -720,10 +720,10 @@ public class GeneDataTools {
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionFiles(organism,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
+                            generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                         }
                     }else{
-                        generateRegionFiles(organism,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
+                        generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                         result="New Region generated successfully";
                     }
                 }
@@ -786,7 +786,7 @@ public class GeneDataTools {
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
                 log.debug("AsyncGeneDataTools with "+chrom+":"+minCoord+"-"+maxCoord);
-                prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
+                prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID,genomeVer);
             }
         }else{
             error=true;
@@ -805,11 +805,11 @@ public class GeneDataTools {
         }
         HashMap<String,String> source=this.getGenomeVersionSource(genomeVer);
         String ensemblPath=source.get("ensembl");
-        boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,ensemblPath,arrayTypeID,RNADatasetID,source.get("ucsc"));
+        boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,genomeVer,ensemblPath,arrayTypeID,RNADatasetID,source.get("ucsc"));
         return createdXML;
     }
     
-    public boolean generateRegionFiles(String organism,String ensemblPath,String folderName,int RNADatasetID,int arrayTypeID,String ucscDB) {
+    public boolean generateRegionFiles(String organism,String genomeVer,String ensemblPath,String folderName,int RNADatasetID,int arrayTypeID,String ucscDB) {
         log.debug("generate files");
         boolean completedSuccessfully = false;
         log.debug("outputDir:"+outputDir);
@@ -819,7 +819,7 @@ public class GeneDataTools {
             //log.debug("make output dir");
             outDirF.mkdirs();
         }
-        boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,ensemblPath,arrayTypeID,RNADatasetID,ucscDB);
+        boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,genomeVer,ensemblPath,arrayTypeID,RNADatasetID,ucscDB);
 
         return createdXML;
     }
@@ -1722,7 +1722,7 @@ public class GeneDataTools {
         return status;
     }
      
-    public boolean createRegionImagesXMLFiles(String folderName,String organism,String ensemblPath,int arrayTypeID,int rnaDatasetID,String ucscDB){
+    public boolean createRegionImagesXMLFiles(String folderName,String organism,String genomeVer,String ensemblPath,int arrayTypeID,int rnaDatasetID,String ucscDB){
         boolean completedSuccessfully=false;
         try{
             //Connection tmpConn=pool.getConnection();
@@ -1744,7 +1744,7 @@ public class GeneDataTools {
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
             //construct perl Args
-            String[] perlArgs = new String[21];
+            String[] perlArgs = new String[22];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Region.pl";
             perlArgs[2] = ucscDir+ucscGeneDir;
@@ -1765,14 +1765,15 @@ public class GeneDataTools {
             perlArgs[10] = Integer.toString(arrayTypeID);
             perlArgs[11] = Integer.toString(rnaDatasetID);
             perlArgs[12] = Integer.toString(publicUserID);
-            perlArgs[13] = dsn;
-            perlArgs[14] = dbUser;
-            perlArgs[15] = dbPassword;
-            perlArgs[16] = ucscDB;
-            perlArgs[17] = ensHost;
-            perlArgs[18] = ensPort;
-            perlArgs[19] = ensUser;
-            perlArgs[20] = ensPassword;
+            perlArgs[13] = genomeVer;
+            perlArgs[14] = dsn;
+            perlArgs[15] = dbUser;
+            perlArgs[16] = dbPassword;
+            perlArgs[17] = ucscDB;
+            perlArgs[18] = ensHost;
+            perlArgs[19] = ensPort;
+            perlArgs[20] = ensUser;
+            perlArgs[21] = ensPassword;
 
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
@@ -1859,9 +1860,9 @@ public class GeneDataTools {
         return completedSuccessfully;
     }
     
-    public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+    public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer){
         AsyncGeneDataTools agdt;         
-        agdt = new AsyncGeneDataTools(session,pool,outputDir,chr, min, max,arrayTypeID,rnaDS_ID,usageID);
+        agdt = new AsyncGeneDataTools(session,pool,outputDir,chr, min, max,arrayTypeID,rnaDS_ID,usageID,genomeVer);
         //log.debug("Getting ready to start");
         agdt.start();
         //log.debug("Started AsyncGeneDataTools");
@@ -2426,7 +2427,7 @@ public class GeneDataTools {
         return mainGenes;
     }
     
-    public void addHeritDABG(ArrayList<Gene> list,int min,int max,String organism,String chr,int rnaDS_ID,int arrayTypeID){
+    public void addHeritDABG(ArrayList<Gene> list,int min,int max,String organism,String chr,int rnaDS_ID,int arrayTypeID,String genomeVer){
         //get all probesets for region with herit and dabg
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
@@ -2436,12 +2437,13 @@ public class GeneDataTools {
                             "from probeset_herit_dabg phd , rnadataset_dataset rd "+
                             "where rd.rna_dataset_id = "+rnaDS_ID+" "+
                             "and phd.dataset_id=rd.dataset_id "+
+                            "and phd.genome_id='"+genomeVer+"' "+
                             "and phd.probeset_id in ("+
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                //"and substr(c.name,1,2) = '"+chr+"' "+
                                 "and c.name = '"+chr.toUpperCase()+"' "+
+                                "and s.genome_id='"+genomeVer+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -2795,74 +2797,126 @@ public class GeneDataTools {
         }
         if(run){
             HashMap tmpHM=new HashMap();
-            String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+
-                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+
-                                "where s.snp_id=lse.snp_id "+
-                                "and lse.probe_id=aep.probeset_id "+
-                                "and c2.chromosome_id=aep.chromosome_id "+
-                                "and c.chromosome_id=s.chromosome_id "+
-                                "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
-                                "and aep.updatedlocation='Y' "+
-                                "and aep.transcript_cluster_id in "+
-                                    "(select aep.transcript_cluster_id "+
-                                    "from location_specific_eqtl lse, snps s, chromosomes c1 , affy_exon_probeset aep "+
-                                    "where s.snp_id=lse.snp_id "+
-                                    "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
-                                    "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
-                                    " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
-                                    "and s.chromosome_id=c1.chromosome_id "+
-                                    "and s.organism ='"+organism+"' "+
-                                    "and c1.name='"+chr.toUpperCase()+"' "+
-                                    "and aep.updatedlocation='Y' "+
-                                    "and lse.probe_id=aep.probeset_id ";
-                                if(!level.equals("All")){
-                                    qtlQuery=qtlQuery+" and ( ";
-                                    for(int k=0;k<levels.length;k++){
-                                        if(k==0){
-                                            qtlQuery=qtlQuery+"aep.pslevel='"+levels[k]+"' ";
-                                        }else{
-                                            qtlQuery=qtlQuery+" or aep.pslevel='"+levels[k]+"' ";
-                                        }
-                                    }
-                                    qtlQuery=qtlQuery+") ";
-                                    //qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
-                                }/*else{
-                                    qtlQuery=qtlQuery+"and aep.pslevel<>'ambiguous' ";
-                                }*/
-                                qtlQuery=qtlQuery+"and aep.psannotation='transcript' "+
-                                "and aep.array_type_id="+arrayTypeID+") "+
-                                "order by aep.transcript_cluster_id, s.tissue";
-
-            String qtlQuery2="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+//,eq.LOD_SCORE "+
-                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+//, expression_qtls eq "+
-                                "where s.snp_id=lse.snp_id "+
-                                "and lse.pvalue< "+(-Math.log10(pvalue))+" "+
-                                //"and substr(c.name,1,2)='"+chr+"' "+
-                                "and c.name='"+chr.toUpperCase()+"' "+
-                                "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
-                                " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
-                                "and s.organism ='"+organism+"' "+
-                                "and lse.probe_id=aep.probeset_id ";
-                                if(!level.equals("All")){
-                                    qtlQuery2=qtlQuery2+" and ( ";
-                                    for(int k=0;k<levels.length;k++){
-                                        if(k==0){
-                                            qtlQuery2=qtlQuery2+"aep.pslevel='"+levels[k]+"' ";
-                                        }else{
-                                            qtlQuery2=qtlQuery2+" or aep.pslevel='"+levels[k]+"' ";
-                                        }
-                                    }
-                                    qtlQuery2=qtlQuery2+") ";
-                                    //qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
-                                }
-                                qtlQuery2=qtlQuery2+"and aep.psannotation='transcript' "+
+            String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end " +
+                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep " +
+                                "where s.snp_id=lse.snp_id " +
+                                "and s.genome_id='"+genomeVer+"'" +
+                                "and lse.probe_id=aep.probeset_id " +
+                                "and c2.chromosome_id=aep.chromosome_id " +
+                                "and c.chromosome_id=s.chromosome_id " +
+                                "and lse.pvalue>= "+(-Math.log10(pvalue))+" " +
+                                "and aep.updatedlocation='Y' " +
+                                "and aep.genome_id='"+genomeVer+"' ";
+                                //"and ( aep.pslevel='core'  or aep.pslevel='extended'  or aep.pslevel='full' ) \n" +
+            if(!level.equals("All")){
+                qtlQuery=qtlQuery+" and ( ";
+                for(int k=0;k<levels.length;k++){
+                    if(k==0){
+                        qtlQuery=qtlQuery+"aep.pslevel='"+levels[k]+"' ";
+                    }else{
+                        qtlQuery=qtlQuery+" or aep.pslevel='"+levels[k]+"' ";
+                    }
+                }
+                qtlQuery=qtlQuery+") ";
+            }
+            qtlQuery=qtlQuery+"and aep.psannotation='transcript' " +
                                 "and aep.array_type_id="+arrayTypeID+" "+
-                                "and aep.updatedlocation='Y' "+
-                                //"and TO_CHAR(aep.probeset_id) = eq.identifier (+) "+
-                                //"and (s.tissue=eq.tissue or eq.tissue is null) "+
-                                "and s.chromosome_id=c.chromosome_id "+
-                                "and c2.chromosome_id=aep.chromosome_id "+
+                                "and c.name='"+chr.toUpperCase()+"' " +
+                                "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
+                                " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
+                                "order by aep.transcript_cluster_id, s.tissue";
+//            String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+
+//                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+
+//                                "where s.snp_id=lse.snp_id "+
+//                                "and lse.probe_id=aep.probeset_id "+
+//                                "and c2.chromosome_id=aep.chromosome_id "+
+//                                "and c.chromosome_id=s.chromosome_id "+
+//                                "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
+//                                "and aep.updatedlocation='Y' "+
+//                                "and aep.transcript_cluster_id in "+
+//                                    "(select aep.transcript_cluster_id "+
+//                                    "from location_specific_eqtl lse, snps s, chromosomes c1 , affy_exon_probeset aep "+
+//                                    "where s.snp_id=lse.snp_id "+
+//                                    "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
+//                                    "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
+//                                    " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
+//                                    "and s.chromosome_id=c1.chromosome_id "+
+//                                    "and s.organism ='"+organism+"' "+
+//                                    "and c1.name='"+chr.toUpperCase()+"' "+
+//                                    "and aep.updatedlocation='Y' "+
+//                                    "and lse.probe_id=aep.probeset_id ";
+//                                if(!level.equals("All")){
+//                                    qtlQuery=qtlQuery+" and ( ";
+//                                    for(int k=0;k<levels.length;k++){
+//                                        if(k==0){
+//                                            qtlQuery=qtlQuery+"aep.pslevel='"+levels[k]+"' ";
+//                                        }else{
+//                                            qtlQuery=qtlQuery+" or aep.pslevel='"+levels[k]+"' ";
+//                                        }
+//                                    }
+//                                    qtlQuery=qtlQuery+") ";
+//                                    //qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
+//                                }/*else{
+//                                    qtlQuery=qtlQuery+"and aep.pslevel<>'ambiguous' ";
+//                                }*/
+//                                qtlQuery=qtlQuery+"and aep.psannotation='transcript' "+
+//                                "and aep.array_type_id="+arrayTypeID+") "+
+//                                "order by aep.transcript_cluster_id, s.tissue";
+            String qtlQuery2="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end " +
+                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep " +
+                                "where s.snp_id=lse.snp_id " +
+                                "and s.genome_id='"+genomeVer+"'" +
+                                "and lse.probe_id=aep.probeset_id " +
+                                "and c2.chromosome_id=aep.chromosome_id " +
+                                "and c.chromosome_id=s.chromosome_id " +
+                                "and lse.pvalue< "+(-Math.log10(pvalue))+" " +
+                                "and aep.updatedlocation='Y' " +
+                                "and aep.genome_id='"+genomeVer+"' ";
+                                //"and ( aep.pslevel='core'  or aep.pslevel='extended'  or aep.pslevel='full' ) \n" +
+            if(!level.equals("All")){
+                qtlQuery2=qtlQuery2+" and ( ";
+                for(int k=0;k<levels.length;k++){
+                    if(k==0){
+                        qtlQuery2=qtlQuery2+"aep.pslevel='"+levels[k]+"' ";
+                    }else{
+                        qtlQuery2=qtlQuery2+" or aep.pslevel='"+levels[k]+"' ";
+                    }
+                }
+                qtlQuery2=qtlQuery2+") ";
+            }
+            qtlQuery2=qtlQuery2+"and aep.psannotation='transcript' " +
+                                "and aep.array_type_id="+arrayTypeID+" "+
+                                "and c.name='"+chr.toUpperCase()+"' " +
+                                "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
+                                " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
                                 "order by aep.transcript_cluster_id,s.tissue,aep.chromosome_id,aep.psstart";
+//            String qtlQuery2="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+//,eq.LOD_SCORE "+
+//                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+//, expression_qtls eq "+
+//                                "where s.snp_id=lse.snp_id "+
+//                                "and lse.pvalue< "+(-Math.log10(pvalue))+" "+
+//                                //"and substr(c.name,1,2)='"+chr+"' "+
+//                                "and c.name='"+chr.toUpperCase()+"' "+
+//                                "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
+//                                " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
+//                                "and s.organism ='"+organism+"' "+
+//                                "and lse.probe_id=aep.probeset_id ";
+//                                if(!level.equals("All")){
+//                                    qtlQuery2=qtlQuery2+" and ( ";
+//                                    for(int k=0;k<levels.length;k++){
+//                                        if(k==0){
+//                                            qtlQuery2=qtlQuery2+"aep.pslevel='"+levels[k]+"' ";
+//                                        }else{
+//                                            qtlQuery2=qtlQuery2+" or aep.pslevel='"+levels[k]+"' ";
+//                                        }
+//                                    }
+//                                    qtlQuery2=qtlQuery2+") ";
+//                                }
+//                                qtlQuery2=qtlQuery2+"and aep.psannotation='transcript' "+
+//                                "and aep.array_type_id="+arrayTypeID+" "+
+//                                "and aep.updatedlocation='Y' "+
+//                                "and s.chromosome_id=c.chromosome_id "+
+//                                "and c2.chromosome_id=aep.chromosome_id "+
+//                                "order by aep.transcript_cluster_id,s.tissue,aep.chromosome_id,aep.psstart";
             Connection conn=null;
             try{
                 log.debug("SQL eQTL FROM QUERY\n"+qtlQuery);
@@ -2917,7 +2971,7 @@ public class GeneDataTools {
                     String snpQ="select * from snps s,chromosomes c where "+
                             "((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
                             "and s.chromosome_id=c.chromosome_id "+
-                            "and s.organism ='"+organism+"' "+
+                            "and s.genome_id ='"+genomeVer+"' "+
                             //"and substr(c.name,1,2)='"+chr+"' ";
                             "and c.name='"+chr.toUpperCase()+"' ";
                     ps = conn.prepareStatement(snpQ);
@@ -2990,7 +3044,8 @@ public class GeneDataTools {
                         }
                     }
                 }
-            
+                HashMap<String,String> source=getGenomeVersionSource(genomeVer);
+                String ensemblPath=source.get("ensembl");
                 File ensPropertiesFile = new File(ensemblDBPropertiesFile);
                 Properties myENSProperties = new Properties();
                 String ensHost="";
@@ -3042,10 +3097,10 @@ public class GeneDataTools {
                 String[] envVar=perlEnvVar.split(",");
 
                 for (int i = 0; i < envVar.length; i++) {
+                    if(envVar[i].contains("/ensembl")){
+                        envVar[i]=envVar[i].replaceFirst("/ensembl", "/"+ensemblPath);
+                    }
                     log.debug(i + " EnvVar::" + envVar[i]);
-                    /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                    }*/
                 }
 
 

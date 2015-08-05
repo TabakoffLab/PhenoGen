@@ -188,7 +188,7 @@ sub createXMLFile
 	#
 
 	# Read in the arguments for the subroutine	
-	my($ucscDir, $outputDir, $folderName,$species,$type,$chromosome,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,$publicID,$dsn,$usr,$passwd,$ucscDB,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
+	my($ucscDir, $outputDir, $folderName,$species,$type,$chromosome,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,$publicID,$genomeVer,$dsn,$usr,$passwd,$ucscDB,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
 	
 	my $scriptStart=time();
 	my $shortSpecies="";
@@ -293,7 +293,7 @@ sub createXMLFile
 	
 	#read Probests
 	my $psTimeStart=time();
-	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
+	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$genomeVer,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
 	my $psTimeEnd=time();
 	createProbesetXMLTrack(\@probesetHOH,$outputDir."probe.xml");
@@ -318,7 +318,7 @@ sub createXMLFile
 	    
 	    #read SNPs/Indels
 	    my $sTimeStart=time();
-	    my $snpRef=readSNPDataFromDB('rn5',$chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    my $snpRef=readSNPDataFromDB($genomeVer,$chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	    %snpHOH=%$snpRef;
 	    @snpStrain=("BNLX","SHRH","SHRJ","F344");
 	    my $sTimeEnd=time();
@@ -883,7 +883,7 @@ sub createXMLFile
 	
 	#read QTLs
 	my $qStart=time();
-	my $qtlRef=readQTLDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	my $qtlRef=readQTLDataFromDB($chr,$species,$minCoord,$maxCoord,$genomeVer,$dsn,$usr,$passwd);
 	my %qtlHOH=%$qtlRef;
 	my $qEnd=time();
 	print "QTLs completed in ".($qEnd-$qStart)." sec.\n";
@@ -947,6 +947,7 @@ sub createXMLFile
 	my $arg17=$ARGV[16];
 	my $arg18=$ARGV[17];
         my $arg19=$ARGV[18];
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19);
+        my $arg20=$ARGV[19];
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20);
 
 exit 0;

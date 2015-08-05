@@ -29,7 +29,7 @@ sub readLocusSpecificPvalues{
 	#INPUT VARIABLES: $probeID, $organism
 
 	# Read inputs
-	my($probeID,$organism,$chromosomeListRef,$dsn,$usr,$passwd)=@_;   
+	my($probeID,$organism,$genomeVer,$chromosomeListRef,$dsn,$usr,$passwd)=@_;   
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# $hostname is used to determine the connection to the database.
@@ -60,7 +60,8 @@ sub readLocusSpecificPvalues{
 		      e.PROBE_ID = $probeID
 		      and s.organism = '$organism'
 		      and s.chromosome_id = c.chromosome_id
-		      and e.SNP_ID = s.SNP_ID";
+		      and e.SNP_ID = s.SNP_ID
+                      and s.genome_id='$genomeVer'";
 
 		      
 	if ($debugLevel >= 2){

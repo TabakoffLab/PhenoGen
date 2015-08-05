@@ -7,7 +7,7 @@ my $debugLevel = 2;
 sub prepCircos
 {
 	# this routine creates configuration and data files for circos
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$dsn,$usr,$passwd,$hostname)=@_;	
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$genomeVer,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$dsn,$usr,$passwd,$hostname)=@_;	
 	my @chromosomeList = @{$chromosomeListRef};
 	my @tissueList = @{$tissueListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
@@ -58,7 +58,7 @@ sub prepCircos
 	createCircosProbesetTextConfFile($dataDirectory,$confDirectory);
 	createCircosProbesetTextDataFile($dataDirectory,$geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$organism);
 	createCircosPvaluesConfFile($confDirectory,$dataDirectory,$cutoff,$organism,$tissueListRef);
-	my $eqtlAOHRef = readLocusSpecificPvalues($probeID,$organism,$chromosomeListRef,$dsn,$usr,$passwd);	
+	my $eqtlAOHRef = readLocusSpecificPvalues($probeID,$organism,$genomeVer,$chromosomeListRef,$dsn,$usr,$passwd);	
 	createCircosPvaluesDataFiles($dataDirectory,$probeID,$organism,$eqtlAOHRef,$chromosomeListRef);
 	if($oneToCreateLinks == 1){
 		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$probeChromosome,$probeStart,$probeStop,$cutoff,$tissueListRef);	

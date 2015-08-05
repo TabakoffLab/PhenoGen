@@ -104,7 +104,8 @@ function loadTrackTable(){
 				rnaDatasetID: rnaDatasetID,
 				arrayTypeID: arrayTypeID,
 				forwardPvalueCutoff:forwardPValueCutoff,
-				folderName: regionfolderName
+				folderName: regionfolderName,
+				genomeVer: genomeVer
 			};
 		if(reportSelectedTrack.trackClass.indexOf("noncoding")>-1){
 			params.type="noncoding";
@@ -164,7 +165,8 @@ function loadEQTLTable(){
 			rnaDatasetID: rnaDatasetID,
 			arrayTypeID: arrayTypeID,
 			pValueCutoff:pValueCutoff,
-			folderName: regionfolderName
+			folderName: regionfolderName,
+			genomeVer: genomeVer
 		};
 	loadDivWithPage("div#regionEQTLTable",jspPage,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");

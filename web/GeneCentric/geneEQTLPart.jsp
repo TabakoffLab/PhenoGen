@@ -55,7 +55,7 @@
 				url: contextPath + "/web/GeneCentric/runCircos.jsp",
    				type: 'GET',
                                 cache: false,
-				data: {cutoffValue:pval,transcriptClusterID:tcID,tissues:tisList,chromosomes:chrList,geneCentricPath:path,hiddenGeneSymbol:geneSymbol},
+				data: {cutoffValue:pval,transcriptClusterID:tcID,tissues:tisList,chromosomes:chrList,geneCentricPath:path,hiddenGeneSymbol:geneSymbol,genomeVer:genomeVer},
 				dataType: 'html',
 				beforeSend: function(){
 				},

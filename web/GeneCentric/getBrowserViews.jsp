@@ -44,6 +44,7 @@ response.setDateHeader("Expires", 0);
             "Description": "<%=bv.getDescription()%>",
             "Organism":"<%=bv.getOrganism()%>",
             "imgSettings" : "<%=bv.getImageSettings()%>",
+            "genomeVersion":"<%= bv.getGenomeVersion()%>",
             "Source":"db",
             "TrackList":
             	[

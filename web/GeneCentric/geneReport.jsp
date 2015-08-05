@@ -644,7 +644,8 @@ Add report here.
 				species: organism,
 				geneSymbol: selectedGeneSymbol,
 				chromosome: chr,
-				id:selectedID
+				id:selectedID,
+                                genomeVer:genomeVer
 			};
 			loadDivWithPage("div#geneEQTL",jspPage,params,
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
@@ -653,7 +654,7 @@ Add report here.
 					url: "web/GeneCentric/callPanelExpr.jsp",
 	   				type: 'GET',
                                         cache: 'false',
-					data: {id:idStr,organism: organism,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
+					data: {id:idStr,organism: organism,genomeVer:genomeVer,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
 					dataType: 'json',
 	    			error: function(xhr, status, error) {console.log(error);}
 	    			});
@@ -678,7 +679,8 @@ Add report here.
                         var jspPage="web/GeneCentric/wgcnaGene.jsp";
 			var params={
 				species: organism,
-				id:selectedID
+				id:selectedID,
+                                genomeVer:genomeVer
 			};
 			loadDivWithPage("div#geneWGCNA",jspPage,params,
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");

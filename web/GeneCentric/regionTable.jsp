@@ -271,11 +271,11 @@
 						}
                         %>
                         <TR class="
-						<% String geneID="";
-						if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>
+                        <% String geneID="";
+                        if(curGene.getSource().equals("RNA Seq")&&curGene.isSingleExon()){%>
                         	singleExon
-						<%}
-						if(tc!=null){%>
+                        <%}
+                        if(tc!=null){%>
                         	eqtl
                         <%}
 						if(curGene.getBioType().equals("protein_coding") && curGene.getLength()>=200){%>

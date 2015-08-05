@@ -84,7 +84,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v2.16.0(7/21/2015)";
+var siteVer="PhenoGen v2.17.0(9/31/2015)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -154,7 +154,7 @@ function updatePage(topSVG){
 		$.ajax({
 				url: pathPrefix+"updateRegion.jsp",
    				type: 'GET',
-				data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,fullminCoord:min,fullmaxCoord:max,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism},
+				data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,fullminCoord:min,fullmaxCoord:max,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism,genomeVer:genomeVer},
 				dataType: 'json',
     			success: function(data2){ 
         			topSVG.prevMinCoord=min;
@@ -2778,18 +2778,28 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     if($('span#verSelect').length>0){
     	var tmpSel=d3.select('span#verSelect').append('select')
     		.on("change", function(){
+
     			$('input#genomeVer').attr("value",$(this).val());
     			displayWorking();
-    			$('form#geneCentricForm').submit();
+    			updateDefaultView($(this).val(),that.currentView);
+    			setTimeout(function(){
+    				console.log("submit genomeVer"+$('input#genomeVer').attr("value"));
+    				$('form#geneCentricForm').submit();
+    			},1500);
     		});
-    	tmpSel.append('option')
-    		.attr('selected','selected')
+    	var rn6Opt=tmpSel.append('option')
     		.attr('value','rn6')
     		.html('rn6');
-    	tmpSel.append('option')
+    	if(genomeVer==='rn6'){
+    		rn6Opt.attr('selected','selected');
+    	}
+    	var rn5Opt=tmpSel.append('option')
     		.attr('value','rn5')
     		.html('rn5');
-    	setTimeout(function(){console.log(genomeVer);tmpSel.property( "value", genomeVer );},1000);
+    	if(genomeVer==='rn5'){
+    		rn5Opt.attr('selected','selected');
+    	}
+    	//setTimeout(function(){console.log(genomeVer);tmpSel.property( "value", genomeVer );},1000);
 
     }
     //Add Sequence Track

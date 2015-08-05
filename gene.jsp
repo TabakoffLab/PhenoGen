@@ -139,6 +139,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
         if(request.getParameter("genomeVer")!=null){
             genomeVer=request.getParameter("genomeVer").trim();
         }
+        log.debug("\ncurGenome:"+genomeVer);
         ArrayList<BrowserView> views=bt.getBrowserViews(defaultGenomeVer);
         log.debug("\nView length:"+views.size());
 	String[] tissuesList1=new String[1];
@@ -515,15 +516,16 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
   <label>Initial View:
   <select name="defaultView" id="defaultView">
   	<%for(int i=0;i<views.size();i++){
-            log.debug(views.get(i).getOrganism().toUpperCase()+"::"+myOrganism.toUpperCase());
-            if(views.get(i).getOrganism().toUpperCase().equals("AA") || myOrganism.toUpperCase().equals(views.get(i).getOrganism().toUpperCase())){
+            if(views.get(i).getGenomeVersion().equals(defaultGenomeVer) &&
+                    (views.get(i).getOrganism().toUpperCase().equals("AA") || 
+                        myOrganism.toUpperCase().equals(views.get(i).getOrganism().toUpperCase()))
+                ){
 			String display=views.get(i).getName();
 			if(views.get(i).getUserID()==0){
 				display=display+"   (Predefined)";
 			}else{
 				display=display+"   (Custom)";
 			}
-                        log.debug(display);
             %>
         	<option value="<%=views.get(i).getID()%>" <%if(defView.equals(Integer.toString(views.get(i).getID()))){%>selected<%}%>><%=display%></option>
             <%}%>
@@ -561,6 +563,7 @@ Or
 <script type="text/javascript">
 	var organism="<%=myOrganism%>";
         var genomeVer="<%=genomeVer%>";
+        console.log("initially set GenomeVer:"+genomeVer);
         var defaultGenomeVer="<%=defaultGenomeVer%>";
         var defaultView=<%=defView%>;
 	var pathPrefix="web/GeneCentric/";
@@ -627,10 +630,14 @@ Or
 		if(pathPrefix==""){
 			tmpContext="";
 		}
+                var submitVer=genomeVer;
+                if(submitVer==''){
+                    submitVer=defaultGenomeVer;
+                }
 		$.ajax({
 				url: tmpContext+"getBrowserViews.jsp",
    				type: 'GET',
-				data: {genomeVer: defaultGenomeVer  },
+				data: {genomeVer: submitVer  },
 				dataType: 'json',
                                 success: function(data2){ 
                                     defviewList=data2;
@@ -700,10 +707,22 @@ Or
 	
 	function setupDefaultView(){
 		//console.log("setupDefaultView()");
+                
+                var tmp=$("#speciesCB").val();
+                if(tmp==="Rn"){
+                    $('input#genomeVer').attr("value","rn6");
+                    //genomeVer='rn6';
+                }else if(tmp==="Mm"){
+                    $('input#genomeVer').attr("value","mm10");
+                    //genomeVer='mm10';
+                }
+                
 		d3.select("#defaultView").html("");
 		filterViewList=[];
 		for(var i=0;i<defviewList.length;i++){
-			if(defviewList[i].Organism.toLowerCase()==="aa"||defviewList[i].Organism.toLowerCase()===$('#speciesCB').val().toLowerCase()){
+			if(defviewList[i].genomeVersion.indexOf(genomeVer)>-1 && 
+                                (defviewList[i].Organism.toLowerCase()==="aa"||defviewList[i].Organism.toLowerCase()===$('#speciesCB').val().toLowerCase())
+                            ){
 				filterViewList.push(defviewList[i]);
 			}
 		}
@@ -728,15 +747,59 @@ Or
 						return ret;
 					});
 		opt.exit().remove();
-                $("#defaultView").val(defaultView);
-                var tmp=$("#speciesCB").val();
-                if(tmp==="Rn"){
-                    $('input#genomeVer').attr("value","rn6");
-                    
-                }else if(tmp==="Mm"){
-                    $('input#genomeVer').attr("value","mm10");
+                var test=$("#defaultView").val(defaultView)[0];
+                if(test.selectedIndex===-1  && filterViewList.length>0){
+                    $("#defaultView").val(filterViewList[0].ViewID);
+                    defaultView=filterViewList[0].ViewID;
                 }
+                
 	}
+        
+        function updateDefaultView(gVer,curView){
+            $('input#genomeVer').attr("value",gVer);
+            genomeVer=gVer;
+            d3.select("#defaultView").html("");
+            filterViewList=[];
+            var newViewID=-1;
+            for(var i=0;i<defviewList.length;i++){
+                    console.log(defviewList[i].ViewID+"  "+defviewList[i].genomeVersion+":"+genomeVer);
+                    if(defviewList[i].genomeVersion.indexOf(genomeVer)>-1 && 
+                            (defviewList[i].Organism.toLowerCase()==="aa"||defviewList[i].Organism.toLowerCase()===$('#speciesCB').val().toLowerCase())
+                        ){
+                            filterViewList.push(defviewList[i]);
+                            if(typeof curView!=='undefined' && typeof curView.Name!=='undefined' && curView.Name===defviewList[i].Name){
+                                newViewID=defviewList[i].ViewID;
+                            }
+                    }
+            }
+            var opt=d3.select("#defaultView").selectAll('option').data(filterViewList);
+            opt.enter().append("option")
+                                    .attr("value",function(d){return d.ViewID;})
+                                    .text(function(d){
+                                            var ret=d.Name;
+                                            if(d.UserID==0){
+                                                    ret=ret+"    (Predefined)";
+                                            }else{
+                                                    ret=ret+"   (Custom)";
+                                            }
+                                            if(d.Organism!="AA"){
+                                                    if(d.Organism=="RN"){
+                                                            ret=ret+"      (Rat Only)";
+                                                    }else if(d.Organism=="MM"){
+                                                            ret=ret+"     (Mouse Only)";
+                                                    }
+                                            }
+
+                                            return ret;
+                                    });
+            opt.exit().remove();
+            if(newViewID>0){
+                $("#defaultView").val(newViewID);
+            }else{
+                $("#defaultView").val(filterViewList[0].ViewID);
+            }
+                
+        }
 
 	
 	$("#speciesCB").on("change",setupDefaultView);

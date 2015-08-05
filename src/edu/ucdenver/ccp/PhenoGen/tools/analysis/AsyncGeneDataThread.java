@@ -52,6 +52,7 @@ public class AsyncGeneDataThread extends Thread {
         private String ucscDir="";
         private String bedDir="";
         private String ver="";
+        private String genomeVer="";
         private Connection dbConn = null;
         String outputDir="";
         String pListFile="";
@@ -64,7 +65,7 @@ public class AsyncGeneDataThread extends Thread {
         
        
         
-    public AsyncGeneDataThread(HttpSession inSession,GeneDataTools gdt,String chromosome,int min,int max,int fullmin,int fullmax,String panel,String myOrganism,int rnaDatasetID,int arrayTypeID,double forwardPValueCutoff) {
+    public AsyncGeneDataThread(HttpSession inSession,GeneDataTools gdt,String chromosome,int min,int max,int fullmin,int fullmax,String panel,String myOrganism,String genomeVer,int rnaDatasetID,int arrayTypeID,double forwardPValueCutoff) {
                 this.session = inSession;
                 this.gdt=gdt;
                 this.gdt.resetPathReady();
@@ -80,7 +81,7 @@ public class AsyncGeneDataThread extends Thread {
                 this.rnaDatasetID=rnaDatasetID;
                 this.myOrganism=myOrganism;
                 this.forwardPValueCutoff=forwardPValueCutoff;
-                
+                this.genomeVer=genomeVer;
                 log = Logger.getRootLogger();
                 log.debug("in GeneDataTools.setSession");
                 this.session = inSession;
@@ -126,10 +127,10 @@ public class AsyncGeneDataThread extends Thread {
     public void run() throws RuntimeException {
         doneThread=false;
         pathReady=false;
-        outputDir=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
+        outputDir=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
         pathReady=true;
         //call full version for adding files later
-        gdt.getRegionData(chromosome,fullMin,fullMax,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);
+        gdt.getRegionData(chromosome,fullMin,fullMax,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);
         doneThread=true;
     }
 
