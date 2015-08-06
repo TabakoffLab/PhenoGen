@@ -54,12 +54,14 @@ function ViewMenu(level){
 	that.removeTrackWithIDIdx=function(indx,vwID){
 		var d=that.findViewWithID(vwID);
 		var vwIndx=that.findViewIndexByID(vwID);
-		d.TrackList.splice(indx,1);
-		that.generateTrackList(d);
-		that.findSelectedView().modified=1;
-		that.generateViewList();
-		that.generatePreview(d);
-		$("#viewSelect"+that.level).prop("selectedIndex",vwIndx);
+		if(typeof d !=='undefined' && typeof d.TrackList!=='undefined'){
+			d.TrackList.splice(indx,1);
+			that.generateTrackList(d);
+			that.findSelectedView().modified=1;
+			that.generateViewList();
+			that.generatePreview(d);
+			$("#viewSelect"+that.level).prop("selectedIndex",vwIndx);
+		}
 	};
 	//called to generate the rows of the track list table 
 	//creates the dragging/sorting behavior
