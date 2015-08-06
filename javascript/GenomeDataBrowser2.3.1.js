@@ -5638,7 +5638,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 				}
-			}else{
+			}else if(d){
 				var data=d.documentElement.getElementsByTagName(tag);
 				var mergeddata=new Array();
 				var checkName=new Array();
@@ -5659,6 +5659,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.draw(mergeddata);
 				that.hideLoading();
 				setTimeout(function(){DisplayRegionReport();},300);
+			}else{
+				that.hideLoading();
 			}
 		});
 	};
@@ -6931,55 +6933,57 @@ function RefSeqTrack(gsvg,data,trackClass,label,additionalOptions){
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 						}
-			}else{
-				if(!(d===null)){
-					var data=d.documentElement.getElementsByTagName(tag);
-					var mergeddata=new Array();
-					var checkName=new Array();
-					var curInd=0;
+			}else if(d){
+				var data=d.documentElement.getElementsByTagName(tag);
+				var mergeddata=new Array();
+				var checkName=new Array();
+				var curInd=0;
+				for(var l=0;l<data.length;l++){
+					if(data[l] ){
+						mergeddata[curInd]=data[l];
+						mergeddata[curInd].setAttribute("ID",curInd);
+						checkName[data[l].getAttribute("geneSymbol")]=1;
+						curInd++;
+					}
+				}
+				for(var l=0;l<that.data.length;l++){
+					if(that.data[l] && !checkName[that.data[l].getAttribute("geneSymbol")]){
+						mergeddata[curInd]=that.data[l];
+						mergeddata[curInd].setAttribute("ID",curInd);
+						curInd++;
+					}
+				}
+				that.draw(mergeddata);
+				that.hideLoading();
+				that.getDisplayedData();
+				setTimeout(function(){DisplayRegionReport();},300);
+				/*var data=d.documentElement.getElementsByTagName(tag);
+				var mergeddata=new Array();
+				var checkName=new Array();
+				var curInd=0;
 					for(var l=0;l<data.length;l++){
-						if(data[l] ){
+						if(typeof data[l]!=='undefined' ){
 							mergeddata[curInd]=data[l];
-							mergeddata[curInd].setAttribute("ID",curInd);
-							checkName[data[l].getAttribute("geneSymbol")]=1;
+							checkName[data[l].getAttribute("ID")]=1;
 							curInd++;
 						}
 					}
 					for(var l=0;l<that.data.length;l++){
-						if(that.data[l] && !checkName[that.data[l].getAttribute("geneSymbol")]){
+						if(typeof that.data[l]!=='undefined' && typeof checkName[that.data[l].getAttribute("ID")]==='undefined'){
 							mergeddata[curInd]=that.data[l];
-							mergeddata[curInd].setAttribute("ID",curInd);
 							curInd++;
 						}
 					}
-					that.draw(mergeddata);
-					that.hideLoading();
-					that.getDisplayedData();
-					setTimeout(function(){DisplayRegionReport();},300);
-					/*var data=d.documentElement.getElementsByTagName(tag);
-					var mergeddata=new Array();
-					var checkName=new Array();
-					var curInd=0;
-						for(var l=0;l<data.length;l++){
-							if(typeof data[l]!=='undefined' ){
-								mergeddata[curInd]=data[l];
-								checkName[data[l].getAttribute("ID")]=1;
-								curInd++;
-							}
-						}
-						for(var l=0;l<that.data.length;l++){
-							if(typeof that.data[l]!=='undefined' && typeof checkName[that.data[l].getAttribute("ID")]==='undefined'){
-								mergeddata[curInd]=that.data[l];
-								curInd++;
-							}
-						}
-					that.draw(mergeddata);
-					that.hideLoading();
-					that.getDisplayedData();
-					DisplayRegionReport();*/
-				}else{
-					that.updateData(retry+1);
-				}
+				that.draw(mergeddata);
+				that.hideLoading();
+				that.getDisplayedData();
+				DisplayRegionReport();*/
+				
+			}else{
+				that.updateData(retry+1);
+				//shouldn't need this
+				//that.draw(that.data);
+				that.hideLoading();
 			}
 		});
 	};
@@ -7792,7 +7796,7 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 					}
-				}else{
+				}else if(d){
 						var probe=d.documentElement.getElementsByTagName(tag);
 						var mergeddata=new Array();
 						var checkName=new Array();
@@ -7813,7 +7817,11 @@ function ProbeTrack(gsvg,data,trackClass,label,additionalOptions){
 						
 						that.draw(mergeddata);
 						that.hideLoading();
-					}
+				}else{
+					//shouldn't need this
+					//that.draw(that.data);
+					that.hideLoading();
+				}
 			});
 	};
 
@@ -8980,7 +8988,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 							d3.select("#Level"+that.levelNumber+that.trackClass).attr("height", 15);
 							that.gsvg.addTrackErrorRemove(that.svg,"#Level"+that.gsvg.levelNumber+that.trackClass);
 						}
-					}else{
+					}else if(d){
 						var qtl=d.documentElement.getElementsByTagName("QTL");
 						var mergeddata=new Array();
 						var checkName=new Array();
@@ -9000,6 +9008,10 @@ function QTLTrack(gsvg,data,trackClass,density){
 							}
 						}
 						that.draw(mergeddata);
+						that.hideLoading();
+					}else{
+						//shouldn't need this
+						//that.draw(that.data);
 						that.hideLoading();
 					}
 				});

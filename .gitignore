@@ -33,7 +33,7 @@ liftOver/
 hdf/
 MEME/
 ensembl_ucsc/
-ensembl_ucsc_old/
+perl/lib/ensembl*/
 mirDeep/
 web/GeneCentric/lib/
 web/exons/lib/
