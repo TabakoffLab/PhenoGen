@@ -1906,7 +1906,7 @@ public class GeneDataTools {
                 String ensUser=myENSProperties.getProperty("USER");
                 String ensPassword=myENSProperties.getProperty("PASSWORD");
                 //construct perl Args
-                String[] perlArgs = new String[17];
+                String[] perlArgs = new String[18];
                 perlArgs[0] = "perl";
                 perlArgs[1] = perlDir + "writeXML_RNA.pl";
                 perlArgs[2] = tmpoutputDir;
@@ -1921,13 +1921,14 @@ public class GeneDataTools {
                 perlArgs[7] = Integer.toString(arrayTypeID);
                 perlArgs[8] = Integer.toString(rnaDS_ID);
                 perlArgs[9] = Integer.toString(publicUserID);
-                perlArgs[10] = dsn;
-                perlArgs[11] = dbUser;
-                perlArgs[12] = dbPassword;
-                perlArgs[13] = ensHost;
-                perlArgs[14] = ensPort;
-                perlArgs[15] = ensUser;
-                perlArgs[16] = ensPassword;
+                perlArgs[10]= genomeVer;
+                perlArgs[11] = dsn;
+                perlArgs[12] = dbUser;
+                perlArgs[13] = dbPassword;
+                perlArgs[14] = ensHost;
+                perlArgs[15] = ensPort;
+                perlArgs[16] = ensUser;
+                perlArgs[17] = ensPassword;
 
 
                 log.debug("setup params");
@@ -2042,6 +2043,11 @@ public class GeneDataTools {
     
     public boolean callPanelExpr(String id,String chr, int min, int max,String genomeVer,int arrayTypeID,int rnaDS_ID,AsyncGeneDataTools prevThread){
         boolean error=false;
+        String organism="Rn";
+        if(arrayTypeID==21){
+            organism="Mm";
+        }
+        callWriteXML(id,organism,genomeVer,chr,min,max,arrayTypeID,rnaDS_ID);
         //create File with Probeset Tissue herit and DABG
         String datasetQuery="select rd.dataset_id, rd.tissue "+
                             "from rnadataset_dataset rd "+

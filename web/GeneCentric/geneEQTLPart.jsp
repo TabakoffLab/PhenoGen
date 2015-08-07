@@ -105,7 +105,9 @@
 			//
 		boolean fileError=false;
 		try{
+                log.debug("readFile:"+transcriptClusterFileName);
           	transcriptClusterArray = myFileHandler.getFileContents(new File(transcriptClusterFileName));
+                log.debug("TranscriptClusterArray:\n"+transcriptClusterArray.length);
 		}catch(IOException e){
 			fileError=true;
 		}
@@ -121,7 +123,7 @@
 			}
 			else{
 				transcriptError = false;
-            	// Need to change the transcript Cluster Array
+                                // Need to change the transcript Cluster Array
 				// Only include ambiguous if there are no other transcript clusters
 				// Order the transcript cluster array so core is first, full is next, then extended, then ambiguous
 				transcriptClusterArrayOrder = new int[transcriptClusterArray.length];
@@ -246,37 +248,24 @@
     
     
 	<div style="text-align:center;">
-    <%
-			if(fileError){%>
+    <%if(fileError){%>
             	
             </tbody>
 			</table>
 			<div style="display:block; color:#FF0000;">There was an error retrieving transcripts for <%=geneSymbolinternal%>.  Try refreshing the page.  The website administrator has been informed of the error. </div>
-        <%
-			}else if(transcriptError==null){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
-		%>
+    <%}else if(transcriptError==null){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.%>
             </tbody>
 			</table>
 			<div style="display:block; color:#FF0000;">There was an error retrieving transcripts for <%=geneSymbolinternal%>.  The website administrator has been informed.</div>
-		<%
-			}
-			else if(transcriptError) // check before adding the transcript cluster id to the form.  If there is an error, end the form here.
-			{
-		%>
+    <%}else if(transcriptError){ // check before adding the transcript cluster id to the form.  If there is an error, end the form here.%>
             </tbody>
 			</table>
 			<div style="display:block; color:#FF0000;">There are no available transcript cluster IDs for <%=geneSymbolinternal%>.  Please choose a different gene to view eQTL.</div>
-		<%
-			} 
-			else 
-			{ // go ahead and make the rest of the form for entering options
-		%>
-		<div style="font-size:18px; font-weight:bold; background-color:#47c647; color:#FFFFFF;width:100%;text-align:left;">
-    	<span class="trigger less triggerEC" id="circosOption1" name="circosOption" >eQTL Image Options</span>
-    	<span class="eQTLtooltip" title="The controls in this section allow you to change the chromosomes and tissues included in the image as well as the P-value threshold.  If you can't see them click on the + icon.  Once you make changes click on the Click to Run Circos button."><img src="<%=imagesDir%>icons/info.gif"></span>
-		</div>
-
-
+		<%} else{ // go ahead and make the rest of the form for entering options%>
+                    <div style="font-size:18px; font-weight:bold; background-color:#47c647; color:#FFFFFF;width:100%;text-align:left;">
+                        <span class="trigger less triggerEC" id="circosOption1" name="circosOption" >eQTL Image Options</span>
+                        <span class="eQTLtooltip" title="The controls in this section allow you to change the chromosomes and tissues included in the image as well as the P-value threshold.  If you can't see them click on the + icon.  Once you make changes click on the Click to Run Circos button."><img src="<%=imagesDir%>icons/info.gif"></span>
+                    </div>
       	<table id="circosOptTbl" name="items" class="list_base" cellpadding="0" cellspacing="3" style="width:100%;text-align:left;" >
         <tbody id="circosOption">
  		

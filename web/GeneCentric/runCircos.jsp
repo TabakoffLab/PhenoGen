@@ -313,13 +313,13 @@
 
  			String hostName=request.getServerName();
 			if(hostName.equals("phenogen.ucdenver.edu")){
-				perlEnvironmentVariables += ":/usr/bin/perl5.10.1:/usr/local/circos-0.67-5/lib:/usr/local/circos-0.67-5/bin";
+				perlEnvironmentVariables += ":/usr/bin/perl5.10.1:/usr/local/circos-0.67-7/lib:/usr/local/circos-0.67-7/bin";
 			}
 			else if(hostName.equals("stan.ucdenver.pvt")){
-				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/local/circos-0.67-5/lib:/usr/local/circos-0.67-5/bin";
+				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/local/circos-0.67-7/lib:/usr/local/circos-0.67-7/bin";
 			}
 			else{
-				perlEnvironmentVariables += ":/usr/bin/perl5.10.1:/usr/local/circos-0.67-5/lib:/usr/local/circos-0.67-5/bin";
+				perlEnvironmentVariables += ":/usr/bin/perl5.10.1:/usr/local/circos-0.67-7/lib:/usr/local/circos-0.67-7/bin";
 			}
 			log.debug("Host Name "+hostName);
 			String filePrefixWithPath="";			

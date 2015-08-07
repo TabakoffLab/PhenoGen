@@ -110,12 +110,12 @@ sub callCircosMod{
 	my $inkscapeDirectory;
 
 	if($hostname eq 'phenogen'){
-		$circosBinary = '/usr/local/circos-0.67-5/bin/circos';
+		$circosBinary = '/usr/local/circos-0.67-7/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
-		$circosBinary = '/usr/local/circos-0.67-5/bin/circos';
+		$circosBinary = '/usr/local/circos-0.67-7/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 	}

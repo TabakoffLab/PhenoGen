@@ -80,7 +80,7 @@ public class BrowserTools{
         int ret=-1;
         int viewID=bv.getNextID(pool);
         int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
-        BrowserView newView=new BrowserView(viewID,userID,name,description,organism.toUpperCase(),true,imgDisp);
+        BrowserView newView=new BrowserView(viewID,userID,name,description,organism.toUpperCase(),true,imgDisp,genomeVer);
         boolean success=newView.saveToDB(genomeVer,pool);
         if(success){
             ret=viewID;
@@ -92,7 +92,7 @@ public class BrowserTools{
         int ret=-1;
         int viewID=bv.getNextID(pool);
         int userID=((User)session.getAttribute("userLoggedIn")).getUser_id();
-        BrowserView newView=new BrowserView(viewID,userID,name,description,organism.toUpperCase(),true,imgDisp);
+        BrowserView newView=new BrowserView(viewID,userID,name,description,organism.toUpperCase(),true,imgDisp,genomeVer);
         boolean success=newView.saveToDB(genomeVer,pool);
         //copy tracks and settings
         if(success){

@@ -21,7 +21,7 @@
 
 <%
 gdt.setSession(session);
-String chromosome="",panel="",myOrganism="Rn",viewID="10";
+String chromosome="",panel="",myOrganism="Rn",viewID="10",genomeVer="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 
 String selectedID="";
@@ -35,6 +35,9 @@ String selectedID="";
 
 if(request.getParameter("panel")!=null){
 		panel=request.getParameter("panel").trim();
+}
+if(request.getParameter("genomeVer")!=null){
+		genomeVer=request.getParameter("genomeVer").trim();
 }
 if(request.getParameter("myOrganism")!=null){
 		myOrganism=request.getParameter("myOrganism").trim();
@@ -54,7 +57,7 @@ if(request.getParameter("arrayTypeID")!=null){
 	}
 }
 
-	String tmpoutputDir = applicationRoot+contextRoot+ "tmpData/geneData/" + selectedID + "/";
+	String tmpoutputDir = applicationRoot+contextRoot+ "tmpData/browserCache/"+genomeVer+"/geneData/" + selectedID + "/";
 	String[] loc=null;
         try{
                 loc=myFH.getFileContents(new File(tmpoutputDir+"location.txt"));
@@ -66,7 +69,7 @@ if(request.getParameter("arrayTypeID")!=null){
                 min=Integer.parseInt(loc[1]);
                 max=Integer.parseInt(loc[2]);
         }
-	String tmpOutput=gdt.getImageRegionData(chromosome, min, max, panel, myOrganism, rnaDatasetID, arrayTypeID, 0.001,false);
+	String tmpOutput=gdt.getImageRegionData(chromosome, min, max, panel, myOrganism,genomeVer, rnaDatasetID, arrayTypeID, 0.001,false);
 	int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
 	String folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
 	
@@ -78,8 +81,8 @@ if(request.getParameter("arrayTypeID")!=null){
         if(request.getServerPort()!=80 && urlPrefix.indexOf("https")<0){
             urlPrefix=urlPrefix.replace("http","https");
         }
-	genURL=urlPrefix+ "tmpData/geneData/" +selectedID+"/";
-	String regionURL=urlPrefix+"tmpData/regionData/"+folderName+"/";
+	genURL=urlPrefix+ "tmpData/browserCache/"+genomeVer+"/geneData/" +selectedID+"/";
+	String regionURL=urlPrefix+"tmpData/browserCache/"+genomeVer+"/regionData/"+folderName+"/";
 	
 %>
 
@@ -123,26 +126,13 @@ if(request.getParameter("arrayTypeID")!=null){
 	<%}else{%>
 		var uid=<%=userLoggedIn.getUser_id()%>;
 	<%}%>
+        var genomeVer="<%=genomeVer%>";
 	//Bugsense.addExtraData('page', 'geneApplet.jsp');
 	//Bugsense.addExtraData( 'region','<%=selectedID+"::"+chromosome+":"+min+"-"+max%>');
 </script>
 <div id="imageMenu"></div>
 <div id="viewMenu"></div>
-<div id="trackMenu"></div>
-    <!--<div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
-    		View:
-    		<span class="viewMenu" name="viewGenome" >Genome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageGenomeView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
-    		<span class="viewMenu" name="viewTrxome" >Transcriptome<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageTranscriptomeView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
-            <span class="viewMenu" name="viewAll" >Both<div class="inpageHelp" style="display:inline-block; "><img id="HelpImageAllView" class="helpImage" src="<%=imagesDir%>icons/help.png" /></div></span>
-            <!--<span style="font-size:12px; font-weight:normal; float:right;">
-            	Saved Views:
-                <select name="viewSelect" id="viewSelect">
-                		<option value="0" >------Login to use saved views------</option>
-                </select>
-            </span>-->
-    <!--</div>-->
-    
-    
+<div id="trackMenu"></div>    
     <input type="hidden" id="defaultView" value="<%=viewID%>" />
     <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%;">
     		<table style="width:100%;" cellpadding="0" cellspacing="0">
