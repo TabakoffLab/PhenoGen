@@ -14,7 +14,6 @@ require 'readQTLDataFromDB.pl';
 require 'readSNPDataFromMongo.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'readRefSeqDataFromDB.pl';
-#require 'createBED.pl';
 require 'createXMLTrack.pl';
 require 'PolyA2XML.pl';
 
@@ -176,7 +175,7 @@ sub createXMLFile
 	#It reads data from Affy via downloaded files
 	#
 	#Inputs:
-	# 	Name with path of UCSC bed file.  This file must be in the directory /data/ucsc on Phenogen, or must be moved there.
+	#   Name with path of UCSC bed file.  This file must be in the directory /data/ucsc on Phenogen, or must be moved there.
 	#   Name with path of png output file
 	#   Name with path of xml output file
 	#	Species for example, Rat

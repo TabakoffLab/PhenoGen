@@ -608,24 +608,7 @@
 <script type="text/javascript">
 	var spec="<%=myOrganism%>";
 	
-	/*$('#viewTrxDialog').dialog({
-		autoOpen: false,
-		dialogClass: "transcriptDialog",
-		width: 990,
-		height: 400,
-		zIndex: 999
-	});
-	
-	$('.viewTrx').click( function(event){
-		var id=$(this).attr('id');
-		var name=$(this).attr('name');
-		$('.waitTrx').show();
-		$('#viewTrxDialog').html($('#viewTrxDialogOriginal').html());
-		$('#viewTrxDialog').dialog( "option", "position",{ my: "center bottom", at: "center top", of: $(this) });
-		$('#viewTrxDialog').dialog("open").css({'font-size':12});
-		openTranscriptDialog(id,spec,name);
-	});
-	
+	/*
 	$('.viewSMNC').click( function(event){
 		var tmpID=$(this).attr('id');
 		var id=tmpID.substr(0,tmpID.indexOf(":"));

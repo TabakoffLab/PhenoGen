@@ -112,7 +112,7 @@ public class AsyncGeneDataTools extends Thread {
         Date start=new Date();
         try{
             log.debug("Before outputProbesetID");
-            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID,genomeVer);
+            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,genomeVer);
             log.debug("before DEHeatMap");
             callDEHeatMap(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID,genomeVer);
             log.debug("before Panel HErit");
@@ -185,7 +185,7 @@ public class AsyncGeneDataTools extends Thread {
         done=true;
     }
     
-    private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer){
+    private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,String genomeVer){
         if(chr.toLowerCase().startsWith("chr")){
             chr=chr.substring(3);
         }

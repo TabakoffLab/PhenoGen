@@ -83,7 +83,7 @@
 	int rnaDatasetID=0;
 	int arrayTypeID=0;
 	
-	int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+	int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,genomeVer);
 							if(tmp!=null&&tmp.length==2){
 								rnaDatasetID=tmp[1];
 								arrayTypeID=tmp[0];

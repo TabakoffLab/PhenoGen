@@ -13,6 +13,7 @@
 	String chromosome="";
 	String folderName="";
 	String type="";
+        String genomeVer="";
 	LinkGenerator lg=new LinkGenerator(session);
 	double forwardPValueCutoff=0.01;
 	int rnaDatasetID=0;
@@ -68,12 +69,15 @@
 	if(request.getParameter("type")!=null){
 		type=request.getParameter("type");
 	}
-	
+	if(request.getParameter("genomeVer")!=null){
+		genomeVer=request.getParameter("genomeVer");
+	}
+
 	if(min<max){
 			if(min<1){
 				min=1;
 			}
-			String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);
+			String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);
 			int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
 			folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
 			//fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);					
@@ -153,7 +157,7 @@
                   </table>
 
 
-	<% ArrayList<BQTL> bqtls=gdt.getBQTLs(min,max,chromosome,myOrganism);
+	<% ArrayList<BQTL> bqtls=gdt.getBQTLs(min,max,chromosome,myOrganism,genomeVer);
 		//log.debug("testing for error");
 	if(session.getAttribute("getBQTLsERROR")==null){
 		//log.debug("no error");

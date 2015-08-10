@@ -223,7 +223,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 			}
 	
 						if(homologList!=null&&homologList.size()>0){
-								int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+								int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,genomeVer);
 								if(tmp!=null&&tmp.length==2){
 									rnaDatasetID=tmp[1];
 									arrayTypeID=tmp[0];
@@ -296,7 +296,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 			|| ( auto && region )){
 			mySessionHandler.createSessionActivity(session.getId(), "GTD Browser Region: "+myGene, pool);
 		//log.debug("RUNNING REGION");
-		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+		int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,genomeVer);
 		if(tmp!=null&&tmp.length==2){
 			rnaDatasetID=tmp[1];
 			arrayTypeID=tmp[0];

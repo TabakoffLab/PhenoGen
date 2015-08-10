@@ -116,7 +116,7 @@ public class GeneDataTools {
         this.pathReady=false;
     }
     
-    public int[] getOrganismSpecificIdentifiers(String organism){
+    public int[] getOrganismSpecificIdentifiers(String organism,String genomeVer){
         
             int[] ret=new int[2];
             String organismLong="Mouse";
@@ -125,8 +125,14 @@ public class GeneDataTools {
             }
             String atQuery="select Array_type_id from array_types "+
                         "where array_name like 'Affymetrix GeneChip "+organismLong+" Exon 1.0 ST Array'";
+            
+            /*
+            *  This does only look for the brain RNA dataset id.  Right now the tables link that RNA Dataset ID to
+            *  the other datasets.  This means finding the right organism and genome version for now is sufficient without
+            *  regard to tissues as all other tables link to the brain dataset since we have brain for both supported organisms
+            */
             String rnaIDQuery="select rna_dataset_id from RNA_DATASET "+
-                        "where organism = '"+organism+"' and tissue='Brain' and visible=1";
+                        "where organism = '"+organism+"' and tissue='Brain' and visible=1 and genome_id='"+genomeVer+"'";
             Connection conn=null;
             PreparedStatement ps=null;
             try {
@@ -3574,7 +3580,7 @@ public class GeneDataTools {
         return ret;
     }
     
-    public ArrayList<BQTL> getBQTLs(int min,int max,String chr,String organism){
+    public ArrayList<BQTL> getBQTLs(int min,int max,String chr,String organism,String genomeVer){
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
@@ -3598,7 +3604,7 @@ public class GeneDataTools {
         //    bqtl=this.bqtlResult;
         //}else{
             String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
-                            "where pq.organism='"+organism+"' "+
+                            "where pq.genome_id='"+genomeVer+"' "+
                             "and ((pq.qtl_start>="+min+" and pq.qtl_start<="+max+") or (pq.qtl_end>="+min+" and pq.qtl_end<="+max+") or (pq.qtl_start<="+min+" and pq.qtl_end>="+max+")) "+
                             //"and substr(c.name,1,2)='"+chr+"' "+
                             "and c.name='"+chr.toUpperCase()+"' "+ 
@@ -3630,7 +3636,7 @@ public class GeneDataTools {
                     long start=rs.getLong(19);
                     long stop=rs.getLong(20);
                     String mapMethod=rs.getString(21);
-                    String chromosome=rs.getString(22);
+                    String chromosome=rs.getString(23);
                     BQTL tmpB=new BQTL(id,mgiID,rgdID,symbol,name,trait,subTrait,traitMethod,phenotype,diseases,rgdRef,pubmedRef,mapMethod,relQTLs,candidGene,lod,pvalue,start,stop,chromosome);
                     bqtl.add(tmpB);
                 }

@@ -85,7 +85,7 @@ function enterSelectedGene(){
 	$('#geneCentricForm').submit();
 }
 
-function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
+/*function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
 			$.ajax({
 				url: contextPath + "/web/GeneCentric/geneRegionView.jsp",
    				type: 'GET',
@@ -99,7 +99,7 @@ function openTranscriptDialog(regionTxt,speciesTxt,geneTxt){
     			}
 			});
 			
-}
+}*/
 
 function openSmallNonCoding(id,name){
 		var params={id: id,name: name};

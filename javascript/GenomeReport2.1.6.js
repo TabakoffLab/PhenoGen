@@ -86,6 +86,9 @@ function loadRegionReport(reportName,chromosome,rptmin,rptmax){
 }
 
 function loadTrackTable(){
+
+	var min=svgList[0].xScale.domain()[0];
+    var max=svgList[0].xScale.domain()[1];
 	//console.log("loadTrackTable");
 	//console.log(reportSelectedTrack.trackClass);
 	var curRptRegion=chr+":"+minCoord+"-"+maxCoord+":"+reportSelectedTrack.trackClass;
@@ -98,8 +101,8 @@ function loadTrackTable(){
 		var jspPage="";
 		var params={
 				species: organism,
-				minCoord: minCoord,
-				maxCoord: maxCoord,
+				minCoord: min,
+				maxCoord: max,
 				chromosome: chr,
 				rnaDatasetID: rnaDatasetID,
 				arrayTypeID: arrayTypeID,
