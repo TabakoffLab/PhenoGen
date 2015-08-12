@@ -2524,11 +2524,44 @@ public class IDecoderClient {
 	}
 
         public Set<Identifier> getIdentifiersByInputIDAndTarget(int geneListID, String[] targets, DataSource pool) throws SQLException {
-                Set<Identifier> startSet = null;
-                log.debug("in getIdentifiersByInputIDAndTarget passing in geneID");
-                Connection conn=pool.getConnection();
-		startSet = getIdentifiersByInputIDAndTarget(geneListID, targets, conn);
-                conn.close();
+                log.debug("in getIdentifiersByInputIDAndTarget passing in geneListID");
+
+		Set<Identifier> startSet = getIdentifiersByInputID(geneListID, targets, pool);
+		//log.debug("startSet here = "); myDebugger.print(startSet);
+		for (Iterator inputIDitr = startSet.iterator(); inputIDitr.hasNext();) {
+			Identifier thisIdentifier = (Identifier) inputIDitr.next();
+			Set<Identifier> relatedIdentifiers = thisIdentifier.getRelatedIdentifiers();
+			Set<Identifier> locationIdentifiers = thisIdentifier.getLocationIdentifiers();
+			thisIdentifier.setTargetHashMap(new HashMap<String, Set<Identifier>>());
+			for (Iterator identifierItr = relatedIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier relatedIdentifier = (Identifier) identifierItr.next();
+				String identifierType = relatedIdentifier.getIdentifierTypeName();
+                                //log.debug("looking for targets = "+identifierType +"::"+targetsList.contains(identifierType)+":::"+thisIdentifier.getTargetHashMap().containsKey(identifierType));
+				if (targetsList.contains(identifierType)) {
+					if (thisIdentifier.getTargetHashMap().containsKey(identifierType)) {
+                                                //log.debug("Added Target to Existing:");myDebugger.print(relatedIdentifier);
+						((Set<Identifier>) thisIdentifier.getTargetHashMap().get(identifierType)).add(relatedIdentifier);
+					} else {
+                                            //log.debug("Added Target:");myDebugger.print(relatedIdentifier);
+						Set<Identifier> newIdentifierSet = new LinkedHashSet<Identifier>();
+						newIdentifierSet.add(relatedIdentifier);
+						thisIdentifier.getTargetHashMap().put(identifierType, newIdentifierSet);
+                                                //log.debug("print related");myDebugger.print(relatedIdentifier.getRelatedIdentifiers());
+					}
+				}
+			}
+			for (Iterator identifierItr = locationIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier locationIdentifier = (Identifier) identifierItr.next();
+				if (thisIdentifier.getTargetHashMap().containsKey("Location")) {
+					((Set<Identifier>) thisIdentifier.getTargetHashMap().get("Location")).add(locationIdentifier);
+				} else {
+					Set<Identifier> newIdentifierSet = new LinkedHashSet<Identifier>();
+					newIdentifierSet.add(locationIdentifier);
+					thisIdentifier.getTargetHashMap().put("Location", newIdentifierSet);
+				}
+			}
+		}
+		//log.debug("startSet now = "); myDebugger.print(startSet);
 		return startSet;
         }
         

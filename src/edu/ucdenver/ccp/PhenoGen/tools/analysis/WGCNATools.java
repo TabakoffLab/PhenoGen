@@ -192,6 +192,7 @@ public class WGCNATools{
                 ensemblStart="ENSRNOG";
             }
             IDecoderClient myIDecoder=new IDecoderClient();
+            myIDecoder.setNum_iterations(1);
             Set iDecoderAnswer=myIDecoder.getIdentifiersByInputIDAndTarget(id,new String[] {"Ensembl ID"},pool);
             StringBuilder ensIDs=new StringBuilder(100);
             //StringBuilder affyIDs=new StringBuilder(100);

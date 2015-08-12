@@ -3589,24 +3589,10 @@ public class GeneDataTools {
         ArrayList<BQTL> bqtl=new ArrayList<BQTL>();
         session.removeAttribute("getBQTLsERROR");
         boolean run=true;
-        /*if(this.cacheHM.containsKey(tmpRegion)){
-            HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
-            String testParam=(String)regionHM.get("bqtlParams");
-            if(curParams.equals(testParam)){
-                bqtl=(ArrayList<BQTL>)regionHM.get("bqtl");
-                log.debug("\nreturning previous-bqtl\n");
-                run=false;
-            }
-        }
-        if(run){*/
-            log.debug("\ngenerating new-bqtl\n");
-        //if(curParams.equals(this.bqtlParams)){
-        //    bqtl=this.bqtlResult;
-        //}else{
+
             String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
                             "where pq.genome_id='"+genomeVer+"' "+
                             "and ((pq.qtl_start>="+min+" and pq.qtl_start<="+max+") or (pq.qtl_end>="+min+" and pq.qtl_end<="+max+") or (pq.qtl_start<="+min+" and pq.qtl_end>="+max+")) "+
-                            //"and substr(c.name,1,2)='"+chr+"' "+
                             "and c.name='"+chr.toUpperCase()+"' "+ 
                             "and c.chromosome_id=pq.chromosome";
             Connection conn=null;
@@ -3642,8 +3628,6 @@ public class GeneDataTools {
                 }
                 ps.close();
                 conn.close();
-                //this.bqtlResult=bqtl;
-                //this.bqtlParams=curParams;
                 if(cacheHM.containsKey(tmpRegion)){
                     HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
                     regionHM.put("bqtlParams",curParams);        
@@ -3690,14 +3674,14 @@ public class GeneDataTools {
         
         return bqtl;
     }
-    public BQTL getBQTL(String id){
+    public BQTL getBQTL(String id,String genomeVer){
         
         BQTL bqtl=null;
         session.removeAttribute("getBQTLsERROR");
         boolean run=true;
         
             String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
-                            "where pq.rgd_id="+id+
+                            "where pq.genome_id='"+genomeVer+"' and pq.rgd_id="+id+
                             "and pq.chromosome=c.chromosome_id";
             Connection conn=null;
             try{ 
@@ -3725,7 +3709,7 @@ public class GeneDataTools {
                     long start=rs.getLong(19);
                     long stop=rs.getLong(20);
                     String mapMethod=rs.getString(21);
-                    String chromosome=rs.getString(22);
+                    String chromosome=rs.getString(23);
                     bqtl=new BQTL(id,mgiID,rgdID,symbol,name,trait,subTrait,traitMethod,phenotype,diseases,rgdRef,pubmedRef,mapMethod,relQTLs,candidGene,lod,pvalue,start,stop,chromosome);
                 }
                 ps.close();
@@ -3766,12 +3750,12 @@ public class GeneDataTools {
         return bqtl;
     }
     
-    public String getBQTLRegionFromSymbol(String qtlSymbol,String organism){
+    public String getBQTLRegionFromSymbol(String qtlSymbol,String organism,String genomeVer){
         String ret="";
         Connection conn=null;
         try{
             conn=pool.getConnection();
-            ret=this.getBQTLRegionFromSymbol(qtlSymbol,organism, conn);
+            ret=this.getBQTLRegionFromSymbol(qtlSymbol,organism,genomeVer, conn);
             conn.close();
         }catch(SQLException e){
             log.error("SQL Exception error: getBQTLRegionFromSymbol().",e);
@@ -3785,13 +3769,13 @@ public class GeneDataTools {
         return ret;
     }
     
-    public String getBQTLRegionFromSymbol(String qtlSymbol,String organism,Connection dbConn){
+    public String getBQTLRegionFromSymbol(String qtlSymbol,String organism,String genomeVer,Connection dbConn){
         if(qtlSymbol.startsWith("bQTL:")){
             qtlSymbol=qtlSymbol.substring(5);
         }
         String region="";
         String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
-                        "where pq.organism='"+organism+"' "+
+                        "where pq.genome_id='"+genomeVer+"' "+
                         "and pq.chromosome=c.chromosome_id "+
                         "and pq.QTL_SYMBOL='"+qtlSymbol+"'";
         
@@ -3803,7 +3787,7 @@ public class GeneDataTools {
             if(rs.next()){
                 long start=rs.getLong(19);
                 long stop=rs.getLong(20);
-                String chromosome=rs.getString(22);
+                String chromosome=rs.getString(23);
                 region="chr"+chromosome+":"+start+"-"+stop;
             }
             ps.close();

@@ -99,8 +99,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	   			async: true,
 				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
 				dataType: 'json',
+				beforeSend: function(){
+					$("#waitCircos").show();
+				},
 	    		success: function(data2){
-                                
+                                $('#wgcnaGeneImage #message').hide();
                                 if(data2.length>0 && !(data2.length===1 && data2[0].ModuleID==="grey")){
                                     for(var i=0;i<data2.length;i++){
                                         if(data2[i].ModuleID!=="grey"){// && data2[i].ModuleID !=="turquoise"){
@@ -130,7 +133,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         
     that.displayMessage=function(message){
         $("#waitCircos").hide();
-        $('#wgcnaGeneImage').append("<BR><BR><h2>"+message+"</h2><BR><BR>");
+        $('#wgcnaGeneImage #message').html("<BR><BR><h2>"+message+"</h2><BR><BR>").show();
     };
         
     that.refreshRegion=function(timeout){

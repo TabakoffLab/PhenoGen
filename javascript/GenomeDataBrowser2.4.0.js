@@ -84,7 +84,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(mm10) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v2.17.0(9/31/2015)";
+var siteVer="PhenoGen v2.17.0(9/30/2015)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -2779,8 +2779,14 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
     	var tmpSel=d3.select('span#verSelect').append('select')
     		.on("change", function(){
 
-    			$('input#genomeVer').attr("value",$(this).val());
+    			//$('input#genomeVer').val($(this).val());
     			displayWorking();
+    			if(isLocalStorage()===true){
+    				localStorage.setItem(organism+"DefGenomeVer",$(this).val());
+    			}else{
+    				$.cookie(organism+"DefGenomeVer",$(this).val());
+					
+    			}
     			updateDefaultView($(this).val(),that.currentView);
     			setTimeout(function(){
     				console.log("submit genomeVer"+$('input#genomeVer').attr("value"));
@@ -8993,7 +8999,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 			$('div#selectedImage').hide();
 			$('div#selectedReport').show();
 				var jspPage= pathPrefix +"bQTLReport.jsp";
-				var params={id: d.getAttribute("ID"),species: organism};
+				var params={id: d.getAttribute("ID"),species: organism,genomeVer:genomeVer};
 				DisplaySelectedDetailReport(jspPage,params);
 			
 	};

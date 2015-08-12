@@ -93,7 +93,7 @@
                     edt.getExonHeatMapData(ident,rDataFile,version,myOrganism,dbName);
                     gene =(String)session.getAttribute("exonCorGeneFile");
                     heat =(String)session.getAttribute("exonCorHeatFile");
-                    int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+                    int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,genomeVer);
                     if(tmp!=null&&tmp.length==2){
                             rnaDatasetID=tmp[1];
                             arrayTypeID=tmp[0];

@@ -8,7 +8,7 @@
 	
 	DecimalFormat dfC = new DecimalFormat("#,###");
 	String myOrganism="";
-	String id="";
+	String id="",genomeVer="";
 	LinkGenerator lg=new LinkGenerator(session);
 	
 
@@ -19,6 +19,9 @@
 	if(request.getParameter("id")!=null){
 		id=request.getParameter("id");
 	}
+        if(request.getParameter("genomeVer")!=null){
+            genomeVer=request.getParameter("genomeVer");
+        }
 %>
 
 <style>
@@ -38,7 +41,7 @@
 	
 
 
-	<% BQTL bqtls=gdt.getBQTL(id);
+	<% BQTL bqtls=gdt.getBQTL(id,genomeVer);
 	if(session.getAttribute("getBQTLERROR")==null){
 		if(bqtls!=null){
 	%>
@@ -161,7 +164,7 @@
 								//ArrayList<String> relQTLreason=bqtls.getRelatedQTLReason();
 							if(relQTL!=null){
 							for(int j=0;j<relQTL.size();j++){
-								String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism);
+								String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism,genomeVer);
                             	if(regionQTL.startsWith("chr")){
 								%>
                                     <a href="<%=lg.getGeneLink(regionQTL,myOrganism,true,true,false)%>" target="_blank" title="Click to view this bQTL region in a new window.">

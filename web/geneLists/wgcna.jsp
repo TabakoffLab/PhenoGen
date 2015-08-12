@@ -13,7 +13,7 @@
 <%
         extrasList.add("d3.v3.min.js");
         extrasList.add("jquery.dataTables.js");
-        extrasList.add("wgcnaBrowser1.0.7.js");
+        extrasList.add("wgcnaBrowser1.1.0.js");
         extrasList.add("svg-pan-zoom.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
@@ -29,6 +29,10 @@
 
         mySessionHandler.createGeneListActivity("Looked at WGCNA a GeneList", pool);
         String myOrganism=selectedGeneList.getOrganism();
+        String genomeVer="rn6";
+        if(myOrganism.equals("Mm")){
+            genomeVer="mm10";
+        }
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
@@ -37,6 +41,7 @@
 
 <script>
         var organism="<%=selectedGeneList.getOrganism()%>";
+        var genomeVer="<%=genomeVer%>";
         var pathPrefix="../GeneCentric/";
         var contextRoot="<%=contextRoot%>";
         var tt=d3.select("body").append("div")   
@@ -60,6 +65,12 @@
 
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
         <div class="leftTitle">WGCNA<span class="helpImage" id="HelpGeneListWGCNATab" ><img src="<%=imagesDir%>icons/help.png" </span></div>
+        <%if(myOrganism.equals("Rn")){%>
+            <div class="right">Genome Version:<select id="genomeVer">
+                    <option value="rn6">rn6</option>
+                    <option value="rn5">rn5</option>
+                </select></div>
+        <%}%>
     <div style="font-size:14px">
         <%@ include file="/web/GeneCentric/wgcnaGeneCommon.jsp" %>
     </div><!-- end primary content-->
@@ -75,6 +86,10 @@
 			//return false;
 		}
 		);
+    $('#genomeVer').on('change',function(){
+        genomeVer=$(this).val();
+        wgcna.requestModuleList();
+    });
 </script>
 
 <%@ include file="/web/common/footer_adaptive.jsp" %>

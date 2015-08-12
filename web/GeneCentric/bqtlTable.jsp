@@ -259,7 +259,7 @@
 								//ArrayList<String> relQTLreason=curBQTL.getRelatedQTLReason();
 							if(relQTL!=null){
 							for(int j=0;j<relQTL.size();j++){
-								String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism);
+								String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism,genomeVer);
 								//String regionQTL=gdt.getBQTLRegionFromSymbol(relQTL.get(j),myOrganism,dbConn);
                             	if(regionQTL.startsWith("chr")){
 								%>
