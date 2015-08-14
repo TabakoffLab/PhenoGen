@@ -21,6 +21,7 @@
             <TH>Date</TH>
             <TH>Status</TH>
             <TH>Ensembl Ver.</TH>
+            <TH>Genome Ver</TH>
             <TH>View Results</TH>
             <TH>Delete</TH>
         </TR>
@@ -33,6 +34,13 @@
 			}else if(results[i].getStatus().equals("Complete")){
 					complete=true;
 			}
+                    ParameterValue myPV=new ParameterValue();
+                    ParameterValue[] pv=myPV.getParameterValues(results[i].getParameter_group_id(),pool);
+                    ParameterValue gvParam=myPV.getParameterValueFromMyParameterValues(pv,"Genome Version");
+                    String thisGenomeVer="";
+                    if(gvParam!=null){
+                        thisGenomeVer=gvParam.getValue();
+                    }
                     String[] ver=new String[1];
                     ver[0]="?";
                     String verPath=userLoggedIn.getUserGeneListsDir()+ results[i].getAnalysisGeneList().getGene_list_name_no_spaces() +"/GO/"+results[i].getPath()+"/ver.txt";
@@ -46,6 +54,7 @@
                 <TD><%=results[i].getCreate_date_as_string()%></TD>
                 <TD><%=results[i].getStatus()%></TD>
                 <TD>v<%=ver[0]%></TD>
+                <TD><%=thisGenomeVer%></TD>
                 <TD>
                 	<%if(complete){%>
                 	<span class="goResultDetail" id="<%=results[i].getAnalysis_id()%>" style="cursor:pointer;text-decoration:underline;">View Results</span>

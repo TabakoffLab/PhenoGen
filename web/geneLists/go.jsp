@@ -64,7 +64,18 @@
         <div id="toolsAccord" style="text-align:left;">
                             <H2>Run New GO Analysis on Gene List</H2>
                             <div id="newAnalysis" style="font-size:12px;">
-                                Save Results as: <BR><input id="name" type="text" size="30"/>
+                                Save Results as: <BR>
+                                <input id="name" type="text" size="30"/><BR>
+                                <BR>
+                                Genome Version to use:<BR>
+                                <select id="genomeVer">
+                                    <%if(myOrganism.equals("Rn")){%>
+                                        <option value="rn6">rn6</option>
+                                        <option value="rn5">rn5</option>
+                                    <%}else{%>
+                                        <option value="mm10">mm10</option>
+                                    <%}%>
+                                </select>
                                 <HR />
                                 <input type="button" id="runBtn"  value="Run GO" onclick="runGO()"/><span id="runStatus"></span>
                             </div>
@@ -156,12 +167,13 @@
 			var species="<%=myOrganism%>";
 			var id=<%=selectedGeneList.getGene_list_id()%>;
 			var name=$('input#name').val();
+                        var selGV=$('select#genomeVer').val();
 			$('#wait2').show();
 			$('#runStatus').html("");
 			$.ajax({
 				url: contextPath + "/web/geneLists/include/runGO.jsp",
    				type: 'GET',
-				data: {species:species,geneListID:id,name:name},
+				data: {species:species,geneListID:id,name:name,genomeVer:selGV},
 				dataType: 'html',
 				beforeSend: function(){
 					$('#runStatus').html("Submitting...");

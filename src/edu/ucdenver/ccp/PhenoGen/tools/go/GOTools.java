@@ -88,7 +88,7 @@ public class GOTools {
         return ret;
     }
     
-    public String runGOGeneList(GeneList gl,String org,String name,int glaID){
+    public String runGOGeneList(GeneList gl,String org,String genomeVer,String name,int glaID){
         String status="Running..."+name;
         Date start = new Date();
         GregorianCalendar gc = new GregorianCalendar();
@@ -104,7 +104,7 @@ public class GOTools {
         
         
         
-        GOWorker mw=new GOWorker(gl,this.pool,this,this.session,goFilePath,org,glaID);
+        GOWorker mw=new GOWorker(gl,this.pool,this,this.session,goFilePath,org,genomeVer,glaID);
         if(threads.size()>0){
                 GOWorker prev=threads.get(threads.size()-1);
                 if(prev.isAlive()){

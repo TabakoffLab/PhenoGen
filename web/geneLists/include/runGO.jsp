@@ -1,5 +1,6 @@
 <%@ include file="/web/common/session_vars.jsp" %>
 <jsp:useBean id="goT" class="edu.ucdenver.ccp.PhenoGen.tools.go.GOTools" scope="session"> </jsp:useBean>
+<jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"> </jsp:useBean>
@@ -10,7 +11,8 @@
 	String id="";
 	String result="";
 	String name="";
-	
+        String genomeVer="";
+    
 	goT.setup(pool,session);
 	
 	
@@ -29,6 +31,9 @@
 	if(request.getParameter("name")!=null){
 		name=request.getParameter("name");
 	}
+        if(request.getParameter("genomeVer")!=null){
+		genomeVer=request.getParameter("genomeVer");
+	}
 	
 	String now = myObjectHandler.getNowAsMMddyyyy_HHmmss();
 	java.sql.Timestamp timeNow = myObjectHandler.getNowAsTimestamp();
@@ -39,14 +44,14 @@
 	myGeneListAnalysis.setUser_id(userID);
 	myGeneListAnalysis.setCreate_date(timeNow);
 	myGeneListAnalysis.setAnalysis_type("GO");
-	myGeneListAnalysis.setDescription(name);
+	myGeneListAnalysis.setDescription(name+" \n Genome Version: "+genomeVer);
 	myGeneListAnalysis.setAnalysisGeneList(selectedGeneList);
 	myGeneListAnalysis.setVisible(1);
 	myGeneListAnalysis.setStatus("Running");
 	myGeneListAnalysis.setName(name);
 	myGeneListAnalysis.setParameter_group_id(parameter_group_id);
 		
-	ParameterValue[] myParameterValues = new ParameterValue[1];
+	ParameterValue[] myParameterValues = new ParameterValue[2];
 	for (int i=0; i<myParameterValues.length; i++) {
 		myParameterValues[i] = new ParameterValue();
 		myParameterValues[i].setCreate_date();
@@ -55,6 +60,8 @@
 	}
 	myParameterValues[0].setParameter("Name");
 	myParameterValues[0].setValue(name);
+        myParameterValues[1].setParameter("Genome Version");
+	myParameterValues[1].setValue(genomeVer);
 	myGeneListAnalysis.setParameterValues(myParameterValues);
 	int glaID=myGeneListAnalysis.createGeneListAnalysis(pool);
 	
@@ -62,7 +69,7 @@
 	
 	
 	
-	result=goT.runGOGeneList(selectedGeneList,myOrganism,name,glaID);
+	result=goT.runGOGeneList(selectedGeneList,myOrganism,genomeVer,name,glaID);
 %>
 
 
