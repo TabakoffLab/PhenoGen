@@ -4,7 +4,7 @@
 <%request.setAttribute( "selectedMain", "exonTools" );
 	session.setAttribute("myGeneArray",null);
 	session.setAttribute("geneListOrganism",null);
-	extrasList.add("exonCorrelationTab.js");
+	extrasList.add("exonCorrelationTab0.1.js");
 	//extrasList.add("progressBar.js");
 %>
 

@@ -32,6 +32,7 @@
         java.util.Date displayTime = Calendar.getInstance().getTime();
 	SimpleDateFormat displayFormat = new SimpleDateFormat("MMM dd, yyyy");
 	String displayNow = displayFormat.format(displayTime);
+        String myOrganism=selectedGeneList.getOrganism();
 %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
@@ -55,13 +56,12 @@
         <div id="toolsAccord" style="text-align:left;">
                             <H2>Run New Promoter Analysis on Gene List</H2>
                             <div id="newAnalysis" style="font-size:12px;">
-                                <% if (selectedGeneList.getOrganism().equals("Mm") ||
-                                            selectedGeneList.getOrganism().equals("Rn") ||
-                                            selectedGeneList.getOrganism().equals("Hs")) {
+                                <% if (myOrganism.equals("Mm") ||
+                                            myOrganism.equals("Rn") || myOrganism.equals("Hs")) {
                                     %>
                                 Type of Promoter Analysis:
                                 <select id="promoterType">
-                                    <%if(selectedGeneList.getOrganism().equals("Mm") || selectedGeneList.getOrganism().equals("Hs")){ %>
+                                    <%if(myOrganism.equals("Mm") || myOrganism.equals("Hs")){ %>
                                     <option value="oPOSSUM">oPOSSUM</option>
                                     <%}%>
                                     <option value="MEME" selected="selected">MEME</option>
@@ -165,6 +165,27 @@
                                             <BR>
                                             <div class="title">MEME Parameters</div>
                                             <table class="form"  style="width:100%;">
+                                                    <tr>	
+                                                            <td>
+                                                                    <strong>Genome Version:</strong>
+                                                                    <BR>
+                                                                    <%
+                                                                    selectName = "genomeVer";
+                                                                    selectedOption = "";
+                                                                    //onChange = "checkSize()";
+                                                                    style = "";
+                                                                    optionHash = new LinkedHashMap();
+                                                                    if(myOrganism.equals("Rn")){
+                                                                        optionHash.put("rn6", "rn6");
+                                                                        optionHash.put("rn5", "rn5");
+                                                                    }else if(myOrganism.equals("Mm")){
+                                                                        optionHash.put("mm10", "mm10");
+                                                                    }
+                                                                    
+                                                                    %>
+                                                                    <%@ include file="/web/common/selectBox.jsp" %>
+                                                            </td>
+                                                    </tr>
                                                     <tr>	
                                                             <td>
                                                                     <strong>Upstream sequence length:</strong>
@@ -274,6 +295,27 @@
 
                                         <div class="title">Upstream Sequence Extraction Parameters</div>
                                         <table class="form" style="width:100%;" >
+                                        <tr>	
+                                                            <td>
+                                                                    <strong>Genome Version:</strong>
+                                                                    <BR>
+                                                                    <%
+                                                                    selectName = "genomeVer";
+                                                                    selectedOption = "";
+                                                                    //onChange = "checkSize()";
+                                                                    style = "";
+                                                                    optionHash = new LinkedHashMap();
+                                                                    if(myOrganism.equals("Rn")){
+                                                                        optionHash.put("rn6", "rn6");
+                                                                        optionHash.put("rn5", "rn5");
+                                                                    }else if(myOrganism.equals("Mm")){
+                                                                        optionHash.put("mm10", "mm10");
+                                                                    }
+                                                                    
+                                                                    %>
+                                                                    <%@ include file="/web/common/selectBox.jsp" %>
+                                                            </td>
+                                                    </tr>
                                         <tr>
                                                 <td>
                                                         <strong>Upstream sequence length:</strong>

@@ -1,20 +1,15 @@
 #!/usr/bin/perl
 
-#use lib "/opt/ensembl/src/bioperl-live";cpan
-#use lib "/opt/ensembl/src/ensembl/modules";
-
 use Bio::EnsEMBL::Registry;
 use XML::LibXML;
 use XML::Simple;
-#use Carp::Always;
-#use diagnostics;
 
 #use strict;
 
 require 'ReadAffyProbesetDataFromDB.pl';
-require 'createPng.pl';
-require 'addAlternateID.pl';
-require 'convertBedToBigBed.pl';
+#require 'createPng.pl';
+#require 'addAlternateID.pl';
+#require 'convertBedToBigBed.pl';
 
 sub getFeatureInfo
 {
@@ -26,8 +21,6 @@ sub getFeatureInfo
     my $start      = $feature->seq_region_start();
     my $stop        = $feature->seq_region_end();
     my $strand     = $feature->seq_region_strand();
-    
-    #print "$stanble_id::$seq_region::$start::$stop::$strand\n";
 
     return ($stable_id, $seq_region, $start, $stop, $strand );
 }
@@ -70,7 +63,7 @@ sub createXMLFile
 	#
 
 	# Read in the arguments for the subroutine	
-	my($bedOutputFileName, $pngOutputFileName, $xmlOutputFileName,$species,$type,$geneNames,$userName,$bedFileFolder,$dataSetID,$arrayTypeID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
+	my($xmlOutputFileName,$species,$type,$geneNames,$userName,$dataSetID,$arrayTypeID,$genomeVer,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
 	
 	my @geneNamesList=split(/,/,$geneNames);
 	
@@ -84,10 +77,6 @@ sub createXMLFile
 	my $cntGenes=0;
 	my $cntMatchingProbesets=0;
 	my $sliceStart;
-	
-	
-	
-	
 
 	my %GeneHOH; # This is the big data structure to hold information about genes, transcripts, exons, probesets
 	my $GeneHOHRef;
@@ -193,30 +182,15 @@ sub createXMLFile
 			geneSymbol => $geneExternalName
 			};
 		
-#
-#		We have enough information to make the png file so call createPng
-#		With the new picture look we don't have enough information to make the png file yet
-#		So commenting out the lines below.
-#		
-#		my $geneStartSmaller = $geneStart-200;
-#		my $geneStopBigger = $geneStop+200;
-#		createPng($species, $geneChrom, $geneStartSmaller, $geneStopBigger, $pngOutputFileName.$geneName.".png");
 		
 		
 		# Get all of the probesets for this gene by reading from Affy Probeset Tables in database
-		# We just have to read the probesets once for each gene.
+		# We just have to read the probe sets once.
 	    
 		    my ($probesetHOHRef)
-				= readAffyProbesetDataFromDB($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dataSetID,$dsn,$usr,$passwd);
+				= readAffyProbesetDataFromDB($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dataSetID,$genomeVer,$dsn,$usr,$passwd);
 		    my @probesetHOH = @$probesetHOHRef;
 		    #print "get probesets\n";
-		    
-#		    $registry->load_registry_from_db(
-#			-host => 'useastdb.ensembl.org', #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
-#			-port => 5306,
-#			-user => 'anonymous'
-#			);
-#		    $slice_adaptor = $registry->get_adaptor( $species, $type, 'Slice' );
 		    #Get the transcripts for this gene
 		    my $transcripts = $gene->get_all_Transcripts();
 
@@ -313,44 +287,11 @@ sub createXMLFile
 		    } # loop through exons
 		    $cntTranscripts = $cntTranscripts+1;
 		} # loop through transcripts
-		# We're finished with the current Gene
-		# Now we will define alternate IDs for the probesets we marked previously with 'yes' for alternateID
-		# Also create the Bed file.
-		my $newBedOutputFileName = $pngOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".bed";
-		# convert to big bed file.  Not sure if this is exactly necessary ...
-		my $bigBedOutputFileName = $bedOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".bb";
-		my $bigBedOutputFileNameNoPath = $GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".bb";
-		my $twoTrackOutputFileName = $bedOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".".$userName.".2tracks";
-		$GeneHOHRef = addAlternateID(\%GeneHOH, $cntGenes,$newBedOutputFileName,$twoTrackOutputFileName,$bigBedOutputFileNameNoPath,$species,\@probesetHOH);
-		%GeneHOH = %$GeneHOHRef;
-		# Convert the bed file to a big bed file
-		# The big bed file must end up in the directory /data/ucsc on phenogen
-		# either by being copied over there or by being created there.
-		convertBedToBigBed($species,$newBedOutputFileName, $bigBedOutputFileName,$bedFileFolder,1); 
-		#
-		# Create the png file for this gene
-		my $newPngOutputFileName = $pngOutputFileName.$GeneHOH{Gene}[$cntGenes]{ID}.".png";
-		my $geneStartSmaller = $geneStart-200;
-		my $geneStopBigger = $geneStop+200;
-		my $resultCode=0;
-		my $tryCount=0;
-		while($resultCode!=200 and $tryCount<3){
-		    $resultCode=createPng($species,$geneName, $geneChrom, $geneStartSmaller, $geneStopBigger, $newPngOutputFileName,$twoTrackOutputFileName,(15+30*$tryCount));
-		    $tryCount=$tryCount+1;
-		}
+		
 		$cntGenes=$cntGenes+1;
-		#delete files that are no longer needed.  PNGs are saved so the files to generate them are no longer needed.
-		unlink($newBedOutputFileName);
-		unlink($bigBedOutputFileName);
-		unlink($twoTrackOutputFileName);
 	    }# if to process only if chromosome is valid
 	} # loop through genes
-	# create xml object
-	# There are several different versions of the call illustrated below
-	#$xml = new XML::Simple (NoAttr=>1, RootName=>'GeneList');
-	#$xml = new XML::Simple (RootName=>'GeneList', xmldecl => '<?xml version="1.0">');
-	# keeping the examples commented out.
-	
+	# create xml object	
 	my $xml = new XML::Simple (RootName=>'GeneList');
 	my $data = $xml->XMLout(\%GeneHOH);
 	# open xml file
@@ -358,44 +299,29 @@ sub createXMLFile
 	# write the header 
 	print XMLFILE '<?xml version="1.0" encoding="UTF-8"?>';
 	print XMLFILE "\n\n";
-	#print XMLFILE '<!--';
-	#print XMLFILE "\n";
-	#print XMLFILE '    Document   : DevTranscript.xml';
-	#print XMLFILE "\n";
-	#print XMLFILE '    Created on : December 9, 2011, 11:24 AM';
-	#print XMLFILE "\n";
-	#print XMLFILE '    Author     : smahaffey';
-	#print XMLFILE "\n";
-	#print XMLFILE '    Description:';
-	#print XMLFILE "\n";
-	#print XMLFILE '        Purpose of the document follows.';
-	#print XMLFILE "\n";
-	#print XMLFILE '-->';
-	#print XMLFILE "\n\n";
 	# Write the xml data
 	print XMLFILE $data;
 	close XMLFILE;
 }
 #
 #	
-	my $arg1 = $ARGV[0]; # bed file name
-	my $arg2 = $ARGV[1]; # png file name
-	my $arg3 = '>'.$ARGV[2]; #xml file name
-	my $arg4 = $ARGV[3]; #species
-	my $arg5 = $ARGV[4]; #annotation level
-	my $arg6 = $ARGV[5]; #Gene name list
-	my $arg7 = $ARGV[6]; #user name
-	my $arg8 = $ARGV[7]; #path to bed files(bedSort,bedToBigBed, and x.chrom.sizes)
-	my $arg9 = $ARGV[8]; #dataset id
-	my $arg10= $ARGV[9]; #array type id
+	my $arg1 = '>'.$ARGV[0]; #xml file name
+	my $arg2 = $ARGV[1]; #species
+	my $arg3 = $ARGV[2]; #annotation level
+	my $arg4 = $ARGV[3]; #Gene name list
+	my $arg5 = $ARGV[4]; #user name
+	my $arg6 = $ARGV[5]; #dataset id
+	my $arg7 = $ARGV[6]; #array type id
+	my $arg8 = $ARGV[7]; 
+	my $arg9 = $ARGV[8]; 
+	my $arg10= $ARGV[9]; 
 	my $arg11= $ARGV[10];
 	my $arg12= $ARGV[11];
 	my $arg13= $ARGV[12];
 	my $arg14=$ARGV[13];
 	my $arg15=$ARGV[14];
-	my $arg16=$ARGV[15];
-	my $arg17=$ARGV[16];
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11, $arg12, $arg13, $arg14, $arg15, $arg16, $arg17);
+
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11, $arg12, $arg13, $arg14, $arg15);
 
 	
 	# Example call:

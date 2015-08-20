@@ -8,6 +8,7 @@
         String type="";
 	String id="";
         String result="";
+        String genomeVer="";
 
 	if(request.getParameter("type")!=null){
 		type=request.getParameter("type");
@@ -15,8 +16,11 @@
 	if(request.getParameter("geneListID")!=null){
 		id=request.getParameter("geneListID");
 	}
+        if(request.getParameter("genomeVer")!=null){
+                genomeVer=request.getParameter("genomeVer");
+        }
 	
-	
+	log.debug("\n genomeVer="+genomeVer);
 	String now = myObjectHandler.getNowAsMMddyyyy_HHmmss();
 	java.sql.Timestamp timeNow = myObjectHandler.getNowAsTimestamp();
 	
@@ -69,7 +73,7 @@
                         myGeneListAnalysis.setStatus("Running");
                         myGeneListAnalysis.setVisible(1);
 		
-			ParameterValue[] myParameterValues = new ParameterValue[2];
+			ParameterValue[] myParameterValues = new ParameterValue[3];
                         for (int i=0; i<myParameterValues.length; i++) {
                             myParameterValues[i] = new ParameterValue();
                             myParameterValues[i].setCreate_date();
@@ -80,6 +84,8 @@
                 	myParameterValues[0].setValue(Integer.toString(upstreamLength));
                         myParameterValues[1].setParameter("Sequence Start");
                         myParameterValues[1].setValue(upstart);
+                        myParameterValues[2].setParameter("Genome Version");
+                        myParameterValues[2].setValue(genomeVer);
 			myGeneListAnalysis.setParameterValues(myParameterValues);
 
                         myGeneListAnalysis.createGeneListAnalysis(pool);
@@ -89,6 +95,7 @@
 						session,
 						upstreamFileName,
                                                 upstreamStart,
+                                                genomeVer,
 						false,
                                 		myGeneListAnalysis));
 
@@ -156,7 +163,7 @@
                                     //String memeFileName = selectedGeneList.getMemeFileName(memeDir, now);
                             String memeFileName = memeDir;
 
-                            ParameterValue[] myParameterValues = new ParameterValue[7];
+                            ParameterValue[] myParameterValues = new ParameterValue[8];
                             for (int i=0; i<myParameterValues.length; i++) {
                                     myParameterValues[i] = new ParameterValue();
                                     myParameterValues[i].setCreate_date();
@@ -183,6 +190,8 @@
                                 upstart="transcript cds start";
                             }
                             myParameterValues[6].setValue(upstart);
+                            myParameterValues[7].setParameter("Genome Version");
+                            myParameterValues[7].setValue(genomeVer);
 
                             myGeneListAnalysis.setParameterValues(myParameterValues);
                             myGeneListAnalysis.createGeneListAnalysis(pool);
@@ -193,6 +202,7 @@
                                             session,
                                             sequenceFileName,
                                             upstreamStart,
+                                            genomeVer,
                                             true,
                                             myGeneListAnalysis));
 

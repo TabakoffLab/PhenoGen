@@ -8,6 +8,7 @@ GeneList.Gene[] myGeneArray = (GeneList.Gene[]) session.getAttribute("myGeneArra
 String myOrganism=(String)session.getAttribute("geneListOrganism");
 String myTissue="";
 String myGene="";
+String genomeVer="";
 String url=(request.getRequestURL()).toString();
 boolean fromGeneList=false;
 if(url.contains("exonCorrelationTab.jsp")){
@@ -22,6 +23,9 @@ if(request.getParameter("speciesCB")!=null){
 }
 if(request.getParameter("tissueCB")!=null){
 	myTissue=request.getParameter("tissueCB").trim();
+}
+if(request.getParameter("genomeVer")!=null){
+	genomeVer=request.getParameter("genomeVer").trim();
 }
 
 if ((action != null) && action.equals("Get Exon Correlations")) {
@@ -98,6 +102,17 @@ Collections.sort(myCBGeneList);
   <select name="speciesCB" id="speciesCB" onchange="show_species_tissue(this.selectedIndex)">
   	<option value="Mm" <%if(myOrganism!=null && myOrganism.equals("Mm")){%>selected<%}%>>Mus musculus</option>
     <option value="Rn" <%if(myOrganism!=null && myOrganism.equals("Rn")){%>selected<%}%>>Rattus norvegicus</option>
+  </select>
+  </label>
+  <label>Genome Version:
+  <select name="genomeVer" id="genomeVer">
+      <%if(myOrganism!=null && myOrganism.equals("Mm")){%>
+        <option value="mm10" <%if(genomeVer.equals("mm10")){%>selected<%}%> >mm10</option>
+      <%}else if(myOrganism!=null && myOrganism.equals("Rn")){%>
+  	<option value="rn6" <%if(genomeVer.equals("rn6")){%>selected<%}%> >rn6</option>
+        <option value="rn5" <%if(genomeVer.equals("rn5")){%>selected<%}%> >rn5</option>
+     <%}%>
+    
   </select>
   </label>
   <label>Tissue:

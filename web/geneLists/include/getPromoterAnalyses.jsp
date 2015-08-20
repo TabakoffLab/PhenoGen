@@ -90,10 +90,17 @@
                 }else{
                     complete=true;
                 }
+                ParameterValue myPV=new ParameterValue();
+                ParameterValue[] pv=myPV.getParameterValues(results[i].getParameter_group_id(),pool);
+                ParameterValue gvParam=myPV.getParameterValueFromMyParameterValues(pv,"Genome Version");
+                String thisGenomeVer="";
+                    if(gvParam!=null){
+                        thisGenomeVer="Genome Version: "+gvParam.getValue();
+                    }
         %>
         	<TR class="arid<%=results[i].getAnalysis_id()%>">
                 <TD>MEME</td>
-            	<TD><%=results[i].getDescription()%> </TD>
+            	<TD><%=results[i].getDescription()%> <%=thisGenomeVer%> </TD>
                 <TD><%=results[i].getCreate_date_as_string()%></TD>
                 <TD><%=stat%></TD>
                 <TD>
