@@ -176,7 +176,7 @@
         }
 	genURL=urlPrefix+ "tmpData/geneData/" +selectedID+"/";*/
         String urlPrefix=(String)session.getAttribute("mainURL");
-	String regionURL=urlPrefix+"tmpData/regionData/"+folderName+"/";
+	String regionURL=urlPrefix+"tmpData/browserCache/"+genomeVer+"/regionData/"+folderName+"/";
         %>
 
 
@@ -698,6 +698,8 @@
 					width:      appletWidth,
 					height:     appletHeight
 				};
+                                console.log("gene:"+gene);
+                                console.log("heat:"+heat);
 				var parameters = {
 					java_status_events: 'true',
 					jnlp_href:"<%=contextRoot%>web/exons/launch.jnlp",

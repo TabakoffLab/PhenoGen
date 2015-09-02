@@ -30,8 +30,9 @@ if(request.getParameter("genomeVer")!=null){
 
 if ((action != null) && action.equals("Get Exon Correlations")) {
 	if(myGeneArray!=null){
-		selectedInd=Integer.parseInt(request.getParameter("geneCB").trim());
-		myGene=myGeneArray[selectedInd].getGene_id();
+		//selectedInd=Integer.parseInt(request.getParameter("geneCB").trim());
+		//myGene=myGeneArray[selectedInd].getGene_id();
+                myGene=request.getParameter("geneCB").trim();
 	}else{
 		myGene=request.getParameter("geneTxt").trim();
 	}
@@ -77,7 +78,6 @@ Collections.sort(myCBGeneList);
 
 
 
-
 <% if(myGeneArray!=null&&myCBGeneList.size()>0&&fromGeneList||!fromGeneList){%>
 <form method="post" 
 		action="<%=formName%>"
@@ -87,7 +87,7 @@ Collections.sort(myCBGeneList);
 	<label>Gene:*
   	<select name="geneCB" id="geneCB">
 		<% for (int i=0;i<myCBGeneList.size();i++){ %>
-        	<option value="<%=i%>"  <%if(i==selectedInd){%>selected<%}%>>
+        	<option value="<%=myCBGeneList.get(i)%>"  <%if(myGene.equals(myCBGeneList.get(i))){%>selected<%}%>>
 								<%=myCBGeneList.get(i)%>
                                 </option>
         <% } %>
