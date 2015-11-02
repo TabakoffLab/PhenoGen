@@ -51,6 +51,8 @@ public class SessionHandler {
 	private String dbPropertiesFile = "";
         private String ensDbPropertiesFile = "";
         private String ucscDbPropertiesFile = "";
+        private String mongoDbPropertiesFile = "";
+        
         private String captchaPropertiesFile= "";
 	private String adminDir = "";
 	private String isbraDir = "";
@@ -339,7 +341,15 @@ public class SessionHandler {
 
 	public void setUCSCDbPropertiesFile(String inString) {
 		this.ucscDbPropertiesFile = inString;
-	}   
+	}  
+        
+        public String getMongoDbPropertiesFile() {
+		return this.getPropertiesDir() + "/" + mongoDbPropertiesFile; 
+	}
+
+	public void setMongoDbPropertiesFile(String inString) {
+		this.mongoDbPropertiesFile = inString;
+	}  
         
         public String getCaptchaPropertiesFile() {
 		return this.getPropertiesDir() + "/" + captchaPropertiesFile; 
@@ -571,6 +581,7 @@ public class SessionHandler {
                 session.setAttribute("dbPropertiesFile", this.getDbPropertiesFile()); 
                 session.setAttribute("ensDbPropertiesFile", this.getENSDbPropertiesFile());
                 session.setAttribute("ucscDbPropertiesFile", this.getUCSCDbPropertiesFile());
+                session.setAttribute("mongoDbPropertiesFile", this.getMongoDbPropertiesFile());
                 session.setAttribute("captchaPropertiesFile", this.getCaptchaPropertiesFile());
 		//log.debug("in SessionHandler.dbPropertiesFile = "+ dbPropertiesFile);
                 session.setAttribute("perlEnvVar", this.getPerlEnvVar());

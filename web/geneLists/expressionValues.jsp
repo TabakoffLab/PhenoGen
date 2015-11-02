@@ -16,7 +16,7 @@
         log.info("in expressionValues.jsp. user =  "+ user);
 
         extrasList.add("expressionValues.js");
-		extrasList.add("jquery.dataTables.min.js");
+		extrasList.add("jquery.dataTables.1.10.9.min.js");
 		extrasList.add("jquery.tooltipster.min.js");
 		extrasList.add("tooltipster.min.css");
 		extrasList.add("TableTools.min.js");

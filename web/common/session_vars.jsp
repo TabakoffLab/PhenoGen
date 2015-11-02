@@ -90,6 +90,7 @@
 	String dbPropertiesFile = (String) session.getAttribute("dbPropertiesFile");
 	String ensDbPropertiesFile = (String) session.getAttribute("ensDbPropertiesFile");
         String ucscDbPropertiesFile = (String) session.getAttribute("ucscDbPropertiesFile");
+        String mongoDbPropertiesFile = (String) session.getAttribute("mongoDbPropertiesFile");
 	String adminEmail = (String) session.getAttribute("adminEmail");
 
 	String userFilesRoot = (String) session.getAttribute("userFilesRoot");

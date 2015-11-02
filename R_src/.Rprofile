@@ -2,8 +2,8 @@
    #
    # Change the following two lines to customize for your environment
    #
-   G_SrcDir <<- '/usr/share/tomcat/webapps/PhenoGen/R_src/'
-   G_WriteLogFile <<- '/usr/share/tomcat/logs/WriteLogs.txt'
+   G_SrcDir <<- '/Library/Tomcat/webapps/PhenoGen/R_src/'
+   G_WriteLogFile <<- '/Library/Tomcat/logs/WriteLogs.txt'
 
    # Global variables and setup for writeLog use
    # for new programs, create a new G_WriteLogXXX variable below

@@ -32,7 +32,7 @@ sub prepCircosReverse
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
 		$genericConfLocation = '/usr/local/circos-0.67-5/etc/';
-		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
+		$genericConfLocation2 = '/Library/Tomcat/webapps/PhenoGen/tmpData/geneData/';
 		$karyotypeLocation = '/usr/local/circos-0.67-5/data/karyotype/';
 	}
 	else{

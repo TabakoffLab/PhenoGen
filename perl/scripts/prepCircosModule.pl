@@ -43,7 +43,7 @@ sub prepCircosMod
                 $genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
         }
 	elsif($hostname eq 'stan.ucdenver.pvt'){
-		$genericConfLocation2 = '/usr/share/tomcat/webapps/PhenoGen/tmpData/geneData/';
+		$genericConfLocation2 = '/Library/Tomcat/webapps/PhenoGen/tmpData/geneData/';
 	}
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");

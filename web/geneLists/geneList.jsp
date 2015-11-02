@@ -3,7 +3,7 @@
 <%
 	request.setAttribute( "selectedTabId", "list" );
 	extrasList.add("geneList.js");
-	extrasList.add("jquery.dataTables.min.js");
+	extrasList.add("jquery.dataTables.1.10.9.min.js");
 	extrasList.add("dataTables.paging.css");
         //extrasList.add("jquery.dataTables.min.css");
 	

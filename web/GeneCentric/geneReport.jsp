@@ -634,53 +634,7 @@ Add report here.
 		$(this).addClass("selected");
 		var id=$(this).attr("name");
 		$("#"+id).show();
-                console.log("#"+id);
-		if(id=="geneEQTL"){
-			var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
-			var params={
-				species: organism,
-				geneSymbol: selectedGeneSymbol,
-				chromosome: chr,
-				id:selectedID
-			};
-			loadDivWithPage("div#geneEQTL",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-		}else if(id=="geneApp"){
-			$.ajax({
-					url: "web/GeneCentric/callPanelExpr.jsp",
-	   				type: 'GET',
-                                        cache: 'false',
-					data: {id:idStr,organism: organism,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
-					dataType: 'json',
-	    			error: function(xhr, status, error) {console.log(error);}
-	    			});
-		}else if(id=="geneMIrna"){
-			var jspPage="web/GeneCentric/geneMiRnaAjax.jsp";
-			var params={
-				species: organism,
-				id:selectedID
-			};
-			loadDivWithPage("div#geneMIrna",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-		}else if(id=="miGenerna"){
-			var jspPage="web/GeneCentric/miGeneRnaAjax.jsp";
-			var params={
-				species: organism,
-				id:geneSymStr
-			};
-			loadDivWithPage("div#miGenerna",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-		}else if(id=="geneWGCNA"){
-                        $("div#regionWGCNAEQTL").html("");
-                        var jspPage="web/GeneCentric/wgcnaGene.jsp";
-			var params={
-				species: organism,
-				id:selectedID
-			};
-			loadDivWithPage("div#geneWGCNA",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-                }
-		
+		loadGeneReportTabs(id);
 	});
         $('.helpGeneRpt').on('click', function(event){
 			var id=$(this).attr('id');
@@ -690,6 +644,72 @@ Add report here.
 			//return false;
 		}
 	);
+
+        function setSelectedTab(){
+            if(typeof section !== 'undefined' && section !== ""){
+                var oldID=$('.selectdetailMenu.selected').attr("name");
+                $("#"+oldID).hide();
+                $('.selectdetailMenu.selected').removeClass("selected");
+                $(".selectdetailMenu[name=\""+section+"\"]").addClass("selected");
+                $("#"+section).show();
+                loadGeneReportTabs(section);
+            }
+        }
+
+        function loadGeneReportTabs(id){
+            if(id=="geneEQTL"){
+                    var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
+                    var params={
+                            species: organism,
+                            geneSymbol: selectedGeneSymbol,
+                            chromosome: chr,
+                            id:selectedID
+                    };
+                    loadDivWithPage("div#geneEQTL",jspPage,params,
+                                    "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+            }else if(id=="geneApp"){
+                    $.ajax({
+                                    url: "web/GeneCentric/callPanelExpr.jsp",
+                                    type: 'GET',
+                                    cache: 'false',
+                                    data: {id:idStr,organism: organism,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
+                                    dataType: 'json',
+                            error: function(xhr, status, error) {console.log(error);}
+                            });
+            }else if(id=="geneMIrna"){
+                    var jspPage="web/GeneCentric/geneMiRnaAjax.jsp";
+                    var params={
+                            species: organism,
+                            id:selectedID
+                    };
+                    loadDivWithPage("div#geneMIrna",jspPage,params,
+                                    "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+            }else if(id=="miGenerna"){
+                    var jspPage="web/GeneCentric/miGeneRnaAjax.jsp";
+                    var params={
+                            species: organism,
+                            id:geneSymStr
+                    };
+                    loadDivWithPage("div#miGenerna",jspPage,params,
+                                    "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+            }else if(id=="geneWGCNA"){
+                    $("div#regionWGCNAEQTL").html("");
+                    var jspPage="web/GeneCentric/wgcnaGene.jsp";
+                    var params={
+                            species: organism,
+                            id:selectedID
+                    };
+                    loadDivWithPage("div#geneWGCNA",jspPage,params,
+                                    "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+            }
+        }
+        setTimeout(function(){
+            setSelectedTab();
+            setTimeout(function(){
+                $("#geneDiv").scrollTop($("#geneDiv")[0].scrollHeight);
+            },500);
+        },200);
+        
         //svgList[1].updateLinks();
 </script>
 

@@ -2,7 +2,7 @@
 
 <%
 	extrasList.add("detailedTranscriptInfo.js");
-        extrasList.add("jquery.dataTables.min.js");
+        extrasList.add("jquery.dataTables.1.10.9.min.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("d3.v3.min.js");
         extrasList.add("spectrum.js");
@@ -26,20 +26,36 @@ int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 
 String selectedID="";
 
-	if(request.getParameter("selectedID")!=null){
-		selectedID=request.getParameter("selectedID");
-	}
-	if(request.getParameter("defaultView")!=null){
-		viewID=request.getParameter("defaultView");
-	}
-
-if(request.getParameter("panel")!=null){
-		panel=request.getParameter("panel").trim();
+if(request.getParameter("selectedID")!=null){
+        selectedID=request.getParameter("selectedID");
+}
+if(request.getParameter("defaultView")!=null){
+        viewID=request.getParameter("defaultView")0;
 }
 if(request.getParameter("myOrganism")!=null){
 		myOrganism=request.getParameter("myOrganism").trim();
+}else{
+    if(selectedID.startsWith("ENSRNO")){
+        myOrganism="Rn";
+    }else if(selectedID.startsWith("ENSMUS")){
+        myOrganism="Mm";
+    }
 }
-if(request.getParameter("rnaDatasetID")!=null){
+if(request.getParameter("panel")!=null){
+		panel=request.getParameter("panel").trim();
+}else{
+    if(myOrganism.toLowerCase().equals("rn")){
+        panel="BNLX/SHRH";
+    }else if(myOrganism.toLowerCase().equals("mm")){
+        panel="ILS/ISS";
+    }
+}
+int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+if(tmp!=null&&tmp.length==2){
+        rnaDatasetID=tmp[1];
+        arrayTypeID=tmp[0];
+}
+/*if(request.getParameter("rnaDatasetID")!=null){
 	try{
 		rnaDatasetID=Integer.parseInt(request.getParameter("rnaDatasetID").trim());
 	}catch(NumberFormatException e){
@@ -52,7 +68,7 @@ if(request.getParameter("arrayTypeID")!=null){
 	}catch(NumberFormatException e){
 		log.error("Number format exception:arrayTypeID\n",e);
 	}
-}
+}*/
 
 	String tmpoutputDir = applicationRoot+contextRoot+ "tmpData/geneData/" + selectedID + "/";
 	String[] loc=null;

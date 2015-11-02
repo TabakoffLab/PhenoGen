@@ -17,7 +17,7 @@
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 
 <%
-	extrasList.add("jquery.dataTables.min.js");
+	extrasList.add("jquery.dataTables.1.10.9.min.js");
         //extrasList.add("jquery.dataTables.min.css");
 
         tall="53em";

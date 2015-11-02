@@ -71,6 +71,8 @@
                	value="<%=application.getInitParameter(\"ensDbPropertiesFile\") %>" />
         <jsp:setProperty name="mySessionHandler" property="UCSCDbPropertiesFile" 
                	value="<%=application.getInitParameter(\"ucscDbPropertiesFile\") %>" />
+        <jsp:setProperty name="mySessionHandler" property="mongoDbPropertiesFile" 
+               	value="<%=application.getInitParameter(\"mongoDbPropertiesFile\") %>" />
 	<jsp:setProperty name="mySessionHandler" property="host" 
                	value="<%=host%>" />
     <jsp:setProperty name="mySessionHandler" property="perlEnvVar" 
