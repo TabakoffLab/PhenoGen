@@ -6,10 +6,10 @@ String myGeneID="";
 String type="";
 String trackDefault="probe,coding,refseq";
 if(request.getParameter("region")!=null){
-		myGene=request.getParameter("region");
+		myGene=FilterInput.getFilteredInput(request.getParameter("region"));
 }
 if(request.getParameter("gene")!=null){
-		myGeneID=request.getParameter("gene");
+		myGeneID=FilterInput.getFilteredInput(request.getParameter("gene"));
 		if(myGeneID.indexOf(":")>-1){
 			String[] tmp=myGeneID.split(":");
 			myGeneID=tmp[1];
@@ -59,7 +59,7 @@ if(request.getParameter("gene")!=null){
 	
 
 	if(request.getParameter("species")!=null){
-		myOrganism=request.getParameter("species").trim();
+		myOrganism=FilterInput.getFilteredInput(request.getParameter("species").trim());
 	}
 	
 	

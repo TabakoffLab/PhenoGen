@@ -16,18 +16,18 @@
 	ArrayList<MiRResult> mirList=new ArrayList<MiRResult>();
 	
 	if(request.getParameter("species")!=null){
-		myOrganism=request.getParameter("species").trim();
+		myOrganism=FilterInput.getFilteredInput(request.getParameter("species").trim());
 	}
 	
 	if(request.getParameter("id")!=null){
-		id=request.getParameter("id");
+		id=FilterInput.getFilteredInput(request.getParameter("id"));
 	}
 	if(request.getParameter("table")!=null){
-		table=request.getParameter("table");
+		table=FilterInput.getFilteredInput(request.getParameter("table"));
 	}
 	
 	if(request.getParameter("predType")!=null){
-		predType=request.getParameter("predType");
+		predType=FilterInput.getFilteredInput(request.getParameter("predType"));
 	}
 	if(request.getParameter("cutoff")!=null){
 		cutoff=Integer.parseInt(request.getParameter("cutoff"));

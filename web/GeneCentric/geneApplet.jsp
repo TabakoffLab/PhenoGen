@@ -27,13 +27,13 @@ int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 String selectedID="";
 
 if(request.getParameter("selectedID")!=null){
-        selectedID=request.getParameter("selectedID");
+        selectedID=FilterInput.getFilteredInput(request.getParameter("selectedID"));
 }
 if(request.getParameter("defaultView")!=null){
-        viewID=request.getParameter("defaultView")0;
+        viewID=FilterInput.getFilteredInput(request.getParameter("defaultView"));
 }
 if(request.getParameter("myOrganism")!=null){
-		myOrganism=request.getParameter("myOrganism").trim();
+		myOrganism=FilterInput.getFilteredInput(request.getParameter("myOrganism").trim());
 }else{
     if(selectedID.startsWith("ENSRNO")){
         myOrganism="Rn";
@@ -42,7 +42,7 @@ if(request.getParameter("myOrganism")!=null){
     }
 }
 if(request.getParameter("panel")!=null){
-		panel=request.getParameter("panel").trim();
+		panel=FilterInput.getFilteredInput(request.getParameter("panel").trim());
 }else{
     if(myOrganism.toLowerCase().equals("rn")){
         panel="BNLX/SHRH";

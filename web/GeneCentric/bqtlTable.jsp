@@ -20,7 +20,7 @@
 	int min=0;
 	int max=0;
 	if(request.getParameter("species")!=null){
-		myOrganism=request.getParameter("species").trim();
+		myOrganism=FilterInput.getFilteredInput(request.getParameter("species").trim());
 		if(myOrganism.equals("Rn")){
 			panel="BNLX/SHRH";
 			fullOrg="Rattus_norvegicus";
@@ -56,7 +56,7 @@
 		arrayTypeID=Integer.parseInt(request.getParameter("arrayTypeID"));
 	}
 	if(request.getParameter("chromosome")!=null){
-		chromosome=request.getParameter("chromosome");
+		chromosome=FilterInput.getFilteredInput(request.getParameter("chromosome"));
 	}
 	
 	if(request.getParameter("minCoord")!=null){
@@ -66,7 +66,7 @@
 		max=Integer.parseInt(request.getParameter("maxCoord"));
 	}
 	if(request.getParameter("type")!=null){
-		type=request.getParameter("type");
+		type=FilterInput.getFilteredInput(request.getParameter("type"));
 	}
 	
 	if(min<max){

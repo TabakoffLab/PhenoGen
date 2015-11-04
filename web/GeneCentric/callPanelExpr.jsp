@@ -23,7 +23,7 @@ import="org.json.*" %>
 String id="",chromosome="",organism="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 if(request.getParameter("chromosome")!=null){
-		chromosome=request.getParameter("chromosome").trim();
+		chromosome=FilterInput.getFilteredInput(request.getParameter("chromosome").trim());
 }
 if(request.getParameter("minCoord")!=null){
 	try{
@@ -54,10 +54,10 @@ if(request.getParameter("arrayTypeID")!=null){
 	}
 }
 if(request.getParameter("id")!=null){
-	id=request.getParameter("id").trim();
+	id=FilterInput.getFilteredInput(request.getParameter("id").trim());
 }
 if(request.getParameter("organism")!=null){
-	organism=request.getParameter("organism").trim();
+	organism=FilterInput.getFilteredInput(request.getParameter("organism").trim());
 }
 %>
 

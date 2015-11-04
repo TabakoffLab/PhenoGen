@@ -25,7 +25,7 @@ bt.setSession(session);
 
 int id=-1;
 if(request.getParameter("viewID")!=null){
-		id=Integer.parseInt(request.getParameter("viewID"));
+		id=Integer.parseInt(FilterInput.getFilteredInput(request.getParameter("viewID")));
 }
 
 if(id>0){

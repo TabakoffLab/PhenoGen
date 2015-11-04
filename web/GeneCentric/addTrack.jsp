@@ -26,22 +26,22 @@ import="org.json.*" %>
 	
 	String extension=".bed";
 	if(request.getParameter("trackClass")!=null){
-		trackClass=request.getParameter("trackClass");
+		trackClass=FilterInput.getFilteredInput(request.getParameter("trackClass"));
 	}
 	if(request.getParameter("trackName")!=null){
-		trackName=request.getParameter("trackName");
+		trackName=FilterInput.getFilteredInput(request.getParameter("trackName"));
 	}
 	if(request.getParameter("trackDesc")!=null){
-		trackDesc=request.getParameter("trackDesc");
+		trackDesc=FilterInput.getFilteredInput(request.getParameter("trackDesc"));
 	}
 	if(request.getParameter("trackOrg")!=null){
-		trackOrg=request.getParameter("trackOrg");
+		trackOrg=FilterInput.getFilteredInput(request.getParameter("trackOrg"));
 	}
 	if(request.getParameter("genericCategory")!=null){
-		genericCat=request.getParameter("genericCategory");
+		genericCat=FilterInput.getFilteredInput(request.getParameter("genericCategory"));
 	}
 	if(request.getParameter("category")!=null){
-		category=request.getParameter("category");
+		category=FilterInput.getFilteredInput(request.getParameter("category"));
 	}
 	if(request.getParameter("controls")!=null){
 		controls=request.getParameter("controls");
@@ -50,7 +50,7 @@ import="org.json.*" %>
 		location=request.getParameter("location");
 	}
 	if(request.getParameter("type")!=null){
-		type=request.getParameter("type");
+		type=FilterInput.getFilteredInput(request.getParameter("type"));
 	}
 	if(request.getParameter("file")!=null){
 		prevFile=request.getParameter("file");

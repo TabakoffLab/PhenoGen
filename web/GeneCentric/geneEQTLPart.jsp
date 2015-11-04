@@ -94,7 +94,7 @@
 			String iframeURL = null;
 			String svgPdfFile = null;
 		if(request.getParameter("cutoffValue")!=null){
-			selectedCutoffValue = request.getParameter("cutoffValue");
+			selectedCutoffValue = FilterInput.getFilteredInput(request.getParameter("cutoffValue"));
 			log.debug(" Selected Cutoff Value " + selectedCutoffValue);
 			
 		}

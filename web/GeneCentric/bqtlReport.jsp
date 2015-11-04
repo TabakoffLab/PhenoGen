@@ -13,11 +13,11 @@
 	
 
 	if(request.getParameter("species")!=null){
-		myOrganism=request.getParameter("species").trim();
+		myOrganism=FilterInput.getFilteredInput(request.getParameter("species").trim());
 	}
 
 	if(request.getParameter("id")!=null){
-		id=request.getParameter("id");
+		id=FilterInput.getFilteredInput(request.getParameter("id"));
 	}
 %>
 
