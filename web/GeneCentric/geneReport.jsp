@@ -21,7 +21,7 @@
 	
 	
 	if(request.getParameter("levels")!=null && !request.getParameter("levels").equals("")){			
-				String tmpSelectedLevels = request.getParameter("levels");
+				String tmpSelectedLevels = FilterInput.getFilteredInput(request.getParameter("levels"));
 				selectedLevels=tmpSelectedLevels.split(";");
 				log.debug("Getting selected levels:"+tmpSelectedLevels);
 				levelString = "";
@@ -35,7 +35,7 @@
 		selectedLevels=levelString.split(";");
 	}
 	if(request.getParameter("species")!=null){
-		myOrganism=request.getParameter("species").trim();
+		myOrganism=FilterInput.getFilteredInput(request.getParameter("species").trim());
 		if(myOrganism.equals("Rn")){
 			panel="BNLX/SHRH";
 			fullOrg="Rattus_norvegicus";
@@ -45,17 +45,17 @@
 		}
 	}
 	if(request.getParameter("chromosome")!=null){
-		chromosome=request.getParameter("chromosome");
+		chromosome=FilterInput.getFilteredInput(request.getParameter("chromosome"));
 	}
 	
 		
 	if(request.getParameter("geneSymbol")!=null){
-		geneSymbol.add(request.getParameter("geneSymbol"));
+		geneSymbol.add(FilterInput.getFilteredInput(request.getParameter("geneSymbol")));
 	}else{
 		geneSymbol.add("None");
 	}
 	if(request.getParameter("id")!=null){
-		id=request.getParameter("id");
+		id=FilterInput.getFilteredInput(request.getParameter("id"));
 	}
 	
 	gcPath=applicationRoot + contextRoot+"tmpData/geneData/" +id+"/";

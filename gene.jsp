@@ -30,7 +30,9 @@ boolean scriptError=false;
 boolean organismError=false;
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
+                log.debug(request.getParameter("geneTxt").trim()+": MyGene before filtering.");
 		myGene=FilterInput.getFilteredInput(request.getParameter("geneTxt").trim());
+                log.debug(myGene+": MyGene after filtering.");
 		myGene=myGene.replaceAll(",","");
                 String lcmyGene=myGene.toLowerCase();
                 /*if(myGene.length()>150 || lcmyGene.contains("((") || lcmyGene.contains("||") || lcmyGene.contains("))")|| lcmyGene.contains("select")|| lcmyGene.contains("delete")|| lcmyGene.contains("union") || lcmyGene.contains("join") || lcmyGene.contains("from")|| lcmyGene.contains("char") ){
@@ -198,16 +200,20 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 	
 			if(iDecoderAnswer!=null){
 					myIdentifierList = Arrays.asList(iDecoderAnswer.toArray((Identifier[]) new Identifier[iDecoderAnswer.size()]));
-					for(int i=0;i<myIdentifierList.size();i++){
+                                        Identifier targetIdentifier=null;
+                                        Set homologSet = null;
+					for(int i=0; i<myIdentifierList.size() && targetIdentifier==null; i++){
 						log.debug("ID LIST["+i+"]:"+((Identifier)myIdentifierList.get(i)).getIdentifier());
-					}
-					if(myIdentifierList!=null&&myIdentifierList.size()>0){
-						Identifier thisIdentifier = (Identifier)myIdentifierList.get(0);
+                                                Identifier thisIdentifier = (Identifier)myIdentifierList.get(0);
 						HashMap linksHash = thisIdentifier.getTargetHashMap();
-						Set homologSet = myIDecoderClient.getIdentifiersForTargetForOneID(linksHash, new String[] {"Ensembl ID"});
-						log.debug("linksHash size:"+linksHash.size());
+                                                log.debug("linksHash size:"+linksHash.size());
+						homologSet = myIDecoderClient.getIdentifiersForTargetForOneID(linksHash, new String[] {"Ensembl ID"});
+                                                if(homologSet!=null && homologSet.size()>0){
+                                                    targetIdentifier=thisIdentifier;
+                                                }
+					}
+					if(homologSet!=null && homologSet.size()>0){
 						homologList = myObjectHandler.getAsList(homologSet);
-		
 					}else{
 						displayNoEnsembl=true;
 					}
