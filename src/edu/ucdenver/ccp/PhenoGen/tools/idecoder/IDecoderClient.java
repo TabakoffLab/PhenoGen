@@ -294,7 +294,72 @@ public class IDecoderClient {
             return doSearchAll(organism, conn);
         }
         
-        
+        private HashMap<Identifier, Set<Identifier>> doSearch(String gene,String organism, DataSource pool) throws SQLException {
+            log.debug("in doSearch passing gene ID");
+            log.debug("geneID = "+gene);
+            String countQuery2 = 
+			"select count(*) from geneListGraph";
+            //
+		// Insert the identifiers from the original gene list 
+		//
+		String query = 
+			"insert into geneListGraph "+
+			"(start_id_number, "+
+			"start_identifier, "+
+			"ident_type_id, "+
+			"name, "+
+			"id_number, "+
+			"identifier, "+
+			"chromosome, "+
+			"map_location, "+
+			"cM, "+
+			"start_bp, "+
+			"category, "+
+			"organism, "+
+			"array_name, "+
+			"from_id_number, "+
+			"from_identifier, "+
+			"link_source_name) "+
+			"select "+
+			"id.id_number, "+
+			"id.identifier, "+
+			"id.ident_type_id, "+
+			"type.name, "+
+			"id.id_number, "+
+			"id.identifier, "+
+			"id.chromosome, "+
+			"id.map_location, "+
+			"id.cM, "+
+			"id.start_bp, "+
+			"type.category, "+
+			"id.organism, "+
+			"'', "+
+			"id.id_number, "+
+			"id.identifier, "+
+			"'Start' "+
+			"from identifiers id, "+
+			"identifier_types type "+ 
+			"where LOWER(id.identifier) = LOWER(?) "+
+			"and id.ident_type_id = type.ident_type_id  "+
+			"and id.organism = ?";
+                Connection conn=pool.getConnection();
+                conn.setAutoCommit(false);
+                //log.debug("query = "+query);
+                PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.setString(1, gene);
+                pstmt.setString(2, organism);
+		pstmt.executeQuery();
+		pstmt.close();
+                HashMap<Identifier, Set<Identifier>> results=doSearchAll(organism, conn);
+		//Results myResults = new Results(countQuery2, conn);
+		//log.debug("count of geneListGraph at point 1 = "+ myResults.getIntValueFromFirstRow());
+		
+                //myResults.close();
+                try{
+                    conn.close();
+                }catch(Exception e){}
+            return results;
+        }
         
         /**
          * Returns the main HashMap that is used by other methods
@@ -1995,10 +2060,46 @@ public class IDecoderClient {
         
         
         public Set<Identifier> getIdentifiersByInputID(String geneID,String organism, String[] targets, DataSource pool) throws SQLException {
-            Connection conn=pool.getConnection();
-            Set<Identifier> setOfInputIdentifiers=this.getIdentifiersByInputID(geneID, organism, targets, conn);
-            conn.close();
-            return setOfInputIdentifiers;
+            log.debug("in getIdentifiersByInputID passing in gene ID");
+
+		setTargets(targets);
+		log.debug("targetsList = "+targetsList);
+                Connection conn=pool.getConnection();
+		HashMap<Identifier, Set<Identifier>> startHashMap = doSearch(geneID,organism, pool);
+		log.debug("startHashMap = "); myDebugger.print(startHashMap);
+		Set<Identifier> setOfInputIdentifiers = new HashSet<Identifier>();
+		for (Iterator inputIDitr = startHashMap.keySet().iterator(); inputIDitr.hasNext();) {
+			Identifier inputID = (Identifier) inputIDitr.next();
+			Set<Identifier> allRelatedIdentifiers = (Set<Identifier>) startHashMap.get(inputID);
+			log.debug("allRelatedIdentifiers = "); myDebugger.print(allRelatedIdentifiers);
+
+			//Identifier thisInputIdentifier = new Identifier(inputID);
+			Set<Identifier> setOfRelatedIdentifiers = new LinkedHashSet<Identifier>();
+			Set<Identifier> setOfLocationIdentifiers = new LinkedHashSet<Identifier>();
+
+			for (Iterator identifierItr = allRelatedIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier nextIdentifier = (Identifier) identifierItr.next();
+				String identifierType = nextIdentifier.getIdentifierTypeName();
+
+				if (targetsList.contains(identifierType)) { 
+					setOfRelatedIdentifiers.add(nextIdentifier);
+				} 
+				if (targetsList.contains("Location") && 
+						((nextIdentifier.getChromosome() != null &&
+						!nextIdentifier.getChromosome().equals("")) ||
+					(nextIdentifier.getMapLocation() != null && 
+					!nextIdentifier.getMapLocation().equals("")))) {
+					setOfLocationIdentifiers.add(nextIdentifier);
+				} 
+			}
+			inputID.setRelatedIdentifiers(setOfRelatedIdentifiers);
+			inputID.setLocationIdentifiers(setOfLocationIdentifiers);
+			setOfInputIdentifiers.add(inputID);
+		}
+                try{
+                    conn.close();
+                }catch(Exception e){}
+		return setOfInputIdentifiers;
         }
         /** 
 	 * Get a Set of Identifiers for a particular list of targets, although it is not organized by target.
@@ -2732,11 +2833,44 @@ public class IDecoderClient {
 		return startSet;
 	}
         public Set<Identifier> getIdentifiersByInputIDAndTarget(String geneID,String organism, String[] targets, DataSource pool) throws SQLException {
-               Set<Identifier> startSet = null;
-                log.debug("in getIdentifiersByInputIDAndTarget passing in geneID");
-                Connection conn=pool.getConnection();
-		startSet = getIdentifiersByInputIDAndTarget(geneID,organism, targets, conn);
-                conn.close();
+               log.debug("in getIdentifiersByInputIDAndTarget passing in geneID");
+
+		Set<Identifier> startSet = getIdentifiersByInputID(geneID,organism, targets, pool);
+		log.debug("startSet here = "); myDebugger.print(startSet);
+		for (Iterator inputIDitr = startSet.iterator(); inputIDitr.hasNext();) {
+			Identifier thisIdentifier = (Identifier) inputIDitr.next();
+			Set<Identifier> relatedIdentifiers = thisIdentifier.getRelatedIdentifiers();
+			Set<Identifier> locationIdentifiers = thisIdentifier.getLocationIdentifiers();
+			thisIdentifier.setTargetHashMap(new HashMap<String, Set<Identifier>>());
+			for (Iterator identifierItr = relatedIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier relatedIdentifier = (Identifier) identifierItr.next();
+				String identifierType = relatedIdentifier.getIdentifierTypeName();
+                                //log.debug("looking for targets = "+identifierType +"::"+targetsList.contains(identifierType)+":::"+thisIdentifier.getTargetHashMap().containsKey(identifierType));
+				if (targetsList.contains(identifierType)) {
+					if (thisIdentifier.getTargetHashMap().containsKey(identifierType)) {
+                                                //log.debug("Added Target to Existing:");myDebugger.print(relatedIdentifier);
+						((Set<Identifier>) thisIdentifier.getTargetHashMap().get(identifierType)).add(relatedIdentifier);
+					} else {
+                                            //log.debug("Added Target:");myDebugger.print(relatedIdentifier);
+						Set<Identifier> newIdentifierSet = new LinkedHashSet<Identifier>();
+						newIdentifierSet.add(relatedIdentifier);
+						thisIdentifier.getTargetHashMap().put(identifierType, newIdentifierSet);
+                                                //log.debug("print related");myDebugger.print(relatedIdentifier.getRelatedIdentifiers());
+					}
+				}
+			}
+			for (Iterator identifierItr = locationIdentifiers.iterator(); identifierItr.hasNext();) {
+				Identifier locationIdentifier = (Identifier) identifierItr.next();
+				if (thisIdentifier.getTargetHashMap().containsKey("Location")) {
+					((Set<Identifier>) thisIdentifier.getTargetHashMap().get("Location")).add(locationIdentifier);
+				} else {
+					Set<Identifier> newIdentifierSet = new LinkedHashSet<Identifier>();
+					newIdentifierSet.add(locationIdentifier);
+					thisIdentifier.getTargetHashMap().put("Location", newIdentifierSet);
+				}
+			}
+		}
+		//log.debug("startSet now = "); myDebugger.print(startSet);
 		return startSet;
 	}
         

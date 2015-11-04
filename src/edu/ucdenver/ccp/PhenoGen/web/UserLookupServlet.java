@@ -27,8 +27,8 @@ public class UserLookupServlet extends HttpServlet {
 		
 		log = Logger.getRootLogger();
 		
-		String piFirstName = request.getParameter("piFirstName");
-		String piLastName = request.getParameter("piLastName");
+		String piFirstName = FilterInput.getFilteredInput(request.getParameter("piFirstName"));
+		String piLastName = FilterInput.getFilteredInput(request.getParameter("piLastName"));
 		
 		User user = new User();
 				

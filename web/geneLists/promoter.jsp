@@ -17,7 +17,7 @@
 	request.setAttribute( "selectedTabId", "promoter" );
         extrasList.add("promoter1.0.1.js");
         //extrasList.add("meme.js");
-        extrasList.add("jquery.dataTables.min.js");
+        extrasList.add("jquery.dataTables.1.10.9.min.js");
     
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");

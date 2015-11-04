@@ -36,19 +36,19 @@ if(request.getParameter("userLoggedIn")!=null&&!userLoggedIn.getUser_name().equa
 }
 
 if(request.getParameter("name")!=null){
-	name=request.getParameter("name");
+	name=FilterInput.getFilteredInput(request.getParameter("name"));
 }
 if(request.getParameter("description")!=null){
-	desc=request.getParameter("description");
+	desc=FilterInput.getFilteredInput(request.getParameter("description"));
 }
 if(request.getParameter("type")!=null){
-	type=request.getParameter("type");
+	type=FilterInput.getFilteredInput(request.getParameter("type"));
 }
 if(request.getParameter("copyFrom")!=null){
 	copyFrom=Integer.parseInt(request.getParameter("copyFrom"));
 }
 if(request.getParameter("organism")!=null){
-	org=request.getParameter("organism");
+	org=FilterInput.getFilteredInput(request.getParameter("organism"));
 }
 
 if(type.equals("blank")){

@@ -103,6 +103,12 @@
 </context-param>
 
 <context-param>
+	<param-name>mongoDbPropertiesFile</param-name>
+	<param-value>mongo_local.properties
+	</param-value>
+</context-param>
+
+<context-param>
 	<param-name>perlEnvVar</param-name>
 	<param-value>PERL5LIB=/opt/ensembl_ucsc/ensembl/modules,ORACLE_HOME=/usr/local/instantclient_10_2,TNS_ADMIN=/usr/local/instantclient_10_2,DYLD_LIBRARY_PATH=/usr/local/instantclient_10_2,LD_LIBRARY_PATH=/usr/local/instantclient_10_2,PATH=/usr/local/instantclient_10_2</param-value>
 </context-param>

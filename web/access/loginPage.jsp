@@ -16,7 +16,7 @@
 %>
 
 <% 
-	String tmpUrl=request.getParameter("url");
+	String tmpUrl=FilterInput.getFilteredLocalURLInput(request.getParameter("url"),mySessionHandler.getHost());
 	actionForm = "include/handleRedirectLogin.jsp";
 	pageDescription="Login to analyze data";
 %>

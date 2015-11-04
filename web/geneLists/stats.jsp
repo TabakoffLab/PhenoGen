@@ -5,7 +5,7 @@
 
 	request.setAttribute( "selectedTabId", "stats" );
 	extrasList.add("stats.js");
-        extrasList.add("jquery.dataTables.min.js");
+        extrasList.add("jquery.dataTables.1.10.9.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
 

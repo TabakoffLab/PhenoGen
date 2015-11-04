@@ -1,6 +1,7 @@
 <script type="text/javascript">
 //Bugsense.addExtraData( 'gene', '<%=selectedEnsemblID%>' );
 //Bugsense.addExtraData( 'region', '<%=chromosome+":"+min+"-"+max%>' );
+var section="<%=section%>";
 var urlprefix="<%=host+contextRoot%>";
 var trackString="coding,noncoding,snp,smallnc";
 var minCoord=<%=min%>;
