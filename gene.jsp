@@ -2,12 +2,12 @@
 
 <%
 	extrasList.add("detailedTranscriptInfo.js");
-	extrasList.add("jquery.dataTables.min.js");
+	extrasList.add("jquery.dataTables.1.10.9.min.js");
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
 	extrasList.add("spectrum.js");
-        extrasList.add("svg-pan-zoom.min.js");
+        extrasList.add("svg-pan-zoom.3.2.3.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
 	extrasList.add("d3.v3.min.js");
         extrasList.add("tableExport/tableExport.js");
@@ -23,29 +23,35 @@
 
 <%
 String myGene="";
+String section="";
 String myDisplayGene="";
 String defView="1";
 boolean scriptError=false;
 boolean organismError=false;
 boolean popup=false;
 if(request.getParameter("geneTxt")!=null){
-		myGene=request.getParameter("geneTxt").trim();
+                log.debug(request.getParameter("geneTxt").trim()+": MyGene before filtering.");
+		myGene=FilterInput.getFilteredInput(request.getParameter("geneTxt").trim());
+                log.debug(myGene+": MyGene after filtering.");
 		myGene=myGene.replaceAll(",","");
                 String lcmyGene=myGene.toLowerCase();
-                if(myGene.length()>150 || lcmyGene.contains("((") || lcmyGene.contains("||") || lcmyGene.contains("))")|| lcmyGene.contains("select")|| lcmyGene.contains("delete")|| lcmyGene.contains("union") || lcmyGene.contains("join") || lcmyGene.contains("from")|| lcmyGene.contains("char") ){
+                /*if(myGene.length()>150 || lcmyGene.contains("((") || lcmyGene.contains("||") || lcmyGene.contains("))")|| lcmyGene.contains("select")|| lcmyGene.contains("delete")|| lcmyGene.contains("union") || lcmyGene.contains("join") || lcmyGene.contains("from")|| lcmyGene.contains("char") ){
                     log.info("Script Submitted via Form: "+request.getRemoteAddr());
                     log.info("Contents:"+myGene);
                     myGene="";
                     action=null;
                     scriptError=true;
-                }
+                }*/
 }
 if(request.getParameter("newWindow")!=null&&request.getParameter("newWindow").equals("Y")){
 	popup=true;
 }
 
 if(request.getParameter("defaultView")!=null){
-	defView=request.getParameter("defaultView");
+	defView=FilterInput.getFilteredInput(request.getParameter("defaultView"));
+}
+if(request.getParameter("section")!=null){
+	section=FilterInput.getFilteredInput(request.getParameter("section"));
 }
 pageTitle="Genome/Transcriptome Browser "+myGene;
 pageDescription="Genome/Transcriptome Browser provides a vizualization of Microarray and RNA-Seq data along the genome as well as summarize eQTL/WGCNA data for genes and/or regions.";
@@ -117,7 +123,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 		}
 	}
 	if(request.getParameter("speciesCB")!=null){
-		myOrganism=request.getParameter("speciesCB").trim();
+		myOrganism=FilterInput.getFilteredInput(request.getParameter("speciesCB").trim());
                 if(myOrganism.length()>2){
                     myOrganism=myOrganism.substring(0,2);
                 }
@@ -150,23 +156,23 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 	}
 	
 	if(request.getParameter("auto")!=null){
-		String tmp=request.getParameter("auto");
+		String tmp=FilterInput.getFilteredInput(request.getParameter("auto"));
 		if(tmp.equals("Y")){
 			auto=true;
 		}
 	}
 	log.debug("Selected Gene="+request.getParameter("geneSelect"));
 	if(request.getParameter("geneSelect")!=null && !(request.getParameter("geneSelect").equals("")) ){
-		selectedEnsemblID=request.getParameter("geneSelect").trim();
+		selectedEnsemblID=FilterInput.getFilteredInput(request.getParameter("geneSelect").trim());
 		//selectedGene=Integer.parseInt(request.getParameter("geneSelect").trim());
 		//log.debug("Selected Gene:"+selectedGene);
 	}
 	
 	if(request.getParameter("pvalueCutoffInput")!=null){
-		pValueCutoff=Double.parseDouble(request.getParameter("pvalueCutoffInput"));
+		pValueCutoff=Double.parseDouble(FilterInput.getFilteredInput(request.getParameter("pvalueCutoffInput")));
 	}
 	if(request.getParameter("forwardPvalueCutoffInput")!=null){
-		forwardPValueCutoff=Double.parseDouble(request.getParameter("forwardPvalueCutoffInput"));
+		forwardPValueCutoff=Double.parseDouble(FilterInput.getFilteredInput(request.getParameter("forwardPvalueCutoffInput")));
 	}
 	
 	log.debug("ACTION="+action+"  region="+region+"   gene="+myGene+"   rev. pvalue="+pValueCutoff+"  for Pval="+forwardPValueCutoff);
@@ -194,16 +200,20 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 	
 			if(iDecoderAnswer!=null){
 					myIdentifierList = Arrays.asList(iDecoderAnswer.toArray((Identifier[]) new Identifier[iDecoderAnswer.size()]));
-					for(int i=0;i<myIdentifierList.size();i++){
+                                        Identifier targetIdentifier=null;
+                                        Set homologSet = null;
+					for(int i=0; i<myIdentifierList.size() && targetIdentifier==null; i++){
 						log.debug("ID LIST["+i+"]:"+((Identifier)myIdentifierList.get(i)).getIdentifier());
-					}
-					if(myIdentifierList!=null&&myIdentifierList.size()>0){
-						Identifier thisIdentifier = (Identifier)myIdentifierList.get(0);
+                                                Identifier thisIdentifier = (Identifier)myIdentifierList.get(0);
 						HashMap linksHash = thisIdentifier.getTargetHashMap();
-						Set homologSet = myIDecoderClient.getIdentifiersForTargetForOneID(linksHash, new String[] {"Ensembl ID"});
-						log.debug("linksHash size:"+linksHash.size());
+                                                log.debug("linksHash size:"+linksHash.size());
+						homologSet = myIDecoderClient.getIdentifiersForTargetForOneID(linksHash, new String[] {"Ensembl ID"});
+                                                if(homologSet!=null && homologSet.size()>0){
+                                                    targetIdentifier=thisIdentifier;
+                                                }
+					}
+					if(homologSet!=null && homologSet.size()>0){
 						homologList = myObjectHandler.getAsList(homologSet);
-		
 					}else{
 						displayNoEnsembl=true;
 					}

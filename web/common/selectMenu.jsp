@@ -3,7 +3,7 @@
         
 <%
 
-	String url=request.getParameter("menuURL").trim();
+	String url=FilterInput.getFilteredURLInput(request.getParameter("menuURL").trim());
 	String mainMenu="";
 	String specMenuOpt=url.substring(url.lastIndexOf("/")+1);
 	String mainFunc="";
@@ -130,6 +130,12 @@
 	}catch(Exception e){
 		
 	}
+   //Github is the only link referenced with a full URL.  There should be nothing else we link to from the menu with a full URL if there is redirect to the homepage.
+    if(url.startsWith("http")){
+        if(!url.equals("https://github.com/TabakoffLab/PhenoGen")){
+            url=contextRoot+"index.jsp";
+        }
+    }
     response.sendRedirect(url);           
 	
 %>

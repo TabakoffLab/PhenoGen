@@ -83,6 +83,7 @@ public class GeneDataTools {
     private String dbPropertiesFile="";
     private String ensemblDBPropertiesFile="";
     private String ucscDBVerPropertiesFile="";
+    private String mongoDBPropertiesFile="";
     private int minCoord=0;
     private int maxCoord=0;
     FileHandler myFH=new FileHandler();
@@ -1497,6 +1498,14 @@ public class GeneDataTools {
             String ensPort=myENSProperties.getProperty("PORT");
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
+            
+            File mongoPropertiesFile = new File(mongoDBPropertiesFile);
+            Properties myMongoProperties = new Properties();
+            myMongoProperties.load(new FileInputStream(mongoPropertiesFile));
+            String mongoHost=myMongoProperties.getProperty("HOST");
+            String mongoUser=myMongoProperties.getProperty("USER");
+            String mongoPassword=myMongoProperties.getProperty("PASSWORD");
+            
             /*String refSeqDB="Rn_refseq_5";
             if(organism.equals("Mm")){
                 refSeqDB="Mm_refseq_5";
@@ -1516,7 +1525,7 @@ public class GeneDataTools {
             }
             
             //construct perl Args
-            String[] perlArgs = new String[20];
+            String[] perlArgs = new String[23];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Track.pl";
             perlArgs[2] = tmpOutputDir;
@@ -1541,6 +1550,9 @@ public class GeneDataTools {
             perlArgs[17] = ucscDsn;
             perlArgs[18] = ucscUser;
             perlArgs[19] = ucscPassword;
+            perlArgs[20] = mongoHost;
+            perlArgs[21] = mongoUser;
+            perlArgs[22] = mongoPassword;
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
             String[] envVar=perlEnvVar.split(",");
@@ -2980,6 +2992,7 @@ public class GeneDataTools {
         this.dbPropertiesFile = (String)session.getAttribute("dbPropertiesFile");
         this.ensemblDBPropertiesFile = (String)session.getAttribute("ensDbPropertiesFile");
         this.ucscDBVerPropertiesFile = (String)session.getAttribute("ucscDbPropertiesFile");
+        this.mongoDBPropertiesFile = (String)session.getAttribute("mongoDbPropertiesFile");
         log.debug("UCSC File:"+ucscDBVerPropertiesFile);
         if(session.getAttribute("maxRThreadCount")!=null){
             this.maxThreadRunning = Integer.parseInt((String)session.getAttribute("maxRThreadCount"));

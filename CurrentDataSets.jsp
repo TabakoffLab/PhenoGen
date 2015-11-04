@@ -1,8 +1,8 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 <%  pageTitle="Current Datasets";
     pageDescription="A list of public datasets available for download or analysis";
-    extrasList.add("jquery.dataTables.min.js");
-    extrasList.add("jquery.dataTables.min.css");
+    extrasList.add("jquery.dataTables.1.10.9.min.js");
+    extrasList.add("jquery.dataTables.1.10.9.min.css");
 %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <div style="margin:10px;" style="width:100%">

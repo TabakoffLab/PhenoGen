@@ -393,7 +393,7 @@ sub readRNAIsoformDataFromDB{
 
 
 sub readRNACountsDataFromMongo{
-	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;
+	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$dsn,$usr,$passwd,$mongoHost,$mongoUsr,$mongoPwd)=@_;
 	
 	my $org="Mm";
 	if($organism eq "Rat"){
@@ -429,8 +429,11 @@ sub readRNACountsDataFromMongo{
 	my $dsid=$sharedID;
 	
 	my %countHOH;
-	my $client     = MongoDB::Connection->new(host => 'mongodb://phenogen.ucdenver.edu:27017');
-	my $database   = $client->get_database( 'shared' );
+        print "mongohost:".$mongoHost."\n";
+        print "mongouser:".$mongoUsr."\n";
+        print "mongopassword:".$mongoPwd."\n";
+	my $client = MongoDB::MongoClient->new(host => $mongoHost,username => $mongoUsr, password => $mongoPwd, db_name => 'shared');
+        my $database   = $client->get_database( 'shared' );
 	my $col = $database->get_collection( 'RNA_COUNTS_'.$dsid );
 	
 	print "RNA_COUNTS_$dsid\n";

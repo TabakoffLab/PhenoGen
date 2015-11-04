@@ -5,7 +5,7 @@
 	pool=(DataSource)session.getAttribute("dbPool");
 
 	request.setAttribute( "selectedStep", "2" );
-	extrasList.add("jquery.dataTables.min.js");
+	extrasList.add("jquery.dataTables.1.10.9.min.js");
 	extrasList.add("typeOfAnalysis.js");
 	extrasList.add("jquery.tooltipster.min.js");
 	extrasList.add("tooltipster.min.css");

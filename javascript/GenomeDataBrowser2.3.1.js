@@ -5975,7 +5975,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}else if(that.trackClass.indexOf("heart")>-1){
 				lblTissue="Heart";
 			}
-			lbl=lblTissue+" Small RNA";
+			//lbl=lblTissue+" Small RNA";
+			lbl=" Small RNA";
 			lbltxSuffix="";
 		}else if(that.trackClass=="liverTotal"){
 			lbl="Liver RNA-Seq Reconstruction ";

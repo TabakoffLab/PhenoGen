@@ -152,7 +152,7 @@ sub createBinnedData{
 sub createXMLFile
 {
 	# Read in the arguments for the subroutine	
-	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd,$ucscDsn,$ucscUsr,$ucscPasswd)=@_;
+	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd,$ucscDsn,$ucscUsr,$ucscPasswd,$mongoDsn,$mongoUser,$mongoPasswd)=@_;
 	
 	my $scriptStart=time();
 	
@@ -177,7 +177,7 @@ sub createXMLFile
 		
 		my $rnaCountRef;
 
-                $rnaCountRef=readRNACountsDataFromMongo($chromosome,$species,$publicID,$panel,$type,$roundMin,$roundMax,$dsn,$usr,$passwd);
+                $rnaCountRef=readRNACountsDataFromMongo($chromosome,$species,$publicID,$panel,$type,$roundMin,$roundMax,$dsn,$usr,$passwd,$mongoDsn,$mongoUser,$mongoPasswd);
 		
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
@@ -415,7 +415,10 @@ sub createXMLFile
         my $arg16=$ARGV[15];
         my $arg17=$ARGV[16];
         my $arg18=$ARGV[17];
+        my $arg19=$ARGV[18];
+        my $arg20=$ARGV[19];
+        my $arg21=$ARGV[20];
 
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18);
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20,$arg21);
 
 exit 0;

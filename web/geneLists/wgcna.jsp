@@ -12,9 +12,9 @@
 
 <%
         extrasList.add("d3.v3.min.js");
-        extrasList.add("jquery.dataTables.js");
+        extrasList.add("jquery.dataTables.1.10.9.min.js");
         extrasList.add("wgcnaBrowser1.0.7.js");
-        extrasList.add("svg-pan-zoom.min.js");
+        extrasList.add("svg-pan-zoom.3.2.3.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
         //extrasList.add("jquery.dataTables.min.css");
