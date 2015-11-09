@@ -56,9 +56,9 @@
 
 			String password = "";
 			if (emailAddress != null && !emailAddress.equals("")) {
-				password = myUser.getUserPassword(emailAddress, dbConn);
+				password = myUser.getUserPassword(emailAddress, pool);
 			} else {
-				String[] values = myUser.getUserPassword(firstName, lastName, dbConn);
+				String[] values = myUser.getUserPassword(firstName, lastName, pool);
 				if (values != null) {
 					password = values[0];
 					emailAddress = values[1];
@@ -76,7 +76,7 @@
 				try {
 					myEmail.sendEmail();
 								mySessionHandler.createSessionActivity("-99",
-						firstName + " " + lastName + " requested password be sent to " + emailAddress, dbConn); 
+						firstName + " " + lastName + " requested password be sent to " + emailAddress, pool); 
 				} catch (Exception e) {
 					log.error("exception while trying to send message notifying user of password", e);
 				}

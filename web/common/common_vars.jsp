@@ -92,5 +92,5 @@
 	
 	Connection dbConn=null;
 	DataSource pool=null;
-	
+	boolean dbUnavail=false;
 %>

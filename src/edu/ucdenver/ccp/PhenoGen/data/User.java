@@ -450,7 +450,7 @@ public class User{
 	//
 	// returns whether this user is a principal investigator 
 	//
-  	public boolean checkPI(Connection conn) throws SQLException {
+  	public boolean checkPI(DataSource pool) throws SQLException {
 	
 		log.debug("in checkPI");
         	String query =
@@ -459,6 +459,7 @@ public class User{
 			"where pi_user_id = ?";
 
 		boolean principal_investigator = false;
+                Connection conn=pool.getConnection();
 		Results myResults = new Results(query, this.user_id, conn);
 
         	int subordinates = myResults.getIntValueFromFirstRow();
@@ -471,9 +472,12 @@ public class User{
 		}
 
         	myResults.close();
-
+                try{
+                    conn.close();
+                }catch(Exception e){}
 		return principal_investigator;
 	}
+        
         public boolean checkIsUserPublic(int userID,Connection conn) throws SQLException {
 	
 		log.debug("in checkIsUserPublic");
@@ -497,7 +501,7 @@ public class User{
 		return ispublic;
 	}
 
-  public boolean checkRole(String user_name, String password, String role, Connection conn) throws SQLException {
+  public boolean checkRole(String user_name, String password, String role, DataSource pool) throws SQLException {
 
 		log.debug("in checkRole. user_name = "+ user_name + ", and role = "+role); 
 		String query = 
@@ -514,13 +518,17 @@ public class User{
 		//log.debug("query = "+ query);
 	
 		boolean hasRole = false;
-
+                Connection conn=pool.getConnection();
 		Results myResults = new Results(query, new Object[] {user_name, password, role}, conn);
 
         	String value = myResults.getStringValueFromFirstRow();
 
         	myResults.close();
-
+                
+                try{
+                    conn.close();
+                }catch(Exception e){}
+                
 		if (value.equals("x")) {
 			log.debug("user does have that role ");
 			hasRole = true;			
@@ -1049,14 +1057,14 @@ public class User{
 	 * @throws            SQLException if an error occurs while accessing the database
 	 * @return	the user's password
 	 */
-	 public String getUserPassword(String email, Connection conn) throws SQLException {
+	 public String getUserPassword(String email, DataSource pool) throws SQLException {
         	log.debug("in getUserPassword");
 
         	String query =
                 	"select u.password "+
                 	"from users u "+
                 	"where upper(u.email) = ?";
-
+                Connection conn=pool.getConnection();
 		Results myResults = new Results(query, email.toUpperCase(), conn);
 
 		String[] dataRow;
@@ -1065,7 +1073,9 @@ public class User{
 			password = dataRow[0];
 		}
 		myResults.close();
-
+                try{
+                    conn.close();
+                }catch(Exception e){}
         	return password;
 	}
 
@@ -1077,7 +1087,7 @@ public class User{
 	 * @throws            SQLException if an error occurs while accessing the database
 	 * @return	an array containing the user's password in [0] and the email in [1]
 	 */
-	 public String[] getUserPassword(String first_name, String last_name, Connection conn) throws SQLException {
+	 public String[] getUserPassword(String first_name, String last_name, DataSource pool) throws SQLException {
         	log.debug("in getUserPassword passing in first and last name");
 
         	String query =
@@ -1085,7 +1095,7 @@ public class User{
                 	"from users u "+
                 	"where upper(u.first_name) = ? "+
                 	"and upper(u.last_name) = ?";
-
+                Connection conn=pool.getConnection();
 		Results myResults = 
 			new Results(query, first_name.toUpperCase(), last_name.toUpperCase(), conn);
 
@@ -1097,7 +1107,9 @@ public class User{
 			values[1] = dataRow[1];
 		}
 		myResults.close();
-
+                try{
+                    conn.close();
+                }catch(Exception e){}
         	return values;
 	}
 
@@ -1167,7 +1179,7 @@ public class User{
      * @throws            SQLException if an error occurs while accessing the database
      * @return	a User object
      */
-    public User getUser(String user_name, String password, Connection conn) throws SQLException {
+    public User getUser(String user_name, String password, DataSource pool) throws SQLException {
 
         log.debug("in getUser passing in user_name and pwd");
 
@@ -1180,7 +1192,7 @@ public class User{
                 + "where user_name = ? "
                 + "and password = ? "
                 + "and approved = 'Y'";
-
+        Connection conn=pool.getConnection();
         Results myResults = new Results(query, new Object[]{user_name, password}, conn);
 
         int user_id = myResults.getIntValueFromFirstRow();
@@ -1197,7 +1209,9 @@ public class User{
             log.debug("user does not exist.");
             thisUser.setUser_id(user_id);
         }
-
+        try{
+            conn.close();
+        }catch(Exception e){}
         return thisUser;
     }
 

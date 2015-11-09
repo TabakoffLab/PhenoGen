@@ -143,12 +143,21 @@
             pool=mySessionHandler.getDBPool();
             session.setAttribute("dbPool",pool);
         }
+        if(pool!=null){
+            try{
+                Connection test=pool.getConnection();
+                myUser.getUser("public",pool);
+                test.close();
+            }catch(Exception e){
+                dbUnavail=true;
+            }
+        }
 %>
 	
 
 
 <%-- this file has to be after the logger initialization --%>
-<%@ include file="/web/common/dbutil.jsp"  %>
+<%--<%@ include file="/web/common/dbutil.jsp"  %>--%>
 
 <%@ include file="/web/common/alertMsgSetup.jsp" %>
 
