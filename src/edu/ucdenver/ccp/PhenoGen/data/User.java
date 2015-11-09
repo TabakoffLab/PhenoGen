@@ -599,6 +599,39 @@ public class User{
 		return myUsers;
 	}
 
+        /**
+	 * Gets the principal investigators.
+	 * @param conn	the database connection
+	 * @throws            SQLException if an error occurs while accessing the database
+	 * @return	a LinkedHashMap of the PI's user_id mapped to the name
+	 */
+	public LinkedHashMap getAllPrincipalInvestigators(DataSource pool) throws SQLException {
+		String query =
+			"select pi.user_id, "+
+			"pi.last_name||', '||pi.title||' '||pi.first_name "+
+			"from users pi "+
+			"where exists ("+
+			"	select 'x' "+
+			"	from users u "+
+			"	where u.pi_user_id = pi.user_id)  "+
+			"and pi.approved = 'Y' "+
+			"order by pi.last_name";
+                                                                                                                      
+		log.debug("in getAllPrincipalInvestigators");
+		//log.debug("query = "+query);
+                Connection conn=pool.getConnection();                                                                                                     
+		Results myResults = new Results(query, conn);
+		String[] dataRow;
+		LinkedHashMap<String, String> piHash = new LinkedHashMap<String, String>();
+		while ((dataRow = myResults.getNextRow()) != null) {
+                        piHash.put(dataRow[0], dataRow[1]);
+                }
+                try{
+                    conn.close();
+                }catch(Exception e){}
+		return piHash;
+	}
+        
 	/**
 	 * Gets the principal investigators.
 	 * @param conn	the database connection
@@ -737,6 +770,36 @@ public class User{
         	return userInformation;
 	}
 
+        /**
+	 * Gets the user_name for a user_id.
+	 * @param user_id	the identifier for a user
+	 * @param conn	the database connection
+	 * @throws            SQLException if an error occurs while accessing the database
+	 * @return	the user_name of the user
+	 */
+	public String getUser_name(int user_id, DataSource pool) throws SQLException {
+
+		log.debug("in getUser_name. ");
+
+		String query = 
+			"select user_name "+
+			"from users "+
+			"where user_id = ?";
+
+		//log.debug("query = " + query);
+                Connection conn=pool.getConnection();
+		Results myResults = new Results(query, user_id, conn);
+
+        	String user_name = myResults.getStringValueFromFirstRow();
+
+        	myResults.close();
+                try{
+                    conn.close();
+                }catch(Exception e){}
+                
+		return user_name;
+	}
+        
 	/**
 	 * Gets the user_name for a user_id.
 	 * @param user_id	the identifier for a user
@@ -783,6 +846,62 @@ public class User{
 
 
 	/**
+	 * Gets the User object for this user_id
+	 * @param user_id the identifier of the user
+	 * @param conn	the database connection
+	 * @throws            SQLException if an error occurs while accessing the database
+	 * @return	a User object
+	 */
+	public User getUser(int user_id, DataSource pool) throws SQLException {
+
+		//log.debug("in getUser passing in user_id");
+
+        	String query =
+			"select nvl(title,' '), first_name, middle_name, last_name, "+
+                	"user_name, password, email, telephone, fax, "+
+                	"institution, lab_name, box, street, city, "+
+                	"state, zip, country, pi_user_id "+
+                	"from users "+
+                	"where user_id = ?";
+                Connection conn=pool.getConnection();
+        	Results myResults = new Results(query, user_id, conn);
+        	User myUser = new User();
+
+        	String[] dataRow;
+
+        	while ((dataRow = myResults.getNextRow()) != null) {
+
+			myUser.setUser_id(user_id);
+                	myUser.setTitle(myDbUtils.setToEmptyIfNull(dataRow[0]));
+                	myUser.setFirst_name(dataRow[1]);
+                	myUser.setMiddle_name(dataRow[2]);
+                	myUser.setLast_name(dataRow[3]);
+                	myUser.setUser_name(dataRow[4]);
+                	myUser.setPassword(dataRow[5]);
+              		myUser.setEmail(dataRow[6]);
+                	myUser.setTelephone(dataRow[7]);
+                	myUser.setFax(dataRow[8]);
+                	myUser.setInstitution(dataRow[9]);
+                	myUser.setLab_name(dataRow[10]);
+                	myUser.setBox(dataRow[11]);
+                	myUser.setStreet(dataRow[12]);
+                	myUser.setCity(dataRow[13]);
+                	myUser.setState(dataRow[14]);
+                	myUser.setZip(dataRow[15]);
+                	myUser.setCountry(dataRow[16]);
+                	myUser.setPi_user_id(Integer.parseInt(dataRow[17]));
+			myUser.setFull_name(dataRow[0] + " " + dataRow[1] + " " + dataRow[3]);
+			myUser.setFormal_name(dataRow[0] + " " + dataRow[3]);
+			myUser.setSorting_name(dataRow[3] + ", "+dataRow[0] + " " + dataRow[1]);
+
+        	}
+        	myResults.close();
+                try{
+                    conn.close();
+                }catch(Exception e){}
+        	return myUser;
+	}
+        /**
 	 * Gets the User object for this user_id
 	 * @param user_id the identifier of the user
 	 * @param conn	the database connection
@@ -837,6 +956,24 @@ public class User{
         	return myUser;
 	}
 
+        /**
+	 * Gets the User object for this user_name
+	 * @param user_name the user_name of the user
+	 * @param conn	the database connection
+	 * @throws            SQLException if an error occurs while accessing the database
+	 * @return	a User object
+	 */
+	public User getUser(String user_name, DataSource pool) throws SQLException {
+	
+		//log.debug("in getUser as a User object passing in user_name");
+
+		int user_id = getUser_id(user_name, pool);
+
+        	User myUser = getUser(user_id, pool);
+
+        	return myUser;
+	}
+        
 	/**
 	 * Gets the User object for this user_name
 	 * @param user_name the user_name of the user
@@ -964,6 +1101,37 @@ public class User{
         	return values;
 	}
 
+         
+        /**
+	 * Checks to see if a user with the same user_name or first and last name already exists.
+	 * @param myUser	the User object being tested
+	 * @param conn	the database connection
+	 * @throws            SQLException if an error occurs while accessing the database
+	 * @return	the user_id of a user that currently exists
+	 */
+	   public int checkUserExists(User myUser, DataSource pool) throws SQLException {
+                log.debug("in checkUserExists");
+
+                String query =
+                        "select user_id "
+                        + "from users "
+                        + "where (user_name = ? "
+                        + "or (first_name = ? and last_name = ?))";
+                Connection conn=pool.getConnection();
+                Results myResults = new Results(query, new Object[]{myUser.getUser_name(), myUser.getFirst_name(), myUser.getLast_name()}, conn);
+
+                int user_id = myResults.getIntValueFromFirstRow();
+
+                user_id = (user_id == -99 ? -1 : user_id);
+
+                myResults.close();
+                try{
+                    conn.close();
+                }
+                catch(Exception e){}
+                return user_id;
+            }
+         
 	/**
 	 * Checks to see if a user with the same user_name or first and last name already exists.
 	 * @param myUser	the User object being tested
@@ -972,24 +1140,24 @@ public class User{
 	 * @return	the user_id of a user that currently exists
 	 */
 	   public int checkUserExists(User myUser, Connection conn) throws SQLException {
-        log.debug("in checkUserExists");
+                log.debug("in checkUserExists");
 
-        String query =
-                "select user_id "
-                + "from users "
-                + "where (user_name = ? "
-                + "or (first_name = ? and last_name = ?))";
+                String query =
+                        "select user_id "
+                        + "from users "
+                        + "where (user_name = ? "
+                        + "or (first_name = ? and last_name = ?))";
 
-        Results myResults = new Results(query, new Object[]{myUser.getUser_name(), myUser.getFirst_name(), myUser.getLast_name()}, conn);
+                Results myResults = new Results(query, new Object[]{myUser.getUser_name(), myUser.getFirst_name(), myUser.getLast_name()}, conn);
 
-        int user_id = myResults.getIntValueFromFirstRow();
+                int user_id = myResults.getIntValueFromFirstRow();
 
-        user_id = (user_id == -99 ? -1 : user_id);
+                user_id = (user_id == -99 ? -1 : user_id);
 
-        myResults.close();
+                myResults.close();
 
-        return user_id;
-    }
+                return user_id;
+            }
 
     /**
      * Gets the User object for this user_name and password combination
@@ -1033,14 +1201,18 @@ public class User{
         return thisUser;
     }
 
-    public int createUser(User myUser, Connection conn) throws SQLException {
+    public int createUser(User myUser, DataSource pool) throws SQLException {
         user_id=-1;
         if (myUser.getFirst_name().equals(myUser.getLast_name())) {
             log.debug("**************************CREATE USER CALLED WITH SAME FIRST AND LAST NAME"+myUser.toFullString());
         } else {
-
+            Connection conn=pool.getConnection();
             user_id = myDbUtils.getUniqueID("users_seq", conn);
-
+            
+            try{
+                conn.close();
+            }catch(Exception e){}
+            
             String query =
                     "insert into users "
                     + "(user_id, title, first_name, middle_name, last_name, "
@@ -1060,7 +1232,7 @@ public class User{
             try {
 
                 java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-
+                conn=pool.getConnection();
                 pstmt = conn.prepareStatement(query,
                         ResultSet.TYPE_SCROLL_INSENSITIVE,
                         ResultSet.CONCUR_UPDATABLE);
@@ -1095,7 +1267,9 @@ public class User{
                 pstmt.close();
 
                 myUser.setUser_id(user_id);
-
+                try{
+                    conn.close();
+                }catch(Exception e){}
             } catch (SQLException e) {
                 log.error("In exception of createUser", e);
                 throw e;
@@ -1111,7 +1285,7 @@ public class User{
 	 * @param conn	the database connection
 	 * @throws            SQLException if an error occurs while accessing the database
 	 */
-	public void createTSUBMTR (User myUser, Connection conn) throws SQLException {
+	public void createTSUBMTR (User myUser, DataSource pool) throws SQLException {
 
 		// The record created in the TSUBMTR table defaults the country 
 		// code to 275, which is the code for USA.
@@ -1138,7 +1312,7 @@ public class User{
 		log.debug("createTSUBMTR.query = "+query);
 
                 java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-
+                Connection conn=pool.getConnection();
         	PreparedStatement pstmt = conn.prepareStatement(query, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
 						ResultSet.CONCUR_UPDATABLE);
@@ -1160,7 +1334,9 @@ public class User{
                 pstmt.setTimestamp(16, now);
 
                 pstmt.executeUpdate();
-
+                try{
+                conn.close();
+                }catch(Exception e){}
   	}
 
 	/**
@@ -1758,7 +1934,7 @@ public class User{
 	 * @param conn      the connection to the database
 	 * @throws            Exception if an error occurs updating the database or sending email
 	 */
-	 public void updateRegistrationApproval(User requestor, boolean approval, String mainURL, Connection conn) throws Exception {
+	 public void updateRegistrationApproval(User requestor, boolean approval, String mainURL, DataSource pool) throws Exception {
 
 	Email myEmail = new Email();
 	log.debug("requestor is:"); print(requestor);
@@ -1783,12 +1959,15 @@ public class User{
                         "set approved = 'Y' "+
                         "where user_id = ?";
 		//log.debug("query = " + query);
+                Connection conn=pool.getConnection();
 	        PreparedStatement pstmt = conn.prepareStatement(query,
                                         ResultSet.TYPE_SCROLL_INSENSITIVE,
                                         ResultSet.CONCUR_UPDATABLE);
 		pstmt.setInt(1, requestor.getUser_id());
 		pstmt.executeUpdate();
-
+                try{
+                    conn.close();
+                }catch(Exception e){}
 		contentMsg = approvalMsg;
 	}
   }

@@ -135,6 +135,14 @@
 	String adminEmail = mySessionHandler.getAdminEmail();
 	String maxRThreadCount= mySessionHandler.getMaxRThreadCount();
 	
+
+        if(session.getAttribute("dbPool")!=null){
+		pool=(DataSource)session.getAttribute("dbPool");
+		log.debug("DB POOL SETUP");
+	}else{
+            pool=mySessionHandler.getDBPool();
+            session.setAttribute("dbPool",pool);
+        }
 %>
 	
 
