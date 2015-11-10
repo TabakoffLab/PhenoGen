@@ -29,6 +29,16 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
+         <div class="whats_new version"><p><h3>Version: v2.16.1</h3><BR /> Updated:11/10/2015</p></div>
+       <ul>
+                                    <li><span class="highlight-dark">Security Enhancements</span>
+                                        The biggest change that you will see is that we've redirected you to https://phenogen.ucdenver.edu . Please update your bookmarks as we're now requiring use of HTTPS.  This will encrypt all of the data sent between you and our server.
+                                        <BR><BR>We're hoping to be able to offer new features such as registering and/or signing in using a Google account or allowing users to store data on Google Drive.
+                                        Our next major update will include microarrays and RNA-Seq all updated to Rn6, although in the browser both Rn5 and Rn6 will be available.
+                                    </li>
+                                    
+        </ul>
+        <hr/>
        <div class="whats_new version"><p><h3>Version: v2.16.0</h3><BR /> Updated:7/21/2015</p></div>
        <ul>
                                     <li><span class="highlight-dark">Gene Lists</span>

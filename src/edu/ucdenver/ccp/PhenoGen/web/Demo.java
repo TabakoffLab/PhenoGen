@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
@@ -41,11 +42,12 @@ public class Demo {
         this.time=time;
     }
     
-    public HashMap getAllDemos(Connection dbConn){
+    public HashMap getAllDemos(DataSource pool){
         HashMap ret=new HashMap();
         String query="select * from demo_files where visible=1";
         try{
-            PreparedStatement ps = dbConn.prepareStatement(query);
+            Connection conn=pool.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                     String title=rs.getString(1);
@@ -70,23 +72,32 @@ public class Demo {
                     }
             }
             ps.close();
+            
+            try{
+                conn.close();
+            }catch(Exception e){}
+            
         }catch(SQLException e){
             log.error("Error getting Demos.",e);
         }
         return ret;
     }
     
-    public ArrayList<String> getAllDemoCategories(Connection dbConn){
+    public ArrayList<String> getAllDemoCategories(DataSource pool){
         ArrayList<String> ret=new ArrayList<String>();
         String query="select unique category from demo_files where visible=1";
         try{
-            PreparedStatement ps = dbConn.prepareStatement(query);
+            Connection conn=pool.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                   String tmp=rs.getString(1);
                   ret.add(tmp);
             }
             ps.close();
+            try{
+                conn.close();
+            }catch(Exception e){}
         }catch(SQLException e){
             log.error("Error getting Demo categories.",e);
         }

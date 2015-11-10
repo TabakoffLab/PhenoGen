@@ -1588,7 +1588,7 @@ public class User{
         	return myResults;
 	}
 
-  public void updateUser (User myUser, Connection conn) throws SQLException {
+  public void updateUser (User myUser, DataSource pool) throws SQLException {
 
         String query =
                 "update users "+
@@ -1604,7 +1604,7 @@ public class User{
 
         try {
                 java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-
+                Connection conn=pool.getConnection();
                 pstmt = conn.prepareStatement(query, 
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
@@ -1631,7 +1631,9 @@ public class User{
                 pstmt.setInt(20, myUser.getUser_id());
 
                 pstmt.executeUpdate();
-
+                try{
+                    conn.close();
+                }catch(Exception e){}
         } catch (SQLException e) {
 		log.error("In exception of updateUser", e);
 		throw e;

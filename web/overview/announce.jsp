@@ -12,6 +12,12 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>PhenoGen v2.16.1 11/10/2015</H2>
+                        <div style="margin-left:5px;">
+                            <span style=" font-weight: bold;">Security Updates</span> - We now require using HTTPS so all of the data transmitted between your browser and our server is encrypted.  Update your bookmarks.<BR>
+                            <span style=" font-weight: bold;">Future Update:</span> Rn6 - We are still working on updating the Microarrays and RNA-Seq data to Rn6.  Our next major update will include Rn6.
+                              
+                        </div>
                         <H2>PhenoGen v2.16 7/21/2015</H2>
                         <div style="margin-left:5px;">
                             <ul>

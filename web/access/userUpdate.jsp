@@ -26,7 +26,7 @@
 
 	log.info("in userUpdate.  user = " + user);
 
-	myOriginalUser = myOriginalUser.getUser(userID, dbConn);
+	myOriginalUser = myOriginalUser.getUser(userID, pool);
 
 	if (myOriginalUser.getUser_name().equals("guest")) {
 		//Error - "Can't update guest's information
@@ -51,7 +51,7 @@
 
 		myUpdatedUser.setUser_name(myOriginalUser.getUser_name());
 		myUpdatedUser.setState(request.getParameter("state"));
-                myUpdatedUser.updateUser(myUpdatedUser, dbConn);
+                myUpdatedUser.updateUser(myUpdatedUser, pool);
 
                 session.setAttribute("userID", Integer.toString(userID));
 		session.setAttribute("full_name", myUpdatedUser.getTitle() + 
@@ -63,11 +63,11 @@
 		session.setAttribute("userName", myUpdatedUser.getUser_name());
 		log.debug ("emailAddress= "+ myUpdatedUser.getEmail());
 
-                userLoggedIn = myUser.getUser(userLoggedIn.getUser_id(), dbConn);
+                userLoggedIn = myUser.getUser(userLoggedIn.getUser_id(), pool);
 		userLoggedIn.setUserMainDir(userFilesRoot);
 		session.setAttribute("userLoggedIn", userLoggedIn);
 
-		mySessionHandler.createActivity("Updated user profile.", dbConn);
+		mySessionHandler.createActivity("Updated user profile.", pool);
 
 		//Success - "User Updated"
 		session.setAttribute("successMsg", "REG-004");
@@ -179,7 +179,7 @@
 				
 				
 				<%
-				User piUser = myOriginalUser.getUser(myOriginalUser.getPi_user_id(), dbConn);
+				User piUser = myOriginalUser.getUser(myOriginalUser.getPi_user_id(), pool);
 				String PIFullname = piUser.getPi_user_id()==piUser.getUser_id()?"Self":piUser.getFull_name();
 				%>
 				
