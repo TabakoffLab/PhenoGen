@@ -33,7 +33,7 @@
     <div id="welcome" style="height:575px; width:946px; overflow:auto;">
 
 	
-                        <%if(dbConn==null){%>
+                        <%if(dbUnavail){%>
 							<h2>Database is unavailable</h2>
                             <p>The database is currently unavailable.  The administrator has been notified and every effort will be made to make the database available as soon as possible.</p>
 						<%} else{%>

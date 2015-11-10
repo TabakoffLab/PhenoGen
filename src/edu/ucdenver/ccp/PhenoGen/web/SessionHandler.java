@@ -134,6 +134,23 @@ public class SessionHandler {
 		//log.debug("instantiated SessionHandler setting session variable");
 	}
 
+        
+        public DataSource getDBPool(){
+            try {
+                // Create a JNDI Initial context to be able to lookup the DataSource
+                InitialContext ctx = new InitialContext();
+                // Lookup the DataSource, which will be backed by a pool
+                //   that the application server provides.
+                pool = (DataSource)ctx.lookup("java:comp/env/jdbc/"+this.dbMain);
+                if (pool == null){
+                   log.error("Unknown DataSource 'jdbc/"+this.dbMain+"'",new Exception("Unknown DataSource 'jdbc/"+this.dbMain+"'"));
+                }
+            } catch (NamingException ex) {
+                           ex.printStackTrace();
+            }
+            return pool;
+        }
+        
 	public HttpSession getSession() {
 		log.debug("in getSession");
 		return session;
@@ -595,8 +612,34 @@ public class SessionHandler {
             Connection conn=null;
             
             try{
-                conn=pool.getConnection();
-                createSession(mySessionHandler,conn);
+                
+                String query =
+                        "insert into sessions "+
+                        "(session_id, user_id, login_time) "+
+                        "values "+
+                        "(?, ?, ?)";
+
+                PreparedStatement pstmt = null;
+
+                log.debug("in createSession");  
+                //log.debug("query = "+ query);  
+                try {
+                        java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+                        conn=pool.getConnection();
+                        pstmt = conn.prepareStatement(query, 
+                                                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                ResultSet.CONCUR_UPDATABLE);
+                        pstmt.setString(1, mySessionHandler.getSession_id());
+                        pstmt.setInt(2, mySessionHandler.getUser_id());
+                        pstmt.setTimestamp(3, now);
+
+                        pstmt.executeUpdate();
+                        pstmt.close();
+
+                } catch (SQLException e) {
+                        log.error("In exception of createSession", e);
+                        throw e;
+                }
                 conn.close();
             }catch(SQLException e){
                 if(conn!=null && !conn.isClosed()){
@@ -683,8 +726,25 @@ public class SessionHandler {
             Connection conn=null;
             
             try{
+                
+                log.debug("in updateLoginSession.  SessionID = "+this.getSession_id());
+
+		
+                String query =
+                        "update sessions "+
+                        "set  user_id = ? "+
+                        "where session_id = ?";
+
                 conn=pool.getConnection();
-                updateLoginSession(mySessionHandler,conn);
+                PreparedStatement pstmt = conn.prepareStatement(query, 
+                                                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                ResultSet.CONCUR_UPDATABLE);
+                pstmt.setInt(1, mySessionHandler.getUser_id());
+                pstmt.setString(2, this.getSession_id());
+
+                pstmt.executeUpdate();
+
+		
                 conn.close();
             }catch(SQLException e){
                 if(conn!=null && !conn.isClosed()){

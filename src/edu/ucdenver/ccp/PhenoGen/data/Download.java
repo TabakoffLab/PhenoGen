@@ -16,6 +16,7 @@ import edu.ucdenver.ccp.util.Debugger;
 import edu.ucdenver.ccp.util.ObjectHandler;
 
 import edu.ucdenver.ccp.util.sql.Results;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -88,7 +89,35 @@ public class Download {
 		return this.sortOrder;
 	}
 
+        /**
+	 * Gets all the Downloads
+	 * @param conn 	the database connection
+	 * @throws SQLException	if an error occurs while accessing the database
+	 * @return	an array of Download objects
+	 */
+	public Download[] getAllDownloads(DataSource pool) throws SQLException {
 
+		log.debug("In getAllDownloads");
+
+		String query = 
+			"select "+
+			"download_id, url, to_char(create_date, 'dd-MON-yyyy hh24:mi:ss') "+
+			"from Downloads "+ 
+			"order by download_id";
+
+		//log.debug("query =  " + query);
+                Connection conn=pool.getConnection();
+		Results myResults = new Results(query, conn);
+
+		Download[] myDownloads = setupDownloadValues(myResults);
+
+		myResults.close();
+                try{
+                    conn.close();
+                }catch(Exception e){}
+		return myDownloads;
+	}
+        
 	/**
 	 * Gets all the Downloads
 	 * @param conn 	the database connection
@@ -116,6 +145,38 @@ public class Download {
 		return myDownloads;
 	}
 
+        
+        /**
+	 * Gets the Download object for this download_id
+	 * @param download_id	 the identifier of the Download
+	 * @param conn 	the database connection
+	 * @throws SQLException	if an error occurs while accessing the database
+	 * @return	a Download object
+	 */
+	public Download getDownload(int download_id, DataSource pool) throws SQLException {
+
+		log.debug("In getOne Download");
+
+		String query = 
+			"select "+
+			"download_id, url, to_char(create_date, 'dd-MON-yyyy hh24:mi:ss') "+
+			"from Downloads "+ 
+			"where download_id = ?";
+
+		//log.debug("query =  " + query);
+                Connection conn=pool.getConnection();
+		Results myResults = new Results(query, download_id, conn);
+
+		Download myDownload = setupDownloadValues(myResults)[0];
+
+		myResults.close();
+                try{
+                    conn.close();
+                }catch(Exception e){}
+                
+		return myDownload;
+	}
+        
 	/**
 	 * Gets the Download object for this download_id
 	 * @param download_id	 the identifier of the Download
@@ -142,6 +203,45 @@ public class Download {
 		myResults.close();
 
 		return myDownload;
+	}
+
+        
+        /**
+	 * Creates a record in the Downloads table.
+	 * @param conn 	the database connection
+	 * @throws SQLException	if an error occurs while accessing the database
+	 * @return	the identifier of the record created
+	 */
+	public int createDownload(DataSource pool) throws SQLException {
+
+		log.debug("In create Download");
+		
+		String query = 
+			"insert into Downloads "+
+			"(download_id, url, create_date) "+
+			"values "+
+			"(?, ?, ?)";
+
+		//log.debug("query =  " + query);
+                Connection conn=pool.getConnection();
+                int download_id = myDbUtils.getUniqueID("downloads_seq", conn);
+		java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+		PreparedStatement pstmt = conn.prepareStatement(query, 
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+
+		pstmt.setInt(1, download_id);
+		pstmt.setString(2, url);
+		pstmt.setTimestamp(3, now);
+
+		pstmt.executeUpdate();
+		pstmt.close();
+
+		this.setDownload_id(download_id);
+                try{
+                    conn.close();
+                }catch(Exception e){}
+		return download_id;
 	}
 
 	/**
@@ -181,6 +281,41 @@ public class Download {
 		return download_id;
 	}
 
+        
+        /**
+	 * Updates a record in the Downloads table.
+	 * @param conn 	the database connection
+	 * @throws SQLException	if an error occurs while accessing the database
+	 */
+	public void update(DataSource pool) throws SQLException {
+
+		String query = 
+			"update Downloads "+
+			"set download_id = ?, url = ?, create_date = ? "+
+			"where download_id = ?";
+
+		log.debug("query =  " + query);
+
+		java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+                Connection conn=pool.getConnection();
+		PreparedStatement pstmt = conn.prepareStatement(query, 
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+
+		pstmt.setInt(1, download_id);
+		pstmt.setString(2, url);
+		pstmt.setTimestamp(3, now);
+		pstmt.setInt(4, download_id);
+
+		pstmt.executeUpdate();
+		pstmt.close();
+                try{
+                    conn.close();
+                }catch(Exception e){}
+
+	}
+        
+        
 	/**
 	 * Updates a record in the Downloads table.
 	 * @param conn 	the database connection
@@ -210,7 +345,46 @@ public class Download {
 		pstmt.close();
 
 	}
+        
+        /**
+	 * Deletes the record in the Download table and also deletes child records in related tables.
+	 * @param conn	the database connection
+	 * @throws            SQLException if an error occurs while accessing the database
+	 */
+	public void deleteDownload(DataSource pool) throws SQLException {
 
+		log.info("in deleteDownload");
+
+		//conn.setAutoCommit(false);
+
+		PreparedStatement pstmt = null;
+		try {
+
+
+			String query = 
+				"delete from Downloads " + 
+				"where download_id = ?";
+                        Connection conn=pool.getConnection();
+			pstmt = conn.prepareStatement(query, 
+				ResultSet.TYPE_SCROLL_INSENSITIVE, 
+				ResultSet.CONCUR_UPDATABLE); 
+
+			pstmt.setInt(1, download_id);
+			pstmt.executeQuery();
+			pstmt.close();
+                        try{
+                            conn.close();
+                        }catch(Exception e){}
+			//conn.commit();
+		} catch (SQLException e) {
+			log.debug("error in deleteDownload");
+			//conn.rollback();
+			pstmt.close();
+			throw e;
+		}
+		//conn.setAutoCommit(true);
+	}
+        
 	/**
 	 * Deletes the record in the Download table and also deletes child records in related tables.
 	 * @param conn	the database connection
@@ -248,6 +422,41 @@ public class Download {
 		//conn.setAutoCommit(true);
 	}
 
+        
+        /**
+	 * Checks to see if a Download with the same download_id combination already exists.
+	 * @param myDownload	the Download object being tested
+	 * @param conn	the database connection
+	 * @throws            SQLException if an error occurs while accessing the database
+	 * @return	the download_id of a Download that currently exists
+	 */
+	public int checkRecordExists(Download myDownload, DataSource pool) throws SQLException {
+
+		log.debug("in checkRecordExists");
+
+		String query = 
+			"select download_id "+
+			"from Downloads "+
+			"where download_id = ?";
+                Connection conn=pool.getConnection();
+		PreparedStatement pstmt = conn.prepareStatement(query,
+			ResultSet.TYPE_SCROLL_INSENSITIVE,
+			ResultSet.CONCUR_UPDATABLE);
+
+		pstmt.setInt(1, download_id);
+
+		ResultSet rs = pstmt.executeQuery();
+
+		int pk = (rs.next() ? rs.getInt(1) : -1);
+		pstmt.close();
+                
+                try{
+                    conn.close();
+                }catch(Exception e){}
+                
+		return pk;
+	}
+        
 	/**
 	 * Checks to see if a Download with the same download_id combination already exists.
 	 * @param myDownload	the Download object being tested

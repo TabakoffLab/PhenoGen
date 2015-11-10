@@ -14,7 +14,7 @@
 
 	log.info("in userDetails.jsp. userID = "+thisUserID);
 
-	User thisUser = myUser.getUser(thisUserID, dbConn);
+	User thisUser = myUser.getUser(thisUserID, pool);
 
 %>
 <table class=userSpecificWide>

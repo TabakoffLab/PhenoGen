@@ -22,8 +22,8 @@
 
 <%
 	Demo demo=new Demo();
-	ArrayList<String> categories=demo.getAllDemoCategories(dbConn);
-	HashMap demoHashMap=demo.getAllDemos(dbConn);
+	ArrayList<String> categories=demo.getAllDemoCategories(pool);
+	HashMap demoHashMap=demo.getAllDemos(pool);
 	Demo defaultVideo=null;
 	for(int i=0;i<categories.size()&&defaultVideo==null;i++){
 		ArrayList<Demo> demoList=(ArrayList<Demo>)demoHashMap.get(categories.get(i));

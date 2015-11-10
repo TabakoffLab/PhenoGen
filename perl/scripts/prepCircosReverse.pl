@@ -15,25 +15,15 @@ sub prepCircosReverse
 	my $genericConfLocation2;
 	my $karyotypeLocation;
 
-	#if($hostname eq 'amc-kenny.ucdenver.pvt'){
-	#	$genericConfLocation = '/usr/local/circos-0.62-1/etc/';
-	#	$genericConfLocation2 = '/usr/local/circos-0.62-1/etc/';
-	#	$karyotypeLocation = '/usr/local/circos-0.62-1/data/karyotype/';
-	#}
-	#elsif($hostname eq 'compbio.ucdenver.edu'){
-	#	$genericConfLocation = '/usr/local/circos-0.62-1/etc/';
-	#	$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
-	#	$karyotypeLocation = '/usr/local/circos-0.62-1/data/karyotype/';
-	#}
 	if($hostname eq 'phenogen'){
-		$genericConfLocation = '/usr/local/circos-0.67-5/etc/';
+		$genericConfLocation = '/usr/local/circos-0.68/etc/';
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
-		$karyotypeLocation = '/usr/local/circos-0.67-5/data/karyotype/';
+		$karyotypeLocation = '/usr/local/circos-0.68/data/karyotype/';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
-		$genericConfLocation = '/usr/local/circos-0.67-5/etc/';
+		$genericConfLocation = '/usr/local/circos-0.68/etc/';
 		$genericConfLocation2 = '/Library/Tomcat/webapps/PhenoGen/tmpData/geneData/';
-		$karyotypeLocation = '/usr/local/circos-0.67-5/data/karyotype/';
+		$karyotypeLocation = '/usr/local/circos-0.68/data/karyotype/';
 	}
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");

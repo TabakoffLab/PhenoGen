@@ -7,7 +7,7 @@
 	//uncomment following line when the site needs to be down.  This will just redirect users to the siteDownPage.jsp instead of trying to create a session.
 	if(!loginEnabled){
 		response.sendRedirect(accessDir+"siteDownPage.jsp");
-	}else if(dbConn==null){
+	}else if(dbUnavail==true){
 		session.setAttribute("errorPageMsg","The Database is currently unavailable.  The administrator has been notified and every effort will be made to return the database as soon as possible.");
 		response.sendRedirect(commonDir+"errorPage.jsp");
 	}else{
@@ -18,7 +18,7 @@
 		if(loggedIn){
 			response.sendRedirect(url);
 		}else{
-		   userLoggedIn = myUser.getUser("anon", "4lesw7n35h!", dbConn);
+		   userLoggedIn = myUser.getUser("anon", "4lesw7n35h!", pool);
 		   log.debug("last_name = "+userLoggedIn.getLast_name() + ", id = "+userLoggedIn.getUser_id());
 	
 							if (userLoggedIn.getUser_id() == -1) {
@@ -42,7 +42,7 @@
 									mySessionHandler.setSessionVariables(session, userLoggedIn);
 									mySessionHandler.setSession_id(session.getId());
 									mySessionHandler.setUser_id(userLoggedIn.getUser_id());
-									mySessionHandler.createSession(mySessionHandler, dbConn);
+									mySessionHandler.createSession(mySessionHandler, pool);
 	
 									userFilesRoot = (String) session.getAttribute("userFilesRoot");
 	

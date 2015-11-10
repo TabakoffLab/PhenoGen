@@ -367,20 +367,14 @@
 
  			String hostName=request.getServerName();
 
-			if(hostName.equals("amc-kenny.ucdenver.pvt")){
-				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/lib:/usr/share/tomcat/webapps/PhenoGen/perl/lib/circos-0.60/bin";
-			}
-			else if(hostName.equals("compbio.ucdenver.edu")){
-				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
-			}
-			else if(hostName.equals("phenogen.ucdenver.edu")){
-				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+                        if(hostName.equals("phenogen.ucdenver.edu")){
+				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.68/lib:/usr/local/circos-0.68/bin";
 			}
 			else if(hostName.equals("stan.ucdenver.pvt")){
-				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+				perlEnvironmentVariables += ":/bin:/usr/bin:/usr/bin/perl:/usr/local/circos-0.68/lib:/usr/local/circos-0.68/bin";
 			}
 			else{
-				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.62-1/lib:/usr/local/circos-0.62-1/bin";
+				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.68/lib:/usr/local/circos-0.68/bin";
 			}
 			log.debug("Host Name "+hostName);
 			String filePrefixWithPath;			

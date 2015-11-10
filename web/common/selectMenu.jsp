@@ -126,7 +126,7 @@
 	session.setAttribute("mainFunctionStep",mainFuncStep);
 	//log.debug("URL:"+url+"\nMenu Selected:"+mainMenu+"->"+specMenuOpt);
 	try{
-		mySessionHandler.createSessionActivity(session.getId(), "Selected Menu option "+mainMenu+"->"+specMenuOpt, dbConn);
+		mySessionHandler.createSessionActivity(session.getId(), "Selected Menu option "+mainMenu+"->"+specMenuOpt, pool);
 	}catch(Exception e){
 		
 	}

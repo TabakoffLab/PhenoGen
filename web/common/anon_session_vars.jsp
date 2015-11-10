@@ -215,9 +215,8 @@
 		if(!loggedIn){
 			Connection conn=null;
 			try{
-				conn=pool.getConnection();
-				userLoggedIn = myUser.getUser("anon", "4lesw7n35h!", conn);
-				conn.close();
+				
+				userLoggedIn = myUser.getUser("anon", "4lesw7n35h!", pool);
 				log.debug("last_name = "+userLoggedIn.getLast_name() + ", id = "+userLoggedIn.getUser_id());
 				if (userLoggedIn.getUser_id() == -1) {
 						log.info("anon just failed to log in.");
