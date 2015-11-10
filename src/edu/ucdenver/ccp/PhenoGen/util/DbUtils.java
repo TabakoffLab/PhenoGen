@@ -2,6 +2,7 @@ package edu.ucdenver.ccp.PhenoGen.util;
 
 import java.sql.*;
 import edu.ucdenver.ccp.util.sql.Results;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;       
