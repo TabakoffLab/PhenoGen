@@ -16,8 +16,8 @@
 	String dbVersion="";
 	String dbUpdateDate="";
 	
-	if(dbConn!=null){
-		String[] versionValues = myDbUtils.getDBVersion(dbConn);
+	if(pool!=null){
+		String[] versionValues = myDbUtils.getDBVersion(pool);
 		dbVersion = versionValues[0];
 		dbUpdateDate = versionValues[1];
 	}

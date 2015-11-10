@@ -112,6 +112,16 @@
 		pool=(DataSource)session.getAttribute("dbPool");
 		log.debug("DB POOL SETUP");
 	}
+
+        if(pool!=null){
+            try{
+                Connection test=pool.getConnection();
+                myUser.getUser("public",pool);
+                test.close();
+            }catch(Exception e){
+                dbUnavail=true;
+            }
+        }
 	
 	String checkMark = "<img src='" + imagesDir + "icons/" + "checkmark.gif' height=\"20\" width=\"20\" alt=\"\">";
 	String resultsIcon = "<img src='" + imagesDir + "icons/" + "results.png' height=\"20\" width=\"20\" alt=\"\">";

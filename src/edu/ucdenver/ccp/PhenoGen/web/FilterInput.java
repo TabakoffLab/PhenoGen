@@ -26,6 +26,18 @@ public class FilterInput {
       return out;
   }
   
+  public static String getFilteredInputEmail(String in){
+      String out=in;
+      ArrayList<String> list= new ArrayList<String>();
+      list.add("CRLF");
+      list.add("Script");
+      list.add("SQL");
+      list.add("Amp");
+      list.add("Markup");
+      out=getFilteredInput(out,list,"");
+      return out;
+  }
+  
   public static String getFilteredInput(String in,ArrayList<String> list,String host){
       String out=in;
       for(int i=0;i<list.size();i++){

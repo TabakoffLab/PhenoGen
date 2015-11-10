@@ -132,7 +132,7 @@ public class DbUtils{
 	return selectClause;
   }
 
-  public String[] getDBVersion(Connection conn) throws SQLException {
+  public String[] getDBVersion(DataSource pool) throws SQLException {
   	
   	String query = 
   		"select version_number, last_updated_date " +
@@ -143,13 +143,18 @@ public class DbUtils{
 	String[] values = new String[2];
 
 	String[] dataRow;
+        Connection conn=pool.getConnection();
         Results myResults = new Results(query, conn);
         while ((dataRow = myResults.getNextRow()) != null) {
                  values[0] = dataRow[0];
                  values[1] = dataRow[1];
         }
         myResults.close();
-
+        
+        try{
+            conn.close();
+        }catch(Exception e){}
+        
   	return values;
   }
   

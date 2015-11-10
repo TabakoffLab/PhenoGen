@@ -23,7 +23,6 @@
 
 
 <jsp:useBean id="newUser" class="edu.ucdenver.ccp.PhenoGen.data.User">
-	<jsp:setProperty name="newUser" property="*" />
 </jsp:useBean>
 
 <%
@@ -42,6 +41,62 @@
 	log.debug("host = " + host);
 	log.debug("contextRoot = " + contextRoot);
 	loggedIn = false;
+
+        if(request.getParameter("title")!=null){
+            newUser.setTitle(FilterInput.getFilteredInput(request.getParameter("title")));
+        }
+        if(request.getParameter("first_name")!=null){
+            newUser.setFirst_name(FilterInput.getFilteredInput(request.getParameter("first_name")));
+        }
+        if(request.getParameter("middle_name")!=null){
+            newUser.setMiddle_name(FilterInput.getFilteredInput(request.getParameter("middle_name")));
+        }
+        if(request.getParameter("last_name")!=null){
+            newUser.setLast_name(FilterInput.getFilteredInput(request.getParameter("last_name")));
+        }
+        if(request.getParameter("user_name")!=null){
+            newUser.setUser_name(FilterInput.getFilteredInput(request.getParameter("user_name")));
+        }
+        if(request.getParameter("password")!=null){
+            newUser.setPassword(FilterInput.getFilteredInput(request.getParameter("password")));
+        }
+        if(request.getParameter("email")!=null){
+            newUser.setEmail(FilterInput.getFilteredInputEmail(request.getParameter("email")));
+        }
+        if(request.getParameter("telephone")!=null){
+            newUser.setTelephone(FilterInput.getFilteredInput(request.getParameter("telephone")));
+        }
+        if(request.getParameter("fax")!=null){
+            newUser.setFax(FilterInput.getFilteredInput(request.getParameter("fax")));
+        }
+        if(request.getParameter("institution")!=null){
+            newUser.setInstitution(FilterInput.getFilteredInput(request.getParameter("institution")));
+        }
+        if(request.getParameter("lab_name")!=null){
+            newUser.setLab_name(FilterInput.getFilteredInput(request.getParameter("lab_name")));
+        }
+        if(request.getParameter("box")!=null){
+            newUser.setBox(FilterInput.getFilteredInput(request.getParameter("box")));
+        }
+        if(request.getParameter("pi_user_id")!=null){
+            newUser.setPi_user_id(Integer.parseInt(FilterInput.getFilteredInput(request.getParameter("pi_user_id"))));
+        }
+        if(request.getParameter("street")!=null){
+            newUser.setStreet(FilterInput.getFilteredInput(request.getParameter("street")));
+        }
+        if(request.getParameter("city")!=null){
+            newUser.setCity(FilterInput.getFilteredInput(request.getParameter("city")));
+        }
+        if(request.getParameter("state")!=null){
+            newUser.setState(FilterInput.getFilteredInput(request.getParameter("state")));
+        }
+        if(request.getParameter("zip")!=null){
+            newUser.setZip(FilterInput.getFilteredInput(request.getParameter("zip")));
+        }
+        if(request.getParameter("country")!=null){
+            newUser.setCountry(FilterInput.getFilteredInput(request.getParameter("country")));
+        }
+
 
 	//
 	// if person is already logged in, log them out first
@@ -92,7 +147,7 @@
 
 	
 			if (re.checkResponse(secret,gResponse,remoteIP)) {
-				thisUser_id = myUser.checkUserExists(newUser, dbConn);
+				thisUser_id = myUser.checkUserExists(newUser, pool);
 				log.debug("user_id = "+thisUser_id);
 				if (thisUser_id != -1) {
 					//userLoggedIn = myUser.getUser(thisUser_id, dbConn);
@@ -113,15 +168,15 @@
 						log.debug("creation of user attempted with same first and last name");
 						newUser.toString();
 					}else{
-						 int newUserID = myUser.createUser(newUser, dbConn);
+						 int newUserID = myUser.createUser(newUser, pool);
 						log.debug("just created new user.  The id is "+newUserID);
 						// Still need to create a record in the TSUBMTR table -- remove this when combining with users table
 						if(newUserID==-1){
 							log.debug("UserID=-1: Possible fake registration?");
 						}else{
-							myUser.createTSUBMTR(newUser, dbConn);
+							myUser.createTSUBMTR(newUser, pool);
 				
-							User requestor = myUser.getUser(newUserID, dbConn);
+							User requestor = myUser.getUser(newUserID, pool);
 							//session.setAttribute("userID", "-1");
 									//session.setAttribute("userLoggedIn", userLoggedIn);
                                                         int port=request.getServerPort();
@@ -148,7 +203,7 @@
 							} else {
 								log.debug("no problems creating user directories in registration"); 
 				
-								myUser.updateRegistrationApproval(requestor, true, mainURL, dbConn);
+								myUser.updateRegistrationApproval(requestor, true, mainURL, pool);
 								//Success - "Registration approval complete"
 								//	session.setAttribute("successMsg", "REG-005");
 								//	response.sendRedirect(commonDir + "successMsg.jsp");
@@ -322,7 +377,7 @@
                 <%
 					String piUserName="Self";
 					if(newUser.getPi_user_id()!=-99){
-						piUserName=newUser.getUser_name(newUser.getPi_user_id(),dbConn);
+						piUserName=newUser.getUser_name(newUser.getPi_user_id(),pool);
 					}
 				%>
                 
@@ -333,7 +388,7 @@
 					<% 
 					optionHash = new LinkedHashMap();
 					optionHash.put("-99", "Self");
-					optionHash.putAll(newUser.getAllPrincipalInvestigators(dbConn));
+					optionHash.putAll(newUser.getAllPrincipalInvestigators(pool));
 					selectName = "pi_user_id";
 					selectedOption = "-99";
 					if(newUser.getPi_user_id()!=-99){

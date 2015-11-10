@@ -34,34 +34,35 @@
                         password = (String) request.getParameter("password");
                 }
 				
-                                if (dbConn == null || dbConn.isClosed()) {
-                                        if (dbPropertiesFile != null) {
-                                                try {
-                                                        dbConn = new PropertiesConnection().getConnection(dbPropertiesFile);
-                                                        /* save newly created connection in the session */
-                                                        session.setAttribute("dbConn", dbConn);
-                                                } catch (Exception e) {
-                                                        log.error("dbConn was not successfully opened.  Sending email to phenogen.help", e);
-                                                        dbConnAvailable = false;
-                                myDbConnErrorEmail.setSubject("PhenoGen Database is Unavailable");
-                                myDbConnErrorEmail.setContent("The PhenoGen database connection is unavailable.");
-                                try {
-                                        myDbConnErrorEmail.sendEmailToAdministrator(adminEmail);
-                                } catch (Exception error) {
+                if (dbUnavail && pool!=null) {
+                        
+                    try { 
+                        Connection test=pool.getConnection();
+                        myUser.getUser("public",pool);
+                        test.close();
+                        dbUnavail=false;
+                    } catch (Exception e) {
+                            log.error("dbConn was not successfully opened.  Sending email to phenogen.help", e);
+                            //dbConnAvailable = false;
+                            dbUnavail=true;
+                            Email myDbConnErrorEmail=new Email();
+                            myDbConnErrorEmail.setSubject("PhenoGen Database is Unavailable");
+                            myDbConnErrorEmail.setContent("The PhenoGen database connection is unavailable.");
+                            try {
+                                    myDbConnErrorEmail.sendEmailToAdministrator(adminEmail);
+                            } catch (Exception error) {
                                 log.error("exception while trying to send message to phenogen.help about phenogen db connection", error);
-                                }
-                                                }
-                                        } else {
-                                                log.debug("*** dbPropertiesFile is null or session must be inactive. *** ");
-                                        }
-                                }
+                            }
+                    }
+                       
+                }
 				
-                                if (!dbConnAvailable) {
-                        response.sendRedirect("outOfService.html");
-                        }else{
+                if (dbUnavail) {
+                            response.sendRedirect("/index.jsp");
+                }else{
 				
                         if (loginUserName != null && password != null) {
-                        userLoggedIn = myUser.getUser(loginUserName, password, dbConn);
+                        userLoggedIn = myUser.getUser(loginUserName, password, pool);
                          log.debug("last_name = "+userLoggedIn.getLast_name() + ", id = "+userLoggedIn.getUser_id());
 
                         if (userLoggedIn.getUser_id() == -1) {
@@ -72,19 +73,19 @@
                         } else {
                                 log.info(loginUserName + " just logged in.");
 
-                                if (userLoggedIn.checkRole(loginUserName, password, "Administrator", dbConn)) {
+                                if (userLoggedIn.checkRole(loginUserName, password, "Administrator", pool)) {
                                         session.setAttribute("isAdministrator", "Y");
                                 } else {
                                         session.setAttribute("isAdministrator", "N");
                                         log.debug("user is NOT an Administrator");
                                 }
-                                if (userLoggedIn.checkRole(loginUserName, password, "ISBRA", dbConn)) {
+                                if (userLoggedIn.checkRole(loginUserName, password, "ISBRA", pool)) {
                                         session.setAttribute("isISBRA", "Y");
                                 } else {
                                         session.setAttribute("isISBRA", "N");
                                         log.debug("user is NOT an ISBRA");
                                 }
-                                if (userLoggedIn.checkPI(dbConn)) {
+                                if (userLoggedIn.checkPI(pool)) {
                                         session.setAttribute("isPrincipalInvestigator", "Y");
                                 } else {
                                         session.setAttribute("isPrincipalInvestigator", "N");
@@ -94,11 +95,11 @@
                                 mySessionHandler.setSessionVariables(session, userLoggedIn);
                                 mySessionHandler.setSession_id(session.getId());
                                 mySessionHandler.setUser_id(userLoggedIn.getUser_id());
-                                                                if(previousAnonUser){
-                                                                        mySessionHandler.updateLoginSession(mySessionHandler, dbConn);
-                                                                }else{
-                                        mySessionHandler.createSession(mySessionHandler, dbConn);
-                                                                }
+                                if(previousAnonUser){
+                                        mySessionHandler.updateLoginSession(mySessionHandler, pool);
+                                }else{
+                                        mySessionHandler.createSession(mySessionHandler, pool);
+                                }
 
                                 userFilesRoot = (String) session.getAttribute("userFilesRoot");
 

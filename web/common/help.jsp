@@ -29,12 +29,12 @@
 	if (loggedIn) {
 		mySessionHandler.createSessionActivity(session.getId(), 
                 	"Clicked help on this page for "+entireCaller + ", topic = " + topic,
-			dbConn);
+			pool);
 	} else {
 		mySessionHandler.createSessionActivity("-99", 
                         request.getRemoteAddr() + " " +  
                 	"clicked help on this page for "+entireCaller + ", topic = " + topic,
-			dbConn);
+			pool);
 	}
 /*****************************************************************************
 		MAIN HOME PAGE HELP
