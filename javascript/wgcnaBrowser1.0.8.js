@@ -80,7 +80,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//create Data Controls
 		that.createDataControls();
                 
-                $(".wgcnaControltooltip").tooltipster({
+        $(".wgcnaControltooltip").tooltipster({
                     position: 'top-right',
                     maxWidth: 250,
                     offsetX: 5,
@@ -115,6 +115,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                         }
                                     }
                                     that.refreshRegion(1000);
+                                    setTimeout(function(){
+                                    	$('html, body').animate({
+											scrollTop: $("#multiWGCNAScroll").offset().top
+										}, 100);
+                                    },1200);
                                 }else if(data2.length===0){
                                     that.displayMessage("There are no transcripts with Affymetrix Probesets that represent this gene.");
                                 }else if(data2.length===1 && data2[0].ModuleID==="grey"){
