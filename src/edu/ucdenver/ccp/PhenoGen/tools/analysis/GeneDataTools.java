@@ -2713,20 +2713,23 @@ public class GeneDataTools {
                 groupLM=curTime-groupLM;
                 long twoHours=1000*60*10;
                 if(!indivf.exists() || !groupf.exists()||((groupf.length()==0 && groupLM>twoHours) || (indivf.length()==0 && indLM>twoHours))){
+                    log.debug("\n\ntrying to run\n\n");
                     BufferedWriter outGroup=new BufferedWriter(new FileWriter(groupf));
                     BufferedWriter outIndiv=new BufferedWriter(new FileWriter(indivf));
                     ArrayList<AsyncGeneDataExpr> localList=new ArrayList<AsyncGeneDataExpr>();
                     SyncAndClose sac=new SyncAndClose(start,localList,null,pool,outGroup,outIndiv,usageID,tmpOutput);
+                    log.debug("\n\nafter setup\n\n");
                     while(rs.next()){
                         AsyncGeneDataExpr agde=new AsyncGeneDataExpr(session,tmpOutput+"tmp_psList.txt",tmpOutput,null,threadList,maxThreadRunning,outGroup,outIndiv,sac,ver);
                         String dataset_id=Integer.toString(rs.getInt("DATASET_ID"));
                         int iDSID=rs.getInt("DATASET_ID");
                         String tissue=rs.getString("TISSUE");
+                        log.debug("\nAGDE for "+iDSID+":"+tissue+"\n");
                         String tissueNoSpaces=tissue.replaceAll(" ", "_");
                         edu.ucdenver.ccp.PhenoGen.data.Dataset sDataSet=new edu.ucdenver.ccp.PhenoGen.data.Dataset();
-                        Connection tmpConn=pool.getConnection();
-                        edu.ucdenver.ccp.PhenoGen.data.Dataset curDS=sDataSet.getDataset(iDSID,tmpConn,"");
-                        tmpConn.close();
+                        //Connection tmpConn=pool.getConnection();
+                        edu.ucdenver.ccp.PhenoGen.data.Dataset curDS=sDataSet.getDataset(iDSID,pool,"");
+                        //tmpConn.close();
                         String affyFile="allPS";
                         String verStr="allPS";
                         if(arrayTypeID==21){
@@ -2745,11 +2748,15 @@ public class GeneDataTools {
                     }
                     
                 }
-                ps.close();
-                conn.close();
+                try{
+                    ps.close();
+                }catch(Exception e){}
+                try{
+                    conn.close();
+                }catch(Exception e){}
                 //log.debug("Started AsyncGeneDataExpr");
             }catch(IOException ioe){
-                
+                log.error("IOException:\n",ioe);
             }
             
         }catch(SQLException e){

@@ -757,6 +757,63 @@ public class Dataset {
 		return thisDataset;
 	}
 
+        
+        /**
+	 * Retrieves a Dataset object with the data values set to those retrieved from the database.  
+	 * Also retrieves the DatasetVersions for this Dataset.  NOTE THAT THIS DOES NOT
+	 * setPath() of the Dataset or setVersion_path() of the versions
+	 * @param dataset_id	the ID of the dataset
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return            A Dataset object with its values setup 
+	 */
+	public Dataset getDataset(int dataset_id, DataSource pool, String userFilesRoot) throws SQLException {
+
+        	log.debug("in getDataset as a Dataset object. dataset_id = " +dataset_id);
+
+        	String query =
+			datasetVersionDetailsSelectClause + 
+			datasetVersionDetailsFromClause + 
+			datasetVersionWhereClause + 
+                	"and ds.dataset_id = ? "+ 
+			datasetVersionDetailsGroupByClause; 
+
+		//log.debug("query = "+query);
+                Connection conn=pool.getConnection();
+        	Results myResults = new Results(query, dataset_id, conn);
+		Dataset thisDataset = setupDatasetVersionValues(myResults, true)[0]; 
+                try{
+                    conn.close();
+                }catch(Exception e){}
+                conn=pool.getConnection();
+		thisDataset.setHybridIDs(thisDataset.getDatasetHybridIDs(conn));
+                try{
+                    conn.close();
+                }catch(Exception e){}
+        	if (!thisDataset.getHybridIDs().equals("()")) {
+                        if(array_type.equals("null")){
+                            conn=pool.getConnection();
+                            thisDataset.setArray_type(new edu.ucdenver.ccp.PhenoGen.data.Array().getDatasetArrayType(thisDataset.getHybridIDs(), conn));
+                            try{
+                                conn.close();
+                            }catch(Exception e){}
+                        }
+                        log.debug("in getDataset right before settingArrays");
+                        conn=pool.getConnection();
+                	thisDataset.setArrays(new edu.ucdenver.ccp.PhenoGen.data.Array().getArraysByHybridIDs(thisDataset.getHybridIDs(), conn),conn,userFilesRoot);
+			log.debug("num arrays = "+thisDataset.getArrays().length);
+                        try{
+                                conn.close();
+                        }catch(Exception e){}
+		}
+
+		myResults.close();
+
+		//thisDataset.print();
+
+        	return thisDataset;
+  	}
+        
 	/**
 	 * Retrieves a Dataset object with the data values set to those retrieved from the database.  
 	 * Also retrieves the DatasetVersions for this Dataset.  NOTE THAT THIS DOES NOT
