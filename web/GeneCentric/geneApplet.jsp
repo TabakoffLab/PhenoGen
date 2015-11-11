@@ -96,7 +96,8 @@ if(request.getParameter("arrayTypeID")!=null){
         }
 	genURL=urlPrefix+ "tmpData/geneData/" +selectedID+"/";
 	String regionURL=urlPrefix+"tmpData/regionData/"+folderName+"/";
-	
+        boolean error1=gdt.callWriteXML(selectedID,myOrganism,chromosome,min,max,arrayTypeID,rnaDatasetID);
+	boolean error2=gdt.callPanelExpr(selectedID,chromosome,min,max,arrayTypeID,rnaDatasetID,null);
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
