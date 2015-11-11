@@ -152,7 +152,7 @@ Add report here.
 				chromosome: chr,
 				id:selectedID
 			};
-			loadDivWithPage("div#geneReportEQTL",jspPage,params,
+			loadDivWithPage("div#geneReportEQTL",jspPage,false,params,
 					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Laoding...</span>");
         } else {
 			$("div#geneReportEQTL").hide();
@@ -634,7 +634,7 @@ Add report here.
 		$(this).addClass("selected");
 		var id=$(this).attr("name");
 		$("#"+id).show();
-		loadGeneReportTabs(id);
+		loadGeneReportTabs(id,false);
 	});
         $('.helpGeneRpt').on('click', function(event){
 			var id=$(this).attr('id');
@@ -645,19 +645,19 @@ Add report here.
 		}
 	);
 
-        function setSelectedTab(){
+        function setSelectedTab(scrollToDiv){
             if(typeof section !== 'undefined' && section !== ""){
                 var oldID=$('.selectdetailMenu.selected').attr("name");
                 $("#"+oldID).hide();
                 $('.selectdetailMenu.selected').removeClass("selected");
                 $(".selectdetailMenu[name=\""+section+"\"]").addClass("selected");
                 $("#"+section).show();
-                loadGeneReportTabs(section);
+                loadGeneReportTabs(section,scrollToDiv);
             }
         }
 
-        function loadGeneReportTabs(id){
-            if(id=="geneEQTL"){
+        function loadGeneReportTabs(id,scrollToDiv){
+            if(id==="geneEQTL"){
                     var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
                     var params={
                             species: organism,
@@ -665,9 +665,9 @@ Add report here.
                             chromosome: chr,
                             id:selectedID
                     };
-                    loadDivWithPage("div#geneEQTL",jspPage,params,
+                    loadDivWithPage("div#geneEQTL",jspPage,scrollToDiv,params,
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-            }else if(id=="geneApp"){
+            }else if(id==="geneApp"){
                     $.ajax({
                                     url: "web/GeneCentric/callPanelExpr.jsp",
                                     type: 'GET',
@@ -676,38 +676,38 @@ Add report here.
                                     dataType: 'json',
                             error: function(xhr, status, error) {console.log(error);}
                             });
-            }else if(id=="geneMIrna"){
+            }else if(id==="geneMIrna"){
                     var jspPage="web/GeneCentric/geneMiRnaAjax.jsp";
                     var params={
                             species: organism,
                             id:selectedID
                     };
-                    loadDivWithPage("div#geneMIrna",jspPage,params,
+                    loadDivWithPage("div#geneMIrna",jspPage,scrollToDiv,params,
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-            }else if(id=="miGenerna"){
+            }else if(id==="miGenerna"){
                     var jspPage="web/GeneCentric/miGeneRnaAjax.jsp";
                     var params={
                             species: organism,
                             id:geneSymStr
                     };
-                    loadDivWithPage("div#miGenerna",jspPage,params,
+                    loadDivWithPage("div#miGenerna",jspPage,scrollToDiv,params,
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-            }else if(id=="geneWGCNA"){
+            }else if(id==="geneWGCNA"){
                     $("div#regionWGCNAEQTL").html("");
                     var jspPage="web/GeneCentric/wgcnaGene.jsp";
                     var params={
                             species: organism,
                             id:selectedID
                     };
-                    loadDivWithPage("div#geneWGCNA",jspPage,params,
+                    loadDivWithPage("div#geneWGCNA",jspPage,scrollToDiv,params,
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
             }
         }
         setTimeout(function(){
-            setSelectedTab();
-            setTimeout(function(){
-                $("#geneDiv").scrollTop($("#geneDiv")[0].scrollHeight);
-            },500);
+            setSelectedTab(true);
+            //setTimeout(function(){
+            //    $("#geneDiv").scrollTop($("#geneDiv")[0].scrollHeight);
+            //},500);
         },200);
         
         //svgList[1].updateLinks();

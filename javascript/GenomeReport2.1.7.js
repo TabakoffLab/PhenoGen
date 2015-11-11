@@ -146,7 +146,7 @@ function loadTrackTable(){
 
 		}
 		if(jspPage){
-			loadDivWithPage("div#regionTable",jspPage,params,
+			loadDivWithPage("div#regionTable",jspPage,false,params,
 						"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		}
 	}
@@ -166,7 +166,7 @@ function loadEQTLTable(){
 			pValueCutoff:pValueCutoff,
 			folderName: regionfolderName
 		};
-	loadDivWithPage("div#regionEQTLTable",jspPage,params,
+	loadDivWithPage("div#regionEQTLTable",jspPage,false,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
 
@@ -178,7 +178,7 @@ function loadRegionWGCNA(){
 	var params={
 			region: chr+":"+curmin+"-"+curmax
 		};
-	loadDivWithPage("div#regionWGCNAEQTL",jspPage,params,
+	loadDivWithPage("div#regionWGCNAEQTL",jspPage,true,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
 
@@ -197,13 +197,13 @@ function loadEQTLTableWParams(levelList,chrList,tisList,pval){
 			levels:levelList,
 			folderName: regionfolderName
 		};
-	loadDivWithPage("div#regionEQTLTable",jspPage,params,
+	loadDivWithPage("div#regionEQTLTable",jspPage,false,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
 
 
 
-function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
+function loadDivWithPage(divSelector,jspPage,scrollToDiv,params,loadingHTML){
 	$(divSelector).html(loadingHTML);
 	$.ajax({
 				url: jspPage,
@@ -213,6 +213,13 @@ function loadDivWithPage(divSelector,jspPage,params,loadingHTML){
 				dataType: 'html',
     			success: function(data2){ 
         			$(divSelector).html(data2);
+        			if(scrollToDiv){
+        				setTimeout(function(){
+        					$('html, body').animate({
+									scrollTop: $( divSelector).offset().top
+								}, 200);
+        				},300);
+        			}
         			//setTimeout(displayHelpFirstTime,200);
     			},
     			error: function(xhr, status, error) {
@@ -309,6 +316,6 @@ function displayDetailedView(track){
 
 
 function DisplaySelectedDetailReport(jspPage,params){
-	loadDivWithPage("div#selectedReport",jspPage,params,
+	loadDivWithPage("div#selectedReport",jspPage,false,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 }
