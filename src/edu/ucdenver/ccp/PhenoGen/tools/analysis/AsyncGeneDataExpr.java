@@ -80,7 +80,7 @@ public class AsyncGeneDataExpr extends Thread {
                 this.pListFile=pListFile;
                 this.outputDir=outputDir;
                 log = Logger.getRootLogger();
-                log.debug("in GeneDataTools.setSession");
+                log.debug("in AsyncGeneDataExpr()");
                 this.session = inSession;
                 this.prevThread=prevThread;
                 this.threadList=threadList;
@@ -313,7 +313,7 @@ public class AsyncGeneDataExpr extends Thread {
         }
         Date start=new Date();
         //try{
-                
+        log.debug("STARTING");        
             int loopcount=0;
             
             while (!DSPathList.isEmpty()  && loopcount<6) {
@@ -331,6 +331,7 @@ public class AsyncGeneDataExpr extends Thread {
                     String platform=platformList.remove(0);
                     String outGroupPath=outputDir+outGroupFile;
                     String outIndivPath=outputDir+outIndivFile;
+                    log.debug("about to run "+tissue+"\n");
                     try {
                         myStatistic.callHeatMapOutputRawSpecificBoth(platform,
                                 DSPath,

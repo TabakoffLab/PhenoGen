@@ -16,6 +16,8 @@ import="org.json.*" %>
 
 <%@ include file="/web/common/anon_session_vars.jsp"  %>
 
+<%@ include file="/web/common/dbutil.jsp"  %>
+
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 
 

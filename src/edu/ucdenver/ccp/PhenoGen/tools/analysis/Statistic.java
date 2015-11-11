@@ -1470,7 +1470,7 @@ public class Statistic {
 						
 		log.debug("in callOutputRawSpecificGene");
 		rFunction = "Affymetrix.HeatMap.output.Specific.Gene.HDF5";
-		functionArgs = new String[7];
+		functionArgs = new String[6];
 
                 functionArgs[0] = "InputFile = '" + inputFileName + "'";
                 functionArgs[1] = "GeneList = '"+ geneListFileName + "'";
