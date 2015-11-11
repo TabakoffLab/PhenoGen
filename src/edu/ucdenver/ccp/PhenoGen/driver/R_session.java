@@ -203,7 +203,20 @@ public class R_session {
                         for(int i=1;i<=envLen;i++){
                             finalEnvVar[i]=this.envVar[i-1];
                         }
-                        
+                        log.debug("PATH:\n"+sessionPath);
+                        File test=new File(sessionPath);
+                        if(test.exists()){
+                            log.debug("EXISTS\n");
+                            if(test.canRead()){
+                                log.debug("CAN READ\n");
+                            }
+                            if(test.canWrite()){
+                                log.debug("CAN Write\n");
+                            }
+                            if(test.canExecute()){
+                                log.debug("CAN Execute\n");
+                            }
+                        }
 			Process p = Runtime.getRuntime().exec(argtmp, finalEnvVar, new File(sessionPath));
 	
 			int wait = p.waitFor();
