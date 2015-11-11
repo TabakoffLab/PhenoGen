@@ -2736,15 +2736,20 @@ public class GeneDataTools {
                             affyFile="NormVer";
                             verStr=ver;
                         }
+                        log.debug("After Dataset before paths");
                         String DSPath=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/Affy."+affyFile+".h5";
                         String sampleFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/"+verStr+"_samples.txt";
                         String groupFile=userFilesRoot+"public/Datasets/"+curDS.getNameNoSpaces()+"_Master/"+verStr+"_groups.txt";
                         String outGroupFile="group_"+tissueNoSpaces+"_exprVal.txt";
                         String outIndivFile="indiv_"+tissueNoSpaces+"_exprVal.txt";
+                        log.debug("after paths");
                         agde.add(DSPath,sampleFile,groupFile,outGroupFile,outIndivFile,tissue,curDS.getPlatform());
+                        log.debug("after add agde");
                         threadList.add(agde);
                         localList.add(agde);
+                        log.debug("before start");
                         agde.start();     
+                        log.debug("after start");
                     }
                     
                 }
