@@ -16,7 +16,11 @@
                     // close the database connections
                     //
                     //log.debug("closing connection 'dbConn'");
-                    dbConn.close();
+                    if(dbConn!=null){
+                        try{
+                            dbConn.close();
+                        }catch(Exception e){}
+                    }
                     //session.invalidate();
                     loggedIn = false;
                     previousAnonUser=true;
