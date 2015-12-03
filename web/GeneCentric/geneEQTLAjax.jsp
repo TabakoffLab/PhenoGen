@@ -5,7 +5,7 @@
 
 <%
 
-	String myOrganism="";
+	String myOrganism="Rn";
 	String id="";
 	String chromosome="";
 	
@@ -78,12 +78,12 @@
 	}
 	int rnaDatasetID=0;
 	int arrayTypeID=0;
-	
+	gdt.setSession(session);
 	int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
-							if(tmp!=null&&tmp.length==2){
-								rnaDatasetID=tmp[1];
-								arrayTypeID=tmp[0];
-							}
+        if(tmp!=null&&tmp.length==2){
+                rnaDatasetID=tmp[1];
+                arrayTypeID=tmp[0];
+        }
 	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID,true);
 	log.debug("OPENED GENE:"+id);
 
