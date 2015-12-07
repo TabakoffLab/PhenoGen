@@ -70,7 +70,7 @@
 			"Name of program:  " + request.getAttribute("javax.servlet.error.request_uri") + "\n" +
 			"Status Code:  " + request.getAttribute("javax.servlet.error.status_code") + "\n" + 
 			"Error Message:  " + request.getAttribute("javax.servlet.error.message") + "\n" + 
-                        "Browser Info: " + caller.getAttribute("geneTxt")+"\n"+ 
+                        "Browser Info: " + request.getAttribute("geneTxt")+"\n"+ 
 			"Location of Error:  \n"; 
 
 		Throwable error = (Throwable)request.getAttribute("javax.servlet.error.exception");
