@@ -1242,39 +1242,43 @@ public class GeneDataTools {
             	circosErrorMessage = circosErrorMessage + " " + perlScriptArguments[i];
             }
             circosErrorMessage = circosErrorMessage + ")\n\n"+myExec_session.getErrors();
-            myAdminEmail.setContent(circosErrorMessage);
-            try {
-                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-            } catch (Exception mailException) {
-                log.error("error sending message", mailException);
+            if(! circosErrorMessage.contains("WARNING **: Unimplemented style property SP_PROP_POINTER_EVENTS:")){
+                myAdminEmail.setContent(circosErrorMessage);
                 try {
-                        myAdminEmail.sendEmailToAdministrator("");
-                    } catch (Exception mailException1) {
-                        //throw new RuntimeException();
-                    }
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
+                }
             }
         }
         
         String errors=myExec_session.getErrors();
         if(!exception && errors!=null && !(errors.equals(""))){
-            Email myAdminEmail = new Email();
-            myAdminEmail.setSubject("Exception thrown in Exec_session");
-            circosErrorMessage = "There was an error while running ";
-            circosErrorMessage = circosErrorMessage + " " + perlScriptArguments[1] + " (";
-            for(int i=2; i<perlScriptArguments.length; i++){
-            	circosErrorMessage = circosErrorMessage + " " + perlScriptArguments[i];
-            }
-            circosErrorMessage = circosErrorMessage + ")\n\n"+errors;
-            myAdminEmail.setContent(circosErrorMessage);
-            try {
-                myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-            } catch (Exception mailException) {
-                log.error("error sending message", mailException);
+            if(! errors.contains("WARNING **: Unimplemented style property SP_PROP_POINTER_EVENTS:")){
+                Email myAdminEmail = new Email();
+                myAdminEmail.setSubject("Exception thrown in Exec_session");
+                circosErrorMessage = "There was an error while running ";
+                circosErrorMessage = circosErrorMessage + " " + perlScriptArguments[1] + " (";
+                for(int i=2; i<perlScriptArguments.length; i++){
+                    circosErrorMessage = circosErrorMessage + " " + perlScriptArguments[i];
+                }
+                circosErrorMessage = circosErrorMessage + ")\n\n"+errors;
+                myAdminEmail.setContent(circosErrorMessage);
                 try {
-                        myAdminEmail.sendEmailToAdministrator("");
-                    } catch (Exception mailException1) {
-                        //throw new RuntimeException();
-                    }
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    try {
+                            myAdminEmail.sendEmailToAdministrator("");
+                        } catch (Exception mailException1) {
+                            //throw new RuntimeException();
+                        }
+                }
             }
         }
    	return completedSuccessfully;
