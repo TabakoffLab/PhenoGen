@@ -321,7 +321,11 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 </script>
 
 
-<%}else{%>
-    	<div class="error"><%=genURL.get(selectedGene)%><BR />The administrator has been notified of the problem and will investigate the error.  We apologize for any inconvenience.</div><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR />
+<%}else{
+    if(myGene.startsWith("ENS")){%>
+        <BR /><div class="error">ERROR: The Ensembl ID entered is newer than the current version supported v79 or is an older ID that is no longer valid.  In rats this generally indicates the gene was not annotated yet in Rn5 and has been added to Ensembl Rn6.<BR /><BR />We are working to add support for Rn6 at which time new IDs will work, however it is taking time to prepare all of our data for Rn6.<BR>We are very sorry for the inconvenience.  Please check back soon or follow us on Facebook, Twitter, or Google+ to be notified of the update.<BR><BR><BR />
+    <%}else{%>
+        <div class="error"><%=genURL.get(selectedGene)%><BR />The administrator has been notified of the problem and will investigate the error.  We apologize for any inconvenience.</div><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR />
+    <%}%>
 <%}%>
     
