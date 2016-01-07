@@ -746,14 +746,16 @@ Or
 
 <%}else{%>
 
-	<%if(displayNoEnsembl){ %>
+	<%if(displayNoEnsembl && ! myGene.startsWith("ENS")){ %>
     	Hint: Try other synonyms if the first ID that you enter is not found.
             <BR /><BR />
         <BR /><div class="error">ERROR:No Ensembl ID found for the ID entered.<BR /><BR />
         The Gene ID entered could not be translated to an Ensembl ID to retrieve gene information.  Please try an alternate identifier for this gene.  This gene ID has been reported to improve the translation of many Gene IDs to Ensembl Gene IDs.  <BR /><BR /><b>Note:</b> At this time if there is no annotation in Ensembl for a gene we will not be able to display information about it, however if you have found your gene of interest on Ensembl entering the Ensembl Gene ID, which begins with ENSRNOG or ENSMUSG, should work.</div><BR /><BR />
         <BR />
          
-	<% }%>
+	<%}else if(displayNoEnsembl && myGene.startsWith("ENS")){%>
+        <div class="error">ERROR: The Ensembl ID entered is newer than the current version supported v79 or is an older ID that is no longer valid.  In rats this generally indicates the gene was not annotated yet in Rn5 and has been added to Ensembl Rn6.<BR /><BR />We are working to add support for Rn6 at which time new IDs will work, however it is taking time to prepare all of our data for Rn6.<BR>We are very sorry for the inconvenience.  Please check back soon or follow us on Facebook, Twitter, or Google+ to be notified of the update.<BR><BR><BR />
+        <%}%>
 
 	
 	<div class="demo" style="width:100%;text-align:center;">
