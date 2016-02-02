@@ -10,19 +10,23 @@
 	int datasetVersion = ((String) request.getParameter("datasetVersion") != null ? Integer.parseInt((String) request.getParameter("datasetVersion")) : -99);
 
         mySessionHandler.createSessionActivity(session.getId(), "Viewed all genelists", pool);
-	//
-        // Get the gene lists which are stored in PhenoGen
-        //
-        if (datasetID == -99) {
-        	if (geneListsForUser == null) {
-        		log.debug("getting new geneListsForUser");
-                	geneListsForUser = myGeneList.getGeneLists(userID, "All", "All", pool); 
-        	} else {
-                	log.debug("geneListsForUser already set");
-        	}
-	} else {
-                geneListsForUser = myGeneList.getGeneListsForDataset(userID, datasetID, datasetVersion, pool); 
-	}
+        if(userLoggedIn.getUser_name().equals("anon")){
+            geneListsForUser= new GeneList[0];
+        }else{
+            //
+            // Get the gene lists which are stored in PhenoGen
+            //
+            if (datasetID == -99) {
+                    if (geneListsForUser == null) {
+                            log.debug("getting new geneListsForUser");
+                            geneListsForUser = myGeneList.getGeneLists(userID, "All", "All", pool); 
+                    } else {
+                            log.debug("geneListsForUser already set");
+                    }
+            } else {
+                    geneListsForUser = myGeneList.getGeneListsForDataset(userID, datasetID, datasetVersion, pool); 
+            }
+        }
 
 %>
 
@@ -97,5 +101,5 @@
 			setTimeout("setupMain()", 100); 
 		});
 	</script>
-
+<%@ include file="/web/geneLists/include/geneListFooter.jsp"%>
 <%@ include file="/web/common/footer.jsp"%>

@@ -1,7 +1,5 @@
 package edu.ucdenver.ccp.PhenoGen.data;
 
-import edu.ucdenver.ccp.PhenoGen.data.GeneList;
-import edu.ucdenver.ccp.PhenoGen.data.ParameterValue;
 import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
 import edu.ucdenver.ccp.util.Debugger;
 import edu.ucdenver.ccp.util.ObjectHandler;
