@@ -10,11 +10,11 @@
 
 <style>
     
-    .node.gene.selected,.node.miRNA.selected {stroke: #ffff00; stroke-width:4px;}
-    .node.gene.up { fill: #1F77B4; }
-    .node.gene.down { fill: #2CA02C; }
-    .node.miRNA.down {  fill: #9467BD; }
-    .node.miRNA.up {  fill: #FF7F0E; }
+    .node.gene.selected,.node.miRNA.selected {stroke: #008800; stroke-width:4px;}
+    .node.gene.up { fill:#ccccff;/*fill: #1F77B4;*/}
+    .node.gene.down { fill: #ccccff; /*fill: #2CA02C;*/ }
+    .node.miRNA.down { fill: #ffcccc; /*fill: #9467BD;*/ }
+    .node.miRNA.up {  fill: #ffcccc; /*fill: #FF7F0E;*/ }
     .node.gene,.node.miRNA{
         stroke: #FFFFFF;
         stroke-width: 0px;

@@ -91,7 +91,7 @@ function drawGraph(drwNodes,drwLinks){
 	 .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
 	 .attr("d", d3.svg.symbol()
 	   .size(function(d) { return d.logpval*20; })
-	   .type(function(d) { var val="circle"; if(d.type==='gene'){val="square";} return val; }))
+	   .type(function(d) { var val="circle"; if(d.type==='gene'){val="triangle-up";} return val; }))
 	 .call(force.drag)
 	 .on("mouseover",function(d){
 	   $("#graphicHelp").html("Double click to zoom in on the node and connected nodes. Hover over to display labels for node and connected nodes.");
@@ -248,12 +248,18 @@ function addControls(){
 	 .attr("cursor","pointer")
 	 .on("click",function(){
 		   var content="";
-		   content=$("div#grpahic").html();
+		   content=$("div#graphic").html();
 		   var w=$(window).width();
 		   //content=content.replace("width=\"100%\"","width=\""+w+"px\"");
-		   content=content+"\n";
+		   content="<style>.node.gene.up { fill:#ccccff;} "+
+				   ".node.gene.down { fill: #ccccff; }"+
+				   ".node.miRNA.down { fill: #ffcccc;  }"+
+				   ".node.miRNA.up {  fill: #ffcccc;  }"+
+				   ".node.gene,.node.miRNA{ stroke: #FFFFFF;stroke-width: 0px;}"+
+				   ".link{ stroke: #000;stroke-opacity: .9;}"+
+				   ".link.predicted {stroke-dasharray: 0,2 1;}</style>"+content+"\n";
 		   $.ajax({
-				url: pathPrefix+"saveBrowserImage.jsp",
+				url: contextRoot+"web/GeneCentric/saveBrowserImage.jsp",
 				type: 'POST',
 				contentType: 'text/html',
 				data: content,
@@ -518,45 +524,89 @@ function drawLegend(){
 	   .attr("fill","#FFFFFF")
 	   .attr("stroke","#000000");
   lgd.append("text").attr("x",4).attr("y",20).text("Nodes");
-  lgd.append("text").attr("x",4).attr("y",40).text("Up ISS");
-  lgd.append("text").attr("x",70).attr("y",40).text("Up ILS");
-  lgd.append("text").attr("x",98).attr("y",58).text("Gene");
-  lgd.append("text").attr("x",98).attr("y",82).text("miRNA")
+  //lgd.append("text").attr("x",4).attr("y",40).text("Up ISS");
+  //lgd.append("text").attr("x",70).attr("y",40).text("Up ILS");
+  lgd.append("text").attr("x",50).attr("y",58).text("Gene");
+  lgd.append("text").attr("x",50).attr("y",82).text("miRNA")
 
-  lgd.append("rect")
+  lgd.append("path")
+  		.attr("transform","translate(26,55)")
+  		.attr("fill","#ccccff")
+	   	.attr("stroke","#ccccff")
+  		.attr("d", d3.svg.symbol()
+			   		.size(70)
+			   		.type("triangle-up")
+	   		);
+
+  /*lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",20)
 	   .attr("y",50)
 	   .attr("height",12)
 	   .attr("width",12)
-	   .attr("fill","#1F77B4")
-	   .attr("stroke","#1F77B4");
-  lgd.append("rect")
+	   .attr("fill","#ccccff")
+	   .attr("stroke","#ccccff");*/
+  /*lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",80)
 	   .attr("y",50)
 	   .attr("height",12)
 	   .attr("width",12)
 	   .attr("fill","#2CA02C")
-	   .attr("stroke","#2CA02C");
+	   .attr("stroke","#2CA02C");*/
 
   lgd.append("circle")
 	   .attr("class","legend")
 	   .attr("cx",26)
 	   .attr("cy",80)
 	   .attr("r",6)
-	   .attr("fill","#FF7F0E")
-	   .attr("stroke","#FF7F0E");
+	   .attr("fill","#ffcccc")
+	   .attr("stroke","#ffcccc");
 
-    lgd.append("circle")
+    /*lgd.append("circle")
 	   .attr("class","legend")
 	   .attr("cx",86)
 	   .attr("cy",80)
 	   .attr("r",6)
 	   .attr("fill","#9467BD")
-	   .attr("stroke","#9467BD");
+	   .attr("stroke","#9467BD");*/
 
-    lgd.append("rect")
+	lgd.append("path")
+  		.attr("transform","translate(21,107)")
+  		.attr("fill","#000000")
+	   	.attr("stroke","#000000")
+  		.attr("d", d3.svg.symbol()
+			   		.size(8)
+			   		.type("triangle-up")
+	   		);
+
+  	lgd.append("path")
+  		.attr("transform","translate(28,106)")
+  		.attr("fill","#000000")
+	   	.attr("stroke","#000000")
+  		.attr("d", d3.svg.symbol()
+			   		.size(15)
+			   		.type("triangle-up")
+	   		);
+
+  	lgd.append("path")
+  		.attr("transform","translate(38,105)")
+  		.attr("fill","#000000")
+	   	.attr("stroke","#000000")
+  		.attr("d", d3.svg.symbol()
+			   		.size(30)
+			   		.type("triangle-up")
+	   		);
+  	lgd.append("path")
+  		.attr("transform","translate(50,104)")
+  		.attr("fill","#000000")
+	   	.attr("stroke","#000000")
+  		.attr("d", d3.svg.symbol()
+			   		.size(50)
+			   		.type("triangle-up")
+	   		);
+
+    /*lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",20)
 	   .attr("y",106)
@@ -587,7 +637,7 @@ function drawLegend(){
 	   .attr("height",15)
 	   .attr("width",15)
 	   .attr("fill","#000000")
-	   .attr("stroke","#0000000");
+	   .attr("stroke","#0000000");*/
     lgd.append("circle")
 	   .attr("class","legend")
 	   .attr("cx",21.5)
