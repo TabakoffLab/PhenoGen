@@ -7,10 +7,13 @@
  *  Modification Log:
  *      
 --%>
-
-<script type="text/javascript" src="<%=contextRoot%>javascript/Anon_session.js"></script>
+<%
+if(userLoggedIn.getUser_name().equals("anon")){
+%>
 <script type="text/javascript">
-PhenogenAnonSession.setupSession(setupPage);
+    var geneListjs=GeneLists();
+    var PhenogenAnonSession=SetupAnonSession();
+    PhenogenAnonSession.setupSession(setupGeneList);
 </script>
-
+<%}%>
 

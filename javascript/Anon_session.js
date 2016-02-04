@@ -10,7 +10,6 @@ function SetupAnonSession(){
         console.log(typeof uuid);
         if(typeof uuid ==="string" && uuid.length>0){
             that.UUID=uuid;
-            alert("saved:"+that.UUID);
             that.pageSetup();
         }else{
             that.getNewUUID();
@@ -25,7 +24,6 @@ function SetupAnonSession(){
             dataType: 'json',
             success: function(data2){
                 var uuid=JSON.stringify(data2.uuid);
-                alert(uuid);
                 that.UUID=uuid;
                 that.saveUUID();
                 that.pageSetup();
@@ -57,7 +55,7 @@ function SetupAnonSession(){
      * Test for localStorage support in browser.
      */
     that.testLocalStorage=function (){
-	var test = 'test';
+	   var test = 'test';
         try {
                 localStorage.setItem(test, test);
                 localStorage.removeItem(test);
@@ -70,4 +68,3 @@ function SetupAnonSession(){
     return that;
 };
 
-var PhenogenAnonSession=SetupAnonSession();
