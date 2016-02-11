@@ -1143,18 +1143,13 @@ public class SessionHandler {
 	}
   
         public void createGeneListActivity(String sessionID, int geneListID, String activityName,DataSource pool)throws SQLException {
-            Connection conn=null;
-            
-            try{
-                conn=pool.getConnection();
-                createGeneListActivity(sessionID,geneListID,activityName,conn);
-                conn.close();
-            }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-                throw new SQLException();
-            }
+                SessionHandler mySessionHandler = new SessionHandler();
+
+       		mySessionHandler.setSession_id(sessionID);
+		mySessionHandler.setGene_list_id(geneListID);
+        	mySessionHandler.setActivity_name(activityName);
+		
+		createSessionActivity(mySessionHandler, pool);
         }
         
 	/**

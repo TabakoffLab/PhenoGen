@@ -139,7 +139,7 @@ public class GeneList{
 
   private Logger log=null;
 
-  private DbUtils myDbUtils = new DbUtils(); 
+  public DbUtils myDbUtils = new DbUtils(); 
 
   public GeneList () {
 	log = Logger.getRootLogger();
@@ -407,13 +407,13 @@ public class GeneList{
 			geneListFromClause + 
 			"where gl.gene_list_id = ? "+
 			geneListGroupByClause; 
-
+                log.debug(query);
         	Results myResults = new Results(query, geneListID, conn);
                 log.debug("before first call");
         	String[] dataRow = myResults.getNextRow();
-		//log.debug("calling setupGeneListValues");
+		log.debug("calling setupGeneListValues");
         	myGeneList = setupGeneListValues(dataRow);
-
+                log.debug("after calling setupGeneListValues");
 		if (myGeneList.getParameter_group_id() != -99) {
                     log.debug("before parameter group calls");
 			myGeneList.setAnovaPValue(
@@ -1879,8 +1879,8 @@ public class GeneList{
    	 */
   	private GeneList setupGeneListValues(String[] dataRow) {
 
-        	//log.debug("in setupGeneListValues");
-        	//log.debug("dataRow= "); new Debugger().print(dataRow);
+        	log.debug("in general setupGeneListValues");
+        	log.debug("general dataRow= "); new Debugger().print(dataRow);
 
         	GeneList myGeneList = new GeneList();
 

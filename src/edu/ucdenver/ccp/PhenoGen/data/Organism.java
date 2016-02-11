@@ -5,6 +5,7 @@ import java.util.*;
 import edu.ucdenver.ccp.util.sql.*;
 import edu.ucdenver.ccp.util.*;
 import edu.ucdenver.ccp.PhenoGen.web.*;
+import javax.sql.DataSource;
                                                                                                                        
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -22,6 +23,48 @@ public class Organism{
         log = Logger.getRootLogger();
   }
 
+        /**
+	 * Gets the list of valid organisms.
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return		a Hashtable mapping the 2-character abbreviation to the scientific name
+	 */
+	public LinkedHashMap getOrganismsAsSelectOptions(DataSource pool) throws SQLException {
+		//log.debug("in getOrganismsAsSelectOptions");
+
+		String query =
+			"select organism, organism_name "+
+			"from organisms "+
+			"where organism != 'NA' "+
+			"order by organism";
+                Connection conn=null;
+                LinkedHashMap<String, String> optionHash = new LinkedHashMap<String, String>();
+                try{      
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, conn);
+                    
+                    String dataRow[] = null;
+
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            optionHash.put(dataRow[0], dataRow[1]);
+                    }
+
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+                                                                                                                       
+		return optionHash;
+	}
+  
 	/**
 	 * Gets the list of valid organisms.
 	 * @param conn	the database connection

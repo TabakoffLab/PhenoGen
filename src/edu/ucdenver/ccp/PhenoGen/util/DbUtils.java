@@ -86,6 +86,42 @@ public class DbUtils{
         }
   }
 
+        //
+	// gets the next value from the sequence passed in 
+	//
+	public int getUniqueID(String sequence, DataSource pool) throws SQLException {
+	
+		//log.debug("in getUniqueID");
+        	String query =
+                	"select "+
+			sequence + 
+			".nextval "+
+                	"from dual";
+                Connection conn=null;
+                int uniqueID=-99;
+                try{
+                        conn=pool.getConnection();
+                	Results myResults = new Results(query, conn);
+
+                	uniqueID = myResults.getIntValueFromFirstRow();
+
+                	myResults.close();
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+                uniqueID = (uniqueID == -99 ? 0 : uniqueID);
+
+ 		return uniqueID;
+	}
+  
 	//
 	// gets the next value from the sequence passed in 
 	//

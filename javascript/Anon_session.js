@@ -7,13 +7,30 @@ function SetupAnonSession(){
     };
     that.setupUUID=function(){
         var uuid=that.checkUUID();
-        console.log(typeof uuid);
+        console.log("cur UUID:"+uuid);
         if(typeof uuid ==="string" && uuid.length>0){
             that.UUID=uuid;
-            that.pageSetup();
+            that.setupAnonUserSession();
         }else{
             that.getNewUUID();
         }
+    };
+    that.setupAnonUserSession=function(){
+        console.log("request session:"+that.UUID);
+        $.ajax({
+            url: contextRoot+"web/access/setupSessionUUID.jsp",
+            type: 'GET',
+            cache: false,
+            data: { uuid:that.UUID },
+            dataType: 'json',
+            success: function(data2){
+                that.pageSetup();
+            },
+            error: function(xhr, status, error) {
+                console.log("ERROR:"+error);
+                setTimeout(that.setupUUID,2000);
+            }
+        });
     };
     that.getNewUUID=function(){
         $.ajax({
@@ -30,7 +47,7 @@ function SetupAnonSession(){
             },
             error: function(xhr, status, error) {
                 console.log("ERROR:"+error);
-                setTimeout(getNewUUID,2000);
+                setTimeout(that.getNewUUID,2000);
             }
         });
     };
@@ -40,11 +57,11 @@ function SetupAnonSession(){
         }else{
             $.cookie("phenogenAnonUUID",that.UUID);
         }
-    }
+    };
     that.checkUUID=function(){
         var uuid="";
         if(that.local){
-            uuid=localStorage.getItem("phenogenAnonUUID");
+            uuid=localStorage.getItem("phenogenAnonUUID").replace(/\"/g, "");
         }else if($.cookie("phenogenAnonUUID")){
             uuid=$.cookie("phenogenAnonUUID");
         }

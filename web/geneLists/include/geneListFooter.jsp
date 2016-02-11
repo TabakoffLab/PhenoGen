@@ -11,9 +11,8 @@
 if(userLoggedIn.getUser_name().equals("anon")){
 %>
 <script type="text/javascript">
-    var geneListjs=GeneLists();
     var PhenogenAnonSession=SetupAnonSession();
-    PhenogenAnonSession.setupSession(setupGeneList);
+    PhenogenAnonSession.setupSession(setupGeneLists);
 </script>
 <%}%>
 

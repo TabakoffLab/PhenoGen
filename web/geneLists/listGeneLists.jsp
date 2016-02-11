@@ -1,6 +1,7 @@
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %>
 <%
 	// Need to include this here, so that it's available on the modal
+        extrasList.add("d3.v3.min.js");
 	extrasList.add("createGeneList.js");
 	optionsListModal.add("createGeneList");
 	session.setAttribute("selectedGeneList", null);
@@ -42,7 +43,7 @@
 	<form name="chooseGeneList" action="chooseGeneList.jsp" method="get">
 
 		<div class="leftTitle">Gene Lists </div>
-		<table name="items" class="list_base tablesorter" cellpadding="0" cellspacing="2" width="98%">
+		<table id="listGeneList" name="items" class="list_base tablesorter" cellpadding="0" cellspacing="2" width="98%">
         		<thead>
         		<tr class="col_title">
 				<th>Gene List Name</th>
@@ -106,9 +107,9 @@
 
                 var downloadModal; // modal used for download gene list information/interaction box
                 var deleteModal; // modal used for delete gene list information/interaction box
-
+                var itemDetails;
                 function setupPage() {
-                       var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Gene List Details"});
+                       itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Gene List Details"});
 
                        //---> set default sort column to date descending
                        $("table[name='items']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortUp");
@@ -152,6 +153,7 @@
                        setupCreateNewList();
                        setupDeleteButton(contextPath + "/web/geneLists/deleteGeneList.jsp"); 
                        setupDownloadButton(contextPath + "/web/geneLists/downloadGeneList.jsp");
+                       
                 }
 
                 /* * *
@@ -172,10 +174,12 @@
                                });
                        });
                 }
-            
-                function setupGeneList(){
-                    geneListjs.getGeneLists(true);
+
+                function setupGeneLists(){
+                    
+                    geneListjs.getListGeneLists(true,"#listGeneList");
                 }
+
 		$(document).ready(function() {
                         setupPage();
 			setTimeout("setupMain()", 100); 
