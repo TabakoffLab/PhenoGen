@@ -2813,18 +2813,25 @@ public class GeneList{
         
         public Set<String> getGenesAsSet(String whichIdentifier,DataSource pool)throws SQLException {
             Connection conn=null;
-            Set<String> tmp=null;
+            TreeSet<String> geneSet = new TreeSet<String>();
             try{
-                conn=pool.getConnection();
-                tmp=getGenesAsSet(whichIdentifier,conn);
-                conn.close();
+                Gene[] myGeneArray = getGenesAsGeneArray(pool);
+                for (int i=0; i<myGeneArray.length; i++) {
+			if (whichIdentifier.equals("Original")) {
+				geneSet.add(myGeneArray[i].getGene_id());
+                	} else if (whichIdentifier.equals("Current")) {
+				geneSet.add(myGeneArray[i].getCurrent_identifier());
+                	} else {
+                        	log.error("wrong whichIidentifier sent to getGenesAsSet");
+                	}
+		}
             }catch(SQLException e){
                 if(conn!=null && !conn.isClosed()){
                     conn.close();
                 }
                 throw new SQLException();
             }
-            return tmp;
+            return geneSet;
         }
         
 	/**
@@ -2835,7 +2842,6 @@ public class GeneList{
 	 * @return            a Set of Strings containing the gene identifiers in the gene list 
 	 */
 	public Set<String> getGenesAsSet(String whichIdentifier, Connection conn) throws SQLException {
-
         	log.debug("in getGenesAsSet");
 
         	Gene[] myGeneArray = getGenesAsGeneArray(conn);
@@ -2929,19 +2935,14 @@ public class GeneList{
 	}
 
         public String[] getGenesAsArray(String whichIdentifier,DataSource pool)throws SQLException {
-            Connection conn=null;
-            String[] tmp=null;
-            try{
-                conn=pool.getConnection();
-                tmp=getGenesAsArray(whichIdentifier,conn);
-                conn.close();
-            }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-                throw new SQLException();
-            }
-            return tmp;
+            log.debug("in getGenesAsArray");
+
+        	Set<String> geneSet = getGenesAsSet(whichIdentifier, pool);
+
+        	String[] geneArray = (String[]) myObjectHandler.getAsArray(geneSet, String.class);
+
+		//log.debug("size of Array = "+geneArray.length);
+        	return geneArray;
         }
         
 	/**

@@ -60,6 +60,7 @@ import java.lang.Thread;
 public class GOTools {
     private HttpSession session;
     private User user;
+    private AnonUser anonU;
     private DataSource pool;
     private String rFunctDir;
     private String applicationRoot="";
@@ -77,6 +78,10 @@ public class GOTools {
         this.contextRoot = (String) session.getAttribute("contextRoot");
         this.pool=pool;
         user=(User)session.getAttribute("userLoggedIn");
+    }
+    
+    public void setAnonUser(AnonUser au){
+        this.anonU=au;
     }
     
     public boolean isGOResults(String path){
@@ -100,6 +105,9 @@ public class GOTools {
                 Integer.toString(gc.get(gc.MINUTE))+
                 Integer.toString(gc.get(gc.SECOND));
         String goFilePath=this.user.getUserGeneListsDir() +"/" + gl.getGene_list_name_no_spaces() +"/GO/"+datePart+"/";
+        if(this.user.getUser_name().equals("anon")){
+            goFilePath=this.user.getUserGeneListsDir() +"/" + anonU.getUUID()+"/"+gl.getGene_list_id()+"/GO/"+datePart+"/";
+        }
         //create DB entry
         
         

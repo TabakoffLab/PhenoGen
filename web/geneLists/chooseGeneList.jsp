@@ -12,9 +12,10 @@
 <%@ include file="/web/geneLists/include/selectGeneList.jsp"  %>
 <%@ include file="/web/geneLists/include/callIdecoder.jsp"  %>
 <%
-	//log.debug("in chooseGeneList");
+	log.debug("in chooseGeneList");
 	
 	mySessionHandler.createGeneListActivity(session.getId(), selectedGeneList.getGene_list_id(), "Chose genelist", pool);
+        log.debug("after choose activity");
 	if (fromQTL.equals("")) {
 		response.sendRedirect("geneList.jsp");
 	} else {

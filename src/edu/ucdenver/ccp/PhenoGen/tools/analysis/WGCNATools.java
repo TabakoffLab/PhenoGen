@@ -4,6 +4,7 @@ package edu.ucdenver.ccp.PhenoGen.tools.analysis;
 import edu.ucdenver.ccp.PhenoGen.data.User;
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler;
 import edu.ucdenver.ccp.PhenoGen.web.mail.*;
+import edu.ucdenver.ccp.PhenoGen.data.AnonGeneList;
 import edu.ucdenver.ccp.PhenoGen.data.GeneList;
 import edu.ucdenver.ccp.PhenoGen.tools.idecoder.*;
 import java.io.File;
@@ -184,9 +185,9 @@ public class WGCNATools{
         String ensemblStart="ENSMUSG";
         
         int id=glID;
-        GeneList myGeneList=new GeneList();
+        AnonGeneList myAnonGL=new AnonGeneList();
         try{
-            GeneList gl=myGeneList.getGeneList(id,pool);
+            GeneList gl=myAnonGL.getGeneList(id,pool);
             String org=gl.getOrganism();
             if(org.equals("Rn")){
                 ensemblStart="ENSRNOG";

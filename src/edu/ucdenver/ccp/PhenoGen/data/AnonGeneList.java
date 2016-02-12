@@ -437,7 +437,7 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
   	private AnonGeneList setupGeneListValues(String[] dataRow) {
 
         	log.debug("in anon setupGeneListValues");
-        	log.debug("dataRow= "); new Debugger().print(dataRow);
+        	//log.debug("dataRow= "); new Debugger().print(dataRow);
 
         	AnonGeneList myGeneList = new AnonGeneList();
 
@@ -456,12 +456,12 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
 		} catch (Exception e) {
 			log.error("Couldn't parse date", e);
 		}
-		//log.debug("dataset_id = "+dataRow[10]);
+		log.debug("dataset_id = "+dataRow[10]);
 
-        	myGeneList.setDataset_id(Integer.parseInt(dataRow[10]));
+        	myGeneList.setDataset_id(-99);
         	myGeneList.setParameter_group_id(Integer.parseInt(dataRow[11]));
         	myGeneList.setCreated_by_user_id(Integer.parseInt(dataRow[12]));
-        	myGeneList.setVersion(Integer.parseInt(dataRow[13]));
+        	myGeneList.setVersion(-99);
 
         	return myGeneList;
   	}

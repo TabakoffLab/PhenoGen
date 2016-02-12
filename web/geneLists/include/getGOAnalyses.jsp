@@ -1,11 +1,15 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="goT" class="edu.ucdenver.ccp.PhenoGen.tools.go.GOTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
 <jsp:useBean id="myFH" class="edu.ucdenver.ccp.util.FileHandler"/>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 <%
 	goT.setup(pool,session);
+        if(userLoggedIn.getUser_name().equals("anon")){
+            goT.setAnonUser(anonU);
+        }
 	String id="";
 	if(request.getParameter("geneListID")!=null){
 		id=request.getParameter("geneListID");

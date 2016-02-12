@@ -50,16 +50,16 @@ function GeneLists(){
 						
 		
 						$("tr#gl"+id).find("td").slice(0,5).click( function() {
-                                       var listItemId = $(this).parent("tr").attr("id");
+                                       var listItemId = $(this).parent("tr").attr("id").substr(2);
                                        $("input[name='geneListID']").val( listItemId );
                                        showLoadingBox();
                                        document.chooseGeneList.submit();
                                });
 
                         $("tr#gl"+id).find("td.details").click( function() {
-                                       var geneListID = $(this).parent("tr").attr("id");
+                                       var geneListID = $(this).parent("tr").attr("id").substr(2);
                                        var parameterGroupID = $(this).parent("tr").attr("parameterGroupID");
-                                       $.get(contextPath + "/web/common/formatParameters.jsp", 
+                                       $.get(contextPath + "/web/geneLists/formatParametersGL.jsp", 
                                                {geneListID: geneListID, 
                                                parameterGroupID: parameterGroupID,
                                                parameterType:"geneList"},
