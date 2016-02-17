@@ -393,25 +393,29 @@ function addControls(){
 	   d3.select(this).attr("src",contextRoot+"web/images/icons/magMinus_dark_32.png");
 	   $("#graphicHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 	 });
-	 imageBar.append("input").attr("type","checkbox")
+	imageBar.append("input").attr("type","checkbox")
 				.attr("id","labelsCBX")
-				    .style("margin-left","12px")
-				    .style("margin-right","3px")
+				    .style({"margin-left":"12px",
+				    	"margin-right":"3px",
+				    	"position":"relative",
+				    	"top":"-8px"})
 				    .on("click",function(){
 					   var chkBox = d3.select("#labelsCBX")[0][0];
 					   drawLabels=chkBox.checked;
 					   redrawGraph();
 				    });
-    imageBar.append("text").text("Display Labels");
+    imageBar.append("text").style({"position":"relative",
+				    	"top":"-8px"}).text("Display Labels");
 
-	 var edgeCtl=imageBar.append("span").attr("id","edgeCtl").style("display","none");
+	 var edgeCtl=imageBar.append("span").attr("id","edgeCtl").style({"display":"none","padding-left":"30px"});
 
 	edgeCtl.append("span").attr("class","edgePlus control")
 		 .style({
 		   "display":"inline-block",
 		   "cursor":"pointer",
 		   "position":"relative",
-		   "top":"7px"
+		   "top":"7px",
+
 		 })
 		 .attr("id","edgePlusImage")
 		 .append("img")
@@ -474,7 +478,8 @@ function addControls(){
 		   "display":"inline-block",
 		   "cursor":"pointer",
 		   "position":"relative",
-		   "top":"-1px"
+		   "top":"-1px",
+
 		 })
 		 .attr("id","edgeMinusImage")
 		 .append("img")
@@ -500,7 +505,7 @@ function addControls(){
 		   d3.select(this).attr("src",contextRoot+"web/images/icons/edge_reset_dark_32.png");
 		   $("#graphicHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 		 });
-	edgeCtl.append("span").attr("id","edgeCountLbl").attr("style","right-margin:10px;").html("Edge Count limit: "+edgeCutoff);
+	edgeCtl.append("span").attr("id","edgeCountLbl").style({"padding-left":"10px","position":"relative","top":"-8px"}).html("Edge Count limit: "+edgeCutoff);
 
 
     
@@ -524,28 +529,28 @@ function drawLegend(){
 	   .attr("fill","#FFFFFF")
 	   .attr("stroke","#000000");
   lgd.append("text").attr("x",4).attr("y",20).text("Nodes");
-  //lgd.append("text").attr("x",4).attr("y",40).text("Up ISS");
-  //lgd.append("text").attr("x",70).attr("y",40).text("Up ILS");
-  lgd.append("text").attr("x",50).attr("y",58).text("Gene");
-  lgd.append("text").attr("x",50).attr("y",82).text("miRNA")
+  lgd.append("text").attr("x",50).attr("y",80).text("miRNA");
+  lgd.append("text").attr("x",50).attr("y",100).text("Gene");
+  lgd.append("text").attr("x",50).attr("y",40).text("Up ISS");
+  lgd.append("text").attr("x",50).attr("y",60).text("Up ILS")
 
-  lgd.append("path")
+  /*lgd.append("path")
   		.attr("transform","translate(26,55)")
   		.attr("fill","#ccccff")
 	   	.attr("stroke","#ccccff")
   		.attr("d", d3.svg.symbol()
 			   		.size(70)
 			   		.type("triangle-up")
-	   		);
+	   		);*/
 
-  /*lgd.append("rect")
+  lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",20)
-	   .attr("y",50)
+	   .attr("y",30)
 	   .attr("height",12)
-	   .attr("width",12)
-	   .attr("fill","#ccccff")
-	   .attr("stroke","#ccccff");*/
+	   .attr("width",24)
+	   .attr("fill","#ffcccc")
+	   .attr("stroke","#ffcccc");
   /*lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",80)
@@ -555,13 +560,32 @@ function drawLegend(){
 	   .attr("fill","#2CA02C")
 	   .attr("stroke","#2CA02C");*/
 
-  lgd.append("circle")
+  lgd.append("rect")
 	   .attr("class","legend")
-	   .attr("cx",26)
-	   .attr("cy",80)
-	   .attr("r",6)
-	   .attr("fill","#ffcccc")
-	   .attr("stroke","#ffcccc");
+	   .attr("x",20)
+	   .attr("y",50)
+	   .attr("height",12)
+           .attr("width",24)
+	   .attr("fill","#ccccff")
+	   .attr("stroke","#ccccff");
+
+lgd.append("circle")
+           .attr("class","legend")
+           .attr("cx",32)
+           .attr("cy",76)
+           .attr("r",6)
+           .attr("fill","#000000")
+           .attr("stroke","#000000");
+
+
+ lgd.append("path")
+                .attr("transform","translate(32,94)")
+                .attr("fill","#000000")
+                .attr("stroke","#000000")
+                .attr("d", d3.svg.symbol()
+                                        .size(50)
+                                        .type("triangle-up")
+                        );
 
     /*lgd.append("circle")
 	   .attr("class","legend")
@@ -572,7 +596,7 @@ function drawLegend(){
 	   .attr("stroke","#9467BD");*/
 
 	lgd.append("path")
-  		.attr("transform","translate(21,107)")
+  		.attr("transform","translate(21,117)")
   		.attr("fill","#000000")
 	   	.attr("stroke","#000000")
   		.attr("d", d3.svg.symbol()
@@ -581,7 +605,7 @@ function drawLegend(){
 	   		);
 
   	lgd.append("path")
-  		.attr("transform","translate(28,106)")
+  		.attr("transform","translate(28,116)")
   		.attr("fill","#000000")
 	   	.attr("stroke","#000000")
   		.attr("d", d3.svg.symbol()
@@ -590,7 +614,7 @@ function drawLegend(){
 	   		);
 
   	lgd.append("path")
-  		.attr("transform","translate(38,105)")
+  		.attr("transform","translate(38,115)")
   		.attr("fill","#000000")
 	   	.attr("stroke","#000000")
   		.attr("d", d3.svg.symbol()
@@ -598,7 +622,7 @@ function drawLegend(){
 			   		.type("triangle-up")
 	   		);
   	lgd.append("path")
-  		.attr("transform","translate(50,104)")
+  		.attr("transform","translate(50,114)")
   		.attr("fill","#000000")
 	   	.attr("stroke","#000000")
   		.attr("d", d3.svg.symbol()
@@ -617,7 +641,7 @@ function drawLegend(){
     lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",25)
-	   .attr("y",105)
+	   .attr("y",115)
 	   .attr("height",5)
 	   .attr("width",5)
 	   .attr("fill","#000000")
@@ -625,7 +649,7 @@ function drawLegend(){
     lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",32)
-	   .attr("y",102.5)
+	   .attr("y",112.5)
 	   .attr("height",10)
 	   .attr("width",10)
 	   .attr("fill","#000000")
@@ -633,7 +657,7 @@ function drawLegend(){
     lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",45)
-	   .attr("y",100)
+	   .attr("y",110)
 	   .attr("height",15)
 	   .attr("width",15)
 	   .attr("fill","#000000")
@@ -641,33 +665,33 @@ function drawLegend(){
     lgd.append("circle")
 	   .attr("class","legend")
 	   .attr("cx",21.5)
-	   .attr("cy",125)
+	   .attr("cy",135)
 	   .attr("r",1.5)
 	   .attr("fill","#000000")
 	   .attr("stroke","#000000");
     lgd.append("circle")
 	   .attr("class","legend")
 	   .attr("cx",27.5)
-	   .attr("cy",125)
+	   .attr("cy",135)
 	   .attr("r",2.5)
 	   .attr("fill","#000000")
 	   .attr("stroke","#000000");
     lgd.append("circle")
 	   .attr("class","legend")
 	   .attr("cx",37)
-	   .attr("cy",125)
+	   .attr("cy",135)
 	   .attr("r",5)
 	   .attr("fill","#000000")
 	   .attr("stroke","#000000");
     lgd.append("circle")
 	   .attr("class","legend")
 	   .attr("cx",52.5)
-	   .attr("cy",125)
+	   .attr("cy",135)
 	   .attr("r",7.5)
 	   .attr("fill","#000000")
 	   .attr("stroke","#000000");
 
-  lgd.append("text").attr("x",75).attr("y",120).text("abs(Effect)");
+  lgd.append("text").attr("x",75).attr("y",130).text("abs(Effect)");
 
   lgd.append("rect")
 	   .attr("class","legend")
