@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 
 import java.text.NumberFormat;
 
@@ -1265,6 +1266,99 @@ public class QTL {
 			return probesetIDs;
 		}
 
+                
+                
+                public QTL.EQTL[] getExpressionQTLInfo(List<String> identifiers, String typeOfIdentifier, String organism, String tissue, DataSource pool) throws SQLException {
+        		log.debug ("in QTL.getExpressionQTLInfo. tissue = " + tissue + ", typeOfIdentifier = "+typeOfIdentifier);
+			log.debug("identifiers = "); myDebugger.print(identifiers);
+			Iterator itr = identifiers.iterator();
+			List<EQTL> myEQTLList = new ArrayList<EQTL>();
+
+                	while (itr.hasNext()) {
+
+				// nextIdentifier is a comma-delimited string of ids
+				String nextIdentifier = (String) itr.next();
+				log.debug("nextIdentifier = "+nextIdentifier);
+				if (nextIdentifier != null && !nextIdentifier.equals("")) {
+					String thisIdentifierString = "(" + nextIdentifier + ")";
+
+					String typeClause = (typeOfIdentifier.equals("ProbesetID") ?
+                					"p.identifier in " + thisIdentifierString :
+							(typeOfIdentifier.equals("GeneName") ?
+								"gs.gene_name in "+ thisIdentifierString :  
+                							"(p.identifier in " + thisIdentifierString + " or "+
+									"gs.gene_name in "+ thisIdentifierString + ") "));  
+
+        				String query =
+                				"select distinct p.identifier, "+
+						"gs.gene_name, "+
+                				"p.chromosome, "+
+                				"p.mb, "+
+                				"eq.lod_score, "+
+                				"eq.p_value, "+
+						"eq.fdr, "+
+                				"eq.marker, "+
+                				"eq.marker_chromosome, "+
+                				"eq.marker_mb, "+
+                				"nvl(eq.upper_limit, eq.marker_mb), "+
+                				"nvl(eq.lower_limit, eq.marker_mb), "+
+						"cnt.num_gene_symbols, "+
+						"eq.tissue "+
+                				"from probesets p "+
+						"left join gene_symbols gs "+
+						"	on p.identifier = gs.identifier "+
+						"left join expression_qtls eq "+
+						"	on eq.identifier = p.identifier, "+
+						"gene_symbol_count cnt "+
+                				"where "+
+						typeClause + 
+						"and p.identifier = cnt.identifier "+
+						"and eq.organism = ? ";
+						if (!tissue.equals("All")) {
+							query = query + " and eq.tissue = ? ";
+						} 
+						query = query +
+						"order by gs.gene_name";
+
+					log.debug("query = "+query);
+                                        Connection conn=null;
+                                        try{
+                                            conn=pool.getConnection();
+                                            Results myResults = (!tissue.equals("All") ? 
+                                                                    new Results(query, new Object[] {organism, tissue}, conn) : 
+                                                                    new Results(query, new Object[] {organism}, conn));
+                                                                 
+                                            myEQTLList.addAll(setupEQTLValues(myResults));
+                                            
+                                            log.debug("There are "+myEQTLList.size() + " records returned");
+
+                                            myResults.close();
+                                            conn.close();
+                                        }catch(SQLException e){
+                                            throw(e);
+                                        }finally{
+                                            if(conn!=null && !conn.isClosed()){
+                                                try{
+                                                    conn.close();
+                                                    conn=null;
+                                                }catch(SQLException e){}
+                                            }
+                                        }
+				} else {
+					log.debug("nextIdentifier is null");
+				}
+				log.debug("itr has next");
+			}
+			log.debug("before turning into array");
+			log.debug("List contains "+myEQTLList.size() + " objects");
+			EQTL[] myEQTLArray =  (EQTL []) myObjectHandler.getAsArray(myEQTLList, EQTL.class);
+			log.debug("after turning into array");
+
+   			return myEQTLArray;
+		}
+                
+                
+                
         	/**
          	* Retrieves the expression QTL information for the identifier passed in.
          	* @param identifiers	List of Strings containing Affy IDs and/or Gene Symbols broken into comma-delimited strings of 1000 

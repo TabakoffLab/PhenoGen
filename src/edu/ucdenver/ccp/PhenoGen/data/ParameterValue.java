@@ -308,7 +308,42 @@ public class ParameterValue implements Comparable{
 
 	}
 
+        public int createParameterGroup (DataSource pool) throws SQLException {
 
+		log.info("In ParameterValue.createParameterGroup.");
+
+		parameter_group_id = myDbUtils.getUniqueID("parameter_groups_seq", pool);
+
+        	String query =
+                	"insert into parameter_groups "+
+                	"(parameter_group_id, create_date) values "+
+                	"(?, ?)";
+
+                java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    PreparedStatement pstmt = conn.prepareStatement(query, 
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+
+                    pstmt.setInt(1, parameter_group_id); 
+                    pstmt.setTimestamp(2, now);
+                    pstmt.executeUpdate();
+                    pstmt.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+		return parameter_group_id;
+	}
 	/**
 	 * Creates a new row in the parameter_groups table.
 	 * @param conn	the database connection

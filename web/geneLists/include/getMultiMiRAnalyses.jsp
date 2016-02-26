@@ -1,19 +1,26 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="miRT" class="edu.ucdenver.ccp.PhenoGen.tools.mir.MiRTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 <%
 	miRT.setup(pool,session);
-	
+	if(userLoggedIn.getUser_name().equals("anon")){
+            miRT.setAnonUser(anonU);
+        }
 	String id="";
 	
 	if(request.getParameter("geneListID")!=null){
 		id=request.getParameter("geneListID");
 	}
 	
-	GeneListAnalysis[] results=myGeneListAnalysis.getGeneListAnalysisResults(userLoggedIn.getUser_id(), Integer.parseInt(id), "multiMiR", pool);
-	
+	GeneListAnalysis[] results=new GeneListAnalysis[0];
+	if(userLoggedIn.getUser_name().equals("anon")){
+            results=myGeneListAnalysis.getAnonGeneListAnalysisResults(-20, Integer.parseInt(id),  "multiMiR", pool);
+        }else{
+            results=myGeneListAnalysis.getGeneListAnalysisResults(userLoggedIn.getUser_id(), Integer.parseInt(id), "multiMiR", pool);
+        }
 	boolean running=false;
 	
 %>

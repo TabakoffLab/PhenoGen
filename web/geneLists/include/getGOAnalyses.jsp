@@ -14,7 +14,14 @@
 	if(request.getParameter("geneListID")!=null){
 		id=request.getParameter("geneListID");
 	}
-	GeneListAnalysis[] results=myGeneListAnalysis.getGeneListAnalysisResults(userLoggedIn.getUser_id(), Integer.parseInt(id), "GO", pool);
+        log.debug("before gene list analysis");
+	GeneListAnalysis[] results=new GeneListAnalysis[0];
+        if(userLoggedIn.getUser_name().equals("anon")){
+                results=myGeneListAnalysis.getAnonGeneListAnalysisResults(-20, Integer.parseInt(id), "GO", pool);
+        }else{
+                results=myGeneListAnalysis.getGeneListAnalysisResults(userLoggedIn.getUser_id(), Integer.parseInt(id), "GO", pool);
+        }
+        log.debug("after gene list analysis. # results:"+results.length);
 	boolean running=false;
 %>
 <BR />

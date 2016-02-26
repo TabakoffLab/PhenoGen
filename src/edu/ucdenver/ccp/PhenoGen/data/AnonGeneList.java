@@ -33,7 +33,7 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
     private ObjectHandler myObjectHandler = new ObjectHandler();
     private Logger log=null;
     
-    private String geneListSelectClause =
+    private String selectClause =
   		"select "+
 		"gl.gene_list_id, "+
                 "'', "+
@@ -50,10 +50,10 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
 		"gl.created_by_user_id, "+
 		"nvl(gl.version, -99), "+
 		"gl.create_date ";
-    private String geneListFromClause = 
+    private String fromClause = 
         	"from gene_lists gl "+
 		"left join genes g on g.gene_list_id = gl.gene_list_id ";
-    private String geneListGroupByClause = 
+    private String groupByClause = 
 		"group by gl.created_by_user_id, "+
 		"gl.path, "+
 		"gl.gene_list_name, "+
@@ -80,7 +80,7 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
   	public AnonGeneList[] getGeneListsForAllDatasetsForUser(String UUID, DataSource pool) throws SQLException {
 		//log.debug("in getGeneListsForAllDatasetsForUser. user_id = " + user_id); 
                 Connection conn=null;
-		String query = geneListSelectClause+
+		String query = selectClause+
   			/*"select "+
 			"gl.gene_list_id, "+
 			"'', "+
@@ -166,7 +166,7 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
 
 
                 Connection conn=null;
-		String query = geneListSelectClause+
+		String query = selectClause+
         		"from gene_lists gl, Anon_user_genelist aug "+
                 	"where gl.gene_list_id = aug.genelist_id "+
 			"and gl.created_by_user_id = -20 "+
@@ -211,10 +211,10 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
                 log.info("in getGeneList as a GeneList object. geneListID = " + geneListID);
 
   		String query = 
-			geneListSelectClause + 
-			geneListFromClause + 
+			selectClause + 
+			fromClause + 
 			"where gl.gene_list_id = ? "+
-			geneListGroupByClause; 
+			groupByClause; 
                 log.debug(query);
         	Results myResults = new Results(query, geneListID, conn);
                 log.debug("before first call");

@@ -3,6 +3,7 @@ package edu.ucdenver.ccp.PhenoGen.data.external;
 import java.sql.*;
 import java.util.*;
 import edu.ucdenver.ccp.util.sql.*;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;       
@@ -250,6 +251,68 @@ public class KnockOut{
 		return myResults;
 	}
 
+        
+        public String[] getIniaKnockOutCount(String[] symbolList, DataSource pool) throws SQLException {
+		//
+		// This builds a statement for each official symbol passed in the symbolList
+		// e.g., and (g.official_symbol = 'Cdx1' or g.official_symbol = 'CDX1')
+		//
+
+		String likeStatement = null;
+		if (symbolList.length > 0) {
+			likeStatement = "and (g.official_symbol like '" + symbolList[0] + "%' ";
+			for (int i=1; i<symbolList.length; i++) {
+				likeStatement = likeStatement + 
+						"or g.official_symbol like '" + 
+						symbolList[i] + "%' ";
+			}
+			likeStatement = likeStatement + ") ";
+		} else {
+			likeStatement = "and g.official_symbol like 'NoSymbolsPassed%' ";
+		}
+
+		String query = 
+			"select g.official_symbol \"Gene Official Symbol\", "+ 
+			"count(*) "+ 
+			"from inia_genes g, "+ 
+			"assays a, "+ 
+			"gene_assays ga "+ 
+			"where ga.official_symbol = g.official_symbol "+ 
+			"and ga.assay_id = a.assay_id "+ 
+			likeStatement + 
+			"group by g.official_symbol "+
+			"order by g.official_symbol"; 
+
+		log.debug("in getIniaKnockOutCount");
+
+		List<String> iniaKnockouts = new ArrayList<String>();
+
+		String[] dataRow;
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, conn);
+                    while((dataRow = myResults.getNextRow()) != null) {
+                            iniaKnockouts.add(dataRow[0]);
+                    }
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+        	String[] iniaKnockoutArray = (String[]) iniaKnockouts.toArray(new String[iniaKnockouts.size()]);
+		Arrays.sort(iniaKnockoutArray);
+
+		return iniaKnockoutArray;
+	}
+        
 	/**
 	 * Gets the official symbol, and the number of knockouts for that symbol, 
 	 * that have been identified by a member of the INIA consortium.
@@ -300,13 +363,71 @@ public class KnockOut{
 			iniaKnockouts.add(dataRow[0]);
         	}
 		myResults.close();
-
+                
         	String[] iniaKnockoutArray = (String[]) iniaKnockouts.toArray(new String[iniaKnockouts.size()]);
 		Arrays.sort(iniaKnockoutArray);
 
 		return iniaKnockoutArray;
 	}
 
+        
+        
+        public String[] getIniaAlcoholPreferenceCount(String[] symbolList, DataSource pool) throws SQLException {
+		//
+		// This builds a statement for each official symbol passed in the symbolList
+		// e.g., and (ap.official_symbol = 'Cdx1' or ap.official_symbol = 'CDX1')
+		//
+
+		String likeStatement = null;
+		if (symbolList.length > 0) {
+			likeStatement = "ap.official_symbol like '" + symbolList[0] + "%' ";
+			for (int i=1; i<symbolList.length; i++) {
+				likeStatement = likeStatement + 
+						"or ap.official_symbol like '" + 
+						symbolList[i] + "%' ";
+			}
+			likeStatement = likeStatement + " ";
+		} else {
+			likeStatement = "ap.official_symbol like 'NoSymbolsPassed%' ";
+		}
+
+		String query = 
+			"select official_symbol \"Gene Official Symbol\", "+ 
+			"count(*) "+
+			"from alcohol_preferences ap "+ 
+			"where "+ 
+			likeStatement + 
+			"group by official_symbol "+
+			"order by official_symbol"; 
+
+		log.debug("in getIniaAlcoholPreferenceCount");
+		List<String> iniaPreferenceMutants = new ArrayList<String>();
+
+		String[] dataRow;
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, conn);
+                    while((dataRow = myResults.getNextRow()) != null) {
+                            iniaPreferenceMutants.add(dataRow[0]);
+                    }
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+        	String[] iniaPreferenceMutantsArray = 
+			(String[]) iniaPreferenceMutants.toArray(new String[iniaPreferenceMutants.size()]);
+		Arrays.sort(iniaPreferenceMutantsArray);
+
+		return iniaPreferenceMutantsArray;
+	}
 	/**
 	 * Gets the official symbol, and the number of records.
 	 * @param symbolList	an array of official symbols     

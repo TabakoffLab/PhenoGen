@@ -1,10 +1,12 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="goT" class="edu.ucdenver.ccp.PhenoGen.tools.go.GOTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"> </jsp:useBean>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
+    
 <%
-
+        
 	String myOrganism="";
 	String fullOrg="";
 	String id="";
@@ -12,7 +14,9 @@
 	String name="";
 	
 	goT.setup(pool,session);
-	
+	if(userLoggedIn.getUser_name().equals("anon")){
+            goT.setAnonUser(anonU);
+        }
 	
 	if(request.getParameter("species")!=null){
 		myOrganism=request.getParameter("species").trim();
@@ -33,7 +37,10 @@
 	String now = myObjectHandler.getNowAsMMddyyyy_HHmmss();
 	java.sql.Timestamp timeNow = myObjectHandler.getNowAsTimestamp();
 	
-	int parameter_group_id = myParameterValue.createParameterGroup(dbConn);
+	int parameter_group_id = myParameterValue.createParameterGroup(pool);
+        if(userID==-99 && userLoggedIn.getUser_name().equals("anon")){
+            userID=-20;
+        }
 		
 	myGeneListAnalysis.setGene_list_id(selectedGeneList.getGene_list_id());
 	myGeneListAnalysis.setUser_id(userID);

@@ -116,6 +116,36 @@ public class Organism{
 	return organism;
   }
 
+  
+  public String getOrganism_name(String organism, DataSource pool) throws SQLException {
+	log.debug("in getOrganism_name for organism = " + organism);
+
+	String query =
+		"select organism_name "+
+		"from organisms "+
+		"where organism = ?";
+        Connection conn=null;
+        String organism_name ="";
+        try{  
+            conn=pool.getConnection();
+            Results myResults = new Results(query, organism, conn);
+            myResults.getResultSet().next();
+            organism_name = myResults.getResultSet().getString(1);
+            myResults.close();
+            conn.close();
+        }catch(SQLException e){
+            
+        }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+        }
+                                                                                                                       
+	return organism_name;
+  }
   /**
    * Gets the scientific name for an organism
    * @param organism	the 2-character abbreviation of the organism	
@@ -162,6 +192,35 @@ public class Organism{
 	return common_name;
   }
 
+  public String getCommon_name_for_abbreviation(String organism, DataSource pool) throws SQLException {
+	//log.debug("in getCommon_name_for_abbreviation");
+
+	String query =
+		"select common_name "+
+		"from organisms "+
+		"where organism = ?";
+        Connection conn=null;
+        String common_name ="";
+        try{  
+            conn=pool.getConnection();                                                                                          
+            Results myResults = new Results(query, organism, conn);
+            myResults.getResultSet().next();
+            common_name = myResults.getResultSet().getString(1);
+            myResults.close();
+            conn.close();
+        }catch(SQLException e){
+            
+        }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+        }
+                                                                                                                       
+	return common_name;
+  }
   /**
    * Gets the common name for an organism abbreviation
    * @param organism	the 2-character abbreviation of the organism	

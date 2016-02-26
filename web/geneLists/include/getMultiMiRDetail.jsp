@@ -1,10 +1,14 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="miRT" class="edu.ucdenver.ccp.PhenoGen.tools.mir.MiRTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 <%
 	miRT.setup(pool,session);
+        if(userLoggedIn.getUser_name().equals("anon")){
+            miRT.setAnonUser(anonU);
+        }
 	MiRResult myMiRResult=new MiRResult();
 	MiRResultSummary myMiRResultSummary=new MiRResultSummary();
 	String id="";
@@ -20,7 +24,12 @@
 	
 	LinkGenerator lg=new LinkGenerator(session);
 	
-	GeneListAnalysis result=myGeneListAnalysis.getGeneListAnalysis(Integer.parseInt(id), pool);
+	GeneListAnalysis result=null;
+        if(userLoggedIn.getUser_name().equals("anon")){
+            result=myGeneListAnalysis.getAnonGeneListAnalysis(Integer.parseInt(id), pool);
+        }else{
+            result=myGeneListAnalysis.getGeneListAnalysis(Integer.parseInt(id), pool);
+        }
 	
 	/*TODO fix the full organism*/
 	String fullOrg="Mus_musculus";
@@ -79,6 +88,9 @@
 	total[2][1]="Total All";
 	ArrayList<MiRResult> mirList=new ArrayList<MiRResult>();
 	String fullpath=userLoggedIn.getUserGeneListsDir() +"/" + selectedGeneList.getGene_list_name_no_spaces() +"/multiMir/"+result.getPath()+"/";
+        if(userLoggedIn.getUser_name().equals("anon")){
+            fullpath= getUserGeneListsDir()+anonU.getUUID()+"/"+selectedGeneList.getGene_list_id()+"/multiMir/"+result.getPath()+"/";
+        }
 	mirList=myMiRResult.readGeneListResults(fullpath);
 	
 	ArrayList<MiRResultSummary> summaryList=new ArrayList<MiRResultSummary>();

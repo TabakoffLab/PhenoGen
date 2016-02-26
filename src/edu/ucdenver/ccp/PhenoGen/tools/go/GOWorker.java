@@ -102,13 +102,19 @@ public class GOWorker extends Thread {
     
     public void run() throws RuntimeException {
         done=false;
-        
+        log.debug("in GOWorker");
+        User userLoggedIn= (User) session.getAttribute("userLoggedIn");
         try{
-            gla=(new GeneListAnalysis()).getGeneListAnalysis(glaID,pool);
+            if(userLoggedIn.getUser_name().equals("anon")){
+                gla=(new GeneListAnalysis()).getAnonGeneListAnalysis(glaID,pool);
+            }else{
+                gla=(new GeneListAnalysis()).getGeneListAnalysis(glaID,pool);
+            }
             gla.updatePath(pool,shortPath);
         }catch(SQLException e){
-            
+            log.error("Error setting path in GOWorker\n",e);
         }
+        log.debug("after setting path");
         try{
             //
             // If this thread is interrupted, throw an Exception

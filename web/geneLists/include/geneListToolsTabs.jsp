@@ -13,12 +13,13 @@
         <%if(!userLoggedIn.getUser_name().equals("anon")){%>
             <div id="literature" class="single" data-landingPage="litSearch"><span>Literature </span></div>
         <%}%>
+        
         <div id="mir" data-landingPage="mir"><span>miRNA<BR />(multiMiR)</span> </div>
         <div id="wgcna" class="single" data-landingPage="wgcna"><span>WGCNA</span></div>
         <div id="go" class="single" data-landingPage="go"><span>GO</span></div>
         <% if (!selectedGeneList.getOrganism().equalsIgnoreCase("Dm")) { %>    
             <div id="promoter" class="single" data-landingPage="promoter"><span>Promoter</span></div>
-        <% } %>   
+        <% } %>  
         <div id="homologs" class="single" data-landingPage="homologs"><span>Homologs</span></div>
         <% if (selectedGeneList.getDataset_id() != -99) { %>
         	<div id="stats" data-landingPage="stats"><span style="vertical-align: middle;">Analysis<BR />Statistics</span></div>
@@ -37,6 +38,7 @@
         		<div id="pathway" class="single" data-landingPage="pathwayTab"><span>Pathway</span></div>
      		<% } %>   
 	<% } %>
+        
         <div id="expressionValues" data-landingPage="expressionValues"><span>Expression<BR />Values</span></div>
         <div id="exonCorrelationTab" data-landingPage="exonCorrelationTab"><span>Exon<BR />Correlation</span></div>
         <div id="compare" class="single" data-landingPage="compareGeneLists"><span>Compare</span></div>

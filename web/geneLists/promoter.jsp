@@ -52,7 +52,7 @@
         </style>
         
         <div id="container">
-        <div id="toolsAccord" style="text-align:left;">
+        <div id="toolsAccord" style="text-align:left;min-height:100px;">
                             <H2>Run New Promoter Analysis on Gene List</H2>
                             <div id="newAnalysis" style="font-size:12px;">
                                 <% if (selectedGeneList.getOrganism().equals("Mm") ||
@@ -345,7 +345,7 @@
                             </div>
                 
             </div>
-            <div id="topResultData">
+            <div id="topResultData" style="min-height:100px;">
 
                                <div id="resultLoading" style="display:none;width:100%;text-align:center;">
                                        <img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
@@ -371,6 +371,7 @@
 	
 
 <%@ include file="/web/geneLists/include/setupJS.jsp" %>
+<%@ include file="/web/geneLists/include/geneListFooter.jsp"%>
 <%@ include file="/web/common/footer_adaptive.jsp" %>
   <script type="text/javascript">
     var geneNumber=<%=selectedGeneList.getNumber_of_genes()%>;

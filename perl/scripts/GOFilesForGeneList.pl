@@ -194,42 +194,47 @@ sub getGO{
 
 
     foreach my $geneID(@geneList) {
-        my $tmpslice = $slice_adaptor->fetch_by_gene_stable_id( $geneID, 0 );
-        my $genes = $tmpslice->get_all_Genes();
-        while(my $gene=shift @{$genes}){
-            my $geneName  = $gene->stable_id();
-            if ($geneName eq $geneID) {
-                my $transcripts = $gene->get_all_Transcripts();
-                my $cntTranscripts = 0;
-                while ( my $transcript = shift @{$transcripts} ) {
-                    my @xrefs = @{ $transcript->get_all_xrefs("GO%") };
-                    foreach my $xref(@xrefs){
-                            my $primid = $xref->primary_id();
-                            my $dispid = $xref->display_id();
-                            my $db = $xref->dbname;
-                            if(defined $dispid){
-                                my $term = $go_adaptor->fetch_by_accession($dispid);
-                                if(defined $term){
-                                    getParents(\$term,\%geneGOHOHA,\$geneName);
-                                    my $found=0;
-                                    DUPLICATEGENE:foreach my $child2(@{$geneGOHOHA{$term->accession()}{children}}){
-                                        if($child2 eq $geneName){
-                                            $found=1;
-                                            last DUPLICATEGENE;
+        eval{
+            my $tmpslice = $slice_adaptor->fetch_by_gene_stable_id( $geneID, 0 );
+            my $genes = $tmpslice->get_all_Genes();
+            while(my $gene=shift @{$genes}){
+                my $geneName  = $gene->stable_id();
+                if ($geneName eq $geneID) {
+                    my $transcripts = $gene->get_all_Transcripts();
+                    my $cntTranscripts = 0;
+                    while ( my $transcript = shift @{$transcripts} ) {
+                        my @xrefs = @{ $transcript->get_all_xrefs("GO%") };
+                        foreach my $xref(@xrefs){
+                                my $primid = $xref->primary_id();
+                                my $dispid = $xref->display_id();
+                                my $db = $xref->dbname;
+                                if(defined $dispid){
+                                    my $term = $go_adaptor->fetch_by_accession($dispid);
+                                    if(defined $term){
+                                        getParents(\$term,\%geneGOHOHA,\$geneName);
+                                        my $found=0;
+                                        DUPLICATEGENE:foreach my $child2(@{$geneGOHOHA{$term->accession()}{children}}){
+                                            if($child2 eq $geneName){
+                                                $found=1;
+                                                last DUPLICATEGENE;
+                                            }
                                         }
-                                    }
-                                    if($found==0){
-                                        push(@{$geneGOHOHA{$term->accession()}{children}},$geneName);
-                                    }
-                                    
-                                }
+                                        if($found==0){
+                                            push(@{$geneGOHOHA{$term->accession()}{children}},$geneName);
+                                        }
 
-                            }
-                    }
-                    $cntTranscripts = $cntTranscripts+1;
-                } # loop through transcripts   
+                                    }
+
+                                }
+                        }
+                        $cntTranscripts = $cntTranscripts+1;
+                    } # loop through transcripts   
+                }
             }
-        }         
+        };
+        if($@){
+            print "Error: probably from ID missing";
+        }
     }
     
    

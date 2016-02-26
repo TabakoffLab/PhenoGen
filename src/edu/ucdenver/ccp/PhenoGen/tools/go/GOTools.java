@@ -15,6 +15,7 @@ import edu.ucdenver.ccp.PhenoGen.driver.RException;
 import edu.ucdenver.ccp.PhenoGen.driver.R_session;
 import edu.ucdenver.ccp.PhenoGen.data.Dataset;
 import edu.ucdenver.ccp.PhenoGen.data.User;
+import edu.ucdenver.ccp.PhenoGen.data.AnonUser;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Gene;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptCluster;
@@ -66,9 +67,10 @@ public class GOTools {
     private String applicationRoot="";
     private String contextRoot="";
     private ArrayList<GOWorker> threads=new ArrayList<GOWorker>();
-    
+    private Logger log=null;
     
     public GOTools(){
+        log = Logger.getRootLogger();
     }
     
     public void setup(DataSource pool,HttpSession session){
@@ -108,6 +110,7 @@ public class GOTools {
         if(this.user.getUser_name().equals("anon")){
             goFilePath=this.user.getUserGeneListsDir() +"/" + anonU.getUUID()+"/"+gl.getGene_list_id()+"/GO/"+datePart+"/";
         }
+        log.debug("runGOGeneList:\n"+goFilePath);
         //create DB entry
         
         
@@ -120,6 +123,7 @@ public class GOTools {
                     status="In Queue...Waiting";
                 }
         }
+        log.debug("start goWorker");
         mw.start();
         threads.add(mw);
         return status;

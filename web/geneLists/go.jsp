@@ -7,17 +7,12 @@
 --%>
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"%>
 
-
-
-
 <jsp:useBean id="thisIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 
 <%
 	extrasList.add("jquery.dataTables.1.10.9.min.js");
         extrasList.add("d3.v3.min.js");
-	log.info("in go.jsp. user = " + user);
-	log.debug("action = " +action);
 	request.setAttribute( "selectedTabId", "go" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
@@ -45,7 +40,6 @@
 
         tall="100em";
 	
-
 %>
 
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
@@ -59,17 +53,17 @@
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 	
 
-	<% if (selectedGeneList.getGene_list_id() != -99) { %>
+	<%  if (selectedGeneList.getGene_list_id() != -99) { %>
         <div id="container">
         <div id="toolsAccord" style="text-align:left;">
                             <H2>Run New GO Analysis on Gene List</H2>
-                            <div id="newAnalysis" style="font-size:12px;">
+                            <div id="newAnalysis" style="font-size:12px;min-height: 80px;">
                                 Save Results as: <BR><input id="name" type="text" size="30"/>
                                 <HR />
                                 <input type="button" id="runBtn"  value="Run GO" onclick="runGO()"/><span id="runStatus"></span>
                             </div>
                             <H2>GO Results</H2>
-                            <div id="resultsTable">
+                            <div id="resultsTable" style="min-height: 100px;">
                                 <span style="font-size:10px;">Select a row below to view full results</span>
                                 <div id="resultList">
                                 </div>

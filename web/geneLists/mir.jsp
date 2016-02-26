@@ -101,7 +101,7 @@
         <div id="container">
         <div id="toolsAccord" style="text-align:left;">
                         <H2>Run New Analysis on Gene List</H2>
-                        <div style="font-size:12px;">
+                        <div style="font-size:12px;min-height:175px;">
                                 Save Results as: <input id="name" type="text" size="15"/>
                             <HR />
                                 Validation Level: 
@@ -129,7 +129,7 @@
                         </div>
 
                         <H2>multiMiR Results</H2>
-                        <div>
+                        <div style="min-height: 150px;">
                                 <span style="font-size:10px;">Select a row below to view full results</span>
                             <div id="resultList">
                             </div>
@@ -257,5 +257,5 @@
 		
 		
 	</script>
-
+<%@ include file="/web/geneLists/include/geneListFooter.jsp"%>
 <%@ include file="/web/common/footer_adaptive.jsp" %>
