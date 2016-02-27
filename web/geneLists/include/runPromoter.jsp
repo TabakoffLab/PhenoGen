@@ -4,6 +4,9 @@
 
 <jsp:useBean id="thisIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
 <jsp:useBean id="myPromoter" class="edu.ucdenver.ccp.PhenoGen.data.Promoter"> </jsp:useBean>
+
+    
+    
 <%
         String type="";
 	String id="";
@@ -20,7 +23,7 @@
 	String now = myObjectHandler.getNowAsMMddyyyy_HHmmss();
 	java.sql.Timestamp timeNow = myObjectHandler.getNowAsTimestamp();
 	
-	int parameter_group_id = myParameterValue.createParameterGroup(dbConn);
+	int parameter_group_id = myParameterValue.createParameterGroup(pool);
 
 	mySessionHandler.createGeneListActivity("Ran promoter analysis:"+type+" on Gene List", pool);
 	
@@ -43,6 +46,9 @@
 
         	String geneListAnalysisDir = selectedGeneList.getGeneListAnalysisDir(userLoggedIn.getUserMainDir());
         	String upstreamDir = selectedGeneList.getUpstreamDir(geneListAnalysisDir);
+                if(userLoggedIn.getUser_name().equals("anon")){
+                    
+                }
 	        String upstreamFileName = selectedGeneList.getUpstreamFileName(upstreamDir, upstreamLength, now);
 
 		if (!myFileHandler.createDir(geneListAnalysisDir) || 
@@ -59,7 +65,11 @@
 			log.debug("no problems creating geneListAnalysisDir or upstreamDir directory in upstream.jsp"); 
 
 			myGeneListAnalysis.setGene_list_id(selectedGeneList.getGene_list_id());
-                	myGeneListAnalysis.setUser_id(userLoggedIn.getUser_id());
+                        if(userLoggedIn.getUser_name().equals("anon")){
+                            myGeneListAnalysis.setUser_id(-20);
+                        }else{
+                            myGeneListAnalysis.setUser_id(userLoggedIn.getUser_id());
+                        }
                 	myGeneListAnalysis.setCreate_date(timeNow);
                 	myGeneListAnalysis.setAnalysis_type("Upstream");
                 	myGeneListAnalysis.setDescription(selectedGeneList.getGene_list_name() + 

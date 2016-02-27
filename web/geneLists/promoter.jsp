@@ -54,7 +54,7 @@
         <div id="container">
         <div id="toolsAccord" style="text-align:left;min-height:100px;">
                             <H2>Run New Promoter Analysis on Gene List</H2>
-                            <div id="newAnalysis" style="font-size:12px;">
+                            <div id="newAnalysis" style="font-size:12px;min-height:450px">
                                 <% if (selectedGeneList.getOrganism().equals("Mm") ||
                                             selectedGeneList.getOrganism().equals("Rn") ||
                                             selectedGeneList.getOrganism().equals("Hs")) {
@@ -338,7 +338,7 @@
                                 <% } %>
                             </div>
                             <H2>Promoter Results</H2>
-                            <div id="resultsTable">
+                            <div id="resultsTable" style="min-height:200px;">
                                 <span style="font-size:10px;">Select a row below to view full results</span>
                                 <div id="resultList">
                                 </div>

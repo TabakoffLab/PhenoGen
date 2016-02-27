@@ -134,7 +134,7 @@ public class Organism{
             myResults.close();
             conn.close();
         }catch(SQLException e){
-            
+            throw e;
         }finally{
                     if(conn!=null && !conn.isClosed()){
                         try{
@@ -244,6 +244,37 @@ public class Organism{
 	return common_name;
   }
 
+  
+  public String getTaxon_id(String organism, DataSource pool) throws SQLException {
+	//log.debug("in getCommon_name_for_abbreviation");
+
+	String query =
+		"select taxon_id "+
+		"from organisms "+
+		"where organism = ?";
+        Connection conn=null;
+        String taxon_id ="";
+        try{                 
+            conn=pool.getConnection();
+            Results myResults = new Results(query, organism, conn);
+            myResults.getResultSet().next();
+            taxon_id = myResults.getResultSet().getString(1);
+            myResults.close();
+            conn.close();
+        }catch(SQLException e){
+            
+        }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+        }
+                                                                                                                       
+	return taxon_id;
+  }
+  
   /**
    * Gets the taxon_id for an organism abbreviation
    * @param organism	the 2-character abbreviation of the organism	
@@ -266,6 +297,49 @@ public class Organism{
                                                                                                                        
 	return taxon_id;
   }
+  
+  public Chromosome[] getChromosomes(String organism, DataSource pool) throws SQLException {
+
+        	//log.debug("in getChromosomes. organism = " +organism);
+
+        	String query =
+			"select chr.chromosome_id, "+
+			"chr.name,  "+
+			"chr.length, "+
+			"chr.display_order, "+
+			"chr.organism, "+
+			"cyt.band_id, "+
+			"cyt.bp_start, "+
+			"cyt.bp_end, "+
+			"cyt.label, "+
+			"cyt.color "+
+			"from chromosomes chr, cytobands cyt "+
+			"where chr.organism = ? "+
+			"and chr.chromosome_id = cyt.chromosome_id "+
+			"order by chr.display_order, cyt.bp_start";
+
+		//log.debug("query = "+query);
+                Results myResults = null;
+                Connection conn=null;
+                Chromosome[] myChromosomes=new Chromosome[0];
+                try{
+                    conn=pool.getConnection();
+                    myResults = new Results(query, organism, conn);
+                    myChromosomes = setupChromosomeValues(myResults);
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                            if(conn!=null && !conn.isClosed()){
+                                try{
+                                    conn.close();
+                                    conn=null;
+                                }catch(SQLException e){}
+                            }
+                }
+        	return myChromosomes;
+  	}
 	/**
 	 * Retrieves the Chromosome objects for this organism.
 	 * @param organism	the two-character abbreviation for the organism
