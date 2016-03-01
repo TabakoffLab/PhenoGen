@@ -15,41 +15,21 @@
     .node.gene.down { fill: #ccccff; /*fill: #2CA02C;*/ }
     .node.miRNA.up {  fill: #ffcccc; /*fill: #FF7F0E;*/ }
     .node.miRNA.down { fill: #ccccff; /*fill: #9467BD;*/ }
-    .node.gene,.node.miRNA{
-        stroke: #FFFFFF;
-        stroke-width: 0px;
+    .node.gene,.node.miRNA{ stroke: #FFFFFF;stroke-width: 0px; }
+    .link{ stroke: #000; stroke-opacity: .9; }
+    .link.predicted { stroke-dasharray: 0,2 1; }
+    h1{ color:#000000; font-weight: bold; }
+    span.control{
+        background:#DCDCDC;
+        margin-left:2px;
+        margin-right:2px;
+        height:24px;
+        /*padding:2px;*/
+        display:inline-block;
+        width:35px;
+        border-style:solid; border-width:1px; border-color:#777777;
+        -webkit-border-radius: 5px; -khtml-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
     }
-
-    .link{
-        stroke: #000;
-        stroke-opacity: .9;
-    }
-
-    .link.predicted {
-
-        stroke-dasharray: 0,2 1;
-    }
-h1{
-    color:#000000;
-    font-weight: bold;
-}
-
-span.control{
-		background:#DCDCDC;
-		margin-left:2px;
-		margin-right:2px;
-		height:24px;
-		/*padding:2px;*/
-		display:inline-block;
-		width:35px;
-		border-style:solid;
-		border-width:1px;
-		border-color:#777777;
-		-webkit-border-radius: 5px;
-		-khtml-border-radius: 5px;
-		-moz-border-radius: 5px;
-		border-radius: 5px;
-	}
 	span.control:hover{
 		background:#989898;
 	}
@@ -57,6 +37,13 @@ span.control{
 		border-width:2px;
 		border-color:#000000;
 	}
+        @media screen and (max-width:1200px){
+            #graphicHelp{
+                height:45px;
+                width:100%;
+            }
+        }
+       
 </style>
 <script>
     var contextRoot="<%=contextRoot%>";

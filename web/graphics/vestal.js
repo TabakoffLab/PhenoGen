@@ -2,9 +2,14 @@ var width = $(window).width()-25,
     height = $(window).height()-180;
 
 var panZoom=NaN;
+var minDim=height;
+if(width<height){
+	minDim=width;
+}
+var linkDistance=minDim/8;
 var force = d3.layout.force()
     .charge(-340)
-    .linkDistance(80)
+    .linkDistance(linkDistance)
     .size([width, height]);
 
 var fullNodeList;
@@ -15,6 +20,8 @@ var neighbors=[];
 var links=[];
 var drawLabels=false;
 var edgeCutoff=1;
+
+
 
 
 var svg = d3.select("#graphic").append("svg")
@@ -41,6 +48,22 @@ defs.append("marker")
 
 var topG=svg.append("g").attr("class","svg-pan-zoom_viewport");
 
+
+$(window).resize(function (){
+	width = $(window).width()-25;
+    height = $(window).height()-180;
+    minDim=height;
+    if(width<height){
+		minDim=width;
+	}
+	svg.attr("width",width).attr("height",height);
+	if(width>800){
+		force.size([width+50, height]);
+	}else{
+		force.size([width, height]);
+	}
+	redrawGraph(false);
+});
 
 function drawGraph(drwNodes,drwLinks){
 
@@ -120,7 +143,7 @@ function drawGraph(drwNodes,drwLinks){
 		//console.log(d);
 		curclass=topG.select("#node"+d.id).attr("class") + " selected";
 		topG.select(".node"+d.id).attr("class",curclass);
-		redrawGraph();
+		redrawGraph(false);
 	 });
   if(drawLabels){
     gNodes.each(function(d){
@@ -131,7 +154,7 @@ function drawGraph(drwNodes,drwLinks){
   }
 }
 
-function redrawGraph(){
+function redrawGraph(reset){
   var nodeList=[];
   var linkList=[];
   force.stop();
@@ -218,7 +241,17 @@ function redrawGraph(){
   }
   
 
-  
+
+
+
+  if(reset){
+  	for(var m=0;m<nodeList.length;m++){
+  		nodeList[m].x=m;
+  		nodeList[m].y=m;
+  	}
+  }
+  linkDist=minDim/(3+edgeCutoff);
+  /*
   linkDist=80;
   if(edgeCutoff===1){
     linkDist=140;
@@ -226,12 +259,8 @@ function redrawGraph(){
     linkDist=120;
   }else if(edgeCutoff===3){
     linkDist=100;
-  }
-  force.linkDistance(linkDist);
-
-  
-
-  
+  }*/
+  force.linkDistance(linkDist);  
   
 
   drawGraph(nodeList,linkList);
@@ -402,7 +431,7 @@ function addControls(){
 				    .on("click",function(){
 					   var chkBox = d3.select("#labelsCBX")[0][0];
 					   drawLabels=chkBox.checked;
-					   redrawGraph();
+					   redrawGraph(false);
 				    });
     imageBar.append("text").style({"position":"relative",
 				    	"top":"-8px"}).text("Display Labels");
@@ -429,7 +458,7 @@ function addControls(){
 		 .on("click",function(){
 		   	edgeCutoff+=1;
 		   	imageBar.select("#edgeCountLbl").html("Edge Count limit: "+edgeCutoff);
-			redrawGraph();
+			redrawGraph(false);
 		 })
 		 .on("mouseover",function(){
 		   d3.select(this).attr("src",contextRoot+"web/images/icons/edge_plus_light_32.png");
@@ -462,7 +491,7 @@ function addControls(){
 		   	edgeCutoff=1;
 		   }
 		   imageBar.select("#edgeCountLbl").html("Edge Count limit: "+edgeCutoff);
-			redrawGraph();
+			redrawGraph(false);
 		 })
 		 .on("mouseover",function(){
 		   d3.select(this).attr("src",contextRoot+"web/images/icons/edge_minus_light_32.png");
@@ -495,7 +524,7 @@ function addControls(){
 		 	edgeCutoff=1;
 		   	selectedNode=undefined;
 		   	drawLabels=false;
-			redrawGraph();
+			redrawGraph(false);
 		 })
 		 .on("mouseover",function(){
 		   d3.select(this).attr("src",contextRoot+"web/images/icons/edge_reset_light_32.png");
@@ -517,22 +546,22 @@ function addControls(){
 }
 
 function drawLegend(){
-  lgd=svg.append("g").attr("class","legend");
-  lgd.append("rect")
-	   .attr("class","legend")
-	   .attr("x",2)
-	   .attr("y",2)
-	   .attr("rx",5)
-	   .attr("ry",5)
-	   .attr("height",150)
-	   .attr("width",150)
-	   .attr("fill","#FFFFFF")
-	   .attr("stroke","#000000");
-  lgd.append("text").attr("x",4).attr("y",20).text("Nodes");
-  lgd.append("text").attr("x",50).attr("y",80).text("miRNA");
-  lgd.append("text").attr("x",50).attr("y",100).text("Gene");
-  lgd.append("text").attr("x",50).attr("y",40).text("Up ISS");
-  lgd.append("text").attr("x",50).attr("y",60).text("Up ILS")
+	lgd=svg.append("g").attr("class","legend");
+	lgd.append("rect")
+		   .attr("class","legend")
+		   .attr("x",2)
+		   .attr("y",2)
+		   .attr("rx",5)
+		   .attr("ry",5)
+		   .attr("height",150)
+		   .attr("width",150)
+		   .attr("fill","#FFFFFF")
+		   .attr("stroke","#000000");
+	lgd.append("text").attr("x",4).attr("y",20).text("Nodes");
+	lgd.append("text").attr("x",50).attr("y",80).text("miRNA");
+	lgd.append("text").attr("x",50).attr("y",100).text("Gene");
+	lgd.append("text").attr("x",50).attr("y",40).text("Up ISS");
+	lgd.append("text").attr("x",50).attr("y",60).text("Up ILS");
 
   /*lgd.append("path")
   		.attr("transform","translate(26,55)")
@@ -543,7 +572,7 @@ function drawLegend(){
 			   		.type("triangle-up")
 	   		);*/
 
-  lgd.append("rect")
+    lgd.append("rect")
 	   .attr("class","legend")
 	   .attr("x",20)
 	   .attr("y",30)
@@ -569,7 +598,7 @@ function drawLegend(){
 	   .attr("fill","#ccccff")
 	   .attr("stroke","#ccccff");
 
-lgd.append("circle")
+	lgd.append("circle")
            .attr("class","legend")
            .attr("cx",32)
            .attr("cy",76)
@@ -578,7 +607,7 @@ lgd.append("circle")
            .attr("stroke","#000000");
 
 
- lgd.append("path")
+ 	lgd.append("path")
                 .attr("transform","translate(32,94)")
                 .attr("fill","#000000")
                 .attr("stroke","#000000")
