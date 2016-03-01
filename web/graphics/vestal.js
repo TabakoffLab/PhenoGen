@@ -250,7 +250,12 @@ function redrawGraph(reset){
   		nodeList[m].y=m;
   	}
   }
-  linkDist=minDim/(3+edgeCutoff);
+
+  if(typeof selectedNode !=='undefined'){
+    linkDist=minDim/(3+edgeCutoff);
+  }else{
+  	linkDist=minDim/8;
+  }
   /*
   linkDist=80;
   if(edgeCutoff===1){
