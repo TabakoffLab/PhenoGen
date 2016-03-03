@@ -35,7 +35,7 @@
 
         String geneListDir = userLoggedIn.getUserGeneListsUploadDir();
         if(userLoggedIn.getUser_name().equals("anon")){
-            geneListDir=geneListDir+"/"+anonU.getUUID()+"/";
+            geneListDir=geneListDir+anonU.getUUID()+"/";
             File upDir=new File(geneListDir);
             if(!upDir.exists()){
                 upDir.mkdirs();
