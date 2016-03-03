@@ -29,6 +29,8 @@
         border: solid 1px #777;
         border-top: solid 0px #777;
         margin: 0 5px;
+        min-height: 400px;
+        height: 80%;
     }
 	
 	 #body_wrapper_plain{
@@ -39,6 +41,7 @@
         border: solid 1px #777;
         background: #fff url("../web/images/bg/tab-field-bg_grey.jpg") repeat-x 0 0px;
         text-align: left;
+        height:100%;
     }
 	#white_body {
         border: solid 1px #777;

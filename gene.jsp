@@ -637,7 +637,7 @@ Or
 	};
 	
 	function readCookieViews(){
-		console.log("readCookieViews()");
+		//console.log("readCookieViews()");
 		var viewString="";
 		if(isLocalStorage() === true){
 			var cur=localStorage.getItem("phenogenCustomViews");

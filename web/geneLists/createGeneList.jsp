@@ -9,14 +9,21 @@
  *      
 --%>
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"%>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 <%
+        log.debug("after header in createGeneList");
 	log.info("in createGeneList.jsp. user = " + user);
 
 	boolean fromMain = (request.getParameter("fromMain") != null ? true : false);
 	extrasList.add("createGeneList.js");
-	GeneList[] myGeneLists = myGeneList.getGeneLists(userID, "All", "All", pool);
-	
-	myGeneLists = myGeneList.sortGeneLists(myGeneLists, "geneListName", "A");
+        
+	GeneList[] myGeneLists = new GeneList[0];
+        if(! userLoggedIn.getUser_name().equals("anon")){
+                myGeneLists = myGeneList.getGeneLists(userID, "All", "All", pool);
+        }else{
+                myGeneLists = myAnonGeneList.getGeneLists(anonU.getUUID(), "All", pool);
+        }
+        myGeneLists = myGeneList.sortGeneLists(myGeneLists, "geneListName", "A");
 
         if (userLoggedIn.getUser_name().equals("guest")) {
                 //Error - "Feature not allowed for guests"
@@ -30,6 +37,7 @@
         fieldNames.add("filename");
 
 	mySessionHandler.createSessionActivity(session.getId(), "On create genelist page", pool);
+        log.debug("top");
 %>
 	
 	<% if (fromMain) { %>
@@ -37,7 +45,8 @@
 		<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 	<% } else { %>
 		<%@ include file="/web/common/includeExtras.jsp" %>
-	<% } %>
+	<% } 
+        log.debug("after includeExtras.jsp");%>
         <!--  
 	most of the form processing is done in createGeneList2.jsp
 	because this is a multi-part form 
@@ -65,6 +74,7 @@
 			<td> <strong>Organism:</strong> </td>
 			<td>
 			<%
+                            log.debug("before org");
 			selectName = "organism";
 			selectedOption = "";
 			onChange = "";
@@ -72,7 +82,8 @@
 
 			optionHash = new LinkedHashMap();
 			optionHash.put("-99", "-- Select an option --");
-			optionHash.putAll(new Organism().getOrganismsAsSelectOptions(dbConn));
+			optionHash.putAll(new Organism().getOrganismsAsSelectOptions(pool));
+                        log.debug("after org");
 			%>
                 	<%@ include file="/web/common/selectBox.jsp" %>
 			</td>
@@ -122,6 +133,7 @@
                         <h2 style="margin:10px 10px 0px 70px">Copy gene list from:</h2>
                         <table style="margin-left:70px">
                                 <%
+                                    log.debug("before copy");
                                 selectName = "copyFromID";
                                 selectedOption = "None";
                                 onChange = "displayGeneList()";
@@ -138,6 +150,7 @@
 							(myGeneLists[i].getNumber_of_genes() == 1 ? " gene)" :
 							" genes)"));
 				}
+                                log.debug("after copy");
                                 %>
                                 <tr> <td> <%@ include file="/web/common/selectBox.jsp" %> </td></tr>
                         </table>
@@ -164,6 +177,7 @@
 	<BR> <BR>
 	<input type="hidden" name="fromMain" value="<%=fromMain%>">
 </form>
+        <%log.debug("end form");%>
 	<% if (fromMain) { %>
 		<%@ include file="/web/common/footer_adaptive.jsp" %>
 	<% } %>

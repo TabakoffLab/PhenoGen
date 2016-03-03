@@ -146,23 +146,7 @@ public class Promoter{
     this.promoterGeneList = inGeneList;
   }
 
-  
-  
-        public int createPromoterResult(DataSource pool)throws SQLException {
-            Connection conn=null;
-            int tmp=0;
-            try{
-                conn=pool.getConnection();
-                tmp=createPromoterResult(conn);
-                conn.close();
-            }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-                throw new SQLException();
-            }
-            return tmp;
-        }
+
    
 	/**
 	 * Create a record in the gene_list_analyses table with an analysis_type of 'oPOSSUM'.
@@ -173,11 +157,11 @@ public class Promoter{
 	 * @return            the id of the gene_list_analyses record that was created
 	 */
 
-	public int createPromoterResult (Connection conn) throws SQLException {
+	public int createPromoterResult (DataSource pool) throws SQLException {
 	
 		GeneListAnalysis myGeneListAnalysis = new GeneListAnalysis();
 
-		int parameter_group_id = new ParameterValue().createParameterGroup(conn);
+		int parameter_group_id = new ParameterValue().createParameterGroup(pool);
 
 		myGeneListAnalysis.setGene_list_id(this.getGene_list_id());
 		myGeneListAnalysis.setUser_id(this.getUser_id());
@@ -203,7 +187,7 @@ public class Promoter{
 		myParameterValues[2].setValue(this.getThresholdLevel());
 		myGeneListAnalysis.setParameterValues(myParameterValues);
 
-		promoter_id = myGeneListAnalysis.createGeneListAnalysis(conn);
+		promoter_id = myGeneListAnalysis.createGeneListAnalysis(pool);
 
 		log.debug("in Promoter.createPromoterResult.");
         
@@ -211,23 +195,37 @@ public class Promoter{
 			"insert into promoter_result_genes "+
 			"(promoter_id, gene_list_id, gene_id) values "+
 			"(?, ?, ?)";
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                
+                    PreparedStatement pstmt = conn.prepareStatement(query,
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+                    pstmt.setInt(1, promoter_id);
+                    pstmt.setInt(2, this.getGene_list_id());
+                    log.debug("gene_list_id = " + this.getGene_list_id());
+                    log.debug("promoter_id = " + promoter_id);
 
-		PreparedStatement pstmt = conn.prepareStatement(query,
-						ResultSet.TYPE_SCROLL_INSENSITIVE,
-						ResultSet.CONCUR_UPDATABLE);
-		pstmt.setInt(1, promoter_id);
-		pstmt.setInt(2, this.getGene_list_id());
-		log.debug("gene_list_id = " + this.getGene_list_id());
-		log.debug("promoter_id = " + promoter_id);
-		
-		Iterator idIterator  = ids.keySet().iterator();
-		while (idIterator.hasNext()) {
-			String geneID = (String) idIterator.next();
-			pstmt.setString(3, geneID);
-			pstmt.executeUpdate();
-		}
-		
-		pstmt.close();
+                    Iterator idIterator  = ids.keySet().iterator();
+                    while (idIterator.hasNext()) {
+                            String geneID = (String) idIterator.next();
+                            pstmt.setString(3, geneID);
+                            pstmt.executeUpdate();
+                    }
+
+                    pstmt.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
 		
 		log.debug("just created PromoterResult.  Now creating alternate_identifiers");
 
@@ -238,7 +236,8 @@ public class Promoter{
 		myGeneList.setAlternateIdentifierSourceLinkColumn("PROMOTER_RESULT_GENES.PROMOTER_ID");
 		myGeneList.setAlternateIdentifierSourceID(promoter_id);
 		myGeneList.setGenesHashMap(ids);
-		myGeneList.createAlternateIdentifiers(myGeneList, conn);
+                
+		myGeneList.createAlternateIdentifiers(myGeneList,pool);
 
 		log.debug("gene_list = " + myGeneList.getGene_list_id());
 		log.debug("alternate_id_source = " + myGeneList.getAlternateIdentifierSource());
@@ -249,6 +248,32 @@ public class Promoter{
 	}
 
   
+        
+        private Promoter setupPromoterValues(String[] dataRow, DataSource pool) throws SQLException {
+
+                //log.debug("in setupPromoterValues");
+                //log.debug("dataRow= "); new Debugger().print(dataRow);
+		Promoter myPromoter = new Promoter();
+                myPromoter.setPromoter_id(Integer.parseInt(dataRow[0]));
+                myPromoter.setDescription(dataRow[1]);
+                GeneList gl=null;
+                if(Integer.parseInt(dataRow[4])==-20){
+                    gl=(new AnonGeneList()).getGeneList(Integer.parseInt(dataRow[2]), pool);
+                }else{
+                    gl=(new GeneList()).getGeneList(Integer.parseInt(dataRow[2]), pool);
+                }
+                myPromoter.setPromoterGeneList(gl);
+                myPromoter.setCreate_date_as_string(dataRow[3]);
+                myPromoter.setUser_id(Integer.parseInt(dataRow[4]));
+		if (dataRow.length > 5) {
+                	myPromoter.setAnalyzed_ids(dataRow[5]);
+                	myPromoter.setExcluded_ids(dataRow[6]);
+		}
+
+                return myPromoter;
+
+        }
+        
         /**
          * Creates a new Promoter object and sets the data values to those retrieved from the database.
          * @param dataRow       the row of data corresponding to one Promoter
@@ -263,6 +288,7 @@ public class Promoter{
 		Promoter myPromoter = new Promoter();
                 myPromoter.setPromoter_id(Integer.parseInt(dataRow[0]));
                 myPromoter.setDescription(dataRow[1]);
+                
                 myPromoter.setPromoterGeneList(new GeneList().getGeneList(Integer.parseInt(dataRow[2]), conn));
                 myPromoter.setCreate_date_as_string(dataRow[3]);
                 myPromoter.setUser_id(Integer.parseInt(dataRow[4]));
@@ -274,6 +300,101 @@ public class Promoter{
                 return myPromoter;
 
         }
+        
+        
+        public Promoter getPromoterResult(int promoter_id, DataSource pool) throws SQLException {
+
+        	String query =
+                	"select pr.analysis_id, "+
+			"pr.description, "+
+			"gl.gene_list_id, "+
+			"to_char(pr.create_date, 'MMddyyyy_hh24miss'), "+
+			"pr.user_id "+
+			//
+			// This join gets all the gene_ids that were actually sent to oPOSSUM.
+			// It starts by retrieving those gene_ids that did NOT have alternate identifiers
+			// and then unions the results with the gene_ids that DID have alternate identifiers.
+			// Another join is used when retrieving the alternate identifiers so that all alternate 
+			// identifiers are displayed in case more than one was found.
+			//
+			/*
+			// Commented this out because it's creating too big of a CLOB
+                	"to_char(join(cursor(select prg.gene_id "+
+                                	"from promoter_result_genes prg "+
+                                	"where prg.promoter_id = pr.analysis_id "+
+                                	"and not exists (select 'x' "+
+                                        	"from alternate_identifiers ai "+
+                                        	"where ai.source = 'Promoter' "+
+                                        	"and ai.source_id = prg.promoter_id "+
+                                        	"and ai.gene_id = prg.gene_id) "+
+                                	"union "+
+                                	"select to_char(prg.gene_id||' ('|| "+
+                                        	"join(cursor(select ai.alternate_id "+
+                                                        	"from alternate_identifiers ai, "+
+                                                        	"promoter_result_genes prg2 "+
+                                                        	"where ai.gene_list_id = prg2.gene_list_id "+
+                                                        	"and ai.gene_id = prg2.gene_id "+
+                                                        	"and prg2.promoter_id = prg.promoter_id "+
+                                                        	"and prg2.promoter_id = ai.source_id "+
+                                                        	"and prg2.gene_id = prg.gene_id "+
+                                                        	"and ai.source = 'Promoter'), ', ')|| "+
+                                        	"')') "+
+                                	"from promoter_result_genes prg "+
+                                	"where prg.promoter_id = pr.analysis_id "+
+                                	"and exists (select 'x' "+
+                                        	"from alternate_identifiers ai "+
+                                        	"where ai.source = 'Promoter' "+
+                                        	"and ai.source_id = prg.promoter_id "+
+                                        	"and ai.gene_id = prg.gene_id) "+
+                                	"order by 1), ', ')) analyzed_gene_ids, "+
+			//
+			// This join gets all the gene_ids that were not sent to oPOSSUM
+			// It selects those genes from the gene list minus those found in 
+			// promoter_result_genes, which contains the genes sent to oPOSSUM
+			//
+                	"to_char(join(cursor(select gene_id "+
+                                	"from genes "+
+                                	"where gene_list_id = pr.gene_list_id "+
+                                	"minus "+
+                                	"select gene_id "+
+                                	"from promoter_result_genes prg "+
+                                	//"where prg.promoter_id = pr.promoter_id), ', ')) excluded_gene_ids "+
+                                	"where prg.promoter_id = pr.analysis_id), ', ')) excluded_gene_ids "+
+			*/
+                	"from gene_list_analyses pr, "+
+                	"gene_lists gl, "+
+                	//"users u "+
+                	"where pr.analysis_id = ? "+
+			"and pr.analysis_type = 'oPOSSUM' "+
+                	"and pr.gene_list_id = gl.gene_list_id ";
+                	//"and pr.user_id = u.user_id";
+		log.debug("in getPromoterResult");
+		//log.debug("query = " + query);
+                Connection conn=null;
+                Promoter newPromoter = null;
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, promoter_id, conn);
+                    String[] dataRow;
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            newPromoter = setupPromoterValues(dataRow, pool);
+                    }
+                    myResults.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+		
+
+        	return newPromoter;
+	}
 
 	/**
 	 * Retrieves the information about a particular promoter result.
@@ -348,11 +469,11 @@ public class Promoter{
 			*/
                 	"from gene_list_analyses pr, "+
                 	"gene_lists gl, "+
-                	"users u "+
+                	//"users u "+
                 	"where pr.analysis_id = ? "+
 			"and pr.analysis_type = 'oPOSSUM' "+
-                	"and pr.gene_list_id = gl.gene_list_id "+
-                	"and pr.user_id = u.user_id";
+                	"and pr.gene_list_id = gl.gene_list_id ";
+                	//"and pr.user_id = u.user_id";
 		log.debug("in getPromoterResult");
 		//log.debug("query = " + query);
 

@@ -7,8 +7,10 @@
  *  Modification Log:
  *      
 --%>
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="myPromoter" class="edu.ucdenver.ccp.PhenoGen.data.Promoter"> </jsp:useBean>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />    
+
 <% 	
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
@@ -18,7 +20,12 @@
 	userName = "";
 	int itemID = Integer.parseInt((String) request.getParameter("itemID"));
 
-	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
+        GeneListAnalysis thisGeneListAnalysis =null;
+        if(userLoggedIn.getUser_name().equals("anon")){
+                thisGeneListAnalysis = myGeneListAnalysis.getAnonGeneListAnalysis(itemID, pool);
+        }else{
+                thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
+        }
 
 	String searchRegionLevelText = thisGeneListAnalysis.getThisParameter("Search Region Level");
 	String conservationLevelText = thisGeneListAnalysis.getThisParameter("Conservation Level");
@@ -26,9 +33,10 @@
 	
 	log.debug("in promoterResults. itemID = " + itemID);
 
-	Promoter thisPromoter = myPromoter.getPromoterResult(itemID, dbConn);
-
-	userName = myUser.getUser(thisPromoter.getUser_id(), dbConn).getUser_name();
+	Promoter thisPromoter = myPromoter.getPromoterResult(itemID, pool);
+        if(! userLoggedIn.getUser_name().equals("anon")){
+            userName = myUser.getUser(thisPromoter.getUser_id(), pool).getUser_name();
+        }
 	String timeCreated = thisPromoter.getCreate_date_as_string();
 	String geneIDsAnalyzed = thisPromoter.getAnalyzed_ids();
 	String geneIDsExcluded = thisPromoter.getExcluded_ids();
@@ -37,7 +45,9 @@
 
 	String geneListAnalysisDir = promoterGeneList.getGeneListAnalysisDir(userLoggedIn.getUserMainDir());
 	String promoterDir = promoterGeneList.getOPOSSUMDir(geneListAnalysisDir);
-
+        if(userLoggedIn.getUser_name().equals("anon")){
+            promoterDir=userLoggedIn.getUserGeneListsDir() +"/" + anonU.getUUID()+"/"+promoterGeneList.getGene_list_id()+"/oPOSSUM/";
+        }
 	String filePrefix = promoterDir + timeCreated + "_"; 
 	log.debug("filePrefix = " + filePrefix);
 	session.setAttribute("filePrefix", filePrefix);

@@ -8,9 +8,10 @@
  *      
 --%>
 
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
+<jsp:useBean id="myAnonGeneList" class="edu.ucdenver.ccp.PhenoGen.data.AnonGeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"/>
 <jsp:useBean id="myIdentifier" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.Identifier"/>
@@ -34,6 +35,7 @@
 	extrasList.add("geneListMain.css");
 	extrasList.add("insideTabs.js");
         extrasList.add("common.js");
+        extrasList.add("jquery.cookie.js");
 
 	Set iDecoderSet = (Set) session.getAttribute("iDecoderSet");
 	List noIDecoderList = (List) session.getAttribute("noIDecoderList");
@@ -43,4 +45,12 @@
 
         String tall="100em";
 
+if(userLoggedIn.getUser_name().equals("anon")){
 %>
+
+<script type="text/javascript">
+    var contextRoot="<%=contextRoot%>";
+    <%@ include file="/javascript/Anon_session.js" %>
+    <%@ include file="/javascript/Anon_Genelists.js" %>
+</script>
+<%}%>

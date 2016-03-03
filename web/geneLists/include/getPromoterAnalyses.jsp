@@ -8,10 +8,11 @@
  *      
 --%>
 
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
+
 <%
         log.debug("test very begining");
 	//int userID=userLoggedIn.getUser_id();
@@ -42,7 +43,11 @@
     </thead>
     <tbody>
     	<%if(!selectedGeneList.getOrganism().equals("Rn")){
-            results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "oPOSSUM", pool);
+            if(userLoggedIn.getUser_name().equals("anon")){
+                results = myGeneListAnalysis.getAnonGeneListAnalysisResults(-20, geneListID, "oPOSSUM", pool);
+            }else{
+                results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "oPOSSUM", pool);
+            }
             if(results!=null){
                 for(int i=0;i<results.length;i++){
                         boolean complete=false;
@@ -74,8 +79,11 @@
             }
         }%>
         
-    <%  
-        results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "MEME", pool);
+    <%  if(userLoggedIn.getUser_name().equals("anon")){
+            results = myGeneListAnalysis.getAnonGeneListAnalysisResults(-20, geneListID, "MEME", pool);
+        }else{
+            results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "MEME", pool);
+        }
         if(results!=null){
             for(int i=0;i<results.length;i++){
                 boolean complete=false;
@@ -105,7 +113,11 @@
                 </TR>
         <%  }
         }
-        results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "Upstream", pool);
+        if(userLoggedIn.getUser_name().equals("anon")){
+            results = myGeneListAnalysis.getAnonGeneListAnalysisResults(-20, geneListID, "Upstream", pool);
+        }else{
+            results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "Upstream", pool);
+        }
         if(results!=null){
             for(int i=0;i<results.length;i++){
                 boolean complete=false;

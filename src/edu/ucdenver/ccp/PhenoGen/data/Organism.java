@@ -5,6 +5,7 @@ import java.util.*;
 import edu.ucdenver.ccp.util.sql.*;
 import edu.ucdenver.ccp.util.*;
 import edu.ucdenver.ccp.PhenoGen.web.*;
+import javax.sql.DataSource;
                                                                                                                        
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -22,6 +23,48 @@ public class Organism{
         log = Logger.getRootLogger();
   }
 
+        /**
+	 * Gets the list of valid organisms.
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return		a Hashtable mapping the 2-character abbreviation to the scientific name
+	 */
+	public LinkedHashMap getOrganismsAsSelectOptions(DataSource pool) throws SQLException {
+		//log.debug("in getOrganismsAsSelectOptions");
+
+		String query =
+			"select organism, organism_name "+
+			"from organisms "+
+			"where organism != 'NA' "+
+			"order by organism";
+                Connection conn=null;
+                LinkedHashMap<String, String> optionHash = new LinkedHashMap<String, String>();
+                try{      
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, conn);
+                    
+                    String dataRow[] = null;
+
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            optionHash.put(dataRow[0], dataRow[1]);
+                    }
+
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+                                                                                                                       
+		return optionHash;
+	}
+  
 	/**
 	 * Gets the list of valid organisms.
 	 * @param conn	the database connection
@@ -73,6 +116,36 @@ public class Organism{
 	return organism;
   }
 
+  
+  public String getOrganism_name(String organism, DataSource pool) throws SQLException {
+	log.debug("in getOrganism_name for organism = " + organism);
+
+	String query =
+		"select organism_name "+
+		"from organisms "+
+		"where organism = ?";
+        Connection conn=null;
+        String organism_name ="";
+        try{  
+            conn=pool.getConnection();
+            Results myResults = new Results(query, organism, conn);
+            myResults.getResultSet().next();
+            organism_name = myResults.getResultSet().getString(1);
+            myResults.close();
+            conn.close();
+        }catch(SQLException e){
+            throw e;
+        }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+        }
+                                                                                                                       
+	return organism_name;
+  }
   /**
    * Gets the scientific name for an organism
    * @param organism	the 2-character abbreviation of the organism	
@@ -119,6 +192,35 @@ public class Organism{
 	return common_name;
   }
 
+  public String getCommon_name_for_abbreviation(String organism, DataSource pool) throws SQLException {
+	//log.debug("in getCommon_name_for_abbreviation");
+
+	String query =
+		"select common_name "+
+		"from organisms "+
+		"where organism = ?";
+        Connection conn=null;
+        String common_name ="";
+        try{  
+            conn=pool.getConnection();                                                                                          
+            Results myResults = new Results(query, organism, conn);
+            myResults.getResultSet().next();
+            common_name = myResults.getResultSet().getString(1);
+            myResults.close();
+            conn.close();
+        }catch(SQLException e){
+            
+        }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+        }
+                                                                                                                       
+	return common_name;
+  }
   /**
    * Gets the common name for an organism abbreviation
    * @param organism	the 2-character abbreviation of the organism	
@@ -142,6 +244,37 @@ public class Organism{
 	return common_name;
   }
 
+  
+  public String getTaxon_id(String organism, DataSource pool) throws SQLException {
+	//log.debug("in getCommon_name_for_abbreviation");
+
+	String query =
+		"select taxon_id "+
+		"from organisms "+
+		"where organism = ?";
+        Connection conn=null;
+        String taxon_id ="";
+        try{                 
+            conn=pool.getConnection();
+            Results myResults = new Results(query, organism, conn);
+            myResults.getResultSet().next();
+            taxon_id = myResults.getResultSet().getString(1);
+            myResults.close();
+            conn.close();
+        }catch(SQLException e){
+            
+        }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+        }
+                                                                                                                       
+	return taxon_id;
+  }
+  
   /**
    * Gets the taxon_id for an organism abbreviation
    * @param organism	the 2-character abbreviation of the organism	
@@ -164,6 +297,49 @@ public class Organism{
                                                                                                                        
 	return taxon_id;
   }
+  
+  public Chromosome[] getChromosomes(String organism, DataSource pool) throws SQLException {
+
+        	//log.debug("in getChromosomes. organism = " +organism);
+
+        	String query =
+			"select chr.chromosome_id, "+
+			"chr.name,  "+
+			"chr.length, "+
+			"chr.display_order, "+
+			"chr.organism, "+
+			"cyt.band_id, "+
+			"cyt.bp_start, "+
+			"cyt.bp_end, "+
+			"cyt.label, "+
+			"cyt.color "+
+			"from chromosomes chr, cytobands cyt "+
+			"where chr.organism = ? "+
+			"and chr.chromosome_id = cyt.chromosome_id "+
+			"order by chr.display_order, cyt.bp_start";
+
+		//log.debug("query = "+query);
+                Results myResults = null;
+                Connection conn=null;
+                Chromosome[] myChromosomes=new Chromosome[0];
+                try{
+                    conn=pool.getConnection();
+                    myResults = new Results(query, organism, conn);
+                    myChromosomes = setupChromosomeValues(myResults);
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                            if(conn!=null && !conn.isClosed()){
+                                try{
+                                    conn.close();
+                                    conn=null;
+                                }catch(SQLException e){}
+                            }
+                }
+        	return myChromosomes;
+  	}
 	/**
 	 * Retrieves the Chromosome objects for this organism.
 	 * @param organism	the two-character abbreviation for the organism

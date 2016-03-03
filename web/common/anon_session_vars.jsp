@@ -166,10 +166,12 @@
 	String applicationRoot = mySessionHandler.getApplicationRoot();
 	
 	
-		String sessionID = (String) session.getAttribute("sessionID");
-		String analysisPath = (String) session.getAttribute("analysisPath");
-		String[][] qtlResult = (String[][]) session.getAttribute("qtlResult");
+	String sessionID = (String) session.getAttribute("sessionID");
+	String analysisPath = (String) session.getAttribute("analysisPath");
+	String[][] qtlResult = (String[][]) session.getAttribute("qtlResult");
 
+        String additionalInfo="";
+        
 	String checkMark = "<img src='" + imagesDir + "icons/" + "checkmark.gif' height=\"20\" width=\"20\" alt=\"\">";
 	String resultsIcon = "<img src='" + imagesDir + "icons/" + "results.png' height=\"20\" width=\"20\" alt=\"\">";
 	String downloadIcon = "<img src='" + imagesDir + "icons/" + "download_g.png' height=\"20\" width=\"20\" alt=\"\">";

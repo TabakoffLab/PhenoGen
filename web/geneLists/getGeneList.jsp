@@ -9,7 +9,7 @@
  *    **********  Formatting is bad in this file, but necessary so there are no extra 
  *    ********** spaces in the html file
  *
---%><%@ include file="/web/common/session_vars.jsp"%> 
+--%><%@ include file="/web/common/anon_session_vars.jsp" %>
 <%
 	log.info("in getGeneList.jsp."); 
 %><%
@@ -20,7 +20,15 @@
 	log.info("in getGeneList.jsp. geneListID = " + geneListID);
 
 	new SessionHandler().createGeneListActivity(session.getId(), geneListID, "Copied gene list to create a new one", pool);
-	edu.ucdenver.ccp.PhenoGen.data.GeneList thisGeneList = new edu.ucdenver.ccp.PhenoGen.data.GeneList().getGeneList(geneListID, pool);
+        log.debug("after session activity");
+	edu.ucdenver.ccp.PhenoGen.data.GeneList thisGeneList = null;
+        if(! userLoggedIn.getUser_name().equals("anon")){
+            log.debug("logged in");
+            thisGeneList = new edu.ucdenver.ccp.PhenoGen.data.GeneList().getGeneList(geneListID, pool);
+        }else{
+            log.debug("anon");
+            thisGeneList = new edu.ucdenver.ccp.PhenoGen.data.AnonGeneList().getGeneList(geneListID, pool);
+        }
 	edu.ucdenver.ccp.PhenoGen.data.GeneList.Gene[] myGenes = thisGeneList.getGenesAsGeneArray(pool);
 	
 	for (int i=0; i<myGenes.length; i++) {

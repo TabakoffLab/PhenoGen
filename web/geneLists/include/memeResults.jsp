@@ -7,8 +7,9 @@
  *  Modification Log:
  *      
 --%>
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 
 <% 	formName = "promoter.jsp";
 	request.setAttribute( "selectedTabId", "promoter" );
@@ -20,8 +21,12 @@
 	
 	log.debug("in memeResults. itemID = " + itemID);
 
-	GeneListAnalysis thisGeneListAnalysis = 
-			myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
+        GeneListAnalysis thisGeneListAnalysis =null;
+        if(userLoggedIn.getUser_name().equals("anon")){
+                thisGeneListAnalysis = myGeneListAnalysis.getAnonGeneListAnalysis(itemID, pool);
+        }else{
+                thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
+        }
 	ParameterValue[] myParameterValues = thisGeneListAnalysis.getParameterValues();
 	int upstreamLength = Integer.parseInt(thisGeneListAnalysis.getThisParameter("Sequence Length"));
 			
@@ -29,7 +34,10 @@
 	
 	String tmpMemeDir=thisGeneListAnalysis.getThisParameter("MEME Dir");
 	String memeDir = thisGeneList.getMemeDir(thisGeneList.getGeneListAnalysisDir(userLoggedIn.getUserMainDir()));
-    String memeFileName = 
+        if(userLoggedIn.getUser_name().equals("anon")){
+                        memeDir=userLoggedIn.getUserGeneListsDir() +"/" + anonU.getUUID()+"/"+thisGeneList.getGene_list_id()+"/MEME/";
+        }
+        String memeFileName = 
 		thisGeneList.getMemeFileName(memeDir, thisGeneListAnalysis.getCreate_date_for_filename()) + 
 		".html";
 	if(tmpMemeDir!=null){

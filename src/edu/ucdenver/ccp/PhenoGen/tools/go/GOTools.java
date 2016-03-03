@@ -15,6 +15,7 @@ import edu.ucdenver.ccp.PhenoGen.driver.RException;
 import edu.ucdenver.ccp.PhenoGen.driver.R_session;
 import edu.ucdenver.ccp.PhenoGen.data.Dataset;
 import edu.ucdenver.ccp.PhenoGen.data.User;
+import edu.ucdenver.ccp.PhenoGen.data.AnonUser;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Gene;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.TranscriptCluster;
@@ -60,14 +61,16 @@ import java.lang.Thread;
 public class GOTools {
     private HttpSession session;
     private User user;
+    private AnonUser anonU;
     private DataSource pool;
     private String rFunctDir;
     private String applicationRoot="";
     private String contextRoot="";
     private ArrayList<GOWorker> threads=new ArrayList<GOWorker>();
-    
+    private Logger log=null;
     
     public GOTools(){
+        log = Logger.getRootLogger();
     }
     
     public void setup(DataSource pool,HttpSession session){
@@ -77,6 +80,10 @@ public class GOTools {
         this.contextRoot = (String) session.getAttribute("contextRoot");
         this.pool=pool;
         user=(User)session.getAttribute("userLoggedIn");
+    }
+    
+    public void setAnonUser(AnonUser au){
+        this.anonU=au;
     }
     
     public boolean isGOResults(String path){
@@ -100,6 +107,10 @@ public class GOTools {
                 Integer.toString(gc.get(gc.MINUTE))+
                 Integer.toString(gc.get(gc.SECOND));
         String goFilePath=this.user.getUserGeneListsDir() +"/" + gl.getGene_list_name_no_spaces() +"/GO/"+datePart+"/";
+        if(this.user.getUser_name().equals("anon")){
+            goFilePath=this.user.getUserGeneListsDir() +"/" + anonU.getUUID()+"/"+gl.getGene_list_id()+"/GO/"+datePart+"/";
+        }
+        log.debug("runGOGeneList:\n"+goFilePath);
         //create DB entry
         
         
@@ -112,6 +123,7 @@ public class GOTools {
                     status="In Queue...Waiting";
                 }
         }
+        log.debug("start goWorker");
         mw.start();
         threads.add(mw);
         return status;

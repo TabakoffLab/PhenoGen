@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 
 import java.text.NumberFormat;
 
@@ -122,6 +123,37 @@ public class QTL {
 	}
 
 
+        public String getQtl_list_name(int qtl_list_id, DataSource pool) throws SQLException {
+
+        	//log.debug("in getQtl_list_name");
+
+        	String query =
+                	"select qtl_list_name "+
+			"from qtl_lists "+
+                	"where qtl_list_id = ?";
+                Results myResults = null;
+                Connection conn=null;
+                String qtl_list_name ="";
+                try{
+                    conn=pool.getConnection();
+                    myResults = new Results(query, qtl_list_id, conn);
+                    qtl_list_name = myResults.getStringValueFromFirstRow();
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                } 
+
+        	return qtl_list_name;
+	}
+        
         /**
          * Gets the name of a QTL list.
          * @param qtl_list_id	the identifier of the QTL list
@@ -147,6 +179,45 @@ public class QTL {
         	return qtl_list_name;
 	}
 
+        
+        public QTL[] getQTLLists(int user_id, String organism, DataSource pool) throws SQLException {
+
+        	//log.debug("in getQTLLists");
+
+        	String query =
+                	"select qtl_list_id, qtl_list_name, organism, created_by_user_id "+
+			"from qtl_lists "+
+                	"where created_by_user_id = ? ";
+
+		if (!organism.equals("All")) {
+			query = query + 
+			"and organism = ?";
+		}
+		query = query + " order by qtl_list_name ";
+                Results myResults=null;
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    myResults = (!organism.equals("All") ?  new Results(query, new Object[] {user_id, organism}, conn) : 
+                						new Results(query, user_id, conn));
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }   
+		QTL[] myQTLArray = setupQTLValues (myResults);
+
+		
+   		return myQTLArray;
+	}
+        
         /**
          * Gets an array of QTL objects created by a user.
          * @param user_id	the identifier of the user
@@ -180,6 +251,41 @@ public class QTL {
    		return myQTLArray;
 	}
 
+        
+        public QTL getQTLList(int qtl_list_id, DataSource pool) throws SQLException {
+
+        	//log.debug("in getQTLList");
+
+        	String query =
+                	"select qtl_list_id, qtl_list_name, organism, created_by_user_id "+
+			"from qtl_lists ql "+
+                	"where ql.qtl_list_id = ? ";
+
+		//log.debug("query = "+query);
+                Results myResults =null;
+                Connection conn=null;
+                QTL myQTL =null;
+                try{
+                    conn=pool.getConnection();
+                    myResults = new Results(query, qtl_list_id, conn);
+                    myQTL = setupQTLValues (myResults)[0];
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }   
+		myQTL.setLoci(getLociForQTLList(myQTL.getQtl_list_id(), pool));
+
+		return myQTL;
+	}
+        
         /**
          * Gets the details for a specific QTL list
          * @param qtl_list_id	the identifier of the QTL list
@@ -220,16 +326,16 @@ public class QTL {
 		List<QTL> myQTLList = new ArrayList<QTL>();
 
                 String[] dataRow;
-
-		while ((dataRow = myResults.getNextRow()) != null) {
-			QTL thisQtl = new QTL();
-			thisQtl.setQtl_list_id(Integer.parseInt(dataRow[0]));
-			thisQtl.setQtl_list_name(dataRow[1]);
-			thisQtl.setOrganism(dataRow[2]);
-			thisQtl.setCreated_by_user_id(Integer.parseInt(dataRow[3]));
-			myQTLList.add(thisQtl);
-		}
-
+                if(myResults!=null){
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            QTL thisQtl = new QTL();
+                            thisQtl.setQtl_list_id(Integer.parseInt(dataRow[0]));
+                            thisQtl.setQtl_list_name(dataRow[1]);
+                            thisQtl.setOrganism(dataRow[2]);
+                            thisQtl.setCreated_by_user_id(Integer.parseInt(dataRow[3]));
+                            myQTLList.add(thisQtl);
+                    }
+                }
 		QTL[] myQTLArray = (QTL[]) myObjectHandler.getAsArray(myQTLList, QTL.class);
 
    		return myQTLArray;
@@ -260,6 +366,47 @@ public class QTL {
    		return myLocusArray;
 	}
 
+        
+        public QTL[] getQTLListsForUser(int user_id, DataSource pool) throws SQLException {
+
+        	log.debug("in getQTLListsForUser");
+
+        	String query =
+                	"select qtl_list_id, qtl_list_name, organism, created_by_user_id "+
+			"from qtl_lists "+
+			"where created_by_user_id = ? "+
+			"order by qtl_list_id";
+
+		//log.debug("query = "+query);
+                Results myResults=null;
+                Connection conn=null;
+                QTL[] myQTLArray =new QTL[0];
+                try{
+                    conn=pool.getConnection();
+                    myResults = new Results(query, user_id, conn);
+                    myQTLArray = setupQTLValues(myResults);
+                    //log.debug("there are = " + myQTLArray.length + " QTLLists");
+                    //log.debug("myQTLArray = " + myQTLArray[0]);
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+		for (QTL thisQTL : myQTLArray) {
+			thisQTL.setLoci(getLociForQTLList(thisQTL.getQtl_list_id(), pool));
+		}
+		//log.debug("myLoci = " + myQTLArray[0].getLoci()[0]);
+
+		return myQTLArray;
+	}
+        
         /**
          * Gets an array of QTL objects created by a user.
          * @param user_id	the identifier of the user
@@ -294,6 +441,41 @@ public class QTL {
 		return myQTLArray;
 	}
 
+        
+        public Locus[] getLociForQTLList(int qtl_list_id, DataSource pool) throws SQLException {
+
+        	//log.debug("in getLociForQTLList");
+
+        	String query =
+                	"select qtl_name, chromosome, range_start, range_end "+
+			"from qtls q "+
+			"where qtl_list_id = ? "+
+			"order by qtl_name";
+
+		//log.debug("query = "+query);
+                Results myResults = null;
+                Connection conn=null;
+                Locus[] myLocusArray = new Locus[0];
+                try{
+                    conn=pool.getConnection();
+                    myResults = new Results(query, qtl_list_id, conn);
+                    myLocusArray = setupLocusValues(myResults);
+
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+		return myLocusArray;
+	}
+        
         /**
          * Gets the loci for this qtl_list
          * @param qtl_list_id	the identifier of the qtl_list
@@ -1265,6 +1447,99 @@ public class QTL {
 			return probesetIDs;
 		}
 
+                
+                
+                public QTL.EQTL[] getExpressionQTLInfo(List<String> identifiers, String typeOfIdentifier, String organism, String tissue, DataSource pool) throws SQLException {
+        		log.debug ("in QTL.getExpressionQTLInfo. tissue = " + tissue + ", typeOfIdentifier = "+typeOfIdentifier);
+			log.debug("identifiers = "); myDebugger.print(identifiers);
+			Iterator itr = identifiers.iterator();
+			List<EQTL> myEQTLList = new ArrayList<EQTL>();
+
+                	while (itr.hasNext()) {
+
+				// nextIdentifier is a comma-delimited string of ids
+				String nextIdentifier = (String) itr.next();
+				log.debug("nextIdentifier = "+nextIdentifier);
+				if (nextIdentifier != null && !nextIdentifier.equals("")) {
+					String thisIdentifierString = "(" + nextIdentifier + ")";
+
+					String typeClause = (typeOfIdentifier.equals("ProbesetID") ?
+                					"p.identifier in " + thisIdentifierString :
+							(typeOfIdentifier.equals("GeneName") ?
+								"gs.gene_name in "+ thisIdentifierString :  
+                							"(p.identifier in " + thisIdentifierString + " or "+
+									"gs.gene_name in "+ thisIdentifierString + ") "));  
+
+        				String query =
+                				"select distinct p.identifier, "+
+						"gs.gene_name, "+
+                				"p.chromosome, "+
+                				"p.mb, "+
+                				"eq.lod_score, "+
+                				"eq.p_value, "+
+						"eq.fdr, "+
+                				"eq.marker, "+
+                				"eq.marker_chromosome, "+
+                				"eq.marker_mb, "+
+                				"nvl(eq.upper_limit, eq.marker_mb), "+
+                				"nvl(eq.lower_limit, eq.marker_mb), "+
+						"cnt.num_gene_symbols, "+
+						"eq.tissue "+
+                				"from probesets p "+
+						"left join gene_symbols gs "+
+						"	on p.identifier = gs.identifier "+
+						"left join expression_qtls eq "+
+						"	on eq.identifier = p.identifier, "+
+						"gene_symbol_count cnt "+
+                				"where "+
+						typeClause + 
+						"and p.identifier = cnt.identifier "+
+						"and eq.organism = ? ";
+						if (!tissue.equals("All")) {
+							query = query + " and eq.tissue = ? ";
+						} 
+						query = query +
+						"order by gs.gene_name";
+
+					log.debug("query = "+query);
+                                        Connection conn=null;
+                                        try{
+                                            conn=pool.getConnection();
+                                            Results myResults = (!tissue.equals("All") ? 
+                                                                    new Results(query, new Object[] {organism, tissue}, conn) : 
+                                                                    new Results(query, new Object[] {organism}, conn));
+                                                                 
+                                            myEQTLList.addAll(setupEQTLValues(myResults));
+                                            
+                                            log.debug("There are "+myEQTLList.size() + " records returned");
+
+                                            myResults.close();
+                                            conn.close();
+                                        }catch(SQLException e){
+                                            throw(e);
+                                        }finally{
+                                            if(conn!=null && !conn.isClosed()){
+                                                try{
+                                                    conn.close();
+                                                    conn=null;
+                                                }catch(SQLException e){}
+                                            }
+                                        }
+				} else {
+					log.debug("nextIdentifier is null");
+				}
+				log.debug("itr has next");
+			}
+			log.debug("before turning into array");
+			log.debug("List contains "+myEQTLList.size() + " objects");
+			EQTL[] myEQTLArray =  (EQTL []) myObjectHandler.getAsArray(myEQTLList, EQTL.class);
+			log.debug("after turning into array");
+
+   			return myEQTLArray;
+		}
+                
+                
+                
         	/**
          	* Retrieves the expression QTL information for the identifier passed in.
          	* @param identifiers	List of Strings containing Affy IDs and/or Gene Symbols broken into comma-delimited strings of 1000 

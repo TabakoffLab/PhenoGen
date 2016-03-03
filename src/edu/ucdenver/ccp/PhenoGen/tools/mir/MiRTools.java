@@ -15,6 +15,7 @@ import edu.ucdenver.ccp.PhenoGen.driver.RException;
 import edu.ucdenver.ccp.PhenoGen.driver.R_session;
 import edu.ucdenver.ccp.PhenoGen.data.Dataset;
 import edu.ucdenver.ccp.PhenoGen.data.User;
+import edu.ucdenver.ccp.PhenoGen.data.AnonUser;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.Gene;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.BQTL;
 import edu.ucdenver.ccp.PhenoGen.data.Bio.EQTL;
@@ -65,6 +66,7 @@ import java.lang.Thread;
 public class MiRTools {
     private HttpSession session;
     private User user;
+    private AnonUser anonU;
     private DataSource pool;
     private String rFunctDir;
     private String applicationRoot="";
@@ -84,6 +86,10 @@ public class MiRTools {
         this.contextRoot = (String) session.getAttribute("contextRoot");
         this.pool=pool;
         user=(User)session.getAttribute("userLoggedIn");
+    }
+    
+    public void setAnonUser(AnonUser au){
+        this.anonU=au;
     }
     
     public boolean isMirResults(String path){
@@ -108,6 +114,10 @@ public class MiRTools {
                 Integer.toString(gc.get(gc.SECOND));
         String mirFilePath=this.user.getUserGeneListsDir() +"/" + gl.getGene_list_name_no_spaces() +"/multiMir/"+datePart+"/";
         //create DB entry
+        if(this.user.getUser_name().equals("anon")){
+            mirFilePath=this.user.getUserGeneListsDir() +"/" + anonU.getUUID()+"/"+gl.getGene_list_id()+"/multiMir/"+datePart+"/";
+        }
+        
         
         
         

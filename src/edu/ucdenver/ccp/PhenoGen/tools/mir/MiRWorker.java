@@ -148,13 +148,18 @@ public class MiRWorker extends Thread {
     
     public void run() throws RuntimeException {
         done=false;
-        
+        User userLoggedIn= (User) session.getAttribute("userLoggedIn");
         try{
-            gla=(new GeneListAnalysis()).getGeneListAnalysis(glaID,pool);
+            if(userLoggedIn.getUser_name().equals("anon")){
+                gla=(new GeneListAnalysis()).getAnonGeneListAnalysis(glaID,pool);
+            }else{
+                gla=(new GeneListAnalysis()).getGeneListAnalysis(glaID,pool);
+            }
             gla.updatePath(pool,shortPath);
         }catch(SQLException e){
             
         }
+        
         try{
             //
             // If this thread is interrupted, throw an Exception
@@ -175,24 +180,13 @@ public class MiRWorker extends Thread {
             
         }
         //convert Genelist ID to Gene Symbol/Ensembl IDs fill 
-        Connection conn=null;
         GeneList tmpGL=new GeneList();
         String[] myGeneArray=null;
         HashMap<String,String> identifiers=new HashMap<String,String>();
         StringBuilder sb=new StringBuilder();
         try{
-            conn=pool.getConnection();
-            myGeneArray = geneList.getGenesAsArray("Original",conn);
-            conn.close();
-        }catch(SQLException e){
-            
-        }finally{
-            try{
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-            }catch(SQLException e){}
-        }
+        myGeneArray = geneList.getGenesAsArray("Original",pool);
+        }catch(SQLException e){}
         Identifier myIdentifier=new Identifier();
         String[] targets=new String[] {"Gene Symbol","Ensembl ID"};
         IDecoderClient myIDecoderClient=new IDecoderClient();

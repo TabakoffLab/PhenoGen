@@ -1,9 +1,9 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="goT" class="edu.ucdenver.ccp.PhenoGen.tools.go.GOTools" scope="session"> </jsp:useBean>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
-
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 <%
        
 	goT.setup(pool,session);
@@ -12,11 +12,19 @@
 		id=request.getParameter("geneListAnalysisID");
 	}
 	
-	GeneListAnalysis result=myGeneListAnalysis.getGeneListAnalysis(Integer.parseInt(id), pool);
+	GeneListAnalysis result=null;
+        if(userLoggedIn.getUser_name().equals("anon")){
+                result=myGeneListAnalysis.getAnonGeneListAnalysis(Integer.parseInt(id), pool);
+        }else{        
+                result=myGeneListAnalysis.getGeneListAnalysis(Integer.parseInt(id), pool);
+        }
         GeneList geneList=result.getAnalysisGeneList();
 	String part=userLoggedIn.getUserGeneListsDir();
         part=part.substring(part.indexOf("userFiles"));
         String fullPath= contextRoot+part+ geneList.getGene_list_name_no_spaces() +"/GO/"+result.getPath()+"/";
+        if(userLoggedIn.getUser_name().equals("anon")){
+            fullPath= contextRoot+part+anonU.getUUID()+"/"+geneList.getGene_list_id()+"/GO/"+result.getPath()+"/";
+        }
         String file="output.json";
 	
 %>
