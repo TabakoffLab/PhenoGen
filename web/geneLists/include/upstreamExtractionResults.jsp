@@ -8,8 +8,9 @@
  *      
 --%>
 
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 
 <% 	
 	optionsList.add("geneListDetails");
@@ -19,11 +20,28 @@
 	
 	log.debug("in upstreamExtractionResults. itemID = " + itemID);
 
-	GeneListAnalysis thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
+	GeneListAnalysis thisGeneListAnalysis =null;
+        if(userLoggedIn.getUser_name().equals("anon")){
+                thisGeneListAnalysis = myGeneListAnalysis.getAnonGeneListAnalysis(itemID, pool);
+        }else{
+                thisGeneListAnalysis = myGeneListAnalysis.getGeneListAnalysis(itemID, pool);
+        }
 	int upstreamLength = Integer.parseInt(thisGeneListAnalysis.getThisParameter("Sequence Length"));
 			
 	GeneList thisGeneList = thisGeneListAnalysis.getAnalysisGeneList();
         String upstreamDir = thisGeneList.getUpstreamDir(thisGeneList.getGeneListAnalysisDir(userLoggedIn.getUserMainDir()));
+        if(userLoggedIn.getUser_name().equals("anon")){
+                    /*Date start = new Date();
+                    GregorianCalendar gc = new GregorianCalendar();
+                    gc.setTime(start);
+                    String datePart=Integer.toString(gc.get(gc.MONTH)+1)+
+                                        Integer.toString(gc.get(gc.DAY_OF_MONTH))+
+                                        Integer.toString(gc.get(gc.YEAR))+"_"+
+                                        Integer.toString(gc.get(gc.HOUR_OF_DAY))+
+                                        Integer.toString(gc.get(gc.MINUTE))+
+                                        Integer.toString(gc.get(gc.SECOND));*/
+                    upstreamDir=userLoggedIn.getUserGeneListsDir() +"/" + anonU.getUUID()+"/"+thisGeneList.getGene_list_id()+"/UpstreamExtraction/";//+datePart+"/";
+        }
         String upstreamFileName = thisGeneList.getUpstreamFileName(upstreamDir, upstreamLength, thisGeneListAnalysis.getCreate_date_for_filename());
 
 	log.debug("upstreamDir = "+upstreamDir);

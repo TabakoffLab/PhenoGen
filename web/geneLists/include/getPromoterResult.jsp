@@ -1,4 +1,4 @@
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <%
         int itemID = -99;

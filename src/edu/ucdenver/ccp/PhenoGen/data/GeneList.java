@@ -1237,17 +1237,101 @@ public class GeneList{
 
         
         public void createAlternateIdentifiers(GeneList myGeneList,DataSource pool)throws SQLException {
-            Connection conn=null;
-            try{
-                conn=pool.getConnection();
-                createAlternateIdentifiers(myGeneList,conn);
-                conn.close();
-            }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
+                String query = "";
+		//
+		// if the AlternateIdentifierSource has not been set, it will be defaulted to 'Current', but that
+		// column cannot be included in the insert statement
+		// 
+		if (myGeneList.getAlternateIdentifierSource() != null && 
+			!myGeneList.getAlternateIdentifierSource().equals("")) {
+
+			//log.debug("alternate identifier source is not null");
+        		query =
+                	"insert into alternate_identifiers "+
+			"(gene_list_id, gene_id, alternate_id, source_id, source_link_column, source) "+
+                	"values "+
+                	"(?, ?, ?, ?, ?, ?)";
+		} else {
+			//log.debug("alternate identifier source is null");
+        		query =
+                	"insert into alternate_identifiers "+
+			"(gene_list_id, gene_id, alternate_id, source_id, source_link_column) "+
+                	"values "+
+                	"(?, ?, ?, ?, ?)";
+		}
+
+	
+		//log.debug("in createAlternateIdentifiers");
+		//log.debug("query = "+query);
+                Connection conn=null;
+        	PreparedStatement pstmt = null;
+        	try {
+                        conn=pool.getConnection();
+                	pstmt = conn.prepareStatement(query, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+                	pstmt.setInt(1, myGeneList.getGene_list_id());
+
+			if (myGeneList.getAlternateIdentifierSource() != null) {
+				pstmt.setString(6, myGeneList.getAlternateIdentifierSource());
+			} 
+                	pstmt.setInt(4, myGeneList.getAlternateIdentifierSourceID());
+                	pstmt.setString(5, myGeneList.getAlternateIdentifierSourceLinkColumn());
+
+                	// insert each of the genes 
+                	if (myGeneList.getGenesHash() != null) {
+
+				log.debug("getGenesHash is not null.  it contains " + 
+					myGeneList.getGenesHash().size() + " elements");
+
+//				myDebugger.print(myGeneList.getGenesHash());
+				Enumeration genesOriginal = myGeneList.getGenesHash().keys();
+				while (genesOriginal.hasMoreElements()) {
+					String originalID = (String) genesOriginal.nextElement();
+					String alternateID = (String) myGeneList.getGenesHash().get(originalID);
+					//log.debug("originalID = "+originalID + 
+					//	", alternateID = "+alternateID + 
+					//	", gene_list_id = "+myGeneList.getGene_list_id());
+
+                                	pstmt.setString(2, originalID);
+                                	pstmt.setString(3, alternateID);
+                                	pstmt.executeUpdate();
+                        	}
+                	} else if (myGeneList.getGenesHashMap() != null) {
+				//log.debug("getGenesHashMap is not null.  it contains " + 
+				//	myGeneList.getGenesHashMap().size() + " elements");
+
+				Set genesOriginal = myGeneList.getGenesHashMap().keySet();
+				Iterator genesOriginalItr = genesOriginal.iterator();
+				while (genesOriginalItr.hasNext()) {
+					String originalID = (String) genesOriginalItr.next();
+					String[] alternateIDs = (String[]) myGeneList.getGenesHashMap().get(originalID);
+					//log.debug("orginial ID = " + originalID);
+					//log.debug("alternatIDs = "); myDebugger.print(alternateIDs);
+	                        	pstmt.setString(2, originalID);
+					for (int i=0; i<alternateIDs.length; i++) {
+						if (!alternateIDs[i].equals(originalID)) {
+							pstmt.setString(3, alternateIDs[i]);
+       	                         			pstmt.executeUpdate();
+						}
+					}
+                        	}
+			} else {
+				//log.debug("getGenesHash and getGenesHashMap are both null");
+			}
+			pstmt.close();
+                        conn.close();
+        	} catch (SQLException e) {
+                	log.error("In exception of createAlternateIdentifiers", e);
+			throw e;
+        	}finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
                 }
-                throw new SQLException();
-            }
         }
         
   	/** 
