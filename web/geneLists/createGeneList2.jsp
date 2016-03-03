@@ -31,7 +31,7 @@
 	String inputGeneList = "";
 	boolean manuallyEntered = false;
 
-	String additionalInfo = ""; 
+	//String additionalInfo = ""; 
 
         String geneListDir = userLoggedIn.getUserGeneListsUploadDir();
         if(userLoggedIn.getUser_name().equals("anon")){
