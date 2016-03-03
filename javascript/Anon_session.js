@@ -60,7 +60,7 @@ function SetupAnonSession(){
     };
     that.checkUUID=function(){
         var uuid="";
-        if(that.local){
+        if(that.local && localStorage.getItem("phenogenAnonUUID")!==null){
             uuid=localStorage.getItem("phenogenAnonUUID").replace(/\"/g, "");
         }else if($.cookie("phenogenAnonUUID")){
             uuid=$.cookie("phenogenAnonUUID");
