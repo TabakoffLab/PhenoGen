@@ -136,7 +136,32 @@ function drawGraph(drwNodes,drwLinks){
 	   }
 	 })
 	 .on("click", function(d){
-
+	 	console.log(d);
+	 	var jspPage= contextRoot+"web/GeneCentric/geneReport.jsp";
+	 	var params={id:d.ENSID,species:"Mm"};
+	 	if(d.ENSID!==""){
+	 		selectedID=d.ENSID;
+		 	$.ajax({
+					url: jspPage,
+	   				type: 'GET',
+	   				cache: false,
+					data: params,
+					dataType: 'html',
+	    			success: function(data2){ 
+	        			$("#report").html(data2);
+	    				setTimeout(function(){
+	        					$('html, body').animate({
+										scrollTop: $( "#report").offset().top
+									}, 200);
+	        				},300);
+	        			
+	        			//setTimeout(displayHelpFirstTime,200);
+	    			},
+	    			error: function(xhr, status, error) {
+	        			$(divSelector).html("<span style=\"color:#FF0000;\">An error occurred generating this page.  Please try back later.</span>");
+	    			}
+				});
+	 	}
 	 })
 	 .on("dblclick",function(d){
 		selectedNode=d;

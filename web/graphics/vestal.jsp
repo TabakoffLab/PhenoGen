@@ -3,10 +3,15 @@
 <%
   extrasList.add("d3.v3.min.js");
   extrasList.add("svg-pan-zoom.3.2.3.min.js");
+  extrasList.add("GenomeReport2.1.7.js");
+  extrasList.add("wgcnaBrowser1.0.8.js");
 
+  extrasList.add("detailedTranscriptInfo.js");
+  extrasList.add("tabs.css");
 %>
 
 <%@ include file="/web/common/header_adaptive.jsp" %>
+<%@ include file="/web/GeneCentric/browserCSS.jsp" %>
 
 <style>
     
@@ -47,8 +52,10 @@
 </style>
 <script>
     var contextRoot="<%=contextRoot%>";
-    var pathPrefix="web/GeneCentric/";
+    var pathPrefix="<%=contextRoot%>web/GeneCentric/";
     var urlprefix="<%=host+contextRoot%>";
+    var organism="Mm";
+    var selectedID="";
 </script>
 <H1>Figure ? Vestal, B. et. al. <a href="">link</a></H1>
 
@@ -58,7 +65,9 @@
 <div id="graphic">
     
 </div>
-
+<div id="report">
+    
+</div>
 
 
 <script type="text/javascript" src="vestal.js"></script>
