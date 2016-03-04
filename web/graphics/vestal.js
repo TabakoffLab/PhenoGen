@@ -136,11 +136,18 @@ function drawGraph(drwNodes,drwLinks){
 	   }
 	 })
 	 .on("click", function(d){
-	 	console.log(d);
+	 	if(selectedNode){
+	 		topG.select(".node"+selectedNode.id).style("stroke","#FFFFFF").style("stroke-width","0px");
+	 	}
+	 	selectedNode=d;
+		//console.log(d);
+		topG.select(".node"+d.id).style("stroke","#008800").style("stroke-width","4px");
+
 	 	var jspPage= contextRoot+"web/GeneCentric/geneReport.jsp";
 	 	var params={id:d.ENSID,species:"Mm"};
 	 	if(d.ENSID!==""){
 	 		selectedID=d.ENSID;
+	 		$("#report").html("<span style=\"text-align:center;width:100%;\"><img src=\""+contextRoot+"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		 	$.ajax({
 					url: jspPage,
 	   				type: 'GET',
@@ -161,6 +168,8 @@ function drawGraph(drwNodes,drwLinks){
 	        			$(divSelector).html("<span style=\"color:#FF0000;\">An error occurred generating this page.  Please try back later.</span>");
 	    			}
 				});
+	 	}else{
+	 		$("#report").html("");
 	 	}
 	 })
 	 .on("dblclick",function(d){

@@ -626,7 +626,6 @@ Add report here.
                 interactive: true,
                 interactiveTolerance: 350
         });
-        alert("running");
 	$('.selectdetailMenu').click(function (){
 		var oldID=$('.selectdetailMenu.selected').attr("name");
 		$("#"+oldID).hide();
