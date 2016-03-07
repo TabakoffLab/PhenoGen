@@ -502,10 +502,10 @@
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.3.3.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.3.4.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport2.1.8.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.1.2.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.1.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.1.3.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.1.1.js" type="text/javascript"></script>
 				
             <script type="text/javascript">
 				function isLocalStorage(){

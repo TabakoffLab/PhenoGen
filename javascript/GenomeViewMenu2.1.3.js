@@ -50,6 +50,9 @@ function ViewMenu(level){
 		var index=that.findTrackIndex(id);
 		var viewID=that.findSelectedView().ViewID;
 		that.removeTrackWithIDIdx(index,viewID);
+		if(ga){
+			ga('send','event','BrowserViews','deleteTrack');
+		}
 	};
 	that.removeTrackWithIDIdx=function(indx,vwID){
 		var d=that.findViewWithID(vwID);
@@ -187,6 +190,9 @@ function ViewMenu(level){
 			interactive: true,
 			interactiveTolerance: 350
 		});
+		if(ga){
+			ga('send','event','BrowserViews','generateTrackList');
+		}
 	};
 
 
@@ -217,6 +223,9 @@ function ViewMenu(level){
 	    			async: true
 				});	
 		}
+		if(ga){
+			ga('send','event','BrowserViews','applyView');
+		}
 	};
 	that.applySelectedView=function(viewID){
 		var d=NaN;
@@ -234,6 +243,9 @@ function ViewMenu(level){
 		that.setupImage(settingString,d);
 		$("#viewSelect"+that.level).prop("selectedIndex",ind);
 		that.selectChange();
+		if(ga){
+			ga('send','event','BrowserViews','applySelectedView');
+		}
 	};
 	that.setupImage=function(settingString,d){
 		svgList[that.level].removeAllTracks();
@@ -323,6 +335,9 @@ function ViewMenu(level){
 					that.initialized=1;
 					that.applySelectedView(svgViewIDList[that.level]);
 				}
+			}
+			if(ga){
+				ga('send','event','BrowserViews','getViews');
 			}
 		});
 	};
@@ -708,6 +723,9 @@ function ViewMenu(level){
 		$("#viewSelect"+that.level).prop("selectedIndex",viewInd);
 		//update main menu on the browser form
 		//getMainViewData(1);
+		if(ga){
+			ga('send','event','BrowserViews','addTrackToView');
+		}
 	};
 	that.addTrackToViewWithID=function(id,trackData){
 		var view=that.findViewWithID(id);
@@ -837,6 +855,9 @@ function ViewMenu(level){
 		$("#viewDescTxt"+that.level).val("");
 		$("input#createType"+that.level).val("blank");
 		getMainViewData(1);
+		if(ga){
+			ga('send','event','BrowserViews','createView');
+		}
 	};
 
 	that.saveView= function(viewID,svgImage,async){
@@ -897,6 +918,9 @@ function ViewMenu(level){
 			that.getViewData();
 		}
 		getMainViewData(1);
+		if(ga){
+			ga('send','event','BrowserViews','saveView');
+		}
 	};
 
 	that.saveAsView=function(viewCopy,img){
@@ -907,6 +931,9 @@ function ViewMenu(level){
 		$("span#viewMenuLbl"+that.level).text("Save As...");
 		$("input#createType"+that.level).val("blank");
 		$("input#function"+that.level).val("saveAs");
+		if(ga){
+			ga('send','event','BrowserViews','saveAsView');
+		}
 	};
 
 	that.confirmDeleteView = function(toDelete){
@@ -997,7 +1024,9 @@ function ViewMenu(level){
 
 		//update main menu on the browser form
 		getMainViewData(1);
-
+		if(ga){
+			ga('send','event','BrowserViews','deleteView');
+		}
 	};
         
     that.cancelView = function(){

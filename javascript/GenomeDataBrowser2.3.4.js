@@ -1212,7 +1212,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName},
 								dataType: 'json',
 				    			success: function(data2){
-				    				
+				    				if(ga){
+										ga('send','event','browser','generateTrackRefseq');
+									}
 				    			},
 				    			error: function(xhr, status, error) {
 				        			
@@ -1276,7 +1278,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName},
 								dataType: 'json',
 				    			success: function(data2){
-				    				
+				    				if(ga){
+										ga('send','event','browser','generateTrackSNP');
+									}
 				    			},
 				    			error: function(xhr, status, error) {
 				        			
@@ -1423,7 +1427,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName,binSize:tmpBin},
 								dataType: 'json',
 				    			success: function(data2){
-				    				
+				    				if(ga){
+										ga('send','event','browser','generateTrackCounts');
+									}
 				    			},
 				    			error: function(xhr, status, error) {
 				        			
@@ -1540,7 +1546,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName},
 								dataType: 'json',
 				    			success: function(data2){
-				    				
+				    				if(ga){
+										ga('send','event','browser','generateTrackSpliceJnct');
+									}
 				    			},
 				    			error: function(xhr, status, error) {
 				        			
@@ -1636,7 +1644,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: track, folder: that.folderName},
 								dataType: 'json',
 				    			success: function(data2){
-				    				
+				    				if(ga){
+										ga('send','event','browser','generateTrackRepeatMask');
+									}
 				    			},
 				    			error: function(xhr, status, error) {
 				        			
@@ -2177,6 +2187,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 									}	
 									delete a;
 								    return true;
+								}
+								if(ga){
+										ga('send','event','browser','saveBrowserImage');
 								}
 							  
 		    			},
@@ -4702,7 +4715,9 @@ function SequenceTrack(gsvg,trackClass,label,additionalOptions){
 										data: {chromosome: chr,minCoord:that.tmpseqRegionMin,maxCoord:that.tmpseqRegionMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: that.gsvg.folderName},
 										dataType: 'json',
 						    			success: function(data2){
-						    				
+						    				if(ga){
+												ga('send','event','browser','generateTrackSequence');
+											}
 						    			},
 						    			error: function(xhr, status, error) {
 						        			
@@ -5746,7 +5761,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
                             data: {chromosome: chr,minCoord:that.gsvg.xScale.domain()[0],maxCoord:that.gsvg.xScale.domain()[1],panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: file, folder: that.gsvg.folderName},
                             dataType: 'json',
                             success: function(data2){
-
+                            	if(ga){
+										ga('send','event','browser','generateTrackGene');
+									}
                             },
                             error: function(xhr, status, error) {
 
@@ -9819,7 +9836,10 @@ function CustomCountTrack(gsvg,data,trackClass,density,additionalOptions){
 													//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 													dataType: 'json',
 									    			success: function(data2){
-									    				//console.log("generateTrack:DONE");	
+									    				//console.log("generateTrack:DONE");
+									    				if(ga){
+															ga('send','event','browser','generateTrackCount');
+														}	
 									    			},
 									    			error: function(xhr, status, error) {
 									        			
@@ -10191,7 +10211,10 @@ function CountTrack(gsvg,data,trackClass,density){
 												//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 												dataType: 'json',
 								    			success: function(data2){
-								    				//console.log("generateTrack:DONE");	
+								    				//console.log("generateTrack:DONE");
+								    				if(ga){
+														ga('send','event','browser','generateTrackCount');
+													}	
 								    			},
 								    			error: function(xhr, status, error) {
 								        			
@@ -10859,7 +10882,9 @@ function CustomTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpti
 									//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 									dataType: 'json',
 					    			success: function(data2){
-					    				
+					    				if(ga){
+											ga('send','event','browser','generateTrackCustomTranscript');
+										}
 					    			},
 					    			error: function(xhr, status, error) {
 					        			console.log(error);
@@ -11791,7 +11816,9 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 								//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 								dataType: 'json',
 				    			success: function(data2){
-				    				
+				    				if(ga){
+										ga('send','event','browser','generateTrackTranscript');
+									}
 				    			},
 				    			error: function(xhr, status, error) {
 				        			
