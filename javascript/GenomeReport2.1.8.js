@@ -83,6 +83,9 @@ function loadRegionReport(reportName,chromosome,rptmin,rptmax){
                     tblFrom.fnAdjustColumnSizing();
             }
     }
+    if(ga){
+						ga('send','event','loadRegionReport',reportName);
+	}
 }
 
 function loadTrackTable(){
@@ -150,6 +153,9 @@ function loadTrackTable(){
 						"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
 		}
 	}
+	if(ga){
+		ga('send','event','loadTrackTable',reportSelectedTrack.trackClass);
+	}
 }
 
 function loadEQTLTable(){
@@ -168,6 +174,9 @@ function loadEQTLTable(){
 		};
 	loadDivWithPage("div#regionEQTLTable",jspPage,false,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+	if(ga){
+		ga('send','event','loadEQTLTable','eQTLTable');
+	}
 }
 
 function loadRegionWGCNA(){
@@ -180,6 +189,9 @@ function loadRegionWGCNA(){
 		};
 	loadDivWithPage("div#regionWGCNAEQTL",jspPage,true,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+	if(ga){
+		ga('send','event','loadWGCNA','wgcna');
+	}
 }
 
 function loadEQTLTableWParams(levelList,chrList,tisList,pval){
@@ -199,6 +211,9 @@ function loadEQTLTableWParams(levelList,chrList,tisList,pval){
 		};
 	loadDivWithPage("div#regionEQTLTable",jspPage,false,params,
 		"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+	if(ga){
+		ga('send','event','loadEQTLTableWParams','eqtlwparams');
+	}
 }
 
 
@@ -289,6 +304,9 @@ function DisplayRegionReport(){
 	var curmin=svgList[0].xScale.domain()[0];
     var curmax=svgList[0].xScale.domain()[1];
     loadRegionReport(selectedTab,chr,curmin,curmax);
+    if(ga){
+		ga('send','event','loadRegionReport','regionReport');
+	}
 }
 
 function displayDetailedView(track){
@@ -311,6 +329,9 @@ function displayDetailedView(track){
 	}
 	if(!$('div#regionTable').is(":hidden")){
 		loadTrackTable();
+	}
+	if(ga){
+		ga('send','event','loaddetailedView',track);
 	}
 }
 
