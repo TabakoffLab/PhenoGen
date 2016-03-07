@@ -310,10 +310,10 @@ if(request.getParameter("arrayTypeID")!=null){
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.3.3.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.3.4.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport2.1.8.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.1.2.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.1.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.1.3.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.1.1.js" type="text/javascript"></script>
 				
             <script type="text/javascript">
 				function isLocalStorage(){
@@ -364,12 +364,8 @@ if(request.getParameter("arrayTypeID")!=null){
 </div><!--end Border Div -->
     <BR />
     <div id="newunsupportedChrome" style="display:none;color:#FF0000;">
-        New versions of Chrome 42+ may not work for now with the Java Plugin.  If you can setup and activate the plugin it should work but the current Java version 1.8.0_45 does not seem to work.  Please use Firefox or Safari.
-    </div>
-    
-    <div id="unsupportedChrome" style="display:none;color:#FF0000;"><BR /><BR />A Java plug in is required to view this page.  Older versions of Chrome are 32-bit applications and require a 32-bit plug-in which is unavailable for Mac OS X.  
-            	Please try using Safari or FireFox with the Java Plug in installed.  Note: In browsers that support the 64-bit plug in you will be prompted to install Java if it is not already installed.  Chrome 39-41 is 64-bit on Mac OS X so you should be able to use chrome with the plug-in installed.</div>
-                
+        New versions of Chrome 42+ and eventually FireFox will not work with the Java Plugin required for graphics on this page.  Please use Firefox or Safari.  We are working to replace the Java applet with browser based D3js graphics later this year.
+    </div>                
                 
 			<span id="disabledJava" style="display:none;margin-left:40px;"><BR /><BR />
                 <span style="color:#FF0000;">Java has been disabled in your browser.</span><BR />
@@ -394,11 +390,9 @@ if(request.getParameter("arrayTypeID")!=null){
         </div>
         <BR /><BR />
         <div style="text-align:center;">
-        <%if(request.getServerPort()==80){%>
-            <script type="text/javascript" src="http://www.java.com/js/deployJava.js"></script>
-        <%}else{%>
-            <script type="text/javascript" src="https://www.java.com/js/deployJava.js"></script>
-        <%}%>
+
+        <script type="text/javascript" src="https://www.java.com/js/deployJava.js"></script>
+
         <script type="text/javascript">
 			var ensembl=selectedID;
 			var appletWidth=1000;
@@ -444,18 +438,8 @@ if(request.getParameter("arrayTypeID")!=null){
  					//var macVersion=new Number(RegExp.$1); // capture x.x portion and store as a number
 					var tmpAgent=new String(navigator.userAgent);
 					//alert("Detected Mac OS X:"+tmpAgent);
-					if(/Chrome\/(\d+)/.test(tmpAgent)){
-                                                //console.log(RegExp.$1);
-                                                var chromeVer=new Number(RegExp.$1);
-                                                //alert("chrome ver:"+chromeVer);
-						var update=new String(jre);
-						//alert("chrome update:"+update);
-						if(chromeVer<39 && update.length==0){
-							//alert("unsupported");
-							unsupportedChrome=1;
-						}
-					}
-					else if (/10[_\.](d+)/.test(tmpAgent)){
+					
+					if (/10[_\.](d+)/.test(tmpAgent)){
                                                 var osXVer=new Number(RegExp.$1);
 						//alert("Mac Ver ="+osXVer);
                                                 if(oxXVer>=7){//if OS X 10.7 or higher
@@ -477,7 +461,7 @@ if(request.getParameter("arrayTypeID")!=null){
                                                 }
 					}
 			}
-			if(unsupportedChrome===0 && newUnsupportedChrome===0){
+			if(newUnsupportedChrome===0){
 				var attributes = {
 					id:	'geneApplet',
 					code:       "genecentricviewer.GeneCentricViewer",
@@ -495,8 +479,6 @@ if(request.getParameter("arrayTypeID")!=null){
 				}; 
 				var version = "1.7"; 
                                 deployJava.runApplet(attributes, parameters, version);
-			}else if(unsupportedChrome===1){
-				$('#unsupportedChrome').show();
 			}
 			if(bug===1){
 				$('div#macBugDesc').show();
