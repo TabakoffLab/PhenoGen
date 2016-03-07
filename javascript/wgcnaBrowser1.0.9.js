@@ -90,6 +90,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     interactive: true,
                     interactiveTolerance: 350
                 });
+        if(ga){
+			ga('send','event','setupWGCNA','setupWGCNA');
+		}
 	};
 
 	that.requestModuleList=function (){
@@ -125,6 +128,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 }else if(data2.length===1 && data2[0].ModuleID==="grey"){
                                     that.displayMessage("Only the Grey module contains transcripts for this gene.  The Grey module contains all transcripts that did not have a high enough correlation with any other transcripts to be included in another module.");
                                 }
+                                if(ga){
+										ga('send','event','requestModuleList','requestModuleList');
+								}
 	        		//console.log(that.moduleList);
 	    		},
 	    		error: function(xhr, status, error) {
@@ -179,6 +185,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                 },20);
                                             }*/
                                         },20);
+                                        if(ga){
+											ga('send','event','requestModule',file);
+										}
 	    		},
 	    		error: function(xhr, status, error) {
 	        		that.requests--;
@@ -285,6 +294,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			        			console.log(error);
 			    			}
 					});
+					if(ga){
+						ga('send','event','saveWGCNAView','saveWGCNAView');
+					}
 				}
 			})
 			.on("mouseover",function(){
@@ -325,6 +337,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	                    that.singleImage.panZoom.reset();
 	                }
             	}
+            	if(ga){
+					ga('send','event','resetWGCNAView','resetWGCNAView');
+				}
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/reset_white.png");
@@ -360,6 +375,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             }else if(typeof that.singleImage!=='undefined' && that.singleImage ){
                                 that.singleImage.panZoom.zoomIn();
                             }
+                            if(ga){
+								ga('send','event','zoomInWGCNAView','zoomInWGCNAView');
+							}
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/magPlus_light_32.png");
@@ -393,7 +411,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             }else if(typeof that.singleImage!=='undefined' && that.singleImage ){
                                 that.singleImage.panZoom.zoomOut();
                             }
-				
+				if(ga){
+						ga('send','event','zoomOutWGCNAView','zoomOutWGCNAView');
+				}
 			})
 			.on("mouseover",function(){
 				d3.select(this).attr("src",contextRoot+"web/images/icons/magMinus_light_32.png");
@@ -471,6 +491,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","gene").attr("checked","checked").style("margin-left","7px").style("margin-right","3px").on("click",function(){
             that.viewType="gene";
             that.createSingleWGCNAImage();
+            if(ga){
+						ga('send','event','WGCNA','moduleView');
+					}
         });;
 		that.viewBar.append("text").text("Module");
                 that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View transcripts within the selected module and their connectivity based on correlation of expression.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
@@ -478,6 +501,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","eqtl").style("margin-left","7px").style("margin-right","3px").on("click",function(){
             that.viewType="eqtl";
             that.createSingleWGCNAImage();
+            if(ga){
+						ga('send','event','WGCNA','eQTLView');
+					}
         });
 		that.viewBar.append("text").text("Eigengene eQTL");
         that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of the module Eigengene eQTLs.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
@@ -486,6 +512,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px").on("click",function(){
             that.viewType="go";
             that.createSingleWGCNAImage();
+            if(ga){
+						ga('send','event','WGCNA','goView');
+			}
         });
 		that.viewBar.append("text").text("Gene Ontology");
         that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of Gene Ontology terms assigned to transcripts in the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
@@ -500,6 +529,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     .on("click",function(){
                         that.viewType="mir";
                         that.createSingleWGCNAImage();
+                        if(ga){
+							ga('send','event','WGCNA','mirView');
+						}
                     });
             that.viewBar.append("text").text("miRNA Targets");
             that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of miRNAs that target genes in this module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
@@ -538,6 +570,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 sel=go.append("select").attr("id","goDomainSelect").on("change",function(){
                     that.singleImage.goDomain=$("#goDomainSelect").val();
                     that.singleImage.draw();
+                    if(ga){
+						ga('send','event','WGCNA_go','changeDomain');
+					}
                 });
                 sel.append("option").attr("value","cc").text("Cellular Component");
                 sel.append("option").attr("value","bp").text("Biological Process");
@@ -563,6 +598,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     	}else{
                     		event.preventDefault();
                     	}
+                    	if(ga){
+							ga('send','event','WGCNA_go','changeDepth');
+						}
                     },
                     spin: function( event, ui ) {
                     	if(ui.value<=(that.singleImage.maxDepth+1)){
@@ -578,6 +616,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     	}else{
                     		event.preventDefault();
                     	}
+                    	if(ga){
+							ga('send','event','WGCNA_go','changeDepth');
+						}
                     }
                 }).val(3);
                 
@@ -593,6 +634,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         that.singleImage.mirValid=0;
                     }
                     that.singleImage.drawMiR();
+                    if(ga){
+							ga('send','event','WGCNA_mir','changeValidated');
+					}
                 });
                 mir.append("text").text("only miRNAs with Validated Targets");
                 mir.append("br");
@@ -604,12 +648,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 mir.append("input").attr("type","text").attr("id","mirGeneFilterTxt").on("keyup",function(d){
                     that.singleImage.mirTargetID=$(this).val().toLowerCase();
                     that.singleImage.drawMiR();
+                    if(ga){
+							ga('send','event','WGCNA_mir','geneFilter');
+					}
                 });
                  mir.append("br");
                 mir.append("text").style("margin-right","5px").text("miRNA(ID or Accession): ");
                 mir.append("input").attr("type","text").attr("id","mirIDFilterTxt").on("keyup",function(d){
                     that.singleImage.mirID=$(this).val().toLowerCase();
                     that.singleImage.drawMiR();
+                    if(ga){
+							ga('send','event','WGCNA_mir','geneFilter');
+					}
                 });
                 
                 mir=that.dataBar.append("td").append("div").attr("id","mirCtls2").attr("class","mirCTL").style("display","none").style("margin-left","10px");
@@ -624,6 +674,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     }
                     //console.log("set:"+that.singleImage.sortMir);
                     that.singleImage.drawMiR();
+                    if(ga){
+							ga('send','event','WGCNA_mir','mirSort');
+					}
                 });
                 mir.append("text").style("margin-right","5px").style("margin-left","5px").text(" sort by # targeted Genes order ");
                 sel=mir.append("select").attr("id","mirSortSelect").on("change",function(){
@@ -631,6 +684,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         that.singleImage.sortMir=$(this).val();
                         that.singleImage.drawMiR();
                     }
+                    if(ga){
+							ga('send','event','WGCNA_mir','mirSort');
+					}
                 });
                 sel.append("option").attr("value","1").text("Ascending");
                 sel.append("option").attr("value","-1").text("Descending");
@@ -649,6 +705,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 that.singleImage.showMirLinks=0;
                             }
                             //that.singleImage.drawMiR();
+                            if(ga){
+								ga('send','event','WGCNA_mir','showLinks');
+							}
                         });
 				mir.append("text").text("Display links between miRNAs and targeted transcripts");
                 mir.append("br");
@@ -666,6 +725,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             }
                             that.singleImage.setupLegend();
                             //that.singleImage.drawMiR();
+                            if(ga){
+								ga('send','event','WGCNA_mir','linkColor');
+							}
                         });
 				mir.append("text").text("Display links between correlated transcripts");
                 var colorSel=mir.append("div").attr("id","mirLinkColorSelect").style("display","none");
@@ -674,6 +736,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 var selMir=colorSel.append("select").attr("id","mirlinkColor").on("change",function(){
                     that.singleImage.updateColor("mirlinkColor");
                     that.singleImage.setupLegend();
+                    if(ga){
+						ga('send','event','WGCNA_mir','linkColor');
+					}
                 });
                 selMir.append("option").attr("selected","selected").attr("value","Green_Red").text("Green(+) / Red(-)");
                 selMir.append("option").attr("value","Blue_Yellow").text("Blue(+) / Yellow(-)");
@@ -688,7 +753,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             }else{
                             	that.singleImage.showAllFromTarget=0;
                             }
-
+                            if(ga){
+								ga('send','event','WGCNA_mir','linkColor');
+							}
                         });
                 colorSel.append("text").text("Display all cor. transcript links from targeted transcripts.");
                 
@@ -702,6 +769,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         $("span#minMirGeneLabel").html(ui.value);
                         //that.singleImage.CorCutoff_max=ui.values[ 1 ];
                         that.singleImage.drawMiR();
+                        if(ga){
+								ga('send','event','WGCNA_mir','minMir');
+							}
                     }
                   });
                 
@@ -718,6 +788,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             $("span#maxLabel").html(1.0);
                             
                             that.singleImage.draw();
+                            if(ga){
+								ga('send','event','WGCNA_mir','resetCorrelation');
+							}
                         })
                         .append("img").attr("src",contextRoot+"/web/images/icons/reset_16.png");
                 var table=links.append("table");
@@ -1279,6 +1352,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 });
                 },50);
             }
+            if(ga){
+				ga('send','event','changedWGCNAView',that.viewType);
+			}
 	};
 	
 	//common prototype to create generic view
