@@ -15,7 +15,7 @@
 
 <%
 	extrasList.add("jquery.dataTables.1.10.9.min.js");
-        extrasList.add("d3.v3.min.js");
+        extrasList.add("d3.v3.5.16.min.js");
 	log.info("in go.jsp. user = " + user);
 	log.debug("action = " +action);
 	request.setAttribute( "selectedTabId", "go" );

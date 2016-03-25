@@ -1,7 +1,7 @@
 <%@ include file="/web/access/include/login_vars.jsp" %>
 
 <%
-  extrasList.add("d3.v3.min.js");
+  extrasList.add("d3.v3.5.16.min.js");
 %>
 
 
