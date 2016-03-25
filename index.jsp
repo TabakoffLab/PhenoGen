@@ -7,7 +7,7 @@
 	
 	//loggedIn = false;
 	extrasList.add("landing.js");
-	extrasList.add("d3.v3.min.js");
+	extrasList.add("d3.v3.5.16.min.js");
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
 	//extrasList.add("smoothness/jquery-ui.1.11.3.min.css");
