@@ -107,7 +107,18 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	
-	$( "#accordion" ).accordion({heightStyle: "fill"});
+	$( "#accordion" ).accordion({
+            heightStyle: "fill",
+            activate: function( event, ui ) { 
+                        if(ga){
+                            var h="";
+                            if(ui.newHeader){
+                                h=ui.newHeader;
+                            }
+                            ga('send','event','browseDemo',h);
+                        }
+            }
+        });
 	
 	var tableRows = getRows();
 	hoverRows(tableRows);
@@ -123,6 +134,9 @@ $(document).ready(function() {
 			$('#videoDesc').html(list[2]);
 			$('#video').load();
                         $('#largerView').attr("href","<%=webDir%>demo/largerDemo.jsp?demoPath=<%=webDir%>demo/"+list[0]);
+                        if(ga){
+                                ga('send','event','selectDemo',full);
+                        }
 			return false;
 		});
 

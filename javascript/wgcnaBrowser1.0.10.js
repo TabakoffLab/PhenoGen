@@ -1515,6 +1515,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 thatimg.legendDispG.transition()        
                                     .duration(300)
                                     .style("opacity",1);
+                                if(ga){
+		                            ga('send','event','wgcna','viewLegend');
+		                        }
                             })
                             .on("mouseleave",function(){
                                 thatimg.legendDispG.transition()        
@@ -2423,7 +2426,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                     	}
                     	thatimg.drawLinksBetween(gl);
                     }
-                    
+                    if(ga){
+                        ga('send','event','wgcna','mouseOverMir');
+                    }
                 };
                 thatimg.mouseleaveMir=function(){
                     d3.select(this).style("opacity","1");
@@ -2520,7 +2525,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                     return val;
                                 });
                     }
-                    
+                    if(ga){
+                        ga('send','event','wgcna','mouseOverGene');
+                    }
                 };
                 
                 thatimg.mouseleaveGene=function(){
@@ -3205,6 +3212,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		                    }
 		                    thatimg.redraw();
 		                    d3.event.stopPropagation();
+		                    if(ga){
+		                        ga('send','event','wgcna','mouseClickGO');
+		                    }
                         })
                         .on("mouseover",function(d){
                             if(typeof thatimg.selectedNode!=='undefined' && (thatimg.selectedNode.parent!==thatimg.data.GOList[0]&&thatimg.selectedNode.parent!==thatimg.data.GOList[1]&&thatimg.selectedNode.parent!==thatimg.data.GOList[2])){
@@ -3226,6 +3236,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                  
                             }
                             d3.event.stopPropagation();
+                            if(ga){
+		                        ga('send','event','wgcna','mouseOverGO');
+		                    }
                         })
 						.on("mouseleave",function(d){
 							tt.transition()        
@@ -3479,6 +3492,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
           			thatimg.draw();
           		}
           		d3.event.stopPropagation();
+
             };
             
             thatimg.mouseover=function(d){
@@ -3773,6 +3787,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         .attr("class",function(d){return " d"+d.depth;})
                         .on("mouseover",function(d){
                         	d3.select(this).style("background-color","#FFFFFF");
+                        	if(ga){
+		                        ga('send','event','wgcna','mouseOverGOTbl');
+		                    }
                         })
                         .on("mouseleave",function(d){
                         	d3.select(this).style("background-color",that.singleImage.pathColor(d));
@@ -3780,6 +3797,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         .on("click",function(d){
                         	that.singleImage.selectedNode=d;
                         	that.singleImage.redraw();
+                        	if(ga){
+		                        ga('send','event','wgcna','mouseClickGOTbl');
+		                    }
                         });
             
         tracktbl.each(function(d,i){
@@ -3948,6 +3968,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                         tt.html(thatimg.createToolTip(d3.select(this).attr("id"))) 
                                             .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
                                             .style("top", function(){return that.positionTTTop(d3.event.pageY);});
+                                        if(ga){
+					                        ga('send','event','wgcna','mouseOverEQTL');
+					                    }
                                     })
                                     .on("mouseout",function(){
                                         var color=thatimg.colorGene(d3.select(this).attr("id"));

@@ -4,7 +4,7 @@
 	extrasList.add("detailedTranscriptInfo.js");
         extrasList.add("jquery.dataTables.1.10.9.min.js");
 	extrasList.add("jquery.cookie.js");
-	extrasList.add("d3.v3.min.js");
+	extrasList.add("d3.v3.5.16.min.js");
         extrasList.add("spectrum.js");
 	extrasList.add("tabs.css");
 	extrasList.add("tooltipster.min.css");
@@ -310,7 +310,7 @@ if(request.getParameter("arrayTypeID")!=null){
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.3.4.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.3.5.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport2.1.8.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeViewMenu2.1.3.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.1.1.js" type="text/javascript"></script>
