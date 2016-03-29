@@ -10,6 +10,11 @@
 
 <%
 		log.debug("in setupDataset right before calling getDataset");
-		selectedDataset = new Dataset().getDataset(datasetID, userLoggedIn, dbConn,userFilesRoot);
+                if(dbConn==null){
+                    selectedDataset = new Dataset().getDataset(datasetID, pool,userFilesRoot);
+                }else{
+                    selectedDataset = new Dataset().getDataset(datasetID, userLoggedIn, dbConn,userFilesRoot);
+                }
+                log.debug("in setupDataset after calling getDataset");
 %>
 

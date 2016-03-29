@@ -24,6 +24,9 @@
         log.info("in wgcna.jsp. user =  "+ user);
         optionsList.add("geneListDetails");
         optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 
 	request.setAttribute( "selectedTabId", "wgcna" );
 

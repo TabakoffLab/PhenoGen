@@ -355,6 +355,7 @@ public class Toolbar {
         		// Gene List screens
         		optionList.add(new Option("createGeneList", "", "createNew.png", "Create New Gene List"));
                         optionList.add(new Option("linkEmail", "", "link.png", "Link Email to Session"));
+                        optionList.add(new Option("editEmail", "", "link.png", "Edit Linked Email"));
         		optionList.add(new Option("chooseNewGeneList", geneListsDir + "listGeneLists", "chooseNew.png", "Choose New Gene List"));
         		optionList.add(new Option("moreAnnotation", geneListsDir + "advancedAnnotation", "rightArrow.png", "More Annotation"));
         		optionList.add(new Option("basicAnnotation", geneListsDir + "annotation", "leftArrow.png", "Basic Annotation"));

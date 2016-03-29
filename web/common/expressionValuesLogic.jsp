@@ -33,8 +33,8 @@
 			hdf5file = true;
 		}
 
-		datasetArrayType = myArray.getDatasetArrayType(selectedDataset.getDatasetHybridIDs(dbConn), dbConn);
-		groups = selectedDatasetVersion.getGroupsWithExpressionData(dbConn);
+		datasetArrayType = myArray.getDatasetArrayType(selectedDataset.getDatasetHybridIDs(pool),pool);
+		groups = selectedDatasetVersion.getGroupsWithExpressionData(pool);
 		//log.debug("groups = "); myDebugger.print(groups);
 		java.util.Date tmpDate=new java.util.Date();
 		String time=myDateTime.getFormattedTime(tmpDate,"",true);
@@ -84,7 +84,7 @@
 		String sampleFile=selectedDataset.getPath()+version+"_samples.txt";
 
         if ((action != null) && action.equals("View")) {
-			String geneChipName = myArray.getManufactureArrayName(datasetArrayType, dbConn);
+			String geneChipName = myArray.getManufactureArrayName(datasetArrayType, pool);
 			log.debug("geneChipName = "+geneChipName);
 			String [] targets = new String[1];
 			String organism = selectedDataset.getOrganism();
@@ -93,7 +93,7 @@
 			} else if (selectedDataset.getPlatform().equals(selectedDataset.CODELINK_PLATFORM)) {
 				targets[0] = "CodeLink ID";
 			}
-			thisIDecoderSet = thisIDecoderClient.getIdentifiers(selectedGeneList.getGene_list_id(), targets, geneChipName, dbConn);
+			thisIDecoderSet = thisIDecoderClient.getIdentifiers(selectedGeneList.getGene_list_id(), targets, geneChipName, pool);
 			
 			Set caseIgnoreSet=thisIDecoderClient.getIdentifiersIgnoreCase(selectedGeneList.getGene_list_id(), targets, geneChipName, pool);
 			for(Iterator itr=caseIgnoreSet.iterator();itr.hasNext();){
@@ -127,9 +127,8 @@
 										outputDir);
 							} catch (RException e) {
 									rExceptionErrorMsg = e.getMessage();
-									mySessionHandler.createDatasetActivity(
-																"Got RException When Running R Output Raw Specific Gene Function for group",
-																dbConn);
+									mySessionHandler.createDatasetActivity("Got RException When Running R Output Raw Specific Gene Function for group",
+																pool);
 									%><%@ include file="/web/datasets/include/rError.jsp" %><%
 							}
 						}else{
@@ -144,9 +143,8 @@
 										outputDir);
 							} catch (RException e) {
 									rExceptionErrorMsg = e.getMessage();
-									mySessionHandler.createDatasetActivity(
-																"Got RException When Running R Output Raw Specific Gene Function for group",
-																dbConn);
+									mySessionHandler.createDatasetActivity("Got RException When Running R Output Raw Specific Gene Function for group",
+																pool);
 									%><%@ include file="/web/datasets/include/rError.jsp" %><%
 							}
 						}
@@ -157,7 +155,7 @@
 									selectedDatasetVersion.getVersion(), 
 									selectedGeneList.getGene_list_id(),
                                 	"Viewed Group Mean Intensity Values",
-                                	dbConn);
+                                	pool);
 
 				String [] fileContents = myFileHandler.getFileContents(new File(groupValuesStartFileName));
 				//String outFileContents = "";
@@ -222,7 +220,7 @@
                         		rExceptionErrorMsg = e.getMessage();
                         		mySessionHandler.createDatasetActivity(
                                                         	"Got RException When Running R Output Raw Specific Gene Function for individual",
-                                                        	dbConn);
+                                                        	pool);
                         		%><%@ include file="/web/datasets/include/rError.jsp" %><%
                 		}
 				}
@@ -256,7 +254,7 @@
 			} else {
                         	//Error - "Can't find a probeset id for the identifiers
                         	mySessionHandler.createActivity("Used the following geneList: "+ selectedGeneList.getGene_list_name(), 
-                                		dbConn);
+                                		pool);
 				session.setAttribute("additionalInfo", "");
                         	session.setAttribute("errorMsg", "GLT-013");
                         	response.sendRedirect(commonDir + "errorMsg.jsp");
@@ -356,7 +354,7 @@
 				out.clear();
 				out = pageContext.pushBody(); 
 
-                	mySessionHandler.createDatasetActivity("Downloaded Raw Intensity Values for Dataset", dbConn);
+                	mySessionHandler.createDatasetActivity("Downloaded Raw Intensity Values for Dataset", pool);
         	}
 
 	}

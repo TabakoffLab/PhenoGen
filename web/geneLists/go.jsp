@@ -18,6 +18,11 @@
 	request.setAttribute( "selectedTabId", "go" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
+        
+        
 	String myOrganism=selectedGeneList.getOrganism();
 
         String id="";

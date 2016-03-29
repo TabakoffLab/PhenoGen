@@ -2520,6 +2520,53 @@ public class IDecoderClient {
 		return endTreeMap;
 	}
 
+        
+        /** 
+	 * Get a Set of Identifiers for all input IDs for a particular list of targets and gene chip, 
+	 * although it is not organized by target.
+	 * Useful if you want a list of all possible target values, as is needed
+	 * when translating an entire gene list into a particular identifier type.
+	 * <p>
+	 * This starts by calling {@link #getIdentifiersByInputID(int geneListID, String[] targets, Connection conn) getIdentifiersByInputID()} which returns a 
+	 * which returns a Set of input Identifiers pointing to 
+	 * a Set of Identifiers for a list of 
+	 * targets.  This method then creates the middle HashMap and organizes the Identifiers by target.
+	 * During this process, it also restricts by geneChipName
+	 * </p>
+	 *
+	 * @param geneListID	the identifier of the list
+	 * @param targets	names of databases to which the values should be translated
+	 * @param geneChipName	name of gene_chip that should be matched 
+	 * @param conn		database connection
+	 *
+	 * @return		a Set of Identifiers for a particular list of targets
+	 *<br><pre>
+	 *      ------------------------------------------------------------------------------------------------|
+	 *      | Gene Symbol Identifier CDX4 |SwissProt Identifier P18111 | SwissProt Identifier Q8VCF7 |...   |
+	 *      ------------------------------------------------------------------------------------------------|
+	 * </pre>
+	 * @throws	SQLException if there is a problem accessing the database
+	 *                      
+	 */
+	public Set<Identifier> getIdentifiers(int geneListID, String[] targets, String geneChipName, DataSource pool) throws SQLException {
+
+		log.debug("in getIdentifiers passing in geneListID, targets, geneChipName, and conn");
+
+		Set<Identifier> startSet = getIdentifiersByInputID(geneListID, targets, geneChipName, pool);
+		//log.debug("startSet = "); myDebugger.print(startSet);
+		Set<Identifier> endSet = new LinkedHashSet<Identifier>();
+		for (Iterator inputIDitr = startSet.iterator(); inputIDitr.hasNext();) {
+			Identifier inputID = (Identifier) inputIDitr.next();
+			Set<Identifier> identifierSet = inputID.getRelatedIdentifiers();
+			for (Iterator itr = identifierSet.iterator(); itr.hasNext();) {
+                        	((Identifier) itr.next()).setOriginatingIdentifier(inputID);
+			}
+			endSet.addAll(identifierSet);
+		}
+		return endSet;
+	}
+        
+        
 	/** 
 	 * Get a Set of Identifiers for all input IDs for a particular list of targets and gene chip, 
 	 * although it is not organized by target.

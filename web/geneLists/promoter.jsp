@@ -21,6 +21,9 @@
     
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 	/*if(!selectedGeneList.getOrganism().equals("Rn")){
 		extrasList.add("createOpossum.js");
 	}*/

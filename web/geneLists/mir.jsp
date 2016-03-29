@@ -28,6 +28,9 @@
 	request.setAttribute( "selectedTabId", "mir" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 	//optionsList.add("download");
 	
 	//multiMiR Defaults

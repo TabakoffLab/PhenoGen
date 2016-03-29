@@ -10,6 +10,9 @@
 	QTL.EQTL myEQTL = myQTL.new EQTL();
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
         
         QTL[] myQTLLists = new QTL[0];
         QTL[] myQTLs = new QTL[0];

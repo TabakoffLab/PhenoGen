@@ -16,6 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.sql.DataSource;
 
 import edu.ucdenver.ccp.util.Debugger;
 import edu.ucdenver.ccp.util.sql.Results;
@@ -2492,6 +2493,45 @@ public class Array{
 
 	}
 
+        /**
+	 * Gets the manufacturer's name of the type of array used in an 'in-silico' website experiment
+	 * @param arrayName	the name of the array used in the experiment as stored in the database
+	 * @param conn	the PhenoGen database connection
+	 * @return            a String containing the type of array used
+	 * @throws	SQLException if a database error occurs
+	 */
+
+	public String getManufactureArrayName(String arrayName, DataSource pool) throws SQLException {
+		String query = 
+                	"select manufacture_array_name "+
+                	"from array_types "+
+			"where array_name = ?";
+
+		log.debug ("in Array.getManufactureArrayName.");
+                Connection conn =null;
+                 String value = "";
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, arrayName, conn);
+
+                    value = myResults.getStringValueFromFirstRow();
+
+                    myResults.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+		return value;
+	}
+        
 	/**
 	 * Gets the manufacturer's name of the type of array used in an 'in-silico' website experiment
 	 * @param arrayName	the name of the array used in the experiment as stored in the database
@@ -2593,6 +2633,64 @@ public class Array{
 
 	}
 
+        
+        /**
+	 * Gets the name of the type of array used in an 'in-silico' website experiment.
+	 * @param hybridIDs	a comma-delimited string of hybrid ids used in this experiment
+	 * @param conn	the database connection
+	 * @return            a String containing the type of array used
+	 */
+	public String getDatasetArrayType(String hybridIDs, DataSource pool) throws SQLException {
+
+		String query = 
+                	"select distinct "+
+			"case when tardesin_design_name is null then ebi_array_description else tardesin_design_name end "+
+			"from CuratedExperimentDetails expDetails "+
+			", "+
+			"TARRAY left join TARDESIN on tarray_designid = tardesin_sysuid "+
+			"left join EBI_ARRAY_DESIGNS on tarray_designid*-1 = EBI_ARRAY_SYSUID "+
+			"where expDetails.hybrid_array_id = TARRAY.tarray_sysuid "+
+			"and expDetails.hybrid_id in "+
+			hybridIDs + 
+                	" order by 1"; 
+
+		log.debug ("in Array.getDatasetArrayType.");
+		//log.debug("query = "+query);
+                Connection conn=null;
+                String arrayType = "";
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, conn);
+                    String[] dataRow;
+                    
+
+                    int numRows = myResults.getNumRows();
+                    if (numRows == 0) {
+                            arrayType = "Unknown";
+                    } else if (numRows > 1) {
+                            log.debug("More than one chip type");
+                            arrayType = "More than one";
+                    } else {
+                            dataRow = myResults.getNextRow();	
+                            arrayType = dataRow[0];
+                    }
+
+                    myResults.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    throw e;
+        	}finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+		return arrayType;
+	}
+        
 	/**
 	 * Gets the name of the type of array used in an 'in-silico' website experiment.
 	 * @param hybridIDs	a comma-delimited string of hybrid ids used in this experiment
