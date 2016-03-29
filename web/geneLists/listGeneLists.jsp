@@ -1,15 +1,17 @@
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %>
 <%
 	// Need to include this here, so that it's available on the modal
-        extrasList.add("d3.v3.min.js");
+        extrasList.add("d3.v3.5.16.min.js");
 	extrasList.add("createGeneList.js");
 	optionsListModal.add("createGeneList");
+        
 	session.setAttribute("selectedGeneList", null);
 
 	int datasetID = ((String) request.getParameter("datasetID") != null ? Integer.parseInt((String) request.getParameter("datasetID")) : -99);
 	int datasetVersion = ((String) request.getParameter("datasetVersion") != null ? Integer.parseInt((String) request.getParameter("datasetVersion")) : -99);
 
         if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
             geneListsForUser= new GeneList[0];
         }else{
             mySessionHandler.createSessionActivity(session.getId(), "Viewed all genelists", pool);
@@ -32,11 +34,24 @@
 
 <%pageTitle="Analyze gene list";%>
 
-<%@ include file="/web/common/header.jsp"%>
+<%@ include file="/web/common/header_adaptive_menu.jsp"%>
 
-	<div class="page-intro">
+	<div class="page-intro" style="width: auto;margin-bottom: 0px;font-size:18px;">
 		<p>Click on a gene list to select it for further investigation.</p>
 	</div> <!-- // end page-intro -->
+        <%if(userLoggedIn.getUser_name().equals("anon")){%>
+        <BR><BR><BR>
+        <span style="margin-left: 20px;">
+            <img src="<%=imagesDir%>/icons/alert_24.png"> You are not signed in so gene lists are only available on this browser and computer.
+            <span class="info" 
+                  title="<UL><LI>-If you register or sign in your current Gene Lists will be migrated to your user account and will be portable when you login elsewhere.</li><BR>
+                  <li>-Note that clearing your browsers cache may cause loss of your lists.</li><BR>
+                  <li><B>-Alternatively you can add your email address which would allow you to recieve an email with links to recover a lost session.</B></li><BR>
+                  </UL>">
+                
+                <img src="<%=imagesDir%>/icons/info.gif" /></span>
+        </span>
+        <%}%>
 	<div class="brClear"></div>
 
 	<div class="list_container">

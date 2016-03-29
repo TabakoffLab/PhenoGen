@@ -13,6 +13,10 @@
 	optionsList.add("chooseNewGeneList");
 	optionsListModal.add("download");
         
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
+        
 	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 	session.setAttribute("geneListOrganism",selectedGeneList.getOrganism());
 	log.debug("geneListOrganism="+selectedGeneList.getOrganism());

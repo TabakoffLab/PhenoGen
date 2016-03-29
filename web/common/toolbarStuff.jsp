@@ -51,6 +51,7 @@
 							<br/>Phenotype Details
 						</span>
 					</div>
+                                
 				<% } else { 
 					Toolbar.Option thisOption = new Toolbar().new Option().getOptionFromMyOptions(optionChoices, optionName);
 					String landing_page = thisOption.getLinkTo(); 
