@@ -589,6 +589,55 @@ public class ParameterValue implements Comparable{
 		}
 	}  
   
+        
+        /**
+	 * Creates a new row in the parameter_values table.  
+	 * Prior to this, setCreate_date() should be called so that all rows have the same date and time stamp.
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 */
+	public void createParameterValue(DataSource pool) throws SQLException {
+
+		int parameter_value_id = myDbUtils.getUniqueID("parameter_values_seq", pool);
+
+        	String query =
+                	"insert into parameter_values "+
+                	"(parameter_value_id, parameter_group_id, category, parameter, value, create_date) values "+
+                	"(?, ?, ?, ?, ?, ?)";
+
+		//log.debug("In createParameterValue.  Parameter = "+
+		//		this.getParameter() + 
+		//		", Value = " +
+		//		this.getValue());
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    PreparedStatement pstmt = conn.prepareStatement(query, 
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+                    pstmt.setInt(1, parameter_value_id);
+                    pstmt.setInt(2, this.getParameter_group_id());
+                    pstmt.setString(3, this.getCategory());
+                    pstmt.setString(4, this.getParameter());
+                    pstmt.setString(5, this.getValue());
+                    pstmt.setTimestamp(6, this.getCreate_date());
+
+                    pstmt.executeUpdate();
+                    pstmt.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+	}
+        
 	/**
 	 * Creates a new row in the parameter_values table.  
 	 * Prior to this, setCreate_date() should be called so that all rows have the same date and time stamp.
@@ -1410,6 +1459,65 @@ public class ParameterValue implements Comparable{
         	return myParameterValueArray;
 	}
 
+        /**
+	 * Gets the parameters used for a dataset version 
+	 * @param datasetVersion	the DatasetVersion object
+	 * @param conn     the database connection 
+	 * @return            An array of ParameterValue objects
+	 * @throws	SQLException if a database error occurs
+	 */
+	public ParameterValue[] getParameterValuesForDatasetVersion (Dataset.DatasetVersion datasetVersion, DataSource pool) throws SQLException {
+  	
+  		String query = 
+	    		"select pv.parameter_value_id, "+ 
+			"pv.parameter_group_id, "+
+			"pv.category, "+
+			"decode(pv.value, 'Null', ' ', pv.parameter), "+
+			"decode(pv.value, 'Null', ' ', pv.value), "+
+			"to_char(pv.create_date, 'mm/dd/yyyy hh12:mi AM'), "+
+			"pg.dataset_id, "+
+			"pg.version "+
+			"from parameter_values pv, parameter_groups pg "+ 
+			"where pg.dataset_id = ? "+
+			"and pg.version = ? "+
+			"and pv.parameter_group_id = pg.parameter_group_id "+
+			"order by pv.category, pv.parameter";
+
+        	List<ParameterValue> myParameterValueList = new ArrayList<ParameterValue>();
+
+		//log.info("In getParameterValuesForDatasetVersion");
+		//log.debug("query for dataset_id = "+datasetVersion.getDataset().getDataset_id() + " and vsn = "+datasetVersion.getVersion()+ " is " + query);
+	
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, new Object[] {datasetVersion.getDataset().getDataset_id(), datasetVersion.getVersion()}, conn);
+                    String[] dataRow;
+
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            ParameterValue newParameterValue = setupParameterValue(dataRow);
+                            myParameterValueList.add(newParameterValue);
+                    }
+
+                    myResults.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+		ParameterValue[] myParameterValueArray = (ParameterValue[]) myParameterValueList.toArray(new ParameterValue[myParameterValueList.size()]);
+
+        	return myParameterValueArray;
+	}
+        
 	/**
 	 * Gets the parameters used for a dataset version 
 	 * @param datasetVersion	the DatasetVersion object

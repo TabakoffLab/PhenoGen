@@ -20,6 +20,7 @@
                 selectedGeneList = new AnonGeneList().getGeneList(geneListID, pool);
 		selectedGeneList.setUserIsOwner("Y"); 
 		selectedGeneList.setGenes(selectedGeneList.getGenesAsArray("Original", pool));
+                
             }else{
 		selectedGeneList = new GeneList().getGeneList(geneListID, pool);
 		selectedGeneList.setUserIsOwner(selectedGeneList.getCreated_by_user_id() == userID ? "Y" : "N"); 

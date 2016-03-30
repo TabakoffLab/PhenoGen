@@ -79,7 +79,13 @@
 	//
 	// make sure the gene list name is unique
 	//
-	if (myGeneList.geneListNameExists(gene_list_name, userID, pool)) {
+        boolean exists=false;
+        if(userLoggedIn.getUser_name().equals("anon")){
+            exists=myAnonGeneList.geneListNameExists(gene_list_name, anonU.getUUID() ,pool);
+        }else{
+            exists=myGeneList.geneListNameExists(gene_list_name, userID, pool);
+        }
+	if (exists) {
 		//Error - "gene list name exists"
 		session.setAttribute("errorMsg", "GL-006");
 		session.setAttribute("gene_list_name", gene_list_name);

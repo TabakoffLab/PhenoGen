@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import oracle.jdbc.OraclePreparedStatement;
 
@@ -248,6 +249,88 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
             return myGeneList;
         }
         
+        /** Retrieves the set of gene lists available to this user.
+ 	 * It contains gene lists that were derived from the datasets viewable by this user 
+	 * (including from public datasets)  
+	 * PLUS the gene lists created by another user that have been granted to this user
+	 * PLUS the gene lists uploaded by this user or created by this user for 
+	 * literature search, QTL analysis, or promoter analysis.  It is sorted by create_date descending.
+	 * @param user_id	The ID of the user who has access to the gene lists or -99 for all users
+	 * @param organism	The organism of the gene lists requested or "All" or "MmOrRn" or "MmOrHs"
+	 * @param geneListTypes	Types of genelists to include or "All"
+	 * @param conn		the database connection
+	 * @throws	SQLException if a database error occurs
+	 * @return	An array of GeneList objects           
+	 */
+	public GeneList[] getGeneLists(AnonUser user, String organism,  DataSource pool) throws SQLException {
+
+		String orgSpecific = "";
+		//String typeSpecific = "";
+
+		if (organism.equals("All")) {
+			orgSpecific = "%";
+		} else if (organism.equals("MmOrRn")) {
+			orgSpecific = "Mm' or gl.organism like 'Rn";
+		} else if (organism.equals("MmOrHs")) {
+			orgSpecific = "Mm' or gl.organism like 'Hs";
+		} else {
+			orgSpecific = organism; 
+		}
+
+		/*if (geneListTypes.equals("WithResults")) {
+			typeSpecific = 
+				"and (exists "+
+				"	(select 'x' "+
+				"	from gene_list_analyses gla "+
+				"	where gla.gene_list_id = gl.gene_list_id)) ";
+		}*/
+
+  		String query = 
+			selectClause + 
+			"from gene_lists gl, Anon_user_genelist aug "+
+                	"where gl.gene_list_id = aug.genelist_id "+
+			"and gl.created_by_user_id = -20 "+
+                        "and aug.UUID = ?" +
+                        "and gl.organism like '" + orgSpecific + "' "+
+			groupByClause +  
+			"order by 15 desc";
+  		
+		log.debug("in getGeneLists.");
+		//log.debug("query = "+query);
+	
+		String[] dataRow;
+		List<GeneList> geneLists = new ArrayList<GeneList>();
+                Connection conn=null;
+		try{
+                    conn=pool.getConnection();
+                
+                    Results myResults = new Results(query, user.getUUID(), conn);
+
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            GeneList thisGeneList = setupGeneListValues(dataRow);
+
+                            geneLists.add(thisGeneList);
+                    }
+                    myResults.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+		GeneList[] geneListArray = (GeneList[]) myObjectHandler.getAsArray(geneLists, GeneList.class);
+
+		return geneListArray;
+  	}
+        
+        
+        
         public boolean geneListNameExists(String geneListName, String UUID, DataSource pool) throws SQLException {
 
 		log.debug("in geneListNameExists");
@@ -426,6 +509,108 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
 
 		return this.getGene_list_id();
   	}
+        
+        
+        
+        /**
+	 * Gets gene lists that contain the identifiers in this gene list
+	 * @param user_id	the id of the user logged in
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return            an array of Gene objects from this gene list, with the Set of containing GeneLists attached
+	 */
+
+	public Gene[] findContainingGeneLists(String UUID, DataSource pool) throws SQLException {
+
+        	String query =
+			"select a.gene_id, "+
+			"b.gene_list_id, "+
+			"gl.gene_list_name, "+
+			"b.gene_id "+
+			"from genes a "+
+			"left join genes b "+
+			"	on a.gene_id = b.gene_id "+
+			"	and b.gene_list_id != a.gene_list_id "+
+			"left join gene_lists gl "+
+			"	on b.gene_list_id = gl.gene_list_id "+
+			"left join anon_user_genelist agl "+
+			"	on agl.genelist_id = gl.gene_list_id "+
+			"	and agl.UUID = ? "+
+			"where a.gene_list_id = ? "+
+			// if b.gene_list_id is null, then this id is not in any other gene lists
+			// if ugl.user_id is not null, then this person has access to this gene list
+			"and (b.gene_list_id is null or agl.UUID is not null) "+
+			"order by a.gene_id, gl.gene_list_name";
+
+        	log.debug("in findContainingGeneLists. gene_list_id = "+this.getGene_list_id());
+        	//log.debug("query = "+query);
+                List<Gene> myGenes = new ArrayList<Gene>();
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, new Object[] {UUID, this.getGene_list_id()}, conn);
+
+                    Gene latestGene = new Gene();
+                    
+
+                    String thisGeneID = "";
+                    //
+                    // initialize this to 'X' so that the first iteration will work correctly
+                    //
+                    String lastGeneID = "X";
+                    Set<GeneList> theSet = null;
+                    String[] dataRow;
+
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            thisGeneID = dataRow[0];
+                            int containingGeneListID = (dataRow[1] != null ? Integer.parseInt(dataRow[1]) : -99);
+                            //log.debug("thisGeneID = "+thisGeneID + ", and containingGeneListID = "+containingGeneListID);
+
+                            GeneList thisGeneList = new GeneList(containingGeneListID, dataRow[2]);
+                            //
+                            // If the value in first column is the same as the value in the
+                            // first column of the previous record and the gene_list_id column is not null,
+                            // add another GeneList to the list of containing gene lists 
+                            // Otherwise, close out this list
+                            // and set the containing gene lists for the Gene.
+                            //
+                            if (thisGeneID.equals(lastGeneID) && containingGeneListID != -99) {
+                                    //log.debug("geneIDs are the same");
+                                    latestGene.getContainingGeneLists().add(thisGeneList);
+                            } else {
+                                    //log.debug("geneIDs are not the same");
+                                    Gene newGene = new Gene(this.getGene_list_id(), thisGeneID);
+                                    if (containingGeneListID != -99) {
+                                            theSet = new LinkedHashSet<GeneList>();
+                                            theSet.add(thisGeneList);
+                                            //log.debug("just created the Set and now adding to it");
+                                            newGene.setContainingGeneLists(theSet);
+                                    }
+                                    latestGene = newGene;
+                                    myGenes.add(latestGene);
+                            }
+                            //log.debug("this Gene = "); myDebugger.print(latestGene);
+                            //if (latestGene.getContainingGeneLists() != null) 
+                            //	log.debug("containingGeneLists= "); myDebugger.print(latestGene.getContainingGeneLists());
+                            lastGeneID = thisGeneID;
+                    }
+                    myResults.close();
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+        	Gene[] myGeneArray = (Gene[]) myObjectHandler.getAsArray(myGenes, Gene.class);
+		//log.debug("done with findContainingGeneLists. myGeneArray contains this many entries: "+myGeneArray.length);
+
+        	return myGeneArray;
+	}
         
         
         

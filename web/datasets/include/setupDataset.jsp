@@ -10,8 +10,8 @@
 
 <%
 		log.debug("in setupDataset right before calling getDataset");
-                if(dbConn==null){
-                    selectedDataset = new Dataset().getDataset(datasetID, pool,userFilesRoot);
+                if(userLoggedIn.getUser_name().equals("anon")){
+                    selectedDataset = new Dataset().getDataset(datasetID,userLoggedIn.getUser("public",pool), pool,userFilesRoot);
                 }else{
                     selectedDataset = new Dataset().getDataset(datasetID, userLoggedIn, dbConn,userFilesRoot);
                 }

@@ -7,17 +7,18 @@
 	if ((optionsList != null && optionsList.size() > 0) || (optionsListModal != null && optionsListModal.size() > 0)) { 
 	   %>
 		<div id="iconsDiv">
-                    
-                <div style="display:block;float:right;">
-                    <img src="<%=imagesDir%>/icons/alert_24.png">Gene lists will only be available on this browser / computer.
-                    <span class="info" 
-                          title="You are currently not signed in.<BR><BR><UL><LI>-If you register or sign in your current Gene Lists will be migrated to your user account and will be portable when you login elsewhere.</li><BR>
-                          <li>-Note that clearing your browsers cache may cause loss of your lists.</li><BR>
-                          <li><B>-Alternatively you can add your email address which would allow you to recieve an email with links to recover a lost session.</B></li><BR>
-                          </UL>">
+                <%if(userLoggedIn.getUser_name().equals("anon")){%>   
+                    <div style="display:block;float:right;">
+                        <img src="<%=imagesDir%>/icons/alert_24.png">Gene lists will only be available on this browser / computer.
+                        <span class="info" 
+                              title="You are currently not signed in.<BR><BR><UL><LI>-If you register or sign in your current Gene Lists will be migrated to your user account and will be portable when you login elsewhere.</li><BR>
+                              <li>-Note that clearing your browsers cache may cause loss of your lists.</li><BR>
+                              <li><B>-Alternatively you can add your email address which would allow you to recieve an email with links to recover a lost session.</B></li><BR>
+                              </UL>">
 
-                        <img src="<%=imagesDir%>/icons/info.gif" /></span>
-                </div>
+                            <img src="<%=imagesDir%>/icons/info.gif" /></span>
+                    </div>
+                <%}%>
 		<div class="optionIcons">
 		<%
 		if (optionsList != null && optionsList.size() > 0) {
@@ -102,19 +103,6 @@
 		<%
 	} else {
 		//log.debug("optionsList and optionsListModal are both null");
-            %>
-            <div id="iconsDiv">
-                <span>
-                    <img src="<%=imagesDir%>/icons/alert_24.png"> You are not signed in so gene lists are only available on this browser and computer.
-                    <span class="info" 
-                          title="<UL><LI>-If you register or sign in your current Gene Lists will be migrated to your user account and will be portable when you login elsewhere.</li><BR>
-                          <li>-Note that clearing your browsers cache may cause loss of your lists.</li><BR>
-                          <li><B>-Alternatively you can add your email address which would allow you to recieve an email with links to recover a lost session.</B></li><BR>
-                          </UL>">
-
-                        <img src="<%=imagesDir%>/icons/info.gif" /></span>
-                </span>
-            </div>
-	<%}
+        }
 %>
 

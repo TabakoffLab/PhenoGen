@@ -728,6 +728,36 @@ public class Dataset {
         	return version;
 	}
 
+         
+        /**
+	 * Retrieves a Dataset object with the data values set to those retrieved from the database.  
+	 * Also retrieves
+	 * the DatasetVersions for this Dataset AND does setVersion_path().
+	 * @param dataset_id	the ID of the dataset
+	 * @param userLoggedIn	the User object of the user logged in
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return            A Dataset object with its values setup 
+	 */
+	public Dataset getDataset(int dataset_id, User userLoggedIn, DataSource pool,String userFileRoot) throws SQLException {
+        	log.debug("in getDataset with userLoggedIn. dataset_id = " +dataset_id);
+		Dataset thisDataset = getDataset(dataset_id, pool,userFileRoot);
+		thisDataset.setPath(thisDataset.getDatasetPath(userLoggedIn.getUserMainDir()));
+
+		//log.debug("just set path to "+thisDataset.getPath());
+		if (thisDataset.getDatasetVersions() != null && thisDataset.getDatasetVersions().length > 0) {
+			for (int i=0; i<thisDataset.getDatasetVersions().length; i++) {
+				DatasetVersion thisDatasetVersion = thisDataset.getDatasetVersions()[i];
+				thisDataset.getDatasetVersions()[i].setVersion_path(thisDataset.getPath(), thisDataset.getDatasetVersions()[i].getVersion());
+				// this makes sure the exp path and hybridIDs are available for the version
+				thisDatasetVersion.setDataset(thisDataset);
+			}
+		}
+        	//log.debug("setting up parameter values in getDataset with userLoggedIn. dataset_id = " +dataset_id);
+		setupDatasetParameterValues(userLoggedIn.getUser_id(), thisDataset, pool);
+		return thisDataset;
+	} 
+         
 	/**
 	 * Retrieves a Dataset object with the data values set to those retrieved from the database.  
 	 * Also retrieves
@@ -2685,6 +2715,17 @@ public class Dataset {
 		return false;
 	}
 
+        
+        public Dataset setupDatasetParameterValues(int user_id, Dataset thisDataset, DataSource pool) throws SQLException {
+		log.debug("in setupDatasetParameterValues for a dataset");
+		for (DatasetVersion thisDatasetVersion : thisDataset.getDatasetVersions()) {
+			thisDatasetVersion.setParameters(new ParameterValue().getParameterValuesForDatasetVersion(thisDatasetVersion, pool));
+			thisDatasetVersion.setGeneLists(new GeneList().getGeneListsForDatasetVersion(thisDatasetVersion, pool));
+			thisDatasetVersion.setGroupCounts(thisDatasetVersion.getGroupCounts(pool));
+		}
+		return thisDataset;
+	} 
+        
 	/**
 	 * Sets the parameter value-related attributes for the dataset and the dataset versions
 	 * @param user_id	the identifier of the user logged in
@@ -3737,6 +3778,59 @@ public class Dataset {
 			return this.getVersion_path() + "ClusterAnalyses/";
   		}
 
+                
+                /**
+	 	* Retrieves the number of datafiles in each group for this dataset version.  
+	 	* @param conn	the database connection
+	 	* @throws            SQLException if a database error occurs
+	 	* @return	an array containing the number of datafiles in each group.  
+	 	*		Note that this array is ordered by the group's number (e.g., 1, 2, 3). 
+	 	*/
+
+		public int[] getGroupCounts(DataSource pool) throws SQLException {
+
+			//log.debug("in get GroupCounts. " );
+
+        		String query =
+                                "select grps.group_number, count(*) "+
+                                "from groups grps, chip_groups cg, dataset_versions dv "+
+                                "where dv.grouping_id = grps.grouping_id "+
+                                "and dv.dataset_id = ? "+
+                                "and dv.version = ? "+
+                                "and grps.group_number != 0 "+
+                                "and cg.group_id = grps.group_id "+
+                                "group by grps.group_number "+
+                                "order by grps.group_number";
+
+			//log.debug("query = "+query);
+
+			//log.debug("dataset_id = "+this.getDataset().getDataset_id() + ", version = "+ this.getVersion());
+                        Connection conn=null;
+                        int[] groupCount = new int[0];
+                        try{
+                            conn=pool.getConnection();
+                            Results myResults = new Results(query, new Object[] {this.getDataset().getDataset_id(), this.getVersion()}, conn);
+
+                            groupCount = myObjectHandler.getResultsAsIntArray(myResults, 1);
+
+                            myResults.close();
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){
+                            throw e;
+                        }finally{
+                            if(conn!=null && !conn.isClosed()){
+                                try{
+                                    conn.close();
+                                    conn=null;
+                                }catch(SQLException e){}
+                            }
+                        }
+
+  			return groupCount;
+		}
+                
+                
 		/**
 	 	* Retrieves the number of datafiles in each group for this dataset version.  
 	 	* @param conn	the database connection

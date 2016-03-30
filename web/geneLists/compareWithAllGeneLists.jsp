@@ -10,13 +10,21 @@
 
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %> 
 
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
+
 <%
 	log.debug("in compareWithAllGeneLists.jsp");
 	request.setAttribute( "selectedTabId", "compare" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 
-	GeneList.Gene[] myGenes = selectedGeneList.findContainingGeneLists(userID, pool);
+	GeneList.Gene[] myGenes = new GeneList.Gene[0];
+        if(userLoggedIn.getUser_name().equals("anon")){
+            AnonGeneList sgl=(AnonGeneList) selectedGeneList;
+            myGenes = sgl.findContainingGeneLists(anonU.getUUID(), pool);
+        }else{
+            myGenes = selectedGeneList.findContainingGeneLists(userID, pool);
+        }
 	mySessionHandler.createGeneListActivity("Compared '" + selectedGeneList.getGene_list_name() + "' with all gene lists", pool);
 
 %>

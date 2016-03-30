@@ -10,17 +10,26 @@
 
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %> 
 
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
+
 <%
 	log.debug("in compareWithOneGeneList.jsp");
 	request.setAttribute( "selectedTabId", "compare" );
         extrasList.add("compareGeneLists.js");
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 	String geneList2 = "";
 
         if (geneListsForUser == null) {
+            if(userLoggedIn.getUser_name().equals("anon")){
+                geneListsForUser = myAnonGeneList.getGeneLists(anonU, "All", pool);
+            }else{
                 log.debug("geneListsForUser not set");
                 geneListsForUser = myGeneList.getGeneLists(userID, "All", "All", pool);
+            }
         }
 
 	log.debug("action = "+action);
@@ -34,7 +43,11 @@
                         -99);
 
 	if (geneListID2 != -99) {
-		selectedGeneList2 = myGeneList.getGeneList(geneListID2, pool);
+            if(userLoggedIn.getUser_name().equals("anon")){
+                selectedGeneList2 = myAnonGeneList.getGeneList(geneListID2, pool);
+            }else{
+                selectedGeneList2 = myGeneList.getGeneList(geneListID2, pool);
+            }
 	} else {
 		selectedGeneList2 = new GeneList(-99);
 	}
