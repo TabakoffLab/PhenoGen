@@ -15,6 +15,9 @@
 	request.setAttribute( "selectedTabId", "compare" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 	mySessionHandler.createGeneListActivity("Looked at compare genelists tab", pool);
 %>
 
@@ -33,9 +36,9 @@
 	<BR>
 	<div class="menuBar">
         	<div id="tabMenu">
-                 <div class="left inlineButton"><a href="compareWithOneGeneList.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>" >Compare With One Gene List</a></div>
+                    <span class="left button" style="width:220px;"><a href="compareWithOneGeneList.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>" >Compare With One Gene List</a></span>
 						<span>|</span>
-                 <div class="left inlineButton"><a href="compareWithAllGeneLists.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With All Gene Lists</a></div>
+                 <span class="left button" style="width:220px;"><a href="compareWithAllGeneLists.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With All Gene Lists</a></span>
 		</div> <!-- tabMenu -->
 	</div> <!-- menuBar -->
 	<BR>

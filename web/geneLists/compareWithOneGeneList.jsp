@@ -171,7 +171,14 @@
 	<div class="dataContainer" style="height:580px; overflow:auto;padding-bottom:70px;">
 		<div class="menuBar">
         		<div id="tabMenu">
-                        	<div class="left inlineButton"><a href="compareWithAllGeneLists.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With All Gene Lists</a></div>
+                            <%if (selectedGeneList2.getGene_list_id() != -99) { %>
+                                <span class="action button" title="Return to select a different gene list" style="display:inline-block;width: 325px;">
+				<a class="linkedImg return" href="compareWithOneGeneList.jsp?geneListID2=-99"> 
+				<%=fiveSpaces%>
+				Select Another Gene List For Comparison</a>
+                                </span>
+                            <%}%>
+                        	<span class="left button" style="width:220px;"><a href="compareWithAllGeneLists.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With All Gene Lists</a></span>
 			</div> <!-- tabMenu -->
 		</div> <!-- menuBar -->
 
@@ -217,13 +224,14 @@
         </form>
 
 	<% } else if (selectedGeneList2.getGene_list_id() != -99) { %>
-                <div id="related_links">
-			<div class="action" title="Return to select a different gene list">
+                
+                <!--<div id="related_links">
+			<span class="action button" title="Return to select a different gene list" style="display:inline-block;width: 300px;">
 				<a class="linkedImg return" href="compareWithOneGeneList.jsp?geneListID2=-99"> 
 				<%=fiveSpaces%>
 				Select Another Gene List For Comparison</a>
-			</div>
-                </div>
+			</span>
+                <!--</div>-->
                 <div class="viewingPane">
                         <div class="viewingTitle">You are comparing:</div>
                         <div class="listName"><%=selectedGeneList2.getGene_list_name()%>

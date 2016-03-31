@@ -90,14 +90,14 @@
 <script type="text/javascript">
 	//var rows=$("table#mirTbl tr");
 	//stripeTable(rows);
-
-	var tblMir=$('#resultTbl').dataTable({
-			"bPaginate": false,
-			"bDeferRender": true,
-			"aaSorting": [[ 1, "desc" ]],
-			"sDom": '<r><t>'
-	});
-	
+        <%if(results.length>0){%>
+            var tblMir=$('#resultTbl').dataTable({
+                            "bPaginate": false,
+                            "bDeferRender": true,
+                            "aaSorting": [[ 1, "desc" ]],
+                            "sDom": '<r><t>'
+            });
+	<%}%>
         
 	$(".mirResultInfo").tooltipster({
 				position: 'top-left',

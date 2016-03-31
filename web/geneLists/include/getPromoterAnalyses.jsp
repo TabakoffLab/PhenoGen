@@ -22,6 +22,7 @@
 	}
 	GeneListAnalysis[] results=new GeneListAnalysis[0];
         boolean running=false;
+        boolean nonZeroLen=false;
         log.debug("test begining");
 %>
 <style>
@@ -50,6 +51,7 @@
             }
             if(results!=null){
                 for(int i=0;i<results.length;i++){
+                    nonZeroLen=true;
                         boolean complete=false;
                         String stat="Finished";
                         if(results[i].getStatus()!=null){
@@ -86,6 +88,7 @@
         }
         if(results!=null){
             for(int i=0;i<results.length;i++){
+                nonZeroLen=true;
                 boolean complete=false;
                 String stat="Finished";
                 if(results[i].getStatus()!=null){
@@ -120,6 +123,7 @@
         }
         if(results!=null){
             for(int i=0;i<results.length;i++){
+                nonZeroLen=true;
                 boolean complete=false;
                 String stat="Finished";
                 if(results[i].getStatus()!=null){
@@ -158,6 +162,7 @@
 			startRefresh();
 	<%}%>
         (function($){
+            <%if(nonZeroLen){%>
             $('#resultTbl').dataTable({
             
 			"bPaginate": false,
@@ -165,6 +170,7 @@
 			"aaSorting": [[ 2, "desc" ]],
 			"sDom": '<r><t>'
             });
+            <%}%>
             $(".promoterResultDetail").on("click",function (){
                     var id=$(this).attr('id');
                     var type=$(this).attr('type');

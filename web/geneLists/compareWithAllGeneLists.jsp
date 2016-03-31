@@ -17,6 +17,9 @@
 	request.setAttribute( "selectedTabId", "compare" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 
 	GeneList.Gene[] myGenes = new GeneList.Gene[0];
         if(userLoggedIn.getUser_name().equals("anon")){
@@ -44,7 +47,7 @@
 	<div class="dataContainer" style="padding-bottom:70px;">
 		<div class="menuBar">
         		<div id="tabMenu">
-                        	<div class="left inlineButton"><a href="compareWithOneGeneList.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With One Gene List</a></div>
+                        	<span class="left button" style="width:220px;"><a href="compareWithOneGeneList.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With One Gene List</a></span>
 			</div> <!-- tabMenu -->
 		</div> <!-- menuBar -->
 

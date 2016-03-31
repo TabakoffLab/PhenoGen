@@ -253,7 +253,7 @@
 					setTimeout(function (){
 						$('#runStatus').html("");
 					},20000);
-					runGetResults(0);
+					
 					$('select#table').val("all");
 					$('select#predType').val("p");
 					$('input#cutoff').val("20");
@@ -262,6 +262,9 @@
 				},
     			success: function(data2){ 
         			$('#runStatus').html(data2);
+                                setTimeout(function(){
+                                    runGetResults(0);
+                                },2000);
     			},
     			error: function(xhr, status, error) {
         			$('#runStatus').html("An error occurred Try submitting again. Error:"+error);
