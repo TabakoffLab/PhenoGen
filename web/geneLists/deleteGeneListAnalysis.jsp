@@ -39,7 +39,7 @@
 
         if (action != null && action.equals("Delete Literature Search")) {
         	try {
-                        new LitSearch().deleteLitSearch(itemID, dbConn);
+                        new LitSearch().deleteLitSearch(itemID, pool);
 
 			mySessionHandler.createGeneListActivity("Deleted Lit Search : " + itemID, pool);
 			session.setAttribute("successMsg", "GLT-008");
@@ -86,7 +86,7 @@
 	} else if (action != null && action.equals("Delete oPOSSUM Analysis")) {
         	try {
 			myGeneListAnalysis.deleteGeneListAnalysisFiles(userLoggedIn.getUserMainDir(), itemID, pool);
-			new Promoter().deletePromoterResult(itemID, dbConn);
+			new Promoter().deletePromoterResult(itemID, pool);
 
 			mySessionHandler.createGeneListActivity("Deleted oPOSSUM Analysis: " + itemID, pool);
 

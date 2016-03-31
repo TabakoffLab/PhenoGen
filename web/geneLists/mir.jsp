@@ -18,7 +18,6 @@
 
 <%
 	extrasList.add("jquery.dataTables.1.10.9.min.js");
-        //extrasList.add("jquery.dataTables.min.css");
 
         tall="53em";
         
@@ -123,7 +122,7 @@
                                     </select>
                                     <span class="mirtooltip"  title="Limit predicted search to only the top ___% or # of predicted miRNA targets.  The default will only search the top 20% of all predicted results by default."><img src="<%=imagesDir%>icons/info.gif"></span>
                                     <HR />
-                           Predicted Cutoff: Top <input id="cutoff" type="text" size="5" value="<%=cutoff%>" /><span id="lblPerc">% of </span> miRNAs 
+                                    Predicted Cutoff: Top <input id="cutoff" type="text" size="5" value="<%=cutoff%>" /><span id="lblPerc">% of</span>  miRNA-target pairs.
                                     <span class="mirtooltip"  title="Set the cutoff for the predicted cutoff type.  Ex. If Top percentage of miRNA targets is selected and 10 is entered you are searching the top 10% of predicted targets.  If Top number of miRNA targets is selected and 30000 is entered you are searching only the top 30,000 predicted targets."><img src="<%=imagesDir%>icons/info.gif"></span>
                                     <HR />
                            <!--Disease/Drug Association: --><input id="disease" type="hidden" value="" />
@@ -214,6 +213,19 @@
                                 }
                               }
                         });
+                        $("#predType").change( function(){
+                            if($("#predType").val()==='p'){
+                                $("#lblPerc").show();
+                                if($("#cutoff").val()>100){
+                                    $("#cutoff").val("20");
+                                }
+                            }else{
+                                $("#lblPerc").hide();
+                                if($("#cutoff").val()<100){
+                                    $("#cutoff").val("5000");
+                                }
+                            }
+                        });
 		});
 		
 		
@@ -257,7 +269,9 @@
 			});
 		}
 		
-		
+		function setupGeneLists(){
+                    
+                }
 		
 	</script>
 <%@ include file="/web/geneLists/include/geneListFooter.jsp"%>

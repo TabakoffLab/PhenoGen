@@ -490,17 +490,37 @@ public class Promoter{
         	return newPromoter;
 	}
   
+        
+        /** Removes an oPOSSUM record from the gene_list_analyses table, and associated 
+	  * records from promoter_result_genes and alternate_identifiers. 
+	  * @param promoterID	the analysis_id of the promoter run
+	  * @param conn	the database connection
+          * @throws      SQLException if a database error occurs
+	  */
+	public void deleteAnonPromoterResult(int promoterID, DataSource pool) throws SQLException {
+
+		log.info("in deleteAnonPromoterResult");
+                deletePromoterPart(promoterID,pool);
+		new GeneListAnalysis().deleteAnonGeneListAnalysisResult(promoterID, pool);
+
+	}
+        
 	/** Removes an oPOSSUM record from the gene_list_analyses table, and associated 
 	  * records from promoter_result_genes and alternate_identifiers. 
 	  * @param promoterID	the analysis_id of the promoter run
 	  * @param conn	the database connection
           * @throws      SQLException if a database error occurs
 	  */
-	public void deletePromoterResult(int promoterID, Connection conn) throws SQLException {
+	public void deletePromoterResult(int promoterID, DataSource pool) throws SQLException {
 
 		log.info("in deletePromoterResult");
+        	deletePromoterPart(promoterID,pool);
+		new GeneListAnalysis().deleteGeneListAnalysisResult(promoterID, pool);
 
-        	String[] query = new String[2];
+	}
+        
+        private void deletePromoterPart(int promoterID, DataSource pool) throws SQLException {
+            String[] query = new String[2];
 
 		query[0] =
                 	"delete from alternate_identifiers ai  "+
@@ -515,20 +535,32 @@ public class Promoter{
                 	"delete from promoter_result_genes prg  "+
                 	"where promoter_id = ?"; 
 
-		for (int i=0; i<query.length; i++) {
-                        //log.debug("i = " + i + ", query = " + query[i]);
-  			PreparedStatement pstmt = conn.prepareStatement(query[i],
-                            	ResultSet.TYPE_SCROLL_INSENSITIVE,
-                            	ResultSet.CONCUR_UPDATABLE);
-                        pstmt.setInt(1, promoterID);
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    for (int i=0; i<query.length; i++) {
+                            //log.debug("i = " + i + ", query = " + query[i]);
+                            PreparedStatement pstmt = conn.prepareStatement(query[i],
+                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                    ResultSet.CONCUR_UPDATABLE);
+                            pstmt.setInt(1, promoterID);
 
-                        pstmt.executeUpdate();
-                        pstmt.close();
+                            pstmt.executeUpdate();
+                            pstmt.close();
+                    }
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
                 }
-
-		new GeneListAnalysis().deleteGeneListAnalysisResult(promoterID, conn);
-
-	}
+        }
 
   public String[] getAllPromoterResultsForUserStatements(String typeOfQuery) {
 

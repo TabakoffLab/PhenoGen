@@ -740,11 +740,12 @@ public class Dataset {
 	 * @return            A Dataset object with its values setup 
 	 */
 	public Dataset getDataset(int dataset_id, User userLoggedIn, DataSource pool,String userFileRoot) throws SQLException {
-        	log.debug("in getDataset with userLoggedIn. dataset_id = " +dataset_id);
+        	log.debug("\nin getDataset with userLoggedIn. dataset_id = " +dataset_id);
+                log.debug("\n"+userLoggedIn.getUserMainDir());
 		Dataset thisDataset = getDataset(dataset_id, pool,userFileRoot);
 		thisDataset.setPath(thisDataset.getDatasetPath(userLoggedIn.getUserMainDir()));
 
-		//log.debug("just set path to "+thisDataset.getPath());
+		log.debug("just set path to "+thisDataset.getPath());
 		if (thisDataset.getDatasetVersions() != null && thisDataset.getDatasetVersions().length > 0) {
 			for (int i=0; i<thisDataset.getDatasetVersions().length; i++) {
 				DatasetVersion thisDatasetVersion = thisDataset.getDatasetVersions()[i];

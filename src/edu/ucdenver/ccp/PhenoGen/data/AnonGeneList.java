@@ -612,6 +612,37 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
         	return myGeneArray;
 	}
         
+        public String getGeneListOwner(int geneListID,DataSource pool) throws SQLException{
+            String uuid="";
+            String query="select UUID from Anon_user_genelist aug "+
+                    "where aug.genelist_id = ?";
+            Connection conn=null;
+            try{
+                conn=pool.getConnection();
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setInt(1,geneListID);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    uuid=rs.getString(1);
+                }
+                ps.close();
+                conn.close();
+                conn=null;
+            }catch(SQLException e){
+                throw e;
+            }finally{
+                try{
+                    if(conn!=null && !conn.isClosed()){
+                        conn.close();
+                        conn=null;
+                    }
+                }catch(Exception e){}
+            }
+            return uuid;
+        }
+        
+        
+        
         
         
         /**

@@ -70,7 +70,7 @@
                                 <input type="button" id="runBtn"  value="Run GO" onclick="runGO()"/><span id="runStatus"></span>
                             </div>
                             <H2>GO Results</H2>
-                            <div id="resultsTable" style="min-height: 100px;">
+                            <div id="resultsTable" style="min-height: 250px;">
                                 <span style="font-size:10px;">Select a row below to view full results</span>
                                 <div id="resultList">
                                 </div>

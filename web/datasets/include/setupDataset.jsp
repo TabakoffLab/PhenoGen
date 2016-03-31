@@ -11,7 +11,9 @@
 <%
 		log.debug("in setupDataset right before calling getDataset");
                 if(userLoggedIn.getUser_name().equals("anon")){
-                    selectedDataset = new Dataset().getDataset(datasetID,userLoggedIn.getUser("public",pool), pool,userFilesRoot);
+                    User publicU=myUser.getUser("public",pool);
+                    publicU.setUserMainDir(userFilesRoot);
+                    selectedDataset = new Dataset().getDataset(datasetID,publicU, pool,userFilesRoot);
                 }else{
                     selectedDataset = new Dataset().getDataset(datasetID, userLoggedIn, dbConn,userFilesRoot);
                 }

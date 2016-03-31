@@ -886,6 +886,85 @@ public class GeneListAnalysis {
 	}
   
         
+        /**
+	 * Deletes a record from the gene_list_analyses table, and all associated records.
+	 * @param analysis_id	the identifier of the analysis record to be deleted
+	 * @param conn	the database connection
+	 * @throws	SQLException if a database error occurs
+	 */
+
+	public void deleteAnonGeneListAnalysisResult(int analysis_id, DataSource pool) throws SQLException {
+
+		log.info("in deleteGeneListAnalysisResult");
+		
+
+		GeneListAnalysis thisGLA = getAnonGeneListAnalysis(analysis_id, pool);
+
+		//
+		// Had to do it this way because you can't delete the parameter_groups record before deleting the
+		// gene_list_analyses record (it's a one-to-many)
+		//
+
+        	String query1 = 
+			"delete from gene_list_analyses "+
+			"where analysis_id = ? ";
+
+		String query2 =
+                	"delete from parameter_values pv  "+
+                	"where parameter_group_id = ?";
+
+		String query3 = 
+                	"delete from parameter_groups pg  "+
+                	"where parameter_group_id = ?";
+
+  		PreparedStatement pstmt = null;
+                Connection conn=null;
+		try {
+                        conn=pool.getConnection();
+                        conn.setAutoCommit(false);
+			int paramGroupID = thisGLA.getParameter_group_id();
+
+			pstmt = conn.prepareStatement(query1,
+                            	ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            	ResultSet.CONCUR_UPDATABLE);
+                	pstmt.setInt(1, analysis_id);
+                	pstmt.executeUpdate();
+
+			pstmt = conn.prepareStatement(query2,
+                            	ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            	ResultSet.CONCUR_UPDATABLE);
+                	pstmt.setInt(1, paramGroupID);
+                	pstmt.executeUpdate();
+
+			pstmt = conn.prepareStatement(query3,
+                            	ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            	ResultSet.CONCUR_UPDATABLE);
+                	pstmt.setInt(1, paramGroupID);
+                	pstmt.executeUpdate();
+                        pstmt.close();
+			conn.commit();
+                        conn.close();
+                        conn=null;
+		} catch (SQLException e) {
+			log.error("In exception of deleteGeneListAnalysisResult", e);
+			conn.rollback();
+			throw e;
+		} finally {
+			//log.debug("in finally clause of deleteGeneListAnalysisResult");
+			
+			//log.debug("after closing pstmt in finally clause of deleteGeneListAnalysisResult");
+                        if(conn!=null && !conn.isClosed()){
+                            try{
+                                conn.close();
+                                conn=null;
+                            }catch(SQLException e){}
+                        }
+		}
+
+		
+	}
+        
+        
         public void deleteGeneListAnalysisResult(int analysis_id,DataSource pool)throws SQLException {
             Connection conn=null;
             try{
@@ -967,6 +1046,66 @@ public class GeneListAnalysis {
 
 		conn.setAutoCommit(true);
 	}
+        
+        /**
+	 * Deletes files associated with a gene list analysis.
+	 * @param userMainDir	the users's top directory
+	 * @param analysis_id	the identifier of the analysis record to be deleted
+	 * @param conn	the database connection
+	 * @throws	SQLException if a database error occurs
+	 */
+	public void deleteAnonGeneListAnalysisFiles(String userMainDir, int analysis_id, DataSource pool) throws SQLException {
+
+		log.info("in deleteGeneListAnalysisFiles");
+
+		GeneListAnalysis thisGLA = getAnonGeneListAnalysis(analysis_id, pool);
+                
+		String dirToDelete = "";
+		GeneList thisGeneList = thisGLA.getAnalysisGeneList();
+		String glaDir = userMainDir+thisGeneList.getGene_list_id()+"/";
+                log.debug("deleteAnonGeneListAnalysis:"+glaDir);
+		if (thisGLA.getAnalysis_type().equals("oPOSSUM")) {
+			dirToDelete = thisGeneList.getOPOSSUMDir(glaDir);	
+		} else if (thisGLA.getAnalysis_type().equals("MEME")) {
+			dirToDelete = thisGeneList.getMemeDir(glaDir);	
+		} else if (thisGLA.getAnalysis_type().equals("Upstream")) {
+			dirToDelete = thisGeneList.getUpstreamDir(glaDir);	
+		} else if (thisGLA.getAnalysis_type().equals("Pathway")) {
+			dirToDelete = thisGeneList.getPathwayDir(glaDir);	
+		} else if (thisGLA.getAnalysis_type().equals("multiMiR")){
+                        dirToDelete=thisGeneList.getMultiMiRDir(glaDir)+thisGLA.getPath();
+                } else if (thisGLA.getAnalysis_type().equals("GO")){
+                        dirToDelete=thisGeneList.getGODir(glaDir)+thisGLA.getPath();
+                } 
+		log.debug("glaDir="+glaDir);
+		log.debug("dirToDelete="+dirToDelete);
+                File dir=new File(dirToDelete);
+		File[] filesInDir = dir.listFiles();
+                boolean emptyFolder=true;
+		for (int i=0; i<filesInDir.length; i++) {
+                        log.debug("files"+i+"="+filesInDir[i].getAbsolutePath());
+			if (filesInDir[i].getName().indexOf(thisGLA.getCreate_date_as_string()) > -1 ||
+				filesInDir[i].getName().indexOf(thisGLA.getCreate_date_for_filename()) > -1 || 
+                                 thisGLA.getAnalysis_type().equals("GO") || thisGLA.getAnalysis_type().equals("multiMiR")
+                                ) {
+				try{
+                                    if(!filesInDir[i].delete()){
+                                        emptyFolder=false;
+                                    }
+                                }catch(Exception e){
+                                    log.error("error deleteing Gene List Analysis File:"+filesInDir[i].getAbsolutePath(),e);
+                                }
+                                
+			}
+		}
+                if(emptyFolder){
+                    try{
+                        dir.delete();
+                    }catch(Exception e){
+                        log.error("error deleteing Gene List Analysis Folder",e);
+                    }
+                }
+	}
 
         
         public void deleteGeneListAnalysisFiles(String userMainDir,int analysis_id,DataSource pool)throws SQLException {
@@ -995,7 +1134,7 @@ public class GeneListAnalysis {
 		log.info("in deleteGeneListAnalysisFiles");
 
 		GeneListAnalysis thisGLA = getGeneListAnalysis(analysis_id, conn);
-
+                
 		String dirToDelete = "";
 		GeneList thisGeneList = thisGLA.getAnalysisGeneList();
 		String glaDir = thisGeneList.getGeneListAnalysisDir(userMainDir);

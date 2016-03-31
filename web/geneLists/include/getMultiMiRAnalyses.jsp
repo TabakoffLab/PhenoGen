@@ -130,9 +130,9 @@
 					$('table#resultTbl tr.arid'+id).addClass("selected");
 				},
     			success: function(data2){ 
-        			
-					$('#mirResult').html(data2);
-					$('#resultLoading').hide();
+                            $('#resultLoading').hide();
+                            $('#mirResult').html(data2);
+					
                                         
     			},
     			error: function(xhr, status, error) {

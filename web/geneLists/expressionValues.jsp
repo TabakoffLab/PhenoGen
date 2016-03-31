@@ -11,6 +11,7 @@
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %>
 
 <jsp:useBean id="myDataset" class="edu.ucdenver.ccp.PhenoGen.data.Dataset"> </jsp:useBean>
+<jsp:useBean id="myUser" class="edu.ucdenver.ccp.PhenoGen.data.User"> </jsp:useBean>
 
 <%
         log.info("in expressionValues.jsp. user =  "+ user);
