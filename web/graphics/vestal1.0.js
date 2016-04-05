@@ -230,7 +230,7 @@ function drawGraph(drwNodes,drwLinks){
   }
   //start force layout and run multiple ticks.
   force.start();
-  for (var i = n*3; i > 0; --i) force.tick();
+  for (var i = n*5; i > 0; --i) force.tick();
 
 }
 
