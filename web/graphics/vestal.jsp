@@ -3,8 +3,8 @@
 <%
   extrasList.add("d3.v3.5.16.min.js");
   extrasList.add("svg-pan-zoom.3.2.3.min.js");
-  extrasList.add("GenomeReport2.1.7.js");
-  extrasList.add("wgcnaBrowser1.0.8.js");
+  extrasList.add("GenomeReport2.1.8.js");
+  extrasList.add("wgcnaBrowser1.0.10.js");
 
   extrasList.add("detailedTranscriptInfo.js");
   extrasList.add("tabs.css");
@@ -70,5 +70,5 @@
 </div>
 
 
-<script type="text/javascript" src="vestal.js"></script>
+<script type="text/javascript" src="vestal1.0.js"></script>
 <%@ include file="/web/common/footer.jsp" %>

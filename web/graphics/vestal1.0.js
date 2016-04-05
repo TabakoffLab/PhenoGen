@@ -42,11 +42,40 @@ defs.append("marker")
 .append("path").attr("d","M0,-5L10,0L0,5");
 
 
+ force.on("tick", function() {
+	    topG.selectAll(".link").attr("x1", function(d) { return d.source.x; })
+		   .attr("y1", function(d) { return d.source.y; })
+		   .attr("x2", function(d) { return d.target.x;})
+		   .attr("y2", function(d) { return d.target.y; });
+	    topG.selectAll("path")
+		 .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; }).each(function(d){
+		   topG.select("#nodeLbl"+d.id).attr("transform","translate("+(d.x-25)+","+(d.y-30)+")")
+		 });
+	  });
+
 
 
 
 
 var topG=svg.append("g").attr("class","svg-pan-zoom_viewport");
+setTimeout(function(){
+	getData();
+	setup();
+	},150);
+
+setTimeout(function(){
+	panZoom=svgPanZoom('#svgGraph',{  panEnabled: true
+									  , controlIconsEnabled:false
+									  , zoomEnabled: true
+									  , dblClickZoomEnabled: false
+									  , zoomScaleSensitivity: 0.2
+									  , minZoom: 0.1
+									  , maxZoom: 4
+									  , fit: true
+									  , center: true
+								 });
+},1000);
+
 
 
 $(window).resize(function (){
@@ -66,7 +95,7 @@ $(window).resize(function (){
 });
 
 function drawGraph(drwNodes,drwLinks){
-
+	console.log("draw graph")
   drwNodes.forEach(function(d, i) {
   		if(typeof d.x ==='undefined' || typeof d.y ==='undefined'){ 
   			d.x = d.y = width / 2;
@@ -96,7 +125,7 @@ function drawGraph(drwNodes,drwLinks){
 	 //.style("stroke",function(d){var color="#00000"; if(d.pairType==='predicted'){color="#BBBBBB"} return color;});
 	 .style("stroke","#000000")
 	 .attr("marker-end", "url(#arrow)");
-    link.exit().remove();
+    //link.exit().remove();
 
 
 
@@ -113,7 +142,7 @@ function drawGraph(drwNodes,drwLinks){
 	 	})
 	 .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
 	 .attr("d", d3.svg.symbol()
-	   .size(function(d) { return d.logpval*20; })
+	   .size(function(d) { return Math.abs(d.effect)*400; })
 	   .type(function(d) { var val="circle"; if(d.type==='gene'){val="triangle-up";} return val; }))
 	 .call(force.drag)
 	 .on("mouseover",function(d){
@@ -135,7 +164,7 @@ function drawGraph(drwNodes,drwLinks){
 		topG.selectAll(".label").remove();
 	   }
 	 })
-	 .on("click", function(d){
+	 /*.on("click", function(d){
 	 	if(selectedNode){
 	 		topG.select(".node"+selectedNode.id).style("stroke","#FFFFFF").style("stroke-width","0px");
 	 	}
@@ -171,7 +200,7 @@ function drawGraph(drwNodes,drwLinks){
 	 	}else{
 	 		$("#report").html("");
 	 	}
-	 })
+	 })*/
 	 .on("dblclick",function(d){
 		selectedNode=d;
 		//console.log(d);
@@ -186,6 +215,8 @@ function drawGraph(drwNodes,drwLinks){
 	 tmplbl.append("text").attr("x",5).attr("y",15).text(d.name);
     });
   }
+
+
 }
 
 function redrawGraph(reset){
@@ -199,7 +230,7 @@ function redrawGraph(reset){
   if(typeof selectedNode === 'object'){
 	//nodeList=neighbors[selectedNode.id];
 	var nodeLinkHash={};
-	console.log(nodeLinkHash);
+	//console.log(nodeLinkHash);
 	for(var i=0;i<neighbors[selectedNode.id].length;i++){
 		nodeList.push(neighbors[selectedNode.id][i]);
 		nodeLinkHash["node"+neighbors[selectedNode.id][i].id]=1;
@@ -234,17 +265,17 @@ function redrawGraph(reset){
 		prevLevelNodes=levelNodes;
 
     	}
-    	console.log(nodeList);
+    	//console.log(nodeList);
 	//add links for nodes in graph
 	for(var m=0;m<nodeList.length;m++){
 		var curNode=nodeList[m];
 		for(var p=0;p<links[curNode.id].length;p++){
 			var link=links[curNode.id][p];
-			console.log(nodeLinkHash);
+			//console.log(nodeLinkHash);
 			if(nodeLinkHash["node"+link.source.id] === 1 && nodeLinkHash["node"+link.target.id] === 1){
-				console.log("passed:"+"link"+link.source.id+"To"+link.target.id);
+				//console.log("passed:"+"link"+link.source.id+"To"+link.target.id);
 				if(nodeLinkHash["link"+link.source.id+"To"+link.target.id]!==1){
-					console.log("added");
+					//console.log("added");
 					nodeLinkHash["link"+link.source.id+"To"+link.target.id]=1;
 					linkList.push(link);
 				}
@@ -286,9 +317,17 @@ function redrawGraph(reset){
   }
 
   if(typeof selectedNode !=='undefined'){
-    linkDist=minDim/(3+edgeCutoff);
+  	if(nodeList.length<30){
+    	linkDist=minDim/(3+edgeCutoff);
+	}else{
+		linkDist=minDim/(7+edgeCutoff);
+	}
   }else{
-  	linkDist=minDim/8;
+  	if(nodeList.length<30){
+  		linkDist=minDim/8;
+  	}else{
+  		linkDist=minDim/16;
+  	}
   }
   /*
   linkDist=80;
@@ -474,6 +513,16 @@ function addControls(){
 				    });
     imageBar.append("text").style({"position":"relative",
 				    	"top":"-8px"}).text("Display Labels");
+    var dataBar=imageBar.append("span").style({"position":"relative","top":"-8px","padding-left":"15px"});
+
+    dataBar.append("text").text("Select Data Version:");
+    var select=dataBar.append("select").attr("id","dataSelect").on("change",function (){
+    		getData();
+    	});
+    select.append("option").attr("value","S_NVE_05.json").html("Original (S_NVE .05)");
+    select.append("option").attr("value","S_NVE_10.json").html("S_NVE .10");
+    select.append("option").attr("value","NVE_05.json").html("NVE .05");
+    select.append("option").attr("value","NVE_10.json").html("NVE .10");
 
 	 var edgeCtl=imageBar.append("span").attr("id","edgeCtl").style({"display":"none","padding-left":"30px"});
 
@@ -784,70 +833,68 @@ function drawLegend(){
   lgd.append("text").attr("x",60).attr("y",260).text("Meta P-value");
 }
 
+function getData(){
+	var file="S_NVE_05.json";
+	if(! d3.select("#dataSelect").empty()){
+		file=d3.select("#dataSelect").property("value");
+	}
+	topG.selectAll(".link").remove();
+	topG.selectAll(".node").remove();
+	topG.selectAll(".label").remove();
+	d3.json(file, function(error, graph) {
+	  fullLinkList=graph.links;
+	  fullNodeList=graph.nodes;
 
-d3.json("vestal.json", function(error, graph) {
-  fullLinkList=graph.links;
-  fullNodeList=graph.nodes;
+	  var n = graph.nodes.length;
+	  //construct an ordered list of nodes for pushing into neighbors arrays.
+	  for(var i=0;i<graph.nodes.length;i++){
+	    nodes[graph.nodes[i].id]=graph.nodes[i];
+	  }
 
-  var n = graph.nodes.length;
-  //construct an ordered list of nodes for pushing into neighbors arrays.
-  for(var i=0;i<graph.nodes.length;i++){
-    nodes[graph.nodes[i].id]=graph.nodes[i];
-  }
-  //construct neighbors and link lists
-  for(var i=0;i<graph.links.length;i++){
-    if(! neighbors[graph.links[i].source]){
-	 neighbors[graph.links[i].source]=[nodes[graph.links[i].source]]
-    }
-    if(! neighbors[graph.links[i].target]){
-	 neighbors[graph.links[i].target]=[nodes[graph.links[i].target]]
-    }
-    neighbors[graph.links[i].source].push(nodes[graph.links[i].target]);
-    neighbors[graph.links[i].target].push(nodes[graph.links[i].source]);
+	  //construct neighbors and link lists
+	  for(var i=0;i<graph.links.length;i++){
+	    if(! neighbors[graph.links[i].source]){
+		 neighbors[graph.links[i].source]=[nodes[graph.links[i].source]]
+	    }
+	    if(! neighbors[graph.links[i].target]){
+		 neighbors[graph.links[i].target]=[nodes[graph.links[i].target]]
+	    }
+	    neighbors[graph.links[i].source].push(nodes[graph.links[i].target]);
+	    neighbors[graph.links[i].target].push(nodes[graph.links[i].source]);
 
-    if(! links[graph.links[i].source]){
-	 links[graph.links[i].source]=[]
-    }
-    if(! links[graph.links[i].target]){
-	 links[graph.links[i].target]=[]
-    }
-    links[graph.links[i].source].push(graph.links[i]);
-    links[graph.links[i].target].push(graph.links[i]);
-  }
+	    if(! links[graph.links[i].source]){
+		 links[graph.links[i].source]=[]
+	    }
+	    if(! links[graph.links[i].target]){
+		 links[graph.links[i].target]=[]
+	    }
+	    links[graph.links[i].source].push(graph.links[i]);
+	    links[graph.links[i].target].push(graph.links[i]);
+	  }
 
-  //assign node position in deterministic manner
-  //graph.nodes.forEach(function(d, i) { d.x = d.y = width / n * i; });
-  //add node and links prior to running force
-  //force.nodes(graph.nodes).links(graph.links);
+	  //assign node position in deterministic manner
+	  //graph.nodes.forEach(function(d, i) { d.x = d.y = width / n * i; });
+	  //add node and links prior to running force
+	  //force.nodes(graph.nodes).links(graph.links);
 
-  //start force layout and run multiple ticks.
-  //force.start();
-  //for (var i = n*1.5; i > 0; --i) force.tick();
+	  //start force layout and run multiple ticks.
+	  //force.start();
+	  //for (var i = n*1.5; i > 0; --i) force.tick();
 
-  drawGraph(graph.nodes,graph.links);
-  addControls();
-  drawLegend();
-  panZoom=svgPanZoom('#svgGraph',{
-								    panEnabled: true
-								  , controlIconsEnabled:false
-								  , zoomEnabled: true
-								  , dblClickZoomEnabled: false
-								  , zoomScaleSensitivity: 0.2
-								  , minZoom: 0.1
-								  , maxZoom: 4
-								  , fit: true
-								  , center: true
-								  
-							 });
-  
-  force.on("tick", function() {
-    topG.selectAll(".link").attr("x1", function(d) { return d.source.x; })
-	   .attr("y1", function(d) { return d.source.y; })
-	   .attr("x2", function(d) { return d.target.x;})
-	   .attr("y2", function(d) { return d.target.y; });
-    topG.selectAll("path")
-	 .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; }).each(function(d){
-	   topG.select("#nodeLbl"+d.id).attr("transform","translate("+(d.x-25)+","+(d.y-30)+")")
-	 });
-  });
-});
+	  if(graph.nodes<30){
+	  	linkDist=minDim/8;
+	  }else{
+	  	linkDist=minDim/20;
+	  }
+
+	  force.linkDistance(linkDist);  
+
+	  drawGraph(graph.nodes,graph.links);
+	  
+	});
+}
+
+function setup(){
+	addControls();
+	drawLegend();
+}
