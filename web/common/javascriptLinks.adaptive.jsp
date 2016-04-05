@@ -1,4 +1,4 @@
-    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.11.2.min.js"></script>
+    <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-1.12.2.min.js"></script>
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-migrate-1.2.1.min.js"></script>
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery-ui-1.11.4.min.js"></script>
     <script type = "text/javascript" src = "<%=request.getContextPath()%>/javascript/jquery.tooltipster.adaptive.js"></script>
@@ -43,6 +43,9 @@
 			$("span.info").tooltip( tooltipSettings );*/
 
 			tablesorterSettings = { widgets: ['zebra'] };
-			$("table.tablesorter").tablesorter(tablesorterSettings);
+                        try{
+                            $("table.tablesorter").tablesorter(tablesorterSettings);
+                        }catch(err){
+                        }
         	});
 	</script>
