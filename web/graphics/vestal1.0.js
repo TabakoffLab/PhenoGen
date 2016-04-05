@@ -74,7 +74,7 @@ setTimeout(function(){
 									  , fit: true
 									  , center: true
 								 });
-},1000);
+},1500);
 
 
 
@@ -95,20 +95,28 @@ $(window).resize(function (){
 });
 
 function drawGraph(drwNodes,drwLinks){
-	console.log("draw graph")
+	console.log("draw graph");
+   if(typeof selectedNode !=='undefined'){
+  	if(drwNodes.length<30){
+    	linkDist=minDim/(3+edgeCutoff);
+	}else{
+		linkDist=minDim/(7+edgeCutoff);
+	}
+  }else{
+  	if(drwNodes.length<30){
+  		linkDist=minDim/8;
+  	}else{
+  		linkDist=minDim/16;
+  	}
+  }
+  force.linkDistance(linkDist);
   drwNodes.forEach(function(d, i) {
   		if(typeof d.x ==='undefined' || typeof d.y ==='undefined'){ 
   			d.x = d.y = width / 2;
   		} 
   	});
   force.nodes(drwNodes).links(drwLinks);
-  var n=drwNodes.length;
-  if(n<40){
-    n=40;
-  }
-  //start force layout and run multiple ticks.
-  force.start();
-  for (var i = n*3; i > 0; --i) force.tick();
+  
 
   //setup image
   var link = topG.selectAll(".link")
@@ -216,6 +224,13 @@ function drawGraph(drwNodes,drwLinks){
     });
   }
 
+  var n=drwNodes.length;
+  if(n<40){
+    n=40;
+  }
+  //start force layout and run multiple ticks.
+  force.start();
+  for (var i = n*3; i > 0; --i) force.tick();
 
 }
 
@@ -834,6 +849,12 @@ function drawLegend(){
 }
 
 function getData(){
+	fullNodeList=[];
+	fullLinkList=[];
+	selectedNode=undefined;
+	nodes=[];
+	neighbors=[];
+	links=[];
 	var file="S_NVE_05.json";
 	if(! d3.select("#dataSelect").empty()){
 		file=d3.select("#dataSelect").property("value");
