@@ -183,8 +183,11 @@ This filters the results based on length of the target sequence and qeury sequen
 									}else{
 										$('#translateResults').html(data+prevData);
 									}
-									
-									$("table.tablesorter").tablesorter({ widgets: ['zebra'],sortList: [[4,-1]]});
+									try{
+                                                                            $("table.tablesorter").tablesorter({ widgets: ['zebra'],sortList: [[4,-1]]});
+                                                                        }catch(err){
+                                                                            
+                                                                        }
 									$('.translateTable').find("tr.col_title").find("th").slice(4,5).addClass("headerSortDown");
 									
 									

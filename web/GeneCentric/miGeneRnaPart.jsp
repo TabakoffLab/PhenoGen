@@ -89,10 +89,12 @@
 					$('#forMultiMir').show();
 				},
     			success: function(data2){ 
-        			$('#forMultiMir').html(data2);
+                            $('#wait2').hide();
+                            $('#forMultiMir').html(data2);
     			},
     			error: function(xhr, status, error) {
-        			$('#forMultiMir').html("<div>An error occurred generating this image.  Please try back later.</div>");
+                            $('#wait2').hide();
+                            $('#forMultiMir').html("<div>An error occurred generating this image.  Please try back later.</div>");
     			}
 			});
 		}
