@@ -244,16 +244,16 @@
 				interactive: true,
 				interactiveTolerance: 350
 			});
-	
-	var tblMir=$('#mirTbl').dataTable({
-			"bPaginate": false,
-			//"sScrollX": "100%",
-			//"sScrollY": "350px",
-			"bDeferRender": true,
-			"aaSorting": [[ 15, "desc" ]],
-			"sDom": '<"leftSearch"fr><t><i>'
-	});
-	
+	<%if(mirList.size()>0){%>
+            var tblMir=$('#mirTbl').dataTable({
+                            "bPaginate": false,
+                            //"sScrollX": "100%",
+                            //"sScrollY": "350px",
+                            "bDeferRender": true,
+                            "aaSorting": [[ 15, "desc" ]],
+                            "sDom": '<"leftSearch"fr><t><i>'
+            });
+	<%}%>
 	/*tblMir.fnAdjustColumnSizing();
 	tblMir.draw();*/
 	
