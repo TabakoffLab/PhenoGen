@@ -106,10 +106,11 @@ function drawGraph(drwNodes,drwLinks){
   	if(drwNodes.length<30){
   		linkDist=minDim/8;
   	}else{
-  		linkDist=minDim/16;
+  		linkDist=minDim/25;
   	}
   }
   force.linkDistance(linkDist);
+  
   drwNodes.forEach(function(d, i) {
   		if(typeof d.x ==='undefined' || typeof d.y ==='undefined'){ 
   			d.x = d.y = width / 2;
@@ -534,10 +535,11 @@ function addControls(){
     var select=dataBar.append("select").attr("id","dataSelect").on("change",function (){
     		getData();
     	});
-    select.append("option").attr("value","S_NVE_05.json").html("Original (S_NVE .05)");
-    select.append("option").attr("value","S_NVE_10.json").html("S_NVE .10");
     select.append("option").attr("value","NVE_05.json").html("NVE .05");
     select.append("option").attr("value","NVE_10.json").html("NVE .10");
+    select.append("option").attr("value","S_NVE_05.json").html("S_NVE .05");
+    select.append("option").attr("value","S_NVE_10.json").html("S_NVE .10");
+    
 
 	 var edgeCtl=imageBar.append("span").attr("id","edgeCtl").style({"display":"none","padding-left":"30px"});
 
@@ -855,7 +857,7 @@ function getData(){
 	nodes=[];
 	neighbors=[];
 	links=[];
-	var file="S_NVE_05.json";
+	var file="NVE_05.json";
 	if(! d3.select("#dataSelect").empty()){
 		file=d3.select("#dataSelect").property("value");
 	}
