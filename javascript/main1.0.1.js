@@ -501,7 +501,7 @@ function checkUncheckAll( id, name ) {
 function setupExpandCollapse() {
 	$(document).on('click','span.trigger', function (event){
 	//$("span.trigger").click(function(){
-		var baseName = $(this).attr("name");
+        var baseName = $(this).attr("name");
         var thisHidden = $("div#" + baseName).is(":hidden");
         $(this).toggleClass("less");
         if (thisHidden) {

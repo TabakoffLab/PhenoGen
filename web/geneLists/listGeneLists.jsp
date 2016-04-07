@@ -35,6 +35,19 @@
 <%pageTitle="Analyze gene list";%>
 
 <%@ include file="/web/common/header_adaptive_menu.jsp"%>
+<style>
+    .trigger{
+        cursor: pointer;
+        /* needed for IE?  Don't think so */
+	/* cursor: hand; */
+	background: url(<%=imagesDir%>icons/add.png) center left no-repeat; 
+	padding: 0 10px 0 20px;
+    }
+
+    .less{
+            background: url(<%=imagesDir%>icons/min.png) center left no-repeat; 
+    }
+</style>
 
 	<div class="page-intro" style="width: auto;margin-bottom: 0px;font-size:18px;">
 		<p>Click on a gene list to select it for further investigation.</p>
@@ -93,6 +106,22 @@
 		<input type="hidden" name="fromQTL" value="<%=fromQTL%>" />
 	</form>
 	</div>
+        <%if(userLoggedIn.getUser_name().equals("anon")){%>
+        <div style="width:100%;text-align: center;">
+            <span class="trigger" name="lostSession">Not seeing other Gene Lists that you previously created?</span>
+            <div style="display:none;text-align: left;width:100%" id="lostSession"><HR><BR><BR><span class="trigger" name="register">Did you register and login previously? You may just need to login.</span>  <span class="button">Login</span>
+                    <span style="display:none;" id="register"><BR>Existing gene lists will be transferred to your login once you register so you will always be able to login and access them.</span>
+                    <BR><BR>
+                    <span class="trigger" name="recover">Did you add your email address to the session?  If so you can recover by receiving a link in your email.</span> <span class="button" style="width:136px;">Recover Session</span>
+                    <span style="display:none;" id="recover"><BR>If you use the link email address button at the top right of the page you can request that links to previous sessions be sent by email.  This allows you to recover sessions on a different computer or browser or to receive notifications for some tasks that might take longer than you want to wait for them.  </span>
+                    <BR><BR>
+                    <span class="trigger" name="none">If none of the above apply. Try using the same computer/browser as when you created the list.</span>
+            <span style="display:none;" id="none"><BR>If none of the above apply clearing your browser's cache or using a different browser or computer can result in not seeing your gene lists as they are associated with a unique identifier that is stored in your browser.  If you are using a different computer or browser
+                please visit the site from the computer and browser you previously used.<BR>  
+            <B>Except if you cleared your browsers cache AND did not associate an email address you have lost the gene lists you created. You will have to upload/reenter the list.</b></span>
+            </span>
+        </div>
+        <%}%>
 	<div class="itemDetails"></div>
 	<div class="newGeneList"></div>
 	<div class="deleteItem"></div>
@@ -154,6 +183,7 @@
                        });
 
                        setupCreateNewList();
+                       setupRecoverLostSessionByEmail();
                        setupDeleteButton(contextPath + "/web/geneLists/deleteGeneList.jsp"); 
                        setupDownloadButton(contextPath + "/web/geneLists/downloadGeneList.jsp");
                        
@@ -178,6 +208,22 @@
                        });
                 }
 
+
+                function setupRecoverLostSessionByEmail() {
+                       var newList;
+                       // setup create new gene list button
+                       $("#recoverLostSession").click(function(){
+                               if ( newList == undefined ) {
+                                       var dialogSettings = {width: 800, height: 600, title: "Recover Lost Session by Email"};
+                                       newList = createDialog("div.recoverSession", dialogSettings); 
+                               }
+                               $.get("<%=contextRoot%>access/recoverAnonSessions.jsp", function(data){
+                                       newList.dialog("open").html(data);
+                               });
+                       });
+                }
+
+
                 function setupGeneLists(){
                     
                     geneListjs.getListGeneLists(true,"#listGeneList");
@@ -185,7 +231,18 @@
 
 		$(document).ready(function() {
                         setupPage();
-			setTimeout("setupMain()", 100); 
+			setTimeout("setupMain()", 100);
+                        $(document).on('click','span.trigger', function (event){
+                            //$("span.trigger").click(function(){
+                            var baseName = $(this).attr("name");
+                            var thisHidden = $("#" + baseName).is(":hidden");
+                            $(this).toggleClass("less");
+                            if (thisHidden) {
+                                            $("#" + baseName).show();
+                            } else {
+                                            $("#" + baseName).hide();
+                            }
+                            });
 		});
 	</script>
 <%@ include file="/web/geneLists/include/geneListFooter.jsp"%>
