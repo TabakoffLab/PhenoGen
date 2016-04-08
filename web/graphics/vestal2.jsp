@@ -42,7 +42,7 @@
 		border-width:2px;
 		border-color:#000000;
 	}
-        @media screen and (max-width:1200px){
+        @media screen and (max-width:1500px){
             #graphicHelp{
                 height:45px;
                 width:100%;
@@ -56,6 +56,8 @@
     var urlprefix="<%=host+contextRoot%>";
     var organism="Mm";
     var selectedID="";
+    var file="S_NVE_10.json";
+    var chargeValue=-600;
 </script>
 <H1>Figure ? Vestal, B. et. al. <a href="">link</a></H1>
 
@@ -70,5 +72,5 @@
 </div>
 
 
-<script type="text/javascript" src="vestal0.1.js"></script>
+<script type="text/javascript" src="vestal1.1.js"></script>
 <%@ include file="/web/common/footer.jsp" %>
