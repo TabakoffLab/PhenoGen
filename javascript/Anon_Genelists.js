@@ -73,6 +73,28 @@ function GeneLists(){
             hoverRows(tableRows);
     };
     
+    /* * *
+     *  sets up the create new genelist modal
+    /*/
+    that.setupLinkEmail=function () {
+            console.log("call setupLinkEmail");
+           var linkEmailDialog;
+           // setup create new gene list button
+           $("#linkEmail").click(function(){
+                console.log("clicked linkEmail");
+                   if ( linkEmailDialog == undefined ) {
+                           var dialogSettings = {width: 800, height: 200, title: "Link Email to Anonymous Session"};
+                           /* browser.safari true means the browser is Safari */
+                           //if ($.browser.safari) $.extend(dialogSettings, {modal:false});
+                           $("body").append("<div id=\"linkEmailDialog\"></div>");
+                           linkEmailDialog = createDialog("div#linkEmailDialog", dialogSettings); 
+                   }
+                   $.get(contextPath+"/web/access/linkEmail.jsp", function(data){
+                           linkEmailDialog.dialog("open").html(data);
+                   });
+           });
+    }
+    
     return that;
 };
 

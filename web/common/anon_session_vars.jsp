@@ -92,39 +92,7 @@
 <%@ include file="/web/common/common_vars.jsp"%>
 
 <%
-	/*if((String) session.getAttribute("perlDir")==null){
-		session.setAttribute("applicationRoot",application.getInitParameter("applicationRoot")+"/");
-		session.setAttribute("contextRoot",application.getInitParameter("contextRoot")+"/");
-		session.setAttribute("userFilesRoot",application.getInitParameter("userFilesRoot")+"/");
-		session.setAttribute("webDir",application.getInitParameter("webDir")+"/");
-		session.setAttribute("r_FunctionDir",application.getInitParameter("r_FunctionDir")+"/");
-		session.setAttribute("accessDir",application.getInitParameter("accessDir")+"/");
-		session.setAttribute("aptDir",application.getInitParameter("aptDir")+"/");
-		session.setAttribute("datasetsDir",application.getInitParameter("datasetsDir")+"/");
-		session.setAttribute("experimentsDir",application.getInitParameter("experimentsDir")+"/");
-		session.setAttribute("geneListsDir",application.getInitParameter("geneListsDir")+"/");
-		session.setAttribute("qtlsDir",application.getInitParameter("qtlsDir")+"/");
-		session.setAttribute("exonDir",application.getInitParameter("exonDir")+"/");
-		session.setAttribute("ucscGeneDir",application.getInitParameter("ucscGeneDir")+"/");
-		session.setAttribute("ucscDir",application.getInitParameter("ucscDir")+"/");
-		session.setAttribute("bedDir",application.getInitParameter("bedDir")+"/");
-		session.setAttribute("sysBioDir",application.getInitParameter("sysBioDir")+"/");
-		session.setAttribute("imagesDir",application.getInitParameter("imagesDir")+"/");
-		session.setAttribute("commonDir",application.getInitParameter("commonDir")+"/");
-		session.setAttribute("propertiesDir",application.getInitParameter("propertiesDir")+"/");
-		session.setAttribute("adminDir",application.getInitParameter("adminDir")+"/");
-		session.setAttribute("isbraDir",application.getInitParameter("isbraDir")+"/");
-		session.setAttribute("helpDir",application.getInitParameter("helpDir")+"/");
-		session.setAttribute("javascriptDir",application.getInitParameter("javascriptDir")+"/");
-		session.setAttribute("perlDir",application.getInitParameter("perlDir")+"/");
-		session.setAttribute("dbPropertiesFile",application.getInitParameter("propertiesDir")+"/"+application.getInitParameter("dbPropertiesFile"));
-		session.setAttribute("ENSDbPropertiesFile",application.getInitParameter("propertiesDir")+"/"+application.getInitParameter("ENSDbPropertiesFile"));
-		session.setAttribute("host",host);
-		session.setAttribute("perlEnvVar",application.getInitParameter("perlEnvVar"));
-		session.setAttribute("adminEmail",application.getInitParameter("adminEmail"));
-		session.setAttribute("maxRThreadCount",application.getInitParameter("maxRThreadCount"));
-		session.setAttribute("dbExtFileDir",application.getInitParameter("dbExtFileDir")+"/");
-	}*/
+	
 	
 	//
 	// these 4 have the full path specified
@@ -292,4 +260,6 @@
 		}
 	}
 %>
+
+
 

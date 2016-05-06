@@ -13,6 +13,7 @@ if(userLoggedIn.getUser_name().equals("anon")){
 <script type="text/javascript">
     var PhenogenAnonSession=SetupAnonSession();
     PhenogenAnonSession.setupSession(setupGeneLists);
+    geneListjs.setupLinkEmail();
 </script>
 <%}%>
 
