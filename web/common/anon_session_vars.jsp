@@ -84,6 +84,8 @@
     <jsp:setProperty name="mySessionHandler" property="dbExtFileDir" 
                	value="<%=application.getInitParameter(\"dbExtFileDir\") %>" />
     <jsp:setProperty name="mySessionHandler" property="session" value="<%=session%>" />
+    <jsp:setProperty name="mySessionHandler" property="captchaPropertiesFile" 
+               	value="<%=application.getInitParameter(\"captchaPropertiesFile\") %>" />
 </jsp:useBean>
 	
 
@@ -122,7 +124,8 @@
 	String helpDir = mySessionHandler.getHelpDir();
 	String javascriptDir = mySessionHandler.getJavascriptDir();
 	String dbPropertiesFile = mySessionHandler.getDbPropertiesFile();
-	String ensDbPropertiesFile = mySessionHandler.getENSDbPropertiesFile();  
+	String ensDbPropertiesFile = mySessionHandler.getENSDbPropertiesFile();
+        String captchaPropertiesFile = mySessionHandler.getCaptchaPropertiesFile();
 
 	String userFilesRoot = mySessionHandler.getUserFilesRoot() + "/"; 
 	String mainURL = mySessionHandler.getMainURL();

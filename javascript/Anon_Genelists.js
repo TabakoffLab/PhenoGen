@@ -83,15 +83,26 @@ function GeneLists(){
            $("#linkEmail").click(function(){
                 console.log("clicked linkEmail");
                    if ( linkEmailDialog == undefined ) {
-                           var dialogSettings = {width: 800, height: 200, title: "Link Email to Anonymous Session"};
+                           var dialogSettings = {width: 800, height: 200, title: "Link Email to This Anonymous Session"};
                            /* browser.safari true means the browser is Safari */
                            //if ($.browser.safari) $.extend(dialogSettings, {modal:false});
                            $("body").append("<div id=\"linkEmailDialog\"></div>");
                            linkEmailDialog = createDialog("div#linkEmailDialog", dialogSettings); 
                    }
-                   $.get(contextPath+"/web/access/linkEmail.jsp", function(data){
-                           linkEmailDialog.dialog("open").html(data);
-                   });
+                   
+                   $.ajax({
+                        url: contextPath+"/web/access/linkEmail.jsp",
+                        type: 'GET',
+                        cache: false,
+                        data: { uuid:PhenogenAnonSession.UUID },
+                        dataType: 'html',
+                        success: function(data2){
+                             linkEmailDialog.dialog("open").html(data2);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("ERROR:"+error);
+                        }
+                    });
            });
     }
     

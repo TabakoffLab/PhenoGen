@@ -29,12 +29,24 @@
                     geneListsForUser = myGeneList.getGeneListsForDataset(userLoggedIn.getUser_id(), datasetID, datasetVersion, pool); 
             }
         }
+        
+    Properties myProperties = new Properties();
+    File myPropertiesFile = new File(captchaPropertiesFile);
+    myProperties.load(new FileInputStream(myPropertiesFile));
+    String pub="";
+    String secret="";
+    pub=myProperties.getProperty("PUBLIC");
 
 %>
 
 <%pageTitle="Analyze gene list";%>
 
 <%@ include file="/web/common/header_adaptive_menu.jsp"%>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+
 <style>
     .trigger{
         cursor: pointer;
@@ -111,10 +123,10 @@
         <%if(userLoggedIn.getUser_name().equals("anon")){%>
         <div style="width:100%;text-align: center;">
             <span class="trigger" name="lostSession">Not seeing other Gene Lists that you previously created?</span>
-            <div style="display:none;text-align: left;width:100%" id="lostSession"><HR><BR><BR><span class="trigger" name="register">Did you register and login previously? You may just need to login.</span>  <a href="<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>listGeneLists.jsp"><span class="button">Login</span></a>
+            <div style="display:none;text-align: left;width:100%;padding:0 25 0 25;" id="lostSession"><HR><BR><BR><span class="trigger" name="register">Did you register and login previously? You may just need to login.</span>  <a href="<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>listGeneLists.jsp"><span class="button">Login</span></a>
                     <span style="display:none;" id="register" class="triggerContent"><BR><BR>Existing gene lists will be transferred to your login once you register so you will always be able to login and access them.</span>
                     <BR><BR><BR>
-                    <span class="trigger" name="recover">Did you add your email address to the session?  If so you can recover by receiving a link in your email.</span> <span class="button" style="width:136px;">Recover Session</span>
+                    <span class="trigger" name="recover">Did you add your email address to the session?  If so you can recover by receiving a link in your email.</span> <span class="button" id="recoverLostSession" style="width:136px;">Recover Session</span>
                     <span style="display:none;" id="recover" class="triggerContent"><BR><BR>If you use the link email address button at the top right of the page you can request that links to previous sessions be sent by email.  This allows you to recover sessions on a different computer or browser or to receive notifications for some tasks that might take longer than you want to wait for them.  </span>
                     <BR><BR><BR>
                     <span class="trigger" name="none">If none of the above apply. Try using the same computer/browser as when you created the list.</span>
@@ -129,6 +141,7 @@
 	<div class="deleteItem"></div>
 	<div class="downloadItem"></div>
 	<div class="load">Loading...</div>
+        <div id="recoverSession"></div>
 	<script type="text/javascript">
                 /* --------------------------------------------------------------------------------
                 *
@@ -212,16 +225,26 @@
 
 
                 function setupRecoverLostSessionByEmail() {
-                       var newList;
+                       var recoverDialog;
                        // setup create new gene list button
                        $("#recoverLostSession").click(function(){
-                               if ( newList == undefined ) {
-                                       var dialogSettings = {width: 800, height: 600, title: "Recover Lost Session by Email"};
-                                       newList = createDialog("div.recoverSession", dialogSettings); 
+                               if ( recoverDialog == undefined ) {
+                                       var dialogSettings = {width: 600, height: 300, title: "Recover Lost Session by Email"};
+                                       recoverDialog = createDialog("#recoverSession", dialogSettings); 
                                }
-                               $.get("<%=contextRoot%>access/recoverAnonSessions.jsp", function(data){
-                                       newList.dialog("open").html(data);
-                               });
+                               $.ajax({
+                                    url: "<%=contextRoot%>web/access/recoverAnonSessions.jsp",
+                                    type: 'GET',
+                                    cache: false,
+                                    data: { uuid:PhenogenAnonSession.UUID },
+                                    dataType: 'html',
+                                    success: function(data2){
+                                         recoverDialog.dialog("open").html(data2);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log("ERROR:"+error);
+                                    }
+                                });
                        });
                 }
 
