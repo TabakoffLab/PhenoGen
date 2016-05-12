@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
 /* for logging messages */
 import org.apache.log4j.Logger;
 
@@ -43,9 +43,22 @@ public class AnonUser{
     }
 
     public void setEmail(String email) {
-        if(!email.equals("null")){
+        if(email!=null && !email.equals("null")){
             this.email = email;
         }
+    }
+    
+    public String getObfuscatedEmail(){
+        String oEmail="";
+        int atInd=email.indexOf("@");
+        if( atInd>-1 ){
+            oEmail=email.substring(0, 1);
+            for(int i=1;i<atInd;i++){
+                oEmail+="*";
+            }
+            oEmail+=email.substring(atInd);
+        }
+        return oEmail;
     }
 
     public Date getCreated() {
@@ -104,6 +117,42 @@ public class AnonUser{
       return this.getAnonUser(uuid, pool);
   }
   
+  public AnonUser linkEmail(String uuid,String email, DataSource pool){
+      String update="update ANON_USERS set EMAIL = ? where UUID=?";
+      String checkEmail="select email from Anon_Users where UUID=?";
+      Connection conn=null;
+      try{
+          conn=pool.getConnection();
+          PreparedStatement ps=conn.prepareStatement(checkEmail);
+          ps.setString(1, uuid);
+          ResultSet rs=ps.executeQuery();
+          if(rs.next()){
+              if(rs.getString(1)==null){
+                    PreparedStatement ps2=conn.prepareStatement(update);
+                    ps2.setString(1, email);
+                    ps2.setString(2, uuid);
+                    ps2.execute();
+                    ps2.close();
+              }
+          }
+          rs.close();
+          ps.close();
+          conn.close();
+          conn=null;
+      }catch(SQLException e){
+          
+      }finally{
+          try{
+              if(conn!=null && !conn.isClosed()){
+                  conn.close();
+                  conn=null;
+              }
+          }catch(Exception e){}
+      }
+      return this.getAnonUser(uuid, pool);
+  }
+  
+  
   public void linkGeneList(int glID, DataSource pool) throws SQLException{
       String insert="insert into ANON_USER_GENELIST (UUID,GENELIST_ID) VALUES (?,?)";
       Connection conn=null;
@@ -142,7 +191,7 @@ public class AnonUser{
               ret.setUUID(rs.getString("UUID"));
               ret.setCreated(rs.getDate("CREATED"));
               ret.setLast_access(rs.getDate("LAST_ACCESS"));
-              ret.setAccess_count(rs.getInt("ACCESS_COUT"));
+              ret.setAccess_count(rs.getInt("ACCESS_COUNT"));
               ret.setEmail(rs.getString("EMAIL"));
           }
           rs.close();
@@ -163,4 +212,33 @@ public class AnonUser{
       return ret;
   }
 
+  public ArrayList<String> getAnonSessionListByEmail(String email,DataSource pool){
+      ArrayList<String> list= new ArrayList<String>();
+      String select="select uuid from ANON_USERS where email=?";
+      Connection conn=null;
+      try{
+          conn=pool.getConnection();
+          PreparedStatement ps=conn.prepareStatement(select);
+          ps.setString(1, email);
+          ResultSet rs=ps.executeQuery();
+          while(rs.next()){
+              list.add(rs.getString("uuid"));
+          }
+          rs.close();
+          ps.close();
+          conn.close();
+          conn=null;
+      }catch(SQLException e){
+          
+      }finally{
+          try{
+              if(conn!=null && !conn.isClosed()){
+                  conn.close();
+                  conn=null;
+              }
+          }catch(Exception e){}
+      }
+      return list;
+  }
+  
 }

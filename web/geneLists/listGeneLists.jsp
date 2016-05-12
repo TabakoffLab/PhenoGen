@@ -229,7 +229,7 @@
                        // setup create new gene list button
                        $("#recoverLostSession").click(function(){
                                if ( recoverDialog == undefined ) {
-                                       var dialogSettings = {width: 600, height: 300, title: "Recover Lost Session by Email"};
+                                       var dialogSettings = {width: 500, height: 365, title: "Recover Lost Session by Email"};
                                        recoverDialog = createDialog("#recoverSession", dialogSettings); 
                                }
                                $.ajax({

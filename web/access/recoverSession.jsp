@@ -1,8 +1,6 @@
 <%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <jsp:useBean id="myAnonUser" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser"> </jsp:useBean>
-<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
-
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2016
@@ -24,15 +22,10 @@
     secret=myProperties.getProperty("SECRET");
     String status="Failed please try again";
    
-    String uuid="";
-    if(request.getParameter("uuid") != null){
-        uuid=FilterInput.getFilteredInput(request.getParameter("uuid"));
-    }
     String email="";
     if(request.getParameter("email") != null){
         email=FilterInput.getFilteredInputEmail(request.getParameter("email"));
     }
-    log.debug(email);
     boolean match=Pattern.matches("^[a-zA-Z0-9\\.!#\\$%&'\\*\\+\\/=\\?\\^_`\\{|\\}~-]+@[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?(?:\\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9])*$", email);
     //  ^[a-zA-Z0-9\\.\\-~_]+@[a-zA-Z0-9-]+([a-zA-Z0-9-\\.]+)$
     //  /^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
@@ -45,12 +38,21 @@
         }
         reCaptcha re=new reCaptcha();
         if (re.checkResponse(secret,gResponse,remoteIP)) {
-            AnonUser tmpU=myAnonUser.linkEmail(uuid,email,pool);
-            if(tmpU.getEmail().equals(email)){
-                anonU.setEmail(email);
-                status="Successfully linked email address.";
-            }else{
-                status="Cannot update email address is already set.";
+            ArrayList<String> list=myAnonUser.getAnonSessionListByEmail(email,pool);
+            try{
+                mySessionHandler.sendAnonSessionRecoveryEmail(list,email);
+                status="Recovery Email has been sent.";
+            }catch(MessagingException e){
+                status="There was an error sending your email.  Please try again later.";
+                Email myAdminEmail = new Email();
+		myAdminEmail.setSubject("Exception thrown sending Session Recovery Email");
+		myAdminEmail.setContent("There was an error sending Anonymous Session Recovery Email.\n"+ e.toString());
+		try {
+			myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+		} catch (Exception mailException) {
+			log.error("error sending message", mailException);
+			throw new RuntimeException();
+		}
             }
         }else{
             status="Captcha response was invalid please try again.";

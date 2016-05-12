@@ -77,15 +77,13 @@ function GeneLists(){
      *  sets up the create new genelist modal
     /*/
     that.setupLinkEmail=function () {
-            console.log("call setupLinkEmail");
+           console.log("call setupLinkEmail");
            var linkEmailDialog;
            // setup create new gene list button
            $("#linkEmail").click(function(){
                 console.log("clicked linkEmail");
                    if ( linkEmailDialog == undefined ) {
-                           var dialogSettings = {width: 800, height: 200, title: "Link Email to This Anonymous Session"};
-                           /* browser.safari true means the browser is Safari */
-                           //if ($.browser.safari) $.extend(dialogSettings, {modal:false});
+                           var dialogSettings = {width: 500, height: 365, title: "Link Email to This Anonymous Session"};
                            $("body").append("<div id=\"linkEmailDialog\"></div>");
                            linkEmailDialog = createDialog("div#linkEmailDialog", dialogSettings); 
                    }
@@ -96,6 +94,9 @@ function GeneLists(){
                         cache: false,
                         data: { uuid:PhenogenAnonSession.UUID },
                         dataType: 'html',
+                        beforeSend: function(){
+                            $('#linkEmailDialog').html("");
+                        },
                         success: function(data2){
                              linkEmailDialog.dialog("open").html(data2);
                         },
