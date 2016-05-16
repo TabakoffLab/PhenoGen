@@ -214,7 +214,8 @@ public class AnonUser{
 
   public ArrayList<String> getAnonSessionListByEmail(String email,DataSource pool){
       ArrayList<String> list= new ArrayList<String>();
-      String select="select uuid from ANON_USERS where email=?";
+      String select="select uuid from ANON_USERS au,  where email=?";
+      String selectCount="select count(*) from Anon_user_genelist where uuid=?";
       Connection conn=null;
       try{
           conn=pool.getConnection();
@@ -222,7 +223,16 @@ public class AnonUser{
           ps.setString(1, email);
           ResultSet rs=ps.executeQuery();
           while(rs.next()){
-              list.add(rs.getString("uuid"));
+              String uuid=rs.getString("uuid");
+              PreparedStatement ps1=conn.prepareStatement(selectCount);
+                ps1.setString(1, uuid);
+                ResultSet rs1=ps1.executeQuery();
+                if(rs1.next()){
+                    int count=rs1.getInt(1);
+                    if(count>0){
+                        list.add(uuid);
+                    }
+                }
           }
           rs.close();
           ps.close();
@@ -239,6 +249,39 @@ public class AnonUser{
           }catch(Exception e){}
       }
       return list;
+  }
+  
+  public boolean mergeSessionTo(String uuidSource,String uuidDest,DataSource pool)throws SQLException{
+      boolean ret=false;
+      AnonGeneList agl=new AnonGeneList();
+      boolean moved=agl.moveGeneListsToSession(uuidSource,uuidDest,pool);
+      String delete="delete from Anon_users where uuid=?";
+      Connection conn=null;
+      try{
+          conn=pool.getConnection();
+          conn.setAutoCommit(false);
+          PreparedStatement ps=conn.prepareStatement(delete);
+          ps.setString(1, uuidSource);
+          int del=ps.executeUpdate();
+          if(del==1 && moved){
+              ret=true;
+              conn.commit();
+          }else{
+              conn.rollback();
+          }
+          conn.close();
+          conn=null;
+      }catch(SQLException e){
+          throw e;
+      }finally{
+          try{
+              if(conn!=null && !conn.isClosed()){
+                  conn.close();
+                  conn=null;
+              }
+          }catch(Exception e){}
+      }
+      return ret;
   }
   
 }

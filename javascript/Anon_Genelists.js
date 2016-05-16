@@ -3,7 +3,7 @@ function GeneLists(){
     var that=this;
     that.retryCount=0;
     
-    this.getListGeneLists=function (draw,selector){
+    this.getListGeneLists=function (draw,selector,size){
     	$.ajax({
             url: contextRoot+"web/geneLists/include/getGeneList.jsp",
             type: 'GET',
@@ -13,8 +13,11 @@ function GeneLists(){
             success: function(data2){
                	console.log(data2);
                	if(draw){
-               		createTableGeneLists(data2,selector);
-           		}
+                    createTableGeneLists(data2,selector,size);
+                }
+                if(that.callBack){
+                    that.callBack(data2);
+                }
             },
             error: function(xhr, status, error) {
                 console.log("ERROR:"+error);
@@ -26,7 +29,10 @@ function GeneLists(){
         });
     };
 
-    function createTableGeneLists(data,selector){
+    function createTableGeneLists(data,selector,size){
+        if(data.length>0){
+        d3.select(selector).select("tbody")
+    		.selectAll('tr').remove();
     	var tracktbl=d3.select(selector).select("tbody")
     		.selectAll('tr')
     		.data(data)
@@ -44,10 +50,11 @@ function GeneLists(){
 						d3.select(this).append("td").html(d.geneCount);
 						d3.select(this).append("td").html(d.organism);
 						d3.select(this).append("td").html(d.source);
-						d3.select(this).append("td").attr("class","details").append("span").text("view");
-						d3.select(this).append("td").attr("class","actionIcons").append("img").attr("src",contextRoot+"web/images/icons/delete.png");
-						d3.select(this).append("td").attr("class","actionIcons").append("img").attr("src",contextRoot+"web/images/icons/download_g.png");
-						
+                                                if(size==="full"){
+                                                    d3.select(this).append("td").attr("class","details").append("span").text("view");
+                                                    d3.select(this).append("td").attr("class","actionIcons").append("img").attr("src",contextRoot+"web/images/icons/delete.png");
+                                                    d3.select(this).append("td").attr("class","actionIcons").append("img").attr("src",contextRoot+"web/images/icons/download_g.png");
+                                                }
 		
 						$("tr#gl"+id).find("td").slice(0,5).click( function() {
                                        var listItemId = $(this).parent("tr").attr("id").substr(2);
@@ -71,6 +78,15 @@ function GeneLists(){
             });
             var tableRows = getRows();
             hoverRows(tableRows);
+        }else{
+            colspanSize=5;
+            if(size==="full"){
+                colspanSize=8
+            }
+            d3.select(selector).select("tbody")
+    		.selectAll('tr').remove();
+            var tracktbl=d3.select(selector).select("tbody").append("tr").append("td").attr("colspan",colspanSize).html("No Results");
+        }    
     };
     
     /* * *

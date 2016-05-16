@@ -1,5 +1,9 @@
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %>
 <%
+    String tmpUuid="";
+    if(request.getParameter("uuid") !=null){
+        tmpUuid=FilterInput.getFilteredInput(request.getParameter("uuid"));
+    }
 	// Need to include this here, so that it's available on the modal
         extrasList.add("d3.v3.5.16.min.js");
 	extrasList.add("createGeneList.js");
@@ -143,6 +147,9 @@
 	<div class="load">Loading...</div>
         <div id="recoverSession"></div>
 	<script type="text/javascript">
+                <%if(!tmpUuid.equals("")){%>
+                    var tmpUUID="<%=tmpUuid%>";
+                <%}%>
                 /* --------------------------------------------------------------------------------
                 *
                 *  specific functions for listGeneList.jsp
@@ -251,7 +258,7 @@
 
                 function setupGeneLists(){
                     
-                    geneListjs.getListGeneLists(true,"#listGeneList");
+                    geneListjs.getListGeneLists(true,"#listGeneList","full");
                 }
 
 		$(document).ready(function() {

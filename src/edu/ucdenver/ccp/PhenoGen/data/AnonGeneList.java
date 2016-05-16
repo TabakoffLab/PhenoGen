@@ -72,6 +72,8 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
           log = Logger.getRootLogger();
     }
     
+    
+    
     /** Retrieves the gene lists for all datasets created by a user or public 
 	 * @param user_id	The ID of the user
 	 * @param pool		the database connection pool
@@ -642,6 +644,34 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
         }
         
         
+         public boolean moveGeneListsToSession(String uuidSource,String uuidDest,DataSource pool) throws SQLException{
+            boolean ret=false;
+            String query="update Anon_user_genelist set UUID=? where UUID=?";
+            Connection conn=null;
+            try{
+                conn=pool.getConnection();
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setString(1,uuidDest);
+                ps.setString(2,uuidSource);
+                int updated=ps.executeUpdate();
+                ps.close();
+                conn.close();
+                conn=null;
+                if(updated>0){
+                    ret=true;
+                }
+            }catch(SQLException e){
+                throw e;
+            }finally{
+                try{
+                    if(conn!=null && !conn.isClosed()){
+                        conn.close();
+                        conn=null;
+                    }
+                }catch(Exception e){}
+            }
+            return ret;
+        }
         
         
         

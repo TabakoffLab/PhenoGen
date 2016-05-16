@@ -16,9 +16,21 @@
 <%
     AnonGeneList myAnonGL=new AnonGeneList();
     
-    log.debug("GET GENELIST for USER:\n"+anonU.getUUID());
+    String useUUID=anonU.getUUID();
     
-    AnonGeneList[] glList=myAnonGL.getGeneListsForAllDatasetsForUser(anonU.getUUID(),pool);
+    /*String tmpUUID="";
+    if(request.getParameter("uuid")!=null){
+            tmpUUID=FilterInput.getFilteredInput(request.getParameter("uuid"));
+    }
+    
+   
+    if(!tmpUUID.equals("")){
+        useUUID=tmpUUID;
+    }*/
+    
+    log.debug("GET GENELIST for USER:\n"+useUUID);
+    
+    AnonGeneList[] glList=myAnonGL.getGeneListsForAllDatasetsForUser(useUUID,pool);
     
     response.setContentType("application/json");
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
