@@ -36,6 +36,7 @@
 	SimpleDateFormat displayFormat = new SimpleDateFormat("MMM dd, yyyy");
 	String displayNow = displayFormat.format(displayTime);
 %>
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 

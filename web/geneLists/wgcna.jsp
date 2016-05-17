@@ -35,6 +35,7 @@
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 

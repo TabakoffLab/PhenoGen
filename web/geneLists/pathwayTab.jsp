@@ -36,6 +36,7 @@
 
         mySessionHandler.createGeneListActivity("On pathway tab ", pool);
 %>
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 

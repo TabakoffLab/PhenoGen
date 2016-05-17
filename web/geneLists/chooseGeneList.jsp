@@ -15,8 +15,10 @@
 	log.debug("in chooseGeneList");
 	
 	mySessionHandler.createGeneListActivity(session.getId(), selectedGeneList.getGene_list_id(), "Chose genelist", pool);
+        
         log.debug("after choose activity");
-	if (fromQTL.equals("")) {
+	
+        if (fromQTL.equals("")) {
 		response.sendRedirect("geneList.jsp");
 	} else {
 		response.sendRedirect("locationEQTL.jsp?fromQTL=Y");

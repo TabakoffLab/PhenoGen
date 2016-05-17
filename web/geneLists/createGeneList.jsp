@@ -39,11 +39,13 @@
 	mySessionHandler.createSessionActivity(session.getId(), "On create genelist page", pool);
         log.debug("top");
 %>
-	
+	<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 	<% if (fromMain) { %>
     	<%pageTitle="Create gene list";%>
+                
 		<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 	<% } else { %>
+        
 		<%@ include file="/web/common/includeExtras.jsp" %>
 	<% } 
         log.debug("after includeExtras.jsp");%>

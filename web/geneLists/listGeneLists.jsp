@@ -44,7 +44,7 @@
 %>
 
 <%pageTitle="Analyze gene list";%>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp"%>
 
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>

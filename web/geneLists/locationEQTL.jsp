@@ -395,6 +395,7 @@ log.debug("after call");
 	request.getSession().setAttribute("selectedGeneList", selectedGeneList);
 
 	%>
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %> 
 	<script type="text/javascript">
 		var ctrlMode = "<%= mode %>";

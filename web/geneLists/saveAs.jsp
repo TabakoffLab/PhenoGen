@@ -146,7 +146,7 @@
         } 
 	formName = "saveAs.jsp";
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
