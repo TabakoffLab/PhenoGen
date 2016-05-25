@@ -114,7 +114,42 @@ public class AnonUser{
               }
           }catch(Exception e){}
       }
-      return this.getAnonUser(uuid, pool);
+      return this.getAnonUser(uuid,false, pool);
+  }
+  
+  public void incrementLogin(DataSource pool){
+      String select="select Access_count from Anon_users where uuid=?";
+      String update="update ANON_USERS set LAST_ACCESS = ?, ACCESS_Count=? where UUID=?";
+      Connection conn=null;
+      try{
+          conn=pool.getConnection();
+          PreparedStatement ps1=conn.prepareStatement(select);
+          ps1.setString(1, uuid);
+          ResultSet rs1=ps1.executeQuery();
+          int count=1;
+          if(rs1.next()){
+              count=rs1.getInt(1)+1;
+          }
+          ps1.close();
+          //Date time = new Date((new java.util.Date()).getTime());
+          java.sql.Timestamp ts=new java.sql.Timestamp((new java.util.Date()).getTime());
+          PreparedStatement ps=conn.prepareStatement(update);
+          ps.setTimestamp(1,ts);
+          ps.setInt(2, count);
+          ps.setString(3, uuid);
+          ps.executeUpdate();
+          conn.close();
+          conn=null;
+      }catch(SQLException e){
+          log.error("Error updating anonymous login",e);
+      }finally{
+          try{
+              if(conn!=null && !conn.isClosed()){
+                  conn.close();
+                  conn=null;
+              }
+          }catch(Exception e){}
+      }
   }
   
   public AnonUser linkEmail(String uuid,String email, DataSource pool){
@@ -149,7 +184,7 @@ public class AnonUser{
               }
           }catch(Exception e){}
       }
-      return this.getAnonUser(uuid, pool);
+      return this.getAnonUser(uuid,false, pool);
   }
   
   
@@ -177,13 +212,17 @@ public class AnonUser{
       }
   }
   
-  public AnonUser getAnonUser(String uuid, DataSource pool){
+  public AnonUser getAnonUser(String uuid,boolean increment, DataSource pool){
       AnonUser ret=null;
-      String select="select * from ANON_USERS where uuid=?";
+      String select="select Access_count from Anon_users where uuid=?";
+      String update="update Anon_users set ACCESS_COUNT=? where UUID=?";
+      String selectAll="select * from ANON_USERS where uuid=?";
       Connection conn=null;
       try{
           conn=pool.getConnection();
-          PreparedStatement ps=conn.prepareStatement(select);
+          
+          //conn=pool.getConnection();
+          PreparedStatement ps=conn.prepareStatement(selectAll);
           ps.setString(1, uuid);
           ResultSet rs=ps.executeQuery();
           if(rs.next()){
@@ -196,10 +235,38 @@ public class AnonUser{
           }
           rs.close();
           ps.close();
+          /*if(increment){
+                PreparedStatement ps1=conn.prepareStatement(select);
+                ps1.setString(1, uuid);
+                ResultSet rs1=ps1.executeQuery();
+                int count=1;
+                if(rs1.next()){
+                    count=rs1.getInt(1)+1;
+                }
+                rs1.close();
+                ps1.close();
+                log.debug("get count:"+count);
+                Date time = new Date((new java.util.Date()).getTime());
+                log.debug("after date");
+                //java.sql.Timestamp ts=new java.sql.Timestamp((new java.util.Date()).getTime());
+                PreparedStatement ps2=conn.prepareStatement(update);
+                log.debug("after prepare");
+                //ps2.setDate(1, time);
+                //log.debug("after time");
+                ps2.setInt(1, count);
+                log.debug("after count");
+                ps2.setString(2, uuid);
+                log.debug("after uuid");
+                
+                ps2.execute();
+                log.debug("after execUpdate");
+                ps2.close();
+                log.debug("update ts/count");
+          }*/
           conn.close();
           conn=null;
       }catch(SQLException e){
-          
+          log.error("exception getting anon_user",e);
       }finally{
           try{
               if(conn!=null && !conn.isClosed()){

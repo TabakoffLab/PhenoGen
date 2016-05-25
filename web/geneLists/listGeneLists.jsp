@@ -75,7 +75,8 @@
         <BR><BR>
 	<div class="list_container">
 	<form name="chooseGeneList" action="chooseGeneList.jsp" method="get">
-
+            <BR>
+            
 		<div class="leftTitle">Gene Lists </div>
 		<table id="listGeneList" name="items" class="list_base tablesorter" cellpadding="0" cellspacing="2" width="98%">
         		<thead>

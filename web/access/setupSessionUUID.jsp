@@ -19,12 +19,14 @@
     }
     log.debug("SESSION UUID:\n"+id);
     //anonU=myAnonUser.getAnonUser(id,pool);
-    AnonUser tmp=myAnonUser.getAnonUser(id,pool);
+    AnonUser tmp=myAnonUser.getAnonUser(id,true,pool);
+    
     anonU.setUUID(tmp.getUUID());
     anonU.setCreated(tmp.getCreated());
     anonU.setLast_access(tmp.getLast_access());
     anonU.setAccess_count(tmp.getAccess_count());
     anonU.setEmail(tmp.getEmail());
+    //anonU.incrementLogin(pool);
     log.debug(anonU.getUUID());
     if(anonU!=null){
 %>
@@ -33,6 +35,7 @@
     
 <%}else{%>
     { "status":"ERROR" }
-<%}%>
+<%}
+log.debug("\n\nend");%>
 
 
