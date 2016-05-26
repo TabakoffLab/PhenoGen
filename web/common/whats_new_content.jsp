@@ -29,6 +29,16 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
+        <div class="whats_new version"><p><h3>Version: v3.0</h3><BR /> Updated:5/31/2016</p></div>
+       <ul>
+                                    <li><span class="highlight-dark">Anonymous Gene Lists</span>
+                                        You now can bring in a Gene List and use our tools without a login.  You should remember that we are storing a unique id in your browser so you can return to your list 
+                                        on subsequent visits.  If you loose this the only way to recover the gene lists linked to that ID is by email recovery.  This only works if you link your email.  If you don't
+                                        link an email there is potential that you will loose access to your list/analysis.
+                                    </li>
+                                    
+        </ul>
+        <hr/>
          <div class="whats_new version"><p><h3>Version: v2.16.1</h3><BR /> Updated:11/10/2015</p></div>
        <ul>
                                     <li><span class="highlight-dark">Security Enhancements</span>
