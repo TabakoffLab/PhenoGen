@@ -12,17 +12,21 @@
 
 <jsp:useBean id="myDataset" class="edu.ucdenver.ccp.PhenoGen.data.Dataset"> </jsp:useBean>
 
+
 <%
         log.info("in expressionValues.jsp. user =  "+ user);
 
         extrasList.add("expressionValues.js");
 		extrasList.add("jquery.dataTables.1.10.9.min.js");
 		extrasList.add("jquery.tooltipster.min.js");
-		extrasList.add("tooltipster.min.css");
+		//extrasList.add("tooltipster.min.css");
 		extrasList.add("TableTools.min.js");
 		extrasList.add("TableTools.css");
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
     
 
 	request.setAttribute( "selectedTabId", "expressionValues" );
@@ -52,6 +56,7 @@
 					geneSymbolsHM.put(myGeneArray[i].getGene_id(),geneSymbolList);            
 	}
 	myIDecoderClient.setNum_iterations(1);
+        log.debug("\nend idecoder\n");
 %>
 
 	<%@ include file="/web/common/expressionValuesLogic.jsp"%>
@@ -60,7 +65,7 @@
 		optionsList.add("download");
 	}%>
 
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -78,7 +83,10 @@
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 
 
-	<% if (selectedDataset.getDataset_id() == -99) { %> 
+	<% log.debug("\nbefore id\n");
+            if (selectedDataset.getDataset_id() == -99) { 
+                log.debug("\nbegin ds==-99 \n");
+            %> 
 	
   		<div class="dataContainer" style="height:480px; overflow:auto; padding-bottom: 70px;">
 		<form name="tableList" action="expressionValues.jsp" method="post">
@@ -137,7 +145,10 @@
         	<input type="hidden" name="itemIDString" />
         	<input type="hidden" name="geneListID" value="<%=selectedGeneList.getGene_list_id()%>"/>
 	</form>
-	<% } else if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() == -99) { %>
+        <% log.debug("\nend ds==-99 \n");
+	 } else if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() == -99) { 
+                 log.debug("\nbegin ds!=-99 ver==-99 \n");
+            %>
         	<div class="dataContainer" style="padding-bottom: 70px;">
 		<div id="related_links">
 			<div class="action" title="Return to select a different dataset">
@@ -171,10 +182,11 @@
                         </thead>
                         <tbody>
 			<%
+                        log.debug("\nbefore loop\n");
                 	for (int j=0; j<selectedDataset.getDatasetVersions().length; j++) {
                         	Dataset.DatasetVersion thisVersion = selectedDataset.getDatasetVersions()[j];
                         	if (thisVersion.getVisible() == 1) {
-                                	Dataset.Group thisGrouping = selectedDataset.new Group().getGrouping(thisVersion.getGrouping_id(), dbConn);
+                                	Dataset.Group thisGrouping = selectedDataset.new Group().getGrouping(thisVersion.getGrouping_id(), pool);
                                 	%>
                                 	<tr id="<%=selectedDataset.getDataset_id()%>|||<%=thisVersion.getVersion()%>">
                                         	<td><%=thisVersion.getVersion()%></td>
@@ -188,7 +200,7 @@
                                 	<%
                         	}
                 	}
-
+                        log.debug("\nafter loop\n");
 %>
 			</tbody>
 		</table>
@@ -197,7 +209,9 @@
 		<input type="hidden" name="itemIDString" value="" />
         	<input type="hidden" name="geneListID" value="<%=selectedGeneList.getGene_list_id()%>"/>
 	</form>
-        <% } else if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) {
+        <% log.debug("\nend ds!=-99 ver==-99\n");
+        } else if (selectedDataset.getDataset_id() != -99 && selectedDatasetVersion.getVersion() != -99) {
+            log.debug("begin ds!=-99 ver!=-99\n");
 	 %>
         	<div class="dataContainer" style="padding-bottom: 70px;">
                     <div style="background: #DEDEDE;">
@@ -379,7 +393,9 @@
 				</form>
 			</div> <!-- scrollable -->
 		<% } %>
-	<% } %>
+	<% } 
+        log.debug("end if\n");
+        %>
 
   <div class="itemDetails"></div>
   <div class="versionDetails"></div>

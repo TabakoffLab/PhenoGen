@@ -31,7 +31,7 @@
 	request.setAttribute( "selectedTabId", "exonCorrelationTab" );
         mySessionHandler.createGeneListActivity("Looked at exon Correlation Values for a gene", pool);
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
     <!--<script language="JAVASCRIPT" type="text/javascript"><%

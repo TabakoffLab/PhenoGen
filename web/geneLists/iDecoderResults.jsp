@@ -24,9 +24,9 @@
 	Hashtable ensemblHash = (Hashtable) session.getAttribute("ensemblHash");
 
 	String ensemblOrganism = new ObjectHandler().replaceBlanksWithUnderscores(
-							new Organism().getOrganism_name(selectedGeneList.getOrganism(), dbConn));
+							new Organism().getOrganism_name(selectedGeneList.getOrganism(), pool));
 	String mapViewerOrganism = new ObjectHandler().replaceBlanksWithUnderscores(
-							new Organism().getTaxon_id(selectedGeneList.getOrganism(), dbConn));
+							new Organism().getTaxon_id(selectedGeneList.getOrganism(), pool));
 	log.debug("action in iDecoderResults = "+action);
 
         if ((action != null) && action.equals("Download")) {
@@ -88,7 +88,7 @@
 
 
 
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 	
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>

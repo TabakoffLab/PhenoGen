@@ -20,6 +20,7 @@
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 
 
+
 <%
 
 	QTL.EQTL myEQTL = myQTL.new EQTL();
@@ -30,6 +31,9 @@
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsList.add("download");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 	optionsList.add("moreAnnotation");
 
 	QTL.EQTL[] eQTLList = null;
@@ -134,8 +138,8 @@
 			ucscOrganism = selectedGeneList.getOrganism();
 			snpOrganism = selectedGeneList.getOrganism();
 			snpOrganism = new ObjectHandler().replaceBlanksWithUnderscores(
-			new Organism().getOrganism_name(organism, dbConn));
-			ucscOrganism = new Organism().getCommon_name_for_abbreviation(organism, dbConn);
+			new Organism().getOrganism_name(organism, pool));
+			ucscOrganism = new Organism().getCommon_name_for_abbreviation(organism, pool);
 
 			Iterator itr = iDecoderSet.iterator();
 
@@ -188,7 +192,7 @@
 
 
 			}
-			eQTLList = myEQTL.getExpressionQTLInfo(allIdentifiers, "Both", selectedGeneList.getOrganism(), "All", dbConn);
+			eQTLList = myEQTL.getExpressionQTLInfo(allIdentifiers, "Both", selectedGeneList.getOrganism(), "All", pool);
 			//log.debug("eQTLList = "); myDebugger.print(eQTLList);
 			//
 			// Get a list of all the ensembl IDs returned 
@@ -292,7 +296,7 @@
 			// to the iniaWestMutants array so that it can be included in the URL
 			// 
 
-			iniaWestMutantsArray = myKnockOut.getIniaKnockOutCount(allOfficialSymbolArray, dbConn);
+			iniaWestMutantsArray = myKnockOut.getIniaKnockOutCount(allOfficialSymbolArray, pool);
 	
 			//
 			// Query the INIA West database (Blednov) to see if any mutants exist
@@ -300,7 +304,7 @@
 			// to the iniaPreferenceMutants array so that it can be included in the URL
 			// 
 
-			iniaPreferenceMutantsArray = myKnockOut.getIniaAlcoholPreferenceCount(allOfficialSymbolArray, dbConn);
+			iniaPreferenceMutantsArray = myKnockOut.getIniaAlcoholPreferenceCount(allOfficialSymbolArray, pool);
 
 			//
 			// Get a list of all the affy IDs returned in the iDecoder call
@@ -315,7 +319,7 @@
 	}
 
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 

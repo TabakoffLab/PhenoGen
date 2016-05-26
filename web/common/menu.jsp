@@ -67,6 +67,15 @@
        		<li class="hideLogin <%if(mainMenuSelected.equals("transcript")){%>selected<%}%>" ><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=contextRoot%>gene.jsp" <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu3line">Genome / Transcriptome Data Browser</span></a></li>
        		<li class="hideLogin <%if(mainMenuSelected.equals("download")){%>selected<%}%>"><a href='<%=commonDir%>selectMenu.jsp?menuURL=<%=sysBioDir%>resources.jsp' <%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> class="public" <%}%>><span class="menu3line">Available Data Downloads</span></a></li>
        
+                
+        <li class='has-sub hideLogin <%if(mainMenuSelected.equals("genelist")){%>selected<%}%>'><span class=<%if(!loggedIn||userLoggedIn.getUser_name().equals("anon")){%> "noLink public" <%}else{%>"noLink"<%}%>><span class="menu2line">Gene List Analysis Tools</span></span>
+          <ul>
+          	 <li><a href="<%=geneListsDir%>listGeneLists.jsp"><span>Analyze a gene list</span></a>
+             <li><a href="<%=geneListsDir%>createGeneList.jsp?fromMain=Y">Upload or create a new list of genes to use for an analysis</a></li>
+             <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>listDatasets.jsp?">Derive a list of genes from a microarray analysis</a></li>
+          </ul>
+       </li>        
+                
        <li class='has-sub hideLogin <%if(mainMenuSelected.equals("microarray")){%>selected<%}%>'><span class="noLink"><span class="menu2line">Microarray Analysis Tools</span></span>
           <ul>
           	 <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>listDatasets.jsp"><span>Analyze precompiled datasets</span></a>
@@ -75,13 +84,7 @@
              <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>geneData.jsp"><span>View expression values for a list of genes in a dataset</span></a></li>
           </ul>
        </li>
-       <li class='has-sub hideLogin <%if(mainMenuSelected.equals("genelist")){%>selected<%}%>'><span class="noLink"><span class="menu2line">Gene List Analysis Tools</span></span>
-          <ul>
-          	 <li><a href='<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>listGeneLists.jsp'><span>Analyze a gene list</span></a>
-             <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=geneListsDir%>createGeneList.jsp?fromMain=Y">Upload or create a new list of genes to use for an analysis</a></li>
-             <li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=datasetsDir%>listDatasets.jsp?">Derive a list of genes from a microarray analysis</a></li>
-          </ul>
-       </li>
+       
        <li class='has-sub hideLogin <%if(mainMenuSelected.equals("qtl")){%>selected<%}%>'><span class="noLink"><span class="menu1line">QTL Tools</span></span>
        			<ul>
                 	<li><a href="<%=commonDir%>selectMenu.jsp?menuURL=<%=accessDir%>checkLogin.jsp?url=<%=qtlsDir%>defineQTL.jsp?fromMain=Y&fromQTL=Y"><span>Enter phenotypic QTL information</span></a></li>

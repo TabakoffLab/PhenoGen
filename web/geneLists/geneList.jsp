@@ -7,14 +7,21 @@
 	extrasList.add("dataTables.paging.css");
         //extrasList.add("jquery.dataTables.min.css");
 	
-
+        log.debug("before getGenesAsArray");
+        
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsListModal.add("download");
+        
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
+        
 	GeneList.Gene[] myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 	session.setAttribute("geneListOrganism",selectedGeneList.getOrganism());
 	log.debug("geneListOrganism="+selectedGeneList.getOrganism());
-	//log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
+        //log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
+        
        	if ((action != null) && action.equals("Download")) {
 			log.debug("action is Download");
 			mySessionHandler.createGeneListActivity("Downloaded Gene List", pool);
@@ -67,7 +74,7 @@
 		}
         mySessionHandler.createGeneListActivity("Viewed geneList contents", pool);
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 <style>

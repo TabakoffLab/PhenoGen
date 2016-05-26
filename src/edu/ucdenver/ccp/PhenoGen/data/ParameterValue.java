@@ -308,7 +308,42 @@ public class ParameterValue implements Comparable{
 
 	}
 
+        public int createParameterGroup (DataSource pool) throws SQLException {
 
+		log.info("In ParameterValue.createParameterGroup.");
+
+		parameter_group_id = myDbUtils.getUniqueID("parameter_groups_seq", pool);
+
+        	String query =
+                	"insert into parameter_groups "+
+                	"(parameter_group_id, create_date) values "+
+                	"(?, ?)";
+
+                java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    PreparedStatement pstmt = conn.prepareStatement(query, 
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+
+                    pstmt.setInt(1, parameter_group_id); 
+                    pstmt.setTimestamp(2, now);
+                    pstmt.executeUpdate();
+                    pstmt.close();
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+		return parameter_group_id;
+	}
 	/**
 	 * Creates a new row in the parameter_groups table.
 	 * @param conn	the database connection
@@ -554,6 +589,55 @@ public class ParameterValue implements Comparable{
 		}
 	}  
   
+        
+        /**
+	 * Creates a new row in the parameter_values table.  
+	 * Prior to this, setCreate_date() should be called so that all rows have the same date and time stamp.
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 */
+	public void createParameterValue(DataSource pool) throws SQLException {
+
+		int parameter_value_id = myDbUtils.getUniqueID("parameter_values_seq", pool);
+
+        	String query =
+                	"insert into parameter_values "+
+                	"(parameter_value_id, parameter_group_id, category, parameter, value, create_date) values "+
+                	"(?, ?, ?, ?, ?, ?)";
+
+		//log.debug("In createParameterValue.  Parameter = "+
+		//		this.getParameter() + 
+		//		", Value = " +
+		//		this.getValue());
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    PreparedStatement pstmt = conn.prepareStatement(query, 
+                                                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                                    ResultSet.CONCUR_UPDATABLE);
+                    pstmt.setInt(1, parameter_value_id);
+                    pstmt.setInt(2, this.getParameter_group_id());
+                    pstmt.setString(3, this.getCategory());
+                    pstmt.setString(4, this.getParameter());
+                    pstmt.setString(5, this.getValue());
+                    pstmt.setTimestamp(6, this.getCreate_date());
+
+                    pstmt.executeUpdate();
+                    pstmt.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+	}
+        
 	/**
 	 * Creates a new row in the parameter_values table.  
 	 * Prior to this, setCreate_date() should be called so that all rows have the same date and time stamp.
@@ -935,6 +1019,134 @@ public class ParameterValue implements Comparable{
 		return myParameterValueArray;
 	}
   
+        
+        /**
+	 * Gets the parameters used for creating a gene list.  
+	 * It first gets the normalization, filters, and statistical test parameters
+	 * and then unions back to parameter_values to get the phenotype values used in a correlation analysis.
+	 * @param parameterGroupID     the identifier of the parameter group
+	 * @param conn     the database connection 
+	 * @return            An array of ParameterValue objects
+	 * @throws	SQLException if a database error occurs
+	 */
+	public ParameterValue[] getGeneListParameters (int parameterGroupID, DataSource pool) throws SQLException {
+  		log.info("in getGeneListParameters. parameterGroupID = " + parameterGroupID);
+  	
+  		String query = 
+  			"select distinct pv.parameter_value_id, "+
+				"pv.parameter_group_id, "+
+				"decode(pv.category, 'Statistical Method', 'Statistical Test', "+
+						"'AbsoluteCallFilter', 'Absolute Call Filter', "+
+						"'MAS5AbsoluteCallFilter', 'MAS5 Absolute Call Filter', "+
+						"'DABGPValueFilter', 'DABG P-Value Filter', "+
+						"'AffyControlGenesFilter', 'Affy Control Genes Filter', "+
+						"'CodeLinkCallFilter', 'Codelink Call Filter', "+
+						"'CodeLinkControlGenesFilter', 'Codelink Control Genes Filter', "+
+						"'CoefficientVariationFilter', 'Coefficient Variation Filter', "+
+						"'GeneSpringCallFilter', 'Gene Spring Call Filter', "+
+						"'MedianFilter', 'Median Filter', "+
+						"'GeneListFilter', 'Gene List Filter', "+
+						"'VariationFilter', 'Variation Filter', "+
+						"'FoldChangeFilter', 'Fold Change Filter', "+
+						"pv.category), "+ 
+				"decode(pv.parameter, 'Parameter 1 is Null', ' ', "+ 
+						"'Parameter 2 is Null', ' ', "+ 
+						"pv.parameter), "+
+				"decode(pv.value, 'Null', ' ', "+
+				"	pv.value), "+ 
+				"to_char(pv.create_date, 'mm/dd/yyyy hh12:mi AM'), "+
+				"pg.dataset_id, "+
+				"pg.version, "+
+				"pv.value "+
+				"from parameter_values pv, "+ 
+				"parameter_groups pg "+
+				"where pv.parameter_group_id = ? "+ 
+				"and pv.parameter_group_id = pg.parameter_group_id "+
+				"and pv.category != 'Data Normalization' "+ 
+				"and pv.parameter != 'User ID' "+
+				"and pv.parameter != 'Parameter Group ID' "+
+				"union "+
+				"select pv.parameter_value_id, "+
+				"pv.parameter_group_id, "+
+				"pv.category, "+
+				"pv.parameter, "+
+				"pv.value, "+
+				"to_char(pv.create_date, 'mm/dd/yyyy hh12:mi AM'), "+
+				"pg.dataset_id, "+
+				"pg.version, "+
+				"pv.value "+
+				"from parameter_values pv, "+
+				"parameter_values pv2, "+
+				"parameter_groups pg "+
+				"where pv.parameter_group_id = pv2.value "+
+				"and pv.parameter_group_id = pg.parameter_group_id "+
+				"and pv2.parameter_group_id = ? "+
+				"and pv2.parameter = 'Parameter Group ID' "+
+				"and pv.category = 'Phenotype Data' "+
+				"and pv.parameter != 'User ID' "+
+				"union "+
+				"select pv.parameter_value_id, "+
+				"pv.parameter_group_id, "+
+				"pv.category, "+
+				"grps.group_name parameter, "+
+				"pv.value, "+
+				"to_char(pv.create_date, 'mm/dd/yyyy hh12:mi AM'), "+
+				"pg.dataset_id, "+
+				"pg.version, "+
+				"pv.value "+
+				"from parameter_values pv, "+
+				"parameter_groups pg, "+
+				"parameter_values pv2, "+
+				"groups grps, gene_lists gl, dataset_versions dv "+
+				"where pv.parameter_group_id = pv2.value "+
+				"and pv.parameter_group_id = pg.parameter_group_id "+
+				"and gl.parameter_group_id = pv2.parameter_group_id "+
+				"and gl.dataset_id = dv.dataset_id "+
+				"and gl.version = dv.version "+
+				"and dv.grouping_id = grps.grouping_id "+
+				"and pv2.parameter_group_id = ? "+
+				"and pv.parameter = to_char(grps.group_number) "+
+				"and pv2.category = 'Phenotype Data' "+
+				"and pv2.parameter = 'Parameter Group ID' "+
+				"and pv.category = 'Phenotype Group Value' "+
+				"order by 2, "+ //parameter_group_id
+				"3, "+ // category
+				"4, "+ // parameter
+				"9, "+ // value
+				"1";   // parameter_value_id
+  		
+        	List<ParameterValue> myParameterValueList = new ArrayList<ParameterValue>();
+
+		//log.debug("query = "+ query);
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, new Object[] {parameterGroupID, parameterGroupID, parameterGroupID}, conn);
+                    String[] dataRow;
+
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            ParameterValue newParameterValue = setupParameterValue(dataRow);
+                            myParameterValueList.add(newParameterValue);
+                    }
+
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+		ParameterValue[] myParameterValueArray = (ParameterValue[]) myParameterValueList.toArray(new ParameterValue[myParameterValueList.size()]);
+
+		return myParameterValueArray;
+	}
+        
 	/**
 	 * Gets the parameters used for creating a gene list.  
 	 * It first gets the normalization, filters, and statistical test parameters
@@ -1247,6 +1459,65 @@ public class ParameterValue implements Comparable{
         	return myParameterValueArray;
 	}
 
+        /**
+	 * Gets the parameters used for a dataset version 
+	 * @param datasetVersion	the DatasetVersion object
+	 * @param conn     the database connection 
+	 * @return            An array of ParameterValue objects
+	 * @throws	SQLException if a database error occurs
+	 */
+	public ParameterValue[] getParameterValuesForDatasetVersion (Dataset.DatasetVersion datasetVersion, DataSource pool) throws SQLException {
+  	
+  		String query = 
+	    		"select pv.parameter_value_id, "+ 
+			"pv.parameter_group_id, "+
+			"pv.category, "+
+			"decode(pv.value, 'Null', ' ', pv.parameter), "+
+			"decode(pv.value, 'Null', ' ', pv.value), "+
+			"to_char(pv.create_date, 'mm/dd/yyyy hh12:mi AM'), "+
+			"pg.dataset_id, "+
+			"pg.version "+
+			"from parameter_values pv, parameter_groups pg "+ 
+			"where pg.dataset_id = ? "+
+			"and pg.version = ? "+
+			"and pv.parameter_group_id = pg.parameter_group_id "+
+			"order by pv.category, pv.parameter";
+
+        	List<ParameterValue> myParameterValueList = new ArrayList<ParameterValue>();
+
+		//log.info("In getParameterValuesForDatasetVersion");
+		//log.debug("query for dataset_id = "+datasetVersion.getDataset().getDataset_id() + " and vsn = "+datasetVersion.getVersion()+ " is " + query);
+	
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, new Object[] {datasetVersion.getDataset().getDataset_id(), datasetVersion.getVersion()}, conn);
+                    String[] dataRow;
+
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            ParameterValue newParameterValue = setupParameterValue(dataRow);
+                            myParameterValueList.add(newParameterValue);
+                    }
+
+                    myResults.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException e){
+                    throw e;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+		ParameterValue[] myParameterValueArray = (ParameterValue[]) myParameterValueList.toArray(new ParameterValue[myParameterValueList.size()]);
+
+        	return myParameterValueArray;
+	}
+        
 	/**
 	 * Gets the parameters used for a dataset version 
 	 * @param datasetVersion	the DatasetVersion object
@@ -1515,6 +1786,115 @@ public class ParameterValue implements Comparable{
         	return phenotypeArray;
 	}
 
+        
+        /**
+	 * Gets the phenotype values stored for a particular parameter group ID.
+	 * @param parameterGroupID     the identifier of the parameter group 
+	 * @param conn     the database connection 
+	 * @return            A Phenotype object
+	 * @throws	SQLException if a database error occurs
+	 */
+	public ParameterValue.Phenotype getPhenotypeValuesForParameterGroupID(int parameterGroupID, DataSource pool) throws SQLException {
+  	
+  		String query = 
+                        "select pv.parameter, "+
+                        "pv.value, "+
+			"pg.dataset_id "+
+                        "from parameter_values pv, "+
+			"parameter_groups pg "+
+                        "where pv.category = 'Phenotype Data' "+
+			"and pv.parameter != 'User ID' "+
+			"and pv.parameter_group_id = pg.parameter_group_id "+
+			"and pv.parameter_group_id = ? "+
+                        "order by pv.parameter";   
+
+  		String query2 = 
+                        "select pv.category, "+
+                        "grps.group_number, "+
+                        "grps.group_name, "+
+                        "grps.has_expression_data, "+
+                        "grps.has_genotype_data, "+
+			"grps.grouping_id, "+
+                        "pv.value "+
+                        "from parameter_values pv, "+
+			"parameter_groups pg, "+
+			"groups grps, "+
+			"groupings grpings, "+
+			"dataset_versions dv "+
+                        "where pv.category like 'Phenotype%' "+
+			"and pv.parameter != 'User ID' "+
+			"and pv.parameter_group_id = pg.parameter_group_id "+
+			"and dv.grouping_id = grpings.grouping_id "+
+			"and grpings.grouping_id = grps.grouping_id "+
+			"and dv.dataset_id = pg.dataset_id "+
+			"and dv.version = pg.version "+
+                        "and pv.parameter = to_char(grps.group_number) "+
+			"and pv.parameter_group_id = ? "+
+                        "order by grps.group_number";   
+
+		//log.debug("query = "+query);
+		//log.debug("query2 = "+query2);
+		log.info("In getPhenotypeValuesForParameterGroupID. parameterGroupID = "+parameterGroupID);
+                Connection conn=null;
+                Phenotype thisPhenotype = new Phenotype();
+                try{
+                    conn=pool.getConnection();
+                
+                    Results myResults = new Results(query, parameterGroupID, conn); 
+                    Results myResults2 = new Results(query2, parameterGroupID, conn); 
+
+                    String[] dataRow;
+
+                    
+                    thisPhenotype.setParameter_group_id(parameterGroupID);
+                    while ((dataRow = myResults.getNextRow()) != null) {
+                            thisPhenotype.setDataset_id(Integer.parseInt(dataRow[2]));
+                            if (dataRow[0].equals("Name")) {
+                                    thisPhenotype.setName(dataRow[1]);
+                            } else if (dataRow[0].equals("Description")) {
+                                    thisPhenotype.setDescription(dataRow[1]);
+                            }
+                    }
+                    Dataset myDataset = new Dataset();
+                    Hashtable<Dataset.Group, Double> means = new Hashtable<Dataset.Group, Double>();
+                    Hashtable<Dataset.Group, Double> variances = new Hashtable<Dataset.Group, Double>();
+                    while ((dataRow = myResults2.getNextRow()) != null) {
+                            if (dataRow[0].equals("Phenotype Group Value")) {
+                                    Dataset.Group thisGroup = myDataset.new Group(Integer.parseInt(dataRow[1]));
+                                    thisGroup.setGroup_name(dataRow[2]);
+                                    thisGroup.setHas_expression_data(dataRow[3]);
+                                    thisGroup.setHas_genotype_data(dataRow[4]);
+                                    thisGroup.setGrouping_id(Integer.parseInt(dataRow[5]));
+                                    means.put(thisGroup, Double.parseDouble(dataRow[6]));
+                            } else if (dataRow[0].equals("Phenotype Variance Value")) {
+                                    Dataset.Group thisGroup = myDataset.new Group(Integer.parseInt(dataRow[1]));
+                                    thisGroup.setGroup_name(dataRow[2]);
+                                    thisGroup.setHas_expression_data(dataRow[3]);
+                                    thisGroup.setHas_genotype_data(dataRow[4]);
+                                    thisGroup.setGrouping_id(Integer.parseInt(dataRow[5]));
+                                    variances.put(thisGroup, Double.parseDouble(dataRow[6]));
+                            }
+                    }
+                    thisPhenotype.setMeans(means);
+                    thisPhenotype.setVariances(variances);
+
+                    myResults.close();
+                    myResults2.close();
+                    conn.close();
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+
+        	return thisPhenotype;
+	}
+        
 	 /**
 	 * Gets the phenotype values stored for a particular parameter group ID.
 	 * @param parameterGroupID     the identifier of the parameter group 

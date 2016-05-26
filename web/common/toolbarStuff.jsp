@@ -7,7 +7,19 @@
 	if ((optionsList != null && optionsList.size() > 0) || (optionsListModal != null && optionsListModal.size() > 0)) { 
 	   %>
 		<div id="iconsDiv">
-		<div class="optionIcons">
+                <%if(userLoggedIn.getUser_name().equals("anon")){%>   
+                    <div style="display:block;float:right;margin-bottom: 5px;">
+                        <img src="<%=imagesDir%>/icons/alert_24.png" style="position:relative;top:5px;">Gene lists will only be available on this browser / computer.
+                        <span class="info" 
+                              title="You are currently not signed in.<BR><BR><UL><LI>-If you register or sign in your current Gene Lists will be migrated to your user account and will be portable when you login elsewhere.</li><BR>
+                              <li>-Note that clearing your browsers cache may cause loss of your lists.</li><BR>
+                              <li><B>-Alternatively you can add your email address which would allow you to recieve an email with links to recover a lost session.</B></li><BR>
+                              </UL>">
+
+                            <img src="<%=imagesDir%>/icons/info.gif" /></span>
+                    </div>
+                <%}%>
+		<div class="optionIcons" >
 		<%
 		if (optionsList != null && optionsList.size() > 0) {
 			//log.debug("optionsList is not null");
@@ -51,6 +63,7 @@
 							<br/>Phenotype Details
 						</span>
 					</div>
+                                
 				<% } else { 
 					Toolbar.Option thisOption = new Toolbar().new Option().getOptionFromMyOptions(optionChoices, optionName);
 					String landing_page = thisOption.getLinkTo(); 
@@ -85,10 +98,11 @@
 	
 		}%>
 		</div> <!-- end optionIcons -->
+                
 		</div> <!-- end div#iconsDiv -->
 		<%
 	} else {
 		//log.debug("optionsList and optionsListModal are both null");
-	}
+        }
 %>
 

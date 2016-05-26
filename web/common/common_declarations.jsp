@@ -25,6 +25,8 @@
         import="java.util.*"
         import="java.util.zip.*"
         import="javax.imageio.*"
+        import="java.util.regex.Pattern"
+        import="javax.mail.MessagingException"
 		import="javax.sql.DataSource"
 		import="javax.naming.*"
         import="java.awt.image.*"

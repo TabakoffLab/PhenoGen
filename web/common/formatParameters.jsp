@@ -154,10 +154,12 @@
 				dbConn);
 		}
 	} else if (parameterType.equals("geneList")) {
+                log.debug("before include selectGeneList");
 		%><%@include file="/web/geneLists/include/selectGeneList.jsp"%><%
-		myParameterValues = myParameterValue.getGeneListParameters(parameterGroupID, dbConn);
-		//log.debug("Before getGenesAsGeneArray:"+selectedGeneList.getGene_list_id());
-		myGeneArray = selectedGeneList.getGenesAsGeneArray(dbConn);
+                log.debug("Before parameters values");
+		myParameterValues = myParameterValue.getGeneListParameters(parameterGroupID, pool);
+		log.debug("Before getGenesAsGeneArray:"+selectedGeneList.getGene_list_id());
+		myGeneArray = selectedGeneList.getGenesAsGeneArray(pool);
 		/*String[] targets = new String[] {
 			"Gene Symbol", 
 			// for Location tool
@@ -171,7 +173,7 @@
 		printGeneListParameters = true; 
 		printPhenotypeParameters = true; 
 		printGeneList = true;
-		mySessionHandler.createGeneListActivity("Looked at details for this gene list", dbConn);
+		mySessionHandler.createGeneListActivity("Looked at details for this gene list", pool);
 	} else if (parameterType.equals("filter")) {
 		myParameterValues = myParameterValue.getFiltersUsed(parameterGroupID, dbConn);
 		mySessionHandler.createActivity("Looked at details for filter.  PGID = " + parameterGroupID, dbConn);

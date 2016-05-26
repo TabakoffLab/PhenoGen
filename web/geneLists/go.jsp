@@ -7,9 +7,6 @@
 --%>
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"%>
 
-
-
-
 <jsp:useBean id="thisIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 
@@ -21,6 +18,11 @@
 	request.setAttribute( "selectedTabId", "go" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
+        
+        
 	String myOrganism=selectedGeneList.getOrganism();
 
         String id="";
@@ -45,9 +47,8 @@
 
         tall="100em";
 	
-
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
@@ -59,17 +60,17 @@
 	<%@ include file="/web/geneLists/include/geneListToolsTabs.jsp" %>
 	
 
-	<% if (selectedGeneList.getGene_list_id() != -99) { %>
+	<%  if (selectedGeneList.getGene_list_id() != -99) { %>
         <div id="container">
         <div id="toolsAccord" style="text-align:left;">
                             <H2>Run New GO Analysis on Gene List</H2>
-                            <div id="newAnalysis" style="font-size:12px;">
+                            <div id="newAnalysis" style="font-size:12px;min-height: 80px;">
                                 Save Results as: <BR><input id="name" type="text" size="30"/>
                                 <HR />
                                 <input type="button" id="runBtn"  value="Run GO" onclick="runGO()"/><span id="runStatus"></span>
                             </div>
                             <H2>GO Results</H2>
-                            <div id="resultsTable">
+                            <div id="resultsTable" style="min-height: 250px;">
                                 <span style="font-size:10px;">Select a row below to view full results</span>
                                 <div id="resultList">
                                 </div>

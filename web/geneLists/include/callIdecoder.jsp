@@ -55,8 +55,7 @@
 
 	try {
 		log.debug("calling iDecoderClient");
-		iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), 
-							targets, pool);
+		iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(selectedGeneList.getGene_list_id(), targets, pool);
 		//log.debug("iDecoderSet = "); myDebugger.print(iDecoderSet);
 		if(iDecoderSet.size()>0){
 			Iterator itr = iDecoderSet.iterator();

@@ -34,6 +34,7 @@ public class Toolbar {
 	private String geneListsDir;
 	private String sysBioDir;
 	private String datasetsDir;
+        private String accessDir;
         private Dataset selectedDataset = null;
         private Dataset.DatasetVersion selectedDatasetVersion = null;
         private Experiment selectedExperiment = null;
@@ -65,6 +66,7 @@ public class Toolbar {
 	        this.geneListsDir = (String) session.getAttribute("geneListsDir");
 	        this.sysBioDir = (String) session.getAttribute("sysBioDir");
 	        this.datasetsDir = (String) session.getAttribute("datasetsDir");
+                this.accessDir = (String) session.getAttribute("accessDir");
                 this.selectedDataset = ((Dataset) session.getAttribute("selectedDataset") == null ?
                                 new Dataset(-99) :
                                 (Dataset) session.getAttribute("selectedDataset"));
@@ -354,6 +356,8 @@ public class Toolbar {
         		optionList.add(new Option("viewFinalizeDataset", "", "closedLock.png", "View/Finalize Dataset"));
         		// Gene List screens
         		optionList.add(new Option("createGeneList", "", "createNew.png", "Create New Gene List"));
+                        optionList.add(new Option("linkEmail", accessDir+"linkEmail", "link.png", "Link Email to Session"));
+                        optionList.add(new Option("editEmail", "", "link.png", "Edit Linked Email"));
         		optionList.add(new Option("chooseNewGeneList", geneListsDir + "listGeneLists", "chooseNew.png", "Choose New Gene List"));
         		optionList.add(new Option("moreAnnotation", geneListsDir + "advancedAnnotation", "rightArrow.png", "More Annotation"));
         		optionList.add(new Option("basicAnnotation", geneListsDir + "annotation", "leftArrow.png", "Basic Annotation"));

@@ -20,6 +20,9 @@
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
 	optionsList.add("download");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 
         List noHomologList = new ArrayList();
         Set iDecoderAnswer = null;
@@ -145,7 +148,7 @@
 	}
 
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 

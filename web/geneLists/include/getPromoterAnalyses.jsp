@@ -8,10 +8,11 @@
  *      
 --%>
 
-<%@ include file="/web/common/session_vars.jsp" %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList"/>
 <jsp:useBean id="myGeneListAnalysis" class="edu.ucdenver.ccp.PhenoGen.data.GeneListAnalysis"/>
 <jsp:useBean id="myParameterValue" class="edu.ucdenver.ccp.PhenoGen.data.ParameterValue"/>
+
 <%
         log.debug("test very begining");
 	//int userID=userLoggedIn.getUser_id();
@@ -21,6 +22,7 @@
 	}
 	GeneListAnalysis[] results=new GeneListAnalysis[0];
         boolean running=false;
+        boolean nonZeroLen=false;
         log.debug("test begining");
 %>
 <style>
@@ -42,9 +44,14 @@
     </thead>
     <tbody>
     	<%if(!selectedGeneList.getOrganism().equals("Rn")){
-            results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "oPOSSUM", pool);
+            if(userLoggedIn.getUser_name().equals("anon")){
+                results = myGeneListAnalysis.getAnonGeneListAnalysisResults(-20, geneListID, "oPOSSUM", pool);
+            }else{
+                results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "oPOSSUM", pool);
+            }
             if(results!=null){
                 for(int i=0;i<results.length;i++){
+                    nonZeroLen=true;
                         boolean complete=false;
                         String stat="Finished";
                         if(results[i].getStatus()!=null){
@@ -74,10 +81,14 @@
             }
         }%>
         
-    <%  
-        results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "MEME", pool);
+    <%  if(userLoggedIn.getUser_name().equals("anon")){
+            results = myGeneListAnalysis.getAnonGeneListAnalysisResults(-20, geneListID, "MEME", pool);
+        }else{
+            results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "MEME", pool);
+        }
         if(results!=null){
             for(int i=0;i<results.length;i++){
+                nonZeroLen=true;
                 boolean complete=false;
                 String stat="Finished";
                 if(results[i].getStatus()!=null){
@@ -105,9 +116,14 @@
                 </TR>
         <%  }
         }
-        results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "Upstream", pool);
+        if(userLoggedIn.getUser_name().equals("anon")){
+            results = myGeneListAnalysis.getAnonGeneListAnalysisResults(-20, geneListID, "Upstream", pool);
+        }else{
+            results = myGeneListAnalysis.getGeneListAnalysisResults(userID, geneListID, "Upstream", pool);
+        }
         if(results!=null){
             for(int i=0;i<results.length;i++){
+                nonZeroLen=true;
                 boolean complete=false;
                 String stat="Finished";
                 if(results[i].getStatus()!=null){
@@ -146,6 +162,7 @@
 			startRefresh();
 	<%}%>
         (function($){
+            <%if(nonZeroLen){%>
             $('#resultTbl').dataTable({
             
 			"bPaginate": false,
@@ -153,6 +170,7 @@
 			"aaSorting": [[ 2, "desc" ]],
 			"sDom": '<r><t>'
             });
+            <%}%>
             $(".promoterResultDetail").on("click",function (){
                     var id=$(this).attr('id');
                     var type=$(this).attr('type');

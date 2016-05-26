@@ -139,7 +139,7 @@ public class GeneList{
 
   private Logger log=null;
 
-  private DbUtils myDbUtils = new DbUtils(); 
+  public DbUtils myDbUtils = new DbUtils(); 
 
   public GeneList () {
 	log = Logger.getRootLogger();
@@ -407,13 +407,13 @@ public class GeneList{
 			geneListFromClause + 
 			"where gl.gene_list_id = ? "+
 			geneListGroupByClause; 
-
+                log.debug(query);
         	Results myResults = new Results(query, geneListID, conn);
                 log.debug("before first call");
         	String[] dataRow = myResults.getNextRow();
-		//log.debug("calling setupGeneListValues");
+		log.debug("calling setupGeneListValues");
         	myGeneList = setupGeneListValues(dataRow);
-
+                log.debug("after calling setupGeneListValues");
 		if (myGeneList.getParameter_group_id() != -99) {
                     log.debug("before parameter group calls");
 			myGeneList.setAnovaPValue(
@@ -1237,17 +1237,101 @@ public class GeneList{
 
         
         public void createAlternateIdentifiers(GeneList myGeneList,DataSource pool)throws SQLException {
-            Connection conn=null;
-            try{
-                conn=pool.getConnection();
-                createAlternateIdentifiers(myGeneList,conn);
-                conn.close();
-            }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
+                String query = "";
+		//
+		// if the AlternateIdentifierSource has not been set, it will be defaulted to 'Current', but that
+		// column cannot be included in the insert statement
+		// 
+		if (myGeneList.getAlternateIdentifierSource() != null && 
+			!myGeneList.getAlternateIdentifierSource().equals("")) {
+
+			//log.debug("alternate identifier source is not null");
+        		query =
+                	"insert into alternate_identifiers "+
+			"(gene_list_id, gene_id, alternate_id, source_id, source_link_column, source) "+
+                	"values "+
+                	"(?, ?, ?, ?, ?, ?)";
+		} else {
+			//log.debug("alternate identifier source is null");
+        		query =
+                	"insert into alternate_identifiers "+
+			"(gene_list_id, gene_id, alternate_id, source_id, source_link_column) "+
+                	"values "+
+                	"(?, ?, ?, ?, ?)";
+		}
+
+	
+		//log.debug("in createAlternateIdentifiers");
+		//log.debug("query = "+query);
+                Connection conn=null;
+        	PreparedStatement pstmt = null;
+        	try {
+                        conn=pool.getConnection();
+                	pstmt = conn.prepareStatement(query, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+                	pstmt.setInt(1, myGeneList.getGene_list_id());
+
+			if (myGeneList.getAlternateIdentifierSource() != null) {
+				pstmt.setString(6, myGeneList.getAlternateIdentifierSource());
+			} 
+                	pstmt.setInt(4, myGeneList.getAlternateIdentifierSourceID());
+                	pstmt.setString(5, myGeneList.getAlternateIdentifierSourceLinkColumn());
+
+                	// insert each of the genes 
+                	if (myGeneList.getGenesHash() != null) {
+
+				log.debug("getGenesHash is not null.  it contains " + 
+					myGeneList.getGenesHash().size() + " elements");
+
+//				myDebugger.print(myGeneList.getGenesHash());
+				Enumeration genesOriginal = myGeneList.getGenesHash().keys();
+				while (genesOriginal.hasMoreElements()) {
+					String originalID = (String) genesOriginal.nextElement();
+					String alternateID = (String) myGeneList.getGenesHash().get(originalID);
+					//log.debug("originalID = "+originalID + 
+					//	", alternateID = "+alternateID + 
+					//	", gene_list_id = "+myGeneList.getGene_list_id());
+
+                                	pstmt.setString(2, originalID);
+                                	pstmt.setString(3, alternateID);
+                                	pstmt.executeUpdate();
+                        	}
+                	} else if (myGeneList.getGenesHashMap() != null) {
+				//log.debug("getGenesHashMap is not null.  it contains " + 
+				//	myGeneList.getGenesHashMap().size() + " elements");
+
+				Set genesOriginal = myGeneList.getGenesHashMap().keySet();
+				Iterator genesOriginalItr = genesOriginal.iterator();
+				while (genesOriginalItr.hasNext()) {
+					String originalID = (String) genesOriginalItr.next();
+					String[] alternateIDs = (String[]) myGeneList.getGenesHashMap().get(originalID);
+					//log.debug("orginial ID = " + originalID);
+					//log.debug("alternatIDs = "); myDebugger.print(alternateIDs);
+	                        	pstmt.setString(2, originalID);
+					for (int i=0; i<alternateIDs.length; i++) {
+						if (!alternateIDs[i].equals(originalID)) {
+							pstmt.setString(3, alternateIDs[i]);
+       	                         			pstmt.executeUpdate();
+						}
+					}
+                        	}
+			} else {
+				//log.debug("getGenesHash and getGenesHashMap are both null");
+			}
+			pstmt.close();
+                        conn.close();
+        	} catch (SQLException e) {
+                	log.error("In exception of createAlternateIdentifiers", e);
+			throw e;
+        	}finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
                 }
-                throw new SQLException();
-            }
         }
         
   	/** 
@@ -1879,8 +1963,8 @@ public class GeneList{
    	 */
   	private GeneList setupGeneListValues(String[] dataRow) {
 
-        	//log.debug("in setupGeneListValues");
-        	//log.debug("dataRow= "); new Debugger().print(dataRow);
+        	log.debug("in general setupGeneListValues");
+        	log.debug("general dataRow= "); new Debugger().print(dataRow);
 
         	GeneList myGeneList = new GeneList();
 
@@ -2693,10 +2777,99 @@ public class GeneList{
         
         public Gene[] getGenesAsGeneArray(DataSource pool)throws SQLException {
             Connection conn=null;
-            Gene[] tmp=null;
+            Gene[] myGeneArray=null;
             try{
                 conn=pool.getConnection();
-                tmp=getGenesAsGeneArray(conn);
+                String query =
+                	"select g.gene_list_id, "+
+                	"g.gene_id \"Original Accession ID\", "+
+                	"ai.alternate_id \"Current Selection\", "+
+                	"to_char(gv.value, '9.9999EEEE') "+
+                	"from genes g left join gene_values gv "+
+			"	on gv.gene_list_id = g.gene_list_id and gv.gene_id = g.gene_id "+
+			"left join statistic_codes sc on gv.statistic_code = sc.statistic_code "+
+			"left join alternate_identifiers ai on ai.gene_list_id = g.gene_list_id "+
+                	"and ai.gene_id = g.gene_id "+
+                	"and ai.source = 'Current' "+
+                	"where g.gene_list_id = ? "+
+                	"order by g.gene_list_id, "+
+			"g.gene_id, "+
+			"sc.sort_order, "+
+			"decode(gv.group_number, 'NA', 0, to_number(gv.group_number))";
+
+        	//log.debug("in getGenesAsGeneArray. gene_list_id = "+this.getGene_list_id());
+        	//log.debug("query = "+query);
+		Gene latestGene = new Gene();
+
+		Results myResults = new Results(query, this.getGene_list_id(), conn);
+        	List<Gene> myGenes = new ArrayList<Gene>();
+
+		String thisGeneID = "";
+        	//
+        	// initialize this to 'X' so that the first iteration will work correctly
+        	//
+        	String lastGeneID = "X";
+        	List<Double> theList = null;
+		String[] dataRow;
+
+		while ((dataRow = myResults.getNextRow()) != null) {
+			int geneListID = Integer.parseInt(dataRow[0]);
+			String geneID = dataRow[1];
+			String currentIdentifier = dataRow[2];
+			Double statisticsValue = null;
+			if (dataRow[3] != null && !dataRow[3].equals("")) {
+				statisticsValue = new Double(dataRow[3]);
+			}
+
+                	thisGeneID = geneListID +" "+geneID;
+
+                	//
+                	// If the value in first 2 columns is the same as the value in the
+                	// first 2 columns of the previous record, add the value in the third
+                	// column to the list of statistics values.  Otherwise, close out this list
+                	// and set the statisticsValues list for the Gene.
+                	//
+                	if (thisGeneID.equals(lastGeneID) && statisticsValue != null) {
+				((List<Double>) latestGene.getStatisticsValues()).add(statisticsValue);
+				String[] sameGeneRow = null;
+				while ((sameGeneRow = myResults.getNextRow()) != null && 
+					thisGeneID.equals(Integer.parseInt(sameGeneRow[0]) + " "+ sameGeneRow[1]) &&
+					sameGeneRow[3] != null &&
+					!sameGeneRow[3].equals("")) {
+
+					//int i = myGenes.indexOf(new Gene(geneListID, geneID));
+					//Collections.sort(myGenes);
+					//int i = Collections.binarySearch(myGenes, new Gene(geneListID, geneID));
+					//log.debug("addings statisticsValue to existingList");
+
+					((List<Double>) latestGene.getStatisticsValues()).add(new Double(sameGeneRow[3]));
+				}
+				// Go back one row
+				myResults.getPreviousRow();
+				// Not sure why this was here -- should only need to be added once
+				//myGenes.add(latestGene);
+                	} else {
+				Gene newGene = new Gene();
+				newGene.setGene_list_id(geneListID);
+				newGene.setGene_id(geneID);
+				newGene.setCurrent_identifier(currentIdentifier);
+				//log.debug("just set currentIdentifier to "+currentIdentifier +" for gene "+geneID);
+				if (statisticsValue != null) {
+					theList = new ArrayList<Double>();
+					theList.add(statisticsValue);
+					newGene.setStatisticsValues(theList);
+				}
+				latestGene = newGene;
+				myGenes.add(latestGene);
+				//newGene.print();
+                	}
+                	lastGeneID = geneListID +" "+geneID;
+		}
+		myResults.close();
+
+        	myGeneArray = (Gene[]) myObjectHandler.getAsArray(myGenes, Gene.class);
+		//log.debug("done with getGenesAsGeneArray. myGeneArray contains this many entries: "+myGeneArray.length);
+
                 conn.close();
             }catch(SQLException e){
                 if(conn!=null && !conn.isClosed()){
@@ -2704,7 +2877,7 @@ public class GeneList{
                 }
                 throw new SQLException();
             }
-            return tmp;
+            return myGeneArray;
         }
         
 	/**
@@ -2812,19 +2985,21 @@ public class GeneList{
 
         
         public Set<String> getGenesAsSet(String whichIdentifier,DataSource pool)throws SQLException {
-            Connection conn=null;
-            Set<String> tmp=null;
-            try{
-                conn=pool.getConnection();
-                tmp=getGenesAsSet(whichIdentifier,conn);
-                conn.close();
-            }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-                throw new SQLException();
+           
+            TreeSet<String> geneSet = new TreeSet<String>();
+            
+            Gene[] myGeneArray = getGenesAsGeneArray(pool);
+            for (int i=0; i<myGeneArray.length; i++) {
+                    if (whichIdentifier.equals("Original")) {
+                            geneSet.add(myGeneArray[i].getGene_id());
+                    } else if (whichIdentifier.equals("Current")) {
+                            geneSet.add(myGeneArray[i].getCurrent_identifier());
+                    } else {
+                            log.error("wrong whichIidentifier sent to getGenesAsSet");
+                    }
             }
-            return tmp;
+           
+            return geneSet;
         }
         
 	/**
@@ -2835,7 +3010,6 @@ public class GeneList{
 	 * @return            a Set of Strings containing the gene identifiers in the gene list 
 	 */
 	public Set<String> getGenesAsSet(String whichIdentifier, Connection conn) throws SQLException {
-
         	log.debug("in getGenesAsSet");
 
         	Gene[] myGeneArray = getGenesAsGeneArray(conn);
@@ -2929,19 +3103,14 @@ public class GeneList{
 	}
 
         public String[] getGenesAsArray(String whichIdentifier,DataSource pool)throws SQLException {
-            Connection conn=null;
-            String[] tmp=null;
-            try{
-                conn=pool.getConnection();
-                tmp=getGenesAsArray(whichIdentifier,conn);
-                conn.close();
-            }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-                throw new SQLException();
-            }
-            return tmp;
+            log.debug("in getGenesAsArray");
+
+        	Set<String> geneSet = getGenesAsSet(whichIdentifier, pool);
+
+        	String[] geneArray = (String[]) myObjectHandler.getAsArray(geneSet, String.class);
+
+		//log.debug("size of Array = "+geneArray.length);
+        	return geneArray;
         }
         
 	/**

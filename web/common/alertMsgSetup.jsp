@@ -13,7 +13,7 @@
 	log.debug("additionalInfo = "+(String) session.getAttribute("additionalInfo"));
 	*/
 	
-	alertMsg = (alertMsgExists && !msgID.equals("-99") ? myMessage.getMessage(msgID, dbConn) : "") +
+	alertMsg = (alertMsgExists && !msgID.equals("-99") ? myMessage.getMessage(msgID, pool) : "") +
 		(!additionalInfo.equals("") ? "  " + additionalInfo : "");
 	log.debug("msgID = " + msgID + ", alertMsg = xxx"+alertMsg + "xxx");
 	if (loggedIn && !alertMsg.equals("")) {
@@ -23,7 +23,7 @@
 				(selectedDatasetVersion != null ? selectedDatasetVersion.getVersion() : -99), 
 				(selectedGeneList != null ? selectedGeneList.getGene_list_id() : -99), 
 				"Got this error/success msg:  " + alertMsg.substring(0,Math.min(alertMsg.length(),1980)),
-				dbConn);
+				pool);
 	}
 	//session.removeAttribute("successMsg");
 	//session.removeAttribute("additionalInfo");

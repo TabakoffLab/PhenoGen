@@ -7,9 +7,12 @@
 	mySessionHandler.createSessionActivity(session.getId(), "On Start Page", dbConn);
 %>
 
+
 <%@ include file="/web/common/header.jsp" %>
 
-
+<style>
+    #main_body{height: 775px;}
+</style>
     <div id="primary-content">
         <div id="welcome">
             <h2>Welcome, <strong><%=full_name%></strong></h2>

@@ -24,6 +24,9 @@
         log.info("in wgcna.jsp. user =  "+ user);
         optionsList.add("geneListDetails");
         optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 
 	request.setAttribute( "selectedTabId", "wgcna" );
 
@@ -32,6 +35,7 @@
 %>
 
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 <%@ include file="/web/geneLists/include/viewingPane.jsp" %>
 

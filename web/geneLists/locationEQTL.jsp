@@ -10,8 +10,17 @@
 	QTL.EQTL myEQTL = myQTL.new EQTL();
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
-        QTL[] myQTLLists= myQTL.getQTLLists(userID, selectedGeneList.getOrganism(), dbConn);
-        QTL[] myQTLs= myQTL.getQTLListsForUser(userID, dbConn);
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
+        
+        QTL[] myQTLLists = new QTL[0];
+        QTL[] myQTLs = new QTL[0];
+        if(! userLoggedIn.getUser_name().equals("anon")){
+            myQTLLists = myQTL.getQTLLists(userID, selectedGeneList.getOrganism(), pool);
+            myQTLs = myQTL.getQTLListsForUser(userID, pool);
+        }
+        
         QTL.Locus[] selectedLoci = null; 
         QTL.EQTL[] expressionQTLs = null;
 	QTL.EQTL[] expressionQTLsPlusNoPhysicalLocation = null;
@@ -20,7 +29,7 @@
         LinkedHashSet iDecoderSetForGenes = (session.getAttribute("iDecoderSet") != null ? 
 			new LinkedHashSet((Set) session.getAttribute("iDecoderSet")) : null);
 
-        Organism.Chromosome[] myChromosomes = myOrganism.getChromosomes(selectedGeneList.getOrganism(), dbConn);
+        Organism.Chromosome[] myChromosomes = myOrganism.getChromosomes(selectedGeneList.getOrganism(), pool);
 
 	session.setAttribute("myChromosomes", myChromosomes);
 
@@ -36,8 +45,8 @@
                 Integer.parseInt((String) request.getParameter("qtlListID")) : -99);
 
         if (qtlListID != -99) {
-                selectedLoci = myQTL.getQTLList(qtlListID, dbConn).getLoci();
-		qtl_list_name = myQTL.getQtl_list_name(qtlListID, dbConn);
+                selectedLoci = myQTL.getQTLList(qtlListID, pool).getLoci();
+		qtl_list_name = myQTL.getQtl_list_name(qtlListID, pool);
         }
 
 	//log.debug("iDecoderSetForGenes contains "+iDecoderSetForGenes.size() + " elements.");
@@ -105,10 +114,9 @@
         extrasList.add("jquery.PrintArea.js");
         extrasList.add("qtlForms.js");
         extrasList.add("locationEQTL.js");
-		extrasList.add("jquery.tooltip.js");
-		extrasList.add("jquery.tooltip.css");
+	extrasList.add("jquery.tooltip.js");
+	extrasList.add("jquery.tooltip.css");
         extrasList.add("eQTLGraphicControl.js");
-		
 	extrasList.add("defineQTL.js");
 
 	String advancedSettings = (request.getParameter( "advSettings" ) != null && 
@@ -189,19 +197,19 @@
 	        log.debug("tissue parameter now = "+tissue);
 		log.debug("calling getExpressionQTLInfo with useEQTLGeneSymbolList");
 		List eQTLListByGeneName = Arrays.asList(myEQTL.getExpressionQTLInfo(
-					useEQTLGeneSymbolList, "GeneName", selectedGeneList.getOrganism(), tissue, dbConn));
+					useEQTLGeneSymbolList, "GeneName", selectedGeneList.getOrganism(), tissue, pool));
 
 		log.debug("calling getExpressionQTLInfo with useProbeIDList");
 		List eQTLListByProbeID = Arrays.asList(myEQTL.getExpressionQTLInfo(
-					useProbeIDList, "ProbesetID", selectedGeneList.getOrganism(), tissue, dbConn));
+					useProbeIDList, "ProbesetID", selectedGeneList.getOrganism(), tissue, pool));
 
 		log.debug("calling getExpressionQTLInfo with useProbeIDListWithNoPhysicalLocation");
 		List eQTLListByProbeIDWithNoPhysicalLocation = Arrays.asList(myEQTL.getExpressionQTLInfo(
-					useProbeIDListWithNoPhysicalLocation, "ProbesetID", selectedGeneList.getOrganism(), tissue, dbConn));
+					useProbeIDListWithNoPhysicalLocation, "ProbesetID", selectedGeneList.getOrganism(), tissue, pool));
 
 		log.debug("calling getExpressionQTLInfo with nonProbeIDList");
 		List eQTLListByBoth = Arrays.asList(myEQTL.getExpressionQTLInfo(
-					nonProbeIDList, "Both", selectedGeneList.getOrganism(), tissue, dbConn));
+					nonProbeIDList, "Both", selectedGeneList.getOrganism(), tissue, pool));
 
 		List eQTLList = new ArrayList();
 		eQTLList.addAll(eQTLListByGeneName);
@@ -385,9 +393,9 @@ log.debug("after call");
 	request.getSession().setAttribute("transToDisplay", transToDisplay);
 	request.getSession().setAttribute("regionsToDisplay", regionsToDisplay);
 	request.getSession().setAttribute("selectedGeneList", selectedGeneList);
-	request.getSession().setAttribute("dbConn", dbConn);
 
 	%>
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %> 
 	<script type="text/javascript">
 		var ctrlMode = "<%= mode %>";

@@ -83,7 +83,7 @@ public class JacksonLab{
 		String accFileName = "/Users/smahaffey/iDecoder/InputFiles/MGI/MGIFile.txt";
 		String logDBFileName = "/Users/smahaffey/iDecoder/InputFiles/MGI/LogDBFile.txt";
 
-        	Connection jacksonConn = new PropertiesConnection().getConnection("/usr/share/tomcat/webapps/PhenoGen/web/common/dbProperties/jacksonMgd.properties");
+        	Connection jacksonConn = new PropertiesConnection().getConnection("/Library/Tomcat/webapps/PhenoGen/web/common/dbProperties/jacksonMgd.properties");
 
 		JacksonLab myJacksonLab = new JacksonLab();
 

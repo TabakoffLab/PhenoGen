@@ -18,7 +18,6 @@
 
 <%
 	extrasList.add("jquery.dataTables.1.10.9.min.js");
-        //extrasList.add("jquery.dataTables.min.css");
 
         tall="53em";
         
@@ -28,6 +27,9 @@
 	request.setAttribute( "selectedTabId", "mir" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 	//optionsList.add("download");
 	
 	//multiMiR Defaults
@@ -83,7 +85,7 @@
 	
 
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
@@ -101,7 +103,7 @@
         <div id="container">
         <div id="toolsAccord" style="text-align:left;">
                         <H2>Run New Analysis on Gene List</H2>
-                        <div style="font-size:12px;">
+                        <div style="font-size:12px;min-height:175px;">
                                 Save Results as: <input id="name" type="text" size="15"/>
                             <HR />
                                 Validation Level: 
@@ -120,7 +122,7 @@
                                     </select>
                                     <span class="mirtooltip"  title="Limit predicted search to only the top ___% or # of predicted miRNA targets.  The default will only search the top 20% of all predicted results by default."><img src="<%=imagesDir%>icons/info.gif"></span>
                                     <HR />
-                           Predicted Cutoff: Top <input id="cutoff" type="text" size="5" value="<%=cutoff%>" /><span id="lblPerc">% of </span> miRNAs 
+                                    Predicted Cutoff: Top <input id="cutoff" type="text" size="5" value="<%=cutoff%>" /><span id="lblPerc">% of</span>  miRNA-target pairs.
                                     <span class="mirtooltip"  title="Set the cutoff for the predicted cutoff type.  Ex. If Top percentage of miRNA targets is selected and 10 is entered you are searching the top 10% of predicted targets.  If Top number of miRNA targets is selected and 30000 is entered you are searching only the top 30,000 predicted targets."><img src="<%=imagesDir%>icons/info.gif"></span>
                                     <HR />
                            <!--Disease/Drug Association: --><input id="disease" type="hidden" value="" />
@@ -129,7 +131,7 @@
                         </div>
 
                         <H2>multiMiR Results</H2>
-                        <div>
+                        <div style="min-height: 150px;">
                                 <span style="font-size:10px;">Select a row below to view full results</span>
                             <div id="resultList">
                             </div>
@@ -211,6 +213,19 @@
                                 }
                               }
                         });
+                        $("#predType").change( function(){
+                            if($("#predType").val()==='p'){
+                                $("#lblPerc").show();
+                                if($("#cutoff").val()>100){
+                                    $("#cutoff").val("20");
+                                }
+                            }else{
+                                $("#lblPerc").hide();
+                                if($("#cutoff").val()<100){
+                                    $("#cutoff").val("5000");
+                                }
+                            }
+                        });
 		});
 		
 		
@@ -238,7 +253,7 @@
 					setTimeout(function (){
 						$('#runStatus').html("");
 					},20000);
-					runGetResults(0);
+					
 					$('select#table').val("all");
 					$('select#predType').val("p");
 					$('input#cutoff').val("20");
@@ -247,6 +262,9 @@
 				},
     			success: function(data2){ 
         			$('#runStatus').html(data2);
+                                setTimeout(function(){
+                                    runGetResults(0);
+                                },2000);
     			},
     			error: function(xhr, status, error) {
         			$('#runStatus').html("An error occurred Try submitting again. Error:"+error);
@@ -254,8 +272,10 @@
 			});
 		}
 		
-		
+		function setupGeneLists(){
+                    
+                }
 		
 	</script>
-
+<%@ include file="/web/geneLists/include/geneListFooter.jsp"%>
 <%@ include file="/web/common/footer_adaptive.jsp" %>

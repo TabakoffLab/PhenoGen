@@ -31,6 +31,7 @@ import oracle.jdbc.*;
 import edu.ucdenver.ccp.util.Debugger;
 /* for logging messages */
 import org.apache.log4j.Logger;
+import javax.sql.DataSource;
 
 /**
  * Class for handling data related to managing literature searches for interpreting gene lists.
@@ -773,7 +774,7 @@ public class LitSearch{
         }
   }
 
-  public void deleteLitSearch(int search_id, Connection conn) throws SQLException {
+  public void deleteLitSearch(int search_id, DataSource pool) throws SQLException {
   	
 	log.info("in deleteLitSearch");
 
@@ -826,22 +827,32 @@ public class LitSearch{
 
   	
   	PreparedStatement pstmt = null;
-
+        Connection conn=null;
 	try {
-                for (int i=0; i<query.length; i++) {
-                        log.debug("i = " + i + ", query = " + query[i]);
-                        pstmt = conn.prepareStatement(query[i],
-                            ResultSet.TYPE_SCROLL_INSENSITIVE,
-                            ResultSet.CONCUR_UPDATABLE);
-                        pstmt.setInt(1, search_id);
+            conn=pool.getConnection();
+            for (int i=0; i<query.length; i++) {
+                    log.debug("i = " + i + ", query = " + query[i]);
+                    pstmt = conn.prepareStatement(query[i],
+                        ResultSet.TYPE_SCROLL_INSENSITIVE,
+                        ResultSet.CONCUR_UPDATABLE);
+                    pstmt.setInt(1, search_id);
 
-                        pstmt.executeUpdate();
-                        pstmt.close();
-                }
+                    pstmt.executeUpdate();
+                    pstmt.close();
+            }
+            conn.close();
+            conn=null;
 	} catch (SQLException e) {
 		log.error("In exception of deleteLitSearch", e);
 		throw e;
-	}	
+	}finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }	
 
   }
   

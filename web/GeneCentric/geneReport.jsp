@@ -125,7 +125,7 @@
 <BR /><BR />
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
     <span class="trigger less" name="geneReport"  style="margin-left:30px;">Gene Details</span>
-    <div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+    <div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="<%=contextRoot%>/web/images/icons/help.png" /></div>
 </div>
 <div id="geneReport" >
 Add report here.
@@ -133,7 +133,7 @@ Add report here.
 <BR /><BR />
 <div style="font-size:18px; font-weight:bold; background-color:#DEDEDE; color:#000000; text-align:left; width:100%; ">
     <span class="triggerNoAction" name="geneReportEQTL"  style="margin-left:30px;">Gene EQTLs (Circos Plot)</span>
-    <div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
+    <div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="<%=contextRoot%>/web/images/icons/help.png" /></div>
 </div>
 <div id="geneReportEQTL" style="display:none;"></div>
             
@@ -162,18 +162,18 @@ Add report here.
 </script>-->
 
 <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
-            <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneDetailTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
-    		<span class="selectdetailMenu" name="geneEQTL">Gene eQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneEqtlTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
-    		<span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpGenePSTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
+            <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneDetailTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+    		<span class="selectdetailMenu" name="geneEQTL">Gene eQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneEqtlTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+    		<span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpGenePSTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
             
             	<%if(curGene.getGeneSymbol().toLowerCase().startsWith("mir")||curGene.getDescription().toLowerCase().startsWith("microRNA")){%>
-            		<span class="selectdetailMenu" name="miGenerna">Genes Targeted by this miRNA(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneMirTargetTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
+            		<span class="selectdetailMenu" name="miGenerna">Genes Targeted by this miRNA(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
                 <%}else{%>
-                	<span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpMirTargetTab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
+                	<span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
                 <%}%>
             
-            <!--<span class="selectdetailMenu" name="geneGO">GO<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div></span>-->
-            <span class="selectdetailMenu" name="geneWGCNA">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneWGCNATab" class="helpGeneRpt" src="../web/images/icons/help.png" /></div></span>
+            <!--<span class="selectdetailMenu" name="geneGO">GO<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>-->
+            <span class="selectdetailMenu" name="geneWGCNA">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneWGCNATab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
 </div>
 
 <div style="font-size:18px; font-weight:bold; background-color:#47c647; color:#FFFFFF; text-align:left; width:100%; ">
@@ -378,7 +378,7 @@ Add report here.
                         Affy Probe Set Data: Overlapping Probe Set Count:<%=curGene.getProbeCount()%> 
                             <span class="reporttooltip" 
                                   title="Summary of probe sets that overlap with an exon or intron of any Ensembl or RNA-Seq transcript for this gene and probe the same strand as the transcript.<BR>Note: The probe set track if displayed shows all non-masked probe sets in the region including the opposite strand.">
-                                <img src="../web/images/icons/info.gif" /></span>
+                                <img src="<%=contextRoot%>/web/images/icons/info.gif" /></span>
                     </div>
                     <%if(curGene.getProbeCount()>0){%>
                     <div class='adapt2Col'>
@@ -626,7 +626,6 @@ Add report here.
                 interactive: true,
                 interactiveTolerance: 350
         });
-        
 	$('.selectdetailMenu').click(function (){
 		var oldID=$('.selectdetailMenu.selected').attr("name");
 		$("#"+oldID).hide();
@@ -658,7 +657,7 @@ Add report here.
 
         function loadGeneReportTabs(id,scrollToDiv){
             if(id==="geneEQTL"){
-                    var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
+                    var jspPage=contextRoot+"web/GeneCentric/geneEQTLAjax.jsp";
                     var params={
                             species: organism,
                             geneSymbol: selectedGeneSymbol,
@@ -669,7 +668,7 @@ Add report here.
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
             }else if(id==="geneApp"){
                     $.ajax({
-                                    url: "web/GeneCentric/callPanelExpr.jsp",
+                                    url: contextRoot+"web/GeneCentric/callPanelExpr.jsp",
                                     type: 'GET',
                                     cache: 'false',
                                     data: {id:idStr,organism: organism,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
@@ -677,7 +676,7 @@ Add report here.
                             error: function(xhr, status, error) {console.log(error);}
                             });
             }else if(id==="geneMIrna"){
-                    var jspPage="web/GeneCentric/geneMiRnaAjax.jsp";
+                    var jspPage=contextRoot+"web/GeneCentric/geneMiRnaAjax.jsp";
                     var params={
                             species: organism,
                             id:selectedID
@@ -685,7 +684,7 @@ Add report here.
                     loadDivWithPage("div#geneMIrna",jspPage,scrollToDiv,params,
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
             }else if(id==="miGenerna"){
-                    var jspPage="web/GeneCentric/miGeneRnaAjax.jsp";
+                    var jspPage=contextRoot+"web/GeneCentric/miGeneRnaAjax.jsp";
                     var params={
                             species: organism,
                             id:geneSymStr
@@ -694,7 +693,7 @@ Add report here.
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
             }else if(id==="geneWGCNA"){
                     $("div#regionWGCNAEQTL").html("");
-                    var jspPage="web/GeneCentric/wgcnaGene.jsp";
+                    var jspPage=contextRoot+"web/GeneCentric/wgcnaGene.jsp";
                     var params={
                             species: organism,
                             id:selectedID

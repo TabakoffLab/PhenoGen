@@ -9,7 +9,7 @@
  *      
 --%>
 
-<%@ include file="/web/common/session_vars.jsp"  %>
+<%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <%-- The FileHandler bean handles the multipart request containing the files to be uploaded.  --%>
 
@@ -20,6 +20,7 @@
 
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList" > </jsp:useBean>
 <jsp:useBean id="myErrorEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 
 <%
 	log.info("in createGeneList2.jsp. user = " + user);
@@ -33,9 +34,19 @@
 	//String additionalInfo = ""; 
 
         String geneListDir = userLoggedIn.getUserGeneListsUploadDir();
+        if(userLoggedIn.getUser_name().equals("anon")){
+            geneListDir=geneListDir+anonU.getUUID();
+            File upDir=new File(geneListDir);
+            if(!upDir.exists()){
+                upDir.mkdirs();
+            }
+            geneListDir=geneListDir+"/";
+                    
+        }
         log.debug("upload geneList dir = "+geneListDir);
 
         log.debug("before call to uploadFiles");
+        
 	// Path must be set before calling uploadFiles
         thisFileHandler.setPath(geneListDir);
 	thisFileHandler.uploadFiles();
@@ -68,7 +79,13 @@
 	//
 	// make sure the gene list name is unique
 	//
-	if (myGeneList.geneListNameExists(gene_list_name, userID, pool)) {
+        boolean exists=false;
+        if(userLoggedIn.getUser_name().equals("anon")){
+            exists=myAnonGeneList.geneListNameExists(gene_list_name, anonU.getUUID() ,pool);
+        }else{
+            exists=myGeneList.geneListNameExists(gene_list_name, userID, pool);
+        }
+	if (exists) {
 		//Error - "gene list name exists"
 		session.setAttribute("errorMsg", "GL-006");
 		session.setAttribute("gene_list_name", gene_list_name);
@@ -79,10 +96,17 @@
 	} else {
 		int geneListID = -99;
 
-		GeneList newGeneList = new GeneList();
+		GeneList newGeneList = null;
+                if(userLoggedIn.getUser_name().equals("anon")){
+                    newGeneList=new AnonGeneList();
+                    newGeneList.setCreated_by_user_id(-20);
+                }else{
+                    newGeneList=new GeneList();
+                    newGeneList.setCreated_by_user_id(userID);
+                }
 		newGeneList.setGene_list_name(gene_list_name);	
-		newGeneList.setDescription(description);	
-		newGeneList.setCreated_by_user_id(userID);	
+		newGeneList.setDescription(description);
+                
 		newGeneList.setOrganism(organism);	
 		newGeneList.setAlternateIdentifierSource("Current");	
 		newGeneList.setAlternateIdentifierSourceID(-99);	
@@ -102,7 +126,7 @@
 
                         geneListID = newGeneList.createGeneList(pool);
                         log.debug("geneListID = "+ geneListID);
-
+                        
                         myGeneList.loadGeneListFromList(resultGeneList, geneListID, pool);
 			additionalInfo = "";
 
@@ -110,6 +134,10 @@
                                 geneListID,
                                 "Created Gene List by typing it in",
                                 pool);
+                       
+                        if(userLoggedIn.getUser_name().equals("anon")){
+                            anonU.linkGeneList(geneListID,pool);
+                        }
 
                         log.debug("just loaded gene list into genes table");
 			session.setAttribute("successMsg", "GL-013");
@@ -143,13 +171,16 @@
 					} else {
 						log.debug("geneListOrigFileName = "+nextFileName);
 						try {
-							geneListID = newGeneList.loadFromFile(0, geneListFileName, pool); 
+							geneListID = newGeneList.loadFromFile(0,geneListFileName, pool); 
 							log.debug("successfully uploaded gene list");
 							additionalInfo = "The file "+
 								nextFileName + 
 								" has been <strong>successfully</strong> uploaded.<br>";
 			                		mySessionHandler.createGeneListActivity(session.getId(), geneListID, 
 												"Uploaded Gene List", pool);
+                                                        if(userLoggedIn.getUser_name().equals("anon")){
+                                                            anonU.linkGeneList(geneListID,pool);
+                                                        }
 							String genesNotFound = myGeneList.checkGenes(geneListID, pool);
 							if (genesNotFound.length() > 0) {
 								additionalInfo = additionalInfo + 

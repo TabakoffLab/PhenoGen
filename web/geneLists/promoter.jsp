@@ -21,6 +21,9 @@
     
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 	/*if(!selectedGeneList.getOrganism().equals("Rn")){
 		extrasList.add("createOpossum.js");
 	}*/
@@ -33,6 +36,7 @@
 	SimpleDateFormat displayFormat = new SimpleDateFormat("MMM dd, yyyy");
 	String displayNow = displayFormat.format(displayTime);
 %>
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
@@ -52,9 +56,9 @@
         </style>
         
         <div id="container">
-        <div id="toolsAccord" style="text-align:left;">
+        <div id="toolsAccord" style="text-align:left;min-height:100px;">
                             <H2>Run New Promoter Analysis on Gene List</H2>
-                            <div id="newAnalysis" style="font-size:12px;">
+                            <div id="newAnalysis" style="font-size:12px;min-height:450px">
                                 <% if (selectedGeneList.getOrganism().equals("Mm") ||
                                             selectedGeneList.getOrganism().equals("Rn") ||
                                             selectedGeneList.getOrganism().equals("Hs")) {
@@ -338,14 +342,14 @@
                                 <% } %>
                             </div>
                             <H2>Promoter Results</H2>
-                            <div id="resultsTable">
+                            <div id="resultsTable" style="min-height:200px;">
                                 <span style="font-size:10px;">Select a row below to view full results</span>
                                 <div id="resultList">
                                 </div>
                             </div>
                 
             </div>
-            <div id="topResultData">
+            <div id="topResultData" style="min-height:100px;">
 
                                <div id="resultLoading" style="display:none;width:100%;text-align:center;">
                                        <img src="<%=imagesDir%>wait.gif" alt="Loading Results..." text-align="center" ><BR />Loading Results...
@@ -371,6 +375,7 @@
 	
 
 <%@ include file="/web/geneLists/include/setupJS.jsp" %>
+<%@ include file="/web/geneLists/include/geneListFooter.jsp"%>
 <%@ include file="/web/common/footer_adaptive.jsp" %>
   <script type="text/javascript">
     var geneNumber=<%=selectedGeneList.getNumber_of_genes()%>;

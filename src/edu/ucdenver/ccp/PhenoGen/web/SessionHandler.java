@@ -14,10 +14,13 @@ import edu.ucdenver.ccp.PhenoGen.data.Experiment;
 import edu.ucdenver.ccp.PhenoGen.data.GeneList;
 import edu.ucdenver.ccp.PhenoGen.data.User;
 import edu.ucdenver.ccp.PhenoGen.util.DbUtils;
+import edu.ucdenver.ccp.PhenoGen.web.mail.Email;
 import edu.ucdenver.ccp.util.sql.Results;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import javax.mail.MessagingException;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -1143,18 +1146,13 @@ public class SessionHandler {
 	}
   
         public void createGeneListActivity(String sessionID, int geneListID, String activityName,DataSource pool)throws SQLException {
-            Connection conn=null;
-            
-            try{
-                conn=pool.getConnection();
-                createGeneListActivity(sessionID,geneListID,activityName,conn);
-                conn.close();
-            }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-                throw new SQLException();
-            }
+                SessionHandler mySessionHandler = new SessionHandler();
+
+       		mySessionHandler.setSession_id(sessionID);
+		mySessionHandler.setGene_list_id(geneListID);
+        	mySessionHandler.setActivity_name(activityName);
+		
+		createSessionActivity(mySessionHandler, pool);
         }
         
 	/**
@@ -1503,6 +1501,34 @@ public class SessionHandler {
                 }
 	}
 
+        
+        public void sendAnonSessionRecoveryEmail(ArrayList<String> idList,String email) throws MessagingException{
+            String subject="PhenoGen Session Recovery";
+            String message="";
+            
+            if(idList.isEmpty()){
+                message="There were no sessions linked to this email address.";
+            }else{
+                StringBuilder sb=new StringBuilder();
+                for(int i=0;i<idList.size();i++){
+                    sb.append("https://"+host+contextRoot+"/"+accessDir+"/recover.jsp?uuid="+idList.get(i)+"\n");
+                }
+                message="Hello,\n\nThe following sessions were linked to this email address.";
+                if(idList.size()>1){
+                    message=message+" You cannot use more than one session at a time, so please use the link to view one session at a time.";
+                }
+                message=message+"\n\n";
+                message=message+sb.toString();
+                message=message+"\n\nThank you for using PhenoGen.  Please use the contact form if you have any questions or concerns. \n\nSincerely,\nThe PhenoGen Team\nhttps://phenogen.udenver.edu";
+            }
+            
+            Email em=new Email();
+            em.setTo(email);
+            em.setSubject(subject);
+            em.setContent(message);
+            em.sendEmail();
+        }
+        
 }
 
 

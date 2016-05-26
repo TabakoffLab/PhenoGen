@@ -3,6 +3,7 @@ package edu.ucdenver.ccp.PhenoGen.data;
 import java.sql.*;
 import java.util.*;
 import edu.ucdenver.ccp.util.sql.*;
+import javax.sql.DataSource;
                                                                                                                        
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -72,6 +73,43 @@ public class Message{
 
 		return message;
   	}
+        /**
+	 * Retrieves the text for the requested message id.
+	 * @param msgID	the ID of the message
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return            the text of the message
+	 */
+  	public String getMessage(String msgID, DataSource pool) throws SQLException {
+		String message="";
+		String query =
+			"select text "+
+			"from messages "+
+			"where id = ?";
 
+		//log.debug("query = "+ query);
+		log.debug("in getMessage. msgID = " + msgID);
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, msgID, conn);
+
+                    message = myResults.getStringValueFromFirstRow();
+
+                    myResults.close();
+                    conn.close();
+                    conn=null;
+                }catch(SQLException er){
+                    throw er;
+                }finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+		return message;
+  	}
 }
 

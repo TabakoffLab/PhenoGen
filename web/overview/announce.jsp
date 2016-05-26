@@ -12,6 +12,12 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                         <H2>PhenoGen v3.0 5/31/2016</H2>
+                        <div style="margin-left:5px;">
+                            <span style=" font-weight: bold;">Anonymous Gene List</span> - You can now use our gene list analysis tools without registering.  We encourage you to link your email so you don't loose access to previous work.<BR>
+                            <span style=" font-weight: bold;">Rn6 (June 2016):</span> Rn6 - Will be available in June 2016.  Rn6 and Rn5 will be available in the genome browser, public HXB datasets, and gene list analysis tools.
+                              
+                        </div>
                         <H2>PhenoGen v2.16.1 11/10/2015</H2>
                         <div style="margin-left:5px;">
                             <span style=" font-weight: bold;">Security Updates</span> - We now require using HTTPS so all of the data transmitted between your browser and our server is encrypted.  Update your bookmarks.<BR>

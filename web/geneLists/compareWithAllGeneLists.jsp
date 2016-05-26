@@ -10,17 +10,28 @@
 
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %> 
 
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
+
 <%
 	log.debug("in compareWithAllGeneLists.jsp");
 	request.setAttribute( "selectedTabId", "compare" );
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 
-	GeneList.Gene[] myGenes = selectedGeneList.findContainingGeneLists(userID, pool);
+	GeneList.Gene[] myGenes = new GeneList.Gene[0];
+        if(userLoggedIn.getUser_name().equals("anon")){
+            AnonGeneList sgl=(AnonGeneList) selectedGeneList;
+            myGenes = sgl.findContainingGeneLists(anonU.getUUID(), pool);
+        }else{
+            myGenes = selectedGeneList.findContainingGeneLists(userID, pool);
+        }
 	mySessionHandler.createGeneListActivity("Compared '" + selectedGeneList.getGene_list_name() + "' with all gene lists", pool);
 
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
@@ -36,7 +47,7 @@
 	<div class="dataContainer" style="padding-bottom:70px;">
 		<div class="menuBar">
         		<div id="tabMenu">
-                        	<div class="left inlineButton"><a href="compareWithOneGeneList.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With One Gene List</a></div>
+                        	<span class="left button" style="width:220px;"><a href="compareWithOneGeneList.jsp?geneListID=<%=selectedGeneList.getGene_list_id()%>">Compare With One Gene List</a></span>
 			</div> <!-- tabMenu -->
 		</div> <!-- menuBar -->
 

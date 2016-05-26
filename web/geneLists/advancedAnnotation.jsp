@@ -15,6 +15,8 @@
 <jsp:useBean id="myEnsembl" class="edu.ucdenver.ccp.PhenoGen.data.external.Ensembl"> </jsp:useBean>
 <jsp:useBean id="thisIDecoderClient" class="edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient"> </jsp:useBean>
 
+
+
 <%
 	
 	log.info("in advancedAnnotation.jsp. user = " + user);
@@ -23,6 +25,9 @@
 	extrasList.add("advancedAnnotation.js");
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
+        if(userLoggedIn.getUser_name().equals("anon")){
+            optionsListModal.add("linkEmail");
+        }
 	optionsList.add("basicAnnotation");
 
 	String[] identifierTypes = thisIDecoderClient.getIdentifierTypes(pool);
@@ -56,7 +61,7 @@
 				arrayNames.addAll(Arrays.asList(codeLinkChipTargets));
 			}
 			String[] arrayTargets = (arrayNames.size() > 0 ? (String[]) arrayNames.toArray(new String[arrayNames.size()]) : null);
-			//log.debug("iDecoder targetSize = "+iDecoderTargets.length); myDebugger.print(iDecoderTargets);
+			log.debug("iDecoder targetSize = "+iDecoderTargets.length); myDebugger.print(iDecoderTargets);
 			// 
 			// If the user selected "Genetic Variations", make sure "Ensembl ID" is one of the targets
 			// because these will need to be passed to Ensembl to get the transcripts
@@ -130,7 +135,7 @@
         formName = "advancedAnnotation.jsp";
 	
 %>
-
+<%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
 <%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 	<%@ include file="/web/geneLists/include/viewingPane.jsp" %>
@@ -151,7 +156,8 @@
 		onSubmit="return IsAdvancedAnnotationComplete()"
         	enctype="application/x-www-form-urlencoded">
 
-		<% if (selectedGeneList.getNumber_of_genes() > 400) { %>
+		<% log.debug("after form");
+                    if (selectedGeneList.getNumber_of_genes() > 400) { %>
 			<div class="tab-intro">
 			<p>Since your gene list contains more than 400 genes, 
 				the results cannot be displayed online.<%=twoSpaces%>

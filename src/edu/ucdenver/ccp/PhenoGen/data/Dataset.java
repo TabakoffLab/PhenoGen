@@ -728,6 +728,37 @@ public class Dataset {
         	return version;
 	}
 
+         
+        /**
+	 * Retrieves a Dataset object with the data values set to those retrieved from the database.  
+	 * Also retrieves
+	 * the DatasetVersions for this Dataset AND does setVersion_path().
+	 * @param dataset_id	the ID of the dataset
+	 * @param userLoggedIn	the User object of the user logged in
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return            A Dataset object with its values setup 
+	 */
+	public Dataset getDataset(int dataset_id, User userLoggedIn, DataSource pool,String userFileRoot) throws SQLException {
+        	log.debug("\nin getDataset with userLoggedIn. dataset_id = " +dataset_id);
+                log.debug("\n"+userLoggedIn.getUserMainDir());
+		Dataset thisDataset = getDataset(dataset_id, pool,userFileRoot);
+		thisDataset.setPath(thisDataset.getDatasetPath(userLoggedIn.getUserMainDir()));
+
+		log.debug("just set path to "+thisDataset.getPath());
+		if (thisDataset.getDatasetVersions() != null && thisDataset.getDatasetVersions().length > 0) {
+			for (int i=0; i<thisDataset.getDatasetVersions().length; i++) {
+				DatasetVersion thisDatasetVersion = thisDataset.getDatasetVersions()[i];
+				thisDataset.getDatasetVersions()[i].setVersion_path(thisDataset.getPath(), thisDataset.getDatasetVersions()[i].getVersion());
+				// this makes sure the exp path and hybridIDs are available for the version
+				thisDatasetVersion.setDataset(thisDataset);
+			}
+		}
+        	//log.debug("setting up parameter values in getDataset with userLoggedIn. dataset_id = " +dataset_id);
+		setupDatasetParameterValues(userLoggedIn.getUser_id(), thisDataset, pool);
+		return thisDataset;
+	} 
+         
 	/**
 	 * Retrieves a Dataset object with the data values set to those retrieved from the database.  
 	 * Also retrieves
@@ -1065,6 +1096,48 @@ public class Dataset {
 
 	}
 
+        
+        /**
+	 * Gets the hybridIDs for this dataset. 
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return            a Set of Strings containing the hybridIDs
+	 */
+	public Set getDatasetHybridIDsAsSet(DataSource pool) throws SQLException {
+
+        	String query =
+                	"select uc.hybrid_id "+
+                	"from user_chips uc, "+
+			"dataset_chips dc "+
+                	"where uc.user_chip_id = dc.user_chip_id "+
+                	"and dc.dataset_id = ? "+
+                	"order by uc.hybrid_id";
+
+        	log.info("in getDatasetHybridIDsAsSet");
+        	//log.debug("query = "+query);
+                Connection conn=null;
+                Set hybridIDsSet = null;
+                try{
+                    
+                    conn=pool.getConnection();
+                    Results myResults = new Results(query, this.getDataset_id(), conn);
+                    hybridIDsSet = myObjectHandler.getResultsAsSet(myResults, 0);
+
+                    myResults.close();
+                    conn.close();
+                }catch(SQLException e){
+                    throw e;
+        	}finally{
+                    if(conn!=null && !conn.isClosed()){
+                        try{
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){}
+                    }
+                }
+        	return hybridIDsSet;
+	}
+        
 	/**
 	 * Gets the hybridIDs for this dataset. 
 	 * @param conn	the database connection
@@ -1091,6 +1164,27 @@ public class Dataset {
         	return hybridIDsSet;
 	}
 
+        /**
+	 * Gets the hybridIDs for this dataset. 
+	 * @param conn	the database connection
+	 * @throws            SQLException if a database error occurs
+	 * @return            a comma-separated list of hybrid IDs already contained in this dataset
+	 */
+	public String getDatasetHybridIDs(DataSource pool) throws SQLException {
+
+        	//log.info("in getDatasetHybridIDs");
+
+        	Set hybridIDsSet = getDatasetHybridIDsAsSet(pool);
+		String hybridIDs = "(" +
+        		myObjectHandler.getAsSeparatedString(hybridIDsSet, ",", "") +
+                	")";
+
+		if (hybridIDs.equals("()")) {
+			hybridIDs = "('')";
+		}
+        	return hybridIDs;
+	}
+        
 	/**
 	 * Gets the hybridIDs for this dataset. 
 	 * @param conn	the database connection
@@ -2622,6 +2716,17 @@ public class Dataset {
 		return false;
 	}
 
+        
+        public Dataset setupDatasetParameterValues(int user_id, Dataset thisDataset, DataSource pool) throws SQLException {
+		log.debug("in setupDatasetParameterValues for a dataset");
+		for (DatasetVersion thisDatasetVersion : thisDataset.getDatasetVersions()) {
+			thisDatasetVersion.setParameters(new ParameterValue().getParameterValuesForDatasetVersion(thisDatasetVersion, pool));
+			thisDatasetVersion.setGeneLists(new GeneList().getGeneListsForDatasetVersion(thisDatasetVersion, pool));
+			thisDatasetVersion.setGroupCounts(thisDatasetVersion.getGroupCounts(pool));
+		}
+		return thisDataset;
+	} 
+        
 	/**
 	 * Sets the parameter value-related attributes for the dataset and the dataset versions
 	 * @param user_id	the identifier of the user logged in
@@ -3674,6 +3779,59 @@ public class Dataset {
 			return this.getVersion_path() + "ClusterAnalyses/";
   		}
 
+                
+                /**
+	 	* Retrieves the number of datafiles in each group for this dataset version.  
+	 	* @param conn	the database connection
+	 	* @throws            SQLException if a database error occurs
+	 	* @return	an array containing the number of datafiles in each group.  
+	 	*		Note that this array is ordered by the group's number (e.g., 1, 2, 3). 
+	 	*/
+
+		public int[] getGroupCounts(DataSource pool) throws SQLException {
+
+			//log.debug("in get GroupCounts. " );
+
+        		String query =
+                                "select grps.group_number, count(*) "+
+                                "from groups grps, chip_groups cg, dataset_versions dv "+
+                                "where dv.grouping_id = grps.grouping_id "+
+                                "and dv.dataset_id = ? "+
+                                "and dv.version = ? "+
+                                "and grps.group_number != 0 "+
+                                "and cg.group_id = grps.group_id "+
+                                "group by grps.group_number "+
+                                "order by grps.group_number";
+
+			//log.debug("query = "+query);
+
+			//log.debug("dataset_id = "+this.getDataset().getDataset_id() + ", version = "+ this.getVersion());
+                        Connection conn=null;
+                        int[] groupCount = new int[0];
+                        try{
+                            conn=pool.getConnection();
+                            Results myResults = new Results(query, new Object[] {this.getDataset().getDataset_id(), this.getVersion()}, conn);
+
+                            groupCount = myObjectHandler.getResultsAsIntArray(myResults, 1);
+
+                            myResults.close();
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){
+                            throw e;
+                        }finally{
+                            if(conn!=null && !conn.isClosed()){
+                                try{
+                                    conn.close();
+                                    conn=null;
+                                }catch(SQLException e){}
+                            }
+                        }
+
+  			return groupCount;
+		}
+                
+                
 		/**
 	 	* Retrieves the number of datafiles in each group for this dataset version.  
 	 	* @param conn	the database connection
@@ -3709,6 +3867,64 @@ public class Dataset {
   			return groupCount;
 		}
 
+                
+                /**
+ 	 	* Retrieves the groups for this dataset version 
+	 	* @param conn	the database connection
+	 	* @throws            SQLException if a database error occurs
+	 	* @return	an array of Group objects
+	 	*/
+		public Group[] getGroups(DataSource pool) throws SQLException {
+
+			log.debug("in getGroups for a dataset version");
+        		String query =
+                                "select grpings.grouping_id, "+
+				"grpings.grouping_name, "+
+				"grpings.criterion, "+
+				"grps.group_id, "+
+				"grps.group_number, "+
+				"grps.group_name, "+
+				"grps.has_expression_data, "+
+				"grps.has_genotype_data, "+
+				"grps.parent "+
+                                "from groups grps, groupings grpings, dataset_versions dv "+
+                                "where dv.grouping_id = grps.grouping_id "+
+                                "and grpings.grouping_id = grps.grouping_id "+
+                                "and grpings.dataset_id = dv.dataset_id "+
+                                "and dv.dataset_id = ? "+
+                                "and dv.version = ? "+
+                                "order by to_number(grps.group_number)";
+
+			//log.debug("query = "+query);
+        		List<Group> myGroupList = new ArrayList<Group>();
+
+                        Connection conn=null;
+                        try{
+                            conn=pool.getConnection();
+                            Results myResults = new Results(query, new Object[] {this.getDataset().getDataset_id(), this.getVersion()}, conn);
+                            String[] dataRow;
+                            while ((dataRow = myResults.getNextRow()) != null) {
+                                    Group newGroup = new Group().setupGroup(dataRow);
+                                    myGroupList.add(newGroup);
+                            } 
+                            myResults.close();
+                            conn.close();
+                        }catch(SQLException e){
+                            throw e;
+                        }finally{
+                            if(conn!=null && !conn.isClosed()){
+                                try{
+                                    conn.close();
+                                    conn=null;
+                                }catch(SQLException e){}
+                            }
+                        }
+                        
+			Group[] myGroupArray = (Group[]) myObjectHandler.getAsArray(myGroupList, Group.class);
+
+  			return myGroupArray;
+  		}
+                
 		/**
  	 	* Retrieves the groups for this dataset version 
 	 	* @param conn	the database connection
@@ -3781,6 +3997,32 @@ public class Dataset {
   			return myHashtable;
   		}
 
+                
+                /**
+ 	 	* Retrieves the groups for this dataset version that have expression data.
+	 	* @param conn	the database connection
+	 	* @throws            SQLException if a database error occurs
+	 	* @return	an array of Group objects
+	 	*/
+		public Group[] getGroupsWithExpressionData(DataSource pool) throws SQLException {
+
+			log.debug("in getGroupsWithExpressionData for a dataset version");
+
+			Group[] inGroupArray = getGroups(pool); 
+
+        		List<Group> myGroupList = new ArrayList<Group>();
+			for (int i=0; i<inGroupArray.length; i++) {
+				if (inGroupArray[i].getHas_expression_data().equals("Y")) {
+                        		myGroupList.add(inGroupArray[i]);
+				}
+			} 
+
+			Group[] outGroupArray = (Group[]) myObjectHandler.getAsArray(myGroupList, Group.class);
+
+  			return outGroupArray;
+  		}
+                
+                
 		/**
  	 	* Retrieves the groups for this dataset version that have expression data.
 	 	* @param conn	the database connection
@@ -4220,6 +4462,51 @@ public class Dataset {
 			return myObjectHandler.getAsArray(otherGroups, Group.class);
         	}
 
+                
+                /**
+	 	* Retrieves the grouping object for the grouping_id.
+	 	* @param grouping_id	the identifier of the grouping
+	 	* @param conn	the database connection
+	 	* @throws            SQLException if a database error occurs
+	 	* @return            the grouping object
+	 	*/
+  		public Group getGrouping(int grouping_id, DataSource pool) throws SQLException {
+
+			//log.debug("in Group.getGrouping. grouping_id = " + grouping_id);
+        		String query =
+				"select grouping_id, grouping_name, criterion, dataset_id "+
+				"from groupings "+
+				"where grouping_id = ?";
+                        Connection conn=null;
+                        Group newGroup = null;
+                        try{
+                            conn=pool.getConnection();
+                            //log.debug("query = "+query);
+                            Results myResults = new Results(query, grouping_id, conn);
+                            String[] dataRow;
+                            
+                            while ((dataRow = myResults.getNextRow()) != null) {
+                                    newGroup = new Group().setupGrouping(dataRow);
+                            } 
+                            myResults.close();
+                            conn.close();
+                            conn=null;
+                        }catch(SQLException e){
+                            throw e;
+                        }finally{
+                            if(conn!=null && !conn.isClosed()){
+                                try{
+                                    conn.close();
+                                    conn=null;
+                                }catch(SQLException e){}
+                            }
+                        }
+
+  			return newGroup;
+		}
+                
+                
+                
 		/**
 	 	* Retrieves the grouping object for the grouping_id.
 	 	* @param grouping_id	the identifier of the grouping

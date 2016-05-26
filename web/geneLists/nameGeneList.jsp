@@ -9,6 +9,8 @@
 --%>
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"%>
 
+<jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
+
 <%
 	optionsList.add("geneListDetails");
 	optionsList.add("chooseNewGeneList");
@@ -52,7 +54,13 @@
 		}
 
 		description = description.substring(0, Math.min(description.length(), 3998)).trim();
-		if (myGeneList.geneListNameExists(gene_list_name, userID, pool)) { 
+                boolean exists=false;
+                if(userLoggedIn.getUser_name().equals("anon")){
+                    exists=myAnonGeneList.geneListNameExists(gene_list_name, anonU.getUUID() ,pool);
+                }else{
+                    exists=myGeneList.geneListNameExists(gene_list_name, userID, pool);
+                }
+		if (exists) { 
 			//Error - "Gene list name exists"
 			session.setAttribute("errorMsg", "GL-006");
                         response.sendRedirect(commonDir + "errorMsg.jsp");
@@ -60,7 +68,7 @@
 			int geneListID = -99;
 			if (resultGeneList.size() > 0) {
 
-                        	parameterGroupID = myParameterValue.createParameterGroup(dbConn);
+                        	parameterGroupID = myParameterValue.createParameterGroup(pool);
 
                         	myParameterValue.setParameter_group_id(parameterGroupID);
                         	myParameterValue.setCreate_date();
@@ -69,12 +77,21 @@
 						Arrays.asList(request.getParameterValues("userList"))); 
 				//log.debug("userList = "); myDebugger.print(userList);
 	
-				GeneList newGeneList = new GeneList();
+				GeneList newGeneList =null;
+                                if(userLoggedIn.getUser_name().equals("anon")){
+                                        newGeneList = new AnonGeneList();
+                                }else{
+                                        newGeneList = new GeneList();
+                                }
 				newGeneList.setGene_list_users(userList);
 
 				newGeneList.setGene_list_name(gene_list_name);	
-				newGeneList.setDescription(description);	
-				newGeneList.setCreated_by_user_id(userID);	
+				newGeneList.setDescription(description);
+                                if(userLoggedIn.getUser_name().equals("anon")){
+                                    newGeneList.setCreated_by_user_id(-20);
+                                }else{
+                                    newGeneList.setCreated_by_user_id(userID);	
+                                }
 				newGeneList.setParameter_group_id(parameterGroupID);	
 
 				if (geneListSource.equals("compare")) {
@@ -85,12 +102,14 @@
                                 	myParameterValue.setCategory("Gene List Source");
                                 	myParameterValue.setParameter("Gene List Comparison");
                                 	myParameterValue.setValue(comparisonType);
-                                	myParameterValue.createParameterValue(dbConn);
+                                	myParameterValue.createParameterValue(pool);
 
                         		geneListID = newGeneList.createGeneList(pool);
 
                         		myGeneList.loadGeneListFromList(resultGeneList, geneListID, pool);
-
+                                        if(userLoggedIn.getUser_name().equals("anon")){
+                                            anonU.linkGeneList(geneListID,pool);
+                                        }
                         		mySessionHandler.createGeneListActivity(session.getId(), 
                                 		geneListID,
                                 		"Created Gene List from comparison of 2 gene lists",
@@ -117,7 +136,7 @@
                                 	myParameterValue.setCategory("Gene List Source");
                                 	myParameterValue.setParameter("QTL Analysis");
                                 	myParameterValue.setValue(geneListParameters);
-                                	myParameterValue.createParameterValue(dbConn);
+                                	myParameterValue.createParameterValue(pool);
 
                         		geneListID = newGeneList.createGeneList(pool);
 
@@ -152,7 +171,8 @@
 %>
 
 <% if (!geneListSource.equals("QTL")) { %>
-	<%@ include file="/web/common/header.jsp" %>
+        <%@ include file="/web/geneLists/include/geneListJS.jsp"  %>
+	<%@ include file="/web/common/header_adaptive_menu.jsp" %>
 
 
 
@@ -209,10 +229,12 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			hideLoadingBox();
-			setTimeout("setupMain()", 100); 
+			setTimeout("setupMain()", 100);
+                        setUUID();
 		});
 	</script>
 
 <% if (!geneListSource.equals("QTL")) { %>
-	<%@ include file="/web/common/footer.jsp" %>
+	<%@ include file="/web/geneLists/include/geneListFooter.jsp"%>
+        <%@ include file="/web/common/footer_adaptive.jsp" %>
 <% } %>

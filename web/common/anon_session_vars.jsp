@@ -84,6 +84,8 @@
     <jsp:setProperty name="mySessionHandler" property="dbExtFileDir" 
                	value="<%=application.getInitParameter(\"dbExtFileDir\") %>" />
     <jsp:setProperty name="mySessionHandler" property="session" value="<%=session%>" />
+    <jsp:setProperty name="mySessionHandler" property="captchaPropertiesFile" 
+               	value="<%=application.getInitParameter(\"captchaPropertiesFile\") %>" />
 </jsp:useBean>
 	
 
@@ -92,39 +94,7 @@
 <%@ include file="/web/common/common_vars.jsp"%>
 
 <%
-	/*if((String) session.getAttribute("perlDir")==null){
-		session.setAttribute("applicationRoot",application.getInitParameter("applicationRoot")+"/");
-		session.setAttribute("contextRoot",application.getInitParameter("contextRoot")+"/");
-		session.setAttribute("userFilesRoot",application.getInitParameter("userFilesRoot")+"/");
-		session.setAttribute("webDir",application.getInitParameter("webDir")+"/");
-		session.setAttribute("r_FunctionDir",application.getInitParameter("r_FunctionDir")+"/");
-		session.setAttribute("accessDir",application.getInitParameter("accessDir")+"/");
-		session.setAttribute("aptDir",application.getInitParameter("aptDir")+"/");
-		session.setAttribute("datasetsDir",application.getInitParameter("datasetsDir")+"/");
-		session.setAttribute("experimentsDir",application.getInitParameter("experimentsDir")+"/");
-		session.setAttribute("geneListsDir",application.getInitParameter("geneListsDir")+"/");
-		session.setAttribute("qtlsDir",application.getInitParameter("qtlsDir")+"/");
-		session.setAttribute("exonDir",application.getInitParameter("exonDir")+"/");
-		session.setAttribute("ucscGeneDir",application.getInitParameter("ucscGeneDir")+"/");
-		session.setAttribute("ucscDir",application.getInitParameter("ucscDir")+"/");
-		session.setAttribute("bedDir",application.getInitParameter("bedDir")+"/");
-		session.setAttribute("sysBioDir",application.getInitParameter("sysBioDir")+"/");
-		session.setAttribute("imagesDir",application.getInitParameter("imagesDir")+"/");
-		session.setAttribute("commonDir",application.getInitParameter("commonDir")+"/");
-		session.setAttribute("propertiesDir",application.getInitParameter("propertiesDir")+"/");
-		session.setAttribute("adminDir",application.getInitParameter("adminDir")+"/");
-		session.setAttribute("isbraDir",application.getInitParameter("isbraDir")+"/");
-		session.setAttribute("helpDir",application.getInitParameter("helpDir")+"/");
-		session.setAttribute("javascriptDir",application.getInitParameter("javascriptDir")+"/");
-		session.setAttribute("perlDir",application.getInitParameter("perlDir")+"/");
-		session.setAttribute("dbPropertiesFile",application.getInitParameter("propertiesDir")+"/"+application.getInitParameter("dbPropertiesFile"));
-		session.setAttribute("ENSDbPropertiesFile",application.getInitParameter("propertiesDir")+"/"+application.getInitParameter("ENSDbPropertiesFile"));
-		session.setAttribute("host",host);
-		session.setAttribute("perlEnvVar",application.getInitParameter("perlEnvVar"));
-		session.setAttribute("adminEmail",application.getInitParameter("adminEmail"));
-		session.setAttribute("maxRThreadCount",application.getInitParameter("maxRThreadCount"));
-		session.setAttribute("dbExtFileDir",application.getInitParameter("dbExtFileDir")+"/");
-	}*/
+	
 	
 	//
 	// these 4 have the full path specified
@@ -154,7 +124,8 @@
 	String helpDir = mySessionHandler.getHelpDir();
 	String javascriptDir = mySessionHandler.getJavascriptDir();
 	String dbPropertiesFile = mySessionHandler.getDbPropertiesFile();
-	String ensDbPropertiesFile = mySessionHandler.getENSDbPropertiesFile();  
+	String ensDbPropertiesFile = mySessionHandler.getENSDbPropertiesFile();
+        String captchaPropertiesFile = mySessionHandler.getCaptchaPropertiesFile();
 
 	String userFilesRoot = mySessionHandler.getUserFilesRoot() + "/"; 
 	String mainURL = mySessionHandler.getMainURL();
@@ -166,10 +137,12 @@
 	String applicationRoot = mySessionHandler.getApplicationRoot();
 	
 	
-		String sessionID = (String) session.getAttribute("sessionID");
-		String analysisPath = (String) session.getAttribute("analysisPath");
-		String[][] qtlResult = (String[][]) session.getAttribute("qtlResult");
+	String sessionID = (String) session.getAttribute("sessionID");
+	String analysisPath = (String) session.getAttribute("analysisPath");
+	String[][] qtlResult = (String[][]) session.getAttribute("qtlResult");
 
+        String additionalInfo="";
+        
 	String checkMark = "<img src='" + imagesDir + "icons/" + "checkmark.gif' height=\"20\" width=\"20\" alt=\"\">";
 	String resultsIcon = "<img src='" + imagesDir + "icons/" + "results.png' height=\"20\" width=\"20\" alt=\"\">";
 	String downloadIcon = "<img src='" + imagesDir + "icons/" + "download_g.png' height=\"20\" width=\"20\" alt=\"\">";
@@ -290,4 +263,6 @@
 		}
 	}
 %>
+
+
 
