@@ -155,9 +155,8 @@
                 <%if(!tmpUuid.equals("")){%>
                     var tmpUUID="<%=tmpUuid%>";
                 <%}%>
-                <%if(!rgdUUID.equals("")){%>
-                    var rgdUUID="<%=rgdUUID%>";
-                <%}%>
+                var rgdUUID="<%=rgdUUID%>";
+                
                 /* --------------------------------------------------------------------------------
                 *
                 *  specific functions for listGeneList.jsp
