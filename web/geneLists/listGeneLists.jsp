@@ -1,8 +1,12 @@
 <%@ include file="/web/geneLists/include/geneListHeader.jsp"  %>
 <%
     String tmpUuid="";
+    String rgdUUID="";
     if(request.getParameter("uuid") !=null){
         tmpUuid=FilterInput.getFilteredInput(request.getParameter("uuid"));
+    }
+    if(request.getParameter("rgdUuid") !=null){
+        rgdUUID=FilterInput.getFilteredInput(request.getParameter("rgdUuid"));
     }
 	// Need to include this here, so that it's available on the modal
         extrasList.add("d3.v3.5.16.min.js");
@@ -150,6 +154,9 @@
 	<script type="text/javascript">
                 <%if(!tmpUuid.equals("")){%>
                     var tmpUUID="<%=tmpUuid%>";
+                <%}%>
+                <%if(!rgdUuid.equals("")){%>
+                    var rgdUUID="<%=rgdUuid%>";
                 <%}%>
                 /* --------------------------------------------------------------------------------
                 *

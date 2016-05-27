@@ -141,6 +141,44 @@ public class AnonGeneList extends edu.ucdenver.ccp.PhenoGen.data.GeneList{
 	
   	}
         
+        public void linkRGDListToUser(String uuID, String rgdID,DataSource pool) throws SQLException{
+            String select="select genelist_id from Anon_rgd_genelist where RGD_ID=?";
+            String delete="delete Anon_rgd_genelist where RGD_ID=?";
+            String insert="insert into Anon_USER_GENELIST (UUID,GENELIST_ID) Values (?,?)";
+            Connection conn=null;
+            try{
+                    conn=pool.getConnection();
+                    conn.setAutoCommit(false);
+                    PreparedStatement ps=conn.prepareStatement(select);
+                    ps.setString(1, rgdID);
+                    ResultSet rs=ps.executeQuery();
+                    while(rs.next()){
+                        PreparedStatement ps2=conn.prepareStatement(insert);
+                        ps2.setString(1, uuID);
+                        ps2.setInt(2, rs.getInt(1));
+                        ps2.execute();
+                        ps2.close();
+                    }
+                    rs.close();
+                    ps.close();
+                    ps=conn.prepareStatement(delete);
+                    ps.setString(1, rgdID);
+                    int delCount=ps.executeUpdate();
+                    ps.close();
+                    conn.commit();
+                    conn.close();
+            }catch(SQLException er){
+                throw er;
+            }finally{
+                if(conn!=null && !conn.isClosed()){
+                    try{
+                        conn.close();
+                        conn=null;
+                    }catch(SQLException e){}
+                }
+            }
+        }
+        
         /** Retrieves the set of gene lists available to this user.
  	 * It contains gene lists that were derived from the datasets viewable by this user 
 	 * (including from public datasets)  

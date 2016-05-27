@@ -26,30 +26,23 @@
 	log.info("in RGD/createGeneList.jsp." );
 
 	String description = "";
-	String organism = "";
+	String organism = "Rn";
 	String gene_list_name = "";
 	String inputGeneList = "";
+        String id="";
 	boolean manuallyEntered = false;
 
 	//String additionalInfo = ""; 
-
-        String geneListDir = userLoggedIn.getUserGeneListsUploadDir();
-        if(userLoggedIn.getUser_name().equals("anon")){
-            geneListDir=geneListDir+anonU.getUUID();
-            File upDir=new File(geneListDir);
-            if(!upDir.exists()){
-                upDir.mkdirs();
-            }
-            geneListDir=geneListDir+"/";
-                    
-        }
+        Date cur=new Date();
+        String geneListDir = userFilesRoot+"tmpRGD/GeneLists/uploads/";
+        
         log.debug("upload geneList dir = "+geneListDir);
 
         log.debug("before call to uploadFiles");
         
 	// Path must be set before calling uploadFiles
         thisFileHandler.setPath(geneListDir);
-	thisFileHandler.uploadFiles();
+	thisFileHandler.uploadFileTimestamp();
 
 	Vector parameterNames = thisFileHandler.getParameterNames(); 
 	Vector parameterValues = thisFileHandler.getParameterValues(); 
@@ -61,30 +54,11 @@
 	for (int i=0; i<parameterNames.size(); i++) {
 		String nextParam = (String) parameterNames.elementAt(i);
 		String nextParamValue = (String) parameterValues.elementAt(i);
-		if (nextParam.equals("description")) {  
-			description = nextParamValue.trim(); 
-		} else if (nextParam.equals("gene_list_name")) {  
-			gene_list_name = nextParamValue; 
-		} else if (nextParam.equals("inputGeneList") && !nextParamValue.equals("")) {  
-			inputGeneList = nextParamValue.trim(); 
-			manuallyEntered = true;
-		} else if (nextParam.equals("organism")) {  
-			organism = nextParamValue; 
-		} else {
-		}
+		if (nextParam.equals("id")) {  
+			id = nextParamValue.trim(); 
+		} 
 	}
-	log.debug("description = "+ description);
-	log.debug("organism = "+ organism);
 
-	//
-	// make sure the gene list name is unique
-	//
-        boolean exists=false;
-        if(userLoggedIn.getUser_name().equals("anon")){
-            exists=myAnonGeneList.geneListNameExists(gene_list_name, anonU.getUUID() ,pool);
-        }else{
-            exists=myGeneList.geneListNameExists(gene_list_name, userID, pool);
-        }
 
         int geneListID = -99;
 
@@ -93,7 +67,7 @@
         newGeneList=new AnonGeneList();
         newGeneList.setCreated_by_user_id(-20);
         
-        newGeneList.setGene_list_name(gene_list_name);	
+        newGeneList.setGene_list_name(id);	
         newGeneList.setDescription(description);
 
         newGeneList.setOrganism(organism);	
