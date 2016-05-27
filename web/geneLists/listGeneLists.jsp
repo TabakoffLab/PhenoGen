@@ -155,8 +155,8 @@
                 <%if(!tmpUuid.equals("")){%>
                     var tmpUUID="<%=tmpUuid%>";
                 <%}%>
-                <%if(!rgdUuid.equals("")){%>
-                    var rgdUUID="<%=rgdUuid%>";
+                <%if(!rgdUUID.equals("")){%>
+                    var rgdUUID="<%=rgdUUID%>";
                 <%}%>
                 /* --------------------------------------------------------------------------------
                 *
