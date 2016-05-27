@@ -4,11 +4,15 @@ function GeneLists(){
     that.retryCount=0;
     
     this.getListGeneLists=function (draw,selector,size){
+        var params={};
+        if(rgdUUID){
+            params={rgd:rgdUUID};
+        }
     	$.ajax({
             url: contextRoot+"web/geneLists/include/getGeneList.jsp",
             type: 'GET',
             cache: false,
-            data: {},
+            data: params,
             dataType: 'json',
             success: function(data2){
                	console.log(data2);
