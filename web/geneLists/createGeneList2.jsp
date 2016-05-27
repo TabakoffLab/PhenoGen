@@ -20,6 +20,7 @@
 
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList" > </jsp:useBean>
 <jsp:useBean id="myErrorEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
+<jsp:useBean id="myAnonGeneList" class="edu.ucdenver.ccp.PhenoGen.data.AnonGeneList"/>
 <jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 
 <%
