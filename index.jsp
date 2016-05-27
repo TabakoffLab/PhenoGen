@@ -20,9 +20,7 @@
 
 <%@ include file="/web/common/basicHeader.jsp" %>
 
-<style>
-	div.header_status{display:none;}
-</style>
+
 
 <%
         String msg = "";

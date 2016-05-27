@@ -13,6 +13,7 @@
 	String folderName="";
 	String type="";
 	String source="";
+        String genomeVer="";
 	LinkGenerator lg=new LinkGenerator(session);
 	double forwardPValueCutoff=0.01;
 	int rnaDatasetID=0;
@@ -71,11 +72,14 @@
 	if(request.getParameter("source")!=null){
 		source=FilterInput.getFilteredInput(request.getParameter("source"));
 	}
+        if(request.getParameter("genomeVer")!=null){
+                genomeVer=request.getParameter("genomeVer");
+        }
 	if(min<max){
 			if(min<1){
 				min=1;
 			}
-			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);					
+			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);					
 			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 			if(second>-1){
@@ -604,24 +608,7 @@
 <script type="text/javascript">
 	var spec="<%=myOrganism%>";
 	
-	/*$('#viewTrxDialog').dialog({
-		autoOpen: false,
-		dialogClass: "transcriptDialog",
-		width: 990,
-		height: 400,
-		zIndex: 999
-	});
-	
-	$('.viewTrx').click( function(event){
-		var id=$(this).attr('id');
-		var name=$(this).attr('name');
-		$('.waitTrx').show();
-		$('#viewTrxDialog').html($('#viewTrxDialogOriginal').html());
-		$('#viewTrxDialog').dialog( "option", "position",{ my: "center bottom", at: "center top", of: $(this) });
-		$('#viewTrxDialog').dialog("open").css({'font-size':12});
-		openTranscriptDialog(id,spec,name);
-	});
-	
+	/*
 	$('.viewSMNC').click( function(event){
 		var tmpID=$(this).attr('id');
 		var id=tmpID.substr(0,tmpID.indexOf(":"));

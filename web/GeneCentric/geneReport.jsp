@@ -14,6 +14,7 @@
 	String fullOrg="";
 		String panel="";
 	String gcPath="";
+        String genomeVer="";
 	int selectedGene=0;
 	ArrayList<String>geneSymbol=new ArrayList<String>();
 	LinkGenerator lg=new LinkGenerator(session);
@@ -57,8 +58,10 @@
 	if(request.getParameter("id")!=null){
 		id=FilterInput.getFilteredInput(request.getParameter("id"));
 	}
-	
-	gcPath=applicationRoot + contextRoot+"tmpData/geneData/" +id+"/";
+	if(request.getParameter("genomeVer")!=null){
+		genomeVer=request.getParameter("genomeVer");
+	}
+	gcPath=applicationRoot + contextRoot+"tmpData/browserCache/"+genomeVer+"/geneData/" +id+"/";
 	
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
@@ -80,7 +83,7 @@
 	int rnaDatasetID=0;
 	int arrayTypeID=0;
 	
-	int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+	int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,genomeVer);
 							if(tmp!=null&&tmp.length==2){
 								rnaDatasetID=tmp[1];
 								arrayTypeID=tmp[0];
@@ -90,8 +93,8 @@
     if(urlPrefix.endsWith(".jsp")){
          urlPrefix=urlPrefix.substring(0,urlPrefix.lastIndexOf("/")+1);
     }
-	genURL=urlPrefix+ "tmpData/geneData/" +id+"/";
-	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID,true);
+	genURL=urlPrefix+ "tmpData/browserCache/"+genomeVer+"/geneData/" +id+"/";
+	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,true);
 	edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=null;
 	for(int i=0;i<tmpGeneList.size();i++){
 		log.debug("check:"+tmpGeneList.get(i).getGeneID()+":"+id);
@@ -587,7 +590,7 @@ Add report here.
     		<div style="text-align:center;">
                 This feature requires Java which will open in a seperate window, when you click the button below.  Java will be automatically detected and directions will be displayed on the next page if there are any issues to correct before proceding.<BR /><BR />
                 
-                <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&defaultView=10" target="_blank">View Affy Probe Set Details</a></span><BR />       		
+                <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&defaultView=10&genomeVer=<%=genomeVer%>" target="_blank">View Affy Probe Set Details</a></span><BR />       		
                 </div>
     </div>
    	
@@ -633,7 +636,59 @@ Add report here.
 		$(this).addClass("selected");
 		var id=$(this).attr("name");
 		$("#"+id).show();
+<<<<<<< HEAD
 		loadGeneReportTabs(id,false);
+=======
+                console.log("#"+id);
+		if(id=="geneEQTL"){
+			var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
+			var params={
+				species: organism,
+				geneSymbol: selectedGeneSymbol,
+				chromosome: chr,
+				id:selectedID,
+                                genomeVer:genomeVer
+			};
+			loadDivWithPage("div#geneEQTL",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+		}else if(id=="geneApp"){
+			$.ajax({
+					url: "web/GeneCentric/callPanelExpr.jsp",
+	   				type: 'GET',
+                                        cache: 'false',
+					data: {id:idStr,organism: organism,genomeVer:genomeVer,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
+					dataType: 'json',
+	    			error: function(xhr, status, error) {console.log(error);}
+	    			});
+		}else if(id=="geneMIrna"){
+			var jspPage="web/GeneCentric/geneMiRnaAjax.jsp";
+			var params={
+				species: organism,
+				id:selectedID
+			};
+			loadDivWithPage("div#geneMIrna",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+		}else if(id=="miGenerna"){
+			var jspPage="web/GeneCentric/miGeneRnaAjax.jsp";
+			var params={
+				species: organism,
+				id:geneSymStr
+			};
+			loadDivWithPage("div#miGenerna",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+		}else if(id=="geneWGCNA"){
+                        $("div#regionWGCNAEQTL").html("");
+                        var jspPage="web/GeneCentric/wgcnaGene.jsp";
+			var params={
+				species: organism,
+				id:selectedID,
+                                genomeVer:genomeVer
+			};
+			loadDivWithPage("div#geneWGCNA",jspPage,params,
+					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
+                }
+		
+>>>>>>> feature/rn6
 	});
         $('.helpGeneRpt').on('click', function(event){
 			var id=$(this).attr('id');

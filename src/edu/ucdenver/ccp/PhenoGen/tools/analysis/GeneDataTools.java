@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 import javax.sql.DataSource;
 
 
@@ -60,10 +61,6 @@ public class GeneDataTools {
     private ExecHandler myExec_session = null;
     private HttpSession session = null;
     private User userLoggedIn = null;
-    //private Dataset[] publicDatasets = null;
-    //private Dataset selectedDataset = null;
-    //private Dataset.DatasetVersion selectedDatasetVersion = null;
-    //private Connection dbConn = null;
     private DataSource pool = null;
     private Logger log = null;
     private String perlDir = "", fullPath = "";
@@ -102,15 +99,7 @@ public class GeneDataTools {
     String updateSQL="update TRANS_DETAIL_USAGE set TIME_TO_RETURN=? , RESULT=? where TRANS_DETAIL_ID=?";
     private HashMap eQTLRegions=null;
     
-    /*private ArrayList<BQTL> bqtlResult=new ArrayList<BQTL>();
-    private ArrayList<TranscriptCluster> controlledRegion=new ArrayList<TranscriptCluster>();
-    private ArrayList<TranscriptCluster> fromRegion=new ArrayList<TranscriptCluster>();
-    private String bqtlParams="";
-    private String controlledRegionParams="";
-    private String controlledCircosRegionParams="";
-    private String fromRegionParams="";*/
-    
-    HashMap cacheHM=new HashMap();
+    HashMap<String,HashMap> cacheHM=new HashMap<String,HashMap>();
     ArrayList<String> cacheList=new ArrayList<String>();
     int maxCacheList=5;
     
@@ -128,7 +117,7 @@ public class GeneDataTools {
         this.pathReady=false;
     }
     
-    public int[] getOrganismSpecificIdentifiers(String organism){
+    public int[] getOrganismSpecificIdentifiers(String organism,String genomeVer){
         
             int[] ret=new int[2];
             String organismLong="Mouse";
@@ -137,8 +126,14 @@ public class GeneDataTools {
             }
             String atQuery="select Array_type_id from array_types "+
                         "where array_name like 'Affymetrix GeneChip "+organismLong+" Exon 1.0 ST Array'";
+            
+            /*
+            *  This does only look for the brain RNA dataset id.  Right now the tables link that RNA Dataset ID to
+            *  the other datasets.  This means finding the right organism and genome version for now is sufficient without
+            *  regard to tissues as all other tables link to the brain dataset since we have brain for both supported organisms
+            */
             String rnaIDQuery="select rna_dataset_id from RNA_DATASET "+
-                        "where organism = '"+organism+"' and tissue='Brain' and visible=1";
+                        "where organism = '"+organism+"' and tissue='Brain' and visible=1 and genome_id='"+genomeVer+"'";
             Connection conn=null;
             PreparedStatement ps=null;
             try {
@@ -185,17 +180,47 @@ public class GeneDataTools {
             return ret;
         
     }
+    
+    public HashMap<String,String> getGenomeVersionSource(String genomeVer){
+        
+            HashMap<String,String> hm=new HashMap<String,String>();
+            String query="select * from Browser_Genome_versions "+
+                        "where genome_id='"+genomeVer+"'";
+
+            Connection conn=null;
+            PreparedStatement ps=null;
+            try {
+                conn=pool.getConnection();
+                ps = conn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    hm.put("ensembl",rs.getString("ENSEMBL"));
+                    hm.put("ucsc",rs.getString("UCSC"));
+                }
+                ps.close();
+            } catch (SQLException ex) {
+                log.error("SQL Exception retreiving datasources for genome Version="+genomeVer ,ex);
+                try {
+                    ps.close();
+                } catch (Exception ex1) {
+                   
+                }
+            }
+            
+            return hm;
+        
+    }
 
     
     public String getGeneFolder(String inputID,String ensemblIDList,
-            String panel,String organism,int RNADatasetID,int arrayTypeID) {
+            String panel,String organism,String genomeVer,int RNADatasetID,int arrayTypeID) {
         String ret="";
         String[] ensemblList = ensemblIDList.split(",");
         String ensemblID1 = ensemblList[0];
         boolean error=false;
         if(ensemblID1!=null && !ensemblID1.equals("")){
             //Define output directory
-            String tmpoutputDir = fullPath + "tmpData/geneData/" + ensemblID1 + "/";
+            String tmpoutputDir = fullPath + "tmpData/browserCache/"+genomeVer+"/geneData/" + ensemblID1 + "/";
             //session.setAttribute("geneCentricPath", outputDir);
             log.debug("checking for path:"+tmpoutputDir);
             String folderName = ensemblID1;
@@ -215,7 +240,7 @@ public class GeneDataTools {
                 maxCoord=Integer.parseInt(loc[2]);
         }
         //log.debug("getGeneCentricData->getRegionData");
-        ret=this.getImageRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.001,false);
+        ret=this.getImageRegionData(chrom, minCoord, maxCoord, panel, organism,genomeVer, RNADatasetID, arrayTypeID, 0.001,false);
         }else{
             ret="";
         }
@@ -229,7 +254,7 @@ public class GeneDataTools {
      * 
      */
     public ArrayList<Gene> getGeneCentricData(String inputID,String ensemblIDList,
-            String panel,String organism,int RNADatasetID,int arrayTypeID,boolean eQTL) {
+            String panel,String organism,String genomeVer,int RNADatasetID,int arrayTypeID,boolean eQTL) {
         
         //Setup a String in the format YYYYMMDDHHMM to append to the folder
         Date start = new Date();
@@ -239,6 +264,8 @@ public class GeneDataTools {
         outputDir="";
         String result="";
         returnGenURL="";
+        HashMap<String,String> source=this.getGenomeVersionSource(genomeVer);
+        
         Connection conn=null;
         try{
             conn=pool.getConnection();
@@ -284,7 +311,7 @@ public class GeneDataTools {
         boolean error=false;
         if(ensemblID1!=null && !ensemblID1.equals("")){
             //Define output directory
-            outputDir = fullPath + "tmpData/geneData/" + ensemblID1 + "/";
+            outputDir = fullPath + "tmpData/browserCache/"+genomeVer+"/geneData/" + ensemblID1 + "/";
             //session.setAttribute("geneCentricPath", outputDir);
             log.debug("checking for path:"+outputDir);
             String folderName = ensemblID1;
@@ -299,7 +326,7 @@ public class GeneDataTools {
                     Date prev2Months=new Date(start.getTime()-(60*24*60*60*1000));
                     if(lastMod.before(prev2Months)||errorFile.exists()){
                         if(myFH.deleteAllFilesPlusDirectory(geneDir)){
-                             error=generateFiles(organism,rOutputPath,ensemblIDList,folderName,ensemblID1,RNADatasetID,arrayTypeID,panel);
+                             error=generateFiles(organism,genomeVer,source.get("ensembl"),rOutputPath,ensemblIDList,folderName,ensemblID1,RNADatasetID,arrayTypeID,panel);
                              result="old files, regenerated all files";
                         }else{
                             error=true;
@@ -315,7 +342,7 @@ public class GeneDataTools {
                             result="cache hit files not generated";
                         }else{
                             if(myFH.deleteAllFilesPlusDirectory(geneDir)){
-                             error=generateFiles(organism,rOutputPath,ensemblIDList,folderName,ensemblID1,RNADatasetID,arrayTypeID,panel);
+                             error=generateFiles(organism,genomeVer,source.get("ensembl"),rOutputPath,ensemblIDList,folderName,ensemblID1,RNADatasetID,arrayTypeID,panel);
                              result="old files, regenerated all files";
                             }else{
                                 error=true;
@@ -323,7 +350,7 @@ public class GeneDataTools {
                         }
                     }
                 }else{
-                    error=generateFiles(organism,rOutputPath,ensemblIDList,folderName,ensemblID1,RNADatasetID,arrayTypeID,panel);
+                    error=generateFiles(organism,genomeVer,source.get("ensembl"),rOutputPath,ensemblIDList,folderName,ensemblID1,RNADatasetID,arrayTypeID,panel);
                     if(!error){
                         result="NewGene generated successfully";
                     }
@@ -362,7 +389,7 @@ public class GeneDataTools {
         if(error){
             result=(String)session.getAttribute("genURL");
         }
-        this.setPublicVariables(error,ensemblID1);
+        this.setPublicVariables(error,genomeVer,ensemblID1);
         Date endLoadLoc=new Date();
         Date endRegion=new Date();
         ArrayList<Gene> ret=new ArrayList<Gene>();
@@ -383,7 +410,7 @@ public class GeneDataTools {
             if(!chrom.toLowerCase().startsWith("chr")){
                 chrom="chr"+chrom;
             }
-            ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism, RNADatasetID, arrayTypeID, 0.01,eQTL);
+            ret=this.getRegionData(chrom, minCoord, maxCoord, panel, organism,genomeVer, RNADatasetID, arrayTypeID, 0.01,eQTL);
             for(int i=0;i<ret.size();i++){
                 //log.debug(ret.get(i).getGeneID()+"::"+ensemblIDList);
                 if(ret.get(i).getGeneID().equals(ensemblIDList)){
@@ -392,46 +419,6 @@ public class GeneDataTools {
                 }
             }
             endRegion=new Date();
-            /*this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
-            ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chrom,arrayTypeID,0.01,"All");
-            HashMap transInQTLsCore=new HashMap();
-            HashMap transInQTLsExtended=new HashMap();
-            HashMap transInQTLsFull=new HashMap();
-            for(int i=0;i<tcList.size();i++){
-                TranscriptCluster tmp=tcList.get(i);
-                if(tmp.getLevel().equals("core")){
-                    transInQTLsCore.put(tmp.getTranscriptClusterID(),tmp);
-                }else if(tmp.getLevel().equals("extended")){
-                    transInQTLsExtended.put(tmp.getTranscriptClusterID(),tmp);
-                }else if(tmp.getLevel().equals("full")){
-                    transInQTLsFull.put(tmp.getTranscriptClusterID(),tmp);
-                }
-                if(loc!=null){
-                        chrom=loc[0];
-                        minCoord=Integer.parseInt(loc[1]);
-                        maxCoord=Integer.parseInt(loc[2]);
-                }
-                ret=Gene.readGenes(outputDir+"Region.xml");
-                //ret=this.mergeOverlapping(ret);
-                ret=this.mergeAnnotatedOverlapping(ret);
-                this.addHeritDABG(ret,minCoord,maxCoord,organism,chrom,RNADatasetID, arrayTypeID);
-                ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chrom,arrayTypeID,0.01,"All");
-                HashMap transInQTLsCore=new HashMap();
-                HashMap transInQTLsExtended=new HashMap();
-                HashMap transInQTLsFull=new HashMap();
-                for(int i=0;i<tcList.size();i++){
-                    TranscriptCluster tmp=tcList.get(i);
-                    if(tmp.getLevel().equals("core")){
-                        transInQTLsCore.put(tmp.getTranscriptClusterID(),tmp);
-                    }else if(tmp.getLevel().equals("extended")){
-                        transInQTLsExtended.put(tmp.getTranscriptClusterID(),tmp);
-                    }else if(tmp.getLevel().equals("full")){
-                        transInQTLsFull.put(tmp.getTranscriptClusterID(),tmp);
-                    }
-                }
-                addFromQTLS(ret,transInQTLsCore,transInQTLsExtended,transInQTLsFull);
-            }
-            addFromQTLS(ret,transInQTLsCore,transInQTLsExtended,transInQTLsFull);*/
         }
         conn=null;
         try{
@@ -471,7 +458,7 @@ public class GeneDataTools {
     
     public ArrayList<Gene> getRegionData(String chromosome,int minCoord,int maxCoord,
             String panel,
-            String organism,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL) {
+            String organism,String genomeVer,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL) {
         
         
         chromosome=chromosome.toLowerCase();
@@ -496,6 +483,7 @@ public class GeneDataTools {
         this.maxCoord=maxCoord;
         this.chrom=chromosome;
         String inputID=organism+":"+chromosome+":"+minCoord+"-"+maxCoord;
+        HashMap<String,String> source=this.getGenomeVersionSource(genomeVer);
         Connection conn=null;
         try{
             conn=pool.getConnection();
@@ -539,14 +527,14 @@ public class GeneDataTools {
         boolean error=false;
 
             //Define output directory
-            outputDir = fullPath + "tmpData/regionData/" +organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart + "/";
+            outputDir = fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/" +organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart + "/";
             //session.setAttribute("geneCentricPath", outputDir);
             log.debug("checking for path:"+outputDir);
             String folderName = organism+chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart;
             //String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
             //publicPath = publicPath.substring(0, publicPath.indexOf("/Affy.NormVer.h5"));
             RegionDirFilter rdf=new RegionDirFilter(organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_");
-            File mainDir=new File(fullPath + "tmpData/regionData");
+            File mainDir=new File(fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/");
             File[] list=mainDir.listFiles(rdf);
             try {
                 File geneDir=new File(outputDir);
@@ -562,7 +550,7 @@ public class GeneDataTools {
                             
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                            generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                             
                             //error=true;
                             //this.setError(errors);
@@ -580,13 +568,13 @@ public class GeneDataTools {
                             result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                            generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                             
                             //error=true;
                             //this.setError(errors);
                         }
                     }else{
-                        generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                        generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                         result="New Region generated successfully";
                     }
                 }
@@ -618,18 +606,18 @@ public class GeneDataTools {
         if(error){
             result=this.returnGenURL;
         }
-        this.setPublicVariables(error,folderName);
+        this.setPublicVariables(error,genomeVer,folderName);
         this.pathReady=true;
         
         ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
 
 
         if(withEQTL){
-            this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID);
+            this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID,genomeVer);
             ArrayList<TranscriptCluster> tcList=getTransControlledFromEQTLs(minCoord,maxCoord,chromosome,arrayTypeID,pValue,"All");
-            HashMap transInQTLsCore=new HashMap();
-            HashMap transInQTLsExtended=new HashMap();
-            HashMap transInQTLsFull=new HashMap();
+            HashMap<String,TranscriptCluster> transInQTLsCore=new HashMap<String,TranscriptCluster>();
+            HashMap<String,TranscriptCluster> transInQTLsExtended=new HashMap<String,TranscriptCluster>();
+            HashMap<String,TranscriptCluster> transInQTLsFull=new HashMap<String,TranscriptCluster>();
             for(int i=0;i<tcList.size();i++){
                 TranscriptCluster tmp=tcList.get(i);
                 if(tmp.getLevel().equals("core")){
@@ -669,7 +657,7 @@ public class GeneDataTools {
     }
     
     public String getImageRegionData(String chromosome,int minCoord,int maxCoord,
-            String panel,String organism,int RNADatasetID,int arrayTypeID,double pValue,boolean img) {
+            String panel,String organism,String genomeVer,int RNADatasetID,int arrayTypeID,double pValue,boolean img) {
         
         
         chromosome=chromosome.toLowerCase();
@@ -697,19 +685,19 @@ public class GeneDataTools {
         if(!img){
             imgStr="";
         }
-        
+        HashMap<String,String> source=this.getGenomeVersionSource(genomeVer);
         //EnsemblIDList can be a comma separated list break up the list
         boolean error=false;
 
             //Define output directory
-            outputDir = fullPath + "tmpData/regionData/"+imgStr +organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart + "/";
+            outputDir = fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/"+imgStr +organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart + "/";
             //session.setAttribute("geneCentricPath", outputDir);
             log.debug("checking for path:"+outputDir);
-            String folderName = organism+chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart;
+            String folderName = imgStr +organism+chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart;
             //String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
             //publicPath = publicPath.substring(0, publicPath.indexOf("/Affy.NormVer.h5"));
             RegionDirFilter rdf=new RegionDirFilter(imgStr+organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_");
-            File mainDir=new File(fullPath + "tmpData/regionData");
+            File mainDir=new File(fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/");
             File[] list=mainDir.listFiles(rdf);
             try {
                 File geneDir=new File(outputDir);
@@ -719,37 +707,30 @@ public class GeneDataTools {
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            //String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
-                            //getUCSCUrl(results[1].replaceFirst(".png", ".url"));
                             result="cache hit files not generated";
                             
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
-                            
-                            //error=true;
-                            //this.setError(errors);
+                            generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                         }
                 }else{
                     if(list.length>0){
+                        
                         outputDir=list[0].getAbsolutePath()+"/";
                         int second=outputDir.lastIndexOf("/",outputDir.length()-2);
                         folderName=outputDir.substring(second+1,outputDir.length()-1);
+                        log.debug("previous exists:"+outputDir);
+                        log.debug("set folder:"+folderName);
                         String errors;
                         errors = loadErrorMessage();
                         if(errors.equals("")){
-                            //String[] results=this.createImage("default", organism,outputDir,chrom,minCoord,maxCoord);
-                            //getUCSCUrl(results[1].replaceFirst(".png", ".url"));
-                            //result="cache hit files not generated";
+                            result="cache hit files not generated";
                         }else{
                             result="Previous Result had errors. Trying again.";
-                            generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
-                            
-                            //error=true;
-                            //this.setError(errors);
+                            generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                         }
                     }else{
-                        generateRegionFiles(organism,folderName,RNADatasetID,arrayTypeID);
+                        generateRegionFiles(organism,genomeVer,source.get("ensembl"),folderName,RNADatasetID,arrayTypeID,source.get("ucsc"));
                         result="New Region generated successfully";
                     }
                 }
@@ -784,121 +765,18 @@ public class GeneDataTools {
         return outputDir;
     }
 
-    /*public void getRegionGeneView(String chromosome,int minCoord,int maxCoord,
-            String panel,
-            String organism,int RNADatasetID,int arrayTypeID,String trackDefault) {
-        
-        chromosome=chromosome.toLowerCase();
-        
-        //Setup a String in the format YYYYMMDDHHMM to append to the folder
-        Date start = new Date();
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.setTime(start);
-        String datePart=Integer.toString(gc.get(gc.MONTH)+1)+
-                Integer.toString(gc.get(gc.DAY_OF_MONTH))+
-                Integer.toString(gc.get(gc.YEAR))+"_"+
-                Integer.toString(gc.get(gc.HOUR_OF_DAY))+
-                Integer.toString(gc.get(gc.MINUTE))+
-                Integer.toString(gc.get(gc.SECOND));
-        String rOutputPath = "";
-        outputDir="";
-        String result="";
-        this.minCoord=minCoord;
-        this.maxCoord=maxCoord;
-        this.chrom=chromosome;
-        String inputID=organism+":"+chromosome+":"+minCoord+"-"+maxCoord;
-        
-        
-        //EnsemblIDList can be a comma separated list break up the list
-        boolean error=false;
-
-            //Define output directory
-            outputDir = fullPath + "tmpData/regionData/trx" +organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart + "/";
-            //session.setAttribute("geneCentricPath", outputDir);
-            log.debug("checking for path:"+outputDir);
-            String folderName = "trx"+organism+chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart;
-            //String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
-            //publicPath = publicPath.substring(0, publicPath.indexOf("/Affy.NormVer.h5"));
-            RegionDirFilter rdf=new RegionDirFilter("trx"+organism+ chromosome+"_"+minCoord+"_"+maxCoord+"_");
-            File mainDir=new File(fullPath + "tmpData/regionData");
-            File[] list=mainDir.listFiles(rdf);
-            try {
-                File geneDir=new File(outputDir);
-                //File errorFile=new File(outputDir+"errMsg.txt");
-                if(geneDir.exists()){
-                        //do nothing just need to set session var
-                        String errors;
-                        errors = loadErrorMessage();
-                        if(errors.equals("")){
-                            String[] results=this.createImage(trackDefault, organism,outputDir,chrom,minCoord,maxCoord);
-                            getUCSCUrl(results[1].replaceFirst(".png", ".url"));
-                            result="cache hit files not generated";
-                        }else{
-                            result="Previous Result had errors. Trying again.";
-                            generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID,trackDefault);
-                        }
-                }else{
-                    if(list.length>0){
-                        outputDir=list[0].getAbsolutePath()+"/";
-                        int second=outputDir.lastIndexOf("/",outputDir.length()-2);
-                        folderName=outputDir.substring(second+1,outputDir.length()-1);
-                        String errors;
-                        errors = loadErrorMessage();
-                        if(errors.equals("")){
-                            String[] results=this.createImage(trackDefault, organism,outputDir,chrom,minCoord,maxCoord);
-                            getUCSCUrl(results[1].replaceFirst(".png", ".url"));
-                            result="cache hit files not generated";
-                        }else{
-                            result="Previous Result had errors. Trying again.";
-                            generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID,trackDefault);
-                        }
-                    }else{
-                        generateRegionViewFiles(organism,folderName,RNADatasetID,arrayTypeID,trackDefault);
-                        result="New Region generated successfully";
-                    }
-                }
-                
-                
-            } catch (Exception e) {
-                error=true;
-                
-                log.error("In Exception getting Gene Centric Results", e);
-                Email myAdminEmail = new Email();
-                String fullerrmsg=e.getMessage();
-                    StackTraceElement[] tmpEx=e.getStackTrace();
-                    for(int i=0;i<tmpEx.length;i++){
-                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
-                    }
-                myAdminEmail.setSubject("Exception thrown getting Gene Centric Results");
-                myAdminEmail.setContent("There was an error while getting gene centric results.\n"+fullerrmsg);
-                try {
-                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-                } catch (Exception mailException) {
-                    log.error("error sending message", mailException);
-                    throw new RuntimeException();
-                }
-            }
-        if(error){
-            result=this.returnGenURL;
-        }
-        this.setPublicVariables(error,folderName);
-    }*/
-    
-    
-    public boolean generateFiles(String organism,String rOutputPath, String ensemblIDList,String folderName,String ensemblID1,int RNADatasetID,int arrayTypeID,String panel) {
+    public boolean generateFiles(String organism,String genomeVer,String ensemblPath,String rOutputPath, String ensemblIDList,String folderName,String ensemblID1,int RNADatasetID,int arrayTypeID,String panel) {
         log.debug("generate files");
         AsyncGeneDataTools prevThread=null;
-        //ArrayList<Gene> genes=null;
         boolean error = false;
         log.debug("outputDir:"+outputDir);
         File outDirF = new File(outputDir);
         //Mkdir if some are missing    
         if (!outDirF.exists()) {
-            //log.debug("make output dir");
             outDirF.mkdirs();
         }
         
-        boolean createdXML=this.createXMLFiles(organism,ensemblIDList,ensemblID1);
+        boolean createdXML=this.createXMLFiles(organism,genomeVer,ensemblIDList,ensemblID1,ensemblPath);
         
         log.debug(ensemblIDList+" CreatedXML::"+createdXML);
         
@@ -914,39 +792,9 @@ public class GeneDataTools {
                 chrom=loc[0];
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
-                //String[] url=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq",organism,outputDir,chrom,minCoord,maxCoord);
-                //if(url!=null){
-                //generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);
-                //}else{
-                //    error=true;
-                //}
-                //getUCSCUrl(url[1].replaceFirst(".png",".url"));
-                //outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
-
-
-
-                //boolean ucscComplete=getUCSCUrls(ensemblID1);
-                //if(!ucscComplete){
-                //       completedSuccessfully=false;
-                //}
                 log.debug("AsyncGeneDataTools with "+chrom+":"+minCoord+"-"+maxCoord);
-                prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
-                /*boolean expError=callPanelExpr(chrom,minCoord,maxCoord,arrayTypeID,RNADatasetID,prevThread);
-                if(expError){
-                       error=true;
-                }*/
+                prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID,genomeVer);
             }
-
-            //String[] url=this.createImage("probe,numExonPlus,numExonMinus,noncoding,smallnc,refseq",organism,outputDir,chrom,minCoord,maxCoord);
-            //if(url!=null){
-            //    completedSuccessfully=true;
-            //    generateGeneRegionFiles(organism,folderName, RNADatasetID, arrayTypeID);
-            //}
-            //getUCSCUrl(url[1].replaceFirst(".png",".url"));
-            
-            
-            //Moved back to AsyncGeneDataTools
-            //outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
         }else{
             error=true;
         }    
@@ -954,36 +802,21 @@ public class GeneDataTools {
         return error;
     }
     
-    public boolean generateGeneRegionFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID) {
+    public boolean generateGeneRegionFiles(String organism,String genomeVer,String folderName,int RNADatasetID,int arrayTypeID) {
         log.debug("generate files");
         log.debug("outputDir:"+outputDir);
         File outDirF = new File(outputDir);
         //Mkdir if some are missing    
         if (!outDirF.exists()) {
-            //log.debug("make output dir");
             outDirF.mkdirs();
         }
-        
-        boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,arrayTypeID,RNADatasetID);
-        
-        
-        /*if(!createdXML){ 
-            
-        }else{
-            String[] url=this.createImage("default",organism,outputDir,chrom,minCoord,maxCoord);
-            if(url!=null){
-                
-                completedSuccessfully=true;
-            }
-            getUCSCUrl(url[1].replaceFirst(".png",".url"));
-            //if(!ucscComplete){
-            //       completedSuccessfully=false;
-            //}
-        }*/
+        HashMap<String,String> source=this.getGenomeVersionSource(genomeVer);
+        String ensemblPath=source.get("ensembl");
+        boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,genomeVer,ensemblPath,arrayTypeID,RNADatasetID,source.get("ucsc"));
         return createdXML;
     }
     
-    public boolean generateRegionFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID) {
+    public boolean generateRegionFiles(String organism,String genomeVer,String ensemblPath,String folderName,int RNADatasetID,int arrayTypeID,String ucscDB) {
         log.debug("generate files");
         boolean completedSuccessfully = false;
         log.debug("outputDir:"+outputDir);
@@ -993,53 +826,11 @@ public class GeneDataTools {
             //log.debug("make output dir");
             outDirF.mkdirs();
         }
-        boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,arrayTypeID,RNADatasetID);
-        
-        
-        /*if(!createdXML){ 
-            
-        }else{
-            //String[] url=this.createImage("default",organism,outputDir,chrom,minCoord,maxCoord);
-            //if(url!=null){
-                
-                completedSuccessfully=true;
-            //}
-            //getUCSCUrl(url[1].replaceFirst(".png",".url"));
-            //if(!ucscComplete){
-            //       completedSuccessfully=false;
-            //}
-        }*/
+        boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,genomeVer,ensemblPath,arrayTypeID,RNADatasetID,ucscDB);
+
         return createdXML;
     }
     
-    /*public boolean generateRegionViewFiles(String organism,String folderName,int RNADatasetID,int arrayTypeID,String defaultTrack) {
-        log.debug("generate files");
-        boolean completedSuccessfully = false;
-        log.debug("outputDir:"+outputDir);
-        File outDirF = new File(outputDir);
-        //Mkdir if some are missing    
-        if (!outDirF.exists()) {
-            //log.debug("make output dir");
-            outDirF.mkdirs();
-        }
-        
-        boolean createdXML=this.createRegionViewImagesXMLFiles(folderName,organism,arrayTypeID,RNADatasetID);
-        
-        if(!createdXML){ 
-            
-        }else{
-            //String[] url=this.createImage(defaultTrack,organism,outputDir,chrom,minCoord,maxCoord);
-            //if(url!=null){
-                completedSuccessfully=true;
-            //}
-            //getUCSCUrl(url[1].replaceFirst(".png",".url"));
-            //boolean ucscComplete=getUCSCUrls("RegionView");
-            //if(!ucscComplete){
-            //       completedSuccessfully=false;
-            //}
-        }
-        return completedSuccessfully;
-    }*/
     
     private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         if(chr.toLowerCase().startsWith("chr")){
@@ -1198,18 +989,11 @@ public class GeneDataTools {
             
     }
     
-     	public boolean createCircosFiles(String perlScriptDirectory, String perlEnvironmentVariables, String[] perlScriptArguments,String filePrefixWithPath){
+    public boolean createCircosFiles(String perlScriptDirectory, String perlEnvironmentVariables, String[] perlScriptArguments,String filePrefixWithPath){
    		// 
    	    boolean completedSuccessfully=false;
    	    String circosErrorMessage;
-   		//log.debug(" in GeneDataTools.createCircosFiles ");
-   		// perlScriptArguments is an array of strings
-   		// perlScriptArguments[0] is "perl" or maybe includes the path??
-   		// perlScriptArguments[1] is the filename including directory of the perl script
-   		// perlScriptArguments[2] ... are argument inputs to the perl script
-   		//for (int i=0; i<perlScriptArguments.length; i++){
-   		//	log.debug(i + "::" + perlScriptArguments[i]);
-   		//}
+
    
         //set environment variables so you can access oracle. Environment variables are pulled from perlEnvironmentVariables which is a comma separated list
         String[] envVar=perlEnvironmentVariables.split(",");
@@ -1285,7 +1069,7 @@ public class GeneDataTools {
    } 
     
 
-    public boolean createXMLFiles(String organism,String ensemblIDList,String ensemblID1){
+    public boolean createXMLFiles(String organism,String genomeVer,String ensemblIDList,String ensemblID1,String ensemblPath){
         boolean completedSuccessfully=false;
         if(ensemblIDList!=null && ensemblID1!=null && !ensemblIDList.equals("") && !ensemblID1.equals("")){
         try{
@@ -1338,27 +1122,20 @@ public class GeneDataTools {
             perlArgs[13] = ensPassword;
             
             log.debug("after perl args");
-            /*for (int i = 0; i < perlArgs.length; i++) {
-                log.debug(i + " PerlArgs::" + perlArgs[i]);
-                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                }*/
-            //}
-            
             log.debug("setup params");
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
-            String[] envVar=perlEnvVar.split(",");
+             String[] envVar=perlEnvVar.split(",");
 
             for (int i = 0; i < envVar.length; i++) {
+                if(envVar[i].contains("/ensembl")){
+                    envVar[i]=envVar[i].replaceFirst("/ensembl", "/"+ensemblPath);
+                }
                 log.debug(i + " EnvVar::" + envVar[i]);
-                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                }*/
             }
 
             log.debug("setup envVar");
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/geneData/"+ensemblID1+"/");
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/browserCache/"+genomeVer+"/geneData/"+ensemblID1+"/");
             boolean exception=false;
             boolean missingDB=false;
             log.debug("setup exec");
@@ -1464,7 +1241,7 @@ public class GeneDataTools {
         }
         return completedSuccessfully;
     }
-    public String generateXMLTrack(String chromosome,int min,int max,String panel,String track,String organism,int rnaDatasetID,int arrayTypeID,String folderName,int binSize){
+    public String generateXMLTrack(String chromosome,int min,int max,String panel,String track,String organism,String genomeVer,int rnaDatasetID,int arrayTypeID,String folderName,int binSize){
         String status="";
         try{
             //Connection tmpConn=pool.getConnection();
@@ -1472,9 +1249,10 @@ public class GeneDataTools {
             int publicUserID=(new User()).getUser_id("public",pool);
             log.debug("PUBLIC USER ID:"+publicUserID);
             //tmpConn.close();
-            String tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
+            String tmpOutputDir=fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/"+folderName+"/";
             
-            
+            HashMap<String,String> source=this.getGenomeVersionSource(genomeVer);
+            String ensemblPath=source.get("ensembl");
             Properties myProperties = new Properties();
             File myPropertiesFile = new File(dbPropertiesFile);
             myProperties.load(new FileInputStream(myPropertiesFile));
@@ -1487,9 +1265,9 @@ public class GeneDataTools {
             log.debug("UCSC file:"+ucscDBVerPropertiesFile);
             File myVerPropertiesFile = new File(ucscDBVerPropertiesFile);
             myVerProperties.load(new FileInputStream(myVerPropertiesFile));
-            
-            String dbVer=myVerProperties.getProperty("UCSCDATE");
-            String refSeqDB=organism+"_"+myVerProperties.getProperty("REFSEQVER");
+            log.debug("read prop");
+            //String dbVer=myVerProperties.getProperty("UCSCDATE");
+            //String refSeqDB=organism+"_"+myVerProperties.getProperty("REFSEQVER");
             String ucscHost=myVerProperties.getProperty("HOST");
             String ucscPort=myVerProperties.getProperty("PORT");
             String ucscUser=myVerProperties.getProperty("USER");
@@ -1514,13 +1292,16 @@ public class GeneDataTools {
             if(organism.equals("Mm")){
                 refSeqDB="Mm_refseq_5";
             }*/
-            String genome="rn5";
+            /*String genome="rn5";
             if(organism.equals("Mm")){
                 genome="mm10";
-            }
-            String ensDsn="DBI:mysql:database="+refSeqDB+";host="+ucscHost+";port="+ucscPort+";";
-            String ucscDsn="DBI:mysql:database=ucsc_"+genome+"_"+dbVer+";host="+ucscHost+";port="+ucscPort+";";
+            }*/
+            log.debug("done properties");
             
+            //NEED TO MODIFY*************************
+            String ensDsn="DBI:mysql:database="+source.get("ucsc")+";host="+ucscHost+";port="+ucscPort+";";
+            String ucscDsn="DBI:mysql:database="+source.get("ucsc")+";host="+ucscHost+";port="+ucscPort+";";
+            //NEED TO MODIFY******************************************************************************************************
             String tissue="Brain";
             if(track.startsWith("liver")){
                 tissue="Liver";
@@ -1562,13 +1343,13 @@ public class GeneDataTools {
             String[] envVar=perlEnvVar.split(",");
 
             for (int i = 0; i < envVar.length; i++) {
+                if(envVar[i].contains("/ensembl")){
+                    envVar[i]=envVar[i].replaceAll("/ensembl", "/"+ensemblPath);
+                }
                 log.debug(i + " EnvVar::" + envVar[i]);
-                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                }*/
             }
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/regionData/"+folderName+"/");
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/"+folderName+"/");
             boolean exception=false;
             try {
                 myExec_session.runExec();
@@ -1644,17 +1425,6 @@ public class GeneDataTools {
         return status;
     }
     
-    /*public String generateCustomXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String inputFileOrURL,String outputXML,String type){
-        String ret="";
-        if(type.equals("remoteBW")||type.equals("remoteBG")){
-            ret=generateCustomRemoteXMLTrack(chromosome,min,max,track,organism,folder,inputFileOrURL,outputXML);
-        }else if(type.equals("bed")){
-            ret=generateCustomBedXMLTrack(chromosome,min,max,track,organism,folder,inputFileOrURL,outputXML);
-        }else if(type.equals("bedGraph")){
-            ret=generateCustomBedGraphXMLTrack(chromosome,min,max,track,organism,folder,inputFileOrURL,outputXML);
-        }
-        return ret;
-    }*/
      public String generateCustomBedXMLTrack(String chromosome,int min,int max,String track,String organism,String folder,String bedFile,String outputFile){
         String status="";
         try{        
@@ -1974,7 +1744,7 @@ public class GeneDataTools {
         return status;
     }
      
-    public boolean createRegionImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
+    public boolean createRegionImagesXMLFiles(String folderName,String organism,String genomeVer,String ensemblPath,int arrayTypeID,int rnaDatasetID,String ucscDB){
         boolean completedSuccessfully=false;
         try{
             //Connection tmpConn=pool.getConnection();
@@ -1996,7 +1766,7 @@ public class GeneDataTools {
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
             //construct perl Args
-            String[] perlArgs = new String[20];
+            String[] perlArgs = new String[22];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Region.pl";
             perlArgs[2] = ucscDir+ucscGeneDir;
@@ -2017,23 +1787,25 @@ public class GeneDataTools {
             perlArgs[10] = Integer.toString(arrayTypeID);
             perlArgs[11] = Integer.toString(rnaDatasetID);
             perlArgs[12] = Integer.toString(publicUserID);
-            perlArgs[13] = dsn;
-            perlArgs[14] = dbUser;
-            perlArgs[15] = dbPassword;
-            perlArgs[16] = ensHost;
-            perlArgs[17] = ensPort;
-            perlArgs[18] = ensUser;
-            perlArgs[19] = ensPassword;
+            perlArgs[13] = genomeVer;
+            perlArgs[14] = dsn;
+            perlArgs[15] = dbUser;
+            perlArgs[16] = dbPassword;
+            perlArgs[17] = ucscDB;
+            perlArgs[18] = ensHost;
+            perlArgs[19] = ensPort;
+            perlArgs[20] = ensUser;
+            perlArgs[21] = ensPassword;
 
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
             String[] envVar=perlEnvVar.split(",");
 
             for (int i = 0; i < envVar.length; i++) {
+                if(envVar[i].contains("/ensembl")){
+                    envVar[i]=envVar[i].replaceAll("/ensembl","/"+ensemblPath);
+                }
                 log.debug(i + " EnvVar::" + envVar[i]);
-                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                }*/
             }
 
 
@@ -2110,401 +1882,9 @@ public class GeneDataTools {
         return completedSuccessfully;
     }
     
-    /*public String[] getUCSCGeneImage(String csvTrackList,String organism,String chr,int min, int max,String geneID){
-        String mainDir=fullPath + "tmpData/geneData/"+geneID+"/";
-        String[] ret=new String[2];
-        String[] tmp=this.createImage(csvTrackList, organism, mainDir, chr, min, max);
-        log.debug(tmp[1]+"\n"+tmp[2]+"\n");
-            ret[0]=tmp[1].substring(tmp[1].indexOf("tmpData/geneData"));
-            ret[1]=tmp[2];       
-        return ret;
-    }
-    
-    public String[] getUCSCRegionImage(String csvTrackList,String organism,String chr,int min, int max){
-        RegionDirFilter rdf=new RegionDirFilter(organism+ chr.toLowerCase()+"_"+min+"_"+max+"_");
-        File mainDir=new File(fullPath + "tmpData/regionData");
-        File[] list=mainDir.listFiles(rdf);
-        String[] ret=new String[2];
-        log.debug("running getUCSCRegionImage");
-        log.debug(organism+ chr+"_"+min+"_"+max+"_");
-        for(int i=0;i<list.length;i++){
-            log.debug(list[i]);
-        }
-        if(list.length>0){
-            String tmpoutputDir=list[0].getAbsolutePath()+"/";
-            int second=tmpoutputDir.lastIndexOf("/",tmpoutputDir.length()-2);
-            //String folderName=tmpoutputDir.substring(second+1,tmpoutputDir.length()-1);
-            String[] tmp=this.createImage(csvTrackList, organism, tmpoutputDir, chr, min, max);
-            log.debug(tmp[0]+"\n"+tmp[1]);
-            ret[0]=tmp[1].substring(tmp[1].indexOf("tmpData/regionData"));
-            ret[1]=tmp[2];       
-        }
-        return ret;
-    }
-    public String[] getUCSCRegionViewImage(String csvTrackList,String organism,String chr,int min, int max){
-        log.debug("RegionView Track List:\n"+csvTrackList+"\n");
-        RegionDirFilter rdf=new RegionDirFilter("trx"+organism+ chr.toLowerCase()+"_"+min+"_"+max+"_");
-        File mainDir=new File(fullPath + "tmpData/regionData");
-        File[] list=mainDir.listFiles(rdf);
-        String[] ret=new String[2];
-        log.debug("running getUCSCRegionViewImage");
-        if(list.length>0){
-            String tmpoutputDir=list[0].getAbsolutePath()+"/";
-            int second=tmpoutputDir.lastIndexOf("/",tmpoutputDir.length()-2);
-            //String folderName=tmpoutputDir.substring(second+1,tmpoutputDir.length()-1);
-            String[] tmp=this.createImage(csvTrackList, organism, tmpoutputDir, chr, min, max);
-            log.debug(tmp[0]+"\n"+tmp[1]);
-            ret[0]=tmp[1].substring(tmp[1].indexOf("tmpData/regionData"));
-            ret[1]=tmp[2];       
-        }
-        return ret;
-    }
-    
-    public String[] createImage(String csvTrackList,String organism,String outputDir,String chrom,int minCoord,int maxCoord){
-        String[] ret=new String[3];
-        ret[0]="";//generic filename
-        ret[1]="";//image path
-        ret[2]="";//url
-         log.debug("Image outputDir:"+outputDir+"\n"+csvTrackList);       
-        String[] list=csvTrackList.split(",");
-        String url=null;
-        int lblWidth=12;
-        if(list.length>0&&list[0].equals("default")){
-            list=new String[3];
-            list[0]="coding";
-            list[1]="noncoding";
-            list[2]="smallnc";
-            //list[3]="snp";
-            //list[4]="qtl";
-            
-        }
-        String tmpPath="";
-        if(outputDir.indexOf("_")>0){
-            tmpPath=outputDir.substring(0,outputDir.lastIndexOf("_",outputDir.lastIndexOf("_")-1));
-        }else{
-            tmpPath=outputDir.substring(0,outputDir.length()-1);
-        }
-        tmpPath=tmpPath.substring(tmpPath.lastIndexOf("/"));
-        String fileName=this.ucscDir+this.ucscGeneDir+tmpPath;
-        String pngFileName="ucsc";
-        HashMap trackVisSelection=new HashMap();
-        for(int i=0;i<list.length;i++){
-            //if(!list[i].equals("refseq")){
-                String tmp=list[i];
-                if(tmp.indexOf(".")>0){
-                    String[] tmp2;
-                    tmp2 = tmp.split("\\.");
-                    //tmp=tmp2[0]+tmp2[1];
-                    trackVisSelection.put(tmp2[0], tmp2[1]);
-                }
-                fileName=fileName+"."+tmp;
-                pngFileName=pngFileName+"."+tmp;
-                if(list[i].contains("qtl")){
-                    lblWidth=35;
-                }
-            //}
-        }
-        String genericFileName=fileName;
-        ret[0]=genericFileName;
-        fileName=fileName+".track";
-        pngFileName=pngFileName+".png";
-        String urlFile=pngFileName.replace(".png",".url");
-        log.debug("Image Files\n"+fileName+"\n"+outputDir+tmpPath+".png\n");
-        
-        File trackFile=new File(fileName);
-        File pngFile=new File(outputDir+pngFileName);
-        ret[1]=outputDir+pngFileName;
-        if(pngFile.exists()&&trackFile.exists()){
-            
-        }else{
-            if(chrom.startsWith("chr")){
-                    chrom=chrom.substring(3);
-            }
-            BufferedWriter out;
-            BufferedReader in;
-            try{
-                out = new BufferedWriter(new FileWriter(trackFile));
-                out.write("browser position chr"+chrom.toUpperCase()+":"+minCoord+"-"+maxCoord+"\n");
-                out.write("browser hide all\n");
-                for(int i=0;i<list.length;i++){
-                    String filePart=list[i];
-                    if(list[i].indexOf(".")>-1){
-                        filePart=list[i].substring(0,list[i].indexOf("."));
-                    }
-                    String changeTrack="";
-                    if(trackVisSelection.containsKey(filePart)){
-                            changeTrack=trackVisSelection.get(filePart).toString();
-                    }
-                    File curTrack=new File(outputDir+filePart+".track");
-                    if(curTrack.exists()){
-                        
-                        in= new BufferedReader(new FileReader(curTrack));
-                        while(in.ready()){
-                            String line=in.readLine();
-                            if(line!=null){
-                                if(!changeTrack.equals("")&&line.indexOf("visibility=")>-1){
-                                    String tmpLine=line.substring(0, line.indexOf("visibility="));
-                                    tmpLine=tmpLine+" visibility="+changeTrack+" ";
-                                    tmpLine=tmpLine+line.substring(line.indexOf("visibility=")+12);
-                                    line=tmpLine;
-                                }
-                                out.write(line+"\n");
-                            }
-                        }
-                        in.close();
-                    }else{
-                        if(list[i].equals("refseq")){
-                            out.write("browser pack refGene\n");
-                        }
-                        if(filePart.equals("helicos")){
-                            String vis="1";
-                            if(!changeTrack.equals("")){
-                                vis=changeTrack;
-                            }
-                            
-                            //out.write("track db=rn5 type=bigWig name=\"Helicos\" description=\"Helicos RNA-Seq Reads\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/Helicos_All_Samples_ge2.bw\n");
-                            out.write("track db=rn5 type=bigWig name=\"Helicos\" description=\"Helicos RNA-Seq Read Counts\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/Helicos_All_Samples.bw\n");
-                        }else if(filePart.equals("illuminaTotal")){
-                            String vis="1";
-                            if(!changeTrack.equals("")){
-                                vis=changeTrack;
-                            }
-                            out.write("track db=rn5 type=bigWig name=\"Illumina Total\" description=\"Illumina rRNA-depleted Total-RNA Read Counts\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/totalRNA.uniqueHits.bw\n");
-                        }else if(filePart.equals("illuminaPolyA")){
-                            String vis="1";
-                            if(!changeTrack.equals("")){
-                                vis=changeTrack;
-                            }
-                            out.write("track db=rn5 type=bigWig name=\"Illumina PolyA+\" description=\"Illumina PolyA+ RNA Read Counts\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/polyARNA.uniqueHits.bw\n");
-                        }else if(filePart.equals("illuminaSmall")){
-                            String vis="1";
-                            if(!changeTrack.equals("")){
-                                vis=changeTrack;
-                            }
-                            out.write("track db=rn5 type=bigWig name=\"Illumina Small RNA\" description=\"Illumina Small RNA Read Counts\" visibility="+vis+" color=0,0,0 bigDataUrl=http://ucsc:JU7etr5t@phenogen.ucdenver.edu/ucsc/smallRNA.uniqueHits.bw\n");
-                        }
-                    }
-                }
-                out.flush();
-                out.close();
-                
-                String[] perlArgs = new String[10];
-                perlArgs[0] = "perl";
-                perlArgs[1] = perlDir + "call_createPng.pl";
-                if (organism.equals("Rn")) {
-                    perlArgs[2] = "Rat";
-                } else if (organism.equals("Mm")) {
-                    perlArgs[2] = "Mouse";
-                }
-                
-                perlArgs[3] = chrom;
-                perlArgs[4] = Integer.toString(minCoord);
-                perlArgs[5] = Integer.toString(maxCoord);
-                perlArgs[6] = outputDir+pngFileName;
-                perlArgs[7] = fileName;
-                perlArgs[8] = Integer.toString(lblWidth);
-                perlArgs[9] = outputDir+urlFile;
-
-                //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
-                String[] envVar=perlEnvVar.split(",");
-
-                for (int i = 0; i < envVar.length; i++) {
-                    log.debug(i + " EnvVar::" + envVar[i]);
-                    /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                    }*/
-/*                }
-
-
-                //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+"png");
-
-                try {
-
-                    myExec_session.runExec();
-
-                } catch (ExecException e) {
-                    log.error("In Exception of run createPng.pl Exec_session", e);
-                    setError("Running Perl Script to get get UCSC image.");
-                    Email myAdminEmail = new Email();
-                    myAdminEmail.setSubject("Exception thrown in Exec_session");
-                    myAdminEmail.setContent("There was an error while running "
-                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+","+perlArgs[9]+","+perlArgs[10]+","+perlArgs[11]+
-                            ")\n\n"+myExec_session.getErrors());
-                    try {
-                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-                    } catch (Exception mailException) {
-                        log.error("error sending message", mailException);
-                        throw new RuntimeException();
-                    }
-                }
-
-                if(myExec_session.getExitValue()!=0){
-                    Email myAdminEmail = new Email();
-                    myAdminEmail.setSubject("Exception thrown in Exec_session");
-                    myAdminEmail.setContent("There was an error while running "
-                            + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
-                            ")\n\n"+myExec_session.getErrors());
-                    try {
-                        myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-                    } catch (Exception mailException) {
-                        log.error("error sending message", mailException);
-                        throw new RuntimeException();
-                    }
-                }else{
-                    //this.getUCSCUrl(outputDir+urlFile);
-                }
-            }catch(IOException e){
-                log.error("IO ERROR creating  region PNG",e);
-            }
-            
-        }
-        ret[2]=this.getUCSCUrlwoGlobal(outputDir+urlFile);
-        
-        return ret;
-    }
-*/
-    
-    /*public boolean createRegionViewImagesXMLFiles(String folderName,String organism,int arrayTypeID,int rnaDatasetID){
-        boolean completedSuccessfully=false;
-        try{
-            //Connection tmpConn=pool.getConnection();
-            int publicUserID=new User().getUser_id("public",pool);
-            //tmpConn.close();
-            
-            Properties myProperties = new Properties();
-            File myPropertiesFile = new File(dbPropertiesFile);
-            myProperties.load(new FileInputStream(myPropertiesFile));
-
-            String dsn="dbi:"+myProperties.getProperty("PLATFORM") +":"+myProperties.getProperty("DATABASE");
-            String dbUser=myProperties.getProperty("USER");
-            String dbPassword=myProperties.getProperty("PASSWORD");
-
-            File ensPropertiesFile = new File(ensemblDBPropertiesFile);
-            Properties myENSProperties = new Properties();
-            myENSProperties.load(new FileInputStream(ensPropertiesFile));
-            String ensHost=myENSProperties.getProperty("HOST");
-            String ensPort=myENSProperties.getProperty("PORT");
-            String ensUser=myENSProperties.getProperty("USER");
-            String ensPassword=myENSProperties.getProperty("PASSWORD");
-            //construct perl Args
-            String[] perlArgs = new String[20];
-            perlArgs[0] = "perl";
-            perlArgs[1] = perlDir + "writeXML_RegionView.pl";
-            perlArgs[2] = ucscDir+ucscGeneDir;
-            perlArgs[3] = outputDir;
-            perlArgs[4] = folderName;
-            if (organism.equals("Rn")) {
-                perlArgs[5] = "Rat";
-            } else if (organism.equals("Mm")) {
-                perlArgs[5] = "Mouse";
-            }
-            perlArgs[6] = "Core";
-            if(chrom.startsWith("chr")){
-                chrom=chrom.substring(3);
-            }
-            perlArgs[7] = chrom;
-            perlArgs[8] = Integer.toString(minCoord);
-            perlArgs[9] = Integer.toString(maxCoord);
-            perlArgs[10] = Integer.toString(arrayTypeID);
-            perlArgs[11] = Integer.toString(rnaDatasetID);
-            perlArgs[12] = Integer.toString(publicUserID);
-            perlArgs[13] = dsn;
-            perlArgs[14] = dbUser;
-            perlArgs[15] = dbPassword;
-            perlArgs[16] = ensHost;
-            perlArgs[17] = ensPort;
-            perlArgs[18] = ensUser;
-            perlArgs[19] = ensPassword;
-
-
-            //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
-            String[] envVar=perlEnvVar.split(",");
-
-            for (int i = 0; i < envVar.length; i++) {
-                log.debug(i + " EnvVar::" + envVar[i]);
-                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                }*/
-    /*        }
-
-
-            //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir);
-            boolean exception = false;
-            try {
-
-                myExec_session.runExec();
-
-            } catch (ExecException e) {
-                exception=true;
-                log.error("In Exception of run writeXML_RegionView.pl Exec_session", e);
-                setError("Running Perl Script to get Gene and Transcript details/images.");
-                Email myAdminEmail = new Email();
-                myAdminEmail.setSubject("Exception thrown in Exec_session");
-                myAdminEmail.setContent("There was an error while running "
-                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+","+perlArgs[7]+","+perlArgs[8]+","+perlArgs[9]+","+perlArgs[10]+","+perlArgs[11]+
-                        ")\n\n"+myExec_session.getErrors());
-                try {
-                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-                } catch (Exception mailException) {
-                    log.error("error sending message", mailException);
-                    try {
-                        myAdminEmail.sendEmailToAdministrator("");
-                    } catch (Exception mailException1) {
-                        //throw new RuntimeException();
-                    }
-                }
-            }
-
-            String errors=myExec_session.getErrors();
-            if(!exception && errors!=null && !(errors.equals(""))){
-                Email myAdminEmail = new Email();
-                myAdminEmail.setSubject("Exception thrown in Exec_session");
-                myAdminEmail.setContent("There was an error while running "
-                        + perlArgs[1] + " (" + perlArgs[2] +" , "+perlArgs[3]+" , "+perlArgs[4]+" , "+perlArgs[5]+" , "+perlArgs[6]+
-                        ")\n\n"+errors);
-                try {
-                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-                } catch (Exception mailException) {
-                    log.error("error sending message", mailException);
-                    try {
-                        myAdminEmail.sendEmailToAdministrator("");
-                    } catch (Exception mailException1) {
-                        //throw new RuntimeException();
-                    }
-                }
-            }else{
-                completedSuccessfully=true;
-            }
-        }catch(Exception e){
-            log.error("Error getting DB properties or Public User ID.",e);
-            String fullerrmsg=e.getMessage();
-                    StackTraceElement[] tmpEx=e.getStackTrace();
-                    for(int i=0;i<tmpEx.length;i++){
-                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
-                    }
-            Email myAdminEmail = new Email();
-                myAdminEmail.setSubject("Exception thrown in GeneDataTools.java");
-                myAdminEmail.setContent("There was an error setting up to run writeXML_RegionView.pl\n\nFull Stacktrace:\n"+fullerrmsg);
-                try {
-                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
-                } catch (Exception mailException) {
-                    log.error("error sending message", mailException);
-                    try {
-                        myAdminEmail.sendEmailToAdministrator("");
-                    } catch (Exception mailException1) {
-                        //throw new RuntimeException();
-                    }
-                }
-        }
-        return completedSuccessfully;
-    }
-    */
-    
-    public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+    public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer){
         AsyncGeneDataTools agdt;         
-        agdt = new AsyncGeneDataTools(session,pool,outputDir,chr, min, max,arrayTypeID,rnaDS_ID,usageID);
+        agdt = new AsyncGeneDataTools(session,pool,outputDir,chr, min, max,arrayTypeID,rnaDS_ID,usageID,genomeVer);
         //log.debug("Getting ready to start");
         agdt.start();
         //log.debug("Started AsyncGeneDataTools");
@@ -2513,13 +1893,15 @@ public class GeneDataTools {
     
     
     
-    public boolean callWriteXML(String id,String organism,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+    public boolean callWriteXML(String id,String organism,String genomeVer,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
         boolean completedSuccessfully=false;
         try{
             //Connection tmpConn=pool.getConnection();
             int publicUserID=new User().getUser_id("public",pool);
             //tmpConn.close();
-            String tmpoutputDir = fullPath + "tmpData/geneData/" + id + "/";
+            String tmpoutputDir = fullPath + "tmpData/browserCache/"+genomeVer+"/geneData/" + id + "/";
+            HashMap<String,String> source=this.getGenomeVersionSource(genomeVer);
+            String ensemblPath=source.get("ensembl");
             File test=new File(tmpoutputDir+"Region.xml");
             long testLM=test.lastModified();
             testLM=(new Date().getTime())-testLM;
@@ -2546,7 +1928,7 @@ public class GeneDataTools {
                 String ensUser=myENSProperties.getProperty("USER");
                 String ensPassword=myENSProperties.getProperty("PASSWORD");
                 //construct perl Args
-                String[] perlArgs = new String[17];
+                String[] perlArgs = new String[18];
                 perlArgs[0] = "perl";
                 perlArgs[1] = perlDir + "writeXML_RNA.pl";
                 perlArgs[2] = tmpoutputDir;
@@ -2561,36 +1943,30 @@ public class GeneDataTools {
                 perlArgs[7] = Integer.toString(arrayTypeID);
                 perlArgs[8] = Integer.toString(rnaDS_ID);
                 perlArgs[9] = Integer.toString(publicUserID);
-                perlArgs[10] = dsn;
-                perlArgs[11] = dbUser;
-                perlArgs[12] = dbPassword;
-                perlArgs[13] = ensHost;
-                perlArgs[14] = ensPort;
-                perlArgs[15] = ensUser;
-                perlArgs[16] = ensPassword;
+                perlArgs[10]= genomeVer;
+                perlArgs[11] = dsn;
+                perlArgs[12] = dbUser;
+                perlArgs[13] = dbPassword;
+                perlArgs[14] = ensHost;
+                perlArgs[15] = ensPort;
+                perlArgs[16] = ensUser;
+                perlArgs[17] = ensPassword;
 
-
-                //for (int i = 0; i < perlArgs.length; i++) {
-                //    log.debug(i + " PerlArgs::" + perlArgs[i]);
-                    /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                    }*/
-                //}
 
                 log.debug("setup params");
                 //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
                 String[] envVar=perlEnvVar.split(",");
 
                 for (int i = 0; i < envVar.length; i++) {
+                    if(envVar[i].contains("/ensembl")){
+                        envVar[i]=envVar[i].replaceFirst("/ensembl", "/"+ensemblPath);
+                    }
                     log.debug(i + " EnvVar::" + envVar[i]);
-                    /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                    }*/
                 }
 
                 log.debug("setup envVar");
                 //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/geneData/"+id+"/");
+                myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/browserCache/"+genomeVer+"/geneData/"+id+"/");
                 boolean exception = false;
                 try {
 
@@ -2687,8 +2063,13 @@ public class GeneDataTools {
         return completedSuccessfully;
     }
     
-    public boolean callPanelExpr(String id,String chr, int min, int max,int arrayTypeID,int rnaDS_ID,AsyncGeneDataTools prevThread){
+    public boolean callPanelExpr(String id,String chr, int min, int max,String genomeVer,int arrayTypeID,int rnaDS_ID,AsyncGeneDataTools prevThread){
         boolean error=false;
+        String organism="Rn";
+        if(arrayTypeID==21){
+            organism="Mm";
+        }
+        callWriteXML(id,organism,genomeVer,chr,min,max,arrayTypeID,rnaDS_ID);
         //create File with Probeset Tissue herit and DABG
         String datasetQuery="select rd.dataset_id, rd.tissue "+
                             "from rnadataset_dataset rd "+
@@ -2706,7 +2087,7 @@ public class GeneDataTools {
                 if(arrayTypeID==21){
                     ver="v6";
                 }
-                String tmpOutput= fullPath + "tmpData/geneData/" + id+ "/";
+                String tmpOutput= fullPath + "tmpData/browserCache/"+genomeVer+"/geneData/" + id+ "/";
                 //log.debug("Getting ready to start");
                 File indivf=new File(tmpOutput+"Panel_Expr_indiv.txt");
                 File groupf=new File(tmpOutput+"Panel_Expr_group.txt");
@@ -2921,9 +2302,9 @@ public class GeneDataTools {
         }
     }*/
     
-    private void setPublicVariables(boolean error,String folderName){
+    private void setPublicVariables(boolean error,String genomeVer,String folderName){
         if(!error){
-            returnGenURL=urlPrefix + "tmpData/geneData/" + folderName + "/";
+            returnGenURL=urlPrefix + "tmpData/browserCache/"+genomeVer+"/geneData/" + folderName + "/";
             returnUCSCURL= this.ucscURL;
             returnOutputDir=outputDir;
         }else{
@@ -3087,7 +2468,7 @@ public class GeneDataTools {
         return mainGenes;
     }
     
-    public void addHeritDABG(ArrayList<Gene> list,int min,int max,String organism,String chr,int rnaDS_ID,int arrayTypeID){
+    public void addHeritDABG(ArrayList<Gene> list,int min,int max,String organism,String chr,int rnaDS_ID,int arrayTypeID,String genomeVer){
         //get all probesets for region with herit and dabg
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
@@ -3097,12 +2478,13 @@ public class GeneDataTools {
                             "from probeset_herit_dabg phd , rnadataset_dataset rd "+
                             "where rd.rna_dataset_id = "+rnaDS_ID+" "+
                             "and phd.dataset_id=rd.dataset_id "+
+                            "and phd.genome_id='"+genomeVer+"' "+
                             "and phd.probeset_id in ("+
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
-                                //"and substr(c.name,1,2) = '"+chr+"' "+
                                 "and c.name = '"+chr.toUpperCase()+"' "+
+                                "and s.genome_id='"+genomeVer+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -3353,15 +2735,15 @@ public class GeneDataTools {
         return transcriptClusters;
     }
     
-    public String getFolder(int min,int max,String chr,String organism){
+    public String getFolder(int min,int max,String chr,String organism,String genomeVer){
         String folder="";
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
         log.debug("getFolderName:"+organism+"chr"+chr+"_"+min+"_"+max+"_");
         RegionDirFilter rdf=new RegionDirFilter(organism+"chr"+chr+"_"+min+"_"+max+"_");
-        log.debug(fullPath + "tmpData/regionData");
-        File mainDir=new File(fullPath + "tmpData/regionData");
+        log.debug(fullPath + "tmpData/browserCache/"+genomeVer+"/regionData");
+        File mainDir=new File(fullPath + "tmpData/browserCache/"+genomeVer+"/regionData");
         File[] list=mainDir.listFiles(rdf);    
         if(list.length>0){
             log.debug("length>0");
@@ -3375,7 +2757,7 @@ public class GeneDataTools {
     }
     
     
-    public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,int RNADatasetID,double pvalue,String level,String organism,String circosTissue,String circosChr){
+    public ArrayList<TranscriptCluster> getTransControllingEQTLs(int min,int max,String chr,int arrayTypeID,int RNADatasetID,double pvalue,String level,String organism,String genomeVer,String circosTissue,String circosChr){
         //session.removeAttribute("get");
         ArrayList<TranscriptCluster> transcriptClusters=new ArrayList<TranscriptCluster>();
         ArrayList<TranscriptCluster> beforeFilter=null;
@@ -3385,25 +2767,25 @@ public class GeneDataTools {
         String tmpOutputDir="";
         String folderName="";
         RegionDirFilter rdf=new RegionDirFilter(organism+"chr"+chr+"_"+min+"_"+max+"_");
-        File mainDir=new File(fullPath + "tmpData/regionData");
+        File mainDir=new File(fullPath + "tmpData/browserCache/"+genomeVer+"/regionData");
         File[] list=mainDir.listFiles(rdf);    
         if(list.length>0){
                     tmpOutputDir=list[0].getAbsolutePath()+"/";
                     int second=tmpOutputDir.lastIndexOf("/",tmpOutputDir.length()-2);
                     folderName=tmpOutputDir.substring(second+1,tmpOutputDir.length()-1);
-                    tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
+                    tmpOutputDir=fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/"+folderName+"/";
         }else{
                 String panel="BNLX/SHRH";
                 if(organism.equals("Mm")){
                     panel="ILS/ISS";
                 }
-                this.getRegionData(chr, min, max, panel, organism, RNADatasetID, arrayTypeID, pvalue, false);
+                this.getRegionData(chr, min, max, panel, organism,genomeVer, RNADatasetID, arrayTypeID, pvalue, false);
                 list=mainDir.listFiles(rdf);    
                 if(list.length>0){
                             tmpOutputDir=list[0].getAbsolutePath()+"/";
                             int second=tmpOutputDir.lastIndexOf("/",tmpOutputDir.length()-2);
                             folderName=tmpOutputDir.substring(second+1,tmpOutputDir.length()-1);
-                            tmpOutputDir=fullPath + "tmpData/regionData/"+folderName+"/";
+                            tmpOutputDir=fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/"+folderName+"/";
                 }
         }
         
@@ -3456,74 +2838,126 @@ public class GeneDataTools {
         }
         if(run){
             HashMap tmpHM=new HashMap();
-            String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+
-                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+
-                                "where s.snp_id=lse.snp_id "+
-                                "and lse.probe_id=aep.probeset_id "+
-                                "and c2.chromosome_id=aep.chromosome_id "+
-                                "and c.chromosome_id=s.chromosome_id "+
-                                "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
-                                "and aep.updatedlocation='Y' "+
-                                "and aep.transcript_cluster_id in "+
-                                    "(select aep.transcript_cluster_id "+
-                                    "from location_specific_eqtl lse, snps s, chromosomes c1 , affy_exon_probeset aep "+
-                                    "where s.snp_id=lse.snp_id "+
-                                    "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
-                                    "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
-                                    " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
-                                    "and s.chromosome_id=c1.chromosome_id "+
-                                    "and s.organism ='"+organism+"' "+
-                                    "and c1.name='"+chr.toUpperCase()+"' "+
-                                    "and aep.updatedlocation='Y' "+
-                                    "and lse.probe_id=aep.probeset_id ";
-                                if(!level.equals("All")){
-                                    qtlQuery=qtlQuery+" and ( ";
-                                    for(int k=0;k<levels.length;k++){
-                                        if(k==0){
-                                            qtlQuery=qtlQuery+"aep.pslevel='"+levels[k]+"' ";
-                                        }else{
-                                            qtlQuery=qtlQuery+" or aep.pslevel='"+levels[k]+"' ";
-                                        }
-                                    }
-                                    qtlQuery=qtlQuery+") ";
-                                    //qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
-                                }/*else{
-                                    qtlQuery=qtlQuery+"and aep.pslevel<>'ambiguous' ";
-                                }*/
-                                qtlQuery=qtlQuery+"and aep.psannotation='transcript' "+
-                                "and aep.array_type_id="+arrayTypeID+") "+
-                                "order by aep.transcript_cluster_id, s.tissue";
-
-            String qtlQuery2="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+//,eq.LOD_SCORE "+
-                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+//, expression_qtls eq "+
-                                "where s.snp_id=lse.snp_id "+
-                                "and lse.pvalue< "+(-Math.log10(pvalue))+" "+
-                                //"and substr(c.name,1,2)='"+chr+"' "+
-                                "and c.name='"+chr.toUpperCase()+"' "+
-                                "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
-                                " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
-                                "and s.organism ='"+organism+"' "+
-                                "and lse.probe_id=aep.probeset_id ";
-                                if(!level.equals("All")){
-                                    qtlQuery2=qtlQuery2+" and ( ";
-                                    for(int k=0;k<levels.length;k++){
-                                        if(k==0){
-                                            qtlQuery2=qtlQuery2+"aep.pslevel='"+levels[k]+"' ";
-                                        }else{
-                                            qtlQuery2=qtlQuery2+" or aep.pslevel='"+levels[k]+"' ";
-                                        }
-                                    }
-                                    qtlQuery2=qtlQuery2+") ";
-                                    //qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
-                                }
-                                qtlQuery2=qtlQuery2+"and aep.psannotation='transcript' "+
+            String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end " +
+                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep " +
+                                "where s.snp_id=lse.snp_id " +
+                                "and s.genome_id='"+genomeVer+"'" +
+                                "and lse.probe_id=aep.probeset_id " +
+                                "and c2.chromosome_id=aep.chromosome_id " +
+                                "and c.chromosome_id=s.chromosome_id " +
+                                "and lse.pvalue>= "+(-Math.log10(pvalue))+" " +
+                                "and aep.updatedlocation='Y' " +
+                                "and aep.genome_id='"+genomeVer+"' ";
+                                //"and ( aep.pslevel='core'  or aep.pslevel='extended'  or aep.pslevel='full' ) \n" +
+            if(!level.equals("All")){
+                qtlQuery=qtlQuery+" and ( ";
+                for(int k=0;k<levels.length;k++){
+                    if(k==0){
+                        qtlQuery=qtlQuery+"aep.pslevel='"+levels[k]+"' ";
+                    }else{
+                        qtlQuery=qtlQuery+" or aep.pslevel='"+levels[k]+"' ";
+                    }
+                }
+                qtlQuery=qtlQuery+") ";
+            }
+            qtlQuery=qtlQuery+"and aep.psannotation='transcript' " +
                                 "and aep.array_type_id="+arrayTypeID+" "+
-                                "and aep.updatedlocation='Y' "+
-                                //"and TO_CHAR(aep.probeset_id) = eq.identifier (+) "+
-                                //"and (s.tissue=eq.tissue or eq.tissue is null) "+
-                                "and s.chromosome_id=c.chromosome_id "+
-                                "and c2.chromosome_id=aep.chromosome_id "+
+                                "and c.name='"+chr.toUpperCase()+"' " +
+                                "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
+                                " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
+                                "order by aep.transcript_cluster_id, s.tissue";
+//            String qtlQuery="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+
+//                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+
+//                                "where s.snp_id=lse.snp_id "+
+//                                "and lse.probe_id=aep.probeset_id "+
+//                                "and c2.chromosome_id=aep.chromosome_id "+
+//                                "and c.chromosome_id=s.chromosome_id "+
+//                                "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
+//                                "and aep.updatedlocation='Y' "+
+//                                "and aep.transcript_cluster_id in "+
+//                                    "(select aep.transcript_cluster_id "+
+//                                    "from location_specific_eqtl lse, snps s, chromosomes c1 , affy_exon_probeset aep "+
+//                                    "where s.snp_id=lse.snp_id "+
+//                                    "and lse.pvalue>= "+(-Math.log10(pvalue))+" "+
+//                                    "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
+//                                    " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
+//                                    "and s.chromosome_id=c1.chromosome_id "+
+//                                    "and s.organism ='"+organism+"' "+
+//                                    "and c1.name='"+chr.toUpperCase()+"' "+
+//                                    "and aep.updatedlocation='Y' "+
+//                                    "and lse.probe_id=aep.probeset_id ";
+//                                if(!level.equals("All")){
+//                                    qtlQuery=qtlQuery+" and ( ";
+//                                    for(int k=0;k<levels.length;k++){
+//                                        if(k==0){
+//                                            qtlQuery=qtlQuery+"aep.pslevel='"+levels[k]+"' ";
+//                                        }else{
+//                                            qtlQuery=qtlQuery+" or aep.pslevel='"+levels[k]+"' ";
+//                                        }
+//                                    }
+//                                    qtlQuery=qtlQuery+") ";
+//                                    //qtlQuery=qtlQuery+"and aep.pslevel='"+level+"' ";
+//                                }/*else{
+//                                    qtlQuery=qtlQuery+"and aep.pslevel<>'ambiguous' ";
+//                                }*/
+//                                qtlQuery=qtlQuery+"and aep.psannotation='transcript' "+
+//                                "and aep.array_type_id="+arrayTypeID+") "+
+//                                "order by aep.transcript_cluster_id, s.tissue";
+            String qtlQuery2="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end " +
+                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep " +
+                                "where s.snp_id=lse.snp_id " +
+                                "and s.genome_id='"+genomeVer+"'" +
+                                "and lse.probe_id=aep.probeset_id " +
+                                "and c2.chromosome_id=aep.chromosome_id " +
+                                "and c.chromosome_id=s.chromosome_id " +
+                                "and lse.pvalue< "+(-Math.log10(pvalue))+" " +
+                                "and aep.updatedlocation='Y' " +
+                                "and aep.genome_id='"+genomeVer+"' ";
+                                //"and ( aep.pslevel='core'  or aep.pslevel='extended'  or aep.pslevel='full' ) \n" +
+            if(!level.equals("All")){
+                qtlQuery2=qtlQuery2+" and ( ";
+                for(int k=0;k<levels.length;k++){
+                    if(k==0){
+                        qtlQuery2=qtlQuery2+"aep.pslevel='"+levels[k]+"' ";
+                    }else{
+                        qtlQuery2=qtlQuery2+" or aep.pslevel='"+levels[k]+"' ";
+                    }
+                }
+                qtlQuery2=qtlQuery2+") ";
+            }
+            qtlQuery2=qtlQuery2+"and aep.psannotation='transcript' " +
+                                "and aep.array_type_id="+arrayTypeID+" "+
+                                "and c.name='"+chr.toUpperCase()+"' " +
+                                "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+min+")) "+
+                                " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
                                 "order by aep.transcript_cluster_id,s.tissue,aep.chromosome_id,aep.psstart";
+//            String qtlQuery2="select aep.transcript_cluster_id,c2.name,aep.strand,aep.psstart,aep.psstop,aep.pslevel, s.tissue,lse.pvalue, s.snp_name,c.name,s.snp_start,s.snp_end "+//,eq.LOD_SCORE "+
+//                                "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep "+//, expression_qtls eq "+
+//                                "where s.snp_id=lse.snp_id "+
+//                                "and lse.pvalue< "+(-Math.log10(pvalue))+" "+
+//                                //"and substr(c.name,1,2)='"+chr+"' "+
+//                                "and c.name='"+chr.toUpperCase()+"' "+
+//                                "and (((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
+//                                " or (s.snp_start=s.snp_end and ((s.snp_start>="+(min-500000)+" and s.snp_start<="+(max+500000)+") or (s.snp_end>="+(min-500000)+" and s.snp_end<="+(max+500000)+") or (s.snp_start<="+(min-500000)+" and s.snp_end>="+(max+500000)+")))) "+
+//                                "and s.organism ='"+organism+"' "+
+//                                "and lse.probe_id=aep.probeset_id ";
+//                                if(!level.equals("All")){
+//                                    qtlQuery2=qtlQuery2+" and ( ";
+//                                    for(int k=0;k<levels.length;k++){
+//                                        if(k==0){
+//                                            qtlQuery2=qtlQuery2+"aep.pslevel='"+levels[k]+"' ";
+//                                        }else{
+//                                            qtlQuery2=qtlQuery2+" or aep.pslevel='"+levels[k]+"' ";
+//                                        }
+//                                    }
+//                                    qtlQuery2=qtlQuery2+") ";
+//                                }
+//                                qtlQuery2=qtlQuery2+"and aep.psannotation='transcript' "+
+//                                "and aep.array_type_id="+arrayTypeID+" "+
+//                                "and aep.updatedlocation='Y' "+
+//                                "and s.chromosome_id=c.chromosome_id "+
+//                                "and c2.chromosome_id=aep.chromosome_id "+
+//                                "order by aep.transcript_cluster_id,s.tissue,aep.chromosome_id,aep.psstart";
             Connection conn=null;
             try{
                 log.debug("SQL eQTL FROM QUERY\n"+qtlQuery);
@@ -3578,7 +3012,7 @@ public class GeneDataTools {
                     String snpQ="select * from snps s,chromosomes c where "+
                             "((s.snp_start>="+min+" and s.snp_start<="+max+") or (s.snp_end>="+min+" and s.snp_end<="+max+") or (s.snp_start<="+min+" and s.snp_end>="+max+")) "+
                             "and s.chromosome_id=c.chromosome_id "+
-                            "and s.organism ='"+organism+"' "+
+                            "and s.genome_id ='"+genomeVer+"' "+
                             //"and substr(c.name,1,2)='"+chr+"' ";
                             "and c.name='"+chr.toUpperCase()+"' ";
                     ps = conn.prepareStatement(snpQ);
@@ -3651,7 +3085,8 @@ public class GeneDataTools {
                         }
                     }
                 }
-            
+                HashMap<String,String> source=getGenomeVersionSource(genomeVer);
+                String ensemblPath=source.get("ensembl");
                 File ensPropertiesFile = new File(ensemblDBPropertiesFile);
                 Properties myENSProperties = new Properties();
                 String ensHost="";
@@ -3703,10 +3138,10 @@ public class GeneDataTools {
                 String[] envVar=perlEnvVar.split(",");
 
                 for (int i = 0; i < envVar.length; i++) {
+                    if(envVar[i].contains("/ensembl")){
+                        envVar[i]=envVar[i].replaceFirst("/ensembl", "/"+ensemblPath);
+                    }
                     log.debug(i + " EnvVar::" + envVar[i]);
-                    /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                        envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                    }*/
                 }
 
 
@@ -4081,7 +3516,7 @@ public class GeneDataTools {
                     int offset=rs.getInt(6);
                     int bnlx=rs.getInt(7);
                     int shrh=rs.getInt(8);
-                    HashMap match=new HashMap();
+                    HashMap<String,Integer> match=new HashMap<String,Integer>();
                     match.put("BNLX", bnlx);
                     match.put("SHRH", shrh);
                     RNASequence tmpSeq=new RNASequence(id,seq,readCount,unique,offset,match);
@@ -4174,7 +3609,7 @@ public class GeneDataTools {
         return ret;
     }
     
-    public ArrayList<BQTL> getBQTLs(int min,int max,String chr,String organism){
+    public ArrayList<BQTL> getBQTLs(int min,int max,String chr,String organism,String genomeVer){
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
         }
@@ -4183,24 +3618,10 @@ public class GeneDataTools {
         ArrayList<BQTL> bqtl=new ArrayList<BQTL>();
         session.removeAttribute("getBQTLsERROR");
         boolean run=true;
-        /*if(this.cacheHM.containsKey(tmpRegion)){
-            HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
-            String testParam=(String)regionHM.get("bqtlParams");
-            if(curParams.equals(testParam)){
-                bqtl=(ArrayList<BQTL>)regionHM.get("bqtl");
-                log.debug("\nreturning previous-bqtl\n");
-                run=false;
-            }
-        }
-        if(run){*/
-            log.debug("\ngenerating new-bqtl\n");
-        //if(curParams.equals(this.bqtlParams)){
-        //    bqtl=this.bqtlResult;
-        //}else{
+
             String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
-                            "where pq.organism='"+organism+"' "+
+                            "where pq.genome_id='"+genomeVer+"' "+
                             "and ((pq.qtl_start>="+min+" and pq.qtl_start<="+max+") or (pq.qtl_end>="+min+" and pq.qtl_end<="+max+") or (pq.qtl_start<="+min+" and pq.qtl_end>="+max+")) "+
-                            //"and substr(c.name,1,2)='"+chr+"' "+
                             "and c.name='"+chr.toUpperCase()+"' "+ 
                             "and c.chromosome_id=pq.chromosome";
             Connection conn=null;
@@ -4230,14 +3651,12 @@ public class GeneDataTools {
                     long start=rs.getLong(19);
                     long stop=rs.getLong(20);
                     String mapMethod=rs.getString(21);
-                    String chromosome=rs.getString(22);
+                    String chromosome=rs.getString(23);
                     BQTL tmpB=new BQTL(id,mgiID,rgdID,symbol,name,trait,subTrait,traitMethod,phenotype,diseases,rgdRef,pubmedRef,mapMethod,relQTLs,candidGene,lod,pvalue,start,stop,chromosome);
                     bqtl.add(tmpB);
                 }
                 ps.close();
                 conn.close();
-                //this.bqtlResult=bqtl;
-                //this.bqtlParams=curParams;
                 if(cacheHM.containsKey(tmpRegion)){
                     HashMap regionHM=(HashMap)cacheHM.get(tmpRegion);
                     regionHM.put("bqtlParams",curParams);        
@@ -4284,14 +3703,14 @@ public class GeneDataTools {
         
         return bqtl;
     }
-    public BQTL getBQTL(String id){
+    public BQTL getBQTL(String id,String genomeVer){
         
         BQTL bqtl=null;
         session.removeAttribute("getBQTLsERROR");
         boolean run=true;
         
             String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
-                            "where pq.rgd_id="+id+
+                            "where pq.genome_id='"+genomeVer+"' and pq.rgd_id="+id+
                             "and pq.chromosome=c.chromosome_id";
             Connection conn=null;
             try{ 
@@ -4319,7 +3738,7 @@ public class GeneDataTools {
                     long start=rs.getLong(19);
                     long stop=rs.getLong(20);
                     String mapMethod=rs.getString(21);
-                    String chromosome=rs.getString(22);
+                    String chromosome=rs.getString(23);
                     bqtl=new BQTL(id,mgiID,rgdID,symbol,name,trait,subTrait,traitMethod,phenotype,diseases,rgdRef,pubmedRef,mapMethod,relQTLs,candidGene,lod,pvalue,start,stop,chromosome);
                 }
                 ps.close();
@@ -4360,12 +3779,12 @@ public class GeneDataTools {
         return bqtl;
     }
     
-    public String getBQTLRegionFromSymbol(String qtlSymbol,String organism){
+    public String getBQTLRegionFromSymbol(String qtlSymbol,String organism,String genomeVer){
         String ret="";
         Connection conn=null;
         try{
             conn=pool.getConnection();
-            ret=this.getBQTLRegionFromSymbol(qtlSymbol,organism, conn);
+            ret=this.getBQTLRegionFromSymbol(qtlSymbol,organism,genomeVer, conn);
             conn.close();
         }catch(SQLException e){
             log.error("SQL Exception error: getBQTLRegionFromSymbol().",e);
@@ -4379,13 +3798,13 @@ public class GeneDataTools {
         return ret;
     }
     
-    public String getBQTLRegionFromSymbol(String qtlSymbol,String organism,Connection dbConn){
+    public String getBQTLRegionFromSymbol(String qtlSymbol,String organism,String genomeVer,Connection dbConn){
         if(qtlSymbol.startsWith("bQTL:")){
             qtlSymbol=qtlSymbol.substring(5);
         }
         String region="";
         String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
-                        "where pq.organism='"+organism+"' "+
+                        "where pq.genome_id='"+genomeVer+"' "+
                         "and pq.chromosome=c.chromosome_id "+
                         "and pq.QTL_SYMBOL='"+qtlSymbol+"'";
         
@@ -4397,7 +3816,7 @@ public class GeneDataTools {
             if(rs.next()){
                 long start=rs.getLong(19);
                 long stop=rs.getLong(20);
-                String chromosome=rs.getString(22);
+                String chromosome=rs.getString(23);
                 region="chr"+chromosome+":"+start+"-"+stop;
             }
             ps.close();
@@ -4430,37 +3849,7 @@ public class GeneDataTools {
         
         return region;
     }
-    
-    /*8public boolean isBQTLSymbolInDB(String qtlSymbol,String organism,Connection dbConn){
-        boolean ret=false;
-        if(qtlSymbol.startsWith("bQTL:")){
-            qtlSymbol=qtlSymbol.substring(5);
-        }
-        String query="select pq.*,c.name from public_qtls pq, chromosomes c "+
-                        "where pq.organism='"+organism+"' "+
-                        "and pq.chromosome=c.chromosome_id "+
-                        "and pq.QTL_SYMBOL='"+qtlSymbol+"'";
         
-        try{ 
-        try{
-            log.debug("SQL eQTL FROM QUERY\n"+query);
-            PreparedStatement ps = dbConn.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                ret=true;
-            }
-            ps.close();
-        }catch(SQLException e){
-            log.error("Error retreiving bQTLs.",e);
-            e.printStackTrace(System.err);
-        }
-        }catch(Exception er){
-            er.printStackTrace(System.err);
-        }
-        return ret;
-    }*/
-    
-    
     public void addQTLS(ArrayList<Gene> genes, ArrayList<EQTL> eqtls){
         HashMap eqtlInd=new HashMap();
         for(int i=0;i<eqtls.size();i++){

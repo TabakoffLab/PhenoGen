@@ -13,6 +13,7 @@
 	String chromosome="";
 	String folderName="";
 	String type="";
+        String genomeVer="";
 	LinkGenerator lg=new LinkGenerator(session);
 	double pValueCutoff=0.01;
 	int rnaDatasetID=0;
@@ -71,6 +72,9 @@
 	if(request.getParameter("folderName")!=null){
 		folderName=request.getParameter("folderName");
 	}
+        if(request.getParameter("genomeVer")!=null){
+            genomeVer=request.getParameter("genomeVer");
+        }
 	
 	String[] selectedChromosomes = null;
 	String[] selectedTissues = null;
@@ -306,7 +310,7 @@
 
 <% log.debug("before eQTL table constr");
 log.debug("loc:"+chromosome+":"+min+"-"+max+"::"+folderName);
-ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,rnaDatasetID,pValueCutoff,levelString,myOrganism,tissueString,chromosomeString);//this region controls what genes
+        ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,chromosome,arrayTypeID,rnaDatasetID,pValueCutoff,levelString,myOrganism,genomeVer,tissueString,chromosomeString);//this region controls what genes
 	time=new java.util.Date();
 	//log.debug("Setup after getcontrolling eqtls:"+(time.getTime()-startDate.getTime()));
 	ArrayList<String> eQTLRegions=gdt.getEQTLRegions();
@@ -340,9 +344,9 @@ ArrayList<TranscriptCluster> transOutQTLs=gdt.getTransControllingEQTLs(min,max,c
 			cutoffTimesTen=Integer.toString(tmp);		
 		}
 
-                String tmpFolder=gdt.getFolder(min,max,chromosome,myOrganism);
+                String tmpFolder=gdt.getFolder(min,max,chromosome,myOrganism,genomeVer);
                 log.debug(tmpFolder);
-		String regionCentricPath= applicationRoot+contextRoot+"tmpData/regionData/"+tmpFolder;
+		String regionCentricPath= applicationRoot+contextRoot+"tmpData/browserCache/"+genomeVer+"/regionData/"+tmpFolder;
 		//String regionCentricPath = "/usr/share/tomcat/webapps/PhenoGen/tmpData/regionData/Rnchr19_54000000_55000000_10242012_175139";
 		if(regionCentricPath.indexOf("/PhenoGen/") > 0){
 			shortRegionCentricPath = regionCentricPath.substring(regionCentricPath.indexOf("/PhenoGen/"));

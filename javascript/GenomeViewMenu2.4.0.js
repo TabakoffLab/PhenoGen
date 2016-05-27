@@ -70,16 +70,17 @@ function ViewMenu(level){
 	//creates the dragging/sorting behavior
 	//creates the controls in each row
 	that.generateTrackList=function(d){
-		
 		var bvData=[];
+		d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').remove();
 		//filter organism specific tracks out if they don't match current organism
-		for(var i=0;i<d.TrackList.length;i++){
-			if(d.TrackList[i].Organism==="AA"||(d.TrackList[i].Organism===that.curOrg)){
-				bvData.push(d.TrackList[i]);
+		if(typeof d.TrackList!=='undefined'){
+			for(var i=0;i<d.TrackList.length;i++){
+				if(d.TrackList[i].Organism==="AA"||(d.TrackList[i].Organism===that.curOrg)){
+					bvData.push(d.TrackList[i]);
+				}
 			}
 		}
-
-		d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').remove();
+		
 		var tracktbl=d3.select("table#trackListTbl"+that.level).select("tbody").selectAll('tr').data(bvData)
 				.enter().append("tr").attr("class",function(d,i){
 				if(i%2===0){
@@ -304,42 +305,48 @@ function ViewMenu(level){
 		if(!pathPrefix){
 			tmpContext="";
 		}
-		
-		d3.json(tmpContext+"getBrowserViews.jsp",function (error,d){
-			if(error){
-				
-			}else{
-				that.viewList=[];
-				//that.viewList=d;
-				for(var i=0;i<d.length;i++){
-					if(d[i].Organism==="AA"||d[i].Organism===that.curOrg){
-						var orgCount=0;
-						for(var j=0;j<d[i].TrackList.length;j++){
-							var tmp=d[i].TrackList[j];
-							if(tmp.Organism==="AA"||tmp.Organism===that.curOrg){
-								orgCount++;
+		$.ajax({
+				url: tmpContext+"getBrowserViews.jsp",
+   				type: 'GET',
+				data: {genomeVer: genomeVer  },
+				dataType: 'json',
+                success: function(d){ 
+                    that.viewList=[];
+					//that.viewList=d;
+					for(var i=0;i<d.length;i++){
+						if(d[i].Organism==="AA"||d[i].Organism===that.curOrg){
+							var orgCount=0;
+							for(var j=0;j<d[i].TrackList.length;j++){
+								var tmp=d[i].TrackList[j];
+								if(tmp.Organism==="AA"||tmp.Organism===that.curOrg){
+									orgCount++;
+								}
 							}
+							d[i].orgCount=orgCount;
+							that.viewList.push(d[i]);
 						}
-						d[i].orgCount=orgCount;
-						that.viewList.push(d[i]);
 					}
-				}
-				if(trackInfo){
-					that.readCookieViews();
-				}
-				that.generateViewList();
-				if(that.initialized===0 && that.level===0){
-					that.initialized=1;
-					that.applySelectedView($("#defaultView").val());
-				}else if(that.level===1){
-					that.initialized=1;
-					that.applySelectedView(svgViewIDList[that.level]);
-				}
-			}
+					if(trackInfo){
+						that.readCookieViews();
+					}
+					that.generateViewList();
+					if(that.initialized===0 && that.level===0){
+						setTimeout(function (){
+							that.initialized=1;
+							that.applySelectedView($("#defaultView").val());
+						},500);
+					}else if(that.level===1){
+						that.initialized=1;
+						that.applySelectedView(svgViewIDList[that.level]);
+					}
 			if(ga){
 				ga('send','event','BrowserViews','getViews');
 			}
-		});
+                },
+                error: function(xhr, status, error) {
+                        
+                }
+        });
 	};
 
 	that.readCookieViews=function(){
@@ -415,8 +422,10 @@ function ViewMenu(level){
 	that.generateSettingStringFromView=function(view){
 		var ret="";
 		var tracks=view.TrackList;
-		for(var j=0;j<tracks.length;j++){
-			ret=ret+tracks[j].TrackClass+","+tracks[j].Settings+";";
+		if(typeof tracks !=='undefined'){
+			for(var j=0;j<tracks.length;j++){
+				ret=ret+tracks[j].TrackClass+","+tracks[j].Settings+";";
+			}
 		}
 		return ret;
 	};

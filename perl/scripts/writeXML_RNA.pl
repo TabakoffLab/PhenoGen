@@ -17,7 +17,7 @@ require 'ReadAffyProbesetDataFromDB.pl';
 #require 'readRNAIsoformDataFromDB.pl';
 require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
-require 'readSNPDataFromDB.pl';
+require 'readSNPDataFromMongo.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'createBED.pl';
 require 'createPng.pl';
@@ -220,7 +220,7 @@ sub createXMLFile
 	#
 
 	# Read in the arguments for the subroutine	
-	my($outputDir, $species,$type,$geneNames,$bedFileFolder,$arrayTypeID,$rnaDatasetID,$publicID,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
+	my($outputDir, $species,$type,$geneNames,$bedFileFolder,$arrayTypeID,$rnaDatasetID,$publicID,$genomeVer,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
 	
 	my @geneNamesList=split(/,/,$geneNames);
 	my $geneNameGlobal=$geneNamesList[0];
@@ -381,7 +381,7 @@ sub createXMLFile
 	
 	# Get all of the probesets for this gene by reading from Affy Probeset Tables in database
 	# We just have to read the probesets once   
-	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoHeritDABG("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$dsn,$usr,$passwd);
+	my ($probesetHOHRef) = readAffyProbesetDataFromDBwoHeritDABG("chr".$chr,$minCoord,$maxCoord,$arrayTypeID,$genomeVer,$dsn,$usr,$passwd);
 	my @probesetHOH = @$probesetHOHRef;
 	my $cntps=0;
         foreach(@probesetHOH){				
@@ -391,7 +391,7 @@ sub createXMLFile
 
         if($shortSpecies eq 'Rn'){
 	    #read SNPs/Indels
-	    my $snpRef=readSNPDataFromDB($chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    my $snpRef=readSNPDataFromDB($genomeVer,$chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 	    %snpHOH=%$snpRef;
 	    @snpStrain=("BNLX","SHRH","SHRJ","F344");
 
@@ -965,7 +965,8 @@ sub createXMLFile
 	my $arg13=$ARGV[12];
 	my $arg14=$ARGV[13];
 	my $arg15=$ARGV[14];
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15);
+        my $arg16=$ARGV[15];
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16);
 
 	
 	# Example call:

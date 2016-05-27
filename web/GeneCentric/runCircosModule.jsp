@@ -63,6 +63,7 @@
             }
             else{
                     perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.68/lib:/usr/local/circos-0.68/bin";
+
             }
 	    log.debug(perlEnvironmentVariables);	
             // create the short svg directory name which incoporates the date for uniqueness

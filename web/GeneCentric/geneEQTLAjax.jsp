@@ -8,6 +8,7 @@
 	String myOrganism="Rn";
 	String id="";
 	String chromosome="";
+        String genomeVer="";
 	
 	String[] selectedLevels=null;
 	String levelString="core;extended;full";
@@ -56,8 +57,11 @@
 	if(request.getParameter("id")!=null){
 		id=FilterInput.getFilteredInput(request.getParameter("id"));
 	}
+        if(request.getParameter("genomeVer")!=null){
+		genomeVer=request.getParameter("genomeVer");
+	}
 	
-	gcPath=applicationRoot + contextRoot+"tmpData/geneData/" +id+"/";
+	gcPath=applicationRoot + contextRoot+"tmpData/browserCache/"+genomeVer+"/geneData/" +id+"/";
 	
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
@@ -78,13 +82,15 @@
 	}
 	int rnaDatasetID=0;
 	int arrayTypeID=0;
-	gdt.setSession(session);
-	int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+
+	
+	int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,genomeVer);
         if(tmp!=null&&tmp.length==2){
                 rnaDatasetID=tmp[1];
                 arrayTypeID=tmp[0];
         }
-	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,rnaDatasetID,arrayTypeID,true);
+	ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(id,id,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,true);
+
 	log.debug("OPENED GENE:"+id);
 
         //response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

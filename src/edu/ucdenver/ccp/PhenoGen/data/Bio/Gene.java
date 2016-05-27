@@ -928,7 +928,8 @@ public class Gene {
         for(int z=0;z<varNodes.getLength();z++){
             if (varNodes.item(z).getNodeName().equals("Variant")) {
                 NamedNodeMap attrib=varNodes.item(z).getAttributes();
-                int ID=Integer.parseInt(attrib.getNamedItem("ID").getNodeValue());
+                //int ID=Integer.parseInt(attrib.getNamedItem("ID").getNodeValue());
+                int ID=z;
                 //System.err.println("reading ProbeID:"+probeID);
                 int start=-1,stop=-1;
                 

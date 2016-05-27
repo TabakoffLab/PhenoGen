@@ -25,13 +25,14 @@ public class BrowserView{
     private String organism="";
     private boolean visible=false;
     private String imageSettings="";
+    private String bvGenomeVer="";
     private ArrayList<BrowserTrack> btList=new ArrayList<BrowserTrack>();
     
     public BrowserView(){
         
     }
     
-    public BrowserView(int id,int userid,String name,String description, String organism,boolean visible,String imgsetting){
+    public BrowserView(int id,int userid,String name,String description, String organism,boolean visible,String imgsetting,String bvGenomeVer){
         this.id=id;
         this.userID=userid;
         this.name=name;
@@ -39,42 +40,70 @@ public class BrowserView{
         this.organism=organism;
         this.visible=visible;
         this.imageSettings=imgsetting;
+        this.bvGenomeVer=bvGenomeVer;
     }
     
-    public ArrayList<BrowserView> getBrowserViews(int userid,DataSource pool){
+    public ArrayList<BrowserView> getBrowserViews(int userid,String genomeVer,DataSource pool){
         Logger log=Logger.getRootLogger();
         ArrayList<BrowserView> ret=new ArrayList<BrowserView>();
         
         HashMap<Integer,BrowserView> hm=new HashMap<Integer,BrowserView>();
         
-        String query="select * from BROWSER_VIEWS "+
-                        "where user_id="+userid+" and visible=1";
+        String query="select bv.*,gbv.genome_id ";
+        String queryP2="from BROWSER_VIEWS bv, BROWSER_GV2VIEW gbv "+
+                        "where bv.user_id="+userid;
+        /*if(genomeVer.indexOf(",")>-1){
+            String[] genomes=genomeVer.split(",");
+            queryP2=queryP2+" ( gbv.genome_id = '"+genomes[0]+"' or "+
+                        " gbv.genome_id = '"+genomes[1]+"' ) "+
+                        " and gbv.BVID=bv.BVID"+
+                        " and bv.visible=1";
+        }else{
+            queryP2=queryP2+" gbv.genome_id = '"+genomeVer+"' "+
+                        " and gbv.BVID=bv.BVID"+
+                        " and bv.visible=1";
+        }*/
+        queryP2=queryP2+" and gbv.BVID=bv.BVID"+
+                        " and bv.visible=1";
+        query=query+queryP2+" order by bv.bvid";
+                        
         String trackquery="select bvt.bvid,bt.*,bts.settings,bvt.ordering from BROWSER_VIEWS_TRACKS bvt,BROWSER_TRACKS bt, BROWSER_TRACK_SETTINGS bts where "+
                         " bvt.trackid=bt.trackid and bvt.tracksettingid=bts.tracksettingid "+
                         " and bt.visible=1 "+
-                        " and bvt.bvid in (select bvid from browser_views where user_id="+userid+" and visible=1) "+
+                        " and bvt.bvid in (select bv.bvid "+queryP2+" ) "+
                         " order by bvt.bvid,bvt.ordering";
             Connection conn=null;
             PreparedStatement ps=null;
             try {
                 conn=pool.getConnection();
+                log.debug("\n"+query+"\n");
                 ps = conn.prepareStatement(query);
                 ResultSet rs = ps.executeQuery();
                 //int count=0;
                 while(rs.next()){
                     int id=rs.getInt(1);
-                    int uid=rs.getInt(2);
-                    String name=rs.getString(3);
-                    String desc=rs.getString(4);
-                    String org=rs.getString(5);
-                    boolean vis=rs.getBoolean(6);
-                    String imgsetting=rs.getString(7);
-                    BrowserView tmpBV=new BrowserView(id,uid,name,desc,org,vis,imgsetting);
-                    ret.add(tmpBV);
-                    hm.put(id,tmpBV);
+                    if(!hm.containsKey(id)){
+                        int uid=rs.getInt(2);
+                        String name=rs.getString(3);
+                        String desc=rs.getString(4);
+                        String org=rs.getString(5);
+                        boolean vis=rs.getBoolean(6);
+                        String imgsetting=rs.getString(7);
+                        String bvGenomeVer=rs.getString(8);
+                        BrowserView tmpBV=new BrowserView(id,uid,name,desc,org,vis,imgsetting,bvGenomeVer);
+                        ret.add(tmpBV);
+                        hm.put(id,tmpBV);
+                    }else{
+                        BrowserView tmpBV=hm.get(id);
+                        String bvGenomeVer=rs.getString(8);
+                        String tmpGV=tmpBV.getGenomeVersion();
+                        tmpGV = tmpGV +","+ bvGenomeVer;
+                        tmpBV.setGenomeVersion(tmpGV);
+                    }
                     //count++;
                 }
                 ps.close();
+                log.debug("\n"+trackquery+"\n");
                 ps = conn.prepareStatement(trackquery);
                 rs = ps.executeQuery();
                 while(rs.next()){
@@ -129,8 +158,8 @@ public class BrowserView{
         Logger log=Logger.getRootLogger();
         BrowserView ret=null;
         
-        String query="select * from BROWSER_VIEWS "+
-                        "where bvid="+viewid;
+        String query="select bv.*,gbv.genome_id from BROWSER_VIEWS bv, BROWSER_GV2VIEW gbv "+
+                        "where bvid="+viewid+" and bv.bvid=gbv.bvid";
         String trackquery="select bvt.bvid,bt.*,bts.settings,bvt.ordering from BROWSER_VIEWS_TRACKS bvt,BROWSER_TRACKS bt, BROWSER_TRACK_SETTINGS bts where "+
                         " bvt.trackid=bt.trackid and bvt.tracksettingid=bts.tracksettingid "+
                         " and bt.visible=1 "+
@@ -151,7 +180,8 @@ public class BrowserView{
                     String org=rs.getString(5);
                     boolean vis=rs.getBoolean(6);
                     String imgsetting=rs.getString(7);
-                    ret=new BrowserView(id,uid,name,desc,org,vis,imgsetting);
+                    String bvGenomeVer=rs.getString(8);
+                    ret=new BrowserView(id,uid,name,desc,org,vis,imgsetting,bvGenomeVer);
                     //count++;
                 }
                 ps.close();
@@ -305,6 +335,14 @@ public class BrowserView{
     public void setOrganism(String organism) {
         this.organism = organism;
     }
+    
+    public String getGenomeVersion() {
+        return this.bvGenomeVer;
+    }
+
+    public void setGenomeVersion(String genomeVersion) {
+        this.bvGenomeVer = genomeVersion;
+    }
 
     public boolean isVisible() {
         return visible;
@@ -384,8 +422,9 @@ public class BrowserView{
         return id;
     }
     
-    public boolean saveToDB(DataSource pool){
+    public boolean saveToDB(String genomeVer,DataSource pool){
         boolean success=false;
+        String insertVersion="insert into browser_GV2VIEW (GENOME_ID,BVID) values(?,?)";
         String insertUsage="insert into browser_views ("
                 + "BVID,USER_ID,NAME,DESCRIPTION,ORGANISM,"
                 + "VISIBLE,IMAGE_SETTINGS) values (?,?,?,?,?,?,?)";
@@ -393,7 +432,14 @@ public class BrowserView{
         Connection conn=null;
         try{
             conn=pool.getConnection();
-            PreparedStatement ps=conn.prepareStatement(insertUsage, 
+            PreparedStatement ps=conn.prepareStatement(insertVersion, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+            ps.setString(1, genomeVer);
+            ps.setInt(2, this.id);
+            ps.execute();
+            ps.close();
+            ps=conn.prepareStatement(insertUsage, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
 						ResultSet.CONCUR_UPDATABLE);
             ps.setInt(1, this.id);

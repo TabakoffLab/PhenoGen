@@ -9,7 +9,7 @@ use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
-require 'readSNPDataFromDB.pl';
+require 'readSNPDataFromMongo.pl';
 require 'readSpliceJunctFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'readRefSeqDataFromDB.pl';
@@ -209,7 +209,7 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-		my $rnaCountRef=readSNPDataFromDB($chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		my $rnaCountRef=readSNPDataFromDB('rn5',$chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
@@ -267,10 +267,10 @@ sub createXMLFile
 		my %repeatMaskHOH=%$repeatMaskRef;
 		my $rnaCountEnd=time();
 		print "RepeatMask completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
-                createGenericXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
-        }elsif(index($type,"chainNet")>-1){
+        createGenericXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
+    }elsif(index($type,"chainNet")>-1){
 
-        }elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
+    }elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
                 my $ver=substr($type,index($type,"_")+1);
                 print "Type:$type\n";
                 print "Ver:$ver\n";
@@ -282,7 +282,7 @@ sub createXMLFile
                 my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chromosome,$minCoord,$maxCoord,22,$dsn,$usr,$passwd);
                 my @probesetHOH = @$probesetHOHRef;
 
-                my $snpRef=readSNPDataFromDB($chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+                my $snpRef=readSNPDataFromDB('rn5',$chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
                 my %snpHOH=%$snpRef;
                 my @snpStrain=("BNLX","SHRH","SHRJ","F344");
                 my $rnaType="totalRNA";
@@ -405,8 +405,8 @@ sub createXMLFile
 	my $arg6 = $ARGV[5]; 
 	my $arg7 = $ARGV[6]; 
 	my $arg8 = $ARGV[7]; 
-	my $arg9= $ARGV[8]; 
-	my $arg10=$ARGV[9];
+	my $arg9 = $ARGV[8]; 
+	my $arg10= $ARGV[9];
 	my $arg11=$ARGV[10];
 	my $arg12=$ARGV[11];
 	my $arg13=$ARGV[12];
@@ -418,6 +418,7 @@ sub createXMLFile
         my $arg19=$ARGV[18];
         my $arg20=$ARGV[19];
         my $arg21=$ARGV[20];
+
 
 	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20,$arg21);
 

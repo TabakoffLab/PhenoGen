@@ -80,7 +80,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//create Data Controls
 		that.createDataControls();
                 
-        $(".wgcnaControltooltip").tooltipster({
+                $(".wgcnaControltooltip").tooltipster({
                     position: 'top-right',
                     maxWidth: 250,
                     offsetX: 5,
@@ -100,10 +100,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				url:  pathPrefix +"getWGCNAModules.jsp",
 	   			type: 'GET',
 	   			async: true,
-				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList},
+				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
 				dataType: 'json',
+				beforeSend: function(){
+					$("#waitCircos").show();
+				},
 	    		success: function(data2){
-                                
+                                $('#wgcnaGeneImage #message').hide();
                                 if(data2.length>0 && !(data2.length===1 && data2[0].ModuleID==="grey")){
                                     for(var i=0;i<data2.length;i++){
                                         if(data2[i].ModuleID!=="grey"){// && data2[i].ModuleID !=="turquoise"){
@@ -141,7 +144,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         
     that.displayMessage=function(message){
         $("#waitCircos").hide();
-        $('#wgcnaGeneImage').append("<BR><BR><h2>"+message+"</h2><BR><BR>");
+        $('#wgcnaGeneImage #message').html("<BR><BR><h2>"+message+"</h2><BR><BR>").show();
     };
         
     that.refreshRegion=function(timeout){
@@ -160,7 +163,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
     };
 	that.requestModule=function(file){
 		$.ajax({
-				url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +file+".json",
+				url:  contextRoot+"tmpData/browserCache/"+genomeVer+"/modules/ds"+that.wDSID+"/" +file+".json",
 	   			type: 'GET',
 	   			async: true,
 				data: {},
@@ -2138,7 +2141,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		
                 thatimg.requestMiR=function(){
                     $.ajax({
-						url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".miR.json",
+						url:  contextRoot+"tmpData/browserCache/"+genomeVer+"/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".miR.json",
 			   			type: 'GET',
 			   			async: true,
 						data: {},
@@ -3315,7 +3318,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             
             thatimg.getModuleGOFile=function (retry){
             	$.ajax({
-					url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+".GO.json",
+					url:  contextRoot+"tmpData/browserCache/"+genomeVer+"/modules/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+".GO.json",
 		   			type: 'GET',
 		   			async: true,
 					data: {},
@@ -3492,7 +3495,6 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
           			thatimg.draw();
           		}
           		d3.event.stopPropagation();
-
             };
             
             thatimg.mouseover=function(d){
@@ -3927,7 +3929,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 d3.select("#viewGene").remove();
                 d3.select("#circos").remove();
                 if(that.selectedModule){
-                	thatimg.update(contextRoot+"tmpData/circos/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"_1/svg/circos_new.svg");
+                	thatimg.update(contextRoot+"tmpData/browserCache/"+genomeVer+"/circos/ds"+that.wDSID+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"/"+replaceUnderscore(that.selectedModule.MOD_NAME)+"_1/svg/circos_new.svg");
                 	that.singleWGCNATableEQTLView(); 
                 }  
             };
@@ -4004,7 +4006,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 })
                 .html("Export CSV");
         $.ajax({
-                url:  contextRoot+"tmpData/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".eQTL.json",
+                url:  contextRoot+"tmpData/browserCache/"+genomeVer+"/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".eQTL.json",
 	   			type: 'GET',
 	   			async: true,
 				data: {},

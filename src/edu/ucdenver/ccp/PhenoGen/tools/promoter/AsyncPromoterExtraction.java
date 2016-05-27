@@ -27,6 +27,7 @@ import edu.ucdenver.ccp.util.ObjectHandler;
 import edu.ucdenver.ccp.util.sql.PropertiesConnection;
 import edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient;
 import edu.ucdenver.ccp.PhenoGen.tools.idecoder.Identifier;
+import edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools;
 
 import org.ensembl.datamodel.Sequence;
 import org.ensembl.driver.CoreDriver;
@@ -63,10 +64,12 @@ public class AsyncPromoterExtraction implements Runnable{
         private String perlDir=null;
         private String geneDir=null;
         private String upstreamStart=null;
+        private String genomeVer="";
 
 	public AsyncPromoterExtraction(HttpSession session,
 				String fileName,
                                 String upstreamStart,
+                                String genomeVer,
 				boolean runningMeme,
 				GeneListAnalysis myGeneListAnalysis) {
 
@@ -91,6 +94,7 @@ public class AsyncPromoterExtraction implements Runnable{
                 this.pool = (DataSource) session.getAttribute("dbPool");
                 this.myIDecoderClient=new IDecoderClient();
                 this.myIdentifier = new Identifier();
+                this.genomeVer = genomeVer;
         }
 
 	public void run() throws RuntimeException {
@@ -104,6 +108,12 @@ public class AsyncPromoterExtraction implements Runnable{
 				"Thank you for using the PhenoGen Informatics website.  "+
 				"The upstream sequence extraction process called '"+
 				myGeneListAnalysis.getDescription() + "' that you initiated ";
+                
+                GeneDataTools gdt=new GeneDataTools();
+                gdt.setSession(session);
+                HashMap<String,String> source=gdt.getGenomeVersionSource(genomeVer);
+                String ensemblPath=source.get("ensembl");
+                log.debug("\nEnsembl Path:"+ensemblPath+"\ngenomeVer="+genomeVer);
                 String[] targets = new String[] {"Ensembl ID"};
                 HashMap<String,String> included=new HashMap<String,String>();
 		try {
@@ -214,12 +224,11 @@ public class AsyncPromoterExtraction implements Runnable{
 
                             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
                             String[] envVar=perlEnvVar.split(",");
-
                             for (int i = 0; i < envVar.length; i++) {
+                                if(envVar[i].contains("/ensembl")){
+                                    envVar[i]=envVar[i].replaceFirst("/ensembl", "/"+ensemblPath);
+                                }
                                 log.debug(i + " EnvVar::" + envVar[i]);
-                                /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-                                }*/
                             }
 
 
