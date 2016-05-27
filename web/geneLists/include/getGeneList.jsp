@@ -18,15 +18,13 @@
     
     String useUUID=anonU.getUUID();
     
-    /*String tmpUUID="";
-    if(request.getParameter("uuid")!=null){
-            tmpUUID=FilterInput.getFilteredInput(request.getParameter("uuid"));
+    
+    if(request.getParameter("rgd")!=null){
+        String tmpUUID="";
+        tmpUUID=FilterInput.getFilteredInput(request.getParameter("rgd"));
+        myAnonGL.linkRGDListToUser(useUUID,tmpUUID,pool);
     }
     
-   
-    if(!tmpUUID.equals("")){
-        useUUID=tmpUUID;
-    }*/
     
     log.debug("GET GENELIST for USER:\n"+useUUID);
     
