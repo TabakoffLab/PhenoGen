@@ -908,7 +908,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					url:  pathPrefix +"runCircosModule.jsp",
 		   			type: 'GET',
 		   			async: true,
-					data: { cutoffValue:cutoff, organism:organism, module:that.selectedModule.MOD_NAME, modColor:that.selectedModule.ModRGB, chrList:cList},
+					data: { cutoffValue:cutoff, organism:organism, module:that.selectedModule.MOD_NAME, modColor:that.selectedModule.ModRGB, chrList:cList,genomeVer:genomeVer},
 					dataType: 'json',
                     beforeSend: function(){
                         //d3.select("#viewGene").remove();

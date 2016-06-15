@@ -51,8 +51,11 @@ sub readSNPDataFromDB{
 	}elsif($organism eq 'Rat'){
 		$organism="Rn";
 	}
-	
-	my $client     = MongoDB::Connection->new(host => 'mongodb://phenogen.ucdenver.edu:27017');
+        print "dsn:$dsn\n";
+        print "usr:$usr\n";
+        print "pass:$passwd\n";
+
+	my $client = MongoDB::MongoClient->new(host => $dsn,username => $usr, password => $passwd, db_name=>'SNPS',  auth_mechanism => 'SCRAM-SHA-1');
 	my $database   = $client->get_database( 'SNPS' );
 	my $col = $database->get_collection( $genomeVer );
 	

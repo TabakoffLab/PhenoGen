@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 
-use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/modules/';
+use lib '/Library/Tomcat/PhenoGen/perl/lib/ensembl_84/ensembl/modules/';
 #use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl-funcgen/modules/';
 
 
@@ -185,7 +185,7 @@ my $dbAdaptorNum =$registry->load_registry_from_db(
         #-port => 5306,
 	#-user => 'anonymous',
         #-verbose => '1'
-		-host => "140.226.114.31", #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
+		-host => "phenogen.ucdenver.pvt", #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
 		-port => "3306",
 		-user => "ensembl",
 		-pass => "INIA_ensembl1"

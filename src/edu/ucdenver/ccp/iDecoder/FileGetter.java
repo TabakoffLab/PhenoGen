@@ -50,12 +50,12 @@ public class FileGetter extends HttpServlet {
 	ObjectHandler myObjectHandler = new ObjectHandler();
 	List<String[]> files = new ArrayList<String[]>();
 
-	String mainDir = "/Users/smahaffey/iDecoder/InputFiles/";
+	String mainDir = "/data/iDecoder/InputFiles/";
 	String flybaseMain = "ftp://ftp.flybase.net/releases/current/precomputed_files/genes/";
 	String ncbiMain = "ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/";
 	String mgiMain = "ftp://ftp.informatics.jax.org/pub/reports/";
 	String ncbiHomologene = "ftp://ftp.ncbi.nih.gov/pub/HomoloGene/current/";
-	String rgdMain = "ftp://rgd.mcw.edu/pub/data_release/";
+	String rgdMain = "ftp://ftp.rgd.mcw.edu/pub/data_release/";
 	String swissprotMain = "ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/";
 /*
 	//String affyMain = "http://www.affymetrix.com/Auth/analysis/downloads/na31/ivt/";
@@ -73,14 +73,15 @@ public class FileGetter extends HttpServlet {
 	files.add(new String[] {affyExonMain, mainDir + "Affymetrix/", "RaEx-1_0-st-v1.na31.rn4.probeset.csv.zip"});
 	files.add(new String[] {affyExonMain, mainDir + "Affymetrix/", "RaEx-1_0-st-v1.na31.rn4.probeset.csv.zip"});
 */
-	/*files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "fbgn_NAseq_Uniprot_fb_2015_04.tsv.gz"});
-	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "gene_map_table_fb_2015_04.tsv.gz"}); 
+	/*files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "fbgn_NAseq_Uniprot_fb_2016_03.tsv.gz"});
+	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "gene_map_table_fb_2016_03.tsv.gz"}); 
 	files.add(new String[] {mgiMain, mainDir + "MGI/", "MGI_Coordinate_build37.rpt"});
         
         files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene2accession.gz"}); 
 	files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene2unigene"}); 
 	files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene_info.gz"}); 
 	files.add(new String[] {ncbiHomologene, mainDir + "NCBI/", "homologene.data"}); 
+        
 	files.add(new String[] {rgdMain, mainDir + "RGD/", "GENES_RAT.txt"}); 
 	files.add(new String[] {swissprotMain, mainDir + "SwissProt/", "uniprot_sprot.dat.gz"}); 
 	FileHandler myFileHandler = new FileHandler();

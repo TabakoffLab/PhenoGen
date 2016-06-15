@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 
-use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/modules/';
+use lib '/Library/Tomcat/PhenoGen/perl/lib/ensembl_84/ensembl/modules/';
 #use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl-funcgen/modules/';
 
 
@@ -16,6 +16,7 @@ use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/module
 #5-user
 #6-password
 #7-path to adjMatrix files
+#8-genomeVer
 
 use DBI;
 use Bio::EnsEMBL::Registry;
@@ -109,6 +110,7 @@ my $dsn=$ARGV[4];
 my $user=$ARGV[5];
 my $passwd=$ARGV[6];
 my $adjPath=$ARGV[7];
+my $genomeVer=$ARGV[8];
 
 my $adjCutoff=0.01;
 
@@ -123,7 +125,7 @@ my $dbAdaptorNum =$registry->load_registry_from_db(
         #-port => 5306,
 	#-user => 'anonymous',
         #-verbose => '1'
-		-host => "140.226.114.31", #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
+		-host => "phenogen.ucdenver.pvt", #'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
 		-port => "3306",
 		-user => "ensembl",
 		-pass => "INIA_ensembl1"
@@ -231,7 +233,7 @@ foreach my $mod(@moduleList){
         }
         $moduleHOH{TCList}{$tc}{PSList}{$psid}{ID}=$psid;
         my $query3="select a.strand,c.name,a.psstart,a.psstop,a.pslevel from Affy_exon_probeset a, chromosomes c where c.chromosome_id=a.chromosome_id
-                        and a.probeset_id=".$psid." and a.updatedlocation= 'Y'";
+                        and a.probeset_id=".$psid." and a.updatedlocation= 'Y' and genome_id='".$genomeVer."'";
         my $query_handle3 = $connect->prepare($query3) or die ("Module query prepare failed \n");
         $query_handle3->execute() or die ( "Module query execute failed \n");
         my $psstrand;
@@ -650,7 +652,7 @@ foreach my $mod(@moduleList){
     #print OFILE "}";#end module
     #close OFILE;
     #Get eQTL Data from WGCNA_EQTL table
-    my $eqtlAOHRef = readLocusSpecificPvaluesModule($mod,$org,"Brain",\@chrArr,$dsn,$user,$passwd);
+    my $eqtlAOHRef = readLocusSpecificPvaluesModule($mod,$org,"Brain",\@chrArr,$genomeVer,$dsn,$user,$passwd);
     my @eqtlAOH = @{$eqtlAOHRef};
     open OFILE, '>', $path.$mod.".eQTL.json" or die " Could not open two track file $path$mod.eQTL.json for writing $!\n\n";
         print OFILE "[";

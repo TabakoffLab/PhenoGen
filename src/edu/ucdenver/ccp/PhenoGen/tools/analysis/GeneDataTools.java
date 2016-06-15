@@ -1765,8 +1765,16 @@ public class GeneDataTools {
             String ensPort=myENSProperties.getProperty("PORT");
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
+            
+            File mongoPropertiesFile = new File(mongoDBPropertiesFile);
+            Properties myMongoProperties = new Properties();
+            myMongoProperties.load(new FileInputStream(mongoPropertiesFile));
+            String mongoHost=myMongoProperties.getProperty("HOST");
+            String mongoUser=myMongoProperties.getProperty("USER");
+            String mongoPassword=myMongoProperties.getProperty("PASSWORD");
+            
             //construct perl Args
-            String[] perlArgs = new String[22];
+            String[] perlArgs = new String[25];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Region.pl";
             perlArgs[2] = ucscDir+ucscGeneDir;
@@ -1796,6 +1804,9 @@ public class GeneDataTools {
             perlArgs[19] = ensPort;
             perlArgs[20] = ensUser;
             perlArgs[21] = ensPassword;
+            perlArgs[22] = mongoHost;
+            perlArgs[23] = mongoUser;
+            perlArgs[24] = mongoPassword;
 
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list

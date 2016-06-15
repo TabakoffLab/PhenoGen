@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 
-use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl/modules/';
+use lib '/Library/Tomcat/PhenoGen/perl/lib/ensembl_84/ensembl/modules/';
 #use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl-funcgen/modules/';
 
 
@@ -155,7 +155,7 @@ foreach my $mod(@moduleList){
                 mkdir $geneCache;
                 #create R call
                 open OFILE,">",$geneCache."callR";
-                print OFILE "source('/usr/share/tomcat/webapps/PhenoGen/R_src/multiMiR.getMiRTargetingGene.R')\n";
+                print OFILE "source('/Library/Tomcat/webapps/PhenoGen/R_src/multiMiR.getMiRTargetingGene.R')\n";
                 print OFILE "multiMiR.getMiRTargetingGene(geneID='".$geneid."',organism='".$mmOrg."',outputDir='".$geneCache."',outputPrefix='".$geneid."',tbl='all',cutoffType='p',cutoff=10)\n";            
                 close OFILE;
 

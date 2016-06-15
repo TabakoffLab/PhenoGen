@@ -547,15 +547,24 @@ public class Resource {
                 heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
                 
                 maskFileList = new ArrayList<MaskDataFile>();
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip"));
+		maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB  All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip"));
+		maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip"));
+                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip"));
+                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip"));
+                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip"));
+                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip"));
+                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip"));
+		maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip"));
+                maskFileList.add(new MaskDataFile("Rn5 PGF File for HXB", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip"));
+                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB  All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.mps.zip"));
+		maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.mps.zip"));
+                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.mps.zip"));
+                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.mps.zip"));
+                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.ps.zip"));
+                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.ps.zip"));
+                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.ps.zip"));
+		maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.ps.zip"));
+                maskFileList.add(new MaskDataFile("Rn6 PGF File for HXB", resourcesDir + "RaEx-1_0-st-v1.r2.rn6.MASKED.HXB.pgf.zip"));
 		maskFileArray = myObjectHandler.getAsArray(maskFileList, MaskDataFile.class);
 
                 resourceList.add(new Resource(5, "Rat", HXBRI_PANEL, HXBRI_Brain_Exon_Dataset, "Whole Brain", myArray.RAT_EXON_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,maskFileArray));

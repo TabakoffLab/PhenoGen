@@ -21,7 +21,7 @@ sub readLocusSpecificPvaluesModule{
 	#INPUT VARIABLES: $probeID, $organism
 
 	# Read inputs
-	my($module,$organism,$tissue,$chromosomeListRef,$dsn,$usr,$passwd)=@_;   
+	my($module,$organism,$tissue,$chromosomeListRef,$genomeVer,$dsn,$usr,$passwd)=@_;   
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# $hostname is used to determine the connection to the database.
@@ -45,6 +45,7 @@ sub readLocusSpecificPvaluesModule{
                         where s.organism='$organism'
                         and s.tissue='$tissue'
                         and s.snp_id=e.snp_id
+                        and s.genome_id='".$genomeVer."'
                         and c.chromosome_id=s.chromosome_id
                         and e.pvalue>=1
                         and e.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.visible=1)

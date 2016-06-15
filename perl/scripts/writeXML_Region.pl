@@ -187,7 +187,7 @@ sub createXMLFile
 	#
 
 	# Read in the arguments for the subroutine	
-	my($ucscDir, $outputDir, $folderName,$species,$type,$chromosome,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,$publicID,$genomeVer,$dsn,$usr,$passwd,$ucscDB,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
+	my($ucscDir, $outputDir, $folderName,$species,$type,$chromosome,$minCoord,$maxCoord,$arrayTypeID,$rnaDatasetID,$publicID,$genomeVer,$dsn,$usr,$passwd,$ucscDB,$ensHost,$ensPort,$ensUsr,$ensPasswd,$mdsn,$muser,$mpass)=@_;
 	
 	my $scriptStart=time();
 	my $shortSpecies="";
@@ -317,7 +317,7 @@ sub createXMLFile
 	    
 	    #read SNPs/Indels
 	    my $sTimeStart=time();
-	    my $snpRef=readSNPDataFromDB($genomeVer,$chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    my $snpRef=readSNPDataFromDB($genomeVer,$chr,$species,$minCoord,$maxCoord,$mdsn,$muser,$mpass);
 	    %snpHOH=%$snpRef;
 	    @snpStrain=("BNLX","SHRH","SHRJ","F344");
 	    my $sTimeEnd=time();
@@ -947,6 +947,10 @@ sub createXMLFile
 	my $arg18=$ARGV[17];
         my $arg19=$ARGV[18];
         my $arg20=$ARGV[19];
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20);
+        my $arg21=$ARGV[20];
+        my $arg22=$ARGV[21];
+        my $arg23=$ARGV[22];
+
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20,$arg21,$arg22,$arg23);
 
 exit 0;

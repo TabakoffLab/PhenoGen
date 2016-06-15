@@ -209,7 +209,7 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-		my $rnaCountRef=readSNPDataFromDB('rn5',$chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		my $rnaCountRef=readSNPDataFromDB('rn5',$chromosome,$species,$minCoord,$maxCoord,$mongoDsn,$mongoUser,$mongoPasswd);
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
