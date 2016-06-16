@@ -55,7 +55,7 @@ sub prepCircosMod
 	createCircosModGenesTextConfFile($dataDirectory,$confDirectory);
 	createCircosModGenesTextDataFile($module,$tissueString,$dataDirectory,$organism,$genomeVer,$dsn,$usr,$passwd);
 	createCircosPvaluesConfFile($confDirectory,$dataDirectory,$cutoff,$organism,$tissueString);
-	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$dsn,$usr,$passwd);
+	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$genomeVer,$dsn,$usr,$passwd);
 	createCircosPvaluesDataFiles($dataDirectory,$module,$organism,$eqtlAOHRef,$chromosomeListRef);
 	if($oneToCreateLinks == 1){
 		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissueString,$chromosomeList[0]);	
@@ -306,11 +306,11 @@ sub createCircosPvaluesConfFile{
 	$filenameHash{'Liver'}='circosLiverPValues.txt';
 	$filenameHash{'BAT'}='circosBATPValues.txt';	
 	
-        #if($debugLevel >= 2){}
+        if($debugLevel >= 2){
             foreach my $key (keys(%colorHash)){
                     print " key $key $colorHash{$key} \n";
             }
-	#}
+		}
 	my @innerRadiusArray = ('0.85r','0.75r','0.65r','0.55r');
 	my @outerRadiusArray = ('0.85r + 100p','0.75r + 100p','0.65r + 100p','0.55r + 100p');
 
@@ -466,7 +466,7 @@ sub createCircosLinksConfAndData{
 		writeLink($CONFFILEHANDLE,$linkFileName,$linkName,$linkColor,$organism,$numberOfTissues,$i);
 	}
 	close(CONFFILE);
-	print " Finished with createCircosLinksConfAndData \n";
+	#print " Finished with createCircosLinksConfAndData \n";
 }
 
 

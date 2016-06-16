@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 
-use lib '/Library/Tomcat/PhenoGen/perl/lib/ensembl_84/ensembl/modules/';
+use lib '/Library/Tomcat/webapps/PhenoGen/perl/lib/ensembl_84/ensembl/modules';
 #use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl-funcgen/modules/';
 
 
@@ -675,5 +675,5 @@ foreach my $mod(@moduleList){
     #print "Circos Path:".$tmpPath."\n";
     my $cutoff=2;
     
-    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$modRGB,$dsn,$user, $passwd);
+    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$modRGB,$genomeVer,$dsn,$user, $passwd);
 }

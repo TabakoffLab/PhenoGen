@@ -48,10 +48,10 @@ sub readLocusSpecificPvaluesModule{
                         and s.genome_id='".$genomeVer."'
                         and c.chromosome_id=s.chromosome_id
                         and e.pvalue>=1
-                        and e.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.visible=1)
+                        and e.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.genome_id='$genomeVer' and wd.visible=1)
                         and e.module_id in 
                             (Select wi.module_id from wgcna_module_info wi where 
-                                wi.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.visible=1) 
+                                wi.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.genome_id='$genomeVer' and wd.visible=1) 
                         and wi.module='$module')
                         order by e.pvalue";
                       

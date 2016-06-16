@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 
-use lib '/Library/Tomcat/PhenoGen/perl/lib/ensembl_84/ensembl/modules/';
+use lib '/Library/Tomcat/webapps/PhenoGen/perl/lib/ensembl_84/ensembl/modules';
 #use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl-funcgen/modules/';
 
 
@@ -50,7 +50,7 @@ if($org eq "Rn"){
 
 my $registry = 'Bio::EnsEMBL::Registry';
 my $dbAdaptorNum =$registry->load_registry_from_db( 
-		-host => "140.226.114.31",
+		-host => "phenogen.ucdenver.pvt",
 		-port => "3306",
 		-user => "ensembl",
 		-pass => "INIA_ensembl1"
