@@ -59,6 +59,7 @@ public class Resource {
         private String population;
         private String ancestry;
         private String description;
+        private String genomeVer;
         
         //private String context="";
 
@@ -95,7 +96,7 @@ public class Resource {
                 setMaskDataFiles(maskFileArray);
 	}
         
-        public Resource(int id, String organism, String strain,String rnaType,String tissue,String tech,String readType, SAMDataFile[] samFileArray) {
+        public Resource(int id, String organism, String strain,String rnaType,String tissue,String tech,String readType, SAMDataFile[] samFileArray,String genomeVer) {
 		log = Logger.getRootLogger();
 		setID(id);
 		setOrganism(organism);
@@ -105,15 +106,17 @@ public class Resource {
                 setTissue(tissue);
                 setTechType(tech);
                 setReadType(readType);
+                setGenome(genomeVer);
 	}
         
-        public Resource(int id, String organism, String strain,String tech, SAMDataFile[] samFileArray) {
+        public Resource(int id, String organism, String strain,String tech, SAMDataFile[] samFileArray,String genomeVer) {
 		log = Logger.getRootLogger();
 		setID(id);
 		setOrganism(organism);
 		setSource(strain);
 		setSAMDataFiles(samFileArray);
                 setTechType(tech);
+                setGenome(genomeVer);
 	}
         
         public Resource(int id, String organism, String population,String ancestry,String tech, GenotypeDataFile[] genotypeFileArray) {
@@ -229,6 +232,14 @@ public class Resource {
 
     public void setRNAType(String rnaType) {
         this.rnaType = rnaType;
+    }
+    
+    public String getGenome() {
+        return genomeVer;
+    }
+
+    public void setGenome(String genome) {
+        this.genomeVer = genome;
     }
 
     public String getTechType() {
@@ -397,9 +408,9 @@ public class Resource {
 		String datasetDir = BXDRI_Dataset.getPath();
 
 		List<ExpressionDataFile> expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values", resourcesDir + "BXD_v6_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicBXDRIMice_RawData_Part1.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicBXDRIMice_RawData_Part2.zip"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values", resourcesDir + "BXD_v6_Affymetrix.Normalization.output.csv.zip","Mm9"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicBXDRIMice_RawData_Part1.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicBXDRIMice_RawData_Part2.zip","N/A"));
 		ExpressionDataFile[] expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
 
 		List<EQTLDataFile> eQTLFileList = new ArrayList<EQTLDataFile>();
@@ -407,7 +418,7 @@ public class Resource {
 		EQTLDataFile[] eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		List<HeritabilityDataFile> heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritability file from RMA normalization plus probe mask", resourcesDir + "herits.BXD.zip"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritability file from RMA normalization plus probe mask", resourcesDir + "herits.BXD.zip","Mm9"));
 		HeritabilityDataFile[] heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
 
                 resourceList.add(new Resource(1, "Mouse", BXDRI_PANEL, BXDRI_Dataset, "Whole Brain", myArray.MOUSE430V2_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,null));
@@ -418,30 +429,30 @@ public class Resource {
 		datasetDir = LXSRI_Dataset.getPath();
 
 		expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "LXS_mm10_v4_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "LXS_mm10_v5_Affymetrix.Normalization.output.csv.zip"));
-                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "LXS_mm10_v6_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.LXS.mm10.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.LXS.mm10.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.LXS.mm10.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.LXS.mm10.PhenoGen.txt.zip"));
-                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.LXS.mm10.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.LXS.mm10.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicLXSRIMice_RawData_Part1.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicLXSRIMice_RawData_Part2.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicLXSRIMice_RawData_Part3.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicLXSRIMice_RawData_Part4.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 5", resourcesDir + "PublicLXSRIMice_RawData_Part5.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 6", resourcesDir + "PublicLXSRIMice_RawData_Part6.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 7", resourcesDir + "PublicLXSRIMice_RawData_Part7.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 8", resourcesDir + "PublicLXSRIMice_RawData_Part8.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 9", resourcesDir + "PublicLXSRIMice_RawData_Part9.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 10", resourcesDir + "PublicLXSRIMice_RawData_Part10.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 11", resourcesDir + "PublicLXSRIMice_RawData_Part11.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 12", resourcesDir + "PublicLXSRIMice_RawData_Part12.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 13", resourcesDir + "PublicLXSRIMice_RawData_Part13.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 14", resourcesDir + "PublicLXSRIMice_RawData_Part14.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 15", resourcesDir + "PublicLXSRIMice_RawData_Part15.zip"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "LXS_mm10_v4_Affymetrix.Normalization.output.csv.zip","Mm10"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "LXS_mm10_v5_Affymetrix.Normalization.output.csv.zip","Mm10"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "LXS_mm10_v6_Affymetrix.Normalization.output.csv.zip","Mm10"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.LXS.mm10.PhenoGen.txt.zip","Mm10"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.LXS.mm10.PhenoGen.txt.zip","Mm10"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.LXS.mm10.PhenoGen.txt.zip","Mm10"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.LXS.mm10.PhenoGen.txt.zip","Mm10"));
+                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.LXS.mm10.PhenoGen.txt.zip","Mm10"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.LXS.mm10.PhenoGen.txt.zip","Mm10"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicLXSRIMice_RawData_Part1.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicLXSRIMice_RawData_Part2.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicLXSRIMice_RawData_Part3.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicLXSRIMice_RawData_Part4.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 5", resourcesDir + "PublicLXSRIMice_RawData_Part5.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 6", resourcesDir + "PublicLXSRIMice_RawData_Part6.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 7", resourcesDir + "PublicLXSRIMice_RawData_Part7.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 8", resourcesDir + "PublicLXSRIMice_RawData_Part8.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 9", resourcesDir + "PublicLXSRIMice_RawData_Part9.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 10", resourcesDir + "PublicLXSRIMice_RawData_Part10.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 11", resourcesDir + "PublicLXSRIMice_RawData_Part11.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 12", resourcesDir + "PublicLXSRIMice_RawData_Part12.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 13", resourcesDir + "PublicLXSRIMice_RawData_Part13.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 14", resourcesDir + "PublicLXSRIMice_RawData_Part14.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 15", resourcesDir + "PublicLXSRIMice_RawData_Part15.zip","N/A"));
 		expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
                                                                                                                                                                                                 
 		eQTLFileList = new ArrayList<EQTLDataFile>();
@@ -452,21 +463,21 @@ public class Resource {
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.LXS.mm10.Brain.txt.zip"));
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.LXS.mm10.Brain.txt.zip"));
-                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probe sets", resourcesDir + "herits.fullPS.LXS.mm10.Brain.txt.zip"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.LXS.mm10.Brain.txt.zip","Mm10"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.LXS.mm10.Brain.txt.zip","Mm10"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probe sets", resourcesDir + "herits.fullPS.LXS.mm10.Brain.txt.zip","Mm10"));
 		heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
 
                 List<MaskDataFile> maskFileList = new ArrayList<MaskDataFile>();
-		maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 All Transcripts", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.all.MASKED.LXS.mps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Core Transcripts", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.core.MASKED.LXS.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Extended Transcripts", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.extended.MASKED.LXS.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Full Transcripts", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.full.MASKED.LXS.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 All Probe sets", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.all.MASKED.LXS.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Core Probe sets", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.core.MASKED.LXS.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Extended Probe sets", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.extended.MASKED.LXS.ps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Full Probe sets", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.full.MASKED.LXS.ps.zip"));
-                maskFileList.add(new MaskDataFile("PGF File for ILS/ISS Mm10", resourcesDir + "MoEx-1_0-st-v1.r2.mm10.MASKED.LXS.pgf.zip"));
+		maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 All Transcripts", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.all.MASKED.LXS.mps.zip","Mm10"));
+		maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Core Transcripts", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.core.MASKED.LXS.mps.zip","Mm10"));
+                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Extended Transcripts", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.extended.MASKED.LXS.mps.zip","Mm10"));
+                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Full Transcripts", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.full.MASKED.LXS.mps.zip","Mm10"));
+                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 All Probe sets", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.all.MASKED.LXS.ps.zip","Mm10"));
+                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Core Probe sets", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.core.MASKED.LXS.ps.zip","Mm10"));
+                maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Extended Probe sets", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.extended.MASKED.LXS.ps.zip","Mm10"));
+		maskFileList.add(new MaskDataFile("Mask File for ILS/ISS Mm10 Full Probe sets", resourcesDir + "MoEx-1_0-st-v1.r2.dt1.mm10.full.MASKED.LXS.ps.zip","Mm10"));
+                maskFileList.add(new MaskDataFile("PGF File for ILS/ISS Mm10", resourcesDir + "MoEx-1_0-st-v1.r2.mm10.MASKED.LXS.pgf.zip","Mm10"));
 		MaskDataFile[] maskFileArray = myObjectHandler.getAsArray(maskFileList, MaskDataFile.class);
                 
                 resourceList.add(new Resource(2, "Mouse", LXSRI_PANEL, LXSRI_Dataset, "Whole Brain", myArray.MOUSE_EXON_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,maskFileArray));
@@ -478,16 +489,16 @@ public class Resource {
 		datasetDir = Inbred_Dataset.getPath();
 
 		expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values", resourcesDir + "Inbred_v6_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicInbredMice_RawData_Part1.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicInbredMice_RawData_Part2.zip"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values", resourcesDir + "Inbred_v6_Affymetrix.Normalization.output.csv.zip","Mm10"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicInbredMice_RawData_Part1.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicInbredMice_RawData_Part2.zip","N/A"));
 		expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
 
 		eQTLFileList = new ArrayList<EQTLDataFile>();
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritability file from RMA normalization plus probe mask", resourcesDir + "herits.Inbred.txt.zip"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritability file from RMA normalization plus probe mask", resourcesDir + "herits.Inbred.txt.zip","Mm10"));
 		heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
 
                 resourceList.add(new Resource(3, "Mouse", INBRED_PANEL, Inbred_Dataset, "Whole Brain", myArray.MOUSE430V2_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,null));
@@ -498,8 +509,8 @@ public class Resource {
 		datasetDir = HXBRI_Dataset.getPath();
 
 		expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values", resourcesDir + "HXB_BXH_v6_CodeLink.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - TXT Files", resourcesDir + "PublicHXB_BXHRIRats_RawData.zip"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values", resourcesDir + "HXB_BXH_v6_CodeLink.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - TXT Files", resourcesDir + "PublicHXB_BXHRIRats_RawData.zip","N/A"));
 		expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
 
 		eQTLFileList = new ArrayList<EQTLDataFile>();
@@ -507,7 +518,7 @@ public class Resource {
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritability file from RMA normalization plus probe mask", resourcesDir + "herits.HXB.txt.zip"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritability file from RMA normalization plus probe mask", resourcesDir + "herits.HXB.txt.zip","Rn5"));
 		heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
 
                 resourceList.add(new Resource(4, "Rat", HXBRI_PANEL, HXBRI_Dataset, "Whole Brain", myArray.CODELINK_RAT_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,null));
@@ -518,19 +529,29 @@ public class Resource {
 		datasetDir = HXBRI_Brain_Exon_Dataset.getPath();
 
 		expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.brain_v4_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.brain_v5_Affymetrix.Normalization.output.csv.zip"));
-                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.brain_v6_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.brain.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.brain.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.brain.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.brain.rn5.PhenoGen.txt.zip"));
-                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.brain.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.brain.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part1.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part2.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part3.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part4.zip"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.brain_v7_Affymetrix.Normalization.output.csv.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.brain_v8_Affymetrix.Normalization.output.csv.zip","Rn6"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.brain_v9_Affymetrix.Normalization.output.csv.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.brain.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.brain.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.brain.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.brain.rn6.PhenoGen.txt.zip","Rn6"));
+                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.brain.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.brain.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.brain_v4_Affymetrix.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.brain_v5_Affymetrix.Normalization.output.csv.zip","Rn5"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.brain_v6_Affymetrix.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.brain.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.brain.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.brain.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.brain.rn5.PhenoGen.txt.zip","Rn5"));
+                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.brain.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.brain.rn5.PhenoGen.txt.zip","Rn5"));
+                
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part1.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part2.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part3.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part4.zip","N/A"));
 		expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
 
 		eQTLFileList = new ArrayList<EQTLDataFile>();
@@ -541,30 +562,33 @@ public class Resource {
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.brain.rn5.txt.zip"));
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.brain.rn5.txt.zip"));
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.brain.rn5.txt.zip"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.brain.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.brain.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.brain.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.brain.rn5.txt.zip","Rn5"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.brain.rn5.txt.zip","Rn5"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.brain.rn5.txt.zip","Rn5"));
                 heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
                 
                 maskFileList = new ArrayList<MaskDataFile>();
-		maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB  All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip"));
-		maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip"));
-		maskFileList.add(new MaskDataFile("Rn5 Mask File for HXB Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Rn5 PGF File for HXB", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip"));
-                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB  All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.mps.zip"));
-		maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.ps.zip"));
-		maskFileList.add(new MaskDataFile("Rn6 Mask File for HXB Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Rn6 PGF File for HXB", resourcesDir + "RaEx-1_0-st-v1.r2.rn6.MASKED.HXB.pgf.zip"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.mps.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.ps.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn6", resourcesDir + "RaEx-1_0-st-v1.r2.rn6.MASKED.HXB.pgf.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip","Rn5"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip","Rn5"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip","Rn5"));
 		maskFileArray = myObjectHandler.getAsArray(maskFileList, MaskDataFile.class);
 
                 resourceList.add(new Resource(5, "Rat", HXBRI_PANEL, HXBRI_Brain_Exon_Dataset, "Whole Brain", myArray.RAT_EXON_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,maskFileArray));
@@ -575,19 +599,28 @@ public class Resource {
 		datasetDir = HXBRI_Heart_Exon_Dataset.getPath();
 
 		expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.heart_v4_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.heart_v5_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.heart_v6_Affymetrix.Normalization.output.csv.zip"));
-                expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.heart.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.heart.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.heart.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.heart.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.heart.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.heart.rn5.PhenoGen.txt.zip"));
-                expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part1.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part2.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part3.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part4.zip"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.heart_v7_Affymetrix.Normalization.output.csv.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.heart_v8_Affymetrix.Normalization.output.csv.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.heart_v9_Affymetrix.Normalization.output.csv.zip","Rn6"));
+                expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.heart.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.heart.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.heart.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.heart.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.heart.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.heart.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.heart_v4_Affymetrix.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.heart_v5_Affymetrix.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.heart_v6_Affymetrix.Normalization.output.csv.zip","Rn5"));
+                expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.heart.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.heart.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.heart.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.heart.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.heart.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.heart.rn5.PhenoGen.txt.zip","Rn5"));
+                expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part1.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part2.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part3.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part4.zip","N/A"));
 		expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
 
 		//log.debug("csv file exists: "+new File(resourcesDir + "HXB.BXH.eQTL.brain.coreTrans.11Jan12.csv.zip").exists());
@@ -601,21 +634,34 @@ public class Resource {
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.heart.rn5.txt.zip"));
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.heart.rn5.txt.zip"));
-                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.heart.rn5.txt.zip"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.heart.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.heart.rn6.txt.zip","Rn6"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.heart.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.heart.rn5.txt.zip","Rn5"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.heart.rn5.txt.zip","Rn5"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.heart.rn5.txt.zip","Rn5"));
 		heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
 
                 maskFileList = new ArrayList<MaskDataFile>();
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.mps.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.ps.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn6", resourcesDir + "RaEx-1_0-st-v1.r2.rn6.MASKED.HXB.pgf.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip","Rn5"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip","Rn5"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip","Rn5"));
 		maskFileArray = myObjectHandler.getAsArray(maskFileList, MaskDataFile.class);
                 
                 resourceList.add(new Resource(6, "Rat", HXBRI_PANEL, HXBRI_Heart_Exon_Dataset, "Heart", myArray.RAT_EXON_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,maskFileArray));
@@ -626,19 +672,28 @@ public class Resource {
 		datasetDir = HXBRI_Liver_Exon_Dataset.getPath();
 
 		expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.liver_v4_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.liver_v5_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.liver_v6_Affymetrix.Normalization.output.csv.zip"));
-                expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.liver.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.liver.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.liver.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.liver.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.liver.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.liver.rn5.PhenoGen.txt.zip"));
-                expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.Liver.Exon.RawData_Part1.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.Liver.Exon.RawData_Part2.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.Liver.Exon.RawData_Part3.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.Liver.Exon.RawData_Part4.zip"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.liver_v7_Affymetrix.Normalization.output.csv.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.liver_v8_Affymetrix.Normalization.output.csv.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.liver_v9_Affymetrix.Normalization.output.csv.zip","Rn6"));
+                expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.liver.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.liver.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.liver.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.liver.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.liver.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.liver.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.liver_v4_Affymetrix.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.liver_v5_Affymetrix.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.liver_v6_Affymetrix.Normalization.output.csv.zip","Rn5"));
+                expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.liver.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.liver.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.liver.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.liver.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.liver.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.liver.rn5.PhenoGen.txt.zip","Rn5"));
+                expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.Liver.Exon.RawData_Part1.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.Liver.Exon.RawData_Part2.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.Liver.Exon.RawData_Part3.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.Liver.Exon.RawData_Part4.zip","N/A"));
 		expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
 
 		eQTLFileList = new ArrayList<EQTLDataFile>();
@@ -649,21 +704,33 @@ public class Resource {
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.liver.rn5.txt.zip"));
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.liver.rn5.txt.zip"));
-                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.liver.rn5.txt.zip"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.liver.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.liver.rn6.txt.zip","Rn6"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.liver.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.liver.rn5.txt.zip","Rn5"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.liver.rn5.txt.zip","Rn5"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.liver.rn5.txt.zip","Rn5"));
 		heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
 
                 maskFileList = new ArrayList<MaskDataFile>();
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.mps.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.ps.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn6", resourcesDir + "RaEx-1_0-st-v1.r2.rn6.MASKED.HXB.pgf.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip","Rn5"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip","Rn5"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip","Rn5"));
 		maskFileArray = myObjectHandler.getAsArray(maskFileList, MaskDataFile.class);
                 
                 resourceList.add(new Resource(7, "Rat", HXBRI_PANEL, HXBRI_Liver_Exon_Dataset, "Liver", myArray.RAT_EXON_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,maskFileArray));
@@ -674,19 +741,28 @@ public class Resource {
 		datasetDir = HXBRI_Brown_Adipose_Exon_Dataset.getPath();
 
 		expressionFileList = new ArrayList<ExpressionDataFile>();
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.bat_v4_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.bat_v5_Affymetrix.Normalization.output.csv.zip"));
-                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.bat_v6_Affymetrix.Normalization.output.csv.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.BAT.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.BAT.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.BAT.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.BAT.rn5.PhenoGen.txt.zip"));
-                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.BAT.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.BAT.rn5.PhenoGen.txt.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.BrownAdipose.Exon.RawData_Part1.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.BrownAdipose.Exon.RawData_Part2.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.BrownAdipose.Exon.RawData_Part3.zip"));
-		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.BrownAdipose.Exon.RawData_Part4.zip"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.bat_v7_Affymetrix.Normalization.output.csv.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.bat_v8_Affymetrix.Normalization.output.csv.zip","Rn6"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.bat_v9_Affymetrix.Normalization.output.csv.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.BAT.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.BAT.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.BAT.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.BAT.rn6.PhenoGen.txt.zip","Rn6"));
+                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.BAT.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.BAT.rn6.PhenoGen.txt.zip","Rn6"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Core Transcripts", resourcesDir + "HXB_BXH.bat_v4_Affymetrix.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Transcripts", resourcesDir + "HXB_BXH.bat_v5_Affymetrix.Normalization.output.csv.zip","Rn5"));
+                expressionFileList.add(new ExpressionDataFile("Normalized expression values and DABG p-values for Full Probesets", resourcesDir + "HXB_BXH.bat_v6_Affymetrix.Normalization.output.csv.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Detection Above Background p-values", resourcesDir + "dabg.coreTrans.HXB_BXH.BAT.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Core Transcripts Normalized expression values", resourcesDir + "rma.coreTrans.HXB_BXH.BAT.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Detection Above Background p-values", resourcesDir + "dabg.fullTrans.HXB_BXH.BAT.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Transcripts Normalized expression values", resourcesDir + "rma.fullTrans.HXB_BXH.BAT.rn5.PhenoGen.txt.zip","Rn5"));
+                expressionFileList.add(new ExpressionDataFile("Full Probesets Detection Above Background p-values", resourcesDir + "dabg.fullPS.HXB_BXH.BAT.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Full Probesets Normalized expression values", resourcesDir + "rma.fullPS.HXB_BXH.BAT.rn5.PhenoGen.txt.zip","Rn5"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.BrownAdipose.Exon.RawData_Part1.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.BrownAdipose.Exon.RawData_Part2.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.BrownAdipose.Exon.RawData_Part3.zip","N/A"));
+		expressionFileList.add(new ExpressionDataFile("Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.BrownAdipose.Exon.RawData_Part4.zip","N/A"));
 		expressionFileArray = myObjectHandler.getAsArray(expressionFileList, ExpressionDataFile.class);
 
 		eQTLFileList = new ArrayList<EQTLDataFile>();
@@ -697,21 +773,33 @@ public class Resource {
 		eQTLFileArray = myObjectHandler.getAsArray(eQTLFileList, EQTLDataFile.class);
 
 		heritabilityFileList = new ArrayList<HeritabilityDataFile>();
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.BAT.rn5.txt.zip"));
-		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.BAT.rn5.txt.zip"));
-                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.BAT.rn5.txt.zip"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.BAT.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.BAT.rn6.txt.zip","Rn6"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.BAT.rn6.txt.zip","Rn6"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Core Transcripts", resourcesDir + "herits.coreTrans.HXB_BXH.BAT.rn5.txt.zip","Rn5"));
+		heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Transcripts", resourcesDir + "herits.fullTrans.HXB_BXH.BAT.rn5.txt.zip","Rn5"));
+                heritabilityFileList.add(new HeritabilityDataFile("Heritabilty File from Full Probesets", resourcesDir + "herits.fullPS.HXB_BXH.BAT.rn5.txt.zip","Rn5"));
 		heritabilityFileArray = myObjectHandler.getAsArray(heritabilityFileList, HeritabilityDataFile.class);
 
                 maskFileList = new ArrayList<MaskDataFile>();
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip"));
-		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip"));
-                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.mps.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.mps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.all.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.core.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.extended.MASKED.HXB.ps.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn6 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn6.full.MASKED.HXB.ps.zip","Rn6"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn6", resourcesDir + "RaEx-1_0-st-v1.r2.rn6.MASKED.HXB.pgf.zip","Rn6"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.mps.zip","Rn5"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Transcripts", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.mps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 All Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.all.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Core Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.core.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Extended Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.extended.MASKED.HXB.ps.zip","Rn5"));
+		maskFileList.add(new MaskDataFile("Mask File for HXB Rn5 Full Probe sets", resourcesDir + "RaEx-1_0-st-v1.r2.dt1.rn5.full.MASKED.HXB.ps.zip","Rn5"));
+                maskFileList.add(new MaskDataFile("PGF File for HXB Rn5", resourcesDir + "RaEx-1_0-st-v1.r2.rn5.MASKED.HXB.pgf.zip","Rn5"));
 		maskFileArray = myObjectHandler.getAsArray(maskFileList, MaskDataFile.class);
                 
                 resourceList.add(new Resource(8, "Rat", HXBRI_PANEL, HXBRI_Brown_Adipose_Exon_Dataset, "Brown Adipose", myArray.RAT_EXON_ARRAY_TYPE,  expressionFileArray, eQTLFileArray, heritabilityFileArray,maskFileArray));
@@ -795,54 +883,74 @@ public class Resource {
                 String seqFilePath="/userFiles/public/RNASeq/";
 		List<Resource> resourceList = new ArrayList<Resource>();
                 
-                SAMDataFile[] bnlxFileList = new SAMDataFile[3];
-                bnlxFileList[0]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx1.polyA.bam");
-                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx2.polyA.bam");
-                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx3.polyA.bam");
-                resourceList.add(new Resource(50, "Rat", "BN-Lx/CubPrin","polyA+ (>200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", bnlxFileList ));
+                SAMDataFile[] bnlxFileList = new SAMDataFile[4];
+                bnlxFileList[0]=new SAMDataFile("BN-Lx Aligned BAM File",seqFilePath+"Aligned/rn6/BNLx.rn6.polyA.bam","Rn6");
+                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx1.polyA.bam","Rn5");
+                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx2.polyA.bam","Rn5");
+                bnlxFileList[3]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/PolyA/BNLx3.polyA.bam","Rn5");
+                resourceList.add(new Resource(50, "Rat", "BN-Lx/CubPrin","polyA+ (>200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", bnlxFileList,"Rn6, Rn5" ));
         	
-                SAMDataFile[] shrhFileList = new SAMDataFile[3];
-                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR1.polyA.bam");
-                shrhFileList[1]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR2.polyA.bam");
-                shrhFileList[2]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR3.polyA.bam");
-                resourceList.add(new Resource(51, "Rat", "SHR/OlaIpcvPrin","polyA+ (>200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", shrhFileList ));
+                SAMDataFile[] shrhFileList = new SAMDataFile[4];
+                shrhFileList[0]=new SAMDataFile("SHR Aligned BAM File",seqFilePath+"Aligned/rn6/SHR.rn6.polyA.bam","Rn6");
+                shrhFileList[1]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR1.polyA.bam","Rn5");
+                shrhFileList[2]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR2.polyA.bam","Rn5");
+                shrhFileList[3]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/PolyA/SHR3.polyA.bam","Rn5");
+                resourceList.add(new Resource(51, "Rat", "SHR/OlaIpcvPrin","polyA+ (>200 nt) selected","Brain","Illumina HiSeq2000","100 bp paired-end", shrhFileList,"Rn6, Rn5" ));
+                
+                bnlxFileList = new SAMDataFile[4];
+                bnlxFileList[0]=new SAMDataFile("BN-Lx Aligned BAM File",seqFilePath+"Aligned/rn6/BNLx.rn6.totalRNA.bam","Rn6");
+                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx1.totalRNA.bam","Rn5");
+                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx2.totalRNA.bam","Rn5");
+                bnlxFileList[3]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx3.totalRNA.bam","Rn5");
+                resourceList.add(new Resource(54, "Rat", "BN-Lx/CubPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Illumina HiSeq2000","100 bp paired-end", bnlxFileList,"Rn6, Rn5" ));
+        	
+                shrhFileList = new SAMDataFile[4];
+                shrhFileList[0]=new SAMDataFile("SHR Aligned BAM File",seqFilePath+"Aligned/rn6/SHR.rn6.totalRNA.bam","Rn6");
+                shrhFileList[1]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Total/SHR1.totalRNA.bam","Rn5");
+                shrhFileList[2]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/Total/SHR2.totalRNA.bam","Rn5");
+                shrhFileList[3]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/Total/SHR3.totalRNA.bam","Rn5");
+                resourceList.add(new Resource(55, "Rat", "SHR/OlaIpcvPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Illumina HiSeq2000","100 bp paired-end", shrhFileList,"Rn6, Rn5" ));
                 
                 bnlxFileList = new SAMDataFile[3];
-                bnlxFileList[0]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx1.totalRNA.bam");
-                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx2.totalRNA.bam");
-                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/Total/BNLx3.totalRNA.bam");
-                resourceList.add(new Resource(54, "Rat", "BN-Lx/CubPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Illumina HiSeq2000","100 bp paired-end", bnlxFileList ));
+                bnlxFileList[0]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx1.smRNA.bam","Rn5");
+                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx2.smRNA.bam","Rn5");
+                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx3.smRNA.bam","Rn5");
+                resourceList.add(new Resource(56, "Rat", "BN-Lx/CubPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","50 bp single-end", bnlxFileList,"Rn5" ));
         	
                 shrhFileList = new SAMDataFile[3];
-                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Total/SHR1.totalRNA.bam");
-                shrhFileList[1]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/Total/SHR2.totalRNA.bam");
-                shrhFileList[2]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/Total/SHR3.totalRNA.bam");
-                resourceList.add(new Resource(55, "Rat", "SHR/OlaIpcvPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Illumina HiSeq2000","100 bp paired-end", shrhFileList ));
-                
-                bnlxFileList = new SAMDataFile[3];
-                bnlxFileList[0]=new SAMDataFile("BN-Lx Sample #1 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx1.smRNA.bam");
-                bnlxFileList[1]=new SAMDataFile("BN-Lx Sample #2 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx2.smRNA.bam");
-                bnlxFileList[2]=new SAMDataFile("BN-Lx Sample #3 Aligned BAM File",seqFilePath+"Aligned/Small/BNLx3.smRNA.bam");
-                resourceList.add(new Resource(56, "Rat", "BN-Lx/CubPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","50 bp single-end", bnlxFileList ));
-        	
-                shrhFileList = new SAMDataFile[3];
-                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Small/SHR1.smRNA.bam");
-                shrhFileList[1]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/Small/SHR2.smRNA.bam");
-                shrhFileList[2]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/Small/SHR3.smRNA.bam");
-                resourceList.add(new Resource(57, "Rat", "SHR/OlaIpcvPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","50 bp single-end", shrhFileList ));
+                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Small/SHR1.smRNA.bam","Rn5");
+                shrhFileList[1]=new SAMDataFile("SHR Sample #2 Aligned BAM File",seqFilePath+"Aligned/Small/SHR2.smRNA.bam","Rn5");
+                shrhFileList[2]=new SAMDataFile("SHR Sample #3 Aligned BAM File",seqFilePath+"Aligned/Small/SHR3.smRNA.bam","Rn5");
+                resourceList.add(new Resource(57, "Rat", "SHR/OlaIpcvPrin","small RNA (<200 nt) selected","Brain","Illumina HiSeq2000","50 bp single-end", shrhFileList,"Rn5" ));
                 
                 SAMDataFile[] helicosBNLXFileList = new SAMDataFile[3];
-                helicosBNLXFileList[0]=new SAMDataFile("BN-Lx Sample #1 BED File",seqFilePath+"Aligned/Helicos/BNLX1.Helicos.bed.zip");
-                helicosBNLXFileList[1]=new SAMDataFile("BN-Lx Sample #2 BED File",seqFilePath+"Aligned/Helicos/BNLX2.Helicos.bed.zip");
-                helicosBNLXFileList[2]=new SAMDataFile("BN-Lx Sample #3 BED File",seqFilePath+"Aligned/Helicos/BNLX3.Helicos.bed.zip");
-                resourceList.add(new Resource(52, "Rat", "BN-Lx/CubPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Helicos","~33 bp single-end", helicosBNLXFileList ));
+                helicosBNLXFileList[0]=new SAMDataFile("BN-Lx Sample #1 BED File",seqFilePath+"Aligned/Helicos/BNLX1.Helicos.bed.zip","Rn5");
+                helicosBNLXFileList[1]=new SAMDataFile("BN-Lx Sample #2 BED File",seqFilePath+"Aligned/Helicos/BNLX2.Helicos.bed.zip","Rn5");
+                helicosBNLXFileList[2]=new SAMDataFile("BN-Lx Sample #3 BED File",seqFilePath+"Aligned/Helicos/BNLX3.Helicos.bed.zip","Rn5");
+                resourceList.add(new Resource(52, "Rat", "BN-Lx/CubPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Helicos","~33 bp single-end", helicosBNLXFileList,"Rn5" ));
         	
                 SAMDataFile[] helicosSHRHFileList = new SAMDataFile[3];
-                helicosSHRHFileList[0]=new SAMDataFile("SHR Sample #1 BED File",seqFilePath+"Aligned/Helicos/SHRH1.Helicos.bed.zip");
-                helicosSHRHFileList[1]=new SAMDataFile("SHR Sample #2 BED File",seqFilePath+"Aligned/Helicos/SHRH2.Helicos.bed.zip");
-                helicosSHRHFileList[2]=new SAMDataFile("SHR Sample #3 BED File",seqFilePath+"Aligned/Helicos/SHRH3.Helicos.bed.zip");
-                resourceList.add(new Resource(53, "Rat", "SHR/OlaIpcvPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Helicos","~33 bp single-end", helicosSHRHFileList ));
+                helicosSHRHFileList[0]=new SAMDataFile("SHR Sample #1 BED File",seqFilePath+"Aligned/Helicos/SHRH1.Helicos.bed.zip","Rn5");
+                helicosSHRHFileList[1]=new SAMDataFile("SHR Sample #2 BED File",seqFilePath+"Aligned/Helicos/SHRH2.Helicos.bed.zip","Rn5");
+                helicosSHRHFileList[2]=new SAMDataFile("SHR Sample #3 BED File",seqFilePath+"Aligned/Helicos/SHRH3.Helicos.bed.zip","Rn5");
+                resourceList.add(new Resource(53, "Rat", "SHR/OlaIpcvPrin","total RNA (>200 nt) after ribosomal RNA depletion","Brain","Helicos","~33 bp single-end", helicosSHRHFileList,"Rn5" ));
                 
+                bnlxFileList = new SAMDataFile[1];
+                bnlxFileList[0]=new SAMDataFile("BN-Lx Aligned BAM File",seqFilePath+"Aligned/Total/BNLx1.totalRNA.bam","Rn6");
+                resourceList.add(new Resource(58, "Rat", "BN-Lx/CubPrin","total RNA (>200 nt) after ribosomal RNA depletion","Heart","Illumina HiSeq2000","stranded 100 bp paired-end", bnlxFileList,"Rn6" ));
+                shrhFileList = new SAMDataFile[1];
+                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Total/SHR1.totalRNA.bam","Rn6");
+                resourceList.add(new Resource(59, "Rat", "SHR/OlaIpcvPrin","total RNA (>200 nt) after ribosomal RNA depletion","Heart","Illumina HiSeq2000","stranded 100 bp paired-end", shrhFileList,"Rn6" ));
+                
+                bnlxFileList = new SAMDataFile[1];
+                bnlxFileList[0]=new SAMDataFile("BN-Lx Aligned BAM File",seqFilePath+"Aligned/Total/BNLx1.totalRNA.bam","Rn6");
+                resourceList.add(new Resource(80, "Rat", "BN-Lx/CubPrin","total RNA (>200 nt) after ribosomal RNA depletion","Liver","Illumina HiSeq2000","stranded 100 bp paired-end", bnlxFileList,"Rn6" ));
+                shrhFileList = new SAMDataFile[1];
+                shrhFileList[0]=new SAMDataFile("SHR Sample #1 Aligned BAM File",seqFilePath+"Aligned/Total/SHR1.totalRNA.bam","Rn6");
+                resourceList.add(new Resource(81, "Rat", "SHR/OlaIpcvPrin","total RNA (>200 nt) after ribosomal RNA depletion","Liver","Illumina HiSeq2000","stranded 100 bp paired-end", shrhFileList,"Rn6" ));
+                
+                
+
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
 		return resourceArray;
 
@@ -857,21 +965,23 @@ public class Resource {
                 String seqFilePath="/userFiles/public/DNASeq/";
 		List<Resource> resourceList = new ArrayList<Resource>();
                 
-                SAMDataFile[] bnlxFileList = new SAMDataFile[1];
-                bnlxFileList[0]=new SAMDataFile("BNLX Genome Fasta File",seqFilePath+"BNLX_rn5_Genome.fa.zip");
-                resourceList.add(new Resource(60, "Rat", "BN-Lx/CubPrin","Illumina HiSeq2000", bnlxFileList ));
+                SAMDataFile[] bnlxFileList = new SAMDataFile[2];
+                bnlxFileList[0]=new SAMDataFile("BNLX Genome Fasta File",seqFilePath+"BNLX_rn6_Genome.fa.zip","Rn6");
+                bnlxFileList[1]=new SAMDataFile("BNLX Genome Fasta File",seqFilePath+"BNLX_rn5_Genome.fa.zip","Rn5");
+                resourceList.add(new Resource(60, "Rat", "BN-Lx/CubPrin","Illumina HiSeq2000", bnlxFileList, "Rn6, Rn5" ));
         	
-                SAMDataFile[] shrhFileList = new SAMDataFile[1];
-                shrhFileList[0]=new SAMDataFile("SHRH Genome Fasta File",seqFilePath+"SHRH_rn5_Genome.fa.zip");
-                resourceList.add(new Resource(61, "Rat", "SHR/OlaIpcvPrin","Illumina HiSeq2000", shrhFileList ));
+                SAMDataFile[] shrhFileList = new SAMDataFile[2];
+                shrhFileList[0]=new SAMDataFile("SHRH Genome Fasta File",seqFilePath+"SHRH_rn6_Genome.fa.zip","Rn6");
+                shrhFileList[1]=new SAMDataFile("SHRH Genome Fasta File",seqFilePath+"SHRH_rn5_Genome.fa.zip","Rn5");
+                resourceList.add(new Resource(61, "Rat", "SHR/OlaIpcvPrin","Illumina HiSeq2000", shrhFileList, "Rn6, Rn5" ));
                 
                  SAMDataFile[] shrjFileList = new SAMDataFile[1];
-                shrjFileList[0]=new SAMDataFile("SHRJ Genome Fasta File",seqFilePath+"SHRJ_rn5_Genome.fa.zip");
-                resourceList.add(new Resource(62, "Rat", "SHR/NCrlPrin","Illumina HiSeq2000", shrjFileList ));
+                shrjFileList[0]=new SAMDataFile("SHRJ Genome Fasta File",seqFilePath+"SHRJ_rn5_Genome.fa.zip","Rn5");
+                resourceList.add(new Resource(62, "Rat", "SHR/NCrlPrin","Illumina HiSeq2000", shrjFileList, "Rn5" ));
                 
                  SAMDataFile[] f344FileList = new SAMDataFile[1];
-                f344FileList[0]=new SAMDataFile("presumptive F344* Genome Fasta File",seqFilePath+"F344_rn5_Genome.fa.zip");
-                resourceList.add(new Resource(63, "Rat", "presumptive F344*","Illumina HiSeq2000", f344FileList ));
+                f344FileList[0]=new SAMDataFile("presumptive F344* Genome Fasta File",seqFilePath+"F344_rn5_Genome.fa.zip","Rn5");
+                resourceList.add(new Resource(63, "Rat", "presumptive F344*","Illumina HiSeq2000", f344FileList, "Rn5" ));
                 
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
 		return resourceArray;

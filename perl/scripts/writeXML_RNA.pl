@@ -914,11 +914,6 @@ sub createXMLFile
 		close XMLFILE;
 		
 		
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
-		
 		#create bed files in region folder
 		
 		#print "generate UCSC Image\n";

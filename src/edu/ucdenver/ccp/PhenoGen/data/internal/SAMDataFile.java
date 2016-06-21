@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 public class SAMDataFile extends DataFile {
 
 	private Logger log=null;
+        private String genomeVer;
 
 	private HttpSession session ;
 
@@ -27,8 +28,9 @@ public class SAMDataFile extends DataFile {
 		setFileName(fileName);
 	}
 
-	public SAMDataFile(String type, String fileName) {
-		super(type, fileName);
+	public SAMDataFile(String type, String fileName,String genomeVer) {
+		super(type, fileName,"",genomeVer);
+                
 		log = Logger.getRootLogger();
 	}
 

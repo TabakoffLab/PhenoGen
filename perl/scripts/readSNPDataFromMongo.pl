@@ -55,7 +55,7 @@ sub readSNPDataFromDB{
         print "usr:$usr\n";
         print "pass:$passwd\n";
 
-	my $client = MongoDB::MongoClient->new(host => $dsn,username => $usr, password => $passwd, db_name=>'SNPS');#,  auth_mechanism => 'SCRAM-SHA-1');
+	my $client = MongoDB::MongoClient->new(host => $dsn,username => $usr, password => $passwd, db_name=>'admin',  auth_mechanism => 'SCRAM-SHA-1');
 	my $database   = $client->get_database( 'SNPS' );
 	my $col = $database->get_collection( $genomeVer );
 	

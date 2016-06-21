@@ -11,7 +11,7 @@ var downloadModal; // modal used for download resources interaction box
 
 function setupPage() {
 
-	var itemDetails = createDialog(".itemDetails" , {width: 700, height: 800, title: "Resource Details"});
+	var itemDetails = createDialog(".itemDetails" , {width: 950, height: 800, title: "Resource Details"});
 
 	var tableRows = getRowsFromNamedTable($("table[id='expressionFiles']"));
 	stripeAndHoverTable( tableRows );

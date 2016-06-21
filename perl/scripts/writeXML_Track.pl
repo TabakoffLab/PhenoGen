@@ -182,10 +182,7 @@ sub createXMLFile
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
+		
 		if($binSize>0){
 			my $ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
 			my %rnaBinned=%$ref;
@@ -213,13 +210,10 @@ sub createXMLFile
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
+
 		#print "track:".$outputDir;
 		#my $output=$outputDir.$type.".xml";
-		createSNPXMLTrack(\%rnaCountHOH,$outputDir,$trackDB);
+		createSNPXMLTrack(\%rnaCountHOH,$outputDir);
 	}elsif(index($type,"refSeq")>-1){
 		my $rnaCountStart=time();
 		if(index($chromosome,"chr")>-1){
@@ -229,11 +223,8 @@ sub createXMLFile
 		my %refSeqHOH=%$refSeqRef;
 		my $rnaCountEnd=time();
 		print "Ref Seq completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
-		createRefSeqXMLTrack(\%refSeqHOH,$outputDir.$type.".xml",$trackDB);
+		
+		createRefSeqXMLTrack(\%refSeqHOH,$outputDir.$type.".xml");
 	}elsif(index($type,"genomeSeq")>-1){
 		my $rnaCountStart=time();
 		if(index($chromosome,"chr")>-1){
@@ -253,10 +244,6 @@ sub createXMLFile
 		my %spliceHOH=%$spliceRef;
 		my $rnaCountEnd=time();
 		print "Splice Junction completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
 		createGenericXMLTrack(\%spliceHOH,$outputDir.$type.".xml");
 	}elsif(index($type,"repeatMask")>-1){
                 my $rnaCountStart=time();
@@ -378,11 +365,10 @@ sub createXMLFile
                         }
                     }
                 }
-                my $trackDB="rn5";
                 if($type eq 'braincoding'){
-                    createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",$trackDB,1);
+                    createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",1);
                 }elsif($type eq 'brainnoncoding'){
-                    createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",$trackDB,0);
+                    createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",0);
                 }else{
                     createLiverTotalXMLTrack(\%brainHOH,$outputDir.$type.".xml");
                 }

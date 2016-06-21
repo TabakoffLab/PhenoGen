@@ -555,15 +555,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             .append("table").append("tr");
 		var tissue=that.dataBar.append("td");
         tissue.append("text").text("Tissue:");
-		var sel=tissue.append("select").attr("id","wgcnaTissueSelect");
+		var sel=tissue.append("select").attr("id","wgcnaTissueSelect").on("change",function(){
+			that.tissue=$('#wgcnaTissueSelect').val();
+			that.requestModuleList();
+		});
 		that.tissues=["Brain"];
 		that.dispTissues=["Whole Brain"];
 		//We only have brain will need to update later.
-                /*if(organism=="Rn"){
-			that.tissues=["Brain","Heart","Liver"
-                        ];
+        if(organism==="Rn" && genomeVer==="rn6"){
+			that.tissues=["Brain","Heart","Liver"];
 			that.dispTissues=["Whole Brain","Heart","Liver"];
-		}*/
+		}
 		for(var i=0;i<that.tissues.length;i++){
 			sel.append("option").attr("value",that.tissues[i]).text(that.dispTissues[i]);
 		}

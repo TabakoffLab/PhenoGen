@@ -2095,7 +2095,7 @@ public class GeneDataTools {
             PreparedStatement ps = conn.prepareStatement(datasetQuery);
             ResultSet rs = ps.executeQuery();
             try{
-                String ver="v1";
+                String ver="v9";
                 if(arrayTypeID==21){
                     ver="v6";
                 }
