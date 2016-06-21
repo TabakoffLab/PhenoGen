@@ -357,6 +357,10 @@ if(request.getParameter("arrayTypeID")!=null){
 </div><!--end Border Div -->
     <BR />
     <div id="newunsupportedChrome" style="display:none;color:#FF0000;">
+        Due to the discontinuing of support for Java applets in modern browsers, we have temporarily disabled this feature.  We are working on a new version of the graphics that will not depend on Java and will incorporate RNA-Seq data at the transcript level.
+        Please check back soon or follow on social media for an announcement when the updated graphics become available.
+    </div>
+    <!--<div id="newunsupportedChrome" style="display:none;color:#FF0000;">
         New versions of Chrome 42+ and eventually FireFox will not work with the Java Plugin required for graphics on this page.  Please use Firefox or Safari.  We are working to replace the Java applet with browser based D3js graphics later this year.
     </div>                
                 
@@ -380,11 +384,11 @@ if(request.getParameter("arrayTypeID")!=null){
             <%if(request.getServerPort()!=80){%>
             <BR><BR><p style="color:#FF0000;">Using the secure site(https), you may first be prompted with a message stating that the server cannot be verified and is not trusted.  This is due to differences between how Java and browsers handle the validation of SSL certificates used to verify the server.  If you see in your browser that the site is trusted and connection is encrypted you should click Continue.  If your browser indicates a problem then you should be very careful about clicking continue.  We are trying to find a way to prevent the additional warning and will update the page as soon as an option exists.</p>
             <%}%>
-        </div>
+        </div>-->
         <BR /><BR />
         <div style="text-align:center;">
 
-        <script type="text/javascript" src="https://www.java.com/js/deployJava.js"></script>
+        <!--<script type="text/javascript" src="https://www.java.com/js/deployJava.js"></script>
 
         <script type="text/javascript">
 			var ensembl=selectedID;
@@ -477,7 +481,7 @@ if(request.getParameter("arrayTypeID")!=null){
 				$('div#macBugDesc').show();
 			}
        
-		</script>
+		</script>-->
 
 	</div>
 

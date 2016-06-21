@@ -50,9 +50,10 @@
     <div class="leftTitle">Exon-Exon Correlations</div>
     <div style="font-size:14px">
     <div id="wait1"><img src="<%=imagesDir%>wait.gif" alt="Working..." /><BR />Working...It may take up to 3 minutes the first time you run an exon correlation.</div>
-    <%@ include file="/web/exons/exonCorrelationForm.jsp" %>
+    <span>Due to discontinuation of support for the Java applet used to display the results, this feature has been disabled temporarily.  We are working on a new version without Java that will incorporate more RNA-Seq data.  We are sorry for the inconvenience.  Please check back soon or follow on social media for an announcement when the graphics are available again.</span>
+    <!--<%//@ include file="/web/exons/exonCorrelationForm.jsp" %>
 	
-  	<%@ include file="/web/exons/exonCorrelationMain.jsp" %>
+  	<%//@ include file="/web/exons/exonCorrelationMain.jsp" %>-->
     </div><!-- end primary content-->
 
 	<script>

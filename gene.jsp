@@ -25,7 +25,7 @@
 String myGene="";
 String section="";
 String myDisplayGene="";
-String defView="1";
+String defView="2";
 boolean scriptError=false;
 boolean organismError=false;
 boolean popup=false;
@@ -146,6 +146,9 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
         if(request.getParameter("genomeVer")!=null){
             genomeVer=request.getParameter("genomeVer").trim();
             log.debug("******\nreading Genome Ver:"+genomeVer);
+        }
+        if(genomeVer.equals("rn6")){
+            defView="12";
         }
         log.debug("*****\ncurGenome:"+genomeVer);
         ArrayList<BrowserView> views=bt.getBrowserViews(genomeVer);
