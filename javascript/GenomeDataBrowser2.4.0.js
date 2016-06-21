@@ -75,7 +75,6 @@ ratOnly.heartilluminaTotalMinus=1;
 ratOnly.probe=1;
 
 
-mouseOnly.brainTotal=1;
 mouseOnly.brainilluminaTotalPlus=1;
 mouseOnly.brainilluminaTotalMinus=1;
 mouseOnly.brainspliceJnct=1;
