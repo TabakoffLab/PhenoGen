@@ -52,7 +52,7 @@ public class BrowserView{
         String query="select bv.*,gbv.genome_id ";
         String queryP2="from BROWSER_VIEWS bv, BROWSER_GV2VIEW gbv "+
                         "where bv.user_id="+userid;
-        /*if(genomeVer.indexOf(",")>-1){
+        if(genomeVer.indexOf(",")>-1){
             String[] genomes=genomeVer.split(",");
             queryP2=queryP2+" ( gbv.genome_id = '"+genomes[0]+"' or "+
                         " gbv.genome_id = '"+genomes[1]+"' ) "+
@@ -62,9 +62,9 @@ public class BrowserView{
             queryP2=queryP2+" gbv.genome_id = '"+genomeVer+"' "+
                         " and gbv.BVID=bv.BVID"+
                         " and bv.visible=1";
-        }*/
-        queryP2=queryP2+" and gbv.BVID=bv.BVID"+
-                        " and bv.visible=1";
+        }
+        /*queryP2=queryP2+" and gbv.BVID=bv.BVID"+
+                        " and bv.visible=1";*/
         query=query+queryP2+" order by bv.bvid";
                         
         String trackquery="select bvt.bvid,bt.*,bts.settings,bvt.ordering from BROWSER_VIEWS_TRACKS bvt,BROWSER_TRACKS bt, BROWSER_TRACK_SETTINGS bts where "+
