@@ -115,6 +115,7 @@ public class WGCNATools{
         String query ="select unique module,gene_id from wgcna_module_info where probeset_id in " +
                         "(select aep.probeset_id from affy_exon_probeset aep, chromosomes c " +
                         " where aep.array_type_id=" + arrayID+
+                        " and aep.genome_id='"+genomeVer+"' "+
                         " and aep.chromosome_id=c.chromosome_id" +
                         " and c.name = '"+chr+"'" +
                         " and ( ("+start+"<=aep.psstart and aep.psstart<="+stop+")" +
