@@ -119,6 +119,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				},
 	    		success: function(data2){
                                 $('#wgcnaGeneImage #message').hide();
+                                that.moduleList=[];
                                 if(data2.length>0 && !(data2.length===1 && data2[0].ModuleID==="grey")){
                                     for(var i=0;i<data2.length;i++){
                                         if(data2[i].ModuleID!=="grey"){// && data2[i].ModuleID !=="turquoise"){
@@ -568,6 +569,14 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		var tissue=that.dataBar.append("td");
         tissue.append("text").text("Tissue:");
 		var sel=tissue.append("select").attr("id","wgcnaTissueSelect").on("change",function(){
+			$("#singleWGCNASVG").hide();
+			d3.select("#multiWGCNASVG").remove();
+			$("#circosModule").hide();
+			$("#wgcnaModuleTable").hide();
+			$("#wgcnaMirTable").hide();
+			$("#wgcnaMirGeneTable").hide();
+			$("#wgcnaGoTable").hide();
+			$("#wgcnaEqtlTable").hide();
 			that.tissue=$('#wgcnaTissueSelect').val();
 			that.requestModuleList();
 		});
@@ -575,7 +584,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.dispTissues=["Whole Brain"];
 		//We only have brain will need to update later.
         if(organism==="Rn" && genomeVer==="rn6"){
-			that.tissues=["Brain","Heart","Liver"];
+			that.tissues=["Whole Brain","Heart","Liver"];
 			that.dispTissues=["Whole Brain","Heart","Liver"];
 		}
 		for(var i=0;i<that.tissues.length;i++){
