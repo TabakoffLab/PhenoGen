@@ -50,10 +50,22 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
     if(organism==="Mm"){
             that.panel="ILS/ISS";
             that.wDSID=1;
-    }else{
+    }else if(organism==="Rn"){
+    	if(genomeVer==="rn5"){
             that.panel="BNLx/SHR";
             that.chrLen=20;
             that.wDSID=2;
+        }else{
+        	that.panel="BNLx/SHR";
+            that.chrLen=20;
+            if(tissue==="Whole Brain"){
+            	that.wDSID=3;
+            }else if(tissue==="Heart"){
+				that.wDSID=4;
+            }else if(tissue==="Liver"){
+				that.wDSID=5;
+            }
+        }
     }
     that.eQTLKey=function(d){return "Link_"+d.Snp;};
     that.mirKey=function(d){return d.ID;};
