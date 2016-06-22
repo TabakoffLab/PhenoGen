@@ -70,7 +70,7 @@ public class BrowserTools{
     public boolean createCustomTrack(int uid,String trackclass, String trackname, String description, String organism,String genomeVer,String settings, int order,String genCat,String category,String controls,Boolean vis,String location,String fileName,String type){
         BrowserTrack bt=new BrowserTrack();
         int trackID=bt.getNextID(pool);
-        BrowserTrack newTrack=new BrowserTrack(trackID, uid, trackclass, trackname, description, organism,settings, order,genCat,category,controls,vis,location,fileName,type,new Timestamp((new Date()).getTime()));
+        BrowserTrack newTrack=new BrowserTrack(trackID, uid, trackclass, trackname, description, organism,settings, order,genCat,category,controls,vis,location,fileName,type,new Timestamp((new Date()).getTime()),genomeVer);
         boolean success=newTrack.saveToDB(genomeVer,pool);
         return success;
     }
