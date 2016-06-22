@@ -394,7 +394,7 @@ sub readRNAIsoformDataFromDB{
 
 
 sub readRNACountsDataFromMongo{
-	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$dsn,$usr,$passwd,$mongoHost,$mongoUsr,$mongoPwd)=@_;
+	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$genomeVer,$dsn,$usr,$passwd,$mongoHost,$mongoUsr,$mongoPwd)=@_;
 	
 	my $org="Mm";
 	if($organism eq "Rat"){
@@ -409,6 +409,7 @@ sub readRNACountsDataFromMongo{
 	$query ="Select rd.shared_id from rna_dataset rd
 			where 
 			rd.organism = '".$org."' "."
+			and rd.genome_id='".$genomeVer."'
 			and rd.user_id= $publicUserID  
 			and rd.visible=0
 			and rd.description = '".$type."'
@@ -484,7 +485,7 @@ sub readRNACountsDataFromMongo{
 
 
 sub readRNACountsDataFromDB{
-	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;
+	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$genomeVer,$dsn,$usr,$passwd)=@_;
 	my %countHOH;
 	
 	my $org="Mm";
@@ -499,6 +500,7 @@ sub readRNACountsDataFromDB{
 	$query ="Select rc.* from rna_counts rc, rna_dataset rd
 			where 
 			rd.organism = '".$org."' "."
+			and rd.genome_id='".$genomveVer."'
 			and rd.user_id= $publicUserID  
 			and rd.visible=0 
 			and rd.description = '".$type."'
