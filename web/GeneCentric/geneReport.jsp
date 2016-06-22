@@ -636,59 +636,7 @@ Add report here.
 		$(this).addClass("selected");
 		var id=$(this).attr("name");
 		$("#"+id).show();
-<<<<<<< HEAD
 		loadGeneReportTabs(id,false);
-=======
-                console.log("#"+id);
-		if(id=="geneEQTL"){
-			var jspPage="web/GeneCentric/geneEQTLAjax.jsp";
-			var params={
-				species: organism,
-				geneSymbol: selectedGeneSymbol,
-				chromosome: chr,
-				id:selectedID,
-                                genomeVer:genomeVer
-			};
-			loadDivWithPage("div#geneEQTL",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-		}else if(id=="geneApp"){
-			$.ajax({
-					url: "web/GeneCentric/callPanelExpr.jsp",
-	   				type: 'GET',
-                                        cache: 'false',
-					data: {id:idStr,organism: organism,genomeVer:genomeVer,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
-					dataType: 'json',
-	    			error: function(xhr, status, error) {console.log(error);}
-	    			});
-		}else if(id=="geneMIrna"){
-			var jspPage="web/GeneCentric/geneMiRnaAjax.jsp";
-			var params={
-				species: organism,
-				id:selectedID
-			};
-			loadDivWithPage("div#geneMIrna",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-		}else if(id=="miGenerna"){
-			var jspPage="web/GeneCentric/miGeneRnaAjax.jsp";
-			var params={
-				species: organism,
-				id:geneSymStr
-			};
-			loadDivWithPage("div#miGenerna",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-		}else if(id=="geneWGCNA"){
-                        $("div#regionWGCNAEQTL").html("");
-                        var jspPage="web/GeneCentric/wgcnaGene.jsp";
-			var params={
-				species: organism,
-				id:selectedID,
-                                genomeVer:genomeVer
-			};
-			loadDivWithPage("div#geneWGCNA",jspPage,params,
-					"<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
-                }
-		
->>>>>>> feature/rn6
 	});
         $('.helpGeneRpt').on('click', function(event){
 			var id=$(this).attr('id');
@@ -717,19 +665,20 @@ Add report here.
                             species: organism,
                             geneSymbol: selectedGeneSymbol,
                             chromosome: chr,
-                            id:selectedID
+                            id:selectedID,
+                            genomeVer:genomeVer
                     };
                     loadDivWithPage("div#geneEQTL",jspPage,scrollToDiv,params,
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
             }else if(id==="geneApp"){
-                    $.ajax({
+                    /*$.ajax({
                                     url: contextRoot+"web/GeneCentric/callPanelExpr.jsp",
                                     type: 'GET',
                                     cache: 'false',
-                                    data: {id:idStr,organism: organism,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
+                                    data: {id:idStr,organism: organism,genomeVer:genomeVer,chromosome: chr,minCoord:svgList[1].xScale.domain()[0],maxCoord:svgList[1].xScale.domain()[1],rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID},
                                     dataType: 'json',
                             error: function(xhr, status, error) {console.log(error);}
-                            });
+                            });*/
             }else if(id==="geneMIrna"){
                     var jspPage=contextRoot+"web/GeneCentric/geneMiRnaAjax.jsp";
                     var params={
@@ -751,7 +700,8 @@ Add report here.
                     var jspPage=contextRoot+"web/GeneCentric/wgcnaGene.jsp";
                     var params={
                             species: organism,
-                            id:selectedID
+                            id:selectedID,
+                            genomeVer:genomeVer
                     };
                     loadDivWithPage("div#geneWGCNA",jspPage,scrollToDiv,params,
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
