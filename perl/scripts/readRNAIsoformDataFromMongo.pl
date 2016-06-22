@@ -36,7 +36,7 @@ sub addChr{
 1;
 
 sub getRNADatasetFromDB{
-    my($organism,$publicUserID,$panel,$tissue,$dsn,$usr,$passwd,$version)=@_;
+    my($organism,$publicUserID,$panel,$tissue,$genomeVer,$dsn,$usr,$passwd,$version)=@_;
     my $ret=0;
     if($organism eq "Rat"){
         $organism="Rn";
@@ -47,7 +47,8 @@ sub getRNADatasetFromDB{
     my $query="select rd2.rna_dataset_id,rd2.build_version from rna_dataset rd2 where
 				rd2.organism = '".$organism."' "."
                                 and rd2.trx_recon=1
-				and rd2.user_id= $publicUserID ";
+				and rd2.user_id= $publicUserID 
+				and rd2.genome_id='$genomeVer' ";
     if(!($tissue eq "Any")){
         $query=$query."and rd2.tissue = '".$tissue."' "; 
     }
@@ -91,10 +92,10 @@ sub readRNAIsoformDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName, $tmpType,$tissue,$version)=@_;   
+	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName, $tmpType,$tissue,$version,$genomeVer)=@_;   
 	
 
-        my $dsid=getRNADatasetFromDB($organism,$publicUserID,$panel,$tissue,$dsn,$usr,$passwd,\$version);
+        my $dsid=getRNADatasetFromDB($organism,$publicUserID,$panel,$tissue,$genomeVer,$dsn,$usr,$passwd,\$version);
 
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	#print "read probesets chr:$geneChrom\n";
@@ -393,7 +394,7 @@ sub readRNAIsoformDataFromDB{
 
 
 sub readRNACountsDataFromMongo{
-	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$dsn,$usr,$passwd,$mongoHost,$mongoUsr,$mongoPwd)=@_;
+	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$genomeVer,$dsn,$usr,$passwd,$mongoHost,$mongoUsr,$mongoPwd)=@_;
 	
 	my $org="Mm";
 	if($organism eq "Rat"){
@@ -408,6 +409,7 @@ sub readRNACountsDataFromMongo{
 	$query ="Select rd.shared_id from rna_dataset rd
 			where 
 			rd.organism = '".$org."' "."
+			and rd.genome_id='".$genomeVer."'
 			and rd.user_id= $publicUserID  
 			and rd.visible=0
 			and rd.description = '".$type."'
@@ -483,7 +485,7 @@ sub readRNACountsDataFromMongo{
 
 
 sub readRNACountsDataFromDB{
-	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;
+	my($geneChrom,$organism,$publicUserID,$panel,$type,$geneStart,$geneStop,$genomeVer,$dsn,$usr,$passwd)=@_;
 	my %countHOH;
 	
 	my $org="Mm";
@@ -498,6 +500,7 @@ sub readRNACountsDataFromDB{
 	$query ="Select rc.* from rna_counts rc, rna_dataset rd
 			where 
 			rd.organism = '".$org."' "."
+			and rd.genome_id='".$genomveVer."'
 			and rd.user_id= $publicUserID  
 			and rd.visible=0 
 			and rd.description = '".$type."'

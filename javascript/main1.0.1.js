@@ -399,7 +399,7 @@ function setupDownloadButton(url) {
  *  this function sets up the events if there is more than one DOWNLOAD button on each row
 /*/
 function setupDownloadButtonByType(url) {
-	var modalOptions = {height: 550, width: 750, position: { my: "center", at: "center", of: window }, title: "Download Resources"};
+	var modalOptions = {height: 550, width: 950, position: { my: "center", at: "center", of: window }, title: "Download Resources"};
 	downloadModal = createDialog( ".downloadItem", modalOptions );
 
 	$("table[name='items']").find("td div.download").click(function() {

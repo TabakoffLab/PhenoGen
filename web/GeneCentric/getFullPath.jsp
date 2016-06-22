@@ -21,7 +21,7 @@ import="org.json.*" %>
 
 <%
 gdt.setSession(session);
-String chromosome="",panel="",myOrganism="Rn";
+String chromosome="",panel="",myOrganism="Rn",genomeVer="";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 double forwardPValueCutoff=0;
 if(request.getParameter("chromosome")!=null){
@@ -68,16 +68,20 @@ if(request.getParameter("forwardPValueCutoff")!=null){
 		log.error("Number format exception:forwardPValueCutoff\n",e);
 	}
 }
+
+if(request.getParameter("genomeVer")!=null){
+    genomeVer=request.getParameter("genomeVer");
+}
 %>
 
 
 <% 
-	String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);
+	String tmpOutput=gdt.getImageRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,false);
 	int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
 	String foldername=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
 	JSONObject genejson;
 	genejson = new JSONObject();
-    genejson.put("folderName" , foldername);
+        genejson.put("folderName" , foldername);
 	response.setContentType("application/json");
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setDateHeader("Expires", 0);

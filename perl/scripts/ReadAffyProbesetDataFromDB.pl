@@ -45,7 +45,7 @@ sub readAffyProbesetDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dataSetID,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dataSetID,$genomeVer,$dsn,$usr,$passwd)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	print "read probesets chr:$geneChrom\n";
@@ -69,44 +69,22 @@ sub readAffyProbesetDataFromDB{
 	my $geneChromNumber = addChr($geneChrom,"subtract");
 
 	# PREPARE THE QUERY for probesets
-	# There's got to be a better way to handle the chromosome...
-	#if(length($geneChromNumber) == 1){
-		
-		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
-		from $chromosomeTablename c, $probesetTablename s
-		left outer join $heritTablename h on s.probeset_id = h.probeset_id
-		left outer join $probeTablename p on p.probeset_id = s.probeset_id
-		where s.chromosome_id = c.chromosome_id
-		and c.name =  "."'".uc($geneChromNumber)."'"."
-		and 
-		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-		(s.psstop >= $geneStart and s.psstop <= $geneStop))
-		and s.psannotation <> 'transcript'
-		and s.Array_TYPE_ID = $arrayTypeID
-		and h.dataset_id = $dataSetID
-		and s.updatedlocation='Y'
-		order by s.probeset_id";
-	#}
-	#elsif(length($geneChromNumber) == 2) {
-	#	$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
-	#	from $chromosomeTablename c, $probesetTablename s
-	#	left outer join $heritTablename h on s.probeset_id = h.probeset_id
-	#	left outer join $probeTablename p on p.probeset_id = s.probeset_id
-	#	where s.chromosome_id = c.chromosome_id
-	#	and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
-	#	and 
-	#	((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-	#	(s.psstop >= $geneStart and s.psstop <= $geneStop))
-	#	and s.psannotation <> 'transcript'
-	#	and s.Array_TYPE_ID = $arrayTypeID
-	#	and h.dataset_id = $dataSetID
-	#	and s.updatedlocation='Y'
-	#	order by s.probeset_id";
-	#
-	#}
-	#else{
-	#	die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-	#}
+        $query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, h.herit, h.dabg, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
+        from $chromosomeTablename c, $probesetTablename s
+        left outer join $heritTablename h on s.probeset_id = h.probeset_id and h.genome_id=s.genome_id
+        left outer join $probeTablename p on p.probeset_id = s.probeset_id and p.genome_id=s.genome_id
+        where s.chromosome_id = c.chromosome_id
+        and c.name =  "."'".uc($geneChromNumber)."'"."
+        and s.genome_id='".$genomeVer."'
+        and 
+        ((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
+        (s.psstop >= $geneStart and s.psstop <= $geneStop))
+        and s.psannotation <> 'transcript'
+        and s.Array_TYPE_ID = $arrayTypeID
+        and h.dataset_id = $dataSetID
+        and s.updatedlocation='Y'
+        order by s.probeset_id";
+
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 
@@ -219,7 +197,7 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$genomeVer,$dsn,$usr,$passwd)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	print "read probesets chr:$geneChrom\n";
@@ -243,14 +221,13 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 	my $geneChromNumber = addChr($geneChrom,"subtract");
 
 	# PREPARE THE QUERY for probesets
-	# There's got to be a better way to handle the chromosome...
-	#if(length($geneChromNumber) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
 		from $chromosomeTablename c, $probesetTablename s
-		left outer join $probeTablename p on p.probeset_id = s.probeset_id
+		left outer join $probeTablename p on p.probeset_id = s.probeset_id and p.genome_id=s.genome_id
 		where s.chromosome_id = c.chromosome_id
 		and c.name =  "."'".uc($geneChromNumber)."'"."
+                and s.genome_id='".$genomeVer."'
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -258,25 +235,7 @@ sub readAffyProbesetDataFromDBwoHeritDABG{
 		and s.Array_TYPE_ID = $arrayTypeID 
 		and s.updatedlocation='Y' 
 		order by s.probeset_id";
-	#}
-	#elsif(length($geneChromNumber) == 2) {
-	#	$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, s.pssequence, s.updatedlocation, p.PROBE_ID, p.STRAND, p.PROBESEQUENCE
-	#	from $chromosomeTablename c, $probesetTablename s
-	#	left outer join $probeTablename p on p.probeset_id = s.probeset_id
-	#	where s.chromosome_id = c.chromosome_id
-	#	and substr(c.name,1,2) = "."'".$geneChromNumber."'"."
-	#	and 
-	#	((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-	#	(s.psstop >= $geneStart and s.psstop <= $geneStop))
-	#	and s.psannotation <> 'transcript'
-	#	and s.Array_TYPE_ID = $arrayTypeID 
-	#	and s.updatedlocation='Y' 
-	#	order by s.probeset_id";
-	#
-	#}
-	#else{
-	#	die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-	#}
+
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 
@@ -378,7 +337,7 @@ sub readTissueAffyProbesetDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$rnaDatasetID,$percCutoff,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$rnaDatasetID,$percCutoff,$genomeVer,$dsn,$usr,$passwd)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	print "read tissue probesets chr:$geneChrom\n$arrayTypeID\n$rnaDatasetID\n$percCutoff";
@@ -400,15 +359,14 @@ sub readTissueAffyProbesetDataFromDB{
 	#my $geneChromNumber = addChr($geneChrom,"subtract");
 
 	# PREPARE THE QUERY for probesets
-	# There's got to be a better way to handle the chromosome...
-	#if(length($geneChrom) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
 		from $chromosomeTablename c, $probesetTablename s
-		left outer join $heritTablename h on s.probeset_id = h.probeset_id
+		left outer join $heritTablename h on s.probeset_id = h.probeset_id and h.genome_id=s.genome_id
                 left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
 		where s.chromosome_id = c.chromosome_id
 		and c.name =  "."'".uc($geneChrom)."'"."
+                and s.genome_id='".$genomeVer."'
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -418,28 +376,7 @@ sub readTissueAffyProbesetDataFromDB{
                 and h.dabg>$percCutoff
 		and s.updatedlocation='Y'
 		order by s.probeset_id";
-#	}
-#	elsif(length($geneChrom) == 2) {
-#		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
-#		from $chromosomeTablename c, $probesetTablename s
-#		left outer join $heritTablename h on s.probeset_id = h.probeset_id
-#        left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
-#		where s.chromosome_id = c.chromosome_id
-#		and substr(c.name,1,2) = "."'".$geneChrom."'"."
-#		and 
-#		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-#		(s.psstop >= $geneStart and s.psstop <= $geneStop))
-#		and s.psannotation <> 'transcript'
-#		and s.Array_TYPE_ID = $arrayTypeID
-#		and rd.rna_dataset_id=$rnaDatasetID
-#        and h.dabg>$percCutoff
-#		and s.updatedlocation='Y'
-#		order by s.probeset_id";
-#
-#	}
-#	else{
-#		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-#	}
+                
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 
@@ -480,7 +417,7 @@ sub readAffyProbesetDataFromDBwoProbes{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$genomeVer,$dsn,$usr,$passwd)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	print "read probesets chr:$geneChrom\n";
@@ -489,9 +426,6 @@ sub readAffyProbesetDataFromDBwoProbes{
 	my @probesetHOH; # giant array of hashes and arrays containing probeset data
 	
 	my %probesetH;
-	
-
-	
 	
 	$probesetTablename = 'Affy_Exon_ProbeSet';
 	
@@ -509,7 +443,8 @@ sub readAffyProbesetDataFromDBwoProbes{
 		from $chromosomeTablename c, $probesetTablename s
 		where s.chromosome_id = c.chromosome_id
 		and c.name =  "."'".uc($geneChromNumber)."'"."
-		and 
+		and s.genome_id='".$genomeVer."' 
+                and
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
 		and s.psannotation <> 'transcript'
@@ -569,7 +504,8 @@ sub readAffyProbesetDataFromDBwoProbes{
 	}
 	
 	$query = "select p.probeset_id,t.tissue,p.dabg, p.herit from probeset_herit_dabg p , rnadataset_dataset t where
-			t.organism = '".$org."'
+                    p.genome_id='".$genomeVer."'
+			and t.organism = '".$org."'
 			and t.dataset_id = p.dataset_id
 			and p.probeset_ID in
 		(select s.Probeset_ID from $chromosomeTablename c, $probesetTablename s
@@ -608,7 +544,7 @@ sub readTissueEQTLProbesetDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$rnaDatasetID,$lodCutoff,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$geneStart,$geneStop,$arrayTypeID,$rnaDatasetID,$lodCutoff,$genomeVer,$dsn,$usr,$passwd)=@_;   
 	
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	print "read tissue probesets chr:$geneChrom\n$arrayTypeID\n$rnaDatasetID\n$lodCutoff";
@@ -630,15 +566,14 @@ sub readTissueEQTLProbesetDataFromDB{
 	#my $geneChromNumber = addChr($geneChrom,"subtract");
 
 	# PREPARE THE QUERY for probesets
-	# There's got to be a better way to handle the chromosome...
-	#if(length($geneChrom) == 1){
 		
 		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
 		from $chromosomeTablename c, $probesetTablename s
-		left outer join $heritTablename h on s.probeset_id = h.probeset_id
+		left outer join $heritTablename h on s.probeset_id = h.probeset_id  and h.genome_id=s.genome_id
                 left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
 		where s.chromosome_id = c.chromosome_id
 		and c.name =  "."'".uc($geneChrom)."'"."
+                and s.genome_id='".$genomeVer."'
 		and 
 		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
 		(s.psstop >= $geneStart and s.psstop <= $geneStop))
@@ -648,28 +583,7 @@ sub readTissueEQTLProbesetDataFromDB{
                 and h.dabg>$percCutoff
 		and s.updatedlocation='Y'
 		order by s.probeset_id";
-#	}
-#	elsif(length($geneChrom) == 2) {
-#		$query = "select s.Probeset_ID, s.psstart, s.psstop, s.strand, s.pslevel, h.dabg, rd.tissue
-#		from $chromosomeTablename c, $probesetTablename s
-#		left outer join $heritTablename h on s.probeset_id = h.probeset_id
-#        left outer join $rnaTissueTablename rd on h.dataset_id=rd.dataset_id
-#		where s.chromosome_id = c.chromosome_id
-#		and substr(c.name,1,2) = "."'".$geneChrom."'"."
-#		and 
-#		((s.psstart >= $geneStart and s.psstart <=$geneStop) OR
-#		(s.psstop >= $geneStart and s.psstop <= $geneStop))
-#		and s.psannotation <> 'transcript'
-#		and s.Array_TYPE_ID = $arrayTypeID
-#		and rd.rna_dataset_id=$rnaDatasetID
-#		and h.dabg>$percCutoff
-#		and s.updatedlocation='Y'
-#		order by s.probeset_id";
-#
-#	}
-#	else{
-#		die "Something is wrong with the probeset query \nChromosome#:$geneChromNumber\n";
-#	}
+
 	print $query."\n";
 	$query_handle = $connect->prepare($query) or die (" Probeset query prepare failed \n");
 

@@ -53,13 +53,13 @@
                 <BR><BR>
                 <h2>Genome Data Browser Annotations</h2>        
                 <ul>
-                    <li>Ensembl v79</li>
-                    <li>RefSeq(source:UCSC Genome Browser): Downloaded 2/27/2015</li>
+                    <li>Ensembl v84, Rn5-v79</li>
+                    <li>RefSeq(source:UCSC Genome Browser): Downloaded 6/21/2016</li>
                     <!--<li>RGD QTL information: Downloaded </li>-->
                 </ul>
                 <BR><BR>
                 <h2>Annotations/Gene ID Matching</h2>
-                <p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on June 8th, 2015 with annotation data from the following sources:</p>
+                <p><a href="<%=helpDir%>Annotation_Overview.htm">iDecoder</a>: &nbsp;&nbsp;Last updated on June 1st, 2016 with annotation data from the following sources:</p>
         <div >
             <ul>
                 <li>Annotation file for Affymetrix Genechip Drosophila Genome [DrosGenome1] na32</li>
@@ -82,16 +82,16 @@
                 <li>Annotation file for Codelink Rat Whole Genome </li>
                 <li>Annotation file for Codelink Mouse Whole Genome </li>
     
-                <li>Location data from Ensembl for Mouse, Human, and Rat from Ensembl Genes v79 </li>
-                <li>FlyBase gene_map_table_fb_2015_01.tsv file and fbgn_NAseq_Uniprot_fb_2015_01.tsv </li>
-                <li>MGI database links file generated from the ACC_Accession table on 4/1/2015</li>
-                <li>MGI_Coordinate.rpt links file, downloaded 4/1/2015</li>
-                <li>NCBI gene2accession file, downloaded 4/1/2015</li>
-                <li>NCBI gene2unigene file, downloaded 4/1/2015</li>
-                <li>NCBI gene_info file, downloaded 4/1/2015</li>
-                <li>NCBI homologene.data file, downloaded 4/1/2015</li>
-                <li>RGD GENES file, last updated on 4/1/2015</li>
-                <li>SwissProt uniprot_sprot.dat file, last updated on 4/1/2015</li>
+                <li>Location data from Ensembl for Mouse, Human, and Rat from Ensembl Genes v84 </li>
+                <li>FlyBase gene_map_table_fb_2015_01.tsv file and fbgn_NAseq_Uniprot_fb_2016_03.tsv </li>
+                <li>MGI database links file generated from the ACC_Accession table on 6/1/2016</li>
+                <li>MGI_Coordinate.rpt links file, downloaded 6/1/2016</li>
+                <li>NCBI gene2accession file, downloaded 6/1/2016</li>
+                <li>NCBI gene2unigene file, downloaded 6/1/2016</li>
+                <li>NCBI gene_info file, downloaded 6/1/2016</li>
+                <li>NCBI homologene.data file, downloaded 6/1/2016</li>
+                <li>RGD GENES file, last updated on 6/1/2016</li>
+                <li>SwissProt uniprot_sprot.dat file, last updated on 6/1/2016</li>
             </ul>
         </div>
 

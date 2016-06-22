@@ -36,6 +36,7 @@ public abstract class DataFile {
         protected String fileName;
         protected String type;
         protected String panel;
+        protected String genome;
 
 	public DataFile() {
 		log = Logger.getRootLogger();
@@ -58,6 +59,13 @@ public abstract class DataFile {
 		setFileName(fileName);
                 setPanel(panel);
 	}
+        public DataFile(String type, String fileName, String panel,String genomeVer) {
+		log = Logger.getRootLogger();
+		setType(type);
+		setFileName(fileName);
+                setPanel(panel);
+                setGenome(genomeVer);
+	}
 
         public DataFile(HttpSession session) {
                 log = Logger.getRootLogger();
@@ -79,6 +87,13 @@ public abstract class DataFile {
 
         public String getType() {
                 return this.type;
+        }
+        public void setGenome(String inString) {
+                this.genome = inString;
+        }
+
+        public String getGenome() {
+                return this.genome;
         }
 
         public void setFileName(String inString) {

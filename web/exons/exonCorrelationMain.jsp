@@ -47,7 +47,7 @@
                         dbName="Public ILSXISS RI Mice";
                         //version="v3";
                         version="v6";  //mm10
-                }else if(myOrganism.equals("Rn")){
+                }else if(genomeVer.equals("rn5")){
                         if(myTissue.equals("Brain")){
                                 rDataFile=rDataFile+"public/Datasets/PublicHXB_BXHRIRats(Brain,ExonArrays)_Master/Affy.NormVer.h5'";
                                 dbName="Public HXB/BXH RI Rats (Brain, Exon Arrays)";
@@ -64,6 +64,24 @@
                                 rDataFile=rDataFile+"public/Datasets/PublicHXB_BXHRIRats(BrownAdipose,ExonArrays)_Master/Affy.NormVer.h5'";
                                 dbName="Public HXB/BXH RI Rats (Brown Adipose, Exon Arrays)";
                                 version="v6";
+                        }
+                }else if(genomeVer.equals("rn6")){
+                        if(myTissue.equals("Brain")){
+                                rDataFile=rDataFile+"public/Datasets/PublicHXB_BXHRIRats(Brain,ExonArrays)_Master/Affy.NormVer.h5'";
+                                dbName="Public HXB/BXH RI Rats (Brain, Exon Arrays)";
+                                version="v9";
+                        }else if(myTissue.equals("Heart")){
+                                rDataFile=rDataFile+"public/Datasets/PublicHXB_BXHRIRats(Heart,ExonArrays)_Master/Affy.NormVer.h5'";
+                                dbName="Public HXB/BXH RI Rats (Heart, Exon Arrays)";
+                                version="v9";
+                        }else if(myTissue.equals("Liver")){
+                                rDataFile=rDataFile+"public/Datasets/PublicHXB_BXHRIRats(Liver,ExonArrays)_Master/Affy.NormVer.h5'";
+                                dbName="Public HXB/BXH RI Rats (Liver, Exon Arrays)";
+                                version="v9";
+                        }else if(myTissue.equals("BAT")){
+                                rDataFile=rDataFile+"public/Datasets/PublicHXB_BXHRIRats(BrownAdipose,ExonArrays)_Master/Affy.NormVer.h5'";
+                                dbName="Public HXB/BXH RI Rats (Brown Adipose, Exon Arrays)";
+                                version="v9";
                         }
                 }
         }
@@ -90,15 +108,15 @@
                     }
                 }
                 if(!ident.equals("")){
-                    edt.getExonHeatMapData(ident,rDataFile,version,myOrganism,dbName);
+                    edt.getExonHeatMapData(ident,rDataFile,version,myOrganism,genomeVer,dbName);
                     gene =(String)session.getAttribute("exonCorGeneFile");
                     heat =(String)session.getAttribute("exonCorHeatFile");
-                    int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+                    int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,genomeVer);
                     if(tmp!=null&&tmp.length==2){
                             rnaDatasetID=tmp[1];
                             arrayTypeID=tmp[0];
                     }
-                    ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(ident,firstEnsemblID,panel,myOrganism,rnaDatasetID,arrayTypeID,false);
+                    ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Gene> tmpGeneList=gdt.getGeneCentricData(ident,firstEnsemblID,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,false);
                     String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
                     String tmpGeneSymbol=gdt.getGeneSymbol();//(String)session.getAttribute("geneSymbol");
                     log.debug(tmpURL+"\n"+tmpGeneSymbol);
@@ -144,7 +162,7 @@
                 min=Integer.parseInt(loc[1]);
                 max=Integer.parseInt(loc[2]);
         }
-	String tmpOutput=gdt.getImageRegionData(chromosome, min, max, panel, myOrganism, rnaDatasetID, arrayTypeID, 0.001,false);
+	String tmpOutput=gdt.getImageRegionData(chromosome, min, max, panel, myOrganism, genomeVer, rnaDatasetID, arrayTypeID, 0.001,false);
 	int startInd=tmpOutput.lastIndexOf("/",tmpOutput.length()-2);
 	String folderName=tmpOutput.substring(startInd+1,tmpOutput.length()-1);
 	
@@ -158,7 +176,7 @@
         }
 	genURL=urlPrefix+ "tmpData/geneData/" +selectedID+"/";*/
         String urlPrefix=(String)session.getAttribute("mainURL");
-	String regionURL=urlPrefix+"tmpData/regionData/"+folderName+"/";
+	String regionURL=urlPrefix+"tmpData/browserCache/"+genomeVer+"/regionData/"+folderName+"/";
         %>
 
 
@@ -332,6 +350,7 @@
 	<%}else{%>
 		var uid=<%=userLoggedIn.getUser_id()%>;
 	<%}%>
+        var genomeVer="<%=genomeVer%>";
 	//Bugsense.addExtraData('page', 'geneApplet.jsp');
 	//Bugsense.addExtraData( 'region','<%=firstEnsemblID+"::"+chromosome+":"+min+"-"+max%>');
 </script>
@@ -502,10 +521,12 @@
        		<div id="imgLoad" style="display:none;"><img src="<%=imagesDir%>ucsc-loading.gif" /></div>
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.3.5.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeReport2.1.8.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.1.3.js" type="text/javascript"></script>
-            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.1.1.js" type="text/javascript"></script>
+
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.4.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeReport2.4.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeViewMenu2.4.0.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.4.0.js" type="text/javascript"></script>
+
 				
             <script type="text/javascript">
 				function isLocalStorage(){
@@ -520,7 +541,7 @@
 				}
 			
                     setTimeout(function(){
-                        var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
+                        var gs=new GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene",false);
                         gs.forceDrawAs("Trx");
                         //loadStateFromCookie(0);
                         gs.xMax=maxCoord;
@@ -679,6 +700,8 @@
 					width:      appletWidth,
 					height:     appletHeight
 				};
+                                console.log("gene:"+gene);
+                                console.log("heat:"+heat);
 				var parameters = {
 					java_status_events: 'true',
 					jnlp_href:"<%=contextRoot%>web/exons/launch.jnlp",

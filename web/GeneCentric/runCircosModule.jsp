@@ -7,6 +7,7 @@
             //
             String iframeURL = null;
             String species="Mm";
+            String genomeVer="mm10";
             String selectedCutoffValue="2";
             String module="";
             String moduleColor="0,0,0";//r,g,b color - default black
@@ -14,6 +15,7 @@
             String dataset="ds1";
             String message="";
             String tissueString="";
+            
 
             //String contextRoot = (String) session.getAttribute("contextRoot");
             //String host = (String) session.getAttribute("host");
@@ -38,7 +40,9 @@
             if(request.getParameter("chrList")!=null){
 			chromosomeString = request.getParameter("chrList");
             }
-
+            if(request.getParameter("genomeVer")!=null){
+			genomeVer = request.getParameter("genomeVer");
+            }
             //For now tissue is static.  Will need to update later in Rat.
             if(species.equals("Mm")){
 			tissueString = "Brain";
@@ -63,6 +67,7 @@
             }
             else{
                     perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.68/lib:/usr/local/circos-0.68/bin";
+
             }
 	    log.debug(perlEnvironmentVariables);	
             // create the short svg directory name which incoporates the date for uniqueness
@@ -82,7 +87,7 @@
             String password = myProperties.getProperty("PASSWORD");	
 
 		
-            String[] perlScriptArguments = new String[13];
+            String[] perlScriptArguments = new String[14];
             // the 0 element in the perlScriptArguments array must be "perl" ??
             perlScriptArguments[0] = "perl";
             // the 1 element in the perlScriptArguments array must be the script name including path
@@ -95,9 +100,10 @@
             perlScriptArguments[7]=modPath;
             perlScriptArguments[8]=timeStampString;
             perlScriptArguments[9]=moduleColor;
-            perlScriptArguments[10]=dsn;
-            perlScriptArguments[11]=OracleUserName;
-            perlScriptArguments[12]=password;
+            perlScriptArguments[10]=genomeVer;
+            perlScriptArguments[11]=dsn;
+            perlScriptArguments[12]=OracleUserName;
+            perlScriptArguments[13]=password;
 
 			//
 			// call perl script

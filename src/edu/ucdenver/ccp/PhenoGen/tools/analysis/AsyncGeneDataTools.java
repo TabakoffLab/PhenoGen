@@ -53,6 +53,7 @@ public class AsyncGeneDataTools extends Thread {
         private String dbPropertiesFile=null;
         String outputDir="";
         String chrom="";
+        String genomeVer="";
         
         int minCoord=0;
         int maxCoord=0;
@@ -62,7 +63,7 @@ public class AsyncGeneDataTools extends Thread {
         boolean done=false;
         String updateSQL="update TRANS_DETAIL_USAGE set TIME_ASYNC_GENE_DATA_TOOLS=? , RESULT=? where TRANS_DETAIL_ID=?";
         
-    public AsyncGeneDataTools(HttpSession inSession,DataSource pool,String outputDir,String chr,int min,int max,int arrayTypeID,int rnaDS_ID,int usageID) {
+    public AsyncGeneDataTools(HttpSession inSession,DataSource pool,String outputDir,String chr,int min,int max,int arrayTypeID,int rnaDS_ID,int usageID,String genomeVer) {
                 this.session = inSession;
                 this.outputDir=outputDir;
                 log = Logger.getRootLogger();
@@ -75,6 +76,7 @@ public class AsyncGeneDataTools extends Thread {
                 this.arrayTypeID=arrayTypeID;
                 this.rnaDatasetID=rnaDS_ID;
                 this.usageID=usageID;
+                this.genomeVer=genomeVer;
 
                 log.debug("start");
 
@@ -110,11 +112,11 @@ public class AsyncGeneDataTools extends Thread {
         Date start=new Date();
         try{
             log.debug("Before outputProbesetID");
-            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
+            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,genomeVer);
             log.debug("before DEHeatMap");
-            callDEHeatMap(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
+            callDEHeatMap(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID,genomeVer);
             log.debug("before Panel HErit");
-            callPanelHerit(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID);
+            callPanelHerit(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID,genomeVer);
             log.debug("After Panel Herit");
             done=true;
             Date end=new Date();
@@ -183,7 +185,7 @@ public class AsyncGeneDataTools extends Thread {
         done=true;
     }
     
-    private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+    private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,String genomeVer){
         if(chr.toLowerCase().startsWith("chr")){
             chr=chr.substring(3);
         }
@@ -191,6 +193,7 @@ public class AsyncGeneDataTools extends Thread {
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 "and c.name = '"+chr.toUpperCase()+"' "+
+                                "and s.genome_id='"+genomeVer+"' "+
                             "and ( "+
                             "(s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+") OR "+
@@ -204,6 +207,7 @@ public class AsyncGeneDataTools extends Thread {
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 "and c.name = '"+chr.toUpperCase()+"' "+
+                                "and s.genome_id='"+genomeVer+"' "+
                             "and ( "+
                             "(s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+") OR "+
@@ -211,7 +215,7 @@ public class AsyncGeneDataTools extends Thread {
                             "and s.psannotation like 'transcript' " +
                             "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = " + arrayTypeID +
-                            " and exists(select l.probe_id from location_specific_eqtl l where s.probeset_id = l.probe_id)";
+                            " and exists(select l.probe_id from location_specific_eqtl l,snps s where s.genome_id='"+genomeVer+"' and l.snp_id=s.snp_id)";
         
         log.debug("PSLEVEL SQL:"+probeQuery);
         log.debug("Transcript Level SQL:"+probeTransQuery);
@@ -330,7 +334,7 @@ public class AsyncGeneDataTools extends Thread {
             
     }
     
-    public boolean callDEHeatMap(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+    public boolean callDEHeatMap(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer){
         boolean error=false;
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
@@ -340,12 +344,14 @@ public class AsyncGeneDataTools extends Thread {
                          "where des.diff_exp_id=dad.diff_exp_id "+
                          "and des.de_strain_id = dem.de_strain_id "+
                          "and dad.diff_exp_id=dem.diff_exp_id "+
+                         "and dad.genome_id='"+genomeVer+"' "+
                          "and dem.diff_exp_id in (select rdd.diff_exp_id from rnadataset_dedataset rdd where rdd.rna_dataset_id = "+rnaDS_ID+") "+
                             "and dem.probeset_id in ("+
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 "and c.name = '"+chr+"' "+
+                                "and s.genome_id='"+genomeVer+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -359,12 +365,14 @@ public class AsyncGeneDataTools extends Thread {
                     "and def.strain_id1 = des1.de_strain_id "+
                     "and def.strain_id2 = des2.de_strain_id "+
                     "and dad.diff_exp_id=def.diff_exp_id  "+
+                    "and dad.genome_id='"+genomeVer+"' "+
                     "and def.diff_exp_id in (select rdd.diff_exp_id from rnadataset_dedataset rdd where rdd.rna_dataset_id = "+rnaDS_ID+") "+
                     "and def.probeset_id in ( "+
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 "and c.name = '"+chr+"' "+
+                                "and s.genome_id='"+genomeVer+"' "+
                                 "and  "+
                                 "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                                 "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
@@ -602,7 +610,7 @@ public class AsyncGeneDataTools extends Thread {
     }
     
     
-    public boolean callPanelHerit(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+    public boolean callPanelHerit(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer){
         boolean error=false;
         if(chr.startsWith("chr")){
             chr=chr.substring(3);
@@ -611,12 +619,14 @@ public class AsyncGeneDataTools extends Thread {
         String probeQuery="select phd.probeset_id, rd.tissue, phd.herit,phd.dabg "+
                             "from probeset_herit_dabg phd , rnadataset_dataset rd "+
                             "where rd.rna_dataset_id = "+rnaDS_ID+" "+
+                            "and phd.genome_id='"+genomeVer+"' "+
                             "and phd.dataset_id=rd.dataset_id "+
                             "and phd.probeset_id in ("+
                                 "select s.Probeset_ID "+
                                 "from Chromosomes c, Affy_Exon_ProbeSet s "+
                                 "where s.chromosome_id = c.chromosome_id "+
                                 "and c.name = '"+chr+"' "+
+                                "and s.genome_id='"+genomeVer+"' "+
                             "and "+
                             "((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
                             "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+

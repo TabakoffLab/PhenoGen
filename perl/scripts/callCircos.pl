@@ -40,7 +40,7 @@ sub setupDirectories{
 
 
 sub callCircos{
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$chromosomeString,$geneCentricPath,$timeStampString,$tissueString,$dsn,$usr,$passwd)=@_;
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$genomeVer,$chromosomeString,$geneCentricPath,$timeStampString,$tissueString,$dsn,$usr,$passwd)=@_;
 	#
 	# General outline of process:
 	# First, prep circos conf and data files
@@ -66,7 +66,7 @@ sub callCircos{
 	my @tissueList = split(/;/, $tissueString);
 	my $tissueListRef = (\@tissueList);
 	print " Ready to call prepCircos \n";
-	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$dsn,$usr,$passwd,$hostname);
+	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$genomeVer,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$dsn,$usr,$passwd,$hostname);
 	print " Finished prepCircos \n";	
 	
 
@@ -165,6 +165,7 @@ sub callCircos{
 	my $arg14=$ARGV[13]; #dsn
 	my $arg15=$ARGV[14]; #user
 	my $arg16=$ARGV[15]; #password
-	callCircos($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11,$arg12,$arg13,$arg14,$arg15,$arg16);
+        my $arg17=$ARGV[16]; #password
+	callCircos($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17);
 
 1;

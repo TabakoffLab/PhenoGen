@@ -40,7 +40,7 @@ sub readQTLDataFromDB{
 	# Stop position on the chromosome
 
 	# Read inputs
-	my($geneChrom,$organism,$geneStart,$geneStop,$dsn,$usr,$passwd)=@_;   
+	my($geneChrom,$organism,$geneStart,$geneStop,$genomeVer,$dsn,$usr,$passwd)=@_;   
 	
 	
 	#Initializing Arrays
@@ -60,29 +60,14 @@ sub readQTLDataFromDB{
 	
 	# PREPARE THE QUERY for probesets
 	# There's got to be a better way to handle the chromosome...
-	#if(length($geneChrom) == 1){
 		$query ="Select pq.QTL_NAME,c.NAME,pq.QTL_START,pq.QTL_END,pq.RGD_ID,pq.TRAIT_NAME,pq.PHENOTYPE,pq.CANDIDATE_GENE_SYMBOLS
 			from public_qtls pq,chromosomes c 
 			where 
 			c.chromosome_id=pq.chromosome 
 			and c.name =  '".uc($geneChrom)."' "."
-			and pq.organism = '".$organism."' "."
+                        and pq.genome_id= '".$genomeVer."' 
 			and ((pq.QTL_START>=$geneStart and pq.QTL_START<=$geneStop) OR (pq.QTL_END>=$geneStart and pq.QTL_END<=$geneStop) OR (pq.QTL_START<=$geneStart and pq.QTL_END>=$geneStop))
 			order by pq.QTL_NAME";
-	#}
-	#elsif(length($geneChrom) == 2) {
-	#	$query ="Select pq.QTL_NAME,c.NAME,pq.QTL_START,pq.QTL_END
-	#		from public_qtls pq,chromosomes c 
-	#		where 
-	#		c.chromosome_id=pq.chromosome 
-	#		and substr(c.name,1,2) =  '".$geneChrom."' "."
-	#		and pq.organism = '".$organism."' "."
-	#		and ((pq.QTL_START>=$geneStart and pq.QTL_START<=$geneStop) OR (pq.QTL_END>=$geneStart and pq.QTL_END<=$geneStop) OR (pq.QTL_START<=$geneStart and pq.QTL_END>=$geneStop))
-	#		order by pq.QTL_NAME";
-	#}
-	#else{
-	#	die "Something is wrong with the bQTL query \n";
-	#}
 	print "QTL Query:".$query."\n";
 	$query_handle = $connect->prepare($query) or die (" bQTL query prepare failed \n");
 

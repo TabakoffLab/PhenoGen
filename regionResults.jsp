@@ -38,6 +38,7 @@ var iconPath="<%=imagesDir%>icons/";
 var trackMenu=[];
 var viewMenu=[];
 var fixedWidth=-1;
+
 /*Bugsense.clearBreadcrumbs();
 Bugsense.leaveBreadcrumb( 'gene.jsp' );
 Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
@@ -165,11 +166,13 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
         <div id="collapsableImage" class="geneimage" >
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
-            <script src="javascript/GenomeDataBrowser2.3.5.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport2.1.8.js" type="text/javascript"></script>
-            <script src="javascript/GenomeViewMenu2.1.3.js" type="text/javascript"></script>
-            <script src="javascript/GenomeTrackMenu2.1.1.js" type="text/javascript"></script>
-            <script src="javascript/wgcnaBrowser1.0.10.js" type="text/javascript"></script>
+
+            <script src="javascript/GenomeDataBrowser2.4.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport2.4.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeViewMenu2.4.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeTrackMenu2.4.0.js" type="text/javascript"></script>
+            <script src="javascript/wgcnaBrowser1.1.0.js" type="text/javascript"></script>
+
             
             
                 <script type="text/javascript">

@@ -41,8 +41,8 @@ public class HeritabilityDataFile extends DataFile {
 		log = Logger.getRootLogger();
 	}
 
-	public HeritabilityDataFile(String type, String fileName) {
-		super(type, fileName);
+	public HeritabilityDataFile(String type, String fileName,String genomeVer) {
+		super(type, fileName,"",genomeVer);
 		log = Logger.getRootLogger();
 	}
 

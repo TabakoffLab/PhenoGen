@@ -46,6 +46,7 @@
 		padding-right:15px;
 		cursor:pointer;
                 color:#000000;
+                
 	}
         span.detailMenu{
 		background-color:#AEAEAE;
@@ -91,9 +92,20 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 <script>
     $("#wait1").hide();
 </script>
-<div id="public">
+<div id="public" style='min-height:750px;'>
 <h2>Select the download icon(<img src="<%=imagesDir%>icons/download_g.png" />) to download data from any of the datasets below.  For some data types multiple options may be available. For these types, a window displays that allows you to choose specific files.</h2>
 
+<div style="width:100%;">
+    <div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
+            <span id="d1" class="detailMenu selected" name="array">Microarray</span>
+            <span id="d2" class="detailMenu" name="sequencing">RNA/DNA Sequencing</span>
+            <span id="d3" class="detailMenu" name="marker">Genomic Marker</span>
+            <span id="d4" class="detailMenu" name="pub">Publications</span>
+            <span id="d5" class="detailMenu" name="geno">Human Genotyping</span>
+    </div>
+</div>
+
+<div id="array" style="border-top:1px solid black;">
 	<form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
@@ -165,8 +177,15 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 			<% } %>
 			</tbody>
 		</table> 
+        </form>
 		<BR>
         *The mask files are the same for all of these datasets.
+        </div>
+        <div id="marker" style="display:none;border-top:1px solid black;">
+	<form	method="post" 
+		action="resources.jsp" 
+		enctype="application/x-www-form-urlencoded"
+		name="resources">
 		<BR>
 		<div class="title"> Genomic Marker Data Files</div>
 		      <table id="markerFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
@@ -203,7 +222,13 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 			<% } %>
 			</tbody>
 		</table> 
-        
+        </form>
+        </div>
+        <div id="sequencing" style="display:none;border-top:1px solid black;">
+	<form	method="post" 
+		action="resources.jsp" 
+		enctype="application/x-www-form-urlencoded"
+		name="resources">
         <BR>
 		<BR>
 		<div class="title"> RNA Sequencing BED/BAM Data Files</div>
@@ -216,6 +241,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                     <th>Seq. Tech.</th>
                     <th>RNA Type</th>
                     <th>Read Type</th>
+                    <TH>Genome Versions</th>
 					<th>.BED/.BAM Files</th>
 				</tr>
 			</thead>
@@ -227,7 +253,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                 <td> <%=resource.getTissue()%></td>
                 <td> <%=resource.getTechType()%></td>
                 <td> <%=resource.getRNAType()%></td>
-                <td> <%=resource.getReadType()%></td>     
+                <td> <%=resource.getReadType()%></td>    
+                <td> <%=resource.getGenome()%></td>
 				<% if (resource.getSAMDataFiles() != null && resource.getSAMDataFiles().length > 0) { %>
 					<td class="actionIcons">
 						<div class="linkedImg download" type="rnaseq"><div>
@@ -243,13 +270,14 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         
         <BR>
 		<BR>
-        <div class="title"> Strain-specific Rat Genomes (Rn5) <span class="toolTip" title="SNPs between the reference genome and the strain have been replaced with the nucleotide from the strain."><img src="<%=imagesDir%>icons/info.gif"></span></div>
+        <div class="title"> Strain-specific Rat Genomes<span class="toolTip" title="SNPs between the reference genome and the strain have been replaced with the nucleotide from the strain."><img src="<%=imagesDir%>icons/info.gif"></span></div>
 		      <table id="dnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
             		<thead>
                                <tr class="col_title">
 					<th>Organism</th>
 					<th>Strain</th>
-                    <th>Seq. Tech.</th>
+                                        <th>Seq. Tech.</th>
+                                        <th>Genome Version</th>
 					<th>.fasta Files</th>
 				</tr>
 			</thead>
@@ -258,7 +286,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 				<tr id="<%=resource.getID()%>">  
 				<td> <%=resource.getOrganism()%> </td>
 				<td> <%=resource.getSource()%></td>
-                <td> <%=resource.getTechType()%></td>  
+                                <td> <%=resource.getTechType()%></td>
+                                <td> <%=resource.getGenome()%></td>
 				<% if (resource.getSAMDataFiles() != null && resource.getSAMDataFiles().length > 0) { %>
 					<td class="actionIcons">
 						<div class="linkedImg download" type="rnaseq"><div>
@@ -272,10 +301,20 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 			</tbody>
 		</table>
         <div style="text-align:center; padding-top:5px;">
-        Links to Reference Rat Genome(Strain BN) Rn5: <a href="ftp://ftp.ncbi.nlm.nih.gov/genomes/R_norvegicus/" target="_blank">FTP NCBI</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="ftp://ftp.ensembl.org/pub/release-71/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl</a>
+        Links to Reference Rat Genome(Strain BN): <a href="ftp://ftp.ncbi.nlm.nih.gov/genomes/R_norvegicus/" target="_blank">FTP NCBI-Rn6</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="ftp://ftp.ensembl.org/pub/release-71/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl-Rn5</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="ftp://ftp.ensembl.org/pub/release-84/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl-Rn6</a>
        	</div>
         <BR><BR>
+        </form>
+</div>
+                        
+<div id="pub" style="display:none;border-top:1px solid black;">
+	<form	method="post" 
+		action="resources.jsp" 
+		enctype="application/x-www-form-urlencoded"
+		name="resources">                        
+
         <div class="title">Data Files used in "The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption"<BR>(Saba et. al. 2015, FEBS)
                 <a href="http://onlinelibrary.wiley.com/doi/10.1111/febs.13358/abstract">Abstract</a></div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
@@ -302,6 +341,12 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         
         
 	</form>
+</div>
+<div id="geno" style="display:none;border-top:1px solid black;">
+	<form	method="post" 
+		action="resources.jsp" 
+		enctype="application/x-www-form-urlencoded"
+		name="resources"> 
         <BR>
 		<BR>
 		<div class="title">Human Genotype Data Files</div>
@@ -337,6 +382,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         
         
 	</form>
+</div>
 </div><!-- END PUBLIC DIV-->
 <div id="members" style="display:none;min-height: 780px;">
     <H2>My Files</h2>
@@ -425,6 +471,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                     $(this).addClass("selected");
                     var cur=$(this).attr("name");
                     $("div#"+cur).show();
+                    rows=$("table.list_base tr");
+                    stripeTable(rows);
                 });
                 
 	});

@@ -29,6 +29,23 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
+    <div class="whats_new version"><p><h3>Version: v3.1</h3><BR /> Updated:6/22/2016</p></div>
+       <ul>
+                                    <li><span class="highlight-dark">Rn6</span>
+                                        All four tissues of the HXB Mircoarray datasets are available with Rn6 versions.  The genome browser will now let you select either Rn5 or Rn6.  Gene list tools that depend on the genome version now allow selection of Rn5 or Rn6 based on the version that you want.
+                                    </li>
+                                    <li><span class="highlight-dark">WGCNA</span>
+                                        Heart and Liver modules are now available based on the Rn6 version of the data. Whole Brain has an updated version using Rn6.
+                                    </li>
+                                    <li><span class="highlight-dark">Site wide search</span>
+                                        You can now use google on the site to search on PhenoGen.
+                                    </li>
+                                    <li><span class="highlight-dark">Repeat Mask Track in the Genome Browser</span>
+                                        We've made the UCSC repeat mask data available as a track in the browser.
+                                    </li>
+                                    
+        </ul>
+        <hr/>
         <div class="whats_new version"><p><h3>Version: v3.0</h3><BR /> Updated:5/31/2016</p></div>
        <ul>
                                     <li><span class="highlight-dark">Anonymous Gene Lists</span>

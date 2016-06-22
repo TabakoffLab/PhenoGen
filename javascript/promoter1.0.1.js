@@ -7,7 +7,7 @@
  *  this function sets up all the functionality for this page
 /*/
 
-var idToDelete=-99; 
+var idToDelete=-99;
 
 function setupPage() {
 	jQuery("select#promoterType").on("change",function(){
@@ -56,7 +56,7 @@ function setupPage() {
     });
 	checkSize();
 	runGetResults(-1);
-	//setupDeleteButton(contextPath + "/web/geneLists/deleteGeneListAnalysis.jsp"); 
+	//setupDeleteButton(contextPath + "/web/geneLists/deleteGeneListAnalysis.jsp");
 }
 /*function runGetPromoterResults(){
             $('#resultList').html("<div id=\"waitLoadResults\" align=\"center\" style=\"position:relative;top:0px;\"><img src=\""+pathImage+"wait.gif\" alt=\"Loading Results...\" text-align=\"center\" ><BR />Loading Results...</div>"+$('#resultList').html());
@@ -65,7 +65,7 @@ function setupPage() {
                     type: 'GET',
                     data: {geneListID:id},
                     dataType: 'html',
-                    success: function(data2){ 
+                    success: function(data2){
                                     goAutoRefreshHandle=setTimeout(function (){
                                             runGetPromoterResults();
                                     },20000);
@@ -107,6 +107,7 @@ function runPromoter(){
 		params.thresholdLevel=jQuery("#oPOSSUMForm #thresholdLevel").val();
 		params.description=jQuery("#oPOSSUMForm #description").val();
 	}else if(type==='MEME'){
+		params.genomeVer=jQuery("#memeForm #genomeVer").val();
 		params.upstreamLength=jQuery("#memeForm #upstreamLength").val();
 		params.upstreamSelect=jQuery("#memeForm #upstreamSelect").val();
 		params.distribution=jQuery("#memeForm #distribution").val();
@@ -115,9 +116,11 @@ function runPromoter(){
 		params.maxMotifs=jQuery("#memeForm #maxMotifs").val();
 		params.description=jQuery("#memeForm #description").val();
 	}else if(type==='Upstream'){
+		params.genomeVer=jQuery("#upstreamForm #genomeVer").val();
 		params.upstreamLength=jQuery("#upstreamForm #upstreamLength").val();
 		params.upstreamSelect=jQuery("#upstreamForm #upstreamSelect").val();
 	}
+	console.log(params);
 	jQuery.ajax({
             url: contextPath + "/web/geneLists/include/runPromoter.jsp",
             type: 'GET',
@@ -126,7 +129,7 @@ function runPromoter(){
             beforeSend: function(){
                     jQuery('#runStatus').html("Submitting...");
             },
-            success: function(data2){ 
+            success: function(data2){
                 jQuery('#runStatus').html(data2);
             },
             error: function(xhr, status, error) {
@@ -161,35 +164,34 @@ function checkSize(){
 }
 
 function IsMeMeFormComplete(formName) {
-   
-	if ( (jQuery.trim(formName.minWidth.value) == '') || (parseInt(formName.minWidth.value) <= 1) ) { 
+
+	if ( (jQuery.trim(formName.minWidth.value) == '') || (parseInt(formName.minWidth.value) <= 1) ) {
 		alert('You must enter a minimum width that is greater than or equal to two.')
 	        formName.minWidth.focus();
-		return false; 
-	}
-   
-	if ( (jQuery.trim(formName.maxWidth.value) == '') || (parseInt(formName.maxWidth.value) >= 301) ) { 
-		alert('You must enter a maximum width that is less than or equal to 300.')
-	        formName.maxWidth.focus();
-		return false; 
-	}
-   
-	if (jQuery.trim(formName.maxMotifs.value) == '') { 
-		alert('You must enter the Maximun number of motifs.')
-	        formName.maxMotifs.focus();
-		return false; 
-	}
-   
-	if (jQuery.trim(formName.description.value) == '') { 
-		alert('You must enter a description.')
-	        formName.description.focus();
-		return false; 
+		return false;
 	}
 
-	if (jQuery.trim(formName.numberOfGenes.value) <= 1) { 
+	if ( (jQuery.trim(formName.maxWidth.value) == '') || (parseInt(formName.maxWidth.value) >= 301) ) {
+		alert('You must enter a maximum width that is less than or equal to 300.')
+	        formName.maxWidth.focus();
+		return false;
+	}
+
+	if (jQuery.trim(formName.maxMotifs.value) == '') {
+		alert('You must enter the Maximun number of motifs.')
+	        formName.maxMotifs.focus();
+		return false;
+	}
+
+	if (jQuery.trim(formName.description.value) == '') {
+		alert('You must enter a description.')
+	        formName.description.focus();
+		return false;
+	}
+
+	if (jQuery.trim(formName.numberOfGenes.value) <= 1) {
             alert('MEME Analysis cannot be performed for a gene list with only ' + formName.numberOfGenes.value + ' gene(s).');
-            return false; 
+            return false;
 	}
 	return true;
 }
-

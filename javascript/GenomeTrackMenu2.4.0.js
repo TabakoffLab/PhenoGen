@@ -202,7 +202,34 @@ function TrackMenu(level){
 		if(pathPrefix===""){
 			tmpContext="";
 		}
-		d3.json(tmpContext+"getBrowserTracks.jsp",function (error,d){
+		$.ajax({
+				url: tmpContext+"getBrowserTracks.jsp",
+   				type: 'GET',
+				data: {genomeVer: genomeVer  },
+				dataType: 'json',
+                success: function(d){ 
+                    that.trackList=d;
+					if(that.level===0){
+						trackInfo=[];
+						for(var i=0;i<that.trackList.length;i++){
+							trackInfo[that.trackList[i].TrackClass]=that.trackList[i];
+						}
+					}
+					//if(uid==0){//add cookie based tracks
+					that.readCookieTracks();
+					//}
+					that.dataInitialized=1;
+					that.generateTrackTable();
+					if(trackMenu[that.level] && trackMenu[that.level].readCookieViews){
+						trackMenu[that.level].readCookieViews();
+						trackMenu[that.level].generateViewList();
+					}
+                },
+                error: function(xhr, status, error) {
+                        
+                }
+        });
+		/*d3.json(tmpContext+"getBrowserTracks.jsp",function (error,d){
 			if(error){
 				console.log(error);
 			}else{
@@ -223,7 +250,7 @@ function TrackMenu(level){
 					trackMenu[that.level].generateViewList();
 				}
 			}
-		});
+		});*/
 	};
 
 	that.readCookieTracks=function(){

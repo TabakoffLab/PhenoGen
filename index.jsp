@@ -20,9 +20,7 @@
 
 <%@ include file="/web/common/basicHeader.jsp" %>
 
-<style>
-	div.header_status{display:none;}
-</style>
+
 
 <%
         String msg = "";
@@ -107,30 +105,27 @@
     </div>
     </div>
 
-    	<script type="text/javascript">
-			$("#closeBTN").on("click",function(){
-				$('div#indexDesc').hide();
-			});
-        	$(document).ready(function(){	
-            		$("div.clicker").click(function(){
-                		var thisHidden = $( "span#" + $(this).attr("name") ).is(":hidden");
-                		var tabTriggers = $(this).parents("ul").find("span.branch").hide();
-                		var baseName = $(this).attr("name");
-				$("span#" + baseName).removeClass("clickerLess");
-                		if ( thisHidden ) {
-					$("span#" + baseName).show().addClass("clickerLess");
-				}
-				$("div."+baseName).removeClass("clicker");
-				$("div."+baseName).addClass("clickerLess");
-            		});
-					
-        	});
-		
-	</script>
+    <script type="text/javascript">
+            $("#closeBTN").on("click",function(){
+                    $('div#indexDesc').hide();
+            });
+            $(document).ready(function(){
+                $(".search").css("top","4px");
+                $("div.clicker").click(function(){
+                    var thisHidden = $( "span#" + $(this).attr("name") ).is(":hidden");
+                    var tabTriggers = $(this).parents("ul").find("span.branch").hide();
+                    var baseName = $(this).attr("name");
+                    $("span#" + baseName).removeClass("clickerLess");
+                    if ( thisHidden ) {
+                            $("span#" + baseName).show().addClass("clickerLess");
+                    }
+                    $("div."+baseName).removeClass("clicker");
+                    $("div."+baseName).addClass("clickerLess");
+                });
 
-	<%@ include file="/web/common/basicFooter.jsp" %>
-<%
-        	//dbConn.close();
-        //}
-%>
+            });
+
+    </script>
+
+    <%@ include file="/web/common/basicFooter.jsp" %>
 

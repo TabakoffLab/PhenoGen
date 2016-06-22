@@ -12,6 +12,11 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>PhenoGen v3.1 6/15/2016</H2>
+                        <div style="margin-left:5px;">
+                            <span style=" font-weight: bold;">Rn6 - </span> is available in the browser, for gene list analysis, and both RNA-Seq datasets and microarray datasets have been updated.
+                            <span style=" font-weight: bold;">Rat WGCNA - </span> Heart and Liver have been added to the rn6 data.
+                        </div>
                          <H2>PhenoGen v3.0 5/31/2016</H2>
                         <div style="margin-left:5px;">
                             <span style=" font-weight: bold;">Anonymous Gene List</span> - You can now use our gene list analysis tools without registering.  We encourage you to link your email so you don't loose access to previous work.<BR>

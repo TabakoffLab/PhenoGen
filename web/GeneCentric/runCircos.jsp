@@ -29,6 +29,7 @@
 			Boolean selectedTissueError = null;
 			Boolean circosReturnStatus = null;
 			String timeStampString = null;
+                        String genomeVer="";
 
 			//
 			//Configure Inputs from session variables, unless they are already defined on the page.
@@ -228,7 +229,9 @@
 			log.debug(" Selected Cutoff Value " + selectedCutoffValue);
 			
 		}
-		
+		if(request.getParameter("genomeVer")!=null){
+			genomeVer = request.getParameter("genomeVer");
+		}
 		// Get information about which tissues to view -- easier for mouse
 		
 		if(species.equals("Mm")){
@@ -336,7 +339,7 @@
             String dsn = "dbi:"+ myProperties.getProperty("PLATFORM")+ ":" + myProperties.getProperty("DATABASE");
             String OracleUserName = myProperties.getProperty("USER");
             String password = myProperties.getProperty("PASSWORD");			
-     		String[] perlScriptArguments = new String[18];
+     		String[] perlScriptArguments = new String[19];
      		// the 0 element in the perlScriptArguments array must be "perl" ??
      		perlScriptArguments[0] = "perl";
      		// the 1 element in the perlScriptArguments array must be the script name including path
@@ -350,14 +353,15 @@
      		perlScriptArguments[8]=transcriptClusterStop;
      		perlScriptArguments[9]=selectedCutoffValue;
      		perlScriptArguments[10]=species;
-     		perlScriptArguments[11]=chromosomeString;
-     		perlScriptArguments[12]=geneCentricPath;
-     		perlScriptArguments[13]=timeStampString;
-     		perlScriptArguments[14]=tissueString;
+                perlScriptArguments[11]=genomeVer;
+     		perlScriptArguments[12]=chromosomeString;
+     		perlScriptArguments[13]=geneCentricPath;
+     		perlScriptArguments[14]=timeStampString;
+     		perlScriptArguments[15]=tissueString;
      		//perlScriptArguments[14]="All";
-     		perlScriptArguments[15]=dsn;
-            perlScriptArguments[16]=OracleUserName;
-            perlScriptArguments[17]=password;
+     		perlScriptArguments[16]=dsn;
+            perlScriptArguments[17]=OracleUserName;
+            perlScriptArguments[18]=password;
 
 			log.debug(" Calling createCircosFiles from GeneDataTools");
 			//log.debug(" filePrefixWithPath "+filePrefixWithPath);

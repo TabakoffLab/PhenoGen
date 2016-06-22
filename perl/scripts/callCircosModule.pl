@@ -40,11 +40,11 @@ sub setupDirectories{
 
 
 sub callCircosMod{
-	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$modColor,$dsn,$usr,$passwd)=@_;
-        print "in callCircosMod() path:$modulePath\n";
+	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$modColor,$genomeVer,$dsn,$usr,$passwd)=@_;
+        #print "in callCircosMod() path:$modulePath\n";
 
 
-        print $module."\n".$cutoff."\n".$organism."\n".$chromosomeString."\ntissue:".$tissueString."\n".$modulePath."\ntime:".$timeStampString."\n".$modColor."\ndsn:".$dsn."\n".$usr."\npass:".$passwd."\n";
+        #print $module."\n".$cutoff."\n".$organism."\n".$chromosomeString."\ntissue:".$tissueString."\n".$modulePath."\ntime:".$timeStampString."\n".$modColor."\ndsn:".$dsn."\n".$usr."\npass:".$passwd."\n";
 
 	#
 	# General outline of process:
@@ -86,9 +86,9 @@ sub callCircosMod{
 	setupDirectories($baseDirectory,$dataDirectory,$confDirectory,$svgDirectory);
 	my @chromosomeList = split(/;/, $chromosomeString);
 	my $chromosomeListRef = (\@chromosomeList);
-	print " Ready to call prepCircos \n";
-	prepCircosMod($module,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueString,$hostname,$dsn,$usr,$passwd);
-	print " Finished prepCircos \n";	
+	#print " Ready to call prepCircos \n";
+	prepCircosMod($module,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueString,$genomeVer,$hostname,$dsn,$usr,$passwd);
+	#print " Finished prepCircos \n";	
 	
 
 	#
@@ -102,7 +102,7 @@ sub callCircosMod{
 	#print " New directory is $newpwd \n";
 	
 	
-	print " Calling Circos \n";
+	#print " Calling Circos \n";
 
 	my $circosBinary;
 	my $perlBinary;
@@ -126,24 +126,24 @@ sub callCircosMod{
 
 	
     my @systemArgs = ($perlBinary,$circosBinary,"-silent","-conf", $confDirectory."circos.conf", "-noparanoid");
-    print " System call with these arguments: @systemArgs \n";
+    #print " System call with these arguments: @systemArgs \n";
     system(@systemArgs);
     if ( $? == -1 )
 	{
-  		print "System Call failed: $!\n";
+  		#print "System Call failed: $!\n";
 	}
 	else
 	{
-  		printf "System Call exited with value %d", $? >> 8;
+  		#printf "System Call exited with value %d", $? >> 8;
 	}
 
 	#-- go back to original directory
 	chdir($pwd);
 	
-	print " Finished running Circos \n";
-	print " Ready to call postprocessCircos \n";
+	#print " Finished running Circos \n";
+	#print " Ready to call postprocessCircos \n";
 	postprocessCircosMod($module,$cutoff,$organism,$dataDirectory,$svgDirectory,$hostname,$tissueString,$modColor);
-	print " Finished with Circos \n";
+	#print " Finished with Circos \n";
 	
 
 	#-- go back to original directory

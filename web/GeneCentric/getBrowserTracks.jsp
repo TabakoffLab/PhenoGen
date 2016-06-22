@@ -23,8 +23,11 @@ import="org.json.*" %>
 log.debug("TESTING");
 int tmpuserID=0;
 bt.setSession(session);
-
-ArrayList<BrowserTrack> tracks=bt.getBrowserTracks();
+String genomeVer="";
+if(request.getParameter("genomeVer")!=null){
+    genomeVer=request.getParameter("genomeVer");
+}
+ArrayList<BrowserTrack> tracks=bt.getBrowserTracks(genomeVer);
 
 response.setContentType("application/json");
 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

@@ -9,7 +9,7 @@ use strict;
 require 'ReadAffyProbesetDataFromDB.pl';
 require 'readRNAIsoformDataFromMongo.pl';
 require 'readQTLDataFromDB.pl';
-require 'readSNPDataFromDB.pl';
+require 'readSNPDataFromMongo.pl';
 require 'readSpliceJunctFromDB.pl';
 require 'readSmallNCDataFromDB.pl';
 require 'readRefSeqDataFromDB.pl';
@@ -152,7 +152,7 @@ sub createBinnedData{
 sub createXMLFile
 {
 	# Read in the arguments for the subroutine	
-	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd,$ucscDsn,$ucscUsr,$ucscPasswd,$mongoDsn,$mongoUser,$mongoPasswd)=@_;
+	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$genomeVer,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd,$ucscDsn,$ucscUsr,$ucscPasswd,$mongoDsn,$mongoUser,$mongoPasswd)=@_;
 	
 	my $scriptStart=time();
 	
@@ -177,15 +177,12 @@ sub createXMLFile
 		
 		my $rnaCountRef;
 
-                $rnaCountRef=readRNACountsDataFromMongo($chromosome,$species,$publicID,$panel,$type,$roundMin,$roundMax,$dsn,$usr,$passwd,$mongoDsn,$mongoUser,$mongoPasswd);
+                $rnaCountRef=readRNACountsDataFromMongo($chromosome,$species,$publicID,$panel,$type,$roundMin,$roundMax,$genomeVer,$dsn,$usr,$passwd,$mongoDsn,$mongoUser,$mongoPasswd);
 		
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
+		
 		if($binSize>0){
 			my $ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
 			my %rnaBinned=%$ref;
@@ -209,17 +206,14 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-		my $rnaCountRef=readSNPDataFromDB($chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+		my $rnaCountRef=readSNPDataFromDB($genomeVer,$chromosome,$species,$minCoord,$maxCoord,$mongoDsn,$mongoUser,$mongoPasswd);
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
+
 		#print "track:".$outputDir;
 		#my $output=$outputDir.$type.".xml";
-		createSNPXMLTrack(\%rnaCountHOH,$outputDir,$trackDB);
+		createSNPXMLTrack(\%rnaCountHOH,$outputDir);
 	}elsif(index($type,"refSeq")>-1){
 		my $rnaCountStart=time();
 		if(index($chromosome,"chr")>-1){
@@ -229,11 +223,8 @@ sub createXMLFile
 		my %refSeqHOH=%$refSeqRef;
 		my $rnaCountEnd=time();
 		print "Ref Seq completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
-		createRefSeqXMLTrack(\%refSeqHOH,$outputDir.$type.".xml",$trackDB);
+		
+		createRefSeqXMLTrack(\%refSeqHOH,$outputDir.$type.".xml");
 	}elsif(index($type,"genomeSeq")>-1){
 		my $rnaCountStart=time();
 		if(index($chromosome,"chr")>-1){
@@ -249,14 +240,10 @@ sub createXMLFile
 			$chromosome=substr($chromosome,3);
 		}
 		
-		my $spliceRef=readSpliceJunctFromDB($chromosome,$species,$minCoord,$maxCoord,$publicID,$panel,$tissue,$dsn,$usr,$passwd);
+		my $spliceRef=readSpliceJunctFromDB($chromosome,$species,$minCoord,$maxCoord,$publicID,$panel,$tissue,$genomeVer,$dsn,$usr,$passwd);
 		my %spliceHOH=%$spliceRef;
 		my $rnaCountEnd=time();
 		print "Splice Junction completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
-		my $trackDB="mm10";
-		if($species eq 'Rat'){
-			$trackDB="rn5";
-		}
 		createGenericXMLTrack(\%spliceHOH,$outputDir.$type.".xml");
 	}elsif(index($type,"repeatMask")>-1){
                 my $rnaCountStart=time();
@@ -267,10 +254,10 @@ sub createXMLFile
 		my %repeatMaskHOH=%$repeatMaskRef;
 		my $rnaCountEnd=time();
 		print "RepeatMask completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";
-                createGenericXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
-        }elsif(index($type,"chainNet")>-1){
+        createGenericXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
+    }elsif(index($type,"chainNet")>-1){
 
-        }elsif(index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
+    }elsif(index($type,"brainTotal")>-1 or index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
                 my $ver=substr($type,index($type,"_")+1);
                 print "Type:$type\n";
                 print "Ver:$ver\n";
@@ -282,7 +269,7 @@ sub createXMLFile
                 my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chromosome,$minCoord,$maxCoord,22,$dsn,$usr,$passwd);
                 my @probesetHOH = @$probesetHOHRef;
 
-                my $snpRef=readSNPDataFromDB($chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+                my $snpRef=readSNPDataFromDB($genomeVer,$chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
                 my %snpHOH=%$snpRef;
                 my @snpStrain=("BNLX","SHRH","SHRJ","F344");
                 my $rnaType="totalRNA";
@@ -291,7 +278,7 @@ sub createXMLFile
                 }elsif(index($type,"brainnoncoding")>-1){
                     $rnaType="NonPolyA+";
                 }
-		my $isoformHOH = readRNAIsoformDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,$rnaType,$tissue,$ver);
+		my $isoformHOH = readRNAIsoformDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,$rnaType,$tissue,$ver,$genomeVer);
                 
                 my %brainHOH=%$isoformHOH;
                 my $regionSize=$maxCoord-$minCoord;
@@ -378,11 +365,10 @@ sub createXMLFile
                         }
                     }
                 }
-                my $trackDB="rn5";
                 if($type eq 'braincoding'){
-                    createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",$trackDB,1);
+                    createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",1);
                 }elsif($type eq 'brainnoncoding'){
-                    createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",$trackDB,0);
+                    createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",0);
                 }else{
                     createLiverTotalXMLTrack(\%brainHOH,$outputDir.$type.".xml");
                 }
@@ -405,8 +391,8 @@ sub createXMLFile
 	my $arg6 = $ARGV[5]; 
 	my $arg7 = $ARGV[6]; 
 	my $arg8 = $ARGV[7]; 
-	my $arg9= $ARGV[8]; 
-	my $arg10=$ARGV[9];
+	my $arg9 = $ARGV[8]; 
+	my $arg10= $ARGV[9];
 	my $arg11=$ARGV[10];
 	my $arg12=$ARGV[11];
 	my $arg13=$ARGV[12];
@@ -418,7 +404,8 @@ sub createXMLFile
         my $arg19=$ARGV[18];
         my $arg20=$ARGV[19];
         my $arg21=$ARGV[20];
+        my $arg22=$ARGV[21];
 
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20,$arg21);
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20,$arg21,$arg22);
 
 exit 0;

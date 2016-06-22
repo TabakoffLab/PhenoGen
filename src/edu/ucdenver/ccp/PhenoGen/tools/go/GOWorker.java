@@ -30,6 +30,7 @@ import edu.ucdenver.ccp.util.FileHandler;
 import edu.ucdenver.ccp.util.ObjectHandler;
 import edu.ucdenver.ccp.PhenoGen.tools.analysis.Statistic;
 import edu.ucdenver.ccp.PhenoGen.tools.go.GOTools;
+import edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools;
 import edu.ucdenver.ccp.PhenoGen.tools.idecoder.IDecoderClient;
 import edu.ucdenver.ccp.PhenoGen.tools.idecoder.Identifier;
 import edu.ucdenver.ccp.PhenoGen.data.GeneList;
@@ -76,6 +77,7 @@ public class GOWorker extends Thread {
     private String shortPath;
     private String rFunctDir;
     private String organism;
+    private String genomeVer;
     private String ensemblDBPropertiesFile;
     private String perlDir;
     private String perlEnvVar;
@@ -84,7 +86,7 @@ public class GOWorker extends Thread {
     private Logger log;
 
 
-    public GOWorker(GeneList gl,DataSource pool,GOTools parent,HttpSession session,String path,String org,int glaID){
+    public GOWorker(GeneList gl,DataSource pool,GOTools parent,HttpSession session,String path,String org,String genomeVer,int glaID){
         this.geneList=gl;
         this.pool=pool;
         this.parent=parent;
@@ -93,6 +95,7 @@ public class GOWorker extends Thread {
         this.fullPath=path.substring(0, path.lastIndexOf("/"));
         this.shortPath=fullPath.substring(fullPath.lastIndexOf("/")+1);
         this.organism=org;
+        this.genomeVer=genomeVer;
         this.glaID=glaID;
         this.log = Logger.getRootLogger();
         this.perlDir = (String) session.getAttribute("perlDir") + "scripts/";
@@ -102,8 +105,13 @@ public class GOWorker extends Thread {
     
     public void run() throws RuntimeException {
         done=false;
+        
         log.debug("in GOWorker");
+        GeneDataTools gdt=new GeneDataTools();
+        gdt.setSession(session);
+        HashMap<String,String> source=gdt.getGenomeVersionSource(genomeVer);
         User userLoggedIn= (User) session.getAttribute("userLoggedIn");
+
         try{
             if(userLoggedIn.getUser_name().equals("anon")){
                 gla=(new GeneListAnalysis()).getAnonGeneListAnalysis(glaID,pool);
@@ -154,8 +162,9 @@ public class GOWorker extends Thread {
             }catch(SQLException e){}
         }
         Identifier myIdentifier=new Identifier();
-        String[] targets=new String[] {"Ensembl ID"};
+
         IDecoderClient myIDecoderClient=new IDecoderClient();
+        myIDecoderClient.setNum_iterations(1);
         HashMap<String,String> prevRunHM=new HashMap<String,String>();
         String prefix="tmp";
         String rOrg="mmu";
@@ -169,27 +178,41 @@ public class GOWorker extends Thread {
         }
         try{
             BufferedWriter fout=new BufferedWriter(new FileWriter(new File(fullPath+"/inputGeneList.txt")));
-            Set iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(geneList.getGene_list_id(),targets, pool);
-            for (int i=0; i<myGeneArray.length; i++) {
-                Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i], iDecoderSet); 			
-                if (thisIdentifier != null) {
-                    myIDecoderClient.setNum_iterations(2);
-                    Set ensID = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), targets);
-                    String ens="";
-                    if (ensID.size() > 0) { 						
-                        for (Iterator symbolItr = ensID.iterator(); symbolItr.hasNext();) { 
-                            Identifier symbol = (Identifier) symbolItr.next();
-                            if(symbol.getIdentifier().toString().startsWith("ENS")&&symbol.getIdentifier().toString().indexOf("G")>0){
-                                fout.write(symbol.getIdentifier().toString()+"\n");
-                            }
-                        }   
+            Set iDecoderSet = myIDecoderClient.getIdentifiersByInputIDAndTarget(geneList.getGene_list_id(),new String[] {"Ensembl ID"}, pool);
+            Iterator ida=iDecoderSet.iterator();
+            while(ida.hasNext()){
+                Identifier ident=(Identifier)ida.next();
+                //log.debug("FROM WGCNA GENE LIST:"+ident.getIdentifier());
+                Set ens = myIDecoderClient.getIdentifiersForTargetForOneID(ident.getTargetHashMap(), new String[] {"Ensembl ID"});
+                Iterator ensItr=ens.iterator();
+                while(ensItr.hasNext()){
+                    Identifier ensIdent=(Identifier) ensItr.next();
+                    if(ensIdent.getIdentifier().toString().startsWith("ENS")&&ensIdent.getIdentifier().toString().indexOf("G")>0){
+                        fout.write(ensIdent.getIdentifier().toString()+"\n");
                     }
-                }                       
+                }
             }
+//            for (int i=0; i<myGeneArray.length; i++) {
+//                Identifier thisIdentifier = myIdentifier.getIdentifierFromSet(myGeneArray[i], iDecoderSet); 			
+//                if (thisIdentifier != null) {
+//                    myIDecoderClient.setNum_iterations(2);
+//                    Set ensID = myIDecoderClient.getIdentifiersForTargetForOneID(thisIdentifier.getTargetHashMap(), new String[] {"Ensembl ID"});
+//                    String ens="";
+//                    if (ensID.size() > 0) { 						
+//                        for (Iterator symbolItr = ensID.iterator(); symbolItr.hasNext();) { 
+//                            Identifier symbol = (Identifier) symbolItr.next();
+//                            if(symbol.getIdentifier().toString().startsWith("ENS")&&symbol.getIdentifier().toString().indexOf("G")>0){
+//                                fout.write(symbol.getIdentifier().toString()+"\n");
+//                            }
+//                        }   
+//                    }
+//                }                       
+//            }
             fout.flush();
             fout.close();
             
             //call perl to run script to output json with GO terms
+            String ensemblPath=source.get("ensembl");
             File ensPropertiesFile = new File(ensemblDBPropertiesFile);
             Properties myENSProperties = new Properties();
             myENSProperties.load(new FileInputStream(ensPropertiesFile));
@@ -209,6 +232,12 @@ public class GOWorker extends Thread {
             perlArgs[8] = ensPassword;
             
             String[] envVar=perlEnvVar.split(",");
+            for (int i = 0; i < envVar.length; i++) {
+                if(envVar[i].contains("/ensembl")){
+                    envVar[i]=envVar[i].replaceFirst("/ensembl", "/"+ensemblPath);
+                }
+                log.debug(i + " EnvVar::" + envVar[i]);
+            }
             
             ExecHandler myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath);
             boolean exception=false;

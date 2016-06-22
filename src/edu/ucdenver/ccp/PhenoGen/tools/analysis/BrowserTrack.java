@@ -61,12 +61,13 @@ public class BrowserTrack{
         this.type=fileType;
     }
 
-    public ArrayList<BrowserTrack> getBrowserTracks(int userid,DataSource pool){
+    public ArrayList<BrowserTrack> getBrowserTracks(int userid,String genomeVer,DataSource pool){
         Logger log=Logger.getRootLogger();
         ArrayList<BrowserTrack> ret=new ArrayList<BrowserTrack>();
         
-        String query="select * from BROWSER_TRACKS "+
-                        "where user_id="+userid+" and visible=1";
+        String query="select bt.* from BROWSER_TRACKS bt, BROWSER_GV2TRACK gbt "+
+                        "where gbt.genome_id= '"+genomeVer+"' and gbt.TRACKID=bt.TRACKID "+
+                        "and bt.user_id="+userid+" and bt.visible=1";
             Connection conn=null;
             PreparedStatement ps=null;
             try {
@@ -341,8 +342,9 @@ public class BrowserTrack{
         return id;
     }
     
-    public boolean saveToDB(DataSource pool){
+    public boolean saveToDB(String genomeVer,DataSource pool){
         boolean success=false;
+        String insertGV2Track="insert into browser_GV2TRACK (genome_id,trackid) values (?,?)";
         String insertUsage="insert into browser_tracks (TRACKID,USER_ID,TRACK_CLASS,"
                 + "TRACK_NAME,TRACK_DESC,ORGANISM,CATEGORY_GENERIC,CATEGORY,DISPLAY_OPTS,"
                 + "VISIBLE,CUSTOM_LOCATION,CUSTOM_DATE,CUSTOM_FILE_ORIGINAL,CUSTOM_TYPE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -350,6 +352,13 @@ public class BrowserTrack{
         try{
             conn=pool.getConnection();
             PreparedStatement ps=conn.prepareStatement(insertUsage, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+            ps.setString(1, genomeVer);
+            ps.setInt(2,this.id);
+            ps.execute();
+            ps.close();
+            ps=conn.prepareStatement(insertUsage, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
 						ResultSet.CONCUR_UPDATABLE);
             ps.setInt(1, this.id);
@@ -406,7 +415,7 @@ public class BrowserTrack{
     public boolean deleteTrack(int trackid,DataSource pool){
         Logger log=Logger.getRootLogger();
         boolean ret=false;
-        
+        String deleteGV2Track="delete from BROWSER_GV2TRACK where trackid="+trackid;
         String settings="delete from BROWSER_TRACK_SETTINGS "+
                         "where tracksettingid in (select tracksettingid from browser_views_tracks where "+
                         "trackid="+trackid+" )";
@@ -418,6 +427,9 @@ public class BrowserTrack{
             try {
                 conn=pool.getConnection();
                 conn.setAutoCommit(false);
+                ps = conn.prepareStatement(deleteGV2Track);
+                ps.executeUpdate();
+                ps.close();
                 ps = conn.prepareStatement(settings);
                 ps.executeUpdate();
                 ps.close();
@@ -436,7 +448,6 @@ public class BrowserTrack{
                 try {
                     conn.rollback();
                     ps.close();
-                   
                 } catch (Exception ex1) {
                 }
             } finally{

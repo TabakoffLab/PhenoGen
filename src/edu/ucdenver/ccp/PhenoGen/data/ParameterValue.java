@@ -1563,34 +1563,53 @@ public class ParameterValue implements Comparable{
 	}
 
         
+        
         /**
 	 * Gets the parameters used by parameter group ID.
 	 * @param parameterGroupID     the identifier of the parameter group
-	 * @param pool    the database pool 
+	 * @param conn     the database connection 
 	 * @return            An array of ParameterValue objects
 	 * @throws	SQLException if a database error occurs
 	 */
 	public ParameterValue[] getParameterValues (int parameterGroupID, DataSource pool) throws SQLException {
-            Connection conn=null;
-            SQLException err=null;
-            ParameterValue[] ret=new ParameterValue[0];
-            try{
-                conn=pool.getConnection();
-                ret=getParameterValues(parameterGroupID,conn);
-                conn.close();
-            }catch(SQLException e){
-                err=e;
-            }finally{
-                if (conn != null) {
-                                 try { conn.close(); } catch (SQLException e) { ; }
-                                 conn = null;
-                                 if(err!=null){
-                                     throw(err);
-                                 }
+            
+            Connection conn=pool.getConnection();
+  		String query = 
+	    		"select pv.parameter_value_id, "+ 
+			"pv.parameter_group_id, "+
+			"pv.category, "+
+			"decode(value, 'Null', ' ', pv.parameter), "+
+			"decode(value, 'Null', ' ', pv.value), "+
+			"to_char(pv.create_date, 'mm/dd/yyyy hh12:mi AM'), "+
+			"pg.dataset_id, "+
+			"pg.version "+
+			"from parameter_values pv, "+ 
+			"parameter_groups pg "+
+			"where pv.parameter_group_id = ? "+
+			"and pv.parameter_group_id = pg.parameter_group_id "+
+			"order by pv.category, pv.parameter";
+
+        	List<ParameterValue> myParameterValueList = new ArrayList<ParameterValue>();
+
+		//log.info("In getParameterValues");
+		//log.debug("query = "+ query);
+	
+                Results myResults = new Results(query, parameterGroupID, conn);
+                String[] dataRow;
+
+                while ((dataRow = myResults.getNextRow()) != null) {
+                        ParameterValue newParameterValue = setupParameterValue(dataRow);
+                        myParameterValueList.add(newParameterValue);
                 }
-            }
-            return ret;
-        }
+
+		myResults.close();
+
+		ParameterValue[] myParameterValueArray = (ParameterValue[]) myParameterValueList.toArray(new ParameterValue[myParameterValueList.size()]);
+                try{
+                    conn.close();
+                }catch(SQLException e){}
+        	return myParameterValueArray;
+	}
         
 	/**
 	 * Gets the parameters used by parameter group ID.

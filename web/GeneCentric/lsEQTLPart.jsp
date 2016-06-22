@@ -367,6 +367,7 @@
 
  			String hostName=request.getServerName();
 
+
                         if(hostName.equals("phenogen.ucdenver.edu")){
 				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.68/lib:/usr/local/circos-0.68/bin";
 			}
@@ -375,6 +376,7 @@
 			}
 			else{
 				perlEnvironmentVariables += ":/usr/bin/perl5.10:/usr/local/circos-0.68/lib:/usr/local/circos-0.68/bin";
+
 			}
 			log.debug("Host Name "+hostName);
 			String filePrefixWithPath;			

@@ -14,7 +14,7 @@ sub replaceDot{
 sub prepCircosMod
 {
 	# this routine creates configuration and data files for circos
-	my($module,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueString,$hostname,$dsn,$usr,$passwd)=@_;	
+	my($module,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueString,$genomeVer,$hostname,$dsn,$usr,$passwd)=@_;	
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# if probeChromosome is not in chromosomeList then we don't want to create a links file
@@ -53,9 +53,9 @@ sub prepCircosMod
 	createCircosConfFile($confDirectory,$genericConfLocation,$genericConfLocation2,$karyotypeLocation,$organism,$chromosomeListRef,$oneToCreateLinks,$oneToCreateLinks);
 	createCircosIdeogramConfFiles($confDirectory,$organism,$chromosomeListRef);
 	createCircosModGenesTextConfFile($dataDirectory,$confDirectory);
-	createCircosModGenesTextDataFile($module,$tissueString,$dataDirectory,$organism,$dsn,$usr,$passwd);
+	createCircosModGenesTextDataFile($module,$tissueString,$dataDirectory,$organism,$genomeVer,$dsn,$usr,$passwd);
 	createCircosPvaluesConfFile($confDirectory,$dataDirectory,$cutoff,$organism,$tissueString);
-	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$dsn,$usr,$passwd);
+	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$genomeVer,$dsn,$usr,$passwd);
 	createCircosPvaluesDataFiles($dataDirectory,$module,$organism,$eqtlAOHRef,$chromosomeListRef);
 	if($oneToCreateLinks == 1){
 		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissueString,$chromosomeList[0]);	
@@ -212,7 +212,7 @@ sub createCircosModGenesTextConfFile{
 
 sub createCircosModGenesTextDataFile{
 	# Create the circos data file that allows labeling of the genes in the module
-	my ($module,$tissue,$dataDirectory,$organism,$dsn,$usr,$passwd)=@_;	
+	my ($module,$tissue,$dataDirectory,$organism,$genomeVer,$dsn,$usr,$passwd)=@_;	
 	if($debugLevel >= 2){
 		print " In createCircosProbesetTextDataFile \n";
 	}
@@ -227,7 +227,7 @@ sub createCircosModGenesTextDataFile{
 	
 	
 	my $query="select wi.gene_id,c.name,ae.psstart from wgcna_module_info wi, affy_exon_probeset ae, chromosomes c
-			where wi.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.visible=1) 
+			where wi.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.genome_id='$genomeVer' and wd.visible=1) 
 			and wi.module='$module'
 			and ae.probeset_id=wi.probeset_id
 			and ae.psannotation='probeset'
@@ -306,11 +306,11 @@ sub createCircosPvaluesConfFile{
 	$filenameHash{'Liver'}='circosLiverPValues.txt';
 	$filenameHash{'BAT'}='circosBATPValues.txt';	
 	
-        #if($debugLevel >= 2){}
+        if($debugLevel >= 2){
             foreach my $key (keys(%colorHash)){
                     print " key $key $colorHash{$key} \n";
             }
-	#}
+		}
 	my @innerRadiusArray = ('0.85r','0.75r','0.65r','0.55r');
 	my @outerRadiusArray = ('0.85r + 100p','0.75r + 100p','0.65r + 100p','0.55r + 100p');
 
@@ -466,7 +466,7 @@ sub createCircosLinksConfAndData{
 		writeLink($CONFFILEHANDLE,$linkFileName,$linkName,$linkColor,$organism,$numberOfTissues,$i);
 	}
 	close(CONFFILE);
-	print " Finished with createCircosLinksConfAndData \n";
+	#print " Finished with createCircosLinksConfAndData \n";
 }
 
 

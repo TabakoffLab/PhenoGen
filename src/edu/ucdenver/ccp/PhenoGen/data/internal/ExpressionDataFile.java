@@ -27,8 +27,8 @@ public class ExpressionDataFile extends DataFile {
 		log = Logger.getRootLogger();
 	}
 
-	public ExpressionDataFile(String type, String fileName) {
-		super(type, fileName);
+	public ExpressionDataFile(String type, String fileName,String genomeVer) {
+		super(type, fileName,"",genomeVer);
 		log = Logger.getRootLogger();
 	}
 

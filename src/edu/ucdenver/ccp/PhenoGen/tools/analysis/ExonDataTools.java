@@ -9,6 +9,7 @@ import edu.ucdenver.ccp.PhenoGen.driver.PerlHandler;
 import edu.ucdenver.ccp.PhenoGen.driver.PerlException;
 import edu.ucdenver.ccp.PhenoGen.driver.ExecHandler;
 import edu.ucdenver.ccp.PhenoGen.driver.ExecException;
+import edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools;
 import edu.ucdenver.ccp.util.FileHandler;
 import edu.ucdenver.ccp.util.ObjectHandler;
 
@@ -26,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class ExonDataTools {
@@ -51,6 +53,7 @@ public class ExonDataTools {
     private String bedDir="";
     private String dbPropertiesFile="";
     private String ensemblDBPropertiesFile="";
+    private String genomeVer="";
 
     public ExonDataTools() {
         log = Logger.getRootLogger();
@@ -67,6 +70,7 @@ public class ExonDataTools {
     public void getExonHeatMapData(String ensemblIDList,
             String H5File, String version,
             String organism,
+            String genomeVer,
             String datasetName) {
         
         //Setup a String in the format YYYYMMDDHHMM to append to the folder
@@ -83,7 +87,7 @@ public class ExonDataTools {
         
         if(ensemblID1!=null){
             //Define output directory
-            String outputDir = fullPath + "tmpData/" + userLoggedIn.getUser_name() + "/" + ensemblID1 + "_" + formattedDate + "/";
+            String outputDir = fullPath + "tmpData/" + userLoggedIn.getUser_name() + "/"+genomeVer+"/" + ensemblID1 + "_" + formattedDate + "/";
             String folderName = ensemblID1 + "_" + formattedDate;
             String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
             publicPath = publicPath.substring(0, publicPath.indexOf("/Affy.NormVer.h5"));
@@ -95,7 +99,8 @@ public class ExonDataTools {
                     + "where User_ID =" + userLoggedIn.getUser_id()
                     + "and ensembl_id like '" + ensemblIDList + "'"
                     + "and public_Path_Dataset like '" + publicPath + "'"
-                    + "and organism like '" + organism + "' order by Created_ON DESC";
+                    + "and organism like '" + organism +"' "
+                    + "and genome_id='"+genomeVer+"' order by Created_ON DESC";
             try {
                 PreparedStatement ps = dbConn.prepareStatement(tmpq);
                 ResultSet rs = ps.executeQuery();
@@ -110,19 +115,19 @@ public class ExonDataTools {
                             //TODO delete files too
                         }*/
                         //log.debug("Results are older than 1 week generating new");
-                        generateFiles(outputDir,organism,rOutputPath,H5File,version,ensemblIDList,folderName,publicPath,datasetName);
+                        generateFiles(outputDir,organism,genomeVer,rOutputPath,H5File,version,ensemblIDList,folderName,publicPath,datasetName);
                     }else{
                         //log.debug("Results are current using existing.");
                         String folder = rs.getString("Folder_Name");
-                        String xmlWebAccess = urlPrefix + "tmpData/" + userLoggedIn.getUser_name() + "/" + folder + "/Gene.xml";
-                        String rWebAccess = urlPrefix + "tmpData/" + userLoggedIn.getUser_name() + "/" + folder + "/HeatMap.csv";
+                        String xmlWebAccess = urlPrefix + "tmpData/" + userLoggedIn.getUser_name() + "/" + genomeVer + "/" + folder + "/Gene.xml";
+                        String rWebAccess = urlPrefix + "tmpData/" + userLoggedIn.getUser_name() + "/" + genomeVer + "/" + folder + "/HeatMap.csv";
 
                         session.setAttribute("exonCorGeneFile", xmlWebAccess);
                         session.setAttribute("exonCorHeatFile", rWebAccess);
                     }
                 } else {//create files
                     //log.debug("No files exist, generating files.");
-                    generateFiles(outputDir,organism,rOutputPath,H5File,version,ensemblIDList,folderName,publicPath,datasetName);
+                    generateFiles(outputDir,organism,genomeVer,rOutputPath,H5File,version,ensemblIDList,folderName,publicPath,datasetName);
                 }
                 rs.close();
             } catch (SQLException e) {
@@ -148,16 +153,9 @@ public class ExonDataTools {
         }
     }
 
-    public boolean generateFiles(String outputDir,String organism,String rOutputPath,String h5File,String version, String ensemblIDList,String folderName,String publicPath,String datasetName) {
+    public boolean generateFiles(String outputDir,String organism,String genomeVer ,String rOutputPath,String h5File,String version, String ensemblIDList,String folderName,String publicPath,String datasetName) {
         //log.debug("generate files");
         boolean completedSuccessfully = false;
-        //create call to perl to get Gene/Transcript/Probe Data
-        // perl writeXML.createXML(outputFilePath,  // ex >/Users/smahaffey/EnsemblePerl/output.xml
-        // PSoutputFilePath,  //ex. >/Users/smahaffy/EnsemblPerl/PSoutput.txt
-        // organism, //ex. Rat
-        //  'core',  //I'm not sure exactly what this means need to clarify with Laura C.
-        // EnsemblID)//The ensembl ID for the gene of interest
-        //log.debug("before check path exists");
         File outDirF = new File(outputDir);
         //Mkdir if some are missing    
         if (!outDirF.exists()) {
@@ -207,32 +205,35 @@ public class ExonDataTools {
             String ensUser=myENSProperties.getProperty("USER");
             String ensPassword=myENSProperties.getProperty("PASSWORD");
         
+        GeneDataTools gdt=new GeneDataTools();
+        gdt.setSession(session);
+        HashMap<String,String> source=gdt.getGenomeVersionSource(genomeVer);
+        String ensemblPath=source.get("ensembl");
+        String geneXML=outputDir + "Gene.xml";
         //construct perl Args
-        String[] perlArgs = new String[19];
+        String[] perlArgs = new String[17];
         perlArgs[0] = "perl";
         perlArgs[1] = perlDir + "writeXML.pl";
-        perlArgs[2] = ucscDir;
-        perlArgs[3] = outputDir;
-        perlArgs[4] = outputDir + "Gene.xml";
+        perlArgs[2] = geneXML;
         rOutputPath = outputDir + "HeatMap.csv";
         if (organism.equals("Rn")) {
-            perlArgs[5] = "Rat";
+            perlArgs[3] = "Rat";
         } else if (organism.equals("Mm")) {
-            perlArgs[5] = "Mouse";
+            perlArgs[3] = "Mouse";
         }
-        perlArgs[6] = "Core";
-        perlArgs[7] = ensemblIDList;
-        perlArgs[8] = userLoggedIn.getUser_name();
-        perlArgs[9] = bedDir;
-        perlArgs[10] = Integer.toString(dsID);
-        perlArgs[11] = Integer.toString(arrayTypeID);
-        perlArgs[12]=dsn;
-        perlArgs[13]=dbUser;
-        perlArgs[14]=dbPassword;
-        perlArgs[15]=ensHost;
-        perlArgs[16]=ensPort;
-        perlArgs[17]=ensUser;
-        perlArgs[18]=ensPassword;
+        perlArgs[4] = "Core";
+        perlArgs[5] = ensemblIDList;
+        perlArgs[6] = userLoggedIn.getUser_name();
+        perlArgs[7] = Integer.toString(dsID);
+        perlArgs[8] = Integer.toString(arrayTypeID);
+        perlArgs[9] = genomeVer;
+        perlArgs[10]=dsn;
+        perlArgs[11]=dbUser;
+        perlArgs[12]=dbPassword;
+        perlArgs[13]=ensHost;
+        perlArgs[14]=ensPort;
+        perlArgs[15]=ensUser;
+        perlArgs[16]=ensPassword;
         
         //print Perl Args
         /*for (int i = 0; i < perlArgs.length; i++) {
@@ -244,16 +245,15 @@ public class ExonDataTools {
         String[] envVar=perlEnvVar.split(",");
         
         for (int i = 0; i < envVar.length; i++) {
-            log.debug(i + " EnvVar::" + envVar[i]);
-            /*if(envVar[i].startsWith("PERL5LIB")&&organism.equals("Mm")){
-                    envVar[i]=envVar[i].replaceAll("ensembl_ucsc", "ensembl_ucsc_old");
-            }*/
-            
-        }
+                if(envVar[i].contains("/ensembl")){
+                    envVar[i]=envVar[i].replaceAll("/ensembl", "/"+ensemblPath);
+                }
+                log.debug(i + " EnvVar::" + envVar[i]);
+            }
 
 
         //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-        myExec_session = new ExecHandler(perlDir, perlArgs, envVar, fullPath + "tmpData/" + userLoggedIn.getUser_name() + "/");
+        myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir);
 
         try {
 
@@ -306,15 +306,15 @@ public class ExonDataTools {
 
             //construct call to R
             String[] rArgs = new String[5];
-            rArgs[0] = h5File;
-            rArgs[1] = "'" + version+ "'";
-            rArgs[2] = sampleFile+ "'";
-            rArgs[3] = "'" + perlArgs[4] + "'";
-            rArgs[4] = "'" + rOutputPath + "'";
+            rArgs[0] = "InputFile="+h5File;
+            rArgs[1] = "Version='" + version+ "'";
+            rArgs[2] = "SampleFile="+sampleFile+ "'";
+            rArgs[3] = "XMLFileName='" + geneXML + "'";
+            rArgs[4] = "plotFileName='" + rOutputPath + "'";
 
             try {
                 //Call R
-                if ((rErrorMsg = myR_session.callR(this.rFunctDir, "Affymetrix.Exon.HeatMap", rArgs, fullPath + "tmpData/" + userLoggedIn.getUser_name() + "/", -99)) != null) {
+                if ((rErrorMsg = myR_session.callR(this.rFunctDir, "Affymetrix.Exon.HeatMap", rArgs, outputDir, -99)) != null) {
                     String errorMsg = new ObjectHandler().getAsSeparatedString(rErrorMsg, "<BR>");
                     log.debug("after R call for ExonHeatMap, got errorMsg. It is " + errorMsg);
                     throw new RException(errorMsg);
@@ -338,16 +338,16 @@ public class ExonDataTools {
             if (completedSuccessfully) {
                 //Define the website address for outputfiles.
                 //TODO Find a way to import begining URL string from a File.
-                String xmlWebAccess = urlPrefix + "tmpData/" + userLoggedIn.getUser_name() + "/" + folderName + "/Gene.xml";
-                String rWebAccess = urlPrefix + "tmpData/" + userLoggedIn.getUser_name() + "/" + folderName + "/HeatMap.csv";
+                String xmlWebAccess = urlPrefix + "tmpData/" + userLoggedIn.getUser_name()+ "/"+genomeVer + "/" + folderName + "/Gene.xml";
+                String rWebAccess = urlPrefix + "tmpData/" + userLoggedIn.getUser_name()+ "/"+genomeVer + "/" + folderName + "/HeatMap.csv";
                 //Save Analysis to DB for later review
                 try {
                     String insertQuery =
                             "insert into GEN_EXON_HEATMAPS "
                             + "(User_ID,Ensembl_ID,Folder_Name,"
-                            + "Created_On,Public_Path_Dataset,Organism"
+                            + "Created_On,Public_Path_Dataset,Organism,Genome_id"
                             + ") VALUES "
-                            + "(?, ?, ?, ?, ?, ?)";
+                            + "(?, ?, ?, ?, ?, ?,?)";
                     PreparedStatement pstmt = dbConn.prepareStatement(insertQuery,
                             ResultSet.TYPE_SCROLL_INSENSITIVE,
                             ResultSet.CONCUR_UPDATABLE);
@@ -358,6 +358,7 @@ public class ExonDataTools {
                     pstmt.setTimestamp(4, now);
                     pstmt.setString(5, publicPath);
                     pstmt.setString(6, organism);
+                    pstmt.setString(7, genomeVer);
                     pstmt.executeUpdate();
                     pstmt.close();
                     dbConn.commit();

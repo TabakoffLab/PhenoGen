@@ -104,7 +104,7 @@ public class AsyncParallelAffyPowerTools implements Runnable {
 			String mousePrefix = "Mo";
 			String ratPrefix = "Ra";
 			String filePrefix = (mouse ? mousePrefix : ratPrefix) + "Ex-1_0-st-v1.r2.";
-			String version = (mouse ? "mm8." : "rn5."); 
+			String version = (mouse ? "mm10." : "rn6."); 
 			String masked = (probeMask.equals("T") ? "MASKED." : ""); 
 
                 	String probeSetFile = aptDir + filePrefix + masked + "pgf";

@@ -45,8 +45,12 @@
 			<thead>
 			<tr class="col_title">
         			<th class="noSort"></th>
+                                <%if(type.equals("rnaseq") || type.equals("expression")|| type.equals("mask")
+                                        || type.equals("heritability")){%>
+                                    <th class="noSort">Genome Version</th>
+                                <%}%>
 				<th class="noSort">File Type</th>
-                <th class="noSort">File Name</th>
+                                <th class="noSort">File Name</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -59,6 +63,10 @@
 						<a href="downloadLink.jsp?url=<%=dataFile.getFileName()%>" target="_blank" > <img src="../images/icons/download_g.png" /></a>
 					</center>
 					</td>  
+                                        <%if(type.equals("rnaseq") || type.equals("expression")|| type.equals("mask")
+                                                 || type.equals("heritability")){%>
+                                        <TD><%=dataFile.getGenome()%></TD>
+                                        <%}%>
 					<td><%=dataFile.getType()%></td>
                     <td><%=dataFile.getFileName().substring(dataFile.getFileName().lastIndexOf("/")+1)%></td>
 					</tr> 

@@ -7,7 +7,7 @@ use Math::Round;
 
 
 sub createQTLXMLTrack{
-	my($qtlHOHRef, $outputFile,$trackDB,$chr) = @_; 
+	my($qtlHOHRef, $outputFile,$chr) = @_; 
 	my %qtlHOH = %$qtlHOHRef;
 	open OFILE, '>'.$outputFile or die " Could not open two track file $outputFile for writing $!\n\n";
 	my $xml = new XML::Simple (RootName=>'QTLList');
@@ -19,7 +19,7 @@ sub createQTLXMLTrack{
 
 
 sub createSNPXMLTrack{
-	my($snpHOHRef, $outputDir, $trackDB) = @_; 
+	my($snpHOHRef, $outputDir) = @_; 
 	# Dereference the hash and array
 	my %snpHOH = %$snpHOHRef;
 	
@@ -32,19 +32,19 @@ sub createSNPXMLTrack{
 	#	@snpList=();
 	#	print "EMPTY SNP LIST\n";
 	#};
-	if(!(defined $snpHOH{"BNLX"}) and ($trackDB eq "rn5")){
+	if(!(defined $snpHOH{"BNLX"}) ){
 		push(@snpStrainList,"BNLX");
 		$snpHOH{"BNLX"}={};
 	}
-	if(!(defined $snpHOH{"SHRH"}) and ($trackDB eq "rn5")){
+	if(!(defined $snpHOH{"SHRH"}) ){
 		push(@snpStrainList,"SHRH");
 		$snpHOH{"SHRH"}={};
 	}
-	if(!(defined $snpHOH{"SHRJ"}) and ($trackDB eq "rn5")){
+	if(!(defined $snpHOH{"SHRJ"}) ){
 		push(@snpStrainList,"SHRJ");
 		$snpHOH{"SHRJ"}={};
 	}
-	if(!(defined $snpHOH{"F344"}) and ($trackDB eq "rn5")){
+	if(!(defined $snpHOH{"F344"})){
 		push(@snpStrainList,"F344");
 		$snpHOH{"F344"}={};
 	}
@@ -64,7 +64,7 @@ sub createSNPXMLTrack{
 
 
 sub createProteinCodingXMLTrack{
-	my($GeneHOHRef, $outputFile, $trackDB, $proteinCoding) = @_; 
+	my($GeneHOHRef, $outputFile, $proteinCoding) = @_; 
 	# Dereference the hash and array
 	my %GeneHOH = %$GeneHOHRef;
 	my $geneListRef=$GeneHOH{Gene};
@@ -102,7 +102,7 @@ sub createProteinCodingXMLTrack{
 
 
 sub createSmallNonCodingXML{
-	my($smncHOHRef,$geneHOHRef, $combinedoutputFile,$smncoutputFile,$ensoutputFile,$trackDB,$chr) = @_; 
+	my($smncHOHRef,$geneHOHRef, $combinedoutputFile,$smncoutputFile,$ensoutputFile,$chr) = @_; 
 	my %smncHOH = %$smncHOHRef;
 	my %geneHOH=%$geneHOHRef;
 	
