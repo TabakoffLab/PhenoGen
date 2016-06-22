@@ -34,6 +34,7 @@ public class BrowserTrack{
     private String originalFile="";
     private String type="";
     private Timestamp ts=null;
+    private String gV="";
     
     public BrowserTrack(){
     }
@@ -41,7 +42,7 @@ public class BrowserTrack{
     public BrowserTrack(int id, int userid,  String trackclass, 
                 String trackname, String description, String organism,String settings, int order,
                 String genCat,String category,String controls,Boolean vis,String location,
-                String fileName,String fileType,Timestamp ts){
+                String fileName,String fileType,Timestamp ts,String genomeVer){
         this.ts = null;
         this.id=id;
         this.userid=userid;
@@ -59,14 +60,19 @@ public class BrowserTrack{
         this.ts=ts;
         this.originalFile=fileName;
         this.type=fileType;
+        this.gV=genomeVer;
     }
 
     public ArrayList<BrowserTrack> getBrowserTracks(int userid,String genomeVer,DataSource pool){
         Logger log=Logger.getRootLogger();
         ArrayList<BrowserTrack> ret=new ArrayList<BrowserTrack>();
         
-        String query="select bt.* from BROWSER_TRACKS bt, BROWSER_GV2TRACK gbt "+
-                        "where gbt.genome_id= '"+genomeVer+"' and gbt.TRACKID=bt.TRACKID "+
+        String query="select bt.*,gbt.genome_id from BROWSER_TRACKS bt, BROWSER_GV2TRACK gbt "+
+                        "where ";
+            if(!genomeVer.equals("all")){
+                query=query+" gbt.genome_id= '"+genomeVer+"' and ";
+            }
+            query=query+" gbt.TRACKID=bt.TRACKID "+
                         "and bt.user_id="+userid+" and bt.visible=1";
             Connection conn=null;
             PreparedStatement ps=null;
@@ -90,7 +96,8 @@ public class BrowserTrack{
                     Timestamp t=rs.getTimestamp(12);
                     String file=rs.getString(13);
                     String type=rs.getString(14);
-                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,"",0,genCat,cat,controls,vis,location,file,type,t);
+                    String gV=rs.getString(15);
+                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,"",0,genCat,cat,controls,vis,location,file,type,t,gV);
                     ret.add(tmpBT);
                 }
                 
@@ -148,7 +155,7 @@ public class BrowserTrack{
                     Timestamp t=rs.getTimestamp(12);
                     String file=rs.getString(13);
                     String type=rs.getString(14);
-                    ret=new BrowserTrack(tid,uid,tclass,name,desc,org,"",0,genCat,cat,controls,vis,location,file,type,t);
+                    ret=new BrowserTrack(tid,uid,tclass,name,desc,org,"",0,genCat,cat,controls,vis,location,file,type,t,"");
                 }
                 
                 ps.close();

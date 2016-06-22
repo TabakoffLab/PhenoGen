@@ -308,7 +308,7 @@ function ViewMenu(level){
 		$.ajax({
 				url: tmpContext+"getBrowserViews.jsp",
    				type: 'GET',
-				data: {genomeVer: genomeVer  },
+				data: {genomeVer: genomeVer },
 				dataType: 'json',
                 success: function(d){ 
                     that.viewList=[];

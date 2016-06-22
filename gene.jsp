@@ -112,7 +112,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 	String selectedEnsemblID="";
 	String regionError="";
         String genomeVer="mm10";
-        String defaultGenomeVer="mm10,rn6";
+        String defaultGenomeVer="mm10";
 	
 	Set iDecoderAnswer;
 	
@@ -134,10 +134,12 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 			panel="BNLX/SHRH";
 			fullOrg="Rattus_norvegicus";
                         genomeVer="rn6";
+                        defaultGenomeVer="rn6";
 		}else if(myOrganism.equals("Mm")){
 			panel="ILS/ISS";
 			fullOrg="Mus_musculus";
                         genomeVer="mm10";
+                        defaultGenomeVer="mm10";
 		}else{
                     organismError=true;
                 }
@@ -148,7 +150,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
             log.debug("******\nreading Genome Ver:"+genomeVer);
         }
         if(genomeVer.equals("rn6")){
-            defView="12";
+            defView="13";
         }
         log.debug("*****\ncurGenome:"+genomeVer);
         ArrayList<BrowserView> views=bt.getBrowserViews(genomeVer);
@@ -640,10 +642,11 @@ Or
 		if(pathPrefix==""){
 			tmpContext="";
 		}
-                submitVer="mm10,rn6";
+                
+                /*submitVer="mm10,rn6";
                 if(genomeVer==='rn5'){
                     submitVer="mm10,rn5";
-                }
+                }*/
                 /*var submitVer=genomeVer;
                 if(submitVer==''){
                     submitVer=defaultGenomeVer;
@@ -651,7 +654,7 @@ Or
 		$.ajax({
 				url: tmpContext+"getBrowserViews.jsp",
    				type: 'GET',
-				data: {genomeVer: submitVer  },
+				data: {genomeVer: genomeVer  },
 				dataType: 'json',
                                 success: function(data2){ 
                                     defviewList=data2;
@@ -788,9 +791,38 @@ Or
                 
 	}
         
+        function changeGenome(gVer,curView){
+            genomeVer=gVer;
+            $('input#genomeVer').val(gVer);
+            getMainViewData(0);
+            d3.select("#defaultView").html("");
+            filterViewList=[];
+            var newViewID=-1;
+            for(var i=0;i<defviewList.length;i++){
+                    console.log(defviewList[i].ViewID+"  "+defviewList[i].genomeVersion+":"+genomeVer);
+                    if(defviewList[i].Organism.toLowerCase()==="aa"||defviewList[i].Organism.toLowerCase()===$('#speciesCB').val().toLowerCase()
+                        ){
+                            filterViewList.push(defviewList[i]);
+                            if(typeof curView!=='undefined' && typeof curView.Name!=='undefined' && curView.Name===defviewList[i].Name){
+                                newViewID=defviewList[i].ViewID;
+                            }
+                    }
+            }
+            if(newViewID>0){
+                $("#defaultView").val(newViewID);
+            }else{
+                if(genomeVer==="rn5"|| genomeVer==="mm10"){
+                      $("#defaultView").val(3);
+                }else if(genomeVer==="rn6"){
+                     $("#defaultView").val(13);
+                 }
+            }
+        }
+        
         function updateDefaultView(gVer,curView){
             $('input#genomeVer').val(gVer);
             genomeVer=gVer;
+            getMainViewData(0);
             d3.select("#defaultView").html("");
             filterViewList=[];
             var newViewID=-1;
@@ -835,7 +867,14 @@ Or
         }
 
 	
-	$("#speciesCB").on("change",setupDefaultView);
+	$("#speciesCB").on("change",function(){
+            var tmp=$("#speciesCB").val();
+            var specStoredGenomeVer=checkStoredGenomeVersion(tmp);
+            $('input#genomeVer').val(specStoredGenomeVer);
+            genomeVer=specStoredGenomeVer;
+            getMainViewData(1);
+            //setupDefaultView();
+        });
 	
 </script>
 
