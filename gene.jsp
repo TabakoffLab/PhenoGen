@@ -25,7 +25,7 @@
 String myGene="";
 String section="";
 String myDisplayGene="";
-String defView="2";
+String defView="3";
 boolean scriptError=false;
 boolean organismError=false;
 boolean popup=false;

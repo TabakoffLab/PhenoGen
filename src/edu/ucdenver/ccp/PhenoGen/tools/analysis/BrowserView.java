@@ -54,12 +54,12 @@ public class BrowserView{
                         "where bv.user_id="+userid;
         if(genomeVer.indexOf(",")>-1){
             String[] genomes=genomeVer.split(",");
-            queryP2=queryP2+" ( gbv.genome_id = '"+genomes[0]+"' or "+
+            queryP2=queryP2+" and ( gbv.genome_id = '"+genomes[0]+"' or "+
                         " gbv.genome_id = '"+genomes[1]+"' ) "+
                         " and gbv.BVID=bv.BVID"+
                         " and bv.visible=1";
         }else{
-            queryP2=queryP2+" gbv.genome_id = '"+genomeVer+"' "+
+            queryP2=queryP2+" and gbv.genome_id = '"+genomeVer+"' "+
                         " and gbv.BVID=bv.BVID"+
                         " and bv.visible=1";
         }
