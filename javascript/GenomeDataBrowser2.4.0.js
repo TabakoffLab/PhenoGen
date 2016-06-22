@@ -74,7 +74,9 @@ ratOnly.heartilluminaTotalPlus=1;
 ratOnly.heartilluminaTotalMinus=1;
 ratOnly.probe=1;
 
-
+if(genomeVer==="rn5"){
+	mouseOnly.brainTotal=1;
+}
 mouseOnly.brainilluminaTotalPlus=1;
 mouseOnly.brainilluminaTotalMinus=1;
 mouseOnly.brainspliceJnct=1;
@@ -2916,7 +2918,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
                     $.cookie(organism+"DefGenomeVer",$(this).val());
 
       			}
-      			updateDefaultView($(this).val(),that.currentView);
+      			changeGenome($(this).val(),that.currentView);
       			setTimeout(function(){
       				console.log("submit genomeVer"+$('input#genomeVer').attr("value"));
       				$('form#geneCentricForm').submit();

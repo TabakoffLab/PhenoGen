@@ -52,17 +52,17 @@ public class BrowserView{
         String query="select bv.*,gbv.genome_id ";
         String queryP2="from BROWSER_VIEWS bv, BROWSER_GV2VIEW gbv "+
                         "where bv.user_id="+userid;
-        if(genomeVer.indexOf(",")>-1){
+        /*if(genomeVer.indexOf(",")>-1){
             String[] genomes=genomeVer.split(",");
             queryP2=queryP2+" and ( gbv.genome_id = '"+genomes[0]+"' or "+
                         " gbv.genome_id = '"+genomes[1]+"' ) "+
                         " and gbv.BVID=bv.BVID"+
                         " and bv.visible=1";
-        }else{
+        }else{*/
             queryP2=queryP2+" and gbv.genome_id = '"+genomeVer+"' "+
                         " and gbv.BVID=bv.BVID"+
                         " and bv.visible=1";
-        }
+        //}
         /*queryP2=queryP2+" and gbv.BVID=bv.BVID"+
                         " and bv.visible=1";*/
         query=query+queryP2+" order by bv.bvid";
@@ -124,7 +124,7 @@ public class BrowserView{
                     String type=rs.getString(15);
                     String sett=rs.getString(16);
                     int order=rs.getInt(17);
-                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls,vis,location,file,type,ts);
+                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls,vis,location,file,type,ts,genomeVer);
                     if(hm.containsKey(bvid)){
                         hm.get(bvid).addTrack(tmpBT);
                     }
@@ -205,7 +205,7 @@ public class BrowserView{
                     String type=rs.getString(15);
                     String sett=rs.getString(16);
                     int order=rs.getInt(17);
-                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls,vis,location,file,type,ts);
+                    BrowserTrack tmpBT=new BrowserTrack(tid,uid,tclass,name,desc,org,sett,order,genCat,cat,controls,vis,location,file,type,ts,bvGenomeVer);
                     ret.addTrack(tmpBT);
                 }
                 ps.close();
