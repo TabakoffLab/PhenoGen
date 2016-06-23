@@ -28,7 +28,8 @@
 	Resource[] myRNASeqResources = myResource.getRNASeqResources();
 	Resource[] myDNASeqResources = myResource.getDNASeqResources();
 	Resource[] myGenotypeResources = myResource.getGenotypingResources();
-        Resource[] myPublicationResources= myResource.getPublicationResources();
+        Resource[] myPublicationResources1 = myResource.getPublicationResources1();
+        Resource[] myPublicationResources2 = myResource.getPublicationResources2();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
 	ArrayList checkedList = new ArrayList();
@@ -315,6 +316,30 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		enctype="application/x-www-form-urlencoded"
 		name="resources">                        
 
+            
+        <div class="title">Data Files used in "Uncovering the liver's role in immunity through RNA co-expression networks."<BR>(Harrall et. al. 2016)
+               </div>
+		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
+                        <thead>
+                            <tr class="col_title">
+					<th>Data</th>
+                                        <TH>Files</TH>
+                            </tr>
+			</thead>
+			<tbody>
+			<% for (Resource resource: myPublicationResources2) { %> 
+				<tr id="<%=resource.getID()%>">  
+                                    
+                                    <TD><%=resource.getDescription()%></TD>
+                                    <td class="actionIcons">
+						<div class="linkedImg download" type="pub"><div>
+                                    </td>
+				</tr> 
+			<% } %>
+			</tbody>
+		</table>
+                        <BR><BR>    
+            
         <div class="title">Data Files used in "The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption"<BR>(Saba et. al. 2015, FEBS)
                 <a href="http://onlinelibrary.wiley.com/doi/10.1111/febs.13358/abstract">Abstract</a></div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
@@ -326,7 +351,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                             </tr>
 			</thead>
 			<tbody>
-			<% for (Resource resource: myPublicationResources) { %> 
+			<% for (Resource resource: myPublicationResources1) { %> 
 				<tr id="<%=resource.getID()%>">  
                                     <TD><%=resource.getPanel()%></TD>
                                     <TD><%=resource.getDescription()%></TD>
