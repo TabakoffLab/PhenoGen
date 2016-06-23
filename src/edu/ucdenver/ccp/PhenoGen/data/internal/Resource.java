@@ -966,12 +966,12 @@ public class Resource {
 		List<Resource> resourceList = new ArrayList<Resource>();
                 
                 SAMDataFile[] bnlxFileList = new SAMDataFile[2];
-                bnlxFileList[0]=new SAMDataFile("BNLX Genome Fasta File",seqFilePath+"BNLX_rn6_Genome.fa.zip","Rn6");
+                bnlxFileList[0]=new SAMDataFile("BNLX Genome Fasta File",seqFilePath+"BNLx.rn6.Genome.fa.zip","Rn6");
                 bnlxFileList[1]=new SAMDataFile("BNLX Genome Fasta File",seqFilePath+"BNLX_rn5_Genome.fa.zip","Rn5");
                 resourceList.add(new Resource(60, "Rat", "BN-Lx/CubPrin","Illumina HiSeq2000", bnlxFileList, "Rn6, Rn5" ));
         	
                 SAMDataFile[] shrhFileList = new SAMDataFile[2];
-                shrhFileList[0]=new SAMDataFile("SHRH Genome Fasta File",seqFilePath+"SHRH_rn6_Genome.fa.zip","Rn6");
+                shrhFileList[0]=new SAMDataFile("SHRH Genome Fasta File",seqFilePath+"SHRH.rn6.Genome.fa.zip","Rn6");
                 shrhFileList[1]=new SAMDataFile("SHRH Genome Fasta File",seqFilePath+"SHRH_rn5_Genome.fa.zip","Rn5");
                 resourceList.add(new Resource(61, "Rat", "SHR/OlaIpcvPrin","Illumina HiSeq2000", shrhFileList, "Rn6, Rn5" ));
                 
