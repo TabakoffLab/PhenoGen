@@ -832,7 +832,7 @@ public class GeneDataTools {
     }
     
     
-    private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID){
+    private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer){
         if(chr.toLowerCase().startsWith("chr")){
             chr=chr.substring(3);
         }
@@ -860,7 +860,7 @@ public class GeneDataTools {
                             "and s.psannotation like 'transcript' " +
                             "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = " + arrayTypeID +
-                            " and exists(select l.probe_id from location_specific_eqtl l where s.probeset_id = l.probe_id)";
+                            " and s.PROBESET_ID in (select l.probe_id from location_specific_eqtl l,snps sn where sn.genome_id='"+genomeVer+"' and l.snp_id=sn.snp_id)";
         
         log.debug("PSLEVEL SQL:"+probeQuery);
         log.debug("Transcript Level SQL:"+probeTransQuery);
@@ -2586,59 +2586,63 @@ public class GeneDataTools {
         return ret;
     }
     
-    public ArrayList<EQTL> getProbeEQTLs(int min,int max,String chr,int arrayTypeID,ArrayList<String> tissues){
+    public ArrayList<EQTL> getProbeEQTLs(int min,int max,String chr,int arrayTypeID,ArrayList<String> tissues,String genomeVer){
         ArrayList<EQTL> eqtls=new ArrayList<EQTL>();
-        if(chr.startsWith("chr")){
-            chr=chr.substring(3);
-        }
-        //HashMap probesets=new HashMap();
-        String qtlQuery="select eq.identifier,eq.lod_score,eq.p_value,eq.fdr,eq.marker,eq.marker_chromosome,eq.marker_mb,eq.lower_limit,eq.upper_limit,eq.tissue "+
-                          "from Chromosomes c, Affy_Exon_ProbeSet s "+
-                          "left outer join expression_qtls eq on eq.identifier = TO_CHAR (s.probeset_id) "+
-                          "where s.chromosome_id = c.chromosome_id "+
-                          //"and substr(c.name,1,2) = '"+chr+"'"+
-                          "and c.name = '"+chr.toUpperCase()+"'"+
-                          "and ((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
-                          "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
-                          "and s.psannotation <> 'transcript' " +
-                          "and s.Array_TYPE_ID = "+arrayTypeID+" "+
-                          "and eq.lod_score>2.5 "+
-                          "order by eq.identifier";
-        Connection conn=null;
-        try{
-            log.debug("SQL\n"+qtlQuery);
-            conn=pool.getConnection();
-            PreparedStatement ps = conn.prepareStatement(qtlQuery);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()){
-                String psID=rs.getString(1);
-                double lod=rs.getDouble(2);
-                double pval=rs.getDouble(3);
-                double fdr=rs.getDouble(4);
-                String marker=rs.getString(5);
-                String marker_chr=rs.getString(6);
-                double marker_loc=rs.getDouble(7);
-                double lower=rs.getDouble(8);
-                double upper=rs.getDouble(9);
-                String tissue=rs.getString(10);
-                EQTL eqtl=new EQTL(psID,marker,marker_chr,marker_loc,tissue,lod,pval,fdr,lower,upper);
-                eqtls.add(eqtl);
-                if(!tissues.contains(tissue)){
-                    tissues.add(tissue);;
+        if(genomeVer.equals("rn5")||genomeVer.equals("mm10") ){
+            if(chr.startsWith("chr")){
+                chr=chr.substring(3);
+            }
+            //HashMap probesets=new HashMap();
+            String qtlQuery="select eq.identifier,eq.lod_score,eq.p_value,eq.fdr,eq.marker,eq.marker_chromosome,eq.marker_mb,eq.lower_limit,eq.upper_limit,eq.tissue "+
+                              "from Chromosomes c, Affy_Exon_ProbeSet s "+
+                              "left outer join expression_qtls eq on eq.identifier = TO_CHAR (s.probeset_id) "+
+                              "where s.chromosome_id = c.chromosome_id "+
+                              //"and substr(c.name,1,2) = '"+chr+"'"+
+                              "and c.name = '"+chr.toUpperCase()+"'"+
+                              "and ((s.psstart >= "+min+" and s.psstart <="+max+") OR "+
+                              "(s.psstop >= "+min+" and s.psstop <= "+max+")) "+
+                              "and s.psannotation <> 'transcript' " +
+                              "and s.Array_TYPE_ID = "+arrayTypeID+" "+
+                              "and eq.lod_score>2.5 "+
+                              "order by eq.identifier";
+            Connection conn=null;
+            try{
+                log.debug("SQL\n"+qtlQuery);
+                conn=pool.getConnection();
+                PreparedStatement ps = conn.prepareStatement(qtlQuery);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next()){
+                    String psID=rs.getString(1);
+                    double lod=rs.getDouble(2);
+                    double pval=rs.getDouble(3);
+                    double fdr=rs.getDouble(4);
+                    String marker=rs.getString(5);
+                    String marker_chr=rs.getString(6);
+                    double marker_loc=rs.getDouble(7);
+                    double lower=rs.getDouble(8);
+                    double upper=rs.getDouble(9);
+                    String tissue=rs.getString(10);
+                    EQTL eqtl=new EQTL(psID,marker,marker_chr,marker_loc,tissue,lod,pval,fdr,lower,upper);
+                    eqtls.add(eqtl);
+                    if(!tissues.contains(tissue)){
+                        tissues.add(tissue);;
+                    }
+                }
+                ps.close();
+                conn.close();
+                //log.debug("EQTL size:"+eqtls.size());
+                //log.debug("Tissue Size:"+tissues.size());
+            }catch(SQLException e){
+                log.error("Error retreiving EQTLs.",e);
+            }finally{
+                try {
+                        if(conn!=null)
+                            conn.close();
+                } catch (SQLException ex) {
                 }
             }
-            ps.close();
-            conn.close();
-            //log.debug("EQTL size:"+eqtls.size());
-            //log.debug("Tissue Size:"+tissues.size());
-        }catch(SQLException e){
-            log.error("Error retreiving EQTLs.",e);
-        }finally{
-            try {
-                    if(conn!=null)
-                        conn.close();
-            } catch (SQLException ex) {
-            }
+        }else{
+            
         }
         return eqtls;
     }

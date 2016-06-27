@@ -215,7 +215,7 @@ public class AsyncGeneDataTools extends Thread {
                             "and s.psannotation like 'transcript' " +
                             "and s.updatedlocation = 'Y' "+
                             "and s.Array_TYPE_ID = " + arrayTypeID +
-                            " and exists(select l.probe_id from location_specific_eqtl l,snps s where s.genome_id='"+genomeVer+"' and l.snp_id=s.snp_id)";
+                            " and s.PROBESET_ID in (select l.probe_id from location_specific_eqtl l,snps sn where sn.genome_id='"+genomeVer+"' and l.snp_id=sn.snp_id)";
         
         log.debug("PSLEVEL SQL:"+probeQuery);
         log.debug("Transcript Level SQL:"+probeTransQuery);
