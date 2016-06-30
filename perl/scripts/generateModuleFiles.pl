@@ -222,6 +222,27 @@ foreach my $mod(@moduleList){
     $query_handle2->bind_columns(\$psid,\$tc,\$geneid,\$modID,\$modRGB,\$modHex);
     while($query_handle2->fetch()) {
         $tcCount++;
+        if($modRGB ne "" and $modHex ne ""){
+
+        }else{
+            my $tmpMod=substr($mod,0,index($mod,"."));
+            my $select="select RGB,HEX from wgcna_module_colors where module='$tmpMod'";
+            
+            my $query_handle3 = $connect->prepare($select) or die ("Module query prepare failed \n");
+            $query_handle3->execute() or die ( "Module query execute failed \n");
+            my $tmpHex;
+            my $tmpRGB;
+            $query_handle3->bind_columns(\$tmpRGB,\$tmpHex);
+            if($query_handle3->fetch()){
+                my $ins="insert wgcna_module_colors (MODULE,RGB,HEX) values ($mod,$tmpRGB,$tmpHex)";
+                my $query_handle4 = $connect->prepare($ins) or die ("Module query prepare failed \n");
+                $query_handle4->execute() or die ( "Module query execute failed \n");
+                $query_handle4->finish();
+                $modRGB=$tmpRGB;
+                $modHex=$tmpHex;
+            }
+            query_handle3->finish();
+        }
         
         #print "$psid\t$tc\t$geneid\n";
         my $secondPeriod=index( $tc , "." , (index($tc,".")+1) );
