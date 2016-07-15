@@ -79,7 +79,12 @@
 			if(min<1){
 				min=1;
 			}
-			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);					
+                        if(source.equals("merged")){
+                            fullGeneList =gdt.getMergedRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
+                        }else{
+                            fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);	
+                        }
+                        log.debug("Gene list size:"+fullGeneList.size());
 			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
 			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
 			if(second>-1){
@@ -279,17 +284,17 @@
                 </thead>
                 
                 <tbody style="text-align:center;">
-					<%DecimalFormat df2 = new DecimalFormat("#.##");
-					DecimalFormat df0 = new DecimalFormat("###");
-					DecimalFormat df4 = new DecimalFormat("#.####");
+                        <%DecimalFormat df2 = new DecimalFormat("#.##");
+                        DecimalFormat df0 = new DecimalFormat("###");
+                        DecimalFormat df4 = new DecimalFormat("#.####");
 						
-					for(int i=0;i<fullGeneList.size();i++){
-                        edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=fullGeneList.get(i);
-						TranscriptCluster tc=curGene.getTranscriptCluster();
-                        HashMap hCount=curGene.getHeritCounts();
-                        HashMap dCount=curGene.getDabgCounts();
-						HashMap hSum=curGene.getHeritAvg();
-                        HashMap dSum=curGene.getDabgAvg();
+			for(int i=0;i<fullGeneList.size();i++){
+                            edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=fullGeneList.get(i);
+                            TranscriptCluster tc=curGene.getTranscriptCluster();
+                            HashMap hCount=curGene.getHeritCounts();
+                            HashMap dCount=curGene.getDabgCounts();
+                            HashMap hSum=curGene.getHeritAvg();
+                            HashMap dSum=curGene.getDabgAvg();
 						String chr=curGene.getChromosome();
 						String viewClass="codingRNA";
 						ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript> tmpTrx=curGene.getTranscripts();
@@ -304,6 +309,7 @@
 						
 						
 							if( (source.equals("ensembl")&&curGene.getGeneID().startsWith("ENS")) ||	//ensembl track
+                                                                source.equals("merged") || // merged track
 								(source.equals("brain")&&(curGene.getGeneID().toLowerCase().startsWith("brain")||curGene.containsTranscripts("brain")))||	//Brain track
 								(source.equals("liver")&&(curGene.getGeneID().toLowerCase().startsWith("liver")||curGene.containsTranscripts("liver")))||	//Liver track
 								(source.equals("heart")&&(curGene.getGeneID().toLowerCase().startsWith("heart")||curGene.containsTranscripts("heart")))

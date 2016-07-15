@@ -157,8 +157,10 @@ sub createXMLFile
 	my $scriptStart=time();
 	
 	my $panel="ILS/ISS";
+	my $arrayTypeID=21;
 	if($species eq 'Rat' or $species eq 'Rn' ){
 		$panel="BNLX/SHRH";
+		$arrayTypeID=22;
 	}
 	
 	if(index($type,"illumina")>-1 or index($type,"helicos")>-1 ){
@@ -257,7 +259,7 @@ sub createXMLFile
         createGenericXMLTrack(\%repeatMaskHOH,$outputDir.$type.".xml");
     }elsif(index($type,"chainNet")>-1){
 
-    }elsif(index($type,"brainTotal")>-1 or index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"brainnoncoding")>-1){
+    }elsif(index($type,"brainTotal")>-1 or index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"mergedTotal")>-1 or index($type,"brainnoncoding")>-1){
                 my $ver=substr($type,index($type,"_")+1);
                 print "Type:$type\n";
                 print "Ver:$ver\n";
@@ -266,10 +268,10 @@ sub createXMLFile
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
-                my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chromosome,$minCoord,$maxCoord,22,$dsn,$usr,$passwd);
+                my ($probesetHOHRef) = readAffyProbesetDataFromDBwoProbes("chr".$chromosome,$minCoord,$maxCoord,$arrayTypeID,$genomeVer,$dsn,$usr,$passwd);
                 my @probesetHOH = @$probesetHOHRef;
 
-                my $snpRef=readSNPDataFromDB($genomeVer,$chromosome,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+                my $snpRef=readSNPDataFromDB($genomeVer,$chromosome,$species,$minCoord,$maxCoord,$mongoDsn,$mongoUser,$mongoPasswd);
                 my %snpHOH=%$snpRef;
                 my @snpStrain=("BNLX","SHRH","SHRJ","F344");
                 my $rnaType="totalRNA";
@@ -278,7 +280,7 @@ sub createXMLFile
                 }elsif(index($type,"brainnoncoding")>-1){
                     $rnaType="NonPolyA+";
                 }
-		my $isoformHOH = readRNAIsoformDataFromDB($chromosome,$species,$publicID,'BNLX/SHRH',$minCoord,$maxCoord,$dsn,$usr,$passwd,1,$rnaType,$tissue,$ver,$genomeVer);
+		my $isoformHOH = readRNAIsoformDataFromDB($chromosome,$species,$publicID,$panel,$minCoord,$maxCoord,$dsn,$usr,$passwd,1,$rnaType,$tissue,$ver,$genomeVer);
                 
                 my %brainHOH=%$isoformHOH;
                 my $regionSize=$maxCoord-$minCoord;

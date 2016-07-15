@@ -95,7 +95,7 @@ sub readRNAIsoformDataFromDB{
 	my($geneChrom,$organism,$publicUserID,$panel,$geneStart,$geneStop,$dsn,$usr,$passwd,$shortName, $tmpType,$tissue,$version,$genomeVer)=@_;   
 	
 
-        my $dsid=getRNADatasetFromDB($organism,$publicUserID,$panel,$tissue,$genomeVer,$dsn,$usr,$passwd,\$version);
+    my $dsid=getRNADatasetFromDB($organism,$publicUserID,$panel,$tissue,$genomeVer,$dsn,$usr,$passwd,\$version);
 
 	#open PSFILE, $psOutputFileName;//Added to output for R but now not needed.  R will read in XML file
 	#print "read probesets chr:$geneChrom\n";
@@ -186,8 +186,8 @@ sub readRNAIsoformDataFromDB{
 	my $genetmp_stop=-1;
 	
 	while($query_handle->fetch()) {
-		if($gene_id eq $previousGeneName){
-			#print "\nchecking:$isoform_id\t:$previousTranscript:\n";
+		if($gene_id eq $previousGeneName and $gene_id ne ""){
+			print "\nchecking:$isoform_id\t:$previousTranscript:\n";
 			if($isoform_id eq $previousTranscript){
 				#print "adding exon $enumber\n";
 				$$exonArray[$cntExon]{ID}=$enumber;
@@ -210,7 +210,7 @@ sub readRNAIsoformDataFromDB{
 				$cntIntron++;
 				$cntExon++;
 			}else{
-				#print "Adding transcript $trtmp_id::$cntTranscript\n";
+				print "Adding transcript $trtmp_id::$cntTranscript\n";
 				
 				$geneHOH{Gene}[$cntGene-1]{TranscriptList}{Transcript}[$cntTranscript] = {
 					ID => $trtmp_id,
@@ -296,7 +296,7 @@ sub readRNAIsoformDataFromDB{
 			}
 			#print "adding gene $gene_id\n";
 			my $tmpGeneID=$gene_id;
-			if($shortName==1){
+			if($shortName==1 and $tissue ne "Merged"){
 				my $shortGID=substr($gene_id,index($gene_id,"_")+1);
 				$tmpGeneID=$tissue."_".$shortGID;
 			}

@@ -724,7 +724,7 @@ public class Gene {
                             geneID="Brain.G"+geneID.substring(startPos);
                         }
                     }*/
-                    //System.out.println("reading gene ID:"+geneID);
+                    System.out.println("reading gene ID:"+geneID);
                     String geneSymbol=attrib.getNamedItem("geneSymbol").getNodeValue();
                     String biotype=attrib.getNamedItem("biotype").getNodeValue();
                     long start=Long.parseLong(attrib.getNamedItem("start").getNodeValue());
