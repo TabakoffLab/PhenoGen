@@ -149,8 +149,12 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
             genomeVer=request.getParameter("genomeVer").trim();
             log.debug("******\nreading Genome Ver:"+genomeVer);
         }
-        if(genomeVer.equals("rn6")){
-            defView="13";
+        int val=-1;
+        try{
+            val=Integer.parseInt(defView);
+        }catch(Exception e){}
+        if(genomeVer.equals("rn6") && val>-1 && val<11){
+            defView=Integer.toString(val+10);
         }
         log.debug("*****\ncurGenome:"+genomeVer);
         ArrayList<BrowserView> views=bt.getBrowserViews(genomeVer);
