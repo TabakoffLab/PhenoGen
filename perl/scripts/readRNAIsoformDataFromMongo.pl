@@ -124,7 +124,7 @@ sub readRNAIsoformDataFromDB{
 	
 
 		$query ="Select rd.tissue,rt.gene_id,rt.isoform_id,rt.source,rt.trstart,rt.trstop,rt.strand,rt.category,rt.strain,c.name as \"chromosome\",
-			re.enumber,re.estart,re.estop ,rt.rna_transcript_id 
+			re.enumber,re.estart,re.estop ,rt.rna_transcript_id, rt.merge_gene_id, rt.merge_isoform_id 
 			from rna_dataset rd, rna_transcripts rt, rna_exons re,chromosomes c 
 			where 
 			c.chromosome_id=rt.chromosome_id 
@@ -154,7 +154,7 @@ sub readRNAIsoformDataFromDB{
 
 # BIND TABLE COLUMNS TO VARIABLES
 
-	$query_handle->bind_columns(\$tissue ,\$gene_id,\$isoform_id,\$source,\$trstart,\$trstop,\$trstrand,\$trcategory,\$trstrain,\$chr,\$enumber,\$estart,\$estop,\$trID);
+	$query_handle->bind_columns(\$tissue ,\$gene_id,\$isoform_id,\$source,\$trstart,\$trstop,\$trstrand,\$trcategory,\$trstrain,\$chr,\$enumber,\$estart,\$estop,\$trID,\$mergeGeneID,\$mergeTrxID);
 # Loop through results, adding to array of hashes.
 	my $continue=1;
 	my @tmpArr=();
@@ -186,6 +186,11 @@ sub readRNAIsoformDataFromDB{
 	my $genetmp_stop=-1;
 	
 	while($query_handle->fetch()) {
+		if(index($gene_id,"P")!=0 and $mergeGeneID ne "" and $mergeTrxID ne ""){
+			$gene_id=$mergeGeneID;
+			$isoform_id=$mergeTrxID;
+		}
+
 		if($gene_id eq $previousGeneName and $gene_id ne ""){
 			print "\nchecking:$isoform_id\t:$previousTranscript:\n";
 			if($isoform_id eq $previousTranscript){
@@ -296,7 +301,7 @@ sub readRNAIsoformDataFromDB{
 			}
 			#print "adding gene $gene_id\n";
 			my $tmpGeneID=$gene_id;
-			if($shortName==1 and $tissue ne "Merged"){
+			if($shortName==1 and index(tmpGeneID,"P")!=0){
 				my $shortGID=substr($gene_id,index($gene_id,"_")+1);
 				$tmpGeneID=$tissue."_".$shortGID;
 			}
