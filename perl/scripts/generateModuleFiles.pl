@@ -186,9 +186,9 @@ foreach my $mod(@moduleList){
     my @adjTC=split("\t",$header);
     for(my $row=0;$row<@adjTC;$row++){
         $adjTC[$row]=trim(substr($adjTC[$row],length($mod)+1));
-        $adjTC[$row]=~ s/^total\./Brain_C/;
-        $adjTC[$row]=~ s/^GENE\./Brain_C/;
-        $adjTC[$row]=~ s/^XLOC_0+/Brain_C/;
+        $adjTC[$row]=~ s/^total\./Heart_C/;
+        $adjTC[$row]=~ s/^GENE\./Heart_C/;
+        $adjTC[$row]=~ s/^XLOC_0+/Heart_C/;
         $adjTC[$row]=~ s/clust//;
         #print "tcName:".$adjTC[$row]."\n";
     }
