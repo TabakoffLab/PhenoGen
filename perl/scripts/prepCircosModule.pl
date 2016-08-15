@@ -56,7 +56,7 @@ sub prepCircosMod
 	createCircosModGenesTextDataFile($module,$tissueString,$dataDirectory,$organism,$genomeVer,$dsn,$usr,$passwd);
 	createCircosPvaluesConfFile($confDirectory,$dataDirectory,$cutoff,$organism,$tissueString);
 	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$genomeVer,$dsn,$usr,$passwd);
-	createCircosPvaluesDataFiles($dataDirectory,$module,$organism,$eqtlAOHRef,$chromosomeListRef);
+	createCircosPvaluesDataFiles($dataDirectory,$module,$organism,$eqtlAOHRef,$chromosomeListRef,$tissueString);
 	if($oneToCreateLinks == 1){
 		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissueString,$chromosomeList[0]);	
 	}
@@ -337,12 +337,17 @@ sub createCircosPvaluesDataFiles{
 	# The 2nd column is the location of the SNP 
 	# The 3rd column has been modified so the histogram shows up better.
 	# The 3rd column might be modified by adding 5000000
-	my ($dataDirectory,$module,$organism, $eqtlAOHRef,$chromosomeListRef) = @_;
+	my ($dataDirectory,$module,$organism, $eqtlAOHRef,$chromosomeListRef,$tissueString) = @_;
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	my @eqtlAOH = @{$eqtlAOHRef};
 	my $arrayLength = scalar @eqtlAOH;
-	my $brainFileName = $dataDirectory.'circosBrainPValues.txt';
+	my %filenameHash;
+	$filenameHash{'Heart'}='circosHeartPValues.txt';
+	$filenameHash{'Brain'}='circosBrainPValues.txt';
+	$filenameHash{'Liver'}='circosLiverPValues.txt';
+	$filenameHash{'BAT'}='circosBATPValues.txt';
+	my $brainFileName =  $dataDirectory.$filenameHash{$tissueString};
 	open(BRAINFILE,'>',$brainFileName) || die ("Can't open $brainFileName:!\n");
 
 	#my $liverFileName = $dataDirectory.'circosLiverPValues.txt';
@@ -365,9 +370,9 @@ sub createCircosPvaluesDataFiles{
 	for($i=0;$i<$arrayLength;$i++){
 		$tissue = $eqtlAOH[$i]{tissue};
 		$stopLocation = $eqtlAOH[$i]{location} + 50000*$numberOfChromosomes;
-		if($tissue eq 'Whole Brain'){
+		#if($tissue eq 'Whole Brain'){
 			print BRAINFILE $eqtlAOH[$i]{chromosome}." ".$eqtlAOH[$i]{location}." ".$stopLocation." ".$eqtlAOH[$i]{pvalue}."\n";
-		}
+		#}
 		#elsif($tissue eq 'Liver'){
 		#	print LIVERFILE $eqtlAOH[$i]{chromosome}." ".$eqtlAOH[$i]{location}." ".$stopLocation." ".$eqtlAOH[$i]{pvalue}."\n";
 		#}
