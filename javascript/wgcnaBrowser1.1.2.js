@@ -578,6 +578,13 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			$("#wgcnaGoTable").hide();
 			$("#wgcnaEqtlTable").hide();
 			that.tissue=$('#wgcnaTissueSelect').val();
+			if(that.tissue==="Whole Brain"){
+            	that.wDSID=3;
+            }else if(that.tissue==="Heart"){
+				that.wDSID=4;
+            }else if(that.tissue==="Liver"){
+				that.wDSID=5;
+            }
 			that.requestModuleList();
 		});
 		that.tissues=["Brain"];
