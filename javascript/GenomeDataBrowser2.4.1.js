@@ -1122,6 +1122,29 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 		}else if(track.indexOf("smallnc")>-1){
 				d3.xml(dataPrefix+"tmpData/browserCache/"+genomeVer+"/regionData/"+that.folderName+"/"+track+".xml",function (error,d){
 					if(error){
+						if(retry===0 ){
+							var tmpMin=that.xScale.domain()[0];
+							var tmpMax=that.xScale.domain()[1];
+							var tmpContext=contextPath +"/"+ pathPrefix;
+							if(!pathPrefix){
+								tmpContext="";
+							}
+							$.ajax({
+								url: tmpContext +"generateTrackXML.jsp",
+				   				type: 'GET',
+				   				cache: false,
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism,genomeVer:genomeVer, track: track, folder: that.folderName},
+								dataType: 'json',
+				    			success: function(data2){
+				    				if(ga){
+										ga('send','event','browser','generateTrackRefseq');
+									}
+				    			},
+				    			error: function(xhr, status, error) {
+
+				    			}
+							});
+						}
 						if(retry<10){//wait before trying again
 							var time=2500;
 							if(retry==1){
