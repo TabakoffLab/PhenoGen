@@ -673,7 +673,7 @@ foreach my $mod(@moduleList){
     #print OFILE "}";#end module
     #close OFILE;
     #Get eQTL Data from WGCNA_EQTL table
-    my $eqtlAOHRef = readLocusSpecificPvaluesModule($mod,$org,"Brain",\@chrArr,$genomeVer,$dsn,$user,$passwd);
+    my $eqtlAOHRef = readLocusSpecificPvaluesModule($mod,$org,"Heart",\@chrArr,$genomeVer,$dsn,$user,$passwd);
     my @eqtlAOH = @{$eqtlAOHRef};
     open OFILE, '>', $path.$mod.".eQTL.json" or die " Could not open two track file $path$mod.eQTL.json for writing $!\n\n";
         print OFILE "[";
@@ -696,5 +696,5 @@ foreach my $mod(@moduleList){
     #print "Circos Path:".$tmpPath."\n";
     my $cutoff=2;
     
-    callCircosMod($mod,$cutoff,$org,$chrString,"Brain",$tmpPath,"1",$modRGB,$genomeVer,$dsn,$user, $passwd);
+    callCircosMod($mod,$cutoff,$org,$chrString,"Heart",$tmpPath,"1",$modRGB,$genomeVer,$dsn,$user, $passwd);
 }
