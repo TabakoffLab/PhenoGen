@@ -43,13 +43,17 @@
             if(request.getParameter("genomeVer")!=null){
 			genomeVer = request.getParameter("genomeVer");
             }
+            
             //For now tissue is static.  Will need to update later in Rat.
             if(species.equals("Mm")){
-			tissueString = "Brain";
+			     tissueString = "Brain";
             }
             else{
                     // we assume if not mouse that it's rat
                     tissueString = "Brain";
+                    if(request.getParameter("tissue")!=null){
+                        tissueString = request.getParameter("tissue");
+                    }
             }
             
             String modPath=fullPath+"tmpData/circos/"+dataset+"/"+module+"/";
