@@ -551,18 +551,20 @@ function TrackMenu(level){
 			var minVal=1;
 			var maxVal=1000;
 			if(testIE||testSafari){
-				minCol=$("#urstrkColorMin"+that.level).spectrum("get").toHexString();
-				maxCol=$("#urstrkColorMax"+that.level).spectrum("get").toHexString();
+				minCol=$("#usrtrkColorMin"+that.level).spectrum("get").toHexString();
+				maxCol=$("#usrtrkColorMax"+that.level).spectrum("get").toHexString();
 				minCol=minCol.substr(1);
 				maxCol=maxCol.substr(1);
 			}else{
-				minCol=$("#urstrkColorMin"+that.level).val();
-				maxCol=$("#urstrkColorMax"+that.level).val();
+				minCol=$("#usrtrkColorMin"+that.level).val();
+				maxCol=$("#usrtrkColorMax"+that.level).val();
+				console.log(minCol);
+				console.log(maxCol);
 				minCol=minCol.substr(1);
 				maxCol=maxCol.substr(1);
 			}
-			minVal=$("#urstrkScoreMinTxt"+that.level).val();
-			maxVal=$("#urstrkScoreMaxTxt"+that.level).val();
+			minVal=$("#usrtrkScoreMinTxt"+that.level).val();
+			maxVal=$("#usrtrkScoreMaxTxt"+that.level).val();
 			
 		}
 		if(type==="bed"){
@@ -606,6 +608,7 @@ function TrackMenu(level){
 			customTrackStr=customTrackStr+"<->Settings=<->Order=0<->GenericCategory="+genCat+"<->Category="+cat+"<->Controls="+control+"<->SetupDate="+tmp+"<->Type="+type;
 			customTrackStr=customTrackStr+"<->OriginalFile="+prevFile;
 			customTrackStr=customTrackStr+"<->Location="+loc;
+			customTrackStr=customTrackStr+"<->genomeVer="+genomeVer;
 
 			customTrackStr=customTrackStr+"<;>";
 			if(isLocalStorage() === true){
