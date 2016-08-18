@@ -21,7 +21,7 @@
 
 <%
 gdt.setSession(session);
-String chromosome="",panel="",myOrganism="Rn",viewID="10",genomeVer="";
+String chromosome="",panel="",myOrganism="Rn",viewID="20",genomeVer="rn6";
 int min=0,max=0,rnaDatasetID=0,arrayTypeID=0;
 
 String selectedID="";
@@ -46,6 +46,11 @@ if(request.getParameter("myOrganism")!=null){
 }
 if(request.getParameter("genomeVer")!=null){
 		genomeVer=request.getParameter("genomeVer").trim();
+}
+if(genomeVer.equals("rn5")){
+	viewID="10";
+}else if(genomeVer.equals("rn6")){
+	viewID="20";
 }
 if(request.getParameter("panel")!=null){
 		panel=FilterInput.getFilteredInput(request.getParameter("panel").trim());
