@@ -32,17 +32,20 @@ if(request.getParameter("selectedID")!=null){
 if(request.getParameter("defaultView")!=null){
         viewID=FilterInput.getFilteredInput(request.getParameter("defaultView"));
 }
-if(request.getParameter("genomeVer")!=null){
-		genomeVer=request.getParameter("genomeVer").trim();
-}
+
 if(request.getParameter("myOrganism")!=null){
 		myOrganism=FilterInput.getFilteredInput(request.getParameter("myOrganism").trim());
 }else{
     if(selectedID.startsWith("ENSRNO")){
         myOrganism="Rn";
+        genomeVer="rn6";
     }else if(selectedID.startsWith("ENSMUS")){
         myOrganism="Mm";
+        genomeVer="mm10";
     }
+}
+if(request.getParameter("genomeVer")!=null){
+		genomeVer=request.getParameter("genomeVer").trim();
 }
 if(request.getParameter("panel")!=null){
 		panel=FilterInput.getFilteredInput(request.getParameter("panel").trim());
@@ -53,7 +56,7 @@ if(request.getParameter("panel")!=null){
         panel="ILS/ISS";
     }
 }
-int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism);
+int[] tmp=gdt.getOrganismSpecificIdentifiers(myOrganism,genomeVer);
 if(tmp!=null&&tmp.length==2){
         rnaDatasetID=tmp[1];
         arrayTypeID=tmp[0];
