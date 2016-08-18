@@ -5,11 +5,11 @@
 		
        
 		<div id="page_header_wide">
-                    <div id="header_title">
+                    <div id="header_title" style="width:100%;">
                     <a href="<%=request.getContextPath()%>">PhenoGen Informatics</a>
                     <div style=" font-size:12px;">The site for quantitative genetics of the transcriptome.</div>
                     <div class="header_status">
-                        <div class="search" style="width:350px;float:right;">
+                        <div class="search" style="width:350px;float:right;position:relative;top:-74px;">
                                         <script>
                                         (function() {
                                           var cx = '002251072100941693273:nciuczz1ipg';
