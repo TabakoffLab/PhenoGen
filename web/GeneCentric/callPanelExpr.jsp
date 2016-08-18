@@ -69,7 +69,7 @@ if(request.getParameter("genomeVer")!=null){
 
 <% 
 	boolean error1=gdt.callWriteXML(id,organism,genomeVer,chromosome,min,max,arrayTypeID,rnaDatasetID);
-	boolean error2=gdt.callPanelExpr(id,chromosome,min,max,genomeVer,arrayTypeID,rnaDatasetID,null);
+	//boolean error2=gdt.callPanelExpr(id,chromosome,min,max,genomeVer,arrayTypeID,rnaDatasetID,null);
 	JSONObject genejson;
 	genejson = new JSONObject();
     genejson.put("success" , error1&&error2);
