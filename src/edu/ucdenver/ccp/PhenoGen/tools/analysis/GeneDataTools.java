@@ -1939,8 +1939,17 @@ public class GeneDataTools {
                 String ensPort=myENSProperties.getProperty("PORT");
                 String ensUser=myENSProperties.getProperty("USER");
                 String ensPassword=myENSProperties.getProperty("PASSWORD");
+
+                File mongoPropertiesFile = new File(mongoDBPropertiesFile);
+                Properties myMongoProperties = new Properties();
+                myMongoProperties.load(new FileInputStream(mongoPropertiesFile));
+                String mongoHost=myMongoProperties.getProperty("HOST");
+                String mongoUser=myMongoProperties.getProperty("USER");
+                String mongoPassword=myMongoProperties.getProperty("PASSWORD");
+
+
                 //construct perl Args
-                String[] perlArgs = new String[18];
+                String[] perlArgs = new String[21];
                 perlArgs[0] = "perl";
                 perlArgs[1] = perlDir + "writeXML_RNA.pl";
                 perlArgs[2] = tmpoutputDir;
@@ -1963,6 +1972,9 @@ public class GeneDataTools {
                 perlArgs[15] = ensPort;
                 perlArgs[16] = ensUser;
                 perlArgs[17] = ensPassword;
+                perlArgs[18] = mongoHost;
+                perlArgs[19] = mongoUser;
+                perlArgs[20] = mongoPassword;
 
 
                 log.debug("setup params");
