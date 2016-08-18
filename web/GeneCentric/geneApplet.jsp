@@ -103,7 +103,7 @@ if(request.getParameter("arrayTypeID")!=null){
         genURL=urlPrefix+ "tmpData/browserCache/"+genomeVer+"/geneData/" +selectedID+"/";
 	String regionURL=urlPrefix+"tmpData/browserCache/"+genomeVer+"/regionData/"+folderName+"/";
     boolean error1=gdt.callWriteXML(selectedID,myOrganism,genomeVer,chromosome,min,max,arrayTypeID,rnaDatasetID);
-	boolean error2=gdt.callPanelExpr(selectedID,chromosome,min,max,genomeVer,arrayTypeID,rnaDatasetID,null);
+	//boolean error2=gdt.callPanelExpr(selectedID,chromosome,min,max,genomeVer,arrayTypeID,rnaDatasetID,null);
 
 %>
 
