@@ -220,7 +220,7 @@ sub createXMLFile
 	#
 
 	# Read in the arguments for the subroutine	
-	my($outputDir, $species,$type,$geneNames,$bedFileFolder,$arrayTypeID,$rnaDatasetID,$publicID,$genomeVer,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd)=@_;
+	my($outputDir, $species,$type,$geneNames,$bedFileFolder,$arrayTypeID,$rnaDatasetID,$publicID,$genomeVer,$dsn,$usr,$passwd,$ensHost,$ensPort,$ensUsr,$ensPasswd,$mdsn,$muser,$mpass)=@_;
 	
 	my @geneNamesList=split(/,/,$geneNames);
 	my $geneNameGlobal=$geneNamesList[0];
@@ -391,7 +391,7 @@ sub createXMLFile
 
         if($shortSpecies eq 'Rn'){
 	    #read SNPs/Indels
-	    my $snpRef=readSNPDataFromDB($genomeVer,$chr,$species,$minCoord,$maxCoord,$dsn,$usr,$passwd);
+	    my $snpRef=readSNPDataFromDB($genomeVer,$chr,$species,$minCoord,$maxCoord,$mdsn,$muser,$mpass);
 	    %snpHOH=%$snpRef;
 	    @snpStrain=("BNLX","SHRH","SHRJ","F344");
 
@@ -960,8 +960,11 @@ sub createXMLFile
 	my $arg13=$ARGV[12];
 	my $arg14=$ARGV[13];
 	my $arg15=$ARGV[14];
-        my $arg16=$ARGV[15];
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16);
+    my $arg16=$ARGV[15];
+    my $arg17=$ARGV[16];
+	my $arg18=$ARGV[17];
+    my $arg19=$ARGV[18];
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19);
 
 	
 	# Example call:
