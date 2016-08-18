@@ -149,6 +149,60 @@ sub createBinnedData{
 	return \%binHOH;
 }
 
+sub createBinnedMaxData{
+	my($refRNA,$bin,$start,$stop)=@_;
+	print "Bin Data:$bin\n";
+	print "Start:$start\tStop:$stop\n";
+	my %fullRNA=%$refRNA;
+	my %binHOH;
+	my $curStart=$start;
+	my $curStop=$bin+$start;
+	my $binInd=0;
+	my $curIndex=0;
+	my $bp90=$bin-($bin*.9);
+	while($curStart<$stop){
+		#print "binning\t$curStart\t$curStop\t$binInd\n";
+		my %countHOH;
+		my $curPos=$curStart;
+		my $loopCount=0;
+		my $binMax=0;
+		while($curPos<$curStop and $loopCount<$bin){
+			my $segStart=$fullRNA{Count}[$curIndex]{start};
+			my $segStop=$fullRNA{Count}[$curIndex]{stop};
+			my $segValue=$fullRNA{Count}[$curIndex]{count};
+			$curPos=$segStop;
+			if($segValue>$binMax){
+				$binMax=$segValue;
+			}
+			
+			$curIndex++;
+			$loopCount++;
+		}
+		
+		
+		#print "$binInd\t$curStart\t$binVal\n";
+		if($binInd>0 and $binHOH{Count}[$binInd-1]{count}==$binMax){
+			#skip since its the same value.
+			$binHOH{Count}[$binInd-1]{start}=$binHOH{Count}[$binInd-1]{start}+$bin;
+			$binHOH{Count}[$binInd-2]{stop}=$curStart+$bin-1;
+			$binHOH{Count}[$binInd-1]{stop}=$curStart+$bin-1;
+		}else{
+			$binHOH{Count}[$binInd]{start}=$curStart;
+			$binHOH{Count}[$binInd]{count}=$binMax;
+			$binHOH{Count}[$binInd]{stop}=$curStart+$bin-1;
+			$binInd++;
+			$binHOH{Count}[$binInd]{start}=$curStart+$bin-1;
+			$binHOH{Count}[$binInd]{count}=$binMax;
+			$binHOH{Count}[$binInd]{stop}=$curStart+$bin-1;
+			$binInd++;
+		}
+		$curStart=$curStop;
+		$curStop=$bin+$curStart;
+	}
+	
+	return \%binHOH;
+}
+
 sub createXMLFile
 {
 	# Read in the arguments for the subroutine	
@@ -179,14 +233,20 @@ sub createXMLFile
 		
 		my $rnaCountRef;
 
-                $rnaCountRef=readRNACountsDataFromMongo($chromosome,$species,$publicID,$panel,$type,$roundMin,$roundMax,$genomeVer,$dsn,$usr,$passwd,$mongoDsn,$mongoUser,$mongoPasswd);
+        $rnaCountRef=readRNACountsDataFromMongo($chromosome,$species,$publicID,$panel,$type,$roundMin,$roundMax,$genomeVer,$dsn,$usr,$passwd,$mongoDsn,$mongoUser,$mongoPasswd);
 		
 		my %rnaCountHOH=%$rnaCountRef;
 		my $rnaCountEnd=time();
 		print "RNA Count completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
 		
 		if($binSize>0){
-			my $ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
+
+			my $ref;
+			if(index($type,"small")>0){
+				$ref=createBinnedMaxData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
+			}else{
+				$ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
+			}
 			my %rnaBinned=%$ref;
 			if(-d $outputDir."tmp"){
 				

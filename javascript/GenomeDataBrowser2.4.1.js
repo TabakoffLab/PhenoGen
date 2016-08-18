@@ -686,8 +686,10 @@ function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
     			if(levelInd==1){
     				ext=ext+",DrawTrx";
     			}
+    			//setTimeout(function (){
+    					tmpSvg.addTrack(trackVars[0],trackVars[1],ext,0);
+    			//	},25*m);
 
-    			tmpSvg.addTrack(trackVars[0],trackVars[1],ext,0);
 
     		}
 		}
@@ -1504,8 +1506,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 
 				    			}
 							});
-						}
-						if(retry<30){//wait before trying again
+							time=10000;
+						}else if(retry<30){//wait before trying again
 							var time=2500;
 							if(retry==1){
 								time=10000;
@@ -9835,7 +9837,7 @@ function LiverIlluminaTotalMinusTrack(gsvg,data,trackClass,density){
 function LiverIlluminaSmallTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	that.graphColorText="#7b7e9d";
-	var lbl="Liver Small-RNA Read Counts";
+	var lbl="Liver  Illumina Small RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
@@ -9863,7 +9865,7 @@ function HeartIlluminaTotalMinusTrack(gsvg,data,trackClass,density){
 function HeartIlluminaSmallTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	that.graphColorText="#9C3212";
-	var lbl="Heart Small-RNA Read Counts";
+	var lbl="Heart Illumina Small RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
