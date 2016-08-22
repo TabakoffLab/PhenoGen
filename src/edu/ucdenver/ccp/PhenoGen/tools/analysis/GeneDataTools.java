@@ -456,9 +456,21 @@ public class GeneDataTools {
         return ret;
     }
     
+    public ArrayList<Gene> getMergedRegionData(String chromosome,int minCoord,int maxCoord,
+            String panel,
+            String organism,String genomeVer,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL) {
+        return this.getRegionDataMain(chromosome,minCoord,maxCoord,panel,organism,genomeVer,RNADatasetID,arrayTypeID,pValue,withEQTL,"mergedTotal.xml");
+    }
+    
     public ArrayList<Gene> getRegionData(String chromosome,int minCoord,int maxCoord,
             String panel,
             String organism,String genomeVer,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL) {
+        return this.getRegionDataMain(chromosome,minCoord,maxCoord,panel,organism,genomeVer,RNADatasetID,arrayTypeID,pValue,withEQTL,"Region.xml");
+    }
+    
+    public ArrayList<Gene> getRegionDataMain(String chromosome,int minCoord,int maxCoord,
+            String panel,
+            String organism,String genomeVer,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL,String file) {
         
         
         chromosome=chromosome.toLowerCase();
@@ -609,7 +621,7 @@ public class GeneDataTools {
         this.setPublicVariables(error,genomeVer,folderName);
         this.pathReady=true;
         
-        ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
+        ArrayList<Gene> ret=Gene.readGenes(outputDir+file);
 
 
         if(withEQTL){
@@ -1307,6 +1319,8 @@ public class GeneDataTools {
                 tissue="Liver";
             }else if(track.startsWith("heart")){
                 tissue="Heart";
+            }else if(track.startsWith("merged")){
+                tissue="Merged";
             }
             
             //construct perl Args
@@ -1822,7 +1836,7 @@ public class GeneDataTools {
 
 
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir);
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+"genRegion");
             boolean exception=false;
             try {
 
