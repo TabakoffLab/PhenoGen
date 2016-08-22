@@ -8,9 +8,12 @@ function SetupAnonSession(){
     that.setupUUID=function(){
         var uuid=that.checkUUID();
         console.log("cur UUID:"+uuid);
+        $('#createGeneList').hide();
+        $('#linkEmail').hide();
         if(typeof uuid ==="string" && uuid.length>0){
             that.UUID=uuid;
             that.setupAnonUserSession();
+            
         }else{
             that.getNewUUID();
         }
@@ -25,6 +28,8 @@ function SetupAnonSession(){
             dataType: 'json',
             success: function(data2){
                 that.pageSetup();
+                $('#createGeneList').show();
+                $('#linkEmail').show();
             },
             error: function(xhr, status, error) {
                 console.log("ERROR:"+error);
@@ -44,6 +49,8 @@ function SetupAnonSession(){
                 that.UUID=uuid;
                 that.saveUUID();
                 that.pageSetup();
+                $('#createGeneList').show();
+                $('#linkEmail').show();
             },
             error: function(xhr, status, error) {
                 console.log("ERROR:"+error);
