@@ -373,6 +373,7 @@ public class Resource {
                 List<Resource> genotypingResources = Arrays.asList(getGenotypingResources());
                 List<Resource> pubResources1 = Arrays.asList(getPublicationResources1());
                 List<Resource> pubResources2 = Arrays.asList(getPublicationResources2());
+                List<Resource> gtfResources = Arrays.asList(getGTFResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
                 allResources.addAll(rnaResources);
@@ -380,6 +381,7 @@ public class Resource {
                 allResources.addAll(genotypingResources);
                 allResources.addAll(pubResources1);
                 allResources.addAll(pubResources2);
+                allResources.addAll(gtfResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
 	}
@@ -984,6 +986,30 @@ public class Resource {
                  SAMDataFile[] f344FileList = new SAMDataFile[1];
                 f344FileList[0]=new SAMDataFile("presumptive F344* Genome Fasta File",seqFilePath+"F344_rn5_Genome.fa.zip","Rn5");
                 resourceList.add(new Resource(63, "Rat", "presumptive F344*","Illumina HiSeq2000", f344FileList, "Rn5" ));
+                
+                Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
+		return resourceArray;
+
+	}
+        
+        /**
+	 * Gets all the RNA Seq resources
+	 * @return	an array of Resource objects
+	 */
+	public Resource[] getGTFResources() {
+		log.debug("in getRNASeqResources");
+                String seqFilePath="/userFiles/public/RNASeq/";
+		List<Resource> resourceList = new ArrayList<Resource>();
+                
+                SAMDataFile[] brainGTFList = new SAMDataFile[1];
+                brainGTFList[0]=new SAMDataFile("HXB Brain Rn6 GTF v1 (5/31/2016)",seqFilePath+"HXB.Brain.rn6.gtf.zip","Rn6");
+                resourceList.add(new Resource(120, "Rat", "BN-Lx/CubPrin,SHR/OlaIpcvPrin","Whole Brain", brainGTFList, "Cufflinks" ));
+                SAMDataFile[] heartGTFList = new SAMDataFile[1];
+                heartGTFList[0]=new SAMDataFile("HXB Heart Rn6 GTF v1 (4/6/2016)",seqFilePath+"HXB.Heart.rn6.gtf.zip","Rn6");
+                resourceList.add(new Resource(121, "Rat", "BN-Lx/CubPrin,SHR/OlaIpcvPrin","Heart", heartGTFList, "Cufflinks" ));
+                SAMDataFile[] liverGTFList = new SAMDataFile[1];
+                liverGTFList[0]=new SAMDataFile("HXB Liver Rn6 GTF v1 (4/6/2016)",seqFilePath+"HXB.Liver.rn6.gtf.zip","Rn6");
+                resourceList.add(new Resource(122, "Rat", "BN-Lx/CubPrin,SHR/OlaIpcvPrin","Liver", liverGTFList, "Cufflinks" ));
                 
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
 		return resourceArray;

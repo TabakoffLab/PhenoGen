@@ -30,6 +30,7 @@
 	Resource[] myGenotypeResources = myResource.getGenotypingResources();
         Resource[] myPublicationResources1 = myResource.getPublicationResources1();
         Resource[] myPublicationResources2 = myResource.getPublicationResources2();
+        Resource[] myGTFResources=myResource.getGTFResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
 	ArrayList checkedList = new ArrayList();
@@ -307,6 +308,31 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                     <a href="ftp://ftp.ensembl.org/pub/release-84/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl-Rn6</a>
        	</div>
         <BR><BR>
+        <div class="title"> RNA-Seq Transcriptome Reconstruction<span class="toolTip" title="Reconstructed Transcriptome with high confidence transcripts from Cufflinks."><img src="<%=imagesDir%>icons/info.gif"></span></div>
+		      <table id="gtfFiles" class="list_base" name="items" cellpadding="0" cellspacing="3">
+            		<thead>
+                               <tr class="col_title">
+					<th>Organism</th>
+					<th>Strains</th>
+                                        <th>Tissue</th>
+                                        <th>Assembled by</th>
+					<th>.gtf Files</th>
+				</tr>
+			</thead>
+                        <% for (Resource resource: myGTFResources) { %> 
+				<tr id="<%=resource.getID()%>">  
+                                    
+                                    <TD><%=resource.getOrganism()%></TD>
+                                    <TD><%=resource.getSource()%></TD>
+                                    <TD><%=resource.getTechType()%></TD>
+                                    <TD><%=resource.getGenome()%></TD>
+                                    <td class="actionIcons">
+						<div class="linkedImg download" type="gtf"><div>
+                                    </td>
+				</tr> 
+			<% } %>
+                      </table>
+
         </form>
 </div>
                         

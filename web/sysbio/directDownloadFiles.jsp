@@ -31,7 +31,8 @@
 				(type.equals("genotype") ? thisResource.getGenotypeDataFiles() :
 				(type.equals("mask") ? thisResource.getMaskDataFiles() :
                                 (type.equals("pub") ? thisResource.getPublicationFiles() :
-				null))))))));
+                                (type.equals("gtf") ? thisResource.getSAMDataFiles() :
+				null)))))))));
         log.debug("array size="+dataFiles.length);
 %>
 
@@ -46,7 +47,7 @@
 			<tr class="col_title">
         			<th class="noSort"></th>
                                 <%if(type.equals("rnaseq") || type.equals("expression")|| type.equals("mask")
-                                        || type.equals("heritability")){%>
+                                        || type.equals("heritability")|| type.equals("gtf")){%>
                                     <th class="noSort">Genome Version</th>
                                 <%}%>
 				<th class="noSort">File Type</th>
@@ -64,7 +65,7 @@
 					</center>
 					</td>  
                                         <%if(type.equals("rnaseq") || type.equals("expression")|| type.equals("mask")
-                                                 || type.equals("heritability")){%>
+                                                 || type.equals("heritability") || type.equals("gtf") ){%>
                                         <TD><%=dataFile.getGenome()%></TD>
                                         <%}%>
 					<td><%=dataFile.getType()%></td>
