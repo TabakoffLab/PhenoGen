@@ -27,6 +27,7 @@ String myGene="";
 String section="";
 String myDisplayGene="";
 String defView="3";
+String overideGV="N";
 boolean scriptError=false;
 boolean organismError=false;
 boolean popup=false;
@@ -43,6 +44,9 @@ if(request.getParameter("geneTxt")!=null){
                     action=null;
                     scriptError=true;
                 }*/
+}
+if(request.getParameter("overideGV")!=null && request.getParameter("overideGV").equals("Y")){
+    overideGV="Y";
 }
 if(request.getParameter("newWindow")!=null&&request.getParameter("newWindow").equals("Y")){
 	popup=true;
@@ -582,10 +586,15 @@ Or
 <script type="text/javascript">
 	var organism="<%=myOrganism%>";
         var genomeVer="<%=genomeVer%>";
-        console.log("initially set GenomeVer:"+genomeVer);
+        //console.log("initially set GenomeVer:"+genomeVer);
         var defaultGenomeVer="<%=defaultGenomeVer%>";
         var defaultView=<%=defView%>;
 	var pathPrefix="web/GeneCentric/";
+        <%if(overideGV.equals("Y")){%>
+            var overideGV=true;
+        <%}else{%>
+            var overideGV=false;
+        <%}%>
 	<%if(userLoggedIn.getUser_name().equals("anon")){%>
 		var uid=0;
 	<%}else{%>
@@ -755,9 +764,17 @@ Or
 	function setupDefaultView(){
 		console.log("setupDefaultView()");
                 var tmp=$("#speciesCB").val();
-                var specStoredGenomeVer=checkStoredGenomeVersion(tmp);
-                $('input#genomeVer').val(specStoredGenomeVer);
-                genomeVer=specStoredGenomeVer;
+                if(! overideGV){
+                    var specStoredGenomeVer=checkStoredGenomeVersion(tmp);
+                    $('input#genomeVer').val(specStoredGenomeVer);
+                    genomeVer=specStoredGenomeVer;
+                }else{
+                    if(isLocalStorage()===true){
+                        localStorage.setItem(tmp+"DefGenomeVer",genomeVer);
+                    }else{
+                        $.cookie(tmp+"DefGenomeVer",genomeVer);
+                    }
+                }
 
 		d3.select("#defaultView").html("");
 		
@@ -913,7 +930,25 @@ Or
         <BR />
          
 	<%}else if(displayNoEnsembl && myGene.startsWith("ENS")){%>
-        <div class="error">ERROR: The Ensembl ID entered is newer than the current version supported v79 or is an older ID that is no longer valid.  In rats this generally indicates the gene was not annotated yet in Rn5 and has been added to Ensembl Rn6.<BR /><BR />We are working to add support for Rn6 at which time new IDs will work, however it is taking time to prepare all of our data for Rn6.<BR>We are very sorry for the inconvenience.  Please check back soon or follow us on Facebook, Twitter, or Google+ to be notified of the update.<BR><BR><BR />
+            <div class="error">ERROR: The Ensembl ID entered is not present in the current version of the Ensembl database being used
+            for your selected genome version (<%=genomeVer%>).
+                <BR><BR>
+                <%if(genomeVer.startsWith("rn")){
+                    int port=request.getServerPort();
+                    String prefix="http";
+                    if(port==443){
+                        prefix=prefix+"s";
+                    }
+                    String newGenomeVer="rn5";
+                %>
+                We recommend trying again after switching genome versions to <% if(genomeVer.equals("rn5")){newGenomeVer="rn6";%>Rn6<%}else{%>Rn5<%}%> by <a href="<%=prefix+"://"+host+contextRoot+"gene.jsp?geneTxt="+myGene+"&genomeVer="+newGenomeVer+"&auto=Y&overideGV=Y"%>">following this link</a>.
+                <BR><BR>
+                It is possible that the ID is from an older ensembl/genome version or an intermediate version of the ensembl database that is not supported on PhenoGen.  We only support the latest
+                version of the Ensembl database for each genome version.  Currently v79 for rn5 and v84 for rn6.
+
+                <%}%>
+            </div>  
+                <BR><BR><BR />
         <%}%>
 
 	
