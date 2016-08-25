@@ -153,6 +153,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
         log.debug("*****\nafter species Genome:"+genomeVer);
         if(request.getParameter("genomeVer")!=null){
             genomeVer=request.getParameter("genomeVer").trim();
+            overideGV="Y";
             log.debug("******\nreading Genome Ver:"+genomeVer);
         }
         int val=-1;
