@@ -6264,7 +6264,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		if(that.trackClass.indexOf("ensembl")>-1){
 			lbl="Ensembl "+lbl+" "+type;
 		}else if(that.trackClass!="liverTotal"&&that.trackClass!="heartTotal"&&that.trackClass!="mergedTotal"){
-			lbl="Brain RNA-Seq Reconstruction "+lbl+lbltxSuffix+" "+type;
+			lbl="Reconstruction "+lbl+lbltxSuffix+" "+type;
 		}else{
 			lbl=lbl+lbltxSuffix+" "+type;
 		}
