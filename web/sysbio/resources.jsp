@@ -343,7 +343,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		name="resources">                        
 
             
-        <div class="title">Data Files used in "Uncovering the liver's role in immunity through RNA co-expression networks."<BR>(Harrall et. al. 2016)
+        <div class="title">Data Files used in "Uncovering the liver's role in immunity through RNA co-expression networks."<BR>(Harrall et. al. 2016, Mamm. Genome) <a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/27401171">Abstract</a>
                </div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
                         <thead>
@@ -367,7 +367,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                         <BR><BR>    
             
         <div class="title">Data Files used in "The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption"<BR>(Saba et. al. 2015, FEBS)
-                <a href="http://onlinelibrary.wiley.com/doi/10.1111/febs.13358/abstract">Abstract</a></div>
+                <a href="http://onlinelibrary.wiley.com/doi/10.1111/febs.13358/abstract" target="_blank">Abstract</a></div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
                         <thead>
                             <tr class="col_title">
