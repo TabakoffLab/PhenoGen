@@ -1486,7 +1486,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 				}
 				d3.xml(file,function (error,d){
 					if(error){
-						if(retry==0){
+						if(retry==0 || retry==3){
 							var tmpContext=contextPath +"/"+ pathPrefix;
 							if(!pathPrefix){
 								tmpContext="";
@@ -1507,10 +1507,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 				    			}
 							});
 							time=10000;
-						}else if(retry<30){//wait before trying again
-							var time=2500;
-							if(retry==1){
-								time=10000;
+						}
+						if(retry<30){//wait before trying again
+							var time=10000;
+							if(retry===0){
+								time=5000;
 							}
 							setTimeout(function (){
 								that.addTrack(track,density,additionalOptions,retry+1);

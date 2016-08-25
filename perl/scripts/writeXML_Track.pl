@@ -242,11 +242,11 @@ sub createXMLFile
 		if($binSize>0){
 
 			my $ref;
-			if(index($type,"small")>0){
-				$ref=createBinnedMaxData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
-			}else{
-				$ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
-			}
+			#if(index($type,"small")>0){
+			#	$ref=createBinnedMaxData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
+			#}else{
+			$ref=createBinnedData(\%rnaCountHOH,$binSize,$roundMin,$roundMax);
+			#}
 			my %rnaBinned=%$ref;
 			if(-d $outputDir."tmp"){
 				
