@@ -105,12 +105,14 @@ public class Transcript {
     
     public void fillFullTranscript(){
         this.fullTranscript=new ArrayList<TranscriptElement>();
-        if(exons!=null){
+        if(exons!=null && exons.size()>1){
             this.fullTranscript.addAll(exons);
             if(introns!=null){
                 this.fullTranscript.addAll(introns);
             }
             Collections.sort(this.fullTranscript);
+        }else{
+            this.fullTranscript.addAll(exons);
         }
     }
     

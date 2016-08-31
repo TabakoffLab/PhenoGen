@@ -622,7 +622,7 @@ public class GeneDataTools {
         this.pathReady=true;
         
         ArrayList<Gene> ret=Gene.readGenes(outputDir+file);
-
+        log.debug("getRegionData() returning gene list of size:"+ret.size());
 
         if(withEQTL){
             this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID,genomeVer);
@@ -805,6 +805,7 @@ public class GeneDataTools {
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
                 log.debug("AsyncGeneDataTools with "+chrom+":"+minCoord+"-"+maxCoord);
+                callWriteXML(ensemblID1,organism,genomeVer,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
                 prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID,genomeVer);
             }
         }else{
@@ -2109,7 +2110,7 @@ public class GeneDataTools {
         }
         callWriteXML(id,organism,genomeVer,chr,min,max,arrayTypeID,rnaDS_ID);
         //create File with Probeset Tissue herit and DABG
-        String datasetQuery="select rd.dataset_id, rd.tissue "+
+        /*String datasetQuery="select rd.dataset_id, rd.tissue "+
                             "from rnadataset_dataset rd "+
                             "where rd.rna_dataset_id = "+rnaDS_ID+" "+
                             "order by rd.tissue";
@@ -2197,7 +2198,7 @@ public class GeneDataTools {
                         conn.close();
                 } catch (SQLException ex) {
                 }
-        }
+        }*/
         return error;
     }
     

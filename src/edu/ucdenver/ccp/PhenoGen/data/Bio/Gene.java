@@ -704,7 +704,32 @@ public class Gene {
 
             }
     }
-    
+    public static HashMap<String,Integer> readGeneIDList(String url) {
+        HashMap<String,Integer> genelist=new HashMap<String,Integer>();
+        try {
+            DocumentBuilder build=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document transcriptDoc=build.parse(url);
+            NodeList genes=transcriptDoc.getElementsByTagName("Gene");
+            //System.out.println("# Genes"+genelist.length);
+            for(int i=0;i<genes.getLength();i++){
+                NamedNodeMap attrib=genes.item(i).getAttributes();
+                if(attrib.getLength()>0){
+                    String geneID=attrib.getNamedItem("ID").getNodeValue();
+                    genelist.put(geneID,1);
+                }
+            }
+        } catch (SAXException ex) {
+            ex.printStackTrace(System.err);
+            
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+            
+        } catch (ParserConfigurationException ex) {
+            ex.printStackTrace(System.err);
+            
+        }
+        return genelist;
+    }
     //Methods to read Gene Data from RegionXML file.
     public static ArrayList<Gene> readGenes(String url) {
         ArrayList<Gene> genelist=new ArrayList<Gene>();
@@ -787,7 +812,7 @@ public class Gene {
                 long start=Long.parseLong(nnm.getNamedItem("start").getNodeValue());
                 long end=Long.parseLong(nnm.getNamedItem("stop").getNodeValue());
                 String trID=nnm.getNamedItem("ID").getNodeValue();
-                if(!trID.startsWith("ENS")){
+                if(!trID.startsWith("ENS")&& trID.indexOf("_0")>-1){
                     Matcher m=Pattern.compile("_0+").matcher(trID);
                     if(m.find()){
                         int startPos=m.end();

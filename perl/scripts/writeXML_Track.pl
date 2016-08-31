@@ -308,7 +308,7 @@ sub createXMLFile
 		print "Splice Junction completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
 		createGenericXMLTrack(\%spliceHOH,$outputDir.$type.".xml");
 	}elsif(index($type,"repeatMask")>-1){
-                my $rnaCountStart=time();
+        my $rnaCountStart=time();
 		if(index($chromosome,"chr")>-1){
 			$chromosome=substr($chromosome,3);
 		}
@@ -320,9 +320,9 @@ sub createXMLFile
     }elsif(index($type,"chainNet")>-1){
 
     }elsif(index($type,"brainTotal")>-1 or index($type,"liverTotal")>-1 or index($type,"heartTotal")>-1 or index($type,"braincoding")>-1 or index($type,"mergedTotal")>-1 or index($type,"brainnoncoding")>-1){
-                my $ver=substr($type,index($type,"_")+1);
-                print "Type:$type\n";
-                print "Ver:$ver\n";
+        my $ver=substr($type,index($type,"_")+1);
+        print "Type:$type\n";
+        print "Ver:$ver\n";
 
 		my $rnaCountStart=time();
 		if(index($chromosome,"chr")>-1){
@@ -452,13 +452,8 @@ sub createXMLFile
         my $snpRef=readSNPDataFromDB($genomeVer,$chromosome,$species,$minCoord,$maxCoord,$mongoDsn,$mongoUser,$mongoPasswd);
         my %snpHOH=%$snpRef;
         my @snpStrain=("BNLX","SHRH","SHRJ","F344");
-        my $rnaType="totalRNA";
-        if(index($type,"braincoding")>-1){
-            $rnaType="PolyA+";
-        }elsif(index($type,"brainnoncoding")>-1){
-            $rnaType="NonPolyA+";
-        }
-		my $isoformHOH = readRNAIsoformDataFromDB($chromosome,$species,$publicID,$panel,$minCoord,$maxCoord,$dsn,$usr,$passwd,1,$rnaType,$tissue,$ver,$genomeVer);
+        my $rnaType="Any";
+		my $isoformHOH = readSmallRNADataFromDB($chromosome,$species,$publicID,$panel,$minCoord,$maxCoord,$dsn,$usr,$passwd,1,$rnaType,$tissue,$ver,$genomeVer);
                 
         my %brainHOH=%$isoformHOH;
         my $regionSize=$maxCoord-$minCoord;
@@ -545,13 +540,9 @@ sub createXMLFile
                 }
             }
         }
-        if($type eq 'braincoding'){
-            createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",1);
-        }elsif($type eq 'brainnoncoding'){
-            createProteinCodingXMLTrack(\%brainHOH,$outputDir.$type.".xml",0);
-        }else{
-            createLiverTotalXMLTrack(\%brainHOH,$outputDir.$type.".xml");
-        }
+        
+        createLiverTotalXMLTrack(\%brainHOH,$outputDir.$type.".xml",1);
+        
 		
 		my $rnaCountEnd=time();
 		print "Track version completed in ".($rnaCountEnd-$rnaCountStart)." sec.\n";	
