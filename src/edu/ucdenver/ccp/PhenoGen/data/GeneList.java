@@ -1963,8 +1963,8 @@ public class GeneList{
    	 */
   	private GeneList setupGeneListValues(String[] dataRow) {
 
-        	log.debug("in general setupGeneListValues");
-        	log.debug("general dataRow= "); new Debugger().print(dataRow);
+        	//log.debug("in general setupGeneListValues");
+        	//log.debug("general dataRow= "); new Debugger().print(dataRow);
 
         	GeneList myGeneList = new GeneList();
 
