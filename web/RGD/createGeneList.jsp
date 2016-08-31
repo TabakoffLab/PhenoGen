@@ -1,7 +1,7 @@
 <%--
  *  Author: Spencer Mahaffey
  *  Created: May, 2016
- *  Description:  This file handles the multipart request from submitted from RGD.
+ *  Description:  This file handles the multipart request form submitted from RGD.
  *
  *
  *  Todo: 
@@ -19,6 +19,7 @@
 </jsp:useBean>
 
 <jsp:useBean id="myGeneList" class="edu.ucdenver.ccp.PhenoGen.data.GeneList" > </jsp:useBean>
+<jsp:useBean id="myAnonGL" class="edu.ucdenver.ccp.PhenoGen.data.AnonGeneList" > </jsp:useBean>
 <jsp:useBean id="myErrorEmail" class="edu.ucdenver.ccp.PhenoGen.web.mail.Email"> </jsp:useBean>
 <jsp:useBean id="anonU" class="edu.ucdenver.ccp.PhenoGen.data.AnonUser" scope="session" />
 
@@ -33,7 +34,7 @@
 	boolean manuallyEntered = false;
 
 	//String additionalInfo = ""; 
-        Date cur=new Date();
+        java.util.Date cur=new java.util.Date();
         String geneListDir = userFilesRoot+"tmpRGD/GeneLists/uploads/";
         
         log.debug("upload geneList dir = "+geneListDir);
@@ -42,11 +43,10 @@
         
 	// Path must be set before calling uploadFiles
         thisFileHandler.setPath(geneListDir);
-	thisFileHandler.uploadFileTimestamp();
+	thisFileHandler.uploadFiles();
 
 	Vector parameterNames = thisFileHandler.getParameterNames(); 
 	Vector parameterValues = thisFileHandler.getParameterValues(); 
-
 	//
 	// Parameters have to be parsed this way because the form
 	// is multi-part/data
@@ -76,15 +76,16 @@
 
 
         newGeneList.setGene_list_source("RGD");	
-
+        log.debug("About to load gene list\n\n");
         Vector fileNames = thisFileHandler.getFilenames(); 
-        Vector fileParameterNames = thisFileHandler.getFileParameterNames(); 
+        log.debug("FILESIZE"+fileNames.size());
+        //Vector fileParameterNames = thisFileHandler.getFileParameterNames(); 
         for (int i=0; i<fileNames.size(); i++) {
-                String nextParam = (String) fileParameterNames.elementAt(i);
+                //String nextParam = (String) fileParameterNames.elementAt(i);
                 String nextFileName = (String) fileNames.elementAt(i);
                 log.debug("nextFileName = "+nextFileName);
 
-                if (nextParam.equals("filename")) {
+                //if (nextParam.equals("filename")) {
                         int numberOfLines = 0;
                         String geneListFileName = geneListDir + nextFileName;
                         File geneListFile = new File(geneListFileName);
@@ -104,15 +105,15 @@
                                 try {
                                         geneListID = newGeneList.loadFromFile(0,geneListFileName, pool); 
                                         log.debug("successfully uploaded gene list");
-                                        additionalInfo = "The file "+
+                                        /*additionalInfo = "The file "+
                                                 nextFileName + 
-                                                " has been <strong>successfully</strong> uploaded.<br>";
-                                        mySessionHandler.createGeneListActivity(session.getId(), geneListID, 
-                                                                                "Uploaded Gene List", pool);
+                                                " has been <strong>successfully</strong> uploaded.<br>";*/
+                                 
                                         if(userLoggedIn.getUser_name().equals("anon")){
-                                            anonU.linkGeneList(geneListID,pool);
+                                            log.debug("link gene list");
+                                            myAnonGL.linkRGDListToRGDUser(id,geneListID,pool);
                                         }
-                                        String genesNotFound = myGeneList.checkGenes(geneListID, pool);
+                                        /*String genesNotFound = myGeneList.checkGenes(geneListID, pool);
                                         if (genesNotFound.length() > 0) {
                                                 additionalInfo = additionalInfo + 
                                                         "<BR>However, the following genes were not recognized in our database "+
@@ -133,9 +134,9 @@
                                                         log.error("exception while trying to send message to phenogen.help about "+
                                                                         "genes not found by iDecoder", error);
                                                 }
-                                        }
+                                        }*/
                                         //Success -- file uploaded
-                                        session.setAttribute("additionalInfo", additionalInfo);
+                                        /*session.setAttribute("additionalInfo", additionalInfo);
                                         session.setAttribute("successMsg", "GL-013");
                                         session.setAttribute("selectedGeneList", newGeneList);
                                         session.removeAttribute("errorMsg");
@@ -143,11 +144,11 @@
                                         session.removeAttribute("description");
                                         session.removeAttribute("organism");
                                         session.removeAttribute("inputGeneList");
-                                        response.sendRedirect(geneListsDir + "listGeneLists.jsp");
+                                        response.sendRedirect(geneListsDir + "listGeneLists.jsp");*/
                                 } catch (SQLException e) {
+                                    e.printStackTrace(System.err);
                                         log.error("did not successfully upload gene list. e.getErrorCode() = " + e.getErrorCode());
-                                        mySessionHandler.createGeneListActivity(session.getId(), geneListID, 
-                                                                                "Got error uploading Gene List", pool);
+                                        
                                         if (e.getErrorCode() == 1) {
                                                 log.debug("got duplicate entry error trying to insert genes record.");
                                                 //Error - "Duplicate gene identifiers"
@@ -158,7 +159,7 @@
                                         }
                                 }
                         }
-                }
+                //}
         }
 %>
 

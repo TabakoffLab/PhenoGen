@@ -4,12 +4,10 @@
 
 package edu.ucdenver.ccp.PhenoGen.web;
 
+
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletInputStream;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -17,6 +15,11 @@ import org.apache.log4j.Logger;
 /* Have to import these since they're not in the same package anymore */
 import com.oreilly.servlet.multipart.BufferedServletInputStream;
 import com.oreilly.servlet.multipart.LimitedServletInputStream;
+
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletInputStream;
+
 /** 
  * A utility class to handle <code>multipart/form-data</code> requests,
  * the kind of requests that support file uploads.  This class uses a 
@@ -53,6 +56,8 @@ import com.oreilly.servlet.multipart.LimitedServletInputStream;
  * 
  * @author Jason Hunter
  * @author Geoff Soutter
+ * @version 1.13, 2004/09/01, added workaround if content-length is -1
+ * @version 1.12, 2004/05/17, added trim on disposition
  * @version 1.11, 2002/11/01, added constructor that takes an encoding, to
  *                            make sure chars are always read correctly
  * @version 1.10, 2002/11/01, added support for a preamble before the first
@@ -74,6 +79,7 @@ import com.oreilly.servlet.multipart.LimitedServletInputStream;
  */
 public class MultipartParser {
   
+    
   private Logger log=null;
 
   /** input stream to read parts from */
@@ -145,8 +151,9 @@ public class MultipartParser {
   public MultipartParser(HttpServletRequest req, int maxSize, boolean buffer, 
                          boolean limitLength, String encoding)
                                                 throws IOException {
+      
     log = Logger.getRootLogger();
-	//log.debug("in MultipartParser constructor #3");
+
     // First make sure we know the encoding to handle chars correctly.
     // Thanks to Andreas Granzer, andreas.granzer@wave-solutions.com,
     // for pointing out the need to have this in the constructor.
@@ -161,30 +168,24 @@ public class MultipartParser {
     String type2 = req.getContentType();
     // If one value is null, choose the other value
     if (type1 == null && type2 != null) {
-	//log.debug("type2 = "+ type2);
       type = type2;
     }
     else if (type2 == null && type1 != null) {
-	//log.debug("type1 = "+ type1);
       type = type1;
     }
     // If neither value is null, choose the longer value
     else if (type1 != null && type2 != null) {
       type = (type1.length() > type2.length() ? type1 : type2);
-	//log.debug("type1 = "+ type1);
-	//log.debug("type2 = "+ type2);
     }
 
     if (type == null || 
         !type.toLowerCase().startsWith("multipart/form-data")) {
-//log.debug("about to throw IOException 'cuz it's not multipart");
       throw new IOException("Posted content type isn't multipart/form-data");
     }
 
     // Check the content length to prevent denial of service attacks
     int length = req.getContentLength();
     if (length > maxSize) {
-//log.debug("about to throw IOException 'cuz length is > maxSize");
       throw new IOException("Posted content length of " + length + 
                             " exceeds limit of " + maxSize);
     }
@@ -193,7 +194,6 @@ public class MultipartParser {
     // Should look something like "------------------------12012133613061"
     String boundary = extractBoundary(type);
     if (boundary == null) {
-//log.debug("about to throw IOException 'cuz boundary is null");
       throw new IOException("Separation boundary was not specified");
     }
 
@@ -202,14 +202,11 @@ public class MultipartParser {
     // If required, wrap the real input stream with classes that 
     // "enhance" its behaviour for performance and stability
     if (buffer) {
-//log.debug("setting in to a buffered inputstream");
       in = new BufferedServletInputStream(in);
     }
-    if (limitLength) {
-//log.debug("setting in to a limited inputstream");
+    if (limitLength && length > 0) {
       in = new LimitedServletInputStream(in, length);
     }
-//log.debug("finished setting in. now ready to ready until hitting the boundary ");
 
     // Save our values for later
     this.in = in;
@@ -221,14 +218,11 @@ public class MultipartParser {
     // the need for preamble support.
     do {
       String line = readLine();
-	//log.debug("just read this line " + line);
       if (line == null) {
-	//log.debug("about to throw IOException from premature ending");
         throw new IOException("Corrupt form data: premature ending");
       }
       // See if this line is the boundary, and if so break
       if (line.startsWith(boundary)) {
-//log.debug("just found boundary");
         break;  // success
       }
     } while (true);
@@ -259,7 +253,6 @@ public class MultipartParser {
    * @see ParamPart
    */
   public Part readNextPart() throws IOException {
-//log.debug("in readNextPart");
     // Make sure the last file was entirely read from the input
     if (lastFilePart != null) {
       lastFilePart.getInputStream().close();
@@ -271,7 +264,6 @@ public class MultipartParser {
     // Content-Type: type/subtype
     // Content-Transfer-Encoding: binary
     Vector headers = new Vector();
-//log.debug("1");
 
     String line = readLine();
     if (line == null) {
@@ -284,7 +276,6 @@ public class MultipartParser {
       return null;
     }
 
-//log.debug("2");
     // Read the following header lines we hit an empty line
     // A line starting with whitespace is considered a continuation;
     // that requires a little special logic.  Thanks to Nic Ferrier for
@@ -307,23 +298,20 @@ public class MultipartParser {
       headers.addElement(line);
       line = nextLine;
     }
-//log.debug("3");
 
     // If we got a null above, it's the end
     if (line == null) {
       return null;
     }
-//log.debug("4");
 
     String name = null;
     String filename = null;
     String origname = null;
     String contentType = "text/plain";  // rfc1867 says this is the default
 
-//log.debug("5");
-    Enumeration enumer = headers.elements();
-    while (enumer.hasMoreElements()) {
-      String headerline = (String) enumer.nextElement();
+    Enumeration enu = headers.elements();
+    while (enu.hasMoreElements()) {
+      String headerline = (String) enu.nextElement();
       if (headerline.toLowerCase().startsWith("content-disposition:")) {
         // Parse the content-disposition line
         String[] dispInfo = extractDispositionInfo(headerline);
@@ -340,23 +328,18 @@ public class MultipartParser {
         }
       }
     }
-//log.debug("6");
 
     // Now, finally, we read the content (end after reading the boundary)
     if (filename == null) {
       // This is a parameter, add it to the vector of values
       // The encoding is needed to help parse the value
-//log.debug("7");
       return new ParamPart(name, in, boundary, encoding);
     }
     else {
-//log.debug("8");
       // This is a file
       if (filename.equals("")) {
-//log.debug("9");
         filename = null; // empty filename, probably an "empty" file param
       }
-//log.debug("10");
       lastFilePart = new FilePart(name, in, boundary,
                                   contentType, filename, origname);
       return lastFilePart;
@@ -369,7 +352,6 @@ public class MultipartParser {
    * @return the boundary token.
    */
   private String extractBoundary(String line) {
-//log.debug("in extractBoundary");
     // Use lastIndexOf() because IE 4.01 on Win98 has been known to send the
     // "boundary=" string multiple times.  Thanks to David Wall for this fix.
     int index = line.lastIndexOf("boundary=");
@@ -397,7 +379,6 @@ public class MultipartParser {
    * @exception  IOException if the line is malformatted.
    */
   private String[] extractDispositionInfo(String line) throws IOException {
-//log.debug("in extractDispositionInfo");
     // Return the line's data as an array: disposition, name, filename
     String[] retval = new String[4];
 
@@ -412,12 +393,11 @@ public class MultipartParser {
     if (start == -1 || end == -1) {
       throw new IOException("Content disposition corrupt: " + origline);
     }
-    String disposition = line.substring(start + 21, end);
+    String disposition = line.substring(start + 21, end).trim();
     if (!disposition.equals("form-data")) {
       throw new IOException("Invalid content disposition: " + disposition);
     }
 
-//log.debug("11");
     // Get the field name
     start = line.indexOf("name=\"", end);  // start at last semicolon
     end = line.indexOf("\"", start + 7);   // skip name=\"
@@ -436,7 +416,6 @@ public class MultipartParser {
       startOffset = 5;  // without quotes we have one fewer char to skip
     }
     String name = origline.substring(start + startOffset, end);
-//log.debug("12");
 
     // Get the filename, if given
     String filename = null;
@@ -453,7 +432,6 @@ public class MultipartParser {
         filename = filename.substring(slash + 1);  // past last slash
       }
     }
-//log.debug("13");
 
     // Return a String array: disposition, name, filename
     // empty filename denotes no file posted!
@@ -495,25 +473,18 @@ public class MultipartParser {
    * @exception IOException	if an input or output exception has occurred.
    */
   private String readLine() throws IOException {
-//log.debug("in readLine()");
     StringBuffer sbuf = new StringBuffer();
     int result;
     String line;
 
     do {
-//log.debug("doing while buffer was filled. buf.length = " + buf.length);
       result = in.readLine(buf, 0, buf.length);  // does +=
-//log.debug("result = "+result);
       if (result != -1) {
-//log.debug("result was not = -1 ");
-//log.debug("sbuf.len before is = " + sbuf.length());
         sbuf.append(new String(buf, 0, result, encoding));
-//log.debug("sbuf.len is now = " + sbuf.length());
       }
     } while (result == buf.length);  // loop only if the buffer was filled
 
     if (sbuf.length() == 0) {
-//log.debug("sbuf.len is 0");
       return null;  // nothing read, must be at the end of stream
     }
 
@@ -521,16 +492,12 @@ public class MultipartParser {
     // It should always be \r\n but IE5 sometimes does just \n
     // Thanks to Luke Blaikie for helping make this work with \n
     int len = sbuf.length();
-//log.debug("len = " + len);
     if (len >= 2 && sbuf.charAt(len - 2) == '\r') {
-//log.debug("22 ");
       sbuf.setLength(len - 2);  // cut \r\n
     }
     else if (len >= 1 && sbuf.charAt(len - 1) == '\n') {
-//log.debug("33 ");
       sbuf.setLength(len - 1);  // cut \n
     }
-//log.debug("sbuf.toString =  " + sbuf.toString());
     return sbuf.toString();
   }
 }
