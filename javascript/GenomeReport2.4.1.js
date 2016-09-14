@@ -142,6 +142,10 @@ function loadTrackTable(){
 			params.source="ensembl";
 			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
 				params.source="brain";
+			}else if(reportSelectedTrack.trackClass.indexOf("heart")>-1){
+				params.source="heart";
+			}if(reportSelectedTrack.trackClass.indexOf("liver")>-1){
+				params.source="liver";
 			}
 			jspPage="web/GeneCentric/smallGeneTable.jsp";
 		}else if((new String(reportSelectedTrack.trackClass)).indexOf("snp")>-1){
@@ -317,13 +321,16 @@ function DisplayRegionReport(){
 }
 
 function displayDetailedView(track){
-	//console.log("displayDetailedView");
+	console.log("displayDetailedView:"+track);
 	reportSelectedTrack=track;
 	$('li.report').removeClass("selected");
 	$("li."+track.trackClass).addClass("selected");
 	if(track.displayBreakDown){
-		$('div#trackGraph').html("");
-		track.displayBreakDown("div#collapsableReport div#trackGraph");
+		setTimeout(function(){
+			console.log("in displayDetailedView()");
+			$('div#trackGraph').html("");
+			track.displayBreakDown("div#collapsableReport div#trackGraph");
+		},50);
 	}
 	var tc=new String(track.trackClass);
 	if(tc.indexOf("coding")>-1 || tc.indexOf("noncoding")>-1 || tc.indexOf("smallnc")>-1 ||

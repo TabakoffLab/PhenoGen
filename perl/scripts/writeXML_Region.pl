@@ -987,6 +987,8 @@ sub createXMLFile
 		%smncHOH=%$smncRef;
 		my $smEnd=time();
 		print "Small RNA completed in ".($smEnd-$smStart)." sec.\n";
+		createSmallNonCodingXMLOLD(\%smncHOH,\%GeneHOH,$outputDir."combinedsmallnc.xml",$outputDir."brainsmallnc.xml",$outputDir."ensemblsmallnc.xml",$chr);
+	
 	}
 	
 	#my $rnaCountStart=time();
@@ -1000,16 +1002,15 @@ sub createXMLFile
 	#create bed files in region folder
 	createQTLXMLTrack(\%qtlHOH,$outputDir."qtl.xml",$chr);
 	createSNPXMLTrack(\%snpHOH,$outputDir);
-	if($genomeVer eq "rn5"){
-		createSmallNonCodingXML(\%smncHOH,\%GeneHOH,$outputDir."combinedsmallnc.xml",$outputDir."brainsmallnc.xml",$outputDir."ensemblsmallnc.xml",$chr);
-	}
+	
+		
 
-        print "start read RefSeq\n";
+    print "start read RefSeq\n";
 	my $ensDsn="DBI:mysql:database=".$ucscDB.";host=".$ensHost.";port=".$ensPort.";";
-        my $refSeqRef=readRefSeqDataFromDB($chr,$species,$minCoord,$maxCoord,$ensDsn,$ensUsr,$ensPasswd);
-        my %refSeqHOH=%$refSeqRef;
-        createRefSeqXMLTrack(\%refSeqHOH,$outputDir."refSeq.xml");
-        print "end read RefSeq\n";
+    my $refSeqRef=readRefSeqDataFromDB($chr,$species,$minCoord,$maxCoord,$ensDsn,$ensUsr,$ensPasswd);
+    my %refSeqHOH=%$refSeqRef;
+    createRefSeqXMLTrack(\%refSeqHOH,$outputDir."refSeq.xml");
+    print "end read RefSeq\n";
 
 	#createRNACountXMLTrack(\%rnaCountHOH,$outputDir."helicos.xml");
 	my $scriptEnd=time();

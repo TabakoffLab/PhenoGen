@@ -54,10 +54,13 @@ public class Gene {
     HashMap totalCounts=new HashMap();
     HashMap snps=new HashMap();
     TranscriptCluster tc=null;
+    ArrayList<HashMap<String,String>> quant=new ArrayList<HashMap<String,String>>();
     
     
     
     ArrayList<Transcript> transcripts=new ArrayList<Transcript>();
+    public Gene(){    
+    }
     
     public Gene(String geneID,long start,long end){
         this(geneID,start,end,"","","","","","");
@@ -175,6 +178,12 @@ public class Gene {
         this.description = description;
     }
     
+    public void addQuant(HashMap<String,String> hm){
+        this.quant.add(hm);
+    }
+    public ArrayList<HashMap<String,String>> getQuant(){
+        return this.quant;
+    }
     public String getEnsemblAnnotation(){
         return this.ensemblAnnot;
     }
@@ -730,6 +739,7 @@ public class Gene {
         }
         return genelist;
     }
+    
     //Methods to read Gene Data from RegionXML file.
     public static ArrayList<Gene> readGenes(String url) {
         ArrayList<Gene> genelist=new ArrayList<Gene>();
@@ -764,8 +774,18 @@ public class Gene {
                     }
                     Gene tmpG=new Gene(geneID,start,stop,chr,strand,biotype,geneSymbol,source,description);
                     NodeList transcripts=genes.item(i).getChildNodes();
-                    ArrayList<Transcript> tmp=readTranscripts(transcripts.item(1).getChildNodes(),geneID);
-                    tmpG.setTranscripts(tmp);
+                    Node transcriptList=null;
+                    for(int j=0;j<transcripts.getLength();j++){
+                        if(transcripts.item(j).getNodeName().equals("TranscriptList")){
+                            transcriptList=transcripts.item(j);
+                        }else if(transcripts.item(j).getNodeName().equals("StrainQuantList")){
+                            fillQuant(tmpG,transcripts.item(j).getChildNodes());
+                        }
+                    }
+                    if(transcriptList!=null){
+                        ArrayList<Transcript> tmp=readTranscripts(transcriptList.getChildNodes(),geneID);
+                        tmpG.setTranscripts(tmp);
+                    }
                     genelist.add(tmpG);
                 }
             }
@@ -781,6 +801,21 @@ public class Gene {
         }
         return genelist;
         
+    }
+    private static void fillQuant(Gene g,NodeList quantList){
+        for(int i=0;i<quantList.getLength();i++){
+            if(quantList.item(i).getNodeName().equals("Strains")){
+                NamedNodeMap attrib=quantList.item(i).getAttributes();
+                HashMap<String,String> hm=new HashMap<String,String>();
+                hm.put("strain",attrib.getNamedItem("strain").getNodeValue());
+                hm.put("cov",attrib.getNamedItem("cov").getNodeValue());
+                hm.put("max",attrib.getNamedItem("max").getNodeValue());
+                hm.put("min",attrib.getNamedItem("min").getNodeValue());
+                hm.put("mean",attrib.getNamedItem("mean").getNodeValue());
+                hm.put("median",attrib.getNamedItem("median").getNodeValue());
+                g.addQuant(hm);
+            }
+        }
     }
     private static ArrayList<Transcript> readTranscripts(NodeList nodes,String geneID) {
         ArrayList<Transcript> transcripts=new ArrayList<Transcript>();

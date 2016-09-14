@@ -3877,6 +3877,8 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 	};
 
 	that.displayBreakDown=function(divSelector){
+		console.log("displayBreakDown");
+		console.log(that.counts);
 		var tmpW= 300,tmpH = 300,radius = Math.min(tmpW, tmpH) / 2;
 		var winWidth=$(window).width()/2;
 		if($(window).width()>1000){
@@ -5134,8 +5136,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		that.ttTrackList.push("brainspliceJnct");
         that.ttTrackList.push("brainilluminaTotalPlus");
         that.ttTrackList.push("brainilluminaTotalMinus");
+    }else if(trackClass==="brainsmallnc"){
+		that.ttTrackList.push("illuminaSmall");
+    }else if(trackClass==="heartsmallnc"){
+		that.ttTrackList.push("heartilluminaSmall");
+    }else if(trackClass==="liversmallnc"){
+		that.ttTrackList.push("liverilluminaSmall");
     }
-
+    that.pieColorPalette=d3.scale.category20();
 
 	that.color =function(d){
 		var color="#000000";
@@ -5266,9 +5274,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
             	color="#FE7596";
             }
 		}else if(that.trackClass==="ensemblsmallnc"){
-			color="#FFCC00";
+			color=that.pieColorPalette(d.data.names);
+			//color="#FFCC00";
 		}else if(that.trackClass==="brainsmallnc"){
+			
 			color="#99CC99";
+			color=that.pieStrainSpecColor(color,d.data.names);
 		}else if(that.trackClass==="liverTotal"){
 			color="#bbbedd";
             color=that.pieStrainSpecColor(color,d.data.names);
@@ -5280,8 +5291,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			color=that.pieStrainSpecColor(color,d.data.names);
 		}else if(that.trackClass==="liversmallnc"){
 			color="#8b8ead";
+			color=that.pieStrainSpecColor(color,d.data.names);
 		}else if(that.trackClass==="heartsmallnc"){
 			color="#BC5232";
+			color=that.pieStrainSpecColor(color,d.data.names);
 		}else if(that.trackClass==="mergedTotal"){
 			color="#9F4F92";
 		}
@@ -5751,7 +5764,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			}
 			var newMin=0;
 			var newMax=0;
-			if(localTxType==="protein"||localTxType==="long"||localTxType==="liverTotal"||localTxType==="heartTotal"||localTxType==="brainTotal"||localTxType==="mergedTotal"||(localTxType==="small"&& new String(d.getAttribute("ID")).indexOf("ENS")>-1)){
+			if(localTxType==="protein"||localTxType==="long"||localTxType==="liverTotal"||localTxType==="heartTotal"||localTxType==="brainTotal"||localTxType==="mergedTotal"|| (localTxType==="small" && genomeVer!=="rn5") ||(localTxType==="small"&& new String(d.getAttribute("ID")).indexOf("ENS")>-1)){
 					var displayID=d.getAttribute("ID");
 					var akaENS="";
 					var akaGenSym="";
@@ -5812,16 +5825,26 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 				}
 				$('div#selectedImage').show();
-				if((new String(selectedID)).indexOf("ENS")>-1){
+				if((new String(selectedID)).indexOf("ENS")>-1 && that.trackClass.indexOf("ensembl")>-1 ){
 					$('div#selectedReport').show();
 					var jspPage= pathPrefix +"geneReport.jsp";
 					var params={id:selectedID,geneSymbol:selectedGeneSymbol,chromosome:chr,species:organism,genomeVer:genomeVer};
 					DisplaySelectedDetailReport(jspPage,params);
 				}else{
-					$('div#selectedReport').html("<BR><BR>Detailed Gene Reports are not currently provided for RNA-Seq(Cufflinks) generated genes that are novel and have not been matched to an existing annotated gene.  In the future overlapping probesets and SNPs will be summarized in the same manner.  This feature should be added by December 2014.  Please keep checking back or let us know you'd like to see it sooner.");
+					if(localTxType!=="small"){
+						$('div#selectedReport').html("<BR><BR>Detailed Gene Reports are not currently provided for RNA-Seq(Cufflinks) generated genes that are novel and have not been matched to an existing annotated gene.  In the future overlapping probesets and SNPs will be summarized in the same manner.  This feature should be added by December 2014.  Please keep checking back or let us know you'd like to see it sooner.");
+					}else{
+						if(genomeVer==="rn6"){
+							var path=dataPrefix+"tmpData/browserCache/"+genomeVer+"/regionData/"+that.gsvg.folderName+"/"+that.trackClass+".xml";
+							var jspPage= pathPrefix +"smallRNAReport.jsp";
+							var params={dataPath:path,id:selectedID};
+							DisplaySelectedDetailReport(jspPage,params);
+						}
+					}
+
 				}
 			}else if(localTxType==="small"){
-				if(new String(d.getAttribute("ID")).indexOf("ENS")===-1){
+				if(new String(d.getAttribute("ID")).indexOf("ENS")===-1 && genomeVer==="rn5"){
 					$('div#selectedImage').hide();
 					$('div#selectedReport').show();
 					newMin=d.getAttribute("start");
@@ -5833,6 +5856,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					DisplaySelectedDetailReport(jspPage,params);
 				}else{
 					//FILL IN to allow selecting miRNA.
+					
 				}
 			}
 			that.gsvg.selectSvg.changeSelection(newMin,newMax);
@@ -5845,7 +5869,82 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 	that.getDisplayedData= function (){
 		var dispData=new Array();
 		var dispDataCount=0;
-		if(that.drawnAs==="Gene"){
+
+		if(that.trackClass.indexOf("smallnc")>-1){
+			var countsInd=0;
+			if(that.trackClass.indexOf("ensembl")>-1){
+				var dataElem;
+				if(that.drawnAs==="Gene"){
+					dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene");
+				}else if(that.drawnAs==="Trx"){
+					dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx");
+				}
+				//console.log(dataElem);
+				that.counts=new Array();
+				var tmpDat=dataElem[0];
+				if(typeof tmpDat !=="undefined"){
+					for(var l=0;l<tmpDat.length;l++){
+						var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+						var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+						if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)||(start<=0&&stop>=that.gsvg.width)){
+							//var nameStr=new String(tmpDat[l].__data__.getAttribute("name"));
+							var name="Ensembl";
+							
+							//console.log(tmpDat[l].__data__);
+							if(typeof tmpDat[l].__data__.getAttribute("biotype") !=="undefined"){
+								name=tmpDat[l].__data__.getAttribute("biotype");
+							}
+							if(typeof that.counts[name]==='undefined'){
+								that.counts[name]=new Object();
+								that.counts[countsInd]=that.counts[name];
+								countsInd++;
+								that.counts[name].value=1;
+								that.counts[name].names=name;
+							}else{
+								that.counts[name].value++;
+							}
+							dispData[dispDataCount]=tmpDat[l].__data__;
+							dispDataCount++;
+							total++;
+						}
+					}
+				}
+			}else{
+				var dataElem;
+				if(that.drawnAs==="Gene"){
+					dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene");
+				}else if(that.drawnAs==="Trx"){
+					dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.trx");
+				}
+				that.counts=new Array();
+				var tmpDat=dataElem[0];
+				if(typeof tmpDat !=='undefined'){
+					for(var l=0;l<tmpDat.length;l++){
+						var start=that.xScale(tmpDat[l].__data__.getAttribute("start"));
+						var stop=that.xScale(tmpDat[l].__data__.getAttribute("stop"));
+						if((0<=start && start<=that.gsvg.width)||(0<=stop &&stop<=that.gsvg.width)||(start<=0&&stop>=that.gsvg.width)){
+							//var nameStr=new String(tmpDat[l].__data__.getAttribute("name"));
+							var name="Ensembl";
+							if(typeof tmpDat[l].__data__.getAttribute("strain") !=='undefined'){
+								name=tmpDat[l].__data__.getAttribute("strain");
+							}
+							if(typeof that.counts[name]==='undefined'){
+								that.counts[name]=new Object();
+								that.counts[countsInd]=that.counts[name];
+								countsInd++;
+								that.counts[name].value=1;
+								that.counts[name].names=name;
+							}else{
+								that.counts[name].value++;
+							}
+							dispData[dispDataCount]=tmpDat[l].__data__;
+							dispDataCount++;
+							total++;
+						}
+					}
+				}
+			}
+		}else if(that.drawnAs==="Gene"){
 			var dataElem=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("g.gene");
 			that.counts=[{value:0,names:"Ensembl"},{value:0,names:"Brain RNA-Seq"},{value:0,names:"Liver RNA-Seq"},{value:0,names:"Heart RNA-Seq"},{value:0,names:"Merged RNA-Seq"}];
 			var tmpDat=dataElem[0];
@@ -5917,7 +6016,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		var path=dataPrefix+"tmpData/browserCache/"+genomeVer+"/regionData/"+that.gsvg.folderName+"/"+that.trackClass+".xml";
 		d3.xml(path,function (error,d){
 			if(error){
-				if(retry===0  && that.trackClass==='mergedTotal'){
+				if(retry===0  && (that.trackClass==='mergedTotal' || that.trackClass.indexOf("smallnc")>-1)){
                 	var tmpContext=contextPath +"/"+ pathPrefix;
 					if(!pathPrefix){
 						tmpContext="";
@@ -6235,26 +6334,28 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		newSvg.addTrack(that.trackClass,2,"DrawTrx",dataArr);
 		//Setup Other tracks included in the track type(listed in that.ttTrackList)
 		for(var r=0;r<that.ttTrackList.length;r++){
-			if(that.ttTrackList[r]!=that.trackClass){
-				var tData=that.gsvg.getTrackData(that.ttTrackList[r]);
-				var fData=new Array();
-				if(typeof tData!=='undefined' && tData.length>0){
-					var fCount=0;
-					for(var s=0;s<tData.length;s++){
-						if((tmpMin<=tData[s].getAttribute("start")&&tData[s].getAttribute("start")<=tmpMax)
-							|| (tData[s].getAttribute("start")<=tmpMin&&tData[s].getAttribute("stop")>=tmpMin)
-							//|| (newSvg.xMin<=tData[s].getAttribute("stop")&&tData[s].getAttribute("stop")<=newSvg.xMax)
-							//|| (tData[s].getAttribute("start")<=newSvg.xMin&&newSvg.xMax<=tData[s].getAttribute("stop"))
-							){
-							fData[fCount]=tData[s];
-							fCount++;
-						}
-					}
-					if(fData.length>0){
-						newSvg.addTrack(that.ttTrackList[r],3,"DrawTrx",fData);
+			if(that.trackClass!==that.ttTrackList[r]){
+			var tData=that.gsvg.getTrackData(that.ttTrackList[r]);
+			var fData=new Array();
+			if(typeof tData!=='undefined' && tData.length>0){
+				var fCount=0;
+				for(var s=0;s<tData.length;s++){
+					if( (tmpMin<=tData[s].getAttribute("start")&&tData[s].getAttribute("start")<=tmpMax)||(tmpMin<=tData[s].getAttribute("stop")&&tData[s].getAttribute("stop")<=tmpMax)
+						|| (tData[s].getAttribute("start")<=tmpMin&&tData[s].getAttribute("stop")>=tmpMin) 
+						
+						//|| (newSvg.xMin<=tData[s].getAttribute("stop")&&tData[s].getAttribute("stop")<=newSvg.xMax)
+						//|| (tData[s].getAttribute("start")<=newSvg.xMin&&newSvg.xMax<=tData[s].getAttribute("stop"))
+						){
+						fData[fCount]=tData[s];
+						fCount++;
 					}
 				}
+				if(fData.length>0){
+					newSvg.addTrack(that.ttTrackList[r],3,"DrawTrx",fData);
+				}
 			}
+			}
+			
 		}
 
 	};
@@ -6340,8 +6441,8 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 
 
 		if(that.drawAs==="Gene" || that.trackClass.indexOf("smallnc")>-1){
-			console.log(that.trackClass);
-			console.log(filterData);
+			//console.log(that.trackClass);
+			//console.log(filterData);
 			that.drawnAs="Gene";
 			that.svg.selectAll(".trx0").each(function(){d3.select(this).remove();});
 
@@ -6394,15 +6495,16 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				            if(d){
 					            that.triggerTableFilter(d);
 					            if(that.trackClass.indexOf("smallnc")===-1){
-					            	that.setupToolTipSVG(d,0.05);
+					            	that.setupToolTipSVG(d.parent,0.05);
 								}else{
 									//console.log("display tooltip svg");
-									var newSvg=toolTipSVG("div#ttSVG",450,((d.getAttribute("start")*1)-10),((d.getAttribute("stop")*1)+10),99,that.getDisplayID(d.getAttribute("ID")),"");
+									that.setupToolTipSVG(d,0.05);
+									/*var newSvg=toolTipSVG("div#ttSVG",450,((d.getAttribute("start")*1)-10),((d.getAttribute("stop")*1)+10),99,that.getDisplayID(d.getAttribute("ID")),"");
 									newSvg.xMin=d.getAttribute("start")-20;
 									newSvg.xMax=d.getAttribute("stop")+20;
 									var dataArr=new Array();
 									dataArr[0]=d;
-									newSvg.addTrack(that.trackClass,2,"",dataArr);
+									newSvg.addTrack(that.trackClass,2,"",dataArr);*/
 								}
 							}
 						}
@@ -6547,7 +6649,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							if( typeof d !=='undefined'){
 					            //that.triggerTableFilter(d);
 					            if(that.trackClass.indexOf("smallnc")===-1){
-					            	that.setupToolTipSVG(d.parent,0.05);
+					            	that.setupToolTipSVG(d,0.05);
 								}else{
 									var newSvg=toolTipSVG("div#ttSVG",450,((d.getAttribute("start")*1)-10),((d.getAttribute("stop")*1)+10),99,that.getDisplayID(d.getAttribute("ID")),"");
 									newSvg.xMin=d.getAttribute("start")-20;

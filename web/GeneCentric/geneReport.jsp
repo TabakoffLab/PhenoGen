@@ -15,6 +15,8 @@
 		String panel="";
 	String gcPath="";
         String genomeVer="";
+        boolean isSmall=false;
+        boolean isNovel=false;
 	int selectedGene=0;
 	ArrayList<String>geneSymbol=new ArrayList<String>();
 	LinkGenerator lg=new LinkGenerator(session);
@@ -58,6 +60,9 @@
 	if(request.getParameter("id")!=null){
 		id=FilterInput.getFilteredInput(request.getParameter("id"));
 	}
+        if(id.startsWith("PRN")||id.startsWith("PMM")){
+            isNovel=true;
+        }
 	if(request.getParameter("genomeVer")!=null){
 		genomeVer=request.getParameter("genomeVer");
 	}
@@ -103,6 +108,10 @@
 			curGene=tmpGeneList.get(i);
 		}
 	}
+        long len=curGene.getEnd()-curGene.getStart();
+        if(len<200 && !curGene.getBioType().equals("protein_coding")){
+            isSmall=true;
+        }
 %>
 
 <style>
@@ -166,17 +175,21 @@ Add report here.
 
 <div style="font-size:18px; font-weight:bold; background-color:#FFFFFF; color:#000000; text-align:center; width:100%; padding-top:3px;">
             <span class="selectdetailMenu selected" name="geneDetail">Gene Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneDetailTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
-    		<span class="selectdetailMenu" name="geneEQTL">Gene eQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneEqtlTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
-    		<span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpGenePSTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
-            
-            	<%if(curGene.getGeneSymbol().toLowerCase().startsWith("mir")||curGene.getDescription().toLowerCase().startsWith("microRNA")){%>
-            		<span class="selectdetailMenu" name="miGenerna">Genes Targeted by this miRNA(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
-                <%}else{%>
-                	<span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
-                <%}%>
-            
-            <!--<span class="selectdetailMenu" name="geneGO">GO<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>-->
-            <span class="selectdetailMenu" name="geneWGCNA">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneWGCNATab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+            <%if(!isSmall){%>
+                <span class="selectdetailMenu" name="geneEQTL">Gene eQTLs<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneEqtlTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+                <span class="selectdetailMenu" name="geneApp">Probe Set Level Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpGenePSTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+                <span class="selectdetailMenu" name="geneMIrna">miRNA Targeting Gene(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+                <!--<span class="selectdetailMenu" name="geneGO">GO<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>-->
+                <span class="selectdetailMenu" name="geneWGCNA">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneWGCNATab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+            <%}else{
+                if(curGene.getGeneSymbol().toLowerCase().startsWith("mir")||curGene.getDescription().toLowerCase().startsWith("microrna") || curGene.getBioType().toLowerCase().indexOf("mirna")>-1){
+                    if(curGene.getGeneID().startsWith("ENS")){%>
+                        <span class="selectdetailMenu" name="miGenerna">Genes Targeted by this miRNA(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+                    <%}else{%>
+                        <span class="selectdetailMenu" name="miGenernaPred">Predict Genes Targeted by this miRNA(PITA)<div class="inpageHelp" style="display:inline-block; "><img id="HelpPredictGeneMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+                    <%}
+                }
+            }%>
 </div>
 
 <div style="font-size:18px; font-weight:bold; background-color:#47c647; color:#FFFFFF; text-align:left; width:100%; ">
@@ -253,7 +266,11 @@ Add report here.
                                 %>
                                 <span title="Description <%=remain%>">
                                 	<%String bioType=curGene.getBioType();%>
-                                    <%=shortDesc%>
+                                        <%if(!isSmall){%>
+                                            <%=shortDesc%>
+                                        <%}else{%>
+                                            <%=bioType%>
+                                        <%}%>
                                     <% HashMap displayed=new HashMap();
                                     HashMap bySource=new HashMap();
                                     for(int k=0;k<tmpTrx.size();k++){
@@ -496,7 +513,7 @@ Add report here.
                     </div>
             <%}%>
             
-            <%	if(tc!=null){	
+            <%	if(tc!=null && ! isSmall){	
 			
 				
                                     //String[] curTissues=tc.getTissueList();%>

@@ -633,6 +633,8 @@ sub readSmallRNADataFromDB{
 					exonList => {exon => \@$exonArray},
 					intronList => {intron => \@$intronArray}
 				};
+				$geneHOH{Gene}[$cntGene-1]{biotype}=$trtmp_category;
+				$geneHOH{Gene}[$cntGene-1]{source}=$trtmp_source;
 				$geneHOH{Gene}[$cntGene-1]{strain}=$trtmp_strain;
 				my $reftmp=$annotHOH{$trtmp_trid};
 				my @tmp=@$reftmp;
@@ -718,6 +720,8 @@ sub readSmallRNADataFromDB{
 					exonList => {exon => \@$exonArray},
 					intronList => {intron => \@$intronArray}
 				};
+				$geneHOH{Gene}[$cntGene-1]{biotype}=$trtmp_category;
+				$geneHOH{Gene}[$cntGene-1]{source}=$trtmp_source;
 				$geneHOH{Gene}[$cntGene-1]{strain}=$trtmp_strain;
 				my $reftmp=$annotHOH{$trtmp_trid};
 				my @tmp=@$reftmp;
@@ -751,7 +755,7 @@ sub readSmallRNADataFromDB{
 				my $shortGID=substr($gene_id,index($gene_id,"_")+1);
 				$tmpGeneID=$shortGID;
 			}
-			my $bioType=$trtmp_category;
+			#my $bioType=$trtmp_category;
 			
 			#create next gene
 			$geneHOH{Gene}[$cntGene] = {
@@ -760,9 +764,9 @@ sub readSmallRNADataFromDB{
 				ID => $tmpGeneID,
 				strand=>$trstrand,
 				chromosome=>$chr,
-				biotype => $bioType,
+				biotype => "",
 				geneSymbol => "",   ####NEED TO FILL THIS IN WITH AKA ANNOTATION
-				source => "RNA Seq"
+				source => ""
 				};
 			$cntGene++;
 			#print "adding transcript $isoform_id\n";
@@ -825,6 +829,8 @@ sub readSmallRNADataFromDB{
 						exonList => {exon => \@$exonArray},
 						intronList => {intron => \@$intronArray}
 		};
+		$geneHOH{Gene}[$cntGene-1]{biotype}=$trtmp_category;
+		$geneHOH{Gene}[$cntGene-1]{source}=$trtmp_source;
 		$geneHOH{Gene}[$cntGene-1]{strain}=$trtmp_strain;
 		my $reftmp=$annotHOH{$trtmp_trid};
 		my @tmp=@$reftmp;

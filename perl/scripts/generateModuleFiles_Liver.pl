@@ -178,6 +178,7 @@ foreach my $mod(@moduleList){
     
     print "processing $mod\n";
     my %adjHOH;
+    my %linkIDs;
 
     #GET LINKS FROM ADJ MATRIX
     #print "OPEN ADJ:".$adjPath."/".$mod.".adjMat\n";
@@ -186,9 +187,9 @@ foreach my $mod(@moduleList){
     my @adjTC=split("\t",$header);
     for(my $row=0;$row<@adjTC;$row++){
         $adjTC[$row]=trim(substr($adjTC[$row],length($mod)+1));
-        $adjTC[$row]=~ s/^total\./Liver_C/;
-        $adjTC[$row]=~ s/^GENE\./Liver_C/;
-        $adjTC[$row]=~ s/^XLOC_0+/Liver_C/;
+        $adjTC[$row]=~ s/^total\./Liver_G/;
+        $adjTC[$row]=~ s/^GENE\./Liver_G/;
+        $adjTC[$row]=~ s/^XLOC_0+/Liver_G/;
         $adjTC[$row]=~ s/clust//;
         #print "tcName:".$adjTC[$row]."\n";
     }
@@ -209,17 +210,23 @@ foreach my $mod(@moduleList){
         }
     }
     close ADJ;
-    my $query2="select wmi.probeset_id,wmi.transcript_clust_id,wmi.gene_id,wmi.module_id,wmc.rgb,wmc.hex from wgcna_module_info wmi, wgcna_module_colors wmc where wdsid=".$wgcnaDataset." and wmi.module='".$mod."' and wmc.module=wmi.module  order by transcript_clust_id";
+    my $query2="select unique wmi.probeset_id,wmi.TRANSCRIPT_CLUST_ID,rt.merge_gene_id,wmi.gene_id,wmi.module_id,wmc.rgb,wmc.hex 
+        from wgcna_module_info wmi
+        inner join wgcna_module_colors wmc on wmc.MODULE=wmi.MODULE
+        left outer join rna_transcripts rt on rt.GENE_ID=wmi.TRANSCRIPT_CLUST_ID and rt.rna_dataset_id=".$rnaDS."
+        where wmi.wdsid=".$wgcnaDataset." and wmi.module='".$mod."' and wmc.module=wmi.module  order by transcript_clust_id";
+    #print $query2."\n";
     my $query_handle2 = $connect->prepare($query2) or die ("Module query prepare failed \n");
     $query_handle2->execute() or die ( "Module query execute failed \n");
     my $psid;
     my $tc;
     my $geneid;
+    my $altGeneID;
     my $tcCount=0;
     my $modID;
     my $modRGB;
     my $modHex;
-    $query_handle2->bind_columns(\$psid,\$tc,\$geneid,\$modID,\$modRGB,\$modHex);
+    $query_handle2->bind_columns(\$psid,\$tc,\$altGeneID,\$geneid,\$modID,\$modRGB,\$modHex);
     while($query_handle2->fetch()) {
         $tcCount++;
         if($modRGB ne "" and $modHex ne ""){
@@ -245,6 +252,11 @@ foreach my $mod(@moduleList){
         }
         
         #print "$psid\t$tc\t$geneid\n";
+        if(index($geneid,"ENS")>-1){
+            $linkIDs{$tc}=$geneid;
+        }else{
+            $linkIDs{$tc}=$altGeneID;
+        }
         my $secondPeriod=index( $tc , "." , (index($tc,".")+1) );
         my $thisID=$tc;
         my $thisCluster="0";
@@ -471,10 +483,14 @@ foreach my $mod(@moduleList){
                     } 
                 }
                 $qh->finish();
+                my $curGeneID=$geneid;
+                if(index($curGeneID,"ENS")==-1){
+                    $curGeneID=$altGeneID;
+                }
                 $moduleHOH{TCList}{$tc}{Gene} = {
                                                 start => $gMin,
                                                 stop => $gMax,
-                                                ID => $geneid,
+                                                ID => $curGeneID,
                                                 strand=>$fStrand,
                                                 chromosome=>$fChr,
                                                 biotype => $fCat,
@@ -510,7 +526,7 @@ foreach my $mod(@moduleList){
         if ($tcCount>0) {
                 print OFILE ",\n";
         }
-        print OFILE "{\"ID\":\"$tc\",";
+        print OFILE "{\"ID\":\"".$moduleHOH{TCList}{$tc}{Gene}{ID}."\",";
         print OFILE "\"LinkSum\":".$moduleHOH{TCList}{$tc}{linkSum}.",";
         print OFILE "\"LinkCount\":".$moduleHOH{TCList}{$tc}{linkCount}.",";
         print OFILE "\"Gene\":{";
@@ -647,9 +663,10 @@ foreach my $mod(@moduleList){
         if($link>0){
             print OFILE ",\n";
         }
+        #print $moduleHOH{LinkList}[$link]{TC1}."\t".$moduleHOH{LinkList}[$link]{TC2}."\t".$linkIDs{$moduleHOH{LinkList}[$link]{TC1}}."\t".$linkIDs{$moduleHOH{LinkList}[$link]{TC2}}."\n";
         print OFILE "{";
-        print OFILE "\"TC1\":\"".$moduleHOH{LinkList}[$link]{TC1}."\",";
-        print OFILE "\"TC2\":\"".$moduleHOH{LinkList}[$link]{TC2}."\",";
+        print OFILE "\"TC1\":\"".$linkIDs{$moduleHOH{LinkList}[$link]{TC1}}."\",";
+        print OFILE "\"TC2\":\"".$linkIDs{$moduleHOH{LinkList}[$link]{TC2}}."\",";
         print OFILE "\"Cor\":".$moduleHOH{LinkList}[$link]{cor};
         print OFILE "}";
     }
