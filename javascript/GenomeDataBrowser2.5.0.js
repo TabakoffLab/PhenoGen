@@ -6495,7 +6495,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				            if(d){
 					            that.triggerTableFilter(d);
 					            if(that.trackClass.indexOf("smallnc")===-1){
-					            	that.setupToolTipSVG(d.parent,0.05);
+					            	if(that.drawAs==="Trx"){
+					            		that.setupToolTipSVG(d.parent,0.05);
+					            	}else{
+					            		that.setupToolTipSVG(d,0.05);
+					            	}
 								}else{
 									//console.log("display tooltip svg");
 									that.setupToolTipSVG(d,0.05);
