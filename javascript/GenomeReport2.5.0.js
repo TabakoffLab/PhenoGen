@@ -111,7 +111,8 @@ function loadTrackTable(){
 				arrayTypeID: arrayTypeID,
 				forwardPvalueCutoff:forwardPValueCutoff,
 				folderName: regionfolderName,
-				genomeVer: genomeVer
+				genomeVer: genomeVer,
+				track:reportSelectedTrack.trackClass
 			};
 		if(reportSelectedTrack.trackClass.indexOf("noncoding")>-1){
 			params.type="noncoding";

@@ -14,7 +14,9 @@
 	String type="";
 	String source="";
         String genomeVer="";
+        String track="";
 	LinkGenerator lg=new LinkGenerator(session);
+        HashMap<String,Integer> geneHM=new HashMap<String,Integer>();
 	double forwardPValueCutoff=0.01;
 	int rnaDatasetID=0;
 	int arrayTypeID=0;
@@ -75,24 +77,30 @@
         if(request.getParameter("genomeVer")!=null){
                 genomeVer=request.getParameter("genomeVer");
         }
+        if(request.getParameter("track")!=null){
+		track=FilterInput.getFilteredInput(request.getParameter("track"));
+	}
 	if(min<max){
-			if(min<1){
-				min=1;
-			}
+            if(min<1){
+                    min=1;
+            }
 
-                        /*if(source.equals("merged")){
-                            fullGeneList =gdt.getMergedRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
-                        }else{*/
-                        fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
-                        geneHM=gdt.getRegionTrackList(chromosome,min,max,genomeVer,track);
-                        //}
-                        log.debug("Gene list size:"+fullGeneList.size());
+            if(source.equals("merged")){
+                fullGeneList =gdt.getMergedRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
+            }else{
+                fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
+            
+            }
+            log.debug("Gene list size:"+fullGeneList.size());
 
-			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
-			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
-			if(second>-1){
-				folderName=tmpURL.substring(second+1,tmpURL.length()-1);
-			}
+            String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
+            int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
+            if(second>-1){
+                    folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+            }
+            if(!track.equals("")){
+                geneHM=gdt.getRegionTrackList(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,track);
+            }
 	}
 			
 	
@@ -292,10 +300,10 @@
                         <%DecimalFormat df2 = new DecimalFormat("#.##");
                         DecimalFormat df0 = new DecimalFormat("###");
                         DecimalFormat df4 = new DecimalFormat("#.####");
-                        HashMap Genes=
 						
 			for(int i=0;i<fullGeneList.size();i++){
                             edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=fullGeneList.get(i);
+                            if(geneHM.containsKey(curGene.getGeneID())){
                             TranscriptCluster tc=curGene.getTranscriptCluster();
                             HashMap hCount=curGene.getHeritCounts();
                             HashMap dCount=curGene.getDabgCounts();
@@ -618,6 +626,7 @@
                                     <%}%>
                          <%}%>
                         </TR>
+                     <%}%>
                      <%}%>
                      <%}%>
                  <%}%>
