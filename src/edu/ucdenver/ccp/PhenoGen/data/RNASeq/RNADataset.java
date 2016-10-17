@@ -34,7 +34,9 @@ public class RNADataset {
     private User rdsUser;
     private boolean isUserLoaded;
     private ArrayList<RNASample> samples;
+    private ArrayList<RNAResult> results;
     private boolean isSampleLoaded;
+    private boolean isResultsLoaded;
     private int sampleCount;
     private DataSource pool;
     private final Logger log;
@@ -279,6 +281,26 @@ public class RNADataset {
 
     public void setPool(DataSource pool) {
         this.pool = pool;
+    }
+
+    public ArrayList<RNAResult> getResults() {
+        return results;
+    }
+
+    public void setResults(ArrayList<RNAResult> results) {
+        if(!isResultsLoaded){
+            RNAResult myResult=new RNAResult();
+            try{
+                this.results=myResult.getRNAResultsByDataset(rnaDatasetID,pool);
+                isResultsLoaded=true;
+            }catch(Exception e){
+                isResultsLoaded=false;
+                results=new ArrayList<>();
+                e.printStackTrace(System.err);
+                log.error("error retreiving RNADataSetResults for RNADataset:"+rnaDatasetID,e);
+            }
+        }
+        this.results = results;
     }
     
     
