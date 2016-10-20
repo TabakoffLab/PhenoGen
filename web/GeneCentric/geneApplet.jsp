@@ -310,7 +310,7 @@ if(request.getParameter("arrayTypeID")!=null){
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
 
-            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.4.1.js" type="text/javascript"></script>
+            <script src="<%=contextRoot%>javascript/GenomeDataBrowser2.4.2.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeReport2.4.1.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeViewMenu2.4.1.js" type="text/javascript"></script>
             <script src="<%=contextRoot%>javascript/GenomeTrackMenu2.4.1.js" type="text/javascript"></script>
