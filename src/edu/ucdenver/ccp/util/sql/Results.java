@@ -117,18 +117,12 @@ public class Results{
                     log.debug(className+":"+thisVar);
                     //log.debug("object value = "+((String)thisVar).toString());
                     //log.debug("object class = "+className);
-                    switch (className) {
-                        case "java.lang.String":
+                    if(className.equals("java.lang.String")){
                             pstmt.setString(ctr, (String) thisVar);
-                            break;
-                        case "java.lang.Double":
+                    }else if(className.equals("java.lang.Double")){
                             pstmt.setDouble(ctr, (Double) thisVar);
-                            break;
-                        case "java.lang.Integer":
+                    }else if(className.equals("java.lang.Integer")){
                             pstmt.setInt(ctr, (Integer) thisVar);
-                            break;
-                        default:
-                            break;
                     }
                     ctr++;
                 }
