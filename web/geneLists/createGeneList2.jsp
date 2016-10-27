@@ -84,7 +84,7 @@
         if(userLoggedIn.getUser_name().equals("anon")){
             exists=myAnonGeneList.geneListNameExists(gene_list_name, anonU.getUUID() ,pool);
         }else{
-            exists=myGeneList.geneListNameExists(gene_list_name, userID, pool);
+            exists=myGeneList.geneListNameExists(gene_list_name, userLoggedIn.getUser_id(), pool);
         }
 	if (exists) {
 		//Error - "gene list name exists"
@@ -103,7 +103,7 @@
                     newGeneList.setCreated_by_user_id(-20);
                 }else{
                     newGeneList=new GeneList();
-                    newGeneList.setCreated_by_user_id(userID);
+                    newGeneList.setCreated_by_user_id(userLoggedIn.getUser_id());
                 }
 		newGeneList.setGene_list_name(gene_list_name);	
 		newGeneList.setDescription(description);

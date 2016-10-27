@@ -19,17 +19,17 @@
         
 	GeneList[] myGeneLists = new GeneList[0];
         if(! userLoggedIn.getUser_name().equals("anon")){
-                myGeneLists = myGeneList.getGeneLists(userID, "All", "All", pool);
+                myGeneLists = myGeneList.getGeneLists(userLoggedIn.getUser_id(), "All", "All", pool);
+        }else if (userLoggedIn.getUser_name().equals("guest")) {
+                //Error - "Feature not allowed for guests"
+                session.setAttribute("errorMsg", "GST-004");
+                response.sendRedirect(commonDir + "errorMsg.jsp");
         }else{
                 myGeneLists = myAnonGeneList.getGeneLists(anonU.getUUID(), "All", pool);
         }
         myGeneLists = myGeneList.sortGeneLists(myGeneLists, "geneListName", "A");
 
-        if (userLoggedIn.getUser_name().equals("guest")) {
-                //Error - "Feature not allowed for guests"
-                session.setAttribute("errorMsg", "GST-004");
-                response.sendRedirect(commonDir + "errorMsg.jsp");
-        }
+        
         fieldNames.add("gene_list_name");
         fieldNames.add("organism");
         fieldNames.add("description");

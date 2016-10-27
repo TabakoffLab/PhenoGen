@@ -15,6 +15,7 @@ import java.util.List;
 
 import edu.ucdenver.ccp.util.Debugger;
 import edu.ucdenver.ccp.util.ObjectHandler;
+import javax.sql.DataSource;
 
 /* for logging messages */
 import org.apache.log4j.Logger;
@@ -32,6 +33,7 @@ public class Results{
 	public int timeout = 0;
 	public String query;
 	public Connection conn;
+        public DataSource pool;
 
 	private Logger log=null;
 
@@ -90,6 +92,53 @@ public class Results{
 		rsmd = rs.getMetaData();
   	}
 
+        
+        /**
+	 * Constructs a Results object for the query and database connection.  
+	 * Creates a PreparedStatement with the given variables bound to the query variable.
+	 * NOTE: close() must be called to close the PreparedStatement when this contructor is used.
+	 * @throws            SQLException if a database error occurs
+	 */
+	public Results(String query, Object[] queryVariables, DataSource pool) throws SQLException {
+		log = Logger.getRootLogger();
+
+		log.debug("pstmt is open here 2.5. This is good");
+		//log.debug("in Results passing in queryVariables");
+	
+                Connection conn=pool.getConnection();
+                pstmt = conn.prepareStatement(query,
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+                log.debug("after pstmt");
+		int ctr = 1;
+                log.debug("queryVars:"+queryVariables.length);
+                for (Object thisVar : queryVariables) {
+                    String className = thisVar.getClass().getName();
+                    log.debug(className+":"+thisVar);
+                    //log.debug("object value = "+((String)thisVar).toString());
+                    //log.debug("object class = "+className);
+                    switch (className) {
+                        case "java.lang.String":
+                            pstmt.setString(ctr, (String) thisVar);
+                            break;
+                        case "java.lang.Double":
+                            pstmt.setDouble(ctr, (Double) thisVar);
+                            break;
+                        case "java.lang.Integer":
+                            pstmt.setInt(ctr, (Integer) thisVar);
+                            break;
+                        default:
+                            break;
+                    }
+                    ctr++;
+                }
+                log.debug("set vars");
+		rs = pstmt.executeQuery();
+                log.debug("execute query");
+		rsmd = rs.getMetaData();
+                log.debug("meta");
+  	}
+        
 	/**
 	 * Constructs a Results object for the query and database connection.  
 	 * Creates a PreparedStatement with the given variables bound to the query variable.

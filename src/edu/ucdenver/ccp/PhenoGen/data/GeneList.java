@@ -758,18 +758,61 @@ public class GeneList{
         
         public int createGeneList(DataSource pool)throws SQLException {
             Connection conn=null;
-            int tmp=-99;
-            try{
-                conn=pool.getConnection();
-                tmp=createGeneList(conn);
-                conn.close();
+            gene_list_id = myDbUtils.getUniqueID("gene_lists_seq", pool);
+            log.debug("in createGeneList");
+            log.debug("gene_list_id = "+gene_list_id + ", and path = "+this.getPath());
+
+            String query = 
+                    "insert into gene_lists "+
+                    "(gene_list_id, gene_list_name, description, create_date, "+
+                    "created_by_user_id, path, gene_list_source, "+
+                    "parameter_group_id, dataset_id, version, "+
+                    "organism) values "+
+                    "(?, ?, ?, ?, "+
+                    "?, ?, ?, "+
+                    "?, ?, ?, "+
+                    "?)";
+
+            java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+            try(Connection conn1=pool.getConnection();
+                PreparedStatement pstmt = conn1.prepareStatement(query, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE)){
+  		
+		pstmt.setInt(1, gene_list_id); 
+		pstmt.setString(2, this.getGene_list_name());	
+		pstmt.setString(3, this.getDescription());	
+		// This is the create_date
+		pstmt.setTimestamp(4, now);	
+		myDbUtils.setToNullIfZero(pstmt, 5, this.getCreated_by_user_id());
+		pstmt.setString(6, this.getPath());	
+		pstmt.setString(7, this.getGene_list_source());	
+		myDbUtils.setToNullIfZero(pstmt, 8, this.getParameter_group_id());	
+		myDbUtils.setToNullIfZero(pstmt, 9, this.getDataset_id());	
+		myDbUtils.setToNullIfZero(pstmt, 10, this.getVersion());	
+		pstmt.setString(11, this.getOrganism());	
+
+		pstmt.executeUpdate();
+		pstmt.close();
+
+		this.setGene_list_id(gene_list_id);
+
+		//log.debug("here this.gene_list_users = "); myDebugger.print(this.getGene_list_users());
+		createGeneListUsers(pool);
+
+		if (this.getCreated_by_user_id() > 0) {
+			Set<Integer> geneListUsersList = new HashSet<Integer>();
+			geneListUsersList.add(new Integer(this.getCreated_by_user_id()));
+			List<Integer> geneListUsers = new ArrayList<Integer>(geneListUsersList);
+			this.setGene_list_users(geneListUsers);
+			//log.debug("here2 this.gene_list_users = "); myDebugger.print(this.getGene_list_users());
+			createGeneListUsers(pool);
+		}
+               
             }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-                throw new SQLException();
+                log.error("Error creating genelist",e);
             }
-            return tmp;
+            return gene_list_id;
         }
         
   	/** 
@@ -1433,16 +1476,35 @@ public class GeneList{
 	}
 
         public void createGeneListUsers(DataSource pool)throws SQLException {
-            Connection conn=null;
-            try{
-                conn=pool.getConnection();
-                createGeneListUsers(conn);
-                conn.close();
+            log.debug("in createGeneListUsers.  gene_list_id = "+this.getGene_list_id());
+        	String query =
+                	"insert into user_gene_lists "+
+			"(gene_list_id, user_id) "+
+                	"values "+
+                	"(?, ?)";
+            try(Connection conn1=pool.getConnection();
+                    PreparedStatement pstmt = conn1.prepareStatement(query, 
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE)){
+                
+		pstmt.setInt(1, this.getGene_list_id());
+
+		//
+                // insert each of the users 
+		//
+                if (this.getGene_list_users() != null) {
+			log.debug("are there any users? YES");
+			Iterator iterator = this.getGene_list_users().iterator();
+                	while (iterator.hasNext()) {
+                        	pstmt.setInt(2, Integer.parseInt(iterator.next().toString()));
+                                pstmt.executeUpdate();
+                        }
+                } else {
+			log.debug("are there any users? NO");
+		}
+		pstmt.close();
             }catch(SQLException e){
-                if(conn!=null && !conn.isClosed()){
-                    conn.close();
-                }
-                throw new SQLException();
+                throw e;
             }
         }
         
@@ -1845,18 +1907,105 @@ public class GeneList{
         
         public GeneList[] getGeneLists(int user_id, String organism, String geneListTypes,DataSource pool)throws SQLException {
             Connection conn=null;
-            GeneList[] tmp=null;
-            try{
-                conn=pool.getConnection();
-                tmp=getGeneLists(user_id,organism,geneListTypes,conn);
-                conn.close();
+            GeneList[] geneListArray=new GeneList[0];
+            String userSpecific1 = "";
+            String userSpecific2 = "";
+            String userSpecific3 = "";
+            String orgSpecific = "";
+            String typeSpecific = "";
+            if (user_id != -99) {
+                    userSpecific1 = "and gl.created_by_user_id = ? ";
+                    userSpecific2 = "and gl.created_by_user_id != ? ";
+                    userSpecific3 = "and ugl.user_id = ? ";
+            }
+            if (organism.equals("All")) {
+                    orgSpecific = "%";
+            } else if (organism.equals("MmOrRn")) {
+                    orgSpecific = "Mm' or gl.organism like 'Rn";
+            } else if (organism.equals("MmOrHs")) {
+                    orgSpecific = "Mm' or gl.organism like 'Hs";
+            } else {
+                    orgSpecific = organism; 
+            }
+
+            if (geneListTypes.equals("WithResults")) {
+                    typeSpecific = 
+                            "and (exists "+
+                            "	(select 'x' "+
+                            "	from gene_list_analyses gla "+
+                            "	where gla.gene_list_id = gl.gene_list_id)) ";
+            }
+
+            String query = 
+                    geneListSelectClause + 
+                    geneListFromClause + 
+                    "where gl.organism like '" + orgSpecific + "' "+
+                    userSpecific1 +
+                    typeSpecific + 
+                    geneListGroupByClause +  
+                    "union "+ 
+                    geneListSelectClause + 
+                    geneListFromClause + 
+                    ", user_gene_lists ugl "+
+                    "where ugl.gene_list_id = gl.gene_list_id "+
+                    "and (gl.organism like '" + orgSpecific + "') "+
+                    userSpecific2+
+                    userSpecific3+
+                    typeSpecific + 
+                    geneListGroupByClause +  
+                    "union "+
+                    geneListSelectClause + 
+                    geneListFromClause + 
+                    "where gl.gene_list_source != 'Statistical Analysis' "+
+                    "and (gl.organism like '" + orgSpecific + "') "+
+                    userSpecific1+
+                    typeSpecific + 
+                    geneListGroupByClause +  
+                    "order by 15 desc";
+
+            log.debug("in getGeneLists.");
+            log.debug("query = "+query);
+
+            String[] dataRow;
+            List<GeneList> geneLists = new ArrayList<GeneList>();
+
+            Object[] parameters = new Object[4];
+            if (user_id != -99) {
+                    parameters[0] = user_id;
+                    parameters[1] = user_id;
+                    parameters[2] = user_id;
+                    parameters[3] = user_id;
+            }
+            
+            
+            
+            /*try{
+                conn=pool.getConnection();*/
+                log.debug("userid:"+user_id);
+		Results myResults = new Results(query, parameters, pool);
+                log.debug("geneList:after my Results");
+                dataRow = myResults.getNextRow();
+                log.debug("geneList:init dataRow");
+		while ( dataRow != null ) {
+                        log.debug("in while");
+			GeneList thisGeneList = setupGeneListValues(dataRow);
+                	geneLists.add(thisGeneList);
+                        dataRow = myResults.getNextRow();
+        	}
+                log.debug("after while");
+        	myResults.close();
+
+		geneListArray = (GeneList[]) myObjectHandler.getAsArray(geneLists, GeneList.class);
+                log.debug("after array");
+		
+            /*    conn.close();
             }catch(SQLException e){
                 if(conn!=null && !conn.isClosed()){
                     conn.close();
                 }
                 throw new SQLException();
-            }
-            return tmp;
+            }*/
+            return geneListArray;
         }
         
   	/** Retrieves the set of gene lists available to this user.
