@@ -775,7 +775,7 @@ public class GeneList{
 
             java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
             try{
-  		Connection conn1=pool.getConnection();
+  		conn1=pool.getConnection();
                 PreparedStatement pstmt = conn1.prepareStatement(query, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
 						ResultSet.CONCUR_UPDATABLE);
