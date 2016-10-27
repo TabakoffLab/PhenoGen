@@ -757,7 +757,7 @@ public class GeneList{
 
         
         public int createGeneList(DataSource pool)throws SQLException {
-            Connection conn=null;
+            Connection conn1=null;
             gene_list_id = myDbUtils.getUniqueID("gene_lists_seq", pool);
             log.debug("in createGeneList");
             log.debug("gene_list_id = "+gene_list_id + ", and path = "+this.getPath());
@@ -774,11 +774,11 @@ public class GeneList{
                     "?)";
 
             java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-            try(Connection conn1=pool.getConnection();
+            try{
+  		conn1=pool.getConnection();
                 PreparedStatement pstmt = conn1.prepareStatement(query, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
-						ResultSet.CONCUR_UPDATABLE)){
-  		
+						ResultSet.CONCUR_UPDATABLE);
 		pstmt.setInt(1, gene_list_id); 
 		pstmt.setString(2, this.getGene_list_name());	
 		pstmt.setString(3, this.getDescription());	
@@ -808,9 +808,17 @@ public class GeneList{
 			//log.debug("here2 this.gene_list_users = "); myDebugger.print(this.getGene_list_users());
 			createGeneListUsers(pool);
 		}
-               
+               conn1.close();
+               conn1=null;
             }catch(SQLException e){
                 log.error("Error creating genelist",e);
+            }finally{
+                if(conn1!=null && !conn1.isClosed()){
+                    try{
+                        conn1.close();
+                        conn1=null;
+                    }catch(SQLException e){}
+                }
             }
             return gene_list_id;
         }
@@ -1482,11 +1490,12 @@ public class GeneList{
 			"(gene_list_id, user_id) "+
                 	"values "+
                 	"(?, ?)";
-            try(Connection conn1=pool.getConnection();
-                    PreparedStatement pstmt = conn1.prepareStatement(query, 
+            Connection conn1=null;
+            try{
+                conn1=pool.getConnection();
+                PreparedStatement pstmt = conn1.prepareStatement(query, 
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
-						ResultSet.CONCUR_UPDATABLE)){
-                
+						ResultSet.CONCUR_UPDATABLE);
 		pstmt.setInt(1, this.getGene_list_id());
 
 		//
@@ -1503,8 +1512,16 @@ public class GeneList{
 			log.debug("are there any users? NO");
 		}
 		pstmt.close();
+                conn1.close();
             }catch(SQLException e){
                 throw e;
+            }finally{
+                if(conn1!=null && !conn1.isClosed()){
+                    try{
+                        conn1.close();
+                        conn1=null;
+                    }catch(SQLException e){}
+                }
             }
         }
         
