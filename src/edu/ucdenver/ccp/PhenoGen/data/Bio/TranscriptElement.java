@@ -9,9 +9,6 @@ import edu.ucdenver.ccp.PhenoGen.data.Bio.SequenceVariant;
 import java.util.HashMap;
 
 
-/* for logging messages */
-import org.apache.log4j.Logger;
-
 /**
  *
  * @author smahaffey
@@ -210,33 +207,20 @@ abstract public class TranscriptElement implements Comparable {
     @Override
     public int compareTo(Object t) {
         TranscriptElement ex2=(TranscriptElement)t;
-        int ret=0;
-        if(this.ID.equals(ex2.ID)&&this.start==ex2.start&&this.stop==ex2.stop){
+        int ret=-1;
+        if(this.start>ex2.start){
+           ret=1; 
+        }else if(this.start<ex2.start){
+           ret=-1;
+        }else if(this.start==ex2.start){
+            if(this.stop>ex2.stop){
+                ret=1;
+            }else{
+                ret=-1;
+            }
+        }
+        if(this.ID.equals(ex2.ID) &&  this.start==ex2.start && this.stop==ex2.stop){
             ret=0;
-        }else if(this.stop>this.start){//+ strand
-            if(this.start>ex2.start){
-               ret=1; 
-            }else if(this.start<ex2.start){
-               ret=-1;
-            }else if(this.start==ex2.start){
-                if(this.stop>ex2.stop){
-                    ret=1;
-                }else{
-                    ret=-1;
-                }
-            }
-        }else if(this.stop<this.start){//- strand
-            if(this.start<ex2.start){
-               ret=1; 
-            }else if(this.start>ex2.start){
-               ret=-1;
-            }else if(this.start==ex2.start){
-                if(this.stop<ex2.stop){
-                    ret=1;
-                }else{
-                    ret=-1;
-                }
-            }
         }
         return ret;
     }
