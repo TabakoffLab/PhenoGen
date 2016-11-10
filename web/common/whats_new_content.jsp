@@ -29,6 +29,15 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
+    <div class="whats_new version"><p><h3>Version: v3.2</h3><BR /> Updated:11/10/2016</p></div>
+       <ul>
+                                    <li><span class="highlight-dark">Small RNA</span>
+                                        Rat small RNA tracks from Brain, Heart, Liver based on the small RNA-Seq.  Including counts from the parental strains.
+                                    </li>
+                                    
+                                    
+        </ul>
+        <hr/>
     <div class="whats_new version"><p><h3>Version: v3.1</h3><BR /> Updated:6/22/2016</p></div>
        <ul>
                                     <li><span class="highlight-dark">Rn6</span>
