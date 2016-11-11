@@ -30,6 +30,7 @@
 	Resource[] myGenotypeResources = myResource.getGenotypingResources();
         Resource[] myPublicationResources1 = myResource.getPublicationResources1();
         Resource[] myPublicationResources2 = myResource.getPublicationResources2();
+        Resource[] myGTFResources=myResource.getGTFResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
 	ArrayList checkedList = new ArrayList();
@@ -307,6 +308,31 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                     <a href="ftp://ftp.ensembl.org/pub/release-84/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl-Rn6</a>
        	</div>
         <BR><BR>
+        <div class="title"> RNA-Seq Transcriptome Reconstruction<span class="toolTip" title="Reconstructed Transcriptome with high confidence transcripts from Cufflinks."><img src="<%=imagesDir%>icons/info.gif"></span></div>
+		      <table id="gtfFiles" class="list_base" name="items" cellpadding="0" cellspacing="3">
+            		<thead>
+                               <tr class="col_title">
+					<th>Organism</th>
+					<th>Strains</th>
+                                        <th>Tissue</th>
+                                        <th>Assembled by</th>
+					<th>.gtf Files</th>
+				</tr>
+			</thead>
+                        <% for (Resource resource: myGTFResources) { %> 
+				<tr id="<%=resource.getID()%>">  
+                                    
+                                    <TD><%=resource.getOrganism()%></TD>
+                                    <TD><%=resource.getSource()%></TD>
+                                    <TD><%=resource.getTechType()%></TD>
+                                    <TD><%=resource.getGenome()%></TD>
+                                    <td class="actionIcons">
+						<div class="linkedImg download" type="gtf"><div>
+                                    </td>
+				</tr> 
+			<% } %>
+                      </table>
+
         </form>
 </div>
                         
@@ -317,7 +343,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		name="resources">                        
 
             
-        <div class="title">Data Files used in "Uncovering the liver's role in immunity through RNA co-expression networks."<BR>(Harrall et. al. 2016)
+        <div class="title">Data Files used in "Uncovering the liver's role in immunity through RNA co-expression networks."<BR>(Harrall et. al. 2016, Mamm. Genome) <a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/27401171">Abstract</a>
                </div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
                         <thead>
@@ -341,7 +367,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                         <BR><BR>    
             
         <div class="title">Data Files used in "The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption"<BR>(Saba et. al. 2015, FEBS)
-                <a href="http://onlinelibrary.wiley.com/doi/10.1111/febs.13358/abstract">Abstract</a></div>
+                <a href="http://onlinelibrary.wiley.com/doi/10.1111/febs.13358/abstract" target="_blank">Abstract</a></div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
                         <thead>
                             <tr class="col_title">

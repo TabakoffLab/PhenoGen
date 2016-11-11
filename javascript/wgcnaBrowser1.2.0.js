@@ -1454,8 +1454,14 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 thatimg.colorCircle=function(d){
                     var id=d.Gene.ID;
                     var color="#DFC184";
-                    if(id.indexOf("Brain")==0||id.indexOf("Unannotated")==0){
-                        color="#7EB5D6";
+                    if(id.indexOf("PRN")==0||id.indexOf("PMM")==0||id.indexOf("Unannotated")==0){
+                    	if(that.tissue==="Whole Brain"){
+                        	color="#7EB5D6";
+                    	}else if(that.tissue==="Heart"){
+                    		color="#DC7252";
+                    	}else if(that.tissue==="Liver"){
+                    		color="#bbbedd";
+                    	}
                     }
                     return color;
                 };

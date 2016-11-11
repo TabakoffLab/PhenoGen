@@ -14,6 +14,7 @@
 	String chromosome="";
 	String folderName="";
 	String source="";
+        String genomeVer="";
 	LinkGenerator lg=new LinkGenerator(session);
 	double forwardPValueCutoff=0.01;
 	int rnaDatasetID=0;
@@ -69,12 +70,15 @@
 	if(request.getParameter("source")!=null){
 		source=request.getParameter("source");
 	}
+        if(request.getParameter("genomeVer")!=null){
+		genomeVer=request.getParameter("genomeVer");
+	}
 	ArrayList<SmallNonCodingRNA> smncRNA=gdt.getSmallNonCodingRNA(min,max,chromosome,rnaDatasetID,myOrganism);
 	if(min<max){
 			if(min<1){
 				min=1;
 			}
-			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
+			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
 			
 
 			//Match smncRNA to ensembl based on annotations
@@ -417,6 +421,7 @@
 										shortDesc=description.substring(0,description.indexOf("["));
 										remain=description.substring(description.indexOf("[")+1,description.indexOf("]"));
 									}
+                         
 							%>
                             <TD >
                            
@@ -459,7 +464,7 @@
 							  
 							%>
                             <TD title="<%=remain%>">
-								<%=shortDesc%>
+								<%=shortDesc+"\n<BR>"+bioType%>
                                 <% HashMap displayed=new HashMap();
 								HashMap bySource=new HashMap();
 								for(int k=0;k<tmpTrx.size();k++){

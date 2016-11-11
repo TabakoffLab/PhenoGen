@@ -249,19 +249,20 @@ function ViewMenu(level){
 		}
 	};
 	that.setupImage=function(settingString,d){
-		svgList[that.level].removeAllTracks();
-		svgList[that.level].currentView=d;
-		svgViewIDList[that.level]=d.ViewID;
-		//svgList[that.level].updateLinks();
-		loadStateFromString(settingString,d.imgSettings,that.level,svgList[that.level]); 
-		$("span#viewLbl"+that.level).html("View: "+d.Name);
-		if(d.UserID===0){
-			$("li#menusaveView"+that.level).addClass("ui-state-disabled");
-			$("li#menudeleteView"+that.level).addClass("ui-state-disabled");
-		}else{
-			$("li#menusaveView"+that.level).removeClass("ui-state-disabled");
-			$("li#menudeleteView"+that.level).removeClass("ui-state-disabled");
-		}
+			svgList[that.level].removeAllTracks();
+			svgList[that.level].currentView=d;
+			svgViewIDList[that.level]=d.ViewID;
+			//svgList[that.level].updateLinks();
+			loadStateFromString(settingString,d.imgSettings,that.level,svgList[that.level]); 
+			$("span#viewLbl"+that.level).html("View: "+d.Name);
+			if(d.UserID===0){
+				$("li#menusaveView"+that.level).addClass("ui-state-disabled");
+				$("li#menudeleteView"+that.level).addClass("ui-state-disabled");
+			}else{
+				$("li#menusaveView"+that.level).removeClass("ui-state-disabled");
+				$("li#menudeleteView"+that.level).removeClass("ui-state-disabled");
+			}
+		
 	};
 
 	//called after dragging a track to reoder it which generates the first column again with the numbers etc.

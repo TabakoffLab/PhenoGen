@@ -14,7 +14,9 @@
 	String type="";
 	String source="";
         String genomeVer="";
+        String track="";
 	LinkGenerator lg=new LinkGenerator(session);
+        HashMap<String,Integer> geneHM=new HashMap<String,Integer>();
 	double forwardPValueCutoff=0.01;
 	int rnaDatasetID=0;
 	int arrayTypeID=0;
@@ -75,16 +77,30 @@
         if(request.getParameter("genomeVer")!=null){
                 genomeVer=request.getParameter("genomeVer");
         }
+        if(request.getParameter("track")!=null){
+		track=FilterInput.getFilteredInput(request.getParameter("track"));
+	}
 	if(min<max){
-			if(min<1){
-				min=1;
-			}
-			fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);					
-			String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
-			int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
-			if(second>-1){
-				folderName=tmpURL.substring(second+1,tmpURL.length()-1);
-			}
+            if(min<1){
+                    min=1;
+            }
+
+            if(source.equals("merged")){
+                fullGeneList =gdt.getMergedRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
+            }else{
+                fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
+            
+            }
+            log.debug("Gene list size:"+fullGeneList.size());
+
+            String tmpURL =gdt.getGenURL();//(String)session.getAttribute("genURL");
+            int second=tmpURL.lastIndexOf("/",tmpURL.length()-2);
+            if(second>-1){
+                    folderName=tmpURL.substring(second+1,tmpURL.length()-1);
+            }
+            if(!track.equals("")){
+                geneHM=gdt.getRegionTrackList(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,track);
+            }
 	}
 			
 	
@@ -279,17 +295,20 @@
                 </thead>
                 
                 <tbody style="text-align:center;">
-					<%DecimalFormat df2 = new DecimalFormat("#.##");
-					DecimalFormat df0 = new DecimalFormat("###");
-					DecimalFormat df4 = new DecimalFormat("#.####");
+
+
+                        <%DecimalFormat df2 = new DecimalFormat("#.##");
+                        DecimalFormat df0 = new DecimalFormat("###");
+                        DecimalFormat df4 = new DecimalFormat("#.####");
 						
-					for(int i=0;i<fullGeneList.size();i++){
-                        edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=fullGeneList.get(i);
-						TranscriptCluster tc=curGene.getTranscriptCluster();
-                        HashMap hCount=curGene.getHeritCounts();
-                        HashMap dCount=curGene.getDabgCounts();
-						HashMap hSum=curGene.getHeritAvg();
-                        HashMap dSum=curGene.getDabgAvg();
+			for(int i=0;i<fullGeneList.size();i++){
+                            edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=fullGeneList.get(i);
+                            if(geneHM.containsKey(curGene.getGeneID())){
+                            TranscriptCluster tc=curGene.getTranscriptCluster();
+                            HashMap hCount=curGene.getHeritCounts();
+                            HashMap dCount=curGene.getDabgCounts();
+                            HashMap hSum=curGene.getHeritAvg();
+                            HashMap dSum=curGene.getDabgAvg();
 						String chr=curGene.getChromosome();
 						String viewClass="codingRNA";
 						ArrayList<edu.ucdenver.ccp.PhenoGen.data.Bio.Transcript> tmpTrx=curGene.getTranscripts();
@@ -304,9 +323,17 @@
 						
 						
 							if( (source.equals("ensembl")&&curGene.getGeneID().startsWith("ENS")) ||	//ensembl track
+
+
+                                                                
+                                                                source.equals("merged") || // merged track
+								source.equals("brain") ||	//Brain track
+								source.equals("liver")||	//Liver track
+								source.equals("heart")
+                                                                /*source.equals("merged") || // merged track
 								(source.equals("brain")&&(curGene.getGeneID().toLowerCase().startsWith("brain")||curGene.containsTranscripts("brain")))||	//Brain track
 								(source.equals("liver")&&(curGene.getGeneID().toLowerCase().startsWith("liver")||curGene.containsTranscripts("liver")))||	//Liver track
-								(source.equals("heart")&&(curGene.getGeneID().toLowerCase().startsWith("heart")||curGene.containsTranscripts("heart")))
+								(source.equals("heart")&&(curGene.getGeneID().toLowerCase().startsWith("heart")||curGene.containsTranscripts("heart")))*/
 							){%>
                         
                             <TR class="
@@ -599,6 +626,7 @@
                                     <%}%>
                          <%}%>
                         </TR>
+                     <%}%>
                      <%}%>
                      <%}%>
                  <%}%>

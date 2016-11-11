@@ -54,10 +54,13 @@ public class Gene {
     HashMap totalCounts=new HashMap();
     HashMap snps=new HashMap();
     TranscriptCluster tc=null;
+    ArrayList<HashMap<String,String>> quant=new ArrayList<HashMap<String,String>>();
     
     
     
     ArrayList<Transcript> transcripts=new ArrayList<Transcript>();
+    public Gene(){    
+    }
     
     public Gene(String geneID,long start,long end){
         this(geneID,start,end,"","","","","","");
@@ -175,6 +178,12 @@ public class Gene {
         this.description = description;
     }
     
+    public void addQuant(HashMap<String,String> hm){
+        this.quant.add(hm);
+    }
+    public ArrayList<HashMap<String,String>> getQuant(){
+        return this.quant;
+    }
     public String getEnsemblAnnotation(){
         return this.ensemblAnnot;
     }
@@ -704,6 +713,32 @@ public class Gene {
 
             }
     }
+    public static HashMap<String,Integer> readGeneIDList(String url) {
+        HashMap<String,Integer> genelist=new HashMap<String,Integer>();
+        try {
+            DocumentBuilder build=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document transcriptDoc=build.parse(url);
+            NodeList genes=transcriptDoc.getElementsByTagName("Gene");
+            //System.out.println("# Genes"+genelist.length);
+            for(int i=0;i<genes.getLength();i++){
+                NamedNodeMap attrib=genes.item(i).getAttributes();
+                if(attrib.getLength()>0){
+                    String geneID=attrib.getNamedItem("ID").getNodeValue();
+                    genelist.put(geneID,1);
+                }
+            }
+        } catch (SAXException ex) {
+            ex.printStackTrace(System.err);
+            
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+            
+        } catch (ParserConfigurationException ex) {
+            ex.printStackTrace(System.err);
+            
+        }
+        return genelist;
+    }
     
     //Methods to read Gene Data from RegionXML file.
     public static ArrayList<Gene> readGenes(String url) {
@@ -724,7 +759,7 @@ public class Gene {
                             geneID="Brain.G"+geneID.substring(startPos);
                         }
                     }*/
-                    //System.out.println("reading gene ID:"+geneID);
+                    System.out.println("reading gene ID:"+geneID);
                     String geneSymbol=attrib.getNamedItem("geneSymbol").getNodeValue();
                     String biotype=attrib.getNamedItem("biotype").getNodeValue();
                     long start=Long.parseLong(attrib.getNamedItem("start").getNodeValue());
@@ -739,8 +774,18 @@ public class Gene {
                     }
                     Gene tmpG=new Gene(geneID,start,stop,chr,strand,biotype,geneSymbol,source,description);
                     NodeList transcripts=genes.item(i).getChildNodes();
-                    ArrayList<Transcript> tmp=readTranscripts(transcripts.item(1).getChildNodes(),geneID);
-                    tmpG.setTranscripts(tmp);
+                    Node transcriptList=null;
+                    for(int j=0;j<transcripts.getLength();j++){
+                        if(transcripts.item(j).getNodeName().equals("TranscriptList")){
+                            transcriptList=transcripts.item(j);
+                        }else if(transcripts.item(j).getNodeName().equals("StrainQuantList")){
+                            fillQuant(tmpG,transcripts.item(j).getChildNodes());
+                        }
+                    }
+                    if(transcriptList!=null){
+                        ArrayList<Transcript> tmp=readTranscripts(transcriptList.getChildNodes(),geneID);
+                        tmpG.setTranscripts(tmp);
+                    }
                     genelist.add(tmpG);
                 }
             }
@@ -756,6 +801,21 @@ public class Gene {
         }
         return genelist;
         
+    }
+    private static void fillQuant(Gene g,NodeList quantList){
+        for(int i=0;i<quantList.getLength();i++){
+            if(quantList.item(i).getNodeName().equals("Strains")){
+                NamedNodeMap attrib=quantList.item(i).getAttributes();
+                HashMap<String,String> hm=new HashMap<String,String>();
+                hm.put("strain",attrib.getNamedItem("strain").getNodeValue());
+                hm.put("cov",attrib.getNamedItem("cov").getNodeValue());
+                hm.put("max",attrib.getNamedItem("max").getNodeValue());
+                hm.put("min",attrib.getNamedItem("min").getNodeValue());
+                hm.put("mean",attrib.getNamedItem("mean").getNodeValue());
+                hm.put("median",attrib.getNamedItem("median").getNodeValue());
+                g.addQuant(hm);
+            }
+        }
     }
     private static ArrayList<Transcript> readTranscripts(NodeList nodes,String geneID) {
         ArrayList<Transcript> transcripts=new ArrayList<Transcript>();
@@ -787,7 +847,7 @@ public class Gene {
                 long start=Long.parseLong(nnm.getNamedItem("start").getNodeValue());
                 long end=Long.parseLong(nnm.getNamedItem("stop").getNodeValue());
                 String trID=nnm.getNamedItem("ID").getNodeValue();
-                if(!trID.startsWith("ENS")){
+                if(!trID.startsWith("ENS")&& trID.indexOf("_0")>-1){
                     Matcher m=Pattern.compile("_0+").matcher(trID);
                     if(m.find()){
                         int startPos=m.end();

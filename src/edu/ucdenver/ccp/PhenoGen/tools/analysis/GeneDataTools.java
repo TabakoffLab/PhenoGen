@@ -456,9 +456,106 @@ public class GeneDataTools {
         return ret;
     }
     
+    public HashMap<String,Integer> getRegionTrackList(String chromosome,int min,int max,String panel,String myOrganism,String genomeVer,int rnaDatasetID,int arrayTypeID,String track){
+        HashMap<String,Integer> ret=new HashMap<String,Integer>();
+        chromosome=chromosome.toLowerCase();
+        if(!chromosome.startsWith("chr")){
+            chromosome="chr"+chromosome;
+        }
+        
+        //Setup a String in the format YYYYMMDDHHMM to append to the folder
+        Date start = new Date();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(start);
+        String datePart=Integer.toString(gc.get(gc.MONTH)+1)+
+                Integer.toString(gc.get(gc.DAY_OF_MONTH))+
+                Integer.toString(gc.get(gc.YEAR))+"_"+
+                Integer.toString(gc.get(gc.HOUR_OF_DAY))+
+                Integer.toString(gc.get(gc.MINUTE))+
+                Integer.toString(gc.get(gc.SECOND));
+        
+        HashMap<String,String> source=this.getGenomeVersionSource(genomeVer);
+        
+        
+        //EnsemblIDList can be a comma separated list break up the list
+        boolean error=false;
+
+            //Define output directory
+            outputDir = fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/" +myOrganism+ chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart + "/";
+            //session.setAttribute("geneCentricPath", outputDir);
+            log.debug("checking for path:"+outputDir);
+            String folderName = myOrganism+chromosome+"_"+minCoord+"_"+maxCoord+"_"+datePart;
+            //String publicPath = H5File.substring(H5File.indexOf("/Datasets/") + 10);
+            //publicPath = publicPath.substring(0, publicPath.indexOf("/Affy.NormVer.h5"));
+            RegionDirFilter rdf=new RegionDirFilter(myOrganism+ chromosome+"_"+minCoord+"_"+maxCoord+"_");
+            File mainDir=new File(fullPath + "tmpData/browserCache/"+genomeVer+"/regionData/");
+            File[] list=mainDir.listFiles(rdf);
+            try {
+                File geneDir=new File(outputDir);
+                File errorFile=new File(outputDir+"errMsg.txt");
+                
+                if(list.length>0){
+                    outputDir=list[0].getAbsolutePath()+"/";
+                    int second=outputDir.lastIndexOf("/",outputDir.length()-2);
+                    folderName=outputDir.substring(second+1,outputDir.length()-1);
+                    String errors;
+                    errors = loadErrorMessage();
+                    if(errors.equals("")){
+                        
+                    }else{
+                        //ERROR
+                    }
+                }else{
+                    //ERROR
+                }
+                
+                
+                
+            } catch (Exception e) {
+                error=true;
+                log.error("In Exception getting Gene List for a track", e);
+                Email myAdminEmail = new Email();
+                String fullerrmsg=e.getMessage();
+                    StackTraceElement[] tmpEx=e.getStackTrace();
+                    for(int i=0;i<tmpEx.length;i++){
+                        fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+                    }
+                myAdminEmail.setSubject("Exception thrown getting Gene List for a track");
+                myAdminEmail.setContent("There was an error while getting Gene List for a track.\n"+fullerrmsg);
+                try {
+                    myAdminEmail.sendEmailToAdministrator((String) session.getAttribute("adminEmail"));
+                } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    try {
+                        myAdminEmail.sendEmailToAdministrator("");
+                    } catch (Exception mailException1) {
+                        //throw new RuntimeException();
+                    }
+                }
+            }
+        
+        this.pathReady=true;
+        
+        ret=Gene.readGeneIDList(outputDir+track);
+        log.debug("getRegionData() returning gene list of size:"+ret.size());
+        return ret;
+    }
+    
+    public ArrayList<Gene> getMergedRegionData(String chromosome,int minCoord,int maxCoord,
+            String panel,
+            String organism,String genomeVer,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL) {
+        return this.getRegionDataMain(chromosome,minCoord,maxCoord,panel,organism,genomeVer,RNADatasetID,arrayTypeID,pValue,withEQTL,"mergedTotal.xml");
+    }
+    
     public ArrayList<Gene> getRegionData(String chromosome,int minCoord,int maxCoord,
             String panel,
             String organism,String genomeVer,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL) {
+        return this.getRegionDataMain(chromosome,minCoord,maxCoord,panel,organism,genomeVer,RNADatasetID,arrayTypeID,pValue,withEQTL,"Region.xml");
+    }
+    
+    public ArrayList<Gene> getRegionDataMain(String chromosome,int minCoord,int maxCoord,
+            String panel,
+            String organism,String genomeVer,int RNADatasetID,int arrayTypeID,double pValue,boolean withEQTL,String file) {
         
         
         chromosome=chromosome.toLowerCase();
@@ -609,8 +706,8 @@ public class GeneDataTools {
         this.setPublicVariables(error,genomeVer,folderName);
         this.pathReady=true;
         
-        ArrayList<Gene> ret=Gene.readGenes(outputDir+"Region.xml");
-
+        ArrayList<Gene> ret=Gene.readGenes(outputDir+file);
+        log.debug("getRegionData() returning gene list of size:"+ret.size());
 
         if(withEQTL){
             this.addHeritDABG(ret,minCoord,maxCoord,organism,chromosome,RNADatasetID, arrayTypeID,genomeVer);
@@ -793,6 +890,7 @@ public class GeneDataTools {
                 minCoord=Integer.parseInt(loc[1]);
                 maxCoord=Integer.parseInt(loc[2]);
                 log.debug("AsyncGeneDataTools with "+chrom+":"+minCoord+"-"+maxCoord);
+                callWriteXML(ensemblID1,organism,genomeVer,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
                 prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID,genomeVer);
             }
         }else{
@@ -1307,6 +1405,8 @@ public class GeneDataTools {
                 tissue="Liver";
             }else if(track.startsWith("heart")){
                 tissue="Heart";
+            }else if(track.startsWith("merged")){
+                tissue="Merged";
             }
             
             //construct perl Args
@@ -1822,7 +1922,7 @@ public class GeneDataTools {
 
 
             //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
-            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir);
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+"genRegion");
             boolean exception=false;
             try {
 
@@ -2095,7 +2195,7 @@ public class GeneDataTools {
         }
         callWriteXML(id,organism,genomeVer,chr,min,max,arrayTypeID,rnaDS_ID);
         //create File with Probeset Tissue herit and DABG
-        String datasetQuery="select rd.dataset_id, rd.tissue "+
+        /*String datasetQuery="select rd.dataset_id, rd.tissue "+
                             "from rnadataset_dataset rd "+
                             "where rd.rna_dataset_id = "+rnaDS_ID+" "+
                             "order by rd.tissue";
@@ -2183,7 +2283,7 @@ public class GeneDataTools {
                         conn.close();
                 } catch (SQLException ex) {
                 }
-        }
+        }*/
         return error;
     }
     

@@ -22,6 +22,7 @@
 
 
 <%
+    log.debug("top of page");
 String myGene="";
 String section="";
 String myDisplayGene="";
@@ -59,6 +60,7 @@ if(request.getParameter("section")!=null){
 }
 pageTitle="Genome/Transcriptome Browser "+myGene;
 pageDescription="Genome/Transcriptome Browser provides a vizualization of Microarray and RNA-Seq data along the genome as well as summarize eQTL/WGCNA data for genes and/or regions.";
+    log.debug("end of top");
 %>
 
 
@@ -76,7 +78,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 <jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 
 <% 
-	
+	log.debug("begining of most code");
 	//GeneDataTools gdt=new GeneDataTools();
         gdt.setSession(session);
 	bt.setSession(session);
@@ -453,6 +455,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 	//String ucscFilterURLString=oh.getAsSeparatedString(ucscURLFiltered,",");
 	String firstENSString=oh.getAsSeparatedString(firstEnsemblID,",");
 	
+        log.debug("end of most code");
 %>
 
 

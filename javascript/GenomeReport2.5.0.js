@@ -111,7 +111,8 @@ function loadTrackTable(){
 				arrayTypeID: arrayTypeID,
 				forwardPvalueCutoff:forwardPValueCutoff,
 				folderName: regionfolderName,
-				genomeVer: genomeVer
+				genomeVer: genomeVer,
+				track:reportSelectedTrack.trackClass
 			};
 		if(reportSelectedTrack.trackClass.indexOf("noncoding")>-1){
 			params.type="noncoding";
@@ -127,7 +128,7 @@ function loadTrackTable(){
 			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
 				params.source="brain";
 			}
-		}else if(reportSelectedTrack.trackClass==="liverTotal"||reportSelectedTrack.trackClass==="heartTotal"||reportSelectedTrack.trackClass==="brainTotal"){
+		}else if(reportSelectedTrack.trackClass==="liverTotal"||reportSelectedTrack.trackClass==="heartTotal"||reportSelectedTrack.trackClass==="brainTotal"||reportSelectedTrack.trackClass==="mergedTotal"){
 			jspPage="web/GeneCentric/geneTable.jsp";
 			params.type="all";
 			params.source="liver";
@@ -135,11 +136,17 @@ function loadTrackTable(){
 				params.source="heart";
 			}else if(reportSelectedTrack.trackClass==="brainTotal"){
 				params.source="brain";
+			}else if(reportSelectedTrack.trackClass==="mergedTotal"){
+				params.source="merged";
 			}
 		}else if(reportSelectedTrack.trackClass.indexOf("smallnc")>-1){
 			params.source="ensembl";
 			if(reportSelectedTrack.trackClass.indexOf("brain")>-1){
 				params.source="brain";
+			}else if(reportSelectedTrack.trackClass.indexOf("heart")>-1){
+				params.source="heart";
+			}if(reportSelectedTrack.trackClass.indexOf("liver")>-1){
+				params.source="liver";
 			}
 			jspPage="web/GeneCentric/smallGeneTable.jsp";
 		}else if((new String(reportSelectedTrack.trackClass)).indexOf("snp")>-1){
@@ -315,17 +322,20 @@ function DisplayRegionReport(){
 }
 
 function displayDetailedView(track){
-	//console.log("displayDetailedView");
+	console.log("displayDetailedView:"+track);
 	reportSelectedTrack=track;
 	$('li.report').removeClass("selected");
 	$("li."+track.trackClass).addClass("selected");
 	if(track.displayBreakDown){
-		$('div#trackGraph').html("");
-		track.displayBreakDown("div#collapsableReport div#trackGraph");
+		setTimeout(function(){
+			console.log("in displayDetailedView()");
+			$('div#trackGraph').html("");
+			track.displayBreakDown("div#collapsableReport div#trackGraph");
+		},50);
 	}
 	var tc=new String(track.trackClass);
 	if(tc.indexOf("coding")>-1 || tc.indexOf("noncoding")>-1 || tc.indexOf("smallnc")>-1 ||
-		 tc.indexOf("liverTotal")>-1 ||tc.indexOf("heartTotal")>-1 ||tc.indexOf("brainTotal")>-1 || tc=="qtl"){
+		 tc.indexOf("liverTotal")>-1 ||tc.indexOf("heartTotal")>-1 ||tc.indexOf("brainTotal")>-1||tc.indexOf("mergedTotal")>-1 || tc=="qtl"){
 		$("#regionTableSubHeader").show();
 		$("#regionTable").show();
 	}else{
