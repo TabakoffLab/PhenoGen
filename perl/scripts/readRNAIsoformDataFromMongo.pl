@@ -516,14 +516,16 @@ sub readSmallRNADataFromDB{
 	my $tmpMax;
 	my $tmpCov;
 	my $cQH=0;
+	my $tmpCollapsed;
 
-	$qh->bind_columns(\$tmpId,\$tmpDsid,\$tmpRnaID,\$tmpStrain,\$tmpMedian,\$tmpMean,\$tmpMin,\$tmpMax,\$tmpCov);
+	$qh->bind_columns(\$tmpId,\$tmpDsid,\$tmpRnaID,\$tmpStrain,\$tmpMedian,\$tmpMean,\$tmpMin,\$tmpMax,\$tmpCov,\$tmpCollapsed);
 	while($qh->fetch()) {
 		$quantHOH{$tmpId}{$tmpDsid}{$tmpStrain}{median}=$tmpMedian;
 		$quantHOH{$tmpId}{$tmpDsid}{$tmpStrain}{mean}=$tmpMean;
 		$quantHOH{$tmpId}{$tmpDsid}{$tmpStrain}{min}=$tmpMin;
 		$quantHOH{$tmpId}{$tmpDsid}{$tmpStrain}{max}=$tmpMax;
 		$quantHOH{$tmpId}{$tmpDsid}{$tmpStrain}{cov}=$tmpCov;
+		$quantHOH{$tmpId}{$tmpDsid}{$tmpStrain}{collapsed}=$tmpCollapsed;
 		$cQH++;
 	}
 	
