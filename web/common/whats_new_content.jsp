@@ -32,9 +32,11 @@ span.control{
     <div class="whats_new version"><p><h3>Version: v3.2</h3><BR /> Updated:11/10/2016</p></div>
        <ul>
                                     <li><span class="highlight-dark">Small RNA</span>
-                                        Rat small RNA tracks from Brain, Heart, Liver based on the small RNA-Seq.  Including counts from the parental strains.
+                                        Rat small RNA tracks from Brain, Heart, Liver based on the small RNA-Seq.  Including counts from the parental strains.  Tracks include known and novel small RNAs.  Novel RNA's were predicted by MiRDeep and SNOSeeker.
                                     </li>
-                                    
+                                    <li><span class="highlight-dark">Merged Total RNA Transcriptome</span>
+                                        Added a track with the merged transcriptome from the 3 available tissues and assigned new unique PhenoGen IDs to all novel transcripts.
+                                    </li>
                                     
         </ul>
         <hr/>
