@@ -230,7 +230,7 @@ foreach my $mod(@moduleList){
     open OFILE, '>', $path.$mod.".miR.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
     print OFILE "{\"MOD_NAME\":\"$mod\",";
     print OFILE "\"MIRList\": [\n";
-    my @mirKey=keys $moduleHOH{miRNA};
+    my $mirKey=keys $moduleHOH{miRNA};
     $mirCount=0;
     foreach my $mir(@mirKey){
         my @geneKey=keys $moduleHOH{miRNA}{$mir}{gene};
