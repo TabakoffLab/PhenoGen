@@ -15,11 +15,13 @@
                         <H2>PhenoGen v3.2 11/13/2016</H2>
                         <div style="margin-left:5px;">
                             <span style=" font-weight: bold;">Small RNA - </span> added tracks and detail on all known and novel (predicted by MiRDeep and SNOSeeker) small RNAs in Brain, Heart, and Liver from the BNLx/SHR parental strains.
+                            <BR>
                             <span style=" font-weight: bold;">Merged Total RNA Transcriptome - </span> added a track with the merged transcriptome from the 3 available tissues and assigned new unique PhenoGen IDs to all novel transcripts.
                         </div>
                         <H2>PhenoGen v3.1 6/15/2016</H2>
                         <div style="margin-left:5px;">
                             <span style=" font-weight: bold;">Rn6 - </span> is available in the browser, for gene list analysis, and both RNA-Seq datasets and microarray datasets have been updated.
+                            <BR>
                             <span style=" font-weight: bold;">Rat WGCNA - </span> Heart and Liver have been added to the rn6 data.
                         </div>
                          <H2>PhenoGen v3.0 5/31/2016</H2>
