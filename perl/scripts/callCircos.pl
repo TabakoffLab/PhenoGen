@@ -94,7 +94,7 @@ sub callCircos{
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
 	elsif($hostname eq 'stan.ucdenver.pvt'){
-		$circosBinary = '/usr/local/circos-0.68/bin/circos';
+		$circosBinary = '/usr/local/circos-0.69-4/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 	}

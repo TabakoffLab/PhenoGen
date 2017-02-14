@@ -41,7 +41,7 @@ sub prepCircos
 			print " Tissue ".$tissueList[$i]."\n";
 		}
 	}
-	my $genericConfLocation = '/usr/local/circos-0.68/etc/';
+	my $genericConfLocation = '/usr/local/circos-0.69-4/etc/';
 	my $genericConfLocation2;
 	if($hostname eq 'phenogen'){
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
@@ -52,7 +52,7 @@ sub prepCircos
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");
 	}
-	my $karyotypeLocation = '/usr/local/circos-0.68/data/karyotype/';
+	my $karyotypeLocation = '/usr/local/circos-0.69-4/data/karyotype/';
 	createCircosConfFile($confDirectory,$genericConfLocation,$genericConfLocation2,$karyotypeLocation,$organism,$chromosomeListRef,$oneToCreateLinks,$oneToCreateLinks);
 	createCircosIdeogramConfFiles($confDirectory,$organism,$chromosomeListRef);
 	createCircosProbesetTextConfFile($dataDirectory,$confDirectory);
