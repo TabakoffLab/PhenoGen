@@ -1,5 +1,5 @@
 chart=function(params){
-	that={}
+	var that={};
 	
 	//Initialize Defaults
 	that.value="CPM";
@@ -7,18 +7,22 @@ chart=function(params){
 	that.widthPerc=0.90;
 	that.curHeight=0;
 	that.curWidth=0;
-	that.margin = {top: 20, right: 20, bottom: 30, left: 40};
+	that.margin = {top: 50, right: 20, bottom: 45, left: 40};
 	that.allowResize=true;
 	that.drawType="scatter";
-	that.maxHMHeight=40;
-	that.minHMHeight=15;
-	that.topMarg=20;
+	that.maxHMHeight=35;
+	that.minHMHeight=10;
+	that.topMarg=45;
 	that.leftMarg=100;
 	that.sortBy={"col":"","dir":""};
 	that.display={"herit":true,"controls":true};
 	that.filtered={};
 	that.filterBy={};
 	that.title="";
+	that.titlePrefix="";
+	that.trianglePoints="0,6 10,6 5,0";
+	that.display.herit=true;
+	that.display.controls=true;
 
 	
 	that.parseOptions=function(params){
@@ -66,12 +70,25 @@ chart=function(params){
 		if(params.title){
 			that.title=params.title;
 		}
+		if(params.titlePrefix){
+			that.titlePrefix=params.titlePrefix+" ";
+		}
 		if(that.allowResize){
 			$(window).resize(function (){
 				that.calcSize();
 				that.redraw();
 			});
 		}
+	};
+	that.setWidth=function(width){
+		if(width.indexOf("%")>0){
+				that.widthPerc=width.substring(0,params.width.length-1)/100;
+		}else{
+				that.widthPerc=width/$(window).width();
+				that.curWidth=width;
+		}
+		that.calcSize();
+		that.redraw();
 	};
 	//Function to perform complete Setup
 	that.setup=function(){
@@ -81,7 +98,12 @@ chart=function(params){
 	};
 	//Function to append SVG to document
 	that.setupDiv=function (){
-		that.help=d3.select(that.select).append("div").attr("class","help").style("display","inline-block").style("text-align","center").style("width","100%");
+		if(d3.select("div.help").size()===0){
+			that.help=d3.select(that.select).append("div").attr("class","help").style("display","inline-block").style("text-align","center").style("width","100%");
+		}else{
+			that.help=d3.select("div.help");
+		}
+		that.help.html("Hover mouse over controls for a summary of their function.");
 		that.divCtrl = d3.select(that.select).append("div").attr("class","controls").style("width","100%").style("display","block");
 		d3.select(that.select).append("br");
 		d3.select(that.select).append("br");
@@ -118,8 +140,8 @@ chart=function(params){
 					d3.select("span#plotBtn").style("background","#989898");
 					that.drawType="scatter";
 					that.reset();
-					d3.select("span#hmBtn img").attr("src","/web/images/icons/hm_dark.png");
-					d3.select("span#hmBtn").style("background","#DCDCDC");
+					that.functionBar.select("span#hmBtn img").attr("src","/web/images/icons/hm_dark.png");
+					that.functionBar.select("span#hmBtn").style("background","#DCDCDC");
 					if(ga){
 						ga('send','event','clickDragZoom','');
 					}
@@ -127,13 +149,14 @@ chart=function(params){
 				.on("mouseout",function(){
 					if(that.drawType!="scatter"){
 						d3.select(this).attr("src","/web/images/icons/plot_dark.png");
-						d3.select("span#plotBtn").style("background","#DCDCDC");
+						that.functionBar.select("span#plotBtn").style("background","#DCDCDC");
 					}
+					that.help.html("Hover mouse over controls for a summary of their function.");
 				})
 				.on("mouseover",function(){
 					d3.select(this).attr("src","/web/images/icons/plot_light.png");
-					d3.select("span#plotBtn").style("background","#989898");
-					d3.select("div.help").html("Display data as scatter plot.");
+					that.functionBar.select("span#plotBtn").style("background","#989898");
+					that.help.html("Display data as scatter plot.");
 					//$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 				});
 			viewType.append("span").attr("id","hmBtn").style("height","24px").style("display","inline-block")
@@ -144,11 +167,11 @@ chart=function(params){
 				.attr("pointer-events","all")
 				.on("click",function(){
 					d3.select(this).attr("src","/web/images/icons/hm_light.png");
-					d3.select("span#hmBtn").style("background","#989898");
+					that.functionBar.select("span#hmBtn").style("background","#989898");
 					that.drawType="heatmap";
 					that.reset();
-					d3.select("span#plotBtn img").attr("src","/web/images/icons/plot_dark.png");
-					d3.select("span#plotBtn").style("background","#DCDCDC");
+					that.functionBar.select("span#plotBtn img").attr("src","/web/images/icons/plot_dark.png");
+					that.functionBar.select("span#plotBtn").style("background","#DCDCDC");
 					if(ga){
 						ga('send','event','clickPan','');
 					}
@@ -156,14 +179,15 @@ chart=function(params){
 				.on("mouseout",function(){
 					if(that.drawType!="heatmap"){
 						d3.select(this).attr("src","/web/images/icons/hm_dark.png");
-						d3.select("span#hmBtn").style("background","#DCDCDC");
+						that.functionBar.select("span#hmBtn").style("background","#DCDCDC");
 					}
-					
+					that.help.html("Hover mouse over controls for a summary of their function.");
+
 				})
 				.on("mouseover",function(){
-					d3.select(this).attr("src","/web/images/icons/hm_light.png");
-					d3.select("span#hmBtn").style("background","#989898");
-					d3.select("div.help").html("Display data as a heatmap.");
+					that.functionBar.select(this).attr("src","/web/images/icons/hm_light.png");
+					that.functionBar.select("span#hmBtn").style("background","#989898");
+					that.help.html("Display data as a heatmap.");
 				});
 			
 			that.functionBar.append("span").attr("class","saveImage control").style("display","inline-block")
@@ -176,10 +200,10 @@ chart=function(params){
 				.on("click",function(){
 					
 					//console.log("Level #:"+levelID);
-					var content=$("div#imgDiv").html();
+					var content=that.imgDiv.html();
 					content=content+"\n";
 					$.ajax({
-							url: pathPrefix+"saveBrowserImage.jsp",
+							url: "/PhenoGen/web/GeneCentric/saveBrowserImage.jsp",
 			   				type: 'POST',
 							contentType: 'text/html',
 							data: content,
@@ -193,11 +217,7 @@ chart=function(params){
 	                                http="https://";
 	                            }
 								var url=http+urlprefix+"/tmpData/download/"+data2.imageFile;
-								var region=new String($('#geneTxt').val());
-								region=region.replace(/:/g,"_");
-								region=region.replace(/-/g,"_");
-								region=region.replace(/,/g,"");
-								var filename = region+"_"+datePart+".png";
+								var filename = "expression.png";
 								var xhr = new XMLHttpRequest();
 
 								  xhr.open('GET', url);
@@ -233,7 +253,7 @@ chart=function(params){
 									    return true;
 									}
 									if(ga){
-											ga('send','event','browser','saveBrowserImage');
+											ga('send','event','browser','saveExpressionImage');
 									}
 								  
 			    			},
@@ -247,15 +267,15 @@ chart=function(params){
 					})
 				.on("mouseover",function(){
 					d3.select(this).attr("src","/web/images/icons/savePic_white.png");
-					d3.select("span#savePic"+that.levelNumber).style("background","#DCDCDC");
+					that.functionBar.select("span#savePic"+that.levelNumber).style("background","#DCDCDC");
 					//$(this).css("background","#989898").html("<img src=\"/web/images/icons/savePic_white.png\">");
-					$("div.help").html("Click to download a PNG image of the current view.");
+					that.help.html("Click to download a PNG image of the current view.");
 				})
 				.on("mouseout",function(){
 					d3.select(this).attr("src","/web/images/icons/savePic_dark.png");
-					d3.select("span#savePic"+that.levelNumber).style("background","#989898");
+					that.functionBar.select("span#savePic"+that.levelNumber).style("background","#989898");
 					//$(this).css("background","#DCDCDC").html("<img src=\"/web/images/icons/savePic_dark.png\">");
-					$("div.help").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+					that.help.html("Hover mouse over controls for a summary of their function.");
 				});
 			tmpSpan=that.divCtrl.append("span").attr("id","displayCbxs").style("display","inline-block");
 			tmpSpan.append("text").style("margin-right","8px").text("Display: ");
@@ -271,6 +291,10 @@ chart=function(params){
 					}
 					that.reset();
 					that.draw();
+				}).on("mouseover",function(){
+					that.help.html("Toggle whether or not Genes are displayed");
+				}).on("mouseout",function(){
+					that.help.html("Hover mouse over controls for a summary of their function.");
 				});
 			tmpSpan.append("text").style("margin-right","8px").text("Genes");
 			//tmpSpan.append("br");
@@ -286,6 +310,10 @@ chart=function(params){
 					}
 					that.reset();
 					that.draw();
+				}).on("mouseover",function(){
+					that.help.html("Toggle whether or not Transcripts are displayed");
+				}).on("mouseout",function(){
+					that.help.html("Hover mouse over controls for a summary of their function.");
 				});
 			tmpSpan.append("text").style("margin-right","8px").text("Transcripts");
 			tmpSpan.append("input").attr("type","checkbox")
@@ -301,6 +329,10 @@ chart=function(params){
 					that.display.herit=sel;
 					that.reset();
 					that.draw();
+				}).on("mouseover",function(){
+					that.help.html("Toggle whether or not a heritability chart is displayed");
+				}).on("mouseout",function(){
+					that.help.html("Hover mouse over controls for a summary of their function.");
 				});
 			tmpSpan.append("text").text("Heritability");
 
@@ -321,6 +353,12 @@ chart=function(params){
 		if(that.allowResize){
 			that.curHeight=Math.floor(($(window).height()*that.heightPerc)-that.margin.top-that.margin.bottom);
 			that.curWidth=Math.floor(($(window).width()*that.widthPerc)-that.margin.left-that.margin.right);
+			//console.log("height:"+that.curHeight);
+		}else{
+			if(that.curWidth===0 && that.curHeight===0){
+				that.curHeight=Math.floor(($(window).height()*that.heightPerc)-that.margin.top-that.margin.bottom);
+				that.curWidth=Math.floor(($(window).width()*that.widthPerc)-that.margin.left-that.margin.right);
+			}
 		}
 	};
 	that.reset=function(){
@@ -423,7 +461,13 @@ chart=function(params){
 		that.xAxGUI=that.svg.append("g")
     		.attr("class", "x axis")
     		.attr("transform", "translate(0," + that.curHeight + ")")
-    		.call(that.xAxis);
+    		.call(that.xAxis)
+    		.selectAll("text")
+			    .attr("y", 0)
+			    .attr("x", 9)
+			    .attr("dy", ".35em")
+			    .attr("transform", "rotate(90)")
+			    .style("text-anchor", "start");
 		that.yAxGUI=that.svg.append("g")
       		.attr("class", "y axis")
       		.call(that.yAxis);
@@ -436,24 +480,45 @@ chart=function(params){
       			.style("text-anchor", "end")
       			.text(that.value);
       	that.svg.append("g").attr("id","title")
-      		.attr("transform","translate("+((that.curWidth-that.leftMarg-that.heritChartW)/2)+",0)")
+      		.attr("transform","translate("+((that.curWidth-that.leftMarg-that.heritChartW)/2)+",-5)")
       		.append("text")
-      		.text(that.title);
+      		.text(that.titlePrefix+that.title);
       	that.svg.selectAll(".dot")
       		.data(that.filteredData)
     		.enter().append("circle")
-    			.attr("class",function(d){return "dot "+d.id;})
+    			.attr("class",function(d){return "dot "+d.id+" "+d.strain;})
 	      		.attr("r", 2.5)
 	      		.attr("cx", function(d) { return that.x(d.strain); })
 	      		.attr("cy", function(d) { return that.y(d.val); })
 	      		.style("fill", function(d) { return that.color(d.id); })
 	      		.on("mouseover",function(d){
-
+	      			d3.selectAll(".dot").transition()
+    					.duration(250)
+    					.attr("r", 2.5);
+	      			d3.selectAll(".dot."+d.id)
+	      				.transition()
+    					.duration(350)
+    					.attr("r",4.5);
+	      			d3.selectAll(".dot."+d.id+"."+d.strain)
+	      				.transition()
+    					.duration(350)
+    					.attr("r",6.5);
+	      		})
+	      		.on("mouseout",function(d){
+	      			d3.selectAll(".dot").transition()
+    					.duration(250)
+    					.attr("r", 2.5);
 	      		});    	
 
+	    yRangeMax=that.curHeight-that.topMarg;
+	    itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
 
+	    barMarg=itemH*0.05;
+	    if(barMarg<1){
+	    	barMarg=1;
+	    }
 	   
-	    for(i=0;i<that.color.domain().length;i++){
+	    /*for(i=0;i<that.color.domain().length;i++){
 	    	tmpID=that.color.domain()[i];
 	    	tmpD=that.svg.selectAll("."+tmpID).data();
 			tmpD.sort(that.sortCompStrainOrder);
@@ -464,7 +529,7 @@ chart=function(params){
       			.style("stroke", function(d) { return that.color(tmpID); })
       			.style("stroke-width", "2px")
           		.style("fill", "none");
-	    }
+	    }*/
 
 		that.geneScale= d3.scaleBand().domain(that.filteredGeneIDs.map(function(d){return d.id;})).range([0, that.curHeight]);
 
@@ -500,7 +565,21 @@ chart=function(params){
 	      		yPos=Math.floor(i/lgdItemWidth)*30;
 	      		xPos=(i%lgdItemWidth)*itemW+that.margin.left;
 	      		return "translate("+xPos+","+yPos+")"; 
-	      	});
+	      	})
+	      	.on("mouseover",function(d){
+	      		d3.selectAll(".dot").transition()
+    					.duration(250)
+    					.attr("r", 2.5);
+	      		d3.selectAll(".dot."+d)
+	      				.transition()
+    					.duration(350)
+    					.attr("r",4.5);
+    		})
+    		.on("mouseout",function(){
+				d3.selectAll(".dot").transition()
+    					.duration(250)
+    					.attr("r", 2.5);
+			});
 
 	  	that.legend.append("rect")
 	  		.attr("class",function(d){ return "legend box "+d;})
@@ -514,19 +593,25 @@ chart=function(params){
 	      .on("click",function(d){
 	      	if(d3.select(this).style("fill")==d3.rgb(255,255,255)){
 	      		d3.select(this).style("fill",that.color(d));
-	      		that.svg.selectAll("#line"+d).style("opacity",100);
-	      		that.svg.selectAll(".dot."+d).style("opacity",100);
+	      		//that.svg.selectAll("#line"+d).style("opacity",100);
+	      		that.svg.selectAll(".dot."+d)
+	      			.transition()
+    				.duration(450)
+    				.style("opacity",100);
 	      	}else{
 	      		d3.select(this).style("fill","#FFFFFF");
-	      		that.svg.selectAll("#line"+d).style("opacity",0);
-	      		that.svg.selectAll(".dot."+d).style("opacity",0);
+	      		//that.svg.selectAll("#line"+d).style("opacity",0);
+	      		that.svg.selectAll(".dot."+d)
+	      			.transition()
+    				.duration(450)
+    				.style("opacity",0);
 	      	}
 	      })
 	      .on("mouseout",function(){
-				d3.select("div.help").html("Click to toggle series on/off.");
+				that.help.html("Hover mouse over controls for a summary of their function.");
 			})
 	      .on("mouseover",function(){
-
+	      		that.help.html("Click to toggle series on/off.");
 	      });
 
 	  	that.legend.append("text")
@@ -563,10 +648,14 @@ chart=function(params){
       							});*/
 	      })
 	      .on("mouseout",function(){
-				d3.select("div.help").html("Click to sort strains based on the values of this series.");
-			})
-	      .on("mouseover",function(){
+				d3.selectAll(".dot").transition()
+    					.duration(250)
+    					.attr("r", 2.5);
+    			that.help.html("Hover mouse over controls for a summary of their function.");
 
+			})
+	      .on("mouseover",function(d){
+	      		that.help.html("Click to sort strains by values of this gene/transcript.");
 	      });
 
 	};
@@ -589,13 +678,13 @@ chart=function(params){
 				.attr("cx", function(d) { return that.x(d.strain); })
 		      	.attr("cy", function(d) { return that.y(d.val); });
 		    
-		    for(i=0;i<that.color.domain().length;i++){
+		    /*for(i=0;i<that.color.domain().length;i++){
 		    	tmpID=that.color.domain()[i];
 		    	tmpD=that.svg.selectAll(".dot."+tmpID).data();
 		    	tmpD.sort(that.sortCompStrainOrder);
 		    	that.svg.select("#line"+tmpID)
 	      			.attr("d", function(d) {return that.line(tmpD);});
-		    }
+		    }*/
 
 		    lgdItemWidth=2
 			if(that.curWidth>1600){
@@ -615,7 +704,7 @@ chart=function(params){
 			itemTotal=that.color.domain().length;
 			rows=Math.floor(itemTotal/lgdItemWidth)+1;
 			lgdH=rows*30;
-			that.legendSVG.attr("height",lgdH).attr("width",that.curWidth);
+			that.legendSVGTop.attr("height",lgdH).attr("width",that.curWidth);
 		    that.legendSVG.selectAll("g.legend")
 		    	.attr("transform", function(d, i) { 
 		      		yPos=Math.floor(i/lgdItemWidth)*30;
@@ -644,11 +733,18 @@ chart=function(params){
 		}
 		itemW=(that.curWidth-that.leftMarg-that.heritChartW)/that.filteredStrains.length;
 		itemH=(that.curHeight-that.topMarg)/that.filteredGeneIDs.length;
+		//console.log("itemH:"+itemH);
+		if(itemH>that.maxHMHeight){
+			itemH=that.maxHMHeight;
+		}
+		if(itemH<that.minHMHeight){
+			itemH=that.minHMHeight;
+		}
 		barMarg=Math.floor(itemH*0.1);
 		if(barMarg<1){
 			barMarg=1;
 		}
-		yRangeMax=that.curHeight-that.topMarg;
+		yRangeMax=itemH*that.filteredGeneIDs.length;
 		/*if(itemH> that.maxHMHeight){
 			itemH=that.maxHMHeight;
 			yRangeMax=that.geneIDs.length*itemH;
@@ -659,12 +755,18 @@ chart=function(params){
 		that.color= d3.scaleLinear().domain([that.yMin,that.yMax]).range([0,255]);
 		that.xAxis = d3.axisTop(that.x);
 		that.yAxis = d3.axisLeft(that.y);
-		that.svg.append("g").attr("id","title").append("text").attr("transform","translate("+((that.curWidth-that.leftMarg-that.heritChartW)/2)+",0)").text(that.title);
+		that.svg.append("g").attr("id","title").append("text").attr("text-anchor","middle").attr("transform","translate("+(that.curWidth/2)+",0)").text(that.titlePrefix+that.title);
 		that.xAxGUI=that.svg.append("g")
     		.attr("class", "x axis")
     		.attr("transform", "translate("+that.leftMarg+","+that.topMarg+")")
-    		.call(that.xAxis);
-    	d3.selectAll("g.x.axis g.tick text")
+    		.call(that.xAxis)
+    		.selectAll("text")
+			    .attr("y", 0)
+			    .attr("x", 9)
+			    .attr("dy", ".35em")
+			    .attr("transform", "rotate(-90)")
+			    .style("text-anchor", "start");
+    	that.svg.selectAll("g.x.axis g.tick text")
       		.style("cursor","pointer")
       		.on("click", function(){
       			id=d3.select(this)._groups[0][0].textContent
@@ -694,7 +796,7 @@ chart=function(params){
       		.attr("class", "y axis")
       		.attr("transform", "translate("+that.leftMarg+","+that.topMarg+")")
       		.call(that.yAxis);
-      	d3.selectAll("g.y.axis g.tick text")
+      	that.svg.selectAll("g.y.axis g.tick text")
       		.style("cursor","pointer")
       		.on("click", function(){
       			id=d3.select(this)._groups[0][0].textContent;
@@ -725,26 +827,39 @@ chart=function(params){
       		});
       	that.svg.selectAll(".box")
       		.data(that.filteredData)
-    		.enter().append("rect")
+    		.enter().append("g")
     			.attr("class","box")
+    			.append("rect")
 	      		.attr("x", function(d) { return that.x(d.strain)+that.leftMarg; })
 	      		.attr("y", function(d) { return that.y(d.id)+that.topMarg; })
 	      		.attr("width", function(d) { return itemW; })
 	      		.attr("height", function(d) { return itemH; })
 	      		.style("fill", function(d) { return d3.rgb(that.color(d.val),0,0); })
 	      		.on("mouseover",function(d){
-
+	      			d3.select(this.parentNode).select("text").attr("opacity","100");
+	      		})
+	      		.on("mouseout",function(d){
+	      			d3.select(this.parentNode).select("text").attr("opacity","0");
+	      		}).each(function(d){
+	      			d3.select(this.parentNode).append("text")
+	      				.attr("text-anchor","middle")
+	      				.attr("transform","translate("+((that.x(d.strain)+that.leftMarg)+itemW/2)+","+((that.y(d.id)+that.topMarg)+itemH/2)+")rotate(-90)")
+	      				.attr("font-size","8px")
+	      				//.attr("stroke","#FFFFFF")
+	      				.attr("fill","#FFFFFF")
+	      				.attr("opacity","0")
+	      				.text(Number(d.val).toFixed(1));
 	      		});
-	    trianglePoints="0,6 10,6 5,0";
+	    
 	    that.sortIndicator=that.svg.append("g").attr("id","sortIndicator").attr("transform","translate(-50,-50)");
 	    that.sortIndicator.append('polyline')
-    		.attr('points', trianglePoints)
+    		.attr('points', that.trianglePoints)
     		.style('stroke', 'white');
 
     	that.svgTop.attr("height",itemH*that.filteredGeneIDs.length+that.margin.top+that.margin.bottom+25);
 
     	//Setup Legend
-	    that.legendSVGTop.attr("height",50);
+	    that.legendSVGTop.attr("height",60).attr("width",that.curWidth+that.margin.left+that.margin.right);
 	    grad=that.legendSVG.append("defs").append("linearGradient")
 	    					.attr("id","scale")
 	    					.attr("x1","0%").attr("y1","0%")
@@ -757,14 +872,142 @@ chart=function(params){
     		.attr("class", "c axis")
     		.attr("transform", "translate("+that.margin.left+",30)")
     		.call(that.cAxis);
-    	that.legendSVG.append("text").attr("id","legendLbl").attr("transform","translate("+(that.curWidth/2+that.margin.left-20)+",11)").text("Counts (CPM)");
+    	that.legendSVG.append("text")
+    		.attr("id","legendLbl")
+    		.attr("transform","translate("+(that.curWidth/2)+",11)")
+    		.attr("text-anchor","middle")
+    		.text("Median Estimated Counts Per Million");
 	    
 	   	that.legendSVG.append("rect").attr("id","legendRect")
-	   					.attr("x",that.leftMarg).attr("y",7)
+	   					.attr("x",that.leftMarg).attr("y",4)
 	   					.attr("width",that.curWidth-that.leftMarg-that.heritChartW)
 	   					.attr("height", 20)
 	   					.attr("fill","url(\"#scale\")")
 	   					.attr("transform","translate("+that.margin.left+",27)");
+	   	that.legendRectHi=that.legendSVG.append("rect").attr("id","legendRectHigh")
+	   					.attr("x",that.leftMarg).attr("y",4)
+	   					.attr("width",0)
+	   					.attr("height", 20)
+	   					.attr("fill","#CECECE")
+	   					.attr("transform","translate("+that.margin.left+",27)");
+	   	that.legendRectLo=that.legendSVG.append("rect").attr("id","legendRectLow")
+	   					.attr("x",that.leftMarg).attr("y",4)
+	   					.attr("width",0)
+	   					.attr("height", 20)
+	   					.attr("fill","#555555")
+	   					.attr("transform","translate("+that.margin.left+",27)");
+
+	   	that.hmScale2=d3.scaleLinear().domain([that.yMin,that.yMax]).range([that.leftMarg, that.curWidth-that.heritChartW]);
+	    that.cAxis2 = d3.axisBottom(that.hmScale2);
+	    that.cAxGUI2=that.legendSVG.append("g")
+    		.attr("class", "c axis2")
+    		.attr("transform", "translate("+that.margin.left+",97)")
+    		.style("opacity",0)
+    		.call(that.cAxis2);
+	    
+	   	that.legendSVG.append("rect").attr("id","legendRect2")
+	   					.attr("x",that.leftMarg).attr("y",50)
+	   					.attr("width",that.curWidth-that.leftMarg-that.heritChartW)
+	   					.attr("height", 20)
+	   					.attr("fill","url(\"#scale\")")
+	   					.attr("transform","translate("+that.margin.left+",27)")
+	   					.style("opacity",0);
+
+
+	   	that.minSliderCurPos=that.leftMarg+that.margin.left-5;
+	   	that.maxSliderCurPos=that.curWidth-that.heritChartW+35;
+	   	that.minSliderPos=that.leftMarg+that.margin.left-5;
+	   	that.maxSliderPos=that.curWidth-that.heritChartW+35;
+	   	that.legendSVG.append("line").attr("class","breakout").attr("id","lineMin")
+    		.attr("x1",that.minSliderPos+5)
+    		.attr("y1",55)
+    		.attr("x2",that.minSliderPos+5)
+    		.attr("y2",78).attr("stroke","black").attr("stroke-width",2).style("opacity",0);
+    	that.legendSVG.append("line").attr("class","breakout").attr("id","lineMax")
+    		.attr("x1",that.maxSliderPos+5)
+    		.attr("y1",55)
+    		.attr("x2",that.maxSliderPos+5)
+    		.attr("y2",78).attr("stroke","black").attr("stroke-width",2).style("opacity",0);
+	   	that.minSlider=that.legendSVG.append("g")
+	   		.attr("id","minSlider")
+	   		.attr("transform","translate("+that.minSliderPos+",50)")
+	   		.style("cursor","pointer")
+	   		.call(d3.drag()
+			        .on("start.interrupt", function() { that.minSlider.interrupt(); })
+			        .on("start drag", function() { 
+			        	x=d3.event.x;
+			        	if(x<that.maxSliderCurPos && x>=that.minSliderPos){
+			        		that.minSlider.attr("transform","translate("+x+",50)");
+			        		that.minSliderCurPos=x;
+			        		that.legendRectLo.attr("width",x-that.leftMarg-that.margin.left+5);
+			        		that.legendSVG.select("#lineMin").attr("x1",x+5);
+			        		if(that.x===that.maxSliderPos){
+			        			that.legendSVGTop.attr("height",60);
+			        			that.legendSVG.select(".c.axis2").style("opacity",0);
+			        			that.legendSVG.select("#legendRect2").style("opacity",0);
+			        			that.legendSVG.selectAll(".breakout").style("opacity",0);
+			        		}else{
+			        			that.legendSVGTop.attr("height",120);
+			        			that.legendSVG.select(".c.axis2").style("opacity",100);
+			        			that.legendSVG.select("#legendRect2").style("opacity",100);
+			        			that.legendSVG.selectAll(".breakout").style("opacity",100);
+			        		}
+			        	}else if(x<that.minSliderPos){
+			        		that.minSlider.attr("transform","translate("+that.minSliderPos+",50)");
+			        		that.minSliderCurPos=that.minSliderPos;
+			        		that.legendRectLo.attr("width",0);
+			        		
+			        	}
+			        	that.color.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
+		        		that.hmScale2.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
+		        		that.cAxGUI2.call(that.cAxis2);
+		        		that.recolorHeatMap();
+			        }));
+	   	that.minSlider
+	   		.append('polyline')
+    		.attr('points', that.trianglePoints)
+    		.style('stroke', 'black');
+
+	   	that.maxSlider=that.legendSVG.append("g")
+	   		.attr("id","maxSlider")
+	   		.attr("transform","translate("+that.maxSliderPos+",50)")
+	   		.style("cursor","pointer")
+	   		.call(d3.drag()
+			        .on("start.interrupt", function() { that.maxSlider.interrupt(); })
+			        .on("start drag", function() { 
+			        	x=d3.event.x;
+			        	if(x>that.minSliderCurPos && x<=that.maxSliderPos){
+			        		that.maxSlider.attr("transform","translate("+x+",50)");
+			        		that.maxSliderCurPos=x;
+			        		that.legendRectHi.attr("x",x-that.margin.left+5).attr("width",that.curWidth+that.margin.left-that.heritChartW-x-5);
+			        		that.legendSVG.select("#lineMax").attr("x1",x+5);
+			        		if(that.x===that.maxSliderPos){
+			        			that.hmScale2.range([]);
+			        			that.legendSVGTop.attr("height",60);
+			        			that.legendSVG.select(".c.axis2").style("opacity",0);
+			        			that.legendSVG.select("#legendRect2").style("opacity",0);
+			        			that.legendSVG.selectAll(".breakout").style("opacity",0);
+			        		}else{
+			        			that.legendSVGTop.attr("height",120);
+			        			that.legendSVG.select(".c.axis2").style("opacity",100);
+			        			that.legendSVG.select("#legendLbl2").style("opacity",100);
+			        			that.legendSVG.select("#legendRect2").style("opacity",100);
+			        			that.legendSVG.selectAll(".breakout").style("opacity",100);
+			        		}
+			        	}else{
+
+			        	}
+			        	that.color.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
+		        		that.hmScale2.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
+		        		that.cAxGUI2.call(that.cAxis2);
+		        		that.recolorHeatMap();
+			        }));
+	   		that.maxSlider.append('polyline')
+    		.attr('points', that.trianglePoints)
+    		.style('stroke', 'black');
+
+    	
+
 	   	that.drawHeritabiltiy(barMarg);
 	};
 
@@ -773,14 +1016,21 @@ chart=function(params){
 			that.reset();
 		}else{
 			that.leftMarg=100;
-			that.topMarg=20;
+			that.topMarg=45;
 			itemW=(that.curWidth-that.leftMarg-that.heritChartW)/that.filteredStrains.length;
 			itemH=(that.curHeight-that.topMarg)/that.filteredGeneIDs.length;
+			if(itemH>that.maxHMHeight){
+				itemH=that.maxHMHeight;
+			}
+			if(itemH<that.minHMHeight){
+				itemH=that.minHMHeight;
+			}
+			yRangeMax=itemH*that.filteredGeneIDs.length;
 			barMarg=Math.floor(itemH*0.1);
 			if(barMarg<1){
 				barMarg=1;
 			}
-			yRangeMax=that.curHeight-that.topMarg;
+			//yRangeMax=that.curHeight-that.topMarg;
 			/*if(itemH> that.maxHMHeight){
 				itemH=that.maxHMHeight;
 				yRangeMax=that.geneIDs.length*itemH;
@@ -790,53 +1040,113 @@ chart=function(params){
 			that.svg.attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
 			that.x.range([0, that.curWidth-that.leftMarg-that.heritChartW]);
 			that.y.range([0, yRangeMax]);
-			that.xAxGUI.call(that.xAxis);
+			that.xAxis = d3.axisTop(that.x);
+			that.yAxis = d3.axisLeft(that.y);
+			that.xAxGUI.call(that.xAxis)
+				.selectAll("text")
+			    .attr("y", 0)
+			    .attr("x", 9)
+			    .attr("dy", ".35em")
+			    .attr("transform", "rotate(-90)")
+			    .style("text-anchor", "start");
 			that.yAxGUI.call(that.yAxis);
-			that.svg.selectAll(".box")
-				.attr("x", function(d) { return that.x(d.strain)+that.leftMarg; })
-	      		.attr("y", function(d) { return that.y(d.id)+that.topMarg; })
+			that.svg.selectAll(".box").each(function(data){
+				d3.select(this).select("rect")
+				.attr("x", function(d) { return that.x(data.strain)+that.leftMarg; })
+	      		.attr("y", function(d) { return that.y(data.id)+that.topMarg; })
 	      		.attr("width", function(d) { return itemW; })
 	      		.attr("height", function(d) { return itemH; });
+	      		d3.select(this).select("text").attr("transform","translate("+((that.x(data.strain)+that.leftMarg)+itemW/2)+","+((that.y(data.id)+that.topMarg)+itemH/2)+")rotate(-90)");
+			});
+			
+			that.minSliderPos=that.leftMarg+that.margin.left-5;
+	   		that.maxSliderPos=that.curWidth-that.heritChartW+35;
+			var minSelected=that.hmScale.invert(that.minSliderCurPos-35);
+			var maxSelected=that.hmScale.invert(that.maxSliderCurPos-35);
+
+
 	      	that.legendSVGTop.attr("width",that.curWidth+that.margin.left+that.margin.right);
 	      	that.legendSVG.select("#legendLbl").attr("transform","translate("+(that.curWidth/2+that.margin.left-20)+",11)");
 	      	that.hmScale.range([that.leftMarg, that.curWidth-that.heritChartW]);
 			that.cAxGUI.call(that.cAxis);
-			d3.select("rect#legendRect").attr("width",that.curWidth-that.leftMarg-that.heritChartW);
+			that.legendSVG.select("rect#legendRect").attr("width",that.curWidth-that.leftMarg-that.heritChartW);
+
+			that.hmScale2.range([that.leftMarg, that.curWidth-that.heritChartW]);
+	    	that.cAxGUI2.attr("transform", "translate("+that.margin.left+",97)")
+    			.call(that.cAxis2);
+	    
+		   	that.legendSVG.select("#legendRect2")
+		   		.attr("width",that.curWidth-that.leftMarg-that.heritChartW);
+
+
+		   	that.minSliderCurPos=that.hmScale(minSelected)+35;
+			that.maxSliderCurPos=that.hmScale(maxSelected)+35;
+	   		that.minSlider.attr("transform","translate("+that.minSliderCurPos+",50)");
+	   		that.maxSlider.attr("transform","translate("+that.maxSliderCurPos+",50)");
+
+			
+			that.legendRectLo.attr("width",that.minSliderCurPos-that.minSliderPos);
+			that.legendRectHi.attr("x",that.maxSliderCurPos+5-that.margin.left).attr("width",that.maxSliderPos-(that.maxSliderCurPos));
+	   	that.legendSVG.select("#lineMin")
+    		.attr("x1",that.minSliderCurPos+5)
+    		.attr("x2",that.leftMarg+that.margin.left);
+    	that.legendSVG.select("#lineMax")
+    		.attr("x1",that.maxSliderCurPos+5)
+    		.attr("x2",that.curWidth-that.heritChartW+that.margin.left);
+	   	
+
+
 			that.redrawHeritability(barMarg);
 		}
+	};
+
+	that.recolorHeatMap=function(){
+		that.svg.selectAll(".box").each(function(){
+			d3.select(this)
+				.select("rect")
+				.style("fill", function(d){
+					tmp=d3.rgb(255,255,255);
+					if(d.val<that.hmScale.invert(that.minSliderCurPos-35)){
+						//console.log("dval"+d.val+":"+that.minSliderCurPos+":"+that.hmScale.invert(that.minSliderCurPos-35));
+						tmp=d3.rgb(85,85,85);
+					}else if(d.val>that.hmScale.invert(that.maxSliderCurPos-35)){
+						tmp=d3.rgb(207,207,207);
+					}else{
+						tmp=d3.rgb(that.color(d.val),0,0);
+					}
+					return tmp;
+				});
+		});
 	};
 
 
 	that.drawHeritabiltiy=function(barMarg){
 		if(that.heritChartW>0){//draw to side of heatmap
+			itemH=(that.curHeight-that.topMarg)/that.filteredGeneIDs.length;
 		   	that.heritScale = d3.scaleLinear().domain([0,1]).range([0,195]);
 		   	that.heritAx=d3.axisTop(that.heritScale);
 		   	internalHChart=that.svg.append("g").attr("id","internalHChart").attr("transform","translate("+(that.curWidth-that.heritChartW)+",0)");
-		   	trianglePoints="0,6 10,6 5,0";
-		    that.hSortIndicator=internalHChart.append("g").attr("id","sortIndicator").attr("transform","translate(-50,-50)");
+		    that.hSortIndicator=internalHChart.append("g").attr("id","hsortIndicator").attr("transform","translate(-50,-50)");
 		    that.hSortIndicator.append('polyline')
-	    		.attr('points', trianglePoints)
+	    		.attr('points', that.trianglePoints)
 	    		.style('stroke', 'white');
 		   	that.hAxGUI=internalHChart.append("g")
 	    		.attr("class", "h axis")
 	    		.attr("transform","translate(0,"+that.topMarg+")")
 	    		.call(that.heritAx);
-	    	internalHChart.append("text").attr("transform","translate(75,2)").style("cursor","pointer")
-	    		.text("Heritability")
+	    	internalHChart.append("text").attr("transform","translate(100,2)").attr("text-anchor","middle").style("cursor","pointer")
+	    		.text("Heritability on RI")
 	    		.on("click", function(){ 
 	    				that.processSortByHerit();
-	    				that.sortIndicator.attr("transform",function(){
+	    				that.hSortIndicator.attr("transform",function(){
 							      					deg=180;
-							      					dy=2;
-							      					
-							      					offs=-30
+							      					dx=0;
+							      					dy=-8;
 													if(that.sortBy.dir=="DESC"){
 														deg=0;
-														dy=-2;
-														
 													}
-													x=75+20;
-													dy=dy+that.geneScale(id)+itemH/2+that.topMarg;
+													x=145+dx;
+													
 							      					return "translate("+x+","+dy+")rotate("+deg+")";
       					
 
@@ -847,7 +1157,7 @@ chart=function(params){
 	    		.enter().append("rect")
 	    			.attr("class","bar")
 		      		.attr("x", function(d) { return 0; })
-		      		.attr("y", function(d) { return that.geneScale(d.id)+that.topMarg+barMarg; })
+		      		.attr("y", function(d) { return that.geneScale(d.id)+that.topMarg+barMarg+10; })
 		      		.attr("width", function(d) { return that.heritScale(d.herit); })
 		      		.attr("height", function(d) { return itemH-(2*barMarg); })
 		      		.style("fill", function(d) { 
@@ -877,10 +1187,27 @@ chart=function(params){
 	    		.attr("class", "yh axis")
 	    		.attr("transform","translate(0,"+(that.topMarg+15)+")")
 	    		.call(that.yhAx);
-	    	that.hChart.append("text").attr("id","hChartLbl").attr("transform","translate("+(that.curWidth/2)+",10)")
+	    	that.hChart.append("text").attr("id","hChartLbl")
+	    		.attr("transform","translate("+(that.curWidth/2)+",10)")
+	    		.attr("text-anchor","middle")
 	    		.style("cursor","pointer")
-	    		.text("Heritability")
-	    		.on("click", that.processSortByHerit);
+	    		.text(that.titlePrefix+"Heritability on RI")
+	    		.on("click", function(){ 
+	    				that.processSortByHerit();
+	    				that.hSortIndicator.attr("transform",function(){
+							      					deg=180;
+							      					dx=0;
+							      					dy=-8;
+													if(that.sortBy.dir=="DESC"){
+														deg=0;
+													}
+													x=145+dx;
+													
+							      					return "translate("+x+","+dy+")rotate("+deg+")";
+      					
+
+      						}).style('stroke', 'black');
+	    		});
 	    	that.hChart.selectAll(".bar")
 	      		.data(that.filteredGeneIDs)
 	    		.enter().append("rect")
@@ -899,6 +1226,10 @@ chart=function(params){
 		      		.on("mouseover",function(d){
 
 		      		});
+		    that.hSortIndicator=that.hChart.append("g").attr("id","hsortIndicator").attr("transform","translate(-50,-50)");
+		    that.hSortIndicator.append('polyline')
+	    		.attr('points', that.trianglePoints)
+	    		.style('stroke', 'white');
 	    }
 	};
 
@@ -910,7 +1241,7 @@ chart=function(params){
 				.attr("height", function(d) { return itemH-(2*barMarg); });
 		}else if (that.display.herit){
 			tmpMarg=that.topMarg+15;
-			d3.select("#hChartLbl").attr("transform","translate("+(that.curWidth/2)+",10)");
+			that.hChart.select("#hChartLbl").attr("transform","translate("+(that.curWidth/2)+",10)");
 			that.hChartTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
     				.attr("height",that.curHeight/2+that.margin.top+that.margin.bottom);
     		that.hChart.attr("transform","translate("+(that.leftMarg+that.margin.left)+",0)");
@@ -941,11 +1272,9 @@ chart=function(params){
 				data: {},
 				dataType: 'json',
     			success: function(data2){
-        			if(data2.GENE_ID){
-        				that.parseSingleGene(data2);
-        			}else if(data2.GENE_LIST){
-        				that.parseMultipleGenes(data2);
-        			}
+
+        			that.parseMultipleGenes(data2);
+        			
         			if(ga){
 						ga('send','event','loadChartData',that.dataFile);
 					}
@@ -1068,72 +1397,40 @@ chart=function(params){
 			that.sortBy.col=column;
 			that.sortBy.dir="ASC";
 		}
-	};
-	//Parse results from single genes
-	that.parseSingleGene=function(d){
-		that.strains=[];
-		that.geneIDs=[];
-		that.data=[];
-		id=d.GENE_ID;
-		tmp={"id":id};
-		if(d.HERIT){
-			tmp.herit=d.HERIT;
-		}else{
-			that.display.herit=false;
-		}
-		that.geneIDs.push(tmp);
-		that.yMin=d.VALUES[0][that.value];
-		that.yMax=d.VALUES[0][that.value];
-		for(i=0;i<d.VALUES.length;i++){
-			that.strains.push(d.VALUES[i].Strain);
-			that.data.push({"id":id,"strain":d.VALUES[i].Strain,"val":d.VALUES[i][that.value]});
-			if(that.yMin>d.VALUES[i][that.value]){
-				that.yMin=d.VALUES[i][that.value];
-			}
-			if(that.yMax<d.VALUES[i][that.value]){
-				that.yMax=d.VALUES[i][that.value];
-			}
-		}
-		for(j=0;j<d.TRXList.length;j++){
-			id=d.TRXList[j].TRXID;
-			tmp={"id":id};
-			if(d.TRXList[j].HERIT){
-				tmp.herit=d.TRXList[j].HERIT;
-			}
-			that.geneIDs.push(tmp);
-			for(i=0;i<d.TRXList[j].VALUES.length;i++){
-				that.data.push({"id":id,"strain":d.TRXList[j].VALUES[i].Strain,"val":d.TRXList[j].VALUES[i][that.value]});
-				if(that.yMin>d.TRXList[j].VALUES[i][that.value]){
-					that.yMin=d.TRXList[j].VALUES[i][that.value];
-				}
-				if(that.yMax<d.TRXList[j].VALUES[i][that.value]){
-					that.yMax=d.TRXList[j].VALUES[i][that.value];
-				}
-			}
-		}
-		that.seriesCount=d.TRXList.length+1;
-		if(that.seriesCount>20){
-			that.drawType="heatmap";
-
-		}
-		that.draw();
-	};
-	
+	};	
 	//Parse results from multiple genes
 	that.parseMultipleGenes=function(d){
 		that.strains=[];
 		that.geneIDs=[];
 		that.data=[];
-		list=d.GENE_LIST;
+		list=d.GENELIST;
 		that.seriesCount=0;
 		that.yMin=list[0].VALUES[0][that.value];
 		that.yMax=list[0].VALUES[0][that.value];
+		/*
+		//find Gene IDs from browserTrackData
+		trackData={};
+		if(gs.getTrackData){
+			tmpTrackData=[];
+			if(that.titlePrefix==="Whole Brain"){
+				tmpTrackData=gs.getTrackData("brainTotal");
+			}else if(that.titlePrefix==="Liver"){
+				tmpTrackData=gs.getTrackData("liverTotal");
+			}
+			for(i=0;i<trackData.length;i++){
+				if(tmpTrackData[i].getAttribute("ID").startswith("PRN6G")){
+
+				}else{
+					getAllChildrenByName(tmpTrackData,"annotation")
+				}
+			}
+		}*/
 		for(var k=0;k<list.length;k++){
 			//console.log(k);
-			id=list[k].GENE_ID;
+			id=list[k].GENEID;
 			
 			tmp={"id":id};
-			if(list[k].HERIT){
+			if(typeof list[k].HERIT!=='undefined'){
 				tmp.herit=list[k].HERIT;
 			}else{
 				that.display.herit=false;
@@ -1153,20 +1450,20 @@ chart=function(params){
 					that.yMax=list[k].VALUES[i][that.value];
 				}
 			}
-			for(j=0;j<list[k].TRXList.length;j++){
-				id=list[k].TRXList[j].TRXID;
+			for(j=0;j<list[k].TRXLIST.length;j++){
+				id=list[k].TRXLIST[j].TRXID;
 				tmp={"id":id};
-				if(list[k].TRXList[j].HERIT){
-					tmp.herit=list[k].TRXList[j].HERIT;
+				if(typeof list[k].TRXLIST[j].HERIT !=='undefined'){
+					tmp.herit=list[k].TRXLIST[j].HERIT;
 				}
 				that.geneIDs.push(tmp);
-				for(i=0;i<list[k].TRXList[j].VALUES.length;i++){
-					that.data.push({"id":id,"strain":list[k].TRXList[j].VALUES[i].Strain,"val":list[k].TRXList[j].VALUES[i][that.value]});
-					if(that.yMin>list[k].TRXList[j].VALUES[i][that.value]){
-						that.yMin=list[k].TRXList[j].VALUES[i][that.value];
+				for(i=0;i<list[k].TRXLIST[j].VALUES.length;i++){
+					that.data.push({"id":id,"strain":list[k].TRXLIST[j].VALUES[i].Strain,"val":list[k].TRXLIST[j].VALUES[i][that.value]});
+					if(that.yMin>list[k].TRXLIST[j].VALUES[i][that.value]){
+						that.yMin=list[k].TRXLIST[j].VALUES[i][that.value];
 					}
-					if(that.yMax<list[k].TRXList[j].VALUES[i][that.value]){
-						that.yMax=list[k].TRXList[j].VALUES[i][that.value];
+					if(that.yMax<list[k].TRXLIST[j].VALUES[i][that.value]){
+						that.yMax=list[k].TRXLIST[j].VALUES[i][that.value];
 					}
 				}
 			}
@@ -1174,7 +1471,13 @@ chart=function(params){
 		if(that.seriesCount>20){
 			that.drawType="heatmap";
 		}
+
+
 		that.draw();
+	};
+
+	that.findIDs=function(trackData,id){
+
 	};
 
 	//Initial Setup

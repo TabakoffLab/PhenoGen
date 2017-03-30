@@ -285,4 +285,15 @@ table.tooltipTable TD{
             column-count: 1;
             }
         }
+        @media screen and (min-width:1500px){
+            div.exprCol{
+                width:100%;
+            }
+        }
+        @media screen and (min-width:1501px){
+            div.exprCol{
+                width:46%;
+            }
+        }
+        
 </style>

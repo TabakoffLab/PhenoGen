@@ -4,7 +4,7 @@
 	extrasList.add("jquery.cookie.js");
 	extrasList.add("spectrum.js");
         extrasList.add("svg-pan-zoom.3.2.3.min.js");
-	extrasList.add("d3.v4.5.0.min.js");
+	extrasList.add("d3.v4.7.1.min.js");
 	extrasList.add("tabs.css");
 	extrasList.add("tsmsselect.css");
 	extrasList.add("jquery.fancybox.css");
