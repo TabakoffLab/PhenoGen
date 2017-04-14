@@ -261,10 +261,17 @@ public class GeneDataTools {
                     hm.put("ucsc",rs.getString("UCSC"));
                 }
                 ps.close();
+                conn.close();
+                conn=null;
             } catch (SQLException ex) {
                 log.error("SQL Exception retreiving datasources for genome Version="+genomeVer ,ex);
                 try {
-                    ps.close();
+                   if(conn!=null && !conn.isClosed()){
+                       try{
+                           conn.close();
+                           conn=null;
+                       }catch(SQLException e){}
+                   }
                 } catch (Exception ex1) {
                    
                 }
