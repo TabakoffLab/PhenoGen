@@ -47,6 +47,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	that.requests=0;
 	that.skipGrey=1;
     that.chrLen=19;
+    that.selSource="seq";
+
     if(organism==="Mm"){
             that.panel="ILS/ISS";
             that.wDSID=1;
@@ -58,13 +60,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         }else{
         	that.panel="BNLx/SHR";
             that.chrLen=20;
-            if(tissue==="Whole Brain"){
-            	that.wDSID=3;
-            }else if(tissue==="Heart"){
-				that.wDSID=4;
-            }else if(tissue==="Liver"){
-				that.wDSID=5;
-            }
+            if(that.selSource==="seq"){
+            	if(tissue==="Whole Brain"){
+	            	that.wDSID=6;
+	            }else if(tissue==="Liver"){
+					that.wDSID=7;
+	            }
+            }else{
+	            if(tissue==="Whole Brain"){
+	            	that.wDSID=3;
+	            }else if(tissue==="Heart"){
+					that.wDSID=4;
+	            }else if(tissue==="Liver"){
+					that.wDSID=5;
+	            }
+        	}
         }
     }
     that.eQTLKey=function(d){return "Link_"+d.Snp;};
@@ -112,10 +122,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				url:  pathPrefix +"getWGCNAModules.jsp",
 	   			type: 'GET',
 	   			async: true,
-				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
+				data: {source:that.selSource,modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
 				dataType: 'json',
 				beforeSend: function(){
 					$("#waitCircos").show();
+					console.log("request mod list:"+that.wDSID+":"+that.selSource);
 				},
 	    		success: function(data2){
                                 $('#wgcnaGeneImage #message').hide();
@@ -184,7 +195,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	    		success: function(data2){
                                         
                                         setTimeout(function(){
-                                            
+                                            console.log(file);
                                             if(that.singleID.length>0){
                                                 that.countGeneInstance(that.singleID,data2);
                                             }else{
@@ -546,9 +557,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//that.dataBar=d3.select("div#wgcnaImageControls").append("span").attr("id","wgcnaDataControls").style("float","right").style("margin-left","10px").style("margin-right","5px")
         that.dataBar=d3.select("#dataControl").append("span").attr("id","wgcnaDataControls").style("margin-left","10px").style("margin-right","5px")
                             .append("table").append("tr");
-		var tissue=that.dataBar.append("td");
-        tissue.append("text").text("Tissue:");
-		var sel=tissue.append("select").attr("id","wgcnaTissueSelect").on("change",function(){
+        var dataSel=that.dataBar.append("td");
+        dataSel.append("text").text("Data Source:");
+		var sel=dataSel.append("select").attr("id","wgcnaSourceSelect").on("change",function(){
 			$("#singleWGCNASVG").hide();
 			d3.select("#multiWGCNASVG").remove();
 			$("#circosModule").hide();
@@ -557,22 +568,82 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			$("#wgcnaMirGeneTable").hide();
 			$("#wgcnaGoTable").hide();
 			$("#wgcnaEqtlTable").hide();
+			that.selSource=$('#wgcnaSourceSelect').val();
 			that.tissue=$('#wgcnaTissueSelect').val();
-			if(that.tissue==="Whole Brain"){
-            	that.wDSID=3;
-            }else if(that.tissue==="Heart"){
-				that.wDSID=4;
-            }else if(that.tissue==="Liver"){
-				that.wDSID=5;
-            }
+			if(that.selSource==="array"){
+				if(that.tissue==="Whole Brain"){
+	            	that.wDSID=3;
+	            }else if(that.tissue==="Heart"){
+					that.wDSID=4;
+	            }else if(that.tissue==="Liver"){
+					that.wDSID=5;
+	            }
+	            d3.select("#wgcnaTissueSelect").append("option").attr("value","Heart").text("Heart");
+       		}else if(that.selSource==="seq"){
+       			if(that.tissue==="Whole Brain"){
+	            	that.wDSID=6;
+	            }else if(that.tissue==="Liver"){
+					that.wDSID=7;
+	            }else{
+	            	that.wDSID=6;
+	            	d3.select("#wgcnaTissueSelect").select("option[value=\"Brain\"]").attr("selected","selected");
+	            }
+	            d3.select("#wgcnaTissueSelect").select("option[value=\"Heart\"]").remove();
+       		}
+			that.requestModuleList();
+		});
+		that.sources=["array"];
+		that.dispSources=["Arrays"];
+		//We only have brain will need to update later.
+        if(organism==="Rn" && genomeVer==="rn6"){
+			that.sources=["seq","array"];
+			that.dispSources=["RNA-Seq","Arrays"];
+		}
+		for(var i=0;i<that.sources.length;i++){
+			sel.append("option").attr("value",that.sources[i]).text(that.dispSources[i]);
+		}
+		dataSel.append("br");
+        dataSel.append("text").text("Tissue:");
+		var sel=dataSel.append("select").attr("id","wgcnaTissueSelect").on("change",function(){
+			$("#singleWGCNASVG").hide();
+			d3.select("#multiWGCNASVG").remove();
+			$("#circosModule").hide();
+			$("#wgcnaModuleTable").hide();
+			$("#wgcnaMirTable").hide();
+			$("#wgcnaMirGeneTable").hide();
+			$("#wgcnaGoTable").hide();
+			$("#wgcnaEqtlTable").hide();
+			that.selSource=$('#wgcnaSourceSelect').val();
+			that.tissue=$('#wgcnaTissueSelect').val();
+			if(that.selSource==="array"){
+				if(that.tissue==="Whole Brain"){
+	            	that.wDSID=3;
+	            }else if(that.tissue==="Heart"){
+					that.wDSID=4;
+	            }else if(that.tissue==="Liver"){
+					that.wDSID=5;
+	            }
+       		}else if(that.selSource==="seq"){
+       			if(that.tissue==="Whole Brain"){
+	            	that.wDSID=6;
+	            }else if(that.tissue==="Liver"){
+					that.wDSID=7;
+	            }
+       		}
 			that.requestModuleList();
 		});
 		that.tissues=["Brain"];
 		that.dispTissues=["Whole Brain"];
 		//We only have brain will need to update later.
         if(organism==="Rn" && genomeVer==="rn6"){
-			that.tissues=["Whole Brain","Heart","Liver"];
-			that.dispTissues=["Whole Brain","Heart","Liver"];
+        	if(that.source && that.source==="arrays"){
+        		that.tissues=["Whole Brain","Heart","Liver"];
+				that.dispTissues=["Whole Brain","Heart","Liver"];
+        	}else{
+        		that.tissues=["Whole Brain","Liver"];
+				that.dispTissues=["Whole Brain","Liver"];
+        	}
+			
 		}
 		for(var i=0;i<that.tissues.length;i++){
 			sel.append("option").attr("value",that.tissues[i]).text(that.dispTissues[i]);
@@ -1612,8 +1683,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 }
                             }
                         }
-                        tt=tt+"<BR><BR>";
-                        tt=tt+d.PSList.length+" Probe Sets in Transcript<BR>";
+                        if(d.PSList && that.selSource==="array"){
+	                        tt=tt+"<BR><BR>";
+	                        tt=tt+d.PSList.length+" Probe Sets in Transcript<BR>";
+                       	}
                         /*for(var l=0;l<d.PSList.length;l++){
                             tt=tt+d.PSList[l].ID+"("+d.PSList[l].Level+")<BR>";
                         }*/
@@ -2616,7 +2689,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 						d3.select(this).append("td").html(d.Gene.geneSymbol);
 						d3.select(this).append("td").html(d.Gene.ID);
 						d3.select(this).append("td").html(d.ID);
-						d3.select(this).append("td").html(d.PSList.length);
+						if(d.PSList){
+							d3.select(this).append("td").html(d.PSList.length);
+						}else{
+							d3.select(this).append("td").html("0");
+						}
+						
 		                d3.select(this).append("td").html(d.LinkSum.toFixed(2));
 		                d3.select(this).append("td").html(function(){return tmpI+1;});
 				});
@@ -3411,13 +3489,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 thatimg.initializeBreadcrumbTrail();
                 thatimg.topG=thatimg.svg.append("g")
                         .attr("transform", "translate(" + [thatimg.width/2 + thatimg.padding, thatimg.height/2 + thatimg.padding] + ")");
-
-                thatimg.partition = d3.partition()
-                        //.size([2 * Math.PI, thatimg.radius * thatimg.radius])
-                        .size([2 * Math.PI, thatimg.radius])
-                        .value(function(d){if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}});
-                        //.value(function(d){return d.size;});
-
+                thatimg.hierarchy= d3.hierarchy(that.data).sum(function(d){if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}});
+                thatimg.partition = d3.partition(thatimg.hierarchy)
+              		.size([2 * Math.PI, thatimg.radius]);
+                    // .value(function(d){if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}});
+                        
                 
                         
                 if( typeof thatimg.data.MOD_NAME ==='undefined' || (typeof that.selectedModule.MOD_NAME !=='undefined' &&  replaceUnderscore(thatimg.data.MOD_NAME) !== replaceUnderscore(that.selectedModule.MOD_NAME)) ) {
@@ -3936,8 +4012,14 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.type="eqtl";
             
             thatimg.createToolTip=function(geneID){
-                        var gene=that.selectedGene[geneID];
-			var tt="<BR>Gene: "+gene.geneSymbol+"("+geneID+")";
+                var gene=that.selectedGene[geneID];
+                var tt="";
+                if(gene.geneSymbol){
+                	tt="<BR>Gene: "+gene.geneSymbol+"("+geneID+")";
+                }else{
+                	tt="<BR>Gene: "+geneID;
+                }
+			
 			return tt;
 		};
             thatimg.colorGene=function(geneID){

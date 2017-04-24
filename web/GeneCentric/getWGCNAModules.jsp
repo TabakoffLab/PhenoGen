@@ -17,6 +17,7 @@ import="org.json.*" %>
 <%@ include file="/web/common/anon_session_vars.jsp"  %>
 
 <jsp:useBean id="wgt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.WGCNATools" scope="session"> </jsp:useBean>
+<jsp:useBean id="gdt" class="edu.ucdenver.ccp.PhenoGen.tools.analysis.GeneDataTools" scope="session"> </jsp:useBean>
 
 <%
 String id="";
@@ -25,6 +26,7 @@ String tissue="";
 String panel="";
 String region="";
 String genomeVer="";
+String source="";
 int geneList=0;
 
 if(request.getParameter("id")!=null){
@@ -48,16 +50,19 @@ if(request.getParameter("geneList")!=null){
 if(request.getParameter("genomeVer")!=null){
         genomeVer=request.getParameter("genomeVer");
 }
+if(request.getParameter("source")!=null){
+        source=request.getParameter("source");
+}
 
 wgt.setSession(session);
-
+gdt.setSession(session);
 ArrayList<String> modules=null;
 if(!id.equals("")){
-    modules=wgt.getWGCNAModulesForGene(id,panel,tissue,org,genomeVer);
+    modules=wgt.getWGCNAModulesForGene(gdt,id,panel,tissue,org,genomeVer,source);
 }else if(!region.equals("")){
-    modules=wgt.getWGCNAModulesForRegion(region,panel,tissue,org,genomeVer);
+    modules=wgt.getWGCNAModulesForRegion(gdt,region,panel,tissue,org,genomeVer,source);
 }else if(geneList>0){
-    modules=wgt.getWGCNAModulesForGeneList(geneList,panel,tissue,genomeVer);
+    modules=wgt.getWGCNAModulesForGeneList(gdt,geneList,panel,tissue,genomeVer,source);
 }
 response.setContentType("application/json");
 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

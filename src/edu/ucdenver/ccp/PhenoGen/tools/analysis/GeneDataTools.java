@@ -188,6 +188,9 @@ public class GeneDataTools {
             if(organism.equals("Rn")){
                 organismLong="Rat";
             }
+            if(tissue.equals("Whole Brain")){
+                tissue="Brain";
+            }
             String atQuery="select Array_type_id from array_types "+
                         "where array_name like 'Affymetrix GeneChip "+organismLong+" Exon 1.0 ST Array'";
             
@@ -198,6 +201,7 @@ public class GeneDataTools {
             */
             String rnaIDQuery="select rna_dataset_id from RNA_DATASET "+
                         "where organism = '"+organism+"' and tissue='"+tissue+"' and visible=1 and genome_id='"+genomeVer+"'";
+            log.debug("\nRNAID Query:\n"+rnaIDQuery);
             Connection conn=null;
             PreparedStatement ps=null;
             try {

@@ -240,13 +240,13 @@ foreach my $mod(@moduleList){
         $tcCount++;
         
         #print "$psid\t$tc\t$geneid\n";
-        my $secondPeriod=index( $tc , "." , (index($tc,".")+1) );
-        my $thisID=$tc;
+        #my $secondPeriod=index( $tc , "." , (index($tc,".")+1) );
+        my $thisID=$geneid;
         my $thisCluster="0";
-        if ($secondPeriod>-1) {
-            $thisID=substr($tc,0,$secondPeriod);
-            $thisCluster=substr($tc,$secondPeriod+1);
-        }
+        #if ($secondPeriod>-1) {
+        #    $thisID=substr($tc,0,$secondPeriod);
+        #    $thisCluster=substr($tc,$secondPeriod+1);
+        #}
         
 
 

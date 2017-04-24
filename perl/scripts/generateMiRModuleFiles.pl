@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 
-use lib '/Library/Tomcat/webapps/PhenoGen/perl/lib/ensembl_84/ensembl/modules';
+use lib '/Library/Tomcat/webapps/PhenoGen/perl/lib/ensembl_88/ensembl/modules';
 #use lib '/usr/share/tomcat/webapps/PhenoGen/perl/lib/ensembl_ucsc/ensembl-funcgen/modules/';
 
 
@@ -230,10 +230,10 @@ foreach my $mod(@moduleList){
     open OFILE, '>', $path.$mod.".miR.json" or die " Could not open two track file $path$mod.json for writing $!\n\n";
     print OFILE "{\"MOD_NAME\":\"$mod\",";
     print OFILE "\"MIRList\": [\n";
-    my @mirKey=keys $moduleHOH{miRNA};
+    my @mirKey=keys %{$moduleHOH{miRNA}};
     $mirCount=0;
     foreach my $mir(@mirKey){
-        my @geneKey=keys $moduleHOH{miRNA}{$mir}{gene};
+        my @geneKey=keys %{$moduleHOH{miRNA}{$mir}{gene}};
         if ($mirCount>0) {
                 print OFILE ",\n";
         }

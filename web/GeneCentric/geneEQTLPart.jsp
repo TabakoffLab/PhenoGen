@@ -92,10 +92,13 @@
                         $("#tissuesMStsms option[value='Heart']").remove();
                         $("#tissuesMS option[value='BAT']").remove();
                          $("#tissuesMStsms option[value='BAT']").remove();
+                         $("td#trxClusterCB").hide();
                     }else{
                         $("#tissuesMS").append('<option value="Heart" selected>Heart</option>');
                         $("#tissuesMS").append('<option value="BAT" selected>Brown Adipose</option>');
+                        $("td#trxClusterCB").show();
                     }
+                    source=tmpSrc;
                     //$("#tissuesMS").twosidedmultiselect();
                 }
 	</script>
@@ -306,7 +309,10 @@
         <tbody id="circosOption">
  		
 		<tr>
-                    <TD><strong>Data Source:</strong><%
+                    <TD>
+                        <strong>Data Source:</strong>
+                        <span class="eQTLtooltip" title="RNA-Seq eQTLs and Microarray eQTLs are available at the gene/transcript cluster level.  Please note the label at the top of the image will indicate the data source for the image displayed."><img src="<%=imagesDir%>icons/info.gif"></span>
+                        <%
 				selectName = "sourceCB";
 				
                                 selectedOption =source;
@@ -316,6 +322,7 @@
                         	optionHash.put("seq", "RNA-Seq");
                         	optionHash.put("array", "Microarrays");
 				%><%@ include file="/web/common/selectBox.jsp" %>
+                                
                     </td>
 			<td style="text-align:center;">
 				<strong>P-value Threshold for Highlighting:</strong> 
@@ -340,13 +347,9 @@
 				%>
 				<%@ include file="/web/common/selectBox.jsp" %>
             </td>
-		<%if(source.equals("seq")){%>
-                <td style="text-align:center;">
-                    <input type="hidden" id="transcriptClusterID" name="transcriptClusterID" value=<%=id%> />
-                </td>
-                <%}else{%>
+		
                 
-                    <td style="text-align:center;">
+                    <td id="trxClusterCB" style="text-align:center;<%if(source.equals("seq")){%>display:none;<%}%>">
                                <strong>Transcript Cluster ID:</strong>
                                 <span class="eQTLtooltip" title="On the Affymetrix Exon Array, gene level expression summaries are labeled as transcript clusters.  
     Each gene may have more than one transcript cluster associated with it, due to differences in annotation among databases and therefore, differences in which individual exons (probe sets) are included in the transcript cluster.  <BR><BR>
@@ -387,7 +390,6 @@
                             %>
                             <%@ include file="/web/common/selectBox.jsp" %>
                 </td>
-            <%}%>
 					
 		</tr>
 
