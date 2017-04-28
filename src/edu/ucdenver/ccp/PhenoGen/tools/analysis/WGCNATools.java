@@ -48,9 +48,9 @@ public class WGCNATools{
     }
     
 
-    public ArrayList<String> getWGCNAModulesForGene(String id,String panel,String tissue,String org,String genomeVer){
+    public ArrayList<String> getWGCNAModulesForGene(GeneDataTools gdt,String id,String panel,String tissue,String org,String genomeVer,String source){
         ArrayList<String> ret=new ArrayList<String>();
-        int dsid=this.getWGCNADataset(panel,tissue,org,genomeVer);
+        int dsid=this.getWGCNADataset(panel,tissue,org,genomeVer,source);
         String query="Select unique module from wgcna_module_info where wdsid="+dsid+" and gene_id='"+id+"'";
         log.debug("QUERY:"+query);
         Connection conn = null;
@@ -94,10 +94,12 @@ public class WGCNATools{
         return ret;
     }
     
-     public ArrayList<String> getWGCNAModulesForRegion(String region,String panel,String tissue,String org,String genomeVer){
+     public ArrayList<String> getWGCNAModulesForRegion(GeneDataTools gdt,String region,String panel,String tissue,String org,String genomeVer,String source){
         ArrayList<String> ret=new ArrayList<String>();
         HashMap<String,String> geneCount=new HashMap<String,String>();
-        int dsid=this.getWGCNADataset(panel,tissue,org,genomeVer);
+        int dsid=this.getWGCNADataset(panel,tissue,org,genomeVer,source);
+        int[] tmpRNADS=gdt.getOrganismSpecificIdentifiers(org,tissue,genomeVer);
+        int rnaDSID=tmpRNADS[1];
         String chr=region.substring(0,region.indexOf(":"));
         if(chr.indexOf("chr")>-1){
             chr=chr.substring(3);
@@ -112,7 +114,9 @@ public class WGCNATools{
             arrayID=22;
         }
         //String query="Select unique module from wgcna_module_info where wdsid="+dsid+" and gene_id='"+id+"'";
-        String query ="select unique module,gene_id from wgcna_module_info where probeset_id in " +
+        String query ="";
+        if(source.equals("array")){
+            query="select unique module,gene_id from wgcna_module_info where probeset_id in " +
                         "(select aep.probeset_id from affy_exon_probeset aep, chromosomes c " +
                         " where aep.array_type_id=" + arrayID+
                         " and aep.genome_id='"+genomeVer+"' "+
@@ -123,6 +127,19 @@ public class WGCNATools{
                         " ("+start+"<=aep.psstop and aep.psstop<="+stop+") )" +
                         ")" +
                         "  and wdsid=" +dsid+" order by module";
+        }else if(source.equals("seq")){
+            query="select unique module,gene_id from wgcna_module_info where transcript_clust_id in " +
+                        "(select unique rt.merge_gene_id from rna_transcripts rt, chromosomes c " +
+                        " where rt.rna_dataset_id=" + rnaDSID +" "+
+                        " and wdsid = " + dsid  + " "+
+                        " and c.name = '"+chr+"'"+
+                        " and c.chromosome_id=rt.chromosome_id "+
+                        " and ( ( rt.trstart <="+start+" and "+start+"<= rt.trstop )" +
+                        " or " +
+                        " ("+start+"<=rt.trstart and rt.trstart<="+stop+") )" +
+                        ")" +
+                        " order by module";
+        }
                         
         log.debug("QUERY:"+query);
         Connection conn = null;
@@ -180,7 +197,7 @@ public class WGCNATools{
         return ret;
     }
      
-    public ArrayList<String> getWGCNAModulesForGeneList(int glID,String panel,String tissue,String genomeVer){
+    public ArrayList<String> getWGCNAModulesForGeneList(GeneDataTools gdt,int glID,String panel,String tissue,String genomeVer,String source){
         ArrayList<String> ret=new ArrayList<String>();
         HashMap<String,String> geneCount=new HashMap<String,String>();
         String ensemblStart="ENSMUSG";
@@ -216,7 +233,7 @@ public class WGCNATools{
             }
 
 
-            int dsid=this.getWGCNADataset(panel,tissue,org,genomeVer);
+            int dsid=this.getWGCNADataset(panel,tissue,org,genomeVer,source);
             int arrayID=21;
             if(org.equals("Rn")){
                 arrayID=22;
@@ -285,9 +302,9 @@ public class WGCNATools{
         return ret;
     }
     
-    private int getWGCNADataset(String panel, String tissue, String org,String genomeVer) {
+    private int getWGCNADataset(String panel, String tissue, String org,String genomeVer,String source) {
         Connection conn = null;
-        String query="Select wdsid from WGCNA_Dataset where organism=? and tissue=? and panel=? and genome_id=? and visible=1";
+        String query="Select wdsid from WGCNA_Dataset where organism=? and tissue=? and panel=? and genome_id=? and type=? and visible=1";
         int ret=-1;
         try {
             conn = pool.getConnection();
@@ -296,6 +313,7 @@ public class WGCNATools{
             ps.setString(2,tissue);
             ps.setString(3,panel);
             ps.setString(4, genomeVer);
+            ps.setString(5, source);
             
             ResultSet rs = ps.executeQuery();
             //int count=0;

@@ -47,6 +47,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	that.requests=0;
 	that.skipGrey=1;
     that.chrLen=19;
+    that.selSource="seq";
+
     if(organism==="Mm"){
             that.panel="ILS/ISS";
             that.wDSID=1;
@@ -58,27 +60,37 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         }else{
         	that.panel="BNLx/SHR";
             that.chrLen=20;
-            if(tissue==="Whole Brain"){
-            	that.wDSID=3;
-            }else if(tissue==="Heart"){
-				that.wDSID=4;
-            }else if(tissue==="Liver"){
-				that.wDSID=5;
-            }
+            if(that.selSource==="seq"){
+            	if(tissue==="Whole Brain"){
+	            	that.wDSID=6;
+	            }else if(tissue==="Liver"){
+					that.wDSID=7;
+	            }
+            }else{
+	            if(tissue==="Whole Brain"){
+	            	that.wDSID=3;
+	            }else if(tissue==="Heart"){
+					that.wDSID=4;
+	            }else if(tissue==="Liver"){
+					that.wDSID=5;
+	            }
+        	}
         }
     }
     that.eQTLKey=function(d){return "Link_"+d.Snp;};
     that.mirKey=function(d){return d.ID;};
     that.removeInvalidIDChars=function(id){
     	var newID=id;
-    	if(newID.indexOf("*")>-1){
-    		newID=newID.replace(/\*/g, "star");
-    	}
-    	if(newID.indexOf(" ")>-1){
-    		newID=newID.replace(/\s/g,"_");
-    	}
-    	if(newID.indexOf(".")>-1){
-    		newID=newID.replace(/\./g,"_");
+    	if(typeof newID!=="undefined"){
+	    	if(newID.indexOf("*")>-1){
+	    		newID=newID.replace(/\*/g, "star");
+	    	}
+	    	if(newID.indexOf(" ")>-1){
+	    		newID=newID.replace(/\s/g,"_");
+	    	}
+	    	if(newID.indexOf(".")>-1){
+	    		newID=newID.replace(/\./g,"_");
+	    	}
     	}
     	return newID;
     }
@@ -112,10 +124,11 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				url:  pathPrefix +"getWGCNAModules.jsp",
 	   			type: 'GET',
 	   			async: true,
-				data: {modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
+				data: {source:that.selSource,modFileType:that.viewtype,id:that.singleID,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
 				dataType: 'json',
 				beforeSend: function(){
 					$("#waitCircos").show();
+					console.log("request mod list:"+that.wDSID+":"+that.selSource);
 				},
 	    		success: function(data2){
                                 $('#wgcnaGeneImage #message').hide();
@@ -184,7 +197,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	    		success: function(data2){
                                         
                                         setTimeout(function(){
-                                            
+                                            console.log(file);
                                             if(that.singleID.length>0){
                                                 that.countGeneInstance(that.singleID,data2);
                                             }else{
@@ -366,23 +379,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 		that.imageBar.append("span").attr("class","zoomIn control")
-			.style({
-				"display":"inline-block",
-				"cursor":"pointer",
-				"position":"relative",
-				"top":"7px"
-			})
+			.style("display","inline-block")
+			.style("cursor","pointer")
+			.style("position","relative")
+			.style("top","7px")
 			.attr("id","wgcnazoomInImage")
 			.append("img")
-			.attr({
-				"src":contextRoot+"web/images/icons/magPlus_dark_32.png",
-				"pointer-events":"all",
-				"cursor":"pointer"
-			})
-			.style({
-				"position":"relative",
-				"top":"-5px"
-			})
+			.attr("src",contextRoot+"web/images/icons/magPlus_dark_32.png")
+			.attr("pointer-events","all")
+			.attr("cursor","pointer")
+			.style("position","relative")
+			.style("top","-5px")
 			.on("click",function(){
                             if(that.viewType==="eqtl" && that.singleImage ){
                                 that.singleImage.panZoomCircos.zoomIn();
@@ -404,21 +411,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 		that.imageBar.append("span").attr("class","zoomOut control")
-			.style({
-				"display":"inline-block",
-				"cursor":"pointer",
-				"position":"relative",
-				"top":"7px"
-			})
+			.style("display","inline-block")
+			.style("cursor","pointer")
+			.style("position","relative")
+			.style("top","7px")
 			.attr("id","wgcnazoomOutImage")
 			.append("img")
 			.attr("src",contextRoot+"web/images/icons/magMinus_dark_32.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
-			.style({
-				"position":"relative",
-				"top":"-5px"
-			})
+			.style("position","relative")
+			.style("top","-5px")
 			.on("click",function(){
                             if(that.viewType==="eqtl" && that.singleImage){
                                 that.singleImage.panZoomCircos.zoomOut();
@@ -440,23 +443,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 		that.imageBar.append("span").attr("class","back control")
-			.style({
-				"display":"inline-block",
-				"cursor":"pointer",
-				"position":"relative",
-				"top":"7px"
-			})
+			.style("display","inline-block")
+			.style("cursor","pointer")
+			.style("position","relative")
+			.style("top","7px")
 			.attr("id","backModule")
 			.append("img")
-			.attr({
-				"src":contextRoot+"web/images/icons/back_dark_32.png",
-				"pointer-events":"all",
-				"cursor":"pointer"
-			})
-			.style({
-				"position":"relative",
-				"top":"-5px"
-			})
+			.attr("src",contextRoot+"web/images/icons/back_dark_32.png")
+			.attr("pointer-events","all")
+			.attr("cursor","pointer")
+			.style("position","relative")
+			.style("top","-5px")
 			.on("click",function(){
 				that.multiImage.backModule();
 			})
@@ -469,21 +466,17 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 				$("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
 			});
 		that.imageBar.append("span").attr("class","forward control")
-			.style({
-				"display":"inline-block",
-				"cursor":"pointer",
-				"position":"relative",
-				"top":"7px"
-			})
+			.style("display","inline-block")
+			.style("cursor","pointer")
+			.style("position","relative")
+			.style("top","7px")
 			.attr("id","forwardModule")
 			.append("img")
 			.attr("src",contextRoot+"web/images/icons/forward_dark_32.png")
 			.attr("pointer-events","all")
 			.attr("cursor","pointer")
-			.style({
-				"position":"relative",
-				"top":"-5px"
-			})
+			.style("position","relative")
+			.style("top","-5px")
 			.on("click",function(){
 				that.multiImage.forwardModule();
 			})
@@ -566,9 +559,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//that.dataBar=d3.select("div#wgcnaImageControls").append("span").attr("id","wgcnaDataControls").style("float","right").style("margin-left","10px").style("margin-right","5px")
         that.dataBar=d3.select("#dataControl").append("span").attr("id","wgcnaDataControls").style("margin-left","10px").style("margin-right","5px")
                             .append("table").append("tr");
-		var tissue=that.dataBar.append("td");
-        tissue.append("text").text("Tissue:");
-		var sel=tissue.append("select").attr("id","wgcnaTissueSelect").on("change",function(){
+        var dataSel=that.dataBar.append("td");
+        dataSel.append("text").text("Data Source:");
+		var sel=dataSel.append("select").attr("id","wgcnaSourceSelect").on("change",function(){
 			$("#singleWGCNASVG").hide();
 			d3.select("#multiWGCNASVG").remove();
 			$("#circosModule").hide();
@@ -577,22 +570,82 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			$("#wgcnaMirGeneTable").hide();
 			$("#wgcnaGoTable").hide();
 			$("#wgcnaEqtlTable").hide();
+			that.selSource=$('#wgcnaSourceSelect').val();
 			that.tissue=$('#wgcnaTissueSelect').val();
-			if(that.tissue==="Whole Brain"){
-            	that.wDSID=3;
-            }else if(that.tissue==="Heart"){
-				that.wDSID=4;
-            }else if(that.tissue==="Liver"){
-				that.wDSID=5;
-            }
+			if(that.selSource==="array"){
+				if(that.tissue==="Whole Brain"){
+	            	that.wDSID=3;
+	            }else if(that.tissue==="Heart"){
+					that.wDSID=4;
+	            }else if(that.tissue==="Liver"){
+					that.wDSID=5;
+	            }
+	            d3.select("#wgcnaTissueSelect").append("option").attr("value","Heart").text("Heart");
+       		}else if(that.selSource==="seq"){
+       			if(that.tissue==="Whole Brain"){
+	            	that.wDSID=6;
+	            }else if(that.tissue==="Liver"){
+					that.wDSID=7;
+	            }else{
+	            	that.wDSID=6;
+	            	d3.select("#wgcnaTissueSelect").select("option[value=\"Brain\"]").attr("selected","selected");
+	            }
+	            d3.select("#wgcnaTissueSelect").select("option[value=\"Heart\"]").remove();
+       		}
+			that.requestModuleList();
+		});
+		that.sources=["array"];
+		that.dispSources=["Arrays"];
+		//We only have brain will need to update later.
+        if(organism==="Rn" && genomeVer==="rn6"){
+			that.sources=["seq","array"];
+			that.dispSources=["RNA-Seq","Arrays"];
+		}
+		for(var i=0;i<that.sources.length;i++){
+			sel.append("option").attr("value",that.sources[i]).text(that.dispSources[i]);
+		}
+		dataSel.append("br");
+        dataSel.append("text").text("Tissue:");
+		var sel=dataSel.append("select").attr("id","wgcnaTissueSelect").on("change",function(){
+			$("#singleWGCNASVG").hide();
+			d3.select("#multiWGCNASVG").remove();
+			$("#circosModule").hide();
+			$("#wgcnaModuleTable").hide();
+			$("#wgcnaMirTable").hide();
+			$("#wgcnaMirGeneTable").hide();
+			$("#wgcnaGoTable").hide();
+			$("#wgcnaEqtlTable").hide();
+			that.selSource=$('#wgcnaSourceSelect').val();
+			that.tissue=$('#wgcnaTissueSelect').val();
+			if(that.selSource==="array"){
+				if(that.tissue==="Whole Brain"){
+	            	that.wDSID=3;
+	            }else if(that.tissue==="Heart"){
+					that.wDSID=4;
+	            }else if(that.tissue==="Liver"){
+					that.wDSID=5;
+	            }
+       		}else if(that.selSource==="seq"){
+       			if(that.tissue==="Whole Brain"){
+	            	that.wDSID=6;
+	            }else if(that.tissue==="Liver"){
+					that.wDSID=7;
+	            }
+       		}
 			that.requestModuleList();
 		});
 		that.tissues=["Brain"];
 		that.dispTissues=["Whole Brain"];
 		//We only have brain will need to update later.
         if(organism==="Rn" && genomeVer==="rn6"){
-			that.tissues=["Whole Brain","Heart","Liver"];
-			that.dispTissues=["Whole Brain","Heart","Liver"];
+        	if(that.source && that.source==="arrays"){
+        		that.tissues=["Whole Brain","Heart","Liver"];
+				that.dispTissues=["Whole Brain","Heart","Liver"];
+        	}else{
+        		that.tissues=["Whole Brain","Liver"];
+				that.dispTissues=["Whole Brain","Liver"];
+        	}
+			
 		}
 		for(var i=0;i<that.tissues.length;i++){
 			sel.append("option").attr("value",that.tissues[i]).text(that.dispTissues[i]);
@@ -711,7 +764,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 							ga('send','event','WGCNA_mir','mirSort');
 					}
                 });
-                mir.append("text").style("margin-right","5px").style("margin-left","5px").text(" sort by # targeted Genes order ");
+                /*mir.append("text").style("margin-right","5px").style("margin-left","5px").text(" sort by # targeted Genes order ");
                 sel=mir.append("select").attr("id","mirSortSelect").on("change",function(){
                     if($("#mirSortCBX").prop('checked')){
                         that.singleImage.sortMir=$(this).val();
@@ -723,7 +776,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 });
                 sel.append("option").attr("value","1").text("Ascending");
                 sel.append("option").attr("value","-1").text("Descending");
-                mir.append("br");
+                mir.append("br");*/
                 mir.append("text").text("Hovering over a node(miR or transcript):");
                 mir.append("br");
                 mir.append("input").attr("type","checkbox")
@@ -927,7 +980,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 chr.append("br");
                 chr.append("br");
                 chr.append("br");
-                chr.append("input").attr({"type":"button","value":"Apply Selections"}).on("click",function(){
+                chr.append("input").attr("type","button").attr("value","Apply Selections").on("click",function(){
                 var cutoff=$("#eqtlPval").val();
                 var list=$("#eqtlChr").val();
                 var cList="";
@@ -995,36 +1048,28 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		if(d3.select("#multiWGCNASVG").size()===0){
 			var div=d3.select("#wgcnaGeneImage").append("div").attr("id","multiWGCNAScroll").style("overflow","auto").style("max-height","430px");
 			thatimg.svg=div.append("svg").attr("id","multiWGCNASVG").attr("height","430px").attr("width","100%");
-			var grad=thatimg.svg.append("linearGradient").attr({
-					"id":"lgrad",
-					"x1":"11%",
-					"y1":"0%",
-					"x2":"89%",
-					"y2":"100%"
-			});
-			grad.append("stop").attr({
-					"offset":"0%",
-					"style":"stop-color:rgb(153,218,255);stop-opacity:1"
-				});
-			grad.append("stop").attr({
-					"offset":"100%",
-					"style":"stop-color:rgb(0,128,128);stop-opacity:1"
-				});
-			var grad=thatimg.svg.append("linearGradient").attr({
-					"id":"selectGrad",
-					"x1":"11%",
-					"y1":"0%",
-					"x2":"89%",
-					"y2":"100%"
-			});
-			grad.append("stop").attr({
-					"offset":"0%",
-					"style":"stop-color:rgb(0,163,55);stop-opacity:1"
-				});
-			grad.append("stop").attr({
-					"offset":"100%",
-					"style":"stop-color:rgb(0,75,20);stop-opacity:1"
-				});
+			var grad=thatimg.svg.append("linearGradient")
+				.attr("id","lgrad")
+				.attr("x1","11%")
+				.attr("y1","0%")
+				.attr("x2","89%")
+				.attr("y2","100%");
+			grad.append("stop")
+				.attr("offset","0%")
+				.attr("style","stop-color:rgb(153,218,255);stop-opacity:1");
+			grad.append("stop").attr("offset","100%")
+				.attr("style","stop-color:rgb(0,128,128);stop-opacity:1");
+			var grad=thatimg.svg.append("linearGradient")
+				.attr("id","selectGrad")
+				.attr("x1","11%")
+				.attr("y1","0%")
+				.attr("x2","89%")
+				.attr("y2","100%");
+			
+			grad.append("stop").attr("offset","0%")
+				.attr("style","stop-color:rgb(0,163,55);stop-opacity:1");
+			grad.append("stop").attr("offset","100%")
+				.attr("style","stop-color:rgb(0,75,20);stop-opacity:1");
 		}else{
 			thatimg.svg=d3.select("#multiWGCNASVG");
 		}
@@ -1118,22 +1163,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             }
                         }
                         darkRGB=rgb[0]+","+rgb[1]+","+rgb[2];
-                        var grad=thatimg.svg.append("linearGradient").attr({
-                                "id":"grad"+data[dataCount].MOD_NAME,
-                                "class":"moduleGradient",
-                                "x1":"11%",
-                                "y1":"0%",
-                                "x2":"89%",
-                                "y2":"100%"
-                            });
-                        grad.append("stop").attr({
-                                            "offset":"0%",
-                                            "style":"stop-color:rgb("+data[dataCount].ModRGB+");stop-opacity:1"
-                                    });
-                        grad.append("stop").attr({
-                                            "offset":"100%",
-                                            "style":"stop-color:rgb("+darkRGB+");stop-opacity:1"
-                                    });
+                        var grad=thatimg.svg.append("linearGradient")
+                        	.attr("id","grad"+data[dataCount].MOD_NAME)
+                            .attr("class","moduleGradient")
+                            .attr("x1","11%")
+                            .attr("y1","0%")
+                            .attr("x2","89%")
+                            .attr("y2","100%");
+                        grad.append("stop").attr("offset","0%")
+                            .attr("style","stop-color:rgb("+data[dataCount].ModRGB+");stop-opacity:1");
+                        
+                        grad.append("stop").attr("offset","100%")
+                            .attr("style","stop-color:rgb("+darkRGB+");stop-opacity:1");
                         dataCount++;
                     }
 				}
@@ -1155,9 +1196,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			var min=d3.min(data,function(d){return d.TCList.length;});
 			var max=d3.max(data,function(d){return d.TCList.length;});
 
-			thatimg.size=d3.scale.linear().
+			thatimg.size=d3.scaleLinear().
 		  		domain([min, max]). 
 		  		range([10, thatimg.maxWidth/2]);
+
 			var mod=thatimg.svg.selectAll(".modules")
 		   			.data(data,thatimg.modKey)
 					.attr("transform",function(d,i){ 
@@ -1165,65 +1207,64 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					});
 			//add new
 			mod.enter().append("g")
-					.attr("class","modules")
-					.attr("id",function(d){return d.MOD_NAME;})
-					.attr("transform",function(d,i){ 
-						return "translate("+thatimg.calcX(d,i)+","+thatimg.calcY(d,i)+")";
-					});
-
-
-			mod.each(function(d){
-				var thisMod=d3.select("g#"+d.MOD_NAME);     
-				thisMod.append("circle")
-					.attr("cx",thatimg.calcWidth/2)
-					.attr("cy",thatimg.maxWidth/2)
-					.attr("r",thatimg.sizing)
-					.attr("stroke",function(d){var val="#FFFFFF"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="#000000";}return val;})
-                                        .attr("stroke-width",function(d){var val="1px"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="3px";}return val;})
-					.attr("fill",function(d){var val="url(#grad"+d.MOD_NAME+")"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="url(#selectGrad)"} return val;})
-					.on("click",function(){
-						thatimg.maxWidth=85;
-                        that.selectedModule=d;
-						thatimg.draw();
-						d3.select("#multiWGCNAScroll").style("max-height","110px");
-						thatimg.svg.select("g#"+d.MOD_NAME).style("background","#CECECE");
-						thatimg.svg.select("g#"+d.MOD_NAME).select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
-                        thatimg.svg.select("g#"+d.MOD_NAME).select("text.txtLbl").style("font-weight","bold");
-                        that.selectedGene={};
-                        for(var l=0;l<d.TCList.length;l++){
-                            if(typeof that.selectedGene[d.TCList[l].Gene.ID] !=='undefined'){
-                                that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
-                            }else{
-                                that.selectedGene[d.TCList[l].Gene.ID]={};
-                                that.selectedGene[d.TCList[l].Gene.ID].geneSymbol=d.TCList[l].Gene.geneSymbol;
-                                that.selectedGene[d.TCList[l].Gene.ID].tcList=[];
-                                that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
-                            }
-                        }
-						setTimeout(that.createSingleWGCNAImage,20);
-					})
-					.on("mouseover",function(){
-						$("#wgcnaMouseHelp").html("<B>Click</B> to select this module and see additional details.");
-						d3.select(this).style("fill","url(#selectGrad)");
-				        	//that.gsvg.get('tt').transition()
-                            tt.transition()        
-                                    .duration(200)      
-                                    .style("opacity", 1);      
-				        	//that.gsvg.get('tt').html(that.createToolTip(d)) 
-                            tt.html(thatimg.createToolTip(d)) 
-                                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
-                                .style("top", function(){return that.positionTTTop(d3.event.pageY);});
-					})
-					.on("mouseout",function(){
-                        var d=d3.select(this).data()[0];
-                        if( typeof that.selectedModule === 'undefined' || (d.MOD_NAME!==that.selectedModule.MOD_NAME) ){
-                            d3.select(this).style("fill","url(#grad"+d.MOD_NAME+")");
-                        }
-						tt.transition()        
-				                .duration(500)      
-				                .style("opacity", 0);
-						});
-                    	if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){
+				.attr("class","modules")
+				.attr("id",function(d){return d.MOD_NAME;})
+				.attr("transform",function(d,i){ 
+					return "translate("+thatimg.calcX(d,i)+","+thatimg.calcY(d,i)+")";
+				})
+				.merge(mod)
+				.each(function(d){
+					var thisMod=d3.select("g#"+d.MOD_NAME);     
+					thisMod.append("circle")
+						.attr("cx",thatimg.calcWidth/2)
+						.attr("cy",thatimg.maxWidth/2)
+						.attr("r",thatimg.sizing)
+						.attr("stroke",function(d){var val="#FFFFFF"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="#000000";}return val;})
+	                    .attr("stroke-width",function(d){var val="1px"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="3px";}return val;})
+						.attr("fill",function(d){var val="url(#grad"+d.MOD_NAME+")"; if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){val="url(#selectGrad)"} return val;})
+						.on("click",function(){
+							thatimg.maxWidth=85;
+	                        that.selectedModule=d;
+							thatimg.draw();
+							d3.select("#multiWGCNAScroll").style("max-height","110px");
+							thatimg.svg.select("g#"+d.MOD_NAME).style("background","#CECECE");
+							thatimg.svg.select("g#"+d.MOD_NAME).select("circle").attr("fill","url(#selectGrad)").attr("stroke","#000000").attr("stroke-width","3px");
+	                        thatimg.svg.select("g#"+d.MOD_NAME).select("text.txtLbl").style("font-weight","bold");
+	                        that.selectedGene={};
+	                        for(var l=0;l<d.TCList.length;l++){
+	                            if(typeof that.selectedGene[d.TCList[l].Gene.ID] !=='undefined'){
+	                                that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
+	                            }else{
+	                                that.selectedGene[d.TCList[l].Gene.ID]={};
+	                                that.selectedGene[d.TCList[l].Gene.ID].geneSymbol=d.TCList[l].Gene.geneSymbol;
+	                                that.selectedGene[d.TCList[l].Gene.ID].tcList=[];
+	                                that.selectedGene[d.TCList[l].Gene.ID].tcList.push(d.TCList[l]);
+	                            }
+	                        }
+							setTimeout(that.createSingleWGCNAImage,20);
+							})
+						.on("mouseover",function(){
+							$("#wgcnaMouseHelp").html("<B>Click</B> to select this module and see additional details.");
+							d3.select(this).style("fill","url(#selectGrad)");
+					        	//that.gsvg.get('tt').transition()
+	                            tt.transition()        
+	                                    .duration(200)      
+	                                    .style("opacity", 1);      
+					        	//that.gsvg.get('tt').html(that.createToolTip(d)) 
+	                            tt.html(thatimg.createToolTip(d)) 
+	                                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+	                                .style("top", function(){return that.positionTTTop(d3.event.pageY);});
+							})
+						.on("mouseout",function(){
+		                        var d=d3.select(this).data()[0];
+		                        if( typeof that.selectedModule === 'undefined' || (d.MOD_NAME!==that.selectedModule.MOD_NAME) ){
+		                            d3.select(this).style("fill","url(#grad"+d.MOD_NAME+")");
+		                        }
+								tt.transition()        
+						                .duration(500)      
+						                .style("opacity", 0);
+							});
+	                    if(typeof that.selectedModule !=='undefined' && that.selectedModule===d){
                             thisMod.append("text")
                                     .attr("class","txtLbl")
 									.attr("y",thatimg.maxWidth+12)
@@ -1267,7 +1308,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 }
                                 return val;
                             });
-			} );
+				} );
 		};
 
 		thatimg.backModule=function(){
@@ -1326,7 +1367,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					that.singleImage.draw();
 					that.img=that.singleImage;
 					that.singleWGCNATableGeneView();
-                    that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+					setTimeout(function(){
+						that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
                                             panEnabled: true
                                           , controlIconsEnabled:false
                                           , zoomEnabled: true
@@ -1337,6 +1379,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                           , fit: true
                                           , center: true   
                                     });
+					},500);
+                    
             	},50);
             }else if(that.viewType==="go"){
             	$("#wgcnaresetImage").hide();
@@ -1372,7 +1416,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					that.singleImage=that.singleWGCNAImageGeneView(that.modules);
 					that.singleImage.draw();
 					that.img=that.singleImage;
-					that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+					setTimeout(function(){
+						that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
                                         panEnabled: true
                                       , controlIconsEnabled:false
                                       , zoomEnabled: true
@@ -1383,6 +1428,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                       , fit: true
                                       , center: true
                                 });
+					},500);
                 },50);
             }
             if(ga){
@@ -1405,21 +1451,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		}
 		//console.log("r:"+thatimg.r);
 		
-                thatimg.maxPerLevel=150;
-                thatimg.CorCutoff_min=0.75;
-                thatimg.CorCutoff_max=1.0;
-                thatimg.showLinks=true;
+        thatimg.maxPerLevel=150;
+        thatimg.CorCutoff_min=0.75;
+        thatimg.CorCutoff_max=1.0;
+        thatimg.showLinks=true;
 		thatimg.data=[];
-                
-                thatimg.maxNodeR=28;
-         
-                thatimg.negColor="#DD0000";
-                thatimg.negDarkColor="#770000";
-                thatimg.posColor="#00DD00";
-                thatimg.posDarkColor="#007700";
-                
-                thatimg.mirVal="#FFFF00";
-                thatimg.mirPred="#0000CC";
+        thatimg.maxNodeR=28;
+        thatimg.negColor="#DD0000";
+        thatimg.negDarkColor="#770000";
+        thatimg.posColor="#00DD00";
+        thatimg.posDarkColor="#007700";  
+        thatimg.mirVal="#FFFF00";
+        thatimg.mirPred="#0000CC";
                 
 
 		//setup image
@@ -1430,7 +1473,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		}
 
 		thatimg.geneKey=function(d){return d.ID;};
-                thatimg.linkKey=function(d){return d.TC1+"_"+d.TC2;};
+        thatimg.linkKey=function(d){return d.TC1+"_"+d.TC2;};
                 
 		thatimg.calcX=function(d,i){
 			var tmp=i%thatimg.modPerLine;
@@ -1451,73 +1494,73 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 			return r;
 		};
                 
-                thatimg.colorCircle=function(d){
-                    var id=d.Gene.ID;
-                    var color="#DFC184";
-                    if(id.indexOf("PRN")==0||id.indexOf("PMM")==0||id.indexOf("Unannotated")==0){
-                    	if(that.tissue==="Whole Brain"){
-                        	color="#7EB5D6";
-                    	}else if(that.tissue==="Heart"){
-                    		color="#DC7252";
-                    	}else if(that.tissue==="Liver"){
-                    		color="#bbbedd";
-                    	}
-                    }
-                    return color;
-                };
-                
-                thatimg.colorLink=function(d){
-                    //var val="#DD0000";
-                    var val=thatimg.negColor;
-                    if(d.Cor>0){
-                        //val= "#00DD00"
-                        val=thatimg.posColor;
-                    }
-                    return val;
-                };
-                
-                thatimg.colorLinkHighlight=function(d){
-                    //var val="#770000";
-                    var val=thatimg.negDarkColor;
-                    if(d.Cor>0){
-                        //val= "#007700"
-                        val=thatimg.posDarkColor;
-                    }
-                    return val;
-                };
-                thatimg.updateColor=function(selector){
-                    var colorOpt=$("#"+selector).val();
-                    //console.log("update color:"+colorOpt);
-                    if(colorOpt==="Red_Green"){
-                        thatimg.posColor="#DD0000";
-                        thatimg.posDarkColor="#770000";
-                        thatimg.negColor="#00DD00";
-                        thatimg.negDarkColor="#007700";
-                        thatimg.mirVal="#FFFF00";
-                        thatimg.mirPred="#0000CC";
-                    }else if(colorOpt==="Blue_Yellow"){
-                        thatimg.posColor="#0000DD";
-                        thatimg.posDarkColor="#000077";
-                        thatimg.negColor="#ffef16";
-                        thatimg.negDarkColor="#b7ae2a";
-                        thatimg.mirVal="#FF9C2A";
-                        thatimg.mirPred="#BA49FF";
-                    }else{
-                        thatimg.negColor="#DD0000";
-                        thatimg.negDarkColor="#770000";
-                        thatimg.posColor="#00DD00";
-                        thatimg.posDarkColor="#007700";
-                        thatimg.mirVal="#FFFF00";
-                        thatimg.mirPred="#0000CC";
-                    }
-                };
-                thatimg.nodeRadiusSum=function(d,i){
-                    var r=3+20*d.LinkSum;
-                    if(r>thatimg.maxNodeR){
-                        r=thatimg.maxNodeR;
-                    }
-                    return r;
-                };
+        thatimg.colorCircle=function(d){
+            var id=d.Gene.ID;
+            var color="#DFC184";
+            if(id.indexOf("PRN")==0||id.indexOf("PMM")==0||id.indexOf("Unannotated")==0){
+            	if(that.tissue==="Whole Brain"){
+                	color="#7EB5D6";
+            	}else if(that.tissue==="Heart"){
+            		color="#DC7252";
+            	}else if(that.tissue==="Liver"){
+            		color="#bbbedd";
+            	}
+            }
+            return color;
+        };
+        
+        thatimg.colorLink=function(d){
+            //var val="#DD0000";
+            var val=thatimg.negColor;
+            if(d.Cor>0){
+                //val= "#00DD00"
+                val=thatimg.posColor;
+            }
+            return val;
+        };
+        
+        thatimg.colorLinkHighlight=function(d){
+            //var val="#770000";
+            var val=thatimg.negDarkColor;
+            if(d.Cor>0){
+                //val= "#007700"
+                val=thatimg.posDarkColor;
+            }
+            return val;
+        };
+        thatimg.updateColor=function(selector){
+            var colorOpt=$("#"+selector).val();
+            //console.log("update color:"+colorOpt);
+            if(colorOpt==="Red_Green"){
+                thatimg.posColor="#DD0000";
+                thatimg.posDarkColor="#770000";
+                thatimg.negColor="#00DD00";
+                thatimg.negDarkColor="#007700";
+                thatimg.mirVal="#FFFF00";
+                thatimg.mirPred="#0000CC";
+            }else if(colorOpt==="Blue_Yellow"){
+                thatimg.posColor="#0000DD";
+                thatimg.posDarkColor="#000077";
+                thatimg.negColor="#ffef16";
+                thatimg.negDarkColor="#b7ae2a";
+                thatimg.mirVal="#FF9C2A";
+                thatimg.mirPred="#BA49FF";
+            }else{
+                thatimg.negColor="#DD0000";
+                thatimg.negDarkColor="#770000";
+                thatimg.posColor="#00DD00";
+                thatimg.posDarkColor="#007700";
+                thatimg.mirVal="#FFFF00";
+                thatimg.mirPred="#0000CC";
+            }
+        };
+        thatimg.nodeRadiusSum=function(d,i){
+            var r=3+20*d.LinkSum;
+            if(r>thatimg.maxNodeR){
+                r=thatimg.maxNodeR;
+            }
+            return r;
+        };
 		thatimg.zoomIn=function(){
 			if(thatimg.maxWidth<$(window).width()/2){
 				thatimg.maxWidth=thatimg.maxWidth*2;
@@ -1542,91 +1585,91 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 		};
 
-                thatimg.setupLegend=function(){
-                    thatimg.svg.select("#legend").remove();
-                    thatimg.svg.select("#legendDisp").remove();
-                    
-                    thatimg.legendG=thatimg.svg.append("g")
-                            .attr("id","legend")
-                            .attr("transform","translate(10,60)")
-                            .style("cursor","pointer")
-                            .on("mouseover",function(){
-                                thatimg.legendDispG.transition()        
-                                    .duration(300)
-                                    .style("opacity",1);
-                                if(ga){
-		                            ga('send','event','wgcna','viewLegend');
-		                        }
-                            })
-                            .on("mouseleave",function(){
-                                thatimg.legendDispG.transition()        
-                                    .duration(300)
-                                    .style("opacity",0);
-                            });
-                    thatimg.legendG.append("image")
-                            .attr("x",0)
-                            .attr("y",-20)
-                            .attr("width","24px")								
-                            .attr("height","24px")
-                            .attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ"+
-                                                        "I0lEQVRIDQEYCef2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAEAAAABVVVVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAq6ur/wAAAP4AAAAAAQAAAAAAAAAAAAAAAFtynWv/AgFSAP//BAEBAgAAAP8B"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/95/Plx4sH"+
-                                                        "/fPbq6ur8QQAAAAAAAAAAEBAQAT/AgOLAQEACQABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAgAJDRgG/O7xiAAAAMkEAAAAAAAAAADz"+
-                                                        "8/MB/vv1pgMEBVb///4JAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAD//Pb+/fLiJgAAAB8AAADJBAAAAAAAAAAADQ0N//nivJACAgLfAQEBOwEB"+
-                                                        "ARH///8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "/gAAAOoAAADxAAAAAAQAAAAAAAAAAMDAwPxAQEDkEhISuv///9wCAgIN////AQAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////4AAADxAAAA2AAAAAAEAAAA"+
-                                                        "AAAAAAAAAAAAFS1XJgQDAk4B//wK/gD9BQIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAD//fro+OXExvj4+O8AAAAABAAAAAAAAAAAAFVVAwUHCLcBAQES"+
-                                                        "AAAHAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAP8A/wYTKxsC79eVAAAA1QIAAAAAAAAAADPe3gIA//3Z///+/AD//v7//v7///7+///+/v//"+
-                                                        "/v7///7+///+/v///v7///7+///+/v///v7///7+///+/v///v7///7+/wH++v/+9+k6////JgAA"+
-                                                        "AAAEAAAAAAAAAAANDQ3/9+LCcwMIDGEB/vs1AAD/DgIBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+/fn9//v18wAAAAAAAAAABAAAAAAAAAAAwMDA/UZG"+
-                                                        "Rt0N/g2q/wAA0gEBAQ39AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAA/////gAAAPD////YAAAAAAQAAAAAAAAAAAAAAP8LIkUAAwT9AwD8+uoCAP/x////"+
-                                                        "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP779vD+8d3a"+
-                                                        "/f395QAAAAAEAAAAAAAAAAAAAAABCQwVtQEBADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/4+gABewTw260AAADzAgAAAAAAAAAA"+
-                                                        "M2ZmBAEA/xsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAA//8BBwD++FYBAQErAAAAAAQAAAAAAAAAAADNzQD5MRBsAwIIagD++igA"+
-                                                        "AP4K////AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH7"+
-                                                        "+PwA9+gIAAAADAAAAAAEAAAAAAAAAADNzc39FxcXzQYGBqACAgIwAgICDv///wIAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAf/////+AAAA7gICAuAAAAAABAAA"+
-                                                        "AAAAAAAAAAAA/uHh4ecfHx+8AwMDzAYGBgb+/v4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAA/f39/wMDA/j29vboAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAD/AAAA/gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                                        "AAAApkUqF3zKmm8AAAAASUVORK5CYII=");
-                    thatimg.legendG.append("text").attr("x","25").style("font-size","18").text("Legend");
-                    thatimg.legendDispG=thatimg.svg.append("g")
-                            .attr("id","legendDisp")
-                            .attr("transform","translate(10,70)")
+        thatimg.setupLegend=function(){
+            thatimg.svg.select("#legend").remove();
+            thatimg.svg.select("#legendDisp").remove();
+            
+            thatimg.legendG=thatimg.svg.append("g")
+                    .attr("id","legend")
+                    .attr("transform","translate(10,60)")
+                    .style("cursor","pointer")
+                    .on("mouseover",function(){
+                        thatimg.legendDispG.transition()        
+                            .duration(300)
                             .style("opacity",1);
-                    thatimg.drawLegend();
-                    setTimeout(function(){
-                         thatimg.legendDispG.transition()        
-                            .duration(750)
+                        if(ga){
+                            ga('send','event','wgcna','viewLegend');
+                        }
+                    })
+                    .on("mouseleave",function(){
+                        thatimg.legendDispG.transition()        
+                            .duration(300)
                             .style("opacity",0);
-                    },8000);
-                };
+                    });
+            thatimg.legendG.append("image")
+                    .attr("x",0)
+                    .attr("y",-20)
+                    .attr("width","24px")								
+                    .attr("height","24px")
+                    .attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ"+
+                                                "I0lEQVRIDQEYCef2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAEAAAABVVVVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAq6ur/wAAAP4AAAAAAQAAAAAAAAAAAAAAAFtynWv/AgFSAP//BAEBAgAAAP8B"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/95/Plx4sH"+
+                                                "/fPbq6ur8QQAAAAAAAAAAEBAQAT/AgOLAQEACQABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAgAJDRgG/O7xiAAAAMkEAAAAAAAAAADz"+
+                                                "8/MB/vv1pgMEBVb///4JAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAD//Pb+/fLiJgAAAB8AAADJBAAAAAAAAAAADQ0N//nivJACAgLfAQEBOwEB"+
+                                                "ARH///8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "/gAAAOoAAADxAAAAAAQAAAAAAAAAAMDAwPxAQEDkEhISuv///9wCAgIN////AQAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////4AAADxAAAA2AAAAAAEAAAA"+
+                                                "AAAAAAAAAAAAFS1XJgQDAk4B//wK/gD9BQIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAD//fro+OXExvj4+O8AAAAABAAAAAAAAAAAAFVVAwUHCLcBAQES"+
+                                                "AAAHAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAP8A/wYTKxsC79eVAAAA1QIAAAAAAAAAADPe3gIA//3Z///+/AD//v7//v7///7+///+/v//"+
+                                                "/v7///7+///+/v///v7///7+///+/v///v7///7+///+/v///v7///7+/wH++v/+9+k6////JgAA"+
+                                                "AAAEAAAAAAAAAAANDQ3/9+LCcwMIDGEB/vs1AAD/DgIBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+/fn9//v18wAAAAAAAAAABAAAAAAAAAAAwMDA/UZG"+
+                                                "Rt0N/g2q/wAA0gEBAQ39AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAA/////gAAAPD////YAAAAAAQAAAAAAAAAAAAAAP8LIkUAAwT9AwD8+uoCAP/x////"+
+                                                "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP779vD+8d3a"+
+                                                "/f395QAAAAAEAAAAAAAAAAAAAAABCQwVtQEBADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/4+gABewTw260AAADzAgAAAAAAAAAA"+
+                                                "M2ZmBAEA/xsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAA//8BBwD++FYBAQErAAAAAAQAAAAAAAAAAADNzQD5MRBsAwIIagD++igA"+
+                                                "AP4K////AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH7"+
+                                                "+PwA9+gIAAAADAAAAAAEAAAAAAAAAADNzc39FxcXzQYGBqACAgIwAgICDv///wIAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAf/////+AAAA7gICAuAAAAAABAAA"+
+                                                "AAAAAAAAAAAA/uHh4ecfHx+8AwMDzAYGBgb+/v4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAA/f39/wMDA/j29vboAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAD/AAAA/gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+                                                "AAAApkUqF3zKmm8AAAAASUVORK5CYII=");
+            thatimg.legendG.append("text").attr("x","25").style("font-size","18").text("Legend");
+            thatimg.legendDispG=thatimg.svg.append("g")
+                    .attr("id","legendDisp")
+                    .attr("transform","translate(10,70)")
+                    .style("opacity",1);
+            thatimg.drawLegend();
+            setTimeout(function(){
+                 thatimg.legendDispG.transition()        
+                    .duration(750)
+                    .style("opacity",0);
+            },8000);
+        };
 
-                thatimg.drawLegend= function(){
-                    
-                };
+        thatimg.drawLegend= function(){
+            
+        };
 
 		thatimg.createToolTip=function(d){
 			var tt="Gene: "+d.Gene.geneSymbol+" ("+d.Gene.ID+")<BR><BR>Transcript:"+d.ID+"<BR>";
@@ -1642,8 +1685,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 }
                             }
                         }
-                        tt=tt+"<BR><BR>";
-                        tt=tt+d.PSList.length+" Probe Sets in Transcript<BR>";
+                        if(d.PSList && that.selSource==="array"){
+	                        tt=tt+"<BR><BR>";
+	                        tt=tt+d.PSList.length+" Probe Sets in Transcript<BR>";
+                       	}
                         /*for(var l=0;l<d.PSList.length;l++){
                             tt=tt+d.PSList[l].ID+"("+d.PSList[l].Level+")<BR>";
                         }*/
@@ -1654,945 +1699,1018 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 	};
 	//internal methods to setup each specific type
 	that.singleWGCNAImageGeneView=function(){
-				var thatimg=that.singleWGCNAImage();
-                $(".goCTL").hide();
-                $(".eqtlCtls").hide();
-                if(that.viewType==='gene'){
-                    $(".linkCTL").show();
-                    $(".mirCTL").hide();
-                    thatimg.showMirLinks=0;
-                }else{
-                    $(".mirCTL").show();
-                    $(".linkCTL").hide();
-                    thatimg.showLinks=1;
-                    thatimg.geneList={};
-                    thatimg.geneMirList={};
-                    var tmpDat=that.selectedModule.TCList;
-                    for(var i=0;i<tmpDat.length;i++){
-                        thatimg.geneList[that.selectedModule.TCList[i].Gene.ID]=that.selectedModule.TCList[i].Gene.geneSymbol;
+		var thatimg=that.singleWGCNAImage();
+        $(".goCTL").hide();
+        $(".eqtlCtls").hide();
+        if(that.viewType==='gene'){
+            $(".linkCTL").show();
+            $(".mirCTL").hide();
+            thatimg.showMirLinks=0;
+        }else{
+            $(".mirCTL").show();
+            $(".linkCTL").hide();
+            thatimg.showLinks=1;
+            thatimg.geneList={};
+            thatimg.geneMirList={};
+            var tmpDat=that.selectedModule.TCList;
+            for(var i=0;i<tmpDat.length;i++){
+                thatimg.geneList[that.selectedModule.TCList[i].Gene.ID]=that.selectedModule.TCList[i].Gene.geneSymbol;
+            }
+            thatimg.showMirLinks=1;
+            thatimg.showAllFromTarget=0;
+        }
+        thatimg.CorCutoff_min=0.75;
+        thatimg.CorCutoff_max=1;
+        thatimg.type=that.viewType;
+        thatimg.truncated=0;
+        thatimg.filterOneDB=1;
+        thatimg.mirGeneCutoff=1;
+        thatimg.mirValid=0;
+        thatimg.mirTargetID="";
+        thatimg.mirID="";
+        thatimg.miRcolor = d3.scaleOrdinal(d3.schemeCategory20b);
+        thatimg.sortMir=0;
+        thatimg.maxCorWidth=5;
+        
+        thatimg.drawLinks=function(d){
+            //console.log("draw links");
+            if(that.viewType==='gene'){
+                //console.log("update link color");
+                thatimg.updateColor("linkColor");
+            }else if(that.viewType==='mir'){
+                //console.log("update mir link color");
+                thatimg.updateColor("mirlinkColor");
+            }
+            thatimg.svg.selectAll(".link").remove();
+            var links=that.selectedModule.LinkList;
+            var filterLinks=[];
+            var count=0;
+            for(var i=0;i<links.length;i++){
+                if(links[i].TC1===d.ID || links[i].TC2===d.ID){
+                    if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
+                        filterLinks[count]=links[i];
+                        count++;
                     }
-                    thatimg.showMirLinks=1;
-                    thatimg.showAllFromTarget=0;
                 }
-                thatimg.CorCutoff_min=0.75;
-                thatimg.CorCutoff_max=1;
-                thatimg.type=that.viewType;
-                thatimg.truncated=0;
-                thatimg.filterOneDB=1;
-                thatimg.mirGeneCutoff=1;
-                thatimg.mirValid=0;
-                thatimg.mirTargetID="";
-                thatimg.mirID="";
-                thatimg.miRcolor = d3.scale.category20b();
-                thatimg.sortMir=0;
-                thatimg.maxCorWidth=5;
-                
-                thatimg.drawLinks=function(d){
-                    //console.log("draw links");
-                    if(that.viewType==='gene'){
-                        //console.log("update link color");
-                        thatimg.updateColor("linkColor");
-                    }else if(that.viewType==='mir'){
-                        //console.log("update mir link color");
-                        thatimg.updateColor("mirlinkColor");
-                    }
-                    thatimg.svg.selectAll(".link").remove();
-                    var links=that.selectedModule.LinkList;
-                    var filterLinks=[];
-                    var count=0;
-                    for(var i=0;i<links.length;i++){
-                        if(links[i].TC1===d.ID || links[i].TC2===d.ID){
-                            if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
-                                filterLinks[count]=links[i];
-                                count++;
-                            }
-                        }
-                    }
-                    links=filterLinks;
-                    if(links.length<10000){
-                        var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
-                        lnk.enter().append("line")
-                                .attr("class","link")
-                                .attr("pointer-events","none")
-                                .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
-                                .attr("x1",function(d){
-                                    var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
-                                    //console.log(d.TC1+":x1:"+x);
-                                    return x;
-                                })
-                                .attr("y1",function(d){
-                                    var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
-                                    //console.log(d.TC1+":y1:"+y);
-                                    return y;
-                                })
-                                .attr("x2",function(d){
-                                    var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
-                                    //console.log(d.TC2+":x2:"+x);
-                                    return x;
-                                })
-                                .attr("y2",function(d){
-                                    var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
-                                    //console.log(d.TC2+":y2:"+y);
-                                    return y;
-                                })
-                                .attr("stroke",thatimg.colorLink)
-                                .attr("stroke-width",function(d){
-                                    var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
-                                    /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
-                                        val=0;
-                                    }*/
-                                    return val;
-                                });
-                    }
-                };
-                
-                thatimg.drawLinksBetween=function(list){
-                	var hash={};
-                	for(var v=0;v<list.length;v++){
-                		hash[list[v]]=1;
-                	}
-
-                    //console.log(list);
-                    if(that.viewType==='gene'){
-                        //console.log("update link color");
-                        thatimg.updateColor("linkColor");
-                    }else if(that.viewType==='mir'){
-                        //console.log("update mir link color");
-                        thatimg.updateColor("mirlinkColor");
-                    }
-                    thatimg.svg.selectAll(".link").remove();
-                    var links=that.selectedModule.LinkList;
-                    var filterLinks=[];
-                    var count=0;
-                    for(var i=0;i<links.length;i++){
-                    	//console.log(links[i].TC1);
-                        if( (thatimg.showAllFromTarget===0 && typeof hash[links[i].TC1]!=='undefined' && typeof hash[links[i].TC2]!=='undefined') ||
-                        	(thatimg.showAllFromTarget===1 && (typeof hash[links[i].TC1]!=='undefined' || typeof hash[links[i].TC2]!=='undefined'))
-                        	){
-                            if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
-                                filterLinks[count]=links[i];
-                                count++;
-                            }
-                        }
-                    }
-                    links=filterLinks;
-                    if(links.length<10000){
-                        var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
-                        lnk.enter().append("line")
-                                .attr("class","link")
-                                .attr("pointer-events","none")
-                                .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
-                                .attr("x1",function(d){
-                                    var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
-                                    //console.log(d.TC1+":x1:"+x);
-                                    return x;
-                                })
-                                .attr("y1",function(d){
-                                    var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
-                                    //console.log(d.TC1+":y1:"+y);
-                                    return y;
-                                })
-                                .attr("x2",function(d){
-                                    var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
-                                    //console.log(d.TC2+":x2:"+x);
-                                    return x;
-                                })
-                                .attr("y2",function(d){
-                                    var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
-                                    //console.log(d.TC2+":y2:"+y);
-                                    return y;
-                                })
-                                .attr("stroke",thatimg.colorLink)
-                                .attr("stroke-width",function(d){
-                                    var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
-                                    /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
-                                        val=0;
-                                    }*/
-                                    return val;
-                                });
-                    }
-                };
-
-                thatimg.nodeX=function(d,i){
-                    var ring=50;
-                    var l=Math.floor(i/thatimg.maxPerLevel)+1;
-                    if(l>1){
-                        ring=l*60;
-                    }
-                    var ii=i%thatimg.maxPerLevel;
-                    return thatimg.width/2+(thatimg.r-ring)*(Math.cos(ii*thatimg.angle-1.57079633));
-                    //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
-                };
-
-                thatimg.nodeY=function(d,i){
-                    var ring=50;
-                    if(i>thatimg.maxPerLevel){
-                        var l=Math.floor(i/thatimg.maxPerLevel)+1;
-                        ring=l*60;
-                    }
-
-                    var ii=i%thatimg.maxPerLevel;
-                    return thatimg.height/2+(thatimg.r-ring)*(Math.sin(ii*thatimg.angle-1.57079633));
-                    //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
-                };
-                
-                thatimg.nodeXLbl=function(d,i){
-                    var ring=50;
-                    var l=Math.floor(i/thatimg.maxPerLevel)+1;
-                    if(l>1){
-                        ring=l*60;
-                    }
-                    var ii=i%thatimg.maxPerLevel;
-                    var angleRad=ii*thatimg.angle-1.57079633;
-                    var plusMinus=1;
-                    if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
-                        var len=0;
-                        if(typeof d.Gene.geneSymbol !=='undefined'){
-                            len=d.Gene.geneSymbol.length;
-                        }
-                        plusMinus=plusMinus+len*7.5;
-                        //console.log("i="+i);
-                    }
-                    return thatimg.width/2+(thatimg.r+plusMinus)*(Math.cos(angleRad));
-                    //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
-                };
-
-                thatimg.nodeYLbl=function(d,i){
-                    var ring=50;
-                    
-                    if(i>thatimg.maxPerLevel){
-                        var l=Math.floor(i/thatimg.maxPerLevel)+1;
-                        ring=l*60;
-                    }
-
-                    var ii=i%thatimg.maxPerLevel;
-                    var angleRad=ii*thatimg.angle-1.57079633;
-                    var plusMinus=1;
-                    if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
-                        var len=0;
-                        if(typeof d.Gene.geneSymbol !=='undefined'){
-                            len=d.Gene.geneSymbol.length;
-                        }
-                        plusMinus=plusMinus+len*7.5;
-                    }
-                    return thatimg.height/2+(thatimg.r+plusMinus)*(Math.sin(angleRad));
-                    //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
-                };
-                
-                thatimg.drawCorLegend=function(start){
-                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start).text("Positive Correlation");
-                    thatimg.legendDispG.append("rect").attr("x","0").attr("y",start-10).attr("width", "30").attr("height", "10").style("fill",thatimg.posColor);
-                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+20).text("Negative Correlation");
-                    thatimg.legendDispG.append("rect").attr("x","0").attr("y",start+10).attr("width", "30").attr("height","10").style("fill",thatimg.negColor);
-                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+40).text("Lower Correlation");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+30).attr("x2", "30").attr("y2",start+30).style("stroke","#000000").style("stroke-width","0");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+35).attr("x2", "30").attr("y2",start+35).style("stroke","#000000").style("stroke-width","0.5");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+40).attr("x2", "30").attr("y2",start+40).style("stroke","#000000").style("stroke-width","1");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+45).attr("x2", "30").attr("y2",start+45).style("stroke","#000000").style("stroke-width","2");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+55).attr("x2", "30").attr("y2",start+55).style("stroke","#000000").style("stroke-width","3");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+65).attr("x2", "30").attr("y2",start+65).style("stroke","#000000").style("stroke-width","5");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+75).attr("x2", "30").attr("y2",start+75).style("stroke","#000000").style("stroke-width","7");
-                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+80).text("Higher Correlation");
-                };
-                thatimg.drawMirSupportLegend=function(start){
-                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start).text("Validated miRNA Target");
-                    thatimg.legendDispG.append("rect").attr("x","0").attr("y",start-10).attr("width", "30").attr("height", "10").style("fill",thatimg.mirVal);
-                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+20).text("Predicted miRNA Target");
-                    thatimg.legendDispG.append("rect").attr("x","0").attr("y",start+10).attr("width", "30").attr("height", "10").style("fill",thatimg.mirPred);
-                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+40).text("Lower support of targeting");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+30).attr("x2", "30").attr("y2",start+30).style("stroke","#000000").style("stroke-width","0");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+35).attr("x2", "30").attr("y2",start+35).style("stroke","#000000").style("stroke-width","0.5");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+40).attr("x2", "30").attr("y2",start+40).style("stroke","#000000").style("stroke-width","1");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+45).attr("x2", "30").attr("y2",start+45).style("stroke","#000000").style("stroke-width","2");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+55).attr("x2", "30").attr("y2",start+55).style("stroke","#000000").style("stroke-width","3");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+65).attr("x2", "30").attr("y2",start+65).style("stroke","#000000").style("stroke-width","5");
-                    thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+75).attr("x2", "30").attr("y2",start+75).style("stroke","#000000").style("stroke-width","7");
-                    thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+80).text("Higher support of targeting");
-                };
-                
-                thatimg.drawLegend=function(){
-                    if(that.viewType==='gene'){
-                        thatimg.drawCorLegend(20);
-                    }else{
-                        thatimg.drawMirSupportLegend(20);
-                        if(!thatimg.showLinks){
-                            thatimg.drawCorLegend(130);
-                        }
-                    }
-                };
-
-				thatimg.draw=function(){
-                    if(that.viewType==='mir'){
-                        thatimg.requestMiR();
-                        thatimg.updateColor("mirlinkColor");
-                    }else if(that.viewType==='gene'){
-                        thatimg.updateColor("linkColor");
-                    }
-                    thatimg.width=$(window).width();
-                    thatimg.height=Math.floor(window.innerHeight*0.9);
-                    //console.log("H:"+thatimg.height+"  W:"+thatimg.width);
-                    if(thatimg.height>thatimg.width){
-                            //console.log("using width");
-                            thatimg.r=Math.floor((thatimg.width/2)*0.95);
-                    }else{
-                            //console.log("using height");
-                            thatimg.r=Math.floor((thatimg.height/2)*0.95);
-                    }
-                    thatimg.svg.attr("height",thatimg.height+"px");
-                    thatimg.svg.selectAll("circle").remove();
-                    thatimg.svg.selectAll("text").remove();
-                    thatimg.svg.selectAll("line").remove();
-                    thatimg.svg.selectAll(".geneTC").remove();
-                    if(typeof thatimg.panZoom !=='undefined'){
-                        thatimg.panZoom.destroy();
-                        delete thatimg.panZoom;
-                    }
-                    thatimg.svg.selectAll(".svg-pan-zoom_viewport").remove();
-                    /*thatimg.svg.append("circle")
-                                    .attr("cx",thatimg.width/2)
-                                    .attr("cy",thatimg.height/2)
-                                    .attr("r",thatimg.r)
-                                    .attr("stroke","#000000")
-                                    .attr("fill","#FFFFFF");*/
-                    
-                    
-                    thatimg.svg.append("text")
-                            .style("font-size","20")
-                                            .attr("y",22)
-                                            .attr("x",5)/*function(){
-                                                    var len=that.selectedModule.MOD_NAME.length;
-                                                    var w=len/2;
-                                                    var offset=thatimg.width/2-(w*6.5);
-                                                    return offset;
-                                            })*/
-                                            .text(function(){
-                                            	if(that.selectedModule){
-                                            		return replaceUnderscore(that.selectedModule.MOD_NAME);
-                                            	}else{
-                                            		return "";
-                                            	}
-                                        	});
-                    
-                    thatimg.setupLegend();
-                    
-                    
-                    
-                    thatimg.data=that.selectedModule.TCList;
-                    thatimg.angle=2*Math.PI/thatimg.data.length;
-                    thatimg.angleDeg=360/thatimg.data.length;
-                    if(thatimg.data.length>thatimg.maxPerLevel){
-                        thatimg.angle=2*Math.PI/thatimg.maxPerLevel;
-                        thatimg.angleDeg=360/thatimg.maxPerLevel;
-                    }
-                    thatimg.data.sort(function(a,b){
-                        if(a.LinkSum===b.LinkSum){
-                        //if(a.LinkCount===b.LinkCount){
-                            return 0;
-                        }else if(a.LinkSum>b.LinkSum){
-                        //}else if(a.LinkCount>b.LinkCount){
-                            return -1;
-                        }
-                        return 1;
-                    });
-                    if(thatimg.data.length>150){
-                        thatimg.truncated=1;
-                        thatimg.maxNodeR=15;
-                        var tmpdata=[];
-                        for(var p=0;p<150;p++){
-                            tmpdata[p]=thatimg.data[p];
-                        }
-                        thatimg.data=tmpdata;
-                        thatimg.dataIndex={};
-                        for(var p=0;p<thatimg.data.length;p++){
-                            thatimg.dataIndex[thatimg.data[p].ID]=1;
-                        }
-                        thatimg.CorCutoff_min=0.85;
-                        $("#linkSliderMin").slider('value',0.85);
-                        $("span#minLabel").html(0.85);
-
-                        thatimg.svg.append("image").attr("x",that.selectedModule.MOD_NAME.length*7.8+20).attr("y",1).attr("width","24px")								
-                            .attr("height","24px")
-                            .attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ"+
-                                    "I0lEQVRIDQEYCef2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAA/wAAH/gAACcAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAADwAAALkCAABoFDEx"+
-                                    "0gIzM+/b29v4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGIAAAAvAgAAHDnn54QGBgY3SUlJBwAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAP8AAB0AAAChAAAADAAAAAAU9vYY4RER/ecNDdLZ2dnvAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5AAAAFgAAAAAA"+
-                                    "AAAABv7+BFHZ2UgFAgI4Ozs7DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAtAAAAmAAAAAQAAAAAAAAAAAAAAAAU9/cM7AoKAOYY"+
-                                    "GNTZ2dnqAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAD/AAAFAAAAnQAAACf8AgIAzhgY/uIODv4V9vYBBP//AR3z8xrKHBzjDhwc2uDg4PYAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASwAAAEUAAAAB+AMD"+
-                                    "AJwyMveSODjT9QUF+AAAAAAY9PQOTN3dTxISEipAQEAEAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAADAAAAIAAAAAEAAAAAAAAAAAC/v7vAv7+tQn7+/IAAAAA"+
-                                    "AAAAAT/g4DQd8/NHCgoKFAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAGcAAAAuAAAAAAAAAAAAAAAAAAEB+gP//+QF///7AAAAAAAAAAAQ+voIVtfXUggICDM5"+
-                                    "OTkJAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABYAAAB4AAAAAQAAAAAA"+
-                                    "AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAATXm5iYt6+tMExMTHAAAAAEAAAAAAAAAAAAA"+
-                                    "AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB7AAAAEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAF/v4CVdfXSw0EBDdAQEALAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAA"+
-                                    "AAD/AAAzAAAAkwAAAAYAAAAAAAAAAAAAAAAAAQEAAAAA/kDh4QAb8/MpAgAACAAAAAAAAAAAAAAA"+
-                                    "ABT29g7vCAgB4RYW1NnZ2eoAAAD/AAAAAAAAAAAAAAAAAAAAAAD/AAAE/wAAtf8AAP//AAD//wAA"+
-                                    "//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD/5Q0N7WNKSnFHR0cS"+
-                                    "AAAAAAAAAAADAAAAAAAAAAAAAAAAgAAATAAAAHkAAAADAAAAAAAAAAAAAAAAAAAAAPgEBP+XMzP7"+
-                                    "xR8f7ivq6gcH/f0CAAAAAAAAAAAAAAAAAAAAAAz6+gj9AgIM2Bsb0QoKCujn5+f+AgAAAAAAAAAA"+
-                                    "/wAABwAAAIkAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAD9AQEA1hUV9MwZGccAAAD2AAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAABAAABR97eNhb390ceHh4RAAAAAAAAAAAAAAAAAP8AAG//AAD+/wAA//8AAP//"+
-                                    "AAD//wAA//8AAP//AAD//gAA/u4ICPvzBQXw/gAA/P8AAP//AAD//wAA//8AAP//AAD//wAA//8A"+
-                                    "AP/CHR3SVVBQNgAAAAACAAAAAP8AAAgAAABfAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA"+
-                                    "AAER+PgEDPv7DwEAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMOnpJyHy8icAAAAABAAA"+
-                                    "AAABAAD42BMTgdUTE2buCwsz/QICCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8BAAD/AAEB"+
-                                    "Af8AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAPEHB/vhEBANAAAAAAQAAAAAAAAAAHU6OrsDAwPnAgIC"+
-                                    "IQEBAQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAABAQH//f39zgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
-                                    "AAAAs0IPw6I24JoAAAAASUVORK5CYII=")
-                            .attr("pointer-events", "all")
-                            .style("cursor","pointer")
-                            .on("mouseover",function(){
-                                    $("#wgcnaMouseHelp").html("Warning: Transcripts displayed are truncated to the top 150 most connected transcripts due to the size of the module.");
-                            })
-                            .on("mouseout",function(){
-                                    $("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-                            });
-                    }else{
-                        thatimg.maxNodeR=28;
-                    }
-                    
-                    thatimg.topG=thatimg.svg.append("g").attr("class","svg-pan-zoom_viewport");
-                    if(that.viewType==='gene'){
-                        var tc=thatimg.topG.selectAll(".geneTC")
-                                        .data(thatimg.data,thatimg.geneKey);
-                        //tc.sort();
-                        //add new
-                        tc.enter().append("circle")
-                                        .attr("class","geneTC")
-                                        .attr("id",function(d){return "tc_"+that.removeInvalidIDChars(d.ID);})
-                                        .attr("cx", thatimg.nodeX)
-                                        .attr("cy",thatimg.nodeY)
-                                        .attr("r",3)
-                                        .attr("stroke","#000000")
-                                        .attr("fill","#FF0000");
-
-                        var links=that.selectedModule.LinkList;
-                        var filterLinks=[];
-                        var count=0;
-                        for(var i=0;i<links.length;i++){
-                            if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
-                                if(thatimg.truncated===0 || (typeof thatimg.dataIndex[links[i].TC1]!=='undefined' && typeof thatimg.dataIndex[links[i].TC2]!=='undefined')){
-                                    filterLinks[count]=links[i];
-                                    count++;
-                                }
-                            }
-                        }
-                        links=filterLinks;
-                        if(thatimg.showLinks && links.length<10000){
-                            var lnk=thatimg.topG.selectAll(".link").data(links,thatimg.linkKey);
-                            lnk.enter().append("line")
-                                    .attr("class","link")
-                                    .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
-                                    .attr("x1",function(d){
-                                        var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
-                                        //console.log(d.TC1+":x1:"+x);
-                                        return x;
-                                    })
-                                    .attr("y1",function(d){
-                                        var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
-                                        //console.log(d.TC1+":y1:"+y);
-                                        return y;
-                                    })
-                                    .attr("x2",function(d){
-                                        var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
-                                        //console.log(d.TC2+":x2:"+x);
-                                        return x;
-                                    })
-                                    .attr("y2",function(d){
-                                        var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
-                                        //console.log(d.TC2+":y2:"+y);
-                                        return y;
-                                    })
-                                    .attr("stroke",thatimg.colorLink)
-                                    .attr("stroke-width",function(d){
-                                        var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
-                                        /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
-                                            val=0;
-                                        }*/
-                                        return val;
-                                    });
-                        }
-                    }
-                    
-                    thatimg.topG.selectAll(".geneTC").remove();
-                    var tc=thatimg.topG.selectAll(".geneTC")
-		   				.data(thatimg.data,thatimg.geneKey);
-                    //tc.sort();
-					//add new
-                    tc.enter().append("g")
-                            .append("circle")
-                            .attr("class",function(d){return "geneTC "+d.Gene.ID;})
-                            .attr("id",function(d){return "tc_"+that.removeInvalidIDChars(d.ID);})
-                            .attr("cx", thatimg.nodeX)
-                            .attr("cy",thatimg.nodeY)
-                            //.attr("r",function(d,i){return 3+d.LinkCount;})
-                            .attr("r",thatimg.nodeRadiusSum)
-                            .attr("stroke","#000000")
-                            .attr("fill",thatimg.colorCircle)
-                            .on("click",function(){
-
-                            })
-                            .on("mouseover",thatimg.mouseoverGene)
-                            .on("mouseout",thatimg.mouseleaveGene);
-                    var lbl=tc.append("g").attr("class","label")
-                            .attr("id",function(d){return "txt_"+that.removeInvalidIDChars(d.ID);})
-                            .attr("transform", function(d,i){
-                            var x=thatimg.nodeXLbl(d,i);
-                            var y=thatimg.nodeYLbl(d,i);
-                        return "translate("+x+","+y+")";
-                    });
-                    
-                    lbl.append("text")
-                        .attr("transform",function(d,i){
-                            var deg=-90;
-                            var ii=i%thatimg.maxPerLevel; 
-                            deg=deg+thatimg.angleDeg*ii;
-                            if(deg>90){
-                                deg=deg-180;
-                            }
-                            return "rotate("+deg+")";
+            }
+            links=filterLinks;
+            if(links.length<10000){
+                var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
+                lnk.enter().append("line")
+                        .attr("class","link")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
+                        .attr("x1",function(d){
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
+                            //console.log(d.TC1+":x1:"+x);
+                            return x;
                         })
-                        .text(function(d){return d.Gene.geneSymbol;});
-                
-                    if(that.viewType==='mir'){
-                        thatimg.drawMiR();
-                    }   
-				};
-		
-                thatimg.requestMiR=function(){
-                    $.ajax({
-						url:  contextRoot+"tmpData/browserCache/"+genomeVer+"/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".miR.json",
-			   			type: 'GET',
-			   			async: true,
-						data: {},
-						dataType: 'json',
-                                success: function(data2){
-                                    setTimeout(function(){
-                                        thatimg.mirData=data2;
-                                        //console.log(thatimg.mirData);
-                                        thatimg.geneMirList={};
-                                        for (var w=0;w<thatimg.mirData.MIRList.length;w++){
-                                            //console.log("mir:"+w+":"+thatimg.mirData.MIRList[w].ID);
-                                            var tmpMir=thatimg.mirData.MIRList[w];
-                                            var gl=tmpMir.GeneList;
-                                            
-                                            for (var v=0;v<gl.length;v++){
-                                                //console.log("check:"+gl[v].ID);
-                                                if(typeof thatimg.geneMirList[gl[v].ID]==='undefined'){
-                                                    //console.log("undef");
-                                                    thatimg.geneMirList[gl[v].ID]=[];
-                                                    thatimg.geneMirList[gl[v].ID].push(tmpMir);
-                                                }else{
-                                                    //console.log("exists");
-                                                    var found=0;
-                                                    for(var u=0;u<thatimg.geneMirList[gl[v].ID].length&&found===0;u++){
-                                                        if(tmpMir.ID===thatimg.geneMirList[gl[v].ID][u].ID){
-                                                            found=1;
-                                                        }
-                                                    }
-                                                    //console.log("found:"+found)
-                                                    if(found===0){
-                                                        thatimg.geneMirList[gl[v].ID].push(tmpMir);
-                                                    }
+                        .attr("y1",function(d){
+                            var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
+                            //console.log(d.TC1+":y1:"+y);
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                        	//console.log(d.TC2+":x2:"+x);
+                        	//console.log(d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)));
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
+                            
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
+                            //console.log(d.TC2+":y2:"+y);
+                            return y;
+                        })
+                        .attr("stroke",thatimg.colorLink)
+                        .attr("stroke-width",function(d){
+                            var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
+                            /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
+                                val=0;
+                            }*/
+                            return val;
+                        }).merge(lnk);
+            }
+        };
+        
+        thatimg.drawLinksBetween=function(list){
+        	var hash={};
+        	for(var v=0;v<list.length;v++){
+        		hash[list[v]]=1;
+        	}
+
+            //console.log(list);
+            if(that.viewType==='gene'){
+                //console.log("update link color");
+                thatimg.updateColor("linkColor");
+            }else if(that.viewType==='mir'){
+                //console.log("update mir link color");
+                thatimg.updateColor("mirlinkColor");
+            }
+            thatimg.svg.selectAll(".link").remove();
+            var links=that.selectedModule.LinkList;
+            var filterLinks=[];
+            var count=0;
+            for(var i=0;i<links.length;i++){
+            	//console.log(links[i].TC1);
+                if( (thatimg.showAllFromTarget===0 && typeof hash[links[i].TC1]!=='undefined' && typeof hash[links[i].TC2]!=='undefined') ||
+                	(thatimg.showAllFromTarget===1 && (typeof hash[links[i].TC1]!=='undefined' || typeof hash[links[i].TC2]!=='undefined'))
+                	){
+                    if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
+                        filterLinks[count]=links[i];
+                        count++;
+                    }
+                }
+            }
+            links=filterLinks;
+            if(links.length<10000){
+                var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
+                lnk.enter().append("line")
+                        .attr("class","link")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
+                        .attr("x1",function(d){
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
+                            //console.log(d.TC1+":x1:"+x);
+                            return x;
+                        })
+                        .attr("y1",function(d){
+                            var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
+                            //console.log(d.TC1+":y1:"+y);
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                        	//console.log(d.TC2+":x2:"+x);
+                        	//console.log(d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)));
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
+                            //console.log(d.TC2+":x2:"+x);
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
+                            //console.log(d.TC2+":y2:"+y);
+                            return y;
+                        })
+                        .attr("stroke",thatimg.colorLink)
+                        .attr("stroke-width",function(d){
+                            var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
+                            /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
+                                val=0;
+                            }*/
+                            return val;
+                        }).merge(lnk);
+            }
+        };
+
+        thatimg.nodeX=function(d,i){
+            var ring=50;
+            var l=Math.floor(i/thatimg.maxPerLevel)+1;
+            if(l>1){
+                ring=l*60;
+            }
+            var ii=i%thatimg.maxPerLevel;
+            return thatimg.width/2+(thatimg.r-ring)*(Math.cos(ii*thatimg.angle-1.57079633));
+            //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
+        };
+
+        thatimg.nodeY=function(d,i){
+            var ring=50;
+            if(i>thatimg.maxPerLevel){
+                var l=Math.floor(i/thatimg.maxPerLevel)+1;
+                ring=l*60;
+            }
+
+            var ii=i%thatimg.maxPerLevel;
+            return thatimg.height/2+(thatimg.r-ring)*(Math.sin(ii*thatimg.angle-1.57079633));
+            //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
+        };
+        
+        thatimg.nodeXLbl=function(d,i){
+            var ring=50;
+            var l=Math.floor(i/thatimg.maxPerLevel)+1;
+            if(l>1){
+                ring=l*60;
+            }
+            var ii=i%thatimg.maxPerLevel;
+            var angleRad=ii*thatimg.angle-1.57079633;
+            var plusMinus=1;
+            if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
+                var len=0;
+                if(typeof d.Gene.geneSymbol !=='undefined'){
+                    len=d.Gene.geneSymbol.length;
+                }
+                plusMinus=plusMinus+len*7.5;
+                //console.log("i="+i);
+            }
+            return thatimg.width/2+(thatimg.r+plusMinus)*(Math.cos(angleRad));
+            //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
+        };
+
+        thatimg.nodeYLbl=function(d,i){
+            var ring=50;
+            
+            if(i>thatimg.maxPerLevel){
+                var l=Math.floor(i/thatimg.maxPerLevel)+1;
+                ring=l*60;
+            }
+
+            var ii=i%thatimg.maxPerLevel;
+            var angleRad=ii*thatimg.angle-1.57079633;
+            var plusMinus=1;
+            if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
+                var len=0;
+                if(typeof d.Gene.geneSymbol !=='undefined'){
+                    len=d.Gene.geneSymbol.length;
+                }
+                plusMinus=plusMinus+len*7.5;
+            }
+            return thatimg.height/2+(thatimg.r+plusMinus)*(Math.sin(angleRad));
+            //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
+        };
+        
+        thatimg.drawCorLegend=function(start){
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start).text("Positive Correlation");
+            thatimg.legendDispG.append("rect").attr("x","0").attr("y",start-10).attr("width", "30").attr("height", "10").style("fill",thatimg.posColor);
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+20).text("Negative Correlation");
+            thatimg.legendDispG.append("rect").attr("x","0").attr("y",start+10).attr("width", "30").attr("height","10").style("fill",thatimg.negColor);
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+40).text("Lower Correlation");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+30).attr("x2", "30").attr("y2",start+30).style("stroke","#000000").style("stroke-width","0");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+35).attr("x2", "30").attr("y2",start+35).style("stroke","#000000").style("stroke-width","0.5");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+40).attr("x2", "30").attr("y2",start+40).style("stroke","#000000").style("stroke-width","1");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+45).attr("x2", "30").attr("y2",start+45).style("stroke","#000000").style("stroke-width","2");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+55).attr("x2", "30").attr("y2",start+55).style("stroke","#000000").style("stroke-width","3");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+65).attr("x2", "30").attr("y2",start+65).style("stroke","#000000").style("stroke-width","5");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+75).attr("x2", "30").attr("y2",start+75).style("stroke","#000000").style("stroke-width","7");
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+80).text("Higher Correlation");
+        };
+        thatimg.drawMirSupportLegend=function(start){
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start).text("Validated miRNA Target");
+            thatimg.legendDispG.append("rect").attr("x","0").attr("y",start-10).attr("width", "30").attr("height", "10").style("fill",thatimg.mirVal);
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+20).text("Predicted miRNA Target");
+            thatimg.legendDispG.append("rect").attr("x","0").attr("y",start+10).attr("width", "30").attr("height", "10").style("fill",thatimg.mirPred);
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+40).text("Lower support of targeting");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+30).attr("x2", "30").attr("y2",start+30).style("stroke","#000000").style("stroke-width","0");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+35).attr("x2", "30").attr("y2",start+35).style("stroke","#000000").style("stroke-width","0.5");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+40).attr("x2", "30").attr("y2",start+40).style("stroke","#000000").style("stroke-width","1");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+45).attr("x2", "30").attr("y2",start+45).style("stroke","#000000").style("stroke-width","2");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+55).attr("x2", "30").attr("y2",start+55).style("stroke","#000000").style("stroke-width","3");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+65).attr("x2", "30").attr("y2",start+65).style("stroke","#000000").style("stroke-width","5");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+75).attr("x2", "30").attr("y2",start+75).style("stroke","#000000").style("stroke-width","7");
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+80).text("Higher support of targeting");
+        };
+        
+        thatimg.drawLegend=function(){
+            if(that.viewType==='gene'){
+                thatimg.drawCorLegend(20);
+            }else{
+                thatimg.drawMirSupportLegend(20);
+                if(!thatimg.showLinks){
+                    thatimg.drawCorLegend(130);
+                }
+            }
+        };
+
+		thatimg.draw=function(){
+            if(that.viewType==='mir'){
+                thatimg.requestMiR();
+                thatimg.updateColor("mirlinkColor");
+            }else if(that.viewType==='gene'){
+                thatimg.updateColor("linkColor");
+            }
+            thatimg.width=$(window).width();
+            thatimg.height=Math.floor(window.innerHeight*0.9);
+            //console.log("H:"+thatimg.height+"  W:"+thatimg.width);
+            if(thatimg.height>thatimg.width){
+                    //console.log("using width");
+                    thatimg.r=Math.floor((thatimg.width/2)*0.95);
+            }else{
+                    //console.log("using height");
+                    thatimg.r=Math.floor((thatimg.height/2)*0.95);
+            }
+            thatimg.svg.attr("height",thatimg.height+"px");
+            thatimg.svg.selectAll("circle").remove();
+            thatimg.svg.selectAll("text").remove();
+            thatimg.svg.selectAll("line").remove();
+            thatimg.svg.selectAll(".geneTC").remove();
+            if(typeof thatimg.panZoom !=='undefined'){
+                thatimg.panZoom.destroy();
+                delete thatimg.panZoom;
+            }
+            thatimg.svg.selectAll(".svg-pan-zoom_viewport").remove();
+            /*thatimg.svg.append("circle")
+                            .attr("cx",thatimg.width/2)
+                            .attr("cy",thatimg.height/2)
+                            .attr("r",thatimg.r)
+                            .attr("stroke","#000000")
+                            .attr("fill","#FFFFFF");*/
+            
+            setTimeout(function(){
+	            thatimg.svg.append("text")
+	                    .style("font-size","20")
+	                                    .attr("y",22)
+	                                    .attr("x",5)/*function(){
+	                                            var len=that.selectedModule.MOD_NAME.length;
+	                                            var w=len/2;
+	                                            var offset=thatimg.width/2-(w*6.5);
+	                                            return offset;
+	                                    })*/
+	                                    .text(function(){
+	                                    	if(that.selectedModule){
+	                                    		return replaceUnderscore(that.selectedModule.MOD_NAME);
+	                                    	}else{
+	                                    		return "";
+	                                    	}
+	                                	});
+	            
+	            thatimg.setupLegend();
+	            
+	            
+	            
+	            thatimg.data=that.selectedModule.TCList;
+	            thatimg.angle=2*Math.PI/thatimg.data.length;
+	            thatimg.angleDeg=360/thatimg.data.length;
+	            if(thatimg.data.length>thatimg.maxPerLevel){
+	                thatimg.angle=2*Math.PI/thatimg.maxPerLevel;
+	                thatimg.angleDeg=360/thatimg.maxPerLevel;
+	            }
+	            thatimg.data.sort(function(a,b){
+	                if(a.LinkSum===b.LinkSum){
+	                //if(a.LinkCount===b.LinkCount){
+	                    return 0;
+	                }else if(a.LinkSum>b.LinkSum){
+	                //}else if(a.LinkCount>b.LinkCount){
+	                    return -1;
+	                }
+	                return 1;
+	            });
+	            if(thatimg.data.length>150){
+	                thatimg.truncated=1;
+	                thatimg.maxNodeR=15;
+	                var tmpdata=[];
+	                for(var p=0;p<150;p++){
+	                    tmpdata[p]=thatimg.data[p];
+	                }
+	                thatimg.data=tmpdata;
+	                thatimg.dataIndex={};
+	                for(var p=0;p<thatimg.data.length;p++){
+	                    thatimg.dataIndex[thatimg.data[p].ID]=1;
+	                }
+	                thatimg.CorCutoff_min=0.85;
+	                $("#linkSliderMin").slider('value',0.85);
+	                $("span#minLabel").html(0.85);
+
+	                thatimg.svg.append("image").attr("x",that.selectedModule.MOD_NAME.length*7.8+20).attr("y",1).attr("width","24px")								
+	                    .attr("height","24px")
+	                    .attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ"+
+	                            "I0lEQVRIDQEYCef2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAA/wAAH/gAACcAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAADwAAALkCAABoFDEx"+
+	                            "0gIzM+/b29v4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGIAAAAvAgAAHDnn54QGBgY3SUlJBwAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAP8AAB0AAAChAAAADAAAAAAU9vYY4RER/ecNDdLZ2dnvAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5AAAAFgAAAAAA"+
+	                            "AAAABv7+BFHZ2UgFAgI4Ozs7DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAtAAAAmAAAAAQAAAAAAAAAAAAAAAAU9/cM7AoKAOYY"+
+	                            "GNTZ2dnqAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAD/AAAFAAAAnQAAACf8AgIAzhgY/uIODv4V9vYBBP//AR3z8xrKHBzjDhwc2uDg4PYAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASwAAAEUAAAAB+AMD"+
+	                            "AJwyMveSODjT9QUF+AAAAAAY9PQOTN3dTxISEipAQEAEAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAADAAAAIAAAAAEAAAAAAAAAAAC/v7vAv7+tQn7+/IAAAAA"+
+	                            "AAAAAT/g4DQd8/NHCgoKFAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAGcAAAAuAAAAAAAAAAAAAAAAAAEB+gP//+QF///7AAAAAAAAAAAQ+voIVtfXUggICDM5"+
+	                            "OTkJAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABYAAAB4AAAAAQAAAAAA"+
+	                            "AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAATXm5iYt6+tMExMTHAAAAAEAAAAAAAAAAAAA"+
+	                            "AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB7AAAAEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAF/v4CVdfXSw0EBDdAQEALAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAA"+
+	                            "AAD/AAAzAAAAkwAAAAYAAAAAAAAAAAAAAAAAAQEAAAAA/kDh4QAb8/MpAgAACAAAAAAAAAAAAAAA"+
+	                            "ABT29g7vCAgB4RYW1NnZ2eoAAAD/AAAAAAAAAAAAAAAAAAAAAAD/AAAE/wAAtf8AAP//AAD//wAA"+
+	                            "//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD/5Q0N7WNKSnFHR0cS"+
+	                            "AAAAAAAAAAADAAAAAAAAAAAAAAAAgAAATAAAAHkAAAADAAAAAAAAAAAAAAAAAAAAAPgEBP+XMzP7"+
+	                            "xR8f7ivq6gcH/f0CAAAAAAAAAAAAAAAAAAAAAAz6+gj9AgIM2Bsb0QoKCujn5+f+AgAAAAAAAAAA"+
+	                            "/wAABwAAAIkAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAD9AQEA1hUV9MwZGccAAAD2AAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAABAAABR97eNhb390ceHh4RAAAAAAAAAAAAAAAAAP8AAG//AAD+/wAA//8AAP//"+
+	                            "AAD//wAA//8AAP//AAD//gAA/u4ICPvzBQXw/gAA/P8AAP//AAD//wAA//8AAP//AAD//wAA//8A"+
+	                            "AP/CHR3SVVBQNgAAAAACAAAAAP8AAAgAAABfAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA"+
+	                            "AAER+PgEDPv7DwEAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMOnpJyHy8icAAAAABAAA"+
+	                            "AAABAAD42BMTgdUTE2buCwsz/QICCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8BAAD/AAEB"+
+	                            "Af8AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAPEHB/vhEBANAAAAAAQAAAAAAAAAAHU6OrsDAwPnAgIC"+
+	                            "IQEBAQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAABAQH//f39zgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAs0IPw6I24JoAAAAASUVORK5CYII=")
+	                    .attr("pointer-events", "all")
+	                    .style("cursor","pointer")
+	                    .on("mouseover",function(){
+	                            $("#wgcnaMouseHelp").html("Warning: Transcripts displayed are truncated to the top 150 most connected transcripts due to the size of the module.");
+	                    })
+	                    .on("mouseout",function(){
+	                            $("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+	                    });
+	            }else{
+	                thatimg.maxNodeR=28;
+	            }
+	            
+	            thatimg.topG=thatimg.svg.append("g").attr("class","svg-pan-zoom_viewport");
+	            if(that.viewType==='gene'){
+	                var tc=thatimg.topG.selectAll(".geneTC")
+	                                .data(thatimg.data,thatimg.geneKey);
+	                //tc.sort();
+	                //add new
+	                tc.enter().append("circle")
+	                                .attr("class","geneTC")
+	                                .attr("id",function(d){return "tc_"+that.removeInvalidIDChars(d.ID);})
+	                                .attr("cx", thatimg.nodeX)
+	                                .attr("cy",thatimg.nodeY)
+	                                .attr("r",3)
+	                                .attr("stroke","#000000")
+	                                .attr("fill","#FF0000").merge(tc);
+
+	                var links=that.selectedModule.LinkList;
+	                var filterLinks=[];
+	                var count=0;
+	                for(var i=0;i<links.length;i++){
+	                    if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
+	                        if(thatimg.truncated===0 || (typeof thatimg.dataIndex[links[i].TC1]!=='undefined' && typeof thatimg.dataIndex[links[i].TC2]!=='undefined')){
+	                            filterLinks[count]=links[i];
+	                            count++;
+	                        }
+	                    }
+	                }
+	                links=filterLinks;
+	                if(thatimg.showLinks && links.length<10000){
+	                    var lnk=thatimg.topG.selectAll(".link").data(links,thatimg.linkKey);
+	                    lnk.enter().append("line")
+	                            .attr("class","link")
+	                            .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
+	                            .attr("x1",function(d){
+	                                var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
+	                                //console.log(d.TC1+":x1:"+x);
+	                                return x;
+	                            })
+	                            .attr("y1",function(d){
+	                                var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
+	                                //console.log(d.TC1+":y1:"+y);
+	                                return y;
+	                            })
+	                            .attr("x2",function(d){
+	                                var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
+	                                //console.log(d.TC2+":x2:"+x);
+	                                return x;
+	                            })
+	                            .attr("y2",function(d){
+	                                var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
+	                                //console.log(d.TC2+":y2:"+y);
+	                                return y;
+	                            })
+	                            .attr("stroke",thatimg.colorLink)
+	                            .attr("stroke-width",function(d){
+	                                var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
+	                                /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
+	                                    val=0;
+	                                }*/
+	                                return val;
+	                            });
+	                }
+	            }
+	            
+	            thatimg.topG.selectAll(".geneTC").remove();
+
+	            var tc=thatimg.topG.selectAll(".geneTC")
+	   				.data(thatimg.data,thatimg.geneKey);
+	            //tc.sort();
+				//add new
+	            tc.enter().append("g")
+	            		.append("circle")
+                		.attr("cx", thatimg.nodeX)
+	                    .attr("cy",thatimg.nodeY)
+	                    //.attr("r",function(d,i){return 3+d.LinkCount;})
+	                    .attr("r",thatimg.nodeRadiusSum)
+	                    .attr("stroke","#000000")
+	                    .attr("fill",thatimg.colorCircle)
+	                    .attr("class",function(d){return "geneTC "+d.Gene.ID;})
+	                    .attr("id",function(d){return "tc_"+that.removeInvalidIDChars(d.ID);})
+	                    .on("click",function(){
+
+	                    })
+	                    .on("mouseover",thatimg.mouseoverGene)
+	                    .on("mouseout",thatimg.mouseleaveGene)
+	                    .merge(tc)
+	                    .each(function(d,i){
+			            	d3.select(this.parentNode).append("g").attr("class","label")
+			                    .attr("id",function(d){return "txt_"+that.removeInvalidIDChars(d.ID);})
+			                    .attr("transform", function(){
+				                    var x=thatimg.nodeXLbl(d,i);
+				                    var y=thatimg.nodeYLbl(d,i);
+				                	return "translate("+x+","+y+")";
+			            		})
+			            		.append("text")
+				                .attr("transform",function(){
+				                    var deg=-90;
+				                    var ii=i%thatimg.maxPerLevel; 
+				                    deg=deg+thatimg.angleDeg*ii;
+				                    if(deg>90){
+				                        deg=deg-180;
+				                    }
+				                    return "rotate("+deg+")";
+				                })
+			                	.text(function(){return d.Gene.geneSymbol;});
+	            		});
+
+	            tc.exit().remove();
+	        
+	            if(that.viewType==='mir'){
+	                thatimg.drawMiR();
+	            }   
+	        },250);
+		};
+
+        thatimg.requestMiR=function(){
+            $.ajax({
+				url:  contextRoot+"tmpData/browserCache/"+genomeVer+"/modules/ds"+that.wDSID+"/" +replaceUnderscore(that.selectedModule.MOD_NAME)+".miR.json",
+	   			type: 'GET',
+	   			async: true,
+				data: {},
+				dataType: 'json',
+                        success: function(data2){
+                            setTimeout(function(){
+                                thatimg.mirData=data2;
+                                //console.log(thatimg.mirData);
+                                thatimg.geneMirList={};
+                                for (var w=0;w<thatimg.mirData.MIRList.length;w++){
+                                    //console.log("mir:"+w+":"+thatimg.mirData.MIRList[w].ID);
+                                    var tmpMir=thatimg.mirData.MIRList[w];
+                                    var gl=tmpMir.GeneList;
+                                    
+                                    for (var v=0;v<gl.length;v++){
+                                        //console.log("check:"+gl[v].ID);
+                                        if(typeof thatimg.geneMirList[gl[v].ID]==='undefined'){
+                                            //console.log("undef");
+                                            thatimg.geneMirList[gl[v].ID]=[];
+                                            thatimg.geneMirList[gl[v].ID].push(tmpMir);
+                                        }else{
+                                            //console.log("exists");
+                                            var found=0;
+                                            for(var u=0;u<thatimg.geneMirList[gl[v].ID].length&&found===0;u++){
+                                                if(tmpMir.ID===thatimg.geneMirList[gl[v].ID][u].ID){
+                                                    found=1;
                                                 }
                                             }
+                                            //console.log("found:"+found)
+                                            if(found===0){
+                                                thatimg.geneMirList[gl[v].ID].push(tmpMir);
+                                            }
                                         }
-                                        //console.log(thatimg.geneMirList);
-                                        thatimg.drawMiR();
-                                        that.singleWGCNATableMirView();
-                                    },50);
-                                },
-                                error: function(xhr, status, error) {
-                                    setTimeout(function(){
-                                        thatimg.requestMiR();
-                                    },2000);
+                                    }
                                 }
-                    });
-                };
+                                //console.log(thatimg.geneMirList);
+                                thatimg.drawMiR();
+                                that.singleWGCNATableMirView();
+                            },50);
+                        },
+                        error: function(xhr, status, error) {
+                            setTimeout(function(){
+                                thatimg.requestMiR();
+                            },2000);
+                        }
+            });
+        };
+        
+        thatimg.drawMiR=function(){
+            if(typeof thatimg.topG!=='undefined' && typeof thatimg.mirData!=='undefined'){
+                thatimg.svg.select("#mirG").remove();
+                thatimg.miRdiameter = thatimg.r*1.5;
+                thatimg.miRformat = d3.format(",d");
                 
-                thatimg.drawMiR=function(){
-                    if(typeof thatimg.topG!=='undefined' && typeof thatimg.mirData!=='undefined'){
-                        thatimg.svg.select("#mirG").remove();
-                        thatimg.miRdiameter = thatimg.r*1.5;
-                        thatimg.miRformat = d3.format(",d");
-                        
-                        thatimg.miRbubble = d3.layout.pack()
-                                            .sort(thatimg.sortMirFunction)
-                                            .size([thatimg.miRdiameter, thatimg.miRdiameter])
-                                            .padding(1.5)
-                                            .value(function(d){return d.filterGLSize;});
-                        //console.log(thatimg.svg.select(".svg-pan-zoom_viewport")[0][0]);
-                        //var topG=thatimg.svg.select(".svg-pan-zoom_viewport")[0][0];
-                        var tmpData=thatimg.runMirFilter(thatimg.mirData.MIRList);
-                        var root={ ID:"miRNAs Tageting Genes in Module",name:"miRNAs Tageting Genes in Module",children:tmpData};
-                        var mirG=thatimg.topG.append("g")
-                                .attr("id","mirG")
-                                    .attr("transform", function() { 
-                                        var w=thatimg.width/2-thatimg.miRdiameter/2;
-                                        var h=thatimg.height/2-thatimg.miRdiameter/2;
-                                        return "translate(" + w + "," + h + ")"; });
-                        var node = mirG.selectAll(".node")
-                                        .data(thatimg.miRbubble.nodes(root),that.mirKey)
-                                        .enter().append("g")
-                                        .attr("class", "node")
-                                        .attr("id", function(d){return that.removeInvalidIDChars(d.ID);})
-                                        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                                        .on("mouseover",thatimg.mouseoverMir)
-                                        .on("mouseleave",thatimg.mouseleaveMir);
+                thatimg.miRbubble = d3.pack()
+                                    //.sort(thatimg.sortMirFunction)
+                                    .size([thatimg.miRdiameter, thatimg.miRdiameter])
+                                    .padding(1.5);
+                                    //.radius(function(d){return d.value*10;});
 
-                        /*node.append("title")
-                            .text(function(d) { return d.className + ": " + format(d.value); });*/
-                        node.each(function(d){
-                            var tmpD=d;
-                            if(d.depth>0){
-                                d3.select(this).append("circle")
-                                    
-                                    .attr("r", function(d) { return tmpD.r; })
-                                    .style("fill", function(d) { return thatimg.miRcolor(tmpD.ID); });
-                                var txt=tmpD.ID.substring(8);
-                                if(txt.length<tmpD.r / 3){
-                                    d3.select(this).append("text")
-                                        .attr("dy", ".2em")
-                                        .attr("pointer-events","none")
-                                        .style("text-anchor", "middle")
-                                        .style("cursor","pointer")
-                                        .append("tspan")
-                                                    .attr("x", 0)
-                                                    //.attr("y", -10)
-                                                    .attr("dy", "-0.5em")
-                                                    .text("miR")
-                                        .append("tspan")
-                                                    .attr("x", 0)
-                                                    .attr("dy", "1em")
-                                                    .text(txt);
-                                        //.text(txt);
-                                }
-                            }
-                        });
-                        
-                    }
-                };
+                var tmpData=thatimg.runMirFilter(thatimg.mirData.MIRList);
+
+                thatimg.hierarch=d3.hierarchy({children:tmpData}).sum(function(d) { return d.filterGLSize; });
+                //var rnodes=hierarch(r);
                 
-                thatimg.sortMirFunction=function(a,b){
-                    if(thatimg.sortMir>0 ){
-                        return a.value - b.value;
-                    }else if(thatimg.sortMir<0 ){
-                        return b.value - a.value;
-                    }else{
-                        return 0;
+                thatimg.mirNode=thatimg.miRbubble(thatimg.hierarch.sort());
+
+                var mirG=thatimg.topG.append("g")
+                        .attr("id","mirG")
+                            .attr("transform", function() { 
+                                var w=thatimg.width/2-thatimg.miRdiameter/2;
+                                var h=thatimg.height/2-thatimg.miRdiameter/2;
+                                return "translate(" + w + "," + h + ")"; });
+                var node = mirG.selectAll(".node")
+                                .data(thatimg.hierarch.leaves(),that.mirKey);
+
+                node.enter().append("g")
+                                .attr("class", "node")
+                                .attr("id", function(d){return that.removeInvalidIDChars(d.ID);})
+                                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                                .merge(node)
+                                .on("mouseover",thatimg.mouseoverMir)
+                                .on("mouseleave",thatimg.mouseleaveMir);
+                                /*.each(function(d){
+				                    var tmpD=d;
+				                    if(d.depth>0){
+				                        d3.select(this).append("circle")
+				                            
+				                            .attr("r", function(d) { return tmpD.r; })
+				                            .style("fill", function(d) { return thatimg.miRcolor(tmpD.ID); });
+				                        var txt=tmpD.ID.substring(8);
+				                        if(txt.length<tmpD.r / 3){
+				                            d3.select(this).append("text")
+				                                .attr("dy", ".2em")
+				                                .attr("pointer-events","none")
+				                                .style("text-anchor", "middle")
+				                                .style("cursor","pointer")
+				                                .append("tspan")
+				                                            .attr("x", 0)
+				                                            //.attr("y", -10)
+				                                            .attr("dy", "-0.5em")
+				                                            .text("miR")
+				                                .append("tspan")
+				                                            .attr("x", 0)
+				                                            .attr("dy", "1em")
+				                                            .text(txt);
+				                                //.text(txt);
+				                        }
+				                    }
+				                });*/
+                node.exit().remove();
+
+                d3.selectAll(".node").each(function(d){
+				                    var tmpD=d.data;
+				                    if(d.depth>0){
+				                    	//console.log(d);
+				                        d3.select(this).append("circle")
+				                            .attr("r", function(d) { return d.r; })
+				                            .style("fill", function(d) { return thatimg.miRcolor(tmpD.ID); });
+				                        var txt=tmpD.ID.substring(8);
+				                        if(txt.length<d.r / 3){
+				                            d3.select(this).append("text")
+				                                .attr("dy", ".2em")
+				                                .attr("pointer-events","none")
+				                                .style("text-anchor", "middle")
+				                                .style("cursor","pointer")
+				                                .append("tspan")
+				                                            .attr("x", 0)
+				                                            //.attr("y", -10)
+				                                            .attr("dy", "-0.5em")
+				                                            .text("miR")
+				                                .append("tspan")
+				                                            .attr("x", 0)
+				                                            .attr("dy", "1em")
+				                                            .text(txt);
+				                                //.text(txt);
+				                        }
+				                    }
+				                })
+                /*node.append("title")
+                    .text(function(d) { return d.className + ": " + format(d.value); });*/
+                /*node.each(function(d){
+                    var tmpD=d;
+                    if(d.depth>0){
+                        d3.select(this).append("circle")
+                            
+                            .attr("r", function(d) { return tmpD.r; })
+                            .style("fill", function(d) { return thatimg.miRcolor(tmpD.ID); });
+                        var txt=tmpD.ID.substring(8);
+                        if(txt.length<tmpD.r / 3){
+                            d3.select(this).append("text")
+                                .attr("dy", ".2em")
+                                .attr("pointer-events","none")
+                                .style("text-anchor", "middle")
+                                .style("cursor","pointer")
+                                .append("tspan")
+                                            .attr("x", 0)
+                                            //.attr("y", -10)
+                                            .attr("dy", "-0.5em")
+                                            .text("miR")
+                                .append("tspan")
+                                            .attr("x", 0)
+                                            .attr("dy", "1em")
+                                            .text(txt);
+                                //.text(txt);
+                        }
                     }
-                };
+                });*/
                 
-                thatimg.runMirFilter=function(list){
-                    var newList=list;
-                    if( thatimg.filterOneDB===1||thatimg.mirGeneCutoff>1 || thatimg.mirValid===1 || thatimg.mirID.length>0 || thatimg.mirTargetID.length>0){
-                        var mc=0;
-                        newList=[];
-                        for(var z=0;z<list.length;z++){
-                            if(thatimg.filterMiR(list[z])){
-                                newList[mc]=list[z];
-                                mc++;
-                            }
-                        }
+            }
+        };
+        
+        thatimg.sortMirFunction=function(a,b){
+            if(thatimg.sortMir>0 ){
+                return a.value - b.value;
+            }else if(thatimg.sortMir<0 ){
+                return b.value - a.value;
+            }else{
+                return 0;
+            }
+        };
+        
+        thatimg.runMirFilter=function(list){
+            var newList=list;
+            if( thatimg.filterOneDB===1||thatimg.mirGeneCutoff>1 || thatimg.mirValid===1 || thatimg.mirID.length>0 || thatimg.mirTargetID.length>0){
+                var mc=0;
+                newList=[];
+                for(var z=0;z<list.length;z++){
+                    if(thatimg.filterMiR(list[z])){
+                        newList[mc]=list[z];
+                        mc++;
                     }
-                    return newList;
-                };
-                
-                thatimg.filterMiR=function(d){
-                    val=true;
-                    
-                    if(d.GeneList.length<thatimg.mirGeneCutoff){
-                        val=false;
-                    }
-                    if(val && thatimg.mirValid===1 && d.vC===0){
-                        val=false;
-                    }
-                    if(val && thatimg.mirID.length>0){
-                        if(!(d.ID.toLowerCase().indexOf(thatimg.mirID)>-1||d.ACC.toLowerCase().indexOf(thatimg.mirID)>-1)){
-                            val=false;
-                        }
-                    }
-                    if(val && thatimg.mirTargetID.length>0){
-                        var found=false;
-                        for(var x=0;x<d.GeneList.length&&!found;x++){
-                            if(thatimg.filterOneDB===1){
-                                if(	(d.GeneList[x].P>1 || d.GeneList[x].V>0) && 
-                                    (d.GeneList[x].ID.toLowerCase().indexOf(thatimg.mirTargetID)>-1 || thatimg.geneList[d.GeneList[x].ID].toLowerCase().indexOf(thatimg.mirTargetID)>-1)
-                                    ){
-                                    found=true;
-                                }
-                            }else{
-                                if(d.GeneList[x].ID.toLowerCase().indexOf(thatimg.mirTargetID)>-1||thatimg.geneList[d.GeneList[x].ID].toLowerCase().indexOf(thatimg.mirTargetID)>-1){
-                                    found=true;
-                                }
-                            }
-                        }
-                        if(!found){
-                            val=false;
-                        }
-                    }
-                    if(val && thatimg.filterOneDB===1 && typeof d.filterGLSize ==='undefined'){
-                        var newSize=0;
-                        for(var x=0;x<d.GeneList.length;x++){
-                            if(d.GeneList[x].P>1 || d.GeneList[x].V>0){
-                                newSize++;
-                            }
-                        }
-                        d.filterGLSize=newSize;
-                        if(d.filterGLSize===0 && d.vC===0){
-                            val=false;
-                        }
-                    }else if(val && thatimg.filterOneDB===1 && d.filterGLSize===0 && d.vC===0){
-                        val=false;
-                    }
-                    return val;
-                };
-                
-                thatimg.filterRevMiR=function(mirList){
-                    var newMirList=[];
-                    if(typeof mirList !=='undefined'){
-	                    if(thatimg.filterOneDB===1){
-	                        for(var x=0;x<mirList.length;x++){
-	                            if(mirList[x].filterGLSize>0 || mirList[x].vC>0){
-	                                newMirList.push(mirList[x]);
-	                            }
-	                        }
-	                    }else{
-	                        newMirList=mirList;
-	                    }
-                	}
-                    return newMirList;
-                };
-                
-                thatimg.filterMiRGenes=function(genes){
-                    var newGenes=[];
+                }
+            }
+            return newList;
+        };
+        
+        thatimg.filterMiR=function(d){
+            val=true;
+            //console.log(d.ID);
+            if(d.GeneList.length<thatimg.mirGeneCutoff){
+                val=false;
+            }
+            if(val && thatimg.mirValid===1 && d.vC===0){
+                val=false;
+            }
+            if(val && thatimg.mirID.length>0){
+                if(!(d.ID.toLowerCase().indexOf(thatimg.mirID)>-1||d.ACC.toLowerCase().indexOf(thatimg.mirID)>-1)){
+                    val=false;
+                }
+            }
+            if(val && thatimg.mirTargetID.length>0){
+                var found=false;
+                for(var x=0;x<d.GeneList.length&&!found;x++){
                     if(thatimg.filterOneDB===1){
-                        for(var x=0;x<genes.length;x++){
-                            if(genes[x].P>1||genes[x].V>0){
-                                newGenes.push(genes[x]);
+                        if(	(d.GeneList[x].P>1 || d.GeneList[x].V>0) && 
+                            (d.GeneList[x].ID.toLowerCase().indexOf(thatimg.mirTargetID)>-1 || thatimg.geneList[d.GeneList[x].ID].toLowerCase().indexOf(thatimg.mirTargetID)>-1)
+                            ){
+                            found=true;
+                        }
+                    }else{
+                        if(d.GeneList[x].ID.toLowerCase().indexOf(thatimg.mirTargetID)>-1||thatimg.geneList[d.GeneList[x].ID].toLowerCase().indexOf(thatimg.mirTargetID)>-1){
+                            found=true;
+                        }
+                    }
+                }
+                if(!found){
+                    val=false;
+                }
+            }
+            if(val && thatimg.filterOneDB===1 && typeof d.filterGLSize ==='undefined'){
+                var newSize=0;
+                for(var x=0;x<d.GeneList.length;x++){
+                    if(d.GeneList[x].P>1 || d.GeneList[x].V>0){
+                        newSize++;
+                    }
+                }
+                d.filterGLSize=newSize;
+                if(d.filterGLSize===0 && d.vC===0){
+                    val=false;
+                }
+            }else if(val && thatimg.filterOneDB===1 && d.filterGLSize===0 && d.vC===0){
+                val=false;
+            }
+            return val;
+        };
+        
+        thatimg.filterRevMiR=function(mirList){
+            var newMirList=[];
+            if(typeof mirList !=='undefined'){
+                if(thatimg.filterOneDB===1){
+                    for(var x=0;x<mirList.length;x++){
+                        if(mirList[x].filterGLSize>0 || mirList[x].vC>0){
+                            newMirList.push(mirList[x]);
+                        }
+                    }
+                }else{
+                    newMirList=mirList;
+                }
+        	}
+            return newMirList;
+        };
+        
+        thatimg.filterMiRGenes=function(genes){
+            var newGenes=[];
+            if(thatimg.filterOneDB===1){
+                for(var x=0;x<genes.length;x++){
+                    if(genes[x].P>1||genes[x].V>0){
+                        newGenes.push(genes[x]);
+                    }
+                }
+            }else{
+                newGenes=genes;
+            }
+            return newGenes;
+        };
+        
+        thatimg.createMirToolTip=function(d){
+            var txt="";
+            txt="<div id=\"ttSVG\"></div>ID: "+d.ID+"<BR>Accession: "+d.ACC+"<BR><BR>Genes Targeted within Module: "+d.filterGLSize+"<BR>";
+            return txt;
+        };
+        
+        thatimg.mouseoverMir=function(){
+        	
+        	var tmpDDoc=d3.select(this).data()[0];
+            var tmpDDat=tmpDDoc.data;
+            var genes=tmpDDat.GeneList;
+            genes=thatimg.filterMiRGenes(genes);
+            d3.select(this).style("opacity","0.3");
+            tt.transition()        
+                    .duration(200)      
+                    .style("opacity", 1);
+            tt.html(thatimg.createMirToolTip(tmpDDat))
+                    .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+                    .style("top", function(){return that.positionTTTop(d3.event.pageY);});
+            
+            var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport")
+                    .selectAll(".mirlink")
+                    .data(genes,that.mirKey);
+            lnk.enter().append("line")
+                        .attr("class","mirlink")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+d.ID;})
+                        .attr("x1",function(d){
+                            var x=tmpDDoc.x+thatimg.width/2-thatimg.miRdiameter/2;
+                            return x;
+                        })
+                        .attr("y1",function(d){
+                            var y=tmpDDoc.y+thatimg.height/2-thatimg.miRdiameter/2;
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                            var x=tmpDDoc.x+thatimg.width/2-thatimg.miRdiameter/2;
+                            if(d3.select("."+d.ID).size()>0){
+                            	x=d3.select("."+d.ID).attr("cx");
+                        	}
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=tmpDDoc.y+thatimg.height/2-thatimg.miRdiameter/2;
+                            if(d3.select("."+d.ID).size()>0){
+                            	y=d3.select("."+d.ID).attr("cy");
+                        	}
+                            return y;
+                        })
+                        .attr("stroke",function(d){
+                            var colr=thatimg.mirPred;
+                            if(d.V>0){
+                                colr=thatimg.mirVal;
                             }
-                        }
-                    }else{
-                        newGenes=genes;
-                    }
-                    return newGenes;
-                };
-                
-                thatimg.createMirToolTip=function(d){
-                    var txt="";
-                    txt="<div id=\"ttSVG\"></div>ID: "+d.ID+"<BR>Accession: "+d.ACC+"<BR><BR>Genes Targeted within Module: "+d.filterGLSize+"<BR>";
-                    return txt;
-                };
-                
-                thatimg.mouseoverMir=function(){
-                    var tmpD=d3.select(this).data()[0];
-                    var genes=tmpD.GeneList;
-                    genes=thatimg.filterMiRGenes(genes);
-                    d3.select(this).style("opacity","0.3");
-                    tt.transition()        
-                            .duration(200)      
-                            .style("opacity", 1);
-                    tt.html(thatimg.createMirToolTip(tmpD))
-                            .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
-                            .style("top", function(){return that.positionTTTop(d3.event.pageY);});
-                    
-                    var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport")
-                            .selectAll(".mirlink")
-                            .data(genes,that.mirKey);
-                    lnk.enter().append("line")
-                                .attr("class","mirlink")
-                                .attr("pointer-events","none")
-                                .attr("id",function(d){return "ln_"+d.ID;})
-                                .attr("x1",function(d){
-                                    var x=tmpD.x+thatimg.width/2-thatimg.miRdiameter/2;
-                                    return x;
-                                })
-                                .attr("y1",function(d){
-                                    var y=tmpD.y+thatimg.height/2-thatimg.miRdiameter/2;
-                                    return y;
-                                })
-                                .attr("x2",function(d){
-                                    var x=tmpD.x+thatimg.width/2-thatimg.miRdiameter/2;
-                                    if(d3.select("."+d.ID).size()>0){
-                                    	x=d3.select("."+d.ID).attr("cx");
-                                	}
-                                    return x;
-                                })
-                                .attr("y2",function(d){
-                                    var y=tmpD.y+thatimg.height/2-thatimg.miRdiameter/2;
-                                    if(d3.select("."+d.ID).size()>0){
-                                    	y=d3.select("."+d.ID).attr("cy");
-                                	}
-                                    return y;
-                                })
-                                .attr("stroke",function(d){
-                                    var colr=thatimg.mirPred;
-                                    if(d.V>0){
-                                        colr=thatimg.mirVal;
-                                    }
-                                    return colr;
-                                })
-                                .attr("stroke-width",function(d){
-                                    var val=d.P+3*d.V;
-                                    return val;
-                                });
+                            return colr;
+                        })
+                        .attr("stroke-width",function(d){
+                            var val=d.P+3*d.V;
+                            return val;
+                        }).merge(lnk);
 
-                    if(!thatimg.showLinks){
-                    	var gl=[];
-                    	for(var w=0;w<genes.length;w++){
-                    		var nodeL=d3.selectAll("."+genes[w].ID);
-                    		for(var x=0;x<nodeL.length;x++){
-                    			if(typeof nodeL[x][0]!=='undefined'){
-                    				gl.push(nodeL[x][0].__data__.ID);
-                    			}
-                    		}
-                    	}
-                    	thatimg.drawLinksBetween(gl);
-                    }
-                    if(ga){
-                        ga('send','event','wgcna','mouseOverMir');
-                    }
-                };
-                thatimg.mouseleaveMir=function(){
-                    d3.select(this).style("opacity","1");
-                    tt.transition()        
-                            .duration(200)      
-                            .style("opacity", 0);
-                    thatimg.svg.selectAll(".mirlink").remove();
-                    thatimg.svg.selectAll(".link").remove();
-                };
-                thatimg.mouseoverGene=function(){
-                    $("#wgcnaMouseHelp").html("<B>Click</B> to select this gene cluster and see additional details.");
-                    d3.select(this).style("fill","url(#selectGrad)");//.attr("stroke","#000000");
-                    //that.gsvg.get('tt').transition()
-                    tt.transition()        
-                            .duration(200)      
-                            .style("opacity", 1);      
-                            //that.gsvg.get('tt').html(that.createToolTip(d)) 
-                    tt.html(thatimg.createToolTip(d3.select(this).data()[0])) 
-                            .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
-                                            .style("top", function(){return that.positionTTTop(d3.event.pageY);});
-                    var d=d3.select(this).data()[0];
-                    
-                    if(that.viewType==='mir'){
-                        thatimg.mirTargetID=d.Gene.ID.toLowerCase();
-                        //console.log("target:"+thatimg.mirTargetID)
-                        that.singleImage.drawMiR();
-                        thatimg.svg.selectAll(".link").remove();
-                        if(!thatimg.showLinks){
-                            thatimg.drawLinks(d);
-                        }
-                    }else{
-                        $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
-                            var id=$(this).attr("id");
-                            d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
-                        });
-                        $("[id$="+that.removeInvalidIDChars(d.ID)+"]").each(function(){
-                            var id=$(this).attr("id");
-                            d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
-                        });
-                        if(!thatimg.showLinks){
-                            thatimg.drawLinks(d);
-                        }
-                    }
-                    d3.select("#txt_"+that.removeInvalidIDChars(d.ID)).select("text").attr("fill","#00A347");
-                    var tcList=that.selectedGene[d.Gene.ID].tcList;
-                    for(var l=0;l<tcList.length;l++){
-                        d3.select("#tc_"+that.removeInvalidIDChars(tcList[l].ID)).attr("fill","#FEFF49");
-                    }
-                    
-                    if(that.viewType==='mir'  && thatimg.showMirLinks){
-                        var geneID=d.Gene.ID;
-                        var mirL=thatimg.geneMirList[d.Gene.ID];
-                        mirL=thatimg.filterRevMiR(mirL);
-                        var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport")
-                            .selectAll(".mirlink")
-                            .data(mirL,that.mirKey);
-                        lnk.enter().append("line")
-                                .attr("class","mirlink")
-                                .attr("pointer-events","none")
-                                .attr("id",function(d){return "ln_"+d.ID;})
-                                .attr("x1",function(d){
-                                    var x=d3.select("."+geneID).attr("cx");
-                                    if(d3.select("#"+that.removeInvalidIDChars(d.ID)).size()>0){
-                                    	x=d3.select("#"+that.removeInvalidIDChars(d.ID))[0][0].__data__.x+thatimg.width/2-thatimg.miRdiameter/2;
-                                	}
-                                    return x;
-                                })
-                                .attr("y1",function(d){
-                                    var y=d3.select("."+geneID).attr("cy");
-                                    if(d3.select("#"+that.removeInvalidIDChars(d.ID)).size()>0){
-                                    	y=d3.select("#"+that.removeInvalidIDChars(d.ID))[0][0].__data__.y+thatimg.height/2-thatimg.miRdiameter/2;
-                                	}
-                                    return y;
-                                })
-                                .attr("x2",function(d){
-                                    var x=d3.select("."+geneID).attr("cx");
-                                    //console.log(d.TC2+":x2:"+x);
-                                    return x;
-                                })
-                                .attr("y2",function(d){
-                                    var y=d3.select("."+geneID).attr("cy");
-                                    //console.log(d.TC2+":y2:"+y);
-                                    return y;
-                                })
-                                .attr("stroke",function(d){
-                                    var colr=thatimg.mirPred;
-                                    if(d.V>0){
-                                        colr=thatimg.mirVal;
-                                    }
-                                    return colr;
-                                })
-                                .attr("stroke-width",function(d){
-                                    var val=d.P+3*d.V;
-                                    return val;
-                                });
-                    }
-                    if(ga){
-                        ga('send','event','wgcna','mouseOverGene');
-                    }
-                };
-                
-                thatimg.mouseleaveGene=function(){
-                    var d=d3.select(this).data()[0];
-                    $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
-                        var id=$(this).attr("id");
-                        d3.select("line#"+id).attr("stroke",thatimg.colorLink);
-                    });
-                    $("[id$="+that.removeInvalidIDChars(d.ID)+"]").each(function(){
-                        var id=$(this).attr("id");
-                        d3.select("line#"+id).attr("stroke",thatimg.colorLink);
-                    });
-                    d3.select(this).style("fill",thatimg.colorCircle);//.attr("stroke","#000000");
-                    d3.select("#txt_"+that.removeInvalidIDChars(d.ID)).select("text").attr("fill","#000000");
-                    tt.transition()        
-                    .duration(500)      
+            if(!thatimg.showLinks){
+            	var gl=[];
+            	for(var w=0;w<genes.length;w++){
+            		var nodeL=d3.selectAll("."+genes[w].ID).nodes();
+            		for(var x=0;x<nodeL.length;x++){
+            			if(typeof nodeL[x]!=='undefined'){
+            				gl.push(d3.select(nodeL[x].parentNode).datum().ID);
+            			}
+            		}
+            	}
+            	thatimg.drawLinksBetween(gl);
+            }
+            if(ga){
+                ga('send','event','wgcna','mouseOverMir');
+            }
+        };
+        thatimg.mouseleaveMir=function(){
+            d3.select(this).style("opacity","1");
+            tt.transition()        
+                    .duration(200)      
                     .style("opacity", 0);
-                    if(!thatimg.showLinks){
-                        thatimg.svg.selectAll(".link").remove();
-                    }
-                    if(that.viewType==='mir'){
-                        thatimg.mirTargetID=$("#mirGeneFilterTxt").val().toLowerCase();
-                        thatimg.svg.selectAll(".mirLink").remove();
-                        that.singleImage.drawMiR();
-                    }
-                };
+            thatimg.svg.selectAll(".mirlink").remove();
+            thatimg.svg.selectAll(".link").remove();
+        };
+        thatimg.mouseoverGene=function(){
+            $("#wgcnaMouseHelp").html("<B>Click</B> to select this gene cluster and see additional details.");
+            d3.select(this).style("fill","url(#selectGrad)");//.attr("stroke","#000000");
+            //that.gsvg.get('tt').transition()
+            tt.transition()        
+                    .duration(200)      
+                    .style("opacity", 1);      
+                    //that.gsvg.get('tt').html(that.createToolTip(d)) 
+            tt.html(thatimg.createToolTip(d3.select(this).data()[0])) 
+                    .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+                                    .style("top", function(){return that.positionTTTop(d3.event.pageY);});
+            var d=d3.select(this.parentNode).datum();
+            
+            if(that.viewType==='mir'){
+                thatimg.mirTargetID=d.Gene.ID.toLowerCase();
+                //console.log("target:"+thatimg.mirTargetID)
+                that.singleImage.drawMiR();
+                thatimg.svg.selectAll(".link").remove();
+                if(!thatimg.showLinks){
+                    thatimg.drawLinks(d);
+                }
+            }else{
+                $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
+                    var id=$(this).attr("id");
+                    d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
+                });
+                $("[id$="+that.removeInvalidIDChars(d.ID)+"]").each(function(){
+                    var id=$(this).attr("id");
+                    d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
+                });
+                if(!thatimg.showLinks){
+                    thatimg.drawLinks(d);
+                }
+            }
+            d3.select("#txt_"+that.removeInvalidIDChars(d.ID)).select("text").attr("fill","#00A347");
+            var tcList=that.selectedGene[d.Gene.ID].tcList;
+            for(var l=0;l<tcList.length;l++){
+                d3.select("#tc_"+that.removeInvalidIDChars(tcList[l].ID)).attr("fill","#FEFF49");
+            }
+            
+            if(that.viewType==='mir'  && thatimg.showMirLinks){
+                var geneID=d.Gene.ID;
+                var mirL=thatimg.geneMirList[d.Gene.ID];
+                mirL=thatimg.filterRevMiR(mirL);
+                var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport")
+                    .selectAll(".mirlink")
+                    .data(mirL,that.mirKey);
+                lnk.enter().append("line")
+                        .attr("class","mirlink")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+d.ID;})
+                        .attr("x1",function(d){
+                            var x=d3.select("."+geneID).attr("cx");
+                            if(d3.select("#"+that.removeInvalidIDChars(d.ID)).size()>0){
+                            	x=d3.select("#"+that.removeInvalidIDChars(d.ID))[0][0].__data__.x+thatimg.width/2-thatimg.miRdiameter/2;
+                        	}
+                            return x;
+                        })
+                        .attr("y1",function(d){
+                            var y=d3.select("."+geneID).attr("cy");
+                            if(d3.select("#"+that.removeInvalidIDChars(d.ID)).size()>0){
+                            	y=d3.select("#"+that.removeInvalidIDChars(d.ID))[0][0].__data__.y+thatimg.height/2-thatimg.miRdiameter/2;
+                        	}
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                            var x=d3.select("."+geneID).attr("cx");
+                            //console.log(d.TC2+":x2:"+x);
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=d3.select("."+geneID).attr("cy");
+                            //console.log(d.TC2+":y2:"+y);
+                            return y;
+                        })
+                        .attr("stroke",function(d){
+                            var colr=thatimg.mirPred;
+                            if(d.V>0){
+                                colr=thatimg.mirVal;
+                            }
+                            return colr;
+                        })
+                        .attr("stroke-width",function(d){
+                            var val=d.P+3*d.V;
+                            return val;
+                        }).merge(lnk);
+            }
+            if(ga){
+                ga('send','event','wgcna','mouseOverGene');
+            }
+        };
+        
+        thatimg.mouseleaveGene=function(){
+            var d=d3.select(this.parentNode).datum();
+            $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
+                var id=$(this).attr("id");
+                d3.select("line#"+id).attr("stroke",thatimg.colorLink);
+            });
+            $("[id$="+that.removeInvalidIDChars(d.ID)+"]").each(function(){
+                var id=$(this).attr("id");
+                d3.select("line#"+id).attr("stroke",thatimg.colorLink);
+            });
+            d3.select(this).style("fill",thatimg.colorCircle);//.attr("stroke","#000000");
+            d3.select("#txt_"+that.removeInvalidIDChars(d.ID)).select("text").attr("fill","#000000");
+            tt.transition()        
+            .duration(500)      
+            .style("opacity", 0);
+            if(!thatimg.showLinks){
+                thatimg.svg.selectAll(".link").remove();
+            }
+            if(that.viewType==='mir'){
+                thatimg.mirTargetID=$("#mirGeneFilterTxt").val().toLowerCase();
+                thatimg.svg.selectAll(".mirLink").remove();
+                that.singleImage.drawMiR();
+            }
+        };
                 
 		return thatimg;
 	};
@@ -2629,7 +2747,12 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 						d3.select(this).append("td").html(d.Gene.geneSymbol);
 						d3.select(this).append("td").html(d.Gene.ID);
 						d3.select(this).append("td").html(d.ID);
-						d3.select(this).append("td").html(d.PSList.length);
+						if(d.PSList){
+							d3.select(this).append("td").html(d.PSList.length);
+						}else{
+							d3.select(this).append("td").html("0");
+						}
+						
 		                d3.select(this).append("td").html(d.LinkSum.toFixed(2));
 		                d3.select(this).append("td").html(function(){return tmpI+1;});
 				});
@@ -3064,9 +3187,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.padding = 5;
             thatimg.radius = (Math.min(thatimg.width, thatimg.height) - 2 * thatimg.padding)/ 2;
             thatimg.duration = 1000;
-            thatimg.xScale = d3.scale.linear().range([0, 2 * Math.PI]);
-            thatimg.yScale = d3.scale.pow().exponent(1.3).domain([0, 1]).range([0, thatimg.radius]);
-            thatimg.colorGO=d3.scale.category20();
+            thatimg.xScale = d3.scaleLinear().range([0, 2 * Math.PI]);
+            thatimg.yScale = d3.scalePow().exponent(1.3).domain([0, 1]).range([0, thatimg.radius]);
+            thatimg.colorGO=d3.scaleOrdinal(d3.schemeCategory20);
             thatimg.displayDepth=3;
             thatimg.geneList={};
             var tmpDat=[];
@@ -3361,18 +3484,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					dataType: 'json',
 		    		success: function(root){
 		    			thatimg.data=root;
-	                    var nodes = thatimg.partition.nodes(thatimg.data.GOList[0]);
+		    			console.log(thatimg.data);
+		    			console.log(thatimg.data.GOList[0]);
+	                    var nodes =thatimg.data.GOList[0];
 	                    var uniqueID=0;
 	                    for(var z=0;z<nodes.length;z++){
 	                    	nodes[z].UnqID=uniqueID;
+	                    	console.log(nodes[z]);
 	                    	uniqueID++;
 	                    }
-	                    nodes = thatimg.partition.nodes(thatimg.data.GOList[1]);
+	                    nodes = thatimg.data.GOList[1];
 	                    for(var z=0;z<nodes.length;z++){
 	                    	nodes[z].UnqID=uniqueID;
 	                    	uniqueID++;
 	                    }
-	                     nodes = thatimg.partition.nodes(thatimg.data.GOList[2]);
+	                     nodes = thatimg.data.GOList[2];
 	                    for(var z=0;z<nodes.length;z++){
 	                    	nodes[z].UnqID=uniqueID;
 	                    	uniqueID++;
@@ -3424,15 +3550,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 thatimg.initializeBreadcrumbTrail();
                 thatimg.topG=thatimg.svg.append("g")
                         .attr("transform", "translate(" + [thatimg.width/2 + thatimg.padding, thatimg.height/2 + thatimg.padding] + ")");
-
-                thatimg.partition = d3.layout.partition()
-                        //.size([2 * Math.PI, thatimg.radius * thatimg.radius])
-                        .size([2 * Math.PI, thatimg.radius])
-                        .value(function(d){if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}});
-                        //.value(function(d){return d.size;});
-
-                
-                        
+                /*thatimg.hierarchy=d3.hierarchy();
+                thatimg.hierarchy=thatimg.hierarchy(that.data)
+                					.sum(function(d){
+                						if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}
+                					});*/
+               	//thatimg.stratify = d3.stratify()
+    			//					.id(function(d) { return d.name; });
+                thatimg.partition = d3.partition()
+              		.size([2 * Math.PI, thatimg.radius]);
+                    // .value(function(d){if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}});
+                 
+                console.log(thatimg.data);
                 if( typeof thatimg.data.MOD_NAME ==='undefined' || (typeof that.selectedModule.MOD_NAME !=='undefined' &&  replaceUnderscore(thatimg.data.MOD_NAME) !== replaceUnderscore(that.selectedModule.MOD_NAME)) ) {
                     thatimg.getModuleGOFile(0);
                     thatimg.selectedNode=null;
@@ -3445,12 +3574,20 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             goRoot=thatimg.data.GOList[1];
                         }
                         thatimg.selectedNode=goRoot;
+                        thatimg.rootN=d3.hierarchy({children:thatimg.goRoot})
+                        		.sum(function(d){
+                						if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}
+                					});
+                        /*thatimg.rootN = thatimg.stratify(goRoot)
+				      		.sum(function(d) { if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;} })
+				      		.sort(function(a, b) { return b.height - a.height || b.value - a.value; });*/
                     }
+	                thatimg.partition(thatimg.rootN);
                     thatimg.lastDrawn=thatimg.goDomain;
                     if(thatimg.selectedNode===thatimg.data.GOList[0] || thatimg.selectedNode===thatimg.data.GOList[1]||thatimg.selectedNode===thatimg.data.GOList[2]){
                     	thatimg.totalSize=thatimg.selectedNode.uniqueGene;
                     }
-                    var nodes = thatimg.partition.nodes(thatimg.selectedNode);
+                    var nodes = thatimg.selectedNode;
                     thatimg.maxDepth=d3.max(nodes,function(d){return d.depth;});
                     nodes=nodes.filter(thatimg.filterNodes);
                     var tmpDisplayDepth=thatimg.displayDepth;
@@ -3949,8 +4086,14 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             thatimg.type="eqtl";
             
             thatimg.createToolTip=function(geneID){
-                        var gene=that.selectedGene[geneID];
-			var tt="<BR>Gene: "+gene.geneSymbol+"("+geneID+")";
+                var gene=that.selectedGene[geneID];
+                var tt="";
+                if(gene.geneSymbol){
+                	tt="<BR>Gene: "+gene.geneSymbol+"("+geneID+")";
+                }else{
+                	tt="<BR>Gene: "+geneID;
+                }
+			
 			return tt;
 		};
             thatimg.colorGene=function(geneID){

@@ -53,7 +53,9 @@ public class FileGetter extends HttpServlet {
 	String mainDir = "/data/iDecoder/InputFiles/";
 	String flybaseMain = "ftp://ftp.flybase.net/releases/current/precomputed_files/genes/";
 	String ncbiMain = "ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/";
-	String mgiMain = "ftp://ftp.informatics.jax.org/pub/reports/";
+        //JAX site changed
+	//String mgiMain = "ftp://ftp.informatics.jax.org/pub/reports/";
+        String mgiMain = "http://www.informatics.jax.org/downloads/reports/";
 	String ncbiHomologene = "ftp://ftp.ncbi.nih.gov/pub/HomoloGene/current/";
 	String rgdMain = "ftp://ftp.rgd.mcw.edu/pub/data_release/";
 	String swissprotMain = "ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/";
@@ -73,10 +75,12 @@ public class FileGetter extends HttpServlet {
 	files.add(new String[] {affyExonMain, mainDir + "Affymetrix/", "RaEx-1_0-st-v1.na31.rn4.probeset.csv.zip"});
 	files.add(new String[] {affyExonMain, mainDir + "Affymetrix/", "RaEx-1_0-st-v1.na31.rn4.probeset.csv.zip"});
 */
-	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "fbgn_NAseq_Uniprot_fb_2016_05.tsv.gz"});
-	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "gene_map_table_fb_2016_05.tsv.gz"}); 
-	files.add(new String[] {mgiMain, mainDir + "MGI/", "MGI_Coordinate_build37.rpt"});
+	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "fbgn_NAseq_Uniprot_fb_2017_01.tsv.gz"});
+	files.add(new String[] {flybaseMain, mainDir + "FlyBase/", "gene_map_table_fb_2017_01.tsv.gz"}); 
         
+        //OLD Report - as of 4/13/2017 this no longer is available.
+	//files.add(new String[] {mgiMain, mainDir + "MGI/", "MGI_Coordinate_build37.rpt"});
+        files.add(new String[] {mgiMain, mainDir + "MGI/", "MGI_Gene_Model_Coord.rpt"});
         files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene2accession.gz"}); 
 	files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene2unigene"}); 
 	files.add(new String[] {ncbiMain, mainDir + "NCBI/", "gene_info.gz"}); 

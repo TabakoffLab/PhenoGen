@@ -75,7 +75,7 @@ sub readSNPDataFromDB{
 	my $listCount=0;
 	my %countHash;
 	my %strainHOH;
-	print "COUNT:".$rsCursor->count."\n";
+	#print "COUNT:".$rsCursor->count."\n";
 	my @list=$rsCursor->all;
 	foreach my $obj(@list){
 		$snpHOH{Snp}[$listCount] = {

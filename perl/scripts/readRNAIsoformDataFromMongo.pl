@@ -79,6 +79,8 @@ sub getRNADatasetFromDB{
         }
         $c++;
     }
+    $query_handle->finish();
+	$connect->disconnect();
     return $ret;
 }
 1;
@@ -128,6 +130,8 @@ sub getSmallRNADatasetFromDB{
         }
         $c++;
     }
+    $query_handle->finish();
+	$connect->disconnect();
     return $ret;
 }
 
@@ -528,7 +532,7 @@ sub readSmallRNADataFromDB{
 		$quantHOH{$tmpId}{$tmpDsid}{$tmpStrain}{collapsed}=$tmpCollapsed;
 		$cQH++;
 	}
-	
+	$qh->finish();
 	print "results: $cQH\n";
 
 	#my $geneChromNumber = addChr($geneChrom,"subtract");
@@ -904,7 +908,8 @@ sub readRNACountsDataFromMongo{
 	$query_handle->fetch();
 	
 	my $dsid=$sharedID;
-	
+	$query_handle->finish();
+	$connect->disconnect();
 	my %countHOH;
         print "mongohost:".$mongoHost."\n";
         print "mongouser:".$mongoUsr."\n";
@@ -1017,6 +1022,8 @@ sub readRNACountsDataFromDB{
 		}
 		$listCount++;
 	}
+	$query_handle->finish();
+	$connect->disconnect();
 	return (\%countHOH);
 }
 

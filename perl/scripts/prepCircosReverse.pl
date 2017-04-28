@@ -16,14 +16,14 @@ sub prepCircosReverse
 	my $karyotypeLocation;
 
 	if($hostname eq 'phenogen'){
-		$genericConfLocation = '/usr/local/circos-0.68/etc/';
+		$genericConfLocation = '/usr/local/circos-0.69-4/etc/';
 		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
-		$karyotypeLocation = '/usr/local/circos-0.68/data/karyotype/';
+		$karyotypeLocation = '/usr/local/circos-0.69-4/data/karyotype/';
 	}
-	elsif($hostname eq 'stan.ucdenver.pvt'){
-		$genericConfLocation = '/usr/local/circos-0.68/etc/';
+	elsif($hostname eq 'stan'){
+		$genericConfLocation = '/usr/local/circos-0.69-4/etc/';
 		$genericConfLocation2 = '/Library/Tomcat/webapps/PhenoGen/tmpData/geneData/';
-		$karyotypeLocation = '/usr/local/circos-0.68/data/karyotype/';
+		$karyotypeLocation = '/usr/local/circos-0.69-4/data/karyotype/';
 	}
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");

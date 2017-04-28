@@ -90,16 +90,22 @@ public class MGIParser extends InputFileParser {
             String geneSymbol = columns[2].trim();
             
             String chromosome = "", mapLocation = "";
-
+            //OLD FORMAT
             // If columns[5] is not "null", mapping information exists:
             //   columns[5] == chromosome
             //   columns[6] == start base pair
             //   columns[7] == end base pair
             //   columns[8] == strand (plus or minus)
-            if (! columns[5].trim().equals("null")) {
-                chromosome = columns[5].trim();
+            // CURRENT FORMAT
+            // If columns[6] is not "null", NCBI mapping information exists:
+            //   columns[6] == chromosome
+            //   columns[7] == start base pair
+            //   columns[8] == end base pair
+            //   columns[9] == strand (plus or minus)
+            if (! columns[6].trim().equals("null")) {
+                chromosome = columns[6].trim();
                 // concat base pairs and strand into "start-end (+/-)"
-                mapLocation = getMapLocation(columns[6], columns[7], columns[8]);
+                mapLocation = getMapLocation(columns[7], columns[8], columns[9]);
                 String[] loc=new String[2];
                 loc[0]=chromosome;
                 loc[1]=mapLocation;

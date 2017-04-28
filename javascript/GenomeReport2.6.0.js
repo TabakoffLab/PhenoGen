@@ -322,7 +322,7 @@ function DisplayRegionReport(){
 }
 
 function displayDetailedView(track){
-	console.log("displayDetailedView:"+track);
+	//console.log("displayDetailedView:"+track);
 	reportSelectedTrack=track;
 	$('li.report').removeClass("selected");
 	$("li."+track.trackClass).addClass("selected");

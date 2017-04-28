@@ -15,6 +15,7 @@
 	String fullOrg="";
 		String panel="";
 	String gcPath="";
+        String source="seq";
 	int selectedGene=0;
 	ArrayList<String>geneSymbol=new ArrayList<String>();
 	
@@ -40,8 +41,9 @@
 			panel="BNLX/SHRH";
 			fullOrg="Rattus_norvegicus";
 		}else{
-			panel="ILS/ISS";
-			fullOrg="Mus_musculus";
+                    
+                    panel="ILS/ISS";
+                    fullOrg="Mus_musculus";
 		}
 	}
 	if(request.getParameter("chromosome")!=null){
@@ -57,6 +59,9 @@
 	if(request.getParameter("id")!=null){
 		id=FilterInput.getFilteredInput(request.getParameter("id"));
 	}
+        if(request.getParameter("source")!=null){
+		source=FilterInput.getFilteredInput(request.getParameter("source"));
+	}
         if(request.getParameter("genomeVer")!=null){
 		genomeVer=request.getParameter("genomeVer");
 	}
@@ -66,19 +71,29 @@
 	String[] tissuesList1=new String[1];
 	String[] tissuesList2=new String[1];
 	if(myOrganism.equals("Rn")){
-		tissuesList1=new String[4];
-		tissuesList2=new String[4];
-		tissuesList1[0]="Brain";
-		tissuesList2[0]="Whole Brain";
-		tissuesList1[1]="Heart";
-		tissuesList2[1]="Heart";
-		tissuesList1[2]="Liver";
-		tissuesList2[2]="Liver";
-		tissuesList1[3]="Brown Adipose";
-		tissuesList2[3]="Brown Adipose";
+                if(source.equals("seq")){
+                    tissuesList1=new String[2];
+                    tissuesList2=new String[2];
+                    tissuesList1[0]="Brain";
+                    tissuesList2[0]="Whole Brain";
+                    tissuesList1[1]="Liver";
+                    tissuesList2[1]="Liver";
+                }else{
+                    tissuesList1=new String[4];
+                    tissuesList2=new String[4];
+                    tissuesList1[0]="Brain";
+                    tissuesList2[0]="Whole Brain";
+                    tissuesList1[1]="Heart";
+                    tissuesList2[1]="Heart";
+                    tissuesList1[2]="Liver";
+                    tissuesList2[2]="Liver";
+                    tissuesList1[3]="Brown Adipose";
+                    tissuesList2[3]="Brown Adipose";
+                }
 	}else{
-		tissuesList1[0]="Brain";
-		tissuesList2[0]="Whole Brain";
+            source="array";
+            tissuesList1[0]="Brain";
+            tissuesList2[0]="Whole Brain";
 	}
 	int rnaDatasetID=0;
 	int arrayTypeID=0;

@@ -45,8 +45,8 @@
 		<p><a href="http://www.r-project.org/" target="R Master">R</a>:&nbsp;&nbsp;version 3.2.1</p>
 		<p><a href="http://www.bioconductor.org/" target="R Master">BioConductor</a>:&nbsp;&nbsp;version 3.0</p>
                 <p><a href="http://multimir.ucdenver.edu/" target="_blank">multiMiR</a>:&nbsp;&nbsp;version 1.0.1</p>
-                <p><a href="http://circos.ca/" target="_blank">CIRCOS</a>:&nbsp;&nbsp;version 0.67-5</p>
-                <p><a href="http://d3js.org/" target="_blank">D3js</a>:&nbsp;&nbsp;version 3.5.5</p>
+                <p><a href="http://circos.ca/" target="_blank">CIRCOS</a>:&nbsp;&nbsp;version 0.69-4</p>
+                <p><a href="http://d3js.org/" target="_blank">D3js</a>:&nbsp;&nbsp;version 4.8</p>
                 <p><a href="http://jquery.com/" target="_blank">jQuery & jQuery UI</a>:&nbsp;&nbsp;version 1.11.2 and 1.11.3</p>
                 
 		<!-- <p><a href="http://www.atlassian.com/" target="JIRA">JIRA</a>: &nbsp;&nbsp;version 3.1.1-#81 Professional Edition</p> -->
@@ -82,16 +82,16 @@
                 <li>Annotation file for Codelink Rat Whole Genome </li>
                 <li>Annotation file for Codelink Mouse Whole Genome </li>
     
-                <li>Location data from Ensembl for Mouse, Human, and Rat from Ensembl Genes v84 </li>
-                <li>FlyBase gene_map_table_fb_2015_01.tsv file and fbgn_NAseq_Uniprot_fb_2016_03.tsv </li>
-                <li>MGI database links file generated from the ACC_Accession table on 6/1/2016</li>
-                <li>MGI_Coordinate.rpt links file, downloaded 6/1/2016</li>
-                <li>NCBI gene2accession file, downloaded 6/1/2016</li>
-                <li>NCBI gene2unigene file, downloaded 6/1/2016</li>
-                <li>NCBI gene_info file, downloaded 6/1/2016</li>
-                <li>NCBI homologene.data file, downloaded 6/1/2016</li>
-                <li>RGD GENES file, last updated on 6/1/2016</li>
-                <li>SwissProt uniprot_sprot.dat file, last updated on 6/1/2016</li>
+                <li>Location data from Ensembl for Mouse, Human, and Rat from Ensembl Genes v88 </li>
+                <li>FlyBase gene_map_table_fb_2015_01.tsv file and fbgn_NAseq_Uniprot_fb_2017_01.tsv </li>
+                <li>MGI database links file generated from the ACC_Accession table on 4/13/2017</li>
+                <li>MGI_Coordinate.rpt links file, downloaded 4/13/2017</li>
+                <li>NCBI gene2accession file, downloaded 4/13/2017</li>
+                <li>NCBI gene2unigene file, downloaded 4/13/2017</li>
+                <li>NCBI gene_info file, downloaded 4/13/2017</li>
+                <li>NCBI homologene.data file, downloaded 4/13/2017</li>
+                <li>RGD GENES file, last updated on 4/13/2017</li>
+                <li>SwissProt uniprot_sprot.dat file, last updated on 4/13/2017</li>
             </ul>
         </div>
 

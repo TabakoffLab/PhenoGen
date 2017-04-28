@@ -29,7 +29,7 @@ sub readLocusSpecificPvalues{
 	#INPUT VARIABLES: $probeID, $organism
 
 	# Read inputs
-	my($probeID,$organism,$genomeVer,$chromosomeListRef,$dsn,$usr,$passwd)=@_;   
+	my($probeID,$organism,$genomeVer,$chromosomeListRef,$dsn,$usr,$passwd,$type)=@_;   
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# $hostname is used to determine the connection to the database.
@@ -45,7 +45,7 @@ sub readLocusSpecificPvalues{
 
 	my @eqtlAOH; # array of hashes containing location specific eqtl data
 
-	my $locationSpecificEQTLTablename = 'Location_Specific_EQTL';
+	my $locationSpecificEQTLTablename = 'Location_Specific_EQTL2';
 	my $snpTablename = 'SNPS';
 	my $chromosomeTablename = 'Chromosomes';
 	
@@ -57,16 +57,17 @@ sub readLocusSpecificPvalues{
 	my $query = "select s.SNP_NAME, c.NAME, s.SNP_START, s.TISSUE, e.PVALUE
 		      from $snpTablename s, $chromosomeTablename c, $locationSpecificEQTLTablename e
 		      where
-		      e.PROBE_ID = $probeID
+		      e.PROBE_ID = '$probeID'
 		      and s.organism = '$organism'
 		      and s.chromosome_id = c.chromosome_id
+		      and s.type='$type'
 		      and e.SNP_ID = s.SNP_ID
-                      and s.genome_id='$genomeVer'";
+              and s.genome_id='$genomeVer'";
 
 		      
-	if ($debugLevel >= 2){
+	#if ($debugLevel >= 2){
 		print $query."\n";
-	}
+	#}
 	my $query_handle = $connect->prepare($query) or die (" Location Specific EQTL query prepare failed $!");
 
 # EXECUTE THE QUERY

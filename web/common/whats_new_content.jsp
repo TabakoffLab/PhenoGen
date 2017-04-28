@@ -29,6 +29,21 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
+    <div class="whats_new version"><p><h3>Version: v3.3</h3><BR /> Updated:4/30/2017</p></div>
+       <ul>
+                                    <li><span class="highlight-dark">Recombinant Inbred Total RNA</span>
+                                        <UL>
+                                            <LI>Expression - The expression tab now will summarize RNA-Seq expression and heritability for the RI panel in both Whole Brain and Liver.  There is both a heatmap and scatter plot available to display the values.</LI>
+                                            <LI>WGCNA - New WGCNA data is available based on RNA-Seq reconstructed transcripts in Whole Brain and Liver.<BR>
+                                                <UL>
+                                                    <LI>You now have the option to view RNA-Seq or Array based WGCNA modules.</LI>
+                                                    <LI>Meta modules have be generated to allow browsing related modules.</LI>
+                                                </UL> 
+                                            </LI>
+                                        </UL>
+                                    </li>
+        </ul>
+        <hr/>
     <div class="whats_new version"><p><h3>Version: v3.2</h3><BR /> Updated:11/10/2016</p></div>
        <ul>
                                     <li><span class="highlight-dark">Small RNA</span>
