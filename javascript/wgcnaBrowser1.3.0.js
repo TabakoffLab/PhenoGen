@@ -81,14 +81,16 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
     that.mirKey=function(d){return d.ID;};
     that.removeInvalidIDChars=function(id){
     	var newID=id;
-    	if(newID.indexOf("*")>-1){
-    		newID=newID.replace(/\*/g, "star");
-    	}
-    	if(newID.indexOf(" ")>-1){
-    		newID=newID.replace(/\s/g,"_");
-    	}
-    	if(newID.indexOf(".")>-1){
-    		newID=newID.replace(/\./g,"_");
+    	if(typeof newID!=="undefined"){
+	    	if(newID.indexOf("*")>-1){
+	    		newID=newID.replace(/\*/g, "star");
+	    	}
+	    	if(newID.indexOf(" ")>-1){
+	    		newID=newID.replace(/\s/g,"_");
+	    	}
+	    	if(newID.indexOf(".")>-1){
+	    		newID=newID.replace(/\./g,"_");
+	    	}
     	}
     	return newID;
     }
@@ -762,7 +764,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 							ga('send','event','WGCNA_mir','mirSort');
 					}
                 });
-                mir.append("text").style("margin-right","5px").style("margin-left","5px").text(" sort by # targeted Genes order ");
+                /*mir.append("text").style("margin-right","5px").style("margin-left","5px").text(" sort by # targeted Genes order ");
                 sel=mir.append("select").attr("id","mirSortSelect").on("change",function(){
                     if($("#mirSortCBX").prop('checked')){
                         that.singleImage.sortMir=$(this).val();
@@ -774,7 +776,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 });
                 sel.append("option").attr("value","1").text("Ascending");
                 sel.append("option").attr("value","-1").text("Descending");
-                mir.append("br");
+                mir.append("br");*/
                 mir.append("text").text("Hovering over a node(miR or transcript):");
                 mir.append("br");
                 mir.append("input").attr("type","checkbox")
@@ -1769,8 +1771,10 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             return y;
                         })
                         .attr("x2",function(d){
+                        	//console.log(d.TC2+":x2:"+x);
+                        	//console.log(d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)));
                             var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
-                            //console.log(d.TC2+":x2:"+x);
+                            
                             return x;
                         })
                         .attr("y2",function(d){
@@ -1785,7 +1789,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 val=0;
                             }*/
                             return val;
-                        });
+                        }).merge(lnk);
             }
         };
         
@@ -1836,6 +1840,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             return y;
                         })
                         .attr("x2",function(d){
+                        	//console.log(d.TC2+":x2:"+x);
+                        	//console.log(d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)));
                             var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
                             //console.log(d.TC2+":x2:"+x);
                             return x;
@@ -1852,7 +1858,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 val=0;
                             }*/
                             return val;
-                        });
+                        }).merge(lnk);
             }
         };
 
@@ -2284,23 +2290,16 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 thatimg.miRbubble = d3.pack()
                                     //.sort(thatimg.sortMirFunction)
                                     .size([thatimg.miRdiameter, thatimg.miRdiameter])
-                                    .padding(1.5)
-                                    .radius(function(d){return d.filterGLSize;});
-                //console.log(thatimg.svg.select(".svg-pan-zoom_viewport")[0][0]);
-                //var topG=thatimg.svg.select(".svg-pan-zoom_viewport")[0][0];
-                console.log(thatimg.mirData.MIRList);
+                                    .padding(1.5);
+                                    //.radius(function(d){return d.value*10;});
+
                 var tmpData=thatimg.runMirFilter(thatimg.mirData.MIRList);
-                console.log("tmpData");
-                console.log(tmpData);
-                var r={ "ID":"miRNAs Tageting Genes in Module","name":"miRNAs Tageting Genes in Module","value":1,"children":tmpData};
-                console.log("r");
-                console.log(r);
-                var hierarch=d3.hierarchy(r).sum(function(d) { return d.filterGLSize; });
-                console.log("h");
-                console.log(hierarch);
-                var nodes=hierarch.leaves();
-                console.log("nodes");
-                console.log(nodes);
+
+                thatimg.hierarch=d3.hierarchy({children:tmpData}).sum(function(d) { return d.filterGLSize; });
+                //var rnodes=hierarch(r);
+                
+                thatimg.mirNode=thatimg.miRbubble(thatimg.hierarch.sort());
+
                 var mirG=thatimg.topG.append("g")
                         .attr("id","mirG")
                             .attr("transform", function() { 
@@ -2308,17 +2307,74 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 var h=thatimg.height/2-thatimg.miRdiameter/2;
                                 return "translate(" + w + "," + h + ")"; });
                 var node = mirG.selectAll(".node")
-                                .data(nodes,that.mirKey)
-                                .enter().append("g")
+                                .data(thatimg.hierarch.leaves(),that.mirKey);
+
+                node.enter().append("g")
                                 .attr("class", "node")
-                                .attr("id", function(d){console.log(d);return that.removeInvalidIDChars(d.ID);})
+                                .attr("id", function(d){return that.removeInvalidIDChars(d.ID);})
                                 .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                                .merge(node)
                                 .on("mouseover",thatimg.mouseoverMir)
                                 .on("mouseleave",thatimg.mouseleaveMir);
+                                /*.each(function(d){
+				                    var tmpD=d;
+				                    if(d.depth>0){
+				                        d3.select(this).append("circle")
+				                            
+				                            .attr("r", function(d) { return tmpD.r; })
+				                            .style("fill", function(d) { return thatimg.miRcolor(tmpD.ID); });
+				                        var txt=tmpD.ID.substring(8);
+				                        if(txt.length<tmpD.r / 3){
+				                            d3.select(this).append("text")
+				                                .attr("dy", ".2em")
+				                                .attr("pointer-events","none")
+				                                .style("text-anchor", "middle")
+				                                .style("cursor","pointer")
+				                                .append("tspan")
+				                                            .attr("x", 0)
+				                                            //.attr("y", -10)
+				                                            .attr("dy", "-0.5em")
+				                                            .text("miR")
+				                                .append("tspan")
+				                                            .attr("x", 0)
+				                                            .attr("dy", "1em")
+				                                            .text(txt);
+				                                //.text(txt);
+				                        }
+				                    }
+				                });*/
+                node.exit().remove();
 
+                d3.selectAll(".node").each(function(d){
+				                    var tmpD=d.data;
+				                    if(d.depth>0){
+				                    	//console.log(d);
+				                        d3.select(this).append("circle")
+				                            .attr("r", function(d) { return d.r; })
+				                            .style("fill", function(d) { return thatimg.miRcolor(tmpD.ID); });
+				                        var txt=tmpD.ID.substring(8);
+				                        if(txt.length<d.r / 3){
+				                            d3.select(this).append("text")
+				                                .attr("dy", ".2em")
+				                                .attr("pointer-events","none")
+				                                .style("text-anchor", "middle")
+				                                .style("cursor","pointer")
+				                                .append("tspan")
+				                                            .attr("x", 0)
+				                                            //.attr("y", -10)
+				                                            .attr("dy", "-0.5em")
+				                                            .text("miR")
+				                                .append("tspan")
+				                                            .attr("x", 0)
+				                                            .attr("dy", "1em")
+				                                            .text(txt);
+				                                //.text(txt);
+				                        }
+				                    }
+				                })
                 /*node.append("title")
                     .text(function(d) { return d.className + ": " + format(d.value); });*/
-                node.each(function(d){
+                /*node.each(function(d){
                     var tmpD=d;
                     if(d.depth>0){
                         d3.select(this).append("circle")
@@ -2344,7 +2400,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 //.text(txt);
                         }
                     }
-                });
+                });*/
                 
             }
         };
@@ -2376,7 +2432,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         
         thatimg.filterMiR=function(d){
             val=true;
-            console.log(d.ID);
+            //console.log(d.ID);
             if(d.GeneList.length<thatimg.mirGeneCutoff){
                 val=false;
             }
@@ -2461,14 +2517,16 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         };
         
         thatimg.mouseoverMir=function(){
-            var tmpD=d3.select(this).data()[0];
-            var genes=tmpD.GeneList;
+        	
+        	var tmpDDoc=d3.select(this).data()[0];
+            var tmpDDat=tmpDDoc.data;
+            var genes=tmpDDat.GeneList;
             genes=thatimg.filterMiRGenes(genes);
             d3.select(this).style("opacity","0.3");
             tt.transition()        
                     .duration(200)      
                     .style("opacity", 1);
-            tt.html(thatimg.createMirToolTip(tmpD))
+            tt.html(thatimg.createMirToolTip(tmpDDat))
                     .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
                     .style("top", function(){return that.positionTTTop(d3.event.pageY);});
             
@@ -2480,22 +2538,22 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         .attr("pointer-events","none")
                         .attr("id",function(d){return "ln_"+d.ID;})
                         .attr("x1",function(d){
-                            var x=tmpD.x+thatimg.width/2-thatimg.miRdiameter/2;
+                            var x=tmpDDoc.x+thatimg.width/2-thatimg.miRdiameter/2;
                             return x;
                         })
                         .attr("y1",function(d){
-                            var y=tmpD.y+thatimg.height/2-thatimg.miRdiameter/2;
+                            var y=tmpDDoc.y+thatimg.height/2-thatimg.miRdiameter/2;
                             return y;
                         })
                         .attr("x2",function(d){
-                            var x=tmpD.x+thatimg.width/2-thatimg.miRdiameter/2;
+                            var x=tmpDDoc.x+thatimg.width/2-thatimg.miRdiameter/2;
                             if(d3.select("."+d.ID).size()>0){
                             	x=d3.select("."+d.ID).attr("cx");
                         	}
                             return x;
                         })
                         .attr("y2",function(d){
-                            var y=tmpD.y+thatimg.height/2-thatimg.miRdiameter/2;
+                            var y=tmpDDoc.y+thatimg.height/2-thatimg.miRdiameter/2;
                             if(d3.select("."+d.ID).size()>0){
                             	y=d3.select("."+d.ID).attr("cy");
                         	}
@@ -2511,15 +2569,15 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         .attr("stroke-width",function(d){
                             var val=d.P+3*d.V;
                             return val;
-                        });
+                        }).merge(lnk);
 
             if(!thatimg.showLinks){
             	var gl=[];
             	for(var w=0;w<genes.length;w++){
-            		var nodeL=d3.selectAll("."+genes[w].ID);
+            		var nodeL=d3.selectAll("."+genes[w].ID).nodes();
             		for(var x=0;x<nodeL.length;x++){
-            			if(typeof nodeL[x][0]!=='undefined'){
-            				gl.push(nodeL[x][0].__data__.ID);
+            			if(typeof nodeL[x]!=='undefined'){
+            				gl.push(d3.select(nodeL[x].parentNode).datum().ID);
             			}
             		}
             	}
@@ -2548,7 +2606,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             tt.html(thatimg.createToolTip(d3.select(this).data()[0])) 
                     .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
                                     .style("top", function(){return that.positionTTTop(d3.event.pageY);});
-            var d=d3.select(this).data()[0];
+            var d=d3.select(this.parentNode).datum();
             
             if(that.viewType==='mir'){
                 thatimg.mirTargetID=d.Gene.ID.toLowerCase();
@@ -2622,7 +2680,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                         .attr("stroke-width",function(d){
                             var val=d.P+3*d.V;
                             return val;
-                        });
+                        }).merge(lnk);
             }
             if(ga){
                 ga('send','event','wgcna','mouseOverGene');
@@ -2630,7 +2688,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         };
         
         thatimg.mouseleaveGene=function(){
-            var d=d3.select(this).data()[0];
+            var d=d3.select(this.parentNode).datum();
             $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
                 var id=$(this).attr("id");
                 d3.select("line#"+id).attr("stroke",thatimg.colorLink);
@@ -3426,18 +3484,21 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 					dataType: 'json',
 		    		success: function(root){
 		    			thatimg.data=root;
-	                    var nodes = thatimg.partition.nodes(thatimg.data.GOList[0]);
+		    			console.log(thatimg.data);
+		    			console.log(thatimg.data.GOList[0]);
+	                    var nodes =thatimg.data.GOList[0];
 	                    var uniqueID=0;
 	                    for(var z=0;z<nodes.length;z++){
 	                    	nodes[z].UnqID=uniqueID;
+	                    	console.log(nodes[z]);
 	                    	uniqueID++;
 	                    }
-	                    nodes = thatimg.partition.nodes(thatimg.data.GOList[1]);
+	                    nodes = thatimg.data.GOList[1];
 	                    for(var z=0;z<nodes.length;z++){
 	                    	nodes[z].UnqID=uniqueID;
 	                    	uniqueID++;
 	                    }
-	                     nodes = thatimg.partition.nodes(thatimg.data.GOList[2]);
+	                     nodes = thatimg.data.GOList[2];
 	                    for(var z=0;z<nodes.length;z++){
 	                    	nodes[z].UnqID=uniqueID;
 	                    	uniqueID++;
@@ -3489,13 +3550,18 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 thatimg.initializeBreadcrumbTrail();
                 thatimg.topG=thatimg.svg.append("g")
                         .attr("transform", "translate(" + [thatimg.width/2 + thatimg.padding, thatimg.height/2 + thatimg.padding] + ")");
-                thatimg.hierarchy= d3.hierarchy(that.data).sum(function(d){if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}});
-                thatimg.partition = d3.partition(thatimg.hierarchy)
+                /*thatimg.hierarchy=d3.hierarchy();
+                thatimg.hierarchy=thatimg.hierarchy(that.data)
+                					.sum(function(d){
+                						if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}
+                					});*/
+               	//thatimg.stratify = d3.stratify()
+    			//					.id(function(d) { return d.name; });
+                thatimg.partition = d3.partition()
               		.size([2 * Math.PI, thatimg.radius]);
                     // .value(function(d){if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}});
-                        
-                
-                        
+                 
+                console.log(thatimg.data);
                 if( typeof thatimg.data.MOD_NAME ==='undefined' || (typeof that.selectedModule.MOD_NAME !=='undefined' &&  replaceUnderscore(thatimg.data.MOD_NAME) !== replaceUnderscore(that.selectedModule.MOD_NAME)) ) {
                     thatimg.getModuleGOFile(0);
                     thatimg.selectedNode=null;
@@ -3508,12 +3574,20 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                             goRoot=thatimg.data.GOList[1];
                         }
                         thatimg.selectedNode=goRoot;
+                        thatimg.rootN=d3.hierarchy({children:thatimg.goRoot})
+                        		.sum(function(d){
+                						if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;}
+                					});
+                        /*thatimg.rootN = thatimg.stratify(goRoot)
+				      		.sum(function(d) { if(d.name.indexOf("ENS")>-1){return 1;}else{return d.uniqueGene;} })
+				      		.sort(function(a, b) { return b.height - a.height || b.value - a.value; });*/
                     }
+	                thatimg.partition(thatimg.rootN);
                     thatimg.lastDrawn=thatimg.goDomain;
                     if(thatimg.selectedNode===thatimg.data.GOList[0] || thatimg.selectedNode===thatimg.data.GOList[1]||thatimg.selectedNode===thatimg.data.GOList[2]){
                     	thatimg.totalSize=thatimg.selectedNode.uniqueGene;
                     }
-                    var nodes = thatimg.partition.nodes(thatimg.selectedNode);
+                    var nodes = thatimg.selectedNode;
                     thatimg.maxDepth=d3.max(nodes,function(d){return d.depth;});
                     nodes=nodes.filter(thatimg.filterNodes);
                     var tmpDisplayDepth=thatimg.displayDepth;

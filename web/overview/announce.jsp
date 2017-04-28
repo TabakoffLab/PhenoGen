@@ -12,6 +12,11 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>PhenoGen v3.3 4/30/2017</H2>
+                        <div style="margin-left:5px;">
+                            <span style=" font-weight: bold;">Recombinant Inbred Total RNA - </span> Added expression data for reconstructed transcripts across RI Panel in Whole Brain and Liver.  Added RNA-Seq based WGCNA for Whole Brain and Liver.  
+                            
+                        </div>
                         <H2>PhenoGen v3.2 11/13/2016</H2>
                         <div style="margin-left:5px;">
                             <span style=" font-weight: bold;">Small RNA - </span> added tracks and detail on all known and novel (predicted by MiRDeep and SNOSeeker) small RNAs in Brain, Heart, and Liver from the BNLx/SHR parental strains.
