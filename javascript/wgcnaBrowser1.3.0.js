@@ -517,7 +517,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.viewBar.append("text").text("Eigengene eQTL");
         that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of the module Eigengene eQTLs.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
 
-        that.viewBar.append("br");
+        /*that.viewBar.append("br");
         that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px").on("click",function(){
             that.viewType="go";
             that.createSingleWGCNAImage();
@@ -525,7 +525,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 						ga('send','event','WGCNA','goView');
 			}
         });
-		that.viewBar.append("text").text("Gene Ontology");
+		that.viewBar.append("text").text("Gene Ontology");*/
         that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of Gene Ontology terms assigned to transcripts in the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
         
         //if(organism==="Mm"){
@@ -546,6 +546,16 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of miRNAs that target genes in this module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
         //}
         
+        /*that.viewBar.append("br");
+        that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","meta").style("margin-left","7px").style("margin-right","3px").on("click",function(){
+            that.viewType="meta";
+            that.createSingleWGCNAImage();
+            if(ga){
+						ga('send','event','WGCNA','metaView');
+			}
+        });
+		that.viewBar.append("text").text("Meta Module (nearest neighbors)");*/
+
         $("#HelpWGCNAView").on('click', function(event){
 			var id=$(this).attr('id');
 			$('#'+id+'Content').dialog( "option", "position",{ my: "right top", at: "left bottom", of: $(this) });
