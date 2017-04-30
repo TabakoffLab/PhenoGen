@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class PropertiesHelper {
 
-    private static final String PROPERTIES_DIR = "/srv/www/tomcat/webapps/PhenoGen/src/edu/ucdenver/ccp/iDecoder/";
+    private static final String PROPERTIES_DIR = "/Library/Tomcat/webapps/PhenoGen/src/edu/ucdenver/ccp/iDecoder/";
     private static final String ORGANISM_PROPERTIES_FILENAME = PROPERTIES_DIR + "organism.properties";
     private static final String UNIGENE_PROPERTIES_FILENAME = PROPERTIES_DIR + "unigene.properties";
     private static final String EXON_PROPERTIES_FILENAME = PROPERTIES_DIR + "exon.properties";

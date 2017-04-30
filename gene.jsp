@@ -9,7 +9,8 @@
 	extrasList.add("spectrum.js");
         extrasList.add("svg-pan-zoom.3.2.3.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
-	extrasList.add("d3.v3.5.16.min.js");
+        extrasList.add("d3.v4.8.0.min.js");
+	//extrasList.add("d3.v3.5.16.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
 	extrasList.add("tabs.css");
@@ -22,7 +23,7 @@
 
 
 <%
-    log.debug("top of page");
+log.debug("top of page");
 String myGene="";
 String section="";
 String myDisplayGene="";

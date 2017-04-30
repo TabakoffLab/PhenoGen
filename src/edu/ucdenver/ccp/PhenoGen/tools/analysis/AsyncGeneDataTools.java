@@ -26,6 +26,7 @@ import edu.ucdenver.ccp.util.FileHandler;
 import au.com.forward.threads.ThreadReturn;
 import au.com.forward.threads.ThreadInterruptedException;
 import au.com.forward.threads.ThreadException;
+import edu.ucdenver.ccp.PhenoGen.driver.ExecException;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,6 +35,8 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Properties;
 import java.util.logging.Level;
 import javax.sql.DataSource;
 
@@ -44,26 +47,32 @@ import org.apache.log4j.Logger;
 
 public class AsyncGeneDataTools extends Thread {
         private String[] rErrorMsg = null;
-        HttpSession session=null;
+        private HttpSession session=null;
         private Logger log = null;
         private String userFilesRoot = "";
         private String urlPrefix = "";
         private String ucscDir="";
         private DataSource pool=null;
         private String dbPropertiesFile=null;
-        String outputDir="";
-        String chrom="";
-        String genomeVer="";
+        private String mongoDBPropertiesFile=null;
+        private String outputDir="";
+        private String chrom="";
+        private String genomeVer="";
+        private String perlDir="";
+        private String perlEnvVar="";
         
-        int minCoord=0;
-        int maxCoord=0;
-        int arrayTypeID=0;
-        int rnaDatasetID=0;
-        int usageID=0;
-        boolean done=false;
-        String updateSQL="update TRANS_DETAIL_USAGE set TIME_ASYNC_GENE_DATA_TOOLS=? , RESULT=? where TRANS_DETAIL_ID=?";
+        private int minCoord=0;
+        private int maxCoord=0;
+        private int arrayTypeID=0;
+        private int rnaDatasetID=0;
+        private int usageID=0;
+        private boolean done=false;
+        private boolean isEnsemblGene=true;
+        private String updateSQL="update TRANS_DETAIL_USAGE set TIME_ASYNC_GENE_DATA_TOOLS=? , RESULT=? where TRANS_DETAIL_ID=?";
+        private String[] tissues=new String[2];
+        private ExecHandler myExec_session = null;
         
-    public AsyncGeneDataTools(HttpSession inSession,DataSource pool,String outputDir,String chr,int min,int max,int arrayTypeID,int rnaDS_ID,int usageID,String genomeVer) {
+    public AsyncGeneDataTools(HttpSession inSession,DataSource pool,String outputDir,String chr,int min,int max,int arrayTypeID,int rnaDS_ID,int usageID,String genomeVer,boolean isEnsemblGene) {
                 this.session = inSession;
                 this.outputDir=outputDir;
                 log = Logger.getRootLogger();
@@ -77,6 +86,7 @@ public class AsyncGeneDataTools extends Thread {
                 this.rnaDatasetID=rnaDS_ID;
                 this.usageID=usageID;
                 this.genomeVer=genomeVer;
+                this.isEnsemblGene=isEnsemblGene;
 
                 log.debug("start");
 
@@ -85,8 +95,10 @@ public class AsyncGeneDataTools extends Thread {
                 //this.publicDatasets = (Dataset[]) session.getAttribute("publicDatasets");
                 this.pool = (DataSource) session.getAttribute("dbPool");
                 dbPropertiesFile = (String) session.getAttribute("dbPropertiesFile");
+                mongoDBPropertiesFile = (String)session.getAttribute("mongoDbPropertiesFile");
                 //log.debug("db");
-                
+                this.perlDir = (String) session.getAttribute("perlDir") + "scripts/";
+                this.perlEnvVar=(String)session.getAttribute("perlEnvVar");
                 String contextRoot = (String) session.getAttribute("contextRoot");
                 //log.debug("context" + contextRoot);
                 String appRoot = (String) session.getAttribute("applicationRoot");
@@ -102,6 +114,8 @@ public class AsyncGeneDataTools extends Thread {
                 this.ucscDir = (String) session.getAttribute("ucscDir");
                 //log.debug("ucsc");
                 
+                tissues[0]="Brain";
+                tissues[1]="Liver";
                 
     }
     
@@ -111,34 +125,37 @@ public class AsyncGeneDataTools extends Thread {
         done=false;
         Date start=new Date();
         try{
-            log.debug("Before outputProbesetID");
-            outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,genomeVer);
-            log.debug("before DEHeatMap");
-            callDEHeatMap(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID,genomeVer);
-            log.debug("before Panel HErit");
-            callPanelHerit(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID,genomeVer);
-            log.debug("After Panel Herit");
-            done=true;
-            Date end=new Date();
-            Connection conn=null;
-            try{
-                conn=pool.getConnection();
-                PreparedStatement ps=conn.prepareStatement(updateSQL);
-                long returnTimeMS=end.getTime()-start.getTime();
-                ps.setLong(1, returnTimeMS);
-                ps.setString(2, "AsyncGeneDataTools completed successfully");
-                ps.setInt(3, usageID);
-                int updated=ps.executeUpdate();
-                log.debug("AsyncGeneDataTools: updated "+updated +"records");
-                ps.close();
-                conn.close();
-            }catch(SQLException e){
-                log.error("Error saving AsyncGeneDataTools Timing",e);
-            }finally{
-                try {
-                    if(conn!=null)
-                        conn.close();
-                } catch (SQLException ex) {
+            outputRNASeqExprFiles(outputDir,chrom,minCoord,maxCoord,genomeVer);
+            if(isEnsemblGene){
+                //log.debug("Before outputProbesetID");
+                outputProbesetIDFiles(outputDir,chrom, minCoord, maxCoord,arrayTypeID,genomeVer);
+                //log.debug("before DEHeatMap");
+                callDEHeatMap(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID,genomeVer);
+                //log.debug("before Panel HErit");
+                callPanelHerit(outputDir,chrom, minCoord, maxCoord,arrayTypeID,rnaDatasetID,genomeVer);
+                //log.debug("After Panel Herit");
+                done=true;
+                Date end=new Date();
+                Connection conn=null;
+                try{
+                    conn=pool.getConnection();
+                    PreparedStatement ps=conn.prepareStatement(updateSQL);
+                    long returnTimeMS=end.getTime()-start.getTime();
+                    ps.setLong(1, returnTimeMS);
+                    ps.setString(2, "AsyncGeneDataTools completed successfully");
+                    ps.setInt(3, usageID);
+                    int updated=ps.executeUpdate();
+                    log.debug("AsyncGeneDataTools: updated "+updated +"records");
+                    ps.close();
+                    conn.close();
+                }catch(SQLException e){
+                    log.error("Error saving AsyncGeneDataTools Timing",e);
+                }finally{
+                    try {
+                        if(conn!=null)
+                            conn.close();
+                    } catch (SQLException ex) {
+                    }
                 }
             }
             
@@ -731,10 +748,272 @@ public class AsyncGeneDataTools extends Thread {
         return error;
     }
     
+    public boolean outputRNASeqExprFiles(String outputDir,String chr, int min, int max,String genomeVer){
+        boolean success=true;
+        // get list of tissues/datasets
+        String query="select RNA_DATASET_ID, TISSUE,BUILD_VERSION,EXP_DATA_ID from rna_dataset where genome_id=? and trx_recon=1 and visible=1 and exp_data_id is not null";
+        Connection conn=null;
+        HashMap<String,Tissues> tissues=new HashMap<String,Tissues>(); 
+        try{
+            conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(query);
+            ps.setString(1,genomeVer);
+            ResultSet rs=ps.executeQuery();
+            while (rs.next()){
+                String tissue=rs.getString(2);
+                int build=Integer.parseInt(rs.getString(3));
+                Tissues t=new Tissues(rs.getInt(1),tissue,build,rs.getInt(4));
+                if(tissues.containsKey(tissue)){
+                    if(tissues.get(tissue).getBuildVer()<build){
+                        tissues.put(tissue,t);
+                    }
+                }else{
+                    tissues.put(tissue, t);
+                }
+                log.debug("*********"+tissue+":"+build+":"+rs.getInt(1)+":"+rs.getInt(4));
+            }
+            ps.close();
+            conn.close();
+        }catch(SQLException e){
+            log.error("Error in outputRNASeqExprFiles",e);
+        }finally{
+            try{
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+            }catch(SQLException e){}
+        }
+        Iterator itr=tissues.keySet().iterator();
+        ArrayList<FeatureID> featList=new ArrayList<FeatureID>();
+        HashMap<String, GeneID> genes=new HashMap<String,GeneID>();
+        StringBuilder sb=new StringBuilder();
+        while(itr.hasNext()){
+            Tissues curTissue=(Tissues)tissues.get(itr.next());
+            //get transcripts
+            String selectTrx="select r.merge_gene_id,r.merge_isoform_id,r.herit_gene,r.herit_trx from rna_transcripts r, chromosomes c where "+
+                        "c.organism=? and c.name=? and c.chromosome_id=r.chromosome_id "+
+                        "and r.rna_dataset_id=? "+
+                        "and ((trstart>="+min+" and trstart<="+max+") OR (trstop>="+min+" and trstop<="+max+") OR (trstart<="+min+" and trstop>="+max+"))";
+            String selectR2="select r.merge_gene_id,r.merge_isoform_id,r.herit_gene,r.herit_trx from rna_transcripts r where r.rna_dataset_id=? and "+
+                    " r.merge_gene_id in (";
+            log.debug(selectTrx);
+            try{
+                conn=pool.getConnection();
+                PreparedStatement ps=conn.prepareStatement(selectTrx);
+                String org="Rn";
+                if(genomeVer.toLowerCase().startsWith("mm")){
+                    org="Mm";
+                }
+                ps.setString(1,org);
+                if(chr.startsWith("chr")){
+                    chr=chr.substring(3);
+                }
+                ps.setString(2,chr);
+                ps.setInt(3,curTissue.getDatasetID());
+                ResultSet rs=ps.executeQuery();
+                while (rs.next()){
+                    String geneID=rs.getString(1);
+                    String trxID=rs.getString(2);
+                    double gHerit=rs.getDouble(3);
+                    double tHerit=rs.getDouble(4);
+                    TrxID tmpTrx=new TrxID(trxID,tHerit);
+                    if(genes.containsKey(geneID)){
+                        GeneID tmpGene=genes.get(geneID);
+                        tmpGene.addTranscript(tmpTrx);
+                    }else{
+                        GeneID tmpGene=new GeneID(geneID,gHerit);
+                        tmpGene.addTranscript(tmpTrx);
+                        genes.put(geneID, tmpGene);
+                        if(sb.length()>0){
+                            sb.append(",");
+                        }
+                        sb.append("'"+geneID+"'");
+                        featList.add(tmpGene);
+                    }
+                    featList.add(tmpTrx);
+                    log.debug("\n&&&&&&&&&&&&&&&&&&&&&&&& trx:"+trxID+"::"+geneID);
+                }
+                ps.close();
+                
+                ps=conn.prepareStatement(selectR2+sb.toString()+" )");
+                ps.setInt(1,curTissue.getDatasetID());
+                rs=ps.executeQuery();
+                while (rs.next()){
+                    String geneID=rs.getString(1);
+                    String trxID=rs.getString(2);
+                    double gHerit=rs.getDouble(3);
+                    double tHerit=rs.getDouble(4);
+                    TrxID tmpTrx=new TrxID(trxID,tHerit);
+                    
+                    GeneID tmpGene=genes.get(geneID);
+                    boolean found=false;
+                    for(int i=0;i<tmpGene.getTranscripts().size()&&!found;i++){
+                        if(tmpGene.getTranscripts().get(i).getID().equals(trxID)){
+                            found=true;
+                        }
+                    }
+                    if(!found){
+                        tmpGene.addTranscript(tmpTrx);
+                        featList.add(tmpTrx);
+                    }
+                    
+                }
+                ps.close();
+                conn.close();
+            }catch(SQLException e){
+                log.error("\n\nError in outputRNASeqExprFiles",e);
+            }finally{
+                try{
+                    if(conn!=null && !conn.isClosed()){
+                        conn.close();
+                    }
+                }catch(SQLException e){}
+            }
+            //create gene list for perl call
+            String perlGeneList="";
+            Iterator gItr=genes.keySet().iterator();
+            int c=0;
+            while(gItr.hasNext()){
+                String next=(String)gItr.next();
+                if(c>0){
+                    perlGeneList=perlGeneList+",";
+                }
+                perlGeneList=perlGeneList+next;
+                c++;
+            }
+            log.debug("PERLGENELIST:\n"+perlGeneList);
+            String heritFile=outputDir+curTissue.getTissue()+"_herit.txt";
+            //output heritablity file for each dataset
+            try{
+                BufferedWriter psout=new BufferedWriter(new FileWriter(new File(heritFile)));
+                for(int i=0;i<featList.size();i++){
+                    psout.write(featList.get(i).getID()+"\t"+featList.get(i).getHeritability()+"\n");
+                }
+                psout.close();
+            }catch(IOException e){
+                log.error("\n\nError outputing herit file:"+heritFile, e);
+            }
+            
+            
+            File mongoPropertiesFile = new File(mongoDBPropertiesFile);
+            Properties myMongoProperties = new Properties();
+            try{
+                myMongoProperties.load(new FileInputStream(mongoPropertiesFile));
+            }catch(IOException e){
+                log.error("Error opening property file",e);
+            }
+            String mongoHost=myMongoProperties.getProperty("HOST");
+            String mongoUser=myMongoProperties.getProperty("USER");
+            String mongoPassword=myMongoProperties.getProperty("PASSWORD");
+            //for each tissue call perl
+            String[] perlArgs = new String[9];
+            perlArgs[0] = "perl";
+            perlArgs[1] = perlDir + "readExprDataFromMongo.pl";
+            perlArgs[2] = outputDir+curTissue.getTissue()+"expr.json";
+            perlArgs[3] = Integer.toString(curTissue.getExprDataID());
+            perlArgs[4] = perlGeneList;
+            perlArgs[5] = heritFile;
+            perlArgs[6] = mongoHost;
+            perlArgs[7] = mongoUser;
+            perlArgs[8] = mongoPassword;
+
+            log.debug("after perl args");
+            log.debug("setup params");
+            //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
+             String[] envVar=perlEnvVar.split(",");
+
+            /*for (int i = 0; i < envVar.length; i++) {
+                if(envVar[i].contains("/ensembl")){
+                    envVar[i]=envVar[i].replaceFirst("/ensembl", "/"+ensemblPath);
+                }
+                log.debug(i + " EnvVar::" + envVar[i]);
+            }*/
+
+            log.debug("setup envVar");
+            //construct ExecHandler which is used instead of Perl Handler because environment variables were needed.
+            myExec_session = new ExecHandler(perlDir, perlArgs, envVar, outputDir+curTissue.getTissue()+"expr");
+            boolean exception = false;
+            try {
+
+                myExec_session.runExec();
+
+            } catch (ExecException e) {
+                exception=true;
+                success=false;
+                e.printStackTrace(System.err);
+                log.error("In Exception of run callWriteXML:writeXML_RNA.pl Exec_session", e);
+            }
+        }
+        return success;
+    }
+    
     public boolean isDone(){
         return done;
     }
     
     
     
+}
+
+class Tissues{
+    private int dsid;
+    private String tissue;
+    private int buildVer;
+    private int exprID;
+    
+    public Tissues(int dsid,String tissue, int buildVer,int exprID){
+        this.dsid=dsid;
+        this.tissue=tissue;
+        this.buildVer=buildVer;
+        this.exprID=exprID;
+    }
+    public String getTissue(){
+        return this.tissue;
+    }
+    public int getDatasetID(){
+        return this.dsid;
+    }
+    public int getBuildVer(){
+        return this.buildVer;
+    }
+    public int getExprDataID(){
+        return exprID;
+    }
+}
+
+class FeatureID{
+    private String id;
+    private double herit;
+    public FeatureID(String id, double herit){
+        this.id=id;
+        this.herit=herit;
+    }
+    public String getID(){
+        return this.id;
+    }
+    public double getHeritability(){
+        return this.herit;
+    }
+}
+
+class GeneID extends FeatureID{
+    private ArrayList<TrxID> trx;
+    
+    public GeneID(String geneID, double herit){
+        super(geneID,herit);
+        this.trx=new ArrayList<TrxID>();
+    }
+    
+    public ArrayList<TrxID> getTranscripts(){
+        return this.trx;
+    }
+    public void addTranscript(TrxID transcript){
+        trx.add(transcript);
+    }
+}
+
+class TrxID extends FeatureID{
+    public TrxID(String geneID, double herit){
+        super(geneID,herit);
+    }
 }

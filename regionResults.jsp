@@ -167,17 +167,17 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
 
-            <script src="javascript/GenomeDataBrowser2.5.0.js" type="text/javascript"></script>
-            <script src="javascript/GenomeReport2.5.0.js" type="text/javascript"></script>
-            <script src="javascript/GenomeViewMenu2.5.0.js" type="text/javascript"></script>
-            <script src="javascript/GenomeTrackMenu2.5.0.js" type="text/javascript"></script>
-            <script src="javascript/wgcnaBrowser1.2.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.6.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeReport2.6.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeViewMenu2.6.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeTrackMenu2.6.0.js" type="text/javascript"></script>
+            <script src="javascript/wgcnaBrowser1.3.0.js" type="text/javascript"></script>
 
             
             
                 <script type="text/javascript">
                     var gs;
-                    setTimeout(function(){GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");displayHelpFirstTime();},10);
+                    setTimeout(function(){gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");displayHelpFirstTime();},10);
                 </script>
            </div>
         </div>
@@ -192,6 +192,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
                     <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpTrackDetails" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                     <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an eQTL in this region<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                     <span id="detail3" class="detailMenu" name="regionWGCNAEQTL">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionWGCNATab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <span id="detail4" class="detailMenu" name="regionExpr">Expression<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionExprTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                 </div>
     </div>
     <div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:left; width:100%;">
@@ -229,6 +230,18 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
           </div>
           <div style="display:none;" id="regionWGCNAEQTL">
          
+          </div>
+           <div style="display:none;" id="regionExpr">
+               <div class="help" style="width:100%;display:inline-block;text-align:center;"></div>
+                <div class="exprCol" id="expRegionBrain" style="display:inline-block;">
+                    <div style="width:100%;text-align: center;"><H2>Whole Brain RNA-Seq Expression</h2></div><BR>
+                    <div id="chartRegionBrain" style="width:98%;"></div>
+                    
+                </div>
+                <div class="exprCol" id="expRegionLiver" style="display:inline-block;">
+                    <div style="width:100%;text-align: center;"><H2>Liver RNA-Seq Expression</h2></div><BR>
+                    <div id="chartRegionLiver" style="width:98%;"></div>
+                </div>
           </div>
     </div><!--collapsableReport end-->
     </div>
@@ -320,7 +333,31 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
                 }*/
   	});
 	
-	
+	<%@ include file="/javascript/chart.js" %>
+            var rbChart;
+            var rlChart;
+        setTimeout(function(){
+            rbChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+gs.folderName+"/Brainexpr.json",
+                "selector":"#chartRegionBrain","allowResize":true,"type":"heatmap","width":"45%","height":"70%","displayHerit":true,
+            "title":"Gene/Transcript Expression","titlePrefix":"Whole Brain"});
+            rlChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+gs.folderName+"/Liverexpr.json",
+                "selector":"#chartRegionLiver","allowResize":true,"type":"heatmap","width":"45%","height":"70%","displayHerit":true,
+            "title":"Gene/Transcript Expression","titlePrefix":"Liver"});
+            if($(window).width()<1500){
+                rbChart.setWidth("98%");
+                rlChart.setWidth("98%");
+            }
+            },5000);
+        //svgList[1].updateLinks();
+        $(window).resize(function (){
+				if($(window).width()<1500){
+                                    rbChart.setWidth("98%");
+                                    rlChart.setWidth("98%");
+                                }else{
+                                    rbChart.setWidth("45%");
+                                    rlChart.setWidth("45%");
+                                }
+			});
 </script>
 
 

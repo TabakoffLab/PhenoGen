@@ -21,7 +21,7 @@ sub readLocusSpecificPvaluesModule{
 	#INPUT VARIABLES: $probeID, $organism
 
 	# Read inputs
-	my($module,$organism,$tissue,$chromosomeListRef,$genomeVer,$dsn,$usr,$passwd)=@_;   
+	my($module,$organism,$tissue,$chromosomeListRef,$genomeVer,$dsn,$usr,$passwd,$type)=@_;   
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# $hostname is used to determine the connection to the database.
@@ -36,16 +36,20 @@ sub readLocusSpecificPvaluesModule{
 
 	my @eqtlAOH; # array of hashes containing location specific eqtl data
 	
+
+	#print "readModuleData.pl:type:$type\n";
+
 	# PERL DBI CONNECT
 	my $connect = DBI->connect($dsn, $usr, $passwd) or die ($DBI::errstr ."\n");
-
+	#print "readModuleData.pl:type:$type\n";
 	# PREPARE THE QUERY for pvalues
-        my $query = "select  s.SNP_NAME, c.name,  s.SNP_START, e.PVALUE
+    my $query = "select  s.SNP_NAME, c.name,  s.SNP_START, e.PVALUE
                         from wgcna_location_eqtl e, snps s, chromosomes c
                         where s.organism='$organism'
                         and s.tissue='$tissue'
                         and s.snp_id=e.snp_id
                         and s.genome_id='".$genomeVer."'
+                        and s.type='$type'
                         and c.chromosome_id=s.chromosome_id
                         and e.pvalue>=1
                         and e.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.genome_id='$genomeVer' and wd.visible=1)
@@ -54,6 +58,7 @@ sub readLocusSpecificPvaluesModule{
                                 wi.wdsid in (Select wd.wdsid from wgcna_dataset wd where wd.organism='$organism' and wd.tissue='$tissue' and wd.genome_id='$genomeVer' and wd.visible=1) 
                         and wi.module='$module')
                         order by e.pvalue";
+    #print "$query\n";
                       
 	my $query_handle = $connect->prepare($query) or die (" Location Specific EQTL query prepare failed $!");
 

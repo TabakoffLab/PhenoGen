@@ -529,6 +529,7 @@ sub readAffyProbesetDataFromDBwoProbes{
 		$probesetHOH[$probesetH{$probeset}]{herit}{$tissue}=$herit;
 		$probesetHOH[$probesetH{$probeset}]{dabg}{$tissue}=$dabg;
 	}
+	$query_handle->finish();
 	$connect->disconnect();
 	#close PSFILE;
 	return (\@probesetHOH);

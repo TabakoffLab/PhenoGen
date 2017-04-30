@@ -27,6 +27,7 @@
 		}
 	</style>
 	<script type="text/javascript">
+                var source="<%=source%>";
 		function displayWorkingCircos(){
 			document.getElementById("wait2").style.display = 'block';
 			//document.getElementById("circosError1").style.display = 'none';
@@ -49,19 +50,29 @@
 			
 			var pval=$('#cutoffValue').val();
 			var tcID=$('#transcriptClusterID').val();
+                        if(source==="seq"){
+                            tcID=idStr;
+                        }
 			var path="<%=gcPath%>";
+                        
 			var geneSymbol="<%=geneSymbol.get(selectedGene)%>";
+                        console.log("before AJAX");
 			$.ajax({
 				url: contextPath + "/web/GeneCentric/runCircos.jsp",
    				type: 'GET',
                                 cache: false,
-				data: {cutoffValue:pval,transcriptClusterID:tcID,tissues:tisList,chromosomes:chrList,geneCentricPath:path,hiddenGeneSymbol:geneSymbol,genomeVer:genomeVer},
+				data: {cutoffValue:pval,transcriptClusterID:tcID,tissues:tisList,chromosomes:chrList,geneCentricPath:path,hiddenGeneSymbol:geneSymbol,genomeVer:genomeVer,source:source},
 				dataType: 'html',
 				beforeSend: function(){
 				},
 				complete: function(){
-					$('#wait2').hide();
-					$('#forIframe').show();
+                                    displayType="RNA-Seq";
+                                    if(source==="array"){
+                                        displayType="Microarray";
+                                    }
+                                    $('span#typeLabel').html(displayType);
+                                    $('#wait2').hide();
+                                    $('#forIframe').show();
 				},
                                 success: function(data2){ 
                                         $('#forIframe').html(data2);
@@ -70,8 +81,26 @@
                                         $('#forIframe').html("<div>An error occurred generating this image.  Please try back later.</div>");
                                 }
 			});
+                        console.log("after AJAX");
 			//$('.allowChromSelection').show();
 		}
+                function changeSource(){
+                    console.log("changeSource");
+                    tmpSrc=$('#sourceCB').val();
+                    if(tmpSrc==="seq"){
+                        $("#tissuesMS option[value='Heart']").remove();
+                        $("#tissuesMStsms option[value='Heart']").remove();
+                        $("#tissuesMS option[value='BAT']").remove();
+                         $("#tissuesMStsms option[value='BAT']").remove();
+                         $("td#trxClusterCB").hide();
+                    }else{
+                        $("#tissuesMS").append('<option value="Heart" selected>Heart</option>');
+                        $("#tissuesMS").append('<option value="BAT" selected>Brown Adipose</option>');
+                        $("td#trxClusterCB").show();
+                    }
+                    source=tmpSrc;
+                    //$("#tissuesMS").twosidedmultiselect();
+                }
 	</script>
     <%
 		String selectedCutoffValue = null;
@@ -231,6 +260,15 @@
 				tissueDisplayArray[0]="Whole Brain";
 			}
 			else{
+                            
+                            if(source.equals("seq")){
+                                numberOfTissues = 2;
+				// assume if not mouse that it's rat
+				tissueNameArray[0]="Brain";
+				tissueDisplayArray[0]="Whole Brain";
+				tissueNameArray[1]="Liver";
+				tissueDisplayArray[1]="Liver";
+                            }else{
 				numberOfTissues = 4;
 				// assume if not mouse that it's rat
 				tissueNameArray[0]="Brain";
@@ -241,6 +279,7 @@
 				tissueDisplayArray[2]="Liver";
 				tissueNameArray[3]="BAT";
 				tissueDisplayArray[3]="Brown Adipose";
+                            }
 			}	
 			
 		
@@ -270,6 +309,21 @@
         <tbody id="circosOption">
  		
 		<tr>
+                    <TD>
+                        <strong>Data Source:</strong>
+                        <span class="eQTLtooltip" title="RNA-Seq eQTLs and Microarray eQTLs are available at the gene/transcript cluster level.  Please note the label at the top of the image will indicate the data source for the image displayed."><img src="<%=imagesDir%>icons/info.gif"></span>
+                        <%
+				selectName = "sourceCB";
+				
+                                selectedOption =source;
+				onChange = "changeSource()";
+				style = "";
+				optionHash = new LinkedHashMap();
+                        	optionHash.put("seq", "RNA-Seq");
+                        	optionHash.put("array", "Microarrays");
+				%><%@ include file="/web/common/selectBox.jsp" %>
+                                
+                    </td>
 			<td style="text-align:center;">
 				<strong>P-value Threshold for Highlighting:</strong> 
 				<span class="eQTLtooltip" title="Loci with p-values below the chosen threshold are highlighted on the Circos plot in yellow; a line connects the significant loci with the physical location of the gene. All p-values are displayed on the Circos graphic as the negative log base 10 of the p-value."><img src="<%=imagesDir%>icons/info.gif"></span>	
@@ -293,48 +347,49 @@
 				%>
 				<%@ include file="/web/common/selectBox.jsp" %>
             </td>
-			
-            	<td style="text-align:center;">
-							<strong>Transcript Cluster ID:</strong>
-                            <span class="eQTLtooltip" title="On the Affymetrix Exon Array, gene level expression summaries are labeled as transcript clusters.  
-Each gene may have more than one transcript cluster associated with it, due to differences in annotation among databases and therefore, differences in which individual exons (probe sets) are included in the transcript cluster.  <BR><BR>
-Transcript clusters given the designation of &ldquo;core&rdquo; are based on well-curated annotation on the gene.  
-&ldquo;Extended&rdquo; and &ldquo;full&rdquo; transcript clusters are based on gene properties that are less thoroughly curated and more putative, respectively.  
-Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; have are highly putative for several reasons and therefore are only included in the drop-down menu if no other transcript clusters are available."><img src="<%=imagesDir%>icons/info.gif"></span>
-							<!--<div class="inpageHelp" style="display:inline-block;">
-							<img id="Help9b" src="/web/images/icons/help.png"/>
-							</div>-->
-			
-			<%
-				// Set up the select box:
-				selectName = "transcriptClusterID";
-				if(selectedTranscriptValue!=null){
-					log.debug(" selected Transcript Value "+selectedTranscriptValue);
-					selectedOption = selectedTranscriptValue;
-				}
-				onChange = "";
-				style = "";
-				optionHash = new LinkedHashMap();	
-				String transcriptClusterString = null;
-				for (int i=0; i<transcriptClusterArray.length; i++) {
-				
-					if(transcriptClusterArrayOrder[i] >-1){
-				
-				
-                		columns = transcriptClusterArray[transcriptClusterArrayOrder[i]].split("\t");
-                		transcriptClusterString = transcriptClusterArray[transcriptClusterArrayOrder[i]];
-						String tmpGeneSym="";
-						if(columns.length>5){
-							tmpGeneSym=" ("+columns[5]+")";
-						}
-                		optionHash.put(transcriptClusterString,columns[0]+ " " + columns[4] +tmpGeneSym );
-                	}
-				}
-				//log.debug(" optionHash for Transcript Cluster ID: "+optionHash);
+		
+                
+                    <td id="trxClusterCB" style="text-align:center;<%if(source.equals("seq")){%>display:none;<%}%>">
+                               <strong>Transcript Cluster ID:</strong>
+                                <span class="eQTLtooltip" title="On the Affymetrix Exon Array, gene level expression summaries are labeled as transcript clusters.  
+    Each gene may have more than one transcript cluster associated with it, due to differences in annotation among databases and therefore, differences in which individual exons (probe sets) are included in the transcript cluster.  <BR><BR>
+    Transcript clusters given the designation of &ldquo;core&rdquo; are based on well-curated annotation on the gene.  
+    &ldquo;Extended&rdquo; and &ldquo;full&rdquo; transcript clusters are based on gene properties that are less thoroughly curated and more putative, respectively.  
+    Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; have are highly putative for several reasons and therefore are only included in the drop-down menu if no other transcript clusters are available."><img src="<%=imagesDir%>icons/info.gif"></span>
+                                                            <!--<div class="inpageHelp" style="display:inline-block;">
+                                                            <img id="Help9b" src="/web/images/icons/help.png"/>
+                                                            </div>-->
 
-			%>
-			<%@ include file="/web/common/selectBox.jsp" %>
-            </td>
+                            <%
+                                    // Set up the select box:
+                                    selectName = "transcriptClusterID";
+                                    if(selectedTranscriptValue!=null){
+                                            log.debug(" selected Transcript Value "+selectedTranscriptValue);
+                                            selectedOption = selectedTranscriptValue;
+                                    }
+                                    onChange = "";
+                                    style = "";
+                                    optionHash = new LinkedHashMap();	
+                                    String transcriptClusterString = null;
+                                    for (int i=0; i<transcriptClusterArray.length; i++) {
+
+                                            if(transcriptClusterArrayOrder[i] >-1){
+
+
+                                    columns = transcriptClusterArray[transcriptClusterArrayOrder[i]].split("\t");
+                                    transcriptClusterString = transcriptClusterArray[transcriptClusterArrayOrder[i]];
+                                                    String tmpGeneSym="";
+                                                    if(columns.length>5){
+                                                            tmpGeneSym=" ("+columns[5]+")";
+                                                    }
+                                    optionHash.put(transcriptClusterString,columns[0]+ " " + columns[4] +tmpGeneSym );
+                            }
+                                    }
+                                    //log.debug(" optionHash for Transcript Cluster ID: "+optionHash);
+
+                            %>
+                            <%@ include file="/web/common/selectBox.jsp" %>
+                </td>
 					
 		</tr>
 
@@ -348,7 +403,7 @@ Transcript clusters labeled as &ldquo;free&rdquo; or &ldquo;ambiguous&rdquo; hav
 		
 		<TR class="allowChromSelection" >
                                        <%if(myOrganism.equals("Rn")){%>
-                                            <TD style="text-align:left; width:50%;">
+                                            <TD colspan="2" style="text-align:left; width:50%;">
                                                 <table style="width:100%;">
                                                     <tbody>
                                                         <tr>
@@ -371,7 +426,7 @@ At least one tissue MUST be included in the Circos plot."><img src="<%=imagesDir
                                                                 
                                                                     <% 
                                                                     
-                                                                    for(int i = 0; i < tissueNameArray.length; i ++){
+                                                                    for(int i = 0; i < numberOfTissues; i ++){
                                                                         tissueSelected=isNotSelectedText;
                                                                         if(selectedTissues != null){
                                                                             for(int j=0; j< selectedTissues.length ;j++){
@@ -454,12 +509,14 @@ The chromosome where the gene is physically located MUST be included in the Circ
                                          </TD>
           </TR>		
 		<tr>	
-				<td>
-				<INPUT TYPE="submit" NAME="action" id="clickToRunCircos" Value="Click to run Circos" onClick="return runCircos()">
+                                
+				<td colspan="3" style="text-align:center;">
+                                    <INPUT TYPE="submit" NAME="action" id="clickToRunCircos" Value="Click to run Circos" onClick="return runCircos()" style="display:inline-block;">
+                                    <div style="float: right;display:inline-block"><a href="http://genome.cshlp.org/content/early/2009/06/15/gr.092759.109.abstract" target="_blank" style="text-decoration: none">Circos: an Information Aesthetic for Comparative Genomics.</a></div>
 				</td>
-				<td>
-					<a href="http://genome.cshlp.org/content/early/2009/06/15/gr.092759.109.abstract" target="_blank" style="text-decoration: none">Circos: an Information Aesthetic for Comparative Genomics.</a>
-				</td>
+				
+					
+				
 		</tr>
         </tbody>
       	</table>
@@ -482,8 +539,8 @@ The chromosome where the gene is physically located MUST be included in the Circ
 	<script>
 			document.getElementById("wait2").style.display = 'none';
 	</script>
-	
-<div id="forIframe" style="position:relative;top:-50px; width:100%;">
+        <div style="position:relative;top:-50px;width:100%;"><h2><span id="typeLabel">RNA-Seq</span> Based Gene Level eQTLs</h2></div>	
+<div id="forIframe" style="position:relative;top:-50px;width:100%;">
 </div>
 	
 
@@ -515,10 +572,12 @@ The chromosome where the gene is physically located MUST be included in the Circ
                         interactive: true,
                         interactiveTolerance: 350
                 });
-		if($('#transcriptClusterID').length==1){
-			runCircos();
-		}
-		
+
+		if($('#transcriptClusterID').length===1){
+                    runCircos();
+		}else if(source==="seq"){
+                    runCircos();
+                }
 		$('#circosIFrame').attr('width',$(window).width()-50);
 		$(window).resize(function (){
 			$('#circosIFrame').attr('width',$(window).width()-50);

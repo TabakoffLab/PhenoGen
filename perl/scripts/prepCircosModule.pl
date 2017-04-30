@@ -14,7 +14,7 @@ sub replaceDot{
 sub prepCircosMod
 {
 	# this routine creates configuration and data files for circos
-	my($module,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueString,$genomeVer,$hostname,$dsn,$usr,$passwd)=@_;	
+	my($module,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueString,$genomeVer,$hostname,$dsn,$usr,$passwd,$type)=@_;	
 	my @chromosomeList = @{$chromosomeListRef};
 	my $numberOfChromosomes = scalar @chromosomeList;
 	# if probeChromosome is not in chromosomeList then we don't want to create a links file
@@ -42,20 +42,20 @@ sub prepCircosMod
 	}elsif($hostname eq 'phenogen' and index($dsn,"test")==-1){
                 $genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
         }
-	elsif($hostname eq 'stan.ucdenver.pvt'){
+	elsif($hostname eq 'stan'){
 		$genericConfLocation2 = '/Library/Tomcat/webapps/PhenoGen/tmpData/geneData/';
 	}
 	else{
 		die("Unrecognized Hostname:",$hostname,"\n");
 	}
-        my $genericConfLocation = '/usr/local/circos-0.68/etc/';
-	my $karyotypeLocation = '/usr/local/circos-0.68/data/karyotype/';
+    my $genericConfLocation = '/usr/local/circos-0.69-4/etc/';
+	my $karyotypeLocation = '/usr/local/circos-0.69-4/data/karyotype/';
 	createCircosConfFile($confDirectory,$genericConfLocation,$genericConfLocation2,$karyotypeLocation,$organism,$chromosomeListRef,$oneToCreateLinks,$oneToCreateLinks);
 	createCircosIdeogramConfFiles($confDirectory,$organism,$chromosomeListRef);
 	createCircosModGenesTextConfFile($dataDirectory,$confDirectory);
 	createCircosModGenesTextDataFile($module,$tissueString,$dataDirectory,$organism,$genomeVer,$dsn,$usr,$passwd);
 	createCircosPvaluesConfFile($confDirectory,$dataDirectory,$cutoff,$organism,$tissueString);
-	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$genomeVer,$dsn,$usr,$passwd);
+	my $eqtlAOHRef = readLocusSpecificPvaluesModule($module,$organism,$tissueString,$chromosomeListRef,$genomeVer,$dsn,$usr,$passwd,$type);
 	createCircosPvaluesDataFiles($dataDirectory,$module,$organism,$eqtlAOHRef,$chromosomeListRef,$tissueString);
 	if($oneToCreateLinks == 1){
 		createCircosLinksConfAndData($dataDirectory,$organism,$confDirectory,$eqtlAOHRef,$cutoff,$tissueString,$chromosomeList[0]);	
@@ -265,6 +265,8 @@ sub createCircosModGenesTextDataFile{
                 }
 		print DATAFILE $sp.$geneHOH{$gene}{chr}, " ",$geneHOH{$gene}{min}, " ",$geneHOH{$gene}{max}, " ",$gene," svgclass=circosGene.",replaceDot($gene),",color=",$colorGene,",svgid=",replaceDot($gene), "\n";
 	}
+	$query_handle->finish();
+	$connect->disconnect();
 	close(DATAFILE);
 }
 

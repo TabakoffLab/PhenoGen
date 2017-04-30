@@ -40,7 +40,7 @@ sub setupDirectories{
 
 
 sub callCircos{
-	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$genomeVer,$chromosomeString,$geneCentricPath,$timeStampString,$tissueString,$dsn,$usr,$passwd)=@_;
+	my($geneName,$geneSymbol,$probeID,$psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$genomeVer,$chromosomeString,$geneCentricPath,$timeStampString,$tissueString,$dsn,$usr,$passwd,$type)=@_;
 	#
 	# General outline of process:
 	# First, prep circos conf and data files
@@ -66,7 +66,7 @@ sub callCircos{
 	my @tissueList = split(/;/, $tissueString);
 	my $tissueListRef = (\@tissueList);
 	print " Ready to call prepCircos \n";
-	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$genomeVer,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$dsn,$usr,$passwd,$hostname);
+	prepCircos($geneName, $geneSymbol,$probeID, $psLevel,$probeChromosome,$probeStart,$probeStop,$cutoff,$organism,$genomeVer,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueListRef,$dsn,$usr,$passwd,$hostname,$type);
 	print " Finished prepCircos \n";	
 	
 
@@ -88,13 +88,13 @@ sub callCircos{
 	my $inkscapeBinary;
 	my $inkscapeDirectory;
 
-        if($hostname eq 'phenogen'){
+    if($hostname eq 'phenogen'){
 		$circosBinary = '/usr/local/circos-0.68/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
-	elsif($hostname eq 'stan.ucdenver.pvt'){
-		$circosBinary = '/usr/local/circos-0.68/bin/circos';
+	elsif($hostname eq 'stan'){
+		$circosBinary = '/usr/local/circos-0.69-4/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 	}
@@ -133,9 +133,9 @@ sub callCircos{
 	# Now convert circos_new.svg to circos_new.pdf
 	#
 
-	
-	@systemArgs=($inkscapeBinary,'-z','-f',$svgDirectory."circos_new.svg",'-A',$svgDirectory."circos_new.pdf",'-b','rgb(255,255,255)','-i','notooltips','-j','-C');
-	print " System call with these arguments: @systemArgs \n";
+	if($hostname eq 'phenogen'){
+		@systemArgs=($inkscapeBinary,'-z','-f',$svgDirectory."circos_new.svg",'-A',$svgDirectory."circos_new.pdf",'-b','rgb(255,255,255)','-i','notooltips','-j','-C');
+		print " System call with these arguments: @systemArgs \n";
 	
         system(@systemArgs);
         if ( $? == -1 )
@@ -149,6 +149,7 @@ sub callCircos{
             #-- go back to original directory
             chdir($pwd);
         }
+    }
 	my $arg1 = $ARGV[0]; # Ensembl Gene Name
 	my $arg2 = $ARGV[1]; # Gene Symbol
 	my $arg3 = $ARGV[2]; # Transcript Cluster ID
@@ -165,7 +166,8 @@ sub callCircos{
 	my $arg14=$ARGV[13]; #dsn
 	my $arg15=$ARGV[14]; #user
 	my $arg16=$ARGV[15]; #password
-        my $arg17=$ARGV[16]; #password
-	callCircos($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17);
+    my $arg17=$ARGV[16]; #password
+    my $arg18=$ARGV[17]; #Source
+	callCircos($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9, $arg10, $arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18);
 
 1;

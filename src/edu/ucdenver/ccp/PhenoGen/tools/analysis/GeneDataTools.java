@@ -181,6 +181,73 @@ public class GeneDataTools {
         
     }
     
+    public int[] getOrganismSpecificIdentifiers(String organism,String tissue,String genomeVer){
+        
+            int[] ret=new int[2];
+            String organismLong="Mouse";
+            if(organism.equals("Rn")){
+                organismLong="Rat";
+            }
+            if(tissue.equals("Whole Brain")){
+                tissue="Brain";
+            }
+            String atQuery="select Array_type_id from array_types "+
+                        "where array_name like 'Affymetrix GeneChip "+organismLong+" Exon 1.0 ST Array'";
+            
+            /*
+            *  This does only look for the brain RNA dataset id.  Right now the tables link that RNA Dataset ID to
+            *  the other datasets.  This means finding the right organism and genome version for now is sufficient without
+            *  regard to tissues as all other tables link to the brain dataset since we have brain for both supported organisms
+            */
+            String rnaIDQuery="select rna_dataset_id from RNA_DATASET "+
+                        "where organism = '"+organism+"' and tissue='"+tissue+"' and visible=1 and genome_id='"+genomeVer+"'";
+            log.debug("\nRNAID Query:\n"+rnaIDQuery);
+            Connection conn=null;
+            PreparedStatement ps=null;
+            try {
+                conn=pool.getConnection();
+                ps = conn.prepareStatement(atQuery);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next()){
+                    ret[0]=rs.getInt(1);
+                }
+                ps.close();
+            } catch (SQLException ex) {
+                log.error("SQL Exception retreiving Array_Type_ID from array_types for Organism="+organism ,ex);
+                try {
+                    ps.close();
+                } catch (Exception ex1) {
+                   
+                }
+            }
+            try {
+                if(conn==null || conn.isClosed()){
+                    conn=pool.getConnection();
+                }
+                ps = conn.prepareStatement(rnaIDQuery);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next()){
+                    ret[1]=rs.getInt(1);
+                }
+                ps.close();
+                conn.close();
+            } catch (SQLException ex) {
+                log.error("SQL Exception retreiving RNA_dataset_ID from RNA_DATASET for Organism="+organism ,ex);
+                try {
+                    ps.close();
+                } catch (Exception ex1) {
+
+                }
+            }finally{
+                    try {
+                            if(conn!=null)
+                                conn.close();
+                        } catch (SQLException ex) {
+                        }
+            }
+            return ret;
+    }
+    
     public HashMap<String,String> getGenomeVersionSource(String genomeVer){
         
             HashMap<String,String> hm=new HashMap<String,String>();
@@ -198,10 +265,17 @@ public class GeneDataTools {
                     hm.put("ucsc",rs.getString("UCSC"));
                 }
                 ps.close();
+                conn.close();
+                conn=null;
             } catch (SQLException ex) {
                 log.error("SQL Exception retreiving datasources for genome Version="+genomeVer ,ex);
                 try {
-                    ps.close();
+                   if(conn!=null && !conn.isClosed()){
+                       try{
+                           conn.close();
+                           conn=null;
+                       }catch(SQLException e){}
+                   }
                 } catch (Exception ex1) {
                    
                 }
@@ -891,7 +965,11 @@ public class GeneDataTools {
                 maxCoord=Integer.parseInt(loc[2]);
                 log.debug("AsyncGeneDataTools with "+chrom+":"+minCoord+"-"+maxCoord);
                 callWriteXML(ensemblID1,organism,genomeVer,chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID);
-                prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID,genomeVer);
+                boolean isENS=false;
+                if(ensemblID1.startsWith("ENS")){
+                    isENS=true;
+                }
+                prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID,genomeVer,isENS);
             }
         }else{
             error=true;
@@ -925,10 +1003,54 @@ public class GeneDataTools {
             outDirF.mkdirs();
         }
         boolean createdXML=this.createRegionImagesXMLFiles(folderName,organism,genomeVer,ensemblPath,arrayTypeID,RNADatasetID,ucscDB);
-
+        AsyncGeneDataTools prevThread=callAsyncGeneDataTools(chrom, minCoord, maxCoord,arrayTypeID,RNADatasetID,genomeVer,false);
         return createdXML;
     }
     
+    public ArrayList<String> getPhenoGenID(String ensemblID,String genomeVer) throws SQLException{
+        Connection conn=null;
+        ArrayList<String> ret=new ArrayList<String>();
+        try{
+           conn=pool.getConnection();
+           String org="Rn";
+           if(ensemblID.startsWith("ENSMMU")){
+               org="Mm";
+           }
+           String query="select rt.gene_id,rta.annotation from rna_transcripts_annot rta, rna_transcripts rt "+
+                        "where rt.RNA_TRANSCRIPT_ID=rta.RNA_TRANSCRIPT_ID "+
+                        "and rt.RNA_DATASET_ID=? "+
+                        "and rta.ANNOTATION like '"+ensemblID+"%'";
+           int[] tmp=getOrganismSpecificIdentifiers(org,"Merged",genomeVer);
+           int dsid=tmp[1];
+           PreparedStatement ps=conn.prepareStatement(query);
+           ps.setInt(1, dsid);
+           ResultSet rs=ps.executeQuery();
+           
+           while(rs.next()){
+               String id=rs.getString(1);
+               boolean found=false;
+               for(int i=0;i<ret.size()&&!found;i++){
+                   if(ret.get(i).equals(id)){
+                       found=true;
+                   }
+               }
+               if(!found){
+                   ret.add(id);
+               }
+           }
+           ps.close();
+           conn.close();
+        }catch(SQLException e){
+            try{
+                if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                    conn=null;
+                }
+            }catch(SQLException ex){}
+            throw(e);
+        }
+        return ret;
+    }
     
     private void outputProbesetIDFiles(String outputDir,String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer){
         if(chr.toLowerCase().startsWith("chr")){
@@ -1994,9 +2116,9 @@ public class GeneDataTools {
         return completedSuccessfully;
     }
     
-    public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer){
+    public AsyncGeneDataTools callAsyncGeneDataTools(String chr, int min, int max,int arrayTypeID,int rnaDS_ID,String genomeVer,boolean isENSGene){
         AsyncGeneDataTools agdt;         
-        agdt = new AsyncGeneDataTools(session,pool,outputDir,chr, min, max,arrayTypeID,rnaDS_ID,usageID,genomeVer);
+        agdt = new AsyncGeneDataTools(session,pool,outputDir,chr, min, max,arrayTypeID,rnaDS_ID,usageID,genomeVer,isENSGene);
         //log.debug("Getting ready to start");
         agdt.start();
         //log.debug("Started AsyncGeneDataTools");
@@ -2790,7 +2912,7 @@ public class GeneDataTools {
             }
             qtlQuery=qtlQuery+"and aep.array_type_id="+arrayTypeID+" "+
                                 "and aep.updatedlocation='Y' "+
-                                "and lse.probe_id=aep.probeset_id "+
+                                "and lse.probe_id=TO_CHAR(aep.probeset_id) "+
                                 "and s.snp_id=lse.snp_id "+
                                 "and lse.pvalue >= "+(-Math.log10(pvalue))+" "+
                                 "and aep.chromosome_id=c1.chromosome_id "+
@@ -2970,7 +3092,7 @@ public class GeneDataTools {
                                 "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep " +
                                 "where s.snp_id=lse.snp_id " +
                                 "and s.genome_id='"+genomeVer+"'" +
-                                "and lse.probe_id=aep.probeset_id " +
+                                "and lse.probe_id=TO_CHAR(aep.probeset_id) " +
                                 "and c2.chromosome_id=aep.chromosome_id " +
                                 "and c.chromosome_id=s.chromosome_id " +
                                 "and lse.pvalue>= "+(-Math.log10(pvalue))+" " +
@@ -3035,7 +3157,7 @@ public class GeneDataTools {
                                 "from location_specific_eqtl lse, snps s, chromosomes c ,chromosomes c2, affy_exon_probeset aep " +
                                 "where s.snp_id=lse.snp_id " +
                                 "and s.genome_id='"+genomeVer+"'" +
-                                "and lse.probe_id=aep.probeset_id " +
+                                "and lse.probe_id=TO_CHAR(aep.probeset_id) " +
                                 "and c2.chromosome_id=aep.chromosome_id " +
                                 "and c.chromosome_id=s.chromosome_id " +
                                 "and lse.pvalue< "+(-Math.log10(pvalue))+" " +

@@ -3,8 +3,8 @@
 <%
   extrasList.add("d3.v3.5.16.min.js");
   extrasList.add("svg-pan-zoom.3.2.3.min.js");
-  extrasList.add("GenomeReport2.1.8.js");
-  extrasList.add("wgcnaBrowser1.0.10.js");
+  //extrasList.add("GenomeReport2.1.8.js");
+  //extrasList.add("wgcnaBrowser1.0.10.js");
 
   extrasList.add("detailedTranscriptInfo.js");
   extrasList.add("tabs.css");

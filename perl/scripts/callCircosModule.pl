@@ -40,7 +40,7 @@ sub setupDirectories{
 
 
 sub callCircosMod{
-	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$modColor,$genomeVer,$dsn,$usr,$passwd)=@_;
+	my($module,$cutoff,$organism,$chromosomeString,$tissueString,$modulePath,$timeStampString,$modColor,$genomeVer,$dsn,$usr,$passwd,$type)=@_;
         #print "in callCircosMod() path:$modulePath\n";
 
 
@@ -87,7 +87,7 @@ sub callCircosMod{
 	my @chromosomeList = split(/;/, $chromosomeString);
 	my $chromosomeListRef = (\@chromosomeList);
 	#print " Ready to call prepCircos \n";
-	prepCircosMod($module,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueString,$genomeVer,$hostname,$dsn,$usr,$passwd);
+	prepCircosMod($module,$cutoff,$organism,$confDirectory,$dataDirectory,$chromosomeListRef,$tissueString,$genomeVer,$hostname,$dsn,$usr,$passwd,$type);
 	#print " Finished prepCircos \n";	
 	
 
@@ -114,8 +114,8 @@ sub callCircosMod{
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/usr/bin/inkscape';
 	}
-	elsif($hostname eq 'stan.ucdenver.pvt'){
-		$circosBinary = '/usr/local/circos-0.68/bin/circos';
+	elsif($hostname eq 'stan'){
+		$circosBinary = '/usr/local/circos-0.69-4/bin/circos';
 		$perlBinary = '/usr/bin/perl';
 		$inkscapeBinary = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape';
 	}
