@@ -2,6 +2,8 @@ package edu.ucdenver.ccp.PhenoGen.tools.analysis;
 
 
 import edu.ucdenver.ccp.PhenoGen.data.User;
+import edu.ucdenver.ccp.PhenoGen.data.WGCNAMetaModule;
+import edu.ucdenver.ccp.PhenoGen.data.WGCNAMetaModLink;
 import edu.ucdenver.ccp.PhenoGen.web.SessionHandler;
 import edu.ucdenver.ccp.PhenoGen.web.mail.*;
 import edu.ucdenver.ccp.PhenoGen.data.AnonGeneList;
@@ -302,6 +304,54 @@ public class WGCNATools{
         return ret;
     }
     
+    public ArrayList<WGCNAMetaModule> getWGCNAMetaModules(String modName,String panel,String tissue, String org, String genomeVer, String source){
+        ArrayList<WGCNAMetaModule> ret=new ArrayList<WGCNAMetaModule>();
+        int dsid=this.getWGCNADataset(panel,tissue,org,genomeVer,source);
+        String mmidQuery="select unique mmpid from WGCNA_Meta_Modues where wdsid=? and module_name=?";
+        WGCNAMetaModule getW=new WGCNAMetaModule();
+        Connection conn = null;
+        try {
+            conn = pool.getConnection();
+            PreparedStatement ps = conn.prepareStatement(mmidQuery);
+            ps.setInt(1, dsid);
+            ps.setString(2,modName);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int mmpid=rs.getInt(1);
+                ret.add(getW.getMetaModule(pool,mmpid));
+            }
+            ps.close();
+            conn.close();
+            conn=null;
+        }catch(SQLException e){
+             e.printStackTrace(System.err);
+            log.error("Error getting WGCNA dataset id.",e);
+            Email myAdminEmail = new Email();
+            String fullerrmsg=e.getMessage();
+            StackTraceElement[] tmpEx=e.getStackTrace();
+            for(int i=0;i<tmpEx.length;i++){
+                fullerrmsg=fullerrmsg+"\n"+tmpEx[i];
+            }
+            myAdminEmail.setSubject("Exception thrown getting WGCNA dataset id");
+            myAdminEmail.setContent("There was an error getting WGCNA dataset id.\n"+fullerrmsg);
+            try {
+                    myAdminEmail.sendEmailToAdministrator("");
+            } catch (Exception mailException) {
+                    log.error("error sending message", mailException);
+                    throw new RuntimeException();
+            }
+        }finally{
+            try{
+                    if(conn!=null&&!conn.isClosed()){
+                        conn.close();
+                        conn=null;
+                    }
+            }catch(SQLException er){
+            }
+        }
+        return ret;
+    }
+    
     private int getWGCNADataset(String panel, String tissue, String org,String genomeVer,String source) {
         Connection conn = null;
         String query="Select wdsid from WGCNA_Dataset where organism=? and tissue=? and panel=? and genome_id=? and type=? and visible=1";
@@ -351,5 +401,13 @@ public class WGCNATools{
         }
         return ret;
     }
+    
+    private ArrayList<WGCNAMetaModLink> getWGCNAMetaLinks(){
+        ArrayList<WGCNAMetaModLink> ret=new ArrayList<WGCNAMetaModLink>();
+        
+        return ret;
+    }
+    
+    
 
 }

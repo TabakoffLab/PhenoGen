@@ -546,7 +546,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of miRNAs that target genes in this module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
         //}
         
-        /*that.viewBar.append("br");
+        that.viewBar.append("br");
         that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","meta").style("margin-left","7px").style("margin-right","3px").on("click",function(){
             that.viewType="meta";
             that.createSingleWGCNAImage();
@@ -554,7 +554,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 						ga('send','event','WGCNA','metaView');
 			}
         });
-		that.viewBar.append("text").text("Meta Module (nearest neighbors)");*/
+		that.viewBar.append("text").text("Meta Module (nearest neighbors)");
 
         $("#HelpWGCNAView").on('click', function(event){
 			var id=$(this).attr('id');
@@ -1424,6 +1424,25 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 $("div#mirLinkColorSelect").hide();
                 setTimeout(function(){
 					that.singleImage=that.singleWGCNAImageGeneView(that.modules);
+					that.singleImage.draw();
+					that.img=that.singleImage;
+					setTimeout(function(){
+						that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                        panEnabled: true
+                                      , controlIconsEnabled:false
+                                      , zoomEnabled: true
+                                      , dblClickZoomEnabled: true
+                                      , zoomScaleSensitivity: 0.2
+                                      , minZoom: 0.1
+                                      , maxZoom: 4
+                                      , fit: true
+                                      , center: true
+                                });
+					},500);
+                },50);
+            }else if(that.viewType==="meta"){
+                setTimeout(function(){
+					that.singleImage=that.singleWGCNAImageMetaView(that.modules);
 					that.singleImage.draw();
 					that.img=that.singleImage;
 					setTimeout(function(){
@@ -4263,5 +4282,675 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		});
 	};
         
+
+	that.singleWGCNAImageMetaView=function(){
+		var thatimg=that.singleWGCNAImage();
+        $(".goCTL").hide();
+        $(".eqtlCtls").hide();
+        $(".linkCTL").show();
+        
+        thatimg.CorCutoff_min=0.75;
+        thatimg.CorCutoff_max=1;
+        thatimg.type=that.viewType;
+        thatimg.truncated=0;
+        thatimg.filterOneDB=1;
+        thatimg.mirGeneCutoff=1;
+        thatimg.mirValid=0;
+        thatimg.mirTargetID="";
+        thatimg.mirID="";
+        thatimg.miRcolor = d3.scaleOrdinal(d3.schemeCategory20b);
+        thatimg.sortMir=0;
+        thatimg.maxCorWidth=5;
+        
+        thatimg.drawLinks=function(d){
+            //console.log("draw links");
+            if(that.viewType==='gene'){
+                //console.log("update link color");
+                thatimg.updateColor("linkColor");
+            }else if(that.viewType==='mir'){
+                //console.log("update mir link color");
+                thatimg.updateColor("mirlinkColor");
+            }
+            thatimg.svg.selectAll(".link").remove();
+            var links=that.selectedModule.LinkList;
+            var filterLinks=[];
+            var count=0;
+            for(var i=0;i<links.length;i++){
+                if(links[i].TC1===d.ID || links[i].TC2===d.ID){
+                    if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
+                        filterLinks[count]=links[i];
+                        count++;
+                    }
+                }
+            }
+            links=filterLinks;
+            if(links.length<10000){
+                var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
+                lnk.enter().append("line")
+                        .attr("class","link")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
+                        .attr("x1",function(d){
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
+                            //console.log(d.TC1+":x1:"+x);
+                            return x;
+                        })
+                        .attr("y1",function(d){
+                            var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
+                            //console.log(d.TC1+":y1:"+y);
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                        	//console.log(d.TC2+":x2:"+x);
+                        	//console.log(d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)));
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
+                            
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
+                            //console.log(d.TC2+":y2:"+y);
+                            return y;
+                        })
+                        .attr("stroke",thatimg.colorLink)
+                        .attr("stroke-width",function(d){
+                            var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
+                            /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
+                                val=0;
+                            }*/
+                            return val;
+                        }).merge(lnk);
+            }
+        };
+        
+        thatimg.drawLinksBetween=function(list){
+        	var hash={};
+        	for(var v=0;v<list.length;v++){
+        		hash[list[v]]=1;
+        	}
+
+            //console.log(list);
+            if(that.viewType==='gene'){
+                //console.log("update link color");
+                thatimg.updateColor("linkColor");
+            }else if(that.viewType==='mir'){
+                //console.log("update mir link color");
+                thatimg.updateColor("mirlinkColor");
+            }
+            thatimg.svg.selectAll(".link").remove();
+            var links=that.selectedModule.LinkList;
+            var filterLinks=[];
+            var count=0;
+            for(var i=0;i<links.length;i++){
+            	//console.log(links[i].TC1);
+                if( (thatimg.showAllFromTarget===0 && typeof hash[links[i].TC1]!=='undefined' && typeof hash[links[i].TC2]!=='undefined') ||
+                	(thatimg.showAllFromTarget===1 && (typeof hash[links[i].TC1]!=='undefined' || typeof hash[links[i].TC2]!=='undefined'))
+                	){
+                    if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
+                        filterLinks[count]=links[i];
+                        count++;
+                    }
+                }
+            }
+            links=filterLinks;
+            if(links.length<10000){
+                var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
+                lnk.enter().append("line")
+                        .attr("class","link")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
+                        .attr("x1",function(d){
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
+                            //console.log(d.TC1+":x1:"+x);
+                            return x;
+                        })
+                        .attr("y1",function(d){
+                            var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
+                            //console.log(d.TC1+":y1:"+y);
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                        	//console.log(d.TC2+":x2:"+x);
+                        	//console.log(d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)));
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
+                            //console.log(d.TC2+":x2:"+x);
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
+                            //console.log(d.TC2+":y2:"+y);
+                            return y;
+                        })
+                        .attr("stroke",thatimg.colorLink)
+                        .attr("stroke-width",function(d){
+                            var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
+                            /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
+                                val=0;
+                            }*/
+                            return val;
+                        }).merge(lnk);
+            }
+        };
+
+        thatimg.nodeX=function(d,i){
+            var ring=50;
+            var l=Math.floor(i/thatimg.maxPerLevel)+1;
+            if(l>1){
+                ring=l*60;
+            }
+            var ii=i%thatimg.maxPerLevel;
+            return thatimg.width/2+(thatimg.r-ring)*(Math.cos(ii*thatimg.angle-1.57079633));
+            //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
+        };
+
+        thatimg.nodeY=function(d,i){
+            var ring=50;
+            if(i>thatimg.maxPerLevel){
+                var l=Math.floor(i/thatimg.maxPerLevel)+1;
+                ring=l*60;
+            }
+
+            var ii=i%thatimg.maxPerLevel;
+            return thatimg.height/2+(thatimg.r-ring)*(Math.sin(ii*thatimg.angle-1.57079633));
+            //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
+        };
+        
+        thatimg.nodeXLbl=function(d,i){
+            var ring=50;
+            var l=Math.floor(i/thatimg.maxPerLevel)+1;
+            if(l>1){
+                ring=l*60;
+            }
+            var ii=i%thatimg.maxPerLevel;
+            var angleRad=ii*thatimg.angle-1.57079633;
+            var plusMinus=1;
+            if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
+                var len=0;
+                if(typeof d.Gene.geneSymbol !=='undefined'){
+                    len=d.Gene.geneSymbol.length;
+                }
+                plusMinus=plusMinus+len*7.5;
+                //console.log("i="+i);
+            }
+            return thatimg.width/2+(thatimg.r+plusMinus)*(Math.cos(angleRad));
+            //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
+        };
+
+        thatimg.nodeYLbl=function(d,i){
+            var ring=50;
+            
+            if(i>thatimg.maxPerLevel){
+                var l=Math.floor(i/thatimg.maxPerLevel)+1;
+                ring=l*60;
+            }
+
+            var ii=i%thatimg.maxPerLevel;
+            var angleRad=ii*thatimg.angle-1.57079633;
+            var plusMinus=1;
+            if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
+                var len=0;
+                if(typeof d.Gene.geneSymbol !=='undefined'){
+                    len=d.Gene.geneSymbol.length;
+                }
+                plusMinus=plusMinus+len*7.5;
+            }
+            return thatimg.height/2+(thatimg.r+plusMinus)*(Math.sin(angleRad));
+            //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
+        };
+        
+        thatimg.drawCorLegend=function(start){
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start).text("Positive Correlation");
+            thatimg.legendDispG.append("rect").attr("x","0").attr("y",start-10).attr("width", "30").attr("height", "10").style("fill",thatimg.posColor);
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+20).text("Negative Correlation");
+            thatimg.legendDispG.append("rect").attr("x","0").attr("y",start+10).attr("width", "30").attr("height","10").style("fill",thatimg.negColor);
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+40).text("Lower Correlation");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+30).attr("x2", "30").attr("y2",start+30).style("stroke","#000000").style("stroke-width","0");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+35).attr("x2", "30").attr("y2",start+35).style("stroke","#000000").style("stroke-width","0.5");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+40).attr("x2", "30").attr("y2",start+40).style("stroke","#000000").style("stroke-width","1");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+45).attr("x2", "30").attr("y2",start+45).style("stroke","#000000").style("stroke-width","2");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+55).attr("x2", "30").attr("y2",start+55).style("stroke","#000000").style("stroke-width","3");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+65).attr("x2", "30").attr("y2",start+65).style("stroke","#000000").style("stroke-width","5");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+75).attr("x2", "30").attr("y2",start+75).style("stroke","#000000").style("stroke-width","7");
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+80).text("Higher Correlation");
+        };
+        
+        
+        thatimg.drawLegend=function(){
+            thatimg.drawCorLegend(20);
+        };
+
+		thatimg.draw=function(){
+			thatimg.requestMeta();
+            if(that.viewType==='mir'){
+                
+                thatimg.updateColor("mirlinkColor");
+            }else if(that.viewType==='gene'){
+                thatimg.updateColor("linkColor");
+            }
+            thatimg.width=$(window).width();
+            thatimg.height=Math.floor(window.innerHeight*0.9);
+            //console.log("H:"+thatimg.height+"  W:"+thatimg.width);
+            if(thatimg.height>thatimg.width){
+                    //console.log("using width");
+                    thatimg.r=Math.floor((thatimg.width/2)*0.95);
+            }else{
+                    //console.log("using height");
+                    thatimg.r=Math.floor((thatimg.height/2)*0.95);
+            }
+            thatimg.svg.attr("height",thatimg.height+"px");
+            thatimg.svg.selectAll("circle").remove();
+            thatimg.svg.selectAll("text").remove();
+            thatimg.svg.selectAll("line").remove();
+            thatimg.svg.selectAll(".geneTC").remove();
+            if(typeof thatimg.panZoom !=='undefined'){
+                thatimg.panZoom.destroy();
+                delete thatimg.panZoom;
+            }
+            thatimg.svg.selectAll(".svg-pan-zoom_viewport").remove();
+            /*thatimg.svg.append("circle")
+                            .attr("cx",thatimg.width/2)
+                            .attr("cy",thatimg.height/2)
+                            .attr("r",thatimg.r)
+                            .attr("stroke","#000000")
+                            .attr("fill","#FFFFFF");*/
+            
+            setTimeout(function(){
+	            thatimg.svg.append("text")
+	                    .style("font-size","20")
+	                                    .attr("y",22)
+	                                    .attr("x",5)/*function(){
+	                                            var len=that.selectedModule.MOD_NAME.length;
+	                                            var w=len/2;
+	                                            var offset=thatimg.width/2-(w*6.5);
+	                                            return offset;
+	                                    })*/
+	                                    .text(function(){
+	                                    	if(that.selectedModule){
+	                                    		return replaceUnderscore(that.selectedModule.MOD_NAME);
+	                                    	}else{
+	                                    		return "";
+	                                    	}
+	                                	});
+	            
+	            thatimg.setupLegend();
+	            
+	            
+	            
+	            thatimg.data=that.selectedModule.TCList;
+	            thatimg.angle=2*Math.PI/thatimg.data.length;
+	            thatimg.angleDeg=360/thatimg.data.length;
+	            if(thatimg.data.length>thatimg.maxPerLevel){
+	                thatimg.angle=2*Math.PI/thatimg.maxPerLevel;
+	                thatimg.angleDeg=360/thatimg.maxPerLevel;
+	            }
+	            thatimg.data.sort(function(a,b){
+	                if(a.LinkSum===b.LinkSum){
+	                //if(a.LinkCount===b.LinkCount){
+	                    return 0;
+	                }else if(a.LinkSum>b.LinkSum){
+	                //}else if(a.LinkCount>b.LinkCount){
+	                    return -1;
+	                }
+	                return 1;
+	            });
+	            if(thatimg.data.length>150){
+	                thatimg.truncated=1;
+	                thatimg.maxNodeR=15;
+	                var tmpdata=[];
+	                for(var p=0;p<150;p++){
+	                    tmpdata[p]=thatimg.data[p];
+	                }
+	                thatimg.data=tmpdata;
+	                thatimg.dataIndex={};
+	                for(var p=0;p<thatimg.data.length;p++){
+	                    thatimg.dataIndex[thatimg.data[p].ID]=1;
+	                }
+	                thatimg.CorCutoff_min=0.85;
+	                $("#linkSliderMin").slider('value',0.85);
+	                $("span#minLabel").html(0.85);
+
+	                thatimg.svg.append("image").attr("x",that.selectedModule.MOD_NAME.length*7.8+20).attr("y",1).attr("width","24px")								
+	                    .attr("height","24px")
+	                    .attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ"+
+	                            "I0lEQVRIDQEYCef2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAA/wAAH/gAACcAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAADwAAALkCAABoFDEx"+
+	                            "0gIzM+/b29v4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGIAAAAvAgAAHDnn54QGBgY3SUlJBwAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAP8AAB0AAAChAAAADAAAAAAU9vYY4RER/ecNDdLZ2dnvAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5AAAAFgAAAAAA"+
+	                            "AAAABv7+BFHZ2UgFAgI4Ozs7DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAtAAAAmAAAAAQAAAAAAAAAAAAAAAAU9/cM7AoKAOYY"+
+	                            "GNTZ2dnqAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAD/AAAFAAAAnQAAACf8AgIAzhgY/uIODv4V9vYBBP//AR3z8xrKHBzjDhwc2uDg4PYAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASwAAAEUAAAAB+AMD"+
+	                            "AJwyMveSODjT9QUF+AAAAAAY9PQOTN3dTxISEipAQEAEAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAADAAAAIAAAAAEAAAAAAAAAAAC/v7vAv7+tQn7+/IAAAAA"+
+	                            "AAAAAT/g4DQd8/NHCgoKFAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAGcAAAAuAAAAAAAAAAAAAAAAAAEB+gP//+QF///7AAAAAAAAAAAQ+voIVtfXUggICDM5"+
+	                            "OTkJAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABYAAAB4AAAAAQAAAAAA"+
+	                            "AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAATXm5iYt6+tMExMTHAAAAAEAAAAAAAAAAAAA"+
+	                            "AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB7AAAAEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAF/v4CVdfXSw0EBDdAQEALAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAA"+
+	                            "AAD/AAAzAAAAkwAAAAYAAAAAAAAAAAAAAAAAAQEAAAAA/kDh4QAb8/MpAgAACAAAAAAAAAAAAAAA"+
+	                            "ABT29g7vCAgB4RYW1NnZ2eoAAAD/AAAAAAAAAAAAAAAAAAAAAAD/AAAE/wAAtf8AAP//AAD//wAA"+
+	                            "//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD/5Q0N7WNKSnFHR0cS"+
+	                            "AAAAAAAAAAADAAAAAAAAAAAAAAAAgAAATAAAAHkAAAADAAAAAAAAAAAAAAAAAAAAAPgEBP+XMzP7"+
+	                            "xR8f7ivq6gcH/f0CAAAAAAAAAAAAAAAAAAAAAAz6+gj9AgIM2Bsb0QoKCujn5+f+AgAAAAAAAAAA"+
+	                            "/wAABwAAAIkAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAD9AQEA1hUV9MwZGccAAAD2AAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAABAAABR97eNhb390ceHh4RAAAAAAAAAAAAAAAAAP8AAG//AAD+/wAA//8AAP//"+
+	                            "AAD//wAA//8AAP//AAD//gAA/u4ICPvzBQXw/gAA/P8AAP//AAD//wAA//8AAP//AAD//wAA//8A"+
+	                            "AP/CHR3SVVBQNgAAAAACAAAAAP8AAAgAAABfAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA"+
+	                            "AAER+PgEDPv7DwEAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMOnpJyHy8icAAAAABAAA"+
+	                            "AAABAAD42BMTgdUTE2buCwsz/QICCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8BAAD/AAEB"+
+	                            "Af8AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAPEHB/vhEBANAAAAAAQAAAAAAAAAAHU6OrsDAwPnAgIC"+
+	                            "IQEBAQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAABAQH//f39zgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAs0IPw6I24JoAAAAASUVORK5CYII=")
+	                    .attr("pointer-events", "all")
+	                    .style("cursor","pointer")
+	                    .on("mouseover",function(){
+	                            $("#wgcnaMouseHelp").html("Warning: Transcripts displayed are truncated to the top 150 most connected transcripts due to the size of the module.");
+	                    })
+	                    .on("mouseout",function(){
+	                            $("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+	                    });
+	            }else{
+	                thatimg.maxNodeR=28;
+	            }
+	            
+	            thatimg.topG=thatimg.svg.append("g").attr("class","svg-pan-zoom_viewport");
+	            if(that.viewType==='gene'){
+	                var tc=thatimg.topG.selectAll(".geneTC")
+	                                .data(thatimg.data,thatimg.geneKey);
+	                //tc.sort();
+	                //add new
+	                tc.enter().append("circle")
+	                                .attr("class","geneTC")
+	                                .attr("id",function(d){return "tc_"+that.removeInvalidIDChars(d.ID);})
+	                                .attr("cx", thatimg.nodeX)
+	                                .attr("cy",thatimg.nodeY)
+	                                .attr("r",3)
+	                                .attr("stroke","#000000")
+	                                .attr("fill","#FF0000").merge(tc);
+
+	                var links=that.selectedModule.LinkList;
+	                var filterLinks=[];
+	                var count=0;
+	                for(var i=0;i<links.length;i++){
+	                    if(thatimg.CorCutoff_min<=Math.abs(links[i].Cor) && Math.abs(links[i].Cor)<=thatimg.CorCutoff_max){
+	                        if(thatimg.truncated===0 || (typeof thatimg.dataIndex[links[i].TC1]!=='undefined' && typeof thatimg.dataIndex[links[i].TC2]!=='undefined')){
+	                            filterLinks[count]=links[i];
+	                            count++;
+	                        }
+	                    }
+	                }
+	                links=filterLinks;
+	                if(thatimg.showLinks && links.length<10000){
+	                    var lnk=thatimg.topG.selectAll(".link").data(links,thatimg.linkKey);
+	                    lnk.enter().append("line")
+	                            .attr("class","link")
+	                            .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
+	                            .attr("x1",function(d){
+	                                var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
+	                                //console.log(d.TC1+":x1:"+x);
+	                                return x;
+	                            })
+	                            .attr("y1",function(d){
+	                                var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
+	                                //console.log(d.TC1+":y1:"+y);
+	                                return y;
+	                            })
+	                            .attr("x2",function(d){
+	                                var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
+	                                //console.log(d.TC2+":x2:"+x);
+	                                return x;
+	                            })
+	                            .attr("y2",function(d){
+	                                var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
+	                                //console.log(d.TC2+":y2:"+y);
+	                                return y;
+	                            })
+	                            .attr("stroke",thatimg.colorLink)
+	                            .attr("stroke-width",function(d){
+	                                var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
+	                                /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
+	                                    val=0;
+	                                }*/
+	                                return val;
+	                            });
+	                }
+	            }
+	            
+	            thatimg.topG.selectAll(".geneTC").remove();
+
+	            var tc=thatimg.topG.selectAll(".geneTC")
+	   				.data(thatimg.data,thatimg.geneKey);
+	            //tc.sort();
+				//add new
+	            tc.enter().append("g")
+	            		.append("circle")
+                		.attr("cx", thatimg.nodeX)
+	                    .attr("cy",thatimg.nodeY)
+	                    //.attr("r",function(d,i){return 3+d.LinkCount;})
+	                    .attr("r",thatimg.nodeRadiusSum)
+	                    .attr("stroke","#000000")
+	                    .attr("fill",thatimg.colorCircle)
+	                    .attr("class",function(d){return "geneTC "+d.Gene.ID;})
+	                    .attr("id",function(d){return "tc_"+that.removeInvalidIDChars(d.ID);})
+	                    .on("click",function(){
+
+	                    })
+	                    .on("mouseover",thatimg.mouseoverGene)
+	                    .on("mouseout",thatimg.mouseleaveGene)
+	                    .merge(tc)
+	                    .each(function(d,i){
+			            	d3.select(this.parentNode).append("g").attr("class","label")
+			                    .attr("id",function(d){return "txt_"+that.removeInvalidIDChars(d.ID);})
+			                    .attr("transform", function(){
+				                    var x=thatimg.nodeXLbl(d,i);
+				                    var y=thatimg.nodeYLbl(d,i);
+				                	return "translate("+x+","+y+")";
+			            		})
+			            		.append("text")
+				                .attr("transform",function(){
+				                    var deg=-90;
+				                    var ii=i%thatimg.maxPerLevel; 
+				                    deg=deg+thatimg.angleDeg*ii;
+				                    if(deg>90){
+				                        deg=deg-180;
+				                    }
+				                    return "rotate("+deg+")";
+				                })
+			                	.text(function(){return d.Gene.geneSymbol;});
+	            		});
+
+	            tc.exit().remove();
+	        
+	            if(that.viewType==='mir'){
+	                thatimg.drawMiR();
+	            }   
+	        },250);
+		};
+
+        thatimg.requestMeta=function(){
+            $.ajax({
+            	url:  pathPrefix +"getWGCNAMetaModules.jsp",
+	   			type: 'GET',
+	   			async: true,
+				data: {source:that.selSource,id:that.selectedModule.MOD_NAME,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
+				dataType: 'json',
+                success: function(data2){
+                    setTimeout(function(){
+                        thatimg.mirData=data2;
+                        //console.log(thatimg.mirData);
+                        thatimg.geneMirList={};
+                        for (var w=0;w<thatimg.mirData.MIRList.length;w++){
+                            //console.log("mir:"+w+":"+thatimg.mirData.MIRList[w].ID);
+                            var tmpMir=thatimg.mirData.MIRList[w];
+                            var gl=tmpMir.GeneList;
+                            
+                            for (var v=0;v<gl.length;v++){
+                                //console.log("check:"+gl[v].ID);
+                                if(typeof thatimg.geneMirList[gl[v].ID]==='undefined'){
+                                    //console.log("undef");
+                                    thatimg.geneMirList[gl[v].ID]=[];
+                                    thatimg.geneMirList[gl[v].ID].push(tmpMir);
+                                }else{
+                                    //console.log("exists");
+                                    var found=0;
+                                    for(var u=0;u<thatimg.geneMirList[gl[v].ID].length&&found===0;u++){
+                                        if(tmpMir.ID===thatimg.geneMirList[gl[v].ID][u].ID){
+                                            found=1;
+                                        }
+                                    }
+                                    //console.log("found:"+found)
+                                    if(found===0){
+                                        thatimg.geneMirList[gl[v].ID].push(tmpMir);
+                                    }
+                                }
+                            }
+                        }
+                        //console.log(thatimg.geneMirList);
+                        thatimg.draw();
+                    },50);
+                },
+                error: function(xhr, status, error) {
+                    setTimeout(function(){
+                        thatimg.requestMeta();
+                    },2000);
+                }
+            });
+        };
+
+        thatimg.mouseoverModule=function(){
+            $("#wgcnaMouseHelp").html("<B>Click</B> to select this gene cluster and see additional details.");
+            d3.select(this).style("fill","url(#selectGrad)");//.attr("stroke","#000000");
+            //that.gsvg.get('tt').transition()
+            tt.transition()        
+                    .duration(200)      
+                    .style("opacity", 1);      
+                    //that.gsvg.get('tt').html(that.createToolTip(d)) 
+            tt.html(thatimg.createToolTip(d3.select(this).data()[0])) 
+                    .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+                                    .style("top", function(){return that.positionTTTop(d3.event.pageY);});
+            var d=d3.select(this.parentNode).datum();
+            
+            if(that.viewType==='mir'){
+                thatimg.mirTargetID=d.Gene.ID.toLowerCase();
+                //console.log("target:"+thatimg.mirTargetID)
+                that.singleImage.drawMiR();
+                thatimg.svg.selectAll(".link").remove();
+                if(!thatimg.showLinks){
+                    thatimg.drawLinks(d);
+                }
+            }else{
+                $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
+                    var id=$(this).attr("id");
+                    d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
+                });
+                $("[id$="+that.removeInvalidIDChars(d.ID)+"]").each(function(){
+                    var id=$(this).attr("id");
+                    d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
+                });
+                if(!thatimg.showLinks){
+                    thatimg.drawLinks(d);
+                }
+            }
+            d3.select("#txt_"+that.removeInvalidIDChars(d.ID)).select("text").attr("fill","#00A347");
+            var tcList=that.selectedGene[d.Gene.ID].tcList;
+            for(var l=0;l<tcList.length;l++){
+                d3.select("#tc_"+that.removeInvalidIDChars(tcList[l].ID)).attr("fill","#FEFF49");
+            }
+            
+            if(that.viewType==='mir'  && thatimg.showMirLinks){
+                var geneID=d.Gene.ID;
+                var mirL=thatimg.geneMirList[d.Gene.ID];
+                mirL=thatimg.filterRevMiR(mirL);
+                var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport")
+                    .selectAll(".mirlink")
+                    .data(mirL,that.mirKey);
+                lnk.enter().append("line")
+                        .attr("class","mirlink")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+d.ID;})
+                        .attr("x1",function(d){
+                            var x=d3.select("."+geneID).attr("cx");
+                            if(d3.select("#"+that.removeInvalidIDChars(d.ID)).size()>0){
+                            	x=d3.select("#"+that.removeInvalidIDChars(d.ID))[0][0].__data__.x+thatimg.width/2-thatimg.miRdiameter/2;
+                        	}
+                            return x;
+                        })
+                        .attr("y1",function(d){
+                            var y=d3.select("."+geneID).attr("cy");
+                            if(d3.select("#"+that.removeInvalidIDChars(d.ID)).size()>0){
+                            	y=d3.select("#"+that.removeInvalidIDChars(d.ID))[0][0].__data__.y+thatimg.height/2-thatimg.miRdiameter/2;
+                        	}
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                            var x=d3.select("."+geneID).attr("cx");
+                            //console.log(d.TC2+":x2:"+x);
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=d3.select("."+geneID).attr("cy");
+                            //console.log(d.TC2+":y2:"+y);
+                            return y;
+                        })
+                        .attr("stroke",function(d){
+                            var colr=thatimg.mirPred;
+                            if(d.V>0){
+                                colr=thatimg.mirVal;
+                            }
+                            return colr;
+                        })
+                        .attr("stroke-width",function(d){
+                            var val=d.P+3*d.V;
+                            return val;
+                        }).merge(lnk);
+            }
+            if(ga){
+                ga('send','event','wgcna','mouseOverGene');
+            }
+        };
+        
+        thatimg.mouseleaveModule=function(){
+            var d=d3.select(this.parentNode).datum();
+            $("[id^=ln_"+that.removeInvalidIDChars(d.ID)+"]").each(function(){
+                var id=$(this).attr("id");
+                d3.select("line#"+id).attr("stroke",thatimg.colorLink);
+            });
+            $("[id$="+that.removeInvalidIDChars(d.ID)+"]").each(function(){
+                var id=$(this).attr("id");
+                d3.select("line#"+id).attr("stroke",thatimg.colorLink);
+            });
+            d3.select(this).style("fill",thatimg.colorCircle);//.attr("stroke","#000000");
+            d3.select("#txt_"+that.removeInvalidIDChars(d.ID)).select("text").attr("fill","#000000");
+            tt.transition()        
+            .duration(500)      
+            .style("opacity", 0);
+            if(!thatimg.showLinks){
+                thatimg.svg.selectAll(".link").remove();
+            }
+            if(that.viewType==='mir'){
+                thatimg.mirTargetID=$("#mirGeneFilterTxt").val().toLowerCase();
+                thatimg.svg.selectAll(".mirLink").remove();
+                that.singleImage.drawMiR();
+            }
+        };
+                
+		return thatimg;
+	};
+  	that.singleWGCNATableMetaView=function(){
+
+  	};
 	return that;
 }
