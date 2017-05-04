@@ -304,10 +304,10 @@ public class WGCNATools{
         return ret;
     }
     
-    public ArrayList<WGCNAMetaModule> getWGCNAMetaModules(String modName,String panel,String tissue, String org, String genomeVer, String source){
+    public ArrayList<WGCNAMetaModule> getWGCNAMetaModulesForModule(String modName,String panel,String tissue, String org, String genomeVer, String source){
         ArrayList<WGCNAMetaModule> ret=new ArrayList<WGCNAMetaModule>();
         int dsid=this.getWGCNADataset(panel,tissue,org,genomeVer,source);
-        String mmidQuery="select unique mmpid from WGCNA_Meta_Modues where wdsid=? and module_name=?";
+        String mmidQuery="select unique mmpid from WGCNA_META_MODULES where wdsid=? and module_name=?";
         WGCNAMetaModule getW=new WGCNAMetaModule();
         Connection conn = null;
         try {
@@ -318,6 +318,7 @@ public class WGCNATools{
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 int mmpid=rs.getInt(1);
+                log.debug("MMPID:"+mmpid);
                 ret.add(getW.getMetaModule(pool,mmpid));
             }
             ps.close();
