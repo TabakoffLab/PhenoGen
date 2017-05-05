@@ -19,7 +19,7 @@
         extrasList.add("exonCorrelationTab0.1.js");
         extrasList.add("jquery.dataTables.1.10.9.min.js");
 	extrasList.add("jquery.cookie.js");
-	extrasList.add("d3.v3.5.16.min.js");
+	extrasList.add("d3.v4.8.0.min.js");
         extrasList.add("spectrum.js");
 	extrasList.add("tabs.css");
 	extrasList.add("tooltipster.min.css");

@@ -9,7 +9,7 @@
         rgdUUID=FilterInput.getFilteredInput(request.getParameter("rgdUuid"));
     }
 	// Need to include this here, so that it's available on the modal
-        extrasList.add("d3.v3.5.16.min.js");
+        extrasList.add("d3.v4.8.0.min.js");
 	extrasList.add("createGeneList.js");
 	optionsListModal.add("createGeneList");
         
