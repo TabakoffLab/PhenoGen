@@ -12,7 +12,7 @@
  *      
 --%>
 <%
-    extrasList.add("d3.v3.5.16.min.js");
+    extrasList.add("d3.v4.8.0.min.js");
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setDateHeader("Expires", 0);
     

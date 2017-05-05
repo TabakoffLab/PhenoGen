@@ -79,6 +79,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
     }
     that.eQTLKey=function(d){return "Link_"+d.Snp;};
     that.mirKey=function(d){return d.ID;};
+    that.modKey=function(d){return d.MODULE;};
     that.removeInvalidIDChars=function(id){
     	var newID=id;
     	if(typeof newID!=="undefined"){
@@ -104,22 +105,24 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		//create Data Controls
 		that.createDataControls();
                 
-                $(".wgcnaControltooltip").tooltipster({
-                    position: 'top-right',
-                    maxWidth: 250,
-                    offsetX: 5,
-                    offsetY: 5,
-                    contentAsHTML:true,
-                    //arrow: false,
-                    interactive: true,
-                    interactiveTolerance: 350
-                });
+        $(".wgcnaControltooltip").tooltipster({
+            position: 'top-right',
+            maxWidth: 250,
+            offsetX: 5,
+            offsetY: 5,
+            contentAsHTML:true,
+            //arrow: false,
+            interactive: true,
+            interactiveTolerance: 350
+        });
         if(ga){
 			ga('send','event','setupWGCNA','setupWGCNA');
 		}
 	};
 
 	that.requestModuleList=function (){
+		that.moduleGenes={};
+		that.moduleList=[];
 		$.ajax({
 				url:  pathPrefix +"getWGCNAModules.jsp",
 	   			type: 'GET',
@@ -187,7 +190,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 }
         },timeout);
     };
-	that.requestModule=function(file){
+	that.requestModule=function(file,callBack){
 		$.ajax({
 				url:  contextRoot+"tmpData/browserCache/"+genomeVer+"/modules/ds"+that.wDSID+"/" +file+".json",
 	   			type: 'GET',
@@ -213,6 +216,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                                     that.createMultiWGCNAImage();
                                                 },20);
                                             }*/
+                                            if(callBack){
+                                            	callBack(file);
+                                            }
                                         },20);
                                         if(ga){
 											ga('send','event','requestModule',file);
@@ -497,7 +503,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         that.viewBar.append("span").attr("id","HelpWGCNAView")
                 .append("img").attr("src",contextRoot+"web/images/icons/help.png");
         that.viewBar.append("br");
-		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","gene").attr("checked","checked").style("margin-left","7px").style("margin-right","3px").on("click",function(){
+		that.viewBar.append("input").attr("type","radio").attr("id","wgcnaGeneViewRB").attr("name","wgcnaViewRB").attr("value","gene").attr("checked","checked").style("margin-left","7px").style("margin-right","3px").on("click",function(){
             that.viewType="gene";
             that.createSingleWGCNAImage();
             if(ga){
@@ -507,7 +513,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.viewBar.append("text").text("Module");
                 that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View transcripts within the selected module and their connectivity based on correlation of expression.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
                 that.viewBar.append("br");
-		that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","eqtl").style("margin-left","7px").style("margin-right","3px").on("click",function(){
+		that.viewBar.append("input").attr("type","radio").attr("id","wgcnaEQTLViewRB").attr("name","wgcnaViewRB").attr("value","eqtl").style("margin-left","7px").style("margin-right","3px").on("click",function(){
             that.viewType="eqtl";
             that.createSingleWGCNAImage();
             if(ga){
@@ -517,44 +523,45 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		that.viewBar.append("text").text("Eigengene eQTL");
         that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of the module Eigengene eQTLs.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
 
-        /*that.viewBar.append("br");
-        that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px").on("click",function(){
-            that.viewType="go";
-            that.createSingleWGCNAImage();
-            if(ga){
-						ga('send','event','WGCNA','goView');
-			}
-        });
-		that.viewBar.append("text").text("Gene Ontology");*/
-        that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of Gene Ontology terms assigned to transcripts in the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
+        that.viewBar.append("br");
+        that.viewBar.append("input").attr("type","radio").attr("id","wgcnaGOViewRB").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px").attr('disabled',true)
+        	.on("click",function(){
+	            that.viewType="go";
+	            that.createSingleWGCNAImage();
+	            if(ga){
+							ga('send','event','WGCNA','goView');
+				}
+	        });
+		that.viewBar.append("text").text("Gene Ontology");
+        that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","TEMPORARILY DISABLED PLEASE CHECK BACK. View a summary of Gene Ontology terms assigned to transcripts in the selected module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
         
-        //if(organism==="Mm"){
-            that.viewBar.append("br");
-            that.viewBar.append("input").attr("type","radio")
-                    .attr("name","wgcnaViewRB")
-                    .attr("value","mir")
-                    .style("margin-left","7px")
-                    .style("margin-right","3px")
-                    .on("click",function(){
-                        that.viewType="mir";
-                        that.createSingleWGCNAImage();
-                        if(ga){
-							ga('send','event','WGCNA','mirView');
-						}
-                    });
-            that.viewBar.append("text").text("miRNA Targets");
-            that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of miRNAs that target genes in this module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
-        //}
+        that.viewBar.append("br");
+        that.viewBar.append("input").attr("type","radio").attr("id","wgcnaMirViewRB")
+                .attr("name","wgcnaViewRB")
+                .attr("value","mir")
+                .style("margin-left","7px")
+                .style("margin-right","3px")
+                .on("click",function(){
+                    that.viewType="mir";
+                    that.createSingleWGCNAImage();
+                    if(ga){
+						ga('send','event','WGCNA','mirView');
+					}
+                });
+        that.viewBar.append("text").text("miRNA Targets");
+        that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View a summary of miRNAs that target genes in this module.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
         
-        /*that.viewBar.append("br");
-        that.viewBar.append("input").attr("type","radio").attr("name","wgcnaViewRB").attr("value","meta").style("margin-left","7px").style("margin-right","3px").on("click",function(){
+        
+        that.viewBar.append("br");
+        that.viewBar.append("input").attr("type","radio").attr("id","wgcnaMetaViewRB").attr("name","wgcnaViewRB").attr("value","meta").style("margin-left","7px").style("margin-right","3px").on("click",function(){
             that.viewType="meta";
             that.createSingleWGCNAImage();
             if(ga){
 						ga('send','event','WGCNA','metaView');
 			}
         });
-		that.viewBar.append("text").text("Meta Module (nearest neighbors)");*/
+		that.viewBar.append("text").text("Meta Module (nearest neighbors)");
+		that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View most closely correlated modules and browse those modules.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
 
         $("#HelpWGCNAView").on('click', function(event){
 			var id=$(this).attr('id');
@@ -1038,11 +1045,9 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 
 	//public method to create any type of WGCNA Image
 	that.createMultiWGCNAImage=function(){
-		
 			that.multiImage=that.multiWGCNAImageGeneView(that.modules);
 			that.multiImage.draw();
 			that.img=that.multiImage;
-		
 	};
 
 	//common prototype to create generic view
@@ -1371,7 +1376,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                 $("span#minLabel").html(0.01);
                 $("#linkSliderMax").slider('value',1.0);
                 $("span#maxLabel").html(1.0);
-                $("#hideLinkExceptNode").prop("checked",true);
+                $("#hideLinkExceptNode").prop("checked",false);
                 setTimeout(function(){
 					that.singleImage=that.singleWGCNAImageGeneView(that.modules);
 					that.singleImage.draw();
@@ -1440,6 +1445,26 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 });
 					},500);
                 },50);
+            }else if(that.viewType==="meta"){
+                setTimeout(function(){
+					that.singleImage=that.singleWGCNAImageMetaView(that.modules);
+					//that.singleImage.draw();
+					that.singleImage.requestMeta();
+					that.img=that.singleImage;
+					setTimeout(function(){
+						that.singleImage.panZoom = svgPanZoom('#singleWGCNASVG',{
+                                        panEnabled: true
+                                      , controlIconsEnabled:false
+                                      , zoomEnabled: true
+                                      , dblClickZoomEnabled: true
+                                      , zoomScaleSensitivity: 0.2
+                                      , minZoom: 0.1
+                                      , maxZoom: 4
+                                      , fit: true
+                                      , center: true
+                                });
+					},500);
+                },50);
             }
             if(ga){
 				ga('send','event','changedWGCNAView',that.viewType);
@@ -1483,7 +1508,8 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		}
 
 		thatimg.geneKey=function(d){return d.ID;};
-        thatimg.linkKey=function(d){return d.TC1+"_"+d.TC2;};
+        thatimg.linkKey=function(d){return that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);};
+
                 
 		thatimg.calcX=function(d,i){
 			var tmp=i%thatimg.modPerLine;
@@ -1765,39 +1791,30 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             }
             links=filterLinks;
             if(links.length<10000){
-                var lnk=thatimg.svg.select("g.svg-pan-zoom_viewport").selectAll(".link").data(links,thatimg.linkKey);
+                var lnk=thatimg.topG.selectAll(".link").data(links,thatimg.linkKey);
                 lnk.enter().append("line")
                         .attr("class","link")
                         .attr("pointer-events","none")
                         .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.TC1)+that.removeInvalidIDChars(d.TC2);})
                         .attr("x1",function(d){
                             var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cx");
-                            //console.log(d.TC1+":x1:"+x);
                             return x;
                         })
                         .attr("y1",function(d){
                             var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC1)).attr("cy");
-                            //console.log(d.TC1+":y1:"+y);
                             return y;
                         })
                         .attr("x2",function(d){
-                        	//console.log(d.TC2+":x2:"+x);
-                        	//console.log(d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)));
-                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");
-                            
+                            var x=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cx");                         
                             return x;
                         })
                         .attr("y2",function(d){
                             var y=d3.select("#tc_"+that.removeInvalidIDChars(d.TC2)).attr("cy");
-                            //console.log(d.TC2+":y2:"+y);
                             return y;
                         })
                         .attr("stroke",thatimg.colorLink)
                         .attr("stroke-width",function(d){
                             var val=Math.abs(d.Cor)*thatimg.maxCorWidth;
-                            /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
-                                val=0;
-                            }*/
                             return val;
                         }).merge(lnk);
             }
@@ -4263,5 +4280,594 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
 		});
 	};
         
+
+	that.singleWGCNAImageMetaView=function(){
+		var thatimg=that.singleWGCNAImage();
+        $(".goCTL").hide();
+        $(".eqtlCtls").hide();
+        $(".linkCTL").show();
+        
+        thatimg.CorCutoff_min=0.75;
+        thatimg.CorCutoff_max=1;
+        thatimg.type=that.viewType;
+        thatimg.truncated=0;
+        thatimg.filterOneDB=1;
+        thatimg.mirGeneCutoff=1;
+        thatimg.mirValid=0;
+        thatimg.mirTargetID="";
+        thatimg.mirID="";
+        thatimg.miRcolor = d3.scaleOrdinal(d3.schemeCategory20b);
+        thatimg.sortMir=0;
+        thatimg.maxCorWidth=5;
+        thatimg.mlinkKey=function(d){return that.removeInvalidIDChars(d.MOD1)+"_"+that.removeInvalidIDChars(d.MOD2);};
+        
+        thatimg.colorCircle=function(d){
+            var color=d.COLOR;
+            return color;
+        };
+
+        thatimg.colorLink=function(d){
+            //var val="#DD0000";
+            var val=thatimg.negColor;
+            if(d.COR>0){
+                //val= "#00DD00"
+                val=thatimg.posColor;
+            }
+            return val;
+        };
+        thatimg.colorLinkHighlight=function(d){
+            //var val="#770000";
+            var val=thatimg.negDarkColor;
+            if(d.COR>0){
+                //val= "#007700"
+                val=thatimg.posDarkColor;
+            }
+            return val;
+        };
+
+        thatimg.drawLinks=function(d){
+        	thatimg.updateColor("linkColor");
+            thatimg.svg.selectAll(".link").remove();
+            var links=thatimg.metaData.LINKS;
+            var filterLinks=[];
+            var count=0;
+            for(var i=0;i<links.length;i++){
+                if(links[i].MOD1===d.MODULE || links[i].MOD2===d.MODULE){
+                    if(thatimg.CorCutoff_min<=Math.abs(links[i].COR) && Math.abs(links[i].COR)<=thatimg.CorCutoff_max){
+                        filterLinks[count]=links[i];
+                        count++;
+                    }
+                }
+            }
+            links=filterLinks;
+            if(links.length<10000){
+                var lnk=thatimg.topG.selectAll(".link").data(links,thatimg.mlinkKey);
+                lnk.enter().append("line")
+                        .attr("class","link")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.MOD1)+that.removeInvalidIDChars(d.MOD2);})
+                        .attr("x1",function(d){
+                            var x=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD1)).attr("cx");
+                            return x;
+                        })
+                        .attr("y1",function(d){
+                            var y=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD1)).attr("cy");
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                            var x=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD2)).attr("cx");
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD2)).attr("cy");
+                            return y;
+                        })
+                        .attr("stroke",thatimg.colorLink)
+                        .attr("stroke-width",function(d){
+                            var val=Math.abs(d.COR)*thatimg.maxCorWidth;
+                            return val;
+                        }).merge(lnk);
+            }
+        };
+        
+        thatimg.drawLinksBetween=function(list){
+        	thatimg.updateColor("linkColor");
+        	var hash={};
+        	for(var v=0;v<list.length;v++){
+        		hash[list[v]]=1;
+        	}
+            thatimg.svg.selectAll(".link").remove();
+            var links=thatimg.metaData.LINKS;
+            var filterLinks=[];
+            var count=0;
+            for(var i=0;i<links.length;i++){
+                if( (thatimg.showAllFromTarget===0 && typeof hash[links[i].MOD1]!=='undefined' && typeof hash[links[i].MOD2]!=='undefined') ||
+                	(thatimg.showAllFromTarget===1 && (typeof hash[links[i].MOD1]!=='undefined' || typeof hash[links[i].MOD2]!=='undefined'))
+                	){
+                    if(thatimg.CorCutoff_min<=Math.abs(links[i].COR) && Math.abs(links[i].COR)<=thatimg.CorCutoff_max){
+                        filterLinks[count]=links[i];
+                        count++;
+                    }
+                }
+            }
+            links=filterLinks;
+            if(links.length<10000){
+                var lnk=thatimg.topG.selectAll(".link").data(links,thatimg.mlinkKey);
+                lnk.enter().append("line")
+                        .attr("class","link")
+                        .attr("pointer-events","none")
+                        .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.MOD1)+that.removeInvalidIDChars(d.MOD2);})
+                        .attr("x1",function(d){
+                            var x=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD1)).attr("cx");
+                            return x;
+                        })
+                        .attr("y1",function(d){
+                            var y=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD1)).attr("cy");
+                            return y;
+                        })
+                        .attr("x2",function(d){
+                            var x=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD2)).attr("cx");
+                            return x;
+                        })
+                        .attr("y2",function(d){
+                            var y=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD2)).attr("cy");
+                            return y;
+                        })
+                        .attr("stroke",thatimg.colorLink)
+                        .attr("stroke-width",function(d){
+                            var val=Math.abs(d.COR)*thatimg.maxCorWidth;
+                            
+                            return val;
+                        }).merge(lnk);
+            }
+        };
+
+        thatimg.nodeX=function(d,i){
+            var ring=50;
+            var l=Math.floor(i/thatimg.maxPerLevel)+1;
+            if(l>1){
+                ring=l*60;
+            }
+            var ii=i%thatimg.maxPerLevel;
+            return thatimg.width/2+(thatimg.r-ring)*(Math.cos(ii*thatimg.angle-1.57079633));
+            //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
+        };
+
+        thatimg.nodeY=function(d,i){
+            var ring=50;
+            if(i>thatimg.maxPerLevel){
+                var l=Math.floor(i/thatimg.maxPerLevel)+1;
+                ring=l*60;
+            }
+
+            var ii=i%thatimg.maxPerLevel;
+            return thatimg.height/2+(thatimg.r-ring)*(Math.sin(ii*thatimg.angle-1.57079633));
+            //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
+        };
+        
+        thatimg.nodeXLbl=function(d,i){
+            var ring=50;
+            var l=Math.floor(i/thatimg.maxPerLevel)+1;
+            if(l>1){
+                ring=l*60;
+            }
+            var ii=i%thatimg.maxPerLevel;
+            var angleRad=ii*thatimg.angle-1.57079633;
+            var plusMinus=1;
+            if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
+                var len=0;
+                if(typeof d.MODULE !=='undefined'){
+                    len=d.MODULE.length;
+                }
+                plusMinus=plusMinus+len*7.5;
+                //console.log("i="+i);
+            }
+            return thatimg.width/2+(thatimg.r+plusMinus)*(Math.cos(angleRad));
+            //return thatimg.width/2+(thatimg.r-ring)*(Math.cos(i*thatimg.angle-1.57079633));
+        };
+
+        thatimg.nodeYLbl=function(d,i){
+            var ring=50;
+            
+            if(i>thatimg.maxPerLevel){
+                var l=Math.floor(i/thatimg.maxPerLevel)+1;
+                ring=l*60;
+            }
+
+            var ii=i%thatimg.maxPerLevel;
+            var angleRad=ii*thatimg.angle-1.57079633;
+            var plusMinus=1;
+            if(Math.PI/2<angleRad &&angleRad<Math.PI*1.5){
+                var len=0;
+                if(typeof d.MODULE !=='undefined'){
+                    len=d.MODULE.length;
+                }
+                plusMinus=plusMinus+len*7.5;
+            }
+            return thatimg.height/2+(thatimg.r+plusMinus)*(Math.sin(angleRad));
+            //return thatimg.height/2+(thatimg.r-ring)*(Math.sin(i*thatimg.angle-1.57079633));
+        };
+        
+        thatimg.drawCorLegend=function(start){
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start).text("Positive Correlation");
+            thatimg.legendDispG.append("rect").attr("x","0").attr("y",start-10).attr("width", "30").attr("height", "10").style("fill",thatimg.posColor);
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+20).text("Negative Correlation");
+            thatimg.legendDispG.append("rect").attr("x","0").attr("y",start+10).attr("width", "30").attr("height","10").style("fill",thatimg.negColor);
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+40).text("Lower Correlation");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+30).attr("x2", "30").attr("y2",start+30).style("stroke","#000000").style("stroke-width","0");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+35).attr("x2", "30").attr("y2",start+35).style("stroke","#000000").style("stroke-width","0.5");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+40).attr("x2", "30").attr("y2",start+40).style("stroke","#000000").style("stroke-width","1");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+45).attr("x2", "30").attr("y2",start+45).style("stroke","#000000").style("stroke-width","2");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+55).attr("x2", "30").attr("y2",start+55).style("stroke","#000000").style("stroke-width","3");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+65).attr("x2", "30").attr("y2",start+65).style("stroke","#000000").style("stroke-width","5");
+            thatimg.legendDispG.append("line").attr("x1","0").attr("y1",start+75).attr("x2", "30").attr("y2",start+75).style("stroke","#000000").style("stroke-width","7");
+            thatimg.legendDispG.append("text").style("font-size","16").attr("x","35").attr("y",start+80).text("Higher Correlation");
+        };
+        
+        
+        thatimg.drawLegend=function(){
+            thatimg.drawCorLegend(20);
+        };
+
+        thatimg.selectMetaMod=function(moduleName){
+        	that.topselectedModule=that.selectedModule;
+    		that.selectedModule=that.modules[moduleName];
+    		that.topselectedGene=that.selectedGene;
+    		that.selectedGene={};
+            for(var l=0;l<that.selectedModule.TCList.length;l++){
+                if(typeof that.selectedGene[that.selectedModule.TCList[l].Gene.ID] !=='undefined'){
+                    that.selectedGene[that.selectedModule.TCList[l].Gene.ID].tcList.push(that.selectedModule.TCList[l]);
+                }else{
+                    that.selectedGene[that.selectedModule.TCList[l].Gene.ID]={};
+                    that.selectedGene[that.selectedModule.TCList[l].Gene.ID].geneSymbol=that.selectedModule.TCList[l].Gene.geneSymbol;
+                    that.selectedGene[that.selectedModule.TCList[l].Gene.ID].tcList=[];
+                    that.selectedGene[that.selectedModule.TCList[l].Gene.ID].tcList.push(that.selectedModule.TCList[l]);
+                }
+            }
+            that.viewType="gene";
+            // NEED TO UPDATE VIEW INTERFACE SELECTION
+            d3.select('#wgcnaGeneViewRB').property('checked', true);
+
+			that.createSingleWGCNAImage();
+        };
+
+		thatimg.draw=function(){
+			//thatimg.requestMeta();
+			thatimg.updateColor("linkColor");
+            thatimg.width=$(window).width();
+            thatimg.height=Math.floor(window.innerHeight*0.9);        
+            if(thatimg.height>thatimg.width){                   
+                    thatimg.r=Math.floor((thatimg.width/2)*0.95);
+            }else{
+                    thatimg.r=Math.floor((thatimg.height/2)*0.95);
+            }
+            thatimg.svg.attr("height",thatimg.height+"px");
+            thatimg.svg.selectAll("circle").remove();
+            thatimg.svg.selectAll("text").remove();
+            thatimg.svg.selectAll("line").remove();
+            thatimg.svg.selectAll(".mod").remove();
+            if(typeof thatimg.panZoom !=='undefined'){
+                thatimg.panZoom.destroy();
+                delete thatimg.panZoom;
+            }
+            thatimg.svg.selectAll(".svg-pan-zoom_viewport").remove();        
+            setTimeout(function(){
+	            thatimg.svg.append("text")
+	                    .style("font-size","20")
+	                                    .attr("y",22)
+	                                    .attr("x",5)
+	                                    .text(function(){
+	                                    	if(that.selectedModule){
+	                                    		return "Meta Module for "+replaceUnderscore(that.selectedModule.MOD_NAME);
+	                                    	}else{
+	                                    		return "";
+	                                    	}
+	                                	});
+	            
+	            thatimg.setupLegend();
+	            
+	            
+	            
+	            thatimg.data=thatimg.metaData.MODULES;
+	            thatimg.angle=2*Math.PI/thatimg.data.length;
+	            thatimg.angleDeg=360/thatimg.data.length;
+	            if(thatimg.data.length>thatimg.maxPerLevel){
+	                thatimg.angle=2*Math.PI/thatimg.maxPerLevel;
+	                thatimg.angleDeg=360/thatimg.maxPerLevel;
+	            }
+	            
+	            if(thatimg.data.length>150){
+	                thatimg.truncated=1;
+	                thatimg.maxNodeR=15;
+	                var tmpdata=[];
+	                for(var p=0;p<150;p++){
+	                    tmpdata[p]=thatimg.data[p];
+	                }
+	                thatimg.data=tmpdata;
+	                thatimg.dataIndex={};
+	                for(var p=0;p<thatimg.data.length;p++){
+	                    thatimg.dataIndex[thatimg.data[p].ID]=1;
+	                }
+	                thatimg.CorCutoff_min=0.75;
+	                $("#linkSliderMin").slider('value',0.75);
+	                $("span#minLabel").html(0.75);
+
+	                thatimg.svg.append("image").attr("x",that.selectedModule.MOD_NAME.length*7.8+20).attr("y",1).attr("width","24px")								
+	                    .attr("height","24px")
+	                    .attr("xlink:href","data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ"+
+	                            "I0lEQVRIDQEYCef2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAA/wAAH/gAACcAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAADwAAALkCAABoFDEx"+
+	                            "0gIzM+/b29v4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGIAAAAvAgAAHDnn54QGBgY3SUlJBwAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAP8AAB0AAAChAAAADAAAAAAU9vYY4RER/ecNDdLZ2dnvAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5AAAAFgAAAAAA"+
+	                            "AAAABv7+BFHZ2UgFAgI4Ozs7DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAtAAAAmAAAAAQAAAAAAAAAAAAAAAAU9/cM7AoKAOYY"+
+	                            "GNTZ2dnqAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAD/AAAFAAAAnQAAACf8AgIAzhgY/uIODv4V9vYBBP//AR3z8xrKHBzjDhwc2uDg4PYAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASwAAAEUAAAAB+AMD"+
+	                            "AJwyMveSODjT9QUF+AAAAAAY9PQOTN3dTxISEipAQEAEAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAADAAAAIAAAAAEAAAAAAAAAAAC/v7vAv7+tQn7+/IAAAAA"+
+	                            "AAAAAT/g4DQd8/NHCgoKFAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAGcAAAAuAAAAAAAAAAAAAAAAAAEB+gP//+QF///7AAAAAAAAAAAQ+voIVtfXUggICDM5"+
+	                            "OTkJAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABYAAAB4AAAAAQAAAAAA"+
+	                            "AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAATXm5iYt6+tMExMTHAAAAAEAAAAAAAAAAAAA"+
+	                            "AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB7AAAAEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAF/v4CVdfXSw0EBDdAQEALAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAA"+
+	                            "AAD/AAAzAAAAkwAAAAYAAAAAAAAAAAAAAAAAAQEAAAAA/kDh4QAb8/MpAgAACAAAAAAAAAAAAAAA"+
+	                            "ABT29g7vCAgB4RYW1NnZ2eoAAAD/AAAAAAAAAAAAAAAAAAAAAAD/AAAE/wAAtf8AAP//AAD//wAA"+
+	                            "//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD/5Q0N7WNKSnFHR0cS"+
+	                            "AAAAAAAAAAADAAAAAAAAAAAAAAAAgAAATAAAAHkAAAADAAAAAAAAAAAAAAAAAAAAAPgEBP+XMzP7"+
+	                            "xR8f7ivq6gcH/f0CAAAAAAAAAAAAAAAAAAAAAAz6+gj9AgIM2Bsb0QoKCujn5+f+AgAAAAAAAAAA"+
+	                            "/wAABwAAAIkAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAD9AQEA1hUV9MwZGccAAAD2AAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAABAAABR97eNhb390ceHh4RAAAAAAAAAAAAAAAAAP8AAG//AAD+/wAA//8AAP//"+
+	                            "AAD//wAA//8AAP//AAD//gAA/u4ICPvzBQXw/gAA/P8AAP//AAD//wAA//8AAP//AAD//wAA//8A"+
+	                            "AP/CHR3SVVBQNgAAAAACAAAAAP8AAAgAAABfAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA"+
+	                            "AAER+PgEDPv7DwEAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMOnpJyHy8icAAAAABAAA"+
+	                            "AAABAAD42BMTgdUTE2buCwsz/QICCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8BAAD/AAEB"+
+	                            "Af8AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAPEHB/vhEBANAAAAAAQAAAAAAAAAAHU6OrsDAwPnAgIC"+
+	                            "IQEBAQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAABAQH//f39zgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+
+	                            "AAAAs0IPw6I24JoAAAAASUVORK5CYII=")
+	                    .attr("pointer-events", "all")
+	                    .style("cursor","pointer")
+	                    .on("mouseover",function(){
+	                            $("#wgcnaMouseHelp").html("Warning: Modules displayed are truncated to the top 150 most connected modules due to the size of the meta module.");
+	                    })
+	                    .on("mouseout",function(){
+	                            $("#wgcnaMouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+	                    });
+	            }else{
+	                thatimg.maxNodeR=28;
+	            }
+	            
+	            thatimg.topG=thatimg.svg.append("g").attr("class","svg-pan-zoom_viewport");
+	            
+                var tc=thatimg.topG.selectAll(".mod")
+                                .data(thatimg.data,thatimg.modKey);
+                //tc.sort();
+                //add new
+                tc.enter().append("circle")
+                                .attr("class","mod")
+                                .attr("id",function(d){return "mod_"+that.removeInvalidIDChars(d.MODULE);})
+                                .attr("cx", thatimg.nodeX)
+                                .attr("cy",thatimg.nodeY)
+                                .attr("r",3)
+                                .attr("stroke","#000000")
+                                .attr("fill","#FF0000").merge(tc);
+
+
+                var links=thatimg.metaData.LINKS;
+                var filterLinks=[];
+                var count=0;
+                for(var i=0;i<links.length;i++){
+                    if(thatimg.CorCutoff_min<=Math.abs(links[i].COR) && Math.abs(links[i].COR)<=thatimg.CorCutoff_max){
+                        if(thatimg.truncated===0 || (typeof thatimg.dataIndex[links[i].MOD1]!=='undefined' && typeof thatimg.dataIndex[links[i].MOD2]!=='undefined')){
+                            filterLinks[count]=links[i];
+                            count++;
+                        }
+                    }
+                }
+                links=filterLinks;
+                if(thatimg.showLinks && links.length<10000){
+                    var lnk=thatimg.topG.selectAll(".link").data(links,thatimg.mlinkKey);
+                    lnk.enter().append("line")
+                            .attr("class","link")
+                            .attr("id",function(d){return "ln_"+that.removeInvalidIDChars(d.MOD1)+that.removeInvalidIDChars(d.MOD2);})
+                            .attr("x1",function(d){
+                                var x=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD1)).attr("cx");
+                                //console.log(d.TC1+":x1:"+x);
+                                return x;
+                            })
+                            .attr("y1",function(d){
+                                var y=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD1)).attr("cy");
+                                //console.log(d.TC1+":y1:"+y);
+                                return y;
+                            })
+                            .attr("x2",function(d){
+                                var x=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD2)).attr("cx");
+                                //console.log(d.TC2+":x2:"+x);
+                                return x;
+                            })
+                            .attr("y2",function(d){
+                                var y=d3.select("#mod_"+that.removeInvalidIDChars(d.MOD2)).attr("cy");
+                                //console.log(d.TC2+":y2:"+y);
+                                return y;
+                            })
+                            .attr("stroke",thatimg.colorLink)
+                            .attr("stroke-width",function(d){
+                                var val=Math.abs(d.COR)*thatimg.maxCorWidth;
+                                /*if(Math.abs(d.Cor)<thatimg.CorCutoff){
+                                    val=0;
+                                }*/
+                                return val;
+                            }).merge(lnk);
+             	}
+	            
+	            
+	            thatimg.topG.selectAll(".mod").remove();
+
+	            var tc=thatimg.topG.selectAll(".mod")
+	   				.data(thatimg.data,thatimg.geneKey);
+	            //tc.sort();
+				//add new
+	            tc.enter().append("g")
+	            		.append("circle")
+                		.attr("cx", thatimg.nodeX)
+	                    .attr("cy",thatimg.nodeY)
+	                    //.attr("r",function(d,i){return 3+d.LinkCount;})
+	                    .attr("r",20)
+	                    .attr("stroke","#000000")
+	                    .attr("fill",thatimg.colorCircle)
+	                    .attr("class",function(d){return "mod "+that.removeInvalidIDChars(d.MODULE);})
+	                    .attr("id",function(d){return "mod_"+that.removeInvalidIDChars(d.MODULE);})
+	                    .on("click", function(d){
+                                	console.log("request"+d.MODULE);
+                                	if(! that.moduleGenes[d.MODULE]){
+                                		that.moduleGenes[d.MODULE]="";
+                                		that.requestModule(d.MODULE,thatimg.selectMetaMod);
+                                	}
+                                	     
+                                })
+	                    .on("mouseover",thatimg.mouseoverModule)
+	                    .on("mouseout",thatimg.mouseleaveModule)
+	                    .merge(tc)
+	                    .each(function(d,i){
+			            	d3.select(this.parentNode).append("g").attr("class","label")
+			                    .attr("id",function(d){return "txt_"+that.removeInvalidIDChars(d.MODULE);})
+			                    .attr("transform", function(){
+				                    var x=thatimg.nodeXLbl(d,i);
+				                    var y=thatimg.nodeYLbl(d,i);
+				                	return "translate("+x+","+y+")";
+			            		})
+			            		.append("text")
+				                .attr("transform",function(){
+				                    var deg=-90;
+				                    var ii=i%thatimg.maxPerLevel; 
+				                    deg=deg+thatimg.angleDeg*ii;
+				                    if(deg>90){
+				                        deg=deg-180;
+				                    }
+				                    return "rotate("+deg+")";
+				                })
+			                	.text(function(){return d.MODULE;});
+	            		});
+
+	            tc.exit().remove();
+	        
+	           
+	        },250);
+		};
+
+        thatimg.requestMeta=function(){
+            $.ajax({
+            	url:  pathPrefix +"getWGCNAMetaModules.jsp",
+	   			type: 'GET',
+	   			async: true,
+				data: {source:that.selSource,id:that.selectedModule.MOD_NAME,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
+				dataType: 'json',
+                success: function(data2){
+                    setTimeout(function(){
+                        thatimg.metaData=data2[0];
+                        //console.log(thatimg.geneMirList);
+                        thatimg.draw();
+                    },50);
+                },
+                error: function(xhr, status, error) {
+                    setTimeout(function(){
+                        thatimg.requestMeta();
+                    },2000);
+                }
+            });
+        };
+
+        thatimg.mouseoverModule=function(){
+            $("#wgcnaMouseHelp").html("<B>Click</B> to select this module and see additional details.");
+            d3.select(this).style("fill","url(#selectGrad)");//.attr("stroke","#000000");
+            //that.gsvg.get('tt').transition()
+            tt.transition()        
+                    .duration(200)      
+                    .style("opacity", 1);      
+                    //that.gsvg.get('tt').html(that.createToolTip(d)) 
+            tt.html(thatimg.createToolTip(d3.select(this).datum())) 
+                    .style("left", function(){return that.positionTTLeft(d3.event.pageX);})     
+                                    .style("top", function(){return that.positionTTTop(d3.event.pageY);});
+            var d=d3.select(this.parentNode).datum();
+            
+            
+            $("[id^=ln_"+that.removeInvalidIDChars(d.MODULE)+"]").each(function(){
+                var id=$(this).attr("id");
+                d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
+            });
+            $("[id$="+that.removeInvalidIDChars(d.MODULE)+"]").each(function(){
+                var id=$(this).attr("id");
+                d3.select("line#"+id).attr("stroke",thatimg.colorLinkHighlight);
+            });
+            if(!thatimg.showLinks){
+                thatimg.drawLinks(d);
+            }
+            
+            d3.select("#txt_"+that.removeInvalidIDChars(d.MODULE)).select("text").attr("fill","#00A347");
+            /*var tcList=that.selectedGene[d.Gene.ID].tcList;
+            for(var l=0;l<tcList.length;l++){
+                d3.select("#tc_"+that.removeInvalidIDChars(tcList[l].ID)).attr("fill","#FEFF49");
+            }*/
+            
+           
+            if(ga){
+                ga('send','event','wgcna','mouseOverModule');
+            }
+        };
+        
+        thatimg.mouseleaveModule=function(){
+            var d=d3.select(this.parentNode).datum();
+            $("[id^=ln_"+that.removeInvalidIDChars(d.MODULE)+"]").each(function(){
+                var id=$(this).attr("id");
+                d3.select("line#"+id).attr("stroke",thatimg.colorLink);
+            });
+            $("[id$="+that.removeInvalidIDChars(d.MODULE)+"]").each(function(){
+                var id=$(this).attr("id");
+                d3.select("line#"+id).attr("stroke",thatimg.colorLink);
+            });
+            d3.select(this).style("fill",thatimg.colorCircle);//.attr("stroke","#000000");
+            d3.select("#txt_"+that.removeInvalidIDChars(d.MODULE)).select("text").attr("fill","#000000");
+            tt.transition()        
+            .duration(500)      
+            .style("opacity", 0);
+            if(!thatimg.showLinks){
+                thatimg.svg.selectAll(".link").remove();
+            }
+            if(that.viewType==='mir'){
+                thatimg.mirTargetID=$("#mirGeneFilterTxt").val().toLowerCase();
+                thatimg.svg.selectAll(".mirLink").remove();
+                that.singleImage.drawMiR();
+            }
+        };
+
+        thatimg.createToolTip=function(d){
+			var tt="Module: "+d.MODULE;
+			return tt;
+		};
+                
+		return thatimg;
+	};
+
+	
+
+  	that.singleWGCNATableMetaView=function(){
+  		$('div#wgcnaModuleTable').hide();
+        $('div#wgcnaMirTable').hide();
+        $('div#wgcnaMirGeneTable').hide();
+        $('div#wgcnaGoTable').hide();
+        $('div#wgcnaEqtlTable').hide();
+  	};
 	return that;
 }
