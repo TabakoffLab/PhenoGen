@@ -86,7 +86,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(<span id=\"verSelect\"></span>) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v3.3.0(4/30/2017)";
+var siteVer="PhenoGen v3.3.1(4/30/2017)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -1659,10 +1659,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 							}
 						}else{
 							var data=d.documentElement.getElementsByTagName("Feature");
-                                                        try{
-                                                            var newTrack= SpliceJunctionTrack(that,data,track,lblPrefix+"Splice Junctions",3,"");
-                                                            that.addTrackList(newTrack);
-                                                        }catch(er){}
+							console.log(data);
+                            try{
+                                var newTrack= SpliceJunctionTrack(that,data,track,lblPrefix+"Splice Junctions",3,"");
+                                that.addTrackList(newTrack);
+                            }catch(er){console.log(er);}
 						}
 					}
 				});
@@ -10420,7 +10421,7 @@ function CountTrack(gsvg,data,trackClass,density){
 				that.svg.selectAll(".leftLbl").remove();
 				that.yScale.domain([0, tmpYMax]);
 				that.svg.select(".area").remove();
-				that.area = d3.svg.area()
+				that.area = d3.area()
 	    				.x(function(d) { return that.xScale(d.getAttribute("start")); })
 					    .y0(140)
 					    .y1(function(d) { return that.yScale(d.getAttribute("count")); });
@@ -10792,7 +10793,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		            		.tickFormat("")
 		        		);
 		    that.svg.select(".area").remove();
-		    that.area = d3.svg.area()
+		    that.area = d3.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
 				    .y0(140)
 				    .y1(function(d,i) { return that.yScale(d.getAttribute("count"));; });
@@ -11018,7 +11019,7 @@ function CountTrack(gsvg,data,trackClass,density){
 				.range([140, 20])
 				.domain([0, d3.max(data, function(d) { return d.getAttribute("count"); })]);
 
-    that.area = d3.svg.area()
+    that.area = d3.area()
     				.x(function(d) { return that.xScale(d.getAttribute("start")); })
 				    .y0(140)
 				    .y1(function(d) { return d.getAttribute("count"); });
@@ -11933,6 +11934,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 	that.drawTrx=function (d,i){
+		console.log(d);
 		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#"+that.idPrefix+"tx"+d.getAttribute("ID"));
 		exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
 		for(var m=0;m<exList.length;m++){
@@ -12182,7 +12184,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 
 
 	that.draw=function(data){
-
+		console.log(data);
 		that.data=data;
 		that.prevDensity=that.density;
 		//that.setDensity();
@@ -12196,55 +12198,63 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 
 		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber).remove();
 		that.redrawLegend();
-		var tx=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber)
-	   			.data(data,key)
-				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(parseInt(d.getAttribute("start"),10),parseInt(d.getAttribute("stop"),10),i)+")";});
-	  	tx.enter().append("g")
-				.attr("class",that.idPrefix+"trx"+that.gsvg.levelNumber)
-				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(parseInt(d.getAttribute("start"),10),parseInt(d.getAttribute("stop"),10),i)+")";})
-				.attr("id",function(d){return that.idPrefix+"tx"+d.getAttribute("ID");})
-				.attr("pointer-events", "all")
-				.style("cursor", "move")
-				.on("mouseover", function(d) {
-						if(that.gsvg.isToolTip==0&&that.trackClass.indexOf("custom")!=0){
-							d3.select(this).selectAll("line").style("stroke","green");
-							d3.select(this).selectAll("rect").style("fill","green");
-							d3.select(this).selectAll("text").style("opacity","0.3").style("fill","green");
-	            			tt.transition()
-								.duration(200)
-								.style("opacity", 1);
-							tt.html(that.createToolTip(d))
-								.style("left", function(){return that.positionTTLeft(d3.event.pageX);})
-								.style("top", function(){return that.positionTTTop(d3.event.pageY);});
-							if(that.ttSVG==1){
-								that.setupToolTipSVG(d,0.05);
+		if(data){
+			//d3.select("#Level"+that.gsvg.levelNumber+that.trackClass)
+			var tmp=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber)
+		   			.data(data,key);
+		   	console.log(tmp);
+		  	tmp.enter().append("g")
+					.attr("class",that.idPrefix+"trx"+that.gsvg.levelNumber)
+					.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(parseInt(d.getAttribute("start"),10),parseInt(d.getAttribute("stop"),10),i)+")";})
+					.attr("id",function(d){return that.idPrefix+"tx"+d.getAttribute("ID");})
+					.attr("pointer-events", "all")
+					.style("cursor", "move")
+					.on("mouseover", function(d) {
+							if(that.gsvg.isToolTip==0&&that.trackClass.indexOf("custom")!=0){
+								d3.select(this).selectAll("line").style("stroke","green");
+								d3.select(this).selectAll("rect").style("fill","green");
+								d3.select(this).selectAll("text").style("opacity","0.3").style("fill","green");
+		            			tt.transition()
+									.duration(200)
+									.style("opacity", 1);
+								tt.html(that.createToolTip(d))
+									.style("left", function(){return that.positionTTLeft(d3.event.pageX);})
+									.style("top", function(){return that.positionTTTop(d3.event.pageY);});
+								if(that.ttSVG==1){
+									that.setupToolTipSVG(d,0.05);
+								}
 							}
-						}
-	            	})
-				.on("mouseout", function(d) {
-						//if(that.gsvg.isToolTip==0){
-							/*mouseTTOver=0;
-							console.log("FEATURE MOUSEOUT");*/
-								//var tmpThis=this;
-								//ttHideHandle=setTimeout(function(){
+		            	})
+					.on("mouseout", function(d) {
+							//if(that.gsvg.isToolTip==0){
+								/*mouseTTOver=0;
+								console.log("FEATURE MOUSEOUT");*/
+									//var tmpThis=this;
+									//ttHideHandle=setTimeout(function(){
 
-												//if(mouseTTOver==0){
-												//	console.log("MOUSE STILL NOT OVER TT");
-													d3.select(this).selectAll("line").style("stroke",that.color);
-													d3.select(this).selectAll("rect").style("fill",that.color);
-													d3.select(this).selectAll("text").style("opacity","0.6").style("fill",that.color);
-													tt.transition()
-														 .delay(100)
-														.duration(200)
-														.style("opacity", 0);
-												/*}else{
-													console.log("MOUSE IS NOW OVER TT")
-												}*/
-								//			},2000);
-						//}
-	        		})
-				.each(that.drawTrx);
-		tx.exit().remove();
+													//if(mouseTTOver==0){
+													//	console.log("MOUSE STILL NOT OVER TT");
+														d3.select(this).selectAll("line").style("stroke",that.color);
+														d3.select(this).selectAll("rect").style("fill",that.color);
+														d3.select(this).selectAll("text").style("opacity","0.6").style("fill",that.color);
+														tt.transition()
+															 .delay(100)
+															.duration(200)
+															.style("opacity", 0);
+													/*}else{
+														console.log("MOUSE IS NOW OVER TT")
+													}*/
+									//			},2000);
+							//}
+		        		})
+					.merge(tmp)
+					.each(that.drawTrx);
+			//tmp.attr("transform",
+			//		function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(parseInt(d.getAttribute("start"),10),parseInt(d.getAttribute("stop"),10),i)+")";});
+			
+			//tmp.each(that.drawTrx);
+			tmp.exit().remove();
+		}
 		if(that.density==1){
 							that.svg.attr("height", 30);
 		}else if(that.density==2){

@@ -4772,7 +4772,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
             	url:  pathPrefix +"getWGCNAMetaModules.jsp",
 	   			type: 'GET',
 	   			async: true,
-				data: {source:that.selSource,id:that.selectedModule.MOD_NAME,organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
+				data: {source:that.selSource,id:replaceUnderscore(that.selectedModule.MOD_NAME),organism:organism,panel:that.panel,tissue:that.tissue,region:that.region,geneList:that.geneList,genomeVer:genomeVer},
 				dataType: 'json',
                 success: function(data2){
                     setTimeout(function(){
