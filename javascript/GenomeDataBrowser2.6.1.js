@@ -11934,7 +11934,6 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 	};
 
 	that.drawTrx=function (d,i){
-		console.log(d);
 		var txG=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).select("#"+that.idPrefix+"tx"+d.getAttribute("ID"));
 		exList=getAllChildrenByName(getFirstChildByName(d,that.xmlTagBlockElem+"List"),that.xmlTagBlockElem);
 		for(var m=0;m<exList.length;m++){
@@ -12184,7 +12183,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 
 
 	that.draw=function(data){
-		console.log(data);
+		
 		that.data=data;
 		that.prevDensity=that.density;
 		//that.setDensity();
@@ -12202,7 +12201,7 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 			//d3.select("#Level"+that.gsvg.levelNumber+that.trackClass)
 			var tmp=d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll("."+that.idPrefix+"trx"+that.gsvg.levelNumber)
 		   			.data(data,key);
-		   	console.log(tmp);
+		   	
 		  	tmp.enter().append("g")
 					.attr("class",that.idPrefix+"trx"+that.gsvg.levelNumber)
 					.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(parseInt(d.getAttribute("start"),10),parseInt(d.getAttribute("stop"),10),i)+")";})
@@ -12252,7 +12251,6 @@ function GenericTranscriptTrack(gsvg,data,trackClass,label,density,additionalOpt
 			//tmp.attr("transform",
 			//		function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(parseInt(d.getAttribute("start"),10),parseInt(d.getAttribute("stop"),10),i)+")";});
 			
-			//tmp.each(that.drawTrx);
 			tmp.exit().remove();
 		}
 		if(that.density==1){

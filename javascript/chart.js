@@ -185,7 +185,7 @@ chart=function(params){
 
 				})
 				.on("mouseover",function(){
-					that.functionBar.select(this).attr("src","/web/images/icons/hm_light.png");
+					d3.select(this).attr("src","/web/images/icons/hm_light.png");
 					that.functionBar.select("span#hmBtn").style("background","#989898");
 					that.help.html("Display data as a heatmap.");
 				});
@@ -443,7 +443,7 @@ chart=function(params){
 		if(that.curWidth>1200 && that.display.herit){
 			that.heritChartW=200;
 		}
-
+		
 		that.x = d3.scalePoint().domain(that.filteredStrains).range([0, that.curWidth-Math.floor(that.heritChartW*1.1)]);
 		that.y = d3.scaleLinear().range([that.curHeight, 0]);
 		if(that.seriesCount>10){
@@ -513,10 +513,12 @@ chart=function(params){
 	    yRangeMax=that.curHeight-that.topMarg;
 	    itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
 
-	    barMarg=itemH*0.05;
+	    barMarg=itemH*0.1;
 	    if(barMarg<1){
 	    	barMarg=1;
 	    }
+	    that.svgTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
+	    				.attr("height",that.curHeight+that.margin.top+that.margin.bottom);
 	   
 	    /*for(i=0;i<that.color.domain().length;i++){
 	    	tmpID=that.color.domain()[i];
@@ -669,10 +671,31 @@ chart=function(params){
 
 			that.x.range([0, that.curWidth-Math.floor(that.heritChartW*1.1)]);
 			that.y.range([that.curHeight, 0]);
-
-			that.xAxGUI.attr("transform", "translate(0," + that.curHeight + ")")
-				.call(that.xAxis);
-			that.yAxGUI.call(that.yAxis).select(".label").attr("x", -(that.curHeight/2));
+			that.xAxis = d3.axisBottom(that.x);
+			that.yAxis = d3.axisLeft(that.y);
+			that.svg.selectAll(".x.axis").remove();
+			that.svg.selectAll(".y.axis").remove();
+			that.xAxGUI=that.svg.append("g")
+	    		.attr("class", "x axis")
+	    		.attr("transform", "translate(0," + that.curHeight + ")")
+	    		.call(that.xAxis)
+	    		.selectAll("text")
+				    .attr("y", 0)
+				    .attr("x", 9)
+				    .attr("dy", ".35em")
+				    .attr("transform", "rotate(90)")
+				    .style("text-anchor", "start");
+			that.yAxGUI=that.svg.append("g")
+	      		.attr("class", "y axis")
+	      		.call(that.yAxis);
+			that.yAxGUI.append("text")
+	      			.attr("class", "label")
+	      			.attr("transform", "rotate(-90)")
+	      			.attr("y", -37)
+	      			.attr("dy", ".71em")
+	      			.attr("x", -(that.curHeight/2))
+	      			.style("text-anchor", "end")
+	      			.text(that.value);
 
 			that.svg.selectAll(".dot")
 				.attr("cx", function(d) { return that.x(d.strain); })
@@ -722,7 +745,14 @@ chart=function(params){
 		      		.attr("dy", ".35em")
 		      		.attr("font-size","1.0em");
 		    }
-		    that.redrawHeritability(0);
+		    yRangeMax=that.curHeight-that.topMarg;
+		    itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
+
+		    barMarg=itemH*0.1;
+		    if(barMarg<1){
+		    	barMarg=1;
+		    }
+		    that.redrawHeritability(barMarg);
 		}
 	};
 
@@ -1171,6 +1201,8 @@ chart=function(params){
 
 		      		});
 	    }else if (that.display.herit){//draw below heatmap
+	    	yRangeMax=that.curHeight-that.topMarg;
+	    	itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
 	    	that.hChartTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
 	    				.attr("height",that.curHeight/2+that.margin.top+that.margin.bottom);
 
@@ -1213,9 +1245,9 @@ chart=function(params){
 	    		.enter().append("rect")
 	    			.attr("class","bar")
 		      		.attr("x", function(d) { return 0; })
-		      		.attr("y", function(d) { return that.yH(d.id)+that.topMarg+15+barMarg; })
+		      		.attr("y", function(d) { return that.yH(d.id)+that.topMarg+barMarg+15; })
 		      		.attr("width", function(d) { return that.heritScale(d.herit); })
-		      		.attr("height", function(d) { return Math.floor(itemH/2)-(2*barMarg); })
+		      		.attr("height", function(d) { return itemH-(2*barMarg); })
 		      		.style("fill", function(d) { 
 		      			color=d3.rgb(0,0,175);
 		      			if(that.drawType==="scatter"){
@@ -1250,9 +1282,9 @@ chart=function(params){
     		that.hAxGUI.call(that.heritAx);
     		that.yhAxGUI.call(that.yhAx);
     		that.hChart.selectAll("rect.bar")
-				.attr("y", function(d) { return that.yH(d.id)+tmpMarg+barMarg; })
+				.attr("y", function(d) { return that.yH(d.id)+tmpMarg+barMarg+15; })
 				.attr("width", function(d) { return that.heritScale(d.herit); })
-				.attr("height", function(d) { return Math.floor(itemH/2)-(2*barMarg); });
+				.attr("height", function(d) { return itemH-(2*barMarg); });
 
 		}
 	}
