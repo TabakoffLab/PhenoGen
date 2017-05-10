@@ -120,7 +120,11 @@ sub writeExprDataJSON {
 		if($lc>0){
 			print $OUT ",";
 		}
-		print $OUT "{\"GENEID\":\"".$geneID."\",\"HERIT\":".$h{$geneID}{GENE}{HERIT}.",";
+		my $tmpHerit=$h{$geneID}{GENE}{HERIT};
+		if(! defined $h{$geneID}{GENE}{HERIT}){
+			$tmpHerit=0;
+		}
+		print $OUT "{\"GENEID\":\"".$geneID."\",\"HERIT\":".$tmpHerit.",";
 		print $OUT "\"VALUES\":[";
 		my $valRef=$h{$geneID}{GENE}{VALUES};
 		my @tmpValues=@$valRef;
@@ -140,7 +144,11 @@ sub writeExprDataJSON {
 			if($trc>0){
 				print $OUT ",";
 			}
-			print $OUT "{\"TRXID\":\"".$trHOH{"TRXID"}."\",\"HERIT\":".$trHOH{HERIT}.",";
+			$tmpHerit=$trHOH{HERIT};
+			if(! defined $trHOH{HERIT}){
+				$tmpHerit=0;
+			}
+			print $OUT "{\"TRXID\":\"".$trHOH{"TRXID"}."\",\"HERIT\":".$tmpHerit.",";
 			print $OUT "\"VALUES\":[";
 			my $vc=0;
 			foreach my $curVal(@{$trHOH{VALUES}}){
