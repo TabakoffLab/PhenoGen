@@ -1067,9 +1067,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
                                                             var newTrack= GeneTrack(that,data,track,"Long Non-Coding / Non-PolyA+ Genes",additionalOptions);
                                                             newTrack.dataVer=ver;
                                                             that.addTrackList(newTrack);
-                                                            if(selectGene!=""){
+                                                            /*if(selectGene!=""){
                                                                     newTrack.setSelected(selectGene);
-                                                            }
+                                                            }*/
                                                         }catch(er){
 
                                                         }
@@ -1114,10 +1114,13 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
                                                             var newTrack= GeneTrack(that,data,track,"Protein Coding / PolyA+",additionalOptions);
                                                             newTrack.dataVer=ver;
                                                             that.addTrackList(newTrack);
-                                                            if(selectGene!=""){
-                                                                    newTrack.setSelected(selectGene);
-                                                            }
-                                                        }catch(er){}
+                                                            /*if(selectGene!=""){
+                                                            	setTimeout(function (){
+                                                            		newTrack.setSelected(selectGene);
+                                                            	},500);
+                                                                    
+                                                            }*/
+                                                        }catch(er){console.log(er);}
 						}
 					}
 				});
@@ -5650,9 +5653,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				that.svg.selectAll("g.gene"+str).selectAll("rect").style("fill","green");
 				that.svg.selectAll("g.gene"+str).selectAll("text").style("opacity","0.3").style("fill","green");
 				var tmp;
-				if(that.svg.selectAll("g.gene"+str).node()){
-					tmp=that.svg.selectAll("g.gene"+str).node().datum();
-					that.setupDetailedView(tmp.parent);
+				if(that.svg.selectAll("g.gene"+str)){	
+					tmp=that.svg.selectAll("g.gene"+str).data();
+					that.setupDetailedView(tmp[0].parent);
 				}
 
 				selectGene="";
@@ -5711,6 +5714,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 			var newMin=0;
 			var newMax=0;
 			if(localTxType==="protein"||localTxType==="long"||localTxType==="liverTotal"||localTxType==="heartTotal"||localTxType==="brainTotal"||localTxType==="mergedTotal"|| (localTxType==="small" && genomeVer!=="rn5") ||(localTxType==="small"&& new String(d.getAttribute("ID")).indexOf("ENS")>-1)){
+					console.log("totalType");
 					var displayID=d.getAttribute("ID");
 					var akaENS="";
 					var akaGenSym="";
@@ -5771,7 +5775,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}
 				}
 				$('div#selectedImage').show();
+				console.log("here");
 				if((new String(selectedID)).indexOf("ENS")>-1 && that.trackClass.indexOf("ensembl")>-1 ){
+					console.log("geneReport");
 					$('div#selectedReport').show();
 					var jspPage= pathPrefix +"geneReport.jsp";
 					var params={id:selectedID,geneSymbol:selectedGeneSymbol,chromosome:chr,species:organism,genomeVer:genomeVer};
@@ -6625,6 +6631,9 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					that.svg.attr("height", (that.trackYMax+1)*15);
 				}
 			}
+		}
+		if(selectGene!=""){
+			that.setSelected(selectGene);
 		}
 		that.redrawSelectedArea();
 		that.drawAs=prevDrawAs;
