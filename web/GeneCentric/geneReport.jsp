@@ -698,6 +698,11 @@ Add report here.
                     loadDivWithPage("div#geneEQTL",jspPage,scrollToDiv,params,
                                     "<span style=\"text-align:center;width:100%;\"><img src=\"web/images/ucsc-loading.gif\"><BR>Loading...</span>");
             }else if(id==="geneApp"){
+                setTimeout(function(){
+                        $('html, body').animate({
+                                                scrollTop: $("#geneApp").offset().top
+                                        }, 200);
+                },300);
                     /*$.ajax({
                                     url: contextRoot+"web/GeneCentric/callPanelExpr.jsp",
                                     type: 'GET',
