@@ -439,104 +439,108 @@ chart=function(params){
 	};
 	//Function to draw initial chart
 	that.drawScatterLine=function(){
-		that.heritChartW=0;
-		if(that.curWidth>1200 && that.display.herit){
-			that.heritChartW=200;
-		}
-		
-		that.x = d3.scalePoint().domain(that.filteredStrains).range([0, that.curWidth-Math.floor(that.heritChartW*1.1)]);
-		that.y = d3.scaleLinear().range([that.curHeight, 0]);
-		if(that.seriesCount>10){
-			that.color = d3.scaleOrdinal(d3.schemeCategory20);
+		if(that.data && that.data.length>0){
+			that.heritChartW=0;
+			if(that.curWidth>1200 && that.display.herit){
+				that.heritChartW=200;
+			}
+			
+			that.x = d3.scalePoint().domain(that.filteredStrains).range([0, that.curWidth-Math.floor(that.heritChartW*1.1)]);
+			that.y = d3.scaleLinear().range([that.curHeight, 0]);
+			if(that.seriesCount>10){
+				that.color = d3.scaleOrdinal(d3.schemeCategory20);
+			}else{
+				that.color = d3.scaleOrdinal(d3.schemeCategory10);;
+			}
+			that.xAxis = d3.axisBottom(that.x);
+			that.yAxis = d3.axisLeft(that.y);
+			that.y.domain([that.yMin,that.yMax]).nice();
+			
+			that.line = d3.line()
+	    					.x(function(d) { return that.x(d.strain); })
+	    					.y(function(d) { return that.y(d.val); });
+			that.xAxGUI=that.svg.append("g")
+	    		.attr("class", "x axis")
+	    		.attr("transform", "translate(0," + that.curHeight + ")")
+	    		.call(that.xAxis)
+	    		.selectAll("text")
+				    .attr("y", 0)
+				    .attr("x", 9)
+				    .attr("dy", ".35em")
+				    .attr("transform", "rotate(90)")
+				    .style("text-anchor", "start");
+			that.yAxGUI=that.svg.append("g")
+	      		.attr("class", "y axis")
+	      		.call(that.yAxis);
+			that.yAxGUI.append("text")
+	      			.attr("class", "label")
+	      			.attr("transform", "rotate(-90)")
+	      			.attr("y", -37)
+	      			.attr("dy", ".71em")
+	      			.attr("x", -(that.curHeight/2))
+	      			.style("text-anchor", "end")
+	      			.text(that.value);
+	      	that.svg.append("g").attr("id","title")
+	      		.attr("transform","translate("+((that.curWidth-that.leftMarg-that.heritChartW)/2)+",-5)")
+	      		.append("text")
+	      		.text(that.titlePrefix+that.title);
+	      	that.svg.selectAll(".dot")
+	      		.data(that.filteredData)
+	    		.enter().append("circle")
+	    			.attr("class",function(d){return "dot "+d.id+" "+d.strain;})
+		      		.attr("r", 2.5)
+		      		.attr("cx", function(d) { return that.x(d.strain); })
+		      		.attr("cy", function(d) { return that.y(d.val); })
+		      		.style("fill", function(d) { return that.color(d.id); })
+		      		.on("mouseover",function(d){
+		      			d3.selectAll(".dot").transition()
+	    					.duration(250)
+	    					.attr("r", 2.5);
+		      			d3.selectAll(".dot."+d.id)
+		      				.transition()
+	    					.duration(350)
+	    					.attr("r",4.5);
+		      			d3.selectAll(".dot."+d.id+"."+d.strain)
+		      				.transition()
+	    					.duration(350)
+	    					.attr("r",6.5);
+		      		})
+		      		.on("mouseout",function(d){
+		      			d3.selectAll(".dot").transition()
+	    					.duration(250)
+	    					.attr("r", 2.5);
+		      		});    	
+
+		    yRangeMax=that.curHeight-that.topMarg;
+		    itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
+
+		    barMarg=itemH*0.1;
+		    if(barMarg<1){
+		    	barMarg=1;
+		    }
+		    that.svgTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
+		    				.attr("height",that.curHeight+that.margin.top+that.margin.bottom);
+		   
+		    /*for(i=0;i<that.color.domain().length;i++){
+		    	tmpID=that.color.domain()[i];
+		    	tmpD=that.svg.selectAll("."+tmpID).data();
+				tmpD.sort(that.sortCompStrainOrder);
+		    	that.svg.append("path")
+	      			.attr("class", "line")
+	      			.attr("id","line"+tmpID)
+	      			.attr("d", function(d) {return that.line(tmpD);})
+	      			.style("stroke", function(d) { return that.color(tmpID); })
+	      			.style("stroke-width", "2px")
+	          		.style("fill", "none");
+		    }*/
+
+			that.geneScale= d3.scaleBand().domain(that.filteredGeneIDs.map(function(d){return d.id;})).range([0, that.curHeight]);
+
+		    that.drawScatterLineLegend();
+		    that.drawHeritabiltiy(barMarg);
 		}else{
-			that.color = d3.scaleOrdinal(d3.schemeCategory10);;
+			that.svgTop.append("text").attr("transform","translate("+(that.curWidth/2-25)+",15 )").text("No Genes to display.")
 		}
-		that.xAxis = d3.axisBottom(that.x);
-		that.yAxis = d3.axisLeft(that.y);
-		that.y.domain([that.yMin,that.yMax]).nice();
-		
-		that.line = d3.line()
-    					.x(function(d) { return that.x(d.strain); })
-    					.y(function(d) { return that.y(d.val); });
-		that.xAxGUI=that.svg.append("g")
-    		.attr("class", "x axis")
-    		.attr("transform", "translate(0," + that.curHeight + ")")
-    		.call(that.xAxis)
-    		.selectAll("text")
-			    .attr("y", 0)
-			    .attr("x", 9)
-			    .attr("dy", ".35em")
-			    .attr("transform", "rotate(90)")
-			    .style("text-anchor", "start");
-		that.yAxGUI=that.svg.append("g")
-      		.attr("class", "y axis")
-      		.call(that.yAxis);
-		that.yAxGUI.append("text")
-      			.attr("class", "label")
-      			.attr("transform", "rotate(-90)")
-      			.attr("y", -37)
-      			.attr("dy", ".71em")
-      			.attr("x", -(that.curHeight/2))
-      			.style("text-anchor", "end")
-      			.text(that.value);
-      	that.svg.append("g").attr("id","title")
-      		.attr("transform","translate("+((that.curWidth-that.leftMarg-that.heritChartW)/2)+",-5)")
-      		.append("text")
-      		.text(that.titlePrefix+that.title);
-      	that.svg.selectAll(".dot")
-      		.data(that.filteredData)
-    		.enter().append("circle")
-    			.attr("class",function(d){return "dot "+d.id+" "+d.strain;})
-	      		.attr("r", 2.5)
-	      		.attr("cx", function(d) { return that.x(d.strain); })
-	      		.attr("cy", function(d) { return that.y(d.val); })
-	      		.style("fill", function(d) { return that.color(d.id); })
-	      		.on("mouseover",function(d){
-	      			d3.selectAll(".dot").transition()
-    					.duration(250)
-    					.attr("r", 2.5);
-	      			d3.selectAll(".dot."+d.id)
-	      				.transition()
-    					.duration(350)
-    					.attr("r",4.5);
-	      			d3.selectAll(".dot."+d.id+"."+d.strain)
-	      				.transition()
-    					.duration(350)
-    					.attr("r",6.5);
-	      		})
-	      		.on("mouseout",function(d){
-	      			d3.selectAll(".dot").transition()
-    					.duration(250)
-    					.attr("r", 2.5);
-	      		});    	
-
-	    yRangeMax=that.curHeight-that.topMarg;
-	    itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
-
-	    barMarg=itemH*0.1;
-	    if(barMarg<1){
-	    	barMarg=1;
-	    }
-	    that.svgTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
-	    				.attr("height",that.curHeight+that.margin.top+that.margin.bottom);
-	   
-	    /*for(i=0;i<that.color.domain().length;i++){
-	    	tmpID=that.color.domain()[i];
-	    	tmpD=that.svg.selectAll("."+tmpID).data();
-			tmpD.sort(that.sortCompStrainOrder);
-	    	that.svg.append("path")
-      			.attr("class", "line")
-      			.attr("id","line"+tmpID)
-      			.attr("d", function(d) {return that.line(tmpD);})
-      			.style("stroke", function(d) { return that.color(tmpID); })
-      			.style("stroke-width", "2px")
-          		.style("fill", "none");
-	    }*/
-
-		that.geneScale= d3.scaleBand().domain(that.filteredGeneIDs.map(function(d){return d.id;})).range([0, that.curHeight]);
-
-	    that.drawScatterLineLegend();
-	    that.drawHeritabiltiy(barMarg);
 	};
 	that.drawScatterLineLegend=function(){
 		lgdItemWidth=2;
@@ -662,97 +666,101 @@ chart=function(params){
 
 	};
 	that.redrawScatterLine=function(){
-		if ( (that.heritChartW==0 && that.curWidth>1200 && that.display.herit) || (that.heritChartW>0 && that.curWidth<1200 && that.display.herit) ){
-			that.reset();
-		}else{
-			that.svgTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
-				.attr("height", that.curHeight+that.margin.top+that.margin.bottom);
-			that.svg.attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
+		if(that.data && that.data.length>0){
+			if ( (that.heritChartW==0 && that.curWidth>1200 && that.display.herit) || (that.heritChartW>0 && that.curWidth<1200 && that.display.herit) ){
+				that.reset();
+			}else{
+				that.svgTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
+					.attr("height", that.curHeight+that.margin.top+that.margin.bottom);
+				that.svg.attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
 
-			that.x.range([0, that.curWidth-Math.floor(that.heritChartW*1.1)]);
-			that.y.range([that.curHeight, 0]);
-			that.xAxis = d3.axisBottom(that.x);
-			that.yAxis = d3.axisLeft(that.y);
-			that.svg.selectAll(".x.axis").remove();
-			that.svg.selectAll(".y.axis").remove();
-			that.xAxGUI=that.svg.append("g")
-	    		.attr("class", "x axis")
-	    		.attr("transform", "translate(0," + that.curHeight + ")")
-	    		.call(that.xAxis)
-	    		.selectAll("text")
-				    .attr("y", 0)
-				    .attr("x", 9)
-				    .attr("dy", ".35em")
-				    .attr("transform", "rotate(90)")
-				    .style("text-anchor", "start");
-			that.yAxGUI=that.svg.append("g")
-	      		.attr("class", "y axis")
-	      		.call(that.yAxis);
-			that.yAxGUI.append("text")
-	      			.attr("class", "label")
-	      			.attr("transform", "rotate(-90)")
-	      			.attr("y", -37)
-	      			.attr("dy", ".71em")
-	      			.attr("x", -(that.curHeight/2))
-	      			.style("text-anchor", "end")
-	      			.text(that.value);
+				that.x.range([0, that.curWidth-Math.floor(that.heritChartW*1.1)]);
+				that.y.range([that.curHeight, 0]);
+				that.xAxis = d3.axisBottom(that.x);
+				that.yAxis = d3.axisLeft(that.y);
+				that.svg.selectAll(".x.axis").remove();
+				that.svg.selectAll(".y.axis").remove();
+				that.xAxGUI=that.svg.append("g")
+		    		.attr("class", "x axis")
+		    		.attr("transform", "translate(0," + that.curHeight + ")")
+		    		.call(that.xAxis)
+		    		.selectAll("text")
+					    .attr("y", 0)
+					    .attr("x", 9)
+					    .attr("dy", ".35em")
+					    .attr("transform", "rotate(90)")
+					    .style("text-anchor", "start");
+				that.yAxGUI=that.svg.append("g")
+		      		.attr("class", "y axis")
+		      		.call(that.yAxis);
+				that.yAxGUI.append("text")
+		      			.attr("class", "label")
+		      			.attr("transform", "rotate(-90)")
+		      			.attr("y", -37)
+		      			.attr("dy", ".71em")
+		      			.attr("x", -(that.curHeight/2))
+		      			.style("text-anchor", "end")
+		      			.text(that.value);
 
-			that.svg.selectAll(".dot")
-				.attr("cx", function(d) { return that.x(d.strain); })
-		      	.attr("cy", function(d) { return that.y(d.val); });
-		    
-		    /*for(i=0;i<that.color.domain().length;i++){
-		    	tmpID=that.color.domain()[i];
-		    	tmpD=that.svg.selectAll(".dot."+tmpID).data();
-		    	tmpD.sort(that.sortCompStrainOrder);
-		    	that.svg.select("#line"+tmpID)
-	      			.attr("d", function(d) {return that.line(tmpD);});
-		    }*/
+				that.svg.selectAll(".dot")
+					.attr("cx", function(d) { return that.x(d.strain); })
+			      	.attr("cy", function(d) { return that.y(d.val); });
+			    
+			    /*for(i=0;i<that.color.domain().length;i++){
+			    	tmpID=that.color.domain()[i];
+			    	tmpD=that.svg.selectAll(".dot."+tmpID).data();
+			    	tmpD.sort(that.sortCompStrainOrder);
+			    	that.svg.select("#line"+tmpID)
+		      			.attr("d", function(d) {return that.line(tmpD);});
+			    }*/
 
-		    lgdItemWidth=2
-			if(that.curWidth>1600){
-				lgdItemWidth=8;
-			}else if(that.curWidth>1400){
-				lgdItemWidth=7;
-			}else if(that.curWidth>1200){
-				lgdItemWidth=6;
-			}else if(that.curWidth>1000){
-				lgdItemWidth=5;
-			}else if(that.curWidth>800){
-				lgdItemWidth=4;
-			}else if(that.curWidth>600){
-				lgdItemWidth=3;
+			    lgdItemWidth=2
+				if(that.curWidth>1600){
+					lgdItemWidth=8;
+				}else if(that.curWidth>1400){
+					lgdItemWidth=7;
+				}else if(that.curWidth>1200){
+					lgdItemWidth=6;
+				}else if(that.curWidth>1000){
+					lgdItemWidth=5;
+				}else if(that.curWidth>800){
+					lgdItemWidth=4;
+				}else if(that.curWidth>600){
+					lgdItemWidth=3;
+				}
+				itemW=(that.curWidth-that.margin.left)/lgdItemWidth;
+				itemTotal=that.color.domain().length;
+				rows=Math.floor(itemTotal/lgdItemWidth)+1;
+				lgdH=rows*30;
+				that.legendSVGTop.attr("height",lgdH).attr("width",that.curWidth);
+			    that.legendSVG.selectAll("g.legend")
+			    	.attr("transform", function(d, i) { 
+			      		yPos=Math.floor(i/lgdItemWidth)*30;
+			      		xPos=(i%lgdItemWidth)*itemW+that.margin.left;
+			      		return "translate("+xPos+","+yPos+")"; 
+			      	});
+			    if(that.curWidth<500){
+			    	that.legendSVG.selectAll(".legend.text")
+			    		.attr("y", 9)
+			      		.attr("dy", ".35em")
+			      		.attr("font-size","0.7em");
+			    }else{
+			    	that.legendSVG.selectAll(".legend.text")
+			    		.attr("y", 9)
+			      		.attr("dy", ".35em")
+			      		.attr("font-size","1.0em");
+			    }
+			    yRangeMax=that.curHeight-that.topMarg;
+			    itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
+
+			    barMarg=itemH*0.1;
+			    if(barMarg<1){
+			    	barMarg=1;
+			    }
+			    that.redrawHeritability(barMarg);
 			}
-			itemW=(that.curWidth-that.margin.left)/lgdItemWidth;
-			itemTotal=that.color.domain().length;
-			rows=Math.floor(itemTotal/lgdItemWidth)+1;
-			lgdH=rows*30;
-			that.legendSVGTop.attr("height",lgdH).attr("width",that.curWidth);
-		    that.legendSVG.selectAll("g.legend")
-		    	.attr("transform", function(d, i) { 
-		      		yPos=Math.floor(i/lgdItemWidth)*30;
-		      		xPos=(i%lgdItemWidth)*itemW+that.margin.left;
-		      		return "translate("+xPos+","+yPos+")"; 
-		      	});
-		    if(that.curWidth<500){
-		    	that.legendSVG.selectAll(".legend.text")
-		    		.attr("y", 9)
-		      		.attr("dy", ".35em")
-		      		.attr("font-size","0.7em");
-		    }else{
-		    	that.legendSVG.selectAll(".legend.text")
-		    		.attr("y", 9)
-		      		.attr("dy", ".35em")
-		      		.attr("font-size","1.0em");
-		    }
-		    yRangeMax=that.curHeight-that.topMarg;
-		    itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
-
-		    barMarg=itemH*0.1;
-		    if(barMarg<1){
-		    	barMarg=1;
-		    }
-		    that.redrawHeritability(barMarg);
+		}else{
+			//Need to Add Message
 		}
 	};
 
@@ -1437,74 +1445,78 @@ chart=function(params){
 		that.data=[];
 		list=d.GENELIST;
 		that.seriesCount=0;
-		that.yMin=list[0].VALUES[0][that.value];
-		that.yMax=list[0].VALUES[0][that.value];
-		/*
-		//find Gene IDs from browserTrackData
-		trackData={};
-		if(gs.getTrackData){
-			tmpTrackData=[];
-			if(that.titlePrefix==="Whole Brain"){
-				tmpTrackData=gs.getTrackData("brainTotal");
-			}else if(that.titlePrefix==="Liver"){
-				tmpTrackData=gs.getTrackData("liverTotal");
-			}
-			for(i=0;i<trackData.length;i++){
-				if(tmpTrackData[i].getAttribute("ID").startswith("PRN6G")){
+		if(list && list.length>0){
+			that.yMin=list[0].VALUES[0][that.value];
+			that.yMax=list[0].VALUES[0][that.value];
+			/*
+			//find Gene IDs from browserTrackData
+			trackData={};
+			if(gs.getTrackData){
+				tmpTrackData=[];
+				if(that.titlePrefix==="Whole Brain"){
+					tmpTrackData=gs.getTrackData("brainTotal");
+				}else if(that.titlePrefix==="Liver"){
+					tmpTrackData=gs.getTrackData("liverTotal");
+				}
+				for(i=0;i<trackData.length;i++){
+					if(tmpTrackData[i].getAttribute("ID").startswith("PRN6G")){
 
-				}else{
-					getAllChildrenByName(tmpTrackData,"annotation")
+					}else{
+						getAllChildrenByName(tmpTrackData,"annotation")
+					}
 				}
-			}
-		}*/
-		for(var k=0;k<list.length;k++){
-			//console.log(k);
-			id=list[k].GENEID;
-			
-			tmp={"id":id};
-			if(typeof list[k].HERIT!=='undefined'){
-				tmp.herit=list[k].HERIT;
-			}else{
-				that.display.herit=false;
-			}
-			that.geneIDs.push(tmp);
-			
-			//console.log(list[k].VALUES.length);
-			for(i=0;i<list[k].VALUES.length;i++){
-				if(k===0){
-					that.strains.push(list[k].VALUES[i].Strain);
-				}
-				that.data.push({"id":id,"strain":list[k].VALUES[i].Strain,"val":list[k].VALUES[i][that.value]});
-				if(that.yMin>list[k].VALUES[i][that.value]){
-					that.yMin=list[k].VALUES[i][that.value];
-				}
-				if(that.yMax<list[k].VALUES[i][that.value]){
-					that.yMax=list[k].VALUES[i][that.value];
-				}
-			}
-			for(j=0;j<list[k].TRXLIST.length;j++){
-				id=list[k].TRXLIST[j].TRXID;
+			}*/
+			for(var k=0;k<list.length;k++){
+				//console.log(k);
+				id=list[k].GENEID;
+				
 				tmp={"id":id};
-				if(typeof list[k].TRXLIST[j].HERIT !=='undefined'){
-					tmp.herit=list[k].TRXLIST[j].HERIT;
+				if(typeof list[k].HERIT!=='undefined'){
+					tmp.herit=list[k].HERIT;
+				}else{
+					that.display.herit=false;
 				}
 				that.geneIDs.push(tmp);
-				for(i=0;i<list[k].TRXLIST[j].VALUES.length;i++){
-					that.data.push({"id":id,"strain":list[k].TRXLIST[j].VALUES[i].Strain,"val":list[k].TRXLIST[j].VALUES[i][that.value]});
-					if(that.yMin>list[k].TRXLIST[j].VALUES[i][that.value]){
-						that.yMin=list[k].TRXLIST[j].VALUES[i][that.value];
+				
+				//console.log(list[k].VALUES.length);
+				for(i=0;i<list[k].VALUES.length;i++){
+					if(k===0){
+						that.strains.push(list[k].VALUES[i].Strain);
 					}
-					if(that.yMax<list[k].TRXLIST[j].VALUES[i][that.value]){
-						that.yMax=list[k].TRXLIST[j].VALUES[i][that.value];
+					that.data.push({"id":id,"strain":list[k].VALUES[i].Strain,"val":list[k].VALUES[i][that.value]});
+					if(that.yMin>list[k].VALUES[i][that.value]){
+						that.yMin=list[k].VALUES[i][that.value];
+					}
+					if(that.yMax<list[k].VALUES[i][that.value]){
+						that.yMax=list[k].VALUES[i][that.value];
+					}
+				}
+				for(j=0;j<list[k].TRXLIST.length;j++){
+					id=list[k].TRXLIST[j].TRXID;
+					tmp={"id":id};
+					if(typeof list[k].TRXLIST[j].HERIT !=='undefined'){
+						tmp.herit=list[k].TRXLIST[j].HERIT;
+					}
+					that.geneIDs.push(tmp);
+					for(i=0;i<list[k].TRXLIST[j].VALUES.length;i++){
+						that.data.push({"id":id,"strain":list[k].TRXLIST[j].VALUES[i].Strain,"val":list[k].TRXLIST[j].VALUES[i][that.value]});
+						if(that.yMin>list[k].TRXLIST[j].VALUES[i][that.value]){
+							that.yMin=list[k].TRXLIST[j].VALUES[i][that.value];
+						}
+						if(that.yMax<list[k].TRXLIST[j].VALUES[i][that.value]){
+							that.yMax=list[k].TRXLIST[j].VALUES[i][that.value];
+						}
 					}
 				}
 			}
-		}
-		if(that.seriesCount>20){
-			that.drawType="heatmap";
-		}
+			if(that.seriesCount>20){
+				that.drawType="heatmap";
+			}
 
-
+		}else{
+			list=[];
+			that.data=[];
+		}
 		that.draw();
 	};
 
