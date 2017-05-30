@@ -29,8 +29,8 @@ pageDescription="Browser and Software Requirements for PhenoGen";
                     <BR />
                 <p>
                     <span style="font-weight: bold;">Firefox 23.0+ (31+ is recommended)</span><BR /><BR>
-                    <span style="font-weight: bold;">Safari 6.0+ (7+ is recommended)</span><BR /><BR>
-                    <span style="font-weight: bold;">Chrome 25+ (36-41 is recommended)</span> NOTE: ver. 42(+) may not work with the Java plugin(see below for a message).  For Detailed Affy Probe Set Data please use Firefox or Safari.<BR /><BR>
+                    <span style="font-weight: bold;">Safari 6.0+ (8+ is recommended)</span><BR /><BR>
+                    <span style="font-weight: bold;">Chrome 25+ (36+ is recommended)</span> <BR /><BR>
                     <span style="font-weight: bold;">IE 10+ (11+ is recommended)</span> NOTE: IE is not recommended for the Genome/Transcriptome Data Browser.  Please use one of the other recommended browsers.<BR><BR>
                     <span style="font-weight: bold;">IE 9</span> - Most features will still work with IE 9, but the Genome/Transcriptome Data Browser will NOT work. <BR><BR>
 				</p>
@@ -50,7 +50,7 @@ pageDescription="Browser and Software Requirements for PhenoGen";
 				$('#noJSsite').hide();
 			</script>
         
-            <li>Java Plugin JRE 1.7+ is required for part of the Gene View in the Detailed Genome/Transcription Information feature.<BR />
+           <!-- <li>Java Plugin JRE 1.7+ is required for part of the Gene View in the Detailed Genome/Transcription Information feature.<BR />
                 (<span id="minJava" style="color:#009900;display:none;" >Java plugin meets the minimum requirements. <BR /></span>
                 <span id="oldJava" style="color:#FF0000;display:none;">A new version may be available click the Install button for the latest version.</span>
                 <span id="noJava" style="color:#FF0000;display:none;"> A newer version is required click the Install button for the latest version.</span><span id="installJava" class="button">Install Java</span>)
@@ -94,12 +94,12 @@ pageDescription="Browser and Software Requirements for PhenoGen";
                             }
 			}
 			
-        </script>
+        </script>-->
         
 		</ul>
         
         
-<script type="text/javascript">
+<!--<script type="text/javascript">
 	$(document).ready(function() {
 		
 		$('#installJava').click(function (){
@@ -113,6 +113,6 @@ pageDescription="Browser and Software Requirements for PhenoGen";
 	});
 	
 	
-</script>        
+</script>    -->   
 
 <%@ include file="/web/common/footer.jsp" %>
