@@ -9425,81 +9425,54 @@ function QTLTrack(gsvg,data,trackClass,density){
 		that.yCount=0;
 		that.idList=new Array();
 		//update
-		that.svg.selectAll(".qtl").remove();
-		var qtls=that.svg.selectAll(".qtl")
-	   			.data(data,key)
-				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d,i)+")";});
+		//that.svg.selectAll(".qtl").remove();
+		if(that.data && that.data.length>0){
+			console.log(that.svg);
+			console.log(that.svg.selectAll(".qtl"));
 
-		//add new
-		qtls.enter().append("g")
-				.attr("class","qtl")
-				.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d,i)+")";})
-				.append("rect")
-	    	.attr("height",10)
-			.attr("rx",1)
-			.attr("ry",1)
-			.attr("width",function(d) {
-								   var wX=1;
-								   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
-									   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
-								   }
-								   return wX;
-								   })
-			.attr("id",function(d){return d.getAttribute("id");})
-			.style("fill","blue")
-			.style("cursor", "pointer")
-			//.on("mouseover", that.onMouseOver)
-			//.on("mouseout", that.onMouseOut);
-			.on("click", that.setupDetailedView)
-			.on("mouseover", function(d) {
-				if(that.gsvg.isToolTip==0){
-					overSelectable=1;
-					$("#mouseHelp").html("<B>Click</B> to see additional details. <B>Double Click</B> to zoom in on this feature.");
-					d3.select(this).style("fill","green");
-		            tt.transition()
-		                .duration(200)
-		                .style("opacity", 1);
-		            tt.html(that.createToolTip(d))
-		                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})
-						.style("top", function(){return that.positionTTTop(d3.event.pageY);});
-		            that.triggerTableFilter(d);
-		        }
-	        })
-			.on("mouseout", function(d) {
-				overSelectable=0;
-				$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
-				var nameStr=d.getAttribute("name");
-				var re = /[0-9]+\s*$/g;
-				var end1=nameStr.search(re);
-				if(end1>-1){
-					nameStr=nameStr.substr(0,end1);
-				}
-				re = /QTL\s*$/g;
-				end1=nameStr.search(re);
-				if(end1>-1){
-					nameStr=nameStr.substr(0,end1);
-				}
-				re = /traits?\s*$/g;
-				end1=nameStr.search(re);
-				if(end1>-1){
-					nameStr=nameStr.substr(0,end1+5);
-				}
-				var name=nameStr;
-				d3.select(this).style("fill",that.color(name));
-	            tt.transition()
-					 .delay(500)
-	                .duration(200)
-	                .style("opacity", 0);
-	            that.clearTableFilter(d);
-	        });
-
-		qtls.exit().remove();
-
-
-		if(typeof qtls[0]!=='undefined'){
-			qtls[0].forEach(function(d){
-				if(typeof d!=='undefined'){
-					var nameStr=new String(d.__data__.getAttribute("name"));
+			var qtls=that.svg.selectAll(".qtl")
+		   			.data(data,key);
+			//		.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d,i)+")";});
+			console.log(qtls);
+			//add new
+			qtls.enter().append("g")
+					.attr("class","qtl")
+					.attr("transform",function(d,i){ return "translate("+that.xScale(d.getAttribute("start"))+","+that.calcY(d,i)+")";})
+					.append("rect")
+		    	.attr("height",10)
+				.attr("rx",1)
+				.attr("ry",1)
+				.attr("width",function(d) {
+									   var wX=1;
+									   if(that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"))>1){
+										   wX=that.xScale(d.getAttribute("stop"))-that.xScale(d.getAttribute("start"));
+									   }
+									   return wX;
+									   })
+				.attr("id",function(d){return d.getAttribute("id");})
+				.style("fill","blue")
+				.style("cursor", "pointer")
+				//.on("mouseover", that.onMouseOver)
+				//.on("mouseout", that.onMouseOut);
+				.on("click", that.setupDetailedView)
+				.on("mouseover", function(d) {
+					if(that.gsvg.isToolTip==0){
+						overSelectable=1;
+						$("#mouseHelp").html("<B>Click</B> to see additional details. <B>Double Click</B> to zoom in on this feature.");
+						d3.select(this).style("fill","green");
+			            tt.transition()
+			                .duration(200)
+			                .style("opacity", 1);
+			            tt.html(that.createToolTip(d))
+			                .style("left", function(){return that.positionTTLeft(d3.event.pageX);})
+							.style("top", function(){return that.positionTTTop(d3.event.pageY);});
+			            that.triggerTableFilter(d);
+			        }
+		        })
+				.on("mouseout", function(d) {
+					overSelectable=0;
+					$("#mouseHelp").html("Navigation Hints: Hold mouse over areas of the image for available actions.");
+					var nameStr=d.getAttribute("name");
 					var re = /[0-9]+\s*$/g;
 					var end1=nameStr.search(re);
 					if(end1>-1){
@@ -9516,12 +9489,47 @@ function QTLTrack(gsvg,data,trackClass,density){
 						nameStr=nameStr.substr(0,end1+5);
 					}
 					var name=nameStr;
-					d3.select(d).select("rect").style("fill",that.color(name));
-				}
-			});
+					d3.select(this).style("fill",that.color(name));
+		            tt.transition()
+						 .delay(500)
+		                .duration(200)
+		                .style("opacity", 0);
+		            that.clearTableFilter(d);
+		        }).merge(qtls);
+
+			qtls.exit().remove();
+
+
+			if(typeof qtls[0]!=='undefined'){
+				qtls[0].forEach(function(d){
+					if(typeof d!=='undefined'){
+						var nameStr=new String(d.__data__.getAttribute("name"));
+						var re = /[0-9]+\s*$/g;
+						var end1=nameStr.search(re);
+						if(end1>-1){
+							nameStr=nameStr.substr(0,end1);
+						}
+						re = /QTL\s*$/g;
+						end1=nameStr.search(re);
+						if(end1>-1){
+							nameStr=nameStr.substr(0,end1);
+						}
+						re = /traits?\s*$/g;
+						end1=nameStr.search(re);
+						if(end1>-1){
+							nameStr=nameStr.substr(0,end1+5);
+						}
+						var name=nameStr;
+						d3.select(d).select("rect").style("fill",that.color(name));
+					}
+				});
+			}
+			that.svg.attr("height", that.yCount*15);
+			//that.getDisplayedData();
+		
+		}else{
+			that.svg.attr("height", 15);
 		}
-		that.svg.attr("height", that.yCount*15);
-		//that.getDisplayedData();
 		that.redrawSelectedArea();
 	};
 	that.draw(data);
