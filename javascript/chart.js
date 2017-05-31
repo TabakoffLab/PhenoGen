@@ -539,7 +539,7 @@ chart=function(params){
 		    that.drawScatterLineLegend();
 		    that.drawHeritabiltiy(barMarg);
 		}else{
-			that.svgTop.append("text").attr("transform","translate("+(that.curWidth/2-25)+",15 )").text("No Genes to display.")
+			that.svgTop.append("text").attr("transform","translate("+(that.curWidth/2-25)+",15 )").text("No Genes to display.");
 		}
 	};
 	that.drawScatterLineLegend=function(){
@@ -765,376 +765,379 @@ chart=function(params){
 	};
 
 	that.drawHeatMap=function(){
-		that.heritChartW=0;
-		if(that.curWidth>1200 && that.display.herit){
-			that.heritChartW=200;
-		}
-		itemW=(that.curWidth-that.leftMarg-that.heritChartW)/that.filteredStrains.length;
-		itemH=(that.curHeight-that.topMarg)/that.filteredGeneIDs.length;
-		//console.log("itemH:"+itemH);
-		if(itemH>that.maxHMHeight){
-			itemH=that.maxHMHeight;
-		}
-		if(itemH<that.minHMHeight){
-			itemH=that.minHMHeight;
-		}
-		barMarg=Math.floor(itemH*0.1);
-		if(barMarg<1){
-			barMarg=1;
-		}
-		yRangeMax=itemH*that.filteredGeneIDs.length;
-		/*if(itemH> that.maxHMHeight){
-			itemH=that.maxHMHeight;
-			yRangeMax=that.geneIDs.length*itemH;
-		}*/
-		that.x = d3.scaleBand().domain(that.filteredStrains).range([0, that.curWidth-that.leftMarg-that.heritChartW]);
-		that.y = d3.scaleBand().domain(that.filteredGeneIDs.map(function(d){return d.id;})).range([0, yRangeMax]);
-		that.geneScale=that.y;
-		that.color= d3.scaleLinear().domain([that.yMin,that.yMax]).range([0,255]);
-		that.xAxis = d3.axisTop(that.x);
-		that.yAxis = d3.axisLeft(that.y);
-		that.svg.append("g").attr("id","title").append("text").attr("text-anchor","middle").attr("transform","translate("+(that.curWidth/2)+",0)").text(that.titlePrefix+that.title);
-		that.xAxGUI=that.svg.append("g")
-    		.attr("class", "x axis")
-    		.attr("transform", "translate("+that.leftMarg+","+that.topMarg+")")
-    		.call(that.xAxis)
-    		.selectAll("text")
-			    .attr("y", 0)
-			    .attr("x", 9)
-			    .attr("dy", ".35em")
-			    .attr("transform", "rotate(-90)")
-			    .style("text-anchor", "start");
-    	that.svg.selectAll("g.x.axis g.tick text")
-      		.style("cursor","pointer")
-      		.on("click", function(){
-      			id=d3.select(this)._groups[0][0].textContent
-      			that.toggleSort(id);
-      			that.sortByStrain(that.sortBy.col,that.sortBy.dir);
-      			that.reset();
-      			that.draw();
-      			setTimeout(function(){
-      				that.sortIndicator.attr("transform", function(){
-      					deg=180;
-      					dy=10;
-      					dx=0;
-      					offs=30;
-						if(that.sortBy.dir=="DESC"){
-							deg=0;
-							dy=5;
-							dx=10;
-						}
-						x=that.x(id)+that.leftMarg-dx+offs+(itemW/2)
-      					return "translate("+x+","+dy+")rotate("+deg+")";
-      				}).style('stroke', 'black');
-      			},500);
-      			
-      		});
-
-		that.yAxGUI=that.svg.append("g")
-      		.attr("class", "y axis")
-      		.attr("transform", "translate("+that.leftMarg+","+that.topMarg+")")
-      		.call(that.yAxis);
-      	that.svg.selectAll("g.y.axis g.tick text")
-      		.style("cursor","pointer")
-      		.on("click", function(){
-      			id=d3.select(this)._groups[0][0].textContent;
-      			that.toggleSort(id);
-      			that.sortByValueForID(that.sortBy.col,that.sortBy.dir);
-      			that.reset();
-      			that.draw();
-      			//draw triangle
-      			setTimeout(function(){
-	      			that.sortIndicator.attr("transform",function(){
-	      					deg=180;
-	      					dy=2;
-	      					dx=0;
-	      					offs=-30
-							if(that.sortBy.dir=="DESC"){
-								deg=0;
-								dy=-2;
-								dx=10;
-							}
-							x=5-dx+offs;
-							dy=dy+that.y(id)+itemH/2+that.topMarg;
-	      					return "translate("+x+","+dy+")rotate("+deg+")";
-	      					
-
-	      			}).style('stroke', 'black');
-	      		},500);
-
-      		});
-      	that.svg.selectAll(".box")
-      		.data(that.filteredData)
-    		.enter().append("g")
-    			.attr("class","box")
-    			.append("rect")
-	      		.attr("x", function(d) { return that.x(d.strain)+that.leftMarg; })
-	      		.attr("y", function(d) { return that.y(d.id)+that.topMarg; })
-	      		.attr("width", function(d) { return itemW; })
-	      		.attr("height", function(d) { return itemH; })
-	      		.style("fill", function(d) { return d3.rgb(that.color(d.val),0,0); })
-	      		.on("mouseover",function(d){
-	      			d3.select(this.parentNode).select("text").attr("opacity","100");
-	      		})
-	      		.on("mouseout",function(d){
-	      			d3.select(this.parentNode).select("text").attr("opacity","0");
-	      		}).each(function(d){
-	      			d3.select(this.parentNode).append("text")
-	      				.attr("text-anchor","middle")
-	      				.attr("transform","translate("+((that.x(d.strain)+that.leftMarg)+itemW/2)+","+((that.y(d.id)+that.topMarg)+itemH/2)+")rotate(-90)")
-	      				.attr("font-size","8px")
-	      				//.attr("stroke","#FFFFFF")
-	      				.attr("fill","#FFFFFF")
-	      				.attr("opacity","0")
-	      				.text(Number(d.val).toFixed(1));
-	      		});
-	    
-	    that.sortIndicator=that.svg.append("g").attr("id","sortIndicator").attr("transform","translate(-50,-50)");
-	    that.sortIndicator.append('polyline')
-    		.attr('points', that.trianglePoints)
-    		.style('stroke', 'white');
-
-    	that.svgTop.attr("height",itemH*that.filteredGeneIDs.length+that.margin.top+that.margin.bottom+25);
-
-    	//Setup Legend
-	    that.legendSVGTop.attr("height",60).attr("width",that.curWidth+that.margin.left+that.margin.right);
-	    grad=that.legendSVG.append("defs").append("linearGradient")
-	    					.attr("id","scale")
-	    					.attr("x1","0%").attr("y1","0%")
-	    					.attr("x2","100%").attr("y2","0%");
-	   	grad.append("stop").attr("offset","0%").style("stop-color","rgb(0,0,0)");
-	   	grad.append("stop").attr("offset","100%").style("stop-color","rgb(255,0,0)");
-	    that.hmScale=d3.scaleLinear().domain([that.yMin,that.yMax]).range([that.leftMarg, that.curWidth-that.heritChartW]);
-	    that.cAxis = d3.axisTop(that.hmScale);
-	    that.cAxGUI=that.legendSVG.append("g")
-    		.attr("class", "c axis")
-    		.attr("transform", "translate("+that.margin.left+",30)")
-    		.call(that.cAxis);
-    	that.legendSVG.append("text")
-    		.attr("id","legendLbl")
-    		.attr("transform","translate("+(that.curWidth/2)+",11)")
-    		.attr("text-anchor","middle")
-    		.text("Median Estimated Counts Per Million");
-	    
-	   	that.legendSVG.append("rect").attr("id","legendRect")
-	   					.attr("x",that.leftMarg).attr("y",4)
-	   					.attr("width",that.curWidth-that.leftMarg-that.heritChartW)
-	   					.attr("height", 20)
-	   					.attr("fill","url(\"#scale\")")
-	   					.attr("transform","translate("+that.margin.left+",27)");
-	   	that.legendRectHi=that.legendSVG.append("rect").attr("id","legendRectHigh")
-	   					.attr("x",that.leftMarg).attr("y",4)
-	   					.attr("width",0)
-	   					.attr("height", 20)
-	   					.attr("fill","#CECECE")
-	   					.attr("transform","translate("+that.margin.left+",27)");
-	   	that.legendRectLo=that.legendSVG.append("rect").attr("id","legendRectLow")
-	   					.attr("x",that.leftMarg).attr("y",4)
-	   					.attr("width",0)
-	   					.attr("height", 20)
-	   					.attr("fill","#555555")
-	   					.attr("transform","translate("+that.margin.left+",27)");
-
-	   	that.hmScale2=d3.scaleLinear().domain([that.yMin,that.yMax]).range([that.leftMarg, that.curWidth-that.heritChartW]);
-	    that.cAxis2 = d3.axisBottom(that.hmScale2);
-	    that.cAxGUI2=that.legendSVG.append("g")
-    		.attr("class", "c axis2")
-    		.attr("transform", "translate("+that.margin.left+",97)")
-    		.style("opacity",0)
-    		.call(that.cAxis2);
-	    
-	   	that.legendSVG.append("rect").attr("id","legendRect2")
-	   					.attr("x",that.leftMarg).attr("y",50)
-	   					.attr("width",that.curWidth-that.leftMarg-that.heritChartW)
-	   					.attr("height", 20)
-	   					.attr("fill","url(\"#scale\")")
-	   					.attr("transform","translate("+that.margin.left+",27)")
-	   					.style("opacity",0);
-
-
-	   	that.minSliderCurPos=that.leftMarg+that.margin.left-5;
-	   	that.maxSliderCurPos=that.curWidth-that.heritChartW+35;
-	   	that.minSliderPos=that.leftMarg+that.margin.left-5;
-	   	that.maxSliderPos=that.curWidth-that.heritChartW+35;
-	   	that.legendSVG.append("line").attr("class","breakout").attr("id","lineMin")
-    		.attr("x1",that.minSliderPos+5)
-    		.attr("y1",55)
-    		.attr("x2",that.minSliderPos+5)
-    		.attr("y2",78).attr("stroke","black").attr("stroke-width",2).style("opacity",0);
-    	that.legendSVG.append("line").attr("class","breakout").attr("id","lineMax")
-    		.attr("x1",that.maxSliderPos+5)
-    		.attr("y1",55)
-    		.attr("x2",that.maxSliderPos+5)
-    		.attr("y2",78).attr("stroke","black").attr("stroke-width",2).style("opacity",0);
-	   	that.minSlider=that.legendSVG.append("g")
-	   		.attr("id","minSlider")
-	   		.attr("transform","translate("+that.minSliderPos+",50)")
-	   		.style("cursor","pointer")
-	   		.call(d3.drag()
-			        .on("start.interrupt", function() { that.minSlider.interrupt(); })
-			        .on("start drag", function() { 
-			        	x=d3.event.x;
-			        	if(x<that.maxSliderCurPos && x>=that.minSliderPos){
-			        		that.minSlider.attr("transform","translate("+x+",50)");
-			        		that.minSliderCurPos=x;
-			        		that.legendRectLo.attr("width",x-that.leftMarg-that.margin.left+5);
-			        		that.legendSVG.select("#lineMin").attr("x1",x+5);
-			        		if(that.x===that.maxSliderPos){
-			        			that.legendSVGTop.attr("height",60);
-			        			that.legendSVG.select(".c.axis2").style("opacity",0);
-			        			that.legendSVG.select("#legendRect2").style("opacity",0);
-			        			that.legendSVG.selectAll(".breakout").style("opacity",0);
-			        		}else{
-			        			that.legendSVGTop.attr("height",120);
-			        			that.legendSVG.select(".c.axis2").style("opacity",100);
-			        			that.legendSVG.select("#legendRect2").style("opacity",100);
-			        			that.legendSVG.selectAll(".breakout").style("opacity",100);
-			        		}
-			        	}else if(x<that.minSliderPos){
-			        		that.minSlider.attr("transform","translate("+that.minSliderPos+",50)");
-			        		that.minSliderCurPos=that.minSliderPos;
-			        		that.legendRectLo.attr("width",0);
-			        		
-			        	}
-			        	that.color.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
-		        		that.hmScale2.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
-		        		that.cAxGUI2.call(that.cAxis2);
-		        		that.recolorHeatMap();
-			        }));
-	   	that.minSlider
-	   		.append('polyline')
-    		.attr('points', that.trianglePoints)
-    		.style('stroke', 'black');
-
-	   	that.maxSlider=that.legendSVG.append("g")
-	   		.attr("id","maxSlider")
-	   		.attr("transform","translate("+that.maxSliderPos+",50)")
-	   		.style("cursor","pointer")
-	   		.call(d3.drag()
-			        .on("start.interrupt", function() { that.maxSlider.interrupt(); })
-			        .on("start drag", function() { 
-			        	x=d3.event.x;
-			        	if(x>that.minSliderCurPos && x<=that.maxSliderPos){
-			        		that.maxSlider.attr("transform","translate("+x+",50)");
-			        		that.maxSliderCurPos=x;
-			        		that.legendRectHi.attr("x",x-that.margin.left+5).attr("width",that.curWidth+that.margin.left-that.heritChartW-x-5);
-			        		that.legendSVG.select("#lineMax").attr("x1",x+5);
-			        		if(that.x===that.maxSliderPos){
-			        			that.hmScale2.range([]);
-			        			that.legendSVGTop.attr("height",60);
-			        			that.legendSVG.select(".c.axis2").style("opacity",0);
-			        			that.legendSVG.select("#legendRect2").style("opacity",0);
-			        			that.legendSVG.selectAll(".breakout").style("opacity",0);
-			        		}else{
-			        			that.legendSVGTop.attr("height",120);
-			        			that.legendSVG.select(".c.axis2").style("opacity",100);
-			        			that.legendSVG.select("#legendLbl2").style("opacity",100);
-			        			that.legendSVG.select("#legendRect2").style("opacity",100);
-			        			that.legendSVG.selectAll(".breakout").style("opacity",100);
-			        		}
-			        	}else{
-
-			        	}
-			        	that.color.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
-		        		that.hmScale2.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
-		        		that.cAxGUI2.call(that.cAxis2);
-		        		that.recolorHeatMap();
-			        }));
-	   		that.maxSlider.append('polyline')
-    		.attr('points', that.trianglePoints)
-    		.style('stroke', 'black');
-
-    	
-
-	   	that.drawHeritabiltiy(barMarg);
-	};
-
-	that.redrawHeatMap=function(){
-		if ( (that.heritChartW==0 && that.curWidth>1200 && that.display.herit) || (that.heritChartW>0 && that.curWidth<1200 && that.display.herit) ){
-			that.reset();
-		}else{
-			that.leftMarg=100;
-			that.topMarg=45;
+		if(that.filteredGeneIDs && that.filteredStrains && that.filteredGeneIDs.length>0 && that.filteredStrains.length>0){
+			that.heritChartW=0;
+			if(that.curWidth>1200 && that.display.herit){
+				that.heritChartW=200;
+			}
 			itemW=(that.curWidth-that.leftMarg-that.heritChartW)/that.filteredStrains.length;
 			itemH=(that.curHeight-that.topMarg)/that.filteredGeneIDs.length;
+			//console.log("itemH:"+itemH);
 			if(itemH>that.maxHMHeight){
 				itemH=that.maxHMHeight;
 			}
 			if(itemH<that.minHMHeight){
 				itemH=that.minHMHeight;
 			}
-			yRangeMax=itemH*that.filteredGeneIDs.length;
 			barMarg=Math.floor(itemH*0.1);
 			if(barMarg<1){
 				barMarg=1;
 			}
-			//yRangeMax=that.curHeight-that.topMarg;
+			yRangeMax=itemH*that.filteredGeneIDs.length;
 			/*if(itemH> that.maxHMHeight){
 				itemH=that.maxHMHeight;
 				yRangeMax=that.geneIDs.length*itemH;
 			}*/
-			that.svgTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
-				.attr("height", itemH*that.filteredGeneIDs.length+25 +that.margin.top+that.margin.bottom);
-			that.svg.attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
-			that.x.range([0, that.curWidth-that.leftMarg-that.heritChartW]);
-			that.y.range([0, yRangeMax]);
+			that.x = d3.scaleBand().domain(that.filteredStrains).range([0, that.curWidth-that.leftMarg-that.heritChartW]);
+			that.y = d3.scaleBand().domain(that.filteredGeneIDs.map(function(d){return d.id;})).range([0, yRangeMax]);
+			that.geneScale=that.y;
+			that.color= d3.scaleLinear().domain([that.yMin,that.yMax]).range([0,255]);
 			that.xAxis = d3.axisTop(that.x);
 			that.yAxis = d3.axisLeft(that.y);
-			that.xAxGUI.call(that.xAxis)
-				.selectAll("text")
-			    .attr("y", 0)
-			    .attr("x", 9)
-			    .attr("dy", ".35em")
-			    .attr("transform", "rotate(-90)")
-			    .style("text-anchor", "start");
-			that.yAxGUI.call(that.yAxis);
-			that.svg.selectAll(".box").each(function(data){
-				d3.select(this).select("rect")
-				.attr("x", function(d) { return that.x(data.strain)+that.leftMarg; })
-	      		.attr("y", function(d) { return that.y(data.id)+that.topMarg; })
-	      		.attr("width", function(d) { return itemW; })
-	      		.attr("height", function(d) { return itemH; });
-	      		d3.select(this).select("text").attr("transform","translate("+((that.x(data.strain)+that.leftMarg)+itemW/2)+","+((that.y(data.id)+that.topMarg)+itemH/2)+")rotate(-90)");
-			});
-			
-			that.minSliderPos=that.leftMarg+that.margin.left-5;
-	   		that.maxSliderPos=that.curWidth-that.heritChartW+35;
-			var minSelected=that.hmScale.invert(that.minSliderCurPos-35);
-			var maxSelected=that.hmScale.invert(that.maxSliderCurPos-35);
+			that.svg.append("g").attr("id","title").append("text").attr("text-anchor","middle").attr("transform","translate("+(that.curWidth/2)+",0)").text(that.titlePrefix+that.title);
+			that.xAxGUI=that.svg.append("g")
+	    		.attr("class", "x axis")
+	    		.attr("transform", "translate("+that.leftMarg+","+that.topMarg+")")
+	    		.call(that.xAxis)
+	    		.selectAll("text")
+				    .attr("y", 0)
+				    .attr("x", 9)
+				    .attr("dy", ".35em")
+				    .attr("transform", "rotate(-90)")
+				    .style("text-anchor", "start");
+	    	that.svg.selectAll("g.x.axis g.tick text")
+	      		.style("cursor","pointer")
+	      		.on("click", function(){
+	      			id=d3.select(this)._groups[0][0].textContent
+	      			that.toggleSort(id);
+	      			that.sortByStrain(that.sortBy.col,that.sortBy.dir);
+	      			that.reset();
+	      			that.draw();
+	      			setTimeout(function(){
+	      				that.sortIndicator.attr("transform", function(){
+	      					deg=180;
+	      					dy=10;
+	      					dx=0;
+	      					offs=30;
+							if(that.sortBy.dir=="DESC"){
+								deg=0;
+								dy=5;
+								dx=10;
+							}
+							x=that.x(id)+that.leftMarg-dx+offs+(itemW/2)
+	      					return "translate("+x+","+dy+")rotate("+deg+")";
+	      				}).style('stroke', 'black');
+	      			},500);
+	      			
+	      		});
+
+			that.yAxGUI=that.svg.append("g")
+	      		.attr("class", "y axis")
+	      		.attr("transform", "translate("+that.leftMarg+","+that.topMarg+")")
+	      		.call(that.yAxis);
+	      	that.svg.selectAll("g.y.axis g.tick text")
+	      		.style("cursor","pointer")
+	      		.on("click", function(){
+	      			id=d3.select(this)._groups[0][0].textContent;
+	      			that.toggleSort(id);
+	      			that.sortByValueForID(that.sortBy.col,that.sortBy.dir);
+	      			that.reset();
+	      			that.draw();
+	      			//draw triangle
+	      			setTimeout(function(){
+		      			that.sortIndicator.attr("transform",function(){
+		      					deg=180;
+		      					dy=2;
+		      					dx=0;
+		      					offs=-30
+								if(that.sortBy.dir=="DESC"){
+									deg=0;
+									dy=-2;
+									dx=10;
+								}
+								x=5-dx+offs;
+								dy=dy+that.y(id)+itemH/2+that.topMarg;
+		      					return "translate("+x+","+dy+")rotate("+deg+")";
+		      					
+
+		      			}).style('stroke', 'black');
+		      		},500);
+
+	      		});
+	      	that.svg.selectAll(".box")
+	      		.data(that.filteredData)
+	    		.enter().append("g")
+	    			.attr("class","box")
+	    			.append("rect")
+		      		.attr("x", function(d) { return that.x(d.strain)+that.leftMarg; })
+		      		.attr("y", function(d) { return that.y(d.id)+that.topMarg; })
+		      		.attr("width", function(d) { return itemW; })
+		      		.attr("height", function(d) { return itemH; })
+		      		.style("fill", function(d) { return d3.rgb(that.color(d.val),0,0); })
+		      		.on("mouseover",function(d){
+		      			d3.select(this.parentNode).select("text").attr("opacity","100");
+		      		})
+		      		.on("mouseout",function(d){
+		      			d3.select(this.parentNode).select("text").attr("opacity","0");
+		      		}).each(function(d){
+		      			d3.select(this.parentNode).append("text")
+		      				.attr("text-anchor","middle")
+		      				.attr("transform","translate("+((that.x(d.strain)+that.leftMarg)+itemW/2)+","+((that.y(d.id)+that.topMarg)+itemH/2)+")rotate(-90)")
+		      				.attr("font-size","8px")
+		      				//.attr("stroke","#FFFFFF")
+		      				.attr("fill","#FFFFFF")
+		      				.attr("opacity","0")
+		      				.text(Number(d.val).toFixed(1));
+		      		});
+		    
+		    that.sortIndicator=that.svg.append("g").attr("id","sortIndicator").attr("transform","translate(-50,-50)");
+		    that.sortIndicator.append('polyline')
+	    		.attr('points', that.trianglePoints)
+	    		.style('stroke', 'white');
+
+	    	that.svgTop.attr("height",itemH*that.filteredGeneIDs.length+that.margin.top+that.margin.bottom+25);
+
+	    	//Setup Legend
+		    that.legendSVGTop.attr("height",60).attr("width",that.curWidth+that.margin.left+that.margin.right);
+		    grad=that.legendSVG.append("defs").append("linearGradient")
+		    					.attr("id","scale")
+		    					.attr("x1","0%").attr("y1","0%")
+		    					.attr("x2","100%").attr("y2","0%");
+		   	grad.append("stop").attr("offset","0%").style("stop-color","rgb(0,0,0)");
+		   	grad.append("stop").attr("offset","100%").style("stop-color","rgb(255,0,0)");
+		    that.hmScale=d3.scaleLinear().domain([that.yMin,that.yMax]).range([that.leftMarg, that.curWidth-that.heritChartW]);
+		    that.cAxis = d3.axisTop(that.hmScale);
+		    that.cAxGUI=that.legendSVG.append("g")
+	    		.attr("class", "c axis")
+	    		.attr("transform", "translate("+that.margin.left+",30)")
+	    		.call(that.cAxis);
+	    	that.legendSVG.append("text")
+	    		.attr("id","legendLbl")
+	    		.attr("transform","translate("+(that.curWidth/2)+",11)")
+	    		.attr("text-anchor","middle")
+	    		.text("Median Estimated Counts Per Million");
+		    
+		   	that.legendSVG.append("rect").attr("id","legendRect")
+		   					.attr("x",that.leftMarg).attr("y",4)
+		   					.attr("width",that.curWidth-that.leftMarg-that.heritChartW)
+		   					.attr("height", 20)
+		   					.attr("fill","url(\"#scale\")")
+		   					.attr("transform","translate("+that.margin.left+",27)");
+		   	that.legendRectHi=that.legendSVG.append("rect").attr("id","legendRectHigh")
+		   					.attr("x",that.leftMarg).attr("y",4)
+		   					.attr("width",0)
+		   					.attr("height", 20)
+		   					.attr("fill","#CECECE")
+		   					.attr("transform","translate("+that.margin.left+",27)");
+		   	that.legendRectLo=that.legendSVG.append("rect").attr("id","legendRectLow")
+		   					.attr("x",that.leftMarg).attr("y",4)
+		   					.attr("width",0)
+		   					.attr("height", 20)
+		   					.attr("fill","#555555")
+		   					.attr("transform","translate("+that.margin.left+",27)");
+
+		   	that.hmScale2=d3.scaleLinear().domain([that.yMin,that.yMax]).range([that.leftMarg, that.curWidth-that.heritChartW]);
+		    that.cAxis2 = d3.axisBottom(that.hmScale2);
+		    that.cAxGUI2=that.legendSVG.append("g")
+	    		.attr("class", "c axis2")
+	    		.attr("transform", "translate("+that.margin.left+",97)")
+	    		.style("opacity",0)
+	    		.call(that.cAxis2);
+		    
+		   	that.legendSVG.append("rect").attr("id","legendRect2")
+		   					.attr("x",that.leftMarg).attr("y",50)
+		   					.attr("width",that.curWidth-that.leftMarg-that.heritChartW)
+		   					.attr("height", 20)
+		   					.attr("fill","url(\"#scale\")")
+		   					.attr("transform","translate("+that.margin.left+",27)")
+		   					.style("opacity",0);
 
 
-	      	that.legendSVGTop.attr("width",that.curWidth+that.margin.left+that.margin.right);
-	      	that.legendSVG.select("#legendLbl").attr("transform","translate("+(that.curWidth/2+that.margin.left-20)+",11)");
-	      	that.hmScale.range([that.leftMarg, that.curWidth-that.heritChartW]);
-			that.cAxGUI.call(that.cAxis);
-			that.legendSVG.select("rect#legendRect").attr("width",that.curWidth-that.leftMarg-that.heritChartW);
+		   	that.minSliderCurPos=that.leftMarg+that.margin.left-5;
+		   	that.maxSliderCurPos=that.curWidth-that.heritChartW+35;
+		   	that.minSliderPos=that.leftMarg+that.margin.left-5;
+		   	that.maxSliderPos=that.curWidth-that.heritChartW+35;
+		   	that.legendSVG.append("line").attr("class","breakout").attr("id","lineMin")
+	    		.attr("x1",that.minSliderPos+5)
+	    		.attr("y1",55)
+	    		.attr("x2",that.minSliderPos+5)
+	    		.attr("y2",78).attr("stroke","black").attr("stroke-width",2).style("opacity",0);
+	    	that.legendSVG.append("line").attr("class","breakout").attr("id","lineMax")
+	    		.attr("x1",that.maxSliderPos+5)
+	    		.attr("y1",55)
+	    		.attr("x2",that.maxSliderPos+5)
+	    		.attr("y2",78).attr("stroke","black").attr("stroke-width",2).style("opacity",0);
+		   	that.minSlider=that.legendSVG.append("g")
+		   		.attr("id","minSlider")
+		   		.attr("transform","translate("+that.minSliderPos+",50)")
+		   		.style("cursor","pointer")
+		   		.call(d3.drag()
+				        .on("start.interrupt", function() { that.minSlider.interrupt(); })
+				        .on("start drag", function() { 
+				        	x=d3.event.x;
+				        	if(x<that.maxSliderCurPos && x>=that.minSliderPos){
+				        		that.minSlider.attr("transform","translate("+x+",50)");
+				        		that.minSliderCurPos=x;
+				        		that.legendRectLo.attr("width",x-that.leftMarg-that.margin.left+5);
+				        		that.legendSVG.select("#lineMin").attr("x1",x+5);
+				        		if(that.x===that.maxSliderPos){
+				        			that.legendSVGTop.attr("height",60);
+				        			that.legendSVG.select(".c.axis2").style("opacity",0);
+				        			that.legendSVG.select("#legendRect2").style("opacity",0);
+				        			that.legendSVG.selectAll(".breakout").style("opacity",0);
+				        		}else{
+				        			that.legendSVGTop.attr("height",120);
+				        			that.legendSVG.select(".c.axis2").style("opacity",100);
+				        			that.legendSVG.select("#legendRect2").style("opacity",100);
+				        			that.legendSVG.selectAll(".breakout").style("opacity",100);
+				        		}
+				        	}else if(x<that.minSliderPos){
+				        		that.minSlider.attr("transform","translate("+that.minSliderPos+",50)");
+				        		that.minSliderCurPos=that.minSliderPos;
+				        		that.legendRectLo.attr("width",0);
+				        		
+				        	}
+				        	that.color.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
+			        		that.hmScale2.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
+			        		that.cAxGUI2.call(that.cAxis2);
+			        		that.recolorHeatMap();
+				        }));
+		   	that.minSlider
+		   		.append('polyline')
+	    		.attr('points', that.trianglePoints)
+	    		.style('stroke', 'black');
 
-			that.hmScale2.range([that.leftMarg, that.curWidth-that.heritChartW]);
-	    	that.cAxGUI2.attr("transform", "translate("+that.margin.left+",97)")
-    			.call(that.cAxis2);
-	    
-		   	that.legendSVG.select("#legendRect2")
-		   		.attr("width",that.curWidth-that.leftMarg-that.heritChartW);
+		   	that.maxSlider=that.legendSVG.append("g")
+		   		.attr("id","maxSlider")
+		   		.attr("transform","translate("+that.maxSliderPos+",50)")
+		   		.style("cursor","pointer")
+		   		.call(d3.drag()
+				        .on("start.interrupt", function() { that.maxSlider.interrupt(); })
+				        .on("start drag", function() { 
+				        	x=d3.event.x;
+				        	if(x>that.minSliderCurPos && x<=that.maxSliderPos){
+				        		that.maxSlider.attr("transform","translate("+x+",50)");
+				        		that.maxSliderCurPos=x;
+				        		that.legendRectHi.attr("x",x-that.margin.left+5).attr("width",that.curWidth+that.margin.left-that.heritChartW-x-5);
+				        		that.legendSVG.select("#lineMax").attr("x1",x+5);
+				        		if(that.x===that.maxSliderPos){
+				        			that.hmScale2.range([]);
+				        			that.legendSVGTop.attr("height",60);
+				        			that.legendSVG.select(".c.axis2").style("opacity",0);
+				        			that.legendSVG.select("#legendRect2").style("opacity",0);
+				        			that.legendSVG.selectAll(".breakout").style("opacity",0);
+				        		}else{
+				        			that.legendSVGTop.attr("height",120);
+				        			that.legendSVG.select(".c.axis2").style("opacity",100);
+				        			that.legendSVG.select("#legendLbl2").style("opacity",100);
+				        			that.legendSVG.select("#legendRect2").style("opacity",100);
+				        			that.legendSVG.selectAll(".breakout").style("opacity",100);
+				        		}
+				        	}else{
+
+				        	}
+				        	that.color.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
+			        		that.hmScale2.domain([that.hmScale.invert(that.minSliderCurPos-35),that.hmScale.invert(that.maxSliderCurPos-35)]);
+			        		that.cAxGUI2.call(that.cAxis2);
+			        		that.recolorHeatMap();
+				        }));
+		   		that.maxSlider.append('polyline')
+	    		.attr('points', that.trianglePoints)
+	    		.style('stroke', 'black');
+		   	that.drawHeritabiltiy(barMarg);
+	   }else{
+	   		that.svgTop.append("text").attr("transform","translate("+(that.curWidth/2-25)+",15 )").text("No Genes to display.");
+	   }
+	};
+
+	that.redrawHeatMap=function(){
+		if(that.filteredGeneIDs && that.filteredStrains && that.filteredGeneIDs.length>0 && that.filteredStrains.length>0){
+			if ( (that.heritChartW==0 && that.curWidth>1200 && that.display.herit) || (that.heritChartW>0 && that.curWidth<1200 && that.display.herit) ){
+				that.reset();
+			}else{
+				that.leftMarg=100;
+				that.topMarg=45;
+				itemW=(that.curWidth-that.leftMarg-that.heritChartW)/that.filteredStrains.length;
+				itemH=(that.curHeight-that.topMarg)/that.filteredGeneIDs.length;
+				if(itemH>that.maxHMHeight){
+					itemH=that.maxHMHeight;
+				}
+				if(itemH<that.minHMHeight){
+					itemH=that.minHMHeight;
+				}
+				yRangeMax=itemH*that.filteredGeneIDs.length;
+				barMarg=Math.floor(itemH*0.1);
+				if(barMarg<1){
+					barMarg=1;
+				}
+				//yRangeMax=that.curHeight-that.topMarg;
+				/*if(itemH> that.maxHMHeight){
+					itemH=that.maxHMHeight;
+					yRangeMax=that.geneIDs.length*itemH;
+				}*/
+				that.svgTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
+					.attr("height", itemH*that.filteredGeneIDs.length+25 +that.margin.top+that.margin.bottom);
+				that.svg.attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
+				that.x.range([0, that.curWidth-that.leftMarg-that.heritChartW]);
+				that.y.range([0, yRangeMax]);
+				that.xAxis = d3.axisTop(that.x);
+				that.yAxis = d3.axisLeft(that.y);
+				that.xAxGUI.call(that.xAxis)
+					.selectAll("text")
+				    .attr("y", 0)
+				    .attr("x", 9)
+				    .attr("dy", ".35em")
+				    .attr("transform", "rotate(-90)")
+				    .style("text-anchor", "start");
+				that.yAxGUI.call(that.yAxis);
+				that.svg.selectAll(".box").each(function(data){
+					d3.select(this).select("rect")
+					.attr("x", function(d) { return that.x(data.strain)+that.leftMarg; })
+		      		.attr("y", function(d) { return that.y(data.id)+that.topMarg; })
+		      		.attr("width", function(d) { return itemW; })
+		      		.attr("height", function(d) { return itemH; });
+		      		d3.select(this).select("text").attr("transform","translate("+((that.x(data.strain)+that.leftMarg)+itemW/2)+","+((that.y(data.id)+that.topMarg)+itemH/2)+")rotate(-90)");
+				});
+				
+				that.minSliderPos=that.leftMarg+that.margin.left-5;
+		   		that.maxSliderPos=that.curWidth-that.heritChartW+35;
+				var minSelected=that.hmScale.invert(that.minSliderCurPos-35);
+				var maxSelected=that.hmScale.invert(that.maxSliderCurPos-35);
 
 
-		   	that.minSliderCurPos=that.hmScale(minSelected)+35;
-			that.maxSliderCurPos=that.hmScale(maxSelected)+35;
-	   		that.minSlider.attr("transform","translate("+that.minSliderCurPos+",50)");
-	   		that.maxSlider.attr("transform","translate("+that.maxSliderCurPos+",50)");
+		      	that.legendSVGTop.attr("width",that.curWidth+that.margin.left+that.margin.right);
+		      	that.legendSVG.select("#legendLbl").attr("transform","translate("+(that.curWidth/2+that.margin.left-20)+",11)");
+		      	that.hmScale.range([that.leftMarg, that.curWidth-that.heritChartW]);
+				that.cAxGUI.call(that.cAxis);
+				that.legendSVG.select("rect#legendRect").attr("width",that.curWidth-that.leftMarg-that.heritChartW);
 
-			
-			that.legendRectLo.attr("width",that.minSliderCurPos-that.minSliderPos);
-			that.legendRectHi.attr("x",that.maxSliderCurPos+5-that.margin.left).attr("width",that.maxSliderPos-(that.maxSliderCurPos));
-	   	that.legendSVG.select("#lineMin")
-    		.attr("x1",that.minSliderCurPos+5)
-    		.attr("x2",that.leftMarg+that.margin.left);
-    	that.legendSVG.select("#lineMax")
-    		.attr("x1",that.maxSliderCurPos+5)
-    		.attr("x2",that.curWidth-that.heritChartW+that.margin.left);
-	   	
+				that.hmScale2.range([that.leftMarg, that.curWidth-that.heritChartW]);
+		    	that.cAxGUI2.attr("transform", "translate("+that.margin.left+",97)")
+	    			.call(that.cAxis2);
+		    
+			   	that.legendSVG.select("#legendRect2")
+			   		.attr("width",that.curWidth-that.leftMarg-that.heritChartW);
 
 
-			that.redrawHeritability(barMarg);
+			   	that.minSliderCurPos=that.hmScale(minSelected)+35;
+				that.maxSliderCurPos=that.hmScale(maxSelected)+35;
+		   		that.minSlider.attr("transform","translate("+that.minSliderCurPos+",50)");
+		   		that.maxSlider.attr("transform","translate("+that.maxSliderCurPos+",50)");
+
+				
+				that.legendRectLo.attr("width",that.minSliderCurPos-that.minSliderPos);
+				that.legendRectHi.attr("x",that.maxSliderCurPos+5-that.margin.left).attr("width",that.maxSliderPos-(that.maxSliderCurPos));
+		   	that.legendSVG.select("#lineMin")
+	    		.attr("x1",that.minSliderCurPos+5)
+	    		.attr("x2",that.leftMarg+that.margin.left);
+	    	that.legendSVG.select("#lineMax")
+	    		.attr("x1",that.maxSliderCurPos+5)
+	    		.attr("x2",that.curWidth-that.heritChartW+that.margin.left);
+		   	
+
+
+				that.redrawHeritability(barMarg);
+			}
 		}
 	};
 
