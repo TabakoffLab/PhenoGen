@@ -167,7 +167,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
 
-            <script src="javascript/GenomeDataBrowser2.6.2.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.6.3.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.6.0.js" type="text/javascript"></script>
@@ -192,7 +192,9 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
                     <span id="detail1" class="detailMenu selected" name="regionSummary">Track Details<div class="inpageHelp" style="display:inline-block; "><img id="HelpTrackDetails" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                     <span id="detail2" class="detailMenu" name="regionEQTLTable">Genes with an eQTL in this region<div class="inpageHelp" style="display:inline-block; "><img id="HelpeQTLTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
                     <span id="detail3" class="detailMenu" name="regionWGCNAEQTL">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionWGCNATab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
-                    <span id="detail4" class="detailMenu" name="regionExpr">Expression<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionExprTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <%if(myOrganism.equals("Rn") && genomeVer.equals("rn6")){%>
+                        <span id="detail4" class="detailMenu" name="regionExpr">Expression<div class="inpageHelp" style="display:inline-block; "><img id="HelpRegionExprTab" class="helpImage" src="../web/images/icons/help.png" /></div></span>
+                    <%}%>
                 </div>
     </div>
     <div style="font-size:18px; font-weight:bold; background-color:#3f92d2; color:#FFFFFF; text-align:left; width:100%;">
