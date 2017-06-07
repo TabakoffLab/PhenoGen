@@ -7,7 +7,7 @@
 	extrasList.add("fancyBox/jquery.fancybox.js");
 	extrasList.add("fancyBox/helpers/jquery.fancybox-thumbs.js");
 	extrasList.add("spectrum.js");
-        extrasList.add("svg-pan-zoom.3.2.3.min.js");
+        extrasList.add("svg-pan-zoom.3.5.1.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
         extrasList.add("d3.v4.8.0.min.js");
 	//extrasList.add("d3.v3.5.16.min.js");
