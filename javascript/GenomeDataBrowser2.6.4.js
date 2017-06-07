@@ -86,7 +86,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(<span id=\"verSelect\"></span>) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v3.3.2(4/30/2017)";
+var siteVer="PhenoGen v3.3.3(4/30/2017)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -98,19 +98,19 @@ var ttHideHandle=0;
 var tt=d3.select("body").append("div")
 	    	.attr("class", "testToolTip")
 	    	.style("z-index",1001)
-	    	.style("opacity", 0)
-	    	.on("mouseover",function(){
+	    	.style("opacity", 0);
+	    	/*.on("mouseover",function(){
 	    		if($(this).css("opacity")>0){
 	    			console.log("mouse is over tooltiptext box");
 	    			$(this).css("opacity",1);
-	    			/*if($(this).css("opacity")>0){
+	    			if($(this).css("opacity")>0){
 					    		console.log("Mouse OVER TT");
 					    		mouseTTOver=1;
 					    		if(ttHideHandle!=0){
 					    			clearTimeout(ttHideHandle);
 					    			ttHideHandle=0;
 					    		}
-					}*/
+					}
 				}
 			})
 	    	.on("mouseout",function(){
@@ -119,7 +119,7 @@ var tt=d3.select("body").append("div")
 					.delay(200)
 	                .duration(200)
 	                .style("opacity", 0);
-	    		/*if($(this).css("opacity")>0){
+	    		if($(this).css("opacity")>0){
 		    		mouseTTOver=0;
 		    		ttHideHandle=setTimeout(function(){
 		    						if(mouseTTOver==0){
@@ -131,9 +131,9 @@ var tt=d3.select("body").append("div")
 							        }
 
 					},3000);
-	    		}*/
+	    		}
 
-	    	});
+	    	});*/
 tt.append("span").style("float","right").append("img").attr("src","web/images/icons/close.png").on("click",function(){
 	tt.style("opacity",0);
 });
@@ -6492,10 +6492,10 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 								d3.select(this).style("fill",that.color);
 							}
 				            //that.gsvg.get('tt').transition(
-		            		/*tt.transition()
+		            		tt.transition()
 		            			.delay(500)
 		                		.duration(200)
-		                		.style("opacity", 0);*/
+		                		.style("opacity", 0);
 		                	that.clearTableFilter(d);
 
 			        });
