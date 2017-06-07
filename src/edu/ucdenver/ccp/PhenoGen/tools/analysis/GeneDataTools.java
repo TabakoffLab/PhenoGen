@@ -1028,6 +1028,9 @@ public class GeneDataTools {
            
            while(rs.next()){
                String id=rs.getString(1);
+               if(id.startsWith("Merged_GPRN")){
+                   id=id.substring(8);
+               }
                boolean found=false;
                for(int i=0;i<ret.size()&&!found;i++){
                    if(ret.get(i).equals(id)){
