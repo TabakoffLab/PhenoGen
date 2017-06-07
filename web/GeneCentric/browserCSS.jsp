@@ -251,6 +251,10 @@ table.tooltipTable TD{
 		top:8px;*/
 	}
         
+        div#imgDiv{
+            background-color: #FFFFFF;
+        }
+        
         .ui-buttonset button.zoomIn span.ui-button-text,.ui-buttonset button.zoomOut span.ui-button-text{
             padding: 0.1em 0.2em;
         }

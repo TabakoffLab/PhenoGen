@@ -23,6 +23,7 @@ chart=function(params){
 	that.trianglePoints="0,6 10,6 5,0";
 	that.display.herit=true;
 	that.display.controls=true;
+	that.filteredID="";
 
 	
 	that.parseOptions=function(params){
@@ -41,7 +42,7 @@ chart=function(params){
 				that.widthPerc=params.width.substring(0,params.width.length-1)/100;
 			}else{
 				that.widthPerc=params.width/$(window).width();
-				that.curWidth=params.width;
+				that.curWidth=params.width*1;
 			}
 		}
 		if(params.height){
@@ -49,7 +50,7 @@ chart=function(params){
 				that.heightPerc=params.height.substring(0,params.height.length-1)/100;
 			}else{
 				that.heightPerc=params.height/$(window).height();
-				that.curHeight=params.height;
+				that.curHeight=params.height*1;
 			}
 		}
 		if(params.allowResize===false){
@@ -79,6 +80,9 @@ chart=function(params){
 				that.redraw();
 			});
 		}
+		if(params.filterID){
+			that.filteredID=params.filterID;
+		}
 	};
 	that.setWidth=function(width){
 		if(width.indexOf("%")>0){
@@ -98,15 +102,17 @@ chart=function(params){
 	};
 	//Function to append SVG to document
 	that.setupDiv=function (){
-		if(d3.select("div.help").size()===0){
-			that.help=d3.select(that.select).append("div").attr("class","help").style("display","inline-block").style("text-align","center").style("width","100%");
-		}else{
-			that.help=d3.select("div.help");
+		if(that.display.controls===true){
+			if(d3.select("div.help").size()===0){
+				that.help=d3.select(that.select).append("div").attr("class","help").style("display","inline-block").style("text-align","center").style("width","100%");
+			}else{
+				that.help=d3.select("div.help");
+			}
+			that.help.html("Hover mouse over controls for a summary of their function.");
+			that.divCtrl = d3.select(that.select).append("div").attr("class","controls").style("width","100%").style("display","block");
+			d3.select(that.select).append("br");
+			d3.select(that.select).append("br");
 		}
-		that.help.html("Hover mouse over controls for a summary of their function.");
-		that.divCtrl = d3.select(that.select).append("div").attr("class","controls").style("width","100%").style("display","block");
-		d3.select(that.select).append("br");
-		d3.select(that.select).append("br");
 		that.imgDiv=d3.select(that.select).append("div").attr("id","imgDiv");
 		that.legendSVGTop = that.imgDiv.append("svg").attr("id","legendSVG")
 									.attr("width",that.curWidth+that.margin.left+that.margin.right);
@@ -117,11 +123,13 @@ chart=function(params){
 			    .attr("height", that.curHeight+that.margin.top+that.margin.bottom);
 		that.svg=that.svgTop.append("g")
 			    .attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
-		that.hChartTop = that.imgDiv.append("svg").attr("id","heritSVG")
-			    .attr("width", that.curWidth+that.margin.left+that.margin.right)
-			    .attr("height", 0);
-		that.hChart=that.hChartTop.append("g")
-			    .attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
+		if(that.display.herit===true){
+			that.hChartTop = that.imgDiv.append("svg").attr("id","heritSVG")
+				    .attr("width", that.curWidth+that.margin.left+that.margin.right)
+				    .attr("height", 0);
+			that.hChart=that.hChartTop.append("g")
+				    .attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
+		}
 	};
 	//Function to setup the UI controls
 	that.setupUI=function(){
@@ -398,24 +406,54 @@ chart=function(params){
 		}
 	};
 	that.filter=function(){
-		geneRE=/ENSRNOG/;
-		trxRE=/(ENS[A-Z]{3}|PRN[0-9]{1,2})T/;
 		that.filteredData=that.data;
 		that.filteredGeneIDs=that.geneIDs;
 		that.filteredStrains=that.strains;
+		if(that.filteredID && that.filteredID.length>0){
+			console.log("filter by ID:"+that.filteredID);
+			that.yMin=9999999;
+			that.yMax=0;
+			tmpGenes=[];
+			toFilter={};
+			for(var i=0;i<that.filteredGeneIDs.length;i++){
+				if(that.filteredGeneIDs[i].id===that.filteredID){
+					tmpGenes.push(that.filteredGeneIDs[i]);
+				}
+			}
+			that.filteredGeneIDs=tmpGenes;
+			tmpData=[];
+			for(var i=0;i<that.filteredData.length;i++){
+				if(that.filteredData[i].id===that.filteredID){
+					if(that.yMin>that.filteredData[i].val){
+						that.yMin=that.filteredData[i].val;
+					}
+					if(that.yMax<that.filteredData[i].val){
+						that.yMax=that.filteredData[i].val;
+					}
+					
+					tmpData.push(that.filteredData[i]);
+				}
+			}
+			that.filteredData=tmpData;
+		}else{
+			console.log("filterBy");
+			geneRE=/ENSRNOG/;
+			trxRE=/(ENS[A-Z]{3}|PRN[0-9]{1,2})T/;
+			
 
-		//filter all genes
-		if(that.filterBy.genes){
-			that.filterID(geneRE);
-		}
-		//filter all transcripts
-		if(that.filterBy.trx){
-			that.filterID(trxRE);
+			//filter all genes
+			if(that.filterBy.genes){
+				that.filterID(geneRE);
+			}
+			//filter all transcripts
+			if(that.filterBy.trx){
+				that.filterID(trxRE);
+			}
 		}
 		//filter a list of gene/trx ids
-		if(that.filterBy.gene){
+		/*if(that.filterBy.gene){
 
-		}
+		}*/
 		
 	};
 	that.filterID=function(regEx){
@@ -518,9 +556,9 @@ chart=function(params){
 		    if(barMarg<1){
 		    	barMarg=1;
 		    }
-		    that.svgTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
-		    				.attr("height",that.curHeight+that.margin.top+that.margin.bottom);
-		   
+		    that.svgTop.attr("width",(that.curWidth+that.margin.left+that.margin.right))
+		    				.attr("height",(that.curHeight+that.margin.top+that.margin.bottom));
+
 		    /*for(i=0;i<that.color.domain().length;i++){
 		    	tmpID=that.color.domain()[i];
 		    	tmpD=that.svg.selectAll("."+tmpID).data();
@@ -559,9 +597,13 @@ chart=function(params){
 		}
 		itemW=(that.curWidth-that.margin.left)/lgdItemWidth;
 		itemTotal=that.color.domain().length;
-		rows=Math.floor(itemTotal/lgdItemWidth)+1;
+		if(itemTotal>1){
+			rows=Math.floor(itemTotal/lgdItemWidth)+1;
+		}else{
+			rows=1;
+		}
 		lgdH=rows*30;
-		that.legendSVG.attr("height",lgdH);
+		that.legendSVGTop.attr("height",lgdH);
 		
 	  	that.legend = that.legendSVG.selectAll(".legend")
 	     	.data(that.color.domain())

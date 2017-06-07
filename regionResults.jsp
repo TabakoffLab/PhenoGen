@@ -167,7 +167,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
 
-            <script src="javascript/GenomeDataBrowser2.6.3.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.6.4.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.6.0.js" type="text/javascript"></script>
