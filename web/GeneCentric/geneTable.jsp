@@ -85,7 +85,7 @@
                     min=1;
             }
 
-            if(source.equals("merged")){
+            if(source.startsWith("merged")){
                 fullGeneList =gdt.getMergedRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
             }else{
                 fullGeneList =gdt.getRegionData(chromosome,min,max,panel,myOrganism,genomeVer,rnaDatasetID,arrayTypeID,forwardPValueCutoff,true);
@@ -303,6 +303,7 @@
 						
 			for(int i=0;i<fullGeneList.size();i++){
                             edu.ucdenver.ccp.PhenoGen.data.Bio.Gene curGene=fullGeneList.get(i);
+                            
                             if(geneHM.containsKey(curGene.getGeneID())){
                             TranscriptCluster tc=curGene.getTranscriptCluster();
                             HashMap hCount=curGene.getHeritCounts();
