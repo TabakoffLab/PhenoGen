@@ -610,7 +610,7 @@ public class GeneDataTools {
         
         this.pathReady=true;
         
-        ret=Gene.readGeneIDList(outputDir+track);
+        ret=Gene.readGeneIDList(outputDir+track+".xml");
         log.debug("getRegionData() returning gene list of size:"+ret.size());
         return ret;
     }

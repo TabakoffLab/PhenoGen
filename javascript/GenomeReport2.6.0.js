@@ -99,7 +99,9 @@ function loadTrackTable(){
 				//don't have to load might reset?
 				//console.log(curRptRegion);
 				//console.log(loadedTrackTable);
+
 	}else{
+
 		loadedTrackTable=curRptRegion;
 		var jspPage="";
 		var params={
@@ -114,6 +116,8 @@ function loadTrackTable(){
 				genomeVer: genomeVer,
 				track:reportSelectedTrack.trackClass
 			};
+		//console.log("ready to send");
+		//console.log(params);
 		if(reportSelectedTrack.trackClass.indexOf("noncoding")>-1){
 			params.type="noncoding";
 			params.source="ensembl";
@@ -328,7 +332,7 @@ function displayDetailedView(track){
 	$("li."+track.trackClass).addClass("selected");
 	if(track.displayBreakDown){
 		setTimeout(function(){
-			console.log("in displayDetailedView()");
+			//console.log("in displayDetailedView()");
 			$('div#trackGraph').html("");
 			track.displayBreakDown("div#collapsableReport div#trackGraph");
 		},50);
@@ -343,6 +347,7 @@ function displayDetailedView(track){
 		$("#regionTable").hide();
 	}
 	if(!$('div#regionTable').is(":hidden")){
+		//console.log("loading track table");
 		loadTrackTable();
 	}
 	if(ga){
