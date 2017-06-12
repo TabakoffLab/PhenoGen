@@ -1253,7 +1253,7 @@ chart=function(params){
 		      		.on("mouseover",function(d){
 
 		      		});
-	    }else if (that.display.herit){//draw below heatmap
+	    }else if (that.display.herit===true){//draw below heatmap
 	    	yRangeMax=that.curHeight-that.topMarg;
 	    	itemH=(yRangeMax/2)/that.filteredGeneIDs.length;
 	    	that.hChartTop.attr("width",that.curWidth+that.margin.left+that.margin.right)
@@ -1315,6 +1315,13 @@ chart=function(params){
 		    that.hSortIndicator.append('polyline')
 	    		.attr('points', that.trianglePoints)
 	    		.style('stroke', 'white');
+	    }else{
+	    	heritDiv=d3.select("span#ttsingleHerit");
+	    	//console.log(heritDiv);
+	    	//if(heritDiv && heritDiv.size()>0){
+	    		console.log(that.filteredGeneIDs);
+	    		heritDiv.html(that.filteredGeneIDs[0].herit);
+	    	//}
 	    }
 	};
 
