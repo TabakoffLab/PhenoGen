@@ -784,10 +784,11 @@ public class AsyncGeneDataTools extends Thread {
             }catch(SQLException e){}
         }
         Iterator itr=tissues.keySet().iterator();
-        ArrayList<FeatureID> featList=new ArrayList<FeatureID>();
         HashMap<String, GeneID> genes=new HashMap<String,GeneID>();
         StringBuilder sb=new StringBuilder();
         while(itr.hasNext()){
+            ArrayList<FeatureID> featList=new ArrayList<FeatureID>();
+            HashMap<String,Integer> featHM=new HashMap<String,Integer>();
             Tissues curTissue=(Tissues)tissues.get(itr.next());
             //get transcripts
             String selectTrx="select r.merge_gene_id,r.merge_isoform_id,r.herit_gene,r.herit_trx from rna_transcripts r, chromosomes c where "+
@@ -810,6 +811,8 @@ public class AsyncGeneDataTools extends Thread {
                 }
                 ps.setString(2,chr);
                 ps.setInt(3,curTissue.getDatasetID());
+                //log.debug(selectTrx+"\norg:"+org+"\nchr:"+chr+"\nds:"+curTissue.getDatasetID()+"\n");
+               
                 ResultSet rs=ps.executeQuery();
                 while (rs.next()){
                     String geneID=rs.getString(1);
@@ -817,21 +820,24 @@ public class AsyncGeneDataTools extends Thread {
                     double gHerit=rs.getDouble(3);
                     double tHerit=rs.getDouble(4);
                     TrxID tmpTrx=new TrxID(trxID,tHerit);
+                    GeneID tmpGene=new GeneID(geneID,gHerit);
+                    tmpGene.addTranscript(tmpTrx);
                     if(genes.containsKey(geneID)){
-                        GeneID tmpGene=genes.get(geneID);
-                        tmpGene.addTranscript(tmpTrx);
+                        /*GeneID tmpGene=genes.get(geneID);
+                        tmpGene.addTranscript(tmpTrx);*/
                     }else{
-                        GeneID tmpGene=new GeneID(geneID,gHerit);
-                        tmpGene.addTranscript(tmpTrx);
                         genes.put(geneID, tmpGene);
                         if(sb.length()>0){
                             sb.append(",");
                         }
                         sb.append("'"+geneID+"'");
+                    }
+                    if(!featHM.containsKey(geneID)){
                         featList.add(tmpGene);
+                        featHM.put(geneID, 1);
                     }
                     featList.add(tmpTrx);
-                    log.debug("\n&&&&&&&&&&&&&&&&&&&&&&&& trx:"+trxID+"::"+geneID);
+                    //log.debug("\n&&&&&&&&&&&&&&&&&&&&&&&& trx:"+trxID+"::"+geneID);
                 }
                 ps.close();
                 

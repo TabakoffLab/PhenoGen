@@ -783,8 +783,11 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
     }else{
         that.allowSelectGenomeVer=allowSelectGenomeVer;
     }
-
-	history[levelNumber].push(tmp);
+    try{
+		history[levelNumber].push(tmp);
+	}catch(err){
+		Rollbar.error("history["+levelNumber+"] not defined");
+	}
 
 	that.get=function(attr){return that[attr];};
 	that.getTrackData=function (track){
@@ -5408,8 +5411,12 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 				tooltip="<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;overflow:scroll;max-height:400px;\"></div>Gene ID: "+gid+"<BR>Gene Symbol: "+geneSym+"<BR>Location: "+d.getAttribute("chromosome")+":"+numberWithCommas(d.getAttribute("start"))+"-"+numberWithCommas(d.getAttribute("stop"))+"<BR>Strand: "+strand+"<BR><BR>Transcripts:<BR>"+txListStr+"<BR>";
 			}
-			if( (that.trackClass==="brainTotal" || that.trackClass==="liverTotal") && d.getAttribute("ID").indexOf("PRN6T")>-1 ){
-				tooltip=tooltip+"Expression:<BR><div id=\"ttChart\"></div>";
+			if( (that.trackClass==="brainTotal" || that.trackClass==="liverTotal") && (d.getAttribute("ID").indexOf("PRN6T")>-1 || d.getAttribute("ID").indexOf("PRN6G")>-1)){
+				var tmpType="Gene";
+				if(d.getAttribute("ID").indexOf("PRN6T")>-1){
+					tmpType="Transcript"
+				}
+				tooltip=tooltip+"<div>Heritability: <span id=\"ttsingleHerit\"></span></div>"+tmpType+" Expression:<BR><div style=\"text-align:center;\">Median Estimated Counts Per Million</div><div id=\"ttChart\"></div>";
 				var tmpShortTissue="Brain";
 				var tmpLongTissue="Whole Brain";
 				if(that.trackClass==="liverTotal"){
@@ -5418,7 +5425,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 				}
 				tmpChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+gs.folderName+"/"+tmpShortTissue+"expr.json",
             		"selector":"#ttChart","allowResize":false,"type":"scatter","width":"400","height":"275","displayHerit":false,"displayControls":false,
-        			"title":"Transcript Expression","titlePrefix":tmpLongTissue,"filterID":d.getAttribute("ID")});
+        			"title":tmpType+" Expression","titlePrefix":tmpLongTissue,"filterID":d.getAttribute("ID")});
 				
 			}
 		}
@@ -5686,7 +5693,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}else{
 						console.log("tmp[0]");
 						console.log(tmp);
-						Rollbar.error("tmp[0] is undefined.  tmp.length is "+tmp.length);
+						Rollbar.error("tmp[0] is undefined.  tmp.length is "+tmp.length+":"+geneID);
 					}
 				}
 
