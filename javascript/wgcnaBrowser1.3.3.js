@@ -433,7 +433,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
                                 that.singleImage.panZoomCircos.zoomOut();
                             }else if(that.singleImage==undefined && that.multiImage){
 								that.multiImage.zoomOut();
-                            }else if(typeof that.singleImage!=='undefined' && that.singleImage ){
+                            }else if(that.singleImage && typeof that.singleImage!=='undefined' && typeof that.singleImage.panZoom !=='undefined' ){
                                 that.singleImage.panZoom.zoomOut();
                             }
 				if(ga){
