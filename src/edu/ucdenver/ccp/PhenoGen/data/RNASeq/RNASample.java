@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
  * @author smahaffey
  */
 public class RNASample {
-    private int rnaDatasetID;
-    private int rnaSampleID;
+    private long rnaDatasetID;
+    private long rnaSampleID;
     private String strain;
     private String sampleName;
     private String age;
@@ -38,8 +38,11 @@ public class RNASample {
     
     private ArrayList<RNATreatment> treatment;
     private ArrayList<RNARawDataFile> rawFiles;
+    private ArrayList<RNAProtocol> protocols;
+    
     private boolean isFileLoaded;
     private boolean isTreatmentLoaded;
+    private boolean isProtocolLoaded;
     private int fileCount;
     
     private DataSource pool;
@@ -49,10 +52,10 @@ public class RNASample {
     public RNASample(){
         log = Logger.getRootLogger();
     }
-    public RNASample(int sampleID, int datasetID, String sampleName,String strain, String age, String sex, String tissue,DataSource pool){
+    public RNASample(long sampleID, long datasetID, String sampleName,String strain, String age, String sex, String tissue,DataSource pool){
         this(sampleID,datasetID,sampleName,strain,age,sex,tissue,"","",null,"","","","","",pool);    
     }
-    public RNASample(int sampleID, int datasetID, String sampleName,String strain, String age, String sex, String tissue, String srcName,
+    public RNASample(long sampleID, long datasetID, String sampleName,String strain, String age, String sex, String tissue, String srcName,
             String srcType, Date srcDate, String breeding, String genotype, String miscDetail, String disease, String phenotype,DataSource pool){
         log = Logger.getRootLogger();
         this.setRnaDatasetID(datasetID);
@@ -72,8 +75,7 @@ public class RNASample {
         this.setPhenotype(phenotype);
         isFileLoaded=false;
         isTreatmentLoaded=false;
-        treatment=new ArrayList<>();
-        rawFiles=new ArrayList<>();
+        isProtocolLoaded=false;
         this.pool=pool;
         this.fileCount=0;
     }
@@ -95,8 +97,8 @@ public class RNASample {
             
             ResultSet rs=ps.executeQuery();
             if(rs.next()){
-                ret=new RNASample(rs.getInt("RNA_SAMPLE_ID"),
-                                    rs.getInt("RNA_DATASET_ID"),
+                ret=new RNASample(rs.getLong("RNA_SAMPLE_ID"),
+                                    rs.getLong("RNA_DATASET_ID"),
                                     rs.getString("SAMPLE_NAME"),
                                     rs.getString("STRAIN"),
                                     rs.getString("AGE"),
@@ -131,8 +133,8 @@ public class RNASample {
             ResultSet rs=ps.executeQuery();
             while(rs.next()){
                 
-                RNASample tmp=new RNASample(rs.getInt("RNA_SAMPLE_ID"),
-                                    rs.getInt("RNA_DATASET_ID"),
+                RNASample tmp=new RNASample(rs.getLong("RNA_SAMPLE_ID"),
+                                    rs.getLong("RNA_DATASET_ID"),
                                     rs.getString("SAMPLE_NAME"),
                                     rs.getString("STRAIN"),
                                     rs.getString("AGE"),
@@ -175,19 +177,19 @@ public class RNASample {
         this.srcName = srcName;
     }
 
-    public int getRnaDatasetID() {
+    public long getRnaDatasetID() {
         return rnaDatasetID;
     }
 
-    public void setRnaDatasetID(int rnaDatasetID) {
+    public void setRnaDatasetID(long rnaDatasetID) {
         this.rnaDatasetID = rnaDatasetID;
     }
 
-    public int getRnaSampleID() {
+    public long getRnaSampleID() {
         return rnaSampleID;
     }
 
-    public void setRnaSampleID(int rnaSampleID) {
+    public void setRnaSampleID(long rnaSampleID) {
         this.rnaSampleID = rnaSampleID;
     }
 
@@ -339,13 +341,13 @@ public class RNASample {
         if(!isFileLoaded){
             RNARawDataFile myDataFile=new RNARawDataFile();
             try{
-                this.rawFiles=myDataFile.getRawDataFileBySample(rnaSampleID,pool);
+                this.rawFiles=myDataFile.getRawDataFilesBySample(rnaSampleID,pool);
                 isFileLoaded=true;
             }catch(Exception e){
                 isFileLoaded=false;
                 rawFiles=new ArrayList<>();
                 e.printStackTrace(System.err);
-                log.error("error retreiving RNASamples for RNADataset:"+rnaDatasetID,e);
+                log.error("error retreiving RNARawFiles for RNASample:"+rnaDatasetID,e);
             }
         }
         return rawFiles;
@@ -371,5 +373,20 @@ public class RNASample {
         this.isTreatmentLoaded = isTreatmentLoaded;
     }
     
+    public ArrayList<RNAProtocol> getProtocols() {
+        if(!isProtocolLoaded){
+            RNAProtocol myProtocol=new RNAProtocol();
+            try{
+                this.rawFiles=myProtocol.getProtocolsBySample(rnaSampleID,pool);
+                isProtocolLoaded=true;
+            }catch(Exception e){
+                isProtocolLoaded=false;
+                protocols=new ArrayList<>();
+                e.printStackTrace(System.err);
+                log.error("error retreiving RNAProtocols for RNASample:"+rnaDatasetID,e);
+            }
+        }
+        return protocols;
+    }
     
 }

@@ -5,6 +5,7 @@
  */
 package edu.ucdenver.ccp.PhenoGen.data.RNASeq;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,8 +19,8 @@ import org.apache.log4j.Logger;
  * @author smahaffey
  */
 public class RNARawDataFile {
-    private int rawDataID;
-    private int rnaSampleID;
+    private long rawDataID;
+    private long rnaSampleID;
     private String sampleName;
     private String batch;
     private String origFileName;
@@ -30,9 +31,11 @@ public class RNARawDataFile {
     private String instrument;
     private int readLen;
     private long totalReads;
-    private long size;
+    private double size;
     private String sizeUnit;
     private boolean isSizeLoaded;
+    private boolean isPublic;
+    private boolean isDownloadable;
     
     private final Logger log;
     private final String select="select * from RNA_RAW_DATA_FILES rdf ";
@@ -41,8 +44,8 @@ public class RNARawDataFile {
         log = Logger.getRootLogger();
     }
     
-    public RNARawDataFile(int rawDataID,int rnaSampleID, String sampleName, String batch,String origFileName, String fileName,
-            String path, String checksum, boolean paired, String instrument,int readLen,long totalReads){
+    public RNARawDataFile(long rawDataID,long rnaSampleID, String sampleName, String batch,String origFileName, String fileName,
+            String path, String checksum, boolean paired, String instrument,int readLen,long totalReads,boolean isPublic,boolean isDownload){
         log = Logger.getRootLogger();
         this.setRawDataID(rawDataID);
         this.setRnaSampleID(rnaSampleID);
@@ -56,13 +59,15 @@ public class RNARawDataFile {
         this.setInstrument(instrument);
         this.setReadLen(readLen);
         this.setTotalReads(totalReads);
+        this.setIsPublic(isPublic);
+        this.setIsDownloadable(isDownload);
         isSizeLoaded=false;
         size=0;
         sizeUnit="MB";
         
     }
 
-    public ArrayList<RNARawDataFile> getRawDataFileBySample(int rnaSampleID,DataSource pool){
+    public ArrayList<RNARawDataFile> getRawDataFilesBySample(long rnaSampleID,DataSource pool){
         String query=select+" where rna_sample_id="+rnaSampleID;
         return getRNARawDataFileByQuery(query,pool);
     }
@@ -75,11 +80,13 @@ public class RNARawDataFile {
             ResultSet rs=ps.executeQuery();
             while(rs.next()){
                 boolean pair=false;
-                if(rs.getInt("PAIRED_END")==1){
-                    pair=true;
-                }
-                RNARawDataFile tmp=new RNARawDataFile(rs.getInt("RNA_RAW_DATA_ID"),
-                                    rs.getInt("RNA_SAMPLE_ID"),
+                if(rs.getInt("PAIRED_END")==1){pair=true;}
+                boolean pub=false;
+                if(rs.getInt("IS_PUBLIC")==1){pub=true;}
+                boolean down=false;
+                if(rs.getInt("IS_DOWNLOAD")==1){down=true;}
+                RNARawDataFile tmp=new RNARawDataFile(rs.getLong("RNA_RAW_DATA_ID"),
+                                    rs.getLong("RNA_SAMPLE_ID"),
                                     rs.getString("RNA_SAMPLE_NAME"),
                                     rs.getString("BATCH"),
                                     rs.getString("ORIGINAL_FILE"),
@@ -89,8 +96,9 @@ public class RNARawDataFile {
                                     pair,
                                     rs.getString("INSTRUMENT"),
                                     rs.getInt("READ_LENGTH"),
-                                    rs.getLong("TOTAL_READS")
-                    );
+                                    rs.getLong("TOTAL_READS"),
+                                    pub,
+                                    down);
                 ret.add(tmp);
             }
             ps.close();
@@ -101,19 +109,19 @@ public class RNARawDataFile {
         return ret;
     }
     
-    public int getRawDataID() {
+    public long getRawDataID() {
         return rawDataID;
     }
 
-    public void setRawDataID(int rawDataID) {
+    public void setRawDataID(long rawDataID) {
         this.rawDataID = rawDataID;
     }
 
-    public int getRnaSampleID() {
+    public long getRnaSampleID() {
         return rnaSampleID;
     }
 
-    public void setRnaSampleID(int rnaSampleID) {
+    public void setRnaSampleID(long rnaSampleID) {
         this.rnaSampleID = rnaSampleID;
     }
 
@@ -195,6 +203,36 @@ public class RNARawDataFile {
 
     public void setTotalReads(long totalReads) {
         this.totalReads = totalReads;
+    }
+
+    public boolean isIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public boolean isIsDownloadable() {
+        return isDownloadable;
+    }
+
+    public void setIsDownloadable(boolean isDownloadable) {
+        this.isDownloadable = isDownloadable;
+    }
+    
+    public double getSize(){
+        if(!isSizeLoaded){
+            File tmp=new File(path+fileName);
+            double tmpDiv=1024;
+            if(sizeUnit.equals("GB")){
+                tmpDiv=1024*1024*1024;
+            }else if(sizeUnit.equals("MB")){
+                tmpDiv=1024*1024;
+            }
+            size=tmp.length()/tmpDiv;
+        }
+        return size;
     }
     
 }

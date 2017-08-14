@@ -18,10 +18,10 @@ import org.apache.log4j.Logger;
  * @author smahaffey
  */
 public class RNAProtocol {
-    private int rnaSampleID;
+    private long rnaSampleID;
     private int order;
     private String notes;
-    private int rnaProtocolID;
+    private long rnaProtocolID;
     private int userID;
     private String title;
     private String description;
@@ -96,11 +96,11 @@ public class RNAProtocol {
         return ret;
     }
 
-    public int getRnaSampleID() {
+    public long getRnaSampleID() {
         return rnaSampleID;
     }
 
-    public void setRnaSampleID(int rnaSampleID) {
+    public void setRnaSampleID(long rnaSampleID) {
         this.rnaSampleID = rnaSampleID;
     }
 
@@ -112,11 +112,11 @@ public class RNAProtocol {
         this.order = order;
     }
 
-    public int getRnaProtocolID() {
+    public long getRnaProtocolID() {
         return rnaProtocolID;
     }
 
-    public void setRnaProtocolID(int rnaProtocolID) {
+    public void setRnaProtocolID(long rnaProtocolID) {
         this.rnaProtocolID = rnaProtocolID;
     }
 
@@ -191,8 +191,5 @@ public class RNAProtocol {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-    
-    
-    
     
 }

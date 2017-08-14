@@ -5,6 +5,7 @@
  */
 package edu.ucdenver.ccp.PhenoGen.data.RNASeq;
 
+import edu.ucdenver.ccp.PhenoGen.data.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,53 +19,50 @@ import org.apache.log4j.Logger;
  * @author smahaffey
  */
 public class RNATreatment {
-    private int rnaSampleID;
-    private int rnaTreatmentID;
+    private long rnaSampleID;
+    private long rnaTreatmentID;
     private int uid;
+    private User trtmtUser;
+    private boolean isUserLoaded;
     private String name;
     private String description;
     private DataSource pool;
     private final Logger log;
-    private final String select="select * from RNA_SAMPLE_TREATMENTS rst , RNA_TREATMENTS rt where rst.RNA_TREATMENT_ID=rt.RNA_TREATMENT_ID ";
+    private final String select="select rst.RNA_SAMPLE_ID,rt.* from RNA_SAMPLE_TREATMENTS rst , RNA_TREATMENTS rt where rst.RNA_TREATMENT_ID=rt.RNA_TREATMENT_ID ";
     
     public RNATreatment(){
         log = Logger.getRootLogger();
     }
     
-    public RNATreatment(int rnaSampleId, int rnaTreatmentID, int userID, String name, String description,DataSource pool){
+    public RNATreatment(long rnaSampleId, long rnaTreatmentID, int userID, String name, String description,DataSource pool){
         log = Logger.getRootLogger();
         this.setRnaSampleID(rnaSampleId);
         this.setRnaTreatmentID(rnaTreatmentID);
         this.setUid(userID);
         this.setName(name);
         this.setDescription(description);
+        isUserLoaded=false;
         this.pool=pool;
     }
     
-    public ArrayList<RNATreatment> getTreatmentBySample(int rnaSampleID,DataSource pool){
+    public ArrayList<RNATreatment> getTreatmentBySample(long rnaSampleID,DataSource pool){
         String query=select+" where rst.rna_sample_id="+rnaSampleID;
         return getRNATreatmentByQuery(query,pool);
     }
     
     public ArrayList<RNATreatment> getRNATreatmentByQuery(String query, DataSource pool){
-        //final Connection conn=null;
         ArrayList<RNATreatment> ret=new ArrayList<>();
         try(Connection conn=pool.getConnection();
             PreparedStatement ps=conn.prepareStatement(query)){
             
             ResultSet rs=ps.executeQuery();
             while(rs.next()){
-                boolean pair=false;
-                if(rs.getInt("PAIRED_END")==1){
-                    pair=true;
-                }
-                RNATreatment tmp=new RNATreatment(rs.getInt("RNA_SAMPLE_ID"),
-                                    rs.getInt("RNA_TREATMENT_ID"),
+                RNATreatment tmp=new RNATreatment(rs.getLong("RNA_SAMPLE_ID"),
+                                    rs.getLong("RNA_TREATMENT_ID"),
                                     rs.getInt("USER_ID"),
                                     rs.getString("NAME"),
                                     rs.getString("DESCRIPTION"),
-                                    pool
-                    );
+                                    pool);
                 ret.add(tmp);
             }
             ps.close();
@@ -75,19 +73,19 @@ public class RNATreatment {
         return ret;
     }
 
-    public int getRnaSampleID() {
+    public long getRnaSampleID() {
         return rnaSampleID;
     }
 
-    public void setRnaSampleID(int rnaSampleID) {
+    public void setRnaSampleID(long rnaSampleID) {
         this.rnaSampleID = rnaSampleID;
     }
 
-    public int getRnaTreatmentID() {
+    public long getRnaTreatmentID() {
         return rnaTreatmentID;
     }
 
-    public void setRnaTreatmentID(int rnaTreatmentID) {
+    public void setRnaTreatmentID(long rnaTreatmentID) {
         this.rnaTreatmentID = rnaTreatmentID;
     }
 
@@ -104,17 +102,40 @@ public class RNATreatment {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if(name!=null){
+            this.name = name;
+        }else{
+            this.name="";
+        }
     }
 
     public String getDescription() {
+        
         return description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if(description!=null){
+            this.description = description;
+        }else{
+            this.description="";
+        }
     }
     
-    
+    public User getUser() {
+        if(!isUserLoaded){
+            User myUser=new User();
+            try{
+                this.trtmtUser=myUser.getUser(uid,pool);
+                isUserLoaded=true;
+            }catch(SQLException e){
+                isUserLoaded=false;
+                trtmtUser=null;
+                e.printStackTrace(System.err);
+                log.error("error retreiving RNATreatment User:"+uid,e);
+            }
+        }
+        return trtmtUser;
+    }
     
 }

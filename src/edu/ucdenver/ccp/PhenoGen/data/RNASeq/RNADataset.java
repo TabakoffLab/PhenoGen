@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public class RNADataset {
-    private int rnaDatasetID;
+    private long rnaDatasetID;
     private String organism;
     private String panel;
     private String description;
@@ -46,7 +46,7 @@ public class RNADataset {
         log = Logger.getRootLogger();
     }
     
-    public RNADataset(int rnaDatasetID, String organism, String panel, String description, boolean visible, Date created, boolean isPublic,int uid,DataSource pool){
+    public RNADataset(long rnaDatasetID, String organism, String panel, String description, boolean visible, Date created, boolean isPublic,int uid,DataSource pool){
         log = Logger.getRootLogger();
         this.pool=pool;
         this.setRnaDatasetID(rnaDatasetID);
@@ -59,7 +59,7 @@ public class RNADataset {
         this.setUserID(uid);
         isUserLoaded=false;
         isSampleLoaded=false;
-        samples=new ArrayList<>();
+        isResultsLoaded=false;
         rdsUser=null;
     }
 
@@ -95,14 +95,10 @@ public class RNADataset {
             ResultSet rs=ps.executeQuery();
             if(rs.next()){
                 boolean vis=false;
-                if(rs.getInt("Visible")==1){
-                    vis=true;
-                }
+                if(rs.getInt("Visible")==1){vis=true;}
                 boolean pub=false;
-                if(rs.getInt("ISPUBLIC")==1){
-                    pub=true;
-                }
-                ret=new RNADataset(rs.getInt("RNA_DATASET_ID"),
+                if(rs.getInt("ISPUBLIC")==1){pub=true;}
+                ret=new RNADataset(rs.getLong("RNA_DATASET_ID"),
                                    rs.getString("Organism"),
                                    rs.getString("Panel"),
                                    rs.getString("Descripton"),
@@ -110,8 +106,7 @@ public class RNADataset {
                                    rs.getDate("CREATED"),
                                    pub,
                                    rs.getInt("USER_ID"),
-                                   pool
-                    );
+                                   pool);
                 ret.setSampleCount(rs.getInt("SAMPLE_COUNT"));
             }
             ps.close();
@@ -129,14 +124,10 @@ public class RNADataset {
             ResultSet rs=ps.executeQuery();
             while(rs.next()){
                 boolean vis=false;
-                if(rs.getInt("Visible")==1){
-                    vis=true;
-                }
+                if(rs.getInt("Visible")==1){vis=true;}
                 boolean pub=false;
-                if(rs.getInt("ISPUBLIC")==1){
-                    pub=true;
-                }
-                RNADataset tmp=new RNADataset(rs.getInt("RNA_DATASET_ID"),
+                if(rs.getInt("ISPUBLIC")==1){pub=true;}
+                RNADataset tmp=new RNADataset(rs.getLong("RNA_DATASET_ID"),
                                    rs.getString("Organism"),
                                    rs.getString("Panel"),
                                    rs.getString("Descripton"),
@@ -162,7 +153,7 @@ public class RNADataset {
         return rnaDatasetID;
     }
 
-    public void setRnaDatasetID(int rnaDatasetID) {
+    public void setRnaDatasetID(long rnaDatasetID) {
         this.rnaDatasetID = rnaDatasetID;
     }
 
@@ -293,6 +284,9 @@ public class RNADataset {
             try{
                 this.results=myResult.getRNAResultsByDataset(rnaDatasetID,pool);
                 isResultsLoaded=true;
+                for(int i=0;i<results.size();i++){
+                    results.get(i).setDataset(this);
+                }
             }catch(Exception e){
                 isResultsLoaded=false;
                 results=new ArrayList<>();
