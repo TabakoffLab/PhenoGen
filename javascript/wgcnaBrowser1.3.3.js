@@ -535,7 +535,7 @@ function WGCNABrowser(id,region,geneList,disptype,viewtype,tissue){
         that.viewBar.append("span").attr("class","wgcnaControltooltip").attr("title","View Circos plot of the module Eigengene eQTLs.<BR><BR>Have a question about this view click the <img src=\""+contextRoot+"web/images/icons/help.png\"> above for a detailed description of each view.").style("margin-left","5px").append("img").attr("src","/web/images/icons/info.gif");
 
         that.viewBar.append("br");
-        that.viewBar.append("input").attr("type","radio").attr("id","wgcnaGOViewRB").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px")//.attr('disabled',true)
+        that.viewBar.append("input").attr("type","radio").attr("id","wgcnaGOViewRB").attr("name","wgcnaViewRB").attr("value","go").style("margin-left","7px").style("margin-right","3px").attr('disabled',true)
         	.on("click",function(){
 	            that.viewType="go";
 	            that.createSingleWGCNAImage();
