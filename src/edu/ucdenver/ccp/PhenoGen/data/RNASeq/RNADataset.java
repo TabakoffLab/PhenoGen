@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -41,6 +41,10 @@ public class RNADataset {
     private DataSource pool;
     private final Logger log;
     private final String selectWCount="select rd.*,(Select count(*) from RNA_DS_SAMPLES rs where rd.RNA_DATASET_ID=rs.RNA_DATASET_ID) as sample_count  from rna_dataset2 rd ";
+    private final String insert="Insert into RNA_DATASET2 (RNA_DATASET_ID,ORGANISM,USER_ID,STRAIN_PANEL,DESCRIPTION,VISIBLE,CREATED,ISPUBLIC) Values (?,?,?,?,?,?,?,?)";
+    private final String update="update set ORGANISM=?,USER_ID=?,STRAIN_PANEL=?,DESCRIPTION=?,VISIBLE=?,CREATED=?,ISPUBLIC=? where RNA_DATASET_ID=?";
+    private final String delete="delete RNA_DATASET2 where RNA_DATASET_ID=?";
+    private final String getID="select RNA_DATASET_SEQ.nextVal from dual";
     
     public RNADataset(){
         log = Logger.getRootLogger();
@@ -55,7 +59,7 @@ public class RNADataset {
         this.setDescription(description);
         this.setVisible(visible);
         this.setCreated(created);
-        this.setIsPublic(isPublic);
+        this.setPublic(isPublic);
         this.setUserID(uid);
         isUserLoaded=false;
         isSampleLoaded=false;
@@ -67,7 +71,113 @@ public class RNADataset {
         this.userID = userID;
     }
     
+    public boolean createRNADataset(RNADataset rd, DataSource pool){
+        boolean success=false;
+        this.pool=pool;
+        if(rd.getRnaDatasetID()==0){
+            try(Connection conn=pool.getConnection()){
+                long newID=getNextID();
+                //rd.setRnaDatasetID(newID);
+                PreparedStatement ps=conn.prepareStatement(insert);
+                ps.setLong(1, newID);
+                ps.setString(2, rd.getOrganism());
+                ps.setInt(3, rd.getUserID());
+                ps.setString(4, rd.getPanel());
+                ps.setString(5,rd.getDescription());
+                if(rd.isVisible()){
+                    ps.setInt(6, 1);
+                }else{
+                    ps.setInt(6, 0);
+                }
+                ps.setDate(7, rd.getCreated());
+                if(rd.isPublic()){
+                    ps.setInt(8, 1);
+                }else{
+                    ps.setInt(8, 0);
+                }
+                boolean tmpSuccess=ps.execute();
+                rd.setRnaDatasetID(newID);
+                //Samples?
+                if(tmpSuccess){
+                    RNASample myRS=new RNASample();
+                    ArrayList<RNASample> rs=rd.getSamples();
+                    for(int i=0;i<rs.size()&&tmpSuccess;i++){
+                        tmpSuccess=myRS.createRNASample(rs.get(i),pool);
+                    }
+                }
+                //Results?
+                if(tmpSuccess){
+                    RNAResult myRR=new RNAResult();
+                    ArrayList<RNAResult> rr=rd.getResults();
+                    for(int i=0;i<rr.size()&&tmpSuccess;i++){
+                        tmpSuccess=myRR.createRNAResult(rr.get(i),pool);
+                    }
+                }
+                if(tmpSuccess){
+                    success=true;
+                }
+            }catch(Exception e){
+
+            }
+        }
+        return success;
+    }
     
+    public boolean updateRNADataset(RNADataset rd, DataSource pool){
+        boolean success=false;
+        try(Connection conn=pool.getConnection()){
+            PreparedStatement ps=conn.prepareStatement(update);
+            ps.setString(1, rd.getOrganism());
+            ps.setInt(2, rd.getUserID());
+            ps.setString(3, rd.getPanel());
+            ps.setString(4, rd.getDescription());
+            if(rd.isVisible()){
+                    ps.setInt(5, 1);
+                }else{
+                    ps.setInt(5, 0);
+                }
+            ps.setDate(6,rd.getCreated());
+            if(rd.isPublic){
+                ps.setInt(7, 1);
+            }else{
+                ps.setInt(7, 0);
+            }
+            ps.setLong(8, rd.getRnaDatasetID());
+            int numUpdated=ps.executeUpdate();
+            if(numUpdated==1){
+                success=true;
+            }
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    
+    public boolean deleteRNADataset(RNADataset rd, DataSource pool){
+        boolean success=false;
+        try{
+            //delete results
+            //delete samples
+            //delete dataset
+            
+            success=true;
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    private long getNextID(){
+        long ret=0;
+        try(Connection conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(getID)){
+            ResultSet rs=ps.executeQuery();
+            ret=rs.getLong(1);
+            rs.close();
+        }catch(SQLException e){
+            log.error("Error getting new RNA_Dataset_ID:",e);
+        }
+        return ret;
+    }
     public RNADataset getRNADataset(long id, DataSource pool){
         String query=selectWCount+" where rd.rna_dataset_id="+id;
         return getRNADatasetByQuery(query,pool);
@@ -205,14 +315,16 @@ public class RNADataset {
         this.created = created;
     }
 
-    public boolean isIsPublic() {
+    public boolean isPublic() {
         return isPublic;
     }
 
-    public void setIsPublic(boolean isPublic) {
+    public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
-
+    public int getUserID(){
+        return this.userID;
+    }
     public User getUser() {
         if(!isUserLoaded){
             User myUser=new User();
@@ -233,11 +345,11 @@ public class RNADataset {
         this.rdsUser = rdsUser;
     }
 
-    public boolean isIsUserLoaded() {
+    public boolean isUserLoaded() {
         return isUserLoaded;
     }
 
-    public void setIsUserLoaded(boolean isUserLoaded) {
+    public void setUserLoaded(boolean isUserLoaded) {
         this.isUserLoaded = isUserLoaded;
     }
 
@@ -261,11 +373,11 @@ public class RNADataset {
         this.samples = samples;
     }
 
-    public boolean isIsSampleLoaded() {
+    public boolean isSampleLoaded() {
         return isSampleLoaded;
     }
 
-    public void setIsSampleLoaded(boolean isSampleLoaded) {
+    public void setSampleLoaded(boolean isSampleLoaded) {
         this.isSampleLoaded = isSampleLoaded;
     }
 

@@ -29,7 +29,10 @@ public class RNATreatment {
     private DataSource pool;
     private final Logger log;
     private final String select="select rst.RNA_SAMPLE_ID,rt.* from RNA_SAMPLE_TREATMENTS rst , RNA_TREATMENTS rt where rst.RNA_TREATMENT_ID=rt.RNA_TREATMENT_ID ";
-    
+    private final String insert="Insert into RNA_DS_SAMPLES (RNA_SAMPLE_ID,RNA_DATASET_ID,SAMPLE_NAME,STRAIN,AGE,SEX,TISSUE,SRC_NAME,SRC_DATE,SRC_TYPE,BREEDING_DETAILS,GENOTYPE,MISC_DETAILS,ASSOCIATED_DISEASE,PHENOTYPE_ID) Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private final String update="update set SAMPLE_NAME=?,STRAIN=?,AGE=?,SEX=?,TISSUE=?,SRC_NAME=?,SRC_DATE=?,SRC_TYPE=?,BREEDING_DETAILS=?,GENOTYPE=?,MISC_DETAILS=?,ASSOCIATED_DISEASE=?,PHENOTYPE_ID=? where RNA_SAMPLE_ID=?";
+    private final String delete="delete RNA_DS_SAMPLES where RNA_SAMPLE_ID=?";
+    private final String getID="select RNA_DS_SAMPLES_SEQ.nextVal from dual";
     public RNATreatment(){
         log = Logger.getRootLogger();
     }
@@ -73,6 +76,187 @@ public class RNATreatment {
         return ret;
     }
 
+    public boolean addTreatmentToSample(, DataSource pool){
+        boolean success=false;
+        if(rdf.getRawDataID()==0){
+            try(Connection conn=pool.getConnection()){
+                long newID=getNextID(pool);
+                PreparedStatement ps=conn.prepareStatement(insert);
+                ps.setLong(1, newID);
+                ps.setLong(2, rdf.getRnaSampleID());
+                ps.setString(3, rdf.getSampleName());
+                ps.setString(4, rdf.getBatch());
+                ps.setString(5, rdf.getOrigFileName());
+                ps.setString(6, rdf.getFileName());
+                ps.setString(7, rdf.getPath());
+                ps.setString(8, rdf.getChecksum());
+                if(rdf.getPaired()){
+                    ps.setInt(9, 1);
+                }else{
+                    ps.setInt(9, 0);
+                }
+                ps.setString(10,rdf.getInstrument());
+                ps.setInt(11, rdf.getReadLen());
+                ps.setLong(12, rdf.getTotalReads());
+                if(rdf.isPublic()){
+                    ps.setInt(13, 1);
+                }else{
+                    ps.setInt(13, 0);
+                }
+                if(rdf.isDownloadable()){
+                    ps.setInt(14, 1);
+                }else{
+                    ps.setInt(14, 0);
+                }
+                boolean tmpSuccess=ps.execute();
+                rdf.setRnaSampleID(newID);
+                if(tmpSuccess){
+                    success=true;
+                }
+            }catch(Exception e){
+
+            }
+        }
+        return success;
+    }
+    public boolean removeTreatmentFromSample(, DataSource pool){
+        boolean success=false;
+        if(rdf.getRawDataID()==0){
+            try(Connection conn=pool.getConnection()){
+                long newID=getNextID(pool);
+                PreparedStatement ps=conn.prepareStatement(insert);
+                ps.setLong(1, newID);
+                ps.setLong(2, rdf.getRnaSampleID());
+                ps.setString(3, rdf.getSampleName());
+                ps.setString(4, rdf.getBatch());
+                ps.setString(5, rdf.getOrigFileName());
+                ps.setString(6, rdf.getFileName());
+                ps.setString(7, rdf.getPath());
+                ps.setString(8, rdf.getChecksum());
+                if(rdf.getPaired()){
+                    ps.setInt(9, 1);
+                }else{
+                    ps.setInt(9, 0);
+                }
+                ps.setString(10,rdf.getInstrument());
+                ps.setInt(11, rdf.getReadLen());
+                ps.setLong(12, rdf.getTotalReads());
+                if(rdf.isPublic()){
+                    ps.setInt(13, 1);
+                }else{
+                    ps.setInt(13, 0);
+                }
+                if(rdf.isDownloadable()){
+                    ps.setInt(14, 1);
+                }else{
+                    ps.setInt(14, 0);
+                }
+                boolean tmpSuccess=ps.execute();
+                rdf.setRnaSampleID(newID);
+                if(tmpSuccess){
+                    success=true;
+                }
+            }catch(Exception e){
+
+            }
+        }
+        return success;
+    }
+    public boolean createTreatment(, DataSource pool){
+        boolean success=false;
+        if(rdf.getRawDataID()==0){
+            try(Connection conn=pool.getConnection()){
+                long newID=getNextID(pool);
+                PreparedStatement ps=conn.prepareStatement(insert);
+                ps.setLong(1, newID);
+                ps.setLong(2, rdf.getRnaSampleID());
+                ps.setString(3, rdf.getSampleName());
+                ps.setString(4, rdf.getBatch());
+                ps.setString(5, rdf.getOrigFileName());
+                ps.setString(6, rdf.getFileName());
+                ps.setString(7, rdf.getPath());
+                ps.setString(8, rdf.getChecksum());
+                if(rdf.getPaired()){
+                    ps.setInt(9, 1);
+                }else{
+                    ps.setInt(9, 0);
+                }
+                ps.setString(10,rdf.getInstrument());
+                ps.setInt(11, rdf.getReadLen());
+                ps.setLong(12, rdf.getTotalReads());
+                if(rdf.isPublic()){
+                    ps.setInt(13, 1);
+                }else{
+                    ps.setInt(13, 0);
+                }
+                if(rdf.isDownloadable()){
+                    ps.setInt(14, 1);
+                }else{
+                    ps.setInt(14, 0);
+                }
+                boolean tmpSuccess=ps.execute();
+                rdf.setRnaSampleID(newID);
+                if(tmpSuccess){
+                    success=true;
+                }
+            }catch(Exception e){
+
+            }
+        }
+        return success;
+    }
+    public boolean updateTreatment(RNARawDataFile rdf, DataSource pool){
+        boolean success=false;
+        try(Connection conn=pool.getConnection()){
+            PreparedStatement ps=conn.prepareStatement(update);
+            ps.setLong(1, rdf.getRnaSampleID());
+            ps.setString(2, rdf.getSampleName());
+            ps.setString(3, rdf.getBatch());
+            ps.setString(4, rdf.getOrigFileName());
+            ps.setString(5, rdf.getFileName());
+            ps.setString(6, rdf.getPath());
+            if(rdf.getPaired()){
+                ps.setInt(7,1);
+            }else{
+                ps.setInt(7,0);
+            }
+            ps.setString(8, rdf.getInstrument());
+            ps.setInt(9, rdf.getReadLen());
+            ps.setLong(10,rdf.getTotalReads());
+            if(rdf.isPublic()){
+                ps.setInt(11,1);
+            }else{
+                ps.setInt(11,0);
+            }
+            if(rdf.isDownloadable()){
+                ps.setInt(12,1);
+            }else{
+                ps.setInt(12,0);
+            }
+            ps.setLong(13, rdf.getRawDataID());
+            int numUpdated=ps.executeUpdate();
+            if(numUpdated==1){
+                success=true;
+            }
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    
+    public boolean deleteTreatment(RNARawDataFile rdf, DataSource pool){
+        boolean success=false;
+        try(Connection conn=pool.getConnection()){
+            PreparedStatement ps=conn.prepareStatement(delete);
+            ps.setLong(1, rdf.getRawDataID());
+            success=true;
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    
+    
     public long getRnaSampleID() {
         return rnaSampleID;
     }

@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 
@@ -48,7 +48,10 @@ public class RNASample {
     private DataSource pool;
     private final Logger log;
     private final String selectWCount="select rs.*,(Select count(*) from RNA_RAW_DATA_FILES rdf where rdf.RNA_SAMPLE_ID=rs.RNA_SAMPLE_ID) as file_count from rna_ds_samples rs ";
-    
+    private final String insert="Insert into RNA_DS_SAMPLES (RNA_SAMPLE_ID,RNA_DATASET_ID,SAMPLE_NAME,STRAIN,AGE,SEX,TISSUE,SRC_NAME,SRC_DATE,SRC_TYPE,BREEDING_DETAILS,GENOTYPE,MISC_DETAILS,ASSOCIATED_DISEASE,PHENOTYPE_ID) Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private final String update="update set SAMPLE_NAME=?,STRAIN=?,AGE=?,SEX=?,TISSUE=?,SRC_NAME=?,SRC_DATE=?,SRC_TYPE=?,BREEDING_DETAILS=?,GENOTYPE=?,MISC_DETAILS=?,ASSOCIATED_DISEASE=?,PHENOTYPE_ID=? where RNA_SAMPLE_ID=?";
+    private final String delete="delete RNA_DS_SAMPLES where RNA_SAMPLE_ID=?";
+    private final String getID="select RNA_DS_SAMPLES_SEQ.nextVal from dual";
     public RNASample(){
         log = Logger.getRootLogger();
     }
@@ -161,6 +164,110 @@ public class RNASample {
         return ret;
     }
 
+    public boolean createRNASample(RNASample rs, DataSource pool){
+        boolean success=false;
+        this.pool=pool;
+        if(rs.getRnaSampleID()==0){
+            try(Connection conn=pool.getConnection()){
+                long newID=getNextID();
+                PreparedStatement ps=conn.prepareStatement(insert);
+                ps.setLong(1, newID);
+                ps.setLong(2, rs.getRnaDatasetID());
+                ps.setString(3, rs.getSampleName());
+                ps.setString(4, rs.getStrain());
+                ps.setString(5, rs.getAge());
+                ps.setString(6, rs.getSex());
+                ps.setString(7, rs.getTissue());
+                ps.setString(8, rs.getSrcName());
+                ps.setDate(9, rs.getSrcDate());
+                ps.setString(10, rs.getSrcType());
+                ps.setString(11, rs.getBreeding());
+                ps.setString(12, rs.getGenoType());
+                ps.setString(13,rs.getMiscDetail());
+                ps.setString(14,rs.getDisease() );
+                ps.setString(15,rs.getPhenotype());
+                boolean tmpSuccess=ps.execute();
+                rs.setRnaSampleID(newID);
+                //Treatments?
+                if(tmpSuccess){
+                    RNATreatment myRS=new RNATreatment();
+                    ArrayList<RNATreatment> rt=rs.getTreatment();
+                    for(int i=0;i<rt.size()&&tmpSuccess;i++){
+                        tmpSuccess=myRS.createTreatment(rt.get(i),pool);
+                    }
+                }
+                //RawFiles?
+                if(tmpSuccess){
+                    RNARawDataFile myRDF=new RNARawDataFile();
+                    ArrayList<RNARawDataFile> rdf=rs.getRawFiles();
+                    for(int i=0;i<rdf.size()&&tmpSuccess;i++){
+                        tmpSuccess=myRDF.createRawDataFile(rdf.get(i),pool);
+                    }
+                }
+                if(tmpSuccess){
+                    success=true;
+                }
+            }catch(Exception e){
+
+            }
+        }
+        return success;
+    }
+    
+    public boolean updateRNASample(RNASample rs, DataSource pool){
+        boolean success=false;
+        try(Connection conn=pool.getConnection()){
+            PreparedStatement ps=conn.prepareStatement(update);
+            ps.setString(1, rs.getSampleName());
+            ps.setString(2, rs.getStrain());
+            ps.setString(3, rs.getAge());
+            ps.setString(4, rs.getSex());
+            ps.setString(5, rs.getTissue());
+            ps.setString(6, rs.getSrcName());
+            ps.setDate(7, rs.getSrcDate());
+            ps.setString(8, rs.getSrcType());
+            ps.setString(9, rs.getBreeding());
+            ps.setString(10, rs.getGenoType());
+            ps.setString(11, rs.getMiscDetail());
+            ps.setString(12, rs.getGenoType());
+            ps.setString(13, rs.getPhenotype());
+            ps.setLong(14, rs.getRnaSampleID());
+            int numUpdated=ps.executeUpdate();
+            if(numUpdated==1){
+                success=true;
+            }
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    
+    public boolean deleteRNADataset(RNADataset rd, DataSource pool){
+        boolean success=false;
+        try{
+            //delete treatments
+            //delete raw files
+            //delete sample
+            
+            success=true;
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    private long getNextID(){
+        long ret=0;
+        try(Connection conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(getID)){
+            ResultSet rs=ps.executeQuery();
+            ret=rs.getLong(1);
+            rs.close();
+        }catch(SQLException e){
+            log.error("Error getting new RNA_Sample_ID:",e);
+        }
+        return ret;
+    }
+    
     public String getSampleName() {
         return sampleName;
     }
