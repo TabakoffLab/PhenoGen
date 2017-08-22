@@ -42,6 +42,7 @@ public class RNARawDataFile {
     private final String insert="Insert into RNA_RAW_DATA_FILES (RNA_RAW_DATA_ID,RNA_SAMPLE_ID,RNA_SAMPLE_NAME,BATCH,ORIGINAL_FILE,FILENAME,PATH,CHECKSUM,PAIRED_END,INSTRUMENT,READ_LENGTH,TOTAL_READS,IS_PUBLIC,IS_DOWNLOAD) Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     private final String update="update set RNA_SAMPLE_ID=?,RNA_SAMPLE_NAME=?,BATCH=?,ORIGINAL_FILE=?,FILENAME=?,PATH=?,PAIRED_END=?,INSTRUMENT=?,READ_LENGTH=?,TOTAL_READS=?,IS_PUBLIC=?,IS_DOWNLOAD=? where RNA_RAW_DATA_ID=?";
     private final String delete="delete RNA_RAW_DATA_FILES where RNA_RAW_DATA_ID=?";
+    private final String deleteAllBySample="delete RNA_RAW_DATA_FILES where RNA_SAMPLE_ID=?";
     private final String getID="select RNA_RAW_DATAFILES_SEQ.nextVal from dual";
     
     public RNARawDataFile(){
@@ -196,12 +197,25 @@ public class RNARawDataFile {
         return success;
     }
     
-    public boolean deleteRNADataset(RNARawDataFile rdf, DataSource pool){
+    public boolean deleteRNARawDataFile(long rnaDataFileID, DataSource pool){
         boolean success=false;
         try(Connection conn=pool.getConnection()){
             PreparedStatement ps=conn.prepareStatement(delete);
-            ps.setLong(1, rdf.getRawDataID());
+            ps.setLong(1, rnaDataFileID);
             success=true;
+            ps.close();
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    public boolean deleteRNARawDataFileBySample(long rnaSampleID, DataSource pool){
+        boolean success=false;
+        try(Connection conn=pool.getConnection()){
+            PreparedStatement ps=conn.prepareStatement(deleteAllBySample);
+            ps.setLong(1, rnaSampleID);
+            success=true;
+            ps.close();
         }catch(Exception e){
             
         }

@@ -242,17 +242,30 @@ public class RNASample {
         return success;
     }
     
-    public boolean deleteRNADataset(RNADataset rd, DataSource pool){
+    public boolean deleteRNASample(RNASample rs, DataSource pool){
         boolean success=false;
-        try{
-            //delete treatments
-            //delete raw files
-            //delete sample
-            
-            success=true;
+        //delete treatments
+        RNATreatment myRT=new RNATreatment();
+        myRT.removeAllTreatmentsFromSample(rs.getRnaSampleID(), pool);
+        //delete raw files
+        RNARawDataFile myRRDF=new RNARawDataFile();
+        myRRDF.deleteRNARawDataFileBySample(rs.getRnaSampleID(), pool);
+        //delete protocols
+        RNAProtocol myRP=new RNAProtocol();
+        myRP.deleteRNAProtocolsFromSample(rs.getRnaSampleID(),pool);
+        //delete sample
+        try(Connection conn=pool.getConnection()){
+            PreparedStatement ps=conn.prepareStatement(delete);
+            ps.setLong(1, rs.getRnaSampleID());
+            boolean tmpSuccess=ps.execute();
+            if(tmpSuccess){
+                success=true;
+            }
+            ps.close();
         }catch(Exception e){
-            
+
         }
+        
         return success;
     }
     private long getNextID(){
