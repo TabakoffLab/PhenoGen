@@ -29,9 +29,13 @@ public class RNATreatment {
     private DataSource pool;
     private final Logger log;
     private final String select="select rst.RNA_SAMPLE_ID,rt.* from RNA_SAMPLE_TREATMENTS rst , RNA_TREATMENTS rt where rst.RNA_TREATMENT_ID=rt.RNA_TREATMENT_ID ";
-    private final String insert="Insert into RNA_SAMPLE_TREATMENTS (RNA_SAMPLE_ID,RNA_TREATMENT_ID) Values (?,?)";
-    private final String delete="delete RNA_SAMPLE_TREATMENTS where RNA_SAMPLE_ID=? and RNA_TREATMENT_ID=?";
-    private final String deleteAll="delete RNA_SAMPLE_TREATMENTS where RNA_SAMPLE_ID=?";
+    private final String insert="insert into RNA_TREATMENTS (RNA_TREATMENT_ID,USER_ID,NAME,DESCRIPTION) Values (?,?,?,?)";
+    private final String update="update RNA_TREATMENTS set NAME=?,DESCRIPTION=? where RNA_TREATMENT_ID=?";
+    private final String insertSample="Insert into RNA_SAMPLE_TREATMENTS (RNA_SAMPLE_ID,RNA_TREATMENT_ID) Values (?,?)";
+    private final String deleteSample="delete RNA_SAMPLE_TREATMENTS where RNA_SAMPLE_ID=? and RNA_TREATMENT_ID=?";
+    private final String deleteSampleAll="delete RNA_SAMPLE_TREATMENTS where RNA_SAMPLE_ID=?";
+    private final String delete="delete RNA_TREATMENTS where RNA_TREATMENT_ID=?";
+    private final String getID="select RNA_TREATMENT_SEQ.nextVal from dual";
     
     public RNATreatment(){
         log = Logger.getRootLogger();
@@ -79,7 +83,7 @@ public class RNATreatment {
     public boolean addTreatmentToSample(long sampleID,long treatmentID, DataSource pool){
         boolean success=false;
         try(Connection conn=pool.getConnection()){
-            PreparedStatement ps=conn.prepareStatement(insert);
+            PreparedStatement ps=conn.prepareStatement(insertSample);
             ps.setLong(1, sampleID);
             ps.setLong(2, treatmentID);
             boolean tmpSuccess=ps.execute();
@@ -96,7 +100,7 @@ public class RNATreatment {
         boolean success=false;
         
         try(Connection conn=pool.getConnection()){
-            PreparedStatement ps=conn.prepareStatement(delete);
+            PreparedStatement ps=conn.prepareStatement(deleteSample);
             ps.setLong(1, sampleID);
             ps.setLong(2, treatmentID);
             boolean tmpSuccess=ps.execute();
@@ -114,7 +118,7 @@ public class RNATreatment {
         boolean success=false;
         
         try(Connection conn=pool.getConnection()){
-            PreparedStatement ps=conn.prepareStatement(deleteAll);
+            PreparedStatement ps=conn.prepareStatement(deleteSampleAll);
             ps.setLong(1, sampleID);
             boolean tmpSuccess=ps.execute();
             if(tmpSuccess){
@@ -127,100 +131,74 @@ public class RNATreatment {
         
         return success;
     }
-    public boolean createTreatment(, DataSource pool){
+    public boolean createTreatment(RNATreatment rt, DataSource pool){
         boolean success=false;
-        if(rdf.getRawDataID()==0){
+        if(rt.getRnaTreatmentID()==0){
             try(Connection conn=pool.getConnection()){
                 long newID=getNextID(pool);
                 PreparedStatement ps=conn.prepareStatement(insert);
                 ps.setLong(1, newID);
-                ps.setLong(2, rdf.getRnaSampleID());
-                ps.setString(3, rdf.getSampleName());
-                ps.setString(4, rdf.getBatch());
-                ps.setString(5, rdf.getOrigFileName());
-                ps.setString(6, rdf.getFileName());
-                ps.setString(7, rdf.getPath());
-                ps.setString(8, rdf.getChecksum());
-                if(rdf.getPaired()){
-                    ps.setInt(9, 1);
-                }else{
-                    ps.setInt(9, 0);
-                }
-                ps.setString(10,rdf.getInstrument());
-                ps.setInt(11, rdf.getReadLen());
-                ps.setLong(12, rdf.getTotalReads());
-                if(rdf.isPublic()){
-                    ps.setInt(13, 1);
-                }else{
-                    ps.setInt(13, 0);
-                }
-                if(rdf.isDownloadable()){
-                    ps.setInt(14, 1);
-                }else{
-                    ps.setInt(14, 0);
-                }
+                ps.setInt(2, rt.getUid());
+                ps.setString(3, rt.getName());
+                ps.setString(4, rt.getDescription());
                 boolean tmpSuccess=ps.execute();
-                rdf.setRnaSampleID(newID);
+                rt.setRnaTreatmentID(newID);
                 if(tmpSuccess){
                     success=true;
                 }
+                ps.close();
             }catch(Exception e){
-
+                log.error("Error creating treatment:",e);
             }
         }
         return success;
     }
-    public boolean updateTreatment(RNARawDataFile rdf, DataSource pool){
+    public boolean updateTreatment(RNATreatment rt, DataSource pool){
         boolean success=false;
         try(Connection conn=pool.getConnection()){
             PreparedStatement ps=conn.prepareStatement(update);
-            ps.setLong(1, rdf.getRnaSampleID());
-            ps.setString(2, rdf.getSampleName());
-            ps.setString(3, rdf.getBatch());
-            ps.setString(4, rdf.getOrigFileName());
-            ps.setString(5, rdf.getFileName());
-            ps.setString(6, rdf.getPath());
-            if(rdf.getPaired()){
-                ps.setInt(7,1);
-            }else{
-                ps.setInt(7,0);
-            }
-            ps.setString(8, rdf.getInstrument());
-            ps.setInt(9, rdf.getReadLen());
-            ps.setLong(10,rdf.getTotalReads());
-            if(rdf.isPublic()){
-                ps.setInt(11,1);
-            }else{
-                ps.setInt(11,0);
-            }
-            if(rdf.isDownloadable()){
-                ps.setInt(12,1);
-            }else{
-                ps.setInt(12,0);
-            }
-            ps.setLong(13, rdf.getRawDataID());
+            ps.setString(1, rt.getName());
+            ps.setString(2, rt.getDescription());
+            ps.setLong(3, rt.getRnaTreatmentID());
             int numUpdated=ps.executeUpdate();
             if(numUpdated==1){
                 success=true;
             }
+            ps.close();
         }catch(Exception e){
             
         }
         return success;
     }
     
-    public boolean deleteTreatment(RNARawDataFile rdf, DataSource pool){
+    public boolean deleteTreatment(RNATreatment rt, DataSource pool){
         boolean success=false;
         try(Connection conn=pool.getConnection()){
             PreparedStatement ps=conn.prepareStatement(delete);
-            ps.setLong(1, rdf.getRawDataID());
-            success=true;
+            ps.setLong(1, rt.getRnaTreatmentID());
+            int count=ps.executeUpdate();
+            if(count==1){
+                success=true;
+            }
+            ps.close();
         }catch(Exception e){
             
         }
         return success;
     }
     
+    private long getNextID(DataSource pool){
+        long ret=0;
+        try(Connection conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(getID)){
+            ResultSet rs=ps.executeQuery();
+            ret=rs.getLong(1);
+            rs.close();
+        }catch(SQLException e){
+            log.error("Error getting new RNA_TREATMENT_ID:",e);
+        }
+        return ret;
+    }
     
     public long getRnaSampleID() {
         return rnaSampleID;

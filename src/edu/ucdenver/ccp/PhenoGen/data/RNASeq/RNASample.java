@@ -52,6 +52,7 @@ public class RNASample {
     private final String update="update set SAMPLE_NAME=?,STRAIN=?,AGE=?,SEX=?,TISSUE=?,SRC_NAME=?,SRC_DATE=?,SRC_TYPE=?,BREEDING_DETAILS=?,GENOTYPE=?,MISC_DETAILS=?,ASSOCIATED_DISEASE=?,PHENOTYPE_ID=? where RNA_SAMPLE_ID=?";
     private final String delete="delete RNA_DS_SAMPLES where RNA_SAMPLE_ID=?";
     private final String getID="select RNA_DS_SAMPLES_SEQ.nextVal from dual";
+    
     public RNASample(){
         log = Logger.getRootLogger();
     }
@@ -201,7 +202,16 @@ public class RNASample {
                     RNARawDataFile myRDF=new RNARawDataFile();
                     ArrayList<RNARawDataFile> rdf=rs.getRawFiles();
                     for(int i=0;i<rdf.size()&&tmpSuccess;i++){
-                        tmpSuccess=myRDF.createRawDataFile(rdf.get(i),pool);
+                        tmpSuccess=myRDF.createRNARawDataFile(rdf.get(i),pool);
+                    }
+                }
+                //Protocols?
+                if(tmpSuccess){
+                    RNAProtocol myRP=new RNAProtocol();
+                    ArrayList<RNAProtocol> rp=rs.getProtocols();
+                    for(int i=0;i<rp.size()&&tmpSuccess;i++){
+                        RNAProtocol tmpRP=rp.get(i);
+                        tmpSuccess=myRP.addRNAProtocolToSample(tmpRP.getRnaSampleID(),tmpRP.getRnaProtocolID(),tmpRP.getOrder(),tmpRP.getVariation(),pool);
                     }
                 }
                 if(tmpSuccess){
@@ -268,6 +278,7 @@ public class RNASample {
         
         return success;
     }
+    
     private long getNextID(){
         long ret=0;
         try(Connection conn=pool.getConnection();
@@ -497,7 +508,7 @@ public class RNASample {
         if(!isProtocolLoaded){
             RNAProtocol myProtocol=new RNAProtocol();
             try{
-                this.rawFiles=myProtocol.getProtocolsBySample(rnaSampleID,pool);
+                this.protocols=myProtocol.getProtocolsBySample(rnaSampleID,pool);
                 isProtocolLoaded=true;
             }catch(Exception e){
                 isProtocolLoaded=false;

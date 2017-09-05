@@ -51,7 +51,7 @@ public class RNAProtocol {
         log = Logger.getRootLogger();
     }
     
-    public RNAProtocol(int rnaSampleID,int order, String notes, int rnaProtocolID, int userID, String title, String description,
+    public RNAProtocol(long rnaSampleID,int order, String notes, long rnaProtocolID, int userID, String title, String description,
             String version, String fileName, String path, String prevVersion, String type, DataSource pool ){
         log = Logger.getRootLogger();
         this.setRnaSampleID(rnaSampleID);
@@ -69,7 +69,7 @@ public class RNAProtocol {
         this.pool=pool;
     }
     
-    public ArrayList<RNAProtocol> getProtocolBySample(int rnaSampleID,DataSource pool){
+    public ArrayList<RNAProtocol> getProtocolsBySample(long rnaSampleID,DataSource pool){
         String query=select+" and rdp.rna_sample_id="+rnaSampleID;
         return getRNAProtocolsByQuery(query,pool);
     }
@@ -104,10 +104,10 @@ public class RNAProtocol {
         return ret;
     }
     
-    /*public boolean createRNAProtocol(RNASample rs, DataSource pool){
+    /*public boolean createRNAProtocol(RNAProtocol rp, DataSource pool){
         boolean success=false;
         this.pool=pool;
-        if(rs.getRnaSampleID()==0){
+        if(rp.getRnaProtocolID()==0){
             try(Connection conn=pool.getConnection()){
                 long newID=getNextID();
                 PreparedStatement ps=conn.prepareStatement(insert);

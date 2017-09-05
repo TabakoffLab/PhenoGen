@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashMap;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
@@ -48,6 +48,10 @@ public class RNAResult {
     
     private final String select="";
     private final String selectSampleIDs="select RNA_SAMPLE_ID from RNA_RESULT_SAMPLE where RNA_DATASET_RESULT_ID=";
+    private final String insert="Insert into RNA_DATASET_RESULTS (RNA_DATASET_RESULT_ID,RNA_DATASET_ID,RESULT_TYPE,GENOME_ID,VER,VERSION_DATE,VISIBLE,ISPUBLIC,RESULT_LOCATION_TYPE,LOCATION_IDENTIFIER,CHECKSUM,CREATED) Values (?,?,?,?,?,?,?,?,?,?,?,?)";
+    private final String update="update set RESULT_TYPE=?,GENOME_ID=?,VER=?,VERSION_DATE=?,VISIBLE=?,ISPUBLIC=?,RESULT_LOCATION_TYPE=?,LOCATION_IDENTIFIER=?,CHECKSUM=?,CREATED=? where RNA_DATASET_RESULTS_ID=?";
+    private final String delete="delete RNA_DATASET_RESULTS where RNA_DATASET_RESULT_ID=?";
+    private final String getID="select RNA_DATASET_RESULT_SEQ.nextVal from dual";
     
     public RNAResult(){
         log = Logger.getRootLogger();
@@ -115,6 +119,84 @@ public class RNAResult {
         return ret;
     }
 
+    public boolean createRNADatasetResult(RNAResult rr, DataSource pool){
+        boolean success=false;
+        this.pool=pool;
+        if(rr.getRnaDatasetResultID()==0){
+            try(Connection conn=pool.getConnection()){
+                long newID=getNextID();
+                int vis=0;
+                if(rr.isVisible()){
+                    vis=1;
+                }
+                int pub=0;
+                if(rr.isPublic()){
+                    pub=1;
+                }
+                PreparedStatement ps=conn.prepareStatement(insert);
+                ps.setLong(1, newID);
+                ps.setLong(2, rr.getRnaDatasetID());
+                ps.setString(3, rr.getType());
+                ps.setString(4, rr.getGenomeVer());
+                ps.setString(5, rr.getVersion());
+                ps.setDate(6, rr.getVersionDate());
+                ps.setInt(7, vis);
+                ps.setInt(8, pub);
+                ps.setString(9, rr.getLocationType());
+                ps.setString(10,rr.getLocation());
+                ps.setString(11,rr.getChecksum());
+                ps.setDate(12,rr.getCreated());
+                boolean tmpSuccess=ps.execute();
+                rr.setRnaDatasetResultID(newID);
+                //Treatments?
+                if(tmpSuccess){
+                    RNATreatment myRS=new RNATreatment();
+                    ArrayList<RNATreatment> rt=rs.getTreatment();
+                    for(int i=0;i<rt.size()&&tmpSuccess;i++){
+                        tmpSuccess=myRS.createTreatment(rt.get(i),pool);
+                    }
+                }
+                //RawFiles?
+                if(tmpSuccess){
+                    RNARawDataFile myRDF=new RNARawDataFile();
+                    ArrayList<RNARawDataFile> rdf=rs.getRawFiles();
+                    for(int i=0;i<rdf.size()&&tmpSuccess;i++){
+                        tmpSuccess=myRDF.createRNARawDataFile(rdf.get(i),pool);
+                    }
+                }
+                //Protocols?
+                if(tmpSuccess){
+                    RNAProtocol myRP=new RNAProtocol();
+                    ArrayList<RNAProtocol> rp=rs.getProtocols();
+                    for(int i=0;i<rp.size()&&tmpSuccess;i++){
+                        RNAProtocol tmpRP=rp.get(i);
+                        tmpSuccess=myRP.addRNAProtocolToSample(tmpRP.getRnaSampleID(),tmpRP.getRnaProtocolID(),tmpRP.getOrder(),tmpRP.getVariation(),pool);
+                    }
+                }
+                if(tmpSuccess){
+                    success=true;
+                }
+            }catch(Exception e){
+
+            }
+        }
+        return success;
+    }
+    
+    
+    private long getNextID(){
+        long ret=0;
+        try(Connection conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(getID)){
+            ResultSet rs=ps.executeQuery();
+            ret=rs.getLong(1);
+            rs.close();
+        }catch(SQLException e){
+            log.error("Error getting new RNA_Sample_ID:",e);
+        }
+        return ret;
+    }
+    
     public long getRnaDatasetResultID() {
         return rnaDatasetResultID;
     }
@@ -163,19 +245,19 @@ public class RNAResult {
         this.versionDate = versionDate;
     }
 
-    public boolean isIsVisible() {
+    public boolean isVisible() {
         return isVisible;
     }
 
-    public void setIsVisible(boolean isVisible) {
+    public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
     }
 
-    public boolean isIsPublic() {
+    public boolean isPublic() {
         return isPublic;
     }
 
-    public void setIsPublic(boolean isPublic) {
+    public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
 

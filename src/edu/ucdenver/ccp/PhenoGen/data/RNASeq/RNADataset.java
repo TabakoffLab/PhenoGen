@@ -157,9 +157,29 @@ public class RNADataset {
         boolean success=false;
         try{
             //delete results
+            RNASample myRS=new RNASample();
+            ArrayList<RNASample> toDeleteSample=rd.getSamples();
+            for(int i=0;i<toDeleteSample.size();i++){
+                myRS.deleteRNASample(toDeleteSample.get(i), pool);
+            }
             //delete samples
+            RNAResult myRR=new RNAResult();
+            ArrayList<RNAResult> toDeleteRes=rd.getResults();
+            for(int i=0;i<toDeleteRes.size();i++){
+                 myRR.deleteRNAResult(toDeleteRes.get(i), pool);
+            }
             //delete dataset
-            
+            try(Connection conn=pool.getConnection()){
+                PreparedStatement ps=conn.prepareStatement(delete);
+                ps.setLong(1, rd.getRnaDatasetID());
+                boolean tmpSuccess=ps.execute();
+                if(tmpSuccess){
+                    success=true;
+                }
+                ps.close();
+            }catch(Exception e){
+
+            }
             success=true;
         }catch(Exception e){
             
