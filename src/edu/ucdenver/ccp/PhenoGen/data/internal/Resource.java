@@ -373,6 +373,7 @@ public class Resource {
                 List<Resource> genotypingResources = Arrays.asList(getGenotypingResources());
                 List<Resource> pubResources1 = Arrays.asList(getPublicationResources1());
                 List<Resource> pubResources2 = Arrays.asList(getPublicationResources2());
+                List<Resource> pubResources3 = Arrays.asList(getPublicationResources3());
                 List<Resource> gtfResources = Arrays.asList(getGTFResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
@@ -381,6 +382,7 @@ public class Resource {
                 allResources.addAll(genotypingResources);
                 allResources.addAll(pubResources1);
                 allResources.addAll(pubResources2);
+                allResources.addAll(pubResources3);
                 allResources.addAll(gtfResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
@@ -1132,6 +1134,30 @@ public class Resource {
                 resourceList.add(new Resource(105, "Rat","N/A", "SDPs",fileList));
 
         	
+            Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
+            return resourceArray;
+        }
+        public Resource[] getPublicationResources3() {
+            log.debug("in getPublicationResources3");
+            String pubFilePath="/userFiles/public/Publication/pravanec/";
+            List<Resource> resourceList = new ArrayList<Resource>();
+                
+            PublicationFile[] fileList = new PublicationFile[4];
+            fileList[0]=new PublicationFile("CEL Files Part 1",pubFilePath+"BAT_pravenec_CEL_part1.zip");
+            fileList[1]=new PublicationFile("CEL Files Part 2",pubFilePath+"BAT_pravenec_CEL_part2.zip");
+            fileList[2]=new PublicationFile("CEL Files Part 3",pubFilePath+"BAT_pravenec_CEL_part3.zip");
+            fileList[3]=new PublicationFile("CEL Files Part 4",pubFilePath+"BAT_pravenec_CEL_part4.zip");
+            resourceList.add(new Resource(110, "Rat", "N/A","CEL Files",fileList));
+
+            fileList = new PublicationFile[1];
+            fileList[0]=new PublicationFile("Normalized Array Data",pubFilePath+"BAT.norm.exparray.txt.zip");
+            resourceList.add(new Resource(111, "Rat", "N/A","Normalized Gene Array",fileList));
+
+            fileList = new PublicationFile[2];
+            fileList[0]=new PublicationFile("Probe Module Summary",pubFilePath+"BAT_pravenec_Probe_Module_Summary_8_2017.txt");
+            fileList[1]=new PublicationFile("Module Eigengene Matrix",pubFilePath+"BAT_pravenec_Module_Eigengene_Matrix_8_2017.txt");
+            resourceList.add(new Resource(112, "Rat","N/A", "WGCNA Module Data",fileList));
+            
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
         }
