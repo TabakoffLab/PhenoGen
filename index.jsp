@@ -79,7 +79,7 @@
     	        
 
     	<!--<div id="primary-content">-->
-        <div id="welcome" style="height:1400px; width:996px;">
+        <div id="welcome" style="height:1440px; width:996px;">
 			<h1 id="index" class="homePage">Welcome to PhenoGen Informatics</h1>    
             <H2> The site for quantitative genetics of the transcriptome.</h2>
             <div>
@@ -89,6 +89,9 @@
                        <h3 style="margin:10px;">Acknowledgements</h3>
                         <H4 style="margin:10px;">Funding</H4>
                         <p>We would like to thank the National Institue on Alcohol Abuse and Alcoholism (<a href="http://www.niaaa.nih.gov/">NIAAA</a>) for continued funding to develop and support this site.  The Banbury Fund for supporting the development of this site.</p>
+                        <H4 style="margin:10px;">Computational Resources</H4>
+                        <p>We would like acknowledge the UNLV National Supercomputing Institute (<a href="https://www.nscee.edu/">UNLV NSI</a>) for access to 
+                            supercomputing resources to support analysis of sequencing data.</p>
                         <h4 style="margin:10px;">Recombinant Inbred Panels</h4>
                         <p>We are grateful to the following investigators for providing the recombinant inbred panels found on the site.<BR />
                         HXB/BXH Rat RI Panel was provided by <a href="http://pharmacology.ucsd.edu/faculty/printz.html">Morton Printz</a>(UC San Diego).<BR />
