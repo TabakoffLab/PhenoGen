@@ -33,7 +33,8 @@
     {"id":30,"name":"Version Info","group":7,"groupName":"announce","level":2,"descPage":"curVer.jsp"},
     {"id":31,"name":"Announce- ments","group":7,"groupName":"announce","level":2,"descPage":"announce.jsp"},
     {"id":32,"name":"multiMiR","group":6,"groupName":"genelist","level":2,"descPage":"glMultiMir.jsp"},
-    {"id":33,"name":"WGCNA","group":6,"groupName":"genelist","level":2,"descPage":"glWGCNA.jsp"}
+    {"id":33,"name":"WGCNA","group":6,"groupName":"genelist","level":2,"descPage":"glWGCNA.jsp"},
+    {"id":34,"name":"Acknowledge- ments","group":7,"groupName":"announce","level":2,"descPage":"acknowledgements.jsp"}
   ],
   "links":[
     {"source":1,"target":0,"value":3},
@@ -68,6 +69,7 @@
     {"source":30,"target":28,"value":3},
     {"source":31,"target":28,"value":3},
     {"source":32,"target":5,"value":3},
-    {"source":33,"target":5,"value":3}
+    {"source":33,"target":5,"value":3},
+    {"source":34,"target":28,"value":3}
   ]
 }

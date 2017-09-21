@@ -86,6 +86,7 @@
             	<%@ include file="/web/common/indexGraph.jsp" %>
            </div>
              <div id="ack">
+                 
                        <h3 style="margin:10px;">Acknowledgements</h3>
                         <H4 style="margin:10px;">Funding</H4>
                         <p>We would like to thank the National Institue on Alcohol Abuse and Alcoholism (<a href="http://www.niaaa.nih.gov/">NIAAA</a>) for continued funding to develop and support this site.  The Banbury Fund for supporting the development of this site.</p>
