@@ -373,6 +373,7 @@ public class Resource {
                 List<Resource> genotypingResources = Arrays.asList(getGenotypingResources());
                 List<Resource> pubResources1 = Arrays.asList(getPublicationResources1());
                 List<Resource> pubResources2 = Arrays.asList(getPublicationResources2());
+                List<Resource> pubResources3 = Arrays.asList(getPublicationResources3());
                 List<Resource> gtfResources = Arrays.asList(getGTFResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
@@ -381,6 +382,7 @@ public class Resource {
                 allResources.addAll(genotypingResources);
                 allResources.addAll(pubResources1);
                 allResources.addAll(pubResources2);
+                allResources.addAll(pubResources3);
                 allResources.addAll(gtfResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
@@ -1137,50 +1139,25 @@ public class Resource {
         }
         public Resource[] getPublicationResources3() {
             log.debug("in getPublicationResources3");
-            //String pubFilePath="/userFiles/public/Publication/harrall/";
+            String pubFilePath="/userFiles/public/Publication/pravanec/";
             List<Resource> resourceList = new ArrayList<Resource>();
                 
-                /*PublicationFile[] fileList = new PublicationFile[2];
-                fileList[0]=new PublicationFile("Affymetrix Mask File",pubFilePath+"RaEx-1_0-st-v1.r2.dt1.rn5.reconstruction.withStrand.byGene.29Oct15.v2.mps");
-                fileList[1]=new PublicationFile("Affymetrix PGF File",pubFilePath+"RaEx-1_0-st-v1.r2.rn5masked.pgf.zip");
-                resourceList.add(new Resource(100, "Rat", "N/A","Array Masks",fileList));
-                
-                fileList = new PublicationFile[1];
-                fileList[0]=new PublicationFile("Normalized Array Data",pubFilePath+"Adjusted_rma.cellSpecific.txt");
-                resourceList.add(new Resource(101, "Rat", "N/A","Cell Type Specific Normalized Exon Array",fileList));
-                
-                fileList = new PublicationFile[2];
-                fileList[0]=new PublicationFile("Normalized Array Data",pubFilePath+"Adjusted_rma.liver.reconTrans.withStrand.byGene.txt");
-                fileList[1]=new PublicationFile("Detection Above Background",pubFilePath+"dabg.liver.reconTrans.geneLevel.txt");
-                resourceList.add(new Resource(102, "Rat","N/A", "HXB Normalized Exon Array",fileList));
-                
-                fileList = new PublicationFile[1];
-                fileList[0]=new PublicationFile("Reconstructed Transcriptome",pubFilePath+"reconstruct.liver.23Oct15.FINAL.gtf");
-                resourceList.add(new Resource(103, "Rat","N/A", "Reconstructed Liver Transcriptome",fileList));
-                
-                fileList = new PublicationFile[14];
-                fileList[0]=new PublicationFile("Aligned BNLx BAM",pubFilePath+"BNLx123.liver.bam");
-                fileList[1]=new PublicationFile("Aligned SHR BAM",pubFilePath+"SHR.liver.bam");
-                fileList[2]=new PublicationFile("BNLx #1 R1 FastQ",pubFilePath+"BNLX_1_GCCAAT_L005_R1_001.fastq.gz");
-                fileList[3]=new PublicationFile("BNLx #1 R2 FastQ",pubFilePath+"BNLX_1_GCCAAT_L005_R2_001.fastq.gz");
-                fileList[4]=new PublicationFile("BNLx #2 R1 FastQ",pubFilePath+"BNLX_2_CAGATC_L006_R1_001.fastq.gz");
-                fileList[5]=new PublicationFile("BNLx #2 R2 FastQ",pubFilePath+"BNLX_2_CAGATC_L006_R2_001.fastq.gz");
-                fileList[6]=new PublicationFile("BNLx #3 R1 FastQ",pubFilePath+"BNLX_3_CTTGTA_L001_R1_001.fastq.gz");
-                fileList[7]=new PublicationFile("BNLx #3 R2 FastQ",pubFilePath+"BNLX_3_CTTGTA_L001_R2_001.fastq.gz");
-                fileList[8]=new PublicationFile("SHR #1 R1 FastQ",pubFilePath+"SHR_H1_CGATGT_L005_R1_001.fastq.gz");
-                fileList[9]=new PublicationFile("SHR #1 R2 FastQ",pubFilePath+"SHR_H1_CGATGT_L005_R2_001.fastq.gz");
-                fileList[10]=new PublicationFile("SHR #2 R1 FastQ",pubFilePath+"SHR_H5_TGACCA_L006_R1_001.fastq.gz");
-                fileList[11]=new PublicationFile("SHR #2 R2 FastQ",pubFilePath+"SHR_H5_TGACCA_L006_R2_001.fastq.gz");
-                fileList[12]=new PublicationFile("SHR #3 R1 FastQ",pubFilePath+"SHR_L25_ACAGTG_L001_R1_001.fastq.gz");
-                fileList[13]=new PublicationFile("SHR #3 R2 FastQ",pubFilePath+"SHR_L25_ACAGTG_L001_R2_001.fastq.gz");
+            PublicationFile[] fileList = new PublicationFile[4];
+            fileList[0]=new PublicationFile("CEL Files Part 1",pubFilePath+"BAT_pravenec_CEL_part1.zip");
+            fileList[1]=new PublicationFile("CEL Files Part 2",pubFilePath+"BAT_pravenec_CEL_part2.zip");
+            fileList[2]=new PublicationFile("CEL Files Part 3",pubFilePath+"BAT_pravenec_CEL_part3.zip");
+            fileList[3]=new PublicationFile("CEL Files Part 4",pubFilePath+"BAT_pravenec_CEL_part4.zip");
+            resourceList.add(new Resource(110, "Rat", "N/A","CEL Files",fileList));
 
-                resourceList.add(new Resource(104, "Rat","N/A", "RNA-Seq",fileList));
-                
-                fileList = new PublicationFile[1];
-                fileList[0]=new PublicationFile("Strain Distibution Patterns",pubFilePath+"HXB.eQTL.masterList.rn5.txt");
-                resourceList.add(new Resource(105, "Rat","N/A", "SDPs",fileList));
-            */
-        	
+            fileList = new PublicationFile[1];
+            fileList[0]=new PublicationFile("Normalized Array Data",pubFilePath+"BAT.norm.exparray.txt.zip");
+            resourceList.add(new Resource(111, "Rat", "N/A","Normalized Gene Array",fileList));
+
+            fileList = new PublicationFile[2];
+            fileList[0]=new PublicationFile("Probe Module Summary",pubFilePath+"BAT_pravenec_Probe_Module_Summary_8_2017.txt");
+            fileList[1]=new PublicationFile("Module Eigengene Matrix",pubFilePath+"BAT_pravenec_Module_Eigengene_Matrix_8_2017.txt");
+            resourceList.add(new Resource(112, "Rat","N/A", "WGCNA Module Data",fileList));
+            
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
         }

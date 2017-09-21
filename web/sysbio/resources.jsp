@@ -342,7 +342,30 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
 		name="resources">                        
-
+        <div class="title">Data Files for "Systems Genetic Analysis of Brown Adipose Tissue Function" by Michal Pravenec, Laura Saba, Vaclav Zidek, 
+            Vladimir Landa, Petr Mlejnek, Jan Silhavy, Miroslava Simakova, Hynak Strnad, Jaroslava Trnovska, Vojtech Skop, Martina Huttl, Irena Markova,
+            Olena Oliyarnyk, Hana Malinska, Ludmila Kazdova, Harry Smith, and Boris Tabakoff. (Under review)
+               </div>
+		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
+                        <thead>
+                            <tr class="col_title">
+					<th>Data</th>
+                                        <TH>Files</TH>
+                            </tr>
+			</thead>
+			<tbody>
+			<% for (Resource resource: myPublicationResources3) { %> 
+				<tr id="<%=resource.getID()%>">  
+                                    
+                                    <TD><%=resource.getDescription()%></TD>
+                                    <td class="actionIcons">
+						<div class="linkedImg download" type="pub"><div>
+                                    </td>
+				</tr> 
+			<% } %>
+			</tbody>
+		</table>
+                        <BR><BR>
          <div class="title">Data Files used in "Uncovering the liver's role in immunity through RNA co-expression networks."<BR>(Harrall et. al. 2016, Mamm. Genome) <a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/27401171">Abstract</a>
                </div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
