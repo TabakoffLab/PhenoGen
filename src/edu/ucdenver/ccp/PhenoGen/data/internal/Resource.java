@@ -1139,7 +1139,7 @@ public class Resource {
         }
         public Resource[] getPublicationResources3() {
             log.debug("in getPublicationResources3");
-            String pubFilePath="/userFiles/public/Publication/pravanec/";
+            String pubFilePath="/userFiles/public/Publication/pravenec/";
             List<Resource> resourceList = new ArrayList<Resource>();
                 
             PublicationFile[] fileList = new PublicationFile[4];
