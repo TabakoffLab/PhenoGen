@@ -469,8 +469,12 @@
 						}
 	
 			});
-                        groupM.columns.adjust().draw();
-                        arrayV.columns.adjust().draw();
+                        if(groupM && groupM.columns){
+                            groupM.columns.adjust().draw();
+                        }
+                        if(arrayV && arrayV.columns){
+                            arrayV.columns.adjust().draw();
+                        }
 			
 			$('.toolTip').tooltipster({
 							position: 'top-right',

@@ -1,6 +1,7 @@
 <%@ include file="/web/common/anon_session_vars.jsp" %>
 
 <%
+        extrasList.add("d3.v4.8.0.min.js");
 	extrasList.add("detailedTranscriptInfo.js");
 	extrasList.add("jquery.dataTables.1.10.9.min.js");
 	extrasList.add("jquery.cookie.js");
@@ -9,7 +10,7 @@
 	extrasList.add("spectrum.js");
         extrasList.add("svg-pan-zoom.3.5.1.min.js");
 	extrasList.add("jquery.twosidedmultiselect.js");
-        extrasList.add("d3.v4.8.0.min.js");
+        
 	//extrasList.add("d3.v3.5.16.min.js");
         extrasList.add("tableExport/tableExport.js");
         extrasList.add("tableExport/jquery.base64.js");
