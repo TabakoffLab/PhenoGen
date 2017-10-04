@@ -167,18 +167,13 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
 
-            <script src="javascript/GenomeDataBrowser2.6.5.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.6.6.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.6.0.js" type="text/javascript"></script>
             <script src="javascript/wgcnaBrowser1.3.3.js" type="text/javascript"></script>
 
             
-            
-                <script type="text/javascript">
-                    var gs;
-                    setTimeout(function(){gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");displayHelpFirstTime();},10);
-                </script>
            </div>
         </div>
 
@@ -336,30 +331,34 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
   	});
 	
 	<%@ include file="/javascript/chart.js" %>
+        $( document ).ready(function() {
+            var gs;
+            setTimeout(function(){gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");displayHelpFirstTime();},10);
             var rbChart;
             var rlChart;
-        setTimeout(function(){
-            rbChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+gs.folderName+"/Brainexpr.json",
-                "selector":"#chartRegionBrain","allowResize":true,"type":"heatmap","width":"45%","height":"70%","displayHerit":true,
-            "title":"Gene/Transcript Expression","titlePrefix":"Whole Brain"});
-            rlChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+gs.folderName+"/Liverexpr.json",
-                "selector":"#chartRegionLiver","allowResize":true,"type":"heatmap","width":"45%","height":"70%","displayHerit":true,
-            "title":"Gene/Transcript Expression","titlePrefix":"Liver"});
-            if($(window).width()<1500){
-                rbChart.setWidth("98%");
-                rlChart.setWidth("98%");
-            }
+            setTimeout(function(){
+                rbChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+gs.folderName+"/Brainexpr.json",
+                    "selector":"#chartRegionBrain","allowResize":true,"type":"heatmap","width":"45%","height":"70%","displayHerit":true,
+                "title":"Gene/Transcript Expression","titlePrefix":"Whole Brain"});
+                rlChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+gs.folderName+"/Liverexpr.json",
+                    "selector":"#chartRegionLiver","allowResize":true,"type":"heatmap","width":"45%","height":"70%","displayHerit":true,
+                "title":"Gene/Transcript Expression","titlePrefix":"Liver"});
+                if($(window).width()<1500){
+                    rbChart.setWidth("98%");
+                    rlChart.setWidth("98%");
+                }
             },5000);
-        //svgList[1].updateLinks();
-        $(window).resize(function (){
-				if($(window).width()<1500){
-                                    rbChart.setWidth("98%");
-                                    rlChart.setWidth("98%");
-                                }else{
-                                    rbChart.setWidth("45%");
-                                    rlChart.setWidth("45%");
-                                }
-			});
+            //svgList[1].updateLinks();
+            $(window).resize(function (){
+                                    if($(window).width()<1500){
+                                        rbChart.setWidth("98%");
+                                        rlChart.setWidth("98%");
+                                    }else{
+                                        rbChart.setWidth("45%");
+                                        rlChart.setWidth("45%");
+                                    }
+                            });
+        });
 </script>
 
 

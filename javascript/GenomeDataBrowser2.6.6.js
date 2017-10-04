@@ -2833,6 +2833,9 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 	tmpHist.chr=chr;
 	tmpHist.start=minCoord;
 	tmpHist.stop=maxCoord;
+	if(!history[that.levelNumber]){
+		history[that.levelNumber]=[]
+	}
 	history[that.levelNumber].push(tmpHist);
 
 	that.xAxis = d3.axisTop(that.xScale)
@@ -4077,7 +4080,7 @@ function Track(gsvgP,dataP,trackClassP,labelP){
 				that.draw(that.data);
 				$('#trackSettingDialog').fadeOut("fast");
 			});
-		}else{
+		}else if(d){
 			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);
 			table.append("tr").append("td").html("Sorry no settings for this track.");
@@ -5693,7 +5696,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					}else{
 						console.log("tmp[0]");
 						console.log(tmp);
-						Rollbar.error("tmp[0] is undefined.  tmp.length is "+tmp.length+":"+geneID);
+						Rollbar.debug("tmp[0] is undefined.  tmp.length is "+tmp.length+":"+geneID+":"+that.gsvg.levelNumber+":"+that.trackClass);
 					}
 				}
 
@@ -5793,7 +5796,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							svgViewIDList[newLevel]=that.gsvg.currentView.ViewID;
 						}else{
 							svgViewIDList[newLevel]=defaultView;
-							Rollbar.error("that.gsvg.currentView is undefined");
+							Rollbar.debug("that.gsvg.currentView is undefined");
 						}
 					}
 					var newSvg= GenomeSVG("div#selectedImage",that.gsvg.width,min,max,newLevel,displayID,"transcript");
@@ -9551,7 +9554,7 @@ function QTLTrack(gsvg,data,trackClass,density){
 			if(typeof qtls[0]!=='undefined'){
 				qtls[0].forEach(function(d){
 					if(typeof d!=='undefined'){
-						var nameStr=new String(d.__data__.getAttribute("name"));
+						var nameStr=new String(d.data().getAttribute("name"));
 						var re = /[0-9]+\s*$/g;
 						var end1=nameStr.search(re);
 						if(end1>-1){
@@ -10946,7 +10949,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		//console.log(trackInfo);
 		//console.log(d);
 		d3.select(topLevelSelector).select("table").select("tbody").html("");
-		if(d.Controls.length>0 && d.Controls!="null"){
+		if(d && d.Controls && d.Controls.length>0 ){
 			var controls=new String(d.Controls).split(",");
 			var table=d3.select(topLevelSelector).select("table").select("tbody");
 			table.append("tr").append("td").style("font-weight","bold").html("Track Settings: "+d.Name);

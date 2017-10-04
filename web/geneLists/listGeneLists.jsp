@@ -264,7 +264,6 @@
 
 
                 function setupGeneLists(){
-                    
                     geneListjs.getListGeneLists(true,"#listGeneList","full");
                 }
 
