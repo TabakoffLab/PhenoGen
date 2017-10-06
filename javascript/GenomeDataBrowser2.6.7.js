@@ -5426,7 +5426,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					tmpShortTissue="Liver";
 					tmpLongTissue="Liver";
 				}
-				tmpChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+gs.folderName+"/"+tmpShortTissue+"expr.json",
+				tmpChart=chart({"data":"tmpData/browserCache/"+genomeVer+"/regionData/"+that.gsvg.folderName+"/"+tmpShortTissue+"expr.json",
             		"selector":"#ttChart","allowResize":false,"type":"scatter","width":"400","height":"275","displayHerit":false,"displayControls":false,
         			"title":tmpType+" Expression","titlePrefix":tmpLongTissue,"filterID":d.getAttribute("ID")});
 				

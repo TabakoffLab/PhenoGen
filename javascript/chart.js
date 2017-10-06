@@ -114,6 +114,15 @@ chart=function(params){
 			d3.select(that.select).append("br");
 		}
 		that.imgDiv=d3.select(that.select).append("div").attr("id","imgDiv");
+		if(d3.select("#body_wrapper_plain").select("#legendSVGScaleDef").size()==0){
+			that.legendSVGScaleDef = d3.select("#body_wrapper_plain").append("svg").attr("id","legendSVGScaleDef").attr("height",0).attr("width",0);
+			grad=that.legendSVGScaleDef.append("defs").append("linearGradient")
+			    					.attr("id","scale")
+			    					.attr("x1","0%").attr("y1","0%")
+			    					.attr("x2","100%").attr("y2","0%");
+			grad.append("stop").attr("offset","0%").style("stop-color","rgb(0,0,0)");
+			grad.append("stop").attr("offset","100%").style("stop-color","rgb(255,0,0)");
+		}
 		that.legendSVGTop = that.imgDiv.append("svg").attr("id","legendSVG")
 									.attr("width",that.curWidth+that.margin.left+that.margin.right);
 		that.legendSVG=that.legendSVGTop.append("g");
@@ -130,6 +139,7 @@ chart=function(params){
 			that.hChart=that.hChartTop.append("g")
 				    .attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
 		}
+
 	};
 	//Function to setup the UI controls
 	that.setupUI=function(){
@@ -941,12 +951,12 @@ chart=function(params){
 
 	    	//Setup Legend
 		    that.legendSVGTop.attr("height",60).attr("width",that.curWidth+that.margin.left+that.margin.right);
-		    grad=that.legendSVG.append("defs").append("linearGradient")
+		    /*grad=that.legendSVG.append("defs").append("linearGradient")
 		    					.attr("id","scale")
 		    					.attr("x1","0%").attr("y1","0%")
 		    					.attr("x2","100%").attr("y2","0%");
 		   	grad.append("stop").attr("offset","0%").style("stop-color","rgb(0,0,0)");
-		   	grad.append("stop").attr("offset","100%").style("stop-color","rgb(255,0,0)");
+		   	grad.append("stop").attr("offset","100%").style("stop-color","rgb(255,0,0)");*/
 		    that.hmScale=d3.scaleLinear().domain([that.yMin,that.yMax]).range([that.leftMarg, that.curWidth-that.heritChartW]);
 		    that.cAxis = d3.axisTop(that.hmScale);
 		    that.cAxGUI=that.legendSVG.append("g")
