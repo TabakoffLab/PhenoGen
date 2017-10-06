@@ -265,6 +265,10 @@ table.tooltipTable TD{
             padding: 0 10px 0 20px;
         }
         
+        .triggerEC {
+            padding-left: 8px;
+        }
+        
         table tr.col_title th {
             vertical-align: middle;
             text-align: center;
