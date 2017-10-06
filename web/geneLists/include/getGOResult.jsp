@@ -40,7 +40,7 @@
 <%@ include file="/web/GeneCentric/browserCSS.jsp" %>
 <H1 style="color:#000000;">Results - <%=result.getName()%> </H1>
 
-<div id="resultSummary" style="width:100%;">
+<div id="resultSummary" style="width:100%;height:100%;overflow: scroll;">
 <div style="text-align:center;">
     <div id="wgcnaImageControls" style="display:inline-block;width:100%;">
         <table style="width:100%;">
@@ -61,7 +61,7 @@
     <div id="tableExportCtl" style="float:right;"></div>
     <div id="wgcnaGoTable" style="display:none;/*width:99%;*/border:1px solid;text-align: center;">
         <div id="waitGoTable" align="center" ><img src="<%=imagesDir%>wait.gif" alt="Loading..." text-align="center" ><BR>Loading...</div>
-        <H2>Gene Ontology Terms for Genes in the <span id="GoTableName">Selected</span> Module</h2><BR>
+        <H2>Gene Ontology Terms for Genes in the <span id="GoTableName">Selected</span> Gene List</h2><BR>
         Click on any row to make it the root of the table and image.
         <div style="text-align:left;">
         <table  id="GoTable" width="100%">
