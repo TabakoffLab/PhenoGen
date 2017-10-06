@@ -167,11 +167,11 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
 
-            <script src="javascript/GenomeDataBrowser2.6.7.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.6.8.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.6.0.js" type="text/javascript"></script>
-            <script src="javascript/wgcnaBrowser1.3.4.js" type="text/javascript"></script>
+            <script src="javascript/wgcnaBrowser1.3.5.js" type="text/javascript"></script>
 
             
            </div>
@@ -246,7 +246,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 	<div id="selectedDetailHeader" style=" display:none; font-size:18px; font-weight:bold; background-color:#00992D; color:#FFFFFF; text-align:left; width:100%;">
     		<span class="trigger less triggerEC" name="selectedDetail" >Selected Feature Image</span>
     		<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="../web/images/icons/help.png" /></div>
-            <span class="closeDetail" style="float:right;"><img src="../web/images/icons/close.png" /></span>
+            <span class="closeDetail" style="float:right;margin-right: 8px;"><img src="../web/images/icons/close.png" /></span>
     </div>
     <div id="selectedDetail" style="display:none;">
     	<div id="selectedImage" style="text-align:center;">
