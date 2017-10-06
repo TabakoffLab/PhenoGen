@@ -86,7 +86,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(<span id=\"verSelect\"></span>) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v3.3.3(4/30/2017)";
+var siteVer="PhenoGen v3.3.5(4/30/2017)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
