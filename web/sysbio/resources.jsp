@@ -11,7 +11,10 @@
 
 <%@ include file="/web/sysbio/include/sysBioHeader.jsp"  %>
 <%
-	log.info("in resources.jsp. user =  "+ user);
+	
+    RNADataset myRNADataset=new RNADataset();
+    
+        log.info("in resources.jsp. user =  "+ user);
 	
 	log.debug("action = "+action);
         extrasList.add("tooltipster.min.css");
@@ -34,7 +37,7 @@
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
 	ArrayList checkedList = new ArrayList();
-	
+        ArrayList<RNADataset> publicRNADatasets=myRNADatasetgetRNADatasetsByPublic(true,"All",pool);
 %>
 <style>
         span.detailMenu{
@@ -100,7 +103,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 <div style="width:100%;">
     <div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
             <span id="d1" class="detailMenu selected" name="array">Microarray</span>
-            <span id="d2" class="detailMenu" name="sequencing">RNA/DNA Sequencing</span>
+            <span id="d2" class="detailMenu" name="rnaseq">RNA-Seq</span>
+            <span id="d6" class="detailMenu" name="dnaseq">DNA-Seq</span>
             <span id="d3" class="detailMenu" name="marker">Genomic Marker</span>
             <span id="d4" class="detailMenu" name="pub">Publications</span>
             <span id="d5" class="detailMenu" name="geno">Human Genotyping</span>
@@ -226,14 +230,24 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		</table> 
         </form>
         </div>
-        <div id="sequencing" style="display:none;border-top:1px solid black;">
+        <div id="rnaseq" style="display:none;border-top:1px solid black;">
+                <div class="title"> RNA Sequencing BED/BAM Data Files</div>
+                <form	method="post" 
+		action="resources.jsp" 
+		enctype="application/x-www-form-urlencoded"
+                name="resources">
+                    
+                    
+                </form>
+        </div>
+        <div id="dnaseq" style="display:none;border-top:1px solid black;">
 	<form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
 		name="resources">
-        <BR>
+        <!--<BR>
 		<BR>
-		<div class="title"> RNA Sequencing BED/BAM Data Files</div>
+		
 		      <table id="rnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
             		<thead>
                                <tr class="col_title">
@@ -271,7 +285,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         
         
         <BR>
-		<BR>
+		<BR>-->
         <div class="title"> Strain-specific Rat Genomes<span class="toolTip" title="SNPs between the reference genome and the strain have been replaced with the nucleotide from the strain."><img src="<%=imagesDir%>icons/info.gif"></span></div>
 		      <table id="dnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
             		<thead>
@@ -307,7 +321,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                     <a href="ftp://ftp.ensembl.org/pub/release-71/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl-Rn5</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a href="ftp://ftp.ensembl.org/pub/release-84/fasta/rattus_norvegicus/dna/" target="_blank">FTP Ensembl-Rn6</a>
        	</div>
-        <BR><BR>
+        <!--<BR><BR>
         <div class="title"> RNA-Seq Transcriptome Reconstruction<span class="toolTip" title="Reconstructed Transcriptome with high confidence transcripts from Cufflinks."><img src="<%=imagesDir%>icons/info.gif"></span></div>
 		      <table id="gtfFiles" class="list_base" name="items" cellpadding="0" cellspacing="3">
             		<thead>
@@ -331,11 +345,11 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                     </td>
 				</tr> 
 			<% } %>
-                      </table>
+                      </table>-->
 
         </form>
 </div>
-                        
+             
 <div id="pub" style="display:none;border-top:1px solid black;">
 	<form	method="post" 
 		action="resources.jsp" 

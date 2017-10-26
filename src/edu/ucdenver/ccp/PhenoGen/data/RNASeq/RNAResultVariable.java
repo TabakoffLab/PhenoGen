@@ -27,14 +27,16 @@ public class RNAResultVariable {
     private final Logger log;
     private final String select="select rrv.*,rrvv.value from RNA_RESULT_VARIABLES rrv, RNA_RESULT_VAR_VALUES rrvv where rrv.RNA_RVAR_ID=rrvv.RNA_RVAR_ID and rrv.RNA_DATASET_RESULT_ID=";
     private final String orderBy=" order by rrv.RNA_RVAR_ID";
+    private final String delete="delete RNA_RESULT_VARIABLES where RNA_RVAR_ID = ?";
+    private final String deleteValues="delete RNA_RESULT_VAR_VALUES where RNA_RVAR_ID = ?";
     
     public RNAResultVariable(){
         log = Logger.getRootLogger();
     }
     public RNAResultVariable(long rnaResultVarID, long rnaDatasetResultID, String name, ArrayList<String> values){
         log = Logger.getRootLogger();
-        this.setRnaResultVarID(rnaResultVarID);
-        this.setRnaDatasetResultID(rnaDatasetResultID);
+        this.setRNAResultVarID(rnaResultVarID);
+        this.setRNADatasetResultID(rnaDatasetResultID);
         this.setName(name);
         this.setValues(values);
     }
@@ -74,19 +76,53 @@ public class RNAResultVariable {
         return ret;
     }
 
-    public long getRnaResultVarID() {
+    public boolean deleteRNAResultVariable(RNAResultVariable rv, DataSource pool){
+        boolean success=false;
+        try{
+            //delete resultsample entries
+            try(Connection conn=pool.getConnection()){
+                PreparedStatement ps=conn.prepareStatement(deleteValues);
+                ps.setLong(1, rv.getRNAResultVarID());
+                boolean tmpSuccess=ps.execute();
+                if(tmpSuccess){
+                    success=true;
+                }
+                ps.close();
+            }catch(Exception e){
+
+            }
+            //delete result file
+            try(Connection conn=pool.getConnection()){
+                PreparedStatement ps=conn.prepareStatement(delete);
+                ps.setLong(1, rv.getRNAResultVarID());
+                boolean tmpSuccess=ps.execute();
+                if(tmpSuccess){
+                    success=true;
+                }
+                ps.close();
+            }catch(Exception e){
+
+            }
+            success=true;
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    
+    public long getRNAResultVarID() {
         return rnaResultVarID;
     }
 
-    public void setRnaResultVarID(long rnaResultVarID) {
+    public void setRNAResultVarID(long rnaResultVarID) {
         this.rnaResultVarID = rnaResultVarID;
     }
 
-    public long getRnaDatasetResultID() {
+    public long getRNADatasetResultID() {
         return rnaDatasetResultID;
     }
 
-    public void setRnaDatasetResultID(long rnaDatasetResultID) {
+    public void setRNADatasetResultID(long rnaDatasetResultID) {
         this.rnaDatasetResultID = rnaDatasetResultID;
     }
 

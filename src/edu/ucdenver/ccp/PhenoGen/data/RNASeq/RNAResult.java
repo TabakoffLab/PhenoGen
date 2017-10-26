@@ -46,11 +46,12 @@ public class RNAResult {
     private DataSource pool;
     private Logger log;
     
-    private final String select="";
+    private final String select="select * from RNA_DATASET_RESULTS rdr ";
     private final String selectSampleIDs="select RNA_SAMPLE_ID from RNA_RESULT_SAMPLE where RNA_DATASET_RESULT_ID=";
     private final String insert="Insert into RNA_DATASET_RESULTS (RNA_DATASET_RESULT_ID,RNA_DATASET_ID,RESULT_TYPE,GENOME_ID,VER,VERSION_DATE,VISIBLE,ISPUBLIC,RESULT_LOCATION_TYPE,LOCATION_IDENTIFIER,CHECKSUM,CREATED) Values (?,?,?,?,?,?,?,?,?,?,?,?)";
     private final String update="update set RESULT_TYPE=?,GENOME_ID=?,VER=?,VERSION_DATE=?,VISIBLE=?,ISPUBLIC=?,RESULT_LOCATION_TYPE=?,LOCATION_IDENTIFIER=?,CHECKSUM=?,CREATED=? where RNA_DATASET_RESULTS_ID=?";
-    private final String delete="delete RNA_DATASET_RESULTS where RNA_DATASET_RESULT_ID=?";
+    private final String delete="delete RNA_DATASET_RESULTS where RNA_DATASET_RESULT_ID= ?";
+    private final String deleteSample="delete RNA_RESULT_SAMPLE where RNA_DATASET_RESULT_ID = ?";
     private final String getID="select RNA_DATASET_RESULT_SEQ.nextVal from dual";
     
     public RNAResult(){
@@ -80,7 +81,7 @@ public class RNAResult {
         this.pool=pool;
     }
     public ArrayList<RNAResult> getRNAResultsByDataset(long rnaDatasetID,DataSource pool){
-        String query=select+" and rdp.rna_dataset_id="+rnaDatasetID;
+        String query=select+" where rdr.rna_dataset_id="+rnaDatasetID;
         return getRNAResultsByQuery(query,pool);
     }
     
@@ -119,7 +120,7 @@ public class RNAResult {
         return ret;
     }
 
-    public boolean createRNADatasetResult(RNAResult rr, DataSource pool){
+    public boolean createRNAResult(RNAResult rr, DataSource pool){
         boolean success=false;
         this.pool=pool;
         if(rr.getRnaDatasetResultID()==0){
@@ -148,29 +149,20 @@ public class RNAResult {
                 ps.setDate(12,rr.getCreated());
                 boolean tmpSuccess=ps.execute();
                 rr.setRnaDatasetResultID(newID);
-                //Treatments?
+                //Variables?
                 if(tmpSuccess){
-                    RNATreatment myRS=new RNATreatment();
-                    ArrayList<RNATreatment> rt=rs.getTreatment();
-                    for(int i=0;i<rt.size()&&tmpSuccess;i++){
-                        tmpSuccess=myRS.createTreatment(rt.get(i),pool);
+                    RNAResultVariable myRV=new RNAResultVariable();
+                    ArrayList<RNAResultVariable> rv=rr.getRNAResultVariables();
+                    for(int i=0;i<rv.size()&&tmpSuccess;i++){
+                        tmpSuccess=myRV.createRNAResultVarialble(rv.get(i),pool);
                     }
                 }
-                //RawFiles?
+                //ResultFiles?
                 if(tmpSuccess){
-                    RNARawDataFile myRDF=new RNARawDataFile();
-                    ArrayList<RNARawDataFile> rdf=rs.getRawFiles();
-                    for(int i=0;i<rdf.size()&&tmpSuccess;i++){
-                        tmpSuccess=myRDF.createRNARawDataFile(rdf.get(i),pool);
-                    }
-                }
-                //Protocols?
-                if(tmpSuccess){
-                    RNAProtocol myRP=new RNAProtocol();
-                    ArrayList<RNAProtocol> rp=rs.getProtocols();
-                    for(int i=0;i<rp.size()&&tmpSuccess;i++){
-                        RNAProtocol tmpRP=rp.get(i);
-                        tmpSuccess=myRP.addRNAProtocolToSample(tmpRP.getRnaSampleID(),tmpRP.getRnaProtocolID(),tmpRP.getOrder(),tmpRP.getVariation(),pool);
+                    RNAResultFile myRRF=new RNAResultFile();
+                    ArrayList<RNAResultFile> rrf=rr.getRNAResultFiles();
+                    for(int i=0;i<rrf.size()&&tmpSuccess;i++){
+                        tmpSuccess=myRRF.createRNAResultFile(rrf.get(i),pool);
                     }
                 }
                 if(tmpSuccess){
@@ -183,6 +175,52 @@ public class RNAResult {
         return success;
     }
     
+    public boolean deleteRNAResult(RNAResult rr, DataSource pool){
+        boolean success=false;
+        try{
+            //delete resultsample entries
+            try(Connection conn=pool.getConnection()){
+                PreparedStatement ps=conn.prepareStatement(deleteSample);
+                ps.setLong(1, rr.getRnaDatasetResultID());
+                boolean tmpSuccess=ps.execute();
+                if(tmpSuccess){
+                    success=true;
+                }
+                ps.close();
+            }catch(Exception e){
+
+            }
+            //delete result file
+             RNAResultFile myRRF=new RNAResultFile();
+            ArrayList<RNAResultFile> toDeleteFile=rr.getRNAResultFiles();
+            for(int i=0;i<toDeleteFile.size();i++){
+                myRRF.deleteRNAResultFile(toDeleteFile.get(i), pool);
+            }
+            //delete variables
+            RNAResultVariable myRR=new RNAResultVariable();
+            ArrayList<RNAResultVariable> toDeleteVars=rr.getRNAResultVariables();
+            for(int i=0;i<toDeleteVars.size();i++){
+                 myRR.deleteRNAResultVariable(toDeleteVars.get(i), pool);
+            }
+           
+            //delete dataset
+            try(Connection conn=pool.getConnection()){
+                PreparedStatement ps=conn.prepareStatement(delete);
+                ps.setLong(1, rr.getRnaDatasetResultID());
+                boolean tmpSuccess=ps.execute();
+                if(tmpSuccess){
+                    success=true;
+                }
+                ps.close();
+            }catch(Exception e){
+
+            }
+            success=true;
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
     
     private long getNextID(){
         long ret=0;
@@ -192,7 +230,7 @@ public class RNAResult {
             ret=rs.getLong(1);
             rs.close();
         }catch(SQLException e){
-            log.error("Error getting new RNA_Sample_ID:",e);
+            log.error("Error getting new RNA_Dataset_Result_ID:",e);
         }
         return ret;
     }
@@ -293,25 +331,25 @@ public class RNAResult {
         this.created = created;
     }
 
-    public ArrayList<RNAResultVariable> getVars() {
+    public ArrayList<RNAResultVariable> getRNAResultVariables() {
         if(!this.isVarLoaded){
             loadVars();
         }
         return vars;
     }
 
-    public void setVars(ArrayList<RNAResultVariable> vars) {
+    public void setRNAResultVariables(ArrayList<RNAResultVariable> vars) {
         this.vars = vars;
     }
 
-    public ArrayList<RNAResultFile> getFiles() {
+    public ArrayList<RNAResultFile> getRNAResultFiles() {
         if(!this.isFileLoaded){
             loadFiles();
         }
         return files;
     }
 
-    public void setFiles(ArrayList<RNAResultFile> files) {
+    public void setRNAResultFiles(ArrayList<RNAResultFile> files) {
         this.files = files;
     }
 

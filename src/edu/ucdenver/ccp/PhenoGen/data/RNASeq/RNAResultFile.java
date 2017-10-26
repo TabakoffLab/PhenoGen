@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashMap;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
@@ -35,6 +35,12 @@ public class RNAResultFile {
     private final Logger log;
     private final String select="select * from RNA_DATASET_RESULTS_FILES rdrf";
     private final String selectSampleIDs="select RNA_SAMPLE_ID from RNA_RESULTFILE_SAMPLE where RNA_DATASET_RESULT_FILE_ID=";
+    private final String insert="Insert into RNA_DATASET_RESULTS_FILES (RNA_DATASET_RESULT_FILE_ID,RNA_DATASET_RESULT_ID,UPLOADED,ORIGINAL_FILENAME,FILENAME,PATH,CHECKSUM) Values (?,?,?,?,?,?,?)";
+     private final String insertSample="Insert into RNA_RESULTFILE_SAMPLE (RNA_DATASET_RESULT_FILE_ID,RNA_SAMPLE_ID) Values (?,?)";
+    private final String delete="delete RNA_DATASET_RESULTS_FILES where RNA_DATASET_RESULT_FILE_ID= ?";
+    private final String deleteSample="delete RNA_RESULTFILE_SAMPLE where RNA_DATASET_RESULT_FILE_ID = ?";
+    
+    private final String getID="select RNA_RESULT_FILE_SEQ.nextVal from dual";
     
     public RNAResultFile(){
         log = Logger.getRootLogger();
@@ -50,8 +56,100 @@ public class RNAResultFile {
         this.path=path;
         this.checksum=checksum;
         this.pool=pool;
+        this.isSampleLoaded=false;
     }
+    
+    public boolean createRNAResultFile(RNAResultFile rrf, DataSource pool){
+        boolean success=false;
+        this.pool=pool;
+        if(rrf.getRNAResultFileID()==0){
+            try(Connection conn=pool.getConnection()){
+                long newID=getNextID();
+                PreparedStatement ps=conn.prepareStatement(insert);
+                ps.setLong(1, newID);
+                ps.setLong(2, rrf.getRNAResultID());
+                ps.setDate(3, rrf.getUploadDate());
+                ps.setString(4, rrf.getOrigFileName());
+                ps.setString(5, rrf.getFileName());
+                ps.setString(6, rrf.getPath());
+                ps.setString(7, rrf.getChecksum());
+                boolean tmpSuccess=ps.execute();
+                rrf.setRNAResultFileID(newID);
+                
+                //Variables?
+                if(tmpSuccess){
+                    RNASample myRS=new RNASample();
+                    ArrayList<RNASample> rs=rrf.getRNASamples();
+                    try(Connection conn2=pool.getConnection()){
+                        for(int i=0;i<rs.size()&&tmpSuccess;i++){
+                                PreparedStatement ps2=conn2.prepareStatement(insertSample);
+                                ps2.setLong(1, rs.get(i).getRnaSampleID());
+                                ps2.setLong(2, rrf.getRNAResultFileID());
+                                tmpSuccess=ps2.execute();
+                                ps2.close();
 
+                        }
+                    }catch(Exception e){
+                        tmpSuccess=false;
+                    }
+                }
+                
+                if(tmpSuccess){
+                    success=true;
+                }
+            }catch(Exception e){
+
+            }
+        }
+        return success;
+    }
+    
+    public boolean deleteRNAResultFile(RNAResultFile rf, DataSource pool){
+        boolean success=false;
+        try{
+            //delete resultsample entries
+            try(Connection conn=pool.getConnection()){
+                PreparedStatement ps=conn.prepareStatement(deleteSample);
+                ps.setLong(1, rf.getRNAResultFileID());
+                boolean tmpSuccess=ps.execute();
+                if(tmpSuccess){
+                    success=true;
+                }
+                ps.close();
+            }catch(Exception e){
+
+            }
+            //delete result file
+            try(Connection conn=pool.getConnection()){
+                PreparedStatement ps=conn.prepareStatement(delete);
+                ps.setLong(1, rf.getRNAResultFileID());
+                boolean tmpSuccess=ps.execute();
+                if(tmpSuccess){
+                    success=true;
+                }
+                ps.close();
+            }catch(Exception e){
+
+            }
+            success=true;
+        }catch(Exception e){
+            
+        }
+        return success;
+    }
+    
+    private long getNextID(){
+        long ret=0;
+        try(Connection conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(getID)){
+            ResultSet rs=ps.executeQuery();
+            ret=rs.getLong(1);
+            rs.close();
+        }catch(SQLException e){
+            log.error("Error getting new RNA_Result_File_ID:",e);
+        }
+        return ret;
+    }
     
     public RNAResultFile getRNAResultFile(long id, DataSource pool){
         String query=select+" where rdrf.rna_dataset_result_file_id="+id;
@@ -168,6 +266,14 @@ public class RNAResultFile {
     public void setDatasetResults(RNAResult parent){
         this.parentDSR=parent;
     }
+    
+    public ArrayList<RNASample> getRNASamples(){
+        if(!isSampleLoaded){
+            loadSamples();
+        }
+        return samples;
+    }
+
     private void loadSamples(){
         samples=new ArrayList<>();
         try{
@@ -186,6 +292,7 @@ public class RNAResultFile {
                         samples.add(hm.get(Long.toString(tmp)));
                     }
                 }
+                isSampleLoaded=true;
             }catch(SQLException er){
                 
             }
