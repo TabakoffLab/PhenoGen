@@ -236,7 +236,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
                 name="resources">
-                 <table id="rnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
+                 <table id="rnaseqTbl" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
             		<thead>
                                <tr class="col_title">
                                    
@@ -271,7 +271,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                     readType=readType+tmpType.get(j);
                                 }
                             %>
-                            <TR>
+                            <TR id="<%=publicRNADatasets.get(i).getRnaDatasetID()%>">
                                 
                                 <TD><%=publicRNADatasets.get(i).getDescription()%></TD>
                                 <TD><%=publicRNADatasets.get(i).getOrganism()%></TD>

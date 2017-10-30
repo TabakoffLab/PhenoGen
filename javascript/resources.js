@@ -38,5 +38,5 @@ function setupPage() {
         $("table[id='expressionFiles']").find("tr.col_title").find("th").slice(0,1).addClass("headerSortDown");
 	$("table[id='markerFiles']").find("tr.col_title").find("th").slice(1,2).addClass("headerSortDown");
 
-	setupDownloadButtonByType(contextPath + "/web/sysbio/directDownloadFiles.jsp");
+	setupDownloadButtonByType(contextPath + "/web/sysbio/directDownloadFiles.jsp",contextPath + "/web/sysbio/seqFileDownload.jsp");
 }
