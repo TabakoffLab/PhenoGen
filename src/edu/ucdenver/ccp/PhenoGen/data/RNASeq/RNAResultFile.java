@@ -30,6 +30,7 @@ public class RNAResultFile {
     private ArrayList<RNASample> samples;
     private RNAResult parentDSR;
     private boolean isSampleLoaded;
+    private boolean isDownloadable;
     
     private DataSource pool;
     private final Logger log;
@@ -46,7 +47,7 @@ public class RNAResultFile {
         log = Logger.getRootLogger();
     }
     
-    public RNAResultFile(long rnaResultFileID,long rnaResultID,Date uploadDate,String origFileName,String fileName, String path, String checksum,DataSource pool){
+    public RNAResultFile(long rnaResultFileID,long rnaResultID,Date uploadDate,String origFileName,String fileName, String path, String checksum,boolean download,DataSource pool){
         log = Logger.getRootLogger();
         this.rnaResultFileID=rnaResultFileID;
         this.rnaResultID=rnaResultID;
@@ -57,6 +58,7 @@ public class RNAResultFile {
         this.checksum=checksum;
         this.pool=pool;
         this.isSampleLoaded=false;
+        this.isDownloadable=download;
     }
     
     public boolean createRNAResultFile(RNAResultFile rrf, DataSource pool){
@@ -65,6 +67,9 @@ public class RNAResultFile {
         if(rrf.getRNAResultFileID()==0){
             try(Connection conn=pool.getConnection()){
                 long newID=getNextID();
+                int downl=0;
+                if(rrf.isDownloadable()){downl=1;}
+                
                 PreparedStatement ps=conn.prepareStatement(insert);
                 ps.setLong(1, newID);
                 ps.setLong(2, rrf.getRNAResultID());
@@ -73,6 +78,7 @@ public class RNAResultFile {
                 ps.setString(5, rrf.getFileName());
                 ps.setString(6, rrf.getPath());
                 ps.setString(7, rrf.getChecksum());
+                ps.setInt(8, downl);
                 boolean tmpSuccess=ps.execute();
                 rrf.setRNAResultFileID(newID);
                 
@@ -166,6 +172,8 @@ public class RNAResultFile {
             PreparedStatement ps=conn.prepareStatement(query)){
             ResultSet rs=ps.executeQuery();
             if(rs.next()){
+                boolean downl=false;
+                if(rs.getInt("ISDOWNLOAD")==1){downl=true;}
                 ret=new RNAResultFile(rs.getInt("RNA_DATASET_RESULT_FILE_ID"),
                                     rs.getInt("RNA_DATASET_RESULT_ID"),
                                     rs.getDate("UPLOADED"),
@@ -173,6 +181,7 @@ public class RNAResultFile {
                                     rs.getString("FILENAME"),
                                     rs.getString("PATH"),
                                     rs.getString("CHECKSUM"),
+                                    downl,
                                     pool);
             }
             ps.close();
@@ -189,6 +198,8 @@ public class RNAResultFile {
             PreparedStatement ps=conn.prepareStatement(query)){
             ResultSet rs=ps.executeQuery();
             while(rs.next()){
+                boolean downl=false;
+                if(rs.getInt("ISDOWNLOAD")==1){downl=true;}
                 RNAResultFile tmp=new RNAResultFile(rs.getInt("RNA_DATASET_RESULT_FILE_ID"),
                                     rs.getInt("RNA_DATASET_RESULT_ID"),
                                     rs.getDate("UPLOADED"),
@@ -196,6 +207,7 @@ public class RNAResultFile {
                                     rs.getString("FILENAME"),
                                     rs.getString("PATH"),
                                     rs.getString("CHECKSUM"),
+                                    downl,
                                     pool);
                 ret.add(tmp);
             }
@@ -207,6 +219,13 @@ public class RNAResultFile {
         return ret;
     }
 
+    public boolean isDownloadable() {
+        return isDownloadable;
+    }
+
+    public void setIsDownloadable(boolean isDownloadable) {
+        this.isDownloadable = isDownloadable;
+    }
     
     public long getRNAResultFileID() {
         return rnaResultFileID;

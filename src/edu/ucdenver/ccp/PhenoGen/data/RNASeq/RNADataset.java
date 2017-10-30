@@ -209,11 +209,11 @@ public class RNADataset {
         return ret;
     }
     public RNADataset getRNADataset(long id, DataSource pool){
-        String query=selectWCount+" where rd.rna_dataset_id="+id;
+        String query=selectWCount+" where rna_dataset_id="+id;
         return getRNADatasetByQuery(query,pool);
     }
     public ArrayList<RNADataset> getRNADatasetsByUser(long uid, DataSource pool){
-        String query=selectWCount+" where rd.user_id="+uid;
+        String query=selectWCount+" where user_id="+uid;
         return getRNADatasetsByQuery(query,pool);
     }
     public ArrayList<RNADataset> getRNADatasetsByPublic(boolean pub,String org, DataSource pool){
@@ -446,10 +446,6 @@ public class RNADataset {
     }
 
     public ArrayList<RNAResult> getResults() {
-        return results;
-    }
-
-    public void setResults(ArrayList<RNAResult> results) {
         if(!isResultsLoaded){
             RNAResult myResult=new RNAResult();
             try{
@@ -465,6 +461,11 @@ public class RNADataset {
                 log.error("error retreiving RNADataSetResults for RNADataset:"+rnaDatasetID,e);
             }
         }
+        return results;
+    }
+
+    public void setResults(ArrayList<RNAResult> results) {
+        
         this.results = results;
     }
     
@@ -493,6 +494,63 @@ public class RNADataset {
                 if(!hm.containsKey(tmp.get(j))){
                     hm.put(tmp.get(j), 1);
                     list.add(tmp.get(j));
+                }
+            }
+        }
+        return list;
+    }
+    public int getRawDownloadFileCount(){
+        int count=0;
+        ArrayList<RNASample> tmpSamples=this.getSamples();
+        for(int i=0;i<tmpSamples.size();i++){
+            ArrayList<RNARawDataFile> tmp=tmpSamples.get(i).getRawFiles();
+            for(int j=0;j<tmp.size();j++){
+                if(tmp.get(j).isDownloadable()){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    public int getResultDownloadCount(){
+        int count=0;
+        ArrayList<RNAResult> tmpResults=this.getResults();
+        for(int i=0;i<tmpResults.size();i++){
+            ArrayList<RNAResultFile> tmp=tmpResults.get(i).getRNAResultFiles();
+            for(int j=0;j<tmp.size();j++){
+                if(tmp.get(j).isDownloadable()){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    public ArrayList<ArrayList<RNAProtocol>> getProtocols(){
+        log.debug("getProtocols");
+        ArrayList<ArrayList<RNAProtocol>> list=new ArrayList<ArrayList<RNAProtocol>>();
+        list.add(new ArrayList<RNAProtocol>());
+        ArrayList<RNASample> tmpSamples=this.getSamples();
+        for(int i=0;i<tmpSamples.size();i++){
+            ArrayList<RNAProtocol> tmp=tmpSamples.get(i).getProtocols();
+            for(int j=0;j<tmp.size();j++){
+                int ord=tmp.get(j).getOrder();
+                if(ord>=list.size()){
+                    log.debug("expand"+list.size()+":"+ord);
+                    for(int k=list.size();k<=ord;k++){
+                        log.debug("k:"+k);
+                        list.add(new ArrayList<RNAProtocol>());
+                        log.debug("end for size:"+list.size());
+                    }
+                }
+                ArrayList<RNAProtocol> stepList=list.get(ord);
+                boolean found=false;
+                for(int m=0;m<stepList.size()&&!found;m++){
+                    if(stepList.get(m).getRnaProtocolID()==tmp.get(j).getRnaProtocolID()){
+                        found=true;
+                    }
+                }
+                if(!found){
+                    stepList.add(tmp.get(j));
                 }
             }
         }

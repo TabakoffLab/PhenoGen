@@ -88,7 +88,7 @@ public class RNAProtocol {
                                     rs.getInt("USER_ID"),
                                     rs.getString("TITLE"),
                                     rs.getString("DESCRIPTION"),
-                                    rs.getString("VER"),
+                                    rs.getString("VERSION"),
                                     rs.getString("FILENAME"),
                                     rs.getString("PATH"),
                                     rs.getString("PREVIOUS_VERSION"),

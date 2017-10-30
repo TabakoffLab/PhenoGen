@@ -249,7 +249,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                     <th>Read Type</th>
                                     <TH>Genome<BR>Versions</th>
                                     <th>Experimental<BR>Details</th>
-                                    <TH>Downloads</TH>
+                                    <TH>Raw Data Downloads</TH>
+                                    <TH>Result Downloads</TH>
 				</tr>
 			</thead>
 			<tbody>  
@@ -281,8 +282,17 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                 <TD><%=publicRNADatasets.get(i).getSeqType()%></TD>
                                 <TD><%=readType%></TD>
                                 <TD></TD>
-                                <td class="actionIcons"><div class="linkedImg info" type="rnaseqnew"><div></td>
-                                <td class="actionIcons"><div class="linkedImg download" type="rnaseqnew"><div></td>
+                                <td class="actionIcons"><div class="linkedImg info" type="rnaseqMeta"><div></td>
+                                <td class="actionIcons">
+                                    <%if(publicRNADatasets.get(i).getRawDownloadFileCount()>0){%>
+                                        <div class="linkedImg download" type="rnaseqRaw"><div>
+                                    <%}%>
+                                </td>
+                                <td class="actionIcons">
+                                    <%if(publicRNADatasets.get(i).getResultDownloadCount()>0){%>
+                                    <div class="linkedImg download" type="rnaseqResults"><div>
+                                    <%}%>
+                                </td>
                             </TR>
                             <%}%>
                         </tbody>
@@ -538,6 +548,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 </div><!-- END MEMBERS DIV-->
 
 <div class="downloadItem"></div>
+
+<div class="metaData"></div>
 
 <div style="width:500px;height:450px;position:absolute;display:none;top:100px;left:400px;background-color: #FFFFFF;border: #000000 1px solid;" id="userList">
     <div style="background-color: #CECECE;width:100%;height:18px;">Select Users to share file <span id="closeuserList" style="float:right; magin-top:2px;margin-right: 5px;"><img src="<%=imagesDir%>/icons/close.png"></span></div>
