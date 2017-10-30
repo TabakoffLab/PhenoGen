@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.util.HashMap;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 
@@ -154,7 +155,7 @@ public class RNASample {
                                     rs.getString("PHENOTYPE_ID"),
                                    pool
                     );
-                tmp.setFileCount(rs.getInt("SAMPLE_COUNT"));
+                tmp.setFileCount(rs.getInt("file_count"));
                 ret.add(tmp);
             }
             ps.close();
@@ -519,5 +520,38 @@ public class RNASample {
         }
         return protocols;
     }
-    
+    public ArrayList<String> getSeqTechFromRawFiles(){
+        //log.debug("PRocessing Sample:"+this.getSampleName());
+        ArrayList<String> list=new ArrayList<String>();
+        HashMap<String,Integer> hm=new HashMap<String,Integer>();
+        ArrayList<RNARawDataFile> tmpFile=this.getRawFiles();
+        for(int i=0;i<tmpFile.size();i++){
+            if(!hm.containsKey(tmpFile.get(i).getInstrument())){
+                hm.put(tmpFile.get(i).getInstrument(), 1);
+                list.add(tmpFile.get(i).getInstrument());
+                //log.debug("add:"+tmpFile.get(i).getInstrument());
+            }
+        }
+        return list;
+    }
+    public ArrayList<String> getReadTypeFromRawFiles(){
+        //log.debug("PRocessing Sample:"+this.getSampleName());
+        ArrayList<String> list=new ArrayList<String>();
+        HashMap<String,Integer> hm=new HashMap<String,Integer>();
+        ArrayList<RNARawDataFile> tmpFile=this.getRawFiles();
+        for(int i=0;i<tmpFile.size();i++){
+            String readType=tmpFile.get(i).getReadLen()+"bp ";
+            if(tmpFile.get(i).getPaired()){
+                readType=readType+" paired-end reads";
+            }else{
+                readType=readType+" single-end reads";
+            }
+            if(!hm.containsKey(readType)){
+                hm.put(readType, 1);
+                list.add(readType);
+                //log.debug("add:"+tmpFile.get(i).getInstrument());
+            }
+        }
+        return list;
+    }
 }

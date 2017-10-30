@@ -35,6 +35,7 @@
         import="edu.ucdenver.ccp.util.sql.*"
         import="edu.ucdenver.ccp.PhenoGen.util.*"
         import="edu.ucdenver.ccp.PhenoGen.data.*"
+        import="edu.ucdenver.ccp.PhenoGen.data.RNASeq.*"
 		import="edu.ucdenver.ccp.PhenoGen.data.Bio.*"
         import="edu.ucdenver.ccp.PhenoGen.data.internal.*"
         import="edu.ucdenver.ccp.PhenoGen.driver.*"

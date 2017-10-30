@@ -14,6 +14,7 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.sql.Date;
+import java.util.HashMap;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -27,6 +28,8 @@ public class RNADataset {
     private String organism;
     private String panel;
     private String description;
+    private String tissue;
+    private String seqType;
     private boolean visible;
     private Date created;
     private boolean isPublic;
@@ -40,9 +43,9 @@ public class RNADataset {
     private int sampleCount;
     private DataSource pool;
     private final Logger log;
-    private final String selectWCount="select rd.*,(Select count(*) from RNA_DS_SAMPLES rs where rd.RNA_DATASET_ID=rs.RNA_DATASET_ID) as sample_count  from rna_dataset2 rd ";
-    private final String insert="Insert into RNA_DATASET2 (RNA_DATASET_ID,ORGANISM,USER_ID,STRAIN_PANEL,DESCRIPTION,VISIBLE,CREATED,ISPUBLIC) Values (?,?,?,?,?,?,?,?)";
-    private final String update="update set ORGANISM=?,USER_ID=?,STRAIN_PANEL=?,DESCRIPTION=?,VISIBLE=?,CREATED=?,ISPUBLIC=? where RNA_DATASET_ID=?";
+    private final String selectWCount="select *  from rna_dataset2 ";
+    private final String insert="Insert into RNA_DATASET2 (RNA_DATASET_ID,ORGANISM,USER_ID,STRAIN_PANEL,DESCRIPTION,VISIBLE,CREATED,ISPUBLIC,TISSUE,SEQ_TYPE) Values (?,?,?,?,?,?,?,?,?,?)";
+    private final String update="update set ORGANISM=?,USER_ID=?,STRAIN_PANEL=?,DESCRIPTION=?,VISIBLE=?,CREATED=?,ISPUBLIC=?,TISSUE=?,SEQ_TYPE=? where RNA_DATASET_ID=?";
     private final String delete="delete RNA_DATASET2 where RNA_DATASET_ID=?";
     private final String getID="select RNA_DATASET_SEQ.nextVal from dual";
     
@@ -50,7 +53,7 @@ public class RNADataset {
         log = Logger.getRootLogger();
     }
     
-    public RNADataset(long rnaDatasetID, String organism, String panel, String description, boolean visible, Date created, boolean isPublic,int uid,DataSource pool){
+    public RNADataset(long rnaDatasetID, String organism, String panel, String description, boolean visible, Date created, boolean isPublic,String tissue,String seqType,int uid,DataSource pool){
         log = Logger.getRootLogger();
         this.pool=pool;
         this.setRnaDatasetID(rnaDatasetID);
@@ -61,6 +64,8 @@ public class RNADataset {
         this.setCreated(created);
         this.setPublic(isPublic);
         this.setUserID(uid);
+        this.setSeqType(seqType);
+        this.setTissue(tissue);
         isUserLoaded=false;
         isSampleLoaded=false;
         isResultsLoaded=false;
@@ -95,6 +100,8 @@ public class RNADataset {
                 }else{
                     ps.setInt(8, 0);
                 }
+                ps.setString(9,rd.getTissue());
+                ps.setString(10, rd.getSeqType());
                 boolean tmpSuccess=ps.execute();
                 rd.setRnaDatasetID(newID);
                 //Samples?
@@ -142,7 +149,10 @@ public class RNADataset {
             }else{
                 ps.setInt(7, 0);
             }
-            ps.setLong(8, rd.getRnaDatasetID());
+            ps.setString(8,rd.getTissue());
+            ps.setString(9, rd.getSeqType());
+            ps.setLong(10, rd.getRnaDatasetID());
+            
             int numUpdated=ps.executeUpdate();
             if(numUpdated==1){
                 success=true;
@@ -211,33 +221,40 @@ public class RNADataset {
         if(pub){
             ispub=1;
         }
-        String query=selectWCount+" where rd.ispublic="+ispub+" and visible=1";
+        String query=selectWCount+" where ispublic="+ispub+" and isvisible=1";
         if(!org.equals("All")){
-            query=query+" and rd.organism='"+org+"'";
+            query=query+" and organism='"+org+"'";
         }
+        log.debug("end of getRNADatasetsByPublic:\n"+query);
        return getRNADatasetsByQuery(query,pool);
     }
 
     public RNADataset getRNADatasetByQuery(String query, DataSource pool){
         RNADataset ret=null;
-        try(Connection conn=pool.getConnection();
-            PreparedStatement ps=conn.prepareStatement(query)){
+        log.debug("before try");
+        try(Connection conn=pool.getConnection();){
+            log.debug("testing");
+            PreparedStatement ps=conn.prepareStatement(query);
+            log.debug(query);
             ResultSet rs=ps.executeQuery();
             if(rs.next()){
                 boolean vis=false;
-                if(rs.getInt("Visible")==1){vis=true;}
+                if(rs.getInt("ISVISIBLE")==1){vis=true;}
                 boolean pub=false;
                 if(rs.getInt("ISPUBLIC")==1){pub=true;}
+                log.debug("Before new RNADataset");
                 ret=new RNADataset(rs.getLong("RNA_DATASET_ID"),
-                                   rs.getString("Organism"),
-                                   rs.getString("Panel"),
-                                   rs.getString("Descripton"),
+                                   rs.getString("ORGANISM"),
+                                   rs.getString("STRAIN_PANEL"),
+                                   rs.getString("DESCRIPTION"),
                                    vis,
                                    rs.getDate("CREATED"),
                                    pub,
+                                   rs.getString("Tissue"),
+                                   rs.getString("SEQ_TYPE"),
                                    rs.getInt("USER_ID"),
                                    pool);
-                ret.setSampleCount(rs.getInt("SAMPLE_COUNT"));
+                //ret.setSampleCount(rs.getInt("SAMPLE_COUNT"));
             }
             ps.close();
             conn.close();
@@ -249,25 +266,28 @@ public class RNADataset {
     
     public ArrayList<RNADataset> getRNADatasetsByQuery(String query, DataSource pool){
         ArrayList<RNADataset> ret=new ArrayList<>();
+        log.debug(query);
         try(Connection conn=pool.getConnection();
             PreparedStatement ps=conn.prepareStatement(query)){
             ResultSet rs=ps.executeQuery();
             while(rs.next()){
                 boolean vis=false;
-                if(rs.getInt("Visible")==1){vis=true;}
+                if(rs.getInt("isvisible")==1){vis=true;}
                 boolean pub=false;
                 if(rs.getInt("ISPUBLIC")==1){pub=true;}
                 RNADataset tmp=new RNADataset(rs.getLong("RNA_DATASET_ID"),
-                                   rs.getString("Organism"),
-                                   rs.getString("Panel"),
-                                   rs.getString("Descripton"),
+                                   rs.getString("ORGANISM"),
+                                   rs.getString("STRAIN_PANEL"),
+                                   rs.getString("DESCRIPTION"),
                                    vis,
                                    rs.getDate("CREATED"),
                                    pub,
+                                   rs.getString("Tissue"),
+                                   rs.getString("SEQ_TYPE"),
                                    rs.getInt("USER_ID"),
                                    pool
                     );
-                tmp.setSampleCount(rs.getInt("SAMPLE_COUNT"));
+                //tmp.setSampleCount(rs.getInt("SAMPLE_COUNT"));
                 ret.add(tmp);
             }
             ps.close();
@@ -277,6 +297,22 @@ public class RNADataset {
             log.error("Error getting RNADataset from \n"+query,e);
         }
         return ret;
+    }
+
+    public String getTissue() {
+        return tissue;
+    }
+
+    public void setTissue(String tissue) {
+        this.tissue = tissue;
+    }
+
+    public String getSeqType() {
+        return seqType;
+    }
+
+    public void setSeqType(String seqType) {
+        this.seqType = seqType;
     }
     
     public long getRnaDatasetID() {
@@ -296,6 +332,9 @@ public class RNADataset {
     }
 
     public int getSampleCount() {
+        if(!this.isSampleLoaded()){
+            this.setSampleCount(this.getSamples().size());
+        }
         return sampleCount;
     }
 
@@ -429,5 +468,34 @@ public class RNADataset {
         this.results = results;
     }
     
-    
+    public ArrayList<String> getSeqTechFromSamples(){
+        ArrayList<String> list=new ArrayList<String>();
+        HashMap<String,Integer> hm=new HashMap<String,Integer>();
+        ArrayList<RNASample> tmpSamples=this.getSamples();
+        for(int i=0;i<tmpSamples.size();i++){
+            ArrayList<String> tmp=tmpSamples.get(i).getSeqTechFromRawFiles();
+            for(int j=0;j<tmp.size();j++){
+                if(!hm.containsKey(tmp.get(j))){
+                    hm.put(tmp.get(j), 1);
+                    list.add(tmp.get(j));
+                }
+            }
+        }
+        return list;
+    }
+    public ArrayList<String> getReadTypeFromSamples(){
+        ArrayList<String> list=new ArrayList<String>();
+        HashMap<String,Integer> hm=new HashMap<String,Integer>();
+        ArrayList<RNASample> tmpSamples=this.getSamples();
+        for(int i=0;i<tmpSamples.size();i++){
+            ArrayList<String> tmp=tmpSamples.get(i).getReadTypeFromRawFiles();
+            for(int j=0;j<tmp.size();j++){
+                if(!hm.containsKey(tmp.get(j))){
+                    hm.put(tmp.get(j), 1);
+                    list.add(tmp.get(j));
+                }
+            }
+        }
+        return list;
+    }
 }

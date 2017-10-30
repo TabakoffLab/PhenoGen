@@ -23,12 +23,16 @@ public class RNAResultVariable {
     private long rnaDatasetResultID;
     private String name;
     private ArrayList<String> values;
+    private DataSource pool;
     
     private final Logger log;
     private final String select="select rrv.*,rrvv.value from RNA_RESULT_VARIABLES rrv, RNA_RESULT_VAR_VALUES rrvv where rrv.RNA_RVAR_ID=rrvv.RNA_RVAR_ID and rrv.RNA_DATASET_RESULT_ID=";
     private final String orderBy=" order by rrv.RNA_RVAR_ID";
+    private final String insert="insert into RNA_RESULT_VARIABLE (RNA_RVAR_ID,RNA_DATASET_RESULT_ID,NAME) VALUES (?,?,?)";
+    private final String insertValues="insert into RNA_RESULT_VAR_VALUES (RNA_RVAR_ID,VALUE)) VALUES (?,?)";
     private final String delete="delete RNA_RESULT_VARIABLES where RNA_RVAR_ID = ?";
     private final String deleteValues="delete RNA_RESULT_VAR_VALUES where RNA_RVAR_ID = ?";
+    private final String getID="select RNA_DATASET_RVAR_SEQ.nextVal from dual";
     
     public RNAResultVariable(){
         log = Logger.getRootLogger();
@@ -75,7 +79,51 @@ public class RNAResultVariable {
         }
         return ret;
     }
+    public boolean createRNAResultVariable(RNAResultVariable rv, DataSource pool){
+        boolean success=false;
+        this.pool=pool;
+        if(rv.getRNAResultVarID()==0){
+            try(Connection conn=pool.getConnection()){
+                long newID=getNextID();
+   
+                PreparedStatement ps=conn.prepareStatement(insert);
+                ps.setLong(1, newID);
+                ps.setLong(2, rv.getRNADatasetResultID());
+                ps.setString(3, rv.getName());
+                boolean tmpSuccess=ps.execute();
+                rv.setRNAResultVarID(newID);
+                ArrayList<String> val=rv.getValues();
+                for(int i=0;i<val.size()&&tmpSuccess;i++){
+                    try(Connection conn2=pool.getConnection()){
+                        PreparedStatement ps2=conn2.prepareStatement(insertValues);
+                        ps2.setLong(1, newID);
+                        ps2.setString(2, val.get(i));
+                        tmpSuccess=ps2.execute();
+                    }catch(Exception er){
+                        
+                    }
+                }
+                if(tmpSuccess){
+                    success=true;
+                }
+            }catch(Exception e){
 
+            }
+        }
+        return success;
+    }
+    private long getNextID(){
+        long ret=0;
+        try(Connection conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(getID)){
+            ResultSet rs=ps.executeQuery();
+            ret=rs.getLong(1);
+            rs.close();
+        }catch(SQLException e){
+            log.error("Error getting new RNA_Result_Var_ID:",e);
+        }
+        return ret;
+    }
     public boolean deleteRNAResultVariable(RNAResultVariable rv, DataSource pool){
         boolean success=false;
         try{

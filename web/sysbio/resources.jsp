@@ -37,7 +37,7 @@
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
 	ArrayList checkedList = new ArrayList();
-        ArrayList<RNADataset> publicRNADatasets=myRNADatasetgetRNADatasetsByPublic(true,"All",pool);
+        ArrayList<RNADataset> publicRNADatasets=myRNADataset.getRNADatasetsByPublic(true,"All",pool);
 %>
 <style>
         span.detailMenu{
@@ -231,13 +231,62 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         </form>
         </div>
         <div id="rnaseq" style="display:none;border-top:1px solid black;">
-                <div class="title"> RNA Sequencing BED/BAM Data Files</div>
+                <div class="title"> RNA Sequencing BED/BAM Data Files:<%=publicRNADatasets.size()%>:</div>
                 <form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
                 name="resources">
-                    
-                    
+                 <table id="rnaFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3">
+            		<thead>
+                               <tr class="col_title">
+                                   
+                                   <TH>Description</TH>
+                                    <th>Organism</th>
+                                    <th>Strain</th>
+                                    <th>Tissue</th>
+                                    <th>Seq. Tech.</th>
+                                    <th>RNA Type</th>
+                                    <th>Read Type</th>
+                                    <TH>Genome<BR>Versions</th>
+                                    <th>Experimental<BR>Details</th>
+                                    <TH>Downloads</TH>
+				</tr>
+			</thead>
+			<tbody>  
+                            <% for(int i=0;i<publicRNADatasets.size();i++){
+                                String tech="";
+                                ArrayList<String> tmpTech=publicRNADatasets.get(i).getSeqTechFromSamples();
+                                for(int j=0;j<tmpTech.size();j++){
+                                    if(j>0){
+                                        tech=tech+", ";
+                                    }
+                                    tech=tech+tmpTech.get(j);
+                                }
+                                String readType="";
+                                ArrayList<String> tmpType=publicRNADatasets.get(i).getReadTypeFromSamples();
+                                for(int j=0;j<tmpType.size();j++){
+                                    if(j>0){
+                                        readType=readType+", ";
+                                    }
+                                    readType=readType+tmpType.get(j);
+                                }
+                            %>
+                            <TR>
+                                
+                                <TD><%=publicRNADatasets.get(i).getDescription()%></TD>
+                                <TD><%=publicRNADatasets.get(i).getOrganism()%></TD>
+                                <TD><%=publicRNADatasets.get(i).getPanel()%></TD>
+                                <TD><%=publicRNADatasets.get(i).getTissue()%></TD>
+                                <TD><%=tech%></TD>
+                                <TD><%=publicRNADatasets.get(i).getSeqType()%></TD>
+                                <TD><%=readType%></TD>
+                                <TD></TD>
+                                <td class="actionIcons"><div class="linkedImg info" type="rnaseqnew"><div></td>
+                                <td class="actionIcons"><div class="linkedImg download" type="rnaseqnew"><div></td>
+                            </TR>
+                            <%}%>
+                        </tbody>
+                 </table>
                 </form>
         </div>
         <div id="dnaseq" style="display:none;border-top:1px solid black;">

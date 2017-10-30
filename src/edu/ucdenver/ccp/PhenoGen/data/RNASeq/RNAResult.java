@@ -154,7 +154,7 @@ public class RNAResult {
                     RNAResultVariable myRV=new RNAResultVariable();
                     ArrayList<RNAResultVariable> rv=rr.getRNAResultVariables();
                     for(int i=0;i<rv.size()&&tmpSuccess;i++){
-                        tmpSuccess=myRV.createRNAResultVarialble(rv.get(i),pool);
+                        tmpSuccess=myRV.createRNAResultVariable(rv.get(i),pool);
                     }
                 }
                 //ResultFiles?
