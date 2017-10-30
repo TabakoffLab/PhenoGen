@@ -73,12 +73,23 @@
         log.debug("after get Protocols");
             for(int i=0;i<prtcl.size();i++){
                     if(prtcl.get(i).size()>1){
-                        
-                        log.debug("i:"+i+":"+prtcl.get(i).size());
+                        ArrayList<RNAProtocol> list=prtcl.get(i);
+                        for(int j=0;j<list.size();j++){
                     %>
-                        
+                            <TR id="<%=prtcl.get(i).get(0).getRnaProtocolID()%>">
+                                <TD><%=(i+1)+"."+j%></TD>
+                                <TD><%=prtcl.get(i).get(j).getType()%></TD>
+                                <TD><%=prtcl.get(i).get(j).getTitle()%></TD>
+                                <TD><%=prtcl.get(i).get(j).getDescription()%></TD>
+                                <TD><%=prtcl.get(i).get(j).getVersion()%></TD>
+                                <td class="actionIcons">
+                                        <%if(prtcl.get(i).get(j).getFileName()!=null){%>
+                                            <div class="linkedImg download" type="protocol"><div>
+                                        <%}%>
+                                </td>
+                            </TR>
+                        <%}%>
                     <%}else if(prtcl.get(i).size()==1){
-                        log.debug("si:"+i+":"+prtcl.get(i).size());
                         %>
             
                         <TR id="<%=prtcl.get(i).get(0).getRnaProtocolID()%>">

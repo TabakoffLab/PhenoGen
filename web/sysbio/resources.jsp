@@ -231,7 +231,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         </form>
         </div>
         <div id="rnaseq" style="display:none;border-top:1px solid black;">
-                <div class="title"> RNA Sequencing BED/BAM Data Files:<%=publicRNADatasets.size()%>:</div>
+                <div class="title"> RNA Sequencing Datasets Experimental Details/Downloads</div>
                 <form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
@@ -271,6 +271,14 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                     }
                                     readType=readType+tmpType.get(j);
                                 }
+                                String genomeVer="";
+                                ArrayList<String> tmpGV=publicRNADatasets.get(i).getResultGenomeVer();
+                                for(int j=0;j<tmpGV.size();j++){
+                                    if(j>0){
+                                        genomeVer=genomeVer+", ";
+                                    }
+                                    genomeVer=genomeVer+tmpGV.get(j);
+                                }
                             %>
                             <TR id="<%=publicRNADatasets.get(i).getRnaDatasetID()%>">
                                 
@@ -281,7 +289,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                                 <TD><%=tech%></TD>
                                 <TD><%=publicRNADatasets.get(i).getSeqType()%></TD>
                                 <TD><%=readType%></TD>
-                                <TD></TD>
+                                <TD><%=genomeVer%></TD>
                                 <td class="actionIcons"><div class="linkedImg info" type="rnaseqMeta"><div></td>
                                 <td class="actionIcons">
                                     <%if(publicRNADatasets.get(i).getRawDownloadFileCount()>0){%>

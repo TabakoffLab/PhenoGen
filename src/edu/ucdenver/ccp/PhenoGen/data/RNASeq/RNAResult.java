@@ -105,7 +105,7 @@ public class RNAResult {
                                             vis,
                                             isPub,
                                             rs.getString("RESULT_LOCATION_TYPE"),
-                                            rs.getString("RESULT_LOCATION"),
+                                            rs.getString("LOCATION_IDENTIFIER"),
                                             rs.getString("CHECKSUM"),
                                             rs.getDate("CREATED"),
                                             pool);

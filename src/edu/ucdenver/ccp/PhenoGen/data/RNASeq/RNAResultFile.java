@@ -162,7 +162,7 @@ public class RNAResultFile {
         return getRNAResultFileByQuery(query,pool);
     }
     public ArrayList<RNAResultFile> getRNAResultFilesByDatasetResult(long dsrid, DataSource pool){
-        String query=select+" where rs.rna_dataset_result_id="+dsrid;
+        String query=select+" where rdrf.rna_dataset_result_id="+dsrid;
         return getRNAResultFilesByQuery(query,pool);
     }
     

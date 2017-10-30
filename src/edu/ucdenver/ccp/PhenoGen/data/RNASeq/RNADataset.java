@@ -525,6 +525,19 @@ public class RNADataset {
         }
         return count;
     }
+    public ArrayList<String> getResultGenomeVer(){
+        ArrayList<String> list=new ArrayList<String>();
+        HashMap<String,Integer> hm=new HashMap<String,Integer>();
+        ArrayList<RNAResult> tmpResults=this.getResults();
+        for(int i=0;i<tmpResults.size();i++){
+            String tmp=tmpResults.get(i).getGenomeVer();
+            if(!hm.containsKey(tmp)){
+                    hm.put(tmp, 1);
+                    list.add(tmp);
+            }
+        }
+        return list;
+    }
     public ArrayList<ArrayList<RNAProtocol>> getProtocols(){
         log.debug("getProtocols");
         ArrayList<ArrayList<RNAProtocol>> list=new ArrayList<ArrayList<RNAProtocol>>();
