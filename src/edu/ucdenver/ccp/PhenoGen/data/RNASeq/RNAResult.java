@@ -41,7 +41,7 @@ public class RNAResult {
     private RNADataset parentDS;
     private boolean isFileLoaded;
     private boolean isSampleLoaded;
-    private RNAPipeline pipeline;
+    private ArrayList<RNAPipeline> pipelines;
     private boolean isPipelineLoaded;
     private DataSource pool;
     private Logger log;
@@ -353,15 +353,15 @@ public class RNAResult {
         this.files = files;
     }
 
-    public RNAPipeline getPipeline() {
+    public ArrayList<RNAPipeline> getPipeline() {
         if(!this.isPipelineLoaded){
             loadPipeline();
         }
-        return pipeline;
+        return pipelines;
     }
 
-    public void setPipeline(RNAPipeline pipeline) {
-        this.pipeline = pipeline;
+    public void setPipeline(ArrayList<RNAPipeline> pipeline) {
+        this.pipelines = pipeline;
     }
     
     public void setDataset(RNADataset par){
@@ -389,7 +389,16 @@ public class RNAResult {
         }
     }
     private void loadPipeline(){
-        
+        RNAPipeline rp=new RNAPipeline();
+        try{
+            this.pipelines=rp.getRNAPipelineByResultID(this.rnaDatasetResultID, this.pool);
+            this.isPipelineLoaded=true;
+        }catch(Exception e){
+            isPipelineLoaded=false;
+            pipelines=new ArrayList<RNAPipeline>();
+            e.printStackTrace(System.err);
+            log.error("error retreiving RNAPipeline for RNAResult:"+rnaDatasetID,e);
+        }
     }
     private void loadVars(){
         RNAResultVariable rrv=new RNAResultVariable();

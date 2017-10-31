@@ -538,6 +538,21 @@ public class RNADataset {
         }
         return list;
     }
+    public ArrayList<RNAPipeline> getResultPipelines(){
+        ArrayList<RNAPipeline> list=new ArrayList<RNAPipeline>();
+        HashMap<String,Integer> hm=new HashMap<String,Integer>();
+        ArrayList<RNAResult> tmpResults=this.getResults();
+        for(int i=0;i<tmpResults.size();i++){
+            ArrayList<RNAPipeline> tmp=tmpResults.get(i).getPipeline();
+            for(int j=0;j<tmp.size();j++){
+                if(!hm.containsKey(Long.toString(tmp.get(j).getRnaPipelineID()))){
+                        hm.put(Long.toString(tmp.get(j).getRnaPipelineID()), 1);
+                        list.add(tmp.get(j));
+                }
+            }
+        }
+        return list;
+    }
     public ArrayList<ArrayList<RNAProtocol>> getProtocols(){
         log.debug("getProtocols");
         ArrayList<ArrayList<RNAProtocol>> list=new ArrayList<ArrayList<RNAProtocol>>();
