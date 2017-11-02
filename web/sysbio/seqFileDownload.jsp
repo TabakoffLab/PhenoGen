@@ -58,6 +58,7 @@
             <TH> Date</TH>
             <TH> Filename</TH>
             <TH> Checksum</TH>
+            <TH>Analysis Details</TH>
             <TH> Download</TH>
         </TR>
     </thead>
@@ -66,13 +67,14 @@
                 ArrayList<RNAResultFile> files=results.get(i).getRNAResultFiles();
                 for(int j=0;j<files.size();j++){
         %>
-                    <TR>
+                    <TR id="<%=results.get(i).getRnaDatasetResultID()%>">
                         <TD><%=results.get(i).getType()%></TD>
                         <TD><%=results.get(i).getGenomeVer()%></TD>
                         <TD><%=results.get(i).getVersion()%></TD>
                         <TD><%=results.get(i).getVersionDate()%></TD>
                         <TD><%=files.get(j).getOrigFileName()%></TD>
                         <TD><%=files.get(j).getChecksum()%></TD>
+                        <td class="actionIcons"><div class="linkedImg info" type="rnaseqMeta"><div></td>
                         <td class="actionIcons">
 					<center>
 						<a href="downloadLink.jsp?url=<%=files.get(j).getPath()+files.get(j).getFileName()%>" target="_blank" > <img src="../images/icons/download_g.png" /></a>
@@ -89,4 +91,29 @@
 	stripeAndHoverTable( tableRows );
         var tableRows = getRowsFromNamedTable($("table#resultDataFile"));
 	stripeAndHoverTable( tableRows );
+        
+        
+        if($("table#resultDataFile").size()>0){
+            $("table#resultDataFile").find("td div.info").click(function() {
+                    var id = $(this).parents("tr").attr("id");
+                    var theType = $(this).attr("type");
+
+                    var dataParams = { resource:id, type: theType };
+
+                    // send to .jsp to handle download
+                    $.ajax({
+                            type: "POST",
+                            url: contextPath + "/web/sysbio/pipelineMetadata.jsp",
+                            dataType: "html",
+                            data: dataParams,
+                            async: true,
+                            success: function( html ){
+                                pipelineModal.html( html ).dialog( "open" );
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                    alert( "there was an error processing this request: " + textStatus + " " + errorThrown );
+                            }
+                    });
+            });
+        }
 </script>

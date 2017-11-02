@@ -102,16 +102,16 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 
 <div style="width:100%;">
     <div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
-            <span id="d1" class="detailMenu selected" name="array">Microarray</span>
-            <span id="d2" class="detailMenu" name="rnaseq">RNA-Seq</span>
+            <span id="d2" class="detailMenu selected" name="rnaseq">RNA-Seq</span>
             <span id="d6" class="detailMenu" name="dnaseq">DNA-Seq</span>
+            <span id="d1" class="detailMenu" name="array">Microarray</span>
             <span id="d3" class="detailMenu" name="marker">Genomic Marker</span>
             <span id="d4" class="detailMenu" name="pub">Publications</span>
-            <span id="d5" class="detailMenu" name="geno">Human Genotyping</span>
+            
     </div>
 </div>
 
-<div id="array" style="border-top:1px solid black;">
+<div id="array" style="display:none;border-top:1px solid black;">
 	<form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
@@ -230,7 +230,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		</table> 
         </form>
         </div>
-        <div id="rnaseq" style="display:none;border-top:1px solid black;">
+        <div id="rnaseq" style="border-top:1px solid black;">
                 <div class="title"> RNA Sequencing Datasets Experimental Details/Downloads</div>
                 <form	method="post" 
 		action="resources.jsp" 
@@ -472,16 +472,10 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                         <BR>
         
         
-	</form>
-</div>
-<div id="geno" style="display:none;border-top:1px solid black;">
-	<form	method="post" 
-		action="resources.jsp" 
-		enctype="application/x-www-form-urlencoded"
-		name="resources"> 
-        <BR>
+                        
+                <BR>
 		<BR>
-		<div class="title">Human Genotype Data Files</div>
+                <div class="title">Human Genotype Data Files used in "Genetic markers of comorbid depression and alcoholism in women."<BR>(Procopio et. al. 2013, Alcohol Clin Exp Res.)<a href="https://www.ncbi.nlm.nih.gov/pubmed/23278386" target="_blank">Abstract</a></div>
 		      <table id="genotypingFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
             	<thead>
                     <tr class="col_title">
@@ -512,9 +506,9 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		</table>
                         <BR>
         
-        
 	</form>
 </div>
+
 </div><!-- END PUBLIC DIV-->
 <div id="members" style="display:none;min-height: 780px;">
     <H2>My Files</h2>
@@ -558,6 +552,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 <div class="downloadItem"></div>
 
 <div class="metaData"></div>
+<div class="pipelineData"></div>
 
 <div style="width:500px;height:450px;position:absolute;display:none;top:100px;left:400px;background-color: #FFFFFF;border: #000000 1px solid;" id="userList">
     <div style="background-color: #CECECE;width:100%;height:18px;">Select Users to share file <span id="closeuserList" style="float:right; magin-top:2px;margin-right: 5px;"><img src="<%=imagesDir%>/icons/close.png"></span></div>
@@ -583,7 +578,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 <%@ include file="/web/common/footer.jsp"  %>
 <script type="text/javascript">
         var curUID=<%=userLoggedIn.getUser_id()%>;
-    
+        var pipelineModal;
+        var metaModal;
 	$(document).ready(function() {
 		$('.toolTip').tooltipster({
 		position: 'top-right',
@@ -608,6 +604,13 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                     rows=$("table.list_base tr");
                     stripeTable(rows);
                 });
+                
+                setTimeout(function(){
+                    var tmpH=$(window).height()*.85;
+                    var tmpW=$(window).width()*.85;
+                    metaModal = createDialog( ".metaData", {height: tmpH, width: tmpW, position: { my: "center", at: "center", of: window }, title: "Experiment Details"} );
+                    pipelineModal = createDialog( ".pipelineData", {height: tmpH, width: tmpW, position: { my: "center", at: "center", of: window }, title: "Analysis Pipeline Details"} );
+                },10);
                 
 	});
         

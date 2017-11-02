@@ -27,6 +27,8 @@ public class RNAPipelineSteps {
     private String program;
     private String version;
     private String command;
+    private String scriptPath;
+    private String programURL;
     private long startReadCount;
     private long endReadCount;
     
@@ -37,7 +39,7 @@ public class RNAPipelineSteps {
         log = Logger.getRootLogger();
     }
     
-    public RNAPipelineSteps(long rnaPipelineStepID,long rnaPipelineID,String stepName,String stepType,int ord,String script,String prog,String ver, String command,long startRead,long endRead){
+    public RNAPipelineSteps(long rnaPipelineStepID,long rnaPipelineID,String stepName,String stepType,int ord,String script,String prog,String ver, String command,long startRead,long endRead,String scriptPath,String programURL){
         this.setRnaPipelineStepID(rnaPipelineStepID);
         this.setRnaPipelineID(rnaPipelineID);
         this.setName(stepName);
@@ -49,6 +51,8 @@ public class RNAPipelineSteps {
         this.setCommand(command);
         this.setStartReadCount(startRead);
         this.setEndReadCount(endRead);
+        this.setScriptPath(scriptPath);
+        this.setProgramURL(programURL);
     }
 
     public ArrayList<RNAPipelineSteps> getRNAPipelineStepsByPipelineID(long rnaPipelineID,DataSource pool){
@@ -72,7 +76,9 @@ public class RNAPipelineSteps {
                         rs.getString("VER"),
                         rs.getString("COMMAND_LINE"),
                         rs.getLong("start_read_count"),
-                        rs.getLong("end_read_count")
+                        rs.getLong("end_read_count"),
+                        rs.getString("SCRIPT_PATH"),
+                        rs.getString("PROGRAM_URL")
                 );
                 
                 ret.add(tmp);
@@ -83,6 +89,22 @@ public class RNAPipelineSteps {
             log.error("Error getting RNADataset from \n"+query,e);
         }
         return ret;
+    }
+
+    public String getScriptPath() {
+        return scriptPath;
+    }
+
+    public void setScriptPath(String scriptPath) {
+        this.scriptPath = scriptPath;
+    }
+
+    public String getProgramURL() {
+        return programURL;
+    }
+
+    public void setProgramURL(String programURL) {
+        this.programURL = programURL;
     }
 
     public long getRnaPipelineStepID() {

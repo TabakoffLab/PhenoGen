@@ -80,9 +80,50 @@ public class RNAResult {
         this.isSampleLoaded=false;
         this.pool=pool;
     }
+    
+    public RNAResult getRNAResultByID(long rnaDatasetResultID,DataSource pool){
+        String query=select+" where rdr.rna_dataset_result_id="+rnaDatasetResultID;
+        return getRNAResultByQuery(query,pool);
+    }
+    
     public ArrayList<RNAResult> getRNAResultsByDataset(long rnaDatasetID,DataSource pool){
         String query=select+" where rdr.rna_dataset_id="+rnaDatasetID;
         return getRNAResultsByQuery(query,pool);
+    }
+    
+    private RNAResult getRNAResultByQuery(String query, DataSource pool){
+        RNAResult ret=null;
+        try(Connection conn=pool.getConnection();
+            PreparedStatement ps=conn.prepareStatement(query)){
+            
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()){
+                boolean vis=false;
+                boolean isPub=false;
+                if(rs.getInt("VISIBLE")==1){vis=true;}
+                if(rs.getInt("ISPUBLIC")==1){isPub=true;}
+                RNAResult tmp=new RNAResult(rs.getLong("RNA_DATASET_RESULT_ID"),
+                                            rs.getLong("RNA_DATASET_ID"),
+                                            rs.getString("RESULT_TYPE"),
+                                            rs.getString("GENOME_ID"),
+                                            rs.getString("VER"),
+                                            rs.getDate("VERSION_DATE"),
+                                            vis,
+                                            isPub,
+                                            rs.getString("RESULT_LOCATION_TYPE"),
+                                            rs.getString("LOCATION_IDENTIFIER"),
+                                            rs.getString("CHECKSUM"),
+                                            rs.getDate("CREATED"),
+                                            pool);
+                
+                ret=tmp;
+            }
+            ps.close();
+            conn.close();
+        }catch(SQLException e){
+            log.error("Error getting RNADataset from \n"+query,e);
+        }
+        return ret;
     }
     
     private ArrayList<RNAResult> getRNAResultsByQuery(String query, DataSource pool){
