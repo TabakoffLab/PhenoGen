@@ -8,7 +8,11 @@
  *      
 --%>
 <%@ include file="/web/sysbio/include/sysBioHeader.jsp"  %>
-
+<style>
+    table.list_base td.cursorPointer{
+        cursor: default;
+    }
+</style>
 <%
     int resource = (request.getParameter("resource") == null ? -99 : Integer.parseInt((String) request.getParameter("resource")));
     String type = (request.getParameter("type") == null ? "" : (String) request.getParameter("type"));
