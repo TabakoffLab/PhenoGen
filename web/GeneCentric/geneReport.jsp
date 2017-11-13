@@ -184,12 +184,16 @@ Add report here.
                 <!--<span class="selectdetailMenu" name="geneGO">GO<div class="inpageHelp" style="display:inline-block; "><img id="HelpUCSCImage" class="helpImage" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>-->
                 <span class="selectdetailMenu" name="geneWGCNA">WGCNA<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneWGCNATab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
             <%}else{
+                if(myOrganism.equals("Rn") && genomeVer.equals("rn6")){%>
+                    <span class="selectdetailMenu" name="geneApp">Expression Data<div class="inpageHelp" style="display:inline-block; "><img id="HelpGenePSTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+                <%}
                 if(curGene.getGeneSymbol().toLowerCase().startsWith("mir")||curGene.getDescription().toLowerCase().startsWith("microrna") || curGene.getBioType().toLowerCase().indexOf("mirna")>-1){
                     if(curGene.getGeneID().startsWith("ENS")){%>
                         <span class="selectdetailMenu" name="miGenerna">Genes Targeted by this miRNA(multiMiR)<div class="inpageHelp" style="display:inline-block; "><img id="HelpGeneMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
-                    <%}else{%>
-                        <span class="selectdetailMenu" name="miGenernaPred">Predict Genes Targeted by this miRNA(PITA)<div class="inpageHelp" style="display:inline-block; "><img id="HelpPredictGeneMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
-                    <%}
+                    <%}//else{%>
+                        <!--<span class="selectdetailMenu" name="miGenernaPred">Predict Genes Targeted by this miRNA(PITA)<div class="inpageHelp" style="display:inline-block; "><img id="HelpPredictGeneMirTargetTab" class="helpGeneRpt" src="<%=contextRoot%>/web/images/icons/help.png" /></div></span>
+                        -->
+                    <%//}
                 }
             }%>
 </div>
