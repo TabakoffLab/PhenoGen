@@ -228,7 +228,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
           <div style="display:none;" id="regionWGCNAEQTL">
          
           </div>
-           <div style="display:none;" id="regionExpr">
+           <div style="display:none;overflow: auto;" id="regionExpr">
                <div class="help" style="width:100%;display:inline-block;text-align:center;"></div>
                 <div class="exprCol" id="expRegionBrain" style="display:inline-block;">
                     <div style="width:100%;text-align: center;"><H2>Whole Brain RNA-Seq Expression</h2></div><BR>

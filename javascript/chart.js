@@ -7,6 +7,7 @@ chart=function(params){
 	that.widthPerc=0.90;
 	that.curHeight=0;
 	that.curWidth=0;
+	
 	that.margin = {top: 50, right: 20, bottom: 45, left: 40};
 	that.allowResize=true;
 	that.drawType="scatter";
@@ -24,6 +25,7 @@ chart=function(params){
 	that.display.herit=true;
 	that.display.controls=true;
 	that.filteredID="";
+
 
 	
 	that.parseOptions=function(params){
@@ -62,6 +64,7 @@ chart=function(params){
 				that.curWidth=Math.floor($(window).heght()*.7);
 			}
 		}
+
 		if(params.displayHerit===false){
 			that.display.herit=false;
 		}
@@ -492,6 +495,7 @@ chart=function(params){
 			if(that.curWidth>1200 && that.display.herit){
 				that.heritChartW=200;
 			}
+			
 			
 			that.x = d3.scalePoint().domain(that.filteredStrains).range([0, that.curWidth-Math.floor(that.heritChartW*1.1)]);
 			that.y = d3.scaleLinear().range([that.curHeight, 0]);

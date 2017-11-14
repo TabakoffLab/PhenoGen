@@ -301,6 +301,8 @@ table.tooltipTable TD{
         @media screen and (min-width:1501px){
             div.exprCol{
                 width:46%;
+                height:100%;
+                float:left;
             }
         }
         
