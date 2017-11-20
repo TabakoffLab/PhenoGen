@@ -97,7 +97,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 <script>
     $("#wait1").hide();
 </script>
-<div id="public" style='min-height:750px;'>
+<div id="public" style='min-height:1030px;'>
 <h2>Select the download icon(<img src="<%=imagesDir%>icons/download_g.png" />) to download data from any of the datasets below.  For some data types multiple options may be available. For these types, a window displays that allows you to choose specific files.</h2>
 
 <div style="width:100%;">
