@@ -86,7 +86,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(<span id=\"verSelect\"></span>) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v3.3.5(4/30/2017)";
+var siteVer="PhenoGen v3.4.0(12/9/2017)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -5311,15 +5311,19 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					sIndx=0;
 				}
 				type=txList[0].getAttribute("category")+" - "+txList[0].getAttribute("source");
-				rnaSeqData="<BR><BR>Read Depth Data:<BR><table name=\"items\"class=\"list_base\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;border: solid 1px #000;\"><thead><th><td>BNLx</td><td>SHR</td></th></thead>";
+				/*rnaSeqData="<BR><BR>Read Depth Data:<BR><table name=\"items\"class=\"list_base\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;border: solid 1px #000;\"><thead><th><td>BNLx</td><td>SHR</td></th></thead>";
 				rnaSeqData=rnaSeqData+"<tr><td>Median Read Depth</td><td>"+numberWithCommas(quantList[bIndx].getAttribute("median"))+"</td><td>"+numberWithCommas(quantList[sIndx].getAttribute("median"))+"</td></tr>";
 				rnaSeqData=rnaSeqData+"<tr><td>Mean Read Depth</td><td>"+numberWithCommas(quantList[bIndx].getAttribute("mean"))+"</td><td>"+numberWithCommas(quantList[sIndx].getAttribute("mean"))+"</td></tr>";
 				rnaSeqData=rnaSeqData+"<tr><td>% Coverage</td><td>"+quantList[bIndx].getAttribute("cov")+"</td><td>"+quantList[sIndx].getAttribute("cov")+"</td></tr>";
 				rnaSeqData=rnaSeqData+"<tr><td>Min Read Depth</td><td>"+numberWithCommas(quantList[bIndx].getAttribute("min"))+"</td><td>"+numberWithCommas(quantList[sIndx].getAttribute("min"))+"</td></tr>";
 				rnaSeqData=rnaSeqData+"<tr><td>Max Read Depth</td><td>"+numberWithCommas(quantList[bIndx].getAttribute("max"))+"</td><td>"+numberWithCommas(quantList[sIndx].getAttribute("max"))+"</td></tr>";
-				rnaSeqData=rnaSeqData+"</table>";
+				rnaSeqData=rnaSeqData+"</table>";*/
 			}
-			tooltip="<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;\"></div>ID: "+d.getAttribute("ID")+"<BR>Length: "+(d.getAttribute("stop")-d.getAttribute("start"))+"<BR>Type:"+type+"<BR>Location: "+d.getAttribute("chromosome")+":"+numberWithCommas(d.getAttribute("start"))+"-"+numberWithCommas(d.getAttribute("stop"))+"<BR>Strand: "+strand+rnaSeqData+"<BR>";
+			tooltip="<BR><div id=\"ttSVG\" style=\"background:#FFFFFF;\"></div>ID: "+d.getAttribute("ID");
+			if(that.trackClass.indexOf("ensembl")===-1){
+				tooltip=tooltip+"<BR>PhenoGen ID: "+d.getAttribute("intGeneID");
+			}
+			tooltip=tooltip+"<BR>Length: "+(d.getAttribute("stop")-d.getAttribute("start"))+"<BR>Type:"+type+"<BR>Location: "+d.getAttribute("chromosome")+":"+numberWithCommas(d.getAttribute("start"))+"-"+numberWithCommas(d.getAttribute("stop"))+"<BR>Strand: "+strand+rnaSeqData+"<BR>";
 		}else{ 
 			var gid=d.getAttribute("ID");
 			gid=that.getDisplayID(gid);

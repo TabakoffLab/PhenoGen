@@ -610,19 +610,15 @@ Add report here.
     </div>
     
     <div style="display:none;" id="geneApp">
-    		<!--<div style="text-align:center;">
-                This feature requires Java which will open in a seperate window, when you click the button below.  Java will be automatically detected and directions will be displayed on the next page if there are any issues to correct before proceding.<BR /><BR />
-                
-                <span class="button" style="width:200px;"><a id="probeSetDetailLink1" href="web/GeneCentric/geneApplet.jsp?selectedID=<%=id%>&myOrganism=<%=myOrganism%>&arrayTypeID=<%=arrayTypeID%>&rnaDatasetID=<%=rnaDatasetID%>&panel=<%=panel%>&defaultView=10&genomeVer=<%=genomeVer%>" target="_blank">View Affy Probe Set Details</a></span><BR />       		
-                </div>-->
+                <div id="geneAppsrcCtrl" class="srcCtrl" style="text-align:center;"></div>
                 <div class="help" style="width:100%;display:inline-block;text-align:center;"></div>
                 <div class="exprCol" id="expBrain" style="display:inline-block;">
-                    <div style="width:100%;text-align: center;"><H2>Whole Brain RNA-Seq Expression</h2></div><BR>
+                    <div style="width:100%;text-align: center;"><H2><span id="geneAppTitleb"></span></h2></div><BR>
                     <div id="chartBrain" style="width:98%;"></div>
                     
                 </div>
                 <div class="exprCol" id="expLiver" style="display:inline-block;">
-                    <div style="width:100%;text-align: center;"><H2>Liver RNA-Seq Expression</h2></div><BR>
+                    <div style="width:100%;text-align: center;"><H2><span id="geneAppTitlel"></span></h2></div><BR>
                     <div id="chartLiver" style="width:98%;"></div>
                 </div>
     </div>
@@ -752,16 +748,21 @@ Add report here.
             //},500);
         },200);
         <%@ include file="/javascript/chart.js" %>
-        var bChart=chart({"data":"<%=genURL+"/Brainexpr.json"%>",
-            "selector":"#chartBrain","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
-        "title":"Gene/Transcript Expression","titlePrefix":"Whole Brain"});
-        var lChart=chart({"data":"<%=genURL+"/Liverexpr.json"%>",
-            "selector":"#chartLiver","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
-        "title":"Gene/Transcript Expression","titlePrefix":"Liver"});
-        if($(window).width()<1500){
-            bChart.setWidth("98%");
-            lChart.setWidth("98%");
-        }
+ 
+        setTimeout(function(){
+                var ctrlDiv="geneApp";
+               <%@ include file="include/js_addExprSrcCtrl.jsp" %>
+               var bChart=chart({"data":"<%=genURL+"/Brainexpr.json"%>",
+                   "selector":"#chartBrain","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
+               "title":"Gene/Transcript Expression","titlePrefix":"Whole Brain"});
+               var lChart=chart({"data":"<%=genURL+"/Liverexpr.json"%>",
+                   "selector":"#chartLiver","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
+               "title":"Gene/Transcript Expression","titlePrefix":"Liver"});
+               if($(window).width()<1500){
+                   bChart.setWidth("98%");
+                   lChart.setWidth("98%");
+               }
+        },50);
         //svgList[1].updateLinks();
         $(window).resize(function (){
 				if($(window).width()<1500){
