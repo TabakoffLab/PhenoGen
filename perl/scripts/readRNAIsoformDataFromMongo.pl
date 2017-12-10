@@ -772,7 +772,8 @@ sub readSmallRNADataFromDB{
 				chromosome=>$chr,
 				biotype => "",
 				geneSymbol => "",   ####NEED TO FILL THIS IN WITH AKA ANNOTATION
-				source => ""
+				source => "",
+                                intGeneID => $mergeGeneID
 				};
 			$cntGene++;
 			#print "adding transcript $isoform_id\n";

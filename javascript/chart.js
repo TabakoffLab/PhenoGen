@@ -850,6 +850,7 @@ chart=function(params){
 			that.color= d3.scaleLinear().domain([that.yMin,that.yMax]).range([0,255]);
 			that.xAxis = d3.axisTop(that.x);
 			that.yAxis = d3.axisLeft(that.y);
+			that.svg.select("g#title").remove();
 			that.svg.append("g").attr("id","title").append("text").attr("text-anchor","middle").attr("transform","translate("+(that.curWidth/2)+",0)").text(that.titlePrefix+that.title);
 			that.xAxGUI=that.svg.append("g")
 	    		.attr("class", "x axis")
@@ -1589,6 +1590,21 @@ chart=function(params){
 	that.findIDs=function(trackData,id){
 
 	};
+
+	that.setTitle=function(title){
+		that.title=title;
+	};
+	that.setDisplayHerit=function(bool){
+		that.display.herit=bool;
+	};
+
+	that.setDataURL=function(url){
+		that.dataFile=url;
+		that.reset();
+		that.getData();
+	};
+
+
 
 	//Initial Setup
 	setTimeout(function(){

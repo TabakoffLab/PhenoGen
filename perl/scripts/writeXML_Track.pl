@@ -471,7 +471,7 @@ sub createXMLFile
 	        my %snpHOH=%$snpRef;
 	        my @snpStrain=("BNLX","SHRH","SHRJ","F344");
 	        my $rnaType="Any";
-			my $isoformHOH = readSmallRNADataFromDB($chromosome,$species,$publicID,$panel,$minCoord,$maxCoord,$dsn,$usr,$passwd,1,$rnaType,$tissue,$ver,$genomeVer);
+		my $isoformHOH = readSmallRNADataFromDB($chromosome,$species,$publicID,$panel,$minCoord,$maxCoord,$dsn,$usr,$passwd,1,$rnaType,$tissue,$ver,$genomeVer);
 	                
 	        my %brainHOH=%$isoformHOH;
 	        my $regionSize=$maxCoord-$minCoord;

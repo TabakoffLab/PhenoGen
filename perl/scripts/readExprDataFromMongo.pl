@@ -71,6 +71,7 @@ sub readExprDataFromDB{
 
 		}else{
 			$exprHOH{$obj->{'GENEID'}}{GENE}={};
+			
 			$exprHOH{$obj->{'GENEID'}}{TRXLIST}=[];
 		}
 
@@ -88,7 +89,7 @@ sub readExprDataFromDB{
 		}
 		$tmpH{VALUES}=\@tmpArr;
 
-		if($obj->{'GENEID'} eq $obj->{'TRXID'}){
+		if( $obj->{'TRXID'} == "" || $obj->{'GENEID'} eq $obj->{'TRXID'}){
 			$exprHOH{$obj->{'GENEID'}}{GENE}=\%tmpH;
 		}else{
 			#my $ref=$exprHOH{$obj->{'GENEID'}}{TRXLIST};
