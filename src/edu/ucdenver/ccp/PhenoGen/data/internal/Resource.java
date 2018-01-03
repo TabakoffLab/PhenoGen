@@ -374,6 +374,7 @@ public class Resource {
                 List<Resource> pubResources1 = Arrays.asList(getPublicationResources1());
                 List<Resource> pubResources2 = Arrays.asList(getPublicationResources2());
                 List<Resource> pubResources3 = Arrays.asList(getPublicationResources3());
+                List<Resource> pubResources4 = Arrays.asList(getPublicationResources4());
                 List<Resource> gtfResources = Arrays.asList(getGTFResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
@@ -383,6 +384,7 @@ public class Resource {
                 allResources.addAll(pubResources1);
                 allResources.addAll(pubResources2);
                 allResources.addAll(pubResources3);
+                allResources.addAll(pubResources4);
                 allResources.addAll(gtfResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
@@ -1158,6 +1160,32 @@ public class Resource {
             fileList[1]=new PublicationFile("Module Eigengene Matrix",pubFilePath+"BAT_pravenec_Module_Eigengene_Matrix_8_2017.txt");
             resourceList.add(new Resource(112, "Rat","N/A", "WGCNA Module Data",fileList));
             
+            Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
+            return resourceArray;
+        }
+        public Resource[] getPublicationResources4() {
+            log.debug("in getPublicationResources4");
+            String pubFilePath="/userFiles/public/Publication/kechris/";
+            List<Resource> resourceList = new ArrayList<Resource>();
+                
+            PublicationFile[] fileList = new PublicationFile[15];
+            fileList[0]=new PublicationFile("Fastq Files Part 1",pubFilePath+"reads_smRNA.Stage1.tar.gz");
+            fileList[1]=new PublicationFile("Fastq Files Part 2.1",pubFilePath+"reads_smRNA.Stage2.1.tar.gz");
+            fileList[2]=new PublicationFile("Fastq Files Part 2.2",pubFilePath+"reads_smRNA.Stage2.2.tar.gz");
+            fileList[3]=new PublicationFile("Fastq Files Part 3.1",pubFilePath+"reads_smRNA.Stage3.1.tar.gz");
+            fileList[4]=new PublicationFile("Fastq Files Part 3.2",pubFilePath+"reads_smRNA.Stage3.2.tar.gz");
+            fileList[5]=new PublicationFile("Fastq Files Part 3.3",pubFilePath+"reads_smRNA.Stage3.3.tar.gz");
+            fileList[6]=new PublicationFile("Fastq Files Part 4.1",pubFilePath+"reads_smRNA.Stage4.1.tar.gz");
+            fileList[7]=new PublicationFile("Fastq Files Part 4.2",pubFilePath+"reads_smRNA.Stage4.2.tar.gz");
+            fileList[8]=new PublicationFile("Fastq Files Part 4.3",pubFilePath+"reads_smRNA.Stage4.3.tar.gz");
+            fileList[9]=new PublicationFile("Fastq Files Part 4.4",pubFilePath+"reads_smRNA.Stage4.4.tar.gz");
+            fileList[10]=new PublicationFile("Fastq Files Part 5.1",pubFilePath+"reads_smRNA.Stage5.1.tar.gz");
+            fileList[11]=new PublicationFile("Fastq Files Part 5.2",pubFilePath+"reads_smRNA.Stage5.2.tar.gz");
+            fileList[12]=new PublicationFile("Fastq Files Part 5.3",pubFilePath+"reads_smRNA.Stage5.3.tar.gz");
+            fileList[13]=new PublicationFile("Fastq Files Part 5.4",pubFilePath+"reads_smRNA.Stage5.4.tar.gz");
+            fileList[14]=new PublicationFile("Fastq Files Part 5.5",pubFilePath+"reads_smRNA.Stage5.5.tar.gz");
+            resourceList.add(new Resource(150, "Mouse", "N/A","Fastq Files",fileList));
+
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
         }
