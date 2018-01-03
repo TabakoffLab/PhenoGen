@@ -31,6 +31,7 @@
         Resource[] myPublicationResources1 = myResource.getPublicationResources1();
         Resource[] myPublicationResources2 = myResource.getPublicationResources2();
         Resource[] myPublicationResources3 = myResource.getPublicationResources3();
+        Resource[] myPublicationResources4 = myResource.getPublicationResources4();
         Resource[] myGTFResources=myResource.getGTFResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
@@ -341,7 +342,29 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 	<form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
-		name="resources">                        
+		name="resources">    
+          <div class="title">Data Files for "Toward effective, functional quantification of miRNAs by small RNA-seq" by Pamela Russell et al. (submitted, NAR.)
+               </div>
+		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
+                        <thead>
+                            <tr class="col_title">
+					<th>Data</th>
+                                        <TH>Files</TH>
+                            </tr>
+			</thead>
+			<tbody>
+			<% for (Resource resource: myPublicationResources4) { %> 
+				<tr id="<%=resource.getID()%>">  
+                                    
+                                    <TD><%=resource.getDescription()%></TD>
+                                    <td class="actionIcons">
+						<div class="linkedImg download" type="pub"><div>
+                                    </td>
+				</tr> 
+			<% } %>
+			</tbody>
+		</table>
+                        <BR><BR>
         <div class="title">Data Files for "Systems Genetic Analysis of Brown Adipose Tissue Function" by Michal Pravenec, Laura Saba, Vaclav Zidek, 
             Vladimir Landa, Petr Mlejnek, Jan Silhavy, Miroslava Simakova, Hynak Strnad, Jaroslava Trnovska, Vojtech Skop, Martina Huttl, Irena Markova,
             Olena Oliyarnyk, Hana Malinska, Ludmila Kazdova, Harry Smith, and Boris Tabakoff. (Nov 10, 2017, Physiol Genomics.)<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/29127223">Abstract</a>
