@@ -388,7 +388,7 @@ function addControls(){
 					}
 				 	var url=http+urlprefix+"/tmpData/download/"+data2.imageFile;
 				 	var region="vestal";
-				 	var filename = region+"_"+datePart+".png";
+				 	var filename = region+"_"+datePart+".pdf";
 				 	var xhr = new XMLHttpRequest(); 
 				   	xhr.open('GET', url);
 				   	xhr.responseType = 'blob';
