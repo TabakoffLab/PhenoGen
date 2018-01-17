@@ -373,7 +373,7 @@ function addControls(){
 				   ".link{ stroke: #000;stroke-opacity: .9;}"+
 				   ".link.predicted {stroke-dasharray: 0,2 1;}</style>"+content+"\n";
 		   $.ajax({
-				url: contextRoot+"web/GeneCentric/saveBrowserImage.jsp",
+				url: contextRoot+"web/GeneCentric/saveBrowserImagePDF.jsp",
 				type: 'POST',
 				contentType: 'text/html',
 				data: content,
