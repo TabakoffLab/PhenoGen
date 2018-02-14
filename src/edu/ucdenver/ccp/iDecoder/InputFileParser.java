@@ -57,6 +57,8 @@ public abstract class InputFileParser {
     protected static final String SWISS_PROT_ID_TYPE = "SwissProt ID";
     protected static final String UNIGENE_ID_TYPE = "UniGene ID";
     protected static final String FULL_NAME_TYPE = "Full Name";
+    protected static final String PHENOGEN_TYPE = "PhenoGen ID";
+    
     
 
     // infoWriter writes annotation information about the primary IDs,
