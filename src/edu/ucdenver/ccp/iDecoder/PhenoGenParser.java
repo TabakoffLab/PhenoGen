@@ -89,19 +89,24 @@ public class PhenoGenParser extends InputFileParser {
                 strStrand="-";
             }
             String mapLocation=start+"-"+stop+" ("+strStrand+")";
-            String[] annotation=columns[5].trim().split(INPUT_LIST_DELIM);
-            
-
             writeToInfoFile(TAXON_ID, PHENOGEN_TYPE, id,chr, mapLocation);
             
-            for(int i=0;i<annotation.length;i++){
-                if(annotation[i].startsWith("PRN6") || annotation[i].startsWith("PRN5")
-                        || annotation[i].startsWith("PMM10")){ //Linked Phenogen ID
-                    writeToLinksFile(PHENOGEN_TYPE, id,PHENOGEN_TYPE,annotation[i]);
-                }else if(annotation[i].startsWith("ENS")){ //linked Ensembl ID
-                    writeToLinksFile(PHENOGEN_TYPE, id,ENSEMBL_ID_TYPE,annotation[i]);
-                }else{//Gene Symbol
-                    writeToLinksFile(PHENOGEN_TYPE, id,GENE_SYMBOL_TYPE,annotation[i]);
+            
+            if(columns.length>5){
+                String[] annotation=columns[5].trim().split(INPUT_LIST_DELIM);
+
+
+
+
+                for(int i=0;i<annotation.length;i++){
+                    if(annotation[i].startsWith("PRN6") || annotation[i].startsWith("PRN5")
+                            || annotation[i].startsWith("PMM10")){ //Linked Phenogen ID
+                        writeToLinksFile(PHENOGEN_TYPE, id,PHENOGEN_TYPE,annotation[i]);
+                    }else if(annotation[i].startsWith("ENS")){ //linked Ensembl ID
+                        writeToLinksFile(PHENOGEN_TYPE, id,ENSEMBL_ID_TYPE,annotation[i]);
+                    }else{//Gene Symbol
+                        writeToLinksFile(PHENOGEN_TYPE, id,GENE_SYMBOL_TYPE,annotation[i]);
+                    }
                 }
             }
             //Write links to other annotation ids

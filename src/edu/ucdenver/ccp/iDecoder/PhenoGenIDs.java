@@ -28,9 +28,10 @@ public class PhenoGenIDs{
   	
 
 	String query = "select gene_id,isoform_id,c.name,trstart,trstop,strand,rta.annotation "+
-                "from rna_transcripts rt, CHROMOSOMES c, RNA_TRANSCRIPTS_ANNOT rta "+
-                "where rt.RNA_TRANSCRIPT_ID=rta.RNA_TRANSCRIPT_ID and rta.SOURCE_ID=13 "+
-                "and rt.CHROMOSOME_ID=c.CHROMOSOME_ID and RNA_DATASET_ID="+datasetID; 
+                "from rna_transcripts rt "+
+                "inner join CHROMOSOMES c on c.CHROMOSOME_ID=rt.CHROMOSOME_ID "+
+                "left outer join RNA_TRANSCRIPTS_ANNOT rta on rta.RNA_TRANSCRIPT_ID=rt.RNA_TRANSCRIPT_ID and rta.SOURCE_ID=13 "+
+                "where rt.RNA_DATASET_ID="+datasetID; 
  
 	log.debug("in getIDs");
 	PreparedStatement pstmt = null;
@@ -140,10 +141,12 @@ class GeneID{
         this.chr=chr;
         this.annotation=new ArrayList<String>();
         //parse Annotation
-        String[] tmpA=annotation.split(":");
-        for(int i=0;i<tmpA.length;i++){
-            if( tmpA[i].startsWith("ENSRNOG") || ! tmpA[i].startsWith("ENSRNOT") ){
-                this.annotation.add(tmpA[i]);
+        if(annotation!=null){
+            String[] tmpA=annotation.split(":");
+            for(int i=0;i<tmpA.length;i++){
+                if( tmpA[i].startsWith("ENSRNOG") || ! tmpA[i].startsWith("ENSRNOT") ){
+                    this.annotation.add(tmpA[i]);
+                }
             }
         }
         trxHM=new HashMap<String,TransID>();
@@ -223,10 +226,13 @@ class TransID{
         this.stop=stop;
         this.strand=strand;
         this.annot=gene.getGeneID();
-        String[] split=annotation.split(":");
-        for(int i=0;i<split.length;i++){
-            if(split[i].startsWith("ENSRNOT")){
-                this.annot+=","+split[i];
+        if(annotation!=null){
+            String[] split=annotation.split(":");
+
+            for(int i=0;i<split.length;i++){
+                if(split[i].startsWith("ENSRNOT")){
+                    this.annot+=","+split[i];
+                }
             }
         }
     }
