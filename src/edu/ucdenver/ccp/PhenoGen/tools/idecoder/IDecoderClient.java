@@ -902,9 +902,9 @@ public class IDecoderClient {
         	while (rs.next()){
             		Identifier foundID = new Identifier(rs.getString(4)); 
                         //log.debug("query1: org:"+foundID.getIdentifier()+":"+foundID.getIdentifierTypeName()+":"+foundID.getOrganism());
-            		//Identifier foundID = new Identifier(rs.getInt(1), rs.getString(2), 
-			//	rs.getLong(3), rs.getString(4), rs.getString(5),
-			//	rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), "");
+            		/*Identifier foundID = new Identifier(rs.getInt(1), rs.getString(2), 
+				rs.getLong(3), rs.getString(4), rs.getString(5),
+				rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), "");*/
 			resultsHashMap.put(foundID, new LinkedHashSet<Identifier>());
 			//linkGraph.put(foundID, new LinkedHashSet<IdentifierLink>());
 		}
