@@ -86,7 +86,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(<span id=\"verSelect\"></span>) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v3.4.0(12/9/2017)";
+var siteVer="PhenoGen v3.4.1(2/16/2018)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -376,7 +376,7 @@ function mup() {
 function mmove(){
 	var i,p,minx,maxx,dist,scaleDist,start,width;
 	for (i=0; i<svgList.length; i++){
-		if(svgList[i]!==null && svgList[i].overSettings===0){
+		if(svgList[i] && svgList[i].overSettings && svgList[i].overSettings===0){
 			if (!isNaN(svgList[i].downx)) {
 	          p = d3.mouse(svgList[i].vis.node()), rupx = p[0];
 	          if (rupx !== 0) {
@@ -783,10 +783,12 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
     }else{
         that.allowSelectGenomeVer=allowSelectGenomeVer;
     }
-    try{
-		history[levelNumber].push(tmp);
-	}catch(err){
-		Rollbar.error("history["+levelNumber+"] not defined");
+    if(levelNumber<20){
+	    try{
+			history[levelNumber].push(tmp);
+		}catch(err){
+			Rollbar.error("history["+levelNumber+"] not defined");
+		}
 	}
 
 	that.get=function(attr){return that[attr];};
@@ -5800,7 +5802,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 							svgViewIDList[newLevel]=that.gsvg.currentView.ViewID;
 						}else{
 							svgViewIDList[newLevel]=defaultView;
-							Rollbar.debug("that.gsvg.currentView is undefined");
+							//Rollbar.debug("that.gsvg.currentView is undefined");
 						}
 					}
 					var newSvg= GenomeSVG("div#selectedImage",that.gsvg.width,min,max,newLevel,displayID,"transcript");

@@ -12,6 +12,10 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2>PhenoGen v3.4.1 2/16/2018</H2>
+                        <div style="margin-left:5px;">
+                            <span style=" font-weight: bold;">The Genome/Transcriptome Data Browser can now look up genes by either their gene or transcript PhenoGen ID.
+                        </div>
                         <H2>NIDA Genetics Consortium Meeting Poster</H2>
                         <div style="margin-left:5px;">
                             <span style=" font-weight: bold;"><a href="<%=webDir%>overview/NIDA_Jan_2018.pdf">NIDA Meeting Poster</a> - </span> 
@@ -21,8 +25,6 @@
                         <H2>PhenoGen v3.4 12/10/2017</H2>
                         <div style="margin-left:5px;">
                             <span style=" font-weight: bold;">Recombinant Inbred Small RNA - </span> Added expression data for small RNA features across RI Panel in Whole Brain and Liver. 
-                    
-                            
                         </div>
                         <H2>PhenoGen v3.3 4/30/2017</H2>
                         <div style="margin-left:5px;">

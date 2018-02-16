@@ -25,6 +25,7 @@ public class ParserRunner {
         runner.runNCBIParser();
         runner.runRGDParser();
         runner.runSwissProtParser();
+        runner.runPhenogenParser();
 
     }
 
@@ -88,6 +89,13 @@ public class ParserRunner {
         long startTime = System.currentTimeMillis();
         new SwissProtParser(outputDirectory).processAllInputFiles();
         System.out.println("SwissProt total\t"
+                + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
+    }
+    
+    private void runPhenogenParser() throws IOException {
+        long startTime = System.currentTimeMillis();
+        new PhenoGenParser(outputDirectory).processAllInputFiles();
+        System.out.println("Phenogen total\t"
                 + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
     }
 }

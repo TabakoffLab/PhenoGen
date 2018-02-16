@@ -29,6 +29,16 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
+    <div class="whats_new version"><p><h3>Version: v3.4.1</h3><BR /> Updated:2/16/2018</p></div>
+       <ul>
+                                    <li><span class="highlight-dark">PhenoGen IDs</span>
+                                        <UL>
+                                            <LI>The Genome/Transcriptome Data Browser can now look up genes by either their gene or transcript PhenoGen ID.</LI>
+                                            <LI>Updated External Database IDs <a href=""></a></LI>
+                                        </UL>
+                                    </li>
+        </ul>
+        <hr/>
     <div class="whats_new version"><p><h3>Version: v3.4</h3><BR /> Updated:12/10/2017</p></div>
        <ul>
                                     <li><span class="highlight-dark">Recombinant Inbred Small RNA</span>
