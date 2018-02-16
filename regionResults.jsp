@@ -169,7 +169,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 
             <script src="javascript/GenomeDataBrowser2.6.10.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.6.0.js" type="text/javascript"></script>
-            <script src="javascript/GenomeViewMenu2.6.0.js" type="text/javascript"></script>
+            <script src="javascript/GenomeViewMenu2.6.1.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.6.0.js" type="text/javascript"></script>
             <script src="javascript/wgcnaBrowser1.3.5.js" type="text/javascript"></script>
 
@@ -335,7 +335,10 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
         <%@ include file="/web/GeneCentric/include/js_addExprSrcCtrl.jsp" %>
         $( document ).ready(function() {
             var gs;
-            setTimeout(function(){gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");displayHelpFirstTime();},10);
+            setTimeout(function(){
+                gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
+                displayHelpFirstTime();
+             },20);
             var pe;
             setTimeout(function(){
                 pe=PhenogenExpr({

@@ -248,6 +248,7 @@ function ViewMenu(level){
 			ga('send','event','BrowserViews','applySelectedView');
 		}
 	};
+	
 	that.setupImage=function(settingString,d){
 			svgList[that.level].removeAllTracks();
 			svgList[that.level].currentView=d;

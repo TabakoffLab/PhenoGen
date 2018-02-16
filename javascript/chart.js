@@ -1256,7 +1256,12 @@ chart=function(params){
 	    			.attr("class","bar")
 		      		.attr("x", function(d) { return 0; })
 		      		.attr("y", function(d) { return that.geneScale(d.id)+that.topMarg+barMarg+10; })
-		      		.attr("width", function(d) { return that.heritScale(d.herit); })
+		      		.attr("width", function(d) { if(d && d.herit) {
+		      											return that.heritScale(d.herit); 
+		      										}else{ 
+		      											return 0;
+		      										} 
+		      									})
 		      		.attr("height", function(d) { return itemH-(2*barMarg); })
 		      		.style("fill", function(d) { 
 		      			color=d3.rgb(0,0,175);
@@ -1314,7 +1319,12 @@ chart=function(params){
 	    			.attr("class","bar")
 		      		.attr("x", function(d) { return 0; })
 		      		.attr("y", function(d) { return that.yH(d.id)+that.topMarg+barMarg+15; })
-		      		.attr("width", function(d) { return that.heritScale(d.herit); })
+		      		.attr("width", function(d) { if(d && d.herit) {
+		      											return that.heritScale(d.herit); 
+		      										}else{ 
+		      											return 0;
+		      										}
+		      									})
 		      		.attr("height", function(d) { return itemH-(2*barMarg); })
 		      		.style("fill", function(d) { 
 		      			color=d3.rgb(0,0,175);
@@ -1335,7 +1345,8 @@ chart=function(params){
 	    	//console.log(heritDiv);
 	    	//if(heritDiv && heritDiv.size()>0){
 	    		console.log(that.filteredGeneIDs);
-	    		heritDiv.html(that.filteredGeneIDs[0].herit);
+	    		heritDiv.html("");
+	    		//heritDiv.html(that.filteredGeneIDs[0].herit);
 	    	//}
 	    }
 	};
