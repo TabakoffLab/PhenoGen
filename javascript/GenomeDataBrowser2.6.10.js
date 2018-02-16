@@ -86,7 +86,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(<span id=\"verSelect\"></span>) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v3.4.0(12/9/2017)";
+var siteVer="PhenoGen v3.4.1(2/19/2018)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -376,7 +376,7 @@ function mup() {
 function mmove(){
 	var i,p,minx,maxx,dist,scaleDist,start,width;
 	for (i=0; i<svgList.length; i++){
-		if(svgList[i]!==null && svgList[i].overSettings===0){
+		if(svgList[i] && svgList[i].overSettings && svgList[i].overSettings===0){
 			if (!isNaN(svgList[i].downx)) {
 	          p = d3.mouse(svgList[i].vis.node()), rupx = p[0];
 	          if (rupx !== 0) {
