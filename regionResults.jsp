@@ -349,11 +349,11 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
             //svgList[1].updateLinks();
             $(window).resize(function (){
                                     if($(window).width()<1500){
-                                        rbChart.setWidth("98%");
-                                        rlChart.setWidth("98%");
+                                        pe.rbChart.setWidth("98%");
+                                        pe.rlChart.setWidth("98%");
                                     }else{
-                                        rbChart.setWidth("45%");
-                                        rlChart.setWidth("45%");
+                                        pe.rbChart.setWidth("45%");
+                                        pe.rlChart.setWidth("45%");
                                     }
                             });
         });
