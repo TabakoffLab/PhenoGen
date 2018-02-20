@@ -80,13 +80,17 @@
     	        
 
     	<!--<div id="primary-content">-->
-        <div id="welcome" style="height:1440px; width:996px;">
+        <div id="welcome" style="height:1690px; width:996px;">
 			<h1 id="index" class="homePage">Welcome to PhenoGen Informatics</h1>    
             <H2> The site for quantitative genetics of the transcriptome.</h2>
             <div>
             	<%@ include file="/web/common/indexGraph.jsp" %>
            </div>
-             <div id="ack">
+            <div id="survey" style="float:left;display:inline-block;width:600px;">
+                <script>(function(t,e,s,n){var o,a,c;t.SMCX=t.SMCX||[],e.getElementById(n)||(o=e.getElementsByTagName(s),a=o[o.length-1],c=e.createElement(s),c.type="text/javascript",c.async=!0,c.id=n,c.src=["https:"===location.protocol?"https://":"http://","widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdwCxF5qGs6PKZhZvk_2FUQJnw5h9X4UcSXH32_2BrHvLUSRg.js"].join(""),a.parentNode.insertBefore(c,a))})(window,document,"script","smcx-sdk");</script>
+                <a style="font: 12px Helvetica, sans-serif; color: #999; text-decoration: none;" href=https://www.surveymonkey.com> Create your own user feedback survey </a>
+            </div>
+             <div style="float:right;display:inline-block;width:350px;" id="ack">
                  
                        <h3 style="margin:10px;">Acknowledgements</h3>
                         <H4 style="margin:10px;">Funding</H4>
