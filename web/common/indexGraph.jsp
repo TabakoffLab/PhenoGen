@@ -701,7 +701,7 @@ div#announcement a:hover, div#announcementSmall a:hover {
                         var timeoutHandle=-1;
 
                         //start automatic scrolling of features
-                        startRunningSelection(15000);
+                        startRunningSelection(25000);
                         function startRunningSelection(delay){
                                 if(timeoutHandle==-1 ){
                                         runSelection(delay);
