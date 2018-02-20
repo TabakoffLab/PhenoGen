@@ -12,9 +12,13 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2> REST API Survey 2/20/2018</H2>
+                        <div style="margin-left:5px;">
+                            Please help us prioritize effort on a REST API to provide access to data on Phenogen.  Take the 1 question survey <a href="#survey">below</a>.
+                        </div>
                         <H2>PhenoGen v3.4.1 2/16/2018</H2>
                         <div style="margin-left:5px;">
-                            <span style=" font-weight: bold;">The Genome/Transcriptome Data Browser can now look up genes by either their gene or transcript PhenoGen ID.
+                            The Genome/Transcriptome Data Browser can now look up genes by either their gene or transcript PhenoGen ID.
                         </div>
                         <H2>NIDA Genetics Consortium Meeting Poster</H2>
                         <div style="margin-left:5px;">
