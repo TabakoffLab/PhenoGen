@@ -476,29 +476,42 @@
         },200);
         
         <%@ include file="/javascript/chart.js" %>
- 
+        <%@ include file="include/js_addExprSrcCtrl.jsp" %>
+        var peSGR;
+        //setTimeout(function(){
+        //       var bChart=chart({"data":"<%=genURL+"/Brain_sm_expr.json"%>",
+        //           "selector":"#chartBrain","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
+        //       "title":"Gene/Transcript Expression","titlePrefix":"Whole Brain"});
+        //       var lChart=chart({"data":"<%=genURL+"/Liver_sm_expr.json"%>",
+        //           "selector":"#chartLiver","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
+        //       "title":"Gene/Transcript Expression","titlePrefix":"Liver"});
+        //       if($(window).width()<1500){
+        //           bChart.setWidth("98%");
+        //           lChart.setWidth("98%");
+        //       }
+        //},50);
         setTimeout(function(){
-                var ctrlDiv="geneApp";
-               <%@ include file="include/js_addExprSrcCtrl.jsp" %>
-               var bChart=chart({"data":"<%=genURL+"/Brain_sm_expr.json"%>",
-                   "selector":"#chartBrain","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
-               "title":"Gene/Transcript Expression","titlePrefix":"Whole Brain"});
-               var lChart=chart({"data":"<%=genURL+"/Liver_sm_expr.json"%>",
-                   "selector":"#chartLiver","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
-               "title":"Gene/Transcript Expression","titlePrefix":"Liver"});
-               if($(window).width()<1500){
-                   bChart.setWidth("98%");
-                   lChart.setWidth("98%");
+                peSGR=PhenogenExpr({
+                    "dataPrefix":"<%=genURL%>",
+                    "div":"geneApp",
+                    "genomeBrowser":gs,
+                    "type":"scatter",
+                    "featureType":"Small",
+                    "displayCtrl":false
+                });
+                if($(window).width()<1500){
+                   peSGR.bChart.setWidth("98%");
+                   peSGR.lChart.setWidth("98%");
                }
-        },50);
+            },5000);
         //svgList[1].updateLinks();
         $(window).resize(function (){
 				if($(window).width()<1500){
-                                    bChart.setWidth("98%");
-                                    lChart.setWidth("98%");
+                                    peSGR.bChart.setWidth("98%");
+                                    peSGR.lChart.setWidth("98%");
                                 }else{
-                                    bChart.setWidth("46%");
-                                    lChart.setWidth("46%");
+                                    peSGR.bChart.setWidth("46%");
+                                    peSGR.lChart.setWidth("46%");
                                 }
 			});
 </script>

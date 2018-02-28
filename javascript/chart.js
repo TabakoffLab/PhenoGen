@@ -7,6 +7,7 @@ chart=function(params){
 	that.widthPerc=0.90;
 	that.curHeight=0;
 	that.curWidth=0;
+	that.maxScatterHeight=700;
 	
 	that.margin = {top: 50, right: 20, bottom: 45, left: 40};
 	that.allowResize=true;
@@ -374,7 +375,12 @@ chart=function(params){
 		if(that.allowResize){
 			that.curHeight=Math.floor(($(window).height()*that.heightPerc)-that.margin.top-that.margin.bottom);
 			that.curWidth=Math.floor(($(window).width()*that.widthPerc)-that.margin.left-that.margin.right);
-			//console.log("height:"+that.curHeight);
+			if(that.drawType==="scatter" && that.curHeight>that.maxScatterHeight){
+				that.curHeight=that.maxScatterHeight;
+			}
+			console.log("calcSize() win height:"+$(window).height());
+			console.log("calcSize() win width:"+$(window).width());
+			console.log("chart height:"+that.curHeight);
 		}else{
 			if(that.curWidth===0 && that.curHeight===0){
 				that.curHeight=Math.floor(($(window).height()*that.heightPerc)-that.margin.top-that.margin.bottom);
@@ -412,9 +418,9 @@ chart=function(params){
 	};
 	that.draw=function(){
 		that.filter();
-		if(that.drawType=="scatter"){
+		if(that.drawType==="scatter"){
 			that.drawScatterLine();
-		}else if(that.drawType=="heatmap"){
+		}else if(that.drawType==="heatmap"){
 			that.drawHeatMap();
 		}
 	};
