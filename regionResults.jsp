@@ -233,12 +233,12 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
                <div class="help" style="width:100%;display:inline-block;text-align:center;"></div>
                 <div class="exprCol" id="expRegionBrain" style="display:inline-block;">
                     <div style="width:100%;text-align: center;"><H2><span id="regionExprTitleb"></span></h2></div><BR>
-                    <div id="chartRegionBrain" style="width:98%;"></div>
+                    <div id="chartBrainregionExpr" style="width:98%;"></div>
                     
                 </div>
                 <div class="exprCol" id="expRegionLiver" style="display:inline-block;">
                     <div style="width:100%;text-align: center;"><H2><span id="regionExprTitlel"></span></h2></div><BR>
-                    <div id="chartRegionLiver" style="width:98%;"></div>
+                    <div id="chartLiverregionExpr" style="width:98%;"></div>
                 </div>
           </div>
     </div><!--collapsableReport end-->
@@ -333,8 +333,8 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 	
 	<%@ include file="/javascript/chart.js" %>
         <%@ include file="/web/GeneCentric/include/js_addExprSrcCtrl.jsp" %>
+        var gs;
         $( document ).ready(function() {
-            var gs;
             setTimeout(function(){
                 gs=GenomeSVG(".ucscImage",$(window).width()-25,minCoord,maxCoord,0,chr,"gene");
                 displayHelpFirstTime();
@@ -343,19 +343,25 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
             setTimeout(function(){
                 pe=PhenogenExpr({
                     "div":"regionExpr",
-                    "genomeBrowser":gs
+                    "genomeBrowser":gs,
+                    "type":"heatmap",
+                    "featureType":"Long"
                 });
+                if($(window).width()<1500){
+                   pe.bChart.setWidth("98%");
+                   pe.lChart.setWidth("98%");
+               }
             },5000);
             //svgList[1].updateLinks();
             $(window).resize(function (){
-                                    if($(window).width()<1500){
-                                        pe.rbChart.setWidth("98%");
-                                        pe.rlChart.setWidth("98%");
-                                    }else{
-                                        pe.rbChart.setWidth("45%");
-                                        pe.rlChart.setWidth("45%");
-                                    }
-                            });
+                    if($(window).width()<1500){
+                        pe.rbChart.setWidth("98%");
+                        pe.rlChart.setWidth("98%");
+                    }else{
+                        pe.rbChart.setWidth("45%");
+                        pe.rlChart.setWidth("45%");
+                    }
+            });
         });
 </script>
 
