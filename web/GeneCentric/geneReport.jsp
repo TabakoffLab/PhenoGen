@@ -614,12 +614,12 @@ Add report here.
                 <div class="help" style="width:100%;display:inline-block;text-align:center;"></div>
                 <div class="exprCol" id="expBrain" style="display:inline-block;">
                     <div style="width:100%;text-align: center;"><H2><span id="geneAppTitleb"></span></h2></div><BR>
-                    <div id="chartBrain" style="width:98%;"></div>
+                    <div id="chartBraingeneApp" style="width:98%;"></div>
                     
                 </div>
                 <div class="exprCol" id="expLiver" style="display:inline-block;">
                     <div style="width:100%;text-align: center;"><H2><span id="geneAppTitlel"></span></h2></div><BR>
-                    <div id="chartLiver" style="width:98%;"></div>
+                    <div id="chartLivergeneApp" style="width:98%;"></div>
                 </div>
     </div>
    	
@@ -748,30 +748,31 @@ Add report here.
             //},500);
         },200);
         <%@ include file="/javascript/chart.js" %>
- 
+        <%@ include file="include/js_addExprSrcCtrl.jsp" %>
+        var peGR;
         setTimeout(function(){
-                var ctrlDiv="geneApp";
-               <%@ include file="include/js_addExprSrcCtrl.jsp" %>
-               var bChart=chart({"data":"<%=genURL+"/Brainexpr.json"%>",
-                   "selector":"#chartBrain","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
-               "title":"Gene/Transcript Expression","titlePrefix":"Whole Brain"});
-               var lChart=chart({"data":"<%=genURL+"/Liverexpr.json"%>",
-                   "selector":"#chartLiver","allowResize":true,"type":"scatter","width":"46%","height":"500","displayHerit":true,
-               "title":"Gene/Transcript Expression","titlePrefix":"Liver"});
-               if($(window).width()<1500){
-                   bChart.setWidth("98%");
-                   lChart.setWidth("98%");
+                peGR=PhenogenExpr({
+                    "dataPrefix":"<%=genURL%>",
+                    "div":"geneApp",
+                    "genomeBrowser":gs,
+                    "type":"scatter",
+                    "featureType":"Long",
+                    "displayCtrl":false
+                });
+                if($(window).width()<1500){
+                   peGR.bChart.setWidth("98%");
+                   peGR.lChart.setWidth("98%");
                }
-        },50);
+            },5000);
         //svgList[1].updateLinks();
         $(window).resize(function (){
-				if($(window).width()<1500){
-                                    bChart.setWidth("98%");
-                                    lChart.setWidth("98%");
-                                }else{
-                                    bChart.setWidth("46%");
-                                    lChart.setWidth("46%");
-                                }
-			});
+            if($(window).width()<1500){
+                peGR.bChart.setWidth("98%");
+                peGR.lChart.setWidth("98%");
+            }else{
+                peGR.bChart.setWidth("46%");
+                peGR.lChart.setWidth("46%");
+            }
+        });
 </script>
 

@@ -314,7 +314,7 @@ function mup() {
 	var i=0,p,start,width,minx,maxx;
 	for (i=0; i<svgList.length; i++){
 		if(svgList[i]!==null){
-			if(svgList[i].overSettings==0 &&(!isNaN(svgList[i].downx) || !isNaN(svgList[i].downPanx)) ){
+			if( (!svgList[i].overSettings || svgList[i].overSettings==0) && (!isNaN(svgList[i].downx) || !isNaN(svgList[i].downPanx)) ){
 				if(i===0){
 					updatePage(svgList[i]);
 				}
@@ -331,7 +331,7 @@ function mup() {
 					tmp.stop=svgList[i].xScale.domain()[1];
 					history[i].push(tmp);
 				}
-			}else if(svgList[i].overSettings==0 &&!isNaN(svgList[i].downZoomx)){
+			}else if( (!svgList[i].overSettings || svgList[i].overSettings==0) &&!isNaN(svgList[i].downZoomx)){
 				start=svgList[i].downZoomx;
 				p = d3.mouse(svgList[i].vis.node());
 				svgList[i].downZoomxEnd=p[0];
@@ -376,7 +376,7 @@ function mup() {
 function mmove(){
 	var i,p,minx,maxx,dist,scaleDist,start,width;
 	for (i=0; i<svgList.length; i++){
-		if(svgList[i] && svgList[i].overSettings && svgList[i].overSettings===0){
+		if(svgList[i] && (!svgList[i].overSettings || svgList[i].overSettings===0)){
 			if (!isNaN(svgList[i].downx)) {
 	          p = d3.mouse(svgList[i].vis.node()), rupx = p[0];
 	          if (rupx !== 0) {
