@@ -1,3 +1,9 @@
+<%String contextPath=request.getContextPath();
+    log.debug("contextPath:"+contextPath+":");
+    if(contextPath.startsWith("//")){
+        contextPath=contextPath.substring(1);
+    }
+    %>
 <!DOCTYPE html>
 <html>
   <head>
@@ -11,6 +17,6 @@
     <%}%>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type = "text/javascript" >
-        var contextPath = "<%=request.getContextPath()%>";
+        var contextPath = "<%=contextPath%>";
     </script>
 

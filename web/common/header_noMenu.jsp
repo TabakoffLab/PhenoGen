@@ -2,7 +2,7 @@
 
 	<body class="noPrint">
     <div id="page_header">
-    <div id="header_title"><a href="<%=request.getContextPath()%>">PhenoGen Informatics</a></div>
+    <div id="header_title"><a href="<%=contextPath%>">PhenoGen Informatics</a></div>
   </div> <!-- page_header -->
 		
 		<div id="body_wrapper_plain">

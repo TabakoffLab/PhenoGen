@@ -6,7 +6,7 @@
        
 		<div id="page_header_wide">
                     <div id="header_title" style="width:100%;">
-                    <a href="<%=request.getContextPath()%>">PhenoGen Informatics</a>
+                    <a href="<%=contextPath%>">PhenoGen Informatics</a>
                     <div style=" font-size:12px;">The site for quantitative genetics of the transcriptome.</div>
                     <div class="header_status">
                         <div class="search" style="width:350px;float:right;position:relative;top:-74px;">
