@@ -387,11 +387,7 @@
 	
 	log.debug("HELP URL = "+helpFileURL);
 	//response.sendRedirect(fileNameHelpURL);
-	%><!-- <div align="right"><a href="javascript:window.close()">Close</a></div>--> <%
-	%><!--<jsp:include page="<%=fileNameHelpURL%>" flush="true"/>--><%
-	%><!-- <center><a href="javascript:window.close()">Close</a></center><BR><BR>--> <%
-	 
-%>
+	%>
 		
 		
 
