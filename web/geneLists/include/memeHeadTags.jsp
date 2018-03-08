@@ -5,8 +5,8 @@
     <title>PhenoGen <%if(pageTitle!=null && !pageTitle.equals("")){%>- <%=pageTitle%> <%}%></title>
     <meta http-equiv="expires" content="<%= new java.util.Date()%>">
     <meta http-equiv="Cache-Control" content="no-cache">
-    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/base.min.css" type="text/css" media="screen">
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/main.min.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="<%=contextPath%>/css/base.min.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="<%=contextPath%>/css/main.min.css" type="text/css" media="screen">
     
 
 	<%@ include file="/web/common/cssLinks.jsp" %>

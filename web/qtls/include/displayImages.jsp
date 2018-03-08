@@ -17,7 +17,7 @@
 		//log.debug("imageFile = "+imageFile);
 		if (imageFile.exists()) {
 			//log.debug("imageFile exists ");
-			%><img src="<%=request.getContextPath()%><%=imagesPath%><%=imageFileNames[i]%>" height="<%=imageHeight%>" width="<%=imageWidth%>" alt="<%=imageFileNames[i]%>"><%
+			%><img src="<%=contextPath%><%=imagesPath%><%=imageFileNames[i]%>" height="<%=imageHeight%>" width="<%=imageWidth%>" alt="<%=imageFileNames[i]%>"><%
 		} else {
 			log.debug("imageFile does not exist");
 		}

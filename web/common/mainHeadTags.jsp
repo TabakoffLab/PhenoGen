@@ -1,9 +1,3 @@
-<%String contextPath=request.getContextPath();
-    log.debug("contextPath:"+contextPath+":");
-    if(contextPath.startsWith("//")){
-        contextPath=contextPath.substring(1);
-    }
-    %>
 <!DOCTYPE html>
 <html>
   <head>

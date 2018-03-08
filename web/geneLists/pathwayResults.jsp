@@ -151,7 +151,7 @@
 			</tbody>
 		</table>
 
-        <input type="hidden" name="pathwayPlotUrl" id="pathwayPlotUrl" value="<%=request.getContextPath()%><%=relativePath%><%=plotFileName%>"/>
+        <input type="hidden" name="pathwayPlotUrl" id="pathwayPlotUrl" value="<%=contextPath%><%=relativePath%><%=plotFileName%>"/>
         	<form   method="POST"
                 	action="pathwayResults.jsp"
 			name="pathwayResults"

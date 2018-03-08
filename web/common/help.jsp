@@ -465,7 +465,7 @@
 		//fileName="PhenoGen_Overview_Left.htm#CSHID=Overview.htm|StartTopic=Content%2FOverview.htm|SkinName=PhenoGen";
 	}
 	//fileName="/helpdocs/Content/" + fileName;
-	fileName=request.getContextPath()+"/helpdocs/PhenoGen_Overview_CSH.htm#"+fileName;
+	fileName=contextPath+"/helpdocs/PhenoGen_Overview_CSH.htm#"+fileName;
 	
 	log.debug("fileName = "+fileName);
 	response.sendRedirect(fileName);
