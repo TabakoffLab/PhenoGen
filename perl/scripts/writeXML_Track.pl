@@ -223,14 +223,14 @@ sub getFeatureInfo
 sub createXMLFile
 {
 	# Read in the arguments for the subroutine	
-	my($outputDir,$species,$type,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$genomeVer,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd,$ucscDsn,$ucscUsr,$ucscPasswd,$mongoDsn,$mongoUser,$mongoPasswd)=@_;
+	my($outputDir,$species,$type,$panel,$chromosome,$minCoord,$maxCoord,$publicID,$binSize,$tissue,$genomeVer,$dsn,$usr,$passwd,$ensDsn,$ensUsr,$ensPasswd,$ucscDsn,$ucscUsr,$ucscPasswd,$mongoDsn,$mongoUser,$mongoPasswd)=@_;
 	
 	my $scriptStart=time();
 	
-	my $panel="ILS/ISS";
+	#my $panel="ILS/ISS";
 	my $arrayTypeID=21;
 	if($species eq 'Rat' or $species eq 'Rn' ){
-		$panel="BNLX/SHRH";
+		#$panel="BNLX/SHRH";
 		$arrayTypeID=22;
 	}
 	
@@ -883,14 +883,15 @@ sub createXMLFile
 	my $arg13=$ARGV[12];
 	my $arg14=$ARGV[13];
 	my $arg15=$ARGV[14];
-        my $arg16=$ARGV[15];
-        my $arg17=$ARGV[16];
-        my $arg18=$ARGV[17];
-        my $arg19=$ARGV[18];
-        my $arg20=$ARGV[19];
-        my $arg21=$ARGV[20];
-        my $arg22=$ARGV[21];
+    my $arg16=$ARGV[15];
+    my $arg17=$ARGV[16];
+    my $arg18=$ARGV[17];
+    my $arg19=$ARGV[18];
+    my $arg20=$ARGV[19];
+    my $arg21=$ARGV[20];
+    my $arg22=$ARGV[21];
+    my $arg23=$ARGV[22];
 
-	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20,$arg21,$arg22);
+	createXMLFile($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9,$arg10,$arg11,$arg12,$arg13,$arg14,$arg15,$arg16,$arg17,$arg18,$arg19,$arg20,$arg21,$arg22,$arg23);
 
 exit 0;
