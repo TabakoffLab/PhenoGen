@@ -16,6 +16,11 @@
                         <div style="margin-left:5px;">
                             Please help us prioritize effort on a REST API to provide access to data on Phenogen.  Take the 1 question survey <a href="#survey">below</a>.
                         </div>
+                        <H2>PhenoGen v3.4.2 3/9/2018</H2>
+                        <div style="margin-left:5px;">
+                            Added read depth count tracks to the genome browser for whole brain and liver for the inbred strains:
+                            ACI, Dark-Agouti, Cop, F344-NCl, F344-NHsd, LEW-Crl, LEW-SsNHsd, SHRSP, SR-JrHsd, SS-JrHsd, and WKY.
+                        </div>
                         <H2>PhenoGen v3.4.1 2/16/2018</H2>
                         <div style="margin-left:5px;">
                             The Genome/Transcriptome Data Browser can now look up genes by either their gene or transcript PhenoGen ID.

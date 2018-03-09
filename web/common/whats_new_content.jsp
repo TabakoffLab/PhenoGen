@@ -29,6 +29,18 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
+    <div class="whats_new version"><p><h3>Version: v3.4.2</h3><BR /> Updated:3/9/2018</p></div>
+       <ul>
+                                    <li><span class="highlight-dark">Inbred Read Depth Tracks</span>
+                                        <UL>
+                                            <LI>Added Read Depth Tracks in Brain and Liver for the new inbred strains:
+                                                ACI, Dark-Agouti, Cop, F344-NCl, F344-NHsd, LEW-Crl, LEW-SsNHsd, SHRSP, SR-JrHsd, SS-JrHsd, and WKY
+                                            </LI>
+                                            
+                                        </UL>
+                                    </li>
+        </ul>
+        <hr/>
     <div class="whats_new version"><p><h3>Version: v3.4.1</h3><BR /> Updated:2/16/2018</p></div>
        <ul>
                                     <li><span class="highlight-dark">PhenoGen IDs</span>
