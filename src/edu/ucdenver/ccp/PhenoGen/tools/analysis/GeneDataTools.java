@@ -1535,7 +1535,7 @@ public class GeneDataTools {
             }
             
             //construct perl Args
-            String[] perlArgs = new String[24];
+            String[] perlArgs = new String[25];
             perlArgs[0] = "perl";
             perlArgs[1] = perlDir + "writeXML_Track.pl";
             perlArgs[2] = tmpOutputDir;
@@ -1545,25 +1545,26 @@ public class GeneDataTools {
                 perlArgs[3] = "Mouse";
             }
             perlArgs[4] = track;
-            perlArgs[5]=chromosome;
-             perlArgs[6] = Integer.toString(min);
-            perlArgs[7] = Integer.toString(max);
-            perlArgs[8] = Integer.toString(publicUserID);
-            perlArgs[9] = Integer.toString(binSize);
-            perlArgs[10] = tissue;
-            perlArgs[11] = genomeVer;
-            perlArgs[12] = dsn;
-            perlArgs[13] = dbUser;
-            perlArgs[14] = dbPassword;
-            perlArgs[15] = ensDsn;
-            perlArgs[16] = ensUser;
-            perlArgs[17] = ensPassword;
-            perlArgs[18] = ucscDsn;
-            perlArgs[19] = ucscUser;
-            perlArgs[20] = ucscPassword;
-            perlArgs[21] = mongoHost;
-            perlArgs[22] = mongoUser;
-            perlArgs[23] = mongoPassword;
+            perlArgs[5] = panel;
+            perlArgs[6]=chromosome;
+             perlArgs[7] = Integer.toString(min);
+            perlArgs[8] = Integer.toString(max);
+            perlArgs[9] = Integer.toString(publicUserID);
+            perlArgs[10] = Integer.toString(binSize);
+            perlArgs[11] = tissue;
+            perlArgs[12] = genomeVer;
+            perlArgs[13] = dsn;
+            perlArgs[14] = dbUser;
+            perlArgs[15] = dbPassword;
+            perlArgs[16] = ensDsn;
+            perlArgs[17] = ensUser;
+            perlArgs[18] = ensPassword;
+            perlArgs[19] = ucscDsn;
+            perlArgs[20] = ucscUser;
+            perlArgs[21] = ucscPassword;
+            perlArgs[22] = mongoHost;
+            perlArgs[23] = mongoUser;
+            perlArgs[24] = mongoPassword;
 
             //set environment variables so you can access oracle pulled from perlEnvVar session variable which is a comma separated list
             String[] envVar=perlEnvVar.split(",");

@@ -86,7 +86,7 @@ mouseOnly.probeMouse=1;
 
 var mmVer="Mouse(<span id=\"verSelect\"></span>) Strain:C57BL/6J";
 var rnVer="Rat(<span id=\"verSelect\"></span>) Strain:BN";
-var siteVer="PhenoGen v3.4.1(2/16/2018)";
+var siteVer="PhenoGen v3.4.2(3/12/2018)";
 
 var trackBinCutoff=10000;
 var customTrackLevel=-1;
@@ -771,6 +771,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 	that.trackListHash={};
 	that.overSettings=0;
 	that.zoomFactor=0.05;
+	that.strainSpecificCountColors=d3.scaleOrdinal(d3.schemeCategory20);
 	if(levelNumber==0){
 		that.folderName=regionfolderName;
 	}
@@ -1514,11 +1515,15 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 							if(!pathPrefix){
 								tmpContext="";
 							}
+							tmpPanel=panel;
+							if(track.indexOf("-")>-1){
+								tmpPanel=track.substr(track.indexOf("-")+1);
+							}
 							$.ajax({
 								url: tmpContext +"generateTrackXML.jsp",
 				   				type: 'GET',
 				   				cache: false,
-								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism,genomeVer:genomeVer, track: track, folder: that.folderName,binSize:tmpBin},
+								data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:tmpPanel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism,genomeVer:genomeVer, track: track, folder: that.folderName,binSize:tmpBin},
 								dataType: 'json',
 				    			success: function(data2){
 				    				if(ga){
@@ -1573,6 +1578,8 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 									newTrack= LiverIlluminaSmallTrack(that,data,track,1);
 								}else if(track=="heartilluminaSmall"){
 									newTrack= HeartIlluminaSmallTrack(that,data,track,1);
+								}else if(track.indexOf("illuminaTotal")>-1){
+									newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,1);
 								}
 								that.addTrackList(newTrack);
 							}else{
@@ -1584,31 +1591,33 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 							var data=d.documentElement.getElementsByTagName("Count");
 							var newTrack;
                                                         try{
-							if(track=="helicos"){
+							if(track==="helicos"){
 								newTrack= HelicosTrack(that,data,track,1);
-							}else if(track=="illuminaTotal"){
+							}else if(track==="illuminaTotal"){
 								newTrack= IlluminaTotalTrack(that,data,track,1);
-							}else if(track=="illuminaSmall"){
+							}else if(track==="illuminaSmall"){
 								newTrack= IlluminaSmallTrack(that,data,track,1);
-							}else if(track=="illuminaPolyA"){
+							}else if(track==="illuminaPolyA"){
 								newTrack= IlluminaPolyATrack(that,data,track,1);
-							}else if(track=="liverilluminaTotalPlus"){
+							}else if(track==="liverilluminaTotalPlus"){
 								newTrack= LiverIlluminaTotalPlusTrack(that,data,track,1);
-							}else if(track=="liverilluminaTotalMinus"){
+							}else if(track==="liverilluminaTotalMinus"){
 								newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
-							}else if(track=="heartilluminaTotalPlus"){
-									newTrack= HeartIlluminaTotalPlusTrack(that,data,track,1);
-							}else if(track=="heartilluminaTotalMinus"){
-									newTrack= HeartIlluminaTotalMinusTrack(that,data,track,1);
-							}else if(track=="brainilluminaTotalPlus"){
-									newTrack= BrainIlluminaTotalPlusTrack(that,data,track,1);
-							}else if(track=="brainilluminaTotalMinus"){
-									newTrack= BrainIlluminaTotalMinusTrack(that,data,track,1);
-							}else if(track=="liverilluminaSmall"){
-									newTrack= LiverIlluminaSmallTrack(that,data,track,1);
-								}else if(track=="heartilluminaSmall"){
-									newTrack= HeartIlluminaSmallTrack(that,data,track,1);
-								}
+							}else if(track==="heartilluminaTotalPlus"){
+								newTrack= HeartIlluminaTotalPlusTrack(that,data,track,1);
+							}else if(track==="heartilluminaTotalMinus"){
+								newTrack= HeartIlluminaTotalMinusTrack(that,data,track,1);
+							}else if(track==="brainilluminaTotalPlus"){
+								newTrack= BrainIlluminaTotalPlusTrack(that,data,track,1);
+							}else if(track==="brainilluminaTotalMinus"){
+								newTrack= BrainIlluminaTotalMinusTrack(that,data,track,1);
+							}else if(track==="liverilluminaSmall"){
+								newTrack= LiverIlluminaSmallTrack(that,data,track,1);
+							}else if(track==="heartilluminaSmall"){
+								newTrack= HeartIlluminaSmallTrack(that,data,track,1);
+							}else if(track.indexOf("illuminaTotal")>-1){
+								newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,1);
+							}
 							that.addTrackList(newTrack);
                                                         }catch(er){}
 							//success=1;
@@ -2995,6 +3004,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 	that.updateTimeoutHandle={};
 	that.timeoutTrack=-1;
 	that.forLevel=-1;
+	that.strainSpecificCountColors=d3.scaleOrdinal(d3.schemeCategory20);
 
 	that.get=function(attr){return that[attr];};
 
@@ -3136,6 +3146,8 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 				newTrack= LiverIlluminaSmallTrack(that,data,track,curDensity);
 			}else if(track==="heartilluminaSmall"){
 				newTrack= HeartIlluminaSmallTrack(that,data,track,curDensity);
+			}else if(track.indexOf("illuminaTotal")>-1){
+				newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,1);
 			}
 			if(that.levelNumber===99){
 				if(that.updateTimeoutHandle[track]!==0){
@@ -9993,7 +10005,7 @@ function IlluminaSmallTrack(gsvg,data,trackClass,density){
 }
 function IlluminaTotalTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
-	var lbl="Brain Illumina Total RNA(rRNA depleted) Read Counts";
+	var lbl="BNLx/SHR Brain Illumina Total-RNA(rRNA depleted) Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	return that;
@@ -10001,7 +10013,7 @@ function IlluminaTotalTrack(gsvg,data,trackClass,density){
 function LiverIlluminaTotalPlusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	that.graphColorText="#abaecd";
-	var lbl="Liver + Strand Total-RNA Read Counts";
+	var lbl="BNLx/SHR Liver + Strand Total-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
@@ -10010,7 +10022,7 @@ function LiverIlluminaTotalPlusTrack(gsvg,data,trackClass,density){
 function LiverIlluminaTotalMinusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	that.graphColorText="#dbdefd";
-	var lbl="Liver - Strand Total-RNA Read Counts";
+	var lbl="BNLx/SHR Liver - Strand Total-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
@@ -10029,7 +10041,7 @@ function LiverIlluminaSmallTrack(gsvg,data,trackClass,density){
 function HeartIlluminaTotalPlusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	that.graphColorText="#CC6242";
-	var lbl="Heart + Strand Total-RNA Read Counts";
+	var lbl="BNLx/SHR Heart + Strand Total-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
@@ -10038,7 +10050,7 @@ function HeartIlluminaTotalPlusTrack(gsvg,data,trackClass,density){
 function HeartIlluminaTotalMinusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	that.graphColorText="#FC9272";
-	var lbl="Heart - Strand Total-RNA Read Counts";
+	var lbl="BNLx/SHR Heart - Strand Total-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
@@ -10066,6 +10078,28 @@ function BrainIlluminaTotalMinusTrack(gsvg,data,trackClass,density){
 	var that= CountTrack(gsvg,data,trackClass,density);
 	//that.graphColorText="#CC6242";
 	var lbl="Brain - Strand Total-RNA Read Counts";
+	that.updateLabel(lbl);
+	that.redrawLegend();
+	that.redraw();
+	return that;
+}
+function StrainSpecificIlluminaTotalTrack(gsvg,data,trackClass,density){
+	var that= CountTrack(gsvg,data,trackClass,density);
+	var strain=trackClass.substr(trackClass.indexOf("-")+1);
+	var strand=".";
+	if(trackClass.indexOf("Plus")>0){
+		strand="+";
+	}else if(trackClass.indexOf("Minus")>0){
+		strand="-";
+	}
+	var tissue=trackClass.substr(0,trackClass.indexOf("illumina"));
+	if(tissue==="brain"){
+		tissue="Whole Brain";
+	}else if(tissue==="liver"){
+		tissue="Liver";
+	}
+	that.graphColorText=gsvg.strainSpecificCountColors(strain);
+	var lbl=strain+" "+tissue+" "+strand+" Strand Total-RNA Read Counts";
 	that.updateLabel(lbl);
 	that.redrawLegend();
 	that.redraw();
@@ -10589,11 +10623,15 @@ function CountTrack(gsvg,data,trackClass,density){
 							if(!pathPrefix){
 								tmpContext="";
 							}
+							tmpPanel=panel;
+							if(that.trackClass.indexOf("-")>-1){
+								tmpPanel=that.trackClass.substr(that.trackClass.indexOf("-")+1);
+							}
 							$.ajax({
 												url: tmpContext +"generateTrackXML.jsp",
 								   				type: 'GET',
 								   				cache: false,
-												data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism,genomeVer:genomeVer, track: that.trackClass, folder: that.gsvg.folderName,binSize:that.bin},
+												data: {chromosome: chr,minCoord:tmpMin,maxCoord:tmpMax,panel:tmpPanel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism,genomeVer:genomeVer, track: that.trackClass, folder: that.gsvg.folderName,binSize:that.bin},
 												//data: {chromosome: chr,minCoord:minCoord,maxCoord:maxCoord,panel:panel,rnaDatasetID:rnaDatasetID,arrayTypeID: arrayTypeID, myOrganism: organism, track: that.trackClass, folder: folderName,binSize:that.bin},
 												dataType: 'json',
 								    			success: function(data2){
