@@ -137,9 +137,9 @@
                                   <BR />
                                   <label>Initial View:
                                   <select name="defaultView" id="defaultView">
-                                    <option value="viewGenome" >Genome</option>
-                                    <option value="viewTrxome" >Transcriptome</option>
-                                    <option value="viewAll" >Both</option>
+                                    <option value="11" >Genome</option>
+                                    <option value="12" >Transcriptome</option>
+                                    <option value="13" >Both</option>
                                   </select>
                                   <span class="tooltip2"  title="Select the types of feature/tracks to display.  You can customize the tracks after the region/gene opens, but this allows you to select where to start from."><img src="<%=imagesDir%>icons/info.gif"></span>
                                 </label>

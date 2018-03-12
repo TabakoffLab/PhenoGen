@@ -167,7 +167,7 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
 
             <div id="geneImage" class="ucscImage"  style="display:inline-block;width:100%;">
 
-            <script src="javascript/GenomeDataBrowser2.6.11.js" type="text/javascript"></script>
+            <script src="javascript/GenomeDataBrowser2.6.12.js" type="text/javascript"></script>
             <script src="javascript/GenomeReport2.6.0.js" type="text/javascript"></script>
             <script src="javascript/GenomeViewMenu2.6.1.js" type="text/javascript"></script>
             <script src="javascript/GenomeTrackMenu2.6.0.js" type="text/javascript"></script>
@@ -348,18 +348,26 @@ Bugsense.leaveBreadcrumb( '<%=myGene+"::"+chromosome+":"+min+"-"+max%>');*/
                     "featureType":"Long"
                 });
                 if($(window).width()<1500){
-                   pe.bChart.setWidth("98%");
-                   pe.lChart.setWidth("98%");
+                   pe.rbChart.setWidth("98%");
+                   pe.rlChart.setWidth("98%");
                }
             },5000);
             //svgList[1].updateLinks();
             $(window).resize(function (){
-                    if($(window).width()<1500){
-                        pe.rbChart.setWidth("98%");
-                        pe.rlChart.setWidth("98%");
+                    if($(window).width()<1500 && pe){
+                        if(pe.rbChart){
+                            pe.rbChart.setWidth("98%");
+                        }
+                        if(pe.rlChart){
+                            pe.rlChart.setWidth("98%");
+                        }
                     }else{
-                        pe.rbChart.setWidth("45%");
-                        pe.rlChart.setWidth("45%");
+                        if(pe && pe.rbChart){
+                            pe.rbChart.setWidth("45%");
+                        }
+                        if(pe && pe.rlChart){
+                            pe.rlChart.setWidth("45%");
+                        }
                     }
             });
         });

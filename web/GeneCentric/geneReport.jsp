@@ -759,19 +759,31 @@ Add report here.
                     "featureType":"Long",
                     "displayCtrl":false
                 });
-                if($(window).width()<1500){
-                   peGR.bChart.setWidth("98%");
-                   peGR.lChart.setWidth("98%");
+                if($(window).width()<1500 && peGR){
+                    if(peGR.rbChart){
+                        peGR.rbChart.setWidth("98%");
+                    }
+                    if(peGR.rlChart){
+                        peGR.rlChart.setWidth("98%");
+                    }
                }
             },5000);
         //svgList[1].updateLinks();
         $(window).resize(function (){
-            if($(window).width()<1500){
-                peGR.bChart.setWidth("98%");
-                peGR.lChart.setWidth("98%");
+            if($(window).width()<1500 && peGR){
+                if(peGR.rbChart){
+                    peGR.rbChart.setWidth("98%");
+                }
+                if(peGR.rlChart){
+                    peGR.rlChart.setWidth("98%");
+                }
             }else{
-                peGR.bChart.setWidth("46%");
-                peGR.lChart.setWidth("46%");
+                if(peGR && peGR.rbChart){
+                    peGR.rbChart.setWidth("46%");
+                }
+                if(peGR && peGR.rlChart){
+                    peGR.rlChart.setWidth("46%");
+                }
             }
         });
 </script>
