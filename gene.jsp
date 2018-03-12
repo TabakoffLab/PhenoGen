@@ -825,7 +825,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
     }
 
     function setupDefaultView() {
-        console.log("setupDefaultView()");
+        
         var tmp = $("#speciesCB").val();
         if (!overideGV) {
             var specStoredGenomeVer = checkStoredGenomeVersion(tmp);
