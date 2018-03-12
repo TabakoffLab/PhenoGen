@@ -313,7 +313,7 @@ function zoomOut(level,zoomScale){
 function mup() {
 	var i=0,p,start,width,minx,maxx;
 	for (i=0; i<svgList.length; i++){
-		if(svgList[i]!==null){
+		if(svgList[i] && typeof svgList[i] !=='undefined'){
 			if( (!svgList[i].overSettings || svgList[i].overSettings==0) && (!isNaN(svgList[i].downx) || !isNaN(svgList[i].downPanx)) ){
 				if(i===0){
 					updatePage(svgList[i]);
@@ -3147,7 +3147,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 			}else if(track==="heartilluminaSmall"){
 				newTrack= HeartIlluminaSmallTrack(that,data,track,curDensity);
 			}else if(track.indexOf("illuminaTotal")>-1){
-				newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,1);
+				newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,curDensity);
 			}
 			if(that.levelNumber===99){
 				if(that.updateTimeoutHandle[track]!==0){
@@ -10946,26 +10946,28 @@ function CountTrack(gsvg,data,trackClass,density){
 	};
 
 	that.redrawSelectedArea=function(){
-		var rectH=that.svg.attr("height");
-		if(that.density==1){
-			rectH=10;
-		}
-		d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".selectedArea").remove();
-		if(that.selectionStart>-1&&that.selectionEnd>-1){
-			var tmpStart=that.xScale(that.selectionStart);
-			var tmpW=that.xScale(that.selectionEnd)-tmpStart;
-			if(tmpW<1){
-				tmpW=1;
+		if(that.density>1){
+			var rectH=that.svg.attr("height");
+			
+			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".selectedArea").remove();
+			if(that.selectionStart>-1&&that.selectionEnd>-1){
+				var tmpStart=that.xScale(that.selectionStart);
+				var tmpW=that.xScale(that.selectionEnd)-tmpStart;
+				if(tmpW<1){
+					tmpW=1;
+				}
+				d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).append("rect")
+								.attr("class","selectedArea")
+								.attr("x",tmpStart)
+								.attr("y",0)
+				    			.attr("height",rectH)
+								.attr("width",tmpW)
+								.attr("fill","#CECECE")
+								.attr("opacity",0.3)
+								.attr("pointer-events","none");
 			}
-			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).append("rect")
-							.attr("class","selectedArea")
-							.attr("x",tmpStart)
-							.attr("y",0)
-			    			.attr("height",rectH)
-							.attr("width",tmpW)
-							.attr("fill","#CECECE")
-							.attr("opacity",0.3)
-							.attr("pointer-events","none");
+		}else{
+			d3.select("#Level"+that.gsvg.levelNumber+that.trackClass).selectAll(".selectedArea").remove();
 		}
 	};
 
