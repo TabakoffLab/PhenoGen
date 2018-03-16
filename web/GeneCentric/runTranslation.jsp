@@ -209,7 +209,7 @@ Min Ratio: <%=minRatio%> Min Length:<%=minLenPerc*100%>% (<%=minLen%> bp)
                     <TD><%=df0.format(tmpStop)%></TD>
                     <TD><%=df0.format(len)%></TD>
                     <TD><%=df1.format(perc)%></TD>
-                    <TD><a href="<%=request.getContextPath()%>/gene.jsp?geneTxt=<%=col[0]+":"+df0.format(tmpStart)+"-"+df0.format(tmpStop)%>&speciesCB=<%=targetSpecies.substring(0,2)%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
+                    <TD><a href="<%=contextPath%>/gene.jsp?geneTxt=<%=col[0]+":"+df0.format(tmpStart)+"-"+df0.format(tmpStop)%>&speciesCB=<%=targetSpecies.substring(0,2)%>&auto=Y&newWindow=Y" target="_blank">View Region in New Window</a></TD>
                 </TR>
             <%}%>
         <%}%>

@@ -34,7 +34,7 @@
     <%} else {%>
     	<div id="login_box">
         <form method="post" enctype="application/x-www-form-urlencoded" action="<%=actionForm%>" name="loginForm" id="login-form">
-             <a href="<%=request.getContextPath()%>/web/access/userUpdate.jsp" class="button" id="accountBtn">My Profile</a><BR />	
+             <a href="<%=contextPath%>/web/access/userUpdate.jsp" class="button" id="accountBtn">My Profile</a><BR />	
              <a href="<%=accessDir%>logout.jsp" class="button" id="logInOutBtn">Logout</a>
               </form>
         </div>

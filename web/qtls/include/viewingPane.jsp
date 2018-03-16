@@ -36,7 +36,7 @@
 					datasetVersion: datasetVersion,
 					parameterGroupID: phenotypeParameterGroupID, 
 					parameterType: "phenotype"};
-			$.get("<%=request.getContextPath()%>/web/common/formatParameters.jsp", parameters, function(data){
+			$.get("<%=contextPath%>/web/common/formatParameters.jsp", parameters, function(data){
 				detailsBox.dialog("open").html(data);
 				closeDialog(detailsBox);
 			});
