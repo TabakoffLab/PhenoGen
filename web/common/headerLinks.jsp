@@ -1,19 +1,19 @@
 
   <div id="page_header">
-    <div id="header_title"><a href="<%=request.getContextPath()%>">PhenoGen Informatics</a></div>
+    <div id="header_title"><a href="<%=contextPath%>">PhenoGen Informatics</a></div>
 
     <div id="header_link_container">
 
       <div class="header_nav">
       	<%if(loggedIn){
 			if (userLoggedIn !=null && userLoggedIn.getUser_name().equals("anon")) {%>
-            	<a href="<%=request.getContextPath()%>/index.jsp">Home</a> |
+            	<a href="<%=contextPath%>/index.jsp">Home</a> |
           <%}else{%>
-        		<a href="<%=request.getContextPath()%>/web/common/startPage.jsp">Home</a> |
+        		<a href="<%=contextPath%>/web/common/startPage.jsp">Home</a> |
           <%}%>
-          <a href="<%=request.getContextPath()%>/gene.jsp">Gene Summary</a> |
+          <a href="<%=contextPath%>/gene.jsp">Gene Summary</a> |
        <%}else{%>
-        	<a href="<%=request.getContextPath()%>/web/common/startPage.jsp">Home</a> |
+        	<a href="<%=contextPath%>/web/common/startPage.jsp">Home</a> |
             <a href="<%=accessDir%>createAnnonymousSession.jsp">Gene Summary</a> |
        <%}%>
           
@@ -21,17 +21,17 @@
     if ( loggedIn ) {
 		if (userLoggedIn !=null && !userLoggedIn.getUser_name().equals("anon")) {
 			if (userLoggedIn !=null && !userLoggedIn.getUser_name().equals("guest")) { %>
-        		<a href="<%=request.getContextPath()%>/web/access/userUpdate.jsp">My Profile</a> |
+        		<a href="<%=contextPath%>/web/access/userUpdate.jsp">My Profile</a> |
 			<% } %>
-			<a href="<%=request.getContextPath()%>/web/common/contact.jsp">Contact Us</a> |
-        	<a href="<%=request.getContextPath()%>/web/access/logout.jsp">Logout</a> |
+			<a href="<%=contextPath%>/web/common/contact.jsp">Contact Us</a> |
+        	<a href="<%=contextPath%>/web/access/logout.jsp">Logout</a> |
       <%}%>
 	<% }else{ %>
-		<!--<a href="<%=request.getContextPath()%>/web/common/startPage.jsp">Login</a> |-->
+		<!--<a href="<%=contextPath%>/web/common/startPage.jsp">Login</a> |-->
         <a href="#" class="login_btn"><span>Login</span><span class="triangle_down"></span></a> &nbsp; |
 	<%}%>
     	
-        <a href="<%=request.getContextPath()%>/helpdocs/PhenoGen_Overview_CSH.htm#Overview.htm" target="_blank" class="site_help_link"><span>Site Help</span></a>
+        <a href="<%=rcontextPath%>/helpdocs/PhenoGen_Overview_CSH.htm#Overview.htm" target="_blank" class="site_help_link"><span>Site Help</span></a>
      
         <%@ include file="/web/access/include/loginBox.jsp" %>  <!--The website is temporarily down(<30min) to patch a bug.  Please try again soon.  Sorry for any inconvenience.-->
       </div> <!-- header_nav -->

@@ -32,7 +32,7 @@
 	session.removeAttribute("geneCentricPath");
 	String tmpPath=applicationRoot + contextRoot+"tmpData/regionData/"+curDir+"/"+ensID+"/";
 	
-    response.sendRedirect(request.getContextPath()+"/web/GeneCentric/LocusSpecificEQTL.jsp?hiddenGeneSymbol="+geneSymbol+"&hiddenGeneCentricPath="+tmpPath);           
+    response.sendRedirect(contextPath+"/web/GeneCentric/LocusSpecificEQTL.jsp?hiddenGeneSymbol="+geneSymbol+"&hiddenGeneCentricPath="+tmpPath);           
 	
 %>
 

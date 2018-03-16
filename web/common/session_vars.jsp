@@ -25,13 +25,13 @@
 <%
 	if((User)request.getSession(false).getAttribute("userLoggedIn")== null) {
 		log.debug("Invalid session");
-		response.sendRedirect(request.getContextPath() + "/index.jsp");
+		response.sendRedirect(contextPath + "/index.jsp");
 	} else {
 	
 		if( ((User)request.getSession(false).getAttribute("userLoggedIn")).getUser_name().equals("anon") ){
 			String url=request.getRequestURL().toString();
 			url=url.substring(url.indexOf("/web"));
-			response.sendRedirect(request.getContextPath() + "/web/access/loginPage.jsp?url="+request.getContextPath()+url);
+			response.sendRedirect(contextPath + "/web/access/loginPage.jsp?url="+contextPath+url);
 		}else{
 			userID = Integer.parseInt((String) session.getAttribute("userID"));
 			//

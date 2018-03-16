@@ -55,6 +55,9 @@ public class AsyncDatasetDownload implements Runnable{
 		this.scheme = (String) request.getScheme();
 		this.serverName = (String) request.getServerName();
 		this.contextPath = (String) request.getContextPath();
+                if(this.contextPath.startsWith("//")){
+                    this.contextPath=this.contextPath.substring(1);
+                }
 		this.request = request;
 
 		//log.debug("checkedList = "); myDebugger.print(checkedList);

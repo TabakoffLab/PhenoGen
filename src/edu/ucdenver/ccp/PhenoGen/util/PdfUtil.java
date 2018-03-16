@@ -245,7 +245,10 @@ public class PdfUtil extends PdfPageEventHelper {
 	public List<Image> getMAPlotImages(Dataset selectedDataset, HttpServletRequest request,  String[] arrayNames) throws 
 		BadElementException, MalformedURLException, IOException {
 		log.debug("in getMAPlotImages");
-		
+		String contextPath=request.getContextPath();
+                if(contextPath.startsWith("//")){
+                    contextPath=contextPath.substring(1);
+                }
 		edu.ucdenver.ccp.PhenoGen.data.Array myArray = new edu.ucdenver.ccp.PhenoGen.data.Array();
         	List<Image> images = new ArrayList<Image>();		
                 String imagePath = new FileHandler().getPathFromUserFiles(selectedDataset.getImagesDir());
@@ -256,7 +259,7 @@ public class PdfUtil extends PdfPageEventHelper {
 
             		for (String fileName : imageFileNames) {
                   		Image image = Image.getInstance(request.getScheme() + "://" +
-								request.getServerName() + request.getContextPath() + 
+								request.getServerName() + contextPath + 
 								imagePath + 
 								fileName);						
                   		image.scaleToFit(450f, 450f);
@@ -268,7 +271,10 @@ public class PdfUtil extends PdfPageEventHelper {
 	
 	public PdfPTable getPseudoImages(Dataset selectedDataset, HttpServletRequest request, String[] arrayNames) throws 
 						BadElementException, MalformedURLException, IOException {
-
+                String contextPath=request.getContextPath();
+                if(contextPath.startsWith("//")){
+                    contextPath=contextPath.substring(1);
+                }
 		edu.ucdenver.ccp.PhenoGen.data.Array myArray = new edu.ucdenver.ccp.PhenoGen.data.Array();
 
 		log.debug("in getPseudoImages");
@@ -293,7 +299,7 @@ public class PdfUtil extends PdfPageEventHelper {
 			for (String fileName : imageFileNames) {
 				Image image = Image.getInstance(request.getScheme() + "://" +
 								request.getServerName() +
-								request.getContextPath() +
+								contextPath +
 								imagePath +
 								fileName);
 				clusterTable.addCell(setupCellAttributes(image));

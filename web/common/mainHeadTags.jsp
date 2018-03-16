@@ -11,6 +11,6 @@
     <%}%>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type = "text/javascript" >
-        var contextPath = "<%=request.getContextPath()%>";
+        var contextPath = "<%=contextPath%>";
     </script>
 

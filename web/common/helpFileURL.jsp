@@ -383,15 +383,11 @@
 		//fileNameHelpURL="PhenoGen_Overview_Left.htm#CSHID=Overview.htm|StartTopic=Content%2FOverview.htm|SkinName=PhenoGen";
 	}
 	//fileNameHelpURL="/helpdocs/Content/" + fileNameHelpURL;
-	String helpFileURL=request.getContextPath()+"/helpdocs/PhenoGen_Overview_CSH.htm?filename="+fileNameHelpURL;
+	String helpFileURL=contextPath+"/helpdocs/PhenoGen_Overview_CSH.htm?filename="+fileNameHelpURL;
 	
 	log.debug("HELP URL = "+helpFileURL);
 	//response.sendRedirect(fileNameHelpURL);
-	%><!-- <div align="right"><a href="javascript:window.close()">Close</a></div>--> <%
-	%><!--<jsp:include page="<%=fileNameHelpURL%>" flush="true"/>--><%
-	%><!-- <center><a href="javascript:window.close()">Close</a></center><BR><BR>--> <%
-	 
-%>
+	%>
 		
 		
 
