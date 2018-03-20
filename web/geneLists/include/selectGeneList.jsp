@@ -9,9 +9,8 @@
 --%>
 <%
         log.debug("in selectGeneList.");
-        int geneListID = ((String)request.getParameter("geneListID") != null ?
-			Integer.parseInt((String)request.getParameter("geneListID")) :
-			-99);
+        String tmpID=FilterInput.getFilteredInput((String)request.getParameter("geneListID"));
+        int geneListID = (tmpID != null ? Integer.parseInt(tmpID) : -99);
 
 	log.debug("in selectGeneList. geneListID = " + geneListID);
 
