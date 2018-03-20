@@ -44,7 +44,7 @@ sub prepCircos
 	my $genericConfLocation = '/usr/local/circos-0.69-4/etc/';
 	my $genericConfLocation2;
 	if($hostname eq 'phenogen'){
-		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
+		$genericConfLocation2 = '/usr/local/tomcat7/webapps/PhenoGen/tmpData/geneData/';
 	}
 	elsif($hostname eq 'stan'){
 		$genericConfLocation2 = '/Library/Tomcat/webapps/PhenoGen/tmpData/geneData/';

@@ -38,9 +38,9 @@ sub prepCircosMod
 	
 	my $genericConfLocation2;
 	if($hostname eq 'phenogen' and index($dsn,"test")>0){
-		$genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGenTEST/tmpData/geneData/';
+		$genericConfLocation2 = '/usr/local/tomcat7/webapps/PhenoGenTEST/tmpData/geneData/';
 	}elsif($hostname eq 'phenogen' and index($dsn,"test")==-1){
-                $genericConfLocation2 = '/usr/share/tomcat6/webapps/PhenoGen/tmpData/geneData/';
+                $genericConfLocation2 = '/usr/local/tomcat7/webapps/PhenoGen/tmpData/geneData/';
         }
 	elsif($hostname eq 'stan'){
 		$genericConfLocation2 = '/Library/Tomcat/webapps/PhenoGen/tmpData/geneData/';
