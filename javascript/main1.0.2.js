@@ -398,11 +398,11 @@ function setupDownloadButton(url) {
 /* * * *
  *  this function sets up the events if there is more than one DOWNLOAD button on each row
 /*/
-function setupDownloadButtonByType(url) {
+function setupDownloadButtonByType(url,url2) {
 	var modalOptions = {height: 550, width: 950, position: { my: "center", at: "center", of: window }, title: "Download Resources"};
 	downloadModal = createDialog( ".downloadItem", modalOptions );
 
-	$("table[name='items']").find("td div.download").click(function() {
+	$("table[name='items'][id!='rnaseqTbl']").find("td div.download").click(function() {
 		var id = $(this).parents("tr").attr("id");
 		var theType = $(this).attr("type");
 
@@ -423,6 +423,29 @@ function setupDownloadButtonByType(url) {
                 	}
 		});
 	});
+        if($("table#rnaseqTbl").size()>0){
+            $("table#rnaseqTbl").find("td div.download").click(function() {
+                    var id = $(this).parents("tr").attr("id");
+                    var theType = $(this).attr("type");
+
+                    var dataParams = { resource:id, type: theType };
+
+                    // send to .jsp to handle download
+                    $.ajax({
+                            type: "POST",
+                            url: url2,
+                            dataType: "html",
+                            data: dataParams,
+                            async: false,
+                            success: function( html ){
+                            downloadModal.html( html ).dialog( "open" );
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                    alert( "there was an error processing this request: " + textStatus + " " + errorThrown );
+                            }
+                    });
+            });
+        }
 }
 
 /*function setupDownloadButtonResourcesByType(url,url2) {
