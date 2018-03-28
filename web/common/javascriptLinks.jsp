@@ -1,11 +1,12 @@
 
     
+
     <script type = "text/javascript" src = "<%=contextPath%>/javascript/jquery-1.12.2.min.js"></script>
     <script type = "text/javascript" src = "<%=contextPath%>/javascript/jquery-migrate-1.2.1.min.js"></script>
     <script type = "text/javascript" src = "<%=contextPath%>/javascript/jquery-ui-1.11.4.min.js"></script>
     <script type = "text/javascript" src = "<%=contextPath%>/javascript/jquery.tooltipster.min.js"></script>
     <script type = "text/javascript" src = "<%=contextPath%>/javascript/jquery.tablesorter.js"></script>
-    <script type = "text/javascript" src = "<%=contextPath%>/javascript/main1.0.1.js"></script>
+    <script type = "text/javascript" src = "<%=contextPath%>/javascript/main1.0.2.js"></script>
 
 
 	<%@ include file="/web/common/includeExtras.jsp" %>
