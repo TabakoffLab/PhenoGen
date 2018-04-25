@@ -8,7 +8,7 @@
 <%
 	String mainFilePart="web/demo/detailed_transcript_fullv3";
 	if(request.getParameter("demoPath")!=null){
-		mainFilePart=request.getParameter("demoPath");
+		mainFilePart=FilterInput.getFilteredURLInput(request.getParameter("demoPath"));
 	}
 %>
 
