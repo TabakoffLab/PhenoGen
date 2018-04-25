@@ -60,7 +60,7 @@ public class Resource {
         private String ancestry;
         private String description;
         private String genomeVer;
-        
+        private String downloadHeader;
         //private String context="";
 
 
@@ -147,13 +147,14 @@ public class Resource {
 		setPanel(panel);
 	}
         
-        public Resource(int id, String organism, String panel,String description,PublicationFile[] files) {
+        public Resource(int id, String organism, String panel,String description,PublicationFile[] files,String downloadHeader) {
 		log = Logger.getRootLogger();
 		setID(id);
 		setOrganism(organism);
 		setPanel(panel);
                 setDescription(description);
                 setPublicationFiles(files);
+                setDownloadHeader(downloadHeader);
 	}
 
         public Resource(HttpSession session) {
@@ -342,6 +343,14 @@ public class Resource {
 
         public void setAncestry(String ancestry) {
             this.ancestry = ancestry;
+        }
+
+        public String getDownloadHeader() {
+            return downloadHeader;
+        }
+
+        public void setDownloadHeader(String downloadHeader) {
+            this.downloadHeader = downloadHeader;
         }
         
         
@@ -1051,41 +1060,41 @@ public class Resource {
                 PublicationFile[] fileList = new PublicationFile[2];
                 fileList[0]=new PublicationFile("Reconstructed PolyA Transcriptome",pubFilePath+"reconPolyA.13Feb14.gtf.zip");
                 fileList[1]=new PublicationFile("Reconstructed NonPolyA Transcriptome",pubFilePath+"reconNonPolyA.13Feb14.gtf.zip");
-                resourceList.add(new Resource(90, "Rat", "BN-Lx/SHR","Reconstructed Brain Transcriptome",fileList));
+                resourceList.add(new Resource(90, "Rat", "BN-Lx/SHR","Reconstructed Brain Transcriptome",fileList,"\"The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption\"(Saba et. al. 2015, FEBS)"));
                 
                 fileList = new PublicationFile[1];
                 fileList[0]=new PublicationFile("SNPs for bQTL",pubFilePath+"SDPsforbQTL.csv.zip");
-                resourceList.add(new Resource(91, "Rat", "HXB/BXH","SNPs used for alcohol consumption QTL",fileList));
+                resourceList.add(new Resource(91, "Rat", "HXB/BXH","SNPs used for alcohol consumption QTL",fileList,"\"The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption\"(Saba et. al. 2015, FEBS)"));
                 
                 fileList = new PublicationFile[1];
                 fileList[0]=new PublicationFile("Strain Mean Alcohol Consumption Week 2",pubFilePath+"StrainMeans_ConsumpWk2.txt.zip");
-                resourceList.add(new Resource(92, "Rat","HXB/BXH", "Alcohol Consumption (2 bottle choice, 10% ethanol, week 2)",fileList));
+                resourceList.add(new Resource(92, "Rat","HXB/BXH", "Alcohol Consumption (2 bottle choice, 10% ethanol, week 2)",fileList,"\"The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption\"(Saba et. al. 2015, FEBS)"));
                 
                 fileList = new PublicationFile[2];
                 fileList[0]=new PublicationFile("Detection Above Background - Gene Level",pubFilePath+"dabg.brain.reconTrans.geneLevel.txt.zip");
                 fileList[1]=new PublicationFile("Normalized Expression values - Gene Level",pubFilePath+"Adjusted_rma.brain.reconTrans.geneLevel.txt.zip");
-                resourceList.add(new Resource(93, "Rat","HXB/BXH", "Normalized exon array data - gene level",fileList));
+                resourceList.add(new Resource(93, "Rat","HXB/BXH", "Normalized exon array data - gene level",fileList,"\"The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption\"(Saba et. al. 2015, FEBS)"));
                 
                 fileList = new PublicationFile[2];
                 fileList[0]=new PublicationFile("Detection Above Background - Isoform Level",pubFilePath+"dabg.brain.reconTrans.isoformLevel.txt.zip");
                 fileList[1]=new PublicationFile("Normalized Expression values - Isoform Level",pubFilePath+"Adjusted_rma.brain.reconTrans.isoformLevel.txt.zip");
-                resourceList.add(new Resource(94, "Rat","HXB/BXH", "Normalized exon array data - isoform level",fileList));
+                resourceList.add(new Resource(94, "Rat","HXB/BXH", "Normalized exon array data - isoform level",fileList,"\"The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption\"(Saba et. al. 2015, FEBS)"));
                 
                 fileList = new PublicationFile[2];
                 fileList[0]=new PublicationFile("Detection Above Background - Gene Level",pubFilePath+"dabg.brain.reconTrans.geneLevel.selectedLines.txt.zip");
                 fileList[1]=new PublicationFile("Normalized Expression values - Gene Level",pubFilePath+"rma.brain.reconTrans.geneLevel.selectedLines.txt.zip");
-                resourceList.add(new Resource(95, "Rat","Selected Lines", "Normalized exon array data - gene level",fileList));
+                resourceList.add(new Resource(95, "Rat","Selected Lines", "Normalized exon array data - gene level",fileList,"\"The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption\"(Saba et. al. 2015, FEBS)"));
                 
                 fileList = new PublicationFile[2];
                 fileList[0]=new PublicationFile("Detection Above Background - Isoform Level",pubFilePath+"dabg.brain.reconTrans.isoformLevel.selectedLines.txt.zip");
                 fileList[1]=new PublicationFile("Normalized Expression values - Isoform Level",pubFilePath+"rma.brain.reconTrans.isoformLevel.selectedLines.txt.zip");
-                resourceList.add(new Resource(96, "Rat","Selected Lines", "Normalized exon array data - isoform level",fileList));
+                resourceList.add(new Resource(96, "Rat","Selected Lines", "Normalized exon array data - isoform level",fileList,"\"The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption\"(Saba et. al. 2015, FEBS)"));
                 
                 fileList = new PublicationFile[3];
                 fileList[0]=new PublicationFile("Masked MPS file by gene",pubFilePath+"RaEx-1_0-st-v1.r2.dt1.rn5.reconstruction.withStrand.byGene.MASKED.mps.zip");
                 fileList[1]=new PublicationFile("Masked MPS file",pubFilePath+"RaEx-1_0-st-v1.r2.dt1.rn5.reconstruction.withStrand.MASKED.mps.zip");
                 fileList[2]=new PublicationFile("Masked PGF File",pubFilePath+"RaEx-1_0-st-v1.r2.rn5masked.pgf.zip");
-                resourceList.add(new Resource(97, "Rat","N/A", "Array Masks",fileList));
+                resourceList.add(new Resource(97, "Rat","N/A", "Array Masks",fileList,"\"The sequenced rat brain transcriptome, its use in identifying networks predisposing alcohol consumption\"(Saba et. al. 2015, FEBS)"));
         	
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
@@ -1098,20 +1107,20 @@ public class Resource {
                 PublicationFile[] fileList = new PublicationFile[2];
                 fileList[0]=new PublicationFile("Affymetrix Mask File",pubFilePath+"RaEx-1_0-st-v1.r2.dt1.rn5.reconstruction.withStrand.byGene.29Oct15.v2.mps");
                 fileList[1]=new PublicationFile("Affymetrix PGF File",pubFilePath+"RaEx-1_0-st-v1.r2.rn5masked.pgf.zip");
-                resourceList.add(new Resource(100, "Rat", "N/A","Array Masks",fileList));
+                resourceList.add(new Resource(100, "Rat", "N/A","Array Masks",fileList,"\"Uncovering the liver's role in immunity through RNA co-expression networks.\" Harrall et. al. (2016, Mamm. Genome)"));
                 
                 fileList = new PublicationFile[1];
                 fileList[0]=new PublicationFile("Normalized Array Data",pubFilePath+"Adjusted_rma.cellSpecific.txt");
-                resourceList.add(new Resource(101, "Rat", "N/A","Cell Type Specific Normalized Exon Array",fileList));
+                resourceList.add(new Resource(101, "Rat", "N/A","Cell Type Specific Normalized Exon Array",fileList,"\"Uncovering the liver's role in immunity through RNA co-expression networks.\" Harrall et. al. (2016, Mamm. Genome)"));
                 
                 fileList = new PublicationFile[2];
                 fileList[0]=new PublicationFile("Normalized Array Data",pubFilePath+"Adjusted_rma.liver.reconTrans.withStrand.byGene.txt");
                 fileList[1]=new PublicationFile("Detection Above Background",pubFilePath+"dabg.liver.reconTrans.geneLevel.txt");
-                resourceList.add(new Resource(102, "Rat","N/A", "HXB Normalized Exon Array",fileList));
+                resourceList.add(new Resource(102, "Rat","N/A", "HXB Normalized Exon Array",fileList,"\"Uncovering the liver's role in immunity through RNA co-expression networks.\" Harrall et. al. (2016, Mamm. Genome)"));
                 
                 fileList = new PublicationFile[1];
                 fileList[0]=new PublicationFile("Reconstructed Transcriptome",pubFilePath+"reconstruct.liver.23Oct15.FINAL.gtf");
-                resourceList.add(new Resource(103, "Rat","N/A", "Reconstructed Liver Transcriptome",fileList));
+                resourceList.add(new Resource(103, "Rat","N/A", "Reconstructed Liver Transcriptome",fileList,"\"Uncovering the liver's role in immunity through RNA co-expression networks.\" Harrall et. al. (2016, Mamm. Genome)"));
                 
                 fileList = new PublicationFile[14];
                 fileList[0]=new PublicationFile("Aligned BNLx BAM",pubFilePath+"BNLx123.liver.bam");
@@ -1129,11 +1138,11 @@ public class Resource {
                 fileList[12]=new PublicationFile("SHR #3 R1 FastQ",pubFilePath+"SHR_L25_ACAGTG_L001_R1_001.fastq.gz");
                 fileList[13]=new PublicationFile("SHR #3 R2 FastQ",pubFilePath+"SHR_L25_ACAGTG_L001_R2_001.fastq.gz");
 
-                resourceList.add(new Resource(104, "Rat","N/A", "RNA-Seq",fileList));
+                resourceList.add(new Resource(104, "Rat","N/A", "RNA-Seq",fileList,"\"Uncovering the liver's role in immunity through RNA co-expression networks.\" Harrall et. al. (2016, Mamm. Genome)"));
                 
                 fileList = new PublicationFile[1];
                 fileList[0]=new PublicationFile("Strain Distibution Patterns",pubFilePath+"HXB.eQTL.masterList.rn5.txt");
-                resourceList.add(new Resource(105, "Rat","N/A", "SDPs",fileList));
+                resourceList.add(new Resource(105, "Rat","N/A", "SDPs",fileList,"\"Uncovering the liver's role in immunity through RNA co-expression networks.\" Harrall et. al. (2016, Mamm. Genome)"));
 
         	
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
@@ -1149,16 +1158,16 @@ public class Resource {
             fileList[1]=new PublicationFile("CEL Files Part 2",pubFilePath+"BAT_pravenec_CEL_part2.zip");
             fileList[2]=new PublicationFile("CEL Files Part 3",pubFilePath+"BAT_pravenec_CEL_part3.zip");
             fileList[3]=new PublicationFile("CEL Files Part 4",pubFilePath+"BAT_pravenec_CEL_part4.zip");
-            resourceList.add(new Resource(110, "Rat", "N/A","CEL Files",fileList));
+            resourceList.add(new Resource(110, "Rat", "N/A","CEL Files",fileList,"\"Systems Genetic Analysis of Brown Adipose Tissue Function\" by Michal Pravenec et al. (Nov 10, 2017, Physiol Genomics.)"));
 
             fileList = new PublicationFile[1];
             fileList[0]=new PublicationFile("Normalized Array Data",pubFilePath+"BAT.norm.exparray.txt.zip");
-            resourceList.add(new Resource(111, "Rat", "N/A","Normalized Gene Array",fileList));
+            resourceList.add(new Resource(111, "Rat", "N/A","Normalized Gene Array",fileList,"\"Systems Genetic Analysis of Brown Adipose Tissue Function\" by Michal Pravenec et al. (Nov 10, 2017, Physiol Genomics.)"));
 
             fileList = new PublicationFile[2];
             fileList[0]=new PublicationFile("Probe Module Summary",pubFilePath+"BAT_pravenec_Probe_Module_Summary_8_2017.txt");
             fileList[1]=new PublicationFile("Module Eigengene Matrix",pubFilePath+"BAT_pravenec_Module_Eigengene_Matrix_8_2017.txt");
-            resourceList.add(new Resource(112, "Rat","N/A", "WGCNA Module Data",fileList));
+            resourceList.add(new Resource(112, "Rat","N/A", "WGCNA Module Data",fileList,"\"Systems Genetic Analysis of Brown Adipose Tissue Function\" by Michal Pravenec et al. (Nov 10, 2017, Physiol Genomics.)"));
             
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
@@ -1184,7 +1193,7 @@ public class Resource {
             fileList[12]=new PublicationFile("Fastq Files Part 5.3",pubFilePath+"reads_smRNA.Stage5.3.tar.gz");
             fileList[13]=new PublicationFile("Fastq Files Part 5.4",pubFilePath+"reads_smRNA.Stage5.4.tar.gz");
             fileList[14]=new PublicationFile("Fastq Files Part 5.5",pubFilePath+"reads_smRNA.Stage5.5.tar.gz");
-            resourceList.add(new Resource(150, "Mouse", "N/A","Fastq Files",fileList));
+            resourceList.add(new Resource(150, "Mouse", "N/A","Fastq Files",fileList,"\"Toward effective, functional quantification of miRNAs by small RNA-seq\" by Pamela Russell et al."));
 
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;

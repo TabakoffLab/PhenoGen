@@ -41,7 +41,12 @@
 		action="downloadFiles.jsp" 
 		enctype="application/x-www-form-urlencoded" 
 		name="downloadFiles"> 
-		<div class="leftTitle">Files That Can Be Downloaded For <%=type%>:</div>
+            <% if(type.equals("pub")){%>
+                <div class="leftTitle">Files That Can Be Downloaded For <%=thisResource.getDownloadHeader()%>:</div>
+            <%}else{%>
+                <div class="leftTitle">Files That Can Be Downloaded For <%=type%>:</div>
+            <%}%>
+		
 		<table name="items" class="list_base" cellpadding="0" cellspacing="3" width="90%">
 			<thead>
 			<tr class="col_title">

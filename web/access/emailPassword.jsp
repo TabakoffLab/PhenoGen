@@ -20,13 +20,13 @@
 	String firstName = "";
 	String lastName = "";
 	if( request.getParameter("emailAddress")!=null){
-		emailAddress = (String) request.getParameter("emailAddress");
+		emailAddress = (String) FilterInput.getFilteredInputEmail(request.getParameter("emailAddress"));
 	}
 	if( request.getParameter("firstName") !=null){
-			firstName = (String) request.getParameter("firstName");
+			firstName = (String) FilterInput.getFilteredInput(request.getParameter("firstName"));
 	}
 	if( request.getParameter("lastName")!=null){
-			lastName = (String) request.getParameter("lastName");
+			lastName = (String) FilterInput.getFilteredInput(request.getParameter("lastName"));
 	}
 	
 	
