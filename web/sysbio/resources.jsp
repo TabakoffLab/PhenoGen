@@ -13,13 +13,14 @@
 <%
 	
     RNADataset myRNADataset=new RNADataset();
-    
+    int pubID=0;
+    String section="rnaseq";
         log.info("in resources.jsp. user =  "+ user);
 	
 	log.debug("action = "+action);
         extrasList.add("tooltipster.min.css");
         extrasList.add("tabs.css");
-	extrasList.add("resources.js");
+	extrasList.add("resources1.0.js");
 	extrasList.add("jquery.tooltipster.min.js");
         extrasList.add("d3.v3.5.16.min.js");
         extrasList.add("jquery.dataTables.1.10.9.min.js");
@@ -40,6 +41,12 @@
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
 	ArrayList checkedList = new ArrayList();
         ArrayList<RNADataset> publicRNADatasets=myRNADataset.getRNADatasetsByPublic(true,"All",pool);
+        if(request.getParameter("section")!=null){
+            section=FilterInput.getFilteredInput(request.getParameter("section").trim());
+        }
+        if(request.getParameter("publication")!=null){
+            pubID=Integer.parseInt(FilterInput.getFilteredInput(request.getParameter("publication").trim()));
+        }
 %>
 <style>
         span.detailMenu{
@@ -104,16 +111,16 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 
 <div style="width:100%;">
     <div style="font-size:18px; font-weight:bold;  color:#FFFFFF; text-align:center; width:100%; padding-top: 3px; ">
-            <span id="d2" class="detailMenu selected" name="rnaseq">RNA-Seq</span>
-            <span id="d6" class="detailMenu" name="dnaseq">DNA-Seq</span>
-            <span id="d1" class="detailMenu" name="array">Microarray</span>
-            <span id="d3" class="detailMenu" name="marker">Genomic Marker</span>
-            <span id="d4" class="detailMenu" name="pub">Publications</span>
+            <span id="d2" class="detailMenu <%if(section.equals("rnaseq")){%>selected<%}%>" name="rnaseq">RNA-Seq</span>
+            <span id="d6" class="detailMenu <%if(section.equals("dnaseq")){%>selected<%}%>" name="dnaseq">DNA-Seq</span>
+            <span id="d1" class="detailMenu <%if(section.equals("array")){%>selected<%}%>" name="array">Microarray</span>
+            <span id="d3" class="detailMenu <%if(section.equals("marker")){%>selected<%}%>" name="marker">Genomic Marker</span>
+            <span id="d4" class="detailMenu <%if(section.equals("pub")){%>selected<%}%>" name="pub">Publications</span>
             
     </div>
 </div>
 
-<div id="array" style="display:none;border-top:1px solid black;">
+<div id="array" style="<%if(!section.equals("array")){%>display:none;<%}%>border-top:1px solid black;">
 	<form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
@@ -189,7 +196,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		<BR>
         *The mask files are the same for all of these datasets.
         </div>
-        <div id="marker" style="display:none;border-top:1px solid black;">
+        <div id="marker" style="<%if(!section.equals("marker")){%>display:none;<%}%>border-top:1px solid black;">
 	<form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
@@ -232,7 +239,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		</table> 
         </form>
         </div>
-        <div id="rnaseq" style="border-top:1px solid black;">
+        <div id="rnaseq" style="<%if(!section.equals("rnaseq")){%>display:none;<%}%>border-top:1px solid black;">
                 <div class="title"> New RNA Sequencing Datasets Experimental Details/Downloads</div>
                 <form	method="post" 
 		action="resources.jsp" 
@@ -375,7 +382,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                       </table>
                 </form>
         </div>
-        <div id="dnaseq" style="display:none;border-top:1px solid black;">
+        <div id="dnaseq" style="<%if(!section.equals("dnaseq")){%>display:none;<%}%>border-top:1px solid black;">
 	<form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
@@ -485,7 +492,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
         </form>
 </div>
              
-<div id="pub" style="display:none;border-top:1px solid black;">
+<div id="pub" style="<%if(!section.equals("pub")){%>display:none;<%}%>border-top:1px solid black;">
 	<form	method="post" 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
@@ -691,6 +698,8 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 <%@ include file="/web/common/footer.jsp"  %>
 <script type="text/javascript">
         var curUID=<%=userLoggedIn.getUser_id()%>;
+        var section="<%=section%>";
+        var publicationID=<%=pubID%>;
         var pipelineModal;
         var metaModal;
 	$(document).ready(function() {
@@ -724,6 +733,25 @@ pageDescription="Data resources available for downloading includes Microarrays, 
                     metaModal = createDialog( ".metaData", {height: tmpH, width: tmpW, position: { my: "center", at: "center", of: window }, title: "Experiment Details"} );
                     pipelineModal = createDialog( ".pipelineData", {height: tmpH, width: tmpW, position: { my: "center", at: "center", of: window }, title: "Analysis Pipeline Details"} );
                 },10);
+                
+                /*setTimeout(function(){
+                    if(publicationID>0){
+                        console.log("pub:"+publicationID);
+                        $.ajax({
+                            type: "POST",
+                            url: contextPath + "/web/sysbio/directDownloadFiles.jsp",
+                            dataType: "html",
+                            data: { resource:publicationID, type: "pub" },
+                            async: false,
+                            success: function( html ){
+                            downloadModal.html( html ).dialog( "open" );
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                    alert( "there was an error processing this request: " + textStatus + " " + errorThrown );
+                            }
+                        });
+                    }
+                },500);*/
                 
 	});
         

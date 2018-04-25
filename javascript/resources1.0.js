@@ -63,4 +63,10 @@ function setupPage() {
                     });
             });
         }
+        
+        if(publicationID>0){
+            $("tr#"+publicationID+" td div.download").trigger("click");
+        }
+        
+        
 }
