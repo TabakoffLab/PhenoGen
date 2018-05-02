@@ -31,11 +31,12 @@
 	Resource[] myMarkerResources = myResource.getMarkerResources();
 	Resource[] myRNASeqResources = myResource.getRNASeqResources();
 	Resource[] myDNASeqResources = myResource.getDNASeqResources();
-	Resource[] myGenotypeResources = myResource.getGenotypingResources();
+	//Resource[] myGenotypeResources = myResource.getGenotypingResources();
         Resource[] myPublicationResources1 = myResource.getPublicationResources1();
         Resource[] myPublicationResources2 = myResource.getPublicationResources2();
         Resource[] myPublicationResources3 = myResource.getPublicationResources3();
         Resource[] myPublicationResources4 = myResource.getPublicationResources4();
+        Resource[] myPublicationResources5 = myResource.getPublicationResources5();
         Resource[] myGTFResources=myResource.getGTFResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
@@ -590,42 +591,32 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 			</tbody>
 		</table>
                         <BR>
+                        <BR>
         
-        
-                        
-                <BR>
-		<BR>
-                <div class="title">Human Genotype Data Files used in "Genetic markers of comorbid depression and alcoholism in women."<BR>(Procopio et. al. 2013, Alcohol Clin Exp Res.)<a href="https://www.ncbi.nlm.nih.gov/pubmed/23278386" target="_blank">Abstract</a></div>
-		      <table id="genotypingFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
-            	<thead>
-                    <tr class="col_title">
-					<th >Organism</th>
-					<th >Population</th>
-                    <th >Ancestry</th>
-                    <th >Array Type</th>
-					<th >.CEL Files</th>
-					</tr>
-				</thead>
+                        <div class="title">Data Files used in "Whole Brain and Brain Regional Coexpression Network Interactions Associated with Predisposition to Alcohol Consumption"<BR>
+                            (Vanderlinden et. al. 2013 PLOS) <a href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0068878" target="_blank">Abstract</a></div>
+                        <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
+                        <thead>
+                            <tr class="col_title">
+					<th>Data</th>
+                                        <TH>Files</TH>
+                            </tr>
+			</thead>
 			<tbody>
-			<% for (Resource resource: myGenotypeResources) { %> 
+			<% for (Resource resource: myPublicationResources5) { %> 
 				<tr id="<%=resource.getID()%>">  
-				<td> <%=resource.getOrganism()%> </td>
-				<td> <%=resource.getPopulation()%></td>
-                <td> <%=resource.getAncestry()%></td>
-                <td> <%=resource.getTechType()%></td>    
-				<% if (resource.getGenotypeDataFiles() != null && resource.getGenotypeDataFiles().length > 0) { %>
-					<td class="actionIcons">
-						<div class="linkedImg download" type="genotype"><div>
-					</td>
-				<% } else { %>
-                                	<td>&nbsp;</td>
-				<% } %>
+                                    <TD><%=resource.getDescription()%></TD>
+                                    <td class="actionIcons">
+						<div class="linkedImg download" type="pub"><div>
+                                    </td>
 				</tr> 
 			<% } %>
 			</tbody>
 		</table>
-                        <BR>
-        
+                        
+                        
+                <BR>
+		<BR>
 	</form>
 </div>
 

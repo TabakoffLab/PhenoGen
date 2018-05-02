@@ -384,6 +384,7 @@ public class Resource {
                 List<Resource> pubResources2 = Arrays.asList(getPublicationResources2());
                 List<Resource> pubResources3 = Arrays.asList(getPublicationResources3());
                 List<Resource> pubResources4 = Arrays.asList(getPublicationResources4());
+                List<Resource> pubResources5 = Arrays.asList(getPublicationResources5());
                 List<Resource> gtfResources = Arrays.asList(getGTFResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
@@ -394,6 +395,7 @@ public class Resource {
                 allResources.addAll(pubResources2);
                 allResources.addAll(pubResources3);
                 allResources.addAll(pubResources4);
+                allResources.addAll(pubResources5);
                 allResources.addAll(gtfResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
@@ -1039,14 +1041,14 @@ public class Resource {
                 String seqFilePath="/userFiles/public/Genotyping/";
 		List<Resource> resourceList = new ArrayList<Resource>();
                 
-                GenotypeDataFile[] genotypingFileList = new GenotypeDataFile[5];
+                /*GenotypeDataFile[] genotypingFileList = new GenotypeDataFile[5];
                 genotypingFileList[0]=new GenotypeDataFile("Genotype CEL Files Part 1",seqFilePath+"Genotyping_1.zip");
                 genotypingFileList[1]=new GenotypeDataFile("Genotype CEL Files Part 2",seqFilePath+"Genotyping_2.zip");
                 genotypingFileList[2]=new GenotypeDataFile("Genotype CEL Files Part 3",seqFilePath+"Genotyping_3.zip");
                 genotypingFileList[3]=new GenotypeDataFile("Genotype CEL Files Part 4",seqFilePath+"Genotyping_4.zip");
                 genotypingFileList[4]=new GenotypeDataFile("Genotype CEL Files Part 5",seqFilePath+"Genotyping_5.zip");
                 resourceList.add(new Resource(70, "Human", "Alcohol dependent subjects receiving outpatient treatment at the Medical University of Vienna (Austria)",
-                                            "self-reported European","Affymetrix Genome-Wide Human SNP Array 6.0", genotypingFileList ));
+                                            "self-reported European","Affymetrix Genome-Wide Human SNP Array 6.0", genotypingFileList ));*/
         	
                 Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
 		return resourceArray;
@@ -1198,6 +1200,28 @@ public class Resource {
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
         }
+        
+        public Resource[] getPublicationResources5() {
+            log.debug("in getPublicationResources5");
+            String pubFilePath="/userFiles/public/Publication/vanderlinden/";
+            List<Resource> resourceList = new ArrayList<Resource>();
+                
+            PublicationFile[] fileList = new PublicationFile[1];
+            fileList[0]=new PublicationFile("BXD Whole Brain Expression Data for WGCNA",pubFilePath+"BXD.wholeBrain.priorToWGCNA.txt.zip");
+            resourceList.add(new Resource(162, "Mouse", "BXD","BXD Whole Brain Expression Data for WGCNA",fileList, "\"Whole Brain and Brain Regional Coexpression Network Interactions Associated with Predisposition to Alcohol Consumption\" (Vanderlinden et. al. 2013 PLOS)"));
+
+            fileList = new PublicationFile[1];
+            fileList[0]=new PublicationFile("Module Membership Key",pubFilePath+"BXD.wholeBrain.moduleMembershipKey.txt");
+            resourceList.add(new Resource(161, "Mouse", "BXD","Module Membership Key",fileList,"\"Whole Brain and Brain Regional Coexpression Network Interactions Associated with Predisposition to Alcohol Consumption\" (Vanderlinden et. al. 2013 PLOS)"));
+
+            fileList = new PublicationFile[1];
+            fileList[0]=new PublicationFile("Module Eigengene Matrix",pubFilePath+"BXD.wholeBrain.ModuleEigengeneMatrix.txt");
+            resourceList.add(new Resource(160, "Mouse","BXD", "Module Eigengene Matrix",fileList,"\"Whole Brain and Brain Regional Coexpression Network Interactions Associated with Predisposition to Alcohol Consumption\" (Vanderlinden et. al. 2013 PLOS)"));
+            
+            Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
+            return resourceArray;
+        }
+        
 	/**
 	 * Returns one Resource object from an array of Resource objects
 	 * @param myResources	an array of Resource objects 
