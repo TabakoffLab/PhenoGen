@@ -385,6 +385,7 @@ public class Resource {
                 List<Resource> pubResources3 = Arrays.asList(getPublicationResources3());
                 List<Resource> pubResources4 = Arrays.asList(getPublicationResources4());
                 List<Resource> pubResources5 = Arrays.asList(getPublicationResources5());
+                List<Resource> pubResources6 = Arrays.asList(getPublicationResources6());
                 List<Resource> gtfResources = Arrays.asList(getGTFResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
@@ -396,6 +397,7 @@ public class Resource {
                 allResources.addAll(pubResources3);
                 allResources.addAll(pubResources4);
                 allResources.addAll(pubResources5);
+                allResources.addAll(pubResources6);
                 allResources.addAll(gtfResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
@@ -1221,7 +1223,49 @@ public class Resource {
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
         }
-        
+         public Resource[] getPublicationResources6() {
+            log.debug("in getPublicationResources6");
+            String pubFilePath="/userFiles/public/Publication/kechris/";
+            List<Resource> resourceList = new ArrayList<Resource>();
+                
+            PublicationFile[] fileList = new PublicationFile[15];
+            fileList[0]=new PublicationFile("Fastq Files Part 1",pubFilePath+"reads_smRNA.Stage1.tar.gz");
+            fileList[1]=new PublicationFile("Fastq Files Part 2.1",pubFilePath+"reads_smRNA.Stage2.1.tar.gz");
+            fileList[2]=new PublicationFile("Fastq Files Part 2.2",pubFilePath+"reads_smRNA.Stage2.2.tar.gz");
+            fileList[3]=new PublicationFile("Fastq Files Part 3.1",pubFilePath+"reads_smRNA.Stage3.1.tar.gz");
+            fileList[4]=new PublicationFile("Fastq Files Part 3.2",pubFilePath+"reads_smRNA.Stage3.2.tar.gz");
+            fileList[5]=new PublicationFile("Fastq Files Part 3.3",pubFilePath+"reads_smRNA.Stage3.3.tar.gz");
+            fileList[6]=new PublicationFile("Fastq Files Part 4.1",pubFilePath+"reads_smRNA.Stage4.1.tar.gz");
+            fileList[7]=new PublicationFile("Fastq Files Part 4.2",pubFilePath+"reads_smRNA.Stage4.2.tar.gz");
+            fileList[8]=new PublicationFile("Fastq Files Part 4.3",pubFilePath+"reads_smRNA.Stage4.3.tar.gz");
+            fileList[9]=new PublicationFile("Fastq Files Part 4.4",pubFilePath+"reads_smRNA.Stage4.4.tar.gz");
+            fileList[10]=new PublicationFile("Fastq Files Part 5.1",pubFilePath+"reads_smRNA.Stage5.1.tar.gz");
+            fileList[11]=new PublicationFile("Fastq Files Part 5.2",pubFilePath+"reads_smRNA.Stage5.2.tar.gz");
+            fileList[12]=new PublicationFile("Fastq Files Part 5.3",pubFilePath+"reads_smRNA.Stage5.3.tar.gz");
+            fileList[13]=new PublicationFile("Fastq Files Part 5.4",pubFilePath+"reads_smRNA.Stage5.4.tar.gz");
+            fileList[14]=new PublicationFile("Fastq Files Part 5.5",pubFilePath+"reads_smRNA.Stage5.5.tar.gz");
+            resourceList.add(new Resource(170, "Mouse", "N/A","Fastq Files",fileList,"\"Predictive Modeling of miRNA-mediated Predisposition to Alcohol-related Phenotypes in Mouse\" by Pratyaydipta Rudra et al."));
+            
+            fileList = new PublicationFile[4];
+            fileList[0]=new PublicationFile("miRNA Normalized Expression - This table (881 x 59) contains the filtered, normalized and batch effect corrected miRNA expression data. Each row is a miRNA and each column is a sample. ",pubFilePath+"mirna_expression_normalized.csv.zip");
+            fileList[1]=new PublicationFile("miRNA Variance Stabilized Expression - This table (881 x 59) contains the filtered, normalized and batch effect corrected and variance stabilized miRNA expression data after variance stabilizing transformation from DESeq was performed. Each row is a miRNA and each column is a sample.",pubFilePath+"mirna_expression_variance_stabilized.csv.zip");
+            fileList[2]=new PublicationFile("All SDPs - This table (1416 x 7) shows the list of all SDPs along with the number of SNPs, chromosome number, the rs number and base-pair location for the first and last SNP corresponding to every SDP. ",pubFilePath+"Table_of_all_SDPs.csv.zip");
+            fileList[3]=new PublicationFile("All Quadruples - This table (2916 x 10) shows the list of all the 2916 cohesive quadruples. Each row corresponds to a quadruple. The first four columns show the phenotype name, SDP number, miRNA name and the gene (mRNA) name.  The next 6 columns show the pairwise correlations between the 4 variables for each quadruple.",pubFilePath+"Table_of_all_quadruples.csv.zip");
+            resourceList.add(new Resource(171, "Rat", "N/A","Processed Data",fileList,"\"Predictive Modeling of miRNA-mediated Predisposition to Alcohol-related Phenotypes in Mouse\" by Pratyaydipta Rudra et al."));
+            
+            Dataset myDataset = new Dataset();
+            Dataset LXSRI_Dataset = myDataset.getDatasetFromMyDatasets(publicDatasets, myDataset.LXSRI_DATASET_NAME);
+            String resourcesDir = LXSRI_Dataset.getResourcesDir();
+            resourcesDir=resourcesDir.substring(resourcesDir.indexOf("/userFiles/"));
+
+            fileList = new PublicationFile[1];
+            fileList[0] = new PublicationFile("SNP information on the LXS RI panel was collected by Dr. Gary Churchill and colleagues at the Jackson Laboratory using the Affymetrix Mouse Diversity Genotyping array.  This information was gathered with funding from NIH grants (GM0706833 and AG0038070).", resourcesDir + "LXS.markers.mm10.txt.zip");
+            resourceList.add(new Resource(172, "Mouse", "N/A","Markers",fileList,"\"Predictive Modeling of miRNA-mediated Predisposition to Alcohol-related Phenotypes in Mouse\" by Pratyaydipta Rudra et al."));
+            
+
+            Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
+            return resourceArray;
+        }
 	/**
 	 * Returns one Resource object from an array of Resource objects
 	 * @param myResources	an array of Resource objects 
