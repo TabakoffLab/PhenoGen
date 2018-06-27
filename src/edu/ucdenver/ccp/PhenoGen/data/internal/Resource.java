@@ -1246,11 +1246,13 @@ public class Resource {
             fileList[14]=new PublicationFile("Fastq Files Part 5.5",pubFilePath+"reads_smRNA.Stage5.5.tar.gz");
             resourceList.add(new Resource(170, "Mouse", "N/A","Fastq Files",fileList,"\"Predictive Modeling of miRNA-mediated Predisposition to Alcohol-related Phenotypes in Mouse\" by Pratyaydipta Rudra et al."));
             
-            fileList = new PublicationFile[4];
+            fileList = new PublicationFile[6];
             fileList[0]=new PublicationFile("miRNA Normalized Expression - This table (881 x 59) contains the filtered, normalized and batch effect corrected miRNA expression data. Each row is a miRNA and each column is a sample. ",pubFilePath+"mirna_expression_normalized.csv.zip");
             fileList[1]=new PublicationFile("miRNA Variance Stabilized Expression - This table (881 x 59) contains the filtered, normalized and batch effect corrected and variance stabilized miRNA expression data after variance stabilizing transformation from DESeq was performed. Each row is a miRNA and each column is a sample.",pubFilePath+"mirna_expression_variance_stabilized.csv.zip");
-            fileList[2]=new PublicationFile("All SDPs - This table (1416 x 7) shows the list of all SDPs along with the number of SNPs, chromosome number, the rs number and base-pair location for the first and last SNP corresponding to every SDP. ",pubFilePath+"Table_of_all_SDPs.csv.zip");
-            fileList[3]=new PublicationFile("All Quadruples - This table (2916 x 10) shows the list of all the 2916 cohesive quadruples. Each row corresponds to a quadruple. The first four columns show the phenotype name, SDP number, miRNA name and the gene (mRNA) name.  The next 6 columns show the pairwise correlations between the 4 variables for each quadruple.",pubFilePath+"Table_of_all_quadruples.csv.zip");
+            fileList[2]=new PublicationFile("mRNA Expression Strain Means",pubFilePath+"mRNA_expression_data_strainmeans.csv.zip");
+            fileList[3]=new PublicationFile("mRNA Expression Full",pubFilePath+"mRNA_expression_data_full.csv.zip");
+            fileList[4]=new PublicationFile("All SDPs - This table (1416 x 7) shows the list of all SDPs along with the number of SNPs, chromosome number, the rs number and base-pair location for the first and last SNP corresponding to every SDP. ",pubFilePath+"Table_of_all_SDPs.csv.zip");
+            fileList[5]=new PublicationFile("All Quadruples - This table (2916 x 10) shows the list of all the 2916 cohesive quadruples. Each row corresponds to a quadruple. The first four columns show the phenotype name, SDP number, miRNA name and the gene (mRNA) name.  The next 6 columns show the pairwise correlations between the 4 variables for each quadruple.",pubFilePath+"Table_of_all_quadruples.csv.zip");
             resourceList.add(new Resource(171, "Rat", "N/A","Processed Data",fileList,"\"Predictive Modeling of miRNA-mediated Predisposition to Alcohol-related Phenotypes in Mouse\" by Pratyaydipta Rudra et al."));
             
             Dataset myDataset = new Dataset();
