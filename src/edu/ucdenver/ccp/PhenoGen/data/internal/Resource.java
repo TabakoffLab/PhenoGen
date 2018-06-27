@@ -1197,7 +1197,7 @@ public class Resource {
             fileList[12]=new PublicationFile("Fastq Files Part 5.3",pubFilePath+"reads_smRNA.Stage5.3.tar.gz");
             fileList[13]=new PublicationFile("Fastq Files Part 5.4",pubFilePath+"reads_smRNA.Stage5.4.tar.gz");
             fileList[14]=new PublicationFile("Fastq Files Part 5.5",pubFilePath+"reads_smRNA.Stage5.5.tar.gz");
-            resourceList.add(new Resource(150, "Mouse", "N/A","Fastq Files",fileList,"\"Toward effective, functional quantification of miRNAs by small RNA-seq\" by Pamela Russell et al."));
+            resourceList.add(new Resource(150, "Mouse", "N/A","Fastq Files",fileList,"\"\"miR-MaGiC improves quantification accuracy for small RNA-seq\" by Pamela Russell et al."));
 
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
