@@ -521,7 +521,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 			</tbody>
 		</table>
                         <BR><BR>
-          <div class="title">Data Files for "Toward effective, functional quantification of miRNAs by small RNA-seq" by Pamela Russell et al. (submitted, NAR.)
+          <div class="title">Data Files for "miR-MaGiC improves quantification accuracy for small RNA-seq." by Pamela Russell et al. (2018 May 15, BMC Res Notes)<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/29764489">Abstract</a>
                </div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
                         <thead>
