@@ -134,6 +134,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		      <table id="expressionFiles" name="items" class="list_base tablesorter" cellpadding="0" cellspacing="3" width="98%">
             		<thead>
                                <tr class="col_title">
+                                        <TH>Experiment Accession ID</TH>
 					<th>Organism</th>
 					<th>Dataset</th>
 					<th>Tissue</th>
@@ -149,6 +150,7 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 			<% for (Resource resource: myExpressionResources) { 
 			%> 
 				<tr id="<%=resource.getID()%>">  
+                                    <TD><%=resource.getID()%></TD>
 				<td> <%=resource.getOrganism()%> </td>
 				<td> <%=resource.getDataset().getName()%></td> 
 				<td> <%=resource.getTissue()%></td>
