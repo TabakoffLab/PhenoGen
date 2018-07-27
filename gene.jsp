@@ -423,8 +423,8 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
                                     max=(int)Math.floor(mb*multA);
                                 }
                                 int tmpInt=max;
-                                min=min-tmpInt;
                                 max=min+tmpInt;
+                                min=min-tmpInt;
                         }else if(myGene.indexOf("-+")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-+")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("-+")+2).trim();
@@ -453,8 +453,8 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
                                     max=(int)Math.floor(mb*multA);
                                 }
                                 int tmpInt=max;
-                                min=min-tmpInt;
                                 max=min+tmpInt;
+                                min=min-tmpInt;
                         }else if (myGene.indexOf("+")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("+")+1).trim();
@@ -639,7 +639,7 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
         chr1:5000+-2000 is Chromosome 1 @ bp 3,000-7,000.<BR />
         chr1:5000+2000 is Chromosome 1 @ bp 5,000-7,000.<BR />
         chr1:50.126-51.345 is Chromosome 1 @ 50,126,000-51,345,000<BR>
-        chr1:50.15+-100.0k is chromosome 1 @ 50,150,000-50,250,000<BR>
+        chr1:50.15+-100.0k is chromosome 1 @ 50,050,000-50,250,000<BR>
     </div>
     or<BR />
     Click on the Translate Region to Mouse/Rat to find regions on the Mouse/Rat genome that correspond to a region of interest in the Human/Mouse/Rat genome.<BR />
