@@ -10,7 +10,7 @@
     	<meta name="description" content="<%=pageDescription%>"> 
     <%}%>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type = "text/javascript" >
+    <script >
         var contextPath = "<%=contextPath%>";
     </script>
 
