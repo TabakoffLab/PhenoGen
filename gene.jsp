@@ -391,30 +391,89 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
 		
                 String minCoord="";
                 String maxCoord="";
+                int multI=1000000;
+                int multA=1000000;
+                if(minCoord.toLowerCase().contains("k")||minCoord.toLowerCase().contains("kb")){
+                    multI=1000;
+                    minCoord=minCoord.substring(0,minCoord.indexOf("k"));
+                }else if(minCoord.toLowerCase().contains("m")||minCoord.toLowerCase().contains("mb")){
+                    minCoord=minCoord.substring(0,minCoord.indexOf("m"));
+                }
+                if(maxCoord.toLowerCase().contains("k")||maxCoord.toLowerCase().contains("kb")){
+                    multA=1000;
+                    maxCoord=maxCoord.substring(0,maxCoord.indexOf("k"));
+                }else if(maxCoord.toLowerCase().contains("m")||maxCoord.toLowerCase().contains("mb")){
+                    maxCoord=maxCoord.substring(0,maxCoord.indexOf("m"));
+                }
                 if(myGene.indexOf(":")>0){
                         chromosome=myGene.substring(0,myGene.indexOf(":"));
                         if(myGene.indexOf("+-")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+-")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("+-")+2).trim();
-                                int tmpInt=Integer.parseInt(maxCoord.trim());
-                                min=Integer.parseInt(minCoord)-tmpInt;
-                                max=Integer.parseInt(minCoord)+tmpInt;
+                                if(minCoord.indexOf(".")==-1){
+                                    min=Integer.parseInt(minCoord);
+                                }else{
+                                    mb=Double.parseDouble(minCoord);
+                                    min=Math.floor(mb*multI);
+                                }
+                                if(maxCoord.indexOf(".")==-1){
+                                    max=Integer.parseInt(maxCoord);
+                                }else{
+                                    mb=Double.parseDouble(maxCoord);
+                                    max=Math.floor(mb*multA);
+                                }
+                                int tmpInt=max;
+                                min=min-tmpInt;
+                                max=min+tmpInt;
                         }else if(myGene.indexOf("-+")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-+")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("-+")+2).trim();
-                                int tmpInt=Integer.parseInt(maxCoord);
-                                min=Integer.parseInt(minCoord)-tmpInt;
-                                max=Integer.parseInt(minCoord)+tmpInt;
+                                if(minCoord.indexOf(".")==-1){
+                                    min=Integer.parseInt(minCoord);
+                                }else{
+                                    mb=Double.parseDouble(minCoord);
+                                    min=Math.floor(mb*multI);
+                                }
+                                if(maxCoord.indexOf(".")==-1){
+                                    max=Integer.parseInt(maxCoord);
+                                }else{
+                                    mb=Double.parseDouble(maxCoord);
+                                    max=Math.floor(mb*multA);
+                                }
+                                int tmpInt=max;
+                                min=min-tmpInt;
+                                max=min+tmpInt;
                         }else if (myGene.indexOf("+")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("+")+1).trim();
-                                min=Integer.parseInt(minCoord);
-                                max=min+Integer.parseInt(maxCoord);
+                                if(minCoord.indexOf(".")==-1){
+                                    min=Integer.parseInt(minCoord);
+                                }else{
+                                    mb=Double.parseDouble(minCoord);
+                                    min=Math.floor(mb*multI);
+                                }
+                                if(maxCoord.indexOf(".")==-1){
+                                    max=Integer.parseInt(maxCoord);
+                                }else{
+                                    mb=Double.parseDouble(maxCoord);
+                                    max=Math.floor(mb*multA);
+                                }
+                                max=min+max;
                         }else if(myGene.indexOf("-")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("-")+1).trim();
-                                min=Integer.parseInt(minCoord);
-                                max=Integer.parseInt(maxCoord);
+                                if(minCoord.indexOf(".")==-1){
+                                    min=Integer.parseInt(minCoord);
+                                }else{
+                                    mb=Double.parseDouble(minCoord);
+                                    min=Math.floor(mb*multI);
+                                }
+                                if(maxCoord.indexOf(".")==-1){
+                                    max=Integer.parseInt(maxCoord);
+                                }else{
+                                    mb=Double.parseDouble(maxCoord);
+                                    max=Math.floor(mb*multA);
+                                }
                         }else{
                                 regionError="You have entered an invalid region.  Please see the examples in the instructions.";
                         }
