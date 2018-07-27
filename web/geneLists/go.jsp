@@ -201,5 +201,5 @@
 		
 </script>
 
-<script src="<%=contextRoot%>javascript/goBrowser1.2.0.js" type="text/javascript"></script>
+<script src="<%=contextRoot%>javascript/goBrowser1.2.0.min.js" type="text/javascript"></script>
 <%@ include file="/web/common/footer_adaptive.jsp" %>

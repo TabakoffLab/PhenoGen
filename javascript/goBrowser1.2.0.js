@@ -141,7 +141,7 @@ function GOBrowser(path,fileName){
 										$("#wgcnaMouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
 										window.open(url);
 									}	
-									delete a;
+									//delete a;
 								    return true;
 								}
 			    			},

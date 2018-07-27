@@ -2298,7 +2298,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 										$("#mouseHelp").html("<span style='color:#FF0000;'>Your browser will not save the image directly. Image will open in a popup, in the new window right click to save image.</span>");
 										window.open(url);
 									}
-									delete a;
+									//delete a;
 								    return true;
 								}
 								if(ga){
@@ -9217,9 +9217,9 @@ function SNPTrack(gsvg,data,trackClass,density,additionalOptions){
 			if(tmpName.indexOf("SNP")>-1){
 				color=d3.rgb(0,255,0);
 			}else if(tmpName.indexOf("Insertion")>-1){
-				color=d3.rgb(0,175,00);
+				color=d3.rgb(0,175,0);
 			}else{
-				color=d3.rgb(0,125,00);
+				color=d3.rgb(0,125,0);
 			}
 		}else if(that.strain=="F344"){
 			if(tmpName.indexOf("SNP")>-1){
