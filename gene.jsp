@@ -393,9 +393,6 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
                 String maxCoord="";
                 int multI=1000000;
                 int multA=1000000;
-                
-                log.debug("minCoord\n"+minCoord);
-                log.debug("maxCoord\n"+maxCoord);
                 if(myGene.indexOf(":")>0){
                         chromosome=myGene.substring(0,myGene.indexOf(":"));
                         if(myGene.indexOf("+-")>0){
