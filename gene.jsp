@@ -393,34 +393,37 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
                 String maxCoord="";
                 int multI=1000000;
                 int multA=1000000;
-                if(minCoord.toLowerCase().contains("k")||minCoord.toLowerCase().contains("kb")){
-                    multI=1000;
-                    minCoord=minCoord.substring(0,minCoord.indexOf("k"));
-                }else if(minCoord.toLowerCase().contains("m")||minCoord.toLowerCase().contains("mb")){
-                    minCoord=minCoord.substring(0,minCoord.indexOf("m"));
-                }
-                if(maxCoord.toLowerCase().contains("k")||maxCoord.toLowerCase().contains("kb")){
-                    multA=1000;
-                    maxCoord=maxCoord.substring(0,maxCoord.indexOf("k"));
-                }else if(maxCoord.toLowerCase().contains("m")||maxCoord.toLowerCase().contains("mb")){
-                    maxCoord=maxCoord.substring(0,maxCoord.indexOf("m"));
-                }
+                
+                log.debug("minCoord\n"+minCoord);
+                log.debug("maxCoord\n"+maxCoord);
                 if(myGene.indexOf(":")>0){
                         chromosome=myGene.substring(0,myGene.indexOf(":"));
                         if(myGene.indexOf("+-")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+-")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("+-")+2).trim();
+                                if(minCoord.toLowerCase().contains("k")){
+                                    multI=1000;
+                                    minCoord=minCoord.substring(0,minCoord.toLowerCase().indexOf("k")-1);
+                                }else if(minCoord.toLowerCase().contains("m")){
+                                    minCoord=minCoord.substring(0,minCoord.toLowerCase().indexOf("m")-1);
+                                }
+                                if(maxCoord.toLowerCase().contains("k")){
+                                    multA=1000;
+                                    maxCoord=maxCoord.substring(0,maxCoord.toLowerCase().indexOf("k")-1);
+                                }else if(maxCoord.toLowerCase().contains("m")){
+                                    maxCoord=maxCoord.substring(0,maxCoord.toLowerCase().indexOf("m")-1);
+                                }
                                 if(minCoord.indexOf(".")==-1){
                                     min=Integer.parseInt(minCoord);
                                 }else{
-                                    mb=Double.parseDouble(minCoord);
-                                    min=Math.floor(mb*multI);
+                                    double mb=Double.parseDouble(minCoord);
+                                    min=(int)Math.floor(mb*multI);
                                 }
                                 if(maxCoord.indexOf(".")==-1){
                                     max=Integer.parseInt(maxCoord);
                                 }else{
-                                    mb=Double.parseDouble(maxCoord);
-                                    max=Math.floor(mb*multA);
+                                    double mb=Double.parseDouble(maxCoord);
+                                    max=(int)Math.floor(mb*multA);
                                 }
                                 int tmpInt=max;
                                 min=min-tmpInt;
@@ -428,17 +431,29 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
                         }else if(myGene.indexOf("-+")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-+")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("-+")+2).trim();
+                                if(minCoord.toLowerCase().contains("k")){
+                                    multI=1000;
+                                    minCoord=minCoord.substring(0,minCoord.toLowerCase().indexOf("k")-1);
+                                }else if(minCoord.toLowerCase().contains("m")){
+                                    minCoord=minCoord.substring(0,minCoord.toLowerCase().indexOf("m")-1);
+                                }
+                                if(maxCoord.toLowerCase().contains("k")){
+                                    multA=1000;
+                                    maxCoord=maxCoord.substring(0,maxCoord.toLowerCase().indexOf("k")-1);
+                                }else if(maxCoord.toLowerCase().contains("m")){
+                                    maxCoord=maxCoord.substring(0,maxCoord.toLowerCase().indexOf("m")-1);
+                                }
                                 if(minCoord.indexOf(".")==-1){
                                     min=Integer.parseInt(minCoord);
                                 }else{
-                                    mb=Double.parseDouble(minCoord);
-                                    min=Math.floor(mb*multI);
+                                    double mb=Double.parseDouble(minCoord);
+                                    min=(int)Math.floor(mb*multI);
                                 }
                                 if(maxCoord.indexOf(".")==-1){
                                     max=Integer.parseInt(maxCoord);
                                 }else{
-                                    mb=Double.parseDouble(maxCoord);
-                                    max=Math.floor(mb*multA);
+                                    double mb=Double.parseDouble(maxCoord);
+                                    max=(int)Math.floor(mb*multA);
                                 }
                                 int tmpInt=max;
                                 min=min-tmpInt;
@@ -446,33 +461,57 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
                         }else if (myGene.indexOf("+")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("+")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("+")+1).trim();
+                                if(minCoord.toLowerCase().contains("k")){
+                                    multI=1000;
+                                    minCoord=minCoord.substring(0,minCoord.toLowerCase().indexOf("k")-1);
+                                }else if(minCoord.toLowerCase().contains("m")){
+                                    minCoord=minCoord.substring(0,minCoord.toLowerCase().indexOf("m")-1);
+                                }
+                                if(maxCoord.toLowerCase().contains("k")){
+                                    multA=1000;
+                                    maxCoord=maxCoord.substring(0,maxCoord.toLowerCase().indexOf("k")-1);
+                                }else if(maxCoord.toLowerCase().contains("m")){
+                                    maxCoord=maxCoord.substring(0,maxCoord.toLowerCase().indexOf("m")-1);
+                                }
                                 if(minCoord.indexOf(".")==-1){
                                     min=Integer.parseInt(minCoord);
                                 }else{
-                                    mb=Double.parseDouble(minCoord);
-                                    min=Math.floor(mb*multI);
+                                    double mb=Double.parseDouble(minCoord);
+                                    min=(int)Math.floor(mb*multI);
                                 }
                                 if(maxCoord.indexOf(".")==-1){
                                     max=Integer.parseInt(maxCoord);
                                 }else{
-                                    mb=Double.parseDouble(maxCoord);
-                                    max=Math.floor(mb*multA);
+                                    double mb=Double.parseDouble(maxCoord);
+                                    max=(int)Math.floor(mb*multA);
                                 }
                                 max=min+max;
                         }else if(myGene.indexOf("-")>0){
                                 minCoord=myGene.substring(myGene.indexOf(":")+1,myGene.indexOf("-")).trim();
                                 maxCoord=myGene.substring(myGene.indexOf("-")+1).trim();
+                                if(minCoord.toLowerCase().contains("k")){
+                                    multI=1000;
+                                    minCoord=minCoord.substring(0,minCoord.toLowerCase().indexOf("k")-1);
+                                }else if(minCoord.toLowerCase().contains("m")){
+                                    minCoord=minCoord.substring(0,minCoord.toLowerCase().indexOf("m")-1);
+                                }
+                                if(maxCoord.toLowerCase().contains("k")){
+                                    multA=1000;
+                                    maxCoord=maxCoord.substring(0,maxCoord.toLowerCase().indexOf("k")-1);
+                                }else if(maxCoord.toLowerCase().contains("m")){
+                                    maxCoord=maxCoord.substring(0,maxCoord.toLowerCase().indexOf("m")-1);
+                                }
                                 if(minCoord.indexOf(".")==-1){
                                     min=Integer.parseInt(minCoord);
                                 }else{
-                                    mb=Double.parseDouble(minCoord);
-                                    min=Math.floor(mb*multI);
+                                    double mb=Double.parseDouble(minCoord);
+                                    min=(int)Math.floor(mb*multI);
                                 }
                                 if(maxCoord.indexOf(".")==-1){
                                     max=Integer.parseInt(maxCoord);
                                 }else{
-                                    mb=Double.parseDouble(maxCoord);
-                                    max=Math.floor(mb*multA);
+                                    double mb=Double.parseDouble(maxCoord);
+                                    max=(int)Math.floor(mb*multA);
                                 }
                         }else{
                                 regionError="You have entered an invalid region.  Please see the examples in the instructions.";
@@ -599,9 +638,11 @@ pageDescription="Genome/Transcriptome Browser provides a vizualization of Microa
     or<BR />
     Enter a region such as
     <div style="padding-left:20px;">
-        "chr1:1-50000" which would be Chromosome 1 @ bp 1-50,000.<BR />
-        "chr1:5000+-2000" which would be Chromosome 1 @ bp 3,000-7,000.<BR />
-        "chr1:5000+2000" which would be Chromosome 1 @ bp 5,000-7,000.<BR />
+        chr1:1-50000 is Chromosome 1 @ bp 1-50,000.<BR />
+        chr1:5000+-2000 is Chromosome 1 @ bp 3,000-7,000.<BR />
+        chr1:5000+2000 is Chromosome 1 @ bp 5,000-7,000.<BR />
+        chr1:50.126-51.345 is Chromosome 1 @ 50,126,000-51,345,000<BR>
+        chr1:50.15+-100.0k is chromosome 1 @ 50,150,000-50,250,000<BR>
     </div>
     or<BR />
     Click on the Translate Region to Mouse/Rat to find regions on the Mouse/Rat genome that correspond to a region of interest in the Human/Mouse/Rat genome.<BR />
