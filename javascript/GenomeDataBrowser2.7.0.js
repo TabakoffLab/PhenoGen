@@ -5176,6 +5176,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
             }
 		}else if(that.trackClass.indexOf("liverTotal")===0){
 			color="#bbbedd";
+			if(that.trackClass.indexOf("_F344Stm")>0){
+				color="#abaefd";
+			}else if(that.trackClass.indexOf("_LEStm")>0){
+				color="#dbaecd";
+			}
             if(d.getAttribute("strain")!==null && typeof d.getAttribute("strain") !=='undefined' && d.getAttribute("strain")!=="All"){
                 color=that.strainSpecColor(color,d);
             }
@@ -5187,6 +5192,11 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 		}
 		else if(that.trackClass.indexOf("brainTotal")===0){
 			color="#7EB5D6";
+			if(that.trackClass.indexOf("_F344Stm")>0){
+				color="#6EA5F6";
+			}else if(that.trackClass.indexOf("_LEStm")>0){
+				color="#9EA5C6";
+			}
 			if(d.getAttribute("strain")!==null && typeof d.getAttribute("strain") !=='undefined' && d.getAttribute("strain")!=="All"){
                 color=that.strainSpecColor(color,d);
             }
@@ -5221,13 +5231,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
                 b=b-32;
                 g=g-32;
             }else if(d.getAttribute("strain").toUpperCase()==="F344_ST"){
-                b=b+64;
-                r=r-32;
-                g=g-32;
+                b=b+32;
+                r=r-16;
+                g=g-16;
             }else if(d.getAttribute("strain").toUpperCase()==="LE_ST"){
-                r=r+64;
-                b=b-32;
-                g=g-32;
+                r=r+32;
+                b=b-16;
+                g=g-16;
             }
             if(r>255){
                 r=255;
@@ -6817,13 +6827,13 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
                     legend[curPos]={color:"#BE95B6",label:"SHR"};
                     curPos++;
             }
-            else if(that.trackClass.indexOf("brainTotal")===0){
+            /*else if(that.trackClass.indexOf("brainTotal")===0){
                     legend[curPos]={color:"#7EB5D6",label:"All"};
                     curPos++;
             }else if(that.trackClass.indexOf("liverTotal")===0){
                     legend[curPos]={color:"#bbbedd",label:"All"};
                     curPos++;
-            }
+            }*/
         }
         if(that.trackClass==="brainsmallnc"){
                     legend[curPos]={color:"#3E7596",label:"All"};
