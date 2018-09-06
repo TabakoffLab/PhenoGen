@@ -1231,7 +1231,7 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 
 				d3.xml(dataPrefix+"tmpData/browserCache/"+genomeVer+"/regionData/"+that.folderName+"/"+track+".xml",function (error,d){
 					if(error){
-						if(retry===1 && track==="mergedTotal"){
+						if(retry===1 && (track==="mergedTotal" || track.indexOf("liverTotal")===0 || track.indexOf("brainTotal")===0)){
 							var tmpMin=that.xScale.domain()[0];
 							var tmpMax=that.xScale.domain()[1];
 							var tmpContext=contextPath +"/"+ pathPrefix;
