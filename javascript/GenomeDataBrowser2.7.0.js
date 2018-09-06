@@ -5220,6 +5220,14 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
                 r=r+64;
                 b=b-32;
                 g=g-32;
+            }else if(d.getAttribute("strain").toUpperCase()==="F344_ST"){
+                b=b+64;
+                r=r-32;
+                g=g-32;
+            }else if(d.getAttribute("strain").toUpperCase()==="LE_ST"){
+                r=r+64;
+                b=b-32;
+                g=g-32;
             }
             if(r>255){
                 r=255;
@@ -6455,7 +6463,7 @@ function GeneTrack(gsvg,data,trackClass,label,additionalOptions){
 					if(strain==="F344Stm"){
 						strain="F344-Stm";
 					}
-					lbl=strain+" "+lbl;
+					lbl=strain+" Filtered (>=1.0TPM) "+lbl;
 				}
 		that.updateLabel(lbl);
 		that.redrawLegend();
