@@ -3075,7 +3075,7 @@ function toolTipSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type){
 		}else if(track.indexOf("coding")>-1){
 			var newTrack= GeneTrack(that,data,track,"Protein Coding/PolyA+ Transcripts",additionalOptions);
 			that.addTrackList(newTrack);
-		}else if(track==="liverTotal" || track==="heartTotal" || track==="brainTotal" || track==="mergedTotal"){
+		}else if(track.indexOf("liverTotal")===0 || track==="heartTotal" || track.indexOf("brainTotal")===0 || track==="mergedTotal"){
 			var lbl="Liver Total RNA Transcripts";
 			if(track==="heartTotal"){
 				lbl="Heart Total RNA Transcripts";
@@ -10414,6 +10414,7 @@ function CountTrack(gsvg,data,trackClass,density){
 	that.graphColorText="steelblue";
 	that.colorScale=d3.scaleLinear().domain([that.scaleMin,that.scaleMax]).range(["#EEEEEE","#000000"]);
 	that.ttSVG=1;
+	that.density=density;
 
 	that.ttTrackList=[];
 	if(trackClass.indexOf("illuminaSmall")>-1){
@@ -10897,7 +10898,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.svg.selectAll(".leftLbl").remove();
 		that.svg.select(".area").remove();
 		that.svg.selectAll(".area").remove();
-		if(that.density==1){
+		if(that.density===1){
 			var tmpMax=that.gsvg.xScale.domain()[1];
 	    	var points=that.svg.selectAll("."+that.trackClass)
 	   			.data(data,keyStart);
@@ -10947,7 +10948,7 @@ function CountTrack(gsvg,data,trackClass,density){
 			                .style("opacity", 0);
 			        });
 			that.svg.attr("height", 30);
-	    }else if(that.density==2){
+	    }else if(that.density===2){
 	    	that.yScale.domain([0, tmpYMax]);
 	    	that.yAxis = d3.axisLeft(that.yScale)
     				.ticks(5);
