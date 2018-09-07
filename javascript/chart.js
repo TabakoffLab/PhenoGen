@@ -1331,7 +1331,13 @@ chart=function(params){
 		      											return 0;
 		      										}
 		      									})
-		      		.attr("height", function(d) { return itemH-(2*barMarg); })
+		      		.attr("height", function(d) {  
+		      			var ret= itemH-(2*barMarg); 
+		      			if(ret<1){
+		      				ret=1;
+		      			}
+		      			return ret; 
+		      		})
 		      		.style("fill", function(d) { 
 		      			color=d3.rgb(0,0,175);
 		      			if(that.drawType==="scatter"){
