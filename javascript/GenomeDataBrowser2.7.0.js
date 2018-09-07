@@ -10414,7 +10414,15 @@ function CountTrack(gsvg,data,trackClass,density){
 	that.graphColorText="steelblue";
 	that.colorScale=d3.scaleLinear().domain([that.scaleMin,that.scaleMax]).range(["#EEEEEE","#000000"]);
 	that.ttSVG=1;
+	that.data=data;
 	that.density=density;
+	that.prevDensity=density;
+	that.displayBreakDown=null;
+	var tmpMin=that.gsvg.xScale.domain()[0];
+	var tmpMax=that.gsvg.xScale.domain()[1];
+	var len=tmpMax-tmpMin;
+	that.bin=that.calculateBin(len);
+	that.fullDataTimeOutHandle=0;
 
 	that.ttTrackList=[];
 	if(trackClass.indexOf("illuminaSmall")>-1){
@@ -10457,15 +10465,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		return bin;
 	};
 
-	that.data=data;
-	that.density=density;
-	that.prevDensity=density;
-	that.displayBreakDown=null;
-	var tmpMin=that.gsvg.xScale.domain()[0];
-	var tmpMax=that.gsvg.xScale.domain()[1];
-	var len=tmpMax-tmpMin;
-	that.bin=that.calculateBin(len);
-	that.fullDataTimeOutHandle=0;
+
 
 	that.color= function (d){
 		var color="#FFFFFF";
@@ -10898,7 +10898,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		that.svg.selectAll(".leftLbl").remove();
 		that.svg.select(".area").remove();
 		that.svg.selectAll(".area").remove();
-		if(that.density===1){
+		if(that.density==1){
 			var tmpMax=that.gsvg.xScale.domain()[1];
 	    	var points=that.svg.selectAll("."+that.trackClass)
 	   			.data(data,keyStart);
@@ -10948,7 +10948,7 @@ function CountTrack(gsvg,data,trackClass,density){
 			                .style("opacity", 0);
 			        });
 			that.svg.attr("height", 30);
-	    }else if(that.density===2){
+	    }else if(that.density==2){
 	    	that.yScale.domain([0, tmpYMax]);
 	    	that.yAxis = d3.axisLeft(that.yScale)
     				.ticks(5);
