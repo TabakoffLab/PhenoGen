@@ -677,8 +677,8 @@ function loadSavedConfigTracks(trackListObj,levelInd,curSvg){
 	}
 	for(var m=0;m<trackArray.length;m++){
 		var trackVars=trackArray[m].split(",");
-		//console.log("loadingSavedTrack");
-		//console.log(trackVars);
+		console.log("loadingSavedTrack");
+		console.log(trackVars);
 		if( (organism=="Rn" && typeof mouseOnly[trackVars[0]]==='undefined') || (organism=="Mm" && typeof ratOnly[trackVars[0]]==='undefined')) {
     		if(trackVars[0]!="") {
     			addedCount++;
