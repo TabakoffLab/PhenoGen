@@ -1575,31 +1575,31 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 							if(retry>=4){
 								data=new Array();
 								if(track=="helicos"){
-									newTrack= HelicosTrack(that,data,track,1);
+									newTrack= HelicosTrack(that,data,track,density);
 								}else if(track=="illuminaTotal"){
-									newTrack= IlluminaTotalTrack(that,data,track,1);
+									newTrack= IlluminaTotalTrack(that,data,track,density);
 								}else if(track=="illuminaSmall"){
-									newTrack= IlluminaSmallTrack(that,data,track,1);
+									newTrack= IlluminaSmallTrack(that,data,track,density);
 								}else if(track=="illuminaPolyA"){
-									newTrack= IlluminaPolyATrack(that,data,track,1);
+									newTrack= IlluminaPolyATrack(that,data,track,density);
 								}else if(track=="liverilluminaTotalPlus"){
-									newTrack= LiverIlluminaTotalPlusTrack(that,data,track,1);
+									newTrack= LiverIlluminaTotalPlusTrack(that,data,track,density);
 								}else if(track=="liverilluminaTotalMinus"){
-									newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
+									newTrack= LiverIlluminaTotalMinusTrack(that,data,track,density);
 								}else if(track=="heartilluminaTotalPlus"){
-									newTrack= HeartIlluminaTotalPlusTrack(that,data,track,1);
+									newTrack= HeartIlluminaTotalPlusTrack(that,data,track,density);
 								}else if(track=="heartilluminaTotalMinus"){
-									newTrack= HeartIlluminaTotalMinusTrack(that,data,track,1);
+									newTrack= HeartIlluminaTotalMinusTrack(that,data,track,density);
 								}else if(track=="brainilluminaTotalPlus"){
-									newTrack= BrainIlluminaTotalPlusTrack(that,data,track,1);
+									newTrack= BrainIlluminaTotalPlusTrack(that,data,track,density);
 								}else if(track=="brainilluminaTotalMinus"){
-									newTrack= BrainIlluminaTotalMinusTrack(that,data,track,1);
+									newTrack= BrainIlluminaTotalMinusTrack(that,data,track,density);
 								}else if(track=="liverilluminaSmall"){
-									newTrack= LiverIlluminaSmallTrack(that,data,track,1);
+									newTrack= LiverIlluminaSmallTrack(that,data,track,density);
 								}else if(track=="heartilluminaSmall"){
-									newTrack= HeartIlluminaSmallTrack(that,data,track,1);
+									newTrack= HeartIlluminaSmallTrack(that,data,track,density);
 								}else if(track.indexOf("illuminaTotal")>-1){
-									newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,1);
+									newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,density);
 								}
 								that.addTrackList(newTrack);
 							}else{
@@ -1612,31 +1612,31 @@ function GenomeSVG(div,imageWidth,minCoord,maxCoord,levelNumber,title,type,allow
 							var newTrack;
                                                         try{
 							if(track==="helicos"){
-								newTrack= HelicosTrack(that,data,track,1);
+								newTrack= HelicosTrack(that,data,track,density);
 							}else if(track==="illuminaTotal"){
-								newTrack= IlluminaTotalTrack(that,data,track,1);
+								newTrack= IlluminaTotalTrack(that,data,track,density);
 							}else if(track==="illuminaSmall"){
-								newTrack= IlluminaSmallTrack(that,data,track,1);
+								newTrack= IlluminaSmallTrack(that,data,track,density);
 							}else if(track==="illuminaPolyA"){
-								newTrack= IlluminaPolyATrack(that,data,track,1);
+								newTrack= IlluminaPolyATrack(that,data,track,density);
 							}else if(track==="liverilluminaTotalPlus"){
-								newTrack= LiverIlluminaTotalPlusTrack(that,data,track,1);
+								newTrack= LiverIlluminaTotalPlusTrack(that,data,track,density);
 							}else if(track==="liverilluminaTotalMinus"){
-								newTrack= LiverIlluminaTotalMinusTrack(that,data,track,1);
+								newTrack= LiverIlluminaTotalMinusTrack(that,data,track,density);
 							}else if(track==="heartilluminaTotalPlus"){
-								newTrack= HeartIlluminaTotalPlusTrack(that,data,track,1);
+								newTrack= HeartIlluminaTotalPlusTrack(that,data,track,density);
 							}else if(track==="heartilluminaTotalMinus"){
-								newTrack= HeartIlluminaTotalMinusTrack(that,data,track,1);
+								newTrack= HeartIlluminaTotalMinusTrack(that,data,track,density);
 							}else if(track==="brainilluminaTotalPlus"){
-								newTrack= BrainIlluminaTotalPlusTrack(that,data,track,1);
+								newTrack= BrainIlluminaTotalPlusTrack(that,data,track,density);
 							}else if(track==="brainilluminaTotalMinus"){
-								newTrack= BrainIlluminaTotalMinusTrack(that,data,track,1);
+								newTrack= BrainIlluminaTotalMinusTrack(that,data,track,density);
 							}else if(track==="liverilluminaSmall"){
-								newTrack= LiverIlluminaSmallTrack(that,data,track,1);
+								newTrack= LiverIlluminaSmallTrack(that,data,track,density);
 							}else if(track==="heartilluminaSmall"){
-								newTrack= HeartIlluminaSmallTrack(that,data,track,1);
+								newTrack= HeartIlluminaSmallTrack(that,data,track,density);
 							}else if(track.indexOf("illuminaTotal")>-1){
-								newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,1);
+								newTrack=StrainSpecificIlluminaTotalTrack(that,data,track,density);
 							}
 							that.addTrackList(newTrack);
                                                         }catch(er){}
