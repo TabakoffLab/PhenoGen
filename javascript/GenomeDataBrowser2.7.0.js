@@ -10421,7 +10421,7 @@ function CountTrack(gsvg,data,trackClass,density){
 	var tmpMin=that.gsvg.xScale.domain()[0];
 	var tmpMax=that.gsvg.xScale.domain()[1];
 	var len=tmpMax-tmpMin;
-	that.bin=that.calculateBin(len);
+	
 	that.fullDataTimeOutHandle=0;
 
 	that.ttTrackList=[];
@@ -10464,7 +10464,7 @@ function CountTrack(gsvg,data,trackClass,density){
 		}
 		return bin;
 	};
-
+	that.bin=that.calculateBin(len);
 
 
 	that.color= function (d){
