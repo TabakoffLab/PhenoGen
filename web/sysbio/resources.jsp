@@ -38,6 +38,7 @@
         Resource[] myPublicationResources4 = myResource.getPublicationResources4();
         Resource[] myPublicationResources5 = myResource.getPublicationResources5();
         Resource[] myPublicationResources6 = myResource.getPublicationResources6();
+        Resource[] myPublicationResources7 = myResource.getPublicationResources7();
         Resource[] myGTFResources=myResource.getGTFResources();
 	// Sort by organism first, dataset second (seems backwards!)
 	myExpressionResources = myResource.sortResources(myResource.sortResources(myExpressionResources, "dataset"), "organism");
@@ -501,6 +502,28 @@ pageDescription="Data resources available for downloading includes Microarrays, 
 		action="resources.jsp" 
 		enctype="application/x-www-form-urlencoded"
 		name="resources">   
+            <div class="title">Data Files for "Condition-adaptive fusion graphical lasso (CFGL): an adaptive procedure for inferring condition-specific gene co-expression network." by Lyu, Y., Xue, L., Zhang, F., Koch, H., Saba, L., Kechris, K., & Li, Q. (in press, PLoS Computational Biology)
+               </div>
+		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">
+                        <thead>
+                            <tr class="col_title">
+					<th>Data</th>
+                                        <TH>Files</TH>
+                            </tr>
+			</thead>
+			<tbody>
+			<% for (Resource resource: myPublicationResources7) { %> 
+				<tr id="<%=resource.getID()%>">  
+                                    
+                                    <TD><%=resource.getDescription()%></TD>
+                                    <td class="actionIcons">
+						<div class="linkedImg download" type="pub"><div>
+                                    </td>
+				</tr> 
+			<% } %>
+			</tbody>
+		</table>
+                        <BR><BR>
              <div class="title">Data Files for "Predictive Modeling of miRNA-mediated Predisposition to Alcohol-related Phenotypes in Mouse" by Pratyaydipta Rudra et al. (submitted, BMC Genomics)
                </div>
 		      <table id="pubFiles" class="list_base tablesorter" name="items" cellpadding="0" cellspacing="3" width="85%">

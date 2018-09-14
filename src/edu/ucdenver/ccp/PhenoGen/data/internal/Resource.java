@@ -386,6 +386,7 @@ public class Resource {
                 List<Resource> pubResources4 = Arrays.asList(getPublicationResources4());
                 List<Resource> pubResources5 = Arrays.asList(getPublicationResources5());
                 List<Resource> pubResources6 = Arrays.asList(getPublicationResources6());
+                List<Resource> pubResources7 = Arrays.asList(getPublicationResources7());
                 List<Resource> gtfResources = Arrays.asList(getGTFResources());
 		List<Resource> allResources = new ArrayList<Resource>(expressionResources);
 		allResources.addAll(markerResources);
@@ -398,6 +399,7 @@ public class Resource {
                 allResources.addAll(pubResources4);
                 allResources.addAll(pubResources5);
                 allResources.addAll(pubResources6);
+                allResources.addAll(pubResources7);
                 allResources.addAll(gtfResources);
 		Resource[] allResourcesArray = myObjectHandler.getAsArray(allResources, Resource.class);
 		return allResourcesArray;
@@ -1253,7 +1255,7 @@ public class Resource {
             fileList[3]=new PublicationFile("mRNA Expression Full",pubFilePath+"mRNA_expression_data_full.csv.zip");
             fileList[4]=new PublicationFile("All SDPs - This table (1416 x 7) shows the list of all SDPs along with the number of SNPs, chromosome number, the rs number and base-pair location for the first and last SNP corresponding to every SDP. ",pubFilePath+"Table_of_all_SDPs.csv.zip");
             fileList[5]=new PublicationFile("All Quadruples - This table (2916 x 10) shows the list of all the 2916 cohesive quadruples. Each row corresponds to a quadruple. The first four columns show the phenotype name, SDP number, miRNA name and the gene (mRNA) name.  The next 6 columns show the pairwise correlations between the 4 variables for each quadruple.",pubFilePath+"Table_of_all_quadruples.csv.zip");
-            resourceList.add(new Resource(171, "Rat", "N/A","Processed Data",fileList,"\"Predictive Modeling of miRNA-mediated Predisposition to Alcohol-related Phenotypes in Mouse\" by Pratyaydipta Rudra et al."));
+            resourceList.add(new Resource(171, "Mouse", "N/A","Processed Data",fileList,"\"Predictive Modeling of miRNA-mediated Predisposition to Alcohol-related Phenotypes in Mouse\" by Pratyaydipta Rudra et al."));
             
             Dataset myDataset = new Dataset();
             Dataset LXSRI_Dataset = myDataset.getDatasetFromMyDatasets(publicDatasets, myDataset.LXSRI_DATASET_NAME);
@@ -1268,6 +1270,37 @@ public class Resource {
             Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
             return resourceArray;
         }
+         
+         public Resource[] getPublicationResources7() {
+            log.debug("in getPublicationResources7");
+            String pubFilePath="/userFiles/public/Publication/Li.PSU/";
+            List<Resource> resourceList = new ArrayList<Resource>();
+            Dataset myDataset = new Dataset();
+            Dataset HXBRI_Brain_Exon_Dataset = myDataset.getDatasetFromMyDatasets(publicDatasets, myDataset.HXBRI_BRAIN_EXON_DATASET_NAME);
+            Dataset HXBRI_Heart_Exon_Dataset = myDataset.getDatasetFromMyDatasets(publicDatasets, myDataset.HXBRI_HEART_EXON_DATASET_NAME);
+            
+            PublicationFile[] fileList = new PublicationFile[10];
+            fileList[0]=new PublicationFile("Brain - Normalized Expression Values",pubFilePath+"HXB.Brain.rn6.expr.TC.core.v2.txt.zip");
+            fileList[1]=new PublicationFile("Heart - Normalized Expression Values",pubFilePath+"HXB.Heart.rn6.expr.TC.core.v2.txt.zip");            
+            String resourcesDir = HXBRI_Brain_Exon_Dataset.getResourcesDir();
+            resourcesDir=resourcesDir.substring(resourcesDir.indexOf("/userFiles/"));
+            fileList[2]=new PublicationFile("Brain - Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part1.zip");
+            fileList[3]=new PublicationFile("Brain - Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part2.zip");
+            fileList[4]=new PublicationFile("Brain - Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part3.zip");
+            fileList[5]=new PublicationFile("Brain - Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.Brain.Exon.RawData_Part4.zip");
+            resourcesDir = HXBRI_Heart_Exon_Dataset.getResourcesDir();
+            resourcesDir=resourcesDir.substring(resourcesDir.indexOf("/userFiles/"));
+            fileList[6]=new PublicationFile("Heart - Raw Data - CEL Files, Part 1", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part1.zip");
+            fileList[7]=new PublicationFile("Heart - Raw Data - CEL Files, Part 2", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part2.zip");
+            fileList[8]=new PublicationFile("Heart - Raw Data - CEL Files, Part 3", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part3.zip");
+            fileList[9]=new PublicationFile("Heart - Raw Data - CEL Files, Part 4", resourcesDir + "PublicHXB_BXH.Heart.Exon.RawData_Part4.zip");
+            
+            resourceList.add(new Resource(180, "Rat", "N/A","Normalized Expression/Raw CEL Files",fileList,"\"Condition-adaptive fusion graphical lasso (CFGL): an adaptive procedure for inferring condition-specific gene co-expression network.\" by Y. Lyu et al."));
+            
+            Resource[] resourceArray = myObjectHandler.getAsArray(resourceList, Resource.class);
+            return resourceArray;
+        }
+         
 	/**
 	 * Returns one Resource object from an array of Resource objects
 	 * @param myResources	an array of Resource objects 
