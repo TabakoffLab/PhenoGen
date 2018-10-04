@@ -12,6 +12,13 @@
     
 		<H2>Announcements</H2>
                     <div  style="overflow:auto;height:92%;">
+                        <H2> Phenogen is moving</H2>
+                        <div style="margin-left:5px;">
+                            Phenogen will be hosted in the cloud soon.  The changes should keep the site available nearly 100% of the time and provide better performance.  
+                            There are some major changes to go along with this move. The largest change is that microarray analysis will not be supported.  
+                            You will be able to download previous datasets and access a previous analysis.  We are sorry for any inconvenience this causes.
+                            The new site is still under construction in the cloud.  You can help us beta test it by visiting <a href="https://phenogen.org">phenogen.org</a>.
+                        </div>
                         <H2> REST API Survey 2/20/2018</H2>
                         <div style="margin-left:5px;">
                             Please help us prioritize effort on a REST API to provide access to data on Phenogen.  Take the 1 question survey <a href="#survey">below</a>.

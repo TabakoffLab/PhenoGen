@@ -29,6 +29,19 @@ span.control{
 	}
 </style>
 <div class="whats_new version">
+    <div class="whats_new version"><p><h3>Cloud version</h3><BR /> </p></div>
+       <ul>
+           <li><span class="highlight-dark">Beta Testing cloud version now at <a href="https://phenogen.org">https://phenogen.org</a></span></li>
+           <li> Most of the changes occurred behind the scenes and users will not see much of a difference with 2 exceptions.  
+                                        <UL>
+                                            <LI>The domain is now going to be <a href="https://phenogen.org">phenogen.org</a>.</LI>
+                                            <LI>Microarray analysis will not be available in the cloud version.  You should still have access to previously uploaded arrays and any analysis performed.</LI>
+                                        </UL>
+                                    </li>
+            <li>The major changes should provide better reliability and performance while reducing maintenence time to allow for development of new tools.  Write us and let us know what you would find useful.</li>
+            <li> New Features and data are coming soon so keep checking back on the new site.</li>
+        </ul>
+        <hr/>
     <div class="whats_new version"><p><h3>Version: v3.4.2</h3><BR /> Updated:3/9/2018</p></div>
        <ul>
                                     <li><span class="highlight-dark">Inbred Read Depth Tracks</span>
