@@ -147,6 +147,9 @@
 </div>
 
 <!-- Website status message or other important message-->
+<div style="color:#FF0000;text-align: center;font-size:24px;" >PhenoGen will be moving to <a href="https://phenogen.org">phenogen.org</a>.  You can try it now. Please excuse the temporary bugs.</div>
+<div style="color:#FF0000;text-align: center;font-size:18px;" >Please see our update in what's new for details.  Note: New microarray analysis will no longer be possible.</div>
+
 <span style="color:#FF0000;display:none;" ></span>
 
 <span id="noJS" style="color:#FF0000;display:inline-block;" >This site requires JavaScript and it is currently disabled.  Please visit <a href="<%=commonDir%>siteRequirements.jsp">Browser Support/Software Requirments</a>.</span>
