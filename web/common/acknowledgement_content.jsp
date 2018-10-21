@@ -22,6 +22,6 @@
 <h3 style="margin:10px;">Recombinant Inbred Panels</h3>
     <p>We are grateful to the following investigators for providing the recombinant inbred panels found on the site.</p>
     <p>HXB/BXH Rat RI Panel was provided by <a href="http://www.fgu.cas.cz/en/departments/genetics-of-model-diseases">Michal Pravenec</a> (Czech Academy of Sciences) and <a href="http://pharmacology.ucsd.edu/faculty/printz.html">Morton Printz</a>(UC San Diego).</p>
-    <p>F344/LE Rat RI Panel was provided by Hiromaso Asido (National BioResource Project for the Rat in Japan).</p>
+    <p>F344/LE Rat RI Panel was provided by <a href="http://www.med.kyoto-u.ac.jp/en/organization-staff/research/doctoral_course/r-022/">Masahide Asano</a>(National BioResource Project for the Rat in Japan).</p>
     <p>ILSXISS Mouse RI Panel was provided by <a href="http://ibgwww.colorado.edu/tj-lab/">Thomas Johnson</a>(CU Boulder) and John DeFries (CU Boulder).</p>
 
